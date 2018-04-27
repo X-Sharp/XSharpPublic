@@ -1004,7 +1004,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return false;
         }
-        internal List<XSharpToken> ReclassifyTokens(List<XSharpToken> tokens)
+        internal IList<XSharpToken> ReclassifyTokens(IList<XSharpToken> tokens)
         {
             int lastType = EOS;
             XSharpToken last = null;

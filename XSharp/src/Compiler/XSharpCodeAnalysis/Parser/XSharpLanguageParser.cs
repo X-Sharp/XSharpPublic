@@ -182,9 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
             var sourceText = _text.ToString();
-                var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
-                lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
-                _lexerTokenStream = lexer.GetTokenStream();
+            var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
+            lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
+            _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
@@ -216,45 +216,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             #region Determine if we really need the preprocessor
             bool mustPreprocess = true;
-                if (_options.MacroScript)
+            if (_options.MacroScript)
+            {
+                mustPreprocess = false;
+            }
+            else
+            {
+                if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+                {
+                    mustPreprocess = true;
+                }
+                else
                 {
                     mustPreprocess = false;
-                }
-                else
-                {
-                    if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
-                    {
-                        mustPreprocess = true;
-                    }
-                    else
-                    {
-                        mustPreprocess = false;
 
-                    }
                 }
-                #endregion
-                if (mustPreprocess)
+            }
+            #endregion
+            if (mustPreprocess)
+            {
+                var ppTokens = pp.PreProcess();
+                ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+            }
+            else
+            {
+                // No Standard Defs and no preprocessor tokens in the lexer
+                // so we bypass the preprocessor and use the lexer tokenstream
+                // but if a .ppo is required we must use the preprocessor to
+                // write the source text to the .ppo file
+                if (_options.PreprocessorOutput && pp != null)
                 {
-                    var ppTokens = pp.PreProcess();
-                    ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+                    pp.writeToPPO(sourceText, false);
                 }
-                else
-                {
-                    // No Standard Defs and no preprocessor tokens in the lexer
-                    // so we bypass the preprocessor and use the lexer tokenstream
-                    // but if a .ppo is required we must use the preprocessor to
-                    // write the source text to the .ppo file
-                    if (_options.PreprocessorOutput && pp != null)
-                    {
-                        pp.writeToPPO(sourceText, false, false);
-                    }
-                    BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
-                    var tokens = ts.GetTokens();
-                    // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-                    ppStream = new CommonTokenStream(new ListTokenSource(tokens));
-                }
-                ppStream.Fill();
-                _preprocessorTokenStream = ppStream;
+                BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
+                var tokens = ts.GetTokens();
+                // commontokenstream filters on tokens on the default channel. All other tokens are ignored
+                ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+            }
+            ppStream.Fill();
+            _preprocessorTokenStream = ppStream;
             var parser = new XSharpParser(ppStream);
             parser.IsScript = _options.Kind == SourceCodeKind.Script;
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
@@ -283,6 +283,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // When this fails, then we try again with LL mode and then we record errors
                 parser.RemoveErrorListeners();
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
+                // we need to set force_global_context to get proper error messages. This makes parsing slower
+                // but gives better messages
+                parser.Interpreter.force_global_context = true;     
                 parser.ErrorHandler = new BailErrorStrategy();
                 try
                 {
@@ -319,7 +322,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (_options.Verbose)
                         {
                             string msg = _GetInnerExceptionMessage(e1);
-                            _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg );
+                            _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg);
                         }
                     }
 

@@ -31,6 +31,7 @@
     <Prefer32Bit>False</Prefer32Bit>
     <VO15>false</VO15>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <VO16>false</VO16>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>

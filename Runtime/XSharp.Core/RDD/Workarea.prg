@@ -304,7 +304,8 @@ VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT)
 
 VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
 	IF SELF:_FieldIndexValidate(nFldPos)
-		nFldPos -= 1
+        // !!! WARNING !!! Core Runtime is compiled with 1-Based array, so the compiler will ALREADY minus by one in [nFldPos]
+		// nFldPos -= 1
 		RETURN SELF:_Fields[nFldPos]:Name
 	ENDIF          
 	RETURN String.Empty

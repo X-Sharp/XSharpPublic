@@ -184,8 +184,39 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
-                // CASE DBS_ISNULL
-                // CASE DBS_STEP
+                CASE DbFieldInfo.DBS_NAME
+                    oResult := SELF:_Fields[nFldPos]:Name
+                CASE DbFieldInfo.DBS_LEN
+                    oResult := SELF:_Fields[nFldPos]:Length
+                CASE DbFieldInfo.DBS_DEC
+                    oResult := SELF:_Fields[nFldPos]:Decimals
+                CASE DbFieldInfo.DBS_TYPE
+                    oResult := SELF:_Fields[nFldPos]:FieldType
+                CASE DbFieldInfo.DBS_ALIAS
+                    oResult := SELF:_Fields[nFldPos]:Alias
+
+                CASE DbFieldInfo.DBS_ISNULL
+                CASE DbFieldInfo.DBS_COUNTER
+                CASE DbFieldInfo.DBS_STEP    
+
+                CASE DbFieldInfo.DBS_BLOB_GET     
+                CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
+                                                // is more efficient than using Type() or ValType()
+                                                // since the data itself does not have to be retrieved
+                                                // from the BLOB file in order to determine the type.
+                CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file	
+                CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
+                CASE DbFieldInfo.DBS_BLOB_POINTER	// Returns a numeric pointer to the data in a blob
+                                                    // file. This pointer can be used with BLOBDirectGet(),
+                                                    // BLOBDirectImport(), etc.
+
+                CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
+                CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN		
+
+                CASE DbFieldInfo.DBS_STRUCT				
+                CASE DbFieldInfo.DBS_PROPERTIES			
+                CASE DbFieldInfo.DBS_USER		
+
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
             END SWITCH

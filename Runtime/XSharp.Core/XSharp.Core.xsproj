@@ -215,123 +215,93 @@
   <ItemGroup>
     <EmbeddedResource Include="Collations\Croatia.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Czech852.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\CZech895.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Danish.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Dutch.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Finnish.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\French.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Generic.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\German.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\German2.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Hung852.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\HungCwi.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Italian.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Norwegn.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Pol-Iso.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Pol-Maz.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Pol852.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Port850.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Port860.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Romania.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Russian.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Serbia.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\SL-W-95.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\SL-W-AS7.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\SL-W-EE.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Slov852.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Slov895.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Spanish.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Swedish.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Collations\Uk.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
@@ -346,21 +316,6 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>

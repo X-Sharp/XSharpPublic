@@ -5,7 +5,7 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <AZ>false</AZ>
+    <AZ>true</AZ>
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
@@ -31,6 +31,7 @@
     <Prefer32Bit>False</Prefer32Bit>
     <VO15>false</VO15>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <VO16>false</VO16>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
@@ -112,6 +113,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Collations\" />
     <Folder Include="Functions" />
     <Folder Include="State" />
     <Folder Include="RDD" />
@@ -129,6 +131,7 @@
       <DependentUpon>Collations.resx</DependentUpon>
     </Compile>
     <Compile Include="Defines.prg" />
+    <Compile Include="ErrorEnum.prg" />
     <Compile Include="Functions\Convert.prg" />
     <Compile Include="Functions\Debug.prg" />
     <Compile Include="Functions\Error.prg" />
@@ -145,8 +148,6 @@
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Functions\vodb.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="RDD\BaseIndex.prg" />
-    <Compile Include="RDD\BaseMemo.prg" />
     <Compile Include="RDD\DbFloat.prg" />
     <Compile Include="RDD\RDDDefines.prg" />
     <Compile Include="RDD\RddEnums.prg" />
@@ -156,7 +157,6 @@
     <Compile Include="RDD\RddError.prg" />
     <Compile Include="RDD\RddHelpers.prg" />
     <Compile Include="RDD\RDDSupport.prg" />
-    <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
     <Compile Include="State\Get.prg" />
     <Compile Include="State\EnumSet.prg" />
@@ -169,11 +169,168 @@
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Collations\Brazil.collation" />
+    <None Include="Collations\Croatia.collation" />
+    <None Include="Collations\Czech852.collation" />
+    <None Include="Collations\CZech895.collation" />
+    <None Include="Collations\Danish.collation" />
+    <None Include="Collations\Dutch.collation" />
+    <None Include="Collations\Finnish.collation" />
+    <None Include="Collations\French.collation" />
+    <None Include="Collations\Generic.collation" />
+    <None Include="Collations\German.collation" />
+    <None Include="Collations\German2.collation" />
+    <None Include="Collations\Hung852.collation" />
+    <None Include="Collations\HungCwi.collation" />
+    <None Include="Collations\Italian.collation" />
+    <None Include="Collations\Norwegn.collation" />
+    <None Include="Collations\Pol-Iso.collation" />
+    <None Include="Collations\Pol-Maz.collation" />
+    <None Include="Collations\Pol852.collation" />
+    <None Include="Collations\Port850.collation" />
+    <None Include="Collations\Port860.collation" />
+    <None Include="Collations\Romania.collation" />
+    <None Include="Collations\Russian.collation" />
+    <None Include="Collations\Serbia.collation" />
+    <None Include="Collations\SL-W-95.collation" />
+    <None Include="Collations\SL-W-AS7.collation" />
+    <None Include="Collations\SL-W-EE.collation" />
+    <None Include="Collations\Slov852.collation" />
+    <None Include="Collations\Slov895.collation" />
+    <None Include="Collations\Spanish.collation" />
+    <None Include="Collations\Swedish.collation" />
+    <None Include="Collations\Uk.collation" />
     <None Include="README.md" />
     <None Include="State\GetSet.xh" />
+    <None Include="VoError.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Collations.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Collations\Brazil.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Collations\Croatia.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Czech852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\CZech895.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Danish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Dutch.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Finnish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\French.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Generic.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\German.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\German2.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Hung852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\HungCwi.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Italian.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Norwegn.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Pol-Iso.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Pol-Maz.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Pol852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Port850.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Port860.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Romania.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Russian.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Serbia.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\SL-W-95.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\SL-W-AS7.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\SL-W-EE.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Slov852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Slov895.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Spanish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Swedish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Collations\Uk.resx">
+      <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>

@@ -1034,7 +1034,7 @@ function Bytes2Line(aBytes as byte[], nBuffLen ref int) as string
 	local lFoundCR := false as logic
 	local lFoundCRLF := false as logic
 	nLF := nBuffLen
-	for var nI := 1 to nBuffLen
+	for var nI := 0 to nBuffLen-1
 		switch aBytes[nI]
 			case 10
 				if lFoundCR		// immediately LF after CR

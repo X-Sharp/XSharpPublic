@@ -156,6 +156,7 @@ CLASS DbScopeInfo
 		Rest			 := FALSE
 		WhileBlock		 := NULL
 		WhileExpression  := NULL
+
 	METHOD Clone AS DbScopeInfo
 		LOCAL oClone AS DbScopeInfo
 		oClone := DbScopeInfo{}

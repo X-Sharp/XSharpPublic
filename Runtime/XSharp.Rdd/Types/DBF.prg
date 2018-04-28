@@ -7,6 +7,7 @@
 USING System.Runtime.InteropServices
 USING System.IO
 USING System.Text
+USING System.Linq
 
 
 BEGIN NAMESPACE XSharp.RDD
@@ -26,7 +27,7 @@ BEGIN NAMESPACE XSharp.RDD
         //PROTECT _NullOffSet		AS LONG
         PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
         PROTECT _Positioned		AS LOGIC 	// 
-        PROTECT _Appended		AS LOGIC	// Record has been added ? 
+        PROTECT _Appended		AS LOGIC	// Record has been added ?
         PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
         PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
         PROTECT _fLocked		AS LOGIC
@@ -51,9 +52,28 @@ BEGIN NAMESPACE XSharp.RDD
             
             
             //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
-            //	METHOD GoTop() AS LOGIC
-            //	METHOD GoBottom() AS LOGIC   
-            //	METHOD GoTo(nRec AS LONG) AS LOGIC
+         METHOD GoTop() AS LOGIC
+            IF ( SELF:_hFile != F_ERROR )
+                SELF:GoTo( 1 )
+                RETURN TRUE
+            ENDIF
+            RETURN FALSE
+
+         METHOD GoBottom() AS LOGIC
+            IF ( SELF:_hFile != F_ERROR )
+                SELF:Goto( SELF:RecCount )
+            ENDIF
+            RETURN FALSE
+
+         METHOD GoTo(nRec AS LONG) AS LOGIC
+            IF ( SELF:_hFile != F_ERROR )
+                IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
+                    // virtual pos
+                    Self:_RecNo := nRec
+                ENDIF
+            ENDIF
+            RETURN FALSE
+
             //	METHOD GoToId(oRec AS OBJECT) AS LOGIC
             //	METHOD Skip(nToSkip AS INT) AS LOGIC
             //	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
@@ -70,10 +90,29 @@ BEGIN NAMESPACE XSharp.RDD
             //	METHOD Zap() AS LOGIC   
             
             // Open and Close   
-            //	METHOD Close() 			AS LOGIC  
+        VIRTUAL METHOD Close() 			AS LOGIC 
+            IF ( SELF:_hFile != NULL )
+                VAR isOk := TRUE
+                //
+                isOk := FClose( SELF:_hFile )
+                IF ( isOk )
+                    TRY
+                        SUPER:Close()
+                        CATCH
+                        isOk := FALSE
+                    END TRY
+                    SELF:_hFile := NULL
+                ENDIF
+                RETURN isOk
+            ENDIF
+            RETURN FALSE
+
             //	METHOD Create(info AS DbOpenInfo) AS LOGIC  
-            //	METHOD Open(info AS DbOpenInfo) AS LOGIC
+
         VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+            LOCAL isOK AS LOGIC
+            //
+            isOk := FALSE
             SELF:_OpenInfo := info
             // Should we set to .DBF per default ?
             IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
@@ -86,15 +125,47 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
             SELF:_hFile    := Fopen(SELF:_FileName, SELF:_OpenInfo:FileMode) 
+            IF ( SELF:_hFile != F_ERROR )
+                isOk := SELF:_fillHeader()
+                IF ( isOk )
+                    SELF:GoTop()
+                ENDIF
+            ENDIF
+            RETURN isOk
             
-            SELF:_fillHeader()
-            RETURN TRUE
-            
-        PRIVATE METHOD _fillHeader() AS VOID
+        PRIVATE METHOD _fillHeader() AS LOGIC
+            LOCAL isOk AS LOGIC
             //
-            FRead3(SELF:_hFile, SELF:_Header:Buffer, HDROFFSETS.SIZE)
+            isOk := ( FRead3(SELF:_hFile, SELF:_Header:Buffer, HDROFFSETS.SIZE) == HDROFFSETS.SIZE )
             //
-            RETURN
+            IF ( isOk )
+                LOCAL fieldCount := (( SELF:_Header:HeaderLen - HDROFFSETS.SIZE) / FLDOFFSETS.SIZE ) AS INT
+                LOCAL fieldDefSize := fieldCount * FLDOFFSETS.SIZE AS INT
+                // Something wrong in Size...
+                IF ( fieldCount <= 0 )
+                    RETURN FALSE
+                ENDIF
+                // Move to top, after header
+                isOk := ( FSeek3( SELF:_hFile, HDROFFSETS.SIZE, SeekOrigin.Begin ) == HDROFFSETS.SIZE )
+                IF ( isOk )
+                    // Read full Fields Header
+                    VAR fieldsBuffer := BYTE[]{ fieldDefSize } 
+                    isOk := ( FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize )
+                    IF ( isOk )
+                        VAR currentField := DbfField{}
+                        currentField:Initialize()
+                        // Now, process
+                        SELF:_Fields := RddFieldInfo[]{ fieldCount }
+                        FOR VAR i := 0 TO (fieldCount-1)
+                            //
+                            Array.Copy( fieldsBuffer, i*FLDOFFSETS.SIZE, currentField:Buffer, 0, FLDOFFSETS.SIZE )
+                            SELF:_Fields[ i ] := RddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
+                        NEXT
+                        //
+                    ENDIF
+                ENDIF
+            ENDIF
+            RETURN isOk
             
             // Filtering and Scoping 
             //	METHOD ClearFilter() 	AS LOGIC
@@ -108,16 +179,51 @@ BEGIN NAMESPACE XSharp.RDD
             // Fields
             //METHOD CreateFields(aFields AS DbField[]) AS LOGIC
             //	METHOD FieldIndex(fieldName AS STRING) AS LONG 
+
+
         VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
-                // CASE DBS_ISNULL
-                // CASE DBS_STEP
+                CASE DbFieldInfo.DBS_NAME
+                    oResult := SELF:_Fields[nFldPos]:Name
+                CASE DbFieldInfo.DBS_LEN
+                    oResult := SELF:_Fields[nFldPos]:Length
+                CASE DbFieldInfo.DBS_DEC
+                    oResult := SELF:_Fields[nFldPos]:Decimals
+                CASE DbFieldInfo.DBS_TYPE
+                    oResult := SELF:_Fields[nFldPos]:FieldType
+                CASE DbFieldInfo.DBS_ALIAS
+                    oResult := SELF:_Fields[nFldPos]:Alias
+
+                CASE DbFieldInfo.DBS_ISNULL
+                CASE DbFieldInfo.DBS_COUNTER
+                CASE DbFieldInfo.DBS_STEP    
+
+                CASE DbFieldInfo.DBS_BLOB_GET     
+                CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
+                                                // is more efficient than using Type() or ValType()
+                                                // since the data itself does not have to be retrieved
+                                                // from the BLOB file in order to determine the type.
+                CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file	
+                CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
+                CASE DbFieldInfo.DBS_BLOB_POINTER	// Returns a numeric pointer to the data in a blob
+                                                    // file. This pointer can be used with BLOBDirectGet(),
+                                                    // BLOBDirectImport(), etc.
+
+                CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
+                CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN		
+
+                CASE DbFieldInfo.DBS_STRUCT				
+                CASE DbFieldInfo.DBS_PROPERTIES			
+                CASE DbFieldInfo.DBS_USER		
+
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
             END SWITCH
             RETURN oResult
-            //	METHOD FieldName(nFldPos AS LONG) AS STRING 
+
+        METHOD FieldName(nFldPos AS LONG) AS STRING
+            RETURN SUPER:FieldName( nFldPos )
             
             // Read & Write		
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
@@ -278,9 +384,9 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbInfo.DBI_CANPUTREC
                     oResult := TRUE		
                 CASE DbInfo.DBI_LASTUPDATE
-                    oResult := SELF:_LastUpdate
+                    oResult := SELF:_Header:LastUpdate
                 CASE DbInfo.DBI_GETHEADERSIZE
-                    oResult := SELF:_HeaderLength     
+                    oResult := SELF:_Header:HeaderLen 
                     // DbInfo.GETLOCKARRAY
                     // DbInfo.TABLEEXT
                     // DbInfo.FULLPATH
@@ -367,7 +473,19 @@ BEGIN NAMESPACE XSharp.RDD
             //	PROPERTY FieldCount AS LONG GET 
             //	PROPERTY FilterText	AS STRING GET 
             //	PROPERTY Found		AS LOGIC GET 
-            //	PROPERTY RecCount	AS LONG GET
+        PROPERTY RecCount	AS LONG 
+            GET
+                IF ( SELF:_hFile != F_ERROR )
+                    VAR current := FTell( SELF:_hFile )
+                    VAR fSize := FSeek3( SELF:_hFile, 0, FS_END )
+                    FSeek3( SELF:_hFile, (LONG)current, FS_SET )
+                    RETURN ( fSize - SELF:_Header:HeaderLen ) / SELF:_Header:RecordLen
+                ENDIF
+                // -1 ??
+                RETURN 0
+            END GET
+        END PROPERTY
+
             //	PROPERTY RecNo		AS OBJECT GET 
             //	PROPERTY Shared		AS LOGIC GET
         VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
@@ -400,6 +518,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         PUBLIC ENUM FLDOFFSETS
             MEMBER NAME			:= 0
+            MEMBER NAME_SIZE    := 11
             MEMBER TYPE			:= 11
             MEMBER OFFSET	    := 12
             MEMBER LEN          := 16
@@ -495,7 +614,7 @@ BEGIN NAMESPACE XSharp.RDD
                 PROPERTY LastUpdate AS DateTime      ;
                 GET DateTime{1900+Year, Month, Day} ;
                 SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
-
+                
                 METHOD initialize() AS VOID STRICT
                     Buffer := BYTE[]{HDROFFSETS.SIZE}
                     isHot  := FALSE
@@ -503,7 +622,7 @@ BEGIN NAMESPACE XSharp.RDD
                     // Dbase (7?) Extends this with
                     // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
                     // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG    
-                                                                                                                /*
+                                                                                                                                                                                                                                                                               /*
                     0x02   FoxBASE
                     0x03   FoxBASE+/Dbase III plus, no memo
                     0x04   dBase 4
@@ -560,7 +679,13 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 PROPERTY Name		 AS STRING
                 GET 
-                    VAR str := System.Text.Encoding.ASCII:GetString(Buffer, FLDOFFSETS.NAME,10)
+                    LOCAL fieldName := BYTE[]{FLDOFFSETS.NAME_SIZE} AS BYTE[]
+                    Array.Copy( Buffer, FLDOFFSETS.NAME, fieldName, 0, FLDOFFSETS.NAME_SIZE )
+                    LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
+                    IF count == -1
+                        count := FLDOFFSETS.NAME_SIZE
+                    ENDIF
+                    LOCAL str := System.Text.Encoding.ASCII:GetString( fieldName,0, count ) AS STRING
                     IF ( str == NULL )
                         str := String.Empty
                     ENDIF
@@ -568,7 +693,9 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN str
                 END GET
                 SET
-                    System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(10,VALUE:Length), Buffer, FLDOFFSETS.NAME )
+                    // Be sure to fill the Buffer with 0
+                    Array.Clear( Buffer, FLDOFFSETS.NAME, 32 )
+                    System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Max(32,VALUE:Length), Buffer, FLDOFFSETS.NAME )
                 END SET
             END PROPERTY
             
@@ -636,7 +763,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         
         [StructLayout(LayoutKind.Explicit)];
-        STRUCTURE Dbf7Field   
+            STRUCTURE Dbf7Field   
             // Dbase 7 has 32 Bytes for Field Names
             // Fixed Buffer of 32 bytes
             // Matches the DBF layout

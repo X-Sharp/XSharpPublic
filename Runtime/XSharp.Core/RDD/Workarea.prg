@@ -283,6 +283,7 @@ VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
 	nMax := SELF:FieldCount
 	FOR VAR nFldPos := 0 TO nMax -1
 		IF String.Compare(SELF:_Fields[nFldPos]:Name, fieldName, StringComparison.OrdinalIgnoreCase) == 0
+			// Note that we must return 1 based fldPos
 			RETURN nFldPos+1
 		ENDIF
 	NEXT 
@@ -290,6 +291,7 @@ VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
 	
 PRIVATE METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 	LOCAL nMax AS INT
+	// Note that nFldPos is 1 based
 	nMax := (INT) SELF:_Fields?:Length  
 	IF nFldPos <= 0 .or. nFldPos > nMax 
 		THROW ArgumentException{"Invalid Field Index, must be between 1 and "+SELF:FieldCount:ToString(), nameof(nFldPos)}
@@ -297,26 +299,34 @@ PRIVATE METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 	RETURN TRUE	
 
 VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+	// Note that nFldPos is 1 based
 	IF SELF:_FieldIndexValidate(nFldPos)
-		nFldPos -= 1
+		if __ARRAYBASE__ == 0
+			nFldPos -= 1
+		endif
 	ENDIF
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
+	// Note that nFldPos is 1 based
 	IF SELF:_FieldIndexValidate(nFldPos)
-        // !!! WARNING !!! Core Runtime is compiled with 1-Based array, so the compiler will ALREADY minus by one in [nFldPos]
-		// nFldPos -= 1
+		if __ARRAYBASE__ == 0
+			nFldPos -= 1
+		endif
 		RETURN SELF:_Fields[nFldPos]:Name
 	ENDIF          
 	RETURN String.Empty
 
 VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
+	// Note that nFldPos is 1 based
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+	// Note that nFldPos is 1 based
 	RETURN _Memo:GetValueFile(nFldPos, fileName )
 
 VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
+	// Note that nFldPos is 1 based
 	RETURN _Memo:GetValueLength(nFldPos )
 
 VIRTUAL METHOD Flush( ) AS LOGIC
@@ -329,9 +339,11 @@ VIRTUAL METHOD GoHot( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+	// Note that nFldPos is 1 based
 	THROW NotImplementedException{__ENTITY__}
 
 VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+	// Note that nFldPos is 1 based
 	RETURN _Memo:PutValueFile(nFldPos, fileName )
 
 VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC

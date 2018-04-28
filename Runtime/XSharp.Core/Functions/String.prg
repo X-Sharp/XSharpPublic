@@ -41,12 +41,12 @@ internal function _Asc(c as string, lAnsi as logic) as dword
 			else
 				buffer := byte[]{2}
 				if encoding:GetBytes(chars,0,1,buffer,0) == 1
-					ascValue := buffer[1]
+					ascValue := buffer[0]
 				else
 					if BitConverter.IsLittleEndian
-						local tmp := buffer[1] as byte
-						buffer[1] := buffer[2]
-						buffer[2] := tmp
+						local tmp := buffer[0] as byte
+						buffer[0] := buffer[1]
+						buffer[1] := tmp
 					endif
 					ascValue := BitConverter.ToUInt16( buffer, 0 )
 				endif
@@ -348,7 +348,7 @@ function CharPos(c as string, nStart as dword) as string
 /// </returns>
 function CHR(dwChar as dword) as string
 	var buffer := byte[]{1} 
-	buffer[ __ArrayBASE__] := (byte) dwChar
+	buffer[0] := (byte) dwChar
 	return System.Text.Encoding:ASCII:GetString(buffer)
 
 
@@ -373,7 +373,7 @@ function ChrA(c as dword) as string
       LOCAL chars := Char[]{ 1 } AS Char[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
       LOCAL decoder := encoding:GetDecoder() AS Decoder
-      bytes[1] := b
+      bytes[0] := b
       decoder:GetChars( bytes, 0, 1, chars, 0 )
       ret := chars[1]:ToString()
 

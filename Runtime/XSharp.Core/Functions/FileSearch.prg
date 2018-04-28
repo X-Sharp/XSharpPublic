@@ -224,6 +224,9 @@ function File(cFile as string) as logic
 	local aPaths as string[]
 	local cTemp as string
 	local lFirst as LOGIC
+	IF String.IsNullOrEmpty(cFile)
+		return FALSE
+	endif
 	lHasWildCards := cFile:IndexOfAny( <Char>{ '*', '?' } ) > 0
 	XSharp.IO.File.LastFound := ""
 	if ! lHasWildCards

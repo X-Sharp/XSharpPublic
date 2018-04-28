@@ -15,10 +15,10 @@ function Bin2DW(c as string) as dword
 	if c!= null .and. c:Length >= 4
 		local aBytes as byte[]
 		aBytes := byte[]{4}
-		aBytes[1] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[4] := (byte) _AND(c:Chars[3], 0xFF)
+		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
 		dwResult := BitConverter.ToUInt32(aBytes, 0)
 	endif
 	return dwResult
@@ -34,8 +34,8 @@ function Bin2I(c as string) as short
 	if c!= null .and. c:Length >= 2
 		local aBytes as byte[]
 		aBytes := byte[]{2}
-		aBytes[1] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[1], 0xFF)
+		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
 		siResult := BitConverter.ToInt16(aBytes, 0)
 	endif
 	return siResult
@@ -51,10 +51,10 @@ function Bin2L(c as string) as long
 	if c!= null .and. c:Length >= 4
 		local aBytes as byte[]
 		aBytes := byte[]{4}
-		aBytes[1] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[4] := (byte) _AND(c:Chars[3], 0xFF)
+		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
 		liResult := BitConverter.ToInt32(aBytes, 0)
 	endif
 	return liResult
@@ -91,10 +91,10 @@ function Bin2Real4(c as string) as real4
 	if c!= null .and. c:Length >= 4
 		local aBytes as byte[]
 		aBytes := byte[]{4}
-		aBytes[1] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[4] := (byte) _AND(c:Chars[3], 0xFF)
+		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
 		r4Result := BitConverter.ToSingle(aBytes, 0)
 	endif
 	return r4Result
@@ -111,14 +111,14 @@ function Bin2REAL8(c as string) as real8
 	if c!= null .and. c:Length >= 8
 		local aBytes as byte[]
 		aBytes := byte[]{8}
-		aBytes[1] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[4] := (byte) _AND(c:Chars[3], 0xFF)
-		aBytes[5] := (byte) _AND(c:Chars[4], 0xFF)
-		aBytes[6] := (byte) _AND(c:Chars[5], 0xFF)
-		aBytes[7] := (byte) _AND(c:Chars[6], 0xFF)
-		aBytes[8] := (byte) _AND(c:Chars[7], 0xFF)
+		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
+		aBytes[4] := (byte) _AND(c:Chars[4], 0xFF)
+		aBytes[5] := (byte) _AND(c:Chars[5], 0xFF)
+		aBytes[6] := (byte) _AND(c:Chars[6], 0xFF)
+		aBytes[7] := (byte) _AND(c:Chars[7], 0xFF)
 		r8Result := BitConverter.ToDouble(aBytes, 0)
 	endif
 	return r8Result
@@ -134,8 +134,8 @@ function Bin2W(c as string) as word
 	if c!= null .and. c:Length >= 2
 		local aBytes as byte[]
 		aBytes := byte[]{2}
-		aBytes[1] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[1], 0xFF)
+		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
 		wResult := BitConverter.ToUInt16(aBytes, 0)
 	endif
 	return wResult

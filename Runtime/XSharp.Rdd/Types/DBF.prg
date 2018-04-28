@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD
         //PROTECT _NullOffSet		AS LONG
         PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
         PROTECT _Positioned		AS LOGIC 	// 
-        PROTECT _Appended		AS LOGIC	// Record has been added ?
+        PROTECT _Appended		AS LOGIC	// Record has been added ? 
         PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
         PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
         PROTECT _fLocked		AS LOGIC
@@ -560,9 +560,7 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 PROPERTY Name		 AS STRING
                 GET 
-                    LOCAL fieldName := BYTE[]{32} AS BYTE[]
-                    Array.Copy( Buffer, FLDOFFSETS.NAME, fieldName, 0, 32 )
-                    LOCAL str := System.Text.Encoding.ASCII:GetString( fieldName ) AS STRING
+                    VAR str := System.Text.Encoding.ASCII:GetString(Buffer, FLDOFFSETS.NAME,10)
                     IF ( str == NULL )
                         str := String.Empty
                     ENDIF
@@ -570,7 +568,7 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN str
                 END GET
                 SET
-                    System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Max(32,VALUE:Length), Buffer, FLDOFFSETS.NAME )
+                    System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(10,VALUE:Length), Buffer, FLDOFFSETS.NAME )
                 END SET
             END PROPERTY
             
@@ -638,7 +636,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         
         [StructLayout(LayoutKind.Explicit)];
-            STRUCTURE Dbf7Field   
+        STRUCTURE Dbf7Field   
             // Dbase 7 has 32 Bytes for Field Names
             // Fixed Buffer of 32 bytes
             // Matches the DBF layout

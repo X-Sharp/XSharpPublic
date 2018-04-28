@@ -28,16 +28,13 @@ define DBS_ALIAS				:= DbFieldInfo.DBS_ALIAS
 define DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
 define DBS_COUNTER              := DbFieldInfo.DBS_COUNTER 
 define DBS_STEP                 := DbFieldInfo.DBS_STEP    
-
 define DBS_BLOB_GET             := DbFieldInfo.DBS_BLOB_GET     
 define DBS_BLOB_TYPE			:= DbFieldInfo.DBS_BLOB_TYPE	
 define DBS_BLOB_LEN				:= DbFieldInfo.DBS_BLOB_LEN		
 define DBS_BLOB_OFFSET			:= DbFieldInfo.DBS_BLOB_OFFSET	
 define DBS_BLOB_POINTER			:= DbFieldInfo.DBS_BLOB_POINTER	
-
 define DBS_BLOB_DIRECT_TYPE		:= DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
 define DBS_BLOB_DIRECT_LEN		:= DbFieldInfo.DBS_BLOB_DIRECT_LEN		
-
 define DBS_STRUCT				:= DbFieldInfo.DBS_STRUCT				
 define DBS_PROPERTIES			:= DbFieldInfo.DBS_PROPERTIES			
 define DBS_USER					:= DbFieldInfo.DBS_USER					
@@ -46,8 +43,6 @@ define DBS_USER					:= DbFieldInfo.DBS_USER
 // Scope defines
 define TOPSCOPE                := 0 
 define BOTTOMSCOPE             := 1 
-
-
 
 //DbInfo Defines
 define DBI_ISDBF 			:=  DbInfo.DBI_ISDBF 		 	// Logical: RDD support DBF file format?
@@ -83,20 +78,17 @@ define DBI_MEMOBLOCKSIZE 	:= 	DbInfo.DBI_MEMOBLOCKSIZE	// Number: The memo block
 define DBI_CODEPAGE 		:= 	DbInfo.DBI_CODEPAGE 		// Number: The Windows Codepage
 define DBI_NEWINDEXLOCK 	:= 	DbInfo.DBI_NEWINDEXLOCK 	// Logic:  Use new index lock mechanism
 define DBI_DOSCODEPAGE 		:= 	DbInfo.DBI_DOSCODEPAGE 		// Number: The DOS Codepage
-
 define DBI_STRICTREAD  		:= DbInfo.DBI_STRICTREAD  	// Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  
 define DBI_OPTIMIZE    		:= DbInfo.DBI_OPTIMIZE    	// Flag for whether to use query optimization             
 define DBI_AUTOOPEN    		:= DbInfo.DBI_AUTOOPEN    	// Flag for automatically opening structural indexes      
 define DBI_AUTOORDER   		:= DbInfo.DBI_AUTOORDER   	// When a structural index is opened, the order to be set 
 define DBI_AUTOSHARE   		:= DbInfo.DBI_AUTOSHARE   	// When a network is detected, open the index shared, otherwise open exclusively   
-
 define DBI_DB_VERSION 		:= DbInfo.DBI_DB_VERSION 		
 define DBI_RDD_VERSION 		:= DbInfo.DBI_RDD_VERSION 		
 define DBI_RDD_LIST 		:= DbInfo.DBI_RDD_LIST 		
 define DBI_MEMOFIELD 		:= DbInfo.DBI_MEMOFIELD 		
 define DBI_VO_MACRO_SYNTAX	:= DbInfo.DBI_VO_MACRO_SYNTAX	
 define DBI_RDD_OBJECT 		:= DbInfo.DBI_RDD_OBJECT 		
-
 
 /* CA-Cl*pper documented for public use */
 
@@ -205,7 +197,6 @@ define DBOI_SETCODEBLOCK:= DBOrderInfo.DBOI_SETCODEBLOCK 	// Block : The codeblo
 define DBOI_KEYDEC 		:= DBOrderInfo.DBOI_KEYDEC 		 	// Number: The # of decimals in a numeric key 
 define DBOI_HPLOCKING 	:= DBOrderInfo.DBOI_HPLOCKING 	 	// Logic : Using High Performance locking for this order?
 define DBOI_LOCKOFFSET 	:= DBOrderInfo.DBOI_LOCKOFFSET  	// Number: The offset used for logical locking 
-
 define DBOI_KEYADD 		:= DbOrderInfo.DBOI_KEYADD 		 	// Logic: Custom Index: Was Key added successfully? 
 define DBOI_KEYDELETE 	:= DbOrderInfo.DBOI_KEYDELETE 		// Logic: Custom Index: Was Key Deletion successful? 
 define DBOI_KEYVAL 		:= DbOrderInfo.DBOI_KEYVAL 			// Object: The value of the current key 
@@ -215,7 +206,6 @@ define DBOI_SCOPETOPCLEAR := DbOrderInfo.DBOI_SCOPETOPCLEAR  	// None	 :
 define DBOI_SCOPEBOTTOMCLEAR:= DbOrderInfo.DBOI_SCOPEBOTTOMCLEAR // None :
 define DBOI_CUSTOM 		:= DbOrderInfo.DBOI_CUSTOM // Logic: Is this a Custom Index?  
 define DBOI_SKIPUNIQUE 	:= DbOrderInfo.DBOI_SKIPUNIQUE // Logic: Was a skip to adjacent unique Key successful?  
-
 define DBOI_KEYSINCLUDED:= DbOrderInfo.DBOI_KEYSINCLUDED 	// Number: Number of keys in the index order
 define DBOI_KEYNORAW 	:= DbOrderInfo.DBOI_KEYNORAW 	 // Number: The key number disregarding filters
 define DBOI_KEYCOUNTRAW := DbOrderInfo.DBOI_KEYCOUNTRAW   // Number: The key count disregarding filter  

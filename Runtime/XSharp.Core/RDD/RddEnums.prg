@@ -75,7 +75,7 @@ begin namespace XSharp
 		member DBI_ISFLOCK 			:= 20				// Logic: Is there a file lock active? 
 		// 21 missing									
 		member DBI_CHILDCOUNT 		:= 22				// Number: Number of child relations set
-		member DBI_FILEHANDLE 		:= 23				// Stream: The data file's file stream
+		member DBI_FILEHANDLE 		:= 23				// IntPtr: The data file's handle
 		member DBI_FULLPATH			:= 24				// String: Full path to data file
 		member DBI_ISANSI 			:= 25				// Logic: Is the file ansi encoded
 		member DBI_BOF 				:= 26				// Logic: Same as Bof()
@@ -90,7 +90,7 @@ begin namespace XSharp
 		member DBI_LOCKOFFSET		:= 35				// Number: Lock offset
 		member DBI_SHARED 			:= 36				// Logic: is the file opened shared
 		member DBI_MEMOEXT 			:= 37				// String: Memo file extension
-		member DBI_MEMOHANDLE		:= 38				// Stream: The memo file's file stream
+		member DBI_MEMOHANDLE		:= 38				// Intptr: The memo file's handle
 		member DBI_BLOB_HANDLE 		:= 38				// Alias for MemoHandle
 		member DBI_MEMOBLOCKSIZE 	:= 39				// Number: The memo block size
 		member DBI_BLOB_INTEGRITY	:= 40				// Number: The Windows Codepage
@@ -217,7 +217,7 @@ begin namespace XSharp
 		member DBOI_BAGEXT 		:= 8    // String: The extension of the file containing this order
 		member DBOI_INDEXEXT  	:= 8	// Alias
 		member DBOI_ORDERCOUNT  := 9    // Number: The count of ORDERS contained in an index file or in total
-		member DBOI_FILEHANDLE 	:= 10 	// Stream: The stream of the index
+		member DBOI_FILEHANDLE 	:= 10 	// IntPtr: The handle of the index
 		member DBOI_ISCOND 		:= 11 	// Logic : Does the order have a FOR condition?
 		member DBOI_ISDESC 		:= 12 	// Logic : Is the order DESCENDing? 
 		member DBOI_UNIQUE 		:= 13 	// Logic : Does the order have the UNIQUE attribute?
@@ -232,8 +232,8 @@ begin namespace XSharp
 		member DBOI_SETCODEBLOCK:= 27 	// Block : The codeblock that produces the key 
 		member DBOI_KEYDEC 		:= 28 	// Number: The # of decimals in a numeric key 
 		member DBOI_HPLOCKING 	:= 29 	// Logic : Using High Performance locking for this order?
+		// 30-34
 		member DBOI_LOCKOFFSET 	:= 35 	// Number: The offset used for logical locking 
-		
 		member DBOI_KEYADD 		:= 36  	// Logic: Custom Index: Was Key added successfully? 
 		member DBOI_KEYDELETE 	:= 37 	// Logic: Custom Index: Was Key Deletion successful? 
 		member DBOI_KEYVAL 		:= 38 	// Object: The value of the current key 
@@ -241,6 +241,7 @@ begin namespace XSharp
 		member DBOI_SCOPEBOTTOM := 40 	// Object: Get or Set the scope bottom
 		member DBOI_SCOPETOPCLEAR := 41  	// None	 :
 		member DBOI_SCOPEBOTTOMCLEAR:= 42 // None :
+		// 43-44
 		member DBOI_CUSTOM 		:= 45 // Logic: Is this a Custom Index?  
 		member DBOI_SKIPUNIQUE 	:= 46 // Logic: Was a skip to adjacent unique Key successful?  
 		// 47-49

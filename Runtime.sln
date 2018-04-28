@@ -38,6 +38,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ConsoleApplication1", "Cons
 EndProject
 Project("{5891B814-A2E0-4E64-9A2F-2C2ECAB940FE}") = "VulcanConsole", "VulcanConsole\VulcanConsole.vnproj", "{73B51F86-E1B2-4DE2-B88B-979D620EB138}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD.App", "Runtime\XSharp.RDD.App\XSharp.RDD.App.xsproj", "{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73B51F86-E1B2-4DE2-B88B-979D620EB138}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

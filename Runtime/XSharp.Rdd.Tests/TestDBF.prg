@@ -20,12 +20,82 @@ BEGIN NAMESPACE XSharp.RDD.Tests
         
         [Fact, Trait("Dbf", "Open")];
             METHOD OpenDBF() AS VOID
+            // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
             VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
             //
             VAR myDBF := DBF{}
-            myDBF:Open( dbInfo )
+            Assert.Equal( TRUE, myDBF:Open( dbInfo ) )
             //
+            myDBF:Close()
+            RETURN
 
+        [Fact, Trait("Dbf", "Open")];
+            METHOD OpenDBFErr() AS VOID
+            VAR dbInfo := DbOpenInfo{ "noFile.DBF", "noFile", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            Assert.Equal( FALSE, myDBF:Open( dbInfo ) )
+            //
+            myDBF:Close()
+            RETURN
+        
+        [Fact, Trait("Dbf", "Close")];
+            METHOD CloseDBF() AS VOID
+            // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo )
+                // Should FAIL as currently no ClearScope, ClearRel, ...
+                Assert.Equal( TRUE, myDBF:Close() )
+            ENDIF
+            RETURN
+        
+        [Fact, Trait("Dbf", "Fields")];
+            METHOD CheckFields() AS VOID
+            VAR fields := <STRING>{ "CUSTNUM", "FIRSTNAME", "LASTNAME","ADDRESS","CITY","STATE","ZIP", "PHONE", "FAX" }
+            VAR types :=  <STRING>{ "N", "C", "C","C","C","C","C", "C", "C" }
+            // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                // Right number of Fields ?
+                Assert.Equal(Fields:Length, myDBF:FieldCount)
+                FOR VAR i := 1 TO myDBF:FIELDCount
+                    // Right Name decoding ?
+                    Assert.Equal( fields[i], myDBF:FieldName( i ) )
+                NEXT
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
+        
+        [Fact, Trait("Dbf", "Fields")];
+            METHOD CheckFieldInfo() AS VOID
+            VAR fieldDefs := "CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
+            VAR fields := fieldDefs:Split( ';' )
+            //
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                // Right number of Fields ?
+                Assert.Equal(fields:Length, myDBF:FieldCount)
+                FOR VAR i := 1 TO myDBF:FIELDCount
+                    // Right decoding ?
+                    VAR fieldInfo := fields[i]:Split( ',' )
+                    Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_NAME, NIL ) )
+                    Assert.Equal( fieldInfo[DBS_TYPE], myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
+                    Assert.Equal( fieldInfo[DBS_LEN], myDBF:FieldInfo( i, DBS_LEN, NIL ) )
+                    Assert.Equal( fieldInfo[DBS_DEC], myDBF:FieldInfo( i, DBS_DEC, NIL ) )
+                    Assert.Equal( fieldInfo[DBS_ALIAS], myDBF:FieldInfo( i, DBS_ALIAS, NIL ) )
+                NEXT
+                //
+                myDBF:Close()
+            ENDIF
             RETURN
         
     END CLASS

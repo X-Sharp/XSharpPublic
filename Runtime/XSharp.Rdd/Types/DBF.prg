@@ -694,8 +694,8 @@ BEGIN NAMESPACE XSharp.RDD
                 END GET
                 SET
                     // Be sure to fill the Buffer with 0
-                    Array.Clear( Buffer, FLDOFFSETS.NAME, 32 )
-                    System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Max(32,VALUE:Length), Buffer, FLDOFFSETS.NAME )
+                    Array.Clear( Buffer, FLDOFFSETS.NAME, FLDOFFSETS.NAME_SIZE )
+                    System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(FLDOFFSETS.NAME_SIZE,VALUE:Length), Buffer, FLDOFFSETS.NAME )
                 END SET
             END PROPERTY
             

@@ -44,8 +44,7 @@ function GetChunkBase64(b1 as byte,b2 as byte,b3 as byte,nPad as int) as string
 	/// <returns>
 	/// </returns>
 function GetCurPath() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	getstate string Set.Path
 	
 	/// <summary>
 	/// </summary>
@@ -62,8 +61,7 @@ function GetDASPtr() as IntPtr
 	/// <returns>
 	/// </returns>
 function GetDefault() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	getstate string Set.Default 
 	
 	/// <summary>
 	/// Return the current SetDefaultDir() setting.
@@ -71,14 +69,8 @@ function GetDefault() as string
 	/// <returns>
 	/// </returns>
 function GetDefaultDir() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	getstate string Set.Default 
 	
- 
-
-
-
-
 	
 
 function GetMimType(c as string) as string
@@ -91,8 +83,7 @@ function GetMimType(c as string) as string
 	/// <returns>
 	/// </returns>
 function GetNatDLL() as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+	getstate string Set.NatDLL 
 	
 	
 	/// <summary>
@@ -130,8 +121,6 @@ function GetTimeSep() as dword
 	/// </returns>
 function GetTimeZoneDiff() as int
 return TimeZoneInfo.Local.BaseUtcOffSet:Hours
-
-
 
 function GetYield as logic
 	return SetYield()

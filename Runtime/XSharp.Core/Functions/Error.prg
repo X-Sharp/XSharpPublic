@@ -44,8 +44,3 @@ function DosErrString(nDosErr as dword) as string
 
 
 
-//Todo String lookup
-FUNCTION __CavoStr( resid AS DWORD ) AS STRING
-   return ""
-
-

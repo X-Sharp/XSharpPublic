@@ -118,1428 +118,1351 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EDB_SEEK" xml:space="preserve">
-    <value>Ungültiges Such Argument</value>
+    <value>Argumento de procura incorreto</value>
   </data>
   <data name="EDB_SKIP" xml:space="preserve">
-    <value>Ungültige skipping Nummer</value>
+    <value>Número do salto incorreto</value>
   </data>
   <data name="EDB_GOTO" xml:space="preserve">
-    <value>Leerer Datensatz-Identifikator</value>
+    <value>Identificador de registro vazio</value>
   </data>
   <data name="EDB_SETRELATION" xml:space="preserve">
-    <value>Ungültiger Alias-Bezeichner für Kind-Datenbank</value>
+    <value>ALIAS incorreto para a base de dados filha</value>
   </data>
   <data name="EDB_USE" xml:space="preserve">
-    <value>Ungültiger Datei-Name</value>
+    <value>Especificação de arquivo incorreta</value>
   </data>
   <data name="EDB_CREATEINDEX" xml:space="preserve">
-    <value>Ungültiger Datei-Name</value>
+    <value>Especificação de arquivo incorreta</value>
   </data>
   <data name="EDB_SETORDER" xml:space="preserve">
-    <value>Ungültiger Order-Name</value>
+    <value>Especificação de ordem incorreta</value>
   </data>
   <data name="EDB_SETINDEX" xml:space="preserve">
-    <value>Ungültiger Datei-Name</value>
+    <value>Especificação de arquivo incorreta</value>
   </data>
   <data name="EDB_FIELDNAME" xml:space="preserve">
-    <value>Ungültiger Feld-Name</value>
+    <value>Nome de campo incorreto</value>
   </data>
   <data name="EDB_BADALIAS" xml:space="preserve">
-    <value>Ungültiger Alias-Bezeichner</value>
+    <value>Especificação de ALIAS incorreta</value>
   </data>
   <data name="EDB_DUPALIAS" xml:space="preserve">
-    <value>Alias bereits definiert</value>
+    <value>ALIAS já definido</value>
   </data>
   <data name="EDB_SETFILTER" xml:space="preserve">
-    <value>Fehler beim Setzen des Filters</value>
+    <value>Erro ao estabelecer filtro</value>
   </data>
   <data name="EDB_CYCLICREL" xml:space="preserve">
     <value>???</value>
   </data>
   <data name="EDB_CREATETABLE" xml:space="preserve">
-    <value>Fehler beim Erzeugen der Tabelle</value>
+    <value>Erro ao criar tabela</value>
   </data>
   <data name="EDB_RDDNOTFOUND" xml:space="preserve">
-    <value>Kann RDD nicht finden</value>
+    <value>RDD foi encontrado</value>
   </data>
   <data name="EDB_FIELDINDEX" xml:space="preserve">
-    <value>Ungültiger Feld-Index</value>
+    <value>Índice de campo incorreto</value>
   </data>
   <data name="EDB_SELECT" xml:space="preserve">
-    <value>Ungültige Arbeitsbereichs-Nummer</value>
+    <value>Número incorreto de área de trabalho</value>
   </data>
   <data name="EDB_SYMSELECT" xml:space="preserve">
-    <value>Ungültiger Alias-Name</value>
+    <value>Especificação de ALIAS incorreta</value>
   </data>
   <data name="EDB_TOTAL" xml:space="preserve">
-    <value>Fehler beim Bilden der Summen</value>
+    <value>Erro ao criar totais</value>
   </data>
   <data name="EDB_RECNO" xml:space="preserve">
-    <value>Ungültige Datensatz-Nummer</value>
+    <value>Argumento no número de registro incorreto</value>
   </data>
   <data name="EDB_EXPRESSION" xml:space="preserve">
-    <value>Ausdruck für Macro Compiler fehlt</value>
+    <value>A expressão para o compilador de macros foi esquecida</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
-    <value>Ausdruck für Macro Compiler zu lang</value>
+    <value>A expressão para o compilador de macros é demasiadamente grande</value>
   </data>
   <data name="EDB_DRIVERLOAD" xml:space="preserve">
-    <value>Kann RDD nicht laden</value>
+    <value>RDD não pode ser carregado</value>
   </data>
   <data name="EDB_PARAM" xml:space="preserve">
-    <value>Unzulässiges Argument (#%u) für Funktion %s</value>
+    <value>Argumento incorreto (#%u) para a função %s</value>
   </data>
   <data name="EDB_NOAREAS" xml:space="preserve">
-    <value>Kein freier Arbeitsbereich vorhanden</value>
+    <value>Não há áreas de trabalho livres</value>
   </data>
   <data name="EDB_NOMEM" xml:space="preserve">
-    <value>Zuwenig Speicher</value>
+    <value>Memória esgotada</value>
   </data>
   <data name="EDB_NOFIELDS" xml:space="preserve">
-    <value>Keine Felder definiert</value>
+    <value>Não há campos definidos</value>
   </data>
   <data name="EDB_BAD_ERROR_INFO" xml:space="preserve">
-    <value>RDD Fehler Information korrupt</value>
+    <value>Informação de erro do RDD corrompida</value>
   </data>
   <data name="EDB_WRONGFIELDNAME" xml:space="preserve">
-    <value>Feld-Name existiert bereits</value>
+    <value>Nome de arquivo já existe</value>
   </data>
   <data name="EDB_ORDDESTROY" xml:space="preserve">
-    <value>Keine Order angegeben</value>
+    <value>Não existe ordem especificada</value>
   </data>
   <data name="EDB_NOINITFUNC" xml:space="preserve">
-    <value>Vermisse Init Funktion des RDD</value>
+    <value>Não existe função de inicialização do RDD</value>
   </data>
   <data name="EDB_ERRORINIT" xml:space="preserve">
-    <value>Init Funktion des RDD fehlgeschlagen</value>
+    <value>Falha na função de inicialização do RDD</value>
   </data>
   <data name="EDB_DBSTRUCT" xml:space="preserve">
-    <value>Struktur antwortet nicht</value>
+    <value>Estrutura não responde</value>
   </data>
   <data name="EDB_NOTABLE" xml:space="preserve">
-    <value>Aktueller Arbeitsbereich enthält keine Tabelle</value>
+    <value>A área de trabalho atual não contém uma tabela</value>
   </data>
   <data name="EDB_NOORDER" xml:space="preserve">
-    <value>Keine Order angegeben</value>
+    <value>Uma ordem não foi especificada</value>
   </data>
   <data name="EDB_ASSERTION" xml:space="preserve">
-    <value>Assertion fehlgeschlagen</value>
+    <value>Falha na declaração</value>
   </data>
   <data name="ERDD_OPEN_FILE" xml:space="preserve">
-    <value>Öffne Datenbank</value>
+    <value>Abrir base de dados</value>
   </data>
   <data name="ERDD_OPEN_MEMO" xml:space="preserve">
-    <value>Öffne Memo-Datei</value>
+    <value>Abrir arquivo memo</value>
   </data>
   <data name="ERDD_OPEN_ORDER" xml:space="preserve">
-    <value>Öffne Index-Datei</value>
+    <value>Abrir arquivo de índice</value>
   </data>
   <data name="ERDD_CREATE_FILE" xml:space="preserve">
-    <value>Erzeuge Datenbank</value>
+    <value>Criar base de dados</value>
   </data>
   <data name="ERDD_CREATE_MEMO" xml:space="preserve">
-    <value>Erzeuge Memo-Datei</value>
+    <value>Criar arquivo memo</value>
   </data>
   <data name="ERDD_CREATE_ORDER" xml:space="preserve">
-    <value>Erzeuge Index-Datei</value>
+    <value>Criar arquivo de índice</value>
   </data>
   <data name="ERDD_READ" xml:space="preserve">
-    <value>Lese-Fehler</value>
+    <value>Erro de leitura</value>
   </data>
   <data name="ERDD_WRITE" xml:space="preserve">
-    <value>Schreib-Fehler</value>
+    <value>Erro de escrita</value>
   </data>
   <data name="ERDD_CORRUPT" xml:space="preserve">
-    <value>Datei korrupt</value>
+    <value>Erro de corrupção</value>
   </data>
   <data name="ERDD_CORRUPT_HEADER" xml:space="preserve">
-    <value>Datenbank-Header korrupt</value>
+    <value>Cabeçário da base de dados corrompida</value>
   </data>
   <data name="ERDD_RDDVERSION" xml:space="preserve">
-    <value>Ungültige Treiber-Version</value>
+    <value>Versão incorreta do controlador</value>
   </data>
   <data name="ERDD_DATATYPE" xml:space="preserve">
-    <value>Datentyp-Fehler</value>
+    <value>Erro de tipo de dados</value>
   </data>
   <data name="ERDD_DATAWIDTH" xml:space="preserve">
-    <value>Datenlängen Fehler</value>
+    <value>Erro de largura de dados</value>
   </data>
   <data name="ERDD_UNLOCKED" xml:space="preserve">
-    <value>Datensatzsperre benötigt</value>
+    <value>O registro deve estar bloqueado</value>
   </data>
   <data name="ERDD_SHARED" xml:space="preserve">
-    <value>Shared Fehler</value>
+    <value>Erro de compartilhamento</value>
   </data>
   <data name="ERDD_APPENDLOCK" xml:space="preserve">
-    <value>Fehler bei Append-Sperre</value>
+    <value>Erro de bloqueio ao adicionar</value>
   </data>
   <data name="ERDD_READONLY" xml:space="preserve">
-    <value>nur Lesen</value>
+    <value>Erro de leitura</value>
   </data>
   <data name="ERDD_NULLKEY" xml:space="preserve">
-    <value>Nullkey</value>
+    <value>Chave nula</value>
   </data>
   <data name="ERDD_NTXLIMIT" xml:space="preserve">
-    <value>Index-Datei Limit überschritten</value>
+    <value>Superado limite de arquivos de índice</value>
   </data>
   <data name="ERDD_TAGLIMIT" xml:space="preserve">
-    <value>Index-Datei Tag Limit überschritten</value>
+    <value>Superado limite de tags em arquivo de índice</value>
   </data>
   <data name="ERDD_INIT_LOCK" xml:space="preserve">
-    <value>Fehler beim initialisieren des Sperr-Schema</value>
+    <value>Erro ao iniciar mecanismo de bloqueio</value>
   </data>
   <data name="ERDD_READ_LOCK" xml:space="preserve">
-    <value>Kann Lese-Sperre nicht durchführen</value>
+    <value>Não se pode bloquear para leitura</value>
   </data>
   <data name="ERDD_WRITE_LOCK" xml:space="preserve">
-    <value>Fehler bei Schreib-Sperre</value>
+    <value>Erro no bloqueio de escrita</value>
   </data>
   <data name="ERDD_READ_UNLOCK" xml:space="preserve">
-    <value>Fehler bei Lese-Sperre</value>
+    <value>Erro no desbloqueio de leitura</value>
   </data>
   <data name="ERDD_WRITE_UNLOCK" xml:space="preserve">
-    <value>Fehler beim Aufheben der Schreib-Sperre</value>
+    <value>Erro no desbloqueo de escrita</value>
   </data>
   <data name="ERDD_READ_LOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout Fehler bei der Lese-Sperre der Index-Datei</value>
+    <value>Tempo limite excedido ao bloquear o índice para leitura</value>
   </data>
   <data name="ERDD_WRITE_LOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout Fehler bei der Schreib-Sperre der Index-Datei</value>
+    <value>Tempo limite excedido ao bloquear o índice para escrita</value>
   </data>
   <data name="ERDD_READ_UNLOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout Fehler beim Aufheben der Lese-Sperre der Index-Datei</value>
+    <value>Tempo limite excedido ao desbloquear o índice para leitura</value>
   </data>
   <data name="ERDD_WRITE_UNLOCK_TIMEOUT" xml:space="preserve">
-    <value>Timeout Fehler beim Aufheben der Schreib-Sperre der Index-Datei</value>
+    <value>Tempo limite excedido ao desbloquear o índice para escrita</value>
   </data>
   <data name="ERDD_CLOSE_FILE" xml:space="preserve">
-    <value>Schließe Datenbank</value>
+    <value>Fechar base de dados</value>
   </data>
   <data name="ERDD_CLOSE_MEMO" xml:space="preserve">
-    <value>Schließe Memo-Datei</value>
+    <value>Fechar arquivo memo</value>
   </data>
   <data name="ERDD_CLOSE_ORDER" xml:space="preserve">
-    <value>Schließe Index-Datei</value>
+    <value>Fechar arquivo de índice</value>
   </data>
   <data name="ERDD_INVALID_ORDER" xml:space="preserve">
-    <value>Ungültige Order Spezifikation</value>
+    <value>Especificação de ordem incorrecta</value>
   </data>
   <data name="ERDD_RECNO_MISSING" xml:space="preserve">
-    <value>Datensatz-Nr. nicht gefunden</value>
+    <value>Número de registro não encontrado</value>
   </data>
   <data name="ERDD_NOORDER" xml:space="preserve">
-    <value>Aktueller Arbeitsbereich enthält keine Order</value>
+    <value>A área de trabalho atual não contém uma ordem</value>
   </data>
   <data name="ERDD_UNSUPPORTED" xml:space="preserve">
-    <value>Aktion wird vom aktuellen RDD nicht unterstützt</value>
+    <value>Operação não suportada pelo RDD atual</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>Fehler beim Schreiben der NTX-Datei</value>
+    <value>Erro ao escrever arquivo NTX</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
-    <value>Schlüssel nicht gefunden</value>
+    <value>Chave não encontrada</value>
   </data>
   <data name="ERDD_KEY_EVAL" xml:space="preserve">
-    <value>Unbekannter oder ungültiger Schlüsselausdruck</value>
+    <value>Expressão chave incorreta ou desconhecida</value>
   </data>
   <data name="ERDD_VAR_TYPE" xml:space="preserve">
-    <value>Variablen typ</value>
+    <value>Tipo variável</value>
   </data>
   <data name="ERDD_READ_BUFFER" xml:space="preserve">
-    <value>Fehler beim Lesen von Diskette/Festplatte</value>
+    <value>Erro ao ler do disco</value>
   </data>
   <data name="ERDD_SORT_INIT" xml:space="preserve">
-    <value>Initialisierung der Sortierung</value>
+    <value>Inicialização de ordenação</value>
   </data>
   <data name="ERDD_SORT_ADVANCE" xml:space="preserve">
-    <value>erweiterte Sortierung</value>
+    <value>Avanço na ordenação</value>
   </data>
   <data name="ERDD_SORT_SORT" xml:space="preserve">
-    <value>Sortier Fehler</value>
+    <value>Erro ao ordenar</value>
   </data>
   <data name="ERDD_SORT_COMPLETE" xml:space="preserve">
-    <value>Sort complete error</value>
+    <value>Erro ao completar ordenação</value>
   </data>
   <data name="ERDD_SORT_END" xml:space="preserve">
-    <value>Sort end error</value>
+    <value>Erro ao finalizar ordenação</value>
   </data>
   <data name="ERDD_READ_TEMPFILE" xml:space="preserve">
-    <value>Fehler beim Lesen der temporären Datei</value>
+    <value>Erro ao ler arquivo temporário</value>
   </data>
   <data name="ERDD_STREAM_NUM" xml:space="preserve">
-    <value>Falsche Anzahl der sort streams</value>
+    <value>Número incorreto de fluxos na ordenação</value>
   </data>
   <data name="ERDD_CREATE_TEMPFILE" xml:space="preserve">
-    <value>Fehler beim Erzeugen der temporären Datei</value>
+    <value>Erro ao criar arquivo temporário</value>
   </data>
   <data name="DISKIO_WRITE" xml:space="preserve">
-    <value>Fehler beim Schreiben des Cache Buffers</value>
+    <value>Erro ao escrever na memória intermediária de escrita</value>
   </data>
   <data name="ERDD_WRONG_DRIVERTYPE" xml:space="preserve">
-    <value>Unzulässige Anwendung des Datenbank-Treibers</value>
+    <value>Uso incorreto do controlador de base de dados</value>
   </data>
   <data name="ERDD_OUTOFMEMORY" xml:space="preserve">
-    <value>Speicher Allozierung fehlgeschlagen</value>
+    <value>Falha no assinalamento de memória</value>
   </data>
   <data name="ERDD_INVALIDARG" xml:space="preserve">
-    <value>Ungültiges Argument wurde an Info-Funktion übergeben</value>
+    <value>Argumento incorreto passado para a função de info</value>
   </data>
   <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
-    <value>Generic, ASCII</value>
+    <value>Português, ASCII</value>
   </data>
   <data name="CA_NAT_LANGUAGE_VERSION" xml:space="preserve">
-    <value>Version 2.8 SP2</value>
+    <value>Version 2.8 SP3</value>
   </data>
   <data name="CA_NAT_LANGUAGE_BUILD" xml:space="preserve">
-    <value>2828</value>
+    <value>2837</value>
   </data>
   <data name="CA_NAT_INVALID_ARG" xml:space="preserve">
-    <value>Invalid argument</value>
+    <value>Argumento inválido</value>
   </data>
   <data name="RT_MSG_MONTH1" xml:space="preserve">
-    <value>January</value>
+    <value>Janeiro</value>
   </data>
   <data name="RT_MSG_MONTH2" xml:space="preserve">
-    <value>February</value>
+    <value>Fevereiro</value>
   </data>
   <data name="RT_MSG_MONTH3" xml:space="preserve">
-    <value>March</value>
+    <value>Março</value>
   </data>
   <data name="RT_MSG_MONTH4" xml:space="preserve">
-    <value>April</value>
+    <value>Abril</value>
   </data>
   <data name="RT_MSG_MONTH5" xml:space="preserve">
-    <value>May</value>
+    <value>Maio</value>
   </data>
   <data name="RT_MSG_MONTH6" xml:space="preserve">
-    <value>June</value>
+    <value>Junho</value>
   </data>
   <data name="RT_MSG_MONTH7" xml:space="preserve">
-    <value>July</value>
+    <value>Julho</value>
   </data>
   <data name="RT_MSG_MONTH8" xml:space="preserve">
-    <value>August</value>
+    <value>Agosto</value>
   </data>
   <data name="RT_MSG_MONTH9" xml:space="preserve">
-    <value>September</value>
+    <value>Setembro</value>
   </data>
   <data name="RT_MSG_MONTH10" xml:space="preserve">
-    <value>October</value>
+    <value>Outubro</value>
   </data>
   <data name="RT_MSG_MONTH11" xml:space="preserve">
-    <value>November</value>
+    <value>Novembro</value>
   </data>
   <data name="RT_MSG_MONTH12" xml:space="preserve">
-    <value>December</value>
+    <value>Dezembro</value>
   </data>
   <data name="RT_MSG_DAY1" xml:space="preserve">
-    <value>Sunday</value>
+    <value>Domingo</value>
   </data>
   <data name="RT_MSG_DAY2" xml:space="preserve">
-    <value>Monday</value>
+    <value>Segunda-Feira</value>
   </data>
   <data name="RT_MSG_DAY3" xml:space="preserve">
-    <value>Tuesday</value>
+    <value>Terça-Feira</value>
   </data>
   <data name="RT_MSG_DAY4" xml:space="preserve">
-    <value>Wednesday</value>
+    <value>Quarta-Feira</value>
   </data>
   <data name="RT_MSG_DAY5" xml:space="preserve">
-    <value>Thursday</value>
+    <value>Quinta-Feira</value>
   </data>
   <data name="RT_MSG_DAY6" xml:space="preserve">
-    <value>Friday</value>
+    <value>Sexta-Feira</value>
   </data>
   <data name="RT_MSG_DAY7" xml:space="preserve">
-    <value>Saturday</value>
+    <value>Sábado</value>
   </data>
   <data name="RT_MSG_INFOSTRING" xml:space="preserve">
-    <value>Generic</value>
+    <value>Português ASCII</value>
   </data>
   <data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
-    <value>T</value>
+    <value>V</value>
   </data>
   <data name="RT_MSG_SHORT_FALSE" xml:space="preserve">
     <value>F</value>
   </data>
   <data name="RT_MSG_LONG_TRUE" xml:space="preserve">
-    <value>TRUE</value>
+    <value>VERDADEIRO</value>
   </data>
   <data name="RT_MSG_LONG_FALSE" xml:space="preserve">
-    <value>FALSE</value>
+    <value>FALSO</value>
   </data>
   <data name="RT_MSG_SHORT_YES" xml:space="preserve">
-    <value>Y</value>
+    <value>S</value>
   </data>
   <data name="RT_MSG_SHORT_NO" xml:space="preserve">
     <value>N</value>
   </data>
   <data name="RT_MSG_LONG_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>SIM</value>
   </data>
   <data name="RT_MSG_LONG_NO" xml:space="preserve">
-    <value>NO</value>
-  </data>
-  <data name="RT_MSG_CURRENCY" xml:space="preserve">
-    <value>$</value>
-  </data>
-  <data name="RT_MSG_YNSTRING" xml:space="preserve">
-    <value>Y/N</value>
+    <value>NÃO</value>
   </data>
   <data name="RT_MSG_ERR_0" xml:space="preserve">
-    <value>Warte...</value>
+    <value>Aguardando...</value>
   </data>
   <data name="RT_MSG_ERR_1" xml:space="preserve">
-    <value>Argumentfehler</value>
+    <value>Erro de argumento</value>
   </data>
   <data name="RT_MSG_ERR_2" xml:space="preserve">
-    <value>Bereichsgrenzen-Fehler</value>
+    <value>Erro de limites</value>
   </data>
   <data name="RT_MSG_ERR_3" xml:space="preserve">
-    <value>Zeichenkette-Überlauf</value>
+    <value>Transbordamento de cadeia</value>
   </data>
   <data name="RT_MSG_ERR_4" xml:space="preserve">
-    <value>Numerischer Ueberlauf</value>
+    <value>Transbordamento numérico</value>
   </data>
   <data name="RT_MSG_ERR_5" xml:space="preserve">
-    <value>Null-Divisor</value>
+    <value>Divisor zero</value>
   </data>
   <data name="RT_MSG_ERR_6" xml:space="preserve">
-    <value>Numerischer Fehler</value>
+    <value>Erro numérico</value>
   </data>
   <data name="RT_MSG_ERR_7" xml:space="preserve">
-    <value>Syntaxfehler</value>
+    <value>Erro de síntaxe</value>
   </data>
   <data name="RT_MSG_ERR_8" xml:space="preserve">
-    <value>Operation zu komplex</value>
+    <value>Operação demasiadamente complexa</value>
   </data>
   <data name="RT_MSG_ERR_9" xml:space="preserve">
-    <value>Speicherblock-Überlauf</value>
+    <value>Transbordamento de bloqueio de memória</value>
   </data>
   <data name="RT_MSG_ERR_10" xml:space="preserve">
-    <value>SEQUENCE Fehler</value>
+    <value>Erro de SEQUENCE</value>
   </data>
   <data name="RT_MSG_ERR_11" xml:space="preserve">
-    <value>Zu wenig Speicher</value>
+    <value>Falta de memória</value>
   </data>
   <data name="RT_MSG_ERR_12" xml:space="preserve">
-    <value>Undefinierte Funktion</value>
+    <value>Função não definida</value>
   </data>
   <data name="RT_MSG_ERR_13" xml:space="preserve">
-    <value>Keine exportierte Methode</value>
+    <value>Não existem métodos exportados</value>
   </data>
   <data name="RT_MSG_ERR_14" xml:space="preserve">
-    <value>Variable existiert nicht</value>
+    <value>Variável inexistente</value>
   </data>
   <data name="RT_MSG_ERR_15" xml:space="preserve">
-    <value>Alias existiert nicht</value>
+    <value>ALIAS inexistente</value>
   </data>
   <data name="RT_MSG_ERR_16" xml:space="preserve">
-    <value>Keine exportierte Variable</value>
+    <value>Não existem variáveis exportadas</value>
   </data>
   <data name="RT_MSG_ERR_17" xml:space="preserve">
-    <value>ungültiges Zeichen im Alias</value>
+    <value>Caracter incorrecto no ALIAS</value>
   </data>
   <data name="RT_MSG_ERR_18" xml:space="preserve">
-    <value>Alias wird bereits benutzt</value>
+    <value>O ALIAS está em uso</value>
   </data>
   <data name="RT_MSG_ERR_19" xml:space="preserve">
     <value>Variable not initialized</value>
   </data>
   <data name="RT_MSG_ERR_20" xml:space="preserve">
-    <value>Erstellungs-Fehler</value>
+    <value>Erro de criação</value>
   </data>
   <data name="RT_MSG_ERR_21" xml:space="preserve">
-    <value>Open-Fehler</value>
+    <value>Erro de abertura</value>
   </data>
   <data name="RT_MSG_ERR_22" xml:space="preserve">
-    <value>Close-Fehler</value>
+    <value>Erro de fechamento</value>
   </data>
   <data name="RT_MSG_ERR_23" xml:space="preserve">
-    <value>Lese-Fehler</value>
+    <value>Erro de leitura</value>
   </data>
   <data name="RT_MSG_ERR_24" xml:space="preserve">
-    <value>Schreib-Fehler</value>
+    <value>Erro de escrita</value>
   </data>
   <data name="RT_MSG_ERR_25" xml:space="preserve">
-    <value>Druck-Fehler</value>
+    <value>Erro de impressão</value>
   </data>
   <data name="RT_MSG_ERR_26" xml:space="preserve">
-    <value>Undefiniertes Symbol</value>
+    <value>Símbolo não definido</value>
   </data>
   <data name="RT_MSG_ERR_27" xml:space="preserve">
-    <value>Undefinierte Klasse</value>
+    <value>Classe não definida</value>
   </data>
   <data name="RT_MSG_ERR_28" xml:space="preserve">
-    <value>Fehlerhafte Klasse</value>
+    <value>Classe errônea</value>
   </data>
   <data name="RT_MSG_ERR_29" xml:space="preserve">
-    <value>Illegale Referenz</value>
+    <value>Referência não válida</value>
   </data>
   <data name="RT_MSG_ERR_30" xml:space="preserve">
-    <value>Operation nicht unterstützt</value>
+    <value>Operação não suportada</value>
   </data>
   <data name="RT_MSG_ERR_31" xml:space="preserve">
-    <value>Limit überschritten</value>
+    <value>Limite ultrapassado</value>
   </data>
   <data name="RT_MSG_ERR_32" xml:space="preserve">
-    <value>Beschädigung gefunden</value>
+    <value>Foi detectada corrupção</value>
   </data>
   <data name="RT_MSG_ERR_33" xml:space="preserve">
-    <value>Datentyp-Fehler</value>
+    <value>Erro no tipo de dados</value>
   </data>
   <data name="RT_MSG_ERR_34" xml:space="preserve">
-    <value>Datenlängen-Fehler</value>
+    <value>Erro no tamanho dos datos</value>
   </data>
   <data name="RT_MSG_ERR_35" xml:space="preserve">
-    <value>Arbeitsbereich nicht aktiv</value>
+    <value>A área de trabalho está em uso</value>
   </data>
   <data name="RT_MSG_ERR_36" xml:space="preserve">
-    <value>Keine geöffnete Indexdatei in der Arbeitsbereich</value>
+    <value>A área de trabalho não está indexada</value>
   </data>
   <data name="RT_MSG_ERR_37" xml:space="preserve">
-    <value>Exclusiver Zugriff erforderlich</value>
+    <value>É requerido uso exclusivo</value>
   </data>
   <data name="RT_MSG_ERR_38" xml:space="preserve">
-    <value>Sperrung erforderlich</value>
+    <value>É requerido bloqueio</value>
   </data>
   <data name="RT_MSG_ERR_39" xml:space="preserve">
-    <value>Schreiben nicht erlaubt</value>
+    <value>A escrita não é permitida</value>
   </data>
   <data name="RT_MSG_ERR_40" xml:space="preserve">
-    <value>Append-Lock fehlgeschlagen</value>
+    <value>Falha de bloqueio ao adicionar</value>
   </data>
   <data name="RT_MSG_ERR_41" xml:space="preserve">
-    <value>Lock fehlgeschlagen</value>
+    <value>Falha de bloqueio</value>
   </data>
   <data name="RT_MSG_ERR_42" xml:space="preserve">
     <value>To many threads</value>
   </data>
   <data name="RT_MSG_ERR_43" xml:space="preserve">
-    <value>Reservierte Fehlernummer</value>
+    <value>Número de erro reservado</value>
   </data>
   <data name="RT_MSG_ERR_44" xml:space="preserve">
-    <value>Reserierte  Fehlernummer</value>
+    <value>Número de erro reservado</value>
   </data>
   <data name="RT_MSG_ERR_45" xml:space="preserve">
-    <value>Lock-Fehler</value>
+    <value>Erro de bloqueio</value>
   </data>
   <data name="RT_MSG_ERR_46" xml:space="preserve">
-    <value>Lock-Timeout</value>
+    <value>Tempo para bloqueio excedido</value>
   </data>
   <data name="RT_MSG_ERR_47" xml:space="preserve">
-    <value>Prozessor-Stack-Fehler</value>
+    <value>Falha na pilha do processador</value>
   </data>
   <data name="RT_MSG_ERR_48" xml:space="preserve">
-    <value>Eval-Stack-Fehler</value>
+    <value>Falha na pilha de avaliação</value>
   </data>
   <data name="RT_MSG_ERR_49" xml:space="preserve">
-    <value>Keine Fehlerbehandlungs-Routine</value>
+    <value>Não existe bloqueio de administrador de erros</value>
   </data>
   <data name="RT_MSG_ERR_50" xml:space="preserve">
-    <value>Allgemeine Schutzverletzubg</value>
+    <value>Falha de proteção geral</value>
   </data>
   <data name="RT_MSG_ERR_51" xml:space="preserve">
-    <value>Ungültiger Zeiger</value>
+    <value>Ponteiro incorreto</value>
   </data>
   <data name="RT_MSG_ERR_52" xml:space="preserve">
-    <value>Seitenspeicher-Fehler</value>
+    <value>Falha de página</value>
   </data>
   <data name="RT_MSG_ERR_53" xml:space="preserve">
-    <value>Fehler beim Erstellen des Fehlerobjekts</value>
+    <value>Falha ao criar o objeto erro</value>
   </data>
   <data name="RT_MSG_ERR_54" xml:space="preserve">
-    <value>DynAlloc: Zeiger auf dynamischen Speicherbereich</value>
+    <value>DynAlloc: PTR a DynData</value>
   </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
-    <value>Unbekannter Fehler</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_CORRUPTION" xml:space="preserve">
-    <value>memory problem</value>
+    <value>Problema de memória</value>
   </data>
   <data name="RT_MSG_FATAL" xml:space="preserve">
-    <value>QUIT error</value>
+    <value>Erro de saída</value>
   </data>
   <data name="RT_MSG_APPLI" xml:space="preserve">
-    <value>Application</value>
+    <value>Aplicação</value>
   </data>
   <data name="RT_MSG_LINE" xml:space="preserve">
-    <value>Line</value>
+    <value>Linha</value>
   </data>
   <data name="RT_MSG_FUNC" xml:space="preserve">
-    <value>Function</value>
+    <value>Função</value>
   </data>
   <data name="RT_MSG_RELEASE" xml:space="preserve">
-    <value>Version 2.8 SP2</value>
+    <value>Version 2.8 SP3</value>
   </data>
   <data name="RT_MSG_DOSERR_0" xml:space="preserve">
-    <value>Successful completion</value>
+    <value>Finalização correta</value>
   </data>
   <data name="RT_MSG_DOSERR_1" xml:space="preserve">
-    <value>Invalid function number</value>
+    <value>Número da função incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_2" xml:space="preserve">
-    <value>File not found</value>
+    <value>Arquivo não encontrado</value>
   </data>
   <data name="RT_MSG_DOSERR_3" xml:space="preserve">
-    <value>Path not found</value>
+    <value>Caminho não encontrado</value>
   </data>
   <data name="RT_MSG_DOSERR_4" xml:space="preserve">
-    <value>Too many open files</value>
+    <value>Muitos arquivos abertos</value>
   </data>
   <data name="RT_MSG_DOSERR_5" xml:space="preserve">
-    <value>Access denied</value>
+    <value>Acceso negado</value>
   </data>
   <data name="RT_MSG_DOSERR_6" xml:space="preserve">
-    <value>Invalid handle</value>
+    <value>Gerenciador incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_7" xml:space="preserve">
-    <value>Memory control blocks destroyed</value>
+    <value>Bloqueios de controle de memória destruidos</value>
   </data>
   <data name="RT_MSG_DOSERR_8" xml:space="preserve">
-    <value>Insufficient memory</value>
+    <value>Memória insuficiente</value>
   </data>
   <data name="RT_MSG_DOSERR_9" xml:space="preserve">
-    <value>Invalid memory block address</value>
+    <value>Direção de bloqueio de memória incorreta</value>
   </data>
   <data name="RT_MSG_DOSERR_10" xml:space="preserve">
-    <value>Invalid environment</value>
+    <value>Ambiente inválido</value>
   </data>
   <data name="RT_MSG_DOSERR_11" xml:space="preserve">
-    <value>Invalid format</value>
+    <value>Formato inválido</value>
   </data>
   <data name="RT_MSG_DOSERR_12" xml:space="preserve">
-    <value>Invalid access code</value>
+    <value>Código de acceso incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_13" xml:space="preserve">
-    <value>Invalid data</value>
+    <value>Dado incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_14" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_15" xml:space="preserve">
-    <value>Invalid drive number</value>
+    <value>Número da unidade incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_16" xml:space="preserve">
-    <value>Cannot remove current directory</value>
+    <value>Impossível eliminar diretório atual</value>
   </data>
   <data name="RT_MSG_DOSERR_17" xml:space="preserve">
-    <value>Not same device</value>
+    <value>Não é o mesmo dipositivo</value>
   </data>
   <data name="RT_MSG_DOSERR_18" xml:space="preserve">
-    <value>No more files</value>
+    <value>Não existem mais arquivos</value>
   </data>
   <data name="RT_MSG_DOSERR_19" xml:space="preserve">
-    <value>Write-protected diskette</value>
+    <value>Disco protegido contra escrita</value>
   </data>
   <data name="RT_MSG_DOSERR_20" xml:space="preserve">
-    <value>Unknown unit</value>
+    <value>Unidade desconhecida</value>
   </data>
   <data name="RT_MSG_DOSERR_21" xml:space="preserve">
-    <value>Drive not ready</value>
+    <value>Unidade não preparada</value>
   </data>
   <data name="RT_MSG_DOSERR_22" xml:space="preserve">
-    <value>Unknown command</value>
+    <value>Comando desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_23" xml:space="preserve">
-    <value>Data error (CRC)</value>
+    <value>Erro nos dados (CRC)</value>
   </data>
   <data name="RT_MSG_DOSERR_24" xml:space="preserve">
-    <value>Bad request structure length</value>
+    <value>Tamanho da estrutura incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_25" xml:space="preserve">
-    <value>Seek error</value>
+    <value>Erro de procura</value>
   </data>
   <data name="RT_MSG_DOSERR_26" xml:space="preserve">
-    <value>Unknown media type</value>
+    <value>Tipo de media desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_27" xml:space="preserve">
-    <value>Sector not found</value>
+    <value>Setor não encontrado</value>
   </data>
   <data name="RT_MSG_DOSERR_28" xml:space="preserve">
-    <value>Printer out of paper</value>
+    <value>Impressora sem papel</value>
   </data>
   <data name="RT_MSG_DOSERR_29" xml:space="preserve">
-    <value>Write fault</value>
+    <value>Falha de escrita</value>
   </data>
   <data name="RT_MSG_DOSERR_30" xml:space="preserve">
-    <value>Read fault</value>
+    <value>Falha de leitura</value>
   </data>
   <data name="RT_MSG_DOSERR_31" xml:space="preserve">
-    <value>General failure</value>
+    <value>Falha geral</value>
   </data>
   <data name="RT_MSG_DOSERR_32" xml:space="preserve">
-    <value>Sharing violation</value>
+    <value>Violação de compartilhamento</value>
   </data>
   <data name="RT_MSG_DOSERR_33" xml:space="preserve">
-    <value>Lock violation</value>
+    <value>Violação de bloqueio</value>
   </data>
   <data name="RT_MSG_DOSERR_34" xml:space="preserve">
-    <value>Invalid disk change</value>
+    <value>Troca de disco inválida</value>
   </data>
   <data name="RT_MSG_DOSERR_35" xml:space="preserve">
-    <value>FCB unavailable</value>
+    <value>FCB não disponível</value>
   </data>
   <data name="RT_MSG_DOSERR_36" xml:space="preserve">
-    <value>Sharing buffer overflow</value>
+    <value>Estouro na memória compartilhada</value>
   </data>
   <data name="RT_MSG_DOSERR_37" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_38" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_39" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_40" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_41" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_42" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_43" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_44" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_45" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_46" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_47" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_48" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_49" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_50" xml:space="preserve">
-    <value>Network request not supported</value>
+    <value>Requisição de rede não suportada</value>
   </data>
   <data name="RT_MSG_DOSERR_51" xml:space="preserve">
-    <value>Remote computer not listening</value>
+    <value>Computador remoto não está escutando</value>
   </data>
   <data name="RT_MSG_DOSERR_52" xml:space="preserve">
-    <value>Duplicate name on network</value>
+    <value>Nome duplicado na rede</value>
   </data>
   <data name="RT_MSG_DOSERR_53" xml:space="preserve">
-    <value>Network name not found</value>
+    <value>Nome da rede não foi encontrado</value>
   </data>
   <data name="RT_MSG_DOSERR_54" xml:space="preserve">
-    <value>Network busy</value>
+    <value>Rede ocupada</value>
   </data>
   <data name="RT_MSG_DOSERR_55" xml:space="preserve">
-    <value>Network device no longer exists</value>
+    <value>O dispositivo da rede já não existe</value>
   </data>
   <data name="RT_MSG_DOSERR_56" xml:space="preserve">
-    <value>Net BIOS command limit exceeded</value>
+    <value>Superado límite de comandos na rede NetBIOS</value>
   </data>
   <data name="RT_MSG_DOSERR_57" xml:space="preserve">
-    <value>Network adapter hardware error</value>
+    <value>Erro do hardware adaptador de rede</value>
   </data>
   <data name="RT_MSG_DOSERR_58" xml:space="preserve">
-    <value>Incorrect response from network</value>
+    <value>Resposta incorreta da rede</value>
   </data>
   <data name="RT_MSG_DOSERR_59" xml:space="preserve">
-    <value>Unexpected network error</value>
+    <value>Erro não esperado de rede</value>
   </data>
   <data name="RT_MSG_DOSERR_60" xml:space="preserve">
-    <value>Incompatible remote adapter</value>
+    <value>Adaptador remoto incompatível</value>
   </data>
   <data name="RT_MSG_DOSERR_61" xml:space="preserve">
-    <value>Print queue full</value>
+    <value>Fila de impressão cheia</value>
   </data>
   <data name="RT_MSG_DOSERR_62" xml:space="preserve">
-    <value>Not enough space for print file</value>
+    <value>Não há espaço para o arquiv de impressão</value>
   </data>
   <data name="RT_MSG_DOSERR_63" xml:space="preserve">
-    <value>Print file was deleted</value>
+    <value>O arquivo de imporessão foi apagado, não há espaço</value>
   </data>
   <data name="RT_MSG_DOSERR_64" xml:space="preserve">
-    <value>Network name was deleted</value>
+    <value>O nome da rede foi apagado</value>
   </data>
   <data name="RT_MSG_DOSERR_65" xml:space="preserve">
-    <value>Access denied</value>
+    <value>Acceso negado</value>
   </data>
   <data name="RT_MSG_DOSERR_66" xml:space="preserve">
-    <value>Network device type incorrect</value>
+    <value>Tipo de dispositivo de rede incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_67" xml:space="preserve">
-    <value>Network name not found</value>
+    <value>O nome da rede não foi encontrado</value>
   </data>
   <data name="RT_MSG_DOSERR_68" xml:space="preserve">
-    <value>Network name limit exceeded</value>
+    <value>Limite de nomes de rede ultrapassado</value>
   </data>
   <data name="RT_MSG_DOSERR_69" xml:space="preserve">
-    <value>Net BIOS session limit exceeded</value>
+    <value>Limite de sessões NetBIOS ultrapasssado</value>
   </data>
   <data name="RT_MSG_DOSERR_70" xml:space="preserve">
-    <value>Temporarily paused</value>
+    <value>Temporariamente parado</value>
   </data>
   <data name="RT_MSG_DOSERR_71" xml:space="preserve">
-    <value>Network request not accepted</value>
+    <value>Requisição de rede não aceita</value>
   </data>
   <data name="RT_MSG_DOSERR_72" xml:space="preserve">
-    <value>Print or disk redirection is paused</value>
+    <value>Redirecionamento para Impressora ou disco parado</value>
   </data>
   <data name="RT_MSG_DOSERR_73" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_74" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_75" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_76" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_77" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_78" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_79" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_80" xml:space="preserve">
-    <value>File exists</value>
+    <value>Arquivo já existe</value>
   </data>
   <data name="RT_MSG_DOSERR_81" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_82" xml:space="preserve">
-    <value>Cannot make directory entry</value>
+    <value>Impossível criar entrada no diretório</value>
   </data>
   <data name="RT_MSG_DOSERR_83" xml:space="preserve">
-    <value>Fail on INT 24</value>
+    <value>Faha em INT 24</value>
   </data>
   <data name="RT_MSG_DOSERR_84" xml:space="preserve">
-    <value>Too many redirections</value>
+    <value>Excesso de redirecionamento</value>
   </data>
   <data name="RT_MSG_DOSERR_85" xml:space="preserve">
-    <value>Duplicate redirection</value>
+    <value>Redirecionamento duplicado</value>
   </data>
   <data name="RT_MSG_DOSERR_86" xml:space="preserve">
-    <value>Invalid password</value>
+    <value>Senha incorreta</value>
   </data>
   <data name="RT_MSG_DOSERR_87" xml:space="preserve">
-    <value>Invalid parameter</value>
+    <value>Parâmetro incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_88" xml:space="preserve">
-    <value>Network device fault</value>
+    <value>Falha no dispositivo de rede</value>
   </data>
   <data name="RT_MSG_DOSERR_89" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_90" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_91" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_92" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_93" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_94" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_95" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_96" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_97" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_98" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_99" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_100" xml:space="preserve">
-    <value>Disk read error</value>
+    <value>Erro de leitura no disco</value>
   </data>
   <data name="RT_MSG_DOSERR_101" xml:space="preserve">
-    <value>Disk write error</value>
+    <value>Erro de escrita no disco</value>
   </data>
   <data name="RT_MSG_DOSERR_102" xml:space="preserve">
-    <value>File not assigned</value>
+    <value>Arquivo não assinalado</value>
   </data>
   <data name="RT_MSG_DOSERR_103" xml:space="preserve">
-    <value>File not open</value>
+    <value>Arquivo não aberto</value>
   </data>
   <data name="RT_MSG_DOSERR_104" xml:space="preserve">
-    <value>File not open for input</value>
+    <value>Arquivo não aberto para entrada</value>
   </data>
   <data name="RT_MSG_DOSERR_105" xml:space="preserve">
-    <value>File not open for output</value>
+    <value>Archivo não aberto para saída</value>
   </data>
   <data name="RT_MSG_DOSERR_106" xml:space="preserve">
-    <value>Invalid numeric format</value>
+    <value>Formato numérico incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_107" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_108" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_109" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_110" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_111" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_112" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_113" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_114" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_115" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_116" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_117" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_118" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_119" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_120" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_121" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_122" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_123" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_124" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_125" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_126" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_127" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_128" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_129" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_130" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_131" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_132" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_133" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_134" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_135" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_136" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_137" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_138" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_139" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_140" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_141" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_142" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_143" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_144" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_145" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_146" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_147" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_148" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_149" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_150" xml:space="preserve">
-    <value>Disk is write-protected</value>
+    <value>Disco protegido contra escrita</value>
   </data>
   <data name="RT_MSG_DOSERR_151" xml:space="preserve">
-    <value>Unknown unit</value>
+    <value>Unidade desconhecida</value>
   </data>
   <data name="RT_MSG_DOSERR_152" xml:space="preserve">
-    <value>Drive not ready</value>
+    <value>Unidade não preparada</value>
   </data>
   <data name="RT_MSG_DOSERR_153" xml:space="preserve">
-    <value>Unknown command</value>
+    <value>Comando desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_154" xml:space="preserve">
-    <value>CRC error in data</value>
+    <value>Erro CRC nos dados</value>
   </data>
   <data name="RT_MSG_DOSERR_155" xml:space="preserve">
-    <value>Bad drive request structure length</value>
+    <value>Tamanho da estrutura requesitado está incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_156" xml:space="preserve">
-    <value>Disk seek error</value>
+    <value>Erro na procura em disco</value>
   </data>
   <data name="RT_MSG_DOSERR_157" xml:space="preserve">
-    <value>Unknown media type</value>
+    <value>Tipo de mídia desconhecida</value>
   </data>
   <data name="RT_MSG_DOSERR_158" xml:space="preserve">
-    <value>Sector not found</value>
+    <value>Setor não encontrado</value>
   </data>
   <data name="RT_MSG_DOSERR_159" xml:space="preserve">
-    <value>Printer out of paper</value>
+    <value>Impresora sem papel</value>
   </data>
   <data name="RT_MSG_DOSERR_160" xml:space="preserve">
-    <value>Device write fault</value>
+    <value>Falha de escrita em dispositivo</value>
   </data>
   <data name="RT_MSG_DOSERR_161" xml:space="preserve">
-    <value>Device read fault</value>
+    <value>Falho de leitura em dispositivo</value>
   </data>
   <data name="RT_MSG_DOSERR_162" xml:space="preserve">
-    <value>Hardware failure</value>
+    <value>Falha de hardware</value>
   </data>
   <data name="RT_MSG_DOSERR_163" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_164" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_165" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_166" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_167" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_168" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_169" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_170" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_171" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_172" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_173" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_174" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_175" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_176" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_177" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_178" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_179" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_180" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_181" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_182" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_183" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_184" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_185" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_186" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_187" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_188" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_189" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_190" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_191" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_192" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_193" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_194" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_195" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_196" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_197" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_198" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_199" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_200" xml:space="preserve">
-    <value>Division by zero</value>
+    <value>Divisão por zero</value>
   </data>
   <data name="RT_MSG_DOSERR_201" xml:space="preserve">
-    <value>Range check error</value>
+    <value>Erro de verificação da categoria</value>
   </data>
   <data name="RT_MSG_DOSERR_202" xml:space="preserve">
-    <value>Stack overflow</value>
+    <value>Estouro de pilha</value>
   </data>
   <data name="RT_MSG_DOSERR_203" xml:space="preserve">
-    <value>Heap overflow</value>
+    <value>Estouro de pilha</value>
   </data>
   <data name="RT_MSG_DOSERR_204" xml:space="preserve">
-    <value>Invalid pointer operation</value>
+    <value>Operação de ponteiro incorreta</value>
   </data>
   <data name="RT_MSG_DOSERR_205" xml:space="preserve">
-    <value>Floating point overflow</value>
+    <value>Estouro de ponto flutuante</value>
   </data>
   <data name="RT_MSG_DOSERR_206" xml:space="preserve">
-    <value>Floating point underflow</value>
+    <value>Estouro inferior de ponto flutuante</value>
   </data>
   <data name="RT_MSG_DOSERR_207" xml:space="preserve">
-    <value>Invalid floating point operation</value>
+    <value>Operação de ponto flutuante incorreta</value>
   </data>
   <data name="RT_MSG_DOSERR_208" xml:space="preserve">
-    <value>Overlay manager not installed</value>
+    <value>Administrador de overlays não instalado</value>
   </data>
   <data name="RT_MSG_DOSERR_209" xml:space="preserve">
-    <value>Overlay file read error</value>
+    <value>Erro de leitura do arquivo de overlay</value>
   </data>
   <data name="RT_MSG_DOSERR_210" xml:space="preserve">
-    <value>Object not initialized</value>
+    <value>Objeto não inicializado</value>
   </data>
   <data name="RT_MSG_DOSERR_211" xml:space="preserve">
-    <value>Call to abstract method</value>
+    <value>Chamada a método abstrato</value>
   </data>
   <data name="RT_MSG_DOSERR_212" xml:space="preserve">
-    <value>Stream registration error</value>
+    <value>Erro de registro do fluxo</value>
   </data>
   <data name="RT_MSG_DOSERR_213" xml:space="preserve">
-    <value>Collection index out of range</value>
+    <value>Índice de acumulação fora de categoria</value>
   </data>
   <data name="RT_MSG_DOSERR_214" xml:space="preserve">
-    <value>Collection overflow error</value>
+    <value>Erro de estouro</value>
   </data>
   <data name="RT_MSG_DOSERR_215" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_216" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_217" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_218" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_219" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_220" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_221" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_222" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_223" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_224" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_225" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_226" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_227" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_228" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_229" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_230" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_231" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_232" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_233" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_234" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_235" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_236" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_237" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_238" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_239" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_240" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_241" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_242" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_243" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_244" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_245" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_246" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_247" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_248" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_249" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_250" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_251" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_252" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_253" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_254" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_DOSERR_255" xml:space="preserve">
-    <value>Program abort</value>
+    <value>Programa abortado</value>
   </data>
   <data name="RT_MSG_DOSERR_256" xml:space="preserve">
-    <value>Disk full</value>
+    <value>Disco cheio</value>
   </data>
   <data name="RT_MSG_DOSERR_257" xml:space="preserve">
-    <value>End of file</value>
+    <value>Fim de arquivo</value>
   </data>
   <data name="RT_MSG_DOSERR_258" xml:space="preserve">
-    <value>Invalid Param</value>
+    <value>Parâmetro incorreto</value>
   </data>
   <data name="RT_MSG_DOSERR_FFFF" xml:space="preserve">
-    <value>Bogus disk</value>
+    <value>Disco falso</value>
   </data>
   <data name="RT_MSG_DOSERR_UNKNOWN" xml:space="preserve">
-    <value>Unknown error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
-    <value>ERRORBUILD: no ERRORFUNC installed</value>
+    <value>ERRORBUILD: ERRORFUNC não instalado</value>
   </data>
   <data name="RT_MSG_ERR_GURU" xml:space="preserve">
-    <value>ERRORBUILD: no Guru table</value>
+    <value>ERRORBUILD: não existe a tabela GURU</value>
   </data>
   <data name="RT_MSG_ERR_STACK" xml:space="preserve">
-    <value>ERRORBUILD: low stack area</value>
+    <value>ERRORBUILD: área de pilha insuficiente!</value>
   </data>
   <data name="RT_MSG_ERR_PARAM" xml:space="preserve">
-    <value>ERRORBUILD: invalid strucparam</value>
+    <value>ERRORBUILD: STRUCPARAM incorreto</value>
   </data>
   <data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
-    <value>ERRORBUILD: no CLIPPER ERRORFUNC found</value>
+    <value>ERRORBUILD: CLIPPER ERRORFUNC não encontrada</value>
   </data>
-  <data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
-    <value>ERRORBUILD: ERRORFUNC argcount &lt;&gt;1</value>
-  </data>
-  <data name="RT_MSG_MAIL_ERR1" xml:space="preserve">
-    <value>SendMail(): Failed to load the MAPI DLL</value>
-  </data>
-  <data name="RT_MSG_MAIL_ERR2" xml:space="preserve">
-    <value>SendMail(): Failed to get function entry point in the MAPI DLL</value>
-  </data>
-  <data name="RT_MSG_MAIL_ERR3" xml:space="preserve">
-    <value>SendMail(): Failed to send %s. Error code: %d</value>
-  </data>
-  <data name="RT_MSG_ACCESS_VIOLATION" xml:space="preserve">
-    <value>Access Violation</value>
-  </data>
-  <data name="RT_MSG_DATATYPE_MISALIGNMENT" xml:space="preserve">
-    <value>Datatype Misalignment</value>
-  </data>
-  <data name="RT_MSG_SINGLE_STEP" xml:space="preserve">
-    <value>Single Step</value>
-  </data>
-  <data name="RT_MSG_ARRAY_BOUNDS_EXCEEDED" xml:space="preserve">
-    <value>Array Bounds exceeded</value>
-  </data>
-  <data name="RT_MSG_FLT_DENORMAL_OPERAND" xml:space="preserve">
-    <value>Float denormal operand</value>
-  </data>
-  <data name="RT_MSG_FLT_DIVIDE_BY_ZERO" xml:space="preserve">
-    <value>Float divide by zero</value>
-  </data>
-  <data name="RT_MSG_FLT_INEXACT_RESULT" xml:space="preserve">
-    <value>Float inexact result</value>
-  </data>
-  <data name="RT_MSG_FLT_INVALID_OPERATION" xml:space="preserve">
-    <value>Float invalid operation</value>
-  </data>
-  <data name="RT_MSG_FLT_OVERFLOW" xml:space="preserve">
-    <value>Float overflow</value>
-  </data>
-  <data name="RT_MSG_FLT_STACK_CHECK" xml:space="preserve">
-    <value>Float stack check</value>
-  </data>
-  <data name="RT_MSG_FLT_UNDERFLOW" xml:space="preserve">
-    <value>Float underflow</value>
-  </data>
-  <data name="RT_MSG_INT_DIVIDE_BY_ZERO" xml:space="preserve">
-    <value>Integer divide by zero</value>
-  </data>
-  <data name="RT_MSG_INT_OVERFLOW" xml:space="preserve">
-    <value>Integer overflow</value>
-  </data>
-  <data name="RT_MSG_PRIV_INSTRUCTION" xml:space="preserve">
-    <value>priv instruction</value>
-  </data>
-  <data name="RT_MSG_IN_PAGE_ERROR" xml:space="preserve">
-    <value>In page error</value>
-  </data>
-  <data name="RT_MSG_ILLEGAL_INSTRUCTION" xml:space="preserve">
-    <value>Illegal Instruction</value>
-  </data>
-  <data name="RT_MSG_NONCONTINUABLE_EXCEPTION" xml:space="preserve">
-    <value>Noncontinuable Exception</value>
-  </data>
-  <data name="RT_MSG_STACK_OVERFLOW" xml:space="preserve">
-    <value>Stack overflow</value>
-  </data>
-  <data name="RT_MSG_INVALID_DISPOSITION" xml:space="preserve">
-    <value>Invalid disposition</value>
-  </data>
-  <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
-    <value>Guard Page</value>
-  </data>
+
 </root>

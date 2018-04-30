@@ -7,7 +7,9 @@
 	? "Size of DATE", SizeOf(DATE)
 	? "Size of SYMBOL", SizeOf(SYMBOL)
 	? 
-
+	? SetNatDLL("Italian.DLL")
+	? GetNatDLL()
+	? __CavoStr(VOErrors.TMSG_PRESSANYKEY)
 	Console.WriteLine("")
 	LOCAL mem,mem2 AS INT64
 	mem := GC.GetTotalMemory(TRUE)

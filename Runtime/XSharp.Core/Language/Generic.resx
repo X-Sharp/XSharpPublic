@@ -385,7 +385,7 @@
     <value>Invalid argument passed to an info function</value>
   </data>
   <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
-    <value>Swedish, ASCII</value>
+    <value>Generic, ASCII </value>
   </data>
   <data name="CA_NAT_LANGUAGE_VERSION" xml:space="preserve">
     <value>Version 2.8 SP3</value>
@@ -538,34 +538,34 @@
     <value>OLE Automation Server capabilities not available.\nPlease include OLE Server library.</value>
   </data>
   <data name="RT_MSG_MONTH1" xml:space="preserve">
-    <value>Januari</value>
+    <value>January</value>
   </data>
   <data name="RT_MSG_MONTH2" xml:space="preserve">
-    <value>Februari</value>
+    <value>February</value>
   </data>
   <data name="RT_MSG_MONTH3" xml:space="preserve">
-    <value>Mars</value>
+    <value>March</value>
   </data>
   <data name="RT_MSG_MONTH4" xml:space="preserve">
     <value>April</value>
   </data>
   <data name="RT_MSG_MONTH5" xml:space="preserve">
-    <value>Maj</value>
+    <value>May</value>
   </data>
   <data name="RT_MSG_MONTH6" xml:space="preserve">
-    <value>Juni</value>
+    <value>June</value>
   </data>
   <data name="RT_MSG_MONTH7" xml:space="preserve">
-    <value>Juli</value>
+    <value>July</value>
   </data>
   <data name="RT_MSG_MONTH8" xml:space="preserve">
-    <value>Augusti</value>
+    <value>August</value>
   </data>
   <data name="RT_MSG_MONTH9" xml:space="preserve">
     <value>September</value>
   </data>
   <data name="RT_MSG_MONTH10" xml:space="preserve">
-    <value>Oktober</value>
+    <value>October</value>
   </data>
   <data name="RT_MSG_MONTH11" xml:space="preserve">
     <value>November</value>
@@ -574,28 +574,28 @@
     <value>December</value>
   </data>
   <data name="RT_MSG_DAY1" xml:space="preserve">
-    <value>Söndag</value>
+    <value>Sunday</value>
   </data>
   <data name="RT_MSG_DAY2" xml:space="preserve">
-    <value>Måndag</value>
+    <value>Monday</value>
   </data>
   <data name="RT_MSG_DAY3" xml:space="preserve">
-    <value>Tisdag</value>
+    <value>Tuesday</value>
   </data>
   <data name="RT_MSG_DAY4" xml:space="preserve">
-    <value>Onsdag</value>
+    <value>Wednesday</value>
   </data>
   <data name="RT_MSG_DAY5" xml:space="preserve">
-    <value>Torsdag</value>
+    <value>Thursday</value>
   </data>
   <data name="RT_MSG_DAY6" xml:space="preserve">
-    <value>Fredag</value>
+    <value>Friday</value>
   </data>
   <data name="RT_MSG_DAY7" xml:space="preserve">
-    <value>Lördag</value>
+    <value>Saturday</value>
   </data>
   <data name="RT_MSG_INFOSTRING" xml:space="preserve">
-    <value>Swedish ASCII</value>
+    <value>UK ASCII</value>
   </data>
   <data name="IDT_NEWSHEET" xml:space="preserve">
     <value>New Sheet</value>

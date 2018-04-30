@@ -14,18 +14,18 @@ CLASS Workarea IMPLEMENTS IRdd
 	PUBLIC _Area			AS LONG		// Workarea Number (1 based)
 	PUBLIC _Alias			AS STRING	// Unique Alias
 	PUBLIC _FileName		AS STRING
-	PUBLIC _Fields		AS RddFieldInfo[]	// List of Fields
-	PUBLIC _Bof			AS LOGIC	// Is BOF ?
-	PUBLIC _Bottom		AS LOGIC	// Is at Bottom ?
-	PUBLIC _Eof			AS LOGIC	// Is EOF
+	PUBLIC _Fields		    AS RddFieldInfo[]	// List of Fields
+	PUBLIC _Bof			    AS LOGIC	// Is BOF ?
+	PUBLIC _Bottom		    AS LOGIC	// Is at Bottom ?
+	PUBLIC _Eof			    AS LOGIC	// Is EOF
 	PUBLIC _Found			AS LOGIC	// Is Found ?
-	PUBLIC _Top			AS LOGIC	// Is at Top
-	PUBLIC _Result		AS OBJECT                
+	PUBLIC _Top			    AS LOGIC	// Is at Top
+	PUBLIC _Result		    AS OBJECT                
 	PUBLIC _ScopeInfo		AS DbScopeInfo
-	PUBLIC _FilterInfo	AS DbFilterInfo  
+	PUBLIC _FilterInfo	    AS DbFilterInfo  
 	PUBLIC _OrderCondInfo	AS DbOrderCondInfo
-	PUBLIC _RelInfo		AS DbRelInfo
-	PUBLIC _Parents		AS LONG		// # of parents   
+	PUBLIC _RelInfo		    AS DbRelInfo
+	PUBLIC _Parents		    AS LONG		// # of parents   
 	PUBLIC _MaxFieldNameLength AS LONG	// 
 
 	// Some flags that are stored here but managed in subclasses
@@ -289,7 +289,7 @@ VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
 	NEXT 
 	RETURN 0
 	
-PRIVATE METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
+PROTECTED METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 	LOCAL nMax AS INT
 	// Note that nFldPos is 1 based
 	nMax := (INT) SELF:_Fields?:Length  

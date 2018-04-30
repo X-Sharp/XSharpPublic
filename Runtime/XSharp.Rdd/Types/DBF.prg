@@ -52,28 +52,45 @@ BEGIN NAMESPACE XSharp.RDD
             
             
             //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
-         METHOD GoTop() AS LOGIC
+        METHOD GoTop() AS LOGIC
             IF ( SELF:_hFile != F_ERROR )
                 SELF:GoTo( 1 )
+                SELF:_Top := TRUE
+                SELF:_Bottom := FALSE
+                SELF:_BufferValid := FALSE
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-
-         METHOD GoBottom() AS LOGIC
+            
+        METHOD GoBottom() AS LOGIC
             IF ( SELF:_hFile != F_ERROR )
                 SELF:Goto( SELF:RecCount )
+                SELF:_Top := FALSE
+                SELF:_Bottom := TRUE
+                SELF:_BufferValid := FALSE
             ENDIF
             RETURN FALSE
-
-         METHOD GoTo(nRec AS LONG) AS LOGIC
+            
+        METHOD GoTo(nRec AS LONG) AS LOGIC
             IF ( SELF:_hFile != F_ERROR )
                 IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
                     // virtual pos
-                    Self:_RecNo := nRec
+                    SELF:_RecNo := nRec
+                    SELF:_EOF := FALSE		
+                    SELF:_Bof := FALSE
+                    SELF:_Found :=TRUE
+                    SELF:_BufferValid := FALSE
+                ELSE
+                    // File empty, or trying to go outside ?
+                    SELF:_RecNo := SELF:RecCount + 1
+                    SELF:_EOF := TRUE		
+                    SELF:_Bof := TRUE
+                    SELF:_Found := FALSE
+                    SELF:_BufferValid := FALSE
                 ENDIF
             ENDIF
             RETURN FALSE
-
+            
             //	METHOD GoToId(oRec AS OBJECT) AS LOGIC
             //	METHOD Skip(nToSkip AS INT) AS LOGIC
             //	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
@@ -98,7 +115,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( isOk )
                     TRY
                         SUPER:Close()
-                        CATCH
+                    CATCH
                         isOk := FALSE
                     END TRY
                     SELF:_hFile := NULL
@@ -106,9 +123,9 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN isOk
             ENDIF
             RETURN FALSE
-
+            
             //	METHOD Create(info AS DbOpenInfo) AS LOGIC  
-
+            
         VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
             //
@@ -161,7 +178,9 @@ BEGIN NAMESPACE XSharp.RDD
                             Array.Copy( fieldsBuffer, i*FLDOFFSETS.SIZE, currentField:Buffer, 0, FLDOFFSETS.SIZE )
                             SELF:_Fields[ i ] := RddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
                         NEXT
-                        //
+                        // Allocate the Buffer to read Records
+                        SELF:_RecordLength := (WORD)SELF:_Header:RecordLen
+                        SELF:_RecordBuffer := BYTE[]{_RecordLength}
                     ENDIF
                 ENDIF
             ENDIF
@@ -179,59 +198,253 @@ BEGIN NAMESPACE XSharp.RDD
             // Fields
             //METHOD CreateFields(aFields AS DbField[]) AS LOGIC
             //	METHOD FieldIndex(fieldName AS STRING) AS LONG 
-
-
+            
+            
         VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
+            LOCAL nArrPos := nFldPos AS LONG
+            IF SELF:_FieldIndexValidate(nArrPos)
+                IF __ARRAYBASE__ == 0
+                    nArrPos -= 1
+                ENDIF
+            ENDIF
+            //
             SWITCH nOrdinal
                 CASE DbFieldInfo.DBS_NAME
-                    oResult := SELF:_Fields[nFldPos]:Name
+                    oResult := SELF:_Fields[nArrPos]:Name
                 CASE DbFieldInfo.DBS_LEN
-                    oResult := SELF:_Fields[nFldPos]:Length
+                    oResult := SELF:_Fields[nArrPos]:Length
                 CASE DbFieldInfo.DBS_DEC
-                    oResult := SELF:_Fields[nFldPos]:Decimals
+                    oResult := SELF:_Fields[nArrPos]:Decimals
                 CASE DbFieldInfo.DBS_TYPE
-                    oResult := SELF:_Fields[nFldPos]:FieldType
+                    oResult := SELF:_Fields[nArrPos]:FieldType
                 CASE DbFieldInfo.DBS_ALIAS
-                    oResult := SELF:_Fields[nFldPos]:Alias
-
-                CASE DbFieldInfo.DBS_ISNULL
+                    oResult := SELF:_Fields[nArrPos]:Alias
+                    
+            CASE DbFieldInfo.DBS_ISNULL
                 CASE DbFieldInfo.DBS_COUNTER
                 CASE DbFieldInfo.DBS_STEP    
-
+                
                 CASE DbFieldInfo.DBS_BLOB_GET     
                 CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
-                                                // is more efficient than using Type() or ValType()
-                                                // since the data itself does not have to be retrieved
-                                                // from the BLOB file in order to determine the type.
+                    // is more efficient than using Type() or ValType()
+                    // since the data itself does not have to be retrieved
+                    // from the BLOB file in order to determine the type.
                 CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file	
                 CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
                 CASE DbFieldInfo.DBS_BLOB_POINTER	// Returns a numeric pointer to the data in a blob
-                                                    // file. This pointer can be used with BLOBDirectGet(),
-                                                    // BLOBDirectImport(), etc.
-
+                    // file. This pointer can be used with BLOBDirectGet(),
+                    // BLOBDirectImport(), etc.
+                    
                 CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
                 CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN		
-
+                
                 CASE DbFieldInfo.DBS_STRUCT				
                 CASE DbFieldInfo.DBS_PROPERTIES			
                 CASE DbFieldInfo.DBS_USER		
-
+                
                 OTHERWISE
-                    oResult := SUPER:Info(nOrdinal, oNewValue)
-            END SWITCH
+                    oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+                END SWITCH
             RETURN oResult
-
+            
         METHOD FieldName(nFldPos AS LONG) AS STRING
             RETURN SUPER:FieldName( nFldPos )
             
+            
             // Read & Write		
-        METHOD GetValue(nFldPos AS LONG) AS OBJECT
-            IF _oMemo != NULL_OBJECT                    
-                RETURN _oMemo:GetValue(nFldPos)
-            ELSE                            
-                RETURN SUPER:GetValue(nFldPos)
+        PRIVATE METHOD _fillRecord() AS LOGIC
+            LOCAL isOk AS LOGIC
+            // Buffer is supposed to be correct
+            IF ( SELF:_BufferValid == TRUE )
+                RETURN TRUE
             ENDIF
+            // File Ok ?
+            isOk := ( SELF:_hFile != F_ERROR )
+            //
+            IF ( isOk )
+                // Record pos is One-Based
+                LOCAL lOffset := SELF:_Header:HeaderLen + ( SELF:_RecNo - 1 ) * SELF:_Header:RecordLen AS LONG
+                isOk := ( FSeek3( SELF:_hFile, lOffset, FS_SET ) == lOffset )
+                IF ( isOk )
+                    // Read Record
+                    isOk := ( FRead3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_Header:RecordLen ) == (DWORD)SELF:_Header:RecordLen )
+                    IF ( isOk )
+                        SELF:_BufferValid := TRUE
+                        SELF:_Deleted := ( SELF:_RecordBuffer[ 0 ] == '*' )
+                    ENDIF
+                ENDIF
+            ENDIF
+            RETURN isOk
+            
+        PRIVATE METHOD _julianToDateTime(julianDateAsLong AS INT64) AS System.DateTime
+            LOCAL num2 AS REAL8
+            LOCAL num3 AS REAL8
+            LOCAL num4 AS REAL8
+            LOCAL num5 AS REAL8
+            LOCAL num6 AS REAL8
+            LOCAL num7 AS REAL8
+            LOCAL num8 AS REAL8
+            LOCAL num9 AS REAL8
+            LOCAL num10 AS REAL8
+            LOCAL num11 AS REAL8
+            //
+            IF (julianDateAsLong == 0)
+                //
+                RETURN System.DateTime.MinValue
+            ENDIF
+            num2 := (System.Convert.ToDouble(julianDateAsLong) + 68569)
+            num3 := System.Math.Floor((REAL8)((4 * num2) / 146097) )
+            num4 := (num2 - System.Math.Floor((REAL8)(((146097 * num3) + 3) / 4) ))
+            num5 := System.Math.Floor((REAL8)((4000 * (num4 + 1)) / 1461001) )
+            num6 := ((num4 - System.Math.Floor((REAL8)((1461 * num5) / 4) )) + 31)
+            num7 := System.Math.Floor((REAL8)((80 * num6) / 2447) )
+            num8 := (num6 - System.Math.Floor((REAL8)((2447 * num7) / 80) ))
+            num9 := System.Math.Floor((REAL8)(num7 / 11) )
+            num10 := ((num7 + 2) - (12 * num9))
+            num11 := (((100 * (num3 - 49)) + num5) + num9)
+            RETURN System.DateTime{System.Convert.ToInt32(num11), System.Convert.ToInt32(num10), System.Convert.ToInt32(num8)}
+            
+        PRIVATE METHOD _convertFieldData( buffer AS BYTE[], fieldType AS DbFieldType) AS OBJECT
+            LOCAL str AS STRING
+            LOCAL data AS OBJECT
+            LOCAL encoding AS ASCIIEncoding
+            // Read actual Data
+            encoding := ASCIIEncoding{}
+            str :=  encoding:GetString(buffer)
+            IF ( str == NULL )
+                str := String.Empty
+            ENDIF            
+            str := str:Trim()
+            //
+            data := NULL
+            SWITCH fieldType
+                CASE DbFieldType.Double
+                    //
+                    IF (! String.IsNullOrWhiteSpace(str))
+                        //
+                        data := System.Convert.ToDouble(str)
+                    ENDIF
+                    //					IF ((DbFieldType:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
+                    //						//
+                    //						data := 0.0
+                    //					ENDIF
+                CASE DbFieldType.Character
+                    //
+                    data := str
+                CASE DbFieldType.Date
+                    //
+                    IF (! String.IsNullOrWhiteSpace(str))
+                        //
+                        data := System.DateTime.ParseExact(str, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+                    ENDIF
+                    //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
+                    //                        //
+                    //                        data := System.DateTime.MinValue
+                    //                    ENDIF
+            CASE DbFieldType.Float
+                CASE DbFieldType.Number
+                    //
+                    IF (! String.IsNullOrWhiteSpace(str))
+                        //
+                        data := System.Convert.ToSingle(str)
+                    ENDIF
+                    //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
+                    //                        //
+                    //                        data := 0
+                    //                    ENDIF
+                CASE DbFieldType.Integer
+                    //
+                    IF (! String.IsNullOrWhiteSpace(str))
+                        //
+                        data := System.BitConverter.ToInt32(buffer, 0)
+                    ENDIF
+                    //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
+                    //                        //
+                    //                        data := 0
+                    //                    ENDIF
+                CASE DbFieldType.Logic
+                    //
+                    IF (! String.IsNullOrWhiteSpace(str))
+                        //
+                        data := String.Compare( str, ".T.", TRUE )
+                    ENDIF
+                    //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
+                    //                        //
+                    //                        data := FALSE
+                    //                    ENDIF
+                CASE DbFieldType.DateTime
+                    //
+                    IF (! (String.IsNullOrWhiteSpace(str) .OR. (System.BitConverter.ToInt64(buffer, 0) == 0)))
+                        //
+                        data := _julianToDateTime(System.BitConverter.ToInt64(buffer, 0))
+                    ENDIF
+                    //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
+                    //                        //
+                    //                        data := System.DateTime.MinValue
+                    //                    ENDIF
+                CASE DbFieldType.Currency
+                    IF (!String.IsNullOrWhiteSpace(str))
+                        data := System.Convert.ToDecimal(str)
+                        //                    ELSE
+                        //                        IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) == DBFFieldFlags.AllowNullValues)
+                        //                            //
+                        //                            data := NULL
+                        //                        ELSE
+                        //                            data := 0.0
+                        //                        ENDIF
+                    ENDIF
+                CASE DbFieldType.Memo
+                CASE DbFieldType.OLE
+                CASE DbFieldType.Picture
+                OTHERWISE
+                    data := buffer
+                END SWITCH
+            RETURN Data
+            
+            
+        METHOD GetValue(nFldPos AS LONG) AS OBJECT
+            LOCAL fieldType AS DbFieldType
+            LOCAL ret := NULL AS OBJECT
+            //
+            fieldType := (DbFieldType) SELF:FieldInfo( nFldPos, DBS_TYPE, NULL )
+            // Read Record to Buffer
+            IF SELF:_fillRecord()
+                // 1 To Skip Deleted field
+                LOCAL iOffset := 1 AS INT
+                // 
+                LOCAL nArrPos := nFldPos AS LONG
+                LOCAL nStart := 1 AS LONG
+                LOCAL i AS LONG
+                IF __ARRAYBASE__ == 0
+                    nArrPos -= 1
+                    nStart -= 1
+                ENDIF
+                FOR i := nStart TO (nArrPos-1)
+                    iOffset += SELF:_Fields[i]:Length
+                NEXT
+                //
+                VAR destArray := BYTE[]{SELF:_Fields[nArrPos]:Length}
+                Array.Copy( SELF:_RecordBuffer, iOffset, destArray, 0, SELF:_Fields[nArrPos]:Length)
+                //
+                IF ( ( fieldType == DbFieldType.Memo ) || ;
+                ( fieldType == DbFieldType.OLE ) || ;
+                ( fieldType == DbFieldType.Picture ) )
+                    IF _oMemo != NULL_OBJECT                    
+                        RETURN _oMemo:GetValue(nFldPos)
+                    ELSE                            
+                        RETURN SUPER:GetValue(nFldPos)
+                    ENDIF
+                ELSE
+//                    IF ( fieldType == DbFieldType.Number )
+//                        IF (SELF:_Fields[nArrPos]:Decimals == 0 )
+//                            fieldType := DbFieldType.Integer
+//                        ENDIF
+//                    ENDIF
+                    ret := SELF:_convertFieldData( destArray, fieldType )
+                ENDIF
+            ENDIF
+            RETURN ret
             
         METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
             IF _oMemo != NULL_OBJECT                    
@@ -380,7 +593,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
-            CASE DbInfo.DBI_ISDBF
+                CASE DbInfo.DBI_ISDBF
                 CASE DbInfo.DBI_CANPUTREC
                     oResult := TRUE		
                 CASE DbInfo.DBI_LASTUPDATE
@@ -418,7 +631,7 @@ BEGIN NAMESPACE XSharp.RDD
                     
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
-                END SWITCH
+            END SWITCH
             RETURN oResult  
             
             
@@ -470,9 +683,18 @@ BEGIN NAMESPACE XSharp.RDD
             //	PROPERTY Deleted 	AS LOGIC GET
             //	PROPERTY EoF 		AS LOGIC GET
             //	PROPERTY Exclusive	AS LOGIC GET
-            //	PROPERTY FieldCount AS LONG GET 
-            //	PROPERTY FilterText	AS STRING GET 
-            //	PROPERTY Found		AS LOGIC GET 
+        PROPERTY FieldCount AS LONG 
+            GET 
+                LOCAL ret := 0 AS LONG
+                IF ( SELF:_Fields != NULL )
+                    ret := SELF:_Fields:Length
+                ENDIF
+                RETURN ret
+            END GET
+        END PROPERTY
+        
+        //	PROPERTY FilterText	AS STRING GET 
+        //	PROPERTY Found		AS LOGIC GET 
         PROPERTY RecCount	AS LONG 
             GET
                 IF ( SELF:_hFile != F_ERROR )
@@ -485,9 +707,10 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN 0
             END GET
         END PROPERTY
-
-            //	PROPERTY RecNo		AS OBJECT GET 
-            //	PROPERTY Shared		AS LOGIC GET
+        
+        PROPERTY RecNo		AS INT GET SELF:_RecNo
+        
+        //	PROPERTY Shared		AS LOGIC GET
         VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
         
         //	
@@ -495,6 +718,8 @@ BEGIN NAMESPACE XSharp.RDD
         //	PROPERTY LastGenCode	AS LONG GET
         //	PROPERTY LastSubCode	AS LONG GET
         //	PROPERTY LastError		AS Exception GET
+        
+        
         PUBLIC ENUM HDROFFSETS
             MEMBER SIG			:= 0
             MEMBER YEAR			:= 1
@@ -547,9 +772,9 @@ BEGIN NAMESPACE XSharp.RDD
             PUBLIC isHot	AS LOGIC
             
             PROPERTY Version    AS DBFVersion	;
-                GET (DBFVersion) Buffer[HDROFFSETS.SIG] ;
-                SET Buffer[HDROFFSETS.SIG] := (BYTE) VALUE
-                
+            GET (DBFVersion) Buffer[HDROFFSETS.SIG] ;
+            SET Buffer[HDROFFSETS.SIG] := (BYTE) VALUE
+            
                 PROPERTY Year		AS BYTE			;
                 GET Buffer[HDROFFSETS.YEAR]	;
                 SET Buffer[HDROFFSETS.YEAR] := VALUE, isHot := TRUE
@@ -622,7 +847,7 @@ BEGIN NAMESPACE XSharp.RDD
                     // Dbase (7?) Extends this with
                     // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
                     // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG    
-                                                                                                                                                                                                                                                                               /*
+                    /*
                     0x02   FoxBASE
                     0x03   FoxBASE+/Dbase III plus, no memo
                     0x04   dBase 4
@@ -665,8 +890,8 @@ BEGIN NAMESPACE XSharp.RDD
                     see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
                     
                     */
-                    END STRUCTURE
-            
+                END STRUCTURE
+                
             STRUCTURE DbfField   
                 // Fixed Buffer of 32 bytes
                 // Matches the DBF layout
@@ -763,7 +988,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         
         [StructLayout(LayoutKind.Explicit)];
-            STRUCTURE Dbf7Field   
+        STRUCTURE Dbf7Field   
             // Dbase 7 has 32 Bytes for Field Names
             // Fixed Buffer of 32 bytes
             // Matches the DBF layout
@@ -808,7 +1033,7 @@ BEGIN NAMESPACE XSharp.RDD
         END ENUM
         
         [Flags];
-            ENUM DBFTableFlags AS BYTE
+        ENUM DBFTableFlags AS BYTE
             MEMBER HasMemoField:=2
             MEMBER HasStructuralCDX:=1
             MEMBER IsDBC:=4
@@ -816,7 +1041,7 @@ BEGIN NAMESPACE XSharp.RDD
         END ENUM
         
         [Flags];
-            ENUM DBFFieldFlags AS BYTE
+        ENUM DBFFieldFlags AS BYTE
             MEMBER None:=0
             MEMBER System:=1
             MEMBER AllowNullValues:=2

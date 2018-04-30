@@ -387,12 +387,6 @@
   <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
     <value>Português, ASCII</value>
   </data>
-  <data name="CA_NAT_LANGUAGE_VERSION" xml:space="preserve">
-    <value>Version 2.8 SP3</value>
-  </data>
-  <data name="CA_NAT_LANGUAGE_BUILD" xml:space="preserve">
-    <value>2837</value>
-  </data>
   <data name="CA_NAT_INVALID_ARG" xml:space="preserve">
     <value>Argumento inválido</value>
   </data>

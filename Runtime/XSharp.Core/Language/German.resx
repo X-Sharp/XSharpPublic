@@ -387,12 +387,6 @@
   <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
     <value>German, ASCII</value>
   </data>
-  <data name="CA_NAT_LANGUAGE_VERSION" xml:space="preserve">
-    <value>Version 2.8 SP3</value>
-  </data>
-  <data name="CA_NAT_LANGUAGE_BUILD" xml:space="preserve">
-    <value>2837</value>
-  </data>
   <data name="CA_NAT_INVALID_ARG" xml:space="preserve">
     <value>Invalid argument</value>
   </data>
@@ -407,27 +401,6 @@
   </data>
   <data name="__WCSERROR" xml:space="preserve">
     <value>Fehler</value>
-  </data>
-  <data name="__WCSAREAINDEX" xml:space="preserve">
-    <value>Window_WindowCanvas</value>
-  </data>
-  <data name="4007" xml:space="preserve">
-    <value>Window_Caption</value>
-  </data>
-  <data name="4008" xml:space="preserve">
-    <value>Window_SizeBox</value>
-  </data>
-  <data name="4009" xml:space="preserve">
-    <value>Window_MinBox</value>
-  </data>
-  <data name="4010" xml:space="preserve">
-    <value>Window_MaxBox</value>
-  </data>
-  <data name="4011" xml:space="preserve">
-    <value>Window_SysMenuBox</value>
-  </data>
-  <data name="4012" xml:space="preserve">
-    <value>Window_Border</value>
   </data>
   <data name="4013" xml:space="preserve">
     <value>Unbekannt</value>

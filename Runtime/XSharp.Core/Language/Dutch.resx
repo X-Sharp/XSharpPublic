@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
+    <value>Dutch, ASCII </value>
+  </data>
   <data name="__WCSTYPEERROR" xml:space="preserve">
     <value>Ongeldig argumenttype</value>
   </data>
@@ -125,36 +128,6 @@
   </data>
   <data name="__WCSERROR" xml:space="preserve">
     <value>Fout</value>
-  </data>
-  <data name="__WCSAREAINDEX" xml:space="preserve">
-    <value>Window_WindowCanvas</value>
-  </data>
-  <data name="4007" xml:space="preserve">
-    <value>Window_Titel</value>
-  </data>
-  <data name="4008" xml:space="preserve">
-    <value>Window_FormaatKnop</value>
-  </data>
-  <data name="4009" xml:space="preserve">
-    <value>Window_MinimaalKnop</value>
-  </data>
-  <data name="4010" xml:space="preserve">
-    <value>Window_MaximaalKnop</value>
-  </data>
-  <data name="4011" xml:space="preserve">
-    <value>Window_SysteemMenuKnop</value>
-  </data>
-  <data name="4012" xml:space="preserve">
-    <value>Window_Rand</value>
-  </data>
-  <data name="4013" xml:space="preserve">
-    <value>Onbekend</value>
-  </data>
-  <data name="4014" xml:space="preserve">
-    <value>Window_MenuBalk</value>
-  </data>
-  <data name="4015" xml:space="preserve">
-    <value>Window_Sluiten</value>
   </data>
   <data name="__WCSUNKNOWN" xml:space="preserve">
     <value>Onbekend:</value>

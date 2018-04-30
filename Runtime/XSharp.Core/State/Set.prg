@@ -413,6 +413,35 @@ function SetMath() as dword
 function SetMath(nFPU as dword) as dword
 	setstate dword Set.MATH nFPU
 
+/// <summary>
+/// Activate a new DLL for nation-dependent operations and messages.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
+	LOCAL cBase AS STRING
+	_SetNatDLL(cnewDLL)
+	cBase := System.IO.Path.GetFileNameWithoutExtension(cNewDLL)
+	_SetCollation(cBase)
+	return String.Compare(Messages.CurrentLanguageName, cBase, true) == 0
+
+STATIC FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
+	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", typeof(Functions):Assembly }
+	VAR obj := rm:GetObject(cBase) 
+	if obj != NULL
+		VAR bytes := obj ASTYPE BYTE[]
+		if bytes != null
+			XSharp.RuntimeState.SetValue< BYTE[] >( Set.CollationTable, bytes )
+			return true
+		endif
+	ENDIF
+	return false
+	
+static Function	_SetNatDLL(cNewDLL as STRING) as STRING
+	LOCAL cBase AS STRING
+	cBase := System.IO.Path.GetFileNameWithoutExtension(cNewDLL)
+	Messages.SetCurrentLanguage(cBase)
+	setstate string Set.NatDLL cNewDLL
 
 /// <summary>
 /// Return the setting that determines the search path for opening files. This may be a semi colon separated list of folders.

@@ -12,14 +12,14 @@ USING Xunit
 USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.RDD.Tests
-    
+
     /// <summary>
     /// The TestDBF class.
     /// </summary>
     CLASS TestDBF
-        
+    
         [Fact, Trait("Dbf", "Open")];
-            METHOD OpenDBF() AS VOID
+        METHOD OpenDBF() AS VOID
             // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
             VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
             //
@@ -28,9 +28,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             //
             myDBF:Close()
             RETURN
-
+            
         [Fact, Trait("Dbf", "Open")];
-            METHOD OpenDBFErr() AS VOID
+        METHOD OpenDBFErr() AS VOID
             VAR dbInfo := DbOpenInfo{ "noFile.DBF", "noFile", 1, FALSE, FALSE }
             //
             VAR myDBF := DBF{}
@@ -38,9 +38,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             //
             myDBF:Close()
             RETURN
-        
+            
         [Fact, Trait("Dbf", "Close")];
-            METHOD CloseDBF() AS VOID
+        METHOD CloseDBF() AS VOID
             // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
             VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
             //
@@ -50,9 +50,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 Assert.Equal( TRUE, myDBF:Close() )
             ENDIF
             RETURN
-        
+            
         [Fact, Trait("Dbf", "Fields")];
-            METHOD CheckFields() AS VOID
+        METHOD CheckFields() AS VOID
             VAR fields := <STRING>{ "CUSTNUM", "FIRSTNAME", "LASTNAME","ADDRESS","CITY","STATE","ZIP", "PHONE", "FAX" }
             VAR types :=  <STRING>{ "N", "C", "C","C","C","C","C", "C", "C" }
             // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
@@ -71,9 +71,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 myDBF:Close()
             ENDIF
             RETURN
-        
+            
         [Fact, Trait("Dbf", "Fields")];
-            METHOD CheckFieldInfo() AS VOID
+        METHOD CheckFieldInfo() AS VOID
             VAR fieldDefs := "CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
             VAR fields := fieldDefs:Split( ';' )
             //
@@ -97,6 +97,25 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 myDBF:Close()
             ENDIF
             RETURN
-        
+            
+        [Fact, Trait("Dbf", "Fields")];
+        METHOD CheckFieldValue() AS VOID
+            VAR values := <OBJECT>{ 2, "Robert", "Evans","732 Johnson Street","New York","NY","11501", "(212)764-1246", "(212)764-1877" }
+            //
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                FOR VAR i := 1 TO myDBF:FIELDCount
+                    // 
+                    LOCAL oData AS OBJECT
+                    oData := myDBF:GetValue( i )
+                    Assert.Equal( values[i], oData )
+                NEXT
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
     END CLASS
 END NAMESPACE // XSharp.RDD.Tests

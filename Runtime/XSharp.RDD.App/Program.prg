@@ -4,13 +4,14 @@ USING System.Linq
 USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD.App
-    
+
     FUNCTION Start() AS VOID
         VAR myTest := TestDBF{}
         //
         myTest:OpenDBF()
         myTest:OpenDBFShowFields()
         myTest:CheckFieldInfo()
+        myTest:WriteDataValue()
         //
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")
@@ -21,11 +22,11 @@ BEGIN NAMESPACE XSharp.RDD.App
         STATIC METHOD Equal( a AS OBJECT, b AS OBJECT ) AS VOID
             RETURN
             END CLASS
-    
+            
     CLASS TestDBF
-        
-        
-        
+    
+    
+    
         METHOD OpenDBF() AS VOID
             // CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
             VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
@@ -80,6 +81,24 @@ BEGIN NAMESPACE XSharp.RDD.App
                     Console.WriteLine( fieldInfo[DBS_LEN]+ " / " + myDBF:FieldInfo( i, DBS_LEN, NIL ) )
                     Console.WriteLine( fieldInfo[DBS_DEC]+ " / " + myDBF:FieldInfo( i, DBS_DEC, NIL ) )
                     Console.WriteLine( fieldInfo[DBS_NAME]+ " / " + myDBF:FieldInfo( i, DBS_ALIAS, NIL ) )
+                NEXT
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
+            
+        METHOD WriteDataValue() AS VOID
+            //
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                FOR VAR i := 1 TO myDBF:FIELDCount
+                    // 
+                    LOCAL oData AS OBJECT
+                    oData := myDBF:GetValue( i )
+                    Console.WriteLine( myDBF:FieldInfo( i, DBS_NAME, NIL ) + " == " + oData:ToString() )
                 NEXT
                 //
                 myDBF:Close()

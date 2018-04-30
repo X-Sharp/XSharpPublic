@@ -518,7 +518,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_intValue > rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_intValue > rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.Int64
@@ -528,7 +528,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_i64Value > rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_i64Value > rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.Float
@@ -538,7 +538,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_r8Value > rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_r8Value > (real8) rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.Decimal
@@ -548,7 +548,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_decimalValue > (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue >  rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.String
@@ -581,7 +581,7 @@ begin namespace XSharp
                 otherwise
                     nop
             end switch
-            throw BinaryError(">", "Incompatible Arguments", false, lhs, rhs)
+            throw BinaryError(">", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
             static operator >=(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
@@ -592,7 +592,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_intValue >= rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_intValue >= rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 case UsualType.Int64
                     switch rhs:_usualType
@@ -601,7 +601,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_i64Value >= rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_i64Value >= rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 case UsualType.Float
                     switch rhs:_usualType
@@ -610,7 +610,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_r8Value >= rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_r8Value >= (real8) rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.Decimal
@@ -620,7 +620,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_decimalValue >= (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue >=  rhs:_decimalValue
                         otherwise
-                            throw BinaryError(">=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.String
@@ -651,9 +651,9 @@ begin namespace XSharp
                             nop
                     end switch
                 otherwise
-                    throw BinaryError(">=", "Incompatible Arguments", true, lhs, rhs)
+                    throw BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError(">=", "Incompatible Arguments", false, lhs, rhs)
+            throw BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
             static operator <(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
@@ -664,7 +664,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_intValue < rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_intValue < rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 case UsualType.Int64
                     switch rhs:_usualType
@@ -673,7 +673,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_i64Value < rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_i64Value < rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 case UsualType.Float
                     switch rhs:_usualType
@@ -682,7 +682,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_r8Value < rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_r8Value < (real8) rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.Decimal
@@ -692,7 +692,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_decimalValue < (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue <  rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.String
@@ -723,9 +723,9 @@ begin namespace XSharp
                             nop
                     end switch
                 otherwise
-                    throw BinaryError("<", "Incompatible Arguments", true, lhs, rhs)
+                    throw BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("<", "Incompatible Arguments", false, lhs, rhs)
+            throw BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
             static operator <=(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
@@ -736,7 +736,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_intValue <= rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_intValue <= rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 case UsualType.Int64
                     switch rhs:_usualType
@@ -745,7 +745,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_i64Value <= rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_i64Value <= rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 case UsualType.Float
                     switch rhs:_usualType
@@ -754,7 +754,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_r8Value <= rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_r8Value <= (real8) rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.Decimal
@@ -764,7 +764,7 @@ begin namespace XSharp
                         case UsualType.Float		; return lhs:_decimalValue <= (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue <=  rhs:_decimalValue
                         otherwise
-                            throw BinaryError("<=", "Argument not numeric", false, lhs, rhs)
+                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 case UsualType.String
@@ -795,9 +795,9 @@ begin namespace XSharp
                             nop
                     end switch
                 otherwise
-                    throw BinaryError("<=", "Incompatible Arguments", true, lhs, rhs)
+                    throw BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("<=", "Incompatible Arguments", false, lhs, rhs)
+            throw BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
         #endregion
         
         #region Operators for Equality
@@ -827,7 +827,7 @@ begin namespace XSharp
                 return ! lhs:UsualEquals(rhs, "!=")
             endif
             
-            method UsualEquals( rhs as __Usual, operator as string) as logic
+            method UsualEquals( rhs as __Usual, op as string) as logic
 			if rhs:IsNil
 				return self:IsNil
 			endif
@@ -947,10 +947,10 @@ begin namespace XSharp
                             nop
                     end switch
                 otherwise
-                    throw BinaryError(operator, "Arguments Incompatible", true, self, rhs)
+                    throw BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, self, rhs)
                 
             end switch
-            throw BinaryError(operator, "Arguments Incompatible", false, self, rhs)
+            throw BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, self, rhs)
             
         #endregion
         
@@ -1055,7 +1055,7 @@ begin namespace XSharp
                     switch rhs:_usualType
                         case UsualType.String		; return lhs:_stringValue+ rhs:_stringValue
                         otherwise
-                            throw BinaryError("+", "Argument Not String", false, lhs, rhs)
+                            throw BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), false, lhs, rhs)
                     end switch
                 case UsualType.Date
                     switch rhs:_usualType
@@ -1063,13 +1063,13 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_dateValue + rhs:_i64Value
                         case UsualType.Float		; return lhs:_dateValue + rhs:_r8Value
                         otherwise
-                            throw BinaryError("+", "Argument Not Numeric", false, lhs, rhs)
+                            throw BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
                     end switch
                 
                 otherwise
-                    throw BinaryError("+", "Invalid Arguments", true, lhs, rhs)
+                    throw BinaryError("+", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("+", "Argument Not Numeric", false, lhs, rhs)
+            throw BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
             static operator -(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
@@ -1133,9 +1133,9 @@ begin namespace XSharp
                     end switch
                 
                 otherwise
-                    throw BinaryError("-", "Invalid Arguments", true, lhs, rhs)
+                    throw BinaryError("-", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("-", "Argument Not Numeric", false, lhs, rhs)
+            throw BinaryError("-", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             static operator /(lhs as __Usual, rhs as __Usual) as __Usual
             
             switch lhs:_usualType
@@ -1230,9 +1230,9 @@ begin namespace XSharp
                     end switch
                 
                 otherwise
-                    throw BinaryError("/", "Invalid Arguments", true, lhs, rhs)
+                    throw BinaryError("/", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("/", "Argument Not Numeric", false, lhs, rhs)
+            throw BinaryError("/", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
             static operator %(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
@@ -1274,9 +1274,9 @@ begin namespace XSharp
                 
                 
                 otherwise
-                    throw BinaryError("%", "Invalid Arguments", true, lhs, rhs)
+                    throw BinaryError("%", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("%", "Argument Not Numeric", false, lhs, rhs)
+            throw BinaryError("%", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
             static operator *(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
@@ -1317,9 +1317,9 @@ begin namespace XSharp
                     end switch
                 
                 otherwise
-                    throw BinaryError("*", "Invalid Arguments", true, lhs, rhs)
+                    throw BinaryError("*", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
-            throw BinaryError("*", "Argument Not Numeric", false, lhs, rhs)
+            throw BinaryError("*", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
             static operator >>(lhs as __Usual, rhs as int) as __Usual
             // Right shift
@@ -1327,7 +1327,7 @@ begin namespace XSharp
                 case UsualType.Long	; return lhs:_intValue >> rhs
                 case UsualType.Int64	; return lhs:_i64Value >> rhs
                 otherwise				
-                    throw BinaryError(">>", "Argument not Integer", true, lhs, rhs)
+                    throw BinaryError(">>", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
             end switch
             
             static operator <<(lhs as __Usual, rhs as long) as __Usual
@@ -1336,7 +1336,7 @@ begin namespace XSharp
                 case UsualType.Long	; return lhs:_intValue << rhs
                 case UsualType.Int64	; return lhs:_i64Value << rhs
                 otherwise
-                    throw BinaryError("<<", "Argument not Integer", true, lhs, rhs)
+                    throw BinaryError("<<", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
             end switch
             
             
@@ -1356,9 +1356,9 @@ begin namespace XSharp
                         otherwise					; nop
                     end switch
                 otherwise
-                    throw BinaryError("&", "Argument not Integer", true, lhs, rhs)
+                    throw BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
             end switch
-            throw BinaryError("&", "Argument not Integer", false, lhs, rhs)
+            throw BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), false, lhs, rhs)
             
             static operator |(lhs as __Usual, rhs as __Usual) as __Usual
             // Bitwise or
@@ -1376,9 +1376,9 @@ begin namespace XSharp
                         otherwise					; nop
                     end switch
                 otherwise
-                    throw BinaryError("|", "Argument not Integer", true, lhs, rhs)
+                    throw BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
             end switch
-            throw BinaryError("|", "Argument not Integer", false, lhs, rhs)
+            throw BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), false, lhs, rhs)
         #endregion
         
         #region Implicit From Usual to Other Type
@@ -1937,18 +1937,18 @@ begin namespace XSharp
             switch self:_usualType
                 case UsualType.Array		; return "A"
                 case UsualType.CodeBlock	; return "B"
-                case UsualType.Date		; return "D"
-                case UsualType.DateTime	; return "D"
-                case UsualType.DECIMAL	; return "N"
+                case UsualType.Date			; return "D"
+                case UsualType.DateTime		; return "D"
+                case UsualType.DECIMAL		; return "N"
                 case UsualType.FLOAT		; return "N"
                 case UsualType.Int64		; return "N"
-                case UsualType.Long		; return "N"
+                case UsualType.Long			; return "N"
                 case UsualType.Logic		; return "L"
-                case UsualType.PTR		; return "-"
+                case UsualType.PTR			; return "-"
                 case UsualType.String		; return "C"
 				case UsualType.Object		; return "O"
                 case UsualType.Symbol		; return "#"
-                case UsualType.Void		; return "U"
+                case UsualType.Void			; return "U"
                 otherwise
 					Debug.Fail( "Unhandled data type in Usual:Valtype" )
             end switch
@@ -1962,7 +1962,7 @@ begin namespace XSharp
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+toTypeString
 				//err:ArgType		:= toTypeString
-				err:Description := i"Conversion Error from USUAL ({u:TypeString()})  to {toTypeString}"  
+				err:Description := VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)  
 				err:Arg			:= u:ToString()
 				return err
 
@@ -1974,7 +1974,7 @@ begin namespace XSharp
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+TypeString((DWORD) typeNum)
 				err:ArgType		:= typeNum
-				err:Description := "Conversion Error from USUAL (" +TypeString(UsualType(u))+") to ("+typeString(DWORD(typeNum))+")" 
+				err:Description := VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), typeString(DWORD(typeNum)))  
 				err:Arg			:= u:ToString()
 				return err
             
@@ -1986,29 +1986,29 @@ begin namespace XSharp
 				err:ArgNum		 := 1
 				err:FuncSym		 := "USUAL => "+toTypeString
 				//err:ArgType		 := toTypeString
-				err:Description  := i"Overflow error converting from USUAL({u:TypeString()})  to {toTypeString}"  
+				err:Description  := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)  
 				err:Arg			 := u:ToString()
 				return err
             
             static method BinaryError( operator as string, message as string, left as logic, lhs as __Usual, rhs as __Usual) as Error
-            var err := Error{ArgumentException{}}
-            err:GenCode		 := GenCode.EG_ARG
-            err:Severity	 := Severity.ES_Error
-            err:ArgNum		 := iif (left, 1, 2)
-            err:FuncSym		 := operator
-            err:Description  := message
-            err:Arg			 := iif(left, lhs:ToString(), rhs:ToString())
-            return err
+				var err := Error{ArgumentException{}}
+				err:GenCode		 := GenCode.EG_ARG
+				err:Severity	 := Severity.ES_Error
+				err:ArgNum		 := iif (left, 1, 2)
+				err:FuncSym		 := operator
+				err:Description  := message
+				err:Arg			 := iif(left, lhs:ToString(), rhs:ToString())
+				return err
             
             static method UnaryError( operator as string, u as __Usual) as Error
-            var err := Error{ArgumentException{}}
-            err:GenCode		 := GenCode.EG_ARG
-            err:Severity	 := Severity.ES_Error
-            err:ArgNum		 := 1
-            err:FuncSym		 := operator
-            err:Description  := "Invalid Argument Type"
-            err:Arg			 := u:ToString()
-            return err
+				var err := Error{ArgumentException{}}
+				err:GenCode		 := GenCode.EG_ARG
+				err:Severity	 := Severity.ES_Error
+				err:ArgNum		 := 1
+				err:FuncSym		 := operator
+				err:Description  := __CavoStr(VOErrors.INVALIDARGTYPE)
+				err:Arg			 := u:ToString()
+				return err
             
             
         #endregion
@@ -2025,7 +2025,7 @@ begin namespace XSharp
 			if lhs:IsString 
 				return __StringEquals( lhs:_stringValue, rhs)
 			else
-				throw BinaryError("=", "Arguments incompatible", true, lhs, rhs)
+				throw BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
 			endif
 
 		static method __InexactNotEquals( lhs as usual, rhs as usual ) as logic
@@ -2042,7 +2042,7 @@ begin namespace XSharp
 			if lhs:IsString 
 				return __StringNotEquals( lhs:_stringValue, rhs)
 			else
-				throw BinaryError("<>", "Arguments incompatible", true, lhs, rhs)
+				throw BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
 			endif
 
 		#endregion

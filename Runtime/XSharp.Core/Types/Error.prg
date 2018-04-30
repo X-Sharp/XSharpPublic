@@ -87,7 +87,7 @@ begin namespace XSharp
 			e:FuncSym     := cFuncName
 			e:Arg         := cArgName
 			e:ArgNum      := iArgNum
-			//e:Description := SR.GetString( SR.ArgIsNULL )
+			e:Description := Messages.GetString( __CavoStr(VOErrors.ARGISNULL))
 			return e
 		STATIC METHOD WrapRawException( ex AS Exception ) AS Error
 			LOCAL e AS Error

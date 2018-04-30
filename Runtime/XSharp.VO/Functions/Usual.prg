@@ -354,4 +354,5 @@ function DataTypeError(cFunction as string, cVarName as string, nVar as long) as
 	e:ArgNum := nVar
 	e:Arg	 := cVarName
 	e:Source := cFunction
+	e:Description := ErrString(GenCode.EG_DATATYPE)
 return e

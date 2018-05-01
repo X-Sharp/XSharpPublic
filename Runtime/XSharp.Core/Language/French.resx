@@ -384,9 +384,6 @@
   <data name="ERDD_INVALIDARG" xml:space="preserve">
     <value>Argument incorrect transmis à une fonction info</value>
   </data>
-  <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
-    <value>French, ASCII</value>
-  </data>
   <data name="RT_MSG_MONTH1" xml:space="preserve">
     <value>Janvier</value>
   </data>

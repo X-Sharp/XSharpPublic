@@ -384,12 +384,6 @@
   <data name="ERDD_INVALIDARG" xml:space="preserve">
     <value>Invalid argument passed to an info function</value>
   </data>
-  <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
-    <value>Generic, ASCII </value>
-  </data>
-  <data name="CA_NAT_INVALID_ARG" xml:space="preserve">
-    <value>Invalid argument</value>
-  </data>
   <data name="__WCSLIBRARYNAME" xml:space="preserve">
     <value>GUI Classes</value>
   </data>
@@ -1784,126 +1778,6 @@
   </data>
   <data name="IDS_CREATEFAILED" xml:space="preserve">
     <value>Object creation failed</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_ASSERTFAILED" xml:space="preserve">
-    <value>%V1s %s : assert failed</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_ASSERTIONFAILED" xml:space="preserve">
-    <value>Assertion failed</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_ATTEMPTREPORTS" xml:space="preserve">
-    <value>Should pending reports be attempted?</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_CAPTIONINVALID" xml:space="preserve">
-    <value>sCaption invalid</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_CHANGINGVIEW" xml:space="preserve">
-    <value>Changing view will discard your changes.</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_CHGDISCARD" xml:space="preserve">
-    <value>Your changes will be discarded.</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_CLOSINGCHANGES" xml:space="preserve">
-    <value>Closing will discard your changes.</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_CLOSINGINVCHANGES" xml:space="preserve">
-    <value>Closing will discard invalid changes.</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_CVIDINVALID" xml:space="preserve">
-    <value>oCvID invalid</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DATAWINDOW" xml:space="preserve">
-    <value>%V1s Data Window: %s</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DBROWSEROBJEDT" xml:space="preserve">
-    <value>( Data Browser Object)</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DELETEDRECORD" xml:space="preserve">
-    <value>&gt;&gt;&gt; DELETED RECORD &lt;&lt;&lt;</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DELETEFAILED" xml:space="preserve">
-    <value>Delete Failed</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DELETEFAILEDMSG" xml:space="preserve">
-    <value>Delete record failed - unknown reason</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DWUNTITLED" xml:space="preserve">
-    <value>DataWindow: &lt;untitled&gt;</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_ERROR" xml:space="preserve">
-    <value>Error!</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INTERFACEERROR" xml:space="preserve">
-    <value>General CommonView Interface error</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INVALIDARG" xml:space="preserve">
-    <value>%V1s Invalid arguments to Interface method in %s</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INVALIDCAT" xml:space="preserve">
-    <value>%V1s Invalid CAT value - Has Init() been called in %s ?</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INVALIDRPC" xml:space="preserve">
-    <value>%V1s Invalid RPC Call in %s</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INVALIDVIEW" xml:space="preserve">
-    <value>Invalid value for sViewType</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INVARGUMENT" xml:space="preserve">
-    <value>Invalid Argument</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INVMETHODARG" xml:space="preserve">
-    <value>Invalid method argument</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_NOPROMPT" xml:space="preserve">
-    <value>No prompt</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_NOTFOUND" xml:space="preserve">
-    <value>%V1s %s not found</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_OWNERINVALID" xml:space="preserve">
-    <value>oOwner invalid</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_PARMINVALID" xml:space="preserve">
-    <value>uParm invalid</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_SHOULDAPP" xml:space="preserve">
-    <value>Should this application</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_TYPEERROR" xml:space="preserve">
-    <value>Type error in argument.</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_UNKNOWN" xml:space="preserve">
-    <value>Unknown:</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_UNKNOWNPARM" xml:space="preserve">
-    <value>Unknown parameter</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_UNKNOWNSTATUS" xml:space="preserve">
-    <value>&lt;&lt;&lt; Unknown status &gt;&gt;&gt;</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_UNKNOWNSTATUSMSG" xml:space="preserve">
-    <value>Unknown Status message</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_WARNING" xml:space="preserve">
-    <value>Warning!</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_WARNING2" xml:space="preserve">
-    <value>Warning</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_WARNING3" xml:space="preserve">
-    <value>Warning...</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_YOUHAVECLOSED" xml:space="preserve">
-    <value>%V1s You have closed %s</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_ERROR2" xml:space="preserve">
-    <value>Error :</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_INFO" xml:space="preserve">
-    <value>Information!</value>
-  </data>
-  <data name="__CAVOSTR_GUICLASS_DSNOTOPEN" xml:space="preserve">
-    <value>%V1s%V2s DataServer %s ( %s ) not open</value>
   </data>
   <data name="__CAVOSTR_REPORTCLASS_CLOSEDREPORT" xml:space="preserve">
     <value>%V1s%V2s %s has closed report %s</value>

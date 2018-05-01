@@ -9,7 +9,9 @@ using System.Collections
 using System.Text
 using System.Text.RegularExpressions
 using System.IO
-using System.Diagnostics
+USING System.Diagnostics
+USING System.Linq
+
 //
 //function Start() as void
 //local cFileName as string
@@ -40,9 +42,10 @@ begin namespace XSharpModel
 		private aLinesWithSpecialStuff as List<LineObject> 
 		private aLines    as List<LineObject> 
 		private aSourceLines    as IList<String>
-		private aTypeStack as Stack<EntityObject>
+		PRIVATE aTypeStack AS Stack<EntityObject>
 		private oGlobalObject as EntityObject
-		private _nLength  as int
+		PRIVATE _nLength  AS INT
+        PRIVATE iClassOrStruct AS INT
 				
 		constructor()
 			self:aEntities				:= List<EntityObject>{}
@@ -50,13 +53,14 @@ begin namespace XSharpModel
 			self:aLinesWithSpecialStuff := List<LineObject>{}
 			self:aLines					:= List<LineObject>{}
 
-			self:aTypeStack					:= Stack<EntityObject>{}
+			SELF:aTypeStack					:= Stack<EntityObject>{}
 			self:oGlobalObject				:= EntityObject{EntityType._Class}
 			self:oGlobalObject:cName		:= XELement.GlobalName
 			self:oGlobalObject:lStatic		:= true
 			self:oGlobalObject:lPartial		:= true
 			self:oGlobalObject:nStartLine	:= 1
-			self:oGlobalObject:nCol			:= 1
+			SELF:oGlobalObject:nCol			:= 1
+            SELF:iClassOrStruct             := 0
 		
 		
 		static constructor()
@@ -129,7 +133,29 @@ begin namespace XSharpModel
 			if oLast != NULL_OBJECT
 				oLast:oNext := oInfo
 			ENDIF
-			return
+			RETURN
+
+        METHOD getParentType() AS EntityObject
+            LOCAL oParent := NULL AS EntityObject
+            IF ( aTypeStack:Count > 0 )
+                // Per default, it is the last type in Stack
+                oParent := aTypeStack:Peek()
+                // but we may found a DELEGATE, a VOSTRUCT, ... that we MUST skip (and so, we may support Nested Types ?)
+                IF ( !oParent:eType:SupportNestedType() )
+                    // Walk down the stack to the right type
+                    VAR nPos := 1
+                    WHILE ( nPos < aTypeStack:Count )
+                        oParent := aTypeStack:ElementAt<EntityObject>( nPos )
+                        IF ( !oParent:eType:SupportNestedType() )
+                            oParent := NULL
+                        ELSE
+                            EXIT
+                        ENDIF
+                        nPos++
+                    ENDDO
+                ENDIF
+            ENDIF
+            return oParent
 			
 
 
@@ -148,7 +174,7 @@ begin namespace XSharpModel
 			local lEscapedWord as logic
 			local lEscapedChar as logic
 			local lEscapedString as logic
-			local lInEnum as logic
+			LOCAL lInEnum AS LOGIC
 			local lFindingType as logic
 			local lFindingName as logic
 			local sFoundType as StringBuilder
@@ -762,7 +788,7 @@ begin namespace XSharpModel
 							oStatementLine:cArgument := cUpperWord
 							state:lIgnore := true
 						case lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. hEnt:ContainsKey(cUpperWord)
-							lInEnum := false
+							lInEnum := FALSE
 							state:lField := false
 							state:lLocal := false
 							state:lEvent := false
@@ -774,12 +800,15 @@ begin namespace XSharpModel
 							if eStep == ParseStep.AfterEnd .and. state:lEntityIsType
 								_SetLineType(oStatementLine, LineType.EndClass)
 								if aTypeStack:Count > 0
-									aTypeStack:Pop()
+									VAR oPrevInfo := aTypeStack:Pop()
+                                    IF ( oPrevInfo:eType:SupportNestedType() )
+                                        iClassOrStruct --
+                                    ENDIF
 								endif
 								state:lEntityFound := false
 								state:lEntityIsType := false
 								state:lIgnore := true
-								lInEnum := false
+								lInEnum := FALSE
 								cShortClassName := ""
 								cTypedClassName := ""
 								cClassNameSpace := ""
@@ -790,17 +819,27 @@ begin namespace XSharpModel
 								state:lEntityFound := false
 								state:lEntityIsType := false
 								state:lIgnore := true
-								lInEnum := false
+								lInEnum := FALSE
 								lInProperty := false
 							else
 								lInEnum := cUpperWord == "ENUM"
 								oInfo := EntityObject{GetEntityType(cUpperWord)}
-								if oInfo:eType:IsType()
+								IF oInfo:eType:IsType()
 									aTypeStack:Push(oInfo)
+                                    IF ( iClassOrStruct > 0 )
+                                        // We are already in Class Or Struct
+                                        // So, this is a nested Type
+                                        oInfo:oParent := getParentType()
+                                    ENDIF
+                                    IF oInfo:eType:SupportNestedType()
+                                        iClassOrStruct ++
+                                    ENDIF
 								elseif oInfo:eType:IsClassMember()
-									if aTypeStack:Count > 0
-										var oParent := aTypeStack:Peek()
-										oParent:AddChild(oInfo)
+								    IF aTypeStack:Count > 0
+                                        VAR oParent := getParentType()
+                                        if ( oParent != null )
+										    oParent:AddChild(oInfo)
+                                        endif
 									endif
 								elseif oInfo:eType:IsGlobalMember()
 									self:oGlobalObject:AddChild(oInfo)
@@ -1169,9 +1208,11 @@ begin namespace XSharpModel
 								oInfo:eType := EntityType._Event
 							else
 								oInfo:eType := EntityType._Field
-								if aTypeStack:Count > 0
-									var oParent := aTypeStack:Peek()
-									oParent:AddChild(oInfo)
+								IF aTypeStack:Count > 0
+                                    VAR oParent := getParentType()
+                                    if ( oParent != null )
+										oParent:AddChild(oInfo)
+                                    ENDIF
 								endif
 							end if
 							oInfo:lStatic := lStatic
@@ -1333,7 +1374,16 @@ begin namespace XSharpModel
 				case EntityType._VOStruct
 					return true
 			end switch
-			return false
+			RETURN FALSE
+
+		static method SupportNestedType(self e as ENtityType) as logic
+			switch e
+				case EntityType._Class
+				case EntityType._Structure
+					return true
+			end switch
+			RETURN FALSE
+
 		static method IsGlobalMember(self e as ENtityType) as logic
 			switch e
 				case EntityType._Function
@@ -1344,7 +1394,8 @@ begin namespace XSharpModel
 				case EntityType._Structure
 					return true
 			end switch
-			return false
+			RETURN FALSE
+
 		static method IsClassMember(self e as ENtityType) as logic
 			switch e
 				case EntityType._Field
@@ -1707,7 +1758,10 @@ begin namespace XSharpModel
 			lLinqSelect := false
 			lDimDeclaration := false
 			return
-	end structure
+	END STRUCTURE
+
+
+
 	
 end namespace
 

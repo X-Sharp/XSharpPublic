@@ -555,31 +555,31 @@ begin namespace XSharp
                     if rhs:_usualType == UsualType.String
                         return lhs:_stringValue> rhs:_stringValue
                     else
-                        nop
+                        nop // error below
                     endif
                 
                 case UsualType.Symbol
                     if rhs:_usualType == UsualType.Symbol
                         return lhs:_symValue > rhs:_symValue
                     else
-                        nop
+                        nop // error below
                     endif
                 case UsualType.Date
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue > rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateValue > (Date) rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
                         case UsualType.DateTime	; return lhs:_dateTimeValue > rhs:_dateTimeValue
                         case UsualType.Date		; return lhs:_dateTimeValue > (DateTime) rhs:_dateValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 otherwise
-                    nop
+                    nop // error below
             end switch
             throw BinaryError(">", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
@@ -627,28 +627,28 @@ begin namespace XSharp
                     if rhs:_usualType == UsualType.String
                         return lhs:_stringValue>= rhs:_stringValue
                     else
-                        nop
+                        nop // error below
                     endif
                 
                 case UsualType.Symbol
                     if rhs:_usualType == UsualType.Symbol
                         return lhs:_symValue >= rhs:_symValue
                     else
-                        nop
+                        nop // error below
                     endif
                 case UsualType.Date
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue		>= rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue >= rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue		>=  rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue >=  rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 otherwise
                     throw BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
@@ -699,28 +699,28 @@ begin namespace XSharp
                     if rhs:_usualType == UsualType.String
                         return lhs:_stringValue< rhs:_stringValue
                     else
-                        nop
+                        nop // error below
                     endif
                 
                 case UsualType.Symbol
                     if rhs:_usualType == UsualType.Symbol
                         return lhs:_symValue < rhs:_symValue
                     else
-                        nop
+                        nop // error below
                     endif
                 case UsualType.Date
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue	< rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateValue < (Date) rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue		<  rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue <  rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 otherwise
                     throw BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
@@ -771,28 +771,28 @@ begin namespace XSharp
                     if rhs:_usualType == UsualType.String
                         return  lhs:_stringValue<= rhs:_stringValue
                     else
-                        nop
+                        nop // error below
                     endif
                 
                 case UsualType.Symbol
                     if rhs:_usualType == UsualType.Symbol
                         return lhs:_symValue <= rhs:_symValue
                     else
-                        nop
+                        nop // error below
                     endif
                 case UsualType.Date
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue	<= rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateValue <= (Date) rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 case UsualType.DateTime
                     switch (rhs:_usualType)
                         case UsualType.Date		; return lhs:_dateValue		<=  rhs:_dateValue
                         case UsualType.DateTime	; return lhs:_dateTimeValue <=  rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 otherwise
                     throw BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
@@ -836,7 +836,7 @@ begin namespace XSharp
                     if rhs:_usualType == UsualType.Object
                         return self:_refData == rhs:_refData
                     else
-                        nop
+                        nop // error below
                     endif
                 
                 case UsualType.Void
@@ -850,7 +850,7 @@ begin namespace XSharp
                         case UsualType.Decimal	; return (System.Decimal) self:_intValue == rhs:_decimalValue	// cast lhs to decimal to avoid overflow 
                         case UsualType.Logic		; return rhs:_logicValue == (self:_intValue <> 0)
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Int64
@@ -861,7 +861,7 @@ begin namespace XSharp
                         case UsualType.Decimal	; return _i64Value == rhs:_decimalValue
                         case UsualType.Logic		; return rhs:_logicValue == (self:_i64Value <> 0)
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Float
@@ -871,7 +871,7 @@ begin namespace XSharp
                         case UsualType.Float		; return self:_r8Value ==  rhs:_r8Value
                         case UsualType.Decimal	; return self:_r8Value ==  (real8) rhs:_decimalValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Decimal
@@ -881,7 +881,7 @@ begin namespace XSharp
                         case UsualType.Float		; return self:_decimalValue == (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return self:_decimalValue == rhs:_decimalValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.LOGIC
@@ -891,7 +891,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return self:_logicValue == (rhs:_i64Value <> 0)
                         case UsualType.Decimal	; return self:_logicValue == (rhs:_decimalValue <> 0)
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.DATE
@@ -899,7 +899,7 @@ begin namespace XSharp
                         case UsualType.DATE		; return self:_dateValue == rhs:_dateValue
                         case UsualType.DateTime	; return self:_dateValue == (Date) rhs:_dateTimeValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.DateTime
@@ -907,7 +907,7 @@ begin namespace XSharp
                         case UsualType.DateTime	; return self:_dateTimeValue == rhs:_dateTimeValue
                         case UsualType.DATE		; return self:_dateTimeValue == (DateTime) rhs:_dateValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.STRING
@@ -915,28 +915,28 @@ begin namespace XSharp
                         case UsualType.STRING		; return self:_stringValue== rhs:_stringValue
                         case UsualType.Symbol		; return self:_stringValue == rhs:_symValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.ARRAY
                     switch rhs:_usualType
                         case UsualType.ARRAY		; return self:_refData == rhs:_refData
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.CodeBlock
                     switch rhs:_usualType
                         case UsualType.CodeBlock	; return self:_refData == rhs:_refData
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Ptr
                     switch rhs:_usualType
                         case UsualType.Ptr		; return self:_ptrValue == rhs:_ptrValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Symbol
@@ -944,7 +944,7 @@ begin namespace XSharp
                         case UsualType.Symbol		; return self:_symValue == rhs:_symValue
                         case UsualType.String		; return self:_symValue == rhs:_stringValue
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 otherwise
                     throw BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, self, rhs)
@@ -1021,7 +1021,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_intValue + rhs:_i64Value
                         case UsualType.Float		; return lhs:_intValue + rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_intValue + rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Int64
@@ -1030,7 +1030,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_i64Value + rhs:_i64Value
                         case UsualType.Float		; return lhs:_i64Value + rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_i64Value + rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Float
@@ -1039,7 +1039,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return Float{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
                         case UsualType.Float		; return Float{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
                         case UsualType.Decimal	; return Float{lhs:_r8Value + (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Decimal
@@ -1048,7 +1048,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_decimalValue + rhs:_i64Value
                         case UsualType.Float		; return lhs:_decimalValue + (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue + rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.String
@@ -1060,10 +1060,20 @@ begin namespace XSharp
                 case UsualType.Date
                     switch rhs:_usualType
                         case UsualType.Long		; return lhs:_dateValue + rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_dateValue + rhs:_i64Value
-                        case UsualType.Float		; return lhs:_dateValue + rhs:_r8Value
+                        case UsualType.Int64	; return lhs:_dateValue + rhs:_i64Value
+                        CASE UsualType.Float	; RETURN lhs:_dateValue + rhs:_r8Value
+						// Note We can't add dates, but we can subtract dates
                         otherwise
-                            throw BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+                            throw BinaryError("+", __CavoStr(VOErrors.DATE_ADD), false, lhs, rhs)
+                    end switch
+                case UsualType.DateTime
+                    switch rhs:_usualType
+                        case UsualType.Long		; return lhs:_dateTimeValue:Add( TimeSpan.FromDays(rhs:_intValue ))
+                        case UsualType.Int64	; return lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_i64Value))
+                        CASE UsualType.Float	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_r8Value))
+						// Note We can't add dates, but we can subtract dates
+                        otherwise
+                            throw BinaryError("+", __CavoStr(VOErrors.DATE_ADD), false, lhs, rhs)
                     end switch
                 
                 otherwise
@@ -1079,7 +1089,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_intValue - rhs:_i64Value
                         case UsualType.Float		; return lhs:_intValue - rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_intValue - rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 case UsualType.Int64
                     switch rhs:_usualType
@@ -1087,7 +1097,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_i64Value - rhs:_i64Value
                         case UsualType.Float		; return lhs:_i64Value - rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_i64Value - rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 case UsualType.Float
                     switch rhs:_usualType
@@ -1095,7 +1105,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return Float{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
                         case UsualType.Float		; return Float{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
                         case UsualType.Decimal	; return Float{lhs:_r8Value - (real8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Decimal
@@ -1104,32 +1114,32 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_decimalValue - rhs:_i64Value
                         case UsualType.Float		; return lhs:_decimalValue - (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue - rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.String
                     switch rhs:_usualType
                         case UsualType.String		; return CompilerServices.__StringSubtract(lhs, rhs)
-                        otherwise					; throw BinaryError("-", "Argument Not String", false, lhs, rhs)
+                        otherwise					; throw BinaryError("-", __CavoStr(VOErrors.ARGNOTSTRING), false, lhs, rhs)
                     end switch
                 case UsualType.Date
                     switch rhs:_usualType
                         case UsualType.Long		; return lhs:_dateValue - rhs:_intValue 
                         case UsualType.Int64		; return lhs:_dateValue - rhs:_i64Value
                         case UsualType.Float		; return lhs:_dateValue - rhs:_r8Value
-                        case UsualType.Date		; return lhs:_dateValue - rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateValue - (Date) rhs:_dateTimeValue
-                        otherwise					; nop
+                        case UsualType.Date			; return lhs:_dateValue - rhs:_dateValue
+                        case UsualType.DateTime		; return lhs:_dateValue - (Date) rhs:_dateTimeValue
+                        otherwise					; throw BinaryError("+", __CavoStr(VOErrors.DATE_SUBTRACT), false, lhs, rhs)
                     end switch
                 
                 case UsualType.DateTime
                     switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_dateTimeValue:Subtract(TimeSpan{rhs:_intValue,0,0,0})
+                        case UsualType.Long			; return lhs:_dateTimeValue:Subtract(TimeSpan{rhs:_intValue,0,0,0})
                         case UsualType.Int64		; return lhs:_dateTimeValue:Subtract( TimeSpan{(int)rhs:_i64Value,0,0,0})
                         case UsualType.Float		; return lhs:_dateTimeValue:Subtract( TimeSpan{(int)rhs:_r8Value,0,0,0})
-                        case UsualType.Date		; return lhs:_dateTimeValue:Subtract((DateTime) rhs:_dateValue):Days
-                        case UsualType.DateTime	; return lhs:_dateTimeValue:Subtract( rhs:_dateTimeValue):Days
-                        otherwise					; nop
+                        case UsualType.Date			; return lhs:_dateTimeValue:Subtract((DateTime) rhs:_dateValue):Days
+                        case UsualType.DateTime		; return lhs:_dateTimeValue:Subtract( rhs:_dateTimeValue):Days
+                        otherwise					; throw BinaryError("+", __CavoStr(VOErrors.DATE_SUBTRACT), false, lhs, rhs)
                     end switch
                 
                 otherwise
@@ -1173,7 +1183,7 @@ begin namespace XSharp
                                 return lhs:_intValue / rhs:_decimalValue
                             endif
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Int64
@@ -1208,7 +1218,7 @@ begin namespace XSharp
                                 return lhs:_i64Value / rhs:_decimalValue
                             endif
                         otherwise
-                            nop
+                            nop // error below
                     end switch
                 
                 case UsualType.Float
@@ -1217,7 +1227,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return Float{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
                         case UsualType.Float		; return Float{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
                         case UsualType.Decimal	; return Float{lhs:_r8Value / (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Decimal
@@ -1226,7 +1236,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_decimalValue / rhs:_i64Value
                         case UsualType.Float		; return lhs:_decimalValue / (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue / rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 otherwise
@@ -1242,7 +1252,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_intValue % rhs:_i64Value
                         case UsualType.Float		; return Float{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
                         case UsualType.Decimal	; return lhs:_intValue % rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Int64
@@ -1251,7 +1261,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_i64Value % rhs:_i64Value
                         case UsualType.Float		; return Float{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
                         case UsualType.Decimal	; return lhs:_i64Value % rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Float
@@ -1260,7 +1270,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return Float{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
                         case UsualType.Float		; return Float{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
                         case UsualType.Decimal	; return Float{lhs:_r8Value % (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Decimal
@@ -1269,7 +1279,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_decimalValue % rhs:_i64Value
                         case UsualType.Float		; return lhs:_decimalValue % (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue %  rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 
@@ -1286,7 +1296,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_intValue * rhs:_i64Value
                         case UsualType.Float		; return Float{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
                         case UsualType.Decimal	; return lhs:_intValue * rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Int64
@@ -1295,7 +1305,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_i64Value * rhs:_i64Value
                         case UsualType.Float		; return Float{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
                         case UsualType.Decimal	; return lhs:_i64Value * rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Float
@@ -1304,7 +1314,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return Float{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
                         case UsualType.Float		; return Float{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
                         case UsualType.Decimal	; return Float{lhs:_r8Value * (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 case UsualType.Decimal
@@ -1313,7 +1323,7 @@ begin namespace XSharp
                         case UsualType.Int64		; return lhs:_decimalValue * rhs:_i64Value
                         case UsualType.Float		; return lhs:_decimalValue * (System.Decimal) rhs:_r8Value
                         case UsualType.Decimal	; return lhs:_decimalValue *  rhs:_decimalValue
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 
                 otherwise
@@ -1347,13 +1357,13 @@ begin namespace XSharp
                     switch (rhs:_usualType)
                         case UsualType.Long		; return lhs:_intValue & rhs:_intValue
                         case UsualType.Int64		; return (int64) lhs:_intValue & rhs:_i64Value
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 case UsualType.Int64
                     switch (rhs:_usualType)
                         case UsualType.Long		; return lhs:_i64Value & (int64) rhs:_intValue
-                        case UsualType.Int64		; return  lhs:_i64Value & rhs:_i64Value
-                        otherwise					; nop
+                        case UsualType.Int64	; return  lhs:_i64Value & rhs:_i64Value
+                        otherwise					; nop // error below
                     end switch
                 otherwise
                     throw BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
@@ -1367,13 +1377,13 @@ begin namespace XSharp
                     switch (rhs:_usualType)
                         case UsualType.Long		; return lhs:_intValue | rhs:_intValue
                         case UsualType.Int64		; return (int64) lhs:_intValue | rhs:_i64Value
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 case UsualType.Int64
                     switch (rhs:_usualType)
                         case UsualType.Long		; return lhs:_i64Value | (int64) rhs:_intValue
                         case UsualType.Int64		; return  lhs:_i64Value | rhs:_i64Value
-                        otherwise					; nop
+                        otherwise					; nop // error below
                     end switch
                 otherwise
                     throw BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
@@ -1954,60 +1964,58 @@ begin namespace XSharp
             end switch
 			return "?"                        
 
-            static method ConversionError(toTypeString as string, toType as System.Type, u as __Usual) as Error
+            static method ConversionError(toTypeString as string, toType as System.Type, u as Usual) as Error
 				var err			:= Error{InvalidCastException{}}
 				err:GenCode		:= GenCode.EG_DataType
-				err:Severity	:= Severity.ES_Error
 				err:ArgTypeReq	:= toType
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+toTypeString
-				//err:ArgType		:= toTypeString
 				err:Description := VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)  
-				err:Arg			:= u:ToString()
+				err:Arg			:= "USUAL"
+				err:Args        := <OBJECT>{u}
 				return err
 
-            static method ConversionError(typeNum as INT, toType as System.Type, u as __Usual) as Error
-				var err			:= Error{InvalidCastException{}}
+            static method ConversionError(typeNum as DWORD, toType as System.Type, u as Usual) as Error
+				var err			:= Error{ InvalidCastException{} }
 				err:GenCode		:= GenCode.EG_DataType
-				err:Severity	:= Severity.ES_Error
 				err:ArgTypeReq	:= toType
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+TypeString((DWORD) typeNum)
 				err:ArgType		:= typeNum
 				err:Description := VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), typeString(DWORD(typeNum)))  
-				err:Arg			:= u:ToString()
+				err:Arg			:= "USUAL"
+				err:Args        := <OBJECT>{u}
 				return err
             
-            static method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as __Usual) as Error
-				var err := Error{ex}
-				err:GenCode		 := GenCode.EG_DataType
-				err:Severity	 := Severity.ES_Error
+            static method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as Usual) as Error
+				var err			 := Error{ex}
+				err:GenCode		 := GenCode.EG_NUMOVERFLOW
 				err:ArgTypeReq	 := toType
 				err:ArgNum		 := 1
 				err:FuncSym		 := "USUAL => "+toTypeString
-				//err:ArgType		 := toTypeString
 				err:Description  := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)  
-				err:Arg			 := u:ToString()
+				err:Arg			 := "USUAL"
+				err:Args		 := <OBJECT>{u}
 				return err
             
-            static method BinaryError( operator as string, message as string, left as logic, lhs as __Usual, rhs as __Usual) as Error
-				var err := Error{ArgumentException{}}
+            static method BinaryError( cOperator as string, message as string, left as logic, lhs as Usual, rhs as Usual) as Error
+				var err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
-				err:Severity	 := Severity.ES_Error
 				err:ArgNum		 := iif (left, 1, 2)
-				err:FuncSym		 := operator
+				err:FuncSym		 := cOperator
 				err:Description  := message
-				err:Arg			 := iif(left, lhs:ToString(), rhs:ToString())
+				err:Arg			 := IIF(left, "left operand" , "right operand")
+				err:Args         := <OBJECT> {lhs, rhs}
 				return err
             
-            static method UnaryError( operator as string, u as __Usual) as Error
-				var err := Error{ArgumentException{}}
+            static method UnaryError( cOperator as string, u as Usual) as Error
+				var err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
-				err:Severity	 := Severity.ES_Error
 				err:ArgNum		 := 1
-				err:FuncSym		 := operator
+				err:FuncSym		 := cOperator
 				err:Description  := __CavoStr(VOErrors.INVALIDARGTYPE)
-				err:Arg			 := u:ToString()
+				err:Arg			 := "USUAL"
+				err:Args         := <OBJECT> {u}
 				return err
             
             

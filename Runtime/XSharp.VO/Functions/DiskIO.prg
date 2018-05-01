@@ -23,13 +23,6 @@ function ADir(cPath as Usual,aFNAME as Usual,aFSIZE as Usual,aFDATE as Usual,aFT
 
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DefaultDirInit() as void
-	/// THROW NotImplementedException{}
-	return  
 
 /// <summary>
 /// Create an Array of directory and file information.

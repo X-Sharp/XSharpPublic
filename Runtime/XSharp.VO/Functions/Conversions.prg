@@ -373,7 +373,7 @@ function _Str(n ,nLen ,nDec ) as string
 		return ""
 	endif
 	IF ! n:IsNumeric 
-       THROW DataTypeError( __ENTITY__, nameof(n),1)
+       THROW Error.DataTypeError( __ENTITY__, nameof(n),1, n, nLen, nDec)
     ENDIF
 	switch PCount()
 	case 1
@@ -384,7 +384,7 @@ function _Str(n ,nLen ,nDec ) as string
 		endif
 	case 2
 		if ! nLen:IsNumeric
-			THROW DataTypeError( __ENTITY__, nameof(nLen),2)
+			THROW Error.DataTypeError( __ENTITY__, nameof(nLen),2,n, nLen, nDec)
 		endif
 		if n:IsFloat
 			return Str2(n, nLen)
@@ -393,7 +393,7 @@ function _Str(n ,nLen ,nDec ) as string
 		endif
 	case 3
 		if ! nDec:IsNumeric
-			THROW DataTypeError( __ENTITY__, nameof(nDec),3)
+			THROW Error.DataTypeError( __ENTITY__, nameof(nDec),3,n, nLen, nDec)
 		endif
 		if n:IsFloat
 			return Str3(n, nLen, nDec)
@@ -418,7 +418,7 @@ internal function _PadZero(cValue as STRING) AS STRING
 	/// </returns>
 function StrZero(n as usual,iLen as int,iDec as int) as string
 	IF ! ( n:IsNumeric )
-      BREAK DataTypeError( __ENTITY__, nameof(n),1)
+      BREAK Error.DataTypeError( __ENTITY__, nameof(n),1,n, iLen, iDec)
     ENDIF
 	local cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) as string
 	return _PadZero(cValue)
@@ -432,7 +432,7 @@ function StrZero(n as usual,iLen as int,iDec as int) as string
 /// </returns>
 function StrZero(n as usual,iLen as int) as string
 	IF ! ( n:IsNumeric )
-      break DataTypeError( __ENTITY__, nameof(n),1)
+      break Error.DataTypeError( __ENTITY__, nameof(n),1,n, iLen)
 	endif
 	local cValue := Str2(n, (DWORD) iLen) as string
 	return _padZero(cValue)
@@ -446,7 +446,7 @@ function StrZero(n as usual,iLen as int) as string
 /// </returns>
 function StrZero(n as usual) as string
 	IF ! ( n:IsNumeric )
-      BREAK DataTypeError( __ENTITY__, nameof(n),1)
+      BREAK Error.DataTypeError( __ENTITY__, nameof(n),1,n)
     ENDIF
 	local cValue := Str1(n) as string
 	return _PadZero(cValue)

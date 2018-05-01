@@ -55,9 +55,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ArraySizeTest() as void
 			local values := <object>{1,2,3} as object[]
 			local testArray := Array{values} as Array
-			testArray:ReSize(4)
+			ASize(testArray, 4)
 			Assert.Equal( NIL ,  testArray[4])
-			testArray:ReSize(2)
+			ASize(testArray, 2)
 			Assert.Equal((dword)2,testArray:Length)
 		return
 
@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ArrayTailTest() as void
 			local values := <object>{1,2,3} as object[]
 			local testArray := Array{values} as Array
-			Assert.Equal( 3 , (int) testArray:Tail())
+			Assert.Equal( 3 , (int) ATail(testArray))
 		return
 
  		[Trait("Category", "Array")];

@@ -72,7 +72,7 @@ FUNCTION SetPos( nRow AS INT, nCol AS INT ) AS VOID
    RETURN
 
  FUNCTION _wait() AS STRING STRICT
-   RETURN _wait( "Press any key to continue")
+   RETURN _wait( __CavoStr(VoErrors.TMSG_PRESSANYKEY))
 
 FUNCTION _wait( prompt AS STRING ) AS STRING
    LOCAL info AS ConsoleKeyInfo

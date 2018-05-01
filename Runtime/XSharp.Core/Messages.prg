@@ -121,6 +121,8 @@ CLASS Messages
 					CASE "SL-W-95"
 					CASE "SL-W-AS7"
 						alias := "WL-W-EE"
+					CASE "UK"
+						alias := "Generic"
 					OTHERWISE
 						alias := name
 				END SWITCH

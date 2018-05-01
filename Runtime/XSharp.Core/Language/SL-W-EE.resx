@@ -384,9 +384,6 @@
   <data name="ERDD_INVALIDARG" xml:space="preserve">
     <value>Napaèen argument predan info funkciji</value>
   </data>
-  <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
-    <value>Slovenia-895, ASCII</value>
-  </data>
   <data name="RT_MSG_MONTH1" xml:space="preserve">
     <value>Januar</value>
   </data>

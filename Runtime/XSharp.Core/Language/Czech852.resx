@@ -384,9 +384,6 @@
   <data name="ERDD_INVALIDARG" xml:space="preserve">
     <value>Neplatný argument pøedán do info funkce</value>
   </data>
-  <data name="CA_NAT_LANGUAGE_NAME" xml:space="preserve">
-    <value>Czech-852, ASCII</value>
-  </data>
   <data name="RT_MSG_MONTH1" xml:space="preserve">
     <value>Leden</value>
   </data>

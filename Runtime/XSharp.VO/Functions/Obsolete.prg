@@ -439,7 +439,7 @@ function FxOpen(cFile as string,dwMode as dword,cPath as string) as IntPtr
 
 [Obsolete( "'ErrorBuild()' is not supported and always returns an empty Error Object" )] ;
 function ErrorBuild(pErrInfo as IntPtr) as XSharp.ERROR
-	return  XSharp.Error{ES_ERROR}
+	return  XSharp.Error{ES_ERROR,0}
 
 
 [Obsolete( "'ErrorExec()' is not supported and always returns NIL" )] ;
@@ -574,3 +574,5 @@ RETURN IntPtr.Zero
 [Obsolete];
 function ArgCount() as dword
 return 0   
+
+

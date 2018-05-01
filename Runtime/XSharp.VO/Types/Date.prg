@@ -93,7 +93,10 @@ begin namespace XSharp
 			
 			
 			constructor(strDate as string)
-				throw System.NotImplementedException{"Constructor Date(string Date) is not implemented yet."}
+				LOCAL dValue := CTOD(strDate) as date
+				_year  := dValue:_year
+				_month := dValue:_month
+				_day   := dValue:_day
 			
 			constructor(year as int, month as int, day as int)
 				try

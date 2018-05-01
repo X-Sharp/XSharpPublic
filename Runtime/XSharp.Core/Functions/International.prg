@@ -3,6 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+USING System.Globalization
+using System.Threading
+using System.Security.Permissions
 
 /// <summary>
 /// Remove leading and trailing spaces — including double-byte spaces — from a string.
@@ -221,9 +224,10 @@ function MBTrim(cMBString as string) as string
 /// </summary>
 /// <returns>
 /// </returns>
-function GetAppLocaleID() as dword
-	/// THROW NotImplementedException{}
-	return 0   
+FUNCTION GetAppLocaleID() AS DWORD
+	LOCAL oCI AS CultureInfo
+	oCI := CultureInfo.CurrentCulture
+	return (DWORD) oCI:LCID
 
 
 /// <summary>
@@ -232,9 +236,12 @@ function GetAppLocaleID() as dword
 /// <param name="dwLocaleId"></param>
 /// <returns>
 /// </returns>
-function SetAppLocaleID(dwLocaleId as dword) as dword
-	/// THROW NotImplementedException{}
-	return 0   
+[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread := true)];
+FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
+	VAR ci := CultureInfo{ (INT) dwLocaleID}
+	Thread.CurrentThread:CurrentCulture	  := ci
+	Thread.CurrentThread:CurrentUICulture := ci
+	return dwLocaleID
 
 
 /// <summary>
@@ -309,6 +316,5 @@ FUNCTION IsBiDi() AS LOGIC
 _DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
 
 
-//Todo Nation DLL for string resources
 function GetNatDllHandle() as IntPtr strict
 	return IntPtr.Zero

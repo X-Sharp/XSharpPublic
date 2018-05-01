@@ -27,6 +27,7 @@ namespace XSharp.Project.OptionsPages
         {
             _loading = true;
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
+            chkKeywordsInAll.Checked = optionsPage.KeywordsInAll;
             chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
             chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
             grpCase.Enabled = true;
@@ -72,6 +73,11 @@ namespace XSharp.Project.OptionsPages
         private void chkCompletionListtabs_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.CompletionListTabs = chkCompletionListtabs.Checked;
+        }
+
+        private void chkKeywordsInAll_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.KeywordsInAll = chkKeywordsInAll.Checked;
         }
 
         private void kwCaseChanged(object sender, EventArgs e)
@@ -149,5 +155,6 @@ namespace XSharp.Project.OptionsPages
             }
 
         }
+
     }
 }

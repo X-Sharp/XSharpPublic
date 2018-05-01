@@ -321,6 +321,7 @@ namespace XSharp.Project
                                 {
                                     // Keep the previous Indentation
                                     prevContinue = true;
+                                    prevIndentSize = indentSize;
                                 }
                                 else
                                 {
@@ -398,6 +399,7 @@ namespace XSharp.Project
                         case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
+                        case "#REGION":
                             continue;
                         default:
                             break;
@@ -451,6 +453,7 @@ namespace XSharp.Project
                         case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
+                        case "#REGION":
                             continue;
                         default:
                             break;
@@ -672,7 +675,7 @@ namespace XSharp.Project
                             tagIndex++;
                             continue;
                         }
-                            
+
                     }
                     // out please
                     break;

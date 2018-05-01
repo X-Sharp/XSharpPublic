@@ -62,8 +62,11 @@ CLASS XSharp.RuntimeState
 			self:_SetThreadValue(Set.Exact , TRUE)
 			self:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
 
+			// Add null value for Clipper collation 
+			SELF:_SetThreadValue<Byte[]>(Set.CollationTable, null )
+
 			// Date and time settings
-			self:_SetInternationalWindows()
+			SELF:_SetInternationalWindows()
 
 			// Other settings
 			// Collation Table including Compare delegates

@@ -17,8 +17,7 @@ function ErrString(nGenCode as dword) as string
 	else
 		cResource := "RT_MSG_ERR_" + nGenCode:ToString()
 	endif
-	//Todo Lookup string based on cResourse
-	return cResource
+	return Messages.GetString(cResource)
 	
 	
 	/// <summary>
@@ -36,11 +35,15 @@ function ErrString(nGenCode as XSharp.GenCode) as string
 	/// <param name="nDosErr">The DOS error number that you want a description for.</param>
 	/// <returns>The message string associated with the error number.</returns>
 function DosErrString(nDosErr as dword) as string
-	local cResource as string
+	LOCAL cResource AS STRING
+	local cResult as string
 	cResource := "RT_MSG_DOSERR_" + nDosErr:ToString() 
-	//Todo Lookup string based on nDosErr
 	// when not found return string from RT_MSG_DOSERR_UNKNOWN
-	return cResource
+	cResult := Messages.GetString(cResource)
+	IF String.IsNullOrEmpty(cResult)
+		cResult := Messages.GetString("RT_MSG_DOSERR_UNKNOWN")
+	ENDIF
+	return cResult
 
 
 

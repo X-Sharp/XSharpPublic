@@ -1,107 +1,190 @@
 ﻿
-using System
-using System.Collections.Generic
-using System.Text
+USING System
+USING System.Collections.Generic
+USING System.Text
 
-begin namespace XSharp
+BEGIN NAMESPACE XSharp
 	/// <Summary>XSharp Runtime base Error class</Summary>
-	class Error inherit Exception
+	CLASS Error INHERIT Exception
 		/// <Summary>A string representing the name of the subsystem generating the error.</Summary>
-		property SubSystem as string auto
+		PROPERTY SubSystem AS STRING AUTO
 		/// <Summary>An integer numeric value representing a Visual Objects generic error code.</Summary>
 		/// <Seealso cref="T:XSharp.Gencode"/>
-		property Gencode as dword auto
+		PROPERTY Gencode AS DWORD AUTO
 		/// <Summary>An integer numeric value representing a subsystem-specific error code.</Summary>
-		property SubCode as dword auto
+		PROPERTY SubCode AS DWORD AUTO
 		/// <Summary>A string representing the name of the function or method in which the error occurred.</Summary>
-		property FuncSym as string auto
+		PROPERTY FuncSym AS STRING AUTO
 		/// <Summary>A string representing the name used to open the file associated with the error condition.</Summary>
-		property FileName as string auto
+		PROPERTY FileName AS STRING AUTO
 		/// <Summary>A constant indicating the severity of the error condition.</Summary>
 		/// <Seealso cref="T:XSharp.Severity"/>
-		property Severity as dword auto
+		PROPERTY Severity AS DWORD AUTO
 		/// <Summary>A string that describes the error condition.</Summary>
-		property Description as string auto
-		property Arg as string auto
-		property ArgType as INT auto
-		property ArgTypeReq as System.Type auto
-		property ArgNum as long auto
-		property MethodSelf as object auto
-		property CallFuncSym as string auto
-		property Args as object auto
-		property CanDefault as logic auto
-		property Tries as int auto
+		PROPERTY Description		AS STRING AUTO
+		PROPERTY Arg				AS STRING AUTO
+		PROPERTY ArgType			AS DWORD AUTO
+		PROPERTY ArgTypeReq			AS System.Type AUTO
+		PROPERTY ArgNum				AS DWORD AUTO
+		PROPERTY MethodSelf			AS OBJECT AUTO
+		PROPERTY CallFuncSym		AS STRING AUTO
+		PROPERTY Args				AS OBJECT[] AUTO
+		PROPERTY Tries				AS INT AUTO
+		PROPERTY CanDefault         AS LOGIC AUTO
+		PROPERTY CanRetry           AS LOGIC AUTO
+		PROPERTY CanSubstitute      AS LOGIC AUTO
+		PROPERTY Operation          AS STRING AUTO
+		PROPERTY SubCodeText        AS STRING AUTO
+		
+		PRIVATE METHOD setDefaultValues() AS VOID
+			SELF:Gencode		:= EG_UNKNOWN
+			SELF:Subcode		:= 0
+			SELF:Subsystem		:= "BASE"
+			SELF:Severity		:= ES_ERROR
+			SELF:CanDefault		:= FALSE
+			SELF:CanRetry		:= FALSE
+			SELF:CanSubstitute	:= FALSE
+			SELF:Tries			:= 0
+			SELF:FuncSym		:= ProcName(2)
+			
+		CONSTRUCTOR()
+			SELF:setDefaultValues()
+			RETURN
+			
+		CONSTRUCTOR (ex AS Exception)
+			SUPER(ex.Message,ex)
+			SELF:setDefaultValues()
+			SELF:Description := ex:Message
+			SELF:GenCode     := EG_EXCEPTION
 
-		
-		private method setDefaultValues() as void
-			self:Gencode := 0
-			self:Subcode := 0
-			self:Subsystem := "BASE"
-			self:Severity    := Severity.ES_Error
-		//TODO 
-		//SELF:FuncSym   := 
-		
-		constructor()
-			return
-		
-		constructor (ex as Exception)
-			super(ex.Message,ex)
-			self:setDefaultValues()
-			self:Description := ex:Message
-		
-		constructor (dwgencode as dword)
-			self:setDefaultValues()
-			self:Gencode := dwGenCode
-		
-		constructor (eGencode as Gencode)
-			self:setDefaultValues()
-			self:Gencode := eGenCode
-		
-		constructor (eGencode as Gencode, dwSubCode as dword)
-			self:setDefaultValues()
-			self:Gencode := eGencode
-			self:SubCode := dwSubcode
-		
-		constructor (dwgencode as dword, dwSubCode as dword)
-			self:setDefaultValues()
-			self:Gencode := dwgencode
-			self:SubCode := dwSubcode
-		
-		static method ArgumentError(cFuncName as string, name as string, description as string) as Error
-			return ArgumentError(cFuncName, name, description, 0)
+		CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[])
+			SUPER(ex.Message,ex)
+			SELF:setDefaultValues()
+			SELF:Description := ex:Message
+			SELF:GenCode     := EG_EXCEPTION
+			SELF:FuncSym     := cFuncName
+			SELF:Arg         := cArgName
+			SELF:ArgNum      := iArgNum
+			SELF:Args		 := aArgs
 
-		static method ArgumentError(cFuncName as string, name as string, description as string, iArgnum as int) as Error
-			var err := Error{Gencode.EG_ARG}
-			err:FuncSym     := cFuncName
-			err:Arg  := name
-			err:Description := Description
-			err:Argnum  := iArgNum
-			return err
-		
-		static method NullArgumentError( cFuncName as string, cArgName as string, iArgNum as int ) as Error
-			local e as Error
-			e := Error{ ArgumentNullException{} }
-			e:Severity    := ES_ERROR
-			e:GenCode     := EG_ARG
-			e:SubSystem   := "BASE"
-			e:FuncSym     := cFuncName
-			e:Arg         := cArgName
-			e:ArgNum      := iArgNum
-			//e:Description := SR.GetString( SR.ArgIsNULL )
-			return e
-		STATIC METHOD WrapRawException( ex AS Exception ) AS Error
-			LOCAL e AS Error
-			e := Error{ ex }
-			e:GenCode     := EG_EXCEPTION
-			e:Description := ErrString( EG_EXCEPTION )
-			e:Severity    := ES_ERROR
-			RETURN e
 
-	method @@Throw as void strict
-		// must override in subclass
-		return		
-	end class
-end namespace 
+			
+		CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING)
+			SELF:setDefaultValues()
+			SELF:Gencode := dwGenCode
+			SELF:Arg	 := cArg
+			
+		CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
+			SELF:setDefaultValues()
+			SELF:Gencode		:= dwGenCode
+			SELF:Arg			:= cArg
+			SELF:Description	:= cDescription
+			
+			
+		CONSTRUCTOR (dwgencode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
+			SELF:setDefaultValues()
+			SELF:Gencode := dwgencode
+			SELF:SubCode := dwSubcode
+			SELF:FuncSym     := cFuncName
+			SELF:Arg         := cArgName
+			SELF:ArgNum      := iArgNum
+
+		CONSTRUCTOR (dwgencode AS DWORD, dwSubCode := 0 AS DWORD)
+			SELF:setDefaultValues()
+			SELF:Gencode := dwgencode
+			SELF:SubCode := dwSubcode
+
+			
+		METHOD @@Throw AS VOID STRICT
+			// must override in subclass
+			RETURN		
+			
+			#region Static methods to construct an error			
+			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING) AS Error
+				RETURN ArgumentError(cFuncName, name, description, 0)
+				
+			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD) AS Error
+				VAR err			:= Error{Gencode.EG_ARG, name}
+				err:FuncSym     := cFuncName
+				err:Description := Description
+				err:Argnum		:= iArgNum
+				RETURN err
+				
+			STATIC METHOD WrapRawException( ex AS Exception ) AS Error
+				LOCAL e AS Error
+				e			  := Error{ ex }
+				e:Description := ErrString( EG_EXCEPTION )
+				RETURN e
+				
+			STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[] ) AS Error
+				RETURN VOError( NULL , dwGenCode, cFuncName, cArgName, iArgNum, aArgs )
+				
+			STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[]  ) AS Error
+				LOCAL e AS Error
+				e			  := Error{ ex, cFuncName, cArgName, iArgNum, aArgs } 
+				e:GenCode     := dwGenCode
+				e:Description := ErrString( dwGenCode )
+				RETURN e
+				
+			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING ) AS Error
+				LOCAL e AS Error
+				e := Error{dwGenCode, dwSubCode}
+				e:SubSystem   := "DBCMD"
+				e:FuncSym     := cFuncName
+				e:Description := ErrString( dwGenCode )
+				RETURN e
+				
+			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs Params object[] ) AS Error
+				LOCAL e AS Error
+				e			  := Error{dwGenCode, dwSubCode}
+				e:SubSystem   := "DBCMD"
+				e:Description := ErrString( dwGenCode )
+				e:Args        := aArgs
+				RETURN e
+				
+			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params object[] ) AS Error
+				LOCAL e AS Error
+				e := Error{dwGenCode, dwSubCode, cFuncName, cArgName, iArgNum}
+				e:SubSystem   := "DBCMD"
+				e:Description := ErrString( dwGenCode )
+				e:Args        := aArgs
+				RETURN e	
+				
+		   STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params Object[] ) AS Error
+			  LOCAL e AS Error
+			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
+			  e:GenCode     := EG_DATATYPE
+			  e:Description := __CavoStr( VOErrors.DATATYPEERROR )
+			  RETURN e
+
+		  STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
+			  RETURN ArgumentError( cFuncName, cArgName, iArgNum, ErrString( EG_ARG ), aArgs )
+
+		  STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs params OBJECT[]) AS Error
+			  LOCAL e AS Error
+			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
+			  e:GenCode     := EG_ARG
+			  e:Description := cDescription
+			  RETURN e
+
+		  STATIC METHOD BoundError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[] ) AS Error
+			  LOCAL e AS Error
+			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
+			  e:GenCode     := EG_BOUND
+			  e:Description := ErrString( EG_BOUND )
+			  RETURN e
+
+		  STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD ) AS Error
+			  LOCAL e AS Error
+			  e := Error{ ArgumentNullException{} ,cFuncName, cArgName, iArgNum}
+			  e:GenCode     := EG_ARG
+			  e:Description := __CavoStr( VOErrors.ARGISNULL )
+			  RETURN e
+
+						
+			#endregion
+	END CLASS
+END NAMESPACE 
 
 
 

@@ -53,6 +53,3 @@ function ErrorLevel(dw ) as dword
 	/// THROW NotImplementedException{}
 	return 0   
 
-
-function VO_SPrintF(nNum, arg1, arg2) as string
-	return ""	

@@ -218,7 +218,7 @@ function Len(u as Usual) as dword
 	elseif u:IsString
 		return (dword) ((string) u):Length
 	else
-		throw DataTypeError(__ENTITY__, u, 1)
+		throw Error.DataTypeError(__ENTITY__, u, 1, u)
 	endif
 
 
@@ -319,7 +319,7 @@ function EnforceNumeric(u REF Usual) as void
 	if u:IsNil
 		u := 0
 	elseif ! u:IsNumeric
-		throw DataTypeError(__ENTITY__, u, 1)
+		throw Error.DataTypeError(__ENTITY__, u, 1, u)
 	endif
 	return  
 
@@ -334,24 +334,6 @@ function EnforceType(u REF Usual, dwType as DWORD) as void
 	if u:IsNil
 		u := EmptyUsual(dwType)
 	elseif UsualType(u) != dwType
-		throw DataTypeError(__ENTITY__, u, 1)
+		throw Error.DataTypeError(__ENTITY__, u, 1, u, dwType)
 	endif
 	return  
-
-/// <summary>
-/// Make sure a variable is of a certain type.
-/// </summary>
-/// <param name="refu"></param>
-/// <param name="nType"></param>
-/// <returns>
-/// </returns>
-
-
-
-function DataTypeError(cFunction as string, cVarName as string, nVar as long) as Error
-	local e as Error
-	e := Error{GenCode.EG_DATATYPE}
-	e:ArgNum := nVar
-	e:Arg	 := cVarName
-	e:Source := cFunction
-return e

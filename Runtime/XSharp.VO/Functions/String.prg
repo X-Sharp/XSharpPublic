@@ -95,7 +95,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    LOCAL iRepl            AS INT
 
    IF ! uTarget:IsString
-      THROW DataTypeError( "StrTran", "cTarget", 1 )
+      THROW Error.DataTypeError( "StrTran", "cTarget", 1 , uTarget, uSearch, uReplace, uStart, uCount)
    ELSE
       cSource := uTarget
 
@@ -105,7 +105,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ENDIF
 
    IF ! uSearch:IsString
-      THROW DataTypeError( "StrTran", "cSearch", 2 )
+      THROW Error.DataTypeError( "StrTran", "cSearch", 2 , uTarget, uSearch, uReplace, uStart, uCount)
    ELSE
       cSearch := uSearch
 
@@ -119,7 +119,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ELSEIF uReplace:IsNil
       cReplace := ""
    ELSE
-      THROW  DataTypeError( "StrTran", "cReplace", 3 )
+      THROW  Error.DataTypeError( "StrTran", "cReplace", 3 , uTarget, uSearch, uReplace, uStart, uCount)
    ENDIF
 
    IF PCount() > 3
@@ -128,7 +128,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
       ELSEIF uStart:IsNil
          nStart := 0
       ELSE
-         THROW DataTypeError( "StrTran", "nStart", 4 )
+         THROW Error.DataTypeError( "StrTran", "nStart", 4 , uTarget, uSearch, uReplace, uStart, uCount)
       ENDIF
 
       IF PCount() > 4
@@ -137,7 +137,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
          ELSEIF uCount:IsNil
             iCount := 0
          ELSE
-            THROW DataTypeError( "StrTran", "nCount", 5 )
+            THROW Error.DataTypeError( "StrTran", "nCount", 5 , uTarget, uSearch, uReplace, uStart, uCount)
          ENDIF
       ENDIF
    ENDIF
@@ -285,12 +285,12 @@ function SubS(c ,iStart ,wLen ) as string
 /// </returns>
 function SubStr(c ,uStart ,uLen ) as string
 	if ! c:IsString
-		throw DataTypeError(__ENTITY__, nameof(c), 1)
+		throw Error.DataTypeError(__ENTITY__, nameof(c), 1, c, uStart, uLen)
 	endif
 	if uStart:IsNil
 		uStart := 1
 	elseif ! uStart:IsNumeric
-		throw DataTypeError(__ENTITY__, nameof(uStart), 2)
+		throw Error.DataTypeError(__ENTITY__, nameof(uStart), 2, c, uStart, uLen)
 	endif
 	var start := (int) uStart 
 	var strValue := (string) c 
@@ -307,7 +307,7 @@ function SubStr(c ,uStart ,uLen ) as string
 	elseif uLen:IsNumeric
 		return __SubStr(strValue, start, (int) uLen)
 	else
-		throw DataTypeError(__ENTITY__, nameof(uLen), 3)
+		throw Error.DataTypeError(__ENTITY__, nameof(uLen), 3, c, uStart, uLen)
 	endif
 
 function EmptyString (s as string) as logic

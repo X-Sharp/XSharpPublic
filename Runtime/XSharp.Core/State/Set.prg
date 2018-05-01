@@ -425,7 +425,7 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	_SetCollation(cBase)
 	return String.Compare(Messages.CurrentLanguageName, cBase, true) == 0
 
-STATIC FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
+INTERNAL FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", typeof(Functions):Assembly }
 	VAR obj := rm:GetObject(cBase) 
 	if obj != NULL
@@ -437,7 +437,7 @@ STATIC FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	ENDIF
 	return false
 	
-static Function	_SetNatDLL(cNewDLL as STRING) as STRING
+internal Function	_SetNatDLL(cNewDLL as STRING) as STRING
 	LOCAL cBase AS STRING
 	cBase := System.IO.Path.GetFileNameWithoutExtension(cNewDLL)
 	Messages.SetCurrentLanguage(cBase)

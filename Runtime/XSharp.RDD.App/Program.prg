@@ -12,6 +12,7 @@ BEGIN NAMESPACE XSharp.RDD.App
         myTest:OpenDBFShowFields()
         myTest:CheckFieldInfo()
         myTest:WriteDataValue()
+        myTest:CheckSkip()
         //
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")
@@ -104,6 +105,21 @@ BEGIN NAMESPACE XSharp.RDD.App
                 myDBF:Close()
             ENDIF
             RETURN
+            
+        METHOD CheckSkip() AS VOID
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                Assert.Equal( 1, myDBF:RecNo )
+                Assert.Equal( FALSE, myDBF:Bof )
+                Assert.Equal( FALSE, myDBF:Eof )
+                myDBF:Skip(-1)
+                Assert.Equal( 1, myDBF:RecNo )
+                Assert.Equal( TRUE, myDBF:Bof )
+                myDBF:Close()
+            ENDIF
             
     END CLASS
     

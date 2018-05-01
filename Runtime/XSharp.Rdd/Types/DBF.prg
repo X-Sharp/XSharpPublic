@@ -68,6 +68,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Top := FALSE
                 SELF:_Bottom := TRUE
                 SELF:_BufferValid := FALSE
+                RETURN TRUE
             ENDIF
             RETURN FALSE
             
@@ -88,11 +89,35 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:_Found := FALSE
                     SELF:_BufferValid := FALSE
                 ENDIF
+                RETURN TRUE
             ENDIF
             RETURN FALSE
             
             //	METHOD GoToId(oRec AS OBJECT) AS LOGIC
-            //	METHOD Skip(nToSkip AS INT) AS LOGIC
+        METHOD Skip(nToSkip AS INT) AS LOGIC
+            LOCAL result AS LOGIC
+            //
+            IF ( SELF:_hFile != F_ERROR )
+                SELF:_Top := FALSE
+                SELF:_Bottom := FALSE
+                // Refresh only
+                IF ( nToSkip == 0 )
+                    // FALSE because we have no Relation handling currently
+                    RETURN FALSE
+                ENDIF
+                //
+                result := SELF:Goto( SELF:RecNo + nToSKip )
+                // We reached the top ?
+                IF ( nToSkip < 0 ) .AND. SELF:_Bof .AND. result
+                    SELF:GoTop()
+                    SELF:_Bof := TRUE
+                ENDIF
+                //
+                RETURN result
+            ENDIF
+            RETURN FALSE
+            
+            
             //	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
             //	METHOD SkipRaw(nToSkip AS INT) AS LOGIC 
             //	METHOD SkipScope(nToSkip AS INT) AS LOGIC
@@ -197,10 +222,25 @@ BEGIN NAMESPACE XSharp.RDD
             
             // Fields
             //METHOD CreateFields(aFields AS DbField[]) AS LOGIC
-            //	METHOD FieldIndex(fieldName AS STRING) AS LONG 
+
+        /// <summary>
+        /// This function return the ordinal position of the specified field fieldName in the current work area.
+        /// If there isn't field under the name of fieldName or of no database is open in the selected work area, 
+        /// the function will return a 0.
+        /// </summary>
+        METHOD FieldIndex(fieldName AS STRING) AS LONG
+            LOCAL cName AS STRING
+            IF ( SELF:_hFile != F_ERROR )
+                FOR VAR i := 1 TO SELF:FieldCount
+                    cName := (STRING)SELF:FieldInfo( i, DBS_NAME, NULL )
+                    IF ( String.Compare( cName, fieldName, TRUE )==0 )
+                        RETURN i
+                    ENDIF
+                NEXT
+            ENDIF
+            RETURN 0
             
-            
-        VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+        METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             LOCAL nArrPos := nFldPos AS LONG
             IF SELF:_FieldIndexValidate(nArrPos)
@@ -217,11 +257,11 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbFieldInfo.DBS_DEC
                     oResult := SELF:_Fields[nArrPos]:Decimals
                 CASE DbFieldInfo.DBS_TYPE
-                    oResult := SELF:_Fields[nArrPos]:FieldType
+                    oResult := SELF:_Fields[nArrPos]:FieldType:ToString():Substring(0,1)
                 CASE DbFieldInfo.DBS_ALIAS
                     oResult := SELF:_Fields[nArrPos]:Alias
                     
-            CASE DbFieldInfo.DBS_ISNULL
+                CASE DbFieldInfo.DBS_ISNULL
                 CASE DbFieldInfo.DBS_COUNTER
                 CASE DbFieldInfo.DBS_STEP    
                 
@@ -236,7 +276,7 @@ BEGIN NAMESPACE XSharp.RDD
                     // file. This pointer can be used with BLOBDirectGet(),
                     // BLOBDirectImport(), etc.
                     
-                CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
+            CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
                 CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN		
                 
                 CASE DbFieldInfo.DBS_STRUCT				
@@ -319,6 +359,8 @@ BEGIN NAMESPACE XSharp.RDD
             //
             data := NULL
             SWITCH fieldType
+            CASE DbFieldType.Float
+                CASE DbFieldType.Number
                 CASE DbFieldType.Double
                     //
                     IF (! String.IsNullOrWhiteSpace(str))
@@ -342,17 +384,7 @@ BEGIN NAMESPACE XSharp.RDD
                     //                        //
                     //                        data := System.DateTime.MinValue
                     //                    ENDIF
-            CASE DbFieldType.Float
-                CASE DbFieldType.Number
-                    //
-                    IF (! String.IsNullOrWhiteSpace(str))
-                        //
-                        data := System.Convert.ToSingle(str)
-                    ENDIF
-                    //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
-                    //                        //
-                    //                        data := 0
-                    //                    ENDIF
+                    
                 CASE DbFieldType.Integer
                     //
                     IF (! String.IsNullOrWhiteSpace(str))
@@ -405,9 +437,11 @@ BEGIN NAMESPACE XSharp.RDD
             
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL fieldType AS DbFieldType
+            LOCAL cType AS STRING
             LOCAL ret := NULL AS OBJECT
             //
-            fieldType := (DbFieldType) SELF:FieldInfo( nFldPos, DBS_TYPE, NULL )
+            cType := (STRING)SELF:FieldInfo( nFldPos, DBS_TYPE, NULL )
+            fieldType := (DbFieldType) Char.ToUpper(cType[0])
             // Read Record to Buffer
             IF SELF:_fillRecord()
                 // 1 To Skip Deleted field
@@ -436,11 +470,11 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN SUPER:GetValue(nFldPos)
                     ENDIF
                 ELSE
-//                    IF ( fieldType == DbFieldType.Number )
-//                        IF (SELF:_Fields[nArrPos]:Decimals == 0 )
-//                            fieldType := DbFieldType.Integer
-//                        ENDIF
-//                    ENDIF
+                    //                    IF ( fieldType == DbFieldType.Number )
+                    //                        IF (SELF:_Fields[nArrPos]:Decimals == 0 )
+                    //                            fieldType := DbFieldType.Integer
+                    //                        ENDIF
+                    //                    ENDIF
                     ret := SELF:_convertFieldData( destArray, fieldType )
                 ENDIF
             ENDIF
@@ -593,7 +627,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
-                CASE DbInfo.DBI_ISDBF
+            CASE DbInfo.DBI_ISDBF
                 CASE DbInfo.DBI_CANPUTREC
                     oResult := TRUE		
                 CASE DbInfo.DBI_LASTUPDATE
@@ -631,7 +665,7 @@ BEGIN NAMESPACE XSharp.RDD
                     
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
-            END SWITCH
+                END SWITCH
             RETURN oResult  
             
             
@@ -679,10 +713,13 @@ BEGIN NAMESPACE XSharp.RDD
             
             // Properties
             //	PROPERTY Alias 		AS STRING GET
-            //	PROPERTY BoF 		AS LOGIC GET
-            //	PROPERTY Deleted 	AS LOGIC GET
-            //	PROPERTY EoF 		AS LOGIC GET
-            //	PROPERTY Exclusive	AS LOGIC GET
+        PROPERTY BoF 		AS LOGIC GET SELF:_Bof
+        
+        PROPERTY Deleted 	AS LOGIC GET SELF:_Deleted
+        
+        PROPERTY EoF 		AS LOGIC GET SELF:_Eof
+        
+        //	PROPERTY Exclusive	AS LOGIC GET
         PROPERTY FieldCount AS LONG 
             GET 
                 LOCAL ret := 0 AS LONG
@@ -890,8 +927,8 @@ BEGIN NAMESPACE XSharp.RDD
                     see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
                     
                     */
-                END STRUCTURE
-                
+                    END STRUCTURE
+                    
             STRUCTURE DbfField   
                 // Fixed Buffer of 32 bytes
                 // Matches the DBF layout

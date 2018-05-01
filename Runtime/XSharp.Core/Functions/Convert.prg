@@ -182,7 +182,7 @@ function C2Hex(cSource as string) as string
 
 // helper function to convert bytes to string
 
-function _bytes2String(byteArray as byte[]) as string
+internal function _bytes2String(byteArray as byte[]) as string
 	local sb as StringBuilder
 	sb := StringBuilder{}
 	foreach var b in byteArray

@@ -37,7 +37,7 @@ internal function _Asc(c as string, lAnsi as logic) as dword
 			if encoding:IsSingleByte
 				buffer := byte[]{1}
 				encoding:GetBytes(chars,0,1,buffer,0)
-				ascValue := buffer[1]
+				ascValue := buffer[0]
 			else
 				buffer := byte[]{2}
 				if encoding:GetBytes(chars,0,1,buffer,0) == 1

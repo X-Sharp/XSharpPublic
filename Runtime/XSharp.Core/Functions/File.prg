@@ -1038,7 +1038,7 @@ function Bytes2Line(aBytes as byte[], nBuffLen ref int) as string
 		switch aBytes[nI]
 			case 10
 				if lFoundCR		// immediately LF after CR
-					nLF := nI -2
+					nLF := nI -1
 					lFoundCRLF := true
 				endif
 			case 13

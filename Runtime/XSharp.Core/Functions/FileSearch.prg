@@ -293,7 +293,7 @@ function FPathName() as string
 	return XSharp.IO.File.LastFound
 
 
-static function __FileHelper(cPath as string, cFileSpec as string, lSavePath as LOGIC) as logic
+internal function __FileHelper(cPath as string, cFileSpec as string, lSavePath as LOGIC) as logic
 local cTemp as string
 local cFile as string
 local files as string[]
@@ -308,14 +308,14 @@ if ! System.IO.Directory.Exists(cPath)
 endif
 files := System.IO.Directory.GetFiles(cPath, cFile)
 if files:Length > 0 
-	XSharp.IO.File.LastFound := files[1]
+	XSharp.IO.File.LastFound := files[0]
 elseif lSavePath
 	XSharp.IO.File.LastFound := cTemp
 endif
 return files:Length > 0
 
 
-static function __GetSearchPaths() as string[]
+internal function __GetSearchPaths() as string[]
 	// Not found, now use the path settings from SetDefault and SetPath()
 	// if SetPath() is empty then we look through the Environment variable Path
 	local aDefault as string[]

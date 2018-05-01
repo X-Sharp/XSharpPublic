@@ -7,7 +7,7 @@
 begin namespace XSharp
 	/// <Summary>Error code Enum that matches the Visual Objecs and Vulcan Generic Error Codes</Summary>
 	enum Gencode as dword
-		member EG_WAIT         := 0
+		member EG_UNKNOWN      := 0
 		member EG_ARG          := 1
 		member EG_BOUND        := 2
 		member EG_STROVERFLOW  := 3
@@ -17,7 +17,7 @@ begin namespace XSharp
 		member EG_SYNTAX       := 7
 		member EG_COMPLEXITY   := 8
 		member EG_MEMOVERFLOW  := 9
-		member EG_SEQUENCE	:= 10
+		member EG_SEQUENCE	   := 10
 		member EG_MEM          := 11
 		member EG_NOFUNC       := 12
 		member EG_NOMETHOD     := 13
@@ -64,10 +64,10 @@ begin namespace XSharp
 		
 		// Vulcan errors
 		member EG_INACCESSIBLETYPE := 55
-		member EG_AMBIGUOUSMETHOD := 56
-		member EG_SEND_MISSINGARG := 57
+		member EG_AMBIGUOUSMETHOD  := 56
+		member EG_SEND_MISSINGARG  := 57
 		member EG_SEND_TOOMANYARGS := 58
-		member EG_EXCEPTION := 59
+		member EG_EXCEPTION		   := 59
 		
 		// Last Member                        
 		member EG_MAX          := 59
@@ -207,7 +207,7 @@ end namespace
 
 #region Gencode Defines
 	
-	define EG_WAIT           := GenCode.EG_WAIT         
+	define EG_UNKNOWN        := GenCode.EG_UNKNOWN
 	define EG_ARG            := GenCode.EG_ARG          
 	define EG_BOUND          := GenCode.EG_BOUND        
 	define EG_STROVERFLOW    := GenCode.EG_STROVERFLOW  

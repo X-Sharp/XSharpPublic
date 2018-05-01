@@ -463,7 +463,7 @@ function ClassTree(o as object) as Array
 
 function CreateInstance(cClassName) as object
    IF ! ( cClassName:IsSymbol || cClassName:IsString )
-      BREAK DataTypeError( "CreateInstance", nameof(cClassName), 1)
+      BREAK Error.DataTypeError( "CreateInstance", nameof(cClassName), 1, cClassName)
    endif    	
    var t := OOPHelpers.FindClass(cClassName)
    if t == null
@@ -527,7 +527,7 @@ function ClassTreeClass(cName as STRING) as Array
 	if t != null
 		return OOPHelpers.ClassTree(t)
 	else
-      Throw Error{EG_NOCLASS}
+      Throw Error{EG_NOCLASS,0}
 	endif
 	return null_array   
 

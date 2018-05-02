@@ -1205,9 +1205,13 @@ begin namespace XSharpModel
 							if state:lLocal
 								oInfo:eType := EntityType._Local
 							elseif state:lEvent
-								oInfo:eType := EntityType._Event
-							else
-								oInfo:eType := EntityType._Field
+								oInfo:eType := EntityType._Event                            
+							ELSE
+                                if lInEnum
+								    oInfo:eType := EntityType._EnumMember
+                                else
+								    oInfo:eType := EntityType._Field
+                                ENDIF
 								IF aTypeStack:Count > 0
                                     VAR oParent := getParentType()
                                     if ( oParent != null )
@@ -1655,7 +1659,8 @@ begin namespace XSharpModel
 		member _Property	
 		member _Define		
 		member _Resource	
-		member _TextBlock	
+		MEMBER _TextBlock	
+        MEMBER _EnumMember
 	end enum
 	
 	

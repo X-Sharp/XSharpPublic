@@ -115,7 +115,9 @@ begin namespace XSharpModel
 				case EntityType._Procedure
 					return Kind.Procedure
 				case EntityType._Enum
-					return Kind.Enum
+					RETURN Kind.Enum
+				case EntityType._EnumMember
+					return Kind.EnumMember
 				case EntityType._VOStruct
 					return Kind.VOStruct
 				case EntityType._Global

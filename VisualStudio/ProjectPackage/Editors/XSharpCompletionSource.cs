@@ -103,7 +103,7 @@ namespace XSharpLanguage
                 if (_disposed)
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 _showTabs = _optionsPage.CompletionListTabs;
-                _keywordsInAll = _optionsPage.CompletionListTabs;
+                _keywordsInAll = _optionsPage.KeywordsInAll;
                 if (_coreDialect)
                 {
                     _dotUniversal = _optionsPage.UseDotAsUniversalSelector;

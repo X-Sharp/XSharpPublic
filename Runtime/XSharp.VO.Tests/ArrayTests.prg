@@ -20,8 +20,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ArrayCreateTest() as void
 			local testArray := ArrayNew(2,3) as Array 
 			Assert.NotEqual(null,testArray)
-			Assert.Equal((dword)2,testArray:Length) 
-			Assert.Equal((dword)3,((Array)testArray[1]):Length)
+			Assert.Equal((dword)2, Alen(testArray)) 
+			Assert.Equal((dword)3,(Alen(testArray[1])))
 		RETURN
  		[Trait("Category", "Array")];
 		[Fact];
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ArrayDeleteTest() as void
 			local testArray := {1,2,3} as Array
 			Adel(testArray, 1)
-			Assert.Equal( (dword)3 , testArray:Length)
+			Assert.Equal( (dword)3 , Alen(testArray))
 			Assert.Equal( NIL ,  testArray[3])
 		return
 		
@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			ASize(testArray, 4)
 			Assert.Equal( NIL ,  testArray[4])
 			ASize(testArray, 2)
-			Assert.Equal((dword)2,testArray:Length)
+			Assert.Equal((dword)2,Alen(testArray))
 		return
 
  		[Trait("Category", "Array")];

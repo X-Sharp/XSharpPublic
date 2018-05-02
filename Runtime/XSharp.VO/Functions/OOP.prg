@@ -302,8 +302,6 @@ static class OOPHelpers
 					local arg := uArgs[nPar] as USUAL
 					if pi:ParameterType == typeof(USUAL)
 						// We need to box a usual here 
-						var oTemp := object[]{ 1 }
-						oTemp[1] := arg
 						oArgs[nPar] := Myconvert(arg, typeof(__USUAL))
 					elseif pi:ParameterType:IsAssignableFrom(arg:SystemType) .or. arg == null
 						oArgs[nPar] := uArgs[nPar]
@@ -346,8 +344,7 @@ static class OOPHelpers
 			if toType == typeof(usual)
 				// todo: better mechanism for boxing
 				// box the usual
-				var oTemp := object[]{ 1 }
-				oTemp[1] := uValue
+				var oTemp := <OBJECT> { uValue }
 				return Activator.CreateInstance(typeof(XSharp.__Usual), oTemp)
 			endif
 			var o := (object) uValue 
@@ -363,7 +360,7 @@ static class OOPHelpers
 			  LOCAL nomethodArgs := USUAL[]{ args:Length + 1 } AS USUAL[]
 			  cMethod := cMethod:ToUpperInvariant()
 			  RuntimeState.NoMethod := cMethod   // For NoMethod() function
-			  noMethodArgs[1]		:= cMethod
+			  noMethodArgs[__ARRAYBASE__] := cMethod
 			  Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			  if ! SendHelper(oObject, "NoMethod" , noMethodArgs, out result)
 				// Throw Exception

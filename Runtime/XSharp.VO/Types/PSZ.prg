@@ -16,7 +16,6 @@ begin namespace XSharp
 		private _value as byte ptr
 		static property _NULL_PSZ as __Psz get (__Psz) IntPtr.zero
 		private static _pszList as List< IntPtr>
-
 		internal static method RegisterPsz(pszToRegister as PSZ) as void
 			if _pszList == null
 				_pszList := List<IntPtr>{}

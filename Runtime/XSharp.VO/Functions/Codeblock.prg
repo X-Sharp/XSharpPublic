@@ -53,14 +53,14 @@ function Eval( obj as object,  args params usual[] ) as usual
 		result := Eval( (codeblock) obj, args )
 	else
 		var types   := Type[]{ 1 }
-		types[1]	:= typeof( usual[] )
+		types[__ARRAYBASE__]	:= typeof( usual[] )
 		var oType := obj:GetType()
 		local mi as MethodInfo
 		mi := oType:GetMethod( "Eval", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase, null, types, null )
 		
 		if mi != null
 			var pars := object[]{ 1 }
-			pars[1] := args
+			pars[__ARRAYBASE__] := args
 			result := mi:Invoke( obj , pars )
 		else 
 			throw Error.ArgumentError( __ENTITY__, "obj","Argument is not a codeblock"  ,1)

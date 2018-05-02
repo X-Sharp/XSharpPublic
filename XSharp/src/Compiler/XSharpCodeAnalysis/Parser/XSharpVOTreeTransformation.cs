@@ -2771,10 +2771,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                            GenerateLiteral(0));
 
                         var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, _intType, len);
-
+                        stmts.Add(decl);
                         if (parameters.Parameters.Count > 0)
                         {
-                            stmts.Add(decl);
+
                             for (int i = 0; i < parameters.Parameters.Count; i++)
                             {
                                 var parm = parameters.Parameters[i];
@@ -2915,12 +2915,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
             BinaryExpressionSyntax cond;
+            // no changes to expr for length comparison, even with /az
             cond = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanOrEqualExpression,
                                 GenerateSimpleName(XSharpSpecialNames.ClipperPCount),
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 expr);
             // XS$Args[..]
+            if (_options.ArrayZero)
+            {
+                // adjust array offset when compiling with /az
+                expr = _syntaxFactory.BinaryExpression(
+                                SyntaxKind.SubtractExpression,
+                                expr,
+                                SyntaxFactory.MakeToken(SyntaxKind.MinusToken),
+                                GenerateLiteral(1));
+            }
             var indices = _pool.AllocateSeparated<ArgumentSyntax>();
             indices.Add(MakeArgument(expr));
             var left = _syntaxFactory.ElementAccessExpression(

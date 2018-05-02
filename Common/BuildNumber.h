@@ -1,7 +1,7 @@
 // BuildNumber.h
 #ifndef BUILDNUMBER_H
 #define PRODUCT_NAME     "XSharp"
-#define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2018."
+#define COPYRIGHT_STR    e"Copyright \u00a9 XSharp BV 2015-2018."
 #define COMPANY_NAME     "XSharp BV"
 #define REG_COMPANY_NAME  "XSharpBV"
 		

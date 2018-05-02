@@ -42,7 +42,7 @@ begin namespace XSharpModel
 		
 		#region Simple Properties
 			property File as XFile get self:_File set self:_File := value
-			property FullName as string get self:_Name
+			virtual property FullName as string get self:_Name
 			property Kind as Kind get self:_Kind
 			property Language as string get "XSharp"
 			property Modifiers as Modifiers get self:_Modifiers
@@ -51,8 +51,8 @@ begin namespace XSharpModel
 			property IsStatic as logic get _isStatic set _isStatic := value
 			property FileUsings as IList<string> get self:_File:Usings
 			property Parent as XElement get self:_parent set self:_parent := value
-			property ParentName as string get self:_parent?:FullName
-			property Prototype as string get self:Name
+			virtual property ParentName as string get self:_parent?:FullName
+			virtual property Prototype as string get self:Name
 			property Range as TextRange get self:_range
 			property Visibility as Modifiers get self:_Visibility
 			
@@ -68,7 +68,7 @@ begin namespace XSharpModel
 				
 				parentName := self:ParentName
 				thisName := self:FullName
-				if ((parentName:IndexOf(".") == -1) .AND. (thisName:IndexOf(".") > 0))
+				if parentName:IndexOf(".") == -1 .AND. thisName:IndexOf(".") > 0
 					
 					parentName := thisName:Substring(0, (thisName:LastIndexOf(".") + 1)) + parentName
 				endif
@@ -196,10 +196,10 @@ begin namespace XSharpModel
 		
 		#region Complexer properties		
 			// Properties
-			property Description as string
+			virtual property Description as string
 				get
 					var modVis := ""
-					if (self:Modifiers != Modifiers.None)
+					if self:Modifiers != Modifiers.None
 						modVis := modVis + self:ModifiersKeyword
 					endif
 					modVis += self:VisibilityKeyword

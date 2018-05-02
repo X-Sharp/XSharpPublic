@@ -107,9 +107,7 @@ begin namespace XSharpModel
 
 		property Members as IList<XTypeMember>
 			get
-				//
 				begin lock self:_members
-					//
 					return self:_members:ToArray()
 				end lock
 			end get
@@ -131,15 +129,13 @@ begin namespace XSharpModel
 	
 		property FullName as string
 			get
-				if (! String.IsNullOrEmpty(self:_nameSpace))
+				if ! String.IsNullOrEmpty(self:_nameSpace)
 					return self:NameSpace + "." + super:Name
 				endif
 				return super:Name
 			end get
 		end property
 			
-		
-		
 		
 	    /// <summary>
         /// Merge two XType Objects : Used to create the resulting  XType from partial classes
@@ -178,24 +174,24 @@ begin namespace XSharpModel
 
 		property Clone as XType
 			get
-				if (self:IsPartial)
+				if self:IsPartial
 					return super:File:Project:LookupFullName(self:FullName, true)
 				endif
 				return self
 			end get
 		end property
 		
-		property Description as string
+		new property Description as string
 			get
 				var modVis := ""
-				if (super:Kind == Kind.Class)
-					if (super:Modifiers != Modifiers.None)
+				if super:Kind == Kind.Class
+					if super:Modifiers != Modifiers.None
 						modVis := modVis + super:Modifiers:ToString()+  " "
 					endif
 					modVis := modVis + super:Visibility:ToString()+ " "
 				endif
 			
-				if (super:Kind == Kind.Keyword)
+				if super:Kind == Kind.Keyword
 					return super:Name + " " + super:Kind:ToString()
 				endif
 				return modVis + super:Kind:ToString() + " " + self:Prototype
@@ -224,16 +220,16 @@ begin namespace XSharpModel
 		
 		property ParentName as string
 			get
-				if (super:Parent != null)
+				if super:Parent != null
 					return super:Parent:Name
 				endif
-				if (self:_parentName != null)
+				if self:_parentName != null
 					return self:_parentName
 				endif
 				return null
 			end get
 			set
-				if (super:Parent != null)
+				if super:Parent != null
 					throw System.Exception{"Cannot set ParentName if Parent is not null"}
 				endif
 				self:_parentName := value

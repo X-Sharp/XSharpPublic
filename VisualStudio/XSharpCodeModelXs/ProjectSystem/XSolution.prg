@@ -18,7 +18,7 @@ begin namespace XSharpModel
 			return Add(project:Name, project)
 		
 		static method Add(projectName as string, project as XProject) as logic
-			if (xProjects:ContainsKey(projectName))
+			if xProjects:ContainsKey(projectName)
 				return false
 			endif
 			return xProjects:TryAdd(projectName, project)
@@ -26,7 +26,7 @@ begin namespace XSharpModel
 		static method CloseAll() as void
 			xProjects:Clear()
 			SystemTypeController.Clear()
-			if ((_orphanedFilesProject != null) .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject))
+			if _orphanedFilesProject != null .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
 				foreach var info in _orphanedFilesProject:AssemblyReferences
 					SystemTypeController.LoadAssembly(info:FileName)
 				next
@@ -47,7 +47,6 @@ begin namespace XSharpModel
 			return null
 		
 		static method FindFullPath(fullPath as string) as XFile
-			
 			foreach var project in xProjects
 				var file := project:Value:FindFullPath(fullPath)
 				if file != null
@@ -66,14 +65,12 @@ begin namespace XSharpModel
 			return null
 		
 		static method Remove(projectName as string) as logic
-			local project as XProject
-			local flag2 as logic
-			if (xProjects:ContainsKey(projectName))
-				project := xProjects:Item[projectName]
+			if xProjects:ContainsKey(projectName)
+				var project := xProjects:Item[projectName]
 				project:UnLoad()
-				flag2 := xProjects:TryRemove(projectName, out project)
+				var result := xProjects:TryRemove(projectName, out project)
 				SystemTypeController.UnloadUnusedAssemblies()
-				return flag2
+				return result
 			endif
 			return false
 		
@@ -84,9 +81,8 @@ begin namespace XSharpModel
 			return false
 		
 		static method WalkFile(fileName as string) as void
-			local file as XFile
-			file := FindFile(fileName)
-			if (file != null)
+			var file := FindFile(fileName)
+			if file != null
 				ModelWalker.GetWalker():FileWalk(file)
 			endif
 			return 		
@@ -94,11 +90,11 @@ begin namespace XSharpModel
 		// Properties
 		static property OrphanedFilesProject as XProject
 			get
-				if (_orphanedFilesProject == null)
+				if _orphanedFilesProject == null
 					_orphanedFilesProject := XProject{OrphanedFilesProject{}}
 					var projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
 					projectNode:Project := _orphanedFilesProject
-					if (xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject))
+					if xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
 						projectNode:Project:AddAssemblyReference(typeof(string):Assembly:Location)
 					endif
 				endif

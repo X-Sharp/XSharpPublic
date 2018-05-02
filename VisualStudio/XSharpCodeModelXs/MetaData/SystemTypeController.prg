@@ -56,78 +56,64 @@ begin namespace XSharpModel
 		
 		static method FindAssemblyLocation(fullName as string) as string
 			local info as AssemblyInfo
-			//
 			foreach var pair in assemblies
-				//
 				info := pair:Value
-				if (! String.IsNullOrEmpty(info:FullName) .AND. (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0))
-					//
+				if ! String.IsNullOrEmpty(info:FullName) .AND. (String.Compare(info:FullName, fullName, System.StringComparison.OrdinalIgnoreCase) == 0)
 					return pair:Key
 				endif
 			next
 			return null
 		
 		method FindType(typeName as string, usings as IList<string>, assemblies as IList<AssemblyInfo>) as System.Type
-			local strArray as string[]
-			local num as long
-			local index as long
-			local str2 as string
-			local str3 as string
-			local num3 as long
-			local strArray2 as string[]
-			local type as System.Type
 			//
-			if (typeName:EndsWith(">"))
-				//
-				if (typeName:Length <= (typeName:Replace(">", ""):Length + 1))
-					//
-					strArray := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
-					num := (strArray:Length - 1)
-					typeName := strArray[ 1] + "`" + num:ToString()
+			if typeName:EndsWith(">")
+				if typeName:Length <= (typeName:Replace(">", ""):Length + 1)
+					var elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
+					var num := (elements:Length - 1)
+					typeName := elements[ 1] + "`" + num:ToString()
 				else
-					//
-					index := typeName:IndexOf("<")
-					str2 := typeName:Substring(0, index)
-					str3 := typeName:Substring((index + 1))
-					str3 := str3:Substring(0, (str3:Length - 1)):Trim()
-					index := str3:IndexOf("<")
-					while index >= 0
-						num3 := str3:LastIndexOf(">")
-						str3 := str3:Substring(0, index) + str3:Substring((num3 + 1)):Trim()
-						index := str3:IndexOf("<")
+					var pos		   := typeName:IndexOf("<")
+					var baseName   := typeName:Substring(0, pos)
+					var typeParams := typeName:Substring(pos + 1)
+					typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
+					pos			   := typeParams:IndexOf("<")
+					while pos >= 0
+						var pos2  := typeParams:LastIndexOf(">")
+						typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
+						pos := typeParams:IndexOf("<")
 					enddo
-					strArray2 := str3:Split(",":ToCharArray())
-					typeName := str2 + "`" + strArray2:Length:ToString()
+					var elements := typeParams:Split(",":ToCharArray())
+					typeName := baseName + "`" + elements:Length:ToString()
 				endif
 			endif
-			type := Lookup(typeName, assemblies)
-			if type != null
-				return type
+			var result := Lookup(typeName, assemblies)
+			if result != null
+				return result
 			endif
 			if usings != null
-				foreach strUsing as string in usings:Expanded()
-					type := Lookup(strUsing + "." + typeName, assemblies)
-					if type != null
-						return type
+				foreach name as string in usings:Expanded()
+					result := Lookup(name + "." + typeName, assemblies)
+					if result != null
+						return result
 					endif
 				next
 			endif
 			if assemblies != null
 				foreach var asm in assemblies
-					if (asm:ImplicitNamespaces != null)
+					if asm:ImplicitNamespaces != null
 						foreach strNs as string in asm:ImplicitNamespaces
 							var fullname := strNs + "." + typeName
-							type := Lookup(fullName, assemblies)
-							if type != null
-								return type
+							result := Lookup(fullName, assemblies)
+							if result != null
+								return result
 							endif
 						next
 					endif
 				next
 			endif
             // Also Check into the Functions Class for Globals/Defines/...
-			type := Lookup("Functions." + typeName, assemblies)
-			return type
+			result := Lookup("Functions." + typeName, assemblies)
+			return result
 		
 		method GetNamespaces(assemblies as IList<AssemblyInfo>) as ImmutableList<string>
 			var list := List<string>{}
@@ -144,18 +130,18 @@ begin namespace XSharpModel
 			local key as string
 			//
 			lastWriteTime := File.GetLastWriteTime(cFileName)
-			if (assemblies:ContainsKey(cFileName))
+			if assemblies:ContainsKey(cFileName)
 				info := assemblies:Item[cFileName]
 			else
 				info := AssemblyInfo{cFileName, System.DateTime.MinValue}
 				assemblies:TryAdd(cFileName, info)
 			endif
-			if (cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase))
+			if cFileName:EndsWith("mscorlib.dll", System.StringComparison.OrdinalIgnoreCase)
 				mscorlib := AssemblyInfo{cFileName, System.DateTime.MinValue}
 			endif
-			if (Path.GetFileName(cFileName):ToLower() == "system.dll")
+			if Path.GetFileName(cFileName):ToLower() == "system.dll"
 				key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")
-				if (! assemblies:ContainsKey(key) .AND. File.Exists(key))
+				if ! assemblies:ContainsKey(key) .AND. File.Exists(key)
 					LoadAssembly(key)
 				endif
 			endif
@@ -164,7 +150,7 @@ begin namespace XSharpModel
 		static method LoadAssembly(reference as VsLangProj.Reference) as AssemblyInfo
 			local path as string
 			path := reference:Path
-			if (String.IsNullOrEmpty(path))
+			if String.IsNullOrEmpty(path)
 				return AssemblyInfo{reference}
 			endif
 			return LoadAssembly(path)
@@ -173,13 +159,13 @@ begin namespace XSharpModel
 			local sType as System.Type
 			sType := null
 			foreach var assembly in theirassemblies
-				if (assembly:Types:Count == 0)
+				if assembly:Types:Count == 0
 					assembly:UpdateAssembly()
 				endif
 				if assembly:Types:TryGetValue(typeName, out sType) .and. sType != NULL
 					exit
 				endif
-				if (assembly != null)
+				if assembly != null
 					sType := assembly:GetType(typeName)
 				endif
 				if sType != null
@@ -212,12 +198,10 @@ begin namespace XSharpModel
 				assemblies:TryRemove(key, out info)
 			next
             // when no assemblies left, then unload mscorlib
-			if (assemblies:Count == 0)
+			if assemblies:Count == 0
 				mscorlib := null
 			endif
 			GC.Collect()
-		
-		
 		
 	end class
 	

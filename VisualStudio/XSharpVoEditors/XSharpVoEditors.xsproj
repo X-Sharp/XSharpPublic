@@ -141,6 +141,14 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Common\BuildNumber.h">
+      <Link>BuildNumber.h</Link>
+    </None>
+    <None Include="..\..\Common\version.xh">
+      <Link>version.xh</Link>
+    </None>
+  </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>

@@ -49,7 +49,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool CaseSensitive { get; internal set; } = false;
         public bool ClrVersionWasSet { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
-        public bool CompactFramework { get; internal set; } = false;
         public string DefaultIncludeDir { get; internal set; } = _defaultIncludeDir;
         public XSharpDialect Dialect { get; internal set; } = XSharpDialect.Core;
         public string WindowsDir { get; internal set; } = _windir;
@@ -57,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string IncludePaths { get; internal set; } = "";
         public bool ImplicitNameSpace { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
-        public bool NoRun { get; internal set; } = true;
+        public bool NoClipCall { get; internal set; } = false;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
         public ParseLevel ParseLevel { get;  set; } = ParseLevel.Complete;

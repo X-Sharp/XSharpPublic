@@ -94,6 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal const string VoPszList = "Xs$PszList";
         internal const string ClipperArgs = "Xs$Args";
+        internal const string ClipperPCount = "Xs$PCount";
         internal const string RecoverVarName = "Xs$Obj";
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
@@ -137,6 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSet = "global::VulcanRTFuncs.Functions.__FieldSet";
         internal const string FieldSetWa = "global::VulcanRTFuncs.Functions.__FieldSetWa";
         internal const string NullDate = "global::Vulcan.__VODate.NullDate";
+        // internal const string UsualNIL = "global::Vulcan.__Usual._NIL";
         internal const string PszRelease = "global::Vulcan.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::Vulcan.Internal.CompilerServices.String2Psz";
         internal const string ArrayNew = "global::Vulcan.__Array.__ArrayNew";
@@ -166,6 +168,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarGet = "global::XSharp.VO.Functions.__MemVarGet";
         internal const string MemVarPut = "global::XSharp.VO.Functions.__MemVarPut";
         internal const string NullDate = "global::XSharp.__VODate.NullDate";
+        //internal const string UsualNIL = "global::XSharp.__Usual._NIL";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::XSharp.Internal.CompilerServices.String2Psz";
         internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";

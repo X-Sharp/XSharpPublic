@@ -67,6 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
+        public bool NoClipCall { get; internal set; } 
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
@@ -129,6 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 WindowsDir = opt.WindowsDir;
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
+                NoClipCall = opt.NoClipCall;
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 Verbose = opt.Verbose;
@@ -184,6 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ShowDefs = opt.ShowDefs;
             ShowIncludes = opt.ShowIncludes;
             NoStdDef = opt.NoStdDef;
+            NoClipCall = opt.NoClipCall;
             PreprocessorOutput = opt.PreprocessorOutput;
             ParseLevel = opt.ParseLevel;
             Verbose = opt.Verbose;

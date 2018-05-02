@@ -46,6 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
         public bool LateBinding { get; private set; }
+        public bool NoClipCall { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
 
         public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }

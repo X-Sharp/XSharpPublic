@@ -2,7 +2,6 @@
 USING System.Globalization
 USING System.Resources
 
-
 FUNCTION VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
 	RETURN VO_Sprintf( __CavoStr( format ), args )
 	

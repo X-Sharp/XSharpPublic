@@ -84,8 +84,10 @@ begin namespace XSharp.VO.Tests
 			local oObject as object
 			oObject := CreateInstance("ClassWithNoMethod")
 			assert.Equal(9, (int) Send(oObject, "ADD",2,3,4))
-			assert.Equal(24, (int) Send(oObject, "MUL",2,3,4))
+			assert.Equal(24, (INT) Send(oObject, "MUL",2,3,4))
+            //assert.Equal(24, (int) oObject:Mul(2,3,4))
 			assert.Equal("DIV", (STRING) Send(oObject, "DIV",2,3,4))
+            
 		end class
 		
 	end namespace

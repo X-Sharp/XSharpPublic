@@ -3342,7 +3342,6 @@
   <data name="RT_MSG_GUARD_PAGE" xml:space="preserve">
     <value>Guard Page</value>
   </data>
-
   <data name="ARGCANNOTBEZERO" xml:space="preserve">
     <value>Argument cannot be 0</value>
   </data>
@@ -3411,7 +3410,7 @@
     <value>{0} (Version {1}.{2}, Build {3}, Revision {4})</value>
   </data>
   <data name="RUNTIMEERROR" xml:space="preserve">
-    <value>Vulcan.NET Runtime Error</value>
+    <value>Runtime Error</value>
     <comment>Beginning of runtime error message</comment>
   </data>
   <data name="STRINGLENNE1" xml:space="preserve">
@@ -3442,6 +3441,4 @@
   <data name="ARRAYBOUNDS" xml:space="preserve">
     <value>Invalid array index</value>
   </data>
-
-  
 </root>

@@ -5,18 +5,18 @@
 //
 
 CLASS XSharp.VObject
-	EXPORT oCargo AS OBJECT
-	
-	CONSTRUCTOR()
-		SUPER()
-		RETURN
-
-   DESTRUCTOR()
-	   Destroy()
-	   RETURN
-   	
-   VIRTUAL METHOD Destroy() AS USUAL CLIPPER
-	   RETURN SELF
-
-
+    EXPORT oCargo AS OBJECT
+    
+    CONSTRUCTOR()
+        SUPER()
+        RETURN
+        
+    DESTRUCTOR()
+        Destroy()
+        RETURN
+        
+    VIRTUAL METHOD Destroy() AS USUAL CLIPPER
+        RETURN SELF
+        
+        
 END CLASS

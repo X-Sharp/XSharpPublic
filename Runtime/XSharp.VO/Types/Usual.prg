@@ -4,7 +4,8 @@
 // See License.txt in the project root for license information.
 //
 using System
-using System.Runtime.InteropServices
+USING System.Runtime.InteropServices
+using System.Runtime.CompilerServices
 using System.Diagnostics
 using XSharp.Internal
 begin namespace XSharp
@@ -28,6 +29,7 @@ begin namespace XSharp
             return
             
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(u as __Usual)
             self:_flags     := u:_flags
             self:_valueData	:= u:_valueData
@@ -35,6 +37,7 @@ begin namespace XSharp
             
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(f as Float)
             self:_valueData:r8		:= f:Value
             self:_flags:usualType	:= UsualType.Float
@@ -43,6 +46,7 @@ begin namespace XSharp
             
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(r8 as real8)
             self:_valueData:r8		:= r8
             self:_flags:usualType	:= UsualType.Float
@@ -51,37 +55,43 @@ begin namespace XSharp
             
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as logic)
             self:_flags:usualType	:= UsualType.LOGIC
             self:_valueData:l		:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Array)
             self:_flags:usualType	:= UsualType.Array
             self:_refData			:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Date)
             self:_flags:usualType	:= UsualType.Date
             self:_valueData:d		:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as System.DateTime)
             self:_flags:usualType	:= UsualType.DateTime
             self:_valueData:dt		:= value
-            
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as long)
             self:_flags:usualType	:= UsualType.LONG
             _valueData:i			:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as int64)
             self:_flags:usualType	:= UsualType.INT64
             self:_valueData:i64		:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as uint64)
             if value < Int64.MaxValue
                 self:_flags:usualType	:= UsualType.INT64
@@ -230,11 +240,14 @@ begin namespace XSharp
             self:_flags:usualType	:= UsualType.STRING
             self:_refData 			:= s
             return
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(s as symbol)
             self:_flags:usualType	:= UsualType.SYMBOL
             self:_valueData:s       := s
             return
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(o as object, lIsNull as logic)
             self:_flags:usualType	:= UsualType.OBJECT
             self:_refData 			:= null

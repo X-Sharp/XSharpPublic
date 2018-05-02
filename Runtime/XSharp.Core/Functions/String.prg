@@ -373,9 +373,9 @@ function ChrA(c as dword) as string
       LOCAL chars := Char[]{ 1 } AS Char[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
       LOCAL decoder := encoding:GetDecoder() AS Decoder
-      bytes[0] := b
+      bytes[__ARRAYBASE__] := b
       decoder:GetChars( bytes, 0, 1, chars, 0 )
-      ret := chars[1]:ToString()
+      ret := chars[__ARRAYBASE__]:ToString()
 
    ENDIF
 

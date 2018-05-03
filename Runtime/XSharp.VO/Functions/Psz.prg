@@ -73,18 +73,7 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	function EmptyPSZ(PSZValue as Psz) as logic
 		   RETURN PSZValue:IsEmpty
 	
-	/// <summary>
-	/// </summary>
-	/// <param name="pszText"></param>
-	/// <param name="pszCapt"></param>
-	/// <param name="dwB1"></param>
-	/// <param name="dwB2"></param>
-	/// <param name="dwB3"></param>
-	/// <returns>
-	/// </returns>
-	function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
-		/// THROW NotImplementedException{}
-		return 0     
+   
 		
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.

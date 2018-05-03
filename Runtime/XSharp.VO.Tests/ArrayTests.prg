@@ -13,7 +13,7 @@ using XUnit
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VO.Tests
 
-	CLASS RuntimeArrayTests
+	CLASS ArrayTests
 	 
  		[Trait("Category", "Array")];
 		[Fact]; 
@@ -48,6 +48,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Adel(testArray, 1)
 			Assert.Equal( (dword)3 , Alen(testArray))
 			Assert.Equal( NIL ,  testArray[3])
+
 		return
 		
  		[Trait("Category", "Array")];
@@ -96,6 +97,66 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			mainArray[5][2] := "anothertest"
 			u := mainArray[5][2]
 			Assert.Equal( "anothertest", (string) u)
-		return
+		RETURN
+
+ 		[Trait("Category", "Array")];
+		[Fact];
+		METHOD ArraySortTest() as void
+			LOCAL a := {1,3,2,5,4,6} AS array
+			ASort(a)
+			Assert.Equal( 1, (INT) a[1])
+			Assert.Equal( 2, (int) a[2])
+			Assert.Equal( 3, (INT) a[3])
+			Assert.Equal( 4, (int) a[4])
+			Assert.Equal( 5, (int) a[5])
+			Assert.Equal( 6, (INT) a[6])
+			ASort(a, 1, alen(a), {|x,y| x > y })
+			Assert.Equal( 6,(INT) a[1])
+			Assert.Equal( 5,(int) a[2])
+			Assert.Equal( 4,(INT) a[3])
+			Assert.Equal( 3, (int) a[4])
+			Assert.Equal( 2, (int) a[5])
+			Assert.Equal( 1, (INT) a[6])
+			a := {"Fred", "Kate", "ALVIN", "friend"}
+
+			ASort(a,,, {|x, y| Upper(x) <= Upper(y)})        // {ALVIN, FRED, FRIEND, KATE}
+			Assert.Equal( "ALVIN",(string) a[1])
+			Assert.Equal( "Fred",(string) a[2])
+			Assert.Equal( "friend",(string) a[3])
+			Assert.Equal( "Kate" ,(string) a[4])
+
+		[Trait("Category", "Array")];
+		[Fact];
+		METHOD AscanTest() as void
+			LOCAL a := {1,3,2,5,4,6} AS array
+			Assert.Equal( 1, (INT) Ascan(a, 1))
+			Assert.Equal( 3, (int) Ascan(a, 2))
+			Assert.Equal( 2, (INT) Ascan(a, 3))
+			Assert.Equal( 5, (int) Ascan(a, 4))
+			Assert.Equal( 4, (int) Ascan(a, 5))
+			Assert.Equal( 6, (int) Ascan(a, 6))
+			ASort(a)
+			Assert.Equal( 1, (INT) Ascan(a, 1))
+			Assert.Equal( 2, (int) Ascan(a, 2))
+			Assert.Equal( 3, (INT) Ascan(a, 3))
+			Assert.Equal( 4, (int) Ascan(a, 4))
+			Assert.Equal( 5, (int) Ascan(a, 5))
+			Assert.Equal( 6, (int) Ascan(a, 6))
+			a := {"Fred", "Kate", "ALVIN", "friend"}
+			Assert.Equal( 3, (int)  Ascan(a, "ALVIN"))
+			Assert.Equal( 1, (int) Ascan(a, "Fred"))
+			Assert.Equal( 4, (int) Ascan(a, "friend"))
+			Assert.Equal( 2, (int) Ascan(a, "Kate"))
+
+			ASort(a,,, {|x, y| Upper(x) <= Upper(y)})        // {ALVIN, FRED, FRIEND, KATE}
+			Assert.Equal( 1, (int) Ascan(a, "ALVIN"))
+			Assert.Equal( 2, (int) Ascan(a, "Fred"))
+			Assert.Equal( 3, (int) Ascan(a, {|e| e == "friend"}))
+			Assert.Equal( 4, (int) Ascan(a, {|e| e == "Kate" }))
+			Assert.Equal( 2, (INT) AscanBin(a, "Fred"))
+			SetExact(FALSE)
+			Assert.Equal( 2, (INT) AscanBin(a, "Fre"))
+			Assert.Equal( 0, (INT) AscanBinExact(a, "Fre"))
+			
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -28,7 +28,7 @@ static class StringHelpers
 		endif
 		if nDec != 0
 			cFormat := "."
-			cFormat := cFormat:PadRight(nDec+1, '#')	// 1 extra for the Dot
+			cFormat := cFormat:PadRight(nDec+1, '0')	// 1 extra for the Dot
 		else
 			cFormat := ""
 		endif
@@ -75,13 +75,23 @@ function AsHexString(uValue as usual) as string
 function AsPadr(u as usual,dwLen as dword) as string
 	return PadR(AsString(u), dwLen)
 	
+
+/// <summary>
+/// Convert a value to a string.
+/// </summary>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function _AsString(u as Usual) as string
+	return	 AsString(u)
+
 	
-	/// <summary>
-	/// Convert a value to a string.
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
+/// <summary>
+/// Convert a value to a string.
+/// </summary>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
 function AsString(u as usual) as string
 	local result as string
 	do case
@@ -152,7 +162,7 @@ function Descend(uValue as usual) as usual
 	endif
 	return uValue
 
-internal function _descendingString(s as string)
+internal function _descendingString(s as string) as STRING
 	var sb  := StringBuilder{s}
 	var nlen := s:Length-1
 	local i as int
@@ -356,7 +366,7 @@ function PadR( uValue as usual, nLength as int, cFillStr as string ) as string
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-function Str(n ,nLen ,nDec ) as string
+function Str(n ,nLen ,nDec ) as string CLIPPER
 	if PCount() < 1 .or. pCount() > 3
 		return ""
 	endif
@@ -368,7 +378,7 @@ function Str(n ,nLen ,nDec ) as string
 	endif
 	return result	
 
-function _Str(n ,nLen ,nDec ) as string
+function _Str(n ,nLen ,nDec ) as string CLIPPER
 	if PCount() < 1 .or. pCount() > 3
 		return ""
 	endif

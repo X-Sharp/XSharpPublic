@@ -35,6 +35,7 @@ BEGIN NAMESPACE XSharp
 		PROPERTY CanSubstitute      AS LOGIC AUTO
 		PROPERTY Operation          AS STRING AUTO
 		PROPERTY SubCodeText        AS STRING AUTO
+		PROPERTY OSCode				as DWORD AUTO
 		
 		PRIVATE METHOD setDefaultValues() AS VOID
 			SELF:Gencode		:= EG_UNKNOWN
@@ -46,6 +47,8 @@ BEGIN NAMESPACE XSharp
 			SELF:CanSubstitute	:= FALSE
 			SELF:Tries			:= 0
 			SELF:FuncSym		:= ProcName(2)
+			SELF:OSCode			:= 0
+			SELF:Description    := SELF:Message
 			
 		CONSTRUCTOR()
 			SELF:setDefaultValues()
@@ -60,7 +63,6 @@ BEGIN NAMESPACE XSharp
 		CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[])
 			SUPER(ex.Message,ex)
 			SELF:setDefaultValues()
-			SELF:Description := ex:Message
 			SELF:GenCode     := EG_EXCEPTION
 			SELF:FuncSym     := cFuncName
 			SELF:Arg         := cArgName
@@ -70,11 +72,13 @@ BEGIN NAMESPACE XSharp
 
 			
 		CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING)
+			SUPER(ErrString( dwGenCode ))
 			SELF:setDefaultValues()
 			SELF:Gencode := dwGenCode
 			SELF:Arg	 := cArg
 			
 		CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
+			SUPER(cDescription)
 			SELF:setDefaultValues()
 			SELF:Gencode		:= dwGenCode
 			SELF:Arg			:= cArg
@@ -82,6 +86,7 @@ BEGIN NAMESPACE XSharp
 			
 			
 		CONSTRUCTOR (dwgencode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
+			SUPER(ErrString( dwGenCode ))
 			SELF:setDefaultValues()
 			SELF:Gencode := dwgencode
 			SELF:SubCode := dwSubcode
@@ -102,11 +107,20 @@ BEGIN NAMESPACE XSharp
 			#region Static methods to construct an error			
 			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING) AS Error
 				RETURN ArgumentError(cFuncName, name, description, 0)
+
+			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs params OBJECT[]) AS Error
+				VAR err			:= Error{Gencode.EG_ARG, name, ErrString( EG_ARG )}
+				err:FuncSym     := cFuncName
+				err:Description := err:Message
+				err:Argnum		:= iArgNum
+				err:args			:= aArgs
+				RETURN err
+				
 				
 			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD) AS Error
-				VAR err			:= Error{Gencode.EG_ARG, name}
+				VAR err			:= Error{Gencode.EG_ARG, name, description}
 				err:FuncSym     := cFuncName
-				err:Description := Description
+				err:Description := err:Message
 				err:Argnum		:= iArgNum
 				RETURN err
 				
@@ -157,9 +171,6 @@ BEGIN NAMESPACE XSharp
 			  e:Description := __CavoStr( VOErrors.DATATYPEERROR )
 			  RETURN e
 
-		  STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
-			  RETURN ArgumentError( cFuncName, cArgName, iArgNum, ErrString( EG_ARG ), aArgs )
-
 		  STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs params OBJECT[]) AS Error
 			  LOCAL e AS Error
 			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
@@ -167,18 +178,23 @@ BEGIN NAMESPACE XSharp
 			  e:Description := cDescription
 			  RETURN e
 
-		  STATIC METHOD BoundError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[] ) AS Error
-			  LOCAL e AS Error
-			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
-			  e:GenCode     := EG_BOUND
-			  e:Description := ErrString( EG_BOUND )
-			  RETURN e
-
 		  STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD ) AS Error
 			  LOCAL e AS Error
 			  e := Error{ ArgumentNullException{} ,cFuncName, cArgName, iArgNum}
 			  e:GenCode     := EG_ARG
 			  e:Description := __CavoStr( VOErrors.ARGISNULL )
+			  RETURN e
+
+		   STATIC METHOD BoundError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
+			  LOCAL e AS Error
+			  e := Error{ ArgumentException{ErrString( EG_BOUND) } }
+			  e:Severity    := ES_ERROR
+			  e:GenCode     := EG_BOUND
+			  e:SubSystem   := "BASE"
+			  e:FuncSym     := cFuncName
+			  e:Arg         := cArgName
+			  e:ArgNum      := iArgNum
+			  e:Args        := aArgs
 			  RETURN e
 
 						

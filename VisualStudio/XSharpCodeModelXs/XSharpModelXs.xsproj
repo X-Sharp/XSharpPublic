@@ -90,13 +90,6 @@
       <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="EnvDTE80">
-      <Name>EnvDTE80</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>EnvDTE80.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE80.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp">
       <Name>Microsoft.CSharp</Name>
       <SpecificVersion>False</SpecificVersion>

@@ -87,14 +87,14 @@
       <Name>EnvDTE</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>EnvDTE.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\\PublicAssemblies\EnvDTE.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="EnvDTE80">
       <Name>EnvDTE80</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>EnvDTE80.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\\PublicAssemblies\EnvDTE80.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE80.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp">
@@ -141,9 +141,10 @@
       <Name>VsLangProj</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>VsLangProj.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\\PublicAssemblies\VsLangProj.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\VsLangProj.dll</HintPath>
       <Private>True</Private>
-    </Reference>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+	</Reference>
     <Reference Include="XSharp.CodeAnalysis, Version=1.2.1.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.CodeAnalysis</Name>
       <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>

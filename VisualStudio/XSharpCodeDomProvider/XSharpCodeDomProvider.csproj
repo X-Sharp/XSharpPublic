@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">

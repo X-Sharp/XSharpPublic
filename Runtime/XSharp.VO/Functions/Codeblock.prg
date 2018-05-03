@@ -85,5 +85,5 @@ function CParamCount(oCodeBlock as CodeBlock) as dword
 
 // Todo write canEval based on type
 
-function __CanEval() Clipper
+function __CanEval() as LOGIC Clipper
 	return false

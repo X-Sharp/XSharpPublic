@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-FUNCTION OleDateTimeAsDate(lSet) AS LOGIC
+FUNCTION OleDateTimeAsDate(lSet) AS LOGIC CLIPPER
 	// Global setting for Date/Time return values
 	STATIC lAsDate := FALSE AS LOGIC
 	IF IsLogic(lSet)
@@ -33,7 +33,7 @@ CLASS XSharp.OleDateTime
 		
 	PROPERTY DateTime AS System.DateTime GET dt SET dt := VALUE
 	
-	CONSTRUCTOR(uDate) 
+	CONSTRUCTOR(uDate) CLIPPER
 		IF IsNumeric(uDate)
 			dt := DateTime.FromOADate( (REAL8) uDate)
 		ELSEIF IsDate(uDate)

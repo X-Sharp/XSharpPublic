@@ -36,7 +36,7 @@ function FRead(pHandle as IntPtr,pData as IntPtr,dwCount as dword) as dword
 /// <param name="nBuffLen"></param>
 /// <returns>
 /// </returns>
-function FReadLine(pFile ,nBuffLen) as string
+function FReadLine(pFile ,nBuffLen) as string CLIPPER
 	if nBuffLen == NIL
 		return global::Functions.FreadLine(pFile, 0)
 	else
@@ -52,7 +52,7 @@ function FReadLine(pFile ,nBuffLen) as string
 /// <param name="nOrigin"></param>
 /// <returns>
 /// </returns>
-function FSeek(hFile ,nOffset ,nOrigin ) as long
+function FSeek(hFile ,nOffset ,nOrigin ) as long CLIPPER
 	if nOrigin == NIL
 		return global::Functions.FSeek3(hFile, nOffSet, FS_SET)
 	else
@@ -69,7 +69,7 @@ function FSeek(hFile ,nOffset ,nOrigin ) as long
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWrite(pHandle ,c ,nCount ) as dword
+function FWrite(pHandle ,c ,nCount ) as dword CLIPPER
 	if nCount == NIL
 		return global::Functions.Fwrite(pHandle, c)
 	else
@@ -84,7 +84,7 @@ function FWrite(pHandle ,c ,nCount ) as dword
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteLine(pFile ,c ,nCount) as dword
+function FWriteLine(pFile ,c ,nCount) as dword CLIPPER
 	if nCount == NIL
 		return global::Functions.FwriteLine(pFile, c)
 	else
@@ -99,7 +99,7 @@ function FWriteLine(pFile ,c ,nCount) as dword
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteText(pHandle ,c ,nCount ) as dword
+function FWriteText(pHandle ,c ,nCount ) as dword CLIPPER
 	if nCount == NIL
 		return global::Functions.FWriteText3(pHandle, c, Slen(c))
 	else

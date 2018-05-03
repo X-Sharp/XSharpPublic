@@ -34,10 +34,7 @@ abstract class XSharp.CodeBlock implements ICodeBlock
 		
 	public VIRTUAL method EvalBlock(args params object[] ) as object
 		var num := args:Length
-		var uArgs := usual[]{num}
-		for var i := 1 to num
-			uArgs[i] := (usual) args[i]
-		next
+		var uArgs := __ObjectArrayToUsualArray(args)
 		return self:Eval(uArgs)
 		
 	public override method ToString() as string
@@ -61,11 +58,7 @@ public class XSharp._CodeBlock inherit XSharp.CodeBlock
 		_cMacro		:= cMacro
 		
 	public override method Eval(args params usual[]) as usual
-		var num := args:Length
-		var oArgs := object[]{num}
-		for var i := 1 to num
-			oArgs[i] := (object) args[i]
-		next
+		var oArgs := __UsualArrayToObjectArray(args)
 		return (usual) self:_innerBlock:EvalBlock(oArgs)
 	
 	public override method ToString() as string

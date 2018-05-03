@@ -41,7 +41,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
-    <VO15>true</VO15>
+    <VO15>false</VO15>
     <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
@@ -66,6 +66,10 @@
     <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
+    <DebuggerCommand>$(TargetPath)</DebuggerCommand>
+    <DebuggerCommandArguments />
+    <DebuggerWorkingDirectory />
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -129,7 +133,6 @@
     <Compile Include="Functions\Psz.prg" />
     <Compile Include="Functions\Float.prg" />
     <Compile Include="Functions\GC.prg" />
-    <Compile Include="Functions\Internal.prg" />
     <Compile Include="Functions\International.prg" />
     <Compile Include="Functions\Macro.prg" />
     <Compile Include="Functions\Memo.prg" />

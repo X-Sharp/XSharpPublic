@@ -453,6 +453,6 @@ FUNCTION Transform( uValue AS USUAL, picture AS STRING ) AS STRING
 
 
 //Todo: Implement unformat
-function Unformat( cString, cPicture, cType)
+function Unformat( cString, cPicture, cType) as USUAL CLIPPER
 	return NIL
 

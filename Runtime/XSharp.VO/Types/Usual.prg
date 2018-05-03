@@ -226,7 +226,10 @@ begin namespace XSharp
 								self:_valueData:r8		:= f:Value
 								self:_flags:usualType	:= UsualType.Float
 								self:_flags:Width		:= (Sbyte) f:Digits
-								self:_flags:Decimals	:= (Sbyte) f:Decimals
+								SELF:_flags:Decimals	:= (Sbyte) f:Decimals
+							elseif o is ICodeBlock
+                                SELF:_flags:usualType := UsualType.CodeBlock
+                                self:_refData := o
                             ELSE
                                 SELF:_flags:usualType := UsualType.Object
                                 self:_refData := o
@@ -288,7 +291,7 @@ begin namespace XSharp
 			internal property IsLong		as logic get _usualtype == UsualType.Long
 			internal property IsInteger		as logic get _usualtype == UsualType.Long .or. _usualtype == UsualType.Int64
 			internal property Type			as UsualType get _flags:usualType 
-			internal property IsNumeric
+			internal property IsNumeric as logic
 				get
 					switch _usualType
 					case UsualType.Long
@@ -1861,7 +1864,7 @@ begin namespace XSharp
             public method ToSingle(provider as System.IFormatProvider) as real4
             return self
            
-			public method AsString()
+			public method AsString() as string strict
 				return self:ToString()
 			
 			
@@ -2082,16 +2085,16 @@ begin namespace XSharp
     
     
     [StructLayout(LayoutKind.Explicit)];
-    public structure _UsualData
+    internal structure _UsualData
         // Fields
-        [FieldOffset(0)] export d as __VoDate
-        [FieldOffset(0)] export r8 as real8
-        [FieldOffset(0)] export i as long
-        [FieldOffset(0)] export i64 as int64
-        [FieldOffset(0)] export l as logic
-        [FieldOffset(0)] export p as System.IntPtr
-        [FieldOffset(0)] export s as symbol
-        [FieldOffset(0)] export dt as System.DateTime
+        [FieldOffset(0)] internal d as __VoDate
+        [FieldOffset(0)] internal r8 as real8
+        [FieldOffset(0)] internal i as long
+        [FieldOffset(0)] internal i64 as int64
+        [FieldOffset(0)] internal l as logic
+        [FieldOffset(0)] internal p as System.IntPtr
+        [FieldOffset(0)] internal s as symbol
+        [FieldOffset(0)] internal dt as System.DateTime
         
     end structure
     

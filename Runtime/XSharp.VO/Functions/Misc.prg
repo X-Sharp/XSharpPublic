@@ -58,7 +58,7 @@ function InListExact(u as usual, args params usual[]) as logic
 	return _InListWorker(u, args, TRUE)
 
 
-internal function _InListWorker( u as usual, args as const usual[], lExact as logic)
+internal function _InListWorker( u as usual, args as const usual[], lExact as logic) as logic 
 	local i, nLen as int
 	nLen := args:Length
 	if lExact

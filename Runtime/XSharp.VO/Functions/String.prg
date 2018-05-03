@@ -271,7 +271,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function SubS(c ,iStart ,wLen ) as string
+function SubS(c ,iStart ,wLen ) as string CLIPPER
 	return SubStr(c, iStart, wLen)
 
 
@@ -283,7 +283,7 @@ function SubS(c ,iStart ,wLen ) as string
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function SubStr(c ,uStart ,uLen ) as string
+function SubStr(c ,uStart ,uLen ) as string CLIPPER
 	if ! c:IsString
 		throw Error.DataTypeError(__ENTITY__, nameof(c), 1, c, uStart, uLen)
 	endif

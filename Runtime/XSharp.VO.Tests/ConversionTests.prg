@@ -38,9 +38,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c := Str3(12.3411,5,2)
 			Assert.Equal("12.34", c)	// ROunded down
 			c := Str3(FloatFormat(12.3456,10,4),10,5)
-			Assert.Equal("   12.3456", c)	// ROunded down
+			Assert.Equal("  12.34560", c)	// ROunded down
 			c := StrZero(12.3456,10,2)
 			Assert.Equal("0000012.35", c)	// ROunded up
+			c := STR3(2.49999,4,2)
+			assert.Equal("2.50", c )  
+			c := STR3(2.50012,4,2)
+			assert.Equal("2.50", c )  
 
 
 	END CLASS

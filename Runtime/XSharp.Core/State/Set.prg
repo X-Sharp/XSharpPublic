@@ -603,3 +603,21 @@ function SetYield() as logic
 function SetYield(lSet as logic) as logic
 	setstate logic Set.Yield lSet
 
+
+/// <summary>
+/// Retrieve and set the <%APP%> return code.
+/// </summary>
+/// <param name="dw"></param>
+/// <returns>
+/// </returns>
+function ErrorLevel(dw as dword) as dword 
+	setstate DWORD Set.ErrorLevel dw
+
+
+/// <summary>
+/// Retrieve the <%APP%> return code.
+/// </summary>
+/// <returns>
+/// </returns>
+function ErrorLevel() as dword 
+	getstate DWORD Set.ErrorLevel

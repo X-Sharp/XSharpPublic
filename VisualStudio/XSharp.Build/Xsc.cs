@@ -406,12 +406,13 @@ namespace XSharp.Build
 
         #endregion
 
-
+        private bool useCRLF;
         private int errorCount;
         //private bool hasShownMaxErrorMsg;
         public Xsc() : base()
         {
             //System.Diagnostics.Debugger.Launch();
+            useCRLF = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSHARPDEV"));
             errorCount = 0;
             //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
@@ -770,7 +771,7 @@ namespace XSharp.Build
 
         }
 
-        #region Methods from ManagedCompiler in ROslyn
+#region Methods from ManagedCompiler in ROslyn
         /// <summary>
         /// Adds a "/features:" switch to the command line for each provided feature.
         /// </summary>
@@ -863,7 +864,7 @@ namespace XSharp.Build
                 }
             }
         }
-        #endregion
+#endregion
         /// <summary>
         /// Mostly copied from the ManagedCompiler task in Roslyn
         /// </summary>
@@ -948,7 +949,8 @@ namespace XSharp.Build
             AddAdditionalFilesToCommandLine(commandLine);
 
             // Append the sources.
-            commandLine.AppendFileNamesIfNotNull(Sources, "\n ");
+            
+            commandLine.AppendFileNamesIfNotNull(Sources, useCRLF ? "\n " : " " );
             commandLine.AppendNewLine();
 
         }
@@ -967,7 +969,8 @@ namespace XSharp.Build
 
         protected override string GenerateResponseFileCommands()
         {
-            CommandLineBuilderExtension commandLine = new XSharpCommandLineBuilder(true);
+
+            var commandLine = new XSharpCommandLineBuilder(useCRLF);
             this.AddResponseFileCommands(commandLine);
             return commandLine.ToString();
         }

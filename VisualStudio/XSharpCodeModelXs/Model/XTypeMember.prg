@@ -34,9 +34,6 @@ begin namespace XSharpModel
 				local isStat := oElement:lStatic as logic
 				mods &=  ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 				CalculateRange(oElement, oInfo, OUT span, OUT intv)
-				IF oType:Kind == Kind.@@Enum .and. kind == Kind.@@Field
-					kind := Kind.@@EnumMember
-				endif
 				local result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} as XTypeMember
 				result:File := oFile
 				if oElement:aParams != null

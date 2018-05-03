@@ -1036,6 +1036,7 @@
 		<xs:attribute name="styleclass" type="xs:string"/>
 		<xs:attribute name="style" type="xs:string"/>
 		<xs:attribute name="previewimage" type="xs:string"/>
+		<xs:attribute name="lightbox" type="xs:boolean"/>
 		<xs:attribute name="autostart" type="xs:boolean"/>
 		<xs:attribute name="loop" type="xs:boolean"/>
 		<xs:attribute name="showcontrols" type="xs:boolean"/>

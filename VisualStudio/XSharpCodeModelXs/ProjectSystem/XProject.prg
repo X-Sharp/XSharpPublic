@@ -12,7 +12,6 @@ using EnvDTE
 using LanguageService.CodeAnalysis
 using LanguageService.CodeAnalysis.XSharp
 using System.Collections.Concurrent
-using EnvDTE80
 using Microsoft.VisualStudio
 using Microsoft.VisualStudio.Shell.Interop
 using System.Diagnostics

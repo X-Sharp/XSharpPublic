@@ -22,7 +22,7 @@ internal class Program
     /// <param name="args">Command line arguments passed to the program.</param>
     /// <returns>The process exit code.</returns>
 
-    internal static int Main(string[] args)
+    internal static int Main()
     {
         try
         {

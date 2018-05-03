@@ -452,7 +452,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    ENDIF
     RETURN 
 
-[Obsolete];
+
     METHOD	SortByName( ) AS VOID  
 /*	    // Sort Entities by Names
 	    SELF:aMods := ASort( SELF:aMods, , , { |x,y| x[1] < y[ 1 ] } )

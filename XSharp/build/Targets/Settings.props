@@ -222,7 +222,7 @@
 
   <!-- This file is imported by all projects at the beginning of the project files -->
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props') AND '$(MSBuildProjectExtension)' != '.vcxproj'" />
+          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props') AND '$(MSBuildProjectExtension)' != '.vcxproj' AND '$(MicrosoftCommonPropsHasBeenImported)' != 'true' " />
 
   <Import Project="$(RoslynDiagnosticsPropsFilePath)" Condition="'$(UseRoslynAnalyzers)' == 'true' AND Exists('$(RoslynDiagnosticsPropsFilePath)')" />
 

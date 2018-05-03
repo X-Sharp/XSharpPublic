@@ -67,12 +67,12 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
             RETURN typename
             
-        STATIC METHOD GetXSharpTypeName( SELF type AS System.Type) AS STRING
+        STATIC METHOD GetXSharpTypeName( SELF sysType AS System.Type) AS STRING
             LOCAL fullName AS STRING
             LOCAL suffix AS STRING
-            fullName := type:FullName
+            fullName := sysType:FullName
             IF (fullName == NULL)
-                fullName := type:Name
+                fullName := sysType:Name
             ENDIF
             suffix := ""
             IF fullName:EndsWith("[]")
@@ -87,33 +87,26 @@ BEGIN NAMESPACE XSharpModel
                 //
                 fullName := lookupTable:Item[fullName]
             ENDIF
-            //
-            /*
             // Maybe it's a Raw format ?
-            int genMarker = fullName:IndexOf('`')
+            LOCAL genMarker := fullName:IndexOf('`') AS INT
             IF (genMarker > -1)
-            // Class`1 -> Class
-            var genTypeName = fullName:Substring(0, genMarker)
-            local bFirst := TRUE as logic
-            VAR genTemp = "<"
-            VAR GenericTypeArguments = this.Type.GetGenericArguments();
-            FOREACH (Type genArg IN GenericTypeArguments)
-            {
-            IF (bFirst)
-                {
-                genTemp += genArg.FullName;
-                bFirst = FALSE;
-            }
-            ELSE
-            genTemp += "," + genArg.FullName;
-            }
-            genTemp += ">";
-            GenericTypeName = genTemp;
-            }
-            }
-            //
-            */
-            //
+                // First extract the type
+                LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
+                VAR genericString := "<"
+                VAR GenericTypeArguments := sysType:GetGenericArguments()
+                local first := TRUE as logic
+                FOREACH VAR genArg IN GenericTypeArguments
+                    IF first
+                        genericString += genArg:FullName
+                        First := FALSE
+                    ELSE
+                        genericString += "," + genArg:FullName
+                    ENDIF
+                NEXT
+                //
+                genericString += ">"
+                fullName := genTypeName + genericString
+            ENDIF
             RETURN fullName+ suffix
             
             

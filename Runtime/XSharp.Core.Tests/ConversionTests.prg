@@ -13,7 +13,7 @@ using XUnit
 
 BEGIN NAMESPACE XSharp.Core.Tests
 
-	CLASS ConversionTests
+	CLASS CoreConversionTests
 
 		[Trait("Category", "Conversion")];
 		[Fact];

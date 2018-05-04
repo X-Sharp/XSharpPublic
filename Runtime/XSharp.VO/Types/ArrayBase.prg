@@ -220,8 +220,7 @@ begin namespace XSharp
 		
 		
 		#region static function
-			public static method Copy(aSource as __ArrayBase<T>,aTarget as __ArrayBase<T>,parameter params int[] ) as __Array
-				throw NotImplementedException{"__ArrayBase.Copy is not implemented yet."}
+		
 			
 			
 		#endregion

@@ -597,3 +597,21 @@ function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dwo
 [Obsolete] ;
 FUNCTION IsVOObject(oObject AS OBJECT) AS LOGIC
 	RETURN FALSE   
+
+[Obsolete] ;
+FUNCTION _ArrayGetPoly(a AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN NIL   
+
+[Obsolete] ;
+FUNCTION _ArrayGetCollection(a AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN NIL   
+
+[Obsolete] ;
+FUNCTION _ArrayPutCollection(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN		 NIL   
+
+
+	
+[Obsolete] ;
+FUNCTION _ArrayPutPoly(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN NIL  

@@ -157,6 +157,53 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetExact(FALSE)
 			Assert.Equal( 2, (INT) AscanBin(a, "Fre"))
 			Assert.Equal( 0, (INT) AscanBinExact(a, "Fre"))
-			
+		[Trait("Category", "Array")];
+		[Fact];
+		METHOD AevalTest() AS VOID
+			LOCAL aValues := {1,2,3} AS ARRAY
+			LOCAL nCounter  AS LONG
+			nCounter := 0
+			Aeval(aValues, {|x| nCounter++})
+			Assert.Equal( 3, nCounter)
+			nCounter := 0
+			Aeval(aValues, {|x| nCounter++}, 2)
+			Assert.Equal( 2, nCounter)
+
+			nCounter := 0
+			Aeval(aValues, {|x| nCounter++}, 2,1)
+			Assert.Equal( 1, nCounter)
+			nCounter := 0
+			// AevalA assigns the return value to the array
+			AevalA(aValues, {|x| nCounter++, x*2})
+			Assert.Equal( 3, nCounter)
+			Assert.Equal( 2, (INT) aValues[1])
+			Assert.Equal( 4, (int) aValues[2])
+			Assert.Equal( 6, (int) aValues[3])
+			// AevalOld passes an extra parameter
+			nCounter := 0
+			AevalOld(aValues, {|x, n| nCounter+=n})
+			Assert.Equal( 6, nCounter)
+			// AevalOldA passes an extra parameter and assigns the return value
+			nCounter := 0
+			AevalOldA(aValues, {|x, n| n})
+			Assert.Equal( 1, (INT) aValues[1])
+			Assert.Equal( 2, (int) aValues[2])
+			Assert.Equal( 3, (INT) aValues[3])
+		[Trait("Category", "Array")];
+		[Fact];
+		METHOD ACopyTest() AS VOID
+			LOCAL aValues := {1,2,3} AS ARRAY
+			LOCAL aDest   := ArrayNew(3) AS ARRAY
+			ACopy(aValues, aDest)
+			Assert.Equal( 1, (INT) aDest[1])
+			Assert.Equal( 2, (int) aDest[2])
+			Assert.Equal( 3, (INT) aDest[3])
+			aDest   := ArrayNew(2) 
+			ACopy(aValues, aDest)
+			Assert.Equal( 1, (INT) aDest[1])
+			Assert.Equal( 2, (int) aDest[2])
+
+
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

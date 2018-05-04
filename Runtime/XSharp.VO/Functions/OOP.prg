@@ -261,7 +261,7 @@ STATIC CLASS OOPHelpers
 		IF propInfo != NULL_OBJECT .and. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
-		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, "IVarGetSelf", "IVarGet" ), nameof(cIVar), 2, { cIVar } )
+		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, "IVarGetSelf", "IVarGet" ), nameof(cIVar), 2, <OBJECT>{cIVar} )
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
@@ -279,7 +279,7 @@ STATIC CLASS OOPHelpers
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
-		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, "IVarGetSelf", "IVarGet" ), nameof(cIVar), 2, { cIVar } )
+		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, "IVarGetSelf", "IVarGet" ), nameof(cIVar), 2, <OBJECT>{cIVar})
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
@@ -377,7 +377,7 @@ STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-				THROW Error.VOError( EG_NOMETHOD, "Send", nameof(cMethod), 2, { cMethod} )
+				THROW Error.VOError( EG_NOMETHOD, "Send", nameof(cMethod), 2, <OBJECT>{cMethod} )
 			ENDIF
 		ENDIF
 		RETURN result
@@ -388,10 +388,10 @@ END CLASS
 /// <summary>
 /// Invoke a method for every element in an Array of objects.
 /// </summary>
-/// <param name="aTarget"></param>
-/// <param name="symMethod"></param>
-/// <returns>
-/// </returns>
+/// <param name="aTarget">The array to process.</param>
+/// <param name="symMethod">The method name, specified without parentheses.</param>
+/// <param name="args">A comma-separated list of arguments to pass to <symMethod>.</param>
+/// <returns>A reference to <aTarget>.</returns>
 FUNCTION ASend(aTarget AS ARRAY, cName AS STRING, args PARAMS USUAL[] ) AS ARRAY 
 	IF aTarget != NULL .and. ! String.IsNullOrEmpty( cName )
 		FOREACH VAR x IN aTarget
@@ -415,7 +415,7 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	ELSEIF IsInstanceOf(oObject, symClassName)
 		RETURN TRUE
 	ENDIF
-	LOCAL oError := Error.VOError(EG_WRONGCLASS, "CHECKINSTANCEOF", NAMEOF(oObject),1) AS Error
+	LOCAL oError := Error.VOError(EG_WRONGCLASS, "CHECKINSTANCEOF", NAMEOF(oObject),1, null) AS Error
 	oError:Description := symClassName + " <-> " + oObject:GetType():Name
 	THROW oError
 	
@@ -479,7 +479,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	ENDIF
 	VAR constructors := t:getConstructors() 
 	IF constructors:Length > 1
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD, "CreateInstance", NAMEOF(cClassName), 0 )
+		THROW Error.VOError( EG_AMBIGUOUSMETHOD, "CreateInstance", NAMEOF(cClassName), 0 , null)
 	ENDIF
 	LOCAL ctor := constructors[1] AS ConstructorInfo
 	LOCAL nPCount AS INT
@@ -511,7 +511,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 		ENDIF
 		oRet := ctor:Invoke( oArgs)	
 	CATCH
-		THROW Error.VOError( EG_NOMETHOD, "CreateInstance", "Constructor", 0 )
+		THROW Error.VOError( EG_NOMETHOD, "CreateInstance", "Constructor", 0 , null)
 		oRet := NULL_OBJECT
 	END TRY
 	RETURN oRet
@@ -867,29 +867,19 @@ FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
 	RETURN OOPHelpers.TreeHelper(type)
 	
 	
-/// <summary>
-/// Invoke a method.
-/// </summary>
+/// <summary>Invoke a method.</summary>
 /// <param name="o"></param>
 /// <param name="uMethod "></param>
-/// <returns>
-/// </returns>
-FUNCTION Send(o ,uMethod ) AS USUAL CLIPPER
-	LOCAL args AS USUAL[]
+/// <returns>Return value of the method call. </returns>
+FUNCTION Send(o as USUAL,uMethod as USUAL, args PARAMS Usual[]) AS USUAL 
 	IF !o:IsObject
-	     THROW Error.VOError( EG_DATATYPE, "Send", nameof(o), 1, <OBJECT>{ o } )
+	     THROW Error.VOError( EG_DATATYPE, "Send", nameof(o), 1, <OBJECT>{ o}  )
 	ENDIF
 	IF ! uMethod:IsString  && ! uMethod:IsSymbol
-		THROW Error.VOError( EG_DATATYPE, "Send", nameof(uMethod) , 2, { uMethod } )
+		THROW Error.VOError( EG_DATATYPE, "Send", nameof(uMethod) , 2, <OBJECT>{ uMethod } )
 	ENDIF
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
-	LOCAL nArgs   := PCount() - 2 AS INT
-	LOCAL nArg  AS INT
-	args := USUAL[]{nArgs}
-	FOR nArg := 1 TO nArgs
-		args[nArg] := _GetFParam(nArg+2)
-	NEXT
 	LOCAL uResult AS USUAL
 	try
 		uResult := OopHelpers.DoSend(oObject, cMethod, args)
@@ -898,13 +888,11 @@ FUNCTION Send(o ,uMethod ) AS USUAL CLIPPER
 	END TRY
 	return uResult
 	
-	
-/// <summary>
-/// </summary>
+/// <summary>Invoke a method.</summary>
 /// <param name="o"></param>
 /// <param name="symMethod"></param>
-/// <returns>
-/// </returns>
+/// <param name="args">A comma-separated list of arguments to pass to <symMethod>.</param>
+/// <returns>Return value of the method call. </returns>
 FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	RETURN __InternalSend(o, symMethod, args)
 	
@@ -913,7 +901,8 @@ FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	// CLIPPER calling convention for compatiblity with VO.
 FUNCTION __InternalSend( oObject AS OBJECT, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
-	
+
+/// <summary>Helper function to convert ARRAY to USUAL[]</summary>	
 INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
@@ -926,7 +915,8 @@ INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 		uargs[x] := args[x]
 	NEXT
 	RETURN uargs
-	
+
+/// <summary>Helper function to convert ARRAY to OBJECT[]</summary>		
 INTERNAL FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
@@ -939,7 +929,8 @@ INTERNAL FUNCTION __ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 		oArgs[x] := args[x]
 	NEXT
 	RETURN oArgs
-	
+
+/// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>			
 INTERNAL FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
@@ -953,6 +944,7 @@ INTERNAL FUNCTION __UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	NEXT
 	RETURN oArgs
 
+/// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>		
 INTERNAL FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uArgs    AS USUAL[]
@@ -974,13 +966,10 @@ FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY )
 	RETURN OopHelpers.DoSend(oObject, cMethod, uArgs )
 	
 	
-/// <summary>
-/// Return the number of arguments that a method is expecting.
-/// </summary>
-/// <param name="cClass"></param>
-/// <param name="cMethod"></param>
-/// <returns>
-/// </returns>
+/// <summary>Return the number of arguments that a method is expecting.</summary>
+/// <param name="cClass">The symbol of the class containing the method to examine.</param>
+/// <param name="cMethod">The method name, specified without parentheses.</param>
+/// <returns>The number of arguments that a method is expecting.</returns>
 FUNCTION MParamCount(cClass AS SYMBOL,cMethod AS SYMBOL) AS DWORD
 	LOCAL type AS Type
 	type := OOPHelpers.FindClass(cClass)	
@@ -1002,12 +991,12 @@ FUNCTION MParamCount(cClass AS SYMBOL,cMethod AS SYMBOL) AS DWORD
 	
 	
 	
-/// <summary>
-/// Return the number of local arguments that a function with the CLIPPER calling convention is expecting.
-/// </summary>
-/// <param name="symFunction"></param>
-/// <returns>
-/// </returns>
+/// <summary>Return the number of local arguments that a function is expecting.</summary>
+/// <param name="symFunction">The name of the function to examine.</param>
+/// <returns>The number of arguments that a method is expecting.</returns>
+/// <remarks>Note that you can't call functions that are overloaded.</Br>
+/// And unlike in VO this function can also be used to return the number of parameters for typed functions.</remarks>
+
 FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 	LOCAL aFuncs AS MethodInfo[]
 	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
@@ -1029,28 +1018,34 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 	
 	
 	
-/// <summary>
-/// </summary>
-/// <param name="symFunction"></param>
-/// <param name="aArgs"></param>
-/// <returns>
-/// </returns>
+/// <summary>Call a clipper function by name</summary>
+/// <param name="symFunction">The name of the function to call.</param>
+/// <param name="aArgs">The list of arguments to pass to the function</param>
+/// <returns>The return value of the function</returns>
+/// <remarks>Note that you can't call functions that are overloaded.</remarks>
 FUNCTION _CallClipFunc(symFunction AS STRING,aArgs AS ARRAY) AS USUAL
-LOCAL aFuncs AS MethodInfo[]
+	RETURN	_CallClipFunc(symFunction, __ArrayToUsualArray(aArgs))
 
-aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
-// CLipper functions can't and shouldn't have overloads
-IF aFuncs != NULL .and. aFuncs:Length == 1 
-	LOCAL oMI AS MethodInfo
-	LOCAL result AS USUAL
-	LOCAL uPars AS USUAL[]
-	uPars	:= 	__ArrayToUsualArray(aArgs)
-	oMI		:= aFuncs[1] 
-	IF OOPHelpers.SendHelper(NULL, oMI, uPars, OUT result)
-		RETURN result
+/// <summary>Call a function by name</summary>
+/// <param name="symFunction">The name of the function to call.</param>
+/// <param name="uArgs">The comma separated list of arguments to pass to the function</param>
+/// <returns>The return value of the function</returns>
+/// <remarks>Note that you can't call functions that are overloaded.</remarks>
+FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
+	LOCAL aFuncs AS MethodInfo[]
+
+	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
+	// CLipper functions can't and shouldn't have overloads
+	IF aFuncs != NULL .and. aFuncs:Length == 1 
+		LOCAL oMI AS MethodInfo
+		LOCAL result AS USUAL
+		oMI		:= aFuncs[1] 
+		IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT result)
+			RETURN result
+		ENDIF
 	ENDIF
-ENDIF
 
-RETURN	 NIL   
+	RETURN	 NIL   
+
 
 

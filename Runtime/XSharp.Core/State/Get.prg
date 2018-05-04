@@ -96,14 +96,6 @@ function GetPMExt() as string
 	
 	
 
-	/// <summary>
-	/// </summary>
-	/// <param name="dwRes"></param>
-	/// <returns>
-	/// </returns>
-function GetStringDXAX(dwRes as dword) as string
-	/// THROW NotImplementedException{}
-	return String.Empty
 	
 	
 	/// <summary>
@@ -111,8 +103,8 @@ function GetStringDXAX(dwRes as dword) as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetTimeSep() as dword
-	getstate dword Set.TimeSep
+function GetTimeSep() as word
+	getstate word Set.TimeSep
 	
 	/// <summary>
 	/// Returns TimeZone difference for current timezone in Hours

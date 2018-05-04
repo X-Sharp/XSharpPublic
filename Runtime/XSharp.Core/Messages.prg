@@ -2,6 +2,10 @@
 USING System.Globalization
 USING System.Resources
 
+
+function GetStringDXAX(dwRes as dword) as string
+	return __CavoStr( dwRes )
+
 FUNCTION VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
 	RETURN VO_Sprintf( __CavoStr( format ), args )
 	

@@ -273,22 +273,12 @@ function SetWinCompFunc(pFunc as object) as IntPtr
 	/// THROW NotImplementedException{}
 	return IntPtr.Zero
 
-
-/// <summary>
-/// </summary>
-/// <param name="dwInst"></param>
-/// <returns>
-/// </returns>
+[Obsolete];
 function NationInit(dwInst as dword) as int
-	/// THROW NotImplementedException{}
 	return 0   
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+[Obsolete];
 function NationExit() as int
-	/// THROW NotImplementedException{}
 	return 0   
 
 

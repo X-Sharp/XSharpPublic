@@ -39,7 +39,7 @@ begin namespace XSharpModel
 				endif
 				var result := prefix + self:Prototype
 				if (_isTyped)
-					result += self:AsKeyWord + self:TypeName + iif(self:IsArray,"[]","")
+					result += AsKeyWord + self:TypeName + iif(self:IsArray,"[]","")
 				endif
 				return result				
 			end get
@@ -47,8 +47,22 @@ begin namespace XSharpModel
 		
 		property IsArray as logic auto 
 		property IsTyped as logic get _isTyped
-		
-		property Prototype as string get super:Name
+		property ParamType as ParamType auto
+		PROPERTY Prototype AS STRING GET SUPER:Name
+		PROPERTY ParamTypeDesc AS STRING
+			GET
+				SWITCH ParamType
+				CASE ParamType.Ref
+					return RefKeyWord 
+				case ParamType.Out
+					return OutKeyWord 
+				CASE ParamType.Params
+					return ParamsKeyWord 
+				otherwise
+					return AsKeyWord 
+				END SWITCH
+			end get
+		end property
 		
 		property TypeName as string
 			get

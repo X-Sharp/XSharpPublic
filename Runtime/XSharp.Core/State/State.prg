@@ -305,8 +305,8 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.Century, FALSE)
 		self:_SetThreadValue(Set.DateCountry, 1)
 		self:_SetThreadValue(Set.Decimals, 2)
-		self:_SetThreadValue(Set.DECIMALSEP, (word) 46) // .
-		self:_SetThreadValue(Set.THOUSANDSEP, (word) 44)	// ,
+		self:_SetThreadValue(Set.DECIMALSEP, (word) 46)		// DOT .
+		self:_SetThreadValue(Set.THOUSANDSEP, (word) 44)	// COMMA ,
 		self:_SetThreadValue(Set.DateFormat, "MM/DD/YYYY")
 		self:_SetThreadValue(Set.Intl, CollationMode.Clipper)
 
@@ -316,9 +316,9 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
 		var separator := dtInfo:TimeSeparator
 		if String.IsNullOrEmpty(separator)
-			self:_SetThreadValue(Set.TimeSep, (dword) 0)
+			self:_SetThreadValue(Set.TimeSep, (word) 0)
 		else
-			self:_SetThreadValue(Set.TimeSep, (dword) separator[0])
+			self:_SetThreadValue(Set.TimeSep, (word) separator[0])
 		endif
 		self:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
@@ -332,6 +332,8 @@ CLASS XSharp.RuntimeState
 			dateformat		:= dateformat:Replace("dd", "d")
 		ENDIF
 		_SetThreadValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
+		_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
 		self:_SetThreadValue(Set.DateFormat,  dateformat)
 		self:_SetThreadValue(Set.DateCountry, 1)

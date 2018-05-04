@@ -557,8 +557,8 @@ function SetThousandSep(wSep as word) as word
 /// </summary>
 /// <returns>
 /// </returns>
-function SetTimeSep() as dword
-	getstate dword Set.TimeSep 
+function SetTimeSep() as word
+	getstate word Set.TimeSep 
 
 /// <summary>
 /// Change the setting that determines the separation character to be used in time strings.
@@ -566,8 +566,8 @@ function SetTimeSep() as dword
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-function SetTimeSep(dwChar as dword) as dword
-	setstate dword Set.TimeSep dwChar
+function SetTimeSep(dwChar as word) as word
+	setstate word Set.TimeSep dwChar
 
 /// <summary>
 /// Return the setting that determines whether to include unique record keys in an order.

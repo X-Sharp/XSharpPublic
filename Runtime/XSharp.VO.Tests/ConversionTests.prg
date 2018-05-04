@@ -13,7 +13,7 @@ using System.Globalization
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
-	CLASS ConversionTests
+	CLASS VoConversionTests
 
 		[Fact, Trait("Category", "Conversion")];
 		method AsStringTest() as void 

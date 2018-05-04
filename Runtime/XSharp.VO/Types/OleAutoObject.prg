@@ -204,8 +204,7 @@ CLASS XSharp.OleAutoObject
 					oD := (System.DateTime)oObject
 					uResult := XSharp.__VODate{oD}
 				ELSE
-					oDt := OleDateTime{}
-					oDt:DateTime := (DateTime) oObject
+					oDt := (DateTime) oObject
 					uResult := oDT
 				ENDIF
 			ELSE
@@ -287,7 +286,7 @@ CLASS XSharp.OleAutoObject
 				
 		IF fi != NULL
 			IF ! fi:IsPublic
-				THROW Error.VOError( EG_NOVARMETHOD,  cMethod, "cName", 2,  cName  )
+				THROW Error.VOError( EG_NOVARMETHOD,  cMethod, "cMethod", 2,  <OBJECT>{cName } )
 			ELSE
 				oRet := fi:GetValue( oComObject )
 			ENDIF   
@@ -396,13 +395,13 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 				NEXT
 				retval := t:InvokeMember(cName, bf, NULL, oComObject, oArgs1)
 			CATCH AS ArgumentException
-				THROW Error.VOError(EG_ARG,  cMethod,"args", 4, args )
+				THROW Error.VOError(EG_ARG,  cMethod,"args", 4, <OBJECT>{args} )
 			CATCH AS TargetException
-				THROW Error.VOError(EG_ARG,  cMethod, "args", 4, args )
+				THROW Error.VOError(EG_ARG,  cMethod, "args", 4, <OBJECT>{args})
 			CATCH AS MissingMethodException
-				THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  cName  )
+				THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  <OBJECT>{cName}  )
 			CATCH AS Exception
-				THROW Error.VOError( EG_ARG , cMethod, "args", 4,  args  )
+				THROW Error.VOError( EG_ARG , cMethod, "args", 4,  <OBJECT>{args}  )
 			END TRY
 		ELSE
 			pi := mi:GetParameters()
@@ -448,7 +447,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 							ENDIF
 						NEXT
 						IF ! lFound
-							THROW Error.VOError(EG_ARG,  cMethod, cArgName, (DWORD) x, oNamedArg )
+							THROW Error.VOError(EG_ARG,  cMethod, cArgName, (DWORD) x, <OBJECT>{oNamedArg} )
 						ENDIF
 								
 					ELSE
@@ -489,25 +488,25 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 						retval := t:InvokeMember(cName, bf, NULL, oComObject, oArgs)
 						lOk    := TRUE
 					CATCH AS ArgumentException
-						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, args  )
+						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args})
 						lOk := FALSE                                  
 					CATCH AS TargetException
-						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, args  )
+						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args} )
 						lOk := FALSE                                  
 					CATCH AS MissingMethodException
-						THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2, cName  )
+						THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2, <OBJECT>{cName}  )
 						lOk := FALSE                                  
 					CATCH AS Exception
 						lOk := FALSE              
 					END TRY
 				ENDIF
 				IF ! lOk
-					THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, args  )
+					THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args}  )
 				ENDIF   
 			ENDIF
 		ENDIF
 	CATCH AS AmbiguousMatchException
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD,  cMethod, "cName", 2, { cName } )
+		THROW Error.VOError( EG_AMBIGUOUSMETHOD,  cMethod, "cMethod", 2, <OBJECT>{cMethod} )
 	END TRY  
 	RETURN retval   
 	#endregion

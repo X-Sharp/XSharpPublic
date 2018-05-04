@@ -83,7 +83,11 @@ function CParamCount(oCodeBlock as CodeBlock) as dword
 	return (dword) oCodeBlock:PCount()
 
 
-// Todo write canEval based on type
-
-function __CanEval() as LOGIC Clipper
+FUNCTION __CanEval(uValue AS USUAL) AS LOGIC 
+	IF uValue:isCodeBlock .and. uValue != NULL_CODEBLOCK
+		RETURN TRUE
+	endif
+	IF uValue:IsObject .and. IsMethod(uValue, "Eval")
+		RETURN TRUE
+	endif
 	return false

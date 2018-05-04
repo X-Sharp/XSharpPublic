@@ -130,10 +130,10 @@ BEGIN NAMESPACE XSharp
 				e:Description := ErrString( EG_EXCEPTION )
 				RETURN e
 				
-			STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[] ) AS Error
+			STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs as OBJECT[] ) AS Error
 				RETURN VOError( NULL , dwGenCode, cFuncName, cArgName, iArgNum, aArgs )
 				
-			STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[]  ) AS Error
+			STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs as OBJECT[]  ) AS Error
 				LOCAL e AS Error
 				e			  := Error{ ex, cFuncName, cArgName, iArgNum, aArgs } 
 				e:GenCode     := dwGenCode

@@ -617,3 +617,41 @@ RETURN result
 
 
 
+
+
+/// <summary>
+/// Convert a string containing a numeric value to a numeric data type.
+/// </summary>
+/// <param name="c"></param>
+/// <returns>
+/// </returns>
+function Val(cNumber as string) as Usual
+	cNumber := cNumber:Trim()
+	IF String.IsNullOrEmpty(cNumber)
+		RETURN 0
+	ENDIF
+	LOCAL cDec AS CHAR
+	cDec := (CHAR) SetDecimalSep()
+	IF cNumber:Contains(cDec:ToString()) .or. cNumber:ToUpper():Contains("E") .or. cNumber:Contains(".")
+		local r8Result := 0 as Real8
+		if cDec != '.'
+			cNumber := cNumber:Replace(cDec, '.')
+		ENDIF
+		VAR style := NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent |  NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowThousands
+		IF System.Double.TryParse(cNumber, style, StringHelpers.usCulture, REF r8Result)
+			RETURN r8Result
+		endif
+	ELSE
+		LOCAL iResult := 0 AS INT64
+		VAR style := NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier
+		IF System.Int64.TryParse(cNumber, style, StringHelpers.usCulture, REF iResult)
+			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
+				RETURN (INT) iResult
+			ENDIF
+			return iResult
+		endif
+	ENDIF
+	return 0
+	
+		
+

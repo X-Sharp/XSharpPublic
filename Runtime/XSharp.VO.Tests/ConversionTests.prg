@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS ConversionTests
 
-		[Fact, Trait("Category", "AsString")];
+		[Fact, Trait("Category", "Conversion")];
 		method AsStringTest() as void 
 			local u as usual
 			u := "123"
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			var n1 := GetThreadCount()
 			Assert.Equal(true, n1 > 1)
 
-		[Fact, Trait("Category", "AsString")];
+		[Fact, Trait("Category", "Conversion")];
 		method StrTest() as void 
 			local c as String
 			SetDecimalSep(46)
@@ -45,6 +45,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			assert.Equal("2.50", c )  
 			c := STR3(2.50012,4,2)
 			assert.Equal("2.50", c )  
+
+		[Fact, Trait("Category", "Conversion")];
+		METHOD ValTest() AS VOID
+			LOCAL u AS USUAL
+			u := Val("1.234")
+			Assert.Equal(1.234, (REAL8)(FLOAT) u)
+			SetDecimalSep(44) // ,
+			u := Val("1,234")
+			Assert.Equal(1.234, (Real8)(Float) u)
+			u := Val("1.23E2")
+			Assert.Equal(123, (REAL8)(FLOAT) u)
+			u := Val("1.2345E2")
+			Assert.Equal(123.45, (Real8)(Float) u)
 
 
 	END CLASS

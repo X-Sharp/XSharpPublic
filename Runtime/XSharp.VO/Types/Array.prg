@@ -199,7 +199,33 @@ begin namespace XSharp
 				currentArray:_internalList[index[length]] := u
 			endif
 			return u
-		
+
+			PUBLIC STATIC METHOD Copy(aSource AS Array,aTarget AS Array,;
+				start AS DWORD, sourceLen as DWORD, offSet as dword, targetLen as dword ) AS Void
+				LOCAL x AS DWORD
+				// Adjust
+				start-=1
+				offSet-=1
+				sourceLen-=1
+				targetLen-=1
+				IF start < sourceLen 
+					 FOR x := start UPTO sourceLen
+						aTarget:_InternalList[(INT) offSet] := aSource:_InternalList[(INT) x]
+						offSet++
+						IF offSet > targetLen
+						   EXIT
+						ENDIF
+					 NEXT           
+				  ELSE
+					 FOR x := start DOWNTO sourceLen
+						aTarget:_InternalList[(INT) offSet] := aSource:_InternalList[(INT) x]
+						offSet++
+						IF offSet > targetLen
+						   EXIT
+						ENDIF
+					 NEXT           
+				  ENDIF
+				return				
 		internal class ArrayDebugView
 			private _value as Array
 			public constructor (a as Array)

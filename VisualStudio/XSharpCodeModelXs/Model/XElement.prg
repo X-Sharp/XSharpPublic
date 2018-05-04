@@ -3,384 +3,386 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using EnvDTE
-using Microsoft.VisualStudio.Language.Intellisense
-using System.Collections.Generic
-using System.Diagnostics
-using System
-using System.Linq
+USING Microsoft.VisualStudio.Language.Intellisense
+USING System.Collections.Generic
+USING System.Diagnostics
+USING System
+USING System.Linq
 
-begin namespace XSharpModel
+BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("Kind, {Name,nq}")];
-	class XElement
+	CLASS XElement
 		// Fields
-		private _File as XFile
-		private _interval as TextInterval
-		protected _isStatic as logic
-		private _Kind as Kind
-		private _Modifiers as Modifiers
-		private _Name as string
-		private _parent as XElement
-		private _range as TextRange
-		private _Visibility as Modifiers
-		private _nKeywordCase := -1 as int
-		const public GlobalName := "(Global Scope)" as string
-
+		PRIVATE _File AS XFile
+		PRIVATE _interval AS TextInterval
+		PROTECTED _isStatic AS LOGIC
+		PRIVATE _Kind AS Kind
+		PRIVATE _Modifiers AS Modifiers
+		PRIVATE _Name AS STRING
+		PRIVATE _parent AS XElement
+		PRIVATE _range AS TextRange
+		PRIVATE _Visibility AS Modifiers
+		STATIC PRIVATE _nKeywordCase := -1 AS INT
+		CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
+		
 		// Methods
-		constructor()
-			return
-		
-		constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, range as TextRange, interval as TextInterval)
-			super()
-			self:_Name := name
-			self:_Kind := kind
-			self:_Modifiers := modifiers
-			self:_Visibility := visibility
-			self:_range := range
-			self:_interval := interval
-			self:_isStatic := false
-		
-		#region Simple Properties
-			property File as XFile get self:_File set self:_File := value
-			virtual property FullName as string get self:_Name
-			property Kind as Kind get self:_Kind
-			property Language as string get "XSharp"
-			property Modifiers as Modifiers get self:_Modifiers
-			property Name as string get self:_Name
-			property Interval as TextInterval get self:_interval
-			property IsStatic as logic get _isStatic set _isStatic := value
-			property FileUsings as IList<string> get self:_File:Usings
-			property Parent as XElement get self:_parent set self:_parent := value
-			virtual property ParentName as string get self:_parent?:FullName
-			virtual property Prototype as string get self:Name
-			property Range as TextRange get self:_range
-			property Visibility as Modifiers get self:_Visibility
+		CONSTRUCTOR()
+			RETURN
+			
+		CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, range AS TextRange, interval AS TextInterval)
+			SUPER()
+			SELF:_Name := name
+			SELF:_Kind := kind
+			SELF:_Modifiers := modifiers
+			SELF:_Visibility := visibility
+			SELF:_range := range
+			SELF:_interval := interval
+			SELF:_isStatic := FALSE
+			
+			#region Simple Properties
+			PROPERTY File AS XFile GET SELF:_File SET SELF:_File := VALUE
+			VIRTUAL PROPERTY FullName AS STRING GET SELF:_Name
+			PROPERTY Kind AS Kind GET SELF:_Kind
+			PROPERTY Language AS STRING GET "XSharp"
+			PROPERTY Modifiers AS Modifiers GET SELF:_Modifiers
+			PROPERTY Name AS STRING GET SELF:_Name
+			PROPERTY Interval AS TextInterval GET SELF:_interval
+			PROPERTY IsStatic AS LOGIC GET _isStatic SET _isStatic := VALUE
+			PROPERTY FileUsings AS IList<STRING> GET SELF:_File:Usings
+			PROPERTY Parent AS XElement GET SELF:_parent SET SELF:_parent := VALUE
+			VIRTUAL PROPERTY ParentName AS STRING GET SELF:_parent?:FullName
+			VIRTUAL PROPERTY Prototype AS STRING GET SELF:Name
+			PROPERTY Range AS TextRange GET SELF:_range
+			PROPERTY Visibility AS Modifiers GET SELF:_Visibility
 			
 			
 		#endregion
 		
-		method ForceComplete() as void
-			local parentName as string
-			local thisName as string
-			local tmp as XType
+		METHOD ForceComplete() AS VOID
+			LOCAL parentName AS STRING
+			LOCAL thisName AS STRING
+			LOCAL tmp AS XType
 			
-			if self:_parent == null .AND. ! String.IsNullOrEmpty(self:ParentName)
+			IF SELF:_parent == NULL .AND. ! String.IsNullOrEmpty(SELF:ParentName)
+			
+				parentName := SELF:ParentName
+				thisName := SELF:FullName
+				IF parentName:IndexOf(".") == -1 .AND. thisName:IndexOf(".") > 0
 				
-				parentName := self:ParentName
-				thisName := self:FullName
-				if parentName:IndexOf(".") == -1 .AND. thisName:IndexOf(".") > 0
-					
 					parentName := thisName:Substring(0, (thisName:LastIndexOf(".") + 1)) + parentName
-				endif
-				if self:File != null
+				ENDIF
+				IF SELF:File != NULL
+				
+					tmp := SELF:File:Project:LookupFullName(parentName, TRUE)
+					IF tmp == NULL
+						tmp := SELF:File:Project:Lookup(parentName, TRUE)
+					ENDIF
+					IF tmp != NULL
 					
-					tmp := self:File:Project:LookupFullName(parentName, true)
-					if tmp == null
-						tmp := self:File:Project:Lookup(parentName, true)
-					endif
-					if tmp != null
-						
-						self:_parent := tmp
+						SELF:_parent := tmp
 						// Ensure whole tree is resolved.
-						self:_parent:ForceComplete()
-					endif
-				endif
-			endif
-		
-		private method GetImageListIndex(kind as ImageListKind, overlay as ImageListOverlay) as long
+						SELF:_parent:ForceComplete()
+					ENDIF
+				ENDIF
+			ENDIF
 			
-			return (long)((kind * ImageListKind.Unknown1) + (ImageListKind)(long)overlay  ) 
+		PRIVATE METHOD GetImageListIndex(kind AS ImageListKind, overlay AS ImageListOverlay) AS LONG
 		
-		method OpenEditor() as void
-			if self:_File?:Project?:ProjectNode != null
-				self:_File:Project:ProjectNode:OpenElement(self:_File:SourcePath, self:Range:StartLine, (self:Range:StartColumn + 1))
-			endif
-		
-		static method Etype2Kind(eType as EntityType) as Kind
-			switch eType
-				case EntityType._Constructor
-					return Kind.Constructor
-				case EntityType._Destructor
-					return Kind.Destructor
-				case EntityType._Method
-					return Kind.Method
-				case EntityType._Access
-					return Kind.Access
-				case EntityType._Assign
-					return Kind.Assign
-				case EntityType._Class
-					return Kind.CLASS
-				case EntityType._Function
-					return Kind.Function
-				case EntityType._Procedure
-					return Kind.Procedure
-				case EntityType._Enum
+			RETURN (LONG)((kind * ImageListKind.Unknown1) + (ImageListKind)(LONG)overlay  ) 
+			
+		METHOD OpenEditor() AS VOID
+			IF SELF:_File?:Project?:ProjectNode != NULL
+				SELF:_File:Project:ProjectNode:OpenElement(SELF:_File:SourcePath, SELF:Range:StartLine, (SELF:Range:StartColumn + 1))
+			ENDIF
+			
+		STATIC METHOD Etype2Kind(eType AS EntityType) AS Kind
+			SWITCH eType
+				CASE EntityType._Constructor
+					RETURN Kind.Constructor
+				CASE EntityType._Destructor
+					RETURN Kind.Destructor
+				CASE EntityType._Method
+					RETURN Kind.Method
+				CASE EntityType._Access
+					RETURN Kind.Access
+				CASE EntityType._Assign
+					RETURN Kind.Assign
+				CASE EntityType._Class
+					RETURN Kind.CLASS
+				CASE EntityType._Function
+					RETURN Kind.Function
+				CASE EntityType._Procedure
+					RETURN Kind.Procedure
+				CASE EntityType._Enum
 					RETURN Kind.Enum
-				case EntityType._EnumMember
-					return Kind.EnumMember
-				case EntityType._VOStruct
-					return Kind.VOStruct
-				case EntityType._Global
-					return Kind.VOGLobal
-				case EntityType._Structure
-					return Kind.Structure
-				case EntityType._Interface
-					return Kind.Interface
-				case EntityType._Delegate
-					return Kind.Delegate
-				case EntityType._Event
-					return Kind.Event
-				case EntityType._Field
-					return Kind.Field
-				case EntityType._Union
-					return Kind.Union
-				case EntityType._Operator
-					return Kind.Operator
-				case EntityType._Local
-					return Kind.Local
-				case EntityType._Property
-					return Kind.Property
-				case EntityType._Define
-					return Kind.VODefine
-				case EntityType._Resource
-				case EntityType._TextBlock
-				otherwise
-					return Kind.Unknown
-			end switch
-		
-		static method CalculateRange(oElement as EntityObject, oInfo as ParseResult, span out TextRange, interval out TextInterval) as void
-			local nLineStart, nColStart as int	
-			local nLineEnd, nColEnd		as int
-			local nPosStart, nPosEnd as long
-			local lHasEnd as LOGIC
+				CASE EntityType._EnumMember
+					RETURN Kind.EnumMember
+				CASE EntityType._VOStruct
+					RETURN Kind.VOStruct
+				CASE EntityType._Global
+					RETURN Kind.VOGLobal
+				CASE EntityType._Structure
+					RETURN Kind.Structure
+				CASE EntityType._Interface
+					RETURN Kind.Interface
+				CASE EntityType._Delegate
+					RETURN Kind.Delegate
+				CASE EntityType._Event
+					RETURN Kind.Event
+				CASE EntityType._Field
+					RETURN Kind.Field
+				CASE EntityType._Union
+					RETURN Kind.Union
+				CASE EntityType._Operator
+					RETURN Kind.Operator
+				CASE EntityType._Local
+					RETURN Kind.Local
+				CASE EntityType._Property
+					RETURN Kind.Property
+				CASE EntityType._Define
+					RETURN Kind.VODefine
+				CASE EntityType._Resource
+				CASE EntityType._TextBlock
+				OTHERWISE
+					RETURN Kind.Unknown
+			END SWITCH
+			
+		STATIC METHOD CalculateRange(oElement AS EntityObject, oInfo AS ParseResult, span OUT TextRange, interval OUT TextInterval) AS VOID
+			LOCAL nLineStart, nColStart AS INT	
+			LOCAL nLineEnd, nColEnd		AS INT
+			LOCAL nPosStart, nPosEnd AS LONG
+			LOCAL lHasEnd AS LOGIC
 			nLineStart := oElement:nStartLine  // parser has 1 based lines and columns
 			nLineEnd   := oElement:nStartLine
 			nColStart  := oElement:nCol
 			nPosStart  := oElement:nOffSet
 			lHasEnd    := FALSE
-			if oElement:cName == GlobalName
+			IF oElement:cName == GlobalName
 				nLineEnd   := nLineStart		
 				nColEnd    := nColStart
 				lHasEnd    := TRUE
-			elseif oElement:eType:IsType()
+			ELSEIF oElement:eType:IsType()
 				// find the last member
 				// and the entity after it is our end
-				var oLast := oElement:aChildren:LastOrDefault()
-				if oLast != null_object 
+				VAR oLast := oElement:aChildren:LastOrDefault()
+				IF oLast != NULL_OBJECT 
 					IF oLast:oNext != NULL_OBJECT 
 						nLineEnd := oLast:oNext:nStartLine -1
 						nPosEnd  := oLast:oNext:nOffSet -2		// subtract CRLF
 						lHasEnd    := TRUE
-					endif
-				else
+					ENDIF
+				ELSE
 					// type without children ?
 					IF oElement:oNext != NULL_OBJECT 
 						nLineEnd := oElement:oNext:nStartLine -1
 						nPosEnd  := oElement:oNext:nOffSet -2		// subtract CRLF
 						lHasEnd    := TRUE
-					endif
-				endif
-			elseif oElement:oNext != NULL_OBJECT 
+					ENDIF
+				ENDIF
+			ELSEIF oElement:oNext != NULL_OBJECT 
 				nLineEnd := oElement:oNext:nStartLine -1
 				nPosEnd  := oElement:oNext:nOffSet -2		// subtract CRLF
-				lHasEnd    := true
-			endif
-			if ! lHasEnd
+				lHasEnd    := TRUE
+			ENDIF
+			IF ! lHasEnd
 				nLineEnd   := oInfo:LineCount		
 				nColEnd    := nColStart
 				nPosEnd    := oInfo:SourceLength-2
-			endif
+			ENDIF
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}
 			interval := TextInterval{nPosStart, nPosEnd}
-			return
-		
-		#region Complexer properties		
+			RETURN
+			
+			#region Complexer properties		
 			// Properties
-			virtual property Description as string
-				get
-					var modVis := ""
-					if self:Modifiers != Modifiers.None
-						modVis := modVis + self:ModifiersKeyword
-					endif
-					modVis += self:VisibilityKeyword
-					var desc := modVis
-					desc += self:KindKeyword +  self:Prototype
-					return desc
-				end get
-			end property
+			VIRTUAL PROPERTY Description AS STRING
+				GET
+					VAR modVis := ""
+					IF SELF:Modifiers != Modifiers.None
+						modVis := modVis + SELF:ModifiersKeyword
+					ENDIF
+					modVis += VisibilityKeyword
+					VAR desc := modVis
+					desc += KindKeyword +  SELF:Prototype
+					RETURN desc
+				END GET
+			END PROPERTY
 			
 			
 			
 			/// <summary>
 			/// Glyph constant used by DropDown Types/Members Comboxes in Editor
 			/// </summary>
-			property Glyph as long
-				get
-					
-					var imgK := ImageListKind.Class
-					var imgO := ImageListOverlay.Public
-					switch self:Kind
-						case Kind.Class
+			PROPERTY Glyph AS LONG
+				GET
+				
+					VAR imgK := ImageListKind.Class
+					VAR imgO := ImageListOverlay.Public
+					SWITCH SELF:Kind
+						CASE Kind.Class
 							imgK := ImageListKind.Class
-						case  Kind.Constructor 
-						case Kind.Destructor 
-						case Kind.Method 
-						case Kind.Function 
-						case Kind.Procedure 
+						CASE  Kind.Constructor 
+						CASE Kind.Destructor 
+						CASE Kind.Method 
+						CASE Kind.Function 
+						CASE Kind.Procedure 
 							imgK := ImageListKind.Method
-						case Kind.Structure
-						case Kind.VOStruct 
-						case Kind.Union 
+					CASE Kind.Structure
+						CASE Kind.VOStruct 
+						CASE Kind.Union 
 							imgK := ImageListKind.Structure
-						case Kind.Access 
-						case Kind.Assign 
-						case Kind.Property 
+						CASE Kind.Access 
+						CASE Kind.Assign 
+						CASE Kind.Property 
 							imgK := ImageListKind.Property
-						case Kind.Event
+						CASE Kind.Event
 							imgK := ImageListKind.Event
-						case Kind.Delegate
-							
-							imgK := ImageListKind.Delegate
-						case Kind.Operator
-							imgK := ImageListKind.Operator
-						case Kind.VODefine
-							imgK := ImageListKind.Const
-						case Kind.Enum
-							imgK := ImageListKind.Enum
-						case Kind.EnumMember
-							
-							imgK := ImageListKind.EnumValue
-						case Kind.Interface
-							imgK := ImageListKind.Interface
-						case Kind.Namespace
-							imgK := ImageListKind.Namespace
-						case Kind.VOGlobal 
-						case Kind.Field 
-							imgK := ImageListKind.Field
-						case Kind.Parameter 
-						case Kind.Local 
-							imgK := ImageListKind.Local
-					end switch
-					switch self:Visibility
-						case Modifiers.Public
-							imgO := ImageListOverlay.Public
-						case Modifiers.Protected
-							imgO := ImageListOverlay.Protected
-						case Modifiers.Private
-							imgO := ImageListOverlay.Private
-						case Modifiers.Internal
-							imgO := ImageListOverlay.Internal
-						case Modifiers.ProtectedInternal
-							imgO := ImageListOverlay.ProtectedInternal
+						CASE Kind.Delegate
 						
-					end switch
-					return self:GetImageListIndex(imgK, imgO)
-				end get
-			end property
+							imgK := ImageListKind.Delegate
+						CASE Kind.Operator
+							imgK := ImageListKind.Operator
+						CASE Kind.VODefine
+							imgK := ImageListKind.Const
+						CASE Kind.Enum
+							imgK := ImageListKind.Enum
+						CASE Kind.EnumMember
+						
+							imgK := ImageListKind.EnumValue
+						CASE Kind.Interface
+							imgK := ImageListKind.Interface
+						CASE Kind.Namespace
+							imgK := ImageListKind.Namespace
+						CASE Kind.VOGlobal 
+						CASE Kind.Field 
+							imgK := ImageListKind.Field
+						CASE Kind.Parameter 
+						CASE Kind.Local 
+							imgK := ImageListKind.Local
+						END SWITCH
+					SWITCH SELF:Visibility
+						CASE Modifiers.Public
+							imgO := ImageListOverlay.Public
+						CASE Modifiers.Protected
+							imgO := ImageListOverlay.Protected
+						CASE Modifiers.Private
+							imgO := ImageListOverlay.Private
+						CASE Modifiers.Internal
+							imgO := ImageListOverlay.Internal
+						CASE Modifiers.ProtectedInternal
+							imgO := ImageListOverlay.ProtectedInternal
+							
+					END SWITCH
+					RETURN SELF:GetImageListIndex(imgK, imgO)
+				END GET
+			END PROPERTY
 			
-			property GlyphGroup as StandardGlyphGroup
-				get
-					local imgG := StandardGlyphGroup.GlyphGroupClass as StandardGlyphGroup 
-					switch self:Kind
-						case Kind.Class
+			PROPERTY GlyphGroup AS StandardGlyphGroup
+				GET
+					LOCAL imgG := StandardGlyphGroup.GlyphGroupClass AS StandardGlyphGroup 
+					SWITCH SELF:Kind
+						CASE Kind.Class
 							imgG :=  StandardGlyphGroup.GlyphGroupClass
-						case  Kind.Constructor 
-						case Kind.Destructor 
-						case Kind.Method 
-						case Kind.Function 
-						case Kind.Procedure 
+						CASE  Kind.Constructor 
+						CASE Kind.Destructor 
+						CASE Kind.Method 
+					CASE Kind.Function 
+						CASE Kind.Procedure 
 							imgG :=  StandardGlyphGroup.GlyphGroupMethod
-						case Kind.Structure
+						CASE Kind.Structure
 							imgG :=  StandardGlyphGroup.GlyphGroupStruct
-						case Kind.Access 
-						case Kind.Assign 
-						case Kind.Property 
+						CASE Kind.Access 
+						CASE Kind.Assign 
+						CASE Kind.Property 
 							imgG :=  StandardGlyphGroup.GlyphGroupProperty
-						case Kind.Parameter 
-						case Kind.Local 
+						CASE Kind.Parameter 
+						CASE Kind.Local 
 							imgG :=  StandardGlyphGroup.GlyphGroupVariable
-						case Kind.Event
+						CASE Kind.Event
 							imgG :=  StandardGlyphGroup.GlyphGroupEvent
-						case Kind.Delegate
+						CASE Kind.Delegate
 							imgG :=  StandardGlyphGroup.GlyphGroupDelegate
-						case Kind.Enum
+						CASE Kind.Enum
 							imgG :=  StandardGlyphGroup.GlyphGroupEnum
-						case Kind.EnumMember
+						CASE Kind.EnumMember
 							imgG :=  StandardGlyphGroup.GlyphGroupEnumMember
-						case Kind.Operator
+						CASE Kind.Operator
 							imgG :=  StandardGlyphGroup.GlyphGroupOperator
-						case Kind.Interface
+						CASE Kind.Interface
 							imgG :=  StandardGlyphGroup.GlyphGroupInterface
-						case Kind.Namespace
+						CASE Kind.Namespace
 							imgG :=  StandardGlyphGroup.GlyphGroupNamespace
-						case Kind.Field 
-						case Kind.VOGlobal 
+						CASE Kind.Field 
+						CASE Kind.VOGlobal 
 							imgG :=  StandardGlyphGroup.GlyphGroupField
-						case Kind.Union
+						CASE Kind.Union
 							imgG :=  StandardGlyphGroup.GlyphGroupUnion
-						case Kind.VODefine
+						CASE Kind.VODefine
 							imgG :=  StandardGlyphGroup.GlyphGroupConstant
-						case Kind.VOStruct
+						CASE Kind.VOStruct
 							imgG :=  StandardGlyphGroup.GlyphGroupValueType
-						case Kind.Keyword
+						CASE Kind.Keyword
 							imgG :=  StandardGlyphGroup.GlyphKeyword
-					end switch
-					return imgG
-				end get
-			end property
+						END SWITCH
+					RETURN imgG
+				END GET
+			END PROPERTY
 			
-			property GlyphItem as StandardGlyphItem
-				get
-					
-					local imgI := StandardGlyphItem.GlyphItemPublic as StandardGlyphItem
-					switch self:Visibility
-						case Modifiers.Public
+			PROPERTY GlyphItem AS StandardGlyphItem
+				GET
+				
+					LOCAL imgI := StandardGlyphItem.GlyphItemPublic AS StandardGlyphItem
+					SWITCH SELF:Visibility
+						CASE Modifiers.Public
 							imgI := StandardGlyphItem.GlyphItemPublic
-						case Modifiers.Protected
+						CASE Modifiers.Protected
 							imgI := StandardGlyphItem.GlyphItemProtected
-						case Modifiers.Private
+						CASE Modifiers.Private
 							imgI := StandardGlyphItem.GlyphItemPrivate
-						case Modifiers.Internal
+						CASE Modifiers.Internal
 							imgI := StandardGlyphItem.GlyphItemInternal
-						case Modifiers.ProtectedInternal
+						CASE Modifiers.ProtectedInternal
 							imgI := StandardGlyphItem.GlyphItemProtected
-					end switch
-					if self:IsStatic
+					END SWITCH
+					IF SELF:IsStatic
 						imgI := StandardGlyphItem.GlyphItemShortcut
-					endif
-					return imgI
-				end get
-			end property
+					ENDIF
+					RETURN imgI
+				END GET
+			END PROPERTY
 			
 			
-			property ProjectItem as ProjectItem
-				get
-					throw System.NotImplementedException{}
-				end get
-			end property
-
-			property KeywordsUpperCase as logic
-				get 
-					if _nKeywordCase == -1
-						if self:File?:Project?:ProjectNode != null
-							_nKeywordcase := iif(self:File:Project:ProjectNode:KeywordsUppercase,1,0)
-						else
+//			PROPERTY ProjectItem AS ProjectItem
+//				GET
+//					THROW System.NotImplementedException{}
+//				END GET
+//			END PROPERTY
+			
+			PROPERTY KeywordsUpperCase AS LOGIC
+				GET 
+					IF _nKeywordCase == -1
+						IF SELF:File?:Project?:ProjectNode != NULL
+							_nKeywordcase := IIF(SELF:File:Project:ProjectNode:KeywordsUppercase,1,0)
+						ELSE
 							_nKeywordcase := 1
-						endif
-					endif
-					return _nKeywordCase == 1
-				end get
-			end property
-
-			property AsKeyWord			as string get iif(self:KeywordsUpperCase, " AS ", " as ")
-			property ModifiersKeyword	as string get iif(self:KeywordsUpperCase, self:Modifiers:ToString():ToUpper(), self:Modifiers:ToString():ToLower()) + " "
-			property VisibilityKeyword	as string get iif(self:KeywordsUpperCase, self:Visibility:ToString():ToUpper(), self:Visibility:ToString():ToLower()) + " "
-			property KindKeyword		as string get iif(self:KeywordsUpperCase, self:Kind:DisplayName():ToUpper(), self:Kind:DisplayName():ToLower()) + " "
-
-
-		#endregion
-	end class
+						ENDIF
+					ENDIF
+					RETURN _nKeywordCase == 1
+				END GET
+			END PROPERTY
+			
+			STATIC PROPERTY AsKeyWord			AS STRING GET IIF(_nKeywordCase == 1, " AS ", " as ")
+			STATIC PROPERTY RefKeyWord			AS STRING GET IIF(_nKeywordCase == 1, " REF ", " ref ")
+			STATIC PROPERTY OutKeyWord			AS STRING GET IIF(_nKeywordCase == 1, " OUT ", " out ")
+			STATIC PROPERTY ParamsKeyWord		AS STRING GET IIF(_nKeywordCase == 1, " PARAMS ", " params ")
+			PROPERTY ModifiersKeyword			AS STRING GET IIF(KeywordsUpperCase, SELF:Modifiers:ToString():ToUpper(), SELF:Modifiers:ToString():ToLower()) + " "
+			PROPERTY VisibilityKeyword			AS STRING GET IIF(KeywordsUpperCase, SELF:Visibility:ToString():ToUpper(), SELF:Visibility:ToString():ToLower()) + " "
+			PROPERTY KindKeyword				AS STRING GET IIF(KeywordsUpperCase, SELF:Kind:DisplayName():ToUpper(), SELF:Kind:DisplayName():ToLower()) + " "
+			
+			
+			#endregion
+	END CLASS
 	
-end namespace 
+END NAMESPACE 
 
 

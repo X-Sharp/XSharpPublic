@@ -189,7 +189,8 @@ begin namespace XSharpModel
 			local eAccessLevel as AccessLevel
 			local eModifiers as EntityModifiers
 			local eLexer as LexerStep
-			local eStep as ParseStep
+			LOCAL eStep AS ParseStep
+			local nParamType as ParamType
 			local aLineFields as List<EntityObject>
 			local aLineLocals as List<EntityObject>
 			local nBracketCount as int
@@ -733,7 +734,7 @@ begin namespace XSharpModel
 								case "PRIVATE"
 									eAccessLevel := AccessLevel.Hidden
 									eModifiers := eModifiers | EntityModifiers._Private
-								case  "INTERNAL"
+								case "INTERNAL"
 									eAccessLevel := AccessLevel.Internal
 									eModifiers := eModifiers | EntityModifiers._Internal
 								case "PUBLIC"
@@ -919,8 +920,19 @@ begin namespace XSharpModel
 									eStep := ParseStep.AfterAs
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
-								case state:lInParams .and. (cUpperWord == "REF" .or. cUpperWord == "OUT") .and. .not. lEscapedWord
+								case state:lInParams .and. (cUpperWord == "REF" .or. cUpperWord == "OUT" .or. cUpperWord == "PARAMS") .and. .not. lEscapedWord
 									eStep := ParseStep.AfterRef
+									SWITCH cUpperWord
+										CASE "REF"
+											nParamType := ParamType.Ref
+										CASE "OUT"
+											nParamType := ParamType.Out
+										CASE "PARAMS"
+											nParamType := ParamType.Params
+										OTHERWISE
+											nParamType := ParamType.As
+									end switch
+
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
 								case eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterImplements .or. ;
@@ -1020,11 +1032,8 @@ begin namespace XSharpModel
 									
 									do case
 										case state:lInParams
-											if eStep == ParseStep.AfterRef
-												oInfo:SetParamType("&" + cWord)
-											else
-												oInfo:SetParamType(cWord)
-											endif
+											oInfo:SetParamType(cWord, nParamType)
+											nParamType := ParamType.AS
 											eStep := ParseStep.None
 										case eStep == ParseStep.AfterInherit
 											oInfo:cInherit := cWord
@@ -1562,17 +1571,14 @@ begin namespace XSharpModel
 			self:aParams:Add(oParam)
 			return oParam
 		
-		internal method SetParamType(cType as string) as void
+		internal method SetParamType(cType as string, nParamType as ParamType) as void
 			local oParam as EntityParamsObject
 			if self:aParams == null .or. self:aParams:Count == 0 .or. String.IsNullOrEmpty(cType)
 				return
 			end if
 			oParam := self:aParams[self:aParams:Count - 1]
-			if cType:Contains("&")
-				cType := cType:Replace("&" , "")
-				oParam:lReference := true
-			end if
-			oParam:cType := cType
+			oParam:cType	  := cType
+			oParam:nParamType := nParamType
 			return
 	end class
 	
@@ -1580,7 +1586,7 @@ begin namespace XSharpModel
 		class EntityParamsObject
 		property cName as string auto
 		property cType as string auto
-		property lReference as logic auto
+		property nParamType as ParamType auto
 		property nCol as int auto
 		internal constructor(_cName as string , _cType as string)
 			super()
@@ -1622,17 +1628,26 @@ begin namespace XSharpModel
 	end enum
 	
 	[Flags];
-		enum   EntityModifiers as Int32
-		member _None := 0
-		member _Protected := 1
-		member _Private := 2
-		member _Internal := 4
-		member _Virtual := 8
-		member _Abstract := 16
-		member _Sealed := 32
-		member _Static := 64
-		member _Partial := 128
-		member _New := 256
+	ENUM EntityModifiers AS Int32
+		// roslyn values in the comments, should we keep in sync ?
+		member _None := 0			// 0x0000
+		member _Protected := 1		// 0x0004
+		member _Private := 2		// 0x0008
+		member _Internal := 4		// 0x0002
+		member _Virtual := 8		// 0x0080
+		member _Abstract := 16		// 0x0020
+		member _Sealed := 32		// 0x0010
+		member _Static := 64		// 0x0040
+		member _Partial := 128		// 0x4000
+		MEMBER _New := 256			// 0x0200
+		// roslyn also has these. Should we add these ?
+		// public			0x0001
+		// extern			0x0100
+		// override			0x0400
+		// readonly / initonly 0x0800
+		// volatile			0x1000
+		// unsafe			0x2000
+		// async			0x8000
 	end enum
 	
 	enum EntityType as Int32 

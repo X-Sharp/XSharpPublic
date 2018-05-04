@@ -41,7 +41,8 @@ begin namespace XSharpModel
 						local oVar as XVariable
 						span := TextRange{oElement:nStartLine, oParam:nCol, oElement:nStartLine, oParam:nCol+oParam:cName:Length}
 						intv := TextInterval{oElement:nOffSet+oParam:nCol, oElement:nOffSet+oParam:nCol+oParam:cName:Length}
-						oVar := XVariable{result, oParam:cName, Kind.Local,  span, intv, oParam:cType, true}
+						oVar := XVariable{result, oParam:cName, Kind.Local,  span, intv, oParam:cType, TRUE}
+						oVar:ParamType := oParam:nParamType
 						result:AddParameter(oVar)
 					next
 				endif
@@ -77,7 +78,7 @@ begin namespace XSharpModel
 				if (super:Modifiers != Modifiers.None)
 					modVis := modVis + super:ModifiersKeyword
 				endif
-				var desc := modVis + super:VisibilityKeyword
+				var desc := modVis + VisibilityKeyword
 				if (super:Kind != Kind.Field)
 					desc := desc + super:KindKeyword
 					if (super:Kind == Kind.VODefine)
@@ -111,11 +112,12 @@ begin namespace XSharpModel
 			get
 				var parameters := ""
 				foreach variable as XVariable in self:Parameters
-					if (parameters:Length > 1)
+					if (parameters:Length > 0)
 						parameters := parameters + ", "
-					endif
-					if variable:IsTyped
-						parameters += variable:Name + SELF:AsKeyWord + variable:TypeName
+					ENDIF
+					parameters += variable:Name 
+					IF variable:IsTyped
+						parameters += variable:ParamTypeDesc + variable:TypeName
 					endif
 				next
 				return parameters
@@ -136,7 +138,7 @@ begin namespace XSharpModel
 				endif
 				var desc := super:Name + vars
 				if self:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(self:TypeName)
-					desc := desc + SELF:AsKeyWord + self:TypeName
+					desc := desc + AsKeyWord + self:TypeName
 				endif
 				return desc
 			end get

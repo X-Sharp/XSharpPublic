@@ -661,6 +661,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     DebugOutput("Input stack: Insert Stream {0}, # of tokens {1}", filename, input.Size - 1);
             }
+            // Detect recursion
+            var x = inputs;
+            while (x != null)
+            { 
+                if (string.Compare(x.SourceFileName , filename, true) == 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file ("+filename+") detected",filename));
+                    return;
+                }
+                x = x.parent;
+            }
             InputState s = new InputState(input);
             s.parent = inputs;
             s.SourceFileName = filename;

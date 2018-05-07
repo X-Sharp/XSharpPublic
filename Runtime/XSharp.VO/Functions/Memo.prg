@@ -7,109 +7,201 @@
 /// <summary>
 /// Replace carriage-return/linefeeds with a character that can be displayed.
 /// </summary>
-/// <param name="cSource"></param>
-/// <param name="nCharHard"></param>
-/// <param name="nCharSoft"></param>
-/// <returns>
-/// </returns>
-function MemoTran(cSource as Usual,nCharHard as Usual,nCharSoft as Usual) as string
-    /// THROW NotImplementedException{}
-    return String.Empty   
+/// <param name="cSource">The string that contains the carriage-return/linefeed. </param>
+/// <param name="cReplaceHardCR">The character to replace a hard carriage-return/linefeed pair with.  The default is a semicolon (;).</param>
+/// <param name="cReplaceSoftCR">The character to replace a soft carriage-return/linefeed pair with.  The default is a space.</param>
+/// <returns>A copy of <cString> with the specified carriage-return/linefeed pairs replaced.</returns>
+FUNCTION MemoTran(cSource ,cReplaceHardCR ,cReplaceSoftCR ) AS STRING CLIPPER
 
+   IF cReplaceHardCR == NIL
+      cReplaceHardCR := ";"
+   ENDIF
 
-/// <summary>
-/// Count the number of lines in a string.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="nWidth"></param>
-/// <param name="nTabsize"></param>
-/// <param name="lWrap"></param>
-/// <returns>
-/// </returns>
-function MLCount(c as Usual,nWidth as Usual,nTabsize as Usual,lWrap as Usual) as dword
-    /// THROW NotImplementedException{}
-    return 0   
+   IF cReplaceSoftCR == NIL
+      cReplaceSoftCR := " "
+   ENDIF
 
-/// <summary>
-/// Extract a line of text from a string, specifying an optional offset argument.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="nLine"></param>
-/// <param name="nOffset"></param>
-/// <returns>
-/// </returns>
-function MLine(c as Usual,nLine as Usual,nOffset as Usual) as string
-    /// THROW NotImplementedException{}
-    return String.Empty   
-
-
-
-/// <summary>
-/// Return the position of a character in a formatted string.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="nWidth"></param>
-/// <param name="nLineNum"></param>
-/// <param name="nCol"></param>
-/// <param name="nTabSize"></param>
-/// <param name="lWrap"></param>
-/// <returns>
-/// </returns>
-function MLcToPos(cMemo as Usual,nWidth as Usual,nLineNum as Usual,nCol as Usual,nTabSize as Usual,lWrap as Usual) as dword
-    /// THROW NotImplementedException{}
-    return 0   
-
-/// <summary>
-/// Extract a line of text from a string, specifying a required offset argument.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="nLine"></param>
-/// <param name="PtrN"></param>
-/// <returns>
-/// </returns>
-function MLine3(c as string,nLine as dword,PtrN as Usual) as string
-    /// THROW NotImplementedException{}
-    return String.Empty   
-
-
-/// <summary>
-/// Determine the position of a line in a string.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="nWidth"></param>
-/// <param name="nLineNum"></param>
-/// <param name="nTabSize"></param>
-/// <param name="lWrap"></param>
-/// <returns>
-/// </returns>
-function MLPos(cMemo as Usual,nWidth as Usual,nLineNum as Usual,nTabSize as Usual,lWrap as Usual) as dword
-    /// THROW NotImplementedException{}
-    return 0   
-
-/// <summary>
-/// Return the line and column position of a character in a formatted string.
-/// </summary>
-/// <param name="cMemo"></param>
-/// <param name="nWidth"></param>
-/// <param name="nPos"></param>
-/// <param name="nTabSize"></param>
-/// <param name="lWrap"></param>
-/// <returns>
-/// </returns>
-function MPosToLc(cMemo as Usual,nWidth as Usual,nPos as Usual,nTabSize as Usual,lWrap as Usual) as Array
-    /// THROW NotImplementedException{}
-    return null_array   
-
-
-/// <summary>
-/// </summary>
-/// <param name="ptrLine"></param>
-/// <param name="nLen"></param>
-/// <param name="nLimit"></param>
-/// <param name="nTabSize"></param>
-/// <param name="lWrap"></param>
-/// <returns>
-/// </returns>
-function LineLen(ptrLine as byte[],nLen as dword,nLimit as dword,nTabSize as dword,lWrap as logic) as dword
-    /// THROW NotImplementedException{}
-    return 0  
+   IF cSource == NIL .OR. ! cSource:IsString
+      THROW Error.ArgumentError( __ENTITY__, "cSource", 1, <OBJECT>{ cSource } )
+   ELSEIF ! cReplaceHardCR:IsString
+      THROW Error.ArgumentError( __ENTITY__, "cReplaceHardCR", 2, <OBJECT>{ cReplaceHardCR } )
+   ELSEIF ! cReplaceSoftCR:IsString
+      THROW Error.ArgumentError( __ENTITY__, "cReplaceSoftCR", 3, <OBJECT>{ cReplaceSoftCR } )
+   ENDIF
+   local cSrc := cSource as STRING
+    cSrc := cSrc:Replace( e"\r\n" , cReplaceHardCR )
+	cSrc := cSrc:Replace( e"\0x8D\n" , cReplaceSoftCR)
+	return cSrc
+	
+	/// <summary>
+	/// Count the number of lines in a string.
+	/// </summary>
+	/// <param name="cMemo"></param>
+	/// <param name="nWidth"></param>
+	/// <param name="nTabsize"></param>
+	/// <param name="lWrap"></param>
+	/// <returns>
+	/// </returns>
+FUNCTION MLCount(cMemo ,nWidth ,nTabsize ,lWrap ) AS DWORD CLIPPER
+	IF ! cMemo:IsString
+		THROW Error.DataTypeError( "MLCount", NAMEOF(cMemo), 1, <OBJECT>{ cMemo} )
+	ENDIF
+	
+	IF nWidth == NIL
+		nWidth := MemoHelpers.STD_MEMO_WIDTH
+	ELSEIF !nWidth:IsNumeric
+		BREAK Error.DataTypeError( "MLCount", nameof(nWidth), 2, <OBJECT>{ nWidth } )
+	ENDIF
+	
+	IF nTabSize == NIL
+		nTabSize := MemoHelpers.STD_TAB_WIDTH
+	ELSEIF !nTabSize:IsNumeric
+		BREAK Error.DataTypeError( "MLCount", nameof(nTabSize), 3, <OBJECT>{ nTabSize } )
+	ENDIF
+	
+	IF lWrap == NIL
+		lWrap := TRUE
+	ELSEIF !lWrap:IsLogic
+		BREAK Error.DataTypeError( "MLCount", nameof(lWrap), 4, <OBJECT>{ lWrap } )
+	ENDIF
+	return MemoHelpers.MLCount(cMemo, nWidth, nTabsize, lWrap)
+	
+	
+	
+	/// <summary>
+	/// Return the position of a character in a formatted string.
+	/// </summary>
+	/// <param name="cMemo"></param>
+	/// <param name="nWidth"></param>
+	/// <param name="nLineNum"></param>
+	/// <param name="nCol"></param>
+	/// <param name="nTabSize"></param>
+	/// <param name="lWrap"></param>
+	/// <returns>
+	/// </returns>
+FUNCTION MLcToPos( cMemo, nLineLen, nLineNum, nColumn, nTabSize, lWrap ) AS DWORD CLIPPER
+	
+	IF ! cMemo:IsString
+		THROW Error.DataTypeError( "MLcToPos", NAMEOF(cMemo), 1, <OBJECT>{ cMemo} )
+	ENDIF
+	
+	IF nLineLen == NIL
+		nLineLen := MemoHelpers.STD_MEMO_WIDTH
+	ELSEIF !nLineLen:IsNumeric
+		BREAK Error.DataTypeError( "MLcToPos", nameof(nLineLen), 2, <OBJECT>{ nLineLen } )
+	ENDIF
+	
+	IF nLineNum == NIL
+		nLineNum := 1
+	ELSEIF !nLineNum:IsNumeric
+		BREAK Error.DataTypeError( "MLcToPos", nameof(nLineNum), 3, <OBJECT>{ nLineNum } )
+	ENDIF
+	
+	IF nColumn == NIL
+		nColumn := 0
+	ELSEIF !nColumn:IsNumeric
+		BREAK Error.DataTypeError( "MLcToPos", nameof(nColumn), 4, <OBJECT>{ nColumn } )
+	ENDIF
+	
+	IF nTabSize == NIL
+		nTabSize := MemoHelpers.STD_TAB_WIDTH
+	ELSEIF !nTabSize:IsNumeric
+		BREAK Error.DataTypeError( "MLcToPos", nameof(nTabSize), 5, <OBJECT>{ nTabSize } )
+	ENDIF
+	
+	IF lWrap == NIL
+		lWrap := TRUE
+	ELSEIF !lWrap:IsLogic
+		BREAK Error.DataTypeError( "MLcToPos", nameof(lWrap), 6, <OBJECT>{ lWrap } )
+	ENDIF
+	RETURN MemoHelpers.MLcToPos(cMemo, nLineLen, nLineNum, nColumn, nTabSize, lWrap)   
+	
+	
+	
+	/// <summary>
+	/// Determine the position of a line in a string.
+	/// </summary>
+	/// <param name="cMemo"></param>
+	/// <param name="nLineLen"></param>
+	/// <param name="nLineNum"></param>
+	/// <param name="nTabSize"></param>
+	/// <param name="lWrap"></param>
+	/// <returns>
+	/// </returns>
+FUNCTION MLPos(cMemo ,nLineLen ,nLineNum ,nTabSize ,lWrap ) AS DWORD CLIPPER
+   
+	IF ! cMemo:IsString
+		THROW Error.DataTypeError( "MLPos", NAMEOF(cMemo), 1, <OBJECT>{ cMemo} )
+	ENDIF
+	
+	IF nLineLen == NIL
+		nLineLen := MemoHelpers.STD_MEMO_WIDTH
+	ELSEIF !nLineLen:IsNumeric
+		THROW Error.DataTypeError( "MLPos", nameof(nLineLen), 2, <OBJECT>{ nLineLen } )
+	ENDIF
+	
+	IF nLineNum == NIL
+		nLineNum := 1
+	ELSEIF !nLineNum:IsNumeric
+		THROW Error.DataTypeError( "MLPos", nameof(nLineNum), 3, <OBJECT>{ nLineNum } )
+	ENDIF
+	
+	IF nTabSize == NIL
+		nTabSize := MemoHelpers.STD_TAB_WIDTH
+	ELSEIF !nTabSize:IsNumeric
+		THROW Error.DataTypeError( "MLPos", nameof(nTabSize), 4, <OBJECT>{ nTabSize } )
+	ENDIF
+	
+	IF lWrap == NIL
+		lWrap := TRUE
+	ELSEIF !lWrap:IsLogic
+		THROW Error.DataTypeError( "MLPos", nameof(lWrap), 5, <OBJECT>{ lWrap } )
+	ENDIF
+	LOCAL nIndex AS DWORD
+	nIndex := 0
+    MemoHelpers.MLine( cMemo, nLineNum, nLineLen, nTabSize, lWrap, TRUE, REF nIndex )
+   
+	RETURN nIndex
+	/// <summary>
+	/// Return the line and column position of a character in a formatted string.
+	/// </summary>
+	/// <param name="cMemo"></param>
+	/// <param name="nWidth"></param>
+	/// <param name="nPos"></param>
+	/// <param name="nTabSize"></param>
+	/// <param name="lWrap"></param>
+	/// <returns>
+	/// </returns>
+FUNCTION MPosToLc(cMemo ,nLineLen ,nPos ,nTabSize ,lWrap ) AS ARRAY CLIPPER
+	IF !cMemo:IsString
+		THROW Error.DataTypeError( "MPosToLc", NAMEOF(cMemo), 1, <OBJECT>{ cMemo } )
+	ENDIF
+	
+	IF nLineLen == NIL
+		nLineLen := MemoHelpers.STD_MEMO_WIDTH
+	ELSEIF !nLineLen:IsNumeric
+		THROW  Error.DataTypeError( "MPosToLc", NAMEOF(nLineLen), 2, <OBJECT>{ nLineLen } )
+	ENDIF
+	
+	IF nPos == NIL
+		nPos := 0
+	ELSEIF !nPos:IsNumeric
+		THROW  Error.DataTypeError( "MPosToLc", NAMEOF(nPos), 3, <OBJECT>{ nPos } )
+	ENDIF
+	
+	IF nTabSize == NIL
+		nTabSize := MemoHelpers.STD_TAB_WIDTH
+	ELSEIF !nTabSize:IsNumeric
+		THROW Error.DataTypeError( "MPosToLc", NAMEOF(nTabSize), 4, <OBJECT>{ nTabSize } )
+	ENDIF
+	
+	IF lWrap == NIL
+		lWrap := TRUE
+	ELSEIF !lWrap:IsLogic
+		THROW Error.DataTypeError( "MPosToLc", NAMEOF(lWrap), 5, <OBJECT>{ lWrap } )
+	ENDIF
+	LOCAL result AS Tuple<DWORD, DWORD>
+	result := MemoHelpers.MPosToLc(cMemo, nLineLen, nPos, nTabSize, lWrap)
+	RETURN {result:Item1, result:Item2}
+	
+	

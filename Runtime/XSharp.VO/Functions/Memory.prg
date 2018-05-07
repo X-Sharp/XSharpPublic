@@ -227,7 +227,7 @@ FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 	
 	LOCAL ret := 0 AS DWORD
 	IF pMemory == NULL_PTR
-	   Throw Error.NullArgumentError( "MemAtSpecial", nameof(pMemory), 1 )
+	   Throw Error.NullArgumentError( __ENTITY__, nameof(pMemory), 1 )
 	ENDIF
 	VAR pBytes := (BYTE PTR) pMemory
 	LOCAL x as DWORD
@@ -247,7 +247,7 @@ FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 /// If <bChar> is not matched, MemChr() returns a NULL_PTR.</returns>
 FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemByte",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
    RETURN MemChr( pMemory, bChar, dwCount )
 
@@ -261,7 +261,7 @@ FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 	LOCAL pChr   AS BYTE PTR
 	LOCAL pRet   as BYTE PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemChr",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 
 	pRet	:= NULL_PTR
@@ -280,7 +280,7 @@ FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 /// <returns>A pointer to the filled memory buffer.</returns>
 FUNCTION MemClear( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemClear",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	RETURN FixedMemory.Clear(pMemory, (INT) dwCount)
 
@@ -296,10 +296,10 @@ FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
 	local result as INT
 	// Validate ptr1 and ptr2
 	IF pMem1 == IntPtr.Zero
-		THROW Error.NullArgumentError("MemComp",nameof(pMem1), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMem1), 1)
 	ENDIF
 	IF pMem2 == IntPtr.Zero
-		THROW Error.NullArgumentError("MemComp",nameof(pMem2), 2)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMem2), 2)
 	ENDIF
 
 	pByte1 := (BYTE PTR) pMem1
@@ -328,10 +328,10 @@ FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
 /// is overwritten.  Use MemMove() to copy overlapping regions before they are overwritten.</remarks>
 FUNCTION MemCopy( pDestination AS PTR, pSource AS PTR, dwCount AS DWORD ) AS PTR
 	IF pDestination == IntPtr.Zero
-		THROW Error.NullArgumentError("MemCopy",nameof(pDestination), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pDestination), 1)
 	ENDIF
 	IF pSource == IntPtr.Zero
-		THROW Error.NullArgumentError("MemCopy",nameof(pSource), 2)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pSource), 2)
 	ENDIF
 
 	RETURN FixedMemory.Copy(pDestination, pSource, (int) dwCount)
@@ -347,10 +347,10 @@ FUNCTION MemCopy( pDestination AS PTR, pSource AS PTR, dwCount AS DWORD ) AS PTR
 FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DWORD ) AS VOID
    // Convert the String to Ansi before copying
    IF pDestination == NULL_PTR
-      THROW Error.NullArgumentError("MemCopyString",nameof(pDestination), 1)
+      THROW Error.NullArgumentError(__ENTITY__,nameof(pDestination), 1)
    ENDIF
    IF cSource == NULL
-      THROW Error.NullArgumentError( "MemCopyString", nameof(cSource), 2 )
+      THROW Error.NullArgumentError( __ENTITY__, nameof(cSource), 2 )
    ENDIF
    VAR pszList := List<IntPtr>{}
    TRY
@@ -378,7 +378,7 @@ FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD
 	LOCAL pDword AS DWORD PTR
 	LOCAL pRet   as DWORD PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemDWord",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	pRet   := NULL_PTR
 	pDword := (DWORD PTR) pMemory
@@ -400,7 +400,7 @@ FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR
 	LOCAL pInt   AS INT PTR
 	LOCAL pRet   as INT PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemInt",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	pRet	:= NULL_PTR
 	pInt	:= (INT PTR) pMemory
@@ -419,7 +419,7 @@ FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR
 /// </returns>
 FUNCTION MemLen( pMemory AS PTR ) AS DWORD
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemLen",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	RETURN FixedMemory.BlockSize(pMemory)
 
@@ -431,7 +431,7 @@ FUNCTION MemLen( pMemory AS PTR ) AS DWORD
 /// If <liValue> is not matched, MemLong() returns a NULL_PTR.</returns>
 FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS INT PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemLong",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
    RETURN MemInt( pMemory, liValue, dwCount )
 
@@ -446,7 +446,7 @@ FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 	// Ansi based lower casing
 	LOCAL pChr   AS BYTE PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemLower",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	pChr	:= (BYTE PTR) pMemory
 	FOR VAR x := 1 TO dwCount
@@ -470,10 +470,10 @@ FUNCTION MemMove( pDestination AS PTR, pSource AS PTR, nSize AS DWORD ) AS IntPt
    LOCAL src AS BYTE PTR
 
 	IF pDestination == IntPtr.Zero
-		THROW Error.NullArgumentError("MemMove",nameof(pDestination), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pDestination), 1)
 	ENDIF
 	IF pSource == IntPtr.Zero
-		THROW Error.NullArgumentError("MemMove",nameof(pSource), 2)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pSource), 2)
 	ENDIF
 	dst := (BYTE PTR) pDestination 
 	src := (BYTE PTR) pSource      
@@ -497,7 +497,7 @@ FUNCTION MemMove( pDestination AS PTR, pSource AS PTR, nSize AS DWORD ) AS IntPt
 /// <returns>A pointer to the filled memory buffer.</returns>
 FUNCTION MemSet( pMemory AS IntPtr, bValue AS BYTE, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemSet",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	RETURN FixedMemory.Set(pMemory, bValue, (int) dwCount)
 
@@ -511,7 +511,7 @@ FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) AS SHORT
 	LOCAL pShort  AS SHORT PTR
 	LOCAL pRet   as SHORT PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemShort",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	pRet	:= NULL_PTR
 	pShort	:= (SHORT PTR) pMemory
@@ -532,7 +532,7 @@ FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 	// Ansi based upper casing
 	LOCAL pChr   AS BYTE PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemUpper",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 
 	pChr	:= (BYTE PTR) pMemory
@@ -553,7 +553,7 @@ FUNCTION MemWord( pMemory AS PTR, wValue AS WORD, dwCount AS DWORD ) AS WORD PTR
 	LOCAL pWord  AS WORD PTR
 	LOCAL pRet   as WORD PTR
 	IF pMemory == IntPtr.Zero
-		THROW Error.NullArgumentError("MemWord",nameof(pMemory), 1)
+		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
 	pRet	:= NULL_PTR
 	pWord	:= (WORD PTR) pMemory

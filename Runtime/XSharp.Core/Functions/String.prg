@@ -591,23 +591,6 @@ function LTrim(c as string) as string
 	return c:TrimStart(trimChars)
 
 
-/// <summary>
-/// Count the number of lines in a string or memo field.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-function MemLines(c as string) as dword
-	local nLines := 0as dword
-	if c != null
-		nLines := 1 
-		foreach ch as char in c
-			if ch == c'\r' 
-				nLines++
-			endif
-		next
-	endif
-	return nLines
 
 /// <summary>
 /// Return the number of times a substring occurs in a string.
@@ -958,15 +941,7 @@ function RTrim(c as string) as string
 	return c:TrimEnd(trimChars)
 
 
-/// <summary>
-/// Convert single-byte kana characters in a string to their double-byte equivalents.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-function SBTODB(c as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+
 
 /// <summary>
 /// Create new character variable with the same characters as the original string.

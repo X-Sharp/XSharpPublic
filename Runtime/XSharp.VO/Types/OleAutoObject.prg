@@ -318,7 +318,7 @@ STATIC METHOD  __OleIVarPut(oComObject AS OBJECT, oType AS System.Type, cName AS
 	cMethod := __ENTITY__
 				
 	IF oComObject == NULL
-		THROW Error.NullArgumentError( cMethod, "oComObject", 1 )
+		THROW Error.NullArgumentError( cMethod, nameof(oComObject), 1 )
 	ENDIF
 				
 	// Get the inner OBJECT from OleAutoObjects
@@ -373,7 +373,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 	cMethod  := __ENTITY__
 			
 	IF oComObject == NULL
-		THROW Error.NullArgumentError( __ENTITY__, "oComObject", 1 )
+		THROW Error.NullArgumentError( __ENTITY__, nameof(oComObject), 1 )
 	ENDIF
 	t  :=oType
 	oComObject := OleUnWrapObject(oComObject)

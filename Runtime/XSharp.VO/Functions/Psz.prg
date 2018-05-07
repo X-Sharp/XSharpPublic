@@ -42,15 +42,7 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	return pszDest
 	
 	
-	/// <summary>
-	/// Convert a value to a static Psz.
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	function AsPsz(u as __Usual) as Psz
-		/// THROW NotImplementedException{}
-		return (Psz) IntPtr.Zero
+
 	
 	/// <summary>
 	/// Convert a string containing an 8-bit logical into a logical value.

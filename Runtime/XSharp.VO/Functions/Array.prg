@@ -276,7 +276,7 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS ARRAY
 	LOCAL x AS DWORD
 	
 	IF dwDim > (DWORD) aValues:Length
-		THROW Error.ArgumentError( "ArrayInit", NAMEOF(dwDim), "Element too big")
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(dwDim), "Element too big")
 	ENDIF
 	
 	aTemp := ArrayNew(aValues:Length)
@@ -701,13 +701,13 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	IF IsArray( uSource )
        aSource := uSource
     ELSE
-      THROW Error.ArgumentError( "ACopy", nameof(uSource), 1, <OBJECT>{ uSource } )
+      THROW Error.ArgumentError( __ENTITY__, nameof(uSource), 1, <OBJECT>{ uSource } )
     ENDIF
    
      IF IsArray( uTarget )
         aTarget := uTarget
      ELSE
-        THROW Error.ArgumentError( "ACopy", nameof(uTarget), 2, <OBJECT>{ uTarget } )
+        THROW Error.ArgumentError( __ENTITY__, nameof(uTarget), 2, <OBJECT>{ uTarget } )
      ENDIF
 	 start := 1
 	 sourceLen  := aLen(aSource)
@@ -715,7 +715,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 		IF IsNumeric(nStart)
 			start := nStart
 		ELSE
-			THROW Error.ArgumentError( "ACopy", nameof(nStart), 3, <OBJECT>{ nStart } )
+			THROW Error.ArgumentError( __ENTITY__, nameof(nStart), 3, <OBJECT>{ nStart } )
 		ENDIF
 		IF start < 0
 			start := sourceLen
@@ -727,7 +727,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 		IF IsNumeric(nCount)
 			count := nCount
 		ELSE
-			THROW Error.ArgumentError( "ACopy", nameof(nCount), 4, <OBJECT>{ nCount } )
+			THROW Error.ArgumentError( __ENTITY__, nameof(nCount), 4, <OBJECT>{ nCount } )
 		ENDIF
 		IF count > 0
 			sourceLen := Math.Min(sourceLen, start+count-1)
@@ -743,7 +743,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 			offSet := Math.Min( offSet, targetLen )
             offSet := Math.Max( 1, offSet )
 		ELSE
-			THROW Error.ArgumentError( "ACopy", nameof(nStartDest), 5, <OBJECT>{ nStartDest } )
+			THROW Error.ArgumentError( __ENTITY__, nameof(nStartDest), 5, <OBJECT>{ nStartDest } )
 		ENDIF
 	 ENDIF
 	 XSharp.__Array.Copy(aSource, aTarget, start, sourceLen, offSet, targetLen)
@@ -862,22 +862,22 @@ FUNCTION ASort(aArray ,startIndex ,nCount ,cbOrder ) AS ARRAY CLIPPER
 	DEFAULT( REF startIndex, 1 )
 	
 	IF ! aArray:IsArray
-		THROW Error.ArgumentError( "ASort", NAMEOF(aArray), 1, <OBJECT>{ aArray } )
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(aArray), 1, <OBJECT>{ aArray } )
 	ENDIF
 	nLen := Alen((ARRAY)aArray) 
 	
 	DEFAULT( REF nCount, nLen - startIndex + 1 )
 	
 	IF startIndex < 1 .or. startIndex > nLen
-		THROW Error.ArgumentError( "ASort", NAMEOF(startIndex), 2, <OBJECT>{ startIndex } )
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(startIndex), 2, <OBJECT>{ startIndex } )
 	ENDIF 
 	IF nCount + startIndex > Alen((ARRAY)aArray)+1
-		THROW Error.ArgumentError( "ASort", NAMEOF(nCount), 3, <OBJECT>{ nCount } )
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 3, <OBJECT>{ nCount } )
 	ENDIF 
 	
 	
 	IF cbOrder != NIL && ( ( ! cbOrder:IsCodeBlock ) || ((CODEBLOCK)cbOrder):PCount() != 2 )
-		THROW Error.ArgumentError( "ASort", "cbOrder", 4, <OBJECT>{ cbOrder } )
+		THROW Error.ArgumentError( __ENTITY__, "cbOrder", 4, <OBJECT>{ cbOrder } )
 	ENDIF
 	
 	EnforceNumeric( startIndex )

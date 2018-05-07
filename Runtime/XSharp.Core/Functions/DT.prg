@@ -66,6 +66,14 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
    RETURN _TimeString( dwHour, dwMinute, dwSeconds, FALSE, "", "" )
 
 
+/// <summary>
+/// Return the timestring from a DateTime structure
+/// </summary>
+/// <param name="dt"></param>
+/// <returns>
+/// </returns>
+FUNCTION ConTime(dt AS DateTime) AS STRING
+	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")   
 
 /// <summary>
 /// Convert the number that identifies a day into the name of the day.

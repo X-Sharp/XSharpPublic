@@ -8,30 +8,53 @@ using System.Text
 /// <summary>
 /// Execute a code block for each of the individual characters in a string.
 /// </summary>
-/// <param name="c"></param>
-/// <param name="cod"></param>
+/// <param name="cSource"></param>
+/// <param name="block"></param>
 /// <param name="nStart"></param>
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function SEval(c as usual,cod as usual,nStart as usual,nCount as usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
+	IF ! cSource:IsString .or. String.IsNullOrEmpty(cSource)
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
+	ENDIF
+	IF ! block:IsCodeBlock .or. block == NULL_CODEBLOCK
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(block), 2, <OBJECT>{ block} )
+	endif
+	IF nStart == NIL
+		nStart := 1
+	ELSEIF ! IsNumeric(nStart)
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
+	ENDIF
+	IF nCount == NIL
+		nStart := Slen(cSource) - nStart + 1
+	ELSEIF ! IsNumeric(nCount)
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
+	ENDIF
+	RETURN SEvalWorker(cSource, block, nStart, nCount)
 
-/// <summary>
-/// Execute a code block for each of the individual characters in a string, changing the contents of the argument as well as the return value.
-/// </summary>
-/// <param name="c"></param>
-/// <param name="cod"></param>
-/// <param name="nStart"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-function SEvalA(c as usual,cod as usual,nStart as usual,nCount as usual) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
 
-
+INTERNAL FUNCTION SEvalWorker(cSource AS STRING, oBlock AS CODEBLOCK, nStart AS INT, nCount AS INT) as STRING
+	LOCAL elements AS INT
+	local nLast		as iNT
+	LOCAL x AS LONG
+	elements := cSource:Length
+	nLast := nStart + nCount -1
+	IF nLast > elements
+		nLast := elements
+	ENDIF
+	// note: String is 0-based
+	IF nStart > 0
+		FOR x := nStart UPTO nLast 
+			oBlock:Eval(cSource[x - 1], x )  
+		NEXT
+	ELSE
+		nLast := Math.Max(1, nStart+nCount +1)
+        FOR x := nStart DOWNTO nLast
+			oBlock:Eval(cSource[x - 1], x )  
+        NEXT
+	ENDIF
+	return cSource
 
 internal FUNCTION __AtLenForStrTran( c1 AS STRING, c2 AS STRING, uiLen AS INT, c2offset AS INT ) AS INT
    LOCAL uiPos  := 0 AS INT
@@ -95,7 +118,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    LOCAL iRepl            AS INT
 
    IF ! uTarget:IsString
-      THROW Error.DataTypeError( "StrTran", "cTarget", 1 , uTarget, uSearch, uReplace, uStart, uCount)
+      THROW Error.ArgumentError( __ENTITY__, nameof(uTarget), 1 , <OBJECT>{uTarget})
    ELSE
       cSource := uTarget
 
@@ -105,10 +128,9 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ENDIF
 
    IF ! uSearch:IsString
-      THROW Error.DataTypeError( "StrTran", "cSearch", 2 , uTarget, uSearch, uReplace, uStart, uCount)
+      THROW Error.ArgumentError( __ENTITY__, nameof(uSearch), 2 ,  <OBJECT>{uSearch})
    ELSE
       cSearch := uSearch
-
       IF cSearch == ""
          RETURN cSource
       ENDIF
@@ -119,7 +141,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ELSEIF uReplace:IsNil
       cReplace := ""
    ELSE
-      THROW  Error.DataTypeError( "StrTran", "cReplace", 3 , uTarget, uSearch, uReplace, uStart, uCount)
+      THROW  Error.ArgumentError( __ENTITY__, nameof(uReplace), 3 , <OBJECT>{uReplace})
    ENDIF
 
    IF PCount() > 3
@@ -128,7 +150,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
       ELSEIF uStart:IsNil
          nStart := 0
       ELSE
-         THROW Error.DataTypeError( "StrTran", "nStart", 4 , uTarget, uSearch, uReplace, uStart, uCount)
+         THROW Error.ArgumentError( __ENTITY__, nameof(uStart), 4 ,  <OBJECT>{uStart})
       ENDIF
 
       IF PCount() > 4
@@ -137,7 +159,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
          ELSEIF uCount:IsNil
             iCount := 0
          ELSE
-            THROW Error.DataTypeError( "StrTran", "nCount", 5 , uTarget, uSearch, uReplace, uStart, uCount)
+            THROW Error.ArgumentError( __ENTITY__, nameof(uCount), 5 , <OBJECT>{uCount})
          ENDIF
       ENDIF
    ENDIF
@@ -265,6 +287,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    RETURN sbRet:ToString()
 
 /// <summary>
+/// Extract a substring from a string.
 /// </summary>
 /// <param name="c"></param>
 /// <param name="iStart"></param>
@@ -285,12 +308,12 @@ function SubS(c ,iStart ,wLen ) as string CLIPPER
 /// </returns>
 function SubStr(c ,uStart ,uLen ) as string CLIPPER
 	if ! c:IsString
-		throw Error.DataTypeError(__ENTITY__, nameof(c), 1, c, uStart, uLen)
+		throw Error.ArgumentError(__ENTITY__, nameof(c), 1, <OBJECT>{c})
 	endif
 	if uStart:IsNil
 		uStart := 1
 	elseif ! uStart:IsNumeric
-		throw Error.DataTypeError(__ENTITY__, nameof(uStart), 2, c, uStart, uLen)
+		throw Error.ArgumentError(__ENTITY__, nameof(uStart), 2, <OBJECT>{uStart})
 	endif
 	var start := (int) uStart 
 	var strValue := (string) c 
@@ -307,7 +330,7 @@ function SubStr(c ,uStart ,uLen ) as string CLIPPER
 	elseif uLen:IsNumeric
 		return __SubStr(strValue, start, (int) uLen)
 	else
-		throw Error.DataTypeError(__ENTITY__, nameof(uLen), 3, c, uStart, uLen)
+		throw Error.ArgumentError(__ENTITY__, nameof(uLen), 3, <OBJECT>{uLen})
 	endif
 
 function EmptyString (s as string) as logic

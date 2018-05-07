@@ -3,6 +3,9 @@ USING System.Globalization
 USING System.Resources
 
 
+function SetLiteral(dwRes as DWORD) as string
+	RETURN __CavoStr( dwRes )
+
 function GetStringDXAX(dwRes as dword) as string
 	return __CavoStr( dwRes )
 

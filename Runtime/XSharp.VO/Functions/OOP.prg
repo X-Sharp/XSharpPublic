@@ -261,7 +261,7 @@ STATIC CLASS OOPHelpers
 		IF propInfo != NULL_OBJECT .and. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
-		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, "IVarGetSelf", "IVarGet" ), nameof(cIVar), 2, <OBJECT>{cIVar} )
+		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar} )
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
@@ -279,13 +279,13 @@ STATIC CLASS OOPHelpers
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
-		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, "IVarGetSelf", "IVarGet" ), nameof(cIVar), 2, <OBJECT>{cIVar})
+		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar})
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
 		result := NIL
 		IF t == NULL
-			THROW Error.NullArgumentError( __ENTITY__, "oObject", 1 )
+			THROW Error.NullArgumentError( __ENTITY__, nameof(oObject), 1 )
 		ENDIF
 		LOCAL mi AS MethodInfo
 		mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
@@ -628,10 +628,10 @@ FUNCTION IsInstanceOfUsual(oX AS USUAL,cName AS STRING) AS LOGIC
 /// </returns>
 FUNCTION IVarGet(o AS OBJECT,cIvar AS STRING) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError("IVarGet", NAMEOF(o),1)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError("IVarGet", NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(o, cIVar, FALSE)
 	
@@ -695,10 +695,10 @@ FUNCTION IsMethodClass( c AS STRING, cName AS STRING ) AS LOGIC
 /// </returns>
 FUNCTION IVarGetSelf(o AS OBJECT,cIVar AS STRING) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError("IVarGetSelf", NAMEOF(o),1)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError("IVarGetSelf", NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(o, cIVar, TRUE)
 	
@@ -743,10 +743,10 @@ FUNCTION IVarPutInfo(o AS OBJECT,cIVar AS SYMBOL) AS DWORD
 /// </returns>
 FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError("IVarPut", NAMEOF(o),1)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError("IVarPut", NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
 	ENDIF
 	OOPHelpers.IVarPut(o, cIVar, uValue, FALSE)
 	RETURN uValue
@@ -761,10 +761,10 @@ FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 /// </returns>
 FUNCTION IVarPutSelf(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError("IVarPutSelf", NAMEOF(o),1)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError("IVarPutSelf", NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
 	ENDIF
 	OOPHelpers.IVarPut(o, cIVar, uValue,TRUE) 
 	RETURN uValue

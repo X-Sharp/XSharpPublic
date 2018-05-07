@@ -581,7 +581,11 @@ FUNCTION _Call(ptrFunc AS PTR) AS USUAL
 [Obsolete] ;
 FUNCTION _AsPsz(u AS USUAL) AS PSZ
 	RETURN NULL_PSZ
-	
+
+[Obsolete] ;
+function AsPsz(u as __Usual) as Psz
+	RETURN NULL_PSZ
+
 [Obsolete] ;
 FUNCTION ErrorCount(dw AS USUAL) AS DWORD
 	RETURN 0  
@@ -615,3 +619,17 @@ FUNCTION _ArrayPutCollection(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
 [Obsolete] ;
 FUNCTION _ArrayPutPoly(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
 	RETURN NIL  
+
+
+
+[Obsolete] ;
+function CompString() as int
+	return 0   
+
+[Obsolete] ;
+function SBTODB(c as string) as string
+	RETURN String.Empty   
+
+[Obsolete];
+function SEvalA(cSource as usual,block as usual,nStart as usual,nCount as usual) as string
+	return cSource

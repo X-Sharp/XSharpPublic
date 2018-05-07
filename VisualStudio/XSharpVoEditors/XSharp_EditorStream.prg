@@ -1,7 +1,7 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Text
-
+using XSharp.VODesigners
 USING Xide
 
 // inherits from vulcan's EditorStream

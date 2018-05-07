@@ -9,7 +9,9 @@ using System.Collections
 using System.Text
 using System.Text.RegularExpressions
 using System.IO
-using System.Diagnostics
+USING System.Diagnostics
+USING System.Linq
+
 //
 //function Start() as void
 //local cFileName as string
@@ -40,9 +42,10 @@ begin namespace XSharpModel
 		private aLinesWithSpecialStuff as List<LineObject> 
 		private aLines    as List<LineObject> 
 		private aSourceLines    as IList<String>
-		private aTypeStack as Stack<EntityObject>
+		PRIVATE aTypeStack AS Stack<EntityObject>
 		private oGlobalObject as EntityObject
-		private _nLength  as int
+		PRIVATE _nLength  AS INT
+        PRIVATE iClassOrStruct AS INT
 				
 		constructor()
 			self:aEntities				:= List<EntityObject>{}
@@ -50,13 +53,14 @@ begin namespace XSharpModel
 			self:aLinesWithSpecialStuff := List<LineObject>{}
 			self:aLines					:= List<LineObject>{}
 
-			self:aTypeStack					:= Stack<EntityObject>{}
+			SELF:aTypeStack					:= Stack<EntityObject>{}
 			self:oGlobalObject				:= EntityObject{EntityType._Class}
 			self:oGlobalObject:cName		:= XELement.GlobalName
 			self:oGlobalObject:lStatic		:= true
 			self:oGlobalObject:lPartial		:= true
 			self:oGlobalObject:nStartLine	:= 1
-			self:oGlobalObject:nCol			:= 1
+			SELF:oGlobalObject:nCol			:= 1
+            SELF:iClassOrStruct             := 0
 		
 		
 		static constructor()
@@ -129,7 +133,29 @@ begin namespace XSharpModel
 			if oLast != NULL_OBJECT
 				oLast:oNext := oInfo
 			ENDIF
-			return
+			RETURN
+
+        METHOD getParentType() AS EntityObject
+            LOCAL oParent := NULL AS EntityObject
+            IF ( aTypeStack:Count > 0 )
+                // Per default, it is the last type in Stack
+                oParent := aTypeStack:Peek()
+                // but we may found a DELEGATE, a VOSTRUCT, ... that we MUST skip (and so, we may support Nested Types ?)
+                IF ( !oParent:eType:SupportNestedType() )
+                    // Walk down the stack to the right type
+                    VAR nPos := 1
+                    WHILE ( nPos < aTypeStack:Count )
+                        oParent := aTypeStack:ElementAt<EntityObject>( nPos )
+                        IF ( !oParent:eType:SupportNestedType() )
+                            oParent := NULL
+                        ELSE
+                            EXIT
+                        ENDIF
+                        nPos++
+                    ENDDO
+                ENDIF
+            ENDIF
+            return oParent
 			
 
 
@@ -148,7 +174,7 @@ begin namespace XSharpModel
 			local lEscapedWord as logic
 			local lEscapedChar as logic
 			local lEscapedString as logic
-			local lInEnum as logic
+			LOCAL lInEnum AS LOGIC
 			local lFindingType as logic
 			local lFindingName as logic
 			local sFoundType as StringBuilder
@@ -163,7 +189,8 @@ begin namespace XSharpModel
 			local eAccessLevel as AccessLevel
 			local eModifiers as EntityModifiers
 			local eLexer as LexerStep
-			local eStep as ParseStep
+			LOCAL eStep AS ParseStep
+			local nParamType as ParamType
 			local aLineFields as List<EntityObject>
 			local aLineLocals as List<EntityObject>
 			local nBracketCount as int
@@ -707,7 +734,7 @@ begin namespace XSharpModel
 								case "PRIVATE"
 									eAccessLevel := AccessLevel.Hidden
 									eModifiers := eModifiers | EntityModifiers._Private
-								case  "INTERNAL"
+								case "INTERNAL"
 									eAccessLevel := AccessLevel.Internal
 									eModifiers := eModifiers | EntityModifiers._Internal
 								case "PUBLIC"
@@ -739,10 +766,13 @@ begin namespace XSharpModel
 							if cUpperWord == "LOCAL" .or. cUpperWord == "CATCH" .or. cUpperWord == "FOREACH"
 								state:lLocal := true
 								state:lImpliedLocal := false
-							end if
-							if cUpperWord == "FOREACH"
-								_SetLineType(oStatementLine, LineType.TokenIn)
-							endif
+							
+							    if cUpperWord == "FOREACH"
+    								_SetLineType(oStatementLine, LineType.TokenIn)
+                                ELSEIF cUpperWord == "CATCH"
+                                    _SetLineType(oStatementLine, LineType.TokenInOut)
+							    ENDIF
+                            end if
 						case lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. (cUpperWord == "VAR" .and. state:lFirstWord)
 							state:lVisFound := true
 							if cUpperWord == "VAR"
@@ -759,7 +789,7 @@ begin namespace XSharpModel
 							oStatementLine:cArgument := cUpperWord
 							state:lIgnore := true
 						case lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. hEnt:ContainsKey(cUpperWord)
-							lInEnum := false
+							lInEnum := FALSE
 							state:lField := false
 							state:lLocal := false
 							state:lEvent := false
@@ -771,12 +801,15 @@ begin namespace XSharpModel
 							if eStep == ParseStep.AfterEnd .and. state:lEntityIsType
 								_SetLineType(oStatementLine, LineType.EndClass)
 								if aTypeStack:Count > 0
-									aTypeStack:Pop()
+									VAR oPrevInfo := aTypeStack:Pop()
+                                    IF ( oPrevInfo:eType:SupportNestedType() )
+                                        iClassOrStruct --
+                                    ENDIF
 								endif
 								state:lEntityFound := false
 								state:lEntityIsType := false
 								state:lIgnore := true
-								lInEnum := false
+								lInEnum := FALSE
 								cShortClassName := ""
 								cTypedClassName := ""
 								cClassNameSpace := ""
@@ -787,17 +820,27 @@ begin namespace XSharpModel
 								state:lEntityFound := false
 								state:lEntityIsType := false
 								state:lIgnore := true
-								lInEnum := false
+								lInEnum := FALSE
 								lInProperty := false
 							else
 								lInEnum := cUpperWord == "ENUM"
 								oInfo := EntityObject{GetEntityType(cUpperWord)}
-								if oInfo:eType:IsType()
+								IF oInfo:eType:IsType()
 									aTypeStack:Push(oInfo)
+                                    IF ( iClassOrStruct > 0 )
+                                        // We are already in Class Or Struct
+                                        // So, this is a nested Type
+                                        oInfo:oParent := getParentType()
+                                    ENDIF
+                                    IF oInfo:eType:SupportNestedType()
+                                        iClassOrStruct ++
+                                    ENDIF
 								elseif oInfo:eType:IsClassMember()
-									if aTypeStack:Count > 0
-										var oParent := aTypeStack:Peek()
-										oParent:AddChild(oInfo)
+								    IF aTypeStack:Count > 0
+                                        VAR oParent := getParentType()
+                                        if ( oParent != null )
+										    oParent:AddChild(oInfo)
+                                        endif
 									endif
 								elseif oInfo:eType:IsGlobalMember()
 									self:oGlobalObject:AddChild(oInfo)
@@ -877,8 +920,19 @@ begin namespace XSharpModel
 									eStep := ParseStep.AfterAs
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
-								case state:lInParams .and. (cUpperWord == "REF" .or. cUpperWord == "OUT") .and. .not. lEscapedWord
+								case state:lInParams .and. (cUpperWord == "REF" .or. cUpperWord == "OUT" .or. cUpperWord == "PARAMS") .and. .not. lEscapedWord
 									eStep := ParseStep.AfterRef
+									SWITCH cUpperWord
+										CASE "REF"
+											nParamType := ParamType.Ref
+										CASE "OUT"
+											nParamType := ParamType.Out
+										CASE "PARAMS"
+											nParamType := ParamType.Params
+										OTHERWISE
+											nParamType := ParamType.As
+									end switch
+
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
 								case eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterImplements .or. ;
@@ -978,11 +1032,8 @@ begin namespace XSharpModel
 									
 									do case
 										case state:lInParams
-											if eStep == ParseStep.AfterRef
-												oInfo:SetParamType("&" + cWord)
-											else
-												oInfo:SetParamType(cWord)
-											endif
+											oInfo:SetParamType(cWord, nParamType)
+											nParamType := ParamType.AS
 											eStep := ParseStep.None
 										case eStep == ParseStep.AfterInherit
 											oInfo:cInherit := cWord
@@ -1163,12 +1214,18 @@ begin namespace XSharpModel
 							if state:lLocal
 								oInfo:eType := EntityType._Local
 							elseif state:lEvent
-								oInfo:eType := EntityType._Event
-							else
-								oInfo:eType := EntityType._Field
-								if aTypeStack:Count > 0
-									var oParent := aTypeStack:Peek()
-									oParent:AddChild(oInfo)
+								oInfo:eType := EntityType._Event                            
+							ELSE
+                                if lInEnum
+								    oInfo:eType := EntityType._EnumMember
+                                else
+								    oInfo:eType := EntityType._Field
+                                ENDIF
+								IF aTypeStack:Count > 0
+                                    VAR oParent := getParentType()
+                                    if ( oParent != null )
+										oParent:AddChild(oInfo)
+                                    ENDIF
 								endif
 							end if
 							oInfo:lStatic := lStatic
@@ -1330,7 +1387,16 @@ begin namespace XSharpModel
 				case EntityType._VOStruct
 					return true
 			end switch
-			return false
+			RETURN FALSE
+
+		static method SupportNestedType(self e as ENtityType) as logic
+			switch e
+				case EntityType._Class
+				case EntityType._Structure
+					return true
+			end switch
+			RETURN FALSE
+
 		static method IsGlobalMember(self e as ENtityType) as logic
 			switch e
 				case EntityType._Function
@@ -1341,7 +1407,8 @@ begin namespace XSharpModel
 				case EntityType._Structure
 					return true
 			end switch
-			return false
+			RETURN FALSE
+
 		static method IsClassMember(self e as ENtityType) as logic
 			switch e
 				case EntityType._Field
@@ -1504,17 +1571,14 @@ begin namespace XSharpModel
 			self:aParams:Add(oParam)
 			return oParam
 		
-		internal method SetParamType(cType as string) as void
+		internal method SetParamType(cType as string, nParamType as ParamType) as void
 			local oParam as EntityParamsObject
 			if self:aParams == null .or. self:aParams:Count == 0 .or. String.IsNullOrEmpty(cType)
 				return
 			end if
 			oParam := self:aParams[self:aParams:Count - 1]
-			if cType:Contains("&")
-				cType := cType:Replace("&" , "")
-				oParam:lReference := true
-			end if
-			oParam:cType := cType
+			oParam:cType	  := cType
+			oParam:nParamType := nParamType
 			return
 	end class
 	
@@ -1522,7 +1586,7 @@ begin namespace XSharpModel
 		class EntityParamsObject
 		property cName as string auto
 		property cType as string auto
-		property lReference as logic auto
+		property nParamType as ParamType auto
 		property nCol as int auto
 		internal constructor(_cName as string , _cType as string)
 			super()
@@ -1564,17 +1628,26 @@ begin namespace XSharpModel
 	end enum
 	
 	[Flags];
-		enum   EntityModifiers as Int32
-		member _None := 0
-		member _Protected := 1
-		member _Private := 2
-		member _Internal := 4
-		member _Virtual := 8
-		member _Abstract := 16
-		member _Sealed := 32
-		member _Static := 64
-		member _Partial := 128
-		member _New := 256
+	ENUM EntityModifiers AS Int32
+		// roslyn values in the comments, should we keep in sync ?
+		member _None := 0			// 0x0000
+		member _Protected := 1		// 0x0004
+		member _Private := 2		// 0x0008
+		member _Internal := 4		// 0x0002
+		member _Virtual := 8		// 0x0080
+		member _Abstract := 16		// 0x0020
+		member _Sealed := 32		// 0x0010
+		member _Static := 64		// 0x0040
+		member _Partial := 128		// 0x4000
+		MEMBER _New := 256			// 0x0200
+		// roslyn also has these. Should we add these ?
+		// public			0x0001
+		// extern			0x0100
+		// override			0x0400
+		// readonly / initonly 0x0800
+		// volatile			0x1000
+		// unsafe			0x2000
+		// async			0x8000
 	end enum
 	
 	enum EntityType as Int32 
@@ -1601,7 +1674,8 @@ begin namespace XSharpModel
 		member _Property	
 		member _Define		
 		member _Resource	
-		member _TextBlock	
+		MEMBER _TextBlock	
+        MEMBER _EnumMember
 	end enum
 	
 	
@@ -1704,7 +1778,10 @@ begin namespace XSharpModel
 			lLinqSelect := false
 			lDimDeclaration := false
 			return
-	end structure
+	END STRUCTURE
+
+
+
 	
 end namespace
 

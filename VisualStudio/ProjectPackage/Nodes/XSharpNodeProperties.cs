@@ -282,6 +282,14 @@ namespace XSharp.Project
                 return ((ReferenceNode)this.Node).Resolved;
             }
         }
+        [SRCategory(SR.Misc)]
+        [LocDisplayName(SR.EmbedInteropTypes)]
+        [SRDescription(SR.EmbedInteropTypesDescription)]
+        public virtual bool EmbedInteropTypes
+        {
+            get { return ((ReferenceNode)this.Node).EmbedInteropTypes; }
+            set { ((ReferenceNode)this.Node).EmbedInteropTypes = value; }
+        }
 
 
 
@@ -376,15 +384,6 @@ namespace XSharp.Project
             {
                 this.SetProperty(ProjectFileConstants.Isolated, value.ToString());
             }
-        }
-
-        [SRCategory(SR.Misc)]
-        [LocDisplayName(SR.EmbedInteropTypes)]
-        [SRDescription(SR.EmbedInteropTypesDescription)]
-        public virtual bool EmbedInteropTypes
-        {
-            get { return ((ComReferenceNode)this.Node).EmbedInteropTypes; }
-            set { ((ComReferenceNode)this.Node).EmbedInteropTypes = value; }
         }
 
         #endregion

@@ -96,20 +96,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        public bool EmbedInteropTypes
-        {
-            get
-            {
-                bool value;
-                bool.TryParse(this.ItemNode.GetMetadata(ProjectFileConstants.EmbedInteropTypes), out value);
-                return value;
-            }
 
-            set
-            {
-                this.ItemNode.SetMetadata(ProjectFileConstants.EmbedInteropTypes, value.ToString());
-            }
-        }
 
         public string WrapperTool
         {

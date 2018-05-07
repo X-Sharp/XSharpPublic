@@ -259,17 +259,17 @@ begin namespace XSharpModel
 		
 		property ContentHashCode as dword
 			get
-				if (! self:HasCode .or. self:TypeList == null)
+				if ! self:HasCode .or. self:TypeList == null
 					return 0
 				endif
 				begin lock self:_lock
-					
 					var hash := 0U
 					foreach type as XType in self:TypeList:Values
-						
-						foreach xmem as XTypeMember in type:Members
-							
-							hash := hash + (dword)xmem:Prototype:GetHashCode() 
+						FOREACH xmem AS XTypeMember IN type:Members
+							begin unchecked
+								hash += (DWORD)xmem:Prototype:GetHashCode() 
+								hash += (DWORD) xmem:Range:StartLine
+							end unchecked
 						next
 					next
 					return hash

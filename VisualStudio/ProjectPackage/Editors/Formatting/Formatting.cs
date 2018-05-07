@@ -255,7 +255,7 @@ namespace XSharp.Project
                 //
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var  classifications = xsClassifier.GetRegionTags();
+                var classifications = xsClassifier.GetRegionTags();
                 // We cannot use SortedList, because we may have several Classification that start at the same position
                 List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
                 foreach (var tag in classifications)
@@ -293,10 +293,42 @@ namespace XSharp.Project
                 {
                     var lines = _buffer.CurrentSnapshot.Lines;
                     int indentSize = 0;
+                    bool inComment = false;
+                    bool prevContinue = false;
+                    int prevIndentSize = 0;
                     foreach (var snapLine in lines)
                     {
-                        //
-                        indentSize = getDesiredIndentationInDocument(snapLine, regions, indentSize);
+                        // Ignore Empty lines
+                        if (snapLine.Length > 0)
+                        {
+                            SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
+                            String lineText = sSpan.GetText();
+                            lineText = lineText.Trim();
+                            if (lineText.Length > 0)
+                            {
+                                char start = lineText.Substring(0, 1)[0];
+                                char end = lineText.Substring(lineText.Length - 1, 1)[0];
+                                //
+                                if (prevContinue)
+                                {
+                                    indentSize = prevIndentSize;
+                                }
+                                else
+                                {
+                                    indentSize = getDesiredIndentationInDocument(snapLine, regions, out inComment);
+                                }
+                                if (!inComment && (end == ';'))
+                                {
+                                    // Keep the previous Indentation
+                                    prevContinue = true;
+                                    prevIndentSize = indentSize;
+                                }
+                                else
+                                {
+                                    prevContinue = false;
+                                }
+                            }
+                        }
                         //
                         CommandFilterHelper.FormatLine(this._aggregator, this.TextView, editSession, snapLine, indentSize);
                     }
@@ -323,13 +355,14 @@ namespace XSharp.Project
         }
 
 
-        private int getDesiredIndentationInDocument(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions, int previousIndentSize)
+        private int getDesiredIndentationInDocument(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions, out bool inComment)
         {
             int indentValue = 0;
             int mlCmtSpaces = 0;
             String openKeyword = "";
+            inComment = false;
             //
-            List<IMappingTagSpan<IClassificationTag>> tags = getTagsInLine(snapLine);
+            //List<IMappingTagSpan<IClassificationTag>> tags = getTagsInLine(snapLine);
             // In Tuple Regions, the items are :
             // Item1 is Start
             // Item2 is End
@@ -351,7 +384,7 @@ namespace XSharp.Project
                 if (length <= 0)
                     length = 1;
                 // Get the opening keyword, at the beginning of the currently processed region
-                openKeyword = getFirstKeywordInLine(snapLine.Snapshot, region.Item1.Start, length);
+                openKeyword = getFirstKeywordInLine(snapLine, region.Item1.Start, length);
                 //
                 if ((snapLine.Start.Position <= region.Item1.Start) && (snapLine.End.Position >= region.Item1.Start))
                 {
@@ -366,11 +399,12 @@ namespace XSharp.Project
                         case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
+                        case "#REGION":
                             continue;
                         default:
                             break;
                     }
-                    if (openKeyword == "/*")
+                    if (openKeyword == "//")
                     {
                         // Get the current indentation
                         SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
@@ -386,6 +420,7 @@ namespace XSharp.Project
                         lineText = lineText.Replace("\t", new String(' ', _tabSize));
                         mlCmtSpaces = mlCmtSpaces - (lineText.Length - lineText.TrimStart().Length);
                         //
+                        inComment = true;
                         continue;
                     }
                     // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
@@ -418,6 +453,7 @@ namespace XSharp.Project
                         case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
+                        case "#REGION":
                             continue;
                         default:
                             break;
@@ -430,12 +466,12 @@ namespace XSharp.Project
                     else
                     {
                         // no closing keyword
-                        if (! _codeBlockKeywords.Contains<String>(openKeyword))
+                        if (!_codeBlockKeywords.Contains<String>(openKeyword))
                         {
                             indentValue++;
                         }
                     }
-                    
+
                     // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
                     string startToken = searchMiddleKeyword(openKeyword);
                     if (startToken != null)
@@ -486,6 +522,7 @@ namespace XSharp.Project
             char car;
             int currrentPos = start;
             int pos = 0;
+            bool mayContinue = false;
             char[] newLine = Environment.NewLine.ToCharArray();
             do
             {
@@ -494,15 +531,25 @@ namespace XSharp.Project
                 {
                     if (pos == newLine.Length - 1)
                     {
-                        found = true;
-                        break;
+                        if (!mayContinue)
+                        {
+                            found = true;
+                            break;
+                        }
+                        pos = 0;
                     }
-                    pos++;
+                    else
+                        pos++;
                 }
                 else
                 {
+                    if (car == ';')
+                        mayContinue = true;
+                    else
+                        mayContinue = false;
                     pos = 0;
                 }
+                //
                 currrentPos++;
                 if (currrentPos >= snapshot.Length)
                 {
@@ -550,10 +597,11 @@ namespace XSharp.Project
         }
 
 
-        private String getFirstKeywordInLine(ITextSnapshot snapshot, int start, int length)
+        private String getFirstKeywordInLine(ITextSnapshotLine line, int start, int length)
         {
             String keyword = "";
-            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(snapshot, start, length);
+            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line.Snapshot, start, length);
+            bool inAttribute = false;
             //
             if (tagList.Count > 0)
             {
@@ -595,6 +643,39 @@ namespace XSharp.Project
                                 keyword = keyword.Substring(0, 2);
                             }
                         }
+                    }
+                    else if (currentTag.ClassificationType.IsOfType("punctuation"))
+                    {
+                        var spans = currentSpan.GetSpans(_buffer);
+                        if (spans.Count > 0)
+                        {
+                            SnapshotSpan kwSpan = spans[0];
+                            keyword = kwSpan.GetText();
+                            if (keyword == "[")
+                            {
+                                inAttribute = true;
+                                tagIndex++;
+                                keyword = "";
+                                continue;
+                            }
+                            else if (keyword == "]")
+                            {
+                                inAttribute = false;
+                                tagIndex++;
+                                keyword = "";
+                                continue;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (inAttribute)
+                        {
+                            // Skip All Content
+                            tagIndex++;
+                            continue;
+                        }
+
                     }
                     // out please
                     break;
@@ -938,7 +1019,7 @@ namespace XSharp.Project
                     //
                     ITextSnapshot snapshot = xsClassifier.Snapshot;
                     SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                    var  classifications = xsClassifier.GetRegionTags();
+                    var classifications = xsClassifier.GetRegionTags();
                     // We cannot use SortedList, because we may have several Classification that start at the same position
                     var sortedTags = new List<ClassificationSpan>();
                     foreach (var tag in classifications)

@@ -13,7 +13,6 @@ using LanguageService.CodeAnalysis
 using LanguageService.CodeAnalysis.XSharp
 using System.Collections.Concurrent
 using System.Collections.Immutable
-using EnvDTE80
 using Microsoft.VisualStudio
 using Microsoft.VisualStudio.Shell.Interop
 using System.Diagnostics

@@ -63,6 +63,7 @@ namespace XSharpLanguage
         private XFile _file;
         private bool _coreDialect;
         private bool _showTabs;
+        private bool _keywordsInAll;
         private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
         private IntellisenseOptionsPage _optionsPage;
@@ -102,6 +103,7 @@ namespace XSharpLanguage
                 if (_disposed)
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 _showTabs = _optionsPage.CompletionListTabs;
+                _keywordsInAll = _optionsPage.KeywordsInAll;
                 if (_coreDialect)
                 {
                     _dotUniversal = _optionsPage.UseDotAsUniversalSelector;
@@ -449,14 +451,16 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                //
-                //compList = new CompletionList();
-                //ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupMethod, StandardGlyphItem.GlyphItemPublic);
-                //compList.Add(new XSCompletion("Fab", "Fab(", "Yes Fab !", icon, null, Kind.Method));
-
+                // Add Keywors to the ALL Tab ?
+                if ((kwdList.Count > 0) && _keywordsInAll)
+                {
+                    foreach (var item in kwdList.Values)
+                        compList.Add(item);
+                }
                 // Sort in alphabetical order
                 // and put in the SelectionList
                 var values = compList.Values;
+                // Create the All Tab
                 completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));
                 if (_showTabs)
                 {
@@ -496,6 +500,7 @@ namespace XSharpLanguage
                         completionSets.Add(new CompletionSet("Namespaces", "Namespaces", applicableTo, sub, Enumerable.Empty<Completion>()));
                     }
                 }
+                // Keywords are ALWAYS in a separate Tab anyway
                 if (kwdList.Count > 0)
                 {
                     completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList.Values, Enumerable.Empty<Completion>()));
@@ -665,7 +670,7 @@ namespace XSharpLanguage
                         if (dotPos > 0)
                             realTypeName = realTypeName.Substring(0, dotPos);
                         ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
-                        if (compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                        if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
                             break;
                     }
                 }
@@ -2379,7 +2384,7 @@ namespace XSharpLanguage
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber,
             ITextSnapshot snapshot, out IToken stopToken, bool fromGotoDefn, XFile file, bool dotAsSelector, XTypeMember fromMember)
         {
-           List<String> tokenList = new List<string>();
+            List<String> tokenList = new List<string>();
             String token;
             string fileName;
             var bufferText = snapshot.GetText();
@@ -2467,7 +2472,7 @@ namespace XSharpLanguage
             for (int iToken = current; iToken >= 0; iToken--)
             {
                 // Out tokens line numbers are 1 based
-                if (list[iToken].Line != triggerPointLineNumber+1)
+                if (list[iToken].Line != triggerPointLineNumber + 1)
                     break;
                 current = iToken;
             }
@@ -2494,7 +2499,7 @@ namespace XSharpLanguage
             if (lineNT != lineTP)
             {
                 // should not happen. 
-                return tokenList;
+                //return tokenList;
             }
             nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
             // Now, let's build the Token chain, so we can guess what to add in the CompletionList
@@ -3347,6 +3352,7 @@ namespace XSharpLanguage
                 }
                 //
                 Type declType = null;
+                PropertyInfo prop = null;
                 foreach (var member in members)
                 {
                     if (isGenerated(member))
@@ -3354,7 +3360,7 @@ namespace XSharpLanguage
 
                     if (StringEquals(member.Name, currentToken))
                     {
-                        PropertyInfo prop = member as PropertyInfo;
+                        prop = member as PropertyInfo;
                         declType = prop.PropertyType;
                         break;
                     }
@@ -3384,7 +3390,9 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    return new CompletionType(declType);
+                    cType = new CompletionType(declType);
+                    foundElement = new CompletionElement(prop);
+                    return cType;
                 }
             }
             // Sorry, not found

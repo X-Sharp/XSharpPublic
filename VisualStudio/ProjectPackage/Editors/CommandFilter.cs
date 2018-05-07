@@ -145,6 +145,11 @@ namespace XSharp.Project
                     case VSConstants.VSStd97CmdID.GotoDefn:
                         GotoDefn();
                         return VSConstants.S_OK;
+                    case VSConstants.VSStd97CmdID.Undo:
+                    case VSConstants.VSStd97CmdID.Redo:
+                        CancelSignatureSession();
+                        CancelCompletionSession();
+                        break;
                 }
             }
 
@@ -221,6 +226,7 @@ namespace XSharp.Project
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;
+
                     }
                 }
             }

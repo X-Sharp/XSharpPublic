@@ -112,7 +112,7 @@ function GetTimeSep() as word
 	/// <returns>
 	/// </returns>
 function GetTimeZoneDiff() as int
-return TimeZoneInfo.Local.BaseUtcOffSet:Hours
+	return TimeZoneInfo.Local.BaseUtcOffSet:Hours
 
 function GetYield as logic
 	return SetYield()

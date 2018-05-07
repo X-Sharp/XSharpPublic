@@ -10,9 +10,8 @@
 
 namespace LanguageService.CodeAnalysis {
     using System;
-    using System.Reflection;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -20,7 +19,7 @@ namespace LanguageService.CodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class XSharpResources {
@@ -40,7 +39,7 @@ namespace LanguageService.CodeAnalysis {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharpResources", typeof(XSharpResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharpResources", typeof(XSharpResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -11363,6 +11362,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_AssemblyAttributeFromModuleIsOverridden_Title {
             get {
                 return ResourceManager.GetString("WRN_AssemblyAttributeFromModuleIsOverridden_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
+        /// </summary>
+        internal static string WRN_AssgReadonlyLocalCause {
+            get {
+                return ResourceManager.GetString("WRN_AssgReadonlyLocalCause", resourceCulture);
             }
         }
         

@@ -49,7 +49,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_ConversionWithBase = 553,
     XS_WRN:ERR_ConversionWithDerived = 554,
     XS_WRN:ERR_ExplicitExtension = 1112,
-    XS_WRN:ERR_AssgReadonlyLocalCause = 1656
     */
 
     internal enum ErrorCode
@@ -1570,7 +1569,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_NoExplicitCast = 9060,
         ERR_PtrCastNotAllowed = 9061,
         ERR_TypeNameMatchesGlobalNamespace = 9062,
-        WRN_NullPointerForRefParameter = 9063
+        WRN_NullPointerForRefParameter = 9063,
+        WRN_AssgReadonlyLocalCause = 9064,
         #endregion X#-only messages
     }
 }

@@ -1252,7 +1252,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             };
 
             int index = (checkingReceiver ? 3 : 0) + (kind == BindValueKind.RefOrOut ? 0 : (kind == BindValueKind.RefReturn ? 1 : 2));
-
+#if XSHARP
+            if (local.IsForEach)
+            {
+                ReadOnlyLocalErrors[2] = ErrorCode.WRN_AssgReadonlyLocalCause;
+            }
+#endif        
             Error(diagnostics, ReadOnlyLocalErrors[index], tree, local, cause.Localize());
 
 #if XSHARP

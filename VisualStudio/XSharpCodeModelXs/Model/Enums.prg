@@ -109,5 +109,11 @@ begin namespace XSharpModel
 		member License:=13
 	end enum
 	
+	ENUM ParamType AS BYTE
+		MEMBER @@AS		:= 0
+		MEMBER @@Ref    := 1
+		MEMBER @@Out	:= 2
+		Member @@Params := 3
+	end enum
 end namespace 
 

@@ -288,9 +288,9 @@ namespace XSharpColorizer
             var regions = new List<ClassificationSpan>();
             var classList = new List<EntityObject>();
             var propertyList = new List<EntityObject>();
-            if (info != null && snapshot != null )
+            if (info != null && snapshot != null)
             {
-                
+
                 // walk list of entities
                 foreach (var oElement in info.Entities)
                 {
@@ -330,9 +330,9 @@ namespace XSharpColorizer
                     //{
                     //    classStack.Push(oElement);
                     //}
-                    else if (oElement.eType.HasBody() 
-                            || oElement.eType == EntityType._VOStruct 
-                            || oElement.eType == EntityType._Union )
+                    else if (oElement.eType.HasBody()
+                            || oElement.eType == EntityType._VOStruct
+                            || oElement.eType == EntityType._Union)
                     {
                         int nStart, nEnd;
                         nStart = oElement.nOffSet;
@@ -363,29 +363,29 @@ namespace XSharpColorizer
                             {
                                 var nEndLine = snapshot.LineCount;
                                 // walk the special lines collection to see if there are any 'end' lines at the end of the file
-                                for (int i = info.SpecialLines.Count -1; i >= 0; i--)
+                                for (int i = info.SpecialLines.Count - 1; i >= 0; i--)
                                 {
                                     var oLine = info.SpecialLines[i];
                                     switch (oLine.eType)
                                     {
                                         case LineType.EndNamespace:
                                         case LineType.EndClass:
-                                            nEndLine = oLine.Line -1;
+                                            nEndLine = oLine.Line - 1;
                                             break;
                                         default:
                                             i = -1; // exit the loop
                                             break;
-                                    } 
+                                    }
                                 }
                                 // Our lines are 1 based, so subtract 1
-                                nEnd = snapshot.GetLineFromLineNumber(nEndLine-1).Start;
+                                nEnd = snapshot.GetLineFromLineNumber(nEndLine - 1).Start;
                             }
                         }
                         if (nEnd > snapshot.Length)
                         {
-                            nEnd = snapshot.Length ;
+                            nEnd = snapshot.Length;
                         }
-                        AddRegionSpan(regions, snapshot, nStart, nEnd );
+                        AddRegionSpan(regions, snapshot, nStart, nEnd);
 
                     }
 
@@ -396,7 +396,7 @@ namespace XSharpColorizer
             var nsStack = new Stack<LineObject>();
             foreach (var oLine in info.SpecialLines)
             {
-                int nStart= 0, nEnd = 0;
+                int nStart = 0, nEnd = 0;
                 switch (oLine.eType)
                 {
                     case LineType.BeginNamespace:
@@ -442,19 +442,20 @@ namespace XSharpColorizer
                             if (blStart.eType == LineType.TokenInOut)
                             {
                                 blockStack.Pop();
-                            }
-                            if (blStart.cArgument == "DO" || blStart.cArgument == "SWITCH")
-                            {
-                                // no contents before the first case
-                                ;
-                            }
-                            else
-                            {
-                                nStart = blStart.OffSet;
-                                // our lines are 1 based. 
-                                // we do not want to include the next case line in the block from the previous one
-                                nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
-                                AddRegionSpan(regions, snapshot, nStart, nEnd);
+                                //}
+                                if (blStart.cArgument == "DO" || blStart.cArgument == "SWITCH")
+                                {
+                                    // no contents before the first case
+                                    ;
+                                }
+                                else
+                                {
+                                    nStart = blStart.OffSet;
+                                    // our lines are 1 based. 
+                                    // we do not want to include the next case line in the block from the previous one
+                                    nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
+                                    AddRegionSpan(regions, snapshot, nStart, nEnd);
+                                }
                             }
                         }
                         blockStack.Push(oLine);
@@ -663,7 +664,7 @@ namespace XSharpColorizer
             ClassificationSpan result = null;
             IClassificationType type = null;
             IToken startToken = null;
-            if (keywordContext != null )
+            if (keywordContext != null)
             {
                 startToken = keywordContext;
                 if (startToken.Line != token.Line)
@@ -778,12 +779,12 @@ namespace XSharpColorizer
                 }
             }
         }
-  
+
         private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot)
         {
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             XClassificationSpans newtags;
-            var regionTags  = new List<ClassificationSpan>();
+            var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
             {
                 int iLastInclude = -1;
@@ -798,7 +799,7 @@ namespace XSharpColorizer
                 {
                     var token = tokenStream.Get(iToken);
                     // Orphan End ?
-                    if ( ( keywordContext != null ) && (keywordContext.Line != token.Line ) && (keywordContext.Type == XSharpLexer.END ) )
+                    if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
                     {
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
@@ -816,7 +817,7 @@ namespace XSharpColorizer
                                 newtags.Add(span);
                             }
                         }
-                        if (! disableRegions)
+                        if (!disableRegions)
                         {
                             // now look for Regions of similar code lines
                             switch (token.Type)
@@ -875,10 +876,10 @@ namespace XSharpColorizer
             iLast = start;
             IToken nextToken = lastFound;
             IToken nextToken2 = lastFound;
-            for (int i = start + 1; i < TokenStream.Size-2; i++)
+            for (int i = start + 1; i < TokenStream.Size - 2; i++)
             {
                 nextToken = TokenStream.Get(i);
-                nextToken2 = TokenStream.Get(i+2);  // STATIC <WS> DEFINE for example.
+                nextToken2 = TokenStream.Get(i + 2);  // STATIC <WS> DEFINE for example.
                 if (nextToken.Line > iLine)
                 {
                     if (nextToken.Type == type || (nextToken2.Type == type && nextToken.Type == XSharpLexer.STATIC))

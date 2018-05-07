@@ -72,10 +72,10 @@ namespace XSharp.Project
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
                 List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, _file, false, member);
                 // Check if we can get the member where we are
-                if (tokenList.Count > 1)
-                {
-                    tokenList.RemoveRange(0, tokenList.Count - 1);
-                }
+                //if (tokenList.Count > 1)
+                //{
+                //    tokenList.RemoveRange(0, tokenList.Count - 1);
+                //}
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 XSharpLanguage.CompletionElement gotoElement;
                 String currentNS = "";

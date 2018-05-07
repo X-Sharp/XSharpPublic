@@ -12,7 +12,6 @@ using EnvDTE
 using LanguageService.CodeAnalysis
 using LanguageService.CodeAnalysis.XSharp
 using System.Collections.Concurrent
-using EnvDTE80
 using Microsoft.VisualStudio
 using Microsoft.VisualStudio.Shell.Interop
 using System.Diagnostics
@@ -52,9 +51,6 @@ begin namespace XSharpModel
 			self:xOtherFilesDict := ConcurrentDictionary<string, XFile>{StringComparer.OrdinalIgnoreCase}
 			self:_typeController := SystemTypeController{}
 			self:Loaded := true
-			if (self:_projectNode == null)
-				
-			endif
 
 		#region AssemblyReferences		
 		
@@ -107,7 +103,9 @@ begin namespace XSharpModel
 					endif
 				next
 				foreach path as string in Loaded
-					self:_unprocessedAssemblyReferences:Remove(path)
+					if self:_unprocessedAssemblyReferences:ContainsKey(path)
+						self:_unprocessedAssemblyReferences:Remove(path)
+					endif
 				next
 			endif
 			return 
@@ -289,29 +287,29 @@ begin namespace XSharpModel
 			return self:AddFile(XFile{filePath})
 		
 		method AddFile(xFile as XFile) as logic
-			local file as XFile
 			local xamlCodeBehindFile as string
 			if xFile != null
 				xFile:Project := self
+				local oldFile as XFile
 				if xFile:IsSource
 					if self:xSourceFilesDict:ContainsKey(xFile:FullPath)
-						self:xSourceFilesDict:TryRemove(xFile:FullPath, out file)
+						self:xSourceFilesDict:TryRemove(xFile:FullPath, out oldFile)
 					endif
 					return self:xSourceFilesDict:TryAdd(xFile:FullPath, xFile)
 				endif
 				if xFile:IsXaml
 					xamlCodeBehindFile := xFile:XamlCodeBehindFile
 					if self:xSourceFilesDict:ContainsKey(xamlCodeBehindFile)
-						self:xSourceFilesDict:TryRemove(xamlCodeBehindFile, out  file)
+						self:xSourceFilesDict:TryRemove(xamlCodeBehindFile, out  oldFile)
 					endif
 					self:xSourceFilesDict:TryAdd(xamlCodeBehindFile, xFile)
 					if self:xOtherFilesDict:ContainsKey(xFile:FullPath)
-						self:xOtherFilesDict:TryRemove(xFile:FullPath, out file)
+						self:xOtherFilesDict:TryRemove(xFile:FullPath, out oldFile)
 					endif
 					return self:xOtherFilesDict:TryAdd(xFile:FullPath, xFile)
 				endif
 				if self:xOtherFilesDict:ContainsKey(xFile:FullPath)
-					self:xOtherFilesDict:TryRemove(xFile:FullPath, out file)
+					self:xOtherFilesDict:TryRemove(xFile:FullPath, out oldFile)
 				endif
 				return self:xOtherFilesDict:TryAdd(xFile:FullPath, xFile)
 			endif

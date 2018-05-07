@@ -83,6 +83,20 @@ namespace Microsoft.VisualStudio.Project
                 return String.Empty;
             }
         }
+        public bool EmbedInteropTypes
+        {
+            get
+            {
+                bool value;
+                bool.TryParse(this.ItemNode.GetMetadata(ProjectFileConstants.EmbedInteropTypes), out value);
+                return value;
+            }
+
+            set
+            {
+                this.ItemNode.SetMetadata(ProjectFileConstants.EmbedInteropTypes, value.ToString());
+            }
+        }
         #endregion
 
         #region overridden methods

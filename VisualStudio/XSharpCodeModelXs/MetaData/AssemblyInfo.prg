@@ -12,7 +12,7 @@ begin namespace XSharpModel
 	[DebuggerDisplay("{DisplayName,nq}")];
 	class AssemblyInfo
 		// Fields
-		private _aExtensions as ImmutableList<MethodInfo>
+		private _aExtensions as List<MethodInfo>
 		private _assembly as Assembly
 		private _aTypes as IDictionary<string, System.Type>
 		private _failed as long
@@ -51,7 +51,7 @@ begin namespace XSharpModel
 		private method _clearInfo() as void
 			//
 			self:_aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-			self:_aExtensions := ImmutableList<MethodInfo>.Empty
+			self:_aExtensions := List<MethodInfo>{}
 			self:_nameSpaces := System.Collections.Hashtable{System.StringComparer.OrdinalIgnoreCase}
 			self:_nameSpaceTexts := ImmutableList<string>.Empty
 			self:_implicitNamespaces := ImmutableList<string>.Empty
@@ -60,7 +60,7 @@ begin namespace XSharpModel
 			self:_HasExtensions := false
 		
 		method AddProject(project as XProject) as void
-			if (! self:_projects:Contains(project))
+			if ! self:_projects:Contains(project)
 				self:_projects := self:_projects:Add(project)
 			endif
 		
@@ -69,9 +69,9 @@ begin namespace XSharpModel
 			var folderPath := System.IO.Path.GetDirectoryName(self:FileName)
 			var name := AssemblyName{args:Name}:Name + ".dll"
 			var assemblyPath := System.IO.Path.Combine(folderPath, name)
-			if (System.IO.File.Exists(assemblyPath))
+			if System.IO.File.Exists(assemblyPath)
 				var assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
-				if (assembly != null)
+				if assembly != null
 					return assembly
 				endif
 			endif
@@ -81,7 +81,7 @@ begin namespace XSharpModel
 				if ! folders:Contains(folderPath)
 					assemblyPath := System.IO.Path.Combine(folderPath, name)
 					if System.IO.File.Exists(assemblyPath)
-						var asm := Assembly.LoadFrom(path)
+						var asm := Assembly.LoadFrom(assemblyPath)
 						if asm != null
 							return asm
 						endif
@@ -141,32 +141,44 @@ begin namespace XSharpModel
 				self:_clearInfo()
 			endif
 		
+		STATIC METHOD FindPdbName(fileName AS STRING) AS STRING
+			VAR text        := System.IO.File.ReadAllText(fileName)
+			VAR pdbIndex	:= text:IndexOf(".pdb", StringComparison.InvariantCultureIgnoreCase)
+			IF pdbIndex > 0
+				var lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
+				return text:Substring(lastTerminatorIndex + 1, pdbIndex - lastTerminatorIndex + 3)
+			ENDIF
+			return string.Empty
+
+
 		static method LoadAssemblyFromFile(fileName as string) as Assembly
-			local result  as Assembly
+			LOCAL result  AS Assembly
+			LOCAL cFolder AS STRING
+			cFolder := Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+			cFolder := System.IO.Path.Combine(cFolder, "XSharp\Temp")
+			IF ! System.IO.Directory.Exists(cFolder)
+				System.IO.Directory.CreateDirectory(cFolder)
+			endif
 			if System.IO.File.Exists(fileName)
-				try
-					var input := System.IO.FileStream{fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read}
-					var rawAssembly := System.IO.BinaryReader{input}:ReadBytes((long)input:Length )
-					if rawAssembly:Length != input:Length
-							// Error ?
-					endif
-					input:Close()
-					var cPdb := System.IO.Path.ChangeExtension(fileName, ".pdb")
-					var cTmp := System.IO.Path.ChangeExtension(fileName, ".p$$")
+				TRY
+					var temp  := System.IO.Path.Combine(cFolder, System.IO.Path.GetFileName(fileName))
+					System.IO.File.Copy(fileName, temp)
+					VAR rawAssembly := System.IO.File.ReadAllBytes(temp)
+					var cPdb		:= FindPdbName(temp)
+					System.IO.File.Delete(temp)
+					temp := System.IO.Path.ChangeExtension(temp, ".p$$")
 					local renamed := false as logic
-					if System.IO.File.Exists(cPdb)
+					if !String.IsNullOrEmpty(cPdb) .and. System.IO.File.Exists(cPdb)
 						renamed := true
-						if (System.IO.File.Exists(cTmp))
-							System.IO.File.Delete(cTmp)
+						if System.IO.File.Exists(temp)
+							System.IO.File.Delete(temp)
 						endif
-						System.IO.File.Move(cPdb, cTmp)
+						System.IO.File.Move(cPdb, temp)
 					endif
 					result := Assembly.Load(rawAssembly)
-					if (renamed .AND. System.IO.File.Exists(cTmp))
-						//
-						System.IO.File.Move(cTmp, cPdb)
+					if renamed .AND. System.IO.File.Exists(temp)
+						System.IO.File.Move(temp, cPdb)
 					endif
-					input:Dispose()
 					return result
 				catch exception as System.Exception
 					//
@@ -191,11 +203,11 @@ begin namespace XSharpModel
 			local types := null as System.Type[]
 			local index as long
 			//
-			if (self:_failed > 3)
+			if self:_failed > 3
 				return
 			endif
 			aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-			_aExtensions := ImmutableList<MethodInfo>.Empty
+			_aExtensions := List<MethodInfo>{}
 			fullName := ""
 			simpleName := ""
 			self:_nameSpaces:Clear()
@@ -283,7 +295,7 @@ begin namespace XSharpModel
 								var methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
 								foreach info as MethodInfo in methods
 									if AssemblyInfo.HasExtensionAttribute(info)
-										_aExtensions := _aExtensions:Add(info)
+										_aExtensions:Add(info)
 									endif
 								next
 							endif
@@ -351,12 +363,11 @@ begin namespace XSharpModel
 					self:_clearInfo()
 				end try
 			endif
-		*/
 		
 		// Properties
 		property DisplayName as string
 			get
-				if (String.IsNullOrEmpty(self:fileName))
+				if String.IsNullOrEmpty(self:fileName)
 					return "(Empty)"
 				endif
 				return System.IO.Path.GetFileName(self:fileName)
@@ -370,12 +381,7 @@ begin namespace XSharpModel
 		
 		property HasProjects as logic get self:_projects:Count > 0
 		
-		property ImplicitNamespaces as IList<string>
-			get
-				//
-				return self:_implicitNamespaces
-			end get
-		end property
+		property ImplicitNamespaces as IList<string> get self:_implicitNamespaces
 		
 		property IsModifiedOnDisk as logic
 			get
@@ -390,20 +396,8 @@ begin namespace XSharpModel
 		end property
 		
 		property Modified as System.DateTime get self:_Modified set self:_Modified := value
-		
-		property Namespaces as IList<string>
-			get
-				//
-				return self:_nameSpaceTexts
-			end get
-		end property
-		
-		property Types as IDictionary<string, System.Type>
-			get
-				//
-				return self:_aTypes
-			end get
-		end property
+		property Namespaces as IList<string> get self:_nameSpaceTexts
+		property Types as IDictionary<string, System.Type> get self:_aTypes
 		
 		
 		// Nested Types
@@ -419,7 +413,7 @@ begin namespace XSharpModel
 			
 			method AddType(typeName as string, type as AssemblyInfo.TypeTypes) as void
 				//
-				if (! self:_Types:ContainsKey(typeName))
+				if ! self:_Types:ContainsKey(typeName)
 					//
 					self:_Types:Add(typeName, type)
 				endif

@@ -137,7 +137,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		
 		
-	STATIC METHOD Aeval(aArray AS CONST ARRAY, cbBlock AS CONST CODEBLOCK, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC ) AS ARRAY
+	STATIC METHOD Aeval(aArray AS ARRAY, cbBlock AS ICODEBLOCK, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC )  AS ARRAY
 		LOCAL elements := Alen(aArray) AS DWORD
 		LOCAL last   AS DWORD
 		LOCAL result AS USUAL
@@ -188,14 +188,12 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		RETURN aArray
 		
-	STATIC METHOD AEvalCheckArgs(aArray AS USUAL, cb AS USUAL, iStart REF USUAL, iCount REF USUAL,cFuncName AS STRING) AS LOGIC
-		IF !aArray:isArray
-			THROW Error.ArgumentError( cFuncName, NAMEOF(aArray),1, <OBJECT>{aArray})
-		ELSEIF aArray == NULL_ARRAY
+	STATIC METHOD AEvalCheckArgs(aArray AS ARRAY, cb as ICodeBlock, iStart REF USUAL, iCount REF USUAL,cFuncName AS STRING) AS LOGIC
+		IF aArray == NULL_ARRAY
 			THROW Error.NullArgumentError( cFuncName, NAMEOF(aArray),1)
 		ENDIF
-		IF ! __CanEval(cb)
-			THROW  Error.ArgumentError( cFuncName, NAMEOF(cb), 2 , <OBJECT>{cb})
+		IF cb == NULL
+			THROW Error.NullArgumentError( cFuncName, NAMEOF(cb),2)
 		ENDIF
 		DEFAULT( REF iStart, 1)
 		DEFAULT( REF iCount, Alen(aArray))
@@ -237,7 +235,8 @@ INTERNAL STATIC CLASS ArrayHelpers
 			nCount := -nCount
 		ENDIF
 		RETURN TRUE
-		END CLASS
+
+	END CLASS
 		
 		
 		
@@ -248,6 +247,9 @@ INTERNAL STATIC CLASS ArrayHelpers
 /// <returns>
 /// An uninitialized of the given length.
 /// </returns>
+	
+
+		
 	
 FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY 
 	RETURN __Array{dwDim}
@@ -783,6 +785,7 @@ FUNCTION AFill(a AS ARRAY,fill AS USUAL,Start AS LONG) AS ARRAY
 /// <returns>
 /// </returns>
 FUNCTION AFill(a AS ARRAY,fill AS USUAL, start AS LONG, Stop AS LONG) AS ARRAY 
+	// Todo
 	/*
 	LOCAL nLen := ALen( a ) AS DWORD
 	LOCAL x			AS DWORD
@@ -829,6 +832,16 @@ FUNCTION ArrayBuild() AS ARRAY
 /// </returns>
 FUNCTION ArrayNew(nDim PARAMS INT[]) AS ARRAY
 	RETURN __Array.ArrayCreate(nDim)
+
+
+/// <summary>
+/// Create an uninitialized Array with the specified number of elements and dimensions.
+/// </summary>
+/// <param name="nDim"></param>
+/// <returns>
+/// </returns>
+FUNCTION ArrayNew<T>(nSize as DWORD) AS __ArrayBase<T> where T is NEW()
+	RETURN __ArrayBase<T>{nSize}
 	
 	
 /// <summary>
@@ -850,23 +863,26 @@ FUNCTION AReplicate<T>(x AS USUAL,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS 
 /// <summary>
 /// Sort an Array.
 /// </summary>
-/// <param name="a"></param>
+/// <param name="uArray"></param>
 /// <param name="iStart"></param>
 /// <param name="iCount"></param>
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION ASort(aArray ,startIndex ,nCount ,cbOrder ) AS ARRAY CLIPPER
+FUNCTION ASort(uArray ,startIndex ,nCount ,cbOrder ) AS ARRAY CLIPPER
 	LOCAL nLen AS DWORD
-	
+	LOCAL aArray as ARRAY
 	DEFAULT( REF startIndex, 1 )
 	
-	IF ! aArray:IsArray
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(aArray), 1, <OBJECT>{ aArray } )
+	IF ! uArray:IsArray
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(uArray), 1, <OBJECT>{ uArray } )
 	ENDIF
-	nLen := Alen((ARRAY)aArray) 
-	
+	aArray := uArray
+	nLen := Alen(aArray) 
+
+	EnforceNumeric( startIndex )
 	DEFAULT( REF nCount, nLen - startIndex + 1 )
+	EnforceNumeric( nCount )	
 	
 	IF startIndex < 1 .or. startIndex > nLen
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(startIndex), 2, <OBJECT>{ startIndex } )
@@ -880,24 +896,23 @@ FUNCTION ASort(aArray ,startIndex ,nCount ,cbOrder ) AS ARRAY CLIPPER
 		THROW Error.ArgumentError( __ENTITY__, "cbOrder", 4, <OBJECT>{ cbOrder } )
 	ENDIF
 	
-	EnforceNumeric( startIndex )
-	EnforceNumeric( nCount )
-	
+
 	IF cbOrder == NIL
-		((ARRAY)aArray):Sort( startIndex, nCount, NULL ) // this uses __Usual.ICompareTo()
+		aArray:Sort( startIndex, nCount, NULL ) // this uses __Usual.ICompareTo()
 	ELSE
-		((ARRAY)aArray):Sort( startIndex, nCount, ArraySortComparer{ cbOrder } )
+		aArray:Sort( startIndex, nCount, ArraySortComparer{ cbOrder } )
 	ENDIF   
 	
 	RETURN aArray
 	
 	// This wraps a codeblock and provides an IComparer implementation so
 	// we can use ArrayList:Sort() with a codeblock.
-INTERNAL STRUCTURE ArraySortComparer IMPLEMENTS System.Collections.Generic.IComparer<USUAL>
 
-	PRIVATE _cb AS ICodeblock
+INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.IComparer<USUAL> 
+
+	PRIVATE _cb AS ICodeBlock
 	
-	CONSTRUCTOR( cb AS ICodeblock )
+	CONSTRUCTOR( cb AS ICodeBlock)
 		_cb := cb
 		RETURN
 		
@@ -905,16 +920,71 @@ INTERNAL STRUCTURE ArraySortComparer IMPLEMENTS System.Collections.Generic.IComp
 		IF x == y
 			RETURN 0
 		ENDIF
-		LOCAL u as USUAL
+		LOCAL u AS USUAL
 		u := _cb:EvalBlock( x, y )
-		IF IsLogic(u)
-			RETURN IIF ( (LOGIC) u , -1, 1 ) 
-		ENDIF
+		RETURN IIF (  (LOGIC) u , -1, 1 ) 
 	RETURN 0
 		
 END STRUCTURE
-		
+ 
+INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generic.IComparer<T> WHERE T IS NEW()
+
+	PRIVATE _cb AS @@Func<T,T,LOGIC>
 	
+	CONSTRUCTOR( cb AS @@Func<T,T,LOGIC> )
+		_cb := cb
+		RETURN
+		
+	METHOD Compare( x AS T, y AS T ) AS INT
+		IF x:Equals( y )  
+			RETURN 0
+		ENDIF
+		LOCAL u as LOGIC
+		u := _cb( x, y )
+		RETURN IIF (  u , -1, 1 ) 
+	RETURN 0
+		
+END STRUCTURE
+
+/// <summary>
+/// Sort an Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="iStart"></param>
+/// <param name="iCount"></param>
+/// <param name="cb"></param>
+/// <returns>
+/// </returns>
+FUNCTION ASort1<T>(aArray as __ArrayBase<T> ,startIndex as INT,nCount as INT,cbOrder as @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+
+	aArray:Sort( startIndex, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
+	
+	RETURN aArray
+
+
+/// <summary>
+/// Execute a code block for each element in an Array.
+/// </summary>
+/// <param name="aArray"></param>
+/// <param name="cb"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEval<T>(aArray as __ArrayBase<T>, cb as Action<T>) AS __ArrayBase<T> where T is New()
+	RETURN AEval(aArray, cb, 1, ALen(aArray) )
+
+
+/// <summary>
+/// Execute a code block for each element in an Array.
+/// </summary>
+/// <param name="aArray"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEval<T>(aArray as __ArrayBase<T>, cb as Action<T>,iStart as dword) AS __ArrayBase<T> where T is New()
+	RETURN AEval(aArray, cb, iStart, ALen(aArray) - iStart +1)
+	
+
 /// <summary>
 /// Execute a code block for each element in an Array.
 /// </summary>
@@ -924,9 +994,97 @@ END STRUCTURE
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval(aArray,cb ,iStart ,iCount ) AS USUAL CLIPPER
+FUNCTION AEval<T>(aArray as __ArrayBase<T>, cb as Action<T>,iStart as dword,iCount as dword) AS __ArrayBase<T> where T is New()
+	LOCAL nX AS dword
+	LOCAL nEnd AS dword
+	nEnd := iStart + iCount -1
+	FOR nX := iStart TO nEnd
+		cb(aArray[ nX])
+	NEXT
+	RETURN aArray
+
+
+
+/// <summary>
+/// Execute a code block for each element in an Array.
+/// </summary>
+/// <param name="aArray"></param>
+/// <param name="cb"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEval(aArray AS ARRAY,cb as ICodeBlock ) AS USUAL 
+	LOCAL iStart AS USUAL
+	LOCAL iCount AS USUAL
+	iStart := NIL
+	iCount := NIL
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF iStart, REF iCount, "AEval")
-	RETURN ArrayHelpers.AEval( aArray, cb, iStart,iCount , FALSE, FALSE )
+	RETURN ArrayHelpers.AEval( aArray, cb, iStart, iCount, FALSE, FALSE )
+
+/// <summary>
+/// Execute a code block for each element in an Array.
+/// </summary>
+/// <param name="aArray"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEval(aArray AS ARRAY,cb AS ICODEBLOCK ,iStart AS INT ) AS USUAL 
+	LOCAL uCount AS USUAL
+	local uStart AS USUAL
+	uCount := NIL
+	uStart  := iStart
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount, FALSE, FALSE )
+
+/// <summary>
+/// Execute a code block for each element in an Array.
+/// </summary>
+/// <param name="aArray"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <param name="iCount"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEval(aArray AS ARRAY,cb as ICodeBlock ,iStart as int ,iCount as int) AS USUAL 
+	LOCAL uCount AS USUAL
+	local uStart	 AS USUAL
+	uCount := iCount
+	uStart  := iStart
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount , FALSE, FALSE )
+
+
+/// <summary>
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="cb"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEvalA(aArray AS ARRAY ,cb as ICodeBlock) AS ARRAY
+	LOCAL uCount AS USUAL
+	local uStart	 AS USUAL
+	uCount := NIL
+	uStart  := NIL
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
+	
+
+/// <summary>
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEvalA(aArray AS ARRAY ,cb as ICodeBlock, iStart as INT ) AS ARRAY
+	LOCAL uCount AS USUAL
+	local uStart	 AS USUAL
+	uCount := NIL
+	uStart  := iStart
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
 	
 /// <summary>
 /// Execute a code block for each element in an Array and assign the return value to each element in the Array.
@@ -937,9 +1095,57 @@ FUNCTION AEval(aArray,cb ,iStart ,iCount ) AS USUAL CLIPPER
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA(aArray ,cb ,iStart ,iCount ) AS USUAL CLIPPER
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF iStart, REF iCount, "AEvalA")
-	RETURN ArrayHelpers.AEval( aArray, cb, iStart,iCount , TRUE, FALSE )
+FUNCTION AEvalA(aArray AS ARRAY ,cb as ICodeBlock, iStart as INT ,iCount as INT) AS ARRAY
+	LOCAL uCount AS USUAL
+	local uStart	 AS USUAL
+	uCount := iCount
+	uStart  := iStart
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
+
+
+/// <summary>
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="cb"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEvalA<T>(aArray as __ArrayBase<T>, cb as @@Func<T,T>) AS __ArrayBase<T> where T is New()
+	RETURN AEvalA(aArray, cb, 1, alen(aArray))
+
+
+/// <summary>
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEvalA<T>(aArray as __ArrayBase<T>, cb as @@Func<T,T>,iStart as DWORD) AS __ArrayBase<T> where T is New()
+	RETURN AEvalA(aArray, cb, iStart, alen(aArray) - iStart +1)
+
+	
+
+/// <summary>
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <param name="iCount"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEvalA<T>(aArray as __ArrayBase<T>, cb as @@Func<T,T>,iStart as DWORD,iCount as DWORD) AS __ArrayBase<T> where T is New()
+	LOCAL nX AS DWORD
+	LOCAL nEnd AS DWORD
+	nEnd := iStart + iCount -1
+	FOR nX := iStart TO nEnd
+		aArray[ nX] := cb(aArray[ nX])
+	NEXT
+	RETURN aArray
+
 	
 /// <summary>
 /// Execute a code block for each element in an Array and assign the return value to each element in the Array.
@@ -950,12 +1156,17 @@ FUNCTION AEvalA(aArray ,cb ,iStart ,iCount ) AS USUAL CLIPPER
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOld(aArray ,cb ,iStart ,iCount ) AS USUAL CLIPPER
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF iStart, REF iCount, "AEvalOld")
-	RETURN ArrayHelpers.AEval( aArray, cb, iStart,iCount , FALSE, TRUE)
+FUNCTION AEvalOld(aArray AS ARRAY ,cb as ICodeBlock, iStart as INT ,iCount as INT) AS ARRAY
+	LOCAL uCount	AS USUAL
+	local uStart	 AS USUAL
+	uCount := iCount
+	uStart  := iStart
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+
 
 /// <summary>
-/// Execute a code block for each element in an Array.
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
 /// </summary>
 /// <param name="aArray"></param>
 /// <param name="cb"></param>
@@ -963,7 +1174,30 @@ FUNCTION AEvalOld(aArray ,cb ,iStart ,iCount ) AS USUAL CLIPPER
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOldA(aArray ,cb ,iStart ,iCount ) AS USUAL CLIPPER
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF iStart, REF iCount, "AEvalOldA")
-	RETURN ArrayHelpers.AEval( aArray, cb, iStart,iCount , TRUE, TRUE )
+FUNCTION AEvalOld(aArray AS ARRAY ,cb as ICodeBlock, iStart as INT ) AS ARRAY
+	LOCAL uCount	AS USUAL
+	local uStart	 AS USUAL
+	uCount := NIL
+	uStart  := iStart
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+
+
+/// <summary>
+/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
+/// </summary>
+/// <param name="aArray"></param>
+/// <param name="cb"></param>
+/// <param name="iStart"></param>
+/// <param name="iCount"></param>
+/// <returns>
+/// </returns>
+FUNCTION AEvalOld(aArray AS ARRAY ,cb as ICodeBlock) AS ARRAY
+	LOCAL uCount	AS USUAL
+	local uStart	 AS USUAL
+	uCount := NIL
+	uStart := NIL
+	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+
 

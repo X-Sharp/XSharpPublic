@@ -219,9 +219,35 @@ begin namespace XSharp
 		#endregion
 		
 		
-		#region static function
+		#region operators
 		
-			
+		STATIC OPERATOR IMPLICIT ( a AS ARRAY) AS __ArrayBase<T> 
+			VAR aResult := __ArrayBase<T>{}
+			LOCAL oErr AS Error
+			FOREACH VAR u IN a
+				LOCAL o := u AS Object
+				if o is T
+					aResult:Add( (T) o)
+				ELSE
+					LOCAL nArg AS INT
+					LOCAL oActType AS System.Type
+					oActType := o:GetType()
+					nArg := a:_internalList:IndexOf(u)+1
+					oErr := Error{GenCode.EG_DATATYPE}
+					oErr:Arg := "Array Element : "+nArg:ToString()
+					oErr:Description := "Cannot convert array element " +nArg:ToString() + " from type "+oActType:ToString()+" to type "+TYPEOF(T):ToString()
+					throw oErr 
+				endif
+			NEXT
+			RETURN aResult			
+
+
+		STATIC OPERATOR IMPLICIT ( a AS __ArrayBase<T> ) AS ARRAY
+			VAR aResult := __Array{}
+			FOREACH VAR o IN a
+				aResult:Add(  o)
+			NEXT
+			RETURN aResult			
 			
 		#endregion
 		

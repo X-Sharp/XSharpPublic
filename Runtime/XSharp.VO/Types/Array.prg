@@ -226,13 +226,20 @@ begin namespace XSharp
 					 NEXT           
 				  ENDIF
 				return				
+
+		new public method Sort(startIndex as int, count as int, comparer as IComparer<__USUAL>) as void
+			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
+			return
+
+
 		internal class ArrayDebugView
 			private _value as Array
 			public constructor (a as Array)
 				_value := a
 			//[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
 			public property Elements as List<usual> get _value:_internalList
-			
+		
+		
 		end class
 		
 	end	class

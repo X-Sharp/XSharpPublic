@@ -785,33 +785,33 @@ FUNCTION AFill(a AS ARRAY,fill AS USUAL,Start AS LONG) AS ARRAY
 /// <returns>
 /// </returns>
 FUNCTION AFill(a AS ARRAY,fill AS USUAL, start AS LONG, Stop AS LONG) AS ARRAY 
-	// Todo
-	/*
 	LOCAL nLen := ALen( a ) AS DWORD
-	LOCAL x			AS DWORD
-	LOCAL dwStart	AS DWORD
-	LOCAL dwEnd		as DWORD
+	LOCAL x			AS INT
 	IF nLen > 0
-	IF start > nLen 
-	BREAK Error.BoundError( "AFill", "start", 3, <OBJECT>{ start } )
+		IF start > nLen 
+			THROW Error.BoundError( "AFill", "start", 3, <OBJECT>{ start } )
+		ENDIF
+		IF stop > 0
+			if stop > nLen
+				THROW Error.BoundError( "AFill", "Stop", 4, <OBJECT>{ Stop } )
+			endif
+			Stop := Math.Min( Stop, Start + stop - 1 )
+		ELSE
+			if Stop < -nLen
+				THROW Error.BoundError( "AFill", "Stop", 4, <OBJECT>{ Stop } )
+			endif
+			Stop := Math.Max( 1, Start + stop - 1 )
+		ENDIF   
+		IF Start < Stop
+			FOR x := Start UPTO Stop
+				a[(DWORD) x] := fill
+			NEXT
+		ELSE
+			FOR x := Stop DOWNTO Start
+				a[ (DWORD) x] := fill
+			NEXT
+		ENDIF
 	ENDIF
-	IF stop > 0
-	uiStop := Math.Min( uiStop, uiStart + stop - 1 )
-	ELSE
-	uiStop := Math.Max( 1, uiStart + stop - 1 )
-	ENDIF   
-	
-	IF uiStart < uiStop
-	FOR x := uiStart UPTO uiStop
-	a[x] := fill
-	NEXT
-	ELSE
-	FOR x := uiStop DOWNTO uiStart
-	a[x] := fill
-	NEXT
-	ENDIF
-	ENDIF
-	*/
 	RETURN a
 	
 	

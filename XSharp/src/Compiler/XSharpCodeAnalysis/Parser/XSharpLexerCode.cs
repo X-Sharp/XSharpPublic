@@ -1352,6 +1352,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "LOCK", LOCK},
                     { "NAMESPACE", NAMESPACE},
                     { "NEW", NEW},
+                    { "OF", OF},
                     { "ON", ON},
                     { "OPERATOR", OPERATOR},
                     { "OUT", OUT},

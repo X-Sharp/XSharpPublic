@@ -7169,6 +7169,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Data Types
 
+        public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
+        {
+            context.Put(NotInDialect(_objectType, "ARRAY OF <type>"));
+        }
+
         public override void ExitPtrDatatype([NotNull] XP.PtrDatatypeContext context)
         {
             context.Put(

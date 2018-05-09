@@ -548,6 +548,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                                 if (localvar.DataType is XP.ArrayDatatypeContext ||
                                     localvar.DataType is XP.NullableDatatypeContext ||
+                                    localvar.DataType is XP.ArrayOfTypeContext ||
                                     localvar.DataType is XP.PtrDatatypeContext)
                                 {
                                     useNull = true;
@@ -764,6 +765,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             base.VisitLocalvar(context);
         }
+
+        public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
+        {
+            if (!_options.XSharpRuntime)
+            {
+                context.Put(NotInDialect(_objectType, "ARRAY OF <type>"));
+            }
+            else
+            {
+                var type = MakeGenericName(OurTypeNames.ArrayBase, context.TypeName.Get<TypeSyntax>());
+                var qtype = _syntaxFactory.QualifiedName(GenerateSimpleName("XSharp"),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        type);
+                context.Put(qtype);
+            }
+        }
+
 
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
         {

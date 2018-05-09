@@ -767,7 +767,8 @@ genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
 identifierName		: Id=identifier
                     ;
 
-datatype			: TypeName=typeName PTR											#ptrDatatype
+datatype			: ARRAY OF TypeName=typeName                                    #arrayOfType
+                    | TypeName=typeName PTR											#ptrDatatype
                     | TypeName=typeName (Ranks+=arrayRank)+							#arrayDatatype
                     | TypeName=typeName 											#simpleDatatype
                     | TypeName=typeName QMARK 										#nullableDatatype
@@ -969,7 +970,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | 
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM 
-                    | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
+                    | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
                     | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR  | DECIMAL | DATETIME 
                     | MEMVAR | PARAMETERS  // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers

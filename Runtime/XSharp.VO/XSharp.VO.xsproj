@@ -56,7 +56,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>162,171,553</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>

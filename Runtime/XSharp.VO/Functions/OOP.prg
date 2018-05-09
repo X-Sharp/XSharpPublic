@@ -970,7 +970,7 @@ FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY )
 /// <param name="cClass">The symbol of the class containing the method to examine.</param>
 /// <param name="cMethod">The method name, specified without parentheses.</param>
 /// <returns>The number of arguments that a method is expecting.</returns>
-FUNCTION MParamCount(cClass AS SYMBOL,cMethod AS SYMBOL) AS DWORD
+FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 	LOCAL type AS Type
 	type := OOPHelpers.FindClass(cClass)	
 	IF type != NULL

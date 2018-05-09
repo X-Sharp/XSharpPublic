@@ -157,11 +157,11 @@ FUNCTION MLPos(cMemo ,nLineLen ,nLineNum ,nTabSize ,lWrap ) AS DWORD CLIPPER
 	ELSEIF !lWrap:IsLogic
 		THROW Error.DataTypeError( "MLPos", nameof(lWrap), 5, <OBJECT>{ lWrap } )
 	ENDIF
-	LOCAL nIndex AS DWORD
+	LOCAL nIndex AS INT
 	nIndex := 0
     MemoHelpers.MLine( cMemo, nLineNum, nLineLen, nTabSize, lWrap, TRUE, REF nIndex )
    
-	RETURN nIndex
+	RETURN (DWORD) nIndex
 	/// <summary>
 	/// Return the line and column position of a character in a formatted string.
 	/// </summary>
@@ -200,7 +200,7 @@ FUNCTION MPosToLc(cMemo ,nLineLen ,nPos ,nTabSize ,lWrap ) AS ARRAY CLIPPER
 	ELSEIF !lWrap:IsLogic
 		THROW Error.DataTypeError( "MPosToLc", NAMEOF(lWrap), 5, <OBJECT>{ lWrap } )
 	ENDIF
-	LOCAL result AS Tuple<DWORD, DWORD>
+	LOCAL result AS Tuple<INT, INT>
 	result := MemoHelpers.MPosToLc(cMemo, nLineLen, nPos, nTabSize, lWrap)
 	RETURN {result:Item1, result:Item2}
 	

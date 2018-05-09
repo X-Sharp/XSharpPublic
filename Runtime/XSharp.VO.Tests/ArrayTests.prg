@@ -27,9 +27,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
 		METHOD ArrayFillTest() as void
 			local testArray := Array{3} as Array
-			testArray[1] := 1
-			testArray[2] := 2
-			testArray[3] := 3
+			Afill(testArray, 42)
+			Assert.Equal( 42 , (int) testArray[1])
+			Assert.Equal( 42 , (INT) testArray[2])
+			Assert.Equal( 42 , (int) testArray[3])
 		return
  		[Trait("Category", "Array")];
 		[Fact];
@@ -183,12 +184,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			nCounter := 0
 			AevalOld(aValues, {|x, n| nCounter+=n})
 			Assert.Equal( 6, nCounter)
-			// AevalOldA passes an extra parameter and assigns the return value
-			nCounter := 0
-			AevalOldA(aValues, {|x, n| n})
-			Assert.Equal( 1, (INT) aValues[1])
-			Assert.Equal( 2, (int) aValues[2])
-			Assert.Equal( 3, (INT) aValues[3])
 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ACopyTest() AS VOID

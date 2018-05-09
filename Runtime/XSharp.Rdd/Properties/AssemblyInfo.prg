@@ -6,12 +6,15 @@
 #include "buildnumber.h"
 using System.Reflection
 using System.Runtime.CompilerServices
-using XSharp.Internal
+USING XSharp.Internal
+using XSharp
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("Rdd")]
-[assembly: AssemblyDescription("")]
+[ASSEMBLY: AssemblyDescription("")]
+[ASSEMBLY: ImplicitNamespace("XSharp")]
+
 

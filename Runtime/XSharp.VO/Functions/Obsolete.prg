@@ -614,13 +614,9 @@ FUNCTION _ArrayGetCollection(a AS USUAL,n1 AS USUAL) AS USUAL
 FUNCTION _ArrayPutCollection(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
 	RETURN		 NIL   
 
-
-	
 [Obsolete] ;
 FUNCTION _ArrayPutPoly(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
 	RETURN NIL  
-
-
 
 [Obsolete] ;
 function CompString() as int
@@ -632,4 +628,8 @@ function SBTODB(c as string) as string
 
 [Obsolete];
 function SEvalA(cSource as usual,block as usual,nStart as usual,nCount as usual) as string
-	return cSource
+	RETURN cSource
+
+[ObsoleteAttribute( "'SysObject()' is not supported", true )] ;
+FUNCTION SysObject() AS USUAL
+   RETURN NIL

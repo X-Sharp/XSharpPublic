@@ -985,7 +985,11 @@ FUNCTION MParamCount(cClass AS SYMBOL,cMethod AS SYMBOL) AS DWORD
 			ELSE
 				RETURN (DWORD) met:GetParameters():Length
 			ENDIF
+		ELSE
+			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", nameof(cMethod), 2, <OBJECT>{cMethod} )
 		ENDIF
+	ELSE
+		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", nameof(cClass), 1, <OBJECT>{cClass} )
 	ENDIF
 	RETURN 0   
 	
@@ -1001,22 +1005,24 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 	LOCAL aFuncs AS MethodInfo[]
 	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
 	// CLipper functions can't and shouldn't have overloads
-	IF aFuncs != NULL .and. aFuncs:Length == 1 
-		LOCAL oMI := aFuncs[1] AS MethodInfo
-		IF oMI:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
-			// calculate the # of parameters
-			LOCAL oAttr AS ClipperCallingConventionAttribute
-			oAttr := (ClipperCallingconventionAttribute) oMI:GetCustomAttributes(TYPEOF(ClipperCallingconventionAttribute), FALSE)[1]
-			RETURN (DWORD) oAttr:ParameterNames:Length
+	IF aFuncs != NULL 
+		IF aFuncs:Length == 1 
+			LOCAL oMI := aFuncs[1] AS MethodInfo
+			IF oMI:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
+				// calculate the # of parameters
+				LOCAL oAttr AS ClipperCallingConventionAttribute
+				oAttr := (ClipperCallingconventionAttribute) oMI:GetCustomAttributes(TYPEOF(ClipperCallingconventionAttribute), FALSE)[1]
+				RETURN (DWORD) oAttr:ParameterNames:Length
+			ELSE
+				RETURN (DWORD) oMI:GetParameters():Length
+			ENDIF
 		ELSE
-			RETURN (DWORD) oMI:GetParameters():Length
+			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
+	ELSE
+		THROW Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 	RETURN 0   
-	
-	
-	
-	
 	
 /// <summary>Call a clipper function by name</summary>
 /// <param name="symFunction">The name of the function to call.</param>
@@ -1036,16 +1042,22 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 
 	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
 	// CLipper functions can't and shouldn't have overloads
-	IF aFuncs != NULL .and. aFuncs:Length == 1 
-		LOCAL oMI AS MethodInfo
-		LOCAL result AS USUAL
-		oMI		:= aFuncs[1] 
-		IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT result)
-			RETURN result
+	IF aFuncs != NULL 
+		IF aFuncs:Length == 1 
+			LOCAL oMI AS MethodInfo
+			LOCAL result AS USUAL
+			oMI		:= aFuncs[1] 
+			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT result)
+				RETURN result
+			ENDIF
+		ELSE
+			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", nameof(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
+	ELSE
+		THROW Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 
-	RETURN	 NIL   
+	RETURN  NIL   
 
 
 

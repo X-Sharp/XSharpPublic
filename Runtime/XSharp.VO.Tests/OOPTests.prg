@@ -93,9 +93,9 @@ begin namespace XSharp.VO.Tests
 			assert.Equal(3, (INT) FParamCount("STR"))            
 			assert.Equal(2, (int) FParamCount("STR2"))            
 			assert.Equal(3, (INT) FParamCount("STR3"))            
-			assert.Equal(0, (INT) FParamCount("PROCNAME"))	// 0 because of overloads
 			assert.Equal(3, (INT) MParamCount(#Tester, #TestMe))
 			assert.Equal(0, (INT) MParamCount("VObject", "Destroy"))
+			//assert.Throws( FParamCount("ProcName"))	// ambiguous
 		
 		
 		[Fact, Trait("Category", "OOP")];

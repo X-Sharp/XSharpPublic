@@ -13,7 +13,7 @@ using static XSharp.Functions
 // Todo: Implement System.IConvertible ?
 
 begin namespace XSharp
-	[DebuggerDisplay("{Value,nq}",Type := "SYMBOL")];
+	[DebuggerDisplay("{_value,nq}",Type := "SYMBOL")];
     [DebuggerTypeProxy(typeof(SymbolDebugView))];
 	public structure __Symbol ;
 		implements IEqualityComparer<__Symbol>, ;

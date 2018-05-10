@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
+        internal const string ArrayBase = "__ArrayBase";
         internal const string VOStructAttribute = "VOStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";

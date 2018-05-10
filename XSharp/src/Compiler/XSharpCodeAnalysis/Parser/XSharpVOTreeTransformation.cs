@@ -2077,7 +2077,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return null;
         }
-        private AttributeSyntax EncodeVulcanDefaultParameter(XP.ExpressionContext initexpr)
+        private AttributeSyntax EncodeDefaultParameter(XP.ExpressionContext initexpr)
         {
             bool negative = false;
             if (initexpr is XP.PrefixExpressionContext)
@@ -2170,9 +2170,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitParameter(context);
             // Only apply the vulcan default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
-            if (context.Default != null && context.Attributes == null)
+            if (context.Default != null && context.Attributes == null )
             {
-                AttributeSyntax attr = EncodeVulcanDefaultParameter(context.Default);
+                AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)
                 {
                     ParameterSyntax par = context.Get<ParameterSyntax>();
@@ -2704,9 +2704,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (parameters.Parameters.Count > 0)
             {
                 // generate default parameter attribute to make sure that calling code will compile
-                var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
+                //var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
                 var attrs = _pool.AllocateSeparated<AttributeSyntax>();
-                attrs.Add(attr);
+                //attrs.Add(attr);
+                var defExpr = _syntaxFactory.EqualsValueClause(
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    MakeDefault(_usualType));
                 var attrlist = MakeList(MakeAttributeList(null, attrs));
                 var @params = _pool.AllocateSeparated<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
@@ -2717,7 +2720,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                           modifiers: null,
                           type: _usualType,
                           identifier: parm.Identifier,
-                          @default: null);
+                          @default: defExpr);
                     if (i > 0)
                         @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                     @params.Add(par);
@@ -2747,6 +2750,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Data.HasClipperCallingConvention && _options.NoClipCall)
                 {
                     implementNoClipCall(context, ref parameters, ref dataType);
+                    context.Data.HasClipperCallingConvention = false;
                 }
                 if (context.Data.HasClipperCallingConvention && ! _options.NoClipCall)
                 {

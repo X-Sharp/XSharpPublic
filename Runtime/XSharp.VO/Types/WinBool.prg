@@ -9,7 +9,7 @@ USING System.Linq
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp	
-
+	/// <summary>Internal type that implements the WIN32 Compatible LOGIC type in UNIONs and VOSTRUCTs</summary>
     [DebuggerDisplay("{ToString(),nq}", Type := "LOGIC")];
     PUBLIC STRUCT __WinBool 
         PRIVATE STATIC trueValue := __WinBool{1}	AS __WinBool

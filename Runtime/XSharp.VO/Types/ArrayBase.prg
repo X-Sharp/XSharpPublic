@@ -9,23 +9,30 @@ using System.Linq
 using System.Diagnostics
 using XSharp
 begin namespace XSharp	
+	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
+	/// This type has methods and properties that normally are never directly called from user code.
+	/// </summary>
 	public class __ArrayBase<T> implements IEnumerable<T> where T is new()
 		internal _internalList as List<T> 
 		private _islocked as logic 
 		#region constructors
+			/// <summary>Create an empty array</summary>
 			constructor()
 				_internalList := List<T>{}
 				return  
 			
+			/// <summary>Create an array with a certain number of elements. Each element will be filled with a default value.</summary>
 			constructor(capacity as dword)
 				_internalList := List<T>{ (int) capacity}
 				_internalList:AddRange(Enumerable.Repeat(default(T),(int) capacity))
 				return 
 			
+			/// <summary>Create an array and fill it with elements from an existing collection.</summary>
 			constructor( collection as IEnumerable<T>)
 				_internalList := List<T>{collection}
 				return 
 			
+			/// <summary>Create an array and fill it with elements from an existing .Net array of objects. Note that the objects must be of the right type.</summary>
 			constructor( elements as object[] )
 				self()
 				if elements == null
@@ -42,12 +49,14 @@ begin namespace XSharp
 				next
 				return
 			
+			/// <summary>Create an array and fill it with elements from an existing .Net array.</summary>
 			constructor( elements as T[] )
 				_internalList := List<T>{elements}
 				return
 		#endregion
 		
 		#region properties
+			/// <summary>Is the array empty.</summary>
 			public property IsEmpty as logic
 				get
 					return (_internalList:Count == 0)
@@ -89,11 +98,12 @@ begin namespace XSharp
 		
 		#region Indexers and to Get / Set Elements. 
 			///
-			/// <Summary>Access the array element using ZERO based array index</Summary>
+			/// <summary>Access the array element using ZERO based array index</summary>
 			///
 			public method __GetElement(index as int) as T
 				return self:_internalList[ index ]
 			
+			/// <summary>Set array elements with a ZERO based array index</summary>
 			public method __SetElement(u as T,index as int) as T
 				if self:CheckLock()
 					_internalList[index]:=u
@@ -101,6 +111,7 @@ begin namespace XSharp
 				return u
 			
 			// Note: Zero based !			
+			/// <summary>Get/Set array elements with a ZERO based array index</summary>
 			public property self[i as dword] as T
 				get
 					if  i > _internalList:Count-1
@@ -143,7 +154,7 @@ begin namespace XSharp
 				return self
 			
 			
-			method RemoveAt(index as dword) as void
+			internal method RemoveAt(index as dword) as void
 				if self:CheckLock()
 					_internalList:RemoveRange((int) index-__ARRAYBASE__,1 )
 				endif
@@ -176,7 +187,7 @@ begin namespace XSharp
 		public method ToString() as string
 			return string.Format("[{0}]",_internalList:Count)
 		
-		public method Sort(startIndex as int, count as int, comparer as IComparer<T>) as void
+		internal method Sort(startIndex as int, count as int, comparer as IComparer<T>) as void
 			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
 			return
 		
@@ -220,7 +231,7 @@ begin namespace XSharp
 		
 		
 		#region operators
-		
+		/// <summary>Implicitely convert an array of USUALs to a typed array. Note that the usuals must contain a value of the correct type.</summary>
 		STATIC OPERATOR IMPLICIT ( a AS ARRAY) AS __ArrayBase<T> 
 			VAR aResult := __ArrayBase<T>{}
 			LOCAL oErr AS Error
@@ -242,6 +253,7 @@ begin namespace XSharp
 			RETURN aResult			
 
 
+		/// <summary>Implicitely convert a typed array to an array of USUALs.</summary>
 		STATIC OPERATOR IMPLICIT ( a AS __ArrayBase<T> ) AS ARRAY
 			VAR aResult := __Array{}
 			FOREACH VAR o IN a

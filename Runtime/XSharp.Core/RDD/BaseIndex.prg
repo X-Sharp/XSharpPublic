@@ -5,7 +5,7 @@
 //
 
 
-/// <Summary>Base Index class. Does not implement anything. </Summary>
+/// <summary>Base Index class. Does not implement anything. </summary>
 CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	PRIVATE _oArea AS WorkArea
 

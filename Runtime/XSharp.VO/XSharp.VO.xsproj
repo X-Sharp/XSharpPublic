@@ -57,11 +57,11 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,171,553</DisabledWarnings>
+    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
+    <CommandLineOption>/noclipcall</CommandLineOption>
     <PPO>false</PPO>
     <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
@@ -70,6 +70,7 @@
     <DebuggerCommandArguments />
     <DebuggerWorkingDirectory />
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <DocumentationFile>XSharp.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

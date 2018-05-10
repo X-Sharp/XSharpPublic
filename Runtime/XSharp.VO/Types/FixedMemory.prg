@@ -11,7 +11,7 @@ USING System.Collections.Generic
 USING System.Runtime.CompilerServices
 
 
-/// <Summary>Class that holds the Fixed Memory allocation support</Summary>
+/// <summary>Class that holds the Fixed Memory allocation support</summary>
 ///
 
 DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
@@ -290,7 +290,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
 END CLASS
         
         
-/// <Summary>Guard Block preceding MemAlloc return value</Summary>
+/// <summary>Guard Block preceding MemAlloc return value</summary>
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockStart
     [FieldOffSet(00)] EXPORT dwMagic AS DWORD	// Checksum
@@ -311,7 +311,7 @@ STRUCTURE	 XSharp.FixedMemBlockStart
         
 END         STRUCTURE
         
-/// <Summary>Guard Block following MemAlloc return value</Summary>
+/// <summary>Guard Block following MemAlloc return value</summary>
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockEnd
     [FieldOffSet(00)] EXPORT dwZero  AS DWORD			// Give them 1 extra DWORD to protect against overflows

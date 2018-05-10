@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+/// <summary>Base class for many types used in the VO SDK Classes</summary>
 CLASS XSharp.VObject
     EXPORT oCargo AS OBJECT
     

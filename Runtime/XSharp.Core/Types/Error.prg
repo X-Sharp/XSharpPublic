@@ -4,23 +4,23 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp
-	/// <Summary>XSharp Runtime base Error class</Summary>
+	/// <summary>XSharp Runtime base Error class</summary>
 	CLASS Error INHERIT Exception
-		/// <Summary>A string representing the name of the subsystem generating the error.</Summary>
+		/// <summary>A string representing the name of the subsystem generating the error.</summary>
 		PROPERTY SubSystem AS STRING AUTO
-		/// <Summary>An integer numeric value representing a Visual Objects generic error code.</Summary>
+		/// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
 		/// <Seealso cref="T:XSharp.Gencode"/>
 		PROPERTY Gencode AS DWORD AUTO
-		/// <Summary>An integer numeric value representing a subsystem-specific error code.</Summary>
+		/// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
 		PROPERTY SubCode AS DWORD AUTO
-		/// <Summary>A string representing the name of the function or method in which the error occurred.</Summary>
+		/// <summary>A string representing the name of the function or method in which the error occurred.</summary>
 		PROPERTY FuncSym AS STRING AUTO
-		/// <Summary>A string representing the name used to open the file associated with the error condition.</Summary>
+		/// <summary>A string representing the name used to open the file associated with the error condition.</summary>
 		PROPERTY FileName AS STRING AUTO
-		/// <Summary>A constant indicating the severity of the error condition.</Summary>
+		/// <summary>A constant indicating the severity of the error condition.</summary>
 		/// <Seealso cref="T:XSharp.Severity"/>
 		PROPERTY Severity AS DWORD AUTO
-		/// <Summary>A string that describes the error condition.</Summary>
+		/// <summary>A string that describes the error condition.</summary>
 		PROPERTY Description		AS STRING AUTO
 		PROPERTY Arg				AS STRING AUTO
 		PROPERTY ArgType			AS DWORD AUTO

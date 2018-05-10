@@ -5,7 +5,7 @@
 //
 
 begin namespace XSharp
-	/// <Summary>Error code Enum that matches the Visual Objecs and Vulcan Generic Error Codes</Summary>
+	/// <summary>Error code Enum that matches the Visual Objecs and Vulcan Generic Error Codes</summary>
 	enum Gencode as dword
 		member EG_UNKNOWN      := 0
 		member EG_ARG          := 1

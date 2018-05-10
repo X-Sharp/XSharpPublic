@@ -49,13 +49,13 @@ STATIC CLASS OOPHelpers
 		NEXT
 		RETURN aMethods:ToArray()
 		
-	STATIC METHOD FindClass(cName AS STRING) AS System.Type
+	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
 		FOREACH asm AS Assembly IN FindOurAssemblies()
 			ret := asm:GetType( cName, FALSE, TRUE )
 			IF ret != NULL
-				EXIT
+				EXIT 
 			ENDIF
 			// The class could be prefixed with a Namespace. 
 			// If there is an Implicoit Namespace Attribute
@@ -68,7 +68,7 @@ STATIC CLASS OOPHelpers
 				ret := asm:GetType( cFullName, FALSE, TRUE )
 				IF ret != NULL
 					EXIT
-				ENDIF
+				ENDIF  
 			ENDIF
 		NEXT   
 		RETURN ret

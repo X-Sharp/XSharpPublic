@@ -9,8 +9,9 @@ using System.Linq
 using System.Diagnostics
 
 using System.Runtime.CompilerServices
-
-// Base class for runtime compiled macros and compiletime codeblocks
+	/// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
+	/// This type has method that normally are never directly called from user code.
+	/// </summary>
 [DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 abstract class XSharp.CodeBlock implements ICodeBlock
 	private initonly _pcount as int
@@ -46,7 +47,9 @@ abstract class XSharp.CodeBlock implements ICodeBlock
          return iif( index < args:Length, args[index + 1], NIL )
 	end class
 
-// Base class for runtime compiled macros	
+
+/// <summary>Internal type that is the base class for compile time macros.
+/// </summary>
 [DebuggerDisplay( "{_cMacro}", Type := "_CODEBLOCK" )] ;
 public class XSharp._CodeBlock inherit XSharp.CodeBlock
 	protect _innerBlock as ICodeBlock 

@@ -5,7 +5,7 @@
 //
 using XSharp
 BEGIN NAMESPACE XSharp
-	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
+	/// <summary>Values that match the Visual Objects SET_* defines </summary>
 	ENUM Set                                
 		MEMBER EXACT       := 1			// LOGIC
 		MEMBER FIXED	   := 2			// LOGIC

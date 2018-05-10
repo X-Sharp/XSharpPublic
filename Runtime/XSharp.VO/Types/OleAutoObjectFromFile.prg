@@ -11,6 +11,7 @@ using System.Reflection
 using System.Diagnostics
 using System.Runtime.InteropServices.ComTypes
 
+/// <summary>VO Compatible class to create an OLEAutObject from a file on disk.</summary>	
 [DebuggerDisplay( "Type= {__ComObject}, File={cFileName}", Type := "OleAutoObjectFromFile" )];
 CLASS XSharp.OleAutoObjectFromFile INHERIT OleAutoObject
    PROTECT _cFileName 	AS STRING

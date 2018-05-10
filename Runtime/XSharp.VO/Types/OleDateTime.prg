@@ -14,7 +14,8 @@ FUNCTION OleDateTimeAsDate(lSet AS LOGIC) AS LOGIC
 FUNCTION OleDateTimeAsDate() AS LOGIC 
 	// Global setting for Date/Time return values
 	RETURN lAsDate
-	
+
+/// <summary>VO Compatible class to store DateTime values in OLE Automation</summary>	
 CLASS XSharp.OleDateTime
 	PROTECT dt AS System.DateTime
 	

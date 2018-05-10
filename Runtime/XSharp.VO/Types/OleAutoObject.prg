@@ -10,7 +10,7 @@ USING System.Runtime.Remoting
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 
-
+/// <summary>VO Compatible OLE Automation class</summary>
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
 CLASS XSharp.OleAutoObject
 	PROTECTED oComObject AS OBJECT

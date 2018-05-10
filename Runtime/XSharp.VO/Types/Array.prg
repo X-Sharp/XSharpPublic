@@ -11,17 +11,22 @@ using System.Reflection
 using System.Text
 using XSharp
 begin namespace XSharp	
-	
+	/// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
+	/// This type has methods and properties that normally are never directly called from user code.
+	/// </summary>
 	[DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
 	[DebuggerTypeProxy(typeof(ArrayDebugView))];
 	public sealed class __Array inherit __ArrayBase<usual>
 		
+		/// <summary>Create an empty array</summary>
 		constructor()
 			super()
 		
+		/// <summary>Create an array with a fixed number of usual values</summary>
 		constructor(capacity as dword)
 			super(capacity)
 
+		/// <summary>Create an array and fill it with values from a typed array of USUALs.</summary>
 		constructor( elements as usual[] )
 			self()
 			if elements == null
@@ -31,6 +36,7 @@ begin namespace XSharp
 			_internalList:AddRange(elements) 
 			return
 		
+		/// <summary>Create an array and fill it with values from a typed array of objects.</summary>
 		constructor( elements as object[] )
 			self()
 			if elements == null
@@ -45,7 +51,7 @@ begin namespace XSharp
 			next
 			return
 		
-		public static method ArrayCreate(dimensions params int[] ) as Array
+		internal static method ArrayCreate(dimensions params int[] ) as Array
 			local count := dimensions:Length as int
 			if count <= 0
 				throw ArgumentException{"No dimensions provided."}
@@ -64,7 +70,7 @@ begin namespace XSharp
 			endif
 			return arrayNew
 		
-		public static method __ArrayNew( dimensions params int[] ) as __Array
+		internal static method __ArrayNew( dimensions params int[] ) as __Array
 			local newArray as Array 
 			if dimensions:Length != 0 
 				newArray := __ArrayNewHelper(dimensions,1)
@@ -73,7 +79,7 @@ begin namespace XSharp
 			endif
 			return newArray
 		
-		public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
+		internal static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
 			local capacity  as dword // one based ?
 			local newArray as Array
 			capacity := (dword) dimensions[currentDim]
@@ -108,7 +114,8 @@ begin namespace XSharp
 		internal method CloneShallow() as Array
 			return (Array) super:Clone()
 
-		public property self[i as dword, j as dword, k as DWORD] as usual
+			/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
+			public property self[i as dword, j as dword, k as DWORD] as usual
 			get
 				return __GetElement((int)i,(int)j, (int) k)
 			end get
@@ -117,6 +124,7 @@ begin namespace XSharp
 			end set
 		end property
 
+		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
 		public property self[i as dword, j as dword] as usual
 			get
 				return __GetElement((int)i,(int)j)
@@ -126,6 +134,7 @@ begin namespace XSharp
 			end set
 		end property
 	
+		/// <summary>Get/Set array elements with a ZERO based array.</summary>
 		new property self[index as dword] as usual
 			get
 				return __GetElement((int)index)
@@ -135,14 +144,14 @@ begin namespace XSharp
 			end set
 		end property
 		
-		new public method Swap(position as dword, element as usual) as usual
+		new internal method Swap(position as dword, element as usual) as usual
 			return super:Swap(position, element)
 
-		new public method Swap(position as int, element as usual) as usual
+		new internal method Swap(position as int, element as usual) as usual
 			return super:Swap(position, element)
 
 		///
-		/// <Summary>Access the array element using ZERO based array index</Summary>
+		/// <summary>Access the array elements using ZERO based array indexes.</summary>
 		///
 		public method __GetElement(index params int[]) as usual
 			local indexLength := index:Length as int
@@ -183,6 +192,9 @@ begin namespace XSharp
 			next		
 			sb:Append("}")
 			return sb:ToString()
+
+
+		/// <summary>Assign values to the array elements using ZERO based array indexes.</summary>
 		public method __SetElement(u as usual, index params int[] ) as usual
 			// indices are 0 based
 			if self:CheckLock()
@@ -200,7 +212,7 @@ begin namespace XSharp
 			endif
 			return u
 
-			PUBLIC STATIC METHOD Copy(aSource AS Array,aTarget AS Array,;
+			internal STATIC METHOD Copy(aSource AS Array,aTarget AS Array,;
 				start AS DWORD, sourceLen as DWORD, offSet as dword, targetLen as dword ) AS Void
 				LOCAL x AS DWORD
 				// Adjust
@@ -227,7 +239,7 @@ begin namespace XSharp
 				  ENDIF
 				return				
 
-		new public method Sort(startIndex as int, count as int, comparer as IComparer<__USUAL>) as void
+			new internal method Sort(startIndex as int, count as int, comparer as IComparer<__USUAL>) as void
 			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
 			return
 

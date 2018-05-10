@@ -429,7 +429,7 @@ namespace XSharp.Project
                 if (String.IsNullOrEmpty(DocumentationFile))
                 {
                     var asmName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
-                    documentationFile = System.IO.Path.ChangeExtension(asmName, ".Xml");
+                    documentationFile = asmName+ ".Xml";
                 }
             }
             else

@@ -390,7 +390,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str1(n)
 		else
-			return StringHelpers.FormatNumber((int64), RuntimeState.Digits,0)
+			return StringHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
 		endif
 	case 2
 		if ! nLen:IsNumeric
@@ -399,7 +399,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str2(n, nLen)
 		else
-			return StringHelpers.FormatNumber((int64), nLen,0)
+			return StringHelpers.FormatNumber((int64) n, nLen,0)
 		endif
 	case 3
 		if ! nDec:IsNumeric
@@ -408,7 +408,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str3(n, nLen, nDec)
 		else
-			return StringHelpers.FormatNumber((int64), nLen,nDec)
+			return StringHelpers.FormatNumber((int64) n, nLen,nDec)
 		endif
 	end switch
 	return ""

@@ -139,7 +139,7 @@ function SetCpu(nCpu as dword) as dword
 
 
 /// <summary>
-/// Return the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
+/// Return the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
 /// </summary>
 /// <param name="dwCountry"></param>
 /// <returns>
@@ -148,7 +148,7 @@ function SetDateCountry() as long
 	getstate long Set.DATECOUNTRY
 
 /// <summary>
-/// Return and optionally change the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
+/// Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
 /// </summary>
 /// <param name="dwCountry"></param>
 /// <returns>
@@ -168,7 +168,7 @@ function GetDateFormat() as string
 	getstate string Set.DateFormat
 
 /// <summary>
-/// Change the setting that determines the <%APP%> date format.
+/// Change the setting that determines the X# date format.
 /// </summary>
 /// <param name="cDateFormat"></param>
 /// <returns>
@@ -605,7 +605,7 @@ function SetYield(lSet as logic) as logic
 
 
 /// <summary>
-/// Retrieve and set the <%APP%> return code.
+/// Retrieve and set the X# return code.
 /// </summary>
 /// <param name="dw"></param>
 /// <returns>
@@ -615,7 +615,7 @@ function ErrorLevel(dw as dword) as dword
 
 
 /// <summary>
-/// Retrieve the <%APP%> return code.
+/// Retrieve the X# return code.
 /// </summary>
 /// <returns>
 /// </returns>

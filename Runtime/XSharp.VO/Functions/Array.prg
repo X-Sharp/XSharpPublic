@@ -584,7 +584,7 @@ FUNCTION ArrayStore<T>(a AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWOR
 /// <param name="a">The array whose element will be replaced with a new value.</param>
 /// <param name="dwEl">The number of the element to be replaced.</param>
 /// <param name="u">The new value.</param>
-/// <returns>The original value that was replaced by <uNewValue>.</returns>
+/// <returns>The original value that was replaced by u.</returns>
 FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
 	RETURN a:Swap(dwEl, u)
 	
@@ -594,7 +594,7 @@ FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
 /// <param name="a">The array whose element will be replaced with a new value.</param>
 /// <param name="dwEl">The number of the element to be replaced.</param>
 /// <param name="u">The new value.</param>
-/// <returns>The original value that was replaced by <uNewValue>.</returns>
+/// <returns>The original value that was replaced by u.</returns>
 FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS NEW()
 	RETURN a:Swap(dwEl, u)
 	
@@ -605,7 +605,7 @@ FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS
 /// <param name="uSearch">The number of the element to be replaced.</param>
 /// <param name="nStart">The number of the element to be replaced.</param>
 /// <param name="nCount">The new value.</param>
-/// <returns>If <uSearch> is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
+/// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
 FUNCTION Ascan(aTarget, uSearch,nStart,nCount) AS DWORD CLIPPER
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, SetExact()) 
 	
@@ -616,7 +616,7 @@ FUNCTION Ascan(aTarget, uSearch,nStart,nCount) AS DWORD CLIPPER
 /// <param name="uSearch">The number of the element to be replaced.</param>
 /// <param name="nStart">The number of the element to be replaced.</param>
 /// <param name="nCount">The new value.</param>
-/// <returns>If <uSearch> is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
+/// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
 FUNCTION AScanExact( aTarget, uSearch, nStart, nCount ) AS DWORD CLIPPER
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 	

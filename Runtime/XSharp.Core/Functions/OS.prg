@@ -184,7 +184,7 @@ function DiskFree(cDrive as STRING) as INT64
 /// <summary>
 /// Return the space available on a specified disk.
 /// </summary>
-/// <param name="nDrive">The drive number (1 = A, 2 = B etc)
+/// <param name="nDrive">The drive number (1 = A, 2 = B etc)</param>
 /// <returns>
 /// The free space on the specified disk drive.
 /// </returns>	   
@@ -343,15 +343,13 @@ function DiskChange(c as string) as logic
 	return DirChange(c) == 0
 
 
-/// Return the operating system name.
-/// </summary>
+/// <summary>Return the operating system name.</summary>
 /// <returns>
 /// </returns>
 function OS() as string
 	return OS(FALSE)
 
-/// Return the operating system name.
-/// </summary>
+/// <summary>Return the operating system name.</summary>
 /// <param name="lExtended"></param>
 /// <returns>
 /// </returns>

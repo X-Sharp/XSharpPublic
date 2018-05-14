@@ -7,15 +7,15 @@
 USING System.Collections.Generic
 USING System.Threading
 USING XSharp.RDD
+USING XSharp.RDD.Enums
 
 /// <summary>
 /// Container Class that holds the XSharp Runtime state
 /// </summary>
-/// <Remarks>
-/// Please note that unlike in Visual Objects and Vulcan.NET every thread has 
-/// its own copy of the runtime state.</br>
+/// <remarks>
+/// Please note that unlike in Visual Objects and Vulcan.NET every thread has its own copy of the runtime state.<br/>
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
-/// </Remarks>
+/// </remarks>
 
 
 CLASS XSharp.RuntimeState
@@ -100,11 +100,11 @@ CLASS XSharp.RuntimeState
 		RETURN oNew     
 		
 	/// <summary>Retrieve state name</summary>
-	/// <Returns>String value, such as "State for Thread 123"</Returns>
+	/// <returns>String value, such as "State for Thread 123"</returns>
 	PUBLIC PROPERTY Name AS STRING AUTO
 	PUBLIC PROPERTY BreakLevel as INT AUTO
 	/// <summary>ToString() override</summary>
-	/// <Returns>String value, such as "State for Thread 123"</Returns>
+	/// <returns>String value, such as "State for Thread 123"</returns>
 	PUBLIC VIRTUAL METHOD ToString() AS STRING
 		RETURN SELF:Name
 
@@ -117,7 +117,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>Get the value for a certain setting</summary>
 	/// <param Name="nSetting"> The number of the setting to change</param>
 	/// <typeparam Name="T"> The expected return type of the value</typeparam>
-	/// <Returns>The new value</Returns>
+	/// <returns>The new value</returns>
 	PRIVATE METHOD _GetThreadValue<T> (nSetting AS INT) AS T
 		BEGIN LOCK oSettings
 			IF oSettings.ContainsKey(nSetting)
@@ -191,41 +191,41 @@ CLASS XSharp.RuntimeState
         SET SetValue<INT>(Set.DateCountry, VALUE)
 
 	/// <summary>The current Date format</summary>
-	/// <Remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br>
+	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
 	/// For example DD-MM-YYYY for italian date format, MM/DD/YYYY for American date format or DD/MM/YYYY for British Date format.
 	/// Note that all other characters except the four groups mentioned above are copied to the output string verbatim.
-	/// </Remarks>
-	/// <Returns>String value</Returns>
+	/// </remarks>
+	/// <returns>String value</returns>
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(Value)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
-	/// <Returns>DWORD value</Returns>
+	/// <returns>DWORD value</returns>
     STATIC PROPERTY Decimals AS LONG ;
         GET GetValue<LONG>(Set.DECIMALS);
         SET SetValue<LONG>(Set.DECIMALS, VALUE)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
-	/// <Returns>DWORD value</Returns>
+	/// <returns>DWORD value</returns>
     STATIC PROPERTY DecimalSep AS WORD ;
         GET GetValue<WORD>(Set.DecimalSep);
         SET SetValue<WORD>(Set.DecimalSep, VALUE)
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
-	/// <Returns>Logic value</Returns>
+	/// <returns>Logic value</returns>
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.DELETED);
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
-	/// <Returns>DWORD value</Returns>
+	/// <returns>DWORD value</returns>
     STATIC PROPERTY Digits AS LONG ;
         GET GetValue<LONG>(Set.DIGITS);
         SET SetValue<LONG>(Set.DIGITS, VALUE)
 
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
-	/// <Returns>DWORD value</Returns>
+	/// <returns>DWORD value</returns>
     STATIC PROPERTY Epoch AS DWORD ;
         GET GetValue<DWORD>(Set.EPOCH);
         SET SetValue<DWORD>(Set.EPOCH, VALUE)
@@ -238,7 +238,7 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
-	/// <Returns>Logic value</Returns>
+	/// <returns>Logic value</returns>
     STATIC PROPERTY Exact AS LOGIC ;
         GET GetValue<LOGIC>(Set.EXACT);
         SET SetValue<LOGIC>(Set.EXACT, VALUE)
@@ -264,7 +264,7 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.NETERR);
         SET SetValue<LOGIC>(Set.NETERR, VALUE)
 	/// <summary>RDD Optimize Flag</summary>
-	/// <Returns>Logic value</Returns>
+	/// <returns>Logic value</returns>
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIMIZE);
         SET SetValue<LOGIC>(Set.OPTIMIZE, VALUE)
@@ -274,7 +274,7 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.SoftSeek, VALUE)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
-	/// <Returns>DWORD value</Returns>
+	/// <returns>DWORD value</returns>
     STATIC PROPERTY ThousandSep AS WORD ;
         GET GetValue<WORD>(Set.ThousandSep);
         SET SetValue<WORD>(Set.ThousandSep, VALUE)

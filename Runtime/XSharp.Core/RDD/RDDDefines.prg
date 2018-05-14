@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
+USING XSharp
+USING XSharp.RDD.Enums
+
 // RecInfo defines
 define DBRI_DELETED 	:= DbRecordInfo.DBRI_DELETED 
 define DBRI_LOCKED 		:= DbRecordInfo.DBRI_LOCKED 		

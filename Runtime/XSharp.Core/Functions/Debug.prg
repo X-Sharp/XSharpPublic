@@ -138,7 +138,7 @@ function ProcName(activation as int) as string
 /// <param name="nMode">This parameter is ignored in X#</param>
 /// <returns>
 /// </returns>
-/// <Remarks>This function is inlined by the compiler </remarks>
+/// <remarks>This function is inlined by the compiler </remarks>
 function AltD() as void
 	if System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
@@ -151,7 +151,7 @@ function AltD() as void
 /// <param name="nMode">This parameter is ignored in X#</param>
 /// <returns>
 /// </returns>
-/// <Remarks>This function is inlined by the compiler </remarks>
+/// <remarks>This function is inlined by the compiler </remarks>
 function AltD(nMode as Int) as void
 	if System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()

@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+using XSharp.RDD.Enums
 INTERFACE XSharp.RDD.IRDD
 	// Navigation         
 	METHOD DbEval(info AS DbEvalInfo)		AS LOGIC
@@ -48,13 +48,27 @@ INTERFACE XSharp.RDD.IRDD
 	METHOD FieldName(nFldPos AS LONG)		AS STRING 
 		
 	// Read & Write		
+	/// <summary>Get a value for the specified column.</summary>	
+	/// <param name="nFldPos">1 based column number for which the value should be retrieved.</param>
 	METHOD GetValue(nFldPos AS LONG)		AS OBJECT
+	/// <summary>Get the value for a column and write (export) it to an external file.</summary>	
+	/// <param name="nFldPos">1 based column number for which the value should be retrieved.</param>
+	/// <param name="fileName">Name of the file that needs to be written to.</param>
 	METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+	/// <summary>Get the length of the for the specified column.</summary>	
+	/// <param name="nFldPos">1 based column number for which the length should be retrieved.</param>
 	METHOD GetValueLength(nFldPos AS LONG)	AS LONG
+	/// <summary>Flush the changes to the table, its indexes and memo file.</summary>	
 	METHOD Flush() 							AS LOGIC
 	METHOD GoCold()							AS LOGIC
 	METHOD GoHot()							AS LOGIC   
+	/// <summary>Write a value for a specified column</summary>	
+	/// <param name="nFldPos">1 based column number for which the value should be written.</param>
+	/// <param name="oValue">New value that needs to written to the table this column.</param>
 	METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+	/// <summary>Read (Import) a value from an external file and write it to the specified column.</summary>	
+	/// <param name="nFldPos">1 based column number for which the value should be written.</param>
+	/// <param name="fileName">Name of the file that needs to be read from.</param>
 	METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 	
 		
@@ -65,19 +79,33 @@ INTERFACE XSharp.RDD.IRDD
 	METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
 	
 	// Memo File Access
+	/// <summary>Close the memo file</summary>	
 	METHOD CloseMemFile() 					AS LOGIC    
+	/// <summary>Create the memo file</summary>	
+	/// <param name="info">object describing the file to create.</param>
 	METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
-	METHOD OpenMemFile() 					AS LOGIC   
+	/// <summary>Open the memo file </summary>	
+	/// <param name="info">object describing the file to open.</param>
+	METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC   
 
 	// Indexes
+   /// <summary>Set the condition for the next Index Creation</summary>
     METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+	/// <summary>Create a new index or tag.</summary>
     METHOD OrderCreate(info AS DbOrderCreateInfo)	AS LOGIC	
+	/// <summary>Delete an index or tag.</summary>
 	METHOD OrderDestroy(info AS DbOrderInfo)		AS LOGIC    	
+	/// <summary>Retrieve information about the current index.</summary>
 	METHOD OrderInfo(nOrdinal AS LONG)				AS OBJECT
+	/// <summary>Open an index file and add to the list of open indexes for the current workarea.</summary>
 	METHOD OrderListAdd(info AS DbOrderInfo)		AS LOGIC
+	/// <summary>Close an index file and remove it from the list of open indexes for the current workarea.</summary>
 	METHOD OrderListDelete(info AS DbOrderInfo)		AS LOGIC
+	/// <summary>Set focus to another index in the list open indexes for the current workarea.</summary>
 	METHOD OrderListFocus(info AS DbOrderInfo)		AS LOGIC
+	/// <summary>Rebuild all indexes for the current workarea.</summary>
 	METHOD OrderListRebuild()						AS LOGIC 
+	/// <summary>Perform a seek operation on the current selected index for the current workarea.</summary>
 	METHOD Seek(info AS DbSeekInfo)					AS LOGIC
     	
 	// Relations

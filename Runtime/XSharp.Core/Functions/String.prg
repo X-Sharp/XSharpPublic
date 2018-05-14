@@ -96,7 +96,7 @@ function AscA(c as string) as dword
 /// <param name="cSearch">The string to search for.</param>
 /// <param name="c">The string to search in.</param>
 /// <returns>
-/// The position of the first occurrence of <cSearch> within <cTarget>.  If <cSearch> is not found, At() returns 0.
+/// The position of the first occurrence of cSearch within cTarget.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
 function At(cSearch as string,c as string) as dword
@@ -112,7 +112,7 @@ function At(cSearch as string,c as string) as dword
 /// <param name="cSearch">The string to search for.</param>
 /// <param name="c">The string to search in.</param>
 /// <returns>
-/// The position of the first occurrence of <cSearch> within <cTarget>.  If <cSearch> is not found, At() returns 0.
+/// The position of the first occurrence of cSearch within cTarget.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
 function At2(cSearch as string,c as string) as dword
@@ -126,7 +126,7 @@ function At2(cSearch as string,c as string) as dword
 /// <param name="c">The string to search in.</param>
 /// <param name="dwOff">The position to begin the search with. This offset is ZERO based</param>
 /// <returns>
-/// The position of the first occurrence of <cSearch> within <cTarget> behind the give position.  If <cSearch> is not found, At() returns 0.
+/// The position of the first occurrence of cSearch within cTarget behind the give position.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At3() returns 0.
 /// </returns>
 function At3(cSearch as string,c as string,dwOff as dword) as dword
@@ -246,7 +246,7 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// </summary>
 /// <param name="c">The string from which the even characters shall be extracted.</param>
 /// <returns>
-/// A string which is assembled from the even characters in <c>.
+/// A string which is assembled from the even characters in c.
 /// </returns>
 function CharEven(c as string) as string
 	local evenChars:=null as string
@@ -300,9 +300,10 @@ function CharMix(cOdd as string,cEven as string) as string
 
 /// <summary>
 /// Return the odd-numbered characters in a string.
+/// </summary>
 /// <param name="c">The string from which the odd characters shall be extracted.</param>
 /// <returns>
-/// A string which is assembled from the odd characters in <c>.
+/// A string which is assembled from the odd characters in c.
 /// </returns>
 function CharOdd(c as string) as string
 	local oddChars:=null as string

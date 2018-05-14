@@ -22,7 +22,7 @@ using System.Runtime.ConstrainedExecution
 	/// Change the name of a file.
 	/// </summary>
 	/// <param name="cOldFile">The original file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.</param>
-	/// <param name="cNewFile">The new file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.  If the source directory is different from the target directory, the file moves to the target directory.  If <cNewFile> exists or is currently open, FRename() fails and returns FALSE.</param>
+	/// <param name="cNewFile">The new file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.  If the source directory is different from the target directory, the file moves to the target directory.  If cNewFile exists or is currently open, FRename() fails and returns FALSE.</param>
 	/// <returns>TRUE if the operation succeeds; otherwise, FALSE.  In the case of a failure, FError() can be used to determine the specific error.</returns>
 function FRename( cOldFile as string , cNewFile as string) as logic
 	local renamed := false as logic
@@ -57,8 +57,8 @@ function FErase(fileName as string) as logic
 	/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 	/// <remarks>
 	/// FCopy() is the functional form of the COPY FILE command.
-	/// If <cSourceFile> does not exist, a runtime error is raised.  
-	/// If <cTargetFile> does not exist, it is created.  
+	/// If cSourceFile does not exist, a runtime error is raised.  
+	/// If cTargetFile does not exist, it is created.  
 	///</remarks>
 function FCopy(cSourceFile as string,cTargetFile as string) as logic
 	return FCopy(cSourceFile, cTargetFile, true)
@@ -70,8 +70,8 @@ function FCopy(cSourceFile as string,cTargetFile as string) as logic
 	/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 	/// <remarks>
 	/// FCopy() is the functional form of the COPY FILE command.
-	/// If <cSourceFile> does not exist, a runtime error is raised.  
-	/// If <cTargetFile> does not exist, it is created.  If it exists it is only overwritten if lOverWrite = TRUE
+	/// If cSourceFile does not exist, a runtime error is raised.  
+	/// If cTargetFile does not exist, it is created.  If it exists it is only overwritten if lOverWrite = TRUE
 	///</remarks>
 function FCopy(cSourceFile as string,cTargetFile as string, lOverWrite as logic) as logic
 	local IsCopied := true as logic

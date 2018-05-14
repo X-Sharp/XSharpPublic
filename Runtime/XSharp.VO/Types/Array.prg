@@ -18,15 +18,15 @@ begin namespace XSharp
 	[DebuggerTypeProxy(typeof(ArrayDebugView))];
 	public sealed class __Array inherit __ArrayBase<usual>
 		
-		/// <summary>Create an empty array</summary>
+		/// <inheritdoc />
 		constructor()
 			super()
 		
-		/// <summary>Create an array with a fixed number of usual values</summary>
+		/// <inheritdoc />
 		constructor(capacity as dword)
 			super(capacity)
 
-		/// <summary>Create an array and fill it with values from a typed array of USUALs.</summary>
+		/// <inheritdoc />
 		constructor( elements as usual[] )
 			self()
 			if elements == null
@@ -36,7 +36,7 @@ begin namespace XSharp
 			_internalList:AddRange(elements) 
 			return
 		
-		/// <summary>Create an array and fill it with values from a typed array of objects.</summary>
+		/// <inheritdoc />
 		constructor( elements as object[] )
 			self()
 			if elements == null
@@ -115,7 +115,7 @@ begin namespace XSharp
 			return (Array) super:Clone()
 
 			/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-			public property self[i as dword, j as dword, k as DWORD] as usual
+		public property self[i as dword, j as dword, k as DWORD] as usual
 			get
 				return __GetElement((int)i,(int)j, (int) k)
 			end get
@@ -134,7 +134,7 @@ begin namespace XSharp
 			end set
 		end property
 	
-		/// <summary>Get/Set array elements with a ZERO based array.</summary>
+		/// <inheritdoc />
 		new property self[index as dword] as usual
 			get
 				return __GetElement((int)index)
@@ -150,9 +150,7 @@ begin namespace XSharp
 		new internal method Swap(position as int, element as usual) as usual
 			return super:Swap(position, element)
 
-		///
-		/// <summary>Access the array elements using ZERO based array indexes.</summary>
-		///
+		/// <inheritdoc />
 		public method __GetElement(index params int[]) as usual
 			local indexLength := index:Length as int
 			local currentArray := self as Array
@@ -168,7 +166,8 @@ begin namespace XSharp
 				endif
 				currentArray := (Array) u
 			next
-			return currentArray:_internalList[ index[i] ]
+			RETURN currentArray:_internalList[ index[i] ]
+
 		internal method DebuggerString() as string
 			local sb as StringBuilder
 			local cnt, tot as long
@@ -194,7 +193,7 @@ begin namespace XSharp
 			return sb:ToString()
 
 
-		/// <summary>Assign values to the array elements using ZERO based array indexes.</summary>
+		/// <inheritdoc />
 		public method __SetElement(u as usual, index params int[] ) as usual
 			// indices are 0 based
 			if self:CheckLock()

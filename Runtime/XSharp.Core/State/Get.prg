@@ -39,7 +39,7 @@ function GetChunkBase64(b1 as byte,b2 as byte,b3 as byte,nPad as int) as string
 	return String.Empty   
 	
 	/// <summary>
-	/// Get the current <%APP%> search path for opening file.
+	/// Get the current X# search path for opening file.
 	/// </summary>
 	/// <returns>
 	/// </returns>
@@ -56,7 +56,7 @@ function GetDASPtr() as IntPtr
 	
 	
 	/// <summary>
-	/// Return the <%APP%> default drive and directory.
+	/// Return the X# default drive and directory.
 	/// </summary>
 	/// <returns>
 	/// </returns>

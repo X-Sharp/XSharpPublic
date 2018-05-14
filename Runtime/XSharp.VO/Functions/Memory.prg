@@ -60,7 +60,7 @@ FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
 /// </summary>
 /// <param name="pBuffer"></param>
 /// <param name="nSize"></param>
-/// <returns>Returns the original pointer when the nSize parameter is smaller or equal to the current size.</br>
+/// <returns>Returns the original pointer when the nSize parameter is smaller or equal to the current size.<br/>
 //  Extraneous bytes are zeroed out. Returns a new buffer when the requesed size is bigger than the original size.
 /// </returns>
 FUNCTION MemRealloc( pBuffer AS IntPtr, nSize AS DWORD ) AS IntPtr
@@ -221,7 +221,7 @@ RETURN result
 /// <summary>Get the location of the first special console character in a buffer.</summary>
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>The location of the first special console character within the specified portion of <pMemory>.  
+/// <returns>The location of the first special console character within the specified portion of pMemory.  
 /// If a special console character does not exist, MemAtSpecial() returns 0.</returns>
 FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 	
@@ -243,8 +243,8 @@ FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="bChar">The byte value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <bChar> within the first <dwCount> bytes of <pMemory>.  
-/// If <bChar> is not matched, MemChr() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of bChar within the first dwCount bytes of pMemory.  
+/// If bChar is not matched, MemChr() returns a NULL_PTR.</returns>
 FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
@@ -255,8 +255,8 @@ FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="bChar">The byte value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <bChar> within the first <dwCount> bytes of <pMemory>.  
-/// If <bChar> is not matched, MemChr() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of bChar within the first dwCount bytes of pMemory.  
+/// If bChar is not matched, MemChr() returns a NULL_PTR.</returns>
 FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 	LOCAL pChr   AS BYTE PTR
 	LOCAL pRet   as BYTE PTR
@@ -288,8 +288,8 @@ FUNCTION MemClear( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 /// <param name="pMem1">A pointer to the first memory buffer.</param>
 /// <param name="pMem2">A pointer to the second memory buffer. </param>
 /// <param name="dwCount">The number of bytes to compare.</param>
-/// <returns>-1, 0, or 1 if the first <dwCount> bytes of <pMem1> are less than, equal to, 
-/// or greater than the first <dwCount> bytes of <pMem2>, respectively.</returns>
+/// <returns>-1, 0, or 1 if the first dwCount bytes of pMem1 are less than, equal to, 
+/// or greater than the first dwCount bytes of pMem2, respectively.</returns>
 FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
 	LOCAL pByte1 AS BYTE PTR
 	LOCAL pByte2 AS BYTE PTR
@@ -342,7 +342,7 @@ FUNCTION MemCopy( pDestination AS PTR, pSource AS PTR, dwCount AS DWORD ) AS PTR
 /// <param name="dwCount">The number of bytes to copy.</param>
 /// <returns>NOTHING</returns>
 /// <remarks>MemCopyString() copies the specified number of bytes from the source string to the destination memory buffer.  
-/// If the number of bytes in the source memory buffer is less than <dwCount>, the rest of the destination memory buffer is filled with blanks (character 0).  
+/// If the number of bytes in the source memory buffer is less than dwCount, the rest of the destination memory buffer is filled with blanks (character 0).  
 /// </remarks>
 FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DWORD ) AS VOID
    // Convert the String to Ansi before copying
@@ -372,8 +372,8 @@ FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DW
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="dwValue">The dword value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <dwValue> within the first <dwCount> bytes of <pMemory>.  
-/// If <dwValue> is not matched, MemDWord() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of dwValue within the first dwCount bytes of pMemory.  
+/// If dwValue is not matched, MemDWord() returns a NULL_PTR.</returns>
 FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD PTR
 	LOCAL pDword AS DWORD PTR
 	LOCAL pRet   as DWORD PTR
@@ -394,8 +394,8 @@ FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="iValue">The int value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <iValue> within the first <dwCount> bytes of <pMemory>.  
-/// If <iValue> is not matched, MemInt() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of iValue within the first dwCount bytes of pMemory.  
+/// If iValue is not matched, MemInt() returns a NULL_PTR.</returns>
 FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR 
 	LOCAL pInt   AS INT PTR
 	LOCAL pRet   as INT PTR
@@ -427,8 +427,8 @@ FUNCTION MemLen( pMemory AS PTR ) AS DWORD
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="liValue">The long value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <liValue> within the first <dwCount> bytes of <pMemory>.  
-/// If <liValue> is not matched, MemLong() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of liValue within the first dwCount bytes of pMemory.  
+/// If liValue is not matched, MemLong() returns a NULL_PTR.</returns>
 FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS INT PTR
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
@@ -505,8 +505,8 @@ FUNCTION MemSet( pMemory AS IntPtr, bValue AS BYTE, dwCount AS DWORD ) AS IntPtr
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="siValue">The short value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <siValue> within the first <dwCount> bytes of <pMemory>.  
-/// If <siValue> is not matched, MemShort() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of siValue within the first dwCount bytes of pMemory.  
+/// If siValue is not matched, MemShort() returns a NULL_PTR.</returns>
 FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) AS SHORT PTR
 	LOCAL pShort  AS SHORT PTR
 	LOCAL pRet   as SHORT PTR
@@ -547,8 +547,8 @@ FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 /// <param name="pMemory">A pointer to a buffer. </param>
 /// <param name="wValue">The word value to match. </param>
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
-/// <returns>A pointer to the first occurrence of <wValue> within the first <dwCount> bytes of <pMemory>.  
-/// If <wValue> is not matched, MemWord() returns a NULL_PTR.</returns>
+/// <returns>A pointer to the first occurrence of wValue within the first dwCount bytes of pMemory.  
+/// If wValue is not matched, MemWord() returns a NULL_PTR.</returns>
 FUNCTION MemWord( pMemory AS PTR, wValue AS WORD, dwCount AS DWORD ) AS WORD PTR
 	LOCAL pWord  AS WORD PTR
 	LOCAL pRet   as WORD PTR

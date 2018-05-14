@@ -390,8 +390,8 @@ END CLASS
 /// </summary>
 /// <param name="aTarget">The array to process.</param>
 /// <param name="symMethod">The method name, specified without parentheses.</param>
-/// <param name="args">A comma-separated list of arguments to pass to <symMethod>.</param>
-/// <returns>A reference to <aTarget>.</returns>
+/// <param name="args">A comma-separated list of arguments to pass to symMethod.</param>
+/// <returns>A reference to aTarget.</returns>
 FUNCTION ASend(aTarget AS ARRAY, cName AS STRING, args PARAMS USUAL[] ) AS ARRAY 
 	IF aTarget != NULL .and. ! String.IsNullOrEmpty( cName )
 		FOREACH VAR x IN aTarget
@@ -405,9 +405,9 @@ FUNCTION ASend(aTarget AS ARRAY, cName AS STRING, args PARAMS USUAL[] ) AS ARRAY
 /// Determine if an object is an instance of a particular class.
 /// </summary>
 /// <param name="oObject">The object to check for.</param>
-/// <param name="symClassName">The class that <oObject> may be an instance of.</param>
-/// <returns>TRUE if <oObject> is an instance of <symClassName>; otherwise, an error is generated.  FALSE is returned if you choose to ignore the error.
-/// If <oObject> is a NULL_OBJECT, a FALSE is returned but no error is generated.
+/// <param name="symClassName">The class that oObject may be an instance of.</param>
+/// <returns>TRUE if oObject is an instance of symClassName; otherwise, an error is generated.  FALSE is returned if you choose to ignore the error.
+/// If oObject is a NULL_OBJECT, a FALSE is returned but no error is generated.
 /// </returns>
 FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
@@ -891,7 +891,7 @@ FUNCTION Send(o as USUAL,uMethod as USUAL, args PARAMS Usual[]) AS USUAL
 /// <summary>Invoke a method.</summary>
 /// <param name="o"></param>
 /// <param name="symMethod"></param>
-/// <param name="args">A comma-separated list of arguments to pass to <symMethod>.</param>
+/// <param name="args">A comma-separated list of arguments to pass to symMethod.</param>
 /// <returns>Return value of the method call. </returns>
 FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	RETURN __InternalSend(o, symMethod, args)
@@ -998,7 +998,7 @@ FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 /// <summary>Return the number of local arguments that a function is expecting.</summary>
 /// <param name="symFunction">The name of the function to examine.</param>
 /// <returns>The number of arguments that a method is expecting.</returns>
-/// <remarks>Note that you can't call functions that are overloaded.</Br>
+/// <remarks>Note that you can't call functions that are overloaded.<br/>
 /// And unlike in VO this function can also be used to return the number of parameters for typed functions.</remarks>
 
 FUNCTION FParamCount(symFunction AS STRING) AS DWORD

@@ -7,6 +7,7 @@
 using System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>Class that contains the list of open workareas. Each thread will have its own list.</summary>
 CLASS WorkAreas
 	// Not static because every thread can have its own workareas structure
 	#region Constants
@@ -30,6 +31,7 @@ CLASS WorkAreas
 		Aliases 			:= Dictionary<STRING, LONG>{MaxWorkAreas}
 		RDDs				:= IRDD[]{MaxWorkAreas}   
 		iCurrentWorkArea	:= 1
+
 	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
 	PRIVATE METHOD AdjustArea( nArea REF LONG) AS LOGIC
 		IF  nArea > 0 .and.  nArea <= MaxWorkAreas

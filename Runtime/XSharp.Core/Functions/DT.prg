@@ -10,7 +10,7 @@
 /// </summary>
 /// <param name="cTime"> A valid military time in the form hh:mm:ss, where hh is hours in 24-hour format, mm is minutes, and ss is seconds.</param>
 /// <returns>
-/// An 11-character string in 12-hour format with either "am" or "pm."  If <cTime> does not represent a valid military time, a String.Empty is returned.
+/// An 11-character string in 12-hour format with either "am" or "pm."  If cTime does not represent a valid military time, a String.Empty is returned.
 /// </returns>
 FUNCTION AmPm(cTime AS STRING) AS STRING
 	local nSeconds as dword

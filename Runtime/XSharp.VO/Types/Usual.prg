@@ -1015,7 +1015,7 @@ begin namespace XSharp
                 case UsualType.LONG		; return u:_intValue
                 case UsualType.Int64		; return u:_i64Value
                 case UsualType.Float		; return u:_floatValue
-                case UsualType.Decimal	; return u:_decimalValue
+                case UsualType.Decimal	; return u:_decimalValue 
                 otherwise
                     throw UnaryError("+", u)
             end switch

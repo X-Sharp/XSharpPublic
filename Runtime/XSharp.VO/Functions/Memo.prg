@@ -10,7 +10,7 @@
 /// <param name="cSource">The string that contains the carriage-return/linefeed. </param>
 /// <param name="cReplaceHardCR">The character to replace a hard carriage-return/linefeed pair with.  The default is a semicolon (;).</param>
 /// <param name="cReplaceSoftCR">The character to replace a soft carriage-return/linefeed pair with.  The default is a space.</param>
-/// <returns>A copy of <cString> with the specified carriage-return/linefeed pairs replaced.</returns>
+/// <returns>A copy of cString with the specified carriage-return/linefeed pairs replaced.</returns>
 FUNCTION MemoTran(cSource ,cReplaceHardCR ,cReplaceSoftCR ) AS STRING CLIPPER
 
    IF cReplaceHardCR == NIL

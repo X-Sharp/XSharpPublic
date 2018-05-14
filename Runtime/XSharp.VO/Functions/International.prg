@@ -60,6 +60,7 @@ function LoadResString(cDef ,id ,xModule ) as string CLIPPER
 INTERNAL _DLL FUNCTION LoadStringW( hInst AS IntPtr, uID AS DWORD, lpBuffer AS StringBuilder, nBufferSize AS INT ) AS INT PASCAL:User32.LoadStringW
 INTERNAL _DLL FUNCTION GetModuleHandleW( name AS STRING ) AS IntPtr PASCAL:Kernel32.GetModuleHandleW
 
+/// <summary>
 /// Extract a substring from a string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="c"></param>
@@ -67,5 +68,5 @@ INTERNAL _DLL FUNCTION GetModuleHandleW( name AS STRING ) AS IntPtr PASCAL:Kerne
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function MBSUBSTR(c as usual,iStart as usual,wLen as usual) as string
+function MBSubstr(c as usual,iStart as usual,wLen as usual) as string
 	return Substr(c, iStart, wLen)

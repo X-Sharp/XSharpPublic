@@ -80,8 +80,8 @@ FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 /// Create an Array of directory and file information.
 /// </summary>
 /// <param name="cFileSpec">The file specification for the search.  Besides a file name, this specification can include an optional drive, directory, and extension.  The file name and extension can include the standard wildcard characters (* and ?).  If you do not specify a drive and directory, the Windows defaults are used.</param>
-/// <param name="xAttr">Specifies inclusion of files with special attributes in the returned information.  <uAttributes> can be a string or a numeric.</param>
-/// <returns>An array of subarrays, with each subarray containing information about each file matching <cFileSpec>.  </returns>
+/// <param name="xAttr">Specifies inclusion of files with special attributes in the returned information.  uAttributes can be a string or a numeric.</param>
+/// <returns>An array of subarrays, with each subarray containing information about each file matching cFileSpec.  </returns>
 FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	LOCAL nAttr		AS DWORD
 	LOCAL aReturn	AS ARRAY

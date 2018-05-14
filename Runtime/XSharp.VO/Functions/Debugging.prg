@@ -38,7 +38,7 @@ function CanBreak() as logic
 
 
 /// <summary>
-/// Returns the version of <%APP%> you are using.
+/// Returns the version of X# you are using.
 /// </summary>
 /// <returns>
 /// </returns>

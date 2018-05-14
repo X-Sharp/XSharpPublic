@@ -4,23 +4,31 @@
 // See License.txt in the project root for license information.
 //
 
-begin namespace XSharp
+BEGIN NAMESPACE XSharp.RDD.Enums
+	/// <summary>This enum specifies how files should be opened.</summary>
 	enum AutoShareMode
 		member NoChange		 := 0
-		member Auto	  		 := 1
-		member ForeExclusive := 2
+		member @@Auto		 := 1
+		member ForceExclusive := 2
 	end enum
 	
+	/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
 	enum CollationMode
-		member WINDOWS
-		member CLIPPER
+		member @@WINDOWS
+		member @@CLIPPER
 	end enum
 	
+	/// <summary>This enum specifies the lock modes.</summary>
 	enum DbLockMode
 		member Lock
 		member UnLock
 	end	 enum
 	
+	/// <summary>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "DbRecordInfo." prefix.
+	/// </note>
+	///</summary>
 	enum DbRecordInfo
 		member DBRI_DELETED 	:= 1 
 		member DBRI_LOCKED 		:= 2 	
@@ -36,6 +44,8 @@ begin namespace XSharp
 		member DBRI_USER 		:= 1000
 	end	 enum
 	
+	/// <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
+	///</summary>
 	enum DbFieldInfo
 		member DBS_NAME				:= 1
 		member DBS_TYPE				:= 2
@@ -59,139 +69,268 @@ begin namespace XSharp
 		member DBS_USER				:= 1000
 	end	 enum             
 	
+	/// <summary>This enum specifies the various values that the Info method for the IRDD interface accepts.
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "DbInfo." prefix.
+	/// </note>
+	///</summary>
+
 	enum DbInfo
-		// matches numeric values with Vulcan
-		member DBI_ISDBF 			:= 1				// Logical: RDD support DBF file format?
-		member DBI_CANPUTREC		:= 2				// Logical: RDD support Putting Records? 
-		member DBI_GETHEADERSIZE	:= 3				// Numeric: Get header size of the file 
-		member DBI_LASTUPDATE		:= 4				// Date:    Last date RDD file updated 
-		member DBI_GETDELIMITER		:= 5				// String:  Get default delimiter
-		member DBI_SETDELIMITER		:= 6				// String:  Set default delimiter
-		member DBI_GETRECSIZE		:= 7				// Numeric: Get record size of the file
-		member DBI_GETLOCKARRAY		:= 8				// Array:   Get array of locked records 
-		member DBI_TABLEEXT 		:= 9				// String:  Get table file extension
-		member DBI_READONLY 		:= 10				// Logic: is the file opened readonly
+		/// <summary>Logical: Is the RDD DBF based ?</summary>
+		MEMBER DBI_ISDBF 			:= 1				
+		/// <summary>Logical: Does the RDD support the PutRec mechanism ?</summary>
+		MEMBER DBI_CANPUTREC		:= 2				
+		/// <summary>Numeric: Get header size of the file  ?</summary>
+		MEMBER DBI_GETHEADERSIZE	:= 3				
+		/// <summary>Date:    Last date RDD file updated  </summary> 
+		MEMBER DBI_LASTUPDATE		:= 4				
+		/// <summary>String:  Get default delimiter</summary> 
+		MEMBER DBI_GETDELIMITER		:= 5				
+		/// <summary>String:  Set default delimiter</summary> 
+		MEMBER DBI_SETDELIMITER		:= 6				
+		/// <summary>Numeric: Get record size </summary> 
+		member DBI_GETRECSIZE		:= 7				
+		/// <summary>Array:   Get array of locked records</summary> 
+		member DBI_GETLOCKARRAY		:= 8				
+		/// <summary>String:  Get table file extension</summary> 
+		member DBI_TABLEEXT 		:= 9				
+		/// <summary>Logic: is the file opened readonly</summary> 
+		member DBI_READONLY 		:= 10				
 		// 11-19 missing								
-		member DBI_ISFLOCK 			:= 20				// Logic: Is there a file lock active? 
+		/// <summary>Logic: Is there a file lock active? </summary> 
+		member DBI_ISFLOCK 			:= 20				
 		// 21 missing									
-		member DBI_CHILDCOUNT 		:= 22				// Number: Number of child relations set
-		member DBI_FILEHANDLE 		:= 23				// IntPtr: The data file's handle
-		member DBI_FULLPATH			:= 24				// String: Full path to data file
-		member DBI_ISANSI 			:= 25				// Logic: Is the file ansi encoded
-		member DBI_BOF 				:= 26				// Logic: Same as Bof()
-		member DBI_EOF 				:= 27				// Logic: Same as Eof()
-		member DBI_DBFILTER 		:= 28				// String: Current Filter setting 
-		member DBI_FOUND 			:= 29				// Logic: Same as Found() 
-		member DBI_FCOUNT 			:= 30				// Number: Number of fields per record
-		member DBI_LOCKCOUNT		:= 31				// Number: Number of record locks  
-		member DBI_VALIDBUFFER		:= 32				// Logic: Is the buffer Valid
-		member DBI_ALIAS 			:= 33				// String: Alias
-		member DBI_GETSCOPE 		:= 34				// Object: The ScopeInfo
-		member DBI_LOCKOFFSET		:= 35				// Number: Lock offset
-		member DBI_SHARED 			:= 36				// Logic: is the file opened shared
-		member DBI_MEMOEXT 			:= 37				// String: Memo file extension
-		member DBI_MEMOHANDLE		:= 38				// Intptr: The memo file's handle
-		member DBI_BLOB_HANDLE 		:= 38				// Alias for MemoHandle
-		member DBI_MEMOBLOCKSIZE 	:= 39				// Number: The memo block size
-		member DBI_BLOB_INTEGRITY	:= 40				// Number: The Windows Codepage
-		member DBI_CODEPAGE 		:= 41				// Logic:  Use new index lock mechanism
-		member DBI_DOSCODEPAGE		:= 42				// Number: The DOS Codepage
+		/// <summary>Number: Number of child relations set</summary> 
+		member DBI_CHILDCOUNT 		:= 22				
+		/// <summary>IntPtr: The data file's handle</summary> 
+		member DBI_FILEHANDLE 		:= 23
+		/// <summary>String: Full path to data file</summary> 
+		member DBI_FULLPATH			:= 24
+		/// <summary>Logic: Is the file ansi encoded</summary> 
+		member DBI_ISANSI 			:= 25
+		/// <summary>Logic: Same as Bof()</summary> 
+		member DBI_BOF 				:= 26
+		/// <summary>Logic: Same as Eof()</summary> 
+		member DBI_EOF 				:= 27
+		/// <summary>String: Current Filter setting </summary> 
+		member DBI_DBFILTER 		:= 28			
+		/// <summary>Logic: Same as Found() </summary> 
+		member DBI_FOUND 			:= 29				
+		/// <summary>Number: Number of fields per record</summary> 
+		member DBI_FCOUNT 			:= 30				
+		/// <summary>Number: Number of record locks  </summary> 
+		member DBI_LOCKCOUNT		:= 31			
+		/// <summary>Logic: Is the buffer Valid</summary> 
+		member DBI_VALIDBUFFER		:= 32		
+		/// <summary>String: Alias</summary> 
+		member DBI_ALIAS 			:= 33				
+		/// <summary>Object: The ScopeInfo</summary> 
+		member DBI_GETSCOPE 		:= 34				
+		/// <summary>Number: Lock offset</summary> 
+		member DBI_LOCKOFFSET		:= 35				
+		/// <summary>Logic: is the file opened shared</summary> 
+		member DBI_SHARED 			:= 36			
+		/// <summary>String: Memo file extension</summary> 
+		member DBI_MEMOEXT 			:= 37		
+		/// <summary>Intptr: The memo file's handle</summary> 
+		member DBI_MEMOHANDLE		:= 38			
+		/// <summary>Intptr: The memo file's handle</summary> 
+		member DBI_BLOB_HANDLE 		:= 38				
+		/// <summary>Number: The memo block size</summary> 
+		member DBI_MEMOBLOCKSIZE 	:= 39		
+		member DBI_BLOB_INTEGRITY	:= 40				
+		/// <summary>Number: The Windows Codepage</summary> 
+		member DBI_CODEPAGE 		:= 41				
+		/// <summary>Number: The DOS Codepage</summary> 
+		member DBI_DOSCODEPAGE		:= 42				
+		/// <summary></summary> 
 		member DBI_BLOB_RECOVER 	:= 43
+		/// <summary>Logic:  Use new index lock mechanism</summary> 
 		member DBI_NEWINDEXLOCK 	:= 44
-		member DBI_STRICTREAD  		:= 60				// Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  
-		member DBI_OPTIMIZE    		:= 61 				// Flag for whether to use query optimization             
-		member DBI_AUTOOPEN    		:= 62 				// Flag for automatically opening structural indexes      
-		member DBI_AUTOORDER   		:= 63 				// When a structural index is opened, the order to be set 
-		member DBI_AUTOSHARE   		:= 64 				// When a network is detected, open the index shared, otherwise open exclusively   
+		/// <summary>Flag for avoiding RDD hierarchy and using a bigger buffer when indexing</summary> 
+		member DBI_STRICTREAD  		:= 60				
+		/// <summary>Flag for whether to use query optimization</summary> 
+		member DBI_OPTIMIZE    		:= 61 				
+		/// <summary>Flag for automatically opening structural indexes</summary> 
+		member DBI_AUTOOPEN    		:= 62 				
+		/// <summary>Should the order be set to the first index when a structural index is opened</summary> 
+		member DBI_AUTOORDER   		:= 63 				
+		/// <summary>When a network is detected, open the index shared, otherwise open exclusively</summary> 
+		member DBI_AUTOSHARE   		:= 64 				
+		/// <summary></summary> 
 		member DBI_DB_VERSION 		:= 101
+		/// <summary></summary> 
 		member DBI_RDD_VERSION 		:= 102					
+		/// <summary></summary> 
 		member DBI_RDD_LIST 		:= 103
+		/// <summary></summary> 
 		member DBI_MEMOFIELD 		:= 104
+		/// <summary></summary> 
 		member DBI_VO_MACRO_SYNTAX 	:= 105
+		/// <summary></summary> 
 		member DBI_RDD_OBJECT		:= 106
+		/// <summary></summary> 
 		// 107 - 127 missing
 		// Harbour extensions
+		/// <summary>Harbour extension: Locking scheme used by RDD</summary> 
 		member DBI_LOCKSCHEME          := 128 /* Locking scheme used by RDD */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_ISREADONLY          := 129 /* Was the file opened readonly? */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_ROLLBACK            := 130 /* Rollback changes made to current record */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_PASSWORD            := 131 /* Workarea password */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_ISENCRYPTED         := 132 /* The database is encrypted */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_MEMOTYPE            := 133 /* Type of MEMO file: DBT, SMT, FPT */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_SEPARATOR           := 134 /* The record separator (as a string) */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_MEMOVERSION         := 135 /* sub version of memo file */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_TABLETYPE           := 136 /* Type of table file */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_SCOPEDRELATION      := 137 /* Is given relation scoped */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_TRIGGER             := 138 /* Get/Set trigger function */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_OPENINFO            := 139 /* DBOPENINFO structure pointer */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_ENCRYPT             := 140 /* Encrypt table */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_DECRYPT             := 141 /* Decrypt table */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_MEMOPACK            := 142 /* Pack memo file */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_DIRTYREAD           := 143 /* Get/Set index dirty read flag */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_POSITIONED          := 144 /* Is cursor positioned to valid record */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_ISTEMPORARY         := 145 /* Is the table a temporary one? */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_LOCKTEST            := 146 /* record / file lock test */
+		/// <summary>Harbour extension: </summary> 
 		member DBI_CODEPAGE_HB         := 147 /* Codepage used also memberd by VO and Vulcan */ 
+		/// <summary>Harbour extension: </summary> 
 		member DBI_TRANSREC            := 148  /* Is it destination table of currently processed COPY TO or APPEND FROM operation? */ 
+		/// <summary>Harbour extension: </summary> 
 		member DBI_SETHEADER		   := 149	/* DBF header updating modes */ 
+		/// <summary></summary> 
 		/* Harbour RECORD MAP (RM) support */
-		member DBI_RM_SUPPORTED        := 150 /* has WA RDD record map support? */
-		member DBI_RM_CREATE           := 151 /* create new empty work area record map */
-		member DBI_RM_REMOVE           := 152 /* remove active work area record map */
-		member DBI_RM_CLEAR            := 153 /* remove all records from WA record map */
-		member DBI_RM_FILL             := 154 /* add all records to WA record map */
-		member DBI_RM_ADD              := 155 /* add record to work area record map */
-		member DBI_RM_DROP             := 156 /* remove record from work area record map */
-		member DBI_RM_TEST             := 157 /* test if record is set in WA record map */
-		member DBI_RM_COUNT            := 158 /* number of records set in record map */
-		member DBI_RM_HANDLE           := 159 /* get/set record map filter handle */ 
-		// 160 - 160 missing
-		member DBI_QUERY				:= 170 /* if area represents result of a query, obtain expression of this query */ 
+		/// <summary>Harbour record map extension: has WA RDD record map support?</summary> 
+		member DBI_RM_SUPPORTED        := 150 
+		/// <summary>Harbour record map extension: create new empty work area record map</summary> 
+		member DBI_RM_CREATE           := 151 
+		/// <summary>Harbour record map extension: remove active work area record map</summary> 
+		member DBI_RM_REMOVE           := 152 
+		/// <summary>Harbour record map extension: remove all records from WA record map</summary> 
+		member DBI_RM_CLEAR            := 153 
+		/// <summary>Harbour record map extension: add all records to WA record map </summary> 
+		member DBI_RM_FILL             := 154 
+		/// <summary>Harbour record map extension: add record to work area record map </summary> 
+		member DBI_RM_ADD              := 155 
+		/// <summary>Harbour record map extension: remove record from work area record map</summary> 
+		member DBI_RM_DROP             := 156 
+		/// <summary>Harbour record map extension: test if record is set in WA record map</summary> 
+		member DBI_RM_TEST             := 157 
+		/// <summary>Harbour record map extension: number of records set in record map </summary> 
+		member DBI_RM_COUNT            := 158 
+		/// <summary>Harbour record map extension: get/set record map filter handle</summary> 
+		member DBI_RM_HANDLE           := 159  
+		// 160 - 169 missing
+		/// <summary>if area represents result of a query, obtain expression of this query </summary> 
+		member DBI_QUERY				:= 170 
 		// 171 - 200 missing		
+		/// <summary></summary> 
 		member BLOB_INFO_HANDLE		:= 201
+		/// <summary></summary> 
 		member BLOB_FILE_RECOVER	:= 202
+		/// <summary></summary> 
 		member BLOB_FILE_INTEGRITY	:= 203
+		/// <summary></summary> 
 		member BLOB_OFFSET			:= 204
+		/// <summary></summary> 
 		member BLOB_POINTER			:= 205
+		/// <summary></summary> 
 		member BLOB_LEN				:= 206
+		/// <summary></summary> 
 		member BLOB_TYPE			:= 207
+		/// <summary></summary> 
 		member BLOB_EXPORT			:= 208
+		/// <summary></summary> 
 		member BLOB_ROOT_UNLOCK		:= 209
+		/// <summary></summary> 
 		member BLOB_ROOT_PUT		:= 210
+		/// <summary></summary> 
 		member BLOB_ROOT_GET		:= 211
+		/// <summary></summary> 
 		member BLOB_ROOT_LOCK		:= 212
+		/// <summary></summary> 
 		member BLOB_IMPORT			:= 213
+		/// <summary></summary> 
 		member BLOB_DIRECT_PUT		:= 214
+		/// <summary></summary> 
 		member BLOB_DIRECT_GET		:= 215
+		/// <summary></summary> 
 		member BLOB_GET				:= 216
+		/// <summary></summary> 
 		member BLOB_DIRECT_EXPORT	:= 217
+		/// <summary></summary> 
 		member BLOB_DIRECT_IMPORT	:= 218
+		/// <summary></summary> 
 		member BLOB_NMODE			:= 219
+		/// <summary></summary> 
 		member BLOB_EXPORT_APPEND	:= 220
+		/// <summary></summary> 
 		member BLOB_EXPORT_OVERWRITE:= 221
+		/// <summary></summary> 
 		member BLOB_DIRECT_TYPE		:= 222
+		/// <summary></summary> 
 		member BLOB_DIRECT_LEN		:= 223
+		/// <summary></summary> 
 		member BLOB_USER			:= 2000
 		
 		// Clipmore functions
+		/// <summary>Start of user defined DBI values</summary> 
 		member DBI_USER 			:= 1000
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_AND 			:= 1001
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_CLEAR 		:= 1002
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_COUNT 		:= 1003
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_DESTROY 		:= 1004
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_EXFILTER 		:= 1005
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_GETFILTER 	:= 1006
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_HASMAYBE 		:= 1007
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_LEN 			:= 1008
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_MAYBEEVAL 	:= 1009
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_NEW 			:= 1010
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_NEWDUP 		:= 1011
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_NEWQUERY 		:= 1012
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_NEXTRECNO 	:= 1013
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_NOT 			:= 1014
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_OR 			:= 1015
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_PREVRECNO 	:= 1016
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_SET 			:= 1017
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_SETFILTER 	:= 1018
+		/// <summary>Clipmore extension: </summary> 
 		member DBI_RL_TEST 			:= 1019
 		
 		
@@ -202,7 +341,12 @@ begin namespace XSharp
 		
 	end	 enum
 	
-	
+	/// <summary>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "DbOrderInfo." prefix.
+	/// </note>
+	///</summary>
+
 	enum DbOrderInfo
 		member DBOI_CONDITION 	:= 1     // String: The order's conditional expression     
 		member DBOI_EXPRESSION 	:= 2 	// String: The order's key expression             
@@ -307,6 +451,7 @@ begin namespace XSharp
 		
 	end enum
 	
+	/// <summary>This enum specifies the various field types that can appear in DBF files.</summary>
 	enum DbFieldType as byte
 		member @@Unknown		:= 0	//                                  
 		member @@Character 		:= 67 	// 'C', uses len and dec
@@ -336,6 +481,7 @@ begin namespace XSharp
 		member @@RowVer			:= 94	// '^' = RowVer, 8 bytes  
 	end	 enum
 	
+	/// <summary>This enum specifies the various code pages that can appear in DBF files.</summary>
 	enum DbfHeaderCodepage as byte
 		member CP_DBF_DOS_OLD:=0
 		member CP_DBF_DOS_US:=1
@@ -367,6 +513,12 @@ begin namespace XSharp
 		member CP_DBF_WIN_GREEK:=203
 	end	 enum
 	
+	/// <summary>This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
+	/// </note>
+	///</summary>
+
 	enum RDDInfo
 		member RDDI_ISDBF              :=   1   /* Does this RDD support DBFs? */
 		member RDDI_CANPUTREC          :=   2   /* Can this RDD Put Records? */

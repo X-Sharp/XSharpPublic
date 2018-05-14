@@ -5,8 +5,7 @@
 //
 
 
-/// <summary>
-/// </summary>
+/// <summary>Break out of the current BEGIN SEQUENCE ... END</summary>
 /// <param name="uError"></param>
 /// <returns>
 /// </returns>

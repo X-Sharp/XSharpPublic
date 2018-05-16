@@ -15,6 +15,6 @@ using XSharp
 //
 [assembly: AssemblyTitle("XSharp.Core")]
 [assembly: AssemblyDescription("")]
-[assembly: ClassLibrary(XSHARP_CORE_FUNCTIONS,"")]
+[assembly: ClassLibrary(XSHARP_CORE_FUNCTIONS,"XSharp")]
 [assembly: ImplicitNamespace("XSharp")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:Core" )] 

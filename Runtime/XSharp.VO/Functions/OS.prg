@@ -14,7 +14,7 @@ using System.Reflection
 /// <returns>
 /// </returns>
 function DirChange(pszDir as Psz) as int
-	return global::Functions.DirChange(Psz2String(pszDir))
+	return XSharp.Core.Functions.DirChange(Psz2String(pszDir))
 	
 /// <summary>
 /// Create a directory.
@@ -23,7 +23,7 @@ function DirChange(pszDir as Psz) as int
 /// <returns>
 /// </returns>
 function DirMake(pszDir as Psz) as int
-	return global::Functions.DirMake(Psz2String(pszDir))
+	return XSharp.Core.Functions.DirMake(Psz2String(pszDir))
 	
 /// <summary>
 /// Remove a directory.
@@ -32,7 +32,7 @@ function DirMake(pszDir as Psz) as int
 /// <returns>
 /// </returns>
 function DirRemove(pszDir as Psz) as int
-	return global::Functions.DirRemove(Psz2String(pszDir))
+	return XSharp.Core.Functions.DirRemove(Psz2String(pszDir))
 
 	/// <summary>
 	/// Change the current disk drive.
@@ -41,7 +41,7 @@ function DirRemove(pszDir as Psz) as int
 	/// <returns>
 	/// </returns>
 function DiskChange(pszDisk as Psz) as logic
-	return global::Functions.DiskChange(Psz2String(pszDisk))
+	return XSharp.Core.Functions.DiskChange(Psz2String(pszDisk))
  
 	
 

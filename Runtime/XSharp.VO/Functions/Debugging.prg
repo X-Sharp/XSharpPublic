@@ -14,7 +14,7 @@ using System.Diagnostics
 /// <returns>
 /// </returns>
 FUNCTION _DebOut32( u AS USUAL) AS VOID
-   global::Functions._DebOut32( AsString(u))
+   XSharp.Core.Functions._DebOut32( AsString(u))
    return
 
 
@@ -24,7 +24,7 @@ FUNCTION _DebOut32( u AS USUAL) AS VOID
 /// <returns>
 /// </returns>
 FUNCTION DebOut32( u AS USUAL) AS VOID
-   global::Functions.DebOut32( AsString(u))
+   XSharp.Core.Functions.DebOut32( AsString(u))
    return
 
 

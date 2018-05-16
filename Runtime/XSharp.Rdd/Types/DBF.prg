@@ -8,6 +8,7 @@ USING System.Runtime.InteropServices
 USING System.IO
 USING System.Text
 USING System.Linq
+using XSharp.RDD.Enums
 
 
 BEGIN NAMESPACE XSharp.RDD
@@ -536,11 +537,11 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:CreateMemFile(info)
             ENDIF
             
-        METHOD OpenMemFile() 	AS LOGIC   
+        METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC   
             IF _oMemo != NULL_OBJECT                    
-                RETURN _oMemo:OpenMemFile()
+                RETURN _oMemo:OpenMemFile(info)
             ELSE                            
-                RETURN SUPER:OpenMemFile()
+                RETURN SUPER:OpenMemFile(info)
             ENDIF
             
             // Indexes

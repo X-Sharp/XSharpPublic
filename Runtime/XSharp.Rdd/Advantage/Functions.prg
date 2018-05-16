@@ -5,7 +5,7 @@
 //
 
 using XSharp.ADS
-using static XSharp.Functions
+
 
 // Return the AXS locking status
 FUNCTION AX_AXSLocking( ) AS LOGIC 

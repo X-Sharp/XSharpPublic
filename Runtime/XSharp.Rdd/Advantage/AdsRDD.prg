@@ -8,9 +8,8 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-USING XSharp
 USING XSharp.RDD
-USING STATIC XSharp.Functions
+USING XSharp.RDD.Enums
 
 /// <summary>
 /// The AdsRDD class. 
@@ -94,7 +93,7 @@ CONSTRUCTOR()
         
 
     INTERNAL METHOD Unsupported(strFunctionName AS string) AS Logic
-        SELF:ADSERROR(ERDD_UNSUPPORTED, XSharp.Gencode.EG_UnSupported, strFunctionName)
+        SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UnSupported, strFunctionName)
         RETURN FALSE
 
 
@@ -189,7 +188,7 @@ CONSTRUCTOR()
         TRY
             recNum := System.Convert.ToUInt32(oRecnum)
         CATCH e as Exception
-            SELF:ADSERROR(ERDD_DATATYPE, XSharp.Gencode.EG_DataType, "GoToId",e:Message)
+            SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DataType, "GoToId",e:Message)
             RETURN FALSE
         END TRY
         RETURN SELF:GoTo(recNum)
@@ -233,7 +232,7 @@ CONSTRUCTOR()
         LOCAL atBOF AS Word
         LOCAL Key AS string
         IF (SELF:m_hIndex == System.IntPtr.Zero)
-            SELF:ADSERROR(ERDD_DATATYPE, XSharp.Gencode.EG_NOORDER, "Seek")
+            SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_NOORDER, "Seek")
         ENDIF
         SELF:ACECALL(SELF:AxCheckVODeletedFlag())
         Key := seekinfo:value:ToString()
@@ -305,7 +304,7 @@ CONSTRUCTOR()
         IF ((options & ACE.ADS_EXCLUSIVE) != ACE.ADS_EXCLUSIVE)
             // Only allowed when not Readonly
             IF ((options & ACE.ADS_READONLY) == ACE.ADS_READONLY)
-                SELF:ADSERROR(ERDD_READONLY, XSharp.Gencode.EG_READONLY)
+                SELF:ADSERROR(ERDD.READONLY, XSharp.Gencode.EG_READONLY)
             ENDIF
             SELF:ACECALL(ACE.AdsIsTableLocked(SELF:m_hTable, out isTableLocked))
             IF isTableLocked == 0
@@ -331,7 +330,7 @@ CONSTRUCTOR()
                             SELF:ACECALL(ulRetCode)
                         ENDIF
                     ENDIF
-                    SELF:ADSERROR(ERDD_UNLOCKED, XSharp.Gencode.EG_STROVERFLOW, XSharp.Severity.ES_ERROR)
+                    SELF:ADSERROR(ERDD.UNLOCKED, XSharp.Gencode.EG_STROVERFLOW, XSharp.Severity.ES_ERROR)
                 ENDIF
             ENDIF
         ENDIF
@@ -346,7 +345,7 @@ CONSTRUCTOR()
         ENDIF
         // Only allowed when not Readonly
         IF ((options & ACE.ADS_READONLY) == ACE.ADS_READONLY)
-            SELF:ADSERROR(ERDD_READONLY, XSharp.Gencode.EG_READONLY, "Zap")
+            SELF:ADSERROR(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "Zap")
         ENDIF
         SELF:ACECALL(ACE.AdsZapTable(SELF:m_hTable))
         RETURN SELF:GoTop()
@@ -440,7 +439,7 @@ CONSTRUCTOR()
         TRY
             lRecno := System.Convert.ToUInt32(lockInfo:recID)
         CATCH e as Exception
-            SELF:ADSERROR(ERDD_DATATYPE, XSharp.Gencode.EG_DATATYPE, "Lock", e:Message)
+            SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "Lock", e:Message)
         END TRY
     ENDIF
     IF (lockInfo:@@Method == DBLockInfo.LockMethod.File)
@@ -479,7 +478,7 @@ CONSTRUCTOR()
         numRecord := System.Convert.ToUInt32(recordID)
     CATCH e as Exception
         //
-        SELF:ADSERROR(ERDD_DATATYPE, XSharp.Gencode.EG_DATATYPE, "Unlock",e:Message)
+        SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "Unlock",e:Message)
     END TRY
     IF (numRecord == 0)
         result := ACE.AdsUnlockTable(SELF:m_hTable)
@@ -549,7 +548,7 @@ CONSTRUCTOR()
 
     VIRTUAL METHOD SetRel(relinfo AS DBRELINFO) AS Logic
         IF relinfo:Child:Driver != SELF:m_strDriver
-            SELF:ADSERROR(ERDD_UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
+            SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
             RETURN FALSE
         ENDIF
         VAR child := relInfo:Child astype ADSRDD

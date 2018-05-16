@@ -43,7 +43,7 @@
     <Name>XSharp.RDD</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>Core</Dialect>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
   </PropertyGroup>

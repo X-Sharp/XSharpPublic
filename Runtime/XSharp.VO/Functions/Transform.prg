@@ -662,7 +662,7 @@ INTERNAL FUNCTION __UnformatN(cValue AS STRING, cSayPicture AS STRING, lNullable
 	IF cPic==""
 		uRetVal := Abs( Val(cTempValue) )
 	ELSE
-		cDecimal := CHR( SetDecimalSep() )
+		cDecimal := Chr( SetDecimalSep() )
 
 		wPictureLen := SLen(cPic)
 		wValDecPos  := At(cDecimal,cTempValue)

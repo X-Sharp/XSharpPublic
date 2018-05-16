@@ -21,7 +21,7 @@ function Oem2AnsiBuff(pszDest as psz,pszSource as psz,dwCount as dword) as psz
 	var aSource := byte[]{dwCount}
 	var aDest   := byte[]{dwCount}
 	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
-	global::Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
+	XSharp.Core.Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
 	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
 	return pszDest
 
@@ -37,7 +37,7 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	var aSource := byte[]{dwCount}
 	var aDest   := byte[]{dwCount}
 	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
-	global::Functions.Ansi2OemBuff(aDest, aSource, dwCount)
+	XSharp.Core.Functions.Ansi2OemBuff(aDest, aSource, dwCount)
 	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
 	return pszDest
 	

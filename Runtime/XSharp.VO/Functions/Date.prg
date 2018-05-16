@@ -287,11 +287,11 @@ function Today() as DATE
 /// </returns>
 function TString(uSeconds as Usual) as string
 	if uSeconds:IsNil
-		return global::Functions.Tstring( (DWORD) 0 )
+		return XSharp.Core.Functions.Tstring( (DWORD) 0 )
 	elseif uSeconds:IsFLoat
-		return global::Functions.TString ( (float) uSeconds)
+		return XSharp.Core.Functions.TString ( (float) uSeconds)
 	elseif uSeconds:IsInteger
-		return global::Functions.TString ( (dword) uSeconds)
+		return XSharp.Core.Functions.TString ( (dword) uSeconds)
 	endif
 	return String.Empty   
 

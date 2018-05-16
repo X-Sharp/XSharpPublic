@@ -703,7 +703,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         case SymbolKind.Field:
                             if (onlyDef)
                             {
-                                if (sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
+                                if (sym.ContainingType.Name == XSharpSpecialNames.FunctionsClass)
                                 {
                                     add = true;
                                 }

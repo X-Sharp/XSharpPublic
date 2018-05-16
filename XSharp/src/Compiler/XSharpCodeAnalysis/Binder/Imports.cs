@@ -28,78 +28,80 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class Imports
     {
-        internal static bool HandleVulcanImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder, 
+
+        internal static void AddNs(UsingDirectiveSyntax usingDirective, NamespaceOrTypeSymbol ns, ArrayBuilder<NamespaceOrTypeAndUsingDirective> usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings)
+        {
+            if (!uniqueUsings.Contains(ns))
+            {
+                uniqueUsings.Add(ns);
+                usings.Add(new NamespaceOrTypeAndUsingDirective(ns, usingDirective));
+            }
+
+        }
+        internal static bool HandleXSharpImport(UsingDirectiveSyntax usingDirective, Binder usingsBinder, 
             ArrayBuilder<NamespaceOrTypeAndUsingDirective>  usings, PooledHashSet<NamespaceOrTypeSymbol> uniqueUsings, 
             ConsList<Symbol> basesBeingResolved, CSharpCompilation compilation)
         {
             // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here
             // nvk: usingDirective.Name.ToString() ONLY has spaces if it is nested. This is not supposed to be nested, as it is "Functions" even for the non-core dialects !!!
-            if (usingDirective.Name.ToString().EndsWith(XSharpSpecialNames.CoreFunctionsClass))
+            if (usingDirective.Name.ToString().EndsWith(XSharpSpecialNames.FunctionsClass))
             {
                 var result = LookupResult.GetInstance();
                 LookupOptions options = LookupOptions.AllNamedTypesOnArityZero;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                usingsBinder.LookupSymbolsSimpleName(result, null, XSharpSpecialNames.CoreFunctionsClass, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
+                usingsBinder.LookupSymbolsSimpleName(result, null, XSharpSpecialNames.FunctionsClass, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
                 foreach (var sym in result.Symbols)
                 {
                     if (sym.Kind == SymbolKind.NamedType)
                     {
                         var ts = (NamedTypeSymbol)sym;
-                        if (!uniqueUsings.Contains(ts))
-                        {
-                            uniqueUsings.Add(ts);
-                            usings.Add(new NamespaceOrTypeAndUsingDirective(ts, usingDirective));
-                        }
+                        AddNs(usingDirective, ts, usings, uniqueUsings);
                     }
                 }
-                if (compilation.Options.IsDialectVO)
+                var opts = ((CSharpSyntaxTree)usingDirective.SyntaxTree).Options;
+                if (opts.CommandLineArguments != null)
                 {
-                    var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
-                    var _diagnostics = DiagnosticBag.GetInstance();
-                    var opts = ((CSharpSyntaxTree)usingDirective.SyntaxTree).Options;
-                    if (opts.CommandLineArguments != null)
+                    string functionsClass = null;
+                    if (compilation.Options.TargetDLL == XSharpTargetDLL.Core)
                     {
-                        string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
-                        var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
-                        var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
-                        if (_imported.Kind == SymbolKind.NamedType)
+                        functionsClass = XSharpSpecialNames.XSharpCoreFunctionsClass;
+                    }
+                    else if (compilation.Options.IsDialectVO)
+                    {
+                        functionsClass = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
+                    }
+                    if (!string.IsNullOrEmpty(functionsClass))
+                    {
+                        var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
+                        var diagnostics = DiagnosticBag.GetInstance();
+                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(functionsClass);
+                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                        if (imported.Kind == SymbolKind.NamedType)
                         {
-                            var importedType = (NamedTypeSymbol)_imported;
-                            if (!uniqueUsings.Contains(importedType))
-                            {
-                                uniqueUsings.Add(importedType);
-                                usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
-                            }
+                            var importedType = (NamedTypeSymbol)imported;
+                            AddNs(usingDirective, importedType, usings, uniqueUsings);
                         }
                     }
                 }
+
                 if (!compilation.ClassLibraryType().IsErrorType() &&
-                    !compilation.ImplicitNamespaceType().IsErrorType()
-                    && !compilation.UsualType().IsErrorType())
+                    !compilation.ImplicitNamespaceType().IsErrorType())
                 {
                     var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
-                    var _diagnostics = DiagnosticBag.GetInstance();
+                    var diagnostics = DiagnosticBag.GetInstance();
                     string[] defNs = { OurNameSpaces.Vulcan, OurNameSpaces.XSharp};
                     foreach (var n in defNs)
                     {
-                        var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
-                        var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
-                        if (_imported.Kind == SymbolKind.Namespace)
+                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
+                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                        if (imported.Kind == SymbolKind.Namespace)
                         {
-                            if (!uniqueUsings.Contains(_imported))
-                            {
-                                uniqueUsings.Add(_imported);
-                                usings.Add(new NamespaceOrTypeAndUsingDirective(_imported, usingDirective));
-                            }
+                            AddNs(usingDirective, imported, usings, uniqueUsings);
                         }
-                        else if (_imported.Kind == SymbolKind.NamedType)
+                        else if (imported.Kind == SymbolKind.NamedType)
                         {
-                            var importedType = (NamedTypeSymbol)_imported;
-                            if (!uniqueUsings.Contains(importedType))
-                            {
-                                uniqueUsings.Add(importedType);
-                                usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
-                            }
+                            var importedType = (NamedTypeSymbol)imported;
+                            AddNs(usingDirective, importedType, usings, uniqueUsings);
                         }
                     }
                     var vcla = compilation.ClassLibraryType();
@@ -119,15 +121,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     var defaultNamespace = args[0].Value.ToString();
                                     if (!string.IsNullOrEmpty(defaultNamespace))
                                     {
-                                        var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
-                                        var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
-                                        if (_imported.Kind == SymbolKind.Namespace)
+                                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
+                                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                                        if (imported.Kind == SymbolKind.Namespace)
                                         {
-                                            if (!uniqueUsings.Contains(_imported))
-                                            {
-                                                uniqueUsings.Add(_imported);
-                                                usings.Add(new NamespaceOrTypeAndUsingDirective(_imported, usingDirective));
-                                            }
+                                            AddNs(usingDirective, imported, usings, uniqueUsings);
                                         }
                                     }
                                 }
@@ -142,31 +140,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     var globalClassName = args[0].Value.ToString();
                                     if (!string.IsNullOrEmpty(globalClassName))
                                     {
-                                        var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(globalClassName);
-                                        var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
-                                        if (_imported.Kind == SymbolKind.NamedType)
+                                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(globalClassName);
+                                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                                        if (imported.Kind == SymbolKind.NamedType)
                                         {
-                                            var importedType = (NamedTypeSymbol)_imported;
-                                            if (!uniqueUsings.Contains(importedType))
-                                            {
-                                                uniqueUsings.Add(importedType);
-                                                usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
-                                            }
+                                            var importedType = (NamedTypeSymbol)imported;
+                                            AddNs(usingDirective, importedType, usings, uniqueUsings);
                                         }
                                     }
                                     // second element is the default namespace
                                     var defaultNamespace = args[1].Value.ToString();
                                     if (!string.IsNullOrEmpty(defaultNamespace) && compilation.Options.ImplicitNameSpace)
                                     {
-                                        var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
-                                        var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
-                                        if (_imported.Kind == SymbolKind.Namespace)
+                                        var name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
+                                        var imported = declbinder.BindNamespaceOrTypeSymbol(name, diagnostics, basesBeingResolved);
+                                        if (imported.Kind == SymbolKind.Namespace)
                                         {
-                                            if (!uniqueUsings.Contains(_imported))
-                                            {
-                                                uniqueUsings.Add(_imported);
-                                                usings.Add(new NamespaceOrTypeAndUsingDirective(_imported, usingDirective));
-                                            }
+                                            AddNs(usingDirective, imported, usings, uniqueUsings);
                                         }
                                     }
                                 }

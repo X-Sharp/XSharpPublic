@@ -152,7 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                name = XSharpSpecialNames.CoreFunctionsClass;
+                name = XSharpSpecialNames.FunctionsClass;
             }
             return name;
         }
@@ -2170,7 +2170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitParameter(context);
             // Only apply the vulcan default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
-            if (context.Default != null && context.Attributes == null )
+            if (context.Default != null && context.Attributes == null && ! _options.NoClipCall)
             {
                 AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)

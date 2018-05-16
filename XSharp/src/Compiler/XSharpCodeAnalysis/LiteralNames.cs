@@ -100,9 +100,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
 
-        internal const string CoreFunctionsClass = XSharpFunctionNames.FunctionsClass;
+        internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
-        internal const string XSharpCoreFunctionsClass = "Functions";
+        internal const string XSharpCoreFunctionsClass = "XSharp.Core.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string VODllFunctionsClass = ".Functions";
@@ -128,9 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string GetElement = "__GetElement";
         internal const string SetElement = "__SetElement";
         // These are in the generated code
-        internal const string FunctionsClass = "Functions";
         internal const string RunInitProcs = "RunInitProcs";
-
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -158,8 +156,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal static class XSharpQualifiedFunctionNames
     {
         // In core
-        internal const string Chr = "global::Functions.Chr";
-        internal const string InStr = "global::Functions.Instr";
+        internal const string Chr = "global::XSharp.Core.Functions.Chr";
+        internal const string InStr = "global::XSharp.Core.Functions.Instr";
         internal const string WrapException = "global::XSharp.Error.WrapRawException";
         // In VO assembly
         internal const string FieldGet = "global::XSharp.VO.Functions.__FieldGet";

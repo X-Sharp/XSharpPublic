@@ -171,6 +171,27 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return BaseReferenceNode.ResolvedAssembly.Version.ToString();
             }
         }
+
+        public override bool SpecificVersion
+        {
+            get
+            {
+                var data = this.BaseReferenceNode.ItemNode.GetMetadata(nameof(SpecificVersion));
+                if (String.IsNullOrEmpty(data))
+                    return false;
+                return string.Compare(data, "True", true) == 0;
+                
+            }
+        }
+        public override string RuntimeVersion
+        {
+            get
+            {
+                var asm = BaseReferenceNode as AssemblyReferenceNode;
+                return asm.GetMsBuildProperty("imageruntime");
+            }
+        }
+
         #endregion
     }
 }

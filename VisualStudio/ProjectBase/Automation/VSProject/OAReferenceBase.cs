@@ -178,27 +178,13 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
         #endregion
 
-        public string Aliases {
-            get {
-                throw new NotImplementedException();
-            }
-            set {
-                throw new NotImplementedException();
-            }
+        public virtual string Aliases { get; set; }
+
+        public virtual bool AutoReferenced {
+            get { return false; }
         }
 
-        public bool AutoReferenced {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual bool Isolated {
-            get {
-                throw new NotImplementedException();
-            }
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public virtual bool Isolated { get; set; }
 
         public virtual uint RefType {
             get {
@@ -208,30 +194,12 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
-        public virtual bool Resolved {
-            get { throw new NotImplementedException(); }
-        }
+        public bool Resolved  =>referenceNode.Resolved; 
 
-        public string RuntimeVersion {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract string RuntimeVersion { get; }
 
-        public virtual bool SpecificVersion {
-            get {
-                throw new NotImplementedException();
-            }
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public virtual bool SpecificVersion { get; set; }
 
-        public virtual string SubType {
-            get {
-                throw new NotImplementedException();
-            }
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public virtual string SubType {  get;set; }
     }
 }

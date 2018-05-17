@@ -1770,8 +1770,12 @@ namespace XSharp.Project
         bool _closing = false;
         public override int Close()
         {
+
+            // remove our Reference Cache
+            AssemblyReferenceNode.RemoveFromCache(this);
             // First remove the Navigation Data
             //
+
             if (this.Site != null)
             {
 

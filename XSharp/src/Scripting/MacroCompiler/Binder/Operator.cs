@@ -10,7 +10,7 @@ namespace XSharp.MacroCompiler
 {
     using Syntax;
 
-    internal enum OperatorKind
+    internal enum BinaryOperatorKind
     {
         Error,
         Multiplication,
@@ -35,96 +35,156 @@ namespace XSharp.MacroCompiler
         DefaultValue, // X#
     }
 
-    internal class OperatorSymbol : Symbol
+    internal enum BinaryOperatorType
     {
-        internal readonly OperatorKind Kind;
-        internal OperatorSymbol(OperatorKind kind) { Kind = kind; }
+        Error,
+        Object,
+        String,
+        ObjectAndString,
+        StringAndObject,
+        Int,
+        UInt,
+        Long,
+        ULong,
+        Float,
+        Double,
+        Decimal,
+        Bool,
+        NullableInt,
+        NullableUInt,
+        NullableLong,
+        NullableULong,
+        NullableFloat,
+        NullableDouble,
+        NullableDecimal,
+        NullableBool,
+    }
 
-        internal static OperatorSymbol Create(OperatorKind kind) { return simpleOp[(int)kind]; }
-        internal static OperatorSymbolWithMethod Create(OperatorKind kind, MethodSymbol method, 
-            ConversionSymbol lconv, ConversionSymbol rconv) { return new OperatorSymbolWithMethod(kind, method, lconv, rconv); }
+    internal class BinaryOperatorSymbol : Symbol
+    {
+        internal const int NullableDelta = BinaryOperatorType.NullableInt - BinaryOperatorType.Int;
+
+        internal readonly BinaryOperatorKind Kind;
+        internal readonly BinaryOperatorType OpType;
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, BinaryOperatorType opType) { Kind = kind; OpType = opType; }
+
+        internal static BinaryOperatorSymbol Create(BinaryOperatorKind kind, BinaryOperatorType opType) { return simpleOp[(int)kind,(int)opType]; }
+        internal static BinaryOperatorSymbolWithMethod Create(BinaryOperatorKind kind, MethodSymbol method, 
+            ConversionSymbol lconv, ConversionSymbol rconv) { return new BinaryOperatorSymbolWithMethod(kind, method, lconv, rconv); }
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
-        private static readonly OperatorSymbol[] simpleOp;
+        internal virtual TypeSymbol Type { get { throw new NotImplementedException(); } }
 
-        static OperatorSymbol()
+        private static readonly BinaryOperatorSymbol[,] simpleOp;
+        private static readonly bool[] s_nullable;
+
+        internal static bool IsNullable(BinaryOperatorType type) { return s_nullable[(int)type]; }
+
+        static BinaryOperatorSymbol()
         {
-            var ops = (OperatorKind[])Enum.GetValues(typeof(OperatorKind));
+            var ops = (BinaryOperatorKind[])Enum.GetValues(typeof(BinaryOperatorKind));
+            var opTypes = (BinaryOperatorType[])Enum.GetValues(typeof(BinaryOperatorType));
 
-            simpleOp = new OperatorSymbol[ops.Length];
+            simpleOp = new BinaryOperatorSymbol[ops.Length,opTypes.Length];
 
-            foreach (var c in ops)
+            foreach (var o in ops)
             {
-                if (c != OperatorKind.Error)
-                    simpleOp[(int)c] = new OperatorSymbol(c);
+                foreach (var c in opTypes)
+                {
+                    if (o != BinaryOperatorKind.Error && c != BinaryOperatorType.Error)
+                        simpleOp[(int)o,(int)c] = new BinaryOperatorSymbol(o,c);
+                }
+            }
+
+            s_nullable = new bool[opTypes.Length];
+
+            foreach (var c in opTypes)
+            {
+                if (c.ToString().StartsWith("Nullable"))
+                    s_nullable[(int)c] = true;
             }
 
 #if DEBUG
-            /*foreach (var c in ops)
+            /*
+            foreach (var o in ops)
             {
-                if (c != OperatorKind.Error)
-                    Debug.Assert(OperatorName(c) != null);
-            }*/
+                if (o != BinaryOperatorKind.Error)
+                    Debug.Assert(OperatorName(o) != null);
+            }
+            */
+
+            Dictionary<string, BinaryOperatorType> convNames = new Dictionary<string, BinaryOperatorType>();
+            foreach (var c in opTypes)
+                convNames.Add(c.ToString(), c);
+            foreach (var c in opTypes)
+            {
+                var ncs = "Nullable" + c.ToString();
+                BinaryOperatorType nc;
+                if (convNames.TryGetValue(ncs,out nc))
+                {
+                    Debug.Assert(nc - c == NullableDelta);
+                }
+            }
 #endif
         }
 
-        public static OperatorKind BinaryOperatorKind(TokenType tokenKind)
+        public static BinaryOperatorKind OperatorKind(TokenType tokenKind)
         {
             switch (tokenKind)
             {
                 case TokenType.EXP:
-                    return OperatorKind.Exponent;
+                    return MacroCompiler.BinaryOperatorKind.Exponent;
                 case TokenType.MULT:
-                    return OperatorKind.Multiplication;
+                    return MacroCompiler.BinaryOperatorKind.Multiplication;
                 case TokenType.DIV:
-                    return OperatorKind.Division;
+                    return MacroCompiler.BinaryOperatorKind.Division;
                 case TokenType.MOD:
-                    return OperatorKind.Remainder;
+                    return MacroCompiler.BinaryOperatorKind.Remainder;
                 case TokenType.PLUS:
-                    return OperatorKind.Addition;
+                    return MacroCompiler.BinaryOperatorKind.Addition;
                 case TokenType.MINUS:
-                    return OperatorKind.Subtraction;
+                    return MacroCompiler.BinaryOperatorKind.Subtraction;
                 case TokenType.LSHIFT:
-                    return OperatorKind.LeftShift;
+                    return MacroCompiler.BinaryOperatorKind.LeftShift;
                 case TokenType.RSHIFT:
-                    return OperatorKind.RightShift;
+                    return MacroCompiler.BinaryOperatorKind.RightShift;
                 case TokenType.GT:
-                    return OperatorKind.GreaterThan;
+                    return MacroCompiler.BinaryOperatorKind.GreaterThan;
                 case TokenType.LT:
-                    return OperatorKind.LessThan;
+                    return MacroCompiler.BinaryOperatorKind.LessThan;
                 case TokenType.GTE:
-                    return OperatorKind.GreaterThanOrEqual;
+                    return MacroCompiler.BinaryOperatorKind.GreaterThanOrEqual;
                 case TokenType.LTE:
-                    return OperatorKind.LessThanOrEqual;
+                    return MacroCompiler.BinaryOperatorKind.LessThanOrEqual;
                 case TokenType.EQ:
-                    return OperatorKind.Equal;
+                    return MacroCompiler.BinaryOperatorKind.Equal;
                 case TokenType.EEQ:
-                    return OperatorKind.ExactEqual;
+                    return MacroCompiler.BinaryOperatorKind.ExactEqual;
                 case TokenType.SUBSTR:
-                    return OperatorKind.Substr;
+                    return MacroCompiler.BinaryOperatorKind.Substr;
                 case TokenType.NEQ:
-                    return OperatorKind.NotEqual;
+                    return MacroCompiler.BinaryOperatorKind.NotEqual;
                 case TokenType.NEQ2:
-                    return OperatorKind.NotEqual;
+                    return MacroCompiler.BinaryOperatorKind.NotEqual;
                 case TokenType.AMP:
-                    return OperatorKind.And;
+                    return MacroCompiler.BinaryOperatorKind.And;
                 case TokenType.TILDE:
-                    return OperatorKind.Xor;
+                    return MacroCompiler.BinaryOperatorKind.Xor;
                 case TokenType.PIPE:
-                    return OperatorKind.Or;
+                    return MacroCompiler.BinaryOperatorKind.Or;
                 case TokenType.AND:
-                    return OperatorKind.And; // logic
+                    return MacroCompiler.BinaryOperatorKind.And; // logic
                 case TokenType.LOGIC_AND:
-                    return OperatorKind.And; // logic
+                    return MacroCompiler.BinaryOperatorKind.And; // logic
                 case TokenType.LOGIC_XOR:
-                    return OperatorKind.Xor; // logic
+                    return MacroCompiler.BinaryOperatorKind.Xor; // logic
                 case TokenType.OR:
-                    return OperatorKind.Or; // logic
+                    return MacroCompiler.BinaryOperatorKind.Or; // logic
                 case TokenType.LOGIC_OR:
-                    return OperatorKind.Or; // logic
+                    return MacroCompiler.BinaryOperatorKind.Or; // logic
                 case TokenType.DEFAULT:
-                    return OperatorKind.DefaultValue;
+                    return MacroCompiler.BinaryOperatorKind.DefaultValue;
                 case TokenType.ASSIGN_OP:
                 case TokenType.ASSIGN_ADD:
                 case TokenType.ASSIGN_SUB:
@@ -138,45 +198,45 @@ namespace XSharp.MacroCompiler
                 case TokenType.ASSIGN_RSHIFT:
                 case TokenType.ASSIGN_XOR:
                 default:
-                    return OperatorKind.Error;
+                    return MacroCompiler.BinaryOperatorKind.Error;
             }
         }
 
-        public static string OperatorName(OperatorKind kind)
+        public static string OperatorName(BinaryOperatorKind kind)
         {
             switch (kind)
             {
-                case OperatorKind.Multiplication:
+                case MacroCompiler.BinaryOperatorKind.Multiplication:
                     return OperatorNames.Multiply;
-                case OperatorKind.Addition:
+                case MacroCompiler.BinaryOperatorKind.Addition:
                     return OperatorNames.Addition;
-                case OperatorKind.Subtraction:
+                case MacroCompiler.BinaryOperatorKind.Subtraction:
                     return OperatorNames.Subtraction;
-                case OperatorKind.Division:
+                case MacroCompiler.BinaryOperatorKind.Division:
                     return OperatorNames.Division;
-                case OperatorKind.Remainder:
+                case MacroCompiler.BinaryOperatorKind.Remainder:
                     return OperatorNames.Modulus;
-                case OperatorKind.LeftShift:
+                case MacroCompiler.BinaryOperatorKind.LeftShift:
                     return OperatorNames.LeftShift;
-                case OperatorKind.RightShift:
+                case MacroCompiler.BinaryOperatorKind.RightShift:
                     return OperatorNames.RightShift;
-                case OperatorKind.Equal:
+                case MacroCompiler.BinaryOperatorKind.Equal:
                     return OperatorNames.Equality;
-                case OperatorKind.NotEqual:
+                case MacroCompiler.BinaryOperatorKind.NotEqual:
                     return OperatorNames.Inequality;
-                case OperatorKind.GreaterThan:
+                case MacroCompiler.BinaryOperatorKind.GreaterThan:
                     return OperatorNames.GreaterThan;
-                case OperatorKind.LessThan:
+                case MacroCompiler.BinaryOperatorKind.LessThan:
                     return OperatorNames.LessThan;
-                case OperatorKind.GreaterThanOrEqual:
+                case MacroCompiler.BinaryOperatorKind.GreaterThanOrEqual:
                     return OperatorNames.GreaterThanOrEqual;
-                case OperatorKind.LessThanOrEqual:
+                case MacroCompiler.BinaryOperatorKind.LessThanOrEqual:
                     return OperatorNames.LessThanOrEqual;
-                case OperatorKind.And:
+                case MacroCompiler.BinaryOperatorKind.And:
                     return OperatorNames.BitwiseAnd;
-                case OperatorKind.Xor:
+                case MacroCompiler.BinaryOperatorKind.Xor:
                     return OperatorNames.ExclusiveOr;
-                case OperatorKind.Or:
+                case MacroCompiler.BinaryOperatorKind.Or:
                     return OperatorNames.BitwiseOr;
                 default:
                     return null;
@@ -184,18 +244,236 @@ namespace XSharp.MacroCompiler
     }
     }
 
-    internal class OperatorSymbolWithMethod : OperatorSymbol
+    internal class BinaryOperatorSymbolWithMethod : BinaryOperatorSymbol
     {
         internal MethodSymbol Method;
         internal ConversionSymbol ConvLeft;
         internal ConversionSymbol ConvRight;
 
-        internal OperatorSymbolWithMethod(OperatorKind kind, MethodSymbol method, 
-            ConversionSymbol convLeft, ConversionSymbol convRight) : base(kind)
+        internal BinaryOperatorSymbolWithMethod(BinaryOperatorKind kind, MethodSymbol method, 
+            ConversionSymbol convLeft, ConversionSymbol convRight) : base(kind, BinaryOperatorType.Error)
         {
             Method = method;
             ConvLeft = convLeft;
             ConvRight = convRight;
+        }
+
+        internal override TypeSymbol Type { get { return Method.Type; } }
+    }
+
+    internal static class BinaryOperatorEasyOut
+    {
+        private static BinaryOperatorSymbol[][,] s_binOp;
+
+        static BinaryOperatorEasyOut()
+        {
+            const BinaryOperatorType ERR = BinaryOperatorType.Error;
+            const BinaryOperatorType OBJ = BinaryOperatorType.Object;
+            const BinaryOperatorType INT = BinaryOperatorType.Int;
+            const BinaryOperatorType UIN = BinaryOperatorType.UInt;
+            const BinaryOperatorType LNG = BinaryOperatorType.Long;
+            const BinaryOperatorType ULG = BinaryOperatorType.ULong;
+            const BinaryOperatorType FLT = BinaryOperatorType.Float;
+            const BinaryOperatorType DBL = BinaryOperatorType.Double;
+            const BinaryOperatorType DEC = BinaryOperatorType.Decimal;
+            const BinaryOperatorType BOL = BinaryOperatorType.Bool;
+
+            // Overload resolution for Y * / - % < > <= >= X
+            BinaryOperatorType[,] arithmetic =
+            {
+                //          bool chr  i08  i16  i32  i64  u08  u16  u32  u64  r32  r64  dec
+                /* bool */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  chr */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  i08 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i16 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i32 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i64 */{ ERR, LNG, LNG, LNG, LNG, LNG, LNG, LNG, LNG, ERR, FLT, DBL, DEC },
+                /*  u08 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  u16 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  u32 */{ ERR, UIN, LNG, LNG, LNG, LNG, UIN, UIN, UIN, ULG, FLT, DBL, DEC },
+                /*  u64 */{ ERR, ULG, ERR, ERR, ERR, ERR, ULG, ULG, ULG, ULG, FLT, DBL, DEC },
+                /*  r32 */{ ERR, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, DBL, ERR },
+                /*  r64 */{ ERR, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, ERR },
+                /*  dec */{ ERR, DEC, DEC, DEC, DEC, DEC, DEC, DEC, DEC, DEC, ERR, ERR, DEC },
+            };
+
+            // Overload resolution for Y + X
+            BinaryOperatorType[,] addition =
+            {
+                //          bool chr  i08  i16  i32  i64  u08  u16  u32  u64  r32  r64  dec
+                /* bool */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  chr */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  i08 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i16 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i32 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i64 */{ ERR, LNG, LNG, LNG, LNG, LNG, LNG, LNG, LNG, ERR, FLT, DBL, DEC },
+                /*  u08 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  u16 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  u32 */{ ERR, UIN, LNG, LNG, LNG, LNG, UIN, UIN, UIN, ULG, FLT, DBL, DEC },
+                /*  u64 */{ ERR, ULG, ERR, ERR, ERR, ERR, ULG, ULG, ULG, ULG, FLT, DBL, DEC },
+                /*  r32 */{ ERR, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, DBL, ERR },
+                /*  r64 */{ ERR, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, ERR },
+                /*  dec */{ ERR, DEC, DEC, DEC, DEC, DEC, DEC, DEC, DEC, DEC, ERR, ERR, DEC },
+            };
+
+            // Overload resolution for Y << >> X
+            BinaryOperatorType[,] shift =
+            {
+                //          bool chr  i08  i16  i32  i64  u08  u16  u32  u64  r32  r64  dec
+                /* bool */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  chr */{ ERR, INT, INT, INT, INT, ERR, INT, INT, ERR, ERR, ERR, ERR, ERR },
+                /*  i08 */{ ERR, INT, INT, INT, INT, ERR, INT, INT, ERR, ERR, ERR, ERR, ERR },
+                /*  i16 */{ ERR, INT, INT, INT, INT, ERR, INT, INT, ERR, ERR, ERR, ERR, ERR },
+                /*  i32 */{ ERR, INT, INT, INT, INT, ERR, INT, INT, ERR, ERR, ERR, ERR, ERR },
+                /*  i64 */{ ERR, LNG, LNG, LNG, LNG, ERR, LNG, LNG, ERR, ERR, ERR, ERR, ERR },
+                /*  u08 */{ ERR, INT, INT, INT, INT, ERR, INT, INT, ERR, ERR, ERR, ERR, ERR },
+                /*  u16 */{ ERR, INT, INT, INT, INT, ERR, INT, INT, ERR, ERR, ERR, ERR, ERR },
+                /*  u32 */{ ERR, UIN, UIN, UIN, UIN, ERR, UIN, UIN, ERR, ERR, ERR, ERR, ERR },
+                /*  u64 */{ ERR, ULG, ULG, ULG, ULG, ERR, ULG, ULG, ERR, ERR, ERR, ERR, ERR },
+                /*  r32 */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  r64 */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  dec */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+            };
+
+            // Overload resolution for Y == != X
+            // Note that these are the overload resolution rules; overload resolution might pick an invalid operator.
+            // For example, overload resolution on object == decimal chooses the object/object overload, which then
+            // is not legal because decimal must be a reference type. But we don't know to give that error *until*
+            // overload resolution has chosen the reference equality operator.
+            BinaryOperatorType[,] equality =
+            {
+                //          bool chr  i08  i16  i32  i64  u08  u16  u32  u64  r32  r64  dec
+                /* bool */{ BOL, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ, OBJ },
+                /*  chr */{ OBJ, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  i08 */{ OBJ, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i16 */{ OBJ, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i32 */{ OBJ, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, FLT, DBL, DEC },
+                /*  i64 */{ OBJ, LNG, LNG, LNG, LNG, LNG, LNG, LNG, LNG, ERR, FLT, DBL, DEC },
+                /*  u08 */{ OBJ, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  u16 */{ OBJ, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, FLT, DBL, DEC },
+                /*  u32 */{ OBJ, UIN, LNG, LNG, LNG, LNG, UIN, UIN, UIN, ULG, FLT, DBL, DEC },
+                /*  u64 */{ OBJ, ULG, ERR, ERR, ERR, ERR, ULG, ULG, ULG, ULG, FLT, DBL, DEC },
+                /*  r32 */{ OBJ, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, FLT, DBL, OBJ },
+                /*  r64 */{ OBJ, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, DBL, OBJ },
+                /*  dec */{ OBJ, DEC, DEC, DEC, DEC, DEC, DEC, DEC, DEC, DEC, OBJ, OBJ, DEC },
+            };
+
+            // Overload resolution for Y | & ^ || && X
+            BinaryOperatorType[,] logical =
+            {
+                //          bool chr  i08  i16  i32  i64  u08  u16  u32  u64  r32  r64  dec
+                /* bool */{ BOL, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  chr */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, ERR, ERR, ERR },
+                /*  i08 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, ERR, ERR, ERR },
+                /*  i16 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, ERR, ERR, ERR },
+                /*  i32 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, LNG, ERR, ERR, ERR, ERR },
+                /*  i64 */{ ERR, LNG, LNG, LNG, LNG, LNG, LNG, LNG, LNG, ERR, ERR, ERR, ERR },
+                /*  u08 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, ERR, ERR, ERR },
+                /*  u16 */{ ERR, INT, INT, INT, INT, LNG, INT, INT, UIN, ULG, ERR, ERR, ERR },
+                /*  u32 */{ ERR, UIN, LNG, LNG, LNG, LNG, UIN, UIN, UIN, ULG, ERR, ERR, ERR },
+                /*  u64 */{ ERR, ULG, ERR, ERR, ERR, ERR, ULG, ULG, ULG, ULG, ERR, ERR, ERR },
+                /*  r32 */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  r64 */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+                /*  dec */{ ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR, ERR },
+            };
+
+            var ops = (BinaryOperatorKind[])Enum.GetValues(typeof(BinaryOperatorKind));
+
+            s_binOp = new BinaryOperatorSymbol[ops.Length][,];
+            s_binOp[(int)BinaryOperatorKind.Error] = new BinaryOperatorSymbol[28, 28];
+
+            for (int i = 0; i < 28; i++)
+                for (int j = 0; j < 28; j++)
+                    s_binOp[(int)BinaryOperatorKind.Error][i, j] = BinaryOperatorSymbol.Create(BinaryOperatorKind.Error, BinaryOperatorType.Error);
+
+            for (int i = ((int)BinaryOperatorKind.Error)+1; i < ops.Length; i++)
+                s_binOp[i] = s_binOp[(int)BinaryOperatorKind.Error];
+
+            Func<BinaryOperatorKind, BinaryOperatorType[,], BinaryOperatorSymbol[,]> expandTable = (k, x) =>
+             {
+                 var res = new BinaryOperatorSymbol[28, 28];
+                 for (int i = 0; i < 13; i++)
+                     for (int j = 0; j < 13; j++)
+                     {
+                         var t = x[i, j];
+                         var nt = BinaryOperatorSymbol.IsNullable(t + BinaryOperatorSymbol.NullableDelta) ? t + BinaryOperatorSymbol.NullableDelta : t;
+                         res[i + 2, j + 2] = BinaryOperatorSymbol.Create(k, t);
+                         res[i + 2 + 13, j + 2] = BinaryOperatorSymbol.Create(k, nt);
+                         res[i + 2, j + 2 + 13] = BinaryOperatorSymbol.Create(k, nt);
+                         res[i + 2 + 13, j + 2 + 13] = BinaryOperatorSymbol.Create(k, nt);
+                     }
+                 bool eq = k == BinaryOperatorKind.Equal || k == BinaryOperatorKind.NotEqual || k == BinaryOperatorKind.ExactEqual;
+                 bool add = k == BinaryOperatorKind.Addition;
+                 var op_o = eq ?
+                    BinaryOperatorSymbol.Create(k, BinaryOperatorType.Object)
+                    : BinaryOperatorSymbol.Create(BinaryOperatorKind.Error, BinaryOperatorType.Error);
+                 var op_ss = (eq || add) ? BinaryOperatorSymbol.Create(k, BinaryOperatorType.String) : op_o;
+                 var op_so = (eq || add) ? op_ss : op_o;
+                 var op_os = (eq || add) ? op_ss : op_o;
+                 for (int i = 0; i < 28; i++)
+                 {
+                     if (i == 1)
+                     {
+                         // str
+                         res[1, 1] = op_ss;
+                     }
+                     else
+                     {
+                         // obj
+                         res[0, i] = op_o;
+                         res[i, 0] = op_o;
+                         // str
+                         res[1, i] = op_so;
+                         res[i, 1] = op_os;
+                     }
+                 }
+                 return res;
+             };
+
+            var tables = new[] { arithmetic, addition, shift, equality, logical };
+
+            Func<BinaryOperatorKind, int> tableIndex = k =>
+            {
+                if (k == BinaryOperatorKind.Multiplication || k == BinaryOperatorKind.Subtraction || k == BinaryOperatorKind.Division
+                    || k == BinaryOperatorKind.Remainder || k == BinaryOperatorKind.Exponent)
+                    return 0;
+                if (k == BinaryOperatorKind.Addition)
+                    return 1;
+                if (k == BinaryOperatorKind.LeftShift || k == BinaryOperatorKind.RightShift)
+                    return 2;
+                if (k == BinaryOperatorKind.Equal || k == BinaryOperatorKind.NotEqual || k == BinaryOperatorKind.ExactEqual)
+                    return 3;
+                if (k == BinaryOperatorKind.GreaterThan || k == BinaryOperatorKind.LessThan || k == BinaryOperatorKind.GreaterThanOrEqual
+                    || k == BinaryOperatorKind.LessThanOrEqual || k == BinaryOperatorKind.And || k == BinaryOperatorKind.Xor
+                    || k == BinaryOperatorKind.Or)
+                    return 0;
+                if (k == BinaryOperatorKind.Substr || k == BinaryOperatorKind.DefaultValue)
+                    return -1;
+                return -1;
+            };
+
+            for (int i = ((int)BinaryOperatorKind.Error) + 1; i < ops.Length; i++)
+            {
+                var k = (BinaryOperatorKind)i;
+                var ti = tableIndex(k);
+                if (ti >= 0)
+                    s_binOp[i] = expandTable(k,tables[ti]);
+            }
+        }
+
+        public static BinaryOperatorSymbol ClassifyOperation(BinaryOperatorKind kind, TypeSymbol left, TypeSymbol right)
+        {
+            int leftIdx = ConversionEasyOut.TypeToIndex(left);
+            if (leftIdx < 0)
+            {
+                return null;
+            }
+            int rightIdx = ConversionEasyOut.TypeToIndex(right);
+            if (rightIdx < 0)
+            {
+                return null;
+            }
+            return s_binOp[(int)kind][leftIdx, rightIdx];
         }
     }
 }

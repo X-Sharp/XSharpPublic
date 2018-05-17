@@ -44,9 +44,9 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (Symbol is OperatorSymbolWithMethod)
+            if (Symbol is BinaryOperatorSymbolWithMethod)
             {
-                var op = (OperatorSymbolWithMethod)Symbol;
+                var op = (BinaryOperatorSymbolWithMethod)Symbol;
                 Left.Emit(ilg);
                 Right.Emit(ilg);
                 ilg.Emit(OpCodes.Call, op.Method.Method);
@@ -104,8 +104,22 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 switch (((ConversionSymbol)Symbol).Kind)
                 {
+                    case ConversionKind.ImplicitNumeric:
+                    case ConversionKind.ExplicitNumeric:
+                        EmitNumericConversion(ilg, Expr.Datatype.NativeType, Datatype.NativeType, false);
+                        break;
                     case ConversionKind.ImplicitUserDefined:
+                    case ConversionKind.ExplicitUserDefined:
                         ilg.Emit(OpCodes.Call, ((ConversionSymbolWithMethod)Symbol).Method.Method);
+                        break;
+                    case ConversionKind.Boxing:
+                        ilg.Emit(OpCodes.Box, Datatype.Type);
+                        break;
+                    case ConversionKind.Unboxing:
+                        ilg.Emit(OpCodes.Box, Datatype.Type);
+                        break;
+                    case ConversionKind.ImplicitReference:
+                    case ConversionKind.ExplicitReference:
                         break;
                     default:
                         throw new NotImplementedException();

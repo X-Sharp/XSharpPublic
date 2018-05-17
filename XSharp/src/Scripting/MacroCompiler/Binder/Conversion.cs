@@ -178,7 +178,7 @@ namespace XSharp.MacroCompiler
                 };
         }
 
-        private static int TypeToIndex(TypeSymbol type)
+        internal static int TypeToIndex(TypeSymbol type)
         {
             switch (type.NativeType)
             {
@@ -198,10 +198,10 @@ namespace XSharp.MacroCompiler
                 case NativeType.Double: return 13;
                 case NativeType.Decimal: return 14;
 
-                /*case NativeType.Unknown:
-                    if ((object)type != null && type.Type.IsNullableType())
+                case NativeType.Unknown:
+                    if ((object)type != null && type.IsNullableType())
                     {
-                        TypeSymbol underlyingType = type.GetNullableUnderlyingType();
+                        TypeSymbol underlyingType = type.NullableUnderlyingType;
 
                         switch (underlyingType.NativeType)
                         {
@@ -222,7 +222,7 @@ namespace XSharp.MacroCompiler
                     }
 
                     // fall through
-                    goto default;*/
+                    goto default;
 
                 default:
                     return -1;

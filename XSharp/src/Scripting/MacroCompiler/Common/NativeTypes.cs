@@ -32,7 +32,21 @@ namespace XSharp.MacroCompiler
         //
         String = 18,
         Void = 19,
-        __Usual = 20,
+        IntPtr = 20,
+        UIntPtr = 21,
+        __Usual = 22,
+    }
+
+    public static class NativeTypeInfo
+    {
+        internal static bool IsUnsigned(this NativeType t)
+        {
+            return t == NativeType.Char || t == NativeType.Byte || t == NativeType.UInt16 || t == NativeType.UInt32 || t == NativeType.UInt64;
+        }
+        internal static bool IsFloatingPoint(this NativeType t)
+        {
+            return t == NativeType.Single || t == NativeType.Double || t == NativeType.Decimal;
+        }
     }
 
     public static partial class Compilation
@@ -59,6 +73,8 @@ namespace XSharp.MacroCompiler
             null,
             "System.String",
             "System.Void",
+            "System.IntPtr",
+            "System.UIntPtr",
             VulcanQualifiedTypeNames.Usual,
         };
 

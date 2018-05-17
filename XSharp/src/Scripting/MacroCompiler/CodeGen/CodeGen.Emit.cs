@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Diagnostics;
 
 namespace XSharp.MacroCompiler
 {
@@ -52,6 +53,7 @@ namespace XSharp.MacroCompiler
                 ilg.Emit(OpCodes.Ldnull);
 
         }
+
         internal static void EmitLiteral(ILGenerator ilg, Constant c)
         {
             switch (c.Type.NativeType)
@@ -124,6 +126,329 @@ namespace XSharp.MacroCompiler
                 default:
                     throw new Exception("Unexpected literal kind");
             }
-         }
+        }
+
+        internal static void EmitNumericConversion(ILGenerator ilg, NativeType fromType, NativeType toType, bool @checked)
+        {
+            bool fromUnsigned = fromType.IsUnsigned();
+
+            switch (toType)
+            {
+                case NativeType.SByte:
+                    switch (fromType)
+                    {
+                        case NativeType.SByte:
+                            break; // NOP
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_I1_Un : OpCodes.Conv_Ovf_I1);
+                            else
+                                ilg.Emit(OpCodes.Conv_I1);
+                            break;
+                    }
+                    break;
+
+                case NativeType.Byte:
+                    switch (fromType)
+                    {
+                        case NativeType.Byte:
+                            break; // NOP
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_U1_Un : OpCodes.Conv_Ovf_U1);
+                            else
+                                ilg.Emit(OpCodes.Conv_U1);
+                            break;
+                    }
+                    break;
+
+                case NativeType.Int16:
+                    switch (fromType)
+                    {
+                        case NativeType.SByte:
+                        case NativeType.Byte:
+                        case NativeType.Int16:
+                            break; // NOP
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_I2_Un : OpCodes.Conv_Ovf_I2);
+                            else
+                                ilg.Emit(OpCodes.Conv_I2);
+                            break;
+                    }
+                    break;
+
+                case NativeType.Char:
+                case NativeType.UInt16:
+                    switch (fromType)
+                    {
+                        case NativeType.Byte:
+                        case NativeType.UInt16:
+                        case NativeType.Char:
+                            break; // NOP
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_U2_Un : OpCodes.Conv_Ovf_U2);
+                            else
+                                ilg.Emit(OpCodes.Conv_U2);
+                            break;
+                    }
+                    break;
+
+                case NativeType.Int32:
+                    switch (fromType)
+                    {
+                        case NativeType.SByte:
+                        case NativeType.Byte:
+                        case NativeType.Int16:
+                        case NativeType.UInt16:
+                        case NativeType.Int32:
+                        case NativeType.Char:
+                            break; // NOP
+                        case NativeType.UInt32:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_I4_Un);
+                            break; // NOP in unchecked
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_I4_Un : OpCodes.Conv_Ovf_I4);
+                            else
+                                ilg.Emit(OpCodes.Conv_I4);
+                            break;
+                    }
+                    break;
+
+                case NativeType.UInt32:
+                    switch (fromType)
+                    {
+                        case NativeType.Byte:
+                        case NativeType.UInt16:
+                        case NativeType.UInt32:
+                        case NativeType.Char:
+                            break; // NOP
+                        case NativeType.SByte:
+                        case NativeType.Int16:
+                        case NativeType.Int32:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_U4);
+                            break; // NOP in unchecked
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_U4_Un : OpCodes.Conv_Ovf_U4);
+                            else
+                                ilg.Emit(OpCodes.Conv_U4);
+                            break;
+                    }
+                    break;
+
+                case NativeType.IntPtr:
+                    switch (fromType)
+                    {
+                        case NativeType.IntPtr:
+                            break; // NOP
+                        case NativeType.SByte:
+                        case NativeType.Int16:
+                        case NativeType.Int32:
+                            ilg.Emit(OpCodes.Conv_I); // potentially widening, so not NOP
+                            break;
+                        case NativeType.Byte:
+                        case NativeType.UInt16:
+                        case NativeType.Char:
+                            // Doesn't actually matter whether we sign extend, because
+                            // bit 32 can't be set in any of these types.
+                            ilg.Emit(OpCodes.Conv_U); // potentially widening, so not NOP
+                            break;
+                        case NativeType.UInt32:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_I_Un);
+                            else
+                                // Don't want to sign extend if this is a widening conversion.
+                                ilg.Emit(OpCodes.Conv_U); // potentially widening, so not NOP
+                            break;
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_I_Un : OpCodes.Conv_Ovf_I);
+                            else
+                                ilg.Emit(OpCodes.Conv_I);
+                            break;
+                    }
+                    break;
+
+                case NativeType.UIntPtr:
+                    switch (fromType)
+                    {
+                        case NativeType.UIntPtr:
+                            break; // NOP
+                        case NativeType.Byte:
+                        case NativeType.UInt16:
+                        case NativeType.UInt32:
+                        case NativeType.Char:
+                            ilg.Emit(OpCodes.Conv_U); // potentially widening, so not NOP
+                            break;
+                        case NativeType.SByte:
+                        case NativeType.Int16:
+                        case NativeType.Int32:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_U);
+                            else
+                                ilg.Emit(OpCodes.Conv_I); // potentially widening, so not NOP
+                            break;
+                        default:
+                            if (@checked)
+                                ilg.Emit(fromUnsigned ? OpCodes.Conv_Ovf_U_Un : OpCodes.Conv_Ovf_U);
+                            else
+                                ilg.Emit(OpCodes.Conv_U);
+                            break;
+                    }
+                    break;
+
+                case NativeType.Int64:
+                    switch (fromType)
+                    {
+                        case NativeType.Int64:
+                            break; //NOP
+                        case NativeType.SByte:
+                        case NativeType.Int16:
+                        case NativeType.Int32:
+                        case NativeType.IntPtr:
+                            ilg.Emit(OpCodes.Conv_I8); // sign extend
+                            break;
+                        case NativeType.Byte:
+                        case NativeType.UInt16:
+                        case NativeType.UInt32:
+                        case NativeType.Char:
+                            ilg.Emit(OpCodes.Conv_U8); // 0 extend
+                            break;
+                        //case NativeType.Pointer:
+                        case NativeType.UIntPtr:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_I8_Un);
+                            else
+                                ilg.Emit(OpCodes.Conv_U8); // 0 extend if unchecked
+                            break;
+                        case NativeType.UInt64:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_I8_Un);
+                            break; // NOP in unchecked
+                        default:
+                            Debug.Assert(fromType.IsFloatingPoint());
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_I8);
+                            else
+                                ilg.Emit(OpCodes.Conv_I8);
+                            break;
+                    }
+                    break;
+
+                case NativeType.UInt64:
+                    switch (fromType)
+                    {
+                        case NativeType.UInt64:
+                            break; //NOP
+                        case NativeType.Byte:
+                        case NativeType.UInt16:
+                        case NativeType.UInt32:
+                        //case NativeType.Pointer:
+                        case NativeType.UIntPtr:
+                        case NativeType.Char:
+                            ilg.Emit(OpCodes.Conv_U8); // 0 extend
+                            break;
+                        case NativeType.SByte:
+                        case NativeType.Int16:
+                        case NativeType.Int32:
+                        case NativeType.IntPtr:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_U8);
+                            else
+                                ilg.Emit(OpCodes.Conv_I8); // sign extend if unchecked
+                            break;
+                        case NativeType.Int64:
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_U8);
+                            break; // NOP in unchecked
+                        default:
+                            Debug.Assert(fromType.IsFloatingPoint());
+                            if (@checked)
+                                ilg.Emit(OpCodes.Conv_Ovf_U8);
+                            else
+                                ilg.Emit(OpCodes.Conv_U8);
+                            break;
+                    }
+                    break;
+
+                case NativeType.Single:
+                    switch (fromType)
+                    {
+                        case NativeType.UInt32:
+                        case NativeType.UInt64:
+                            ilg.Emit(OpCodes.Conv_R_Un);
+                            break;
+                    }
+                    ilg.Emit(OpCodes.Conv_R4);
+                    break;
+
+                case NativeType.Double:
+                    switch (fromType)
+                    {
+                        case NativeType.UInt32:
+                        case NativeType.UInt64:
+                            ilg.Emit(OpCodes.Conv_R_Un);
+                            break;
+                    }
+                    ilg.Emit(OpCodes.Conv_R8);
+                    break;
+
+ /*               case NativeType.Pointer:
+                    if (@checked)
+                    {
+                        switch (fromPredefTypeKind)
+                        {
+                            case NativeType.Byte:
+                            case NativeType.UInt16:
+                            case NativeType.UInt32:
+                                ilg.Emit(OpCodes.Conv_U);
+                                break;
+                            case NativeType.UInt64:
+                                ilg.Emit(OpCodes.Conv_Ovf_U_Un);
+                                break;
+                            case NativeType.SByte:
+                            case NativeType.Int16:
+                            case NativeType.Int32:
+                            case NativeType.Int64:
+                                ilg.Emit(OpCodes.Conv_Ovf_U);
+                                break;
+                            default:
+                                throw ExceptionUtilities.UnexpectedValue(fromPredefTypeKind);
+                        }
+                    }
+                    else
+                    {
+                        switch (fromPredefTypeKind)
+                        {
+                            case NativeType.Byte:
+                            case NativeType.UInt16:
+                            case NativeType.UInt32:
+                            case NativeType.UInt64:
+                            case NativeType.Int64:
+                                ilg.Emit(OpCodes.Conv_U);
+                                break;
+                            case NativeType.SByte:
+                            case NativeType.Int16:
+                            case NativeType.Int32:
+                                // This matches dev10.  Presumably, we're using conv_i,
+                                // rather than conv_u, to sign-extend the value.
+                                ilg.Emit(OpCodes.Conv_I);
+                                break;
+                            default:
+                                throw ExceptionUtilities.UnexpectedValue(fromPredefTypeKind);
+                        }
+                    }
+                    break;*/
+
+                default:
+                    //throw ExceptionUtilities.UnexpectedValue(toType);
+                    throw new Exception("Unexpected value");
+            }
+        }
     }
 }

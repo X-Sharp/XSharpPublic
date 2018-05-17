@@ -79,6 +79,23 @@ namespace XSharp.MacroCompiler
             UpdateCache();
             return base.Lookup(name);
         }
+        internal bool IsNullableType()
+        {
+            return Type.IsGenericType && Type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+        private TypeSymbol _nullableUnderlyingType;
+        internal TypeSymbol NullableUnderlyingType
+        {
+            get
+            {
+                if (_nullableUnderlyingType == null)
+                {
+                    if (IsNullableType())
+                        _nullableUnderlyingType = Binder.FindType(Type.GetGenericArguments()[0]);
+                }
+                return _nullableUnderlyingType;
+            }
+        }
     }
     internal class LocalSymbol : Symbol
     {

@@ -10,6 +10,14 @@ function Test(u as usual) as void
     Console.WriteLine("Test: {0}", u)
     return
 
+function TestR(u as real8) as void
+    Console.WriteLine("TestR: {0:##.#}", u)
+    return
+
+function TestI(u as int) as void
+    Console.WriteLine("TestI: {0}", u)
+    return
+
 begin namespace MacroCompilerTest
     using XSharp.Runtime
     using XSharp.MacroCompiler
@@ -19,7 +27,10 @@ begin namespace MacroCompilerTest
 
         //var test_source := "Console.WriteLine(123)";
         //var test_source := "Test(12345)";
-        var test_source := "Test(U(12345)+1)";
+        //var test_source := "Test(U(12345)+1)";
+        //var test_source := "Test(123+45)";
+        var test_source := "TestR(123)";
+        //var test_source := "TestI(123.456)";
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
@@ -91,7 +102,7 @@ begin namespace MacroCompilerTest
         var dt := DateTime.Now - t
         t += dt
         if (!check_mem)
-            Console.WriteLine("  Completed in {0} ({1} ms/iter)", dt,dt:TotalMilliseconds/iterations)
+            Console.WriteLine("  Completed in {0} ({1} ms/iter, {2:#} iters/sec)", dt, dt:TotalMilliseconds/iterations, iterations/dt:TotalSeconds)
             Console.WriteLine("  Memory: +{0} bytes", GC:GetTotalMemory(false) - m)
         end
 

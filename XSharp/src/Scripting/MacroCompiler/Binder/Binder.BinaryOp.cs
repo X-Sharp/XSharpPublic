@@ -12,9 +12,9 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal static OperatorSymbol BinaryOperation(OperatorKind kind, ref Expr left, ref Expr right)
+        internal static BinaryOperatorSymbol BinaryOperation(BinaryOperatorKind kind, ref Expr left, ref Expr right)
         {
-            var name = OperatorSymbol.OperatorName(kind);
+            var name = BinaryOperatorSymbol.OperatorName(kind);
             if (name != null)
             {
                 MethodSymbol mop = null;
@@ -23,7 +23,7 @@ namespace XSharp.MacroCompiler
                 ResolveUserDefinedBinaryOperator(left, right, left.Datatype.Lookup(name), right.Datatype.Lookup(name), ref mop, ref lconv, ref rconv);
                 if (mop != null)
                 {
-                    var op = OperatorSymbol.Create(kind, mop, lconv, rconv);
+                    var op = BinaryOperatorSymbol.Create(kind, mop, lconv, rconv);
                     ApplyBinaryOperator(ref left, ref right, op);
                     return op;
                 }
@@ -98,11 +98,11 @@ namespace XSharp.MacroCompiler
             return false;
         }
 
-        static void ApplyBinaryOperator(ref Expr left, ref Expr right, OperatorSymbol op)
+        static void ApplyBinaryOperator(ref Expr left, ref Expr right, BinaryOperatorSymbol op)
         {
-            if (op is OperatorSymbolWithMethod)
+            if (op is BinaryOperatorSymbolWithMethod)
             {
-                var mop = (OperatorSymbolWithMethod)op;
+                var mop = (BinaryOperatorSymbolWithMethod)op;
                 var parameters = mop.Method.Method.GetParameters();
                 var lconv = mop.ConvLeft;
                 if (lconv != null && lconv.Kind != ConversionKind.Identity)

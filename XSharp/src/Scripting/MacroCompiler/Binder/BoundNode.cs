@@ -137,8 +137,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Symbol = Binder.BinaryOperation(OperatorSymbol.BinaryOperatorKind(Kind), ref Left, ref Right);
-            Datatype = (Symbol as OperatorSymbolWithMethod)?.Method.Type;
+            Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
+            Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
             return null;
         }
     }

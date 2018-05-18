@@ -6,8 +6,7 @@
 
 USING System
 USING XSharp.RDD
-using static XSharp.Functions
-
+USING XSharp.RDD.Enums
 
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC m_hStatement AS System.IntPtr
@@ -35,7 +34,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
     PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:m_hStatement
 
     VIRTUAL METHOD Info(uiOrdinal AS Int, oNewValue as Object) AS Object
-        IF (uiOrdinal == DBI_GET_ACE_STMT_HANDLE )
+        IF (uiOrdinal == DBInfo.DBI_GET_ACE_STMT_HANDLE )
             Return SELF:m_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
@@ -197,7 +196,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
     LOCAL recNum AS DWord
     LOCAL dwCRC AS DWord
     LOCAL dwCRC2 AS DWord
-    IF uiOrdinal != DBRI_UPDATED  
+    IF uiOrdinal != DBRecordInfo.DBRI_UPDATED  
         RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:m_hTable, out isLive) == 0 .AND. isLive == 0

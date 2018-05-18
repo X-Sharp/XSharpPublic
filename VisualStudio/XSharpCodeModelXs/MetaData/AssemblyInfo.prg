@@ -3,324 +3,393 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Collections.Generic
-using System.Collections.Immutable
-using System
-using System.Diagnostics
-using System.Reflection
-begin namespace XSharpModel
+USING System.Collections.Generic
+USING System.Collections.Immutable
+USING System
+USING System.IO
+USING System.Diagnostics
+USING System.Reflection
+BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{DisplayName,nq}")];
-	class AssemblyInfo
+CLASS AssemblyInfo
 		// Fields
-		private _aExtensions as List<MethodInfo>
-		private _assembly as Assembly
-		private _aTypes as IDictionary<string, System.Type>
-		private _failed as long
-		private _fullName as string
-		private _globalClassName as string
-		private _HasExtensions as logic
-		private _implicitNamespaces as ImmutableList<string>
-		private _LoadedTypes as logic
-		private _Modified as System.DateTime
-		private _nameSpaces as System.Collections.Hashtable
-		private _nameSpaceTexts as ImmutableList<string>
-		private _projects as ImmutableList<XProject>
-		private _reference as VSLangProj.Reference
-		private _zeroNamespace as AssemblyInfo.NameSpaceContainer
+		PRIVATE _aExtensions AS List<MethodInfo>
+		PRIVATE _assembly AS Assembly
+		PRIVATE _aTypes AS IDictionary<STRING, System.Type>
+		PRIVATE _fullName AS STRING
+		PRIVATE _globalClassName AS STRING
+		PRIVATE _HasExtensions AS LOGIC
+		PRIVATE _implicitNamespaces AS ImmutableList<STRING>
+		PRIVATE _LoadedTypes AS LOGIC
+		PRIVATE _Modified AS System.DateTime
+		PRIVATE _nameSpaces AS System.Collections.Hashtable
+		PRIVATE _nameSpaceTexts AS ImmutableList<STRING>
+		PRIVATE _projects AS ImmutableList<XProject>
+		PRIVATE _reference AS VSLangProj.Reference
+		PRIVATE _zeroNamespace AS AssemblyInfo.NameSpaceContainer
 		
-		// Methods
-		constructor()
-			super()
-			//
-			self:_fullName := ""
-			self:_failed := 0
-			self:_assembly := null
-			self:_projects := ImmutableList<XProject>.Empty
-			self:_clearInfo()
-		
-		constructor(reference as VSLangProj.Reference)
-			self()
-			self:_reference := reference
-		
-		constructor(_cFileName as string, _dModified as System.DateTime)
-			self()
-			self:FileName := _cFileName
-			self:Modified := _dModified
-			self:UpdateAssembly()
-		
-		private method _clearInfo() as void
-			//
-			self:_aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-			self:_aExtensions := List<MethodInfo>{}
-			self:_nameSpaces := System.Collections.Hashtable{System.StringComparer.OrdinalIgnoreCase}
-			self:_nameSpaceTexts := ImmutableList<string>.Empty
-			self:_implicitNamespaces := ImmutableList<string>.Empty
-			self:_zeroNamespace := AssemblyInfo.NameSpaceContainer{"_"}
-			self:_LoadedTypes := false
-			self:_HasExtensions := false
-		
-		method AddProject(project as XProject) as void
-			if ! self:_projects:Contains(project)
-				self:_projects := self:_projects:Add(project)
-			endif
-		
-		private method CurrentDomain_AssemblyResolve(sender as object, args as System.ResolveEventArgs) as Assembly
-			var folders := List<string>{}	// list of folders that we have tried
-			var folderPath := System.IO.Path.GetDirectoryName(self:FileName)
-			var name := AssemblyName{args:Name}:Name + ".dll"
-			var assemblyPath := System.IO.Path.Combine(folderPath, name)
-			if System.IO.File.Exists(assemblyPath)
-				var assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
-				if assembly != null
-					return assembly
-				endif
-			endif
-			folders:Add(folderPath)
-			foreach path as string in SystemTypeController.AssemblyFileNames
-				folderPath := System.IO.Path.GetDirectoryName(path)
-				if ! folders:Contains(folderPath)
-					assemblyPath := System.IO.Path.Combine(folderPath, name)
-					if System.IO.File.Exists(assemblyPath)
-						var asm := Assembly.LoadFrom(assemblyPath)
-						if asm != null
-							return asm
-						endif
-					endif
-					folders:Add(folderPath)
-				endif
-			next
-			return null
-		
-		method GetType(name as string) as System.Type
-			if self:IsModifiedOnDisk
-				self:LoadAssembly()
-			endif
-			if self:_assembly != null .AND. self:_aTypes:Count == 0
-				self:UpdateAssembly()
-			endif
-			if self:_aTypes:ContainsKey(name)
-				return self:Types:Item[name]
-			endif
-			return null
-		
-		private method GetTypeTypesFromType(oType as System.Type) as AssemblyInfo.TypeTypes
-			if oType:IsValueType
-				return AssemblyInfo.TypeTypes.Structure
-			endif
-			if oType:IsInterface
-				return AssemblyInfo.TypeTypes.Interface
-			endif
-			if typeof(System.Delegate):IsAssignableFrom(oType)
-				return AssemblyInfo.TypeTypes.Delegate
-			endif
-			return AssemblyInfo.TypeTypes.Class
-		
-		private static method HasExtensionAttribute(memberInfo as MemberInfo) as logic
-			try
-				var customAttributes := memberInfo:GetCustomAttributes(false)
-				foreach var custattr in customAttributes
-					if custattr:ToString() == "System.Runtime.CompilerServices.ExtensionAttribute"
-						return true
-					endif
-				next
-			catch 
-				// Failed to retrieve custom attributes
-			end try
-			return false
-		
-		internal method LoadAssembly() as void
-			if String.IsNullOrEmpty(self:FileName) .AND. self:_reference != null
-				self:FileName := self:_reference:Path
-			endif
-			if System.IO.File.Exists(self:FileName)
-				self:_assembly := AssemblyInfo.LoadAssemblyFromFile(self:FileName)
-				if self:_assembly != null
-					self:_fullName := self:_assembly:FullName
-					self:Modified := System.IO.File.GetLastWriteTime(self:FileName)
-				endif
-				self:_clearInfo()
-			endif
-		
-		STATIC METHOD FindPdbName(fileName AS STRING) AS STRING
-			VAR text        := System.IO.File.ReadAllText(fileName)
-			VAR pdbIndex	:= text:IndexOf(".pdb", StringComparison.InvariantCultureIgnoreCase)
-			IF pdbIndex > 0
-				var lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
-				return text:Substring(lastTerminatorIndex + 1, pdbIndex - lastTerminatorIndex + 3)
-			ENDIF
-			return string.Empty
+		PRIVATE STATIC WorkFolder AS STRING
+		PRIVATE STATIC FailedAssemblies as Dictionary<string, int>
 
-
-		static method LoadAssemblyFromFile(fileName as string) as Assembly
-			LOCAL result  AS Assembly
-			LOCAL cFolder AS STRING
-			cFolder := Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+		STATIC CONSTRUCTOR
+			// Clear temp files from previous run 
+			FailedAssemblies := Dictionary<string, int>{StringComparer.OrdinalIgnoreCase}
+			VAR cFolder := Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 			cFolder := System.IO.Path.Combine(cFolder, "XSharp\Temp")
 			IF ! System.IO.Directory.Exists(cFolder)
 				System.IO.Directory.CreateDirectory(cFolder)
-			endif
-			if System.IO.File.Exists(fileName)
+			ENDIF			
+			WorkFolder := cFolder
+			LOCAL oDir := DirectoryInfo{cFolder} AS DirectoryInfo
+			FOREACH VAR oFile IN oDir:GetFiles()
 				TRY
-					var temp  := System.IO.Path.Combine(cFolder, System.IO.Path.GetFileName(fileName))
-					System.IO.File.Copy(fileName, temp)
+					File.SetAttributes(oFile:FullName, FileAttributes.Normal  )
+					File.Delete(oFile:FullName)
+				CATCH e AS Exception
+					Support.Debug("Error deleting file: "+e:Message)
+				END TRY
+			NEXT
+			RETURN
+			
+			
+			// Methods
+		CONSTRUCTOR()
+			SUPER()
+			SELF:_fullName := ""
+			SELF:_assembly := NULL
+			SELF:_projects := ImmutableList<XProject>.Empty
+			SELF:_clearInfo()
+			
+		CONSTRUCTOR(reference AS VSLangProj.Reference)
+			SELF()
+			SELF:_reference := reference
+			
+		CONSTRUCTOR(_cFileName AS STRING, _dModified AS System.DateTime)
+			SELF()
+			SELF:FileName := _cFileName
+			SELF:Modified := _dModified
+			SELF:UpdateAssembly()
+			
+		PRIVATE METHOD _clearInfo() AS VOID
+			//
+			SELF:_aTypes := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
+			SELF:_aExtensions := List<MethodInfo>{}
+			SELF:_nameSpaces := System.Collections.Hashtable{System.StringComparer.OrdinalIgnoreCase}
+			SELF:_nameSpaceTexts := ImmutableList<STRING>.Empty
+			SELF:_implicitNamespaces := ImmutableList<STRING>.Empty
+			SELF:_zeroNamespace := AssemblyInfo.NameSpaceContainer{"_"}
+			SELF:_LoadedTypes := FALSE
+			SELF:_HasExtensions := FALSE
+			
+		METHOD AddProject(project AS XProject) AS VOID
+			IF ! SELF:_projects:Contains(project)
+				SELF:_projects := SELF:_projects:Add(project)
+			ENDIF
+			
+		PRIVATE METHOD CurrentDomain_AssemblyResolve(sender AS OBJECT, args AS System.ResolveEventArgs) AS Assembly
+			VAR folders := List<STRING>{}	// list of folders that we have tried
+			VAR folderPath := System.IO.Path.GetDirectoryName(SELF:FileName)
+			VAR name := AssemblyName{args:Name}:Name + ".dll"
+			VAR assemblyPath := System.IO.Path.Combine(folderPath, name)
+			IF System.IO.File.Exists(assemblyPath)
+				VAR assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
+				IF assembly != NULL
+					RETURN assembly
+				ENDIF
+			ENDIF
+			folders:Add(folderPath)
+			FOREACH path AS STRING IN SystemTypeController.AssemblyFileNames
+				folderPath := System.IO.Path.GetDirectoryName(path)
+				IF ! folders:Contains(folderPath)
+					assemblyPath := System.IO.Path.Combine(folderPath, name)
+					IF System.IO.File.Exists(assemblyPath)
+						VAR asm := Assembly.LoadFrom(assemblyPath)
+						IF asm != NULL
+							RETURN asm
+						ENDIF
+					ENDIF
+					folders:Add(folderPath)
+				ENDIF
+			NEXT
+			RETURN NULL
+			
+		METHOD GetType(name AS STRING) AS System.Type
+			IF SELF:IsModifiedOnDisk
+				SELF:LoadAssembly()
+			ENDIF
+			IF SELF:_assembly != NULL .AND. SELF:_aTypes:Count == 0
+				SELF:UpdateAssembly()
+			ENDIF
+			IF SELF:_aTypes:ContainsKey(name)
+				RETURN SELF:Types:Item[name]
+			ENDIF
+			RETURN NULL
+			
+		PRIVATE METHOD GetTypeTypesFromType(oType AS System.Type) AS AssemblyInfo.TypeTypes
+			IF oType:IsValueType
+				RETURN AssemblyInfo.TypeTypes.Structure
+			ENDIF
+			IF oType:IsInterface
+				RETURN AssemblyInfo.TypeTypes.Interface
+			ENDIF
+			IF TYPEOF(System.Delegate):IsAssignableFrom(oType)
+				RETURN AssemblyInfo.TypeTypes.Delegate
+			ENDIF
+			RETURN AssemblyInfo.TypeTypes.Class
+			
+		PRIVATE STATIC METHOD HasExtensionAttribute(memberInfo AS MemberInfo) AS LOGIC
+			TRY
+				VAR customAttributes := memberInfo:GetCustomAttributes(FALSE)
+				FOREACH VAR custattr IN customAttributes
+					IF custattr:ToString() == "System.Runtime.CompilerServices.ExtensionAttribute"
+						RETURN TRUE
+					ENDIF
+				NEXT
+			CATCH 
+				// Failed to retrieve custom attributes
+			END TRY
+			RETURN FALSE
+			
+		INTERNAL METHOD LoadAssembly() AS VOID
+			IF String.IsNullOrEmpty(SELF:FileName) .AND. SELF:_reference != NULL
+				SELF:FileName := SELF:_reference:Path
+			ENDIF
+			IF System.IO.File.Exists(SELF:FileName)
+				SELF:_assembly := AssemblyInfo.LoadAssemblyFromFile(SELF:FileName)
+				IF SELF:_assembly != NULL
+					SELF:_fullName  := SELF:_assembly:FullName
+					SELF:Modified   := System.IO.File.GetLastWriteTime(SELF:FileName)
+				ENDIF
+				SELF:_clearInfo()
+			ENDIF
+			
+		STATIC METHOD FindPdbName(fileName AS STRING) AS STRING
+			IF System.IO.File.Exists(fileName)
+				VAR pdb			:= System.IO.Path.ChangeExtension(fileName,".pdb")
+				IF System.IO.File.Exists(pdb)
+					RETURN pdb
+				ENDIF
+				// ok when it is not in the DLL folder but referenced in the DLL then extract this information
+				VAR text        := System.IO.File.ReadAllText(fileName)
+				VAR pdbIndex	:= text:IndexOf(".pdb", StringComparison.InvariantCultureIgnoreCase)
+				IF pdbIndex > 0
+					VAR lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
+					RETURN text:Substring(lastTerminatorIndex + 1, pdbIndex - lastTerminatorIndex + 3)
+				ENDIF
+			ENDIF
+			RETURN string.Empty
+			
+			
+		STATIC METHOD LoadAssemblyFromFile(fileName AS STRING) AS Assembly
+			LOCAL result  AS Assembly
+			local iAttempts as INT
+			IF FailedAssemblies:ContainsKey(fileName)
+				iAttempts := FailedAssemblies[fileName]
+				IF iAttempts > 3
+					Support.Debug("Cannot load assembly, giving up after a few retries:")
+					Support.Debug(fileName+" "+ iAttempts:ToString())
+					RETURN NULL
+				endif
+			endif
+			IF System.IO.File.Exists(fileName)
+				LOCAL cPDB		AS STRING
+				LOCAL cPdbCopy	AS STRING
+				local PdbRenamed   := FALSE as LOGIC
+				TRY
+					VAR temp		:=  System.IO.Path.Combine(WorkFolder, System.IO.Path.GetFileName(fileName))
+					System.IO.File.Copy(fileName, temp,true)
 					VAR rawAssembly := System.IO.File.ReadAllBytes(temp)
-					var cPdb		:= FindPdbName(temp)
+					cPdb		:= FindPdbName(temp)
 					System.IO.File.Delete(temp)
-					temp := System.IO.Path.ChangeExtension(temp, ".p$$")
-					local renamed := false as logic
-					if !String.IsNullOrEmpty(cPdb) .and. System.IO.File.Exists(cPdb)
-						renamed := true
-						if System.IO.File.Exists(temp)
-							System.IO.File.Delete(temp)
-						endif
-						System.IO.File.Move(cPdb, temp)
-					endif
+					cPdbCopy := System.IO.Path.ChangeExtension(temp, ".p$$")
+					IF !String.IsNullOrEmpty(cPdb) .and. System.IO.File.Exists(cPdb)
+						PdbRenamed := TRUE
+						IF System.IO.File.Exists(cPdbCopy)
+							System.IO.File.Delete(cPdbCopy)
+						ENDIF
+						System.IO.File.Move(cPdb, cPdbCopy)
+					ENDIF
 					result := Assembly.Load(rawAssembly)
-					if renamed .AND. System.IO.File.Exists(temp)
-						System.IO.File.Move(temp, cPdb)
-					endif
-					return result
-				catch exception as System.Exception
-					//
-					Support.Debug("Generic exception:", Array.Empty<object>())
-					Support.Debug(exception:Message, Array.Empty<object>())
-				end try
-			endif
-			return null
-		
-		method RemoveProject(project as XProject) as void
+					IF FailedAssemblies:ContainsKey(fileName)
+						FailedAssemblies:Remove(fileName)
+					ENDIF
+					RETURN result
+				CATCH exception AS System.IO.FileLoadException
+					// files with unmanaged code produce the exception:
+					// Attempt to load an unverifiable executable with fixups (IAT with more than 2 sections or a TLS section.) (Exception from HRESULT: 0x80131019)
+					Support.Debug("FileLoad Exeption:")
+					Support.Debug(exception:Message)
+				CATCH exception AS System.Exception
+					// Other exception
+					Support.Debug("Generic exception:")
+					Support.Debug(exception:Message)
+				FINALLY
+					IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
+						System.IO.File.Move(cPdbCopy, cPdb)
+					ENDIF
+				END TRY
+				TRY
+					// Generate a random name and coopy the DLL to prevent locking the original file
+					VAR temp := filename
+					DO WHILE File.Exists(temp)
+						temp := System.IO.Path.Combine(WorkFolder, System.IO.Path.GetRandomFileName())
+					ENDDO
+					// Need to rename the PDB again. Was undone in the Finally above
+					IF PdbRenamed .AND. System.IO.File.Exists(cPdb)
+						System.IO.File.Move(cPdb, cPdbCopy)
+					ENDIF
+					System.IO.File.Copy(filename, temp,TRUE)
+					File.SetAttributes(temp, FileAttributes.Normal | FileAttributes.Temporary )
+					result := Assembly.LoadFrom(temp)
+					IF FailedAssemblies:ContainsKey(fileName)
+						FailedAssemblies:Remove(fileName)
+					ENDIF
+					RETURN result
+				CATCH e AS Exception
+					System.Diagnostics.Debug.WriteLine(e:Message)
+				FINALLY
+					IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
+						System.IO.File.Move(cPdbCopy, cPdb)
+					ENDIF
+				END TRY
+				IF FailedAssemblies:ContainsKey(fileName)
+					FailedAssemblies[fileName] := FailedAssemblies[fileName] +1
+				ELSE
+					FailedAssemblies:Add(fileName, 1)
+				ENDIF
+			ELSE
+				// FileName does not exist. No need to change the failedAssemblies list
+			ENDIF
+			RETURN NULL
+			
+		METHOD RemoveProject(project AS XProject) AS VOID
 			//
-			if self:_projects:Contains(project)
-				self:_projects := self:_projects:Remove(project)
-			endif
-
-		internal method UpdateAssembly() as void
-			local aTypes as Dictionary<string, System.Type>
-			local nspace as string
-			local fullName as string
-			local simpleName as string
-			local message as string
-			local types := null as System.Type[]
-			local index as long
+			IF SELF:_projects:Contains(project)
+				SELF:_projects := SELF:_projects:Remove(project)
+			ENDIF
+			
+		INTERNAL METHOD UpdateAssembly() AS VOID
+			LOCAL aTypes AS Dictionary<STRING, System.Type>
+			LOCAL nspace AS STRING
+			LOCAL fullName AS STRING
+			LOCAL simpleName AS STRING
+			LOCAL message AS STRING
+			LOCAL types := NULL AS System.Type[]
+			LOCAL index AS LONG
 			//
-			if self:_failed > 3
-				return
-			endif
-			aTypes := Dictionary<string, System.Type>{System.StringComparer.OrdinalIgnoreCase}
+			aTypes		 := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
 			_aExtensions := List<MethodInfo>{}
 			fullName := ""
 			simpleName := ""
-			self:_nameSpaces:Clear()
-			_nameSpaceTexts := ImmutableList<String>.Empty
-			self:_zeroNamespace:Clear()
-			self:_globalClassName := ""
-			self:_HasExtensions := false
-			self:LoadAssembly()
-
-			var currentDomain := System.AppDomain.CurrentDomain
-			currentDomain:AssemblyResolve += System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
-			try
-				if self:_assembly != null
-					var customAttributes := self:_assembly:GetCustomAttributes(false)
-					local found := 0 as int
-					foreach var custattr in customAttributes
+			SELF:_nameSpaces:Clear()
+			_nameSpaceTexts := ImmutableList<STRING>.Empty
+			SELF:_zeroNamespace:Clear()
+			SELF:_globalClassName := ""
+			SELF:_HasExtensions := FALSE
+			SELF:LoadAssembly()
+			
+			VAR currentDomain := System.AppDomain.CurrentDomain
+			currentDomain:AssemblyResolve += System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
+			TRY
+				IF SELF:_assembly != NULL
+					VAR customAttributes := SELF:_assembly:GetCustomAttributes(FALSE)
+					LOCAL found := 0 AS INT
+					FOREACH VAR custattr IN customAttributes
 						//
-						var type := custattr:GetType()
-						switch custattr:ToString()
-							case "Vulcan.Internal.VulcanClassLibraryAttribute"
-								self:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, null):ToString()
-								var defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, null):ToString()
-								if ! String.IsNullOrEmpty(defaultNs)
-									self:_implicitNamespaces := self:_implicitNamespaces:Add(defaultNs)
-								endif
+						VAR type := custattr:GetType()
+						SWITCH custattr:ToString()
+							CASE "Vulcan.Internal.VulcanClassLibraryAttribute"
+								SELF:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, NULL):ToString()
+								VAR defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, NULL):ToString()
+								IF ! String.IsNullOrEmpty(defaultNs)
+									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
+								ENDIF
 								found += 1
-							case "System.Runtime.CompilerServices.ExtensionAttribute"
-								self:_HasExtensions  := true
+							CASE "System.Runtime.CompilerServices.ExtensionAttribute"
+								SELF:_HasExtensions  := TRUE
 								found += 2
-							case "Vulcan.VulcanImplicitNamespaceAttribute"
-								var ns := type:GetProperty("Namespace"):GetValue(custattr, null):ToString()
-								if ! String.IsNullOrEmpty(ns)
-									self:_implicitNamespaces := self:_implicitNamespaces:Add(ns)
-								endif
+							CASE "Vulcan.VulcanImplicitNamespaceAttribute"
+								VAR ns := type:GetProperty("Namespace"):GetValue(custattr, NULL):ToString()
+								IF ! String.IsNullOrEmpty(ns)
+									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(ns)
+								ENDIF
 								found += 4
-						end switch
+						END SWITCH
 						// All attributes found then get out of here
-						if found == 7
-							exit
-						endif
-					next
-						
-				endif
-			catch e as Exception
+						IF found == 7
+							EXIT
+						ENDIF
+					NEXT
+					
+				ENDIF
+			CATCH e AS Exception
 				// failed to load custom attributes					
 				Support.Debug(e:Message)
-			end try
-			try
-				if self:_assembly != null
-					types := self:_assembly:GetTypes()
-				endif
-				self:_failed := 0
-			catch exception as ReflectionTypeLoadException
+			END TRY
+			TRY
+				IF SELF:_assembly != NULL
+					types := SELF:_assembly:GetTypes()
+				ENDIF
+			CATCH exception AS ReflectionTypeLoadException
 				//
-				Support.Debug("Cannot load types from "+ self:_assembly:GetName():Name)
+				Support.Debug("Cannot load types from "+ SELF:_assembly:GetName():Name)
 				Support.Debug("Exception details:")
-				message := null
-				foreach var exception2 in exception:LoaderExceptions
-					if exception2:Message != message
+				message := NULL
+				FOREACH VAR exception2 IN exception:LoaderExceptions
+					IF exception2:Message != message
 						Support.Debug(exception2:Message)
 						message := exception2:Message
-					endif
-				next
-				Support.Debug("Types loaded:")
-				foreach var t in exception:Types
-					if t != null
-						Support.Debug(t:FullName)
-					endif
-				next
-				self:_assembly := null
-				self:_failed++
-			catch ex as System.Exception
+					ENDIF
+				NEXT
+				//	Support.Debug("Types loaded:")
+				//	VAR t IN exception:Types
+				//	IF t != NULL
+				//	Support.Debug(t:FullName)
+				//	ENDIF
+				//	NEXT
+				SELF:_assembly := NULL
+			CATCH ex AS System.Exception
 				//
 				Support.Debug("Generic exception:")
 				Support.Debug(ex:Message)
-			end try
-			currentDomain:AssemblyResolve -= System.ResolveEventHandler{ self, @CurrentDomain_AssemblyResolve() }
-				
-			if types != null .and. types:Length != 0 .AND. (aTypes:Count == 0  .or. ! _LoadedTypes)
-				try
-					foreach var type in types
+			END TRY
+			currentDomain:AssemblyResolve -= System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
+			
+			IF types != NULL .and. types:Length != 0 .AND. (aTypes:Count == 0  .or. ! _LoadedTypes)
+				TRY
+					FOREACH VAR type IN types
 						fullName := type:FullName
-						if ! fullName:StartsWith("$") .AND. ! fullName:StartsWith("<")
-							if self:_HasExtensions .AND. AssemblyInfo.HasExtensionAttribute(type)
-								var methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
-								foreach info as MethodInfo in methods
-									if AssemblyInfo.HasExtensionAttribute(info)
+						IF ! fullName:StartsWith("$") .AND. ! fullName:StartsWith("<")
+							IF SELF:_HasExtensions .AND. AssemblyInfo.HasExtensionAttribute(type)
+								VAR methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
+								FOREACH info AS MethodInfo IN methods
+									IF AssemblyInfo.HasExtensionAttribute(info)
 										_aExtensions:Add(info)
-									endif
-								next
-							endif
+									ENDIF
+								NEXT
+							ENDIF
 							//
-		                    // Nested Type ?
-							if fullName:Contains("+")
+							// Nested Type ?
+							IF fullName:Contains("+")
 								fullName := fullName:Replace('+', '.')
-							endif
+							ENDIF
 							// Generic ?
-							if fullName:Contains("`")
+							IF fullName:Contains("`")
 								fullName := fullName:Substring(0, fullName:IndexOf("`") + 2)
-							endif
-		                    // Add to the FullyQualified name
-							if ! aTypes:ContainsKey(fullName)
+							ENDIF
+							// Add to the FullyQualified name
+							IF ! aTypes:ContainsKey(fullName)
 								aTypes:Add(fullName, type)
-							endif
-	                        // Now, with Standard name
+							ENDIF
+							// Now, with Standard name
 							simpleName := type:Name:Replace('+', '.')
 							// Not Empty namespace, not a generic, not nested, not starting with underscore
-							if String.IsNullOrEmpty(type:Namespace) .AND. simpleName:IndexOf('`') == -1 .AND. ;
-								simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
-								self:_zeroNamespace:AddType(simpleName, self:GetTypeTypesFromType(type))
-							endif
-	                        // Public Type, not Nested and no Underscore
-							if type:IsPublic .and. simpleName.IndexOf('+') == -1  .and. simpleName.IndexOf('_') == -1
+							IF String.IsNullOrEmpty(type:Namespace) .AND. simpleName:IndexOf('`') == -1 .AND. ;
+simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
+								SELF:_zeroNamespace:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+							ENDIF
+							// Public Type, not Nested and no Underscore
+							IF type:IsPublic .and. simpleName.IndexOf('+') == -1  .and. simpleName.IndexOf('_') == -1
 								// Get the Namespace
 								nspace := type:Namespace
 								// and the normal name
@@ -328,114 +397,122 @@ begin namespace XSharpModel
 								simpleName := simpleName:Replace('+', '.')
 								// Generic ?
 								index := simpleName:IndexOf('`')
-								if index != -1
+								IF index != -1
 									simpleName := simpleName:Substring(0, index)
-								endif
-								if nspace?:Length > 0
-									local container as AssemblyInfo.NameSpaceContainer
-									if ! self:_nameSpaces:ContainsKey(nspace)
+								ENDIF
+								IF nspace?:Length > 0
+									LOCAL container AS AssemblyInfo.NameSpaceContainer
+									IF ! SELF:_nameSpaces:ContainsKey(nspace)
 										container := AssemblyInfo.NameSpaceContainer{nspace}
-										container:AddType(simpleName, self:GetTypeTypesFromType(type))
-										self:_nameSpaces:Add(nspace, container)
-										self:_nameSpaceTexts := self:_nameSpaceTexts:Add(nspace)
-									else
-										container := (AssemblyInfo.NameSpaceContainer)self:_nameSpaces[nspace]
-										container:AddType(simpleName, self:GetTypeTypesFromType(type))
-									endif
-									do while nspace:Contains(".")
+										container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+										SELF:_nameSpaces:Add(nspace, container)
+										SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
+									ELSE
+										container := (AssemblyInfo.NameSpaceContainer)SELF:_nameSpaces[nspace]
+										container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+									ENDIF
+									DO WHILE nspace:Contains(".")
 										nspace := nspace:Substring(0, nspace:LastIndexOf('.'))
-										if ! self:_nameSpaceTexts:Contains(nspace)
-											self:_nameSpaceTexts := self:_nameSpaceTexts:Add(nspace)
-										endif
-									enddo
-								endif
-							endif
-						endif
-					next
-					self:_LoadedTypes := true
-					self:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
-					self:_failed := 0
-					self:_assembly := null
-				catch e as System.Exception
+										IF ! SELF:_nameSpaceTexts:Contains(nspace)
+											SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
+										ENDIF
+									ENDDO
+								ENDIF
+							ENDIF
+						ENDIF
+					NEXT
+					SELF:_LoadedTypes := TRUE
+					SELF:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
+					SELF:_assembly := NULL
+				CATCH e AS System.Exception
 					//
 					Support.Debug("Generic exception:")
 					Support.Debug(e:Message)
-					self:_clearInfo()
-				end try
-			endif
+					SELF:_clearInfo()
+				END TRY
+			ENDIF
+			
+			// Properties
+		PROPERTY DisplayName AS STRING
+			GET
+				IF String.IsNullOrEmpty(SELF:fileName)
+					RETURN "(Empty)"
+				ENDIF
+				RETURN System.IO.Path.GetFileName(SELF:fileName)
+			END GET
+		END PROPERTY
 		
-		// Properties
-		property DisplayName as string
-			get
-				if String.IsNullOrEmpty(self:fileName)
-					return "(Empty)"
-				endif
-				return System.IO.Path.GetFileName(self:fileName)
-			end get
-		end property
+		PROPERTY FileName AS STRING AUTO
 		
-		property FileName as string auto
+		PROPERTY FullName AS STRING GET SELF:_fullName
+		PROPERTY GlobalClassName AS STRING GET SELF:_globalClassName
 		
-		property FullName as string get self:_fullName
-		property GlobalClassName as string get self:_globalClassName
+		PROPERTY HasProjects AS LOGIC GET SELF:_projects:Count > 0
 		
-		property HasProjects as logic get self:_projects:Count > 0
+		PROPERTY ImplicitNamespaces AS IList<STRING> GET SELF:_implicitNamespaces
 		
-		property ImplicitNamespaces as IList<string> get self:_implicitNamespaces
+		PROPERTY IsModifiedOnDisk AS LOGIC
+			GET
+				IF String.IsNullOrEmpty(SELF:fileName)
+					RETURN FALSE
+				ENDIF
+				IF ! System.IO.File.Exists(SELF:fileName)
+					RETURN FALSE
+				ENDIF
+				RETURN (System.IO.File.GetLastWriteTime(SELF:fileName) != SELF:Modified)
+			END GET
+		END PROPERTY
 		
-		property IsModifiedOnDisk as logic
-			get
-				if String.IsNullOrEmpty(self:fileName)
-					return false
-				endif
-				if ! System.IO.File.Exists(self:fileName)
-					return false
-				endif
-				return (System.IO.File.GetLastWriteTime(self:fileName) != self:Modified)
-			end get
-		end property
-		
-		property Modified as System.DateTime get self:_Modified set self:_Modified := value
-		property Namespaces as IList<string> get self:_nameSpaceTexts
-		property Types as IDictionary<string, System.Type> get self:_aTypes
+		PROPERTY Modified AS System.DateTime GET SELF:_Modified SET SELF:_Modified := VALUE
+		PROPERTY Namespaces AS IList<STRING> GET SELF:_nameSpaceTexts
+		PROPERTY RuntimeVersion AS STRING 
+			GET
+				SELF:UpdateAssembly()
+				IF SELF:_assembly != NULL
+					RETURN SELF:_assembly:ImageRuntimeVersion
+				ENDIF
+				RETURN ""
+			END GET
+		END PROPERTY
+		PROPERTY Types AS IDictionary<STRING, System.Type> GET SELF:_aTypes
 		
 		
 		// Nested Types
-		internal class NameSpaceContainer
+		INTERNAL CLASS NameSpaceContainer
 			// Fields
-			internal _NameSpace := "" as string
-			internal _Types as SortedList<string, AssemblyInfo.TypeTypes>
+			INTERNAL _NameSpace := "" AS STRING
+			INTERNAL _Types AS SortedList<STRING, AssemblyInfo.TypeTypes>
 			
-			constructor(_cNameSpace as string);super()
+			CONSTRUCTOR(_cNameSpace AS STRING);SUPER()
 				//
-				self:_NameSpace := _cNameSpace
-				self:_Types := SortedList<string, AssemblyInfo.TypeTypes>{}
-			
-			method AddType(typeName as string, type as AssemblyInfo.TypeTypes) as void
+				SELF:_NameSpace := _cNameSpace
+				SELF:_Types := SortedList<STRING, AssemblyInfo.TypeTypes>{}
+				
+			METHOD AddType(typeName AS STRING, type AS AssemblyInfo.TypeTypes) AS VOID
 				//
-				if ! self:_Types:ContainsKey(typeName)
+				IF ! SELF:_Types:ContainsKey(typeName)
 					//
-					self:_Types:Add(typeName, type)
-				endif
-			
-			method Clear() as void
+					SELF:_Types:Add(typeName, type)
+				ENDIF
+				
+			METHOD Clear() AS VOID
 				//
-				self:_Types:Clear()
-			
-			
-		end class
+				SELF:_Types:Clear()
+				
+				
+				END CLASS
+				
+		INTERNAL ENUM TypeTypes AS LONG
+			MEMBER @@All:=0xff
+			MEMBER @@Class:=1
+			MEMBER @@Delegate:=8
+			MEMBER @@Interface:=4
+			MEMBER @@None:=0
+			MEMBER @@Structure:=2
+		END ENUM
 		
-		internal enum TypeTypes as long
-			member @@All:=0xff
-			member @@Class:=1
-			member @@Delegate:=8
-			member @@Interface:=4
-			member @@None:=0
-			member @@Structure:=2
-		end enum
 		
-		
-	end class
+	END CLASS
 	
-end namespace 
+END NAMESPACE 
 

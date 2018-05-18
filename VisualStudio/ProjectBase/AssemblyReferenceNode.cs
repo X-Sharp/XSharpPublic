@@ -31,13 +31,14 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private System.Reflection.AssemblyName assemblyName;
         private AssemblyName resolvedAssemblyName;
-
-        private string assemblyPath = String.Empty;
-
+        private string assemblyPath = string.Empty;
+        private HashSet<string> resolvedProperties; // the names of the properties that MsBuild has resolved
+        private ProjectItemInstance prjitem; // the project item that contains the properties from resolvedProperties
         /// <summary>
         /// Defines the listener that would listen on file changes on the nested project node.
         /// </summary>
         private FileChangeManager fileChangeListener;
+        static private Dictionary<ProjectNode, ProjectItemInstance[]> referenceCache = new Dictionary<ProjectNode, ProjectItemInstance[]>(); // cache to speed up loading of projects.
 
         /// <summary>
         /// A flag for specifying if the object was disposed.
@@ -154,6 +155,15 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region methods
+
+        internal static void RemoveFromCache(ProjectNode project)
+        {
+            if (project != null && referenceCache.ContainsKey(project))
+            {
+                referenceCache.Remove(project);
+            }
+        }
+
         /// <summary>
         /// Closes the node.
         /// </summary>
@@ -162,6 +172,7 @@ namespace Microsoft.VisualStudio.Project
         {
             try
             {
+                RemoveFromCache(this.ProjectMgr);
                 this.Dispose(true);
             }
             finally
@@ -355,6 +366,18 @@ namespace Microsoft.VisualStudio.Project
             this.ResolveAssemblyReference();
         }
 
+
+        internal string GetMsBuildProperty(string propName)
+        {
+            if (resolvedProperties != null && prjitem != null)
+            {
+                if (resolvedProperties.Contains(propName))
+                    return prjitem.GetMetadataValue(propName);
+            }
+            return "";
+
+        }
+
 		private void SetHintPathAndPrivateValue(ProjectInstance instance)
 		{
 
@@ -440,7 +463,7 @@ namespace Microsoft.VisualStudio.Project
         /// Does the actual job of resolving an assembly reference. We need a private method that does not violate
         /// calling virtual method from the constructor.
         /// </summary>
-		private void ResolveAssemblyReference()
+        internal void ResolveAssemblyReference()
 		{
 			if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
 			{
@@ -448,22 +471,31 @@ namespace Microsoft.VisualStudio.Project
 			}
             
 			var instance = this.ProjectMgr.ProjectInstance;
-			var group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
-            // RvdH Only call ResolveAsemblyReferences when we cannot find any items
-            if (group == null || group.Length == 0)
+            ProjectItemInstance[] group = null;
+            if (referenceCache.ContainsKey(this.ProjectMgr))
+            {
+                group = referenceCache[this.ProjectMgr];
+            }
+            // get list of unprocessed references. If the number is different from the cache items then we
+            // must call MsBuild again
+            var list = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.Reference).ToArray();
+            if (group == null || group.Length != list.Length)
             {
                 BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
                 group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
+                referenceCache[this.ProjectMgr] = group;
+
             }
             if (group != null)
 			{
 				foreach (var item in group)
 				{
-					string fullPath = this.GetFullPathFromPath(MSBuildItem.GetEvaluatedInclude(item));
-					System.Reflection.AssemblyName name = System.Reflection.AssemblyName.GetAssemblyName(fullPath);
-
+					string fullPath = item.GetMetadataValue("fullpath");
+					AssemblyName name = AssemblyName.GetAssemblyName(fullPath);
+                    
 					// Try with full assembly name and then with weak assembly name.
-					if (String.Compare(name.FullName, this.assemblyName.FullName, StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(name.Name, this.assemblyName.Name, StringComparison.OrdinalIgnoreCase) == 0)
+					if (String.Compare(name.FullName, this.assemblyName.FullName, StringComparison.OrdinalIgnoreCase) == 0 || 
+                        String.Compare(name.Name, this.assemblyName.Name, StringComparison.OrdinalIgnoreCase) == 0)
 					{
 						if (!NativeMethods.IsSamePath(fullPath, this.assemblyPath))
 						{
@@ -474,12 +506,23 @@ namespace Microsoft.VisualStudio.Project
 							this.fileChangeListener.ObserveItem(this.assemblyPath);
 						}
 						this.resolvedAssemblyName = name;
-						// No hint path is needed since the assembly path will always be resolved.
-						return;
+                        // No hint path is needed since the assembly path will always be resolved.
+                        
+                        // cache the propertynames and the item.
+                        resolvedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        foreach (var str in item.MetadataNames)
+                        {
+                            resolvedProperties.Add(str);
+                        }
+                        prjitem = item;
+                        return;
 					}
 				}
-			}
-		}
+                // when we get here then the assembly was not resolved by MsBuild. Maybe the reference was not persisted yet ?
+                return;
+            }
+
+        }
 
         /// <summary>
         /// Registers with File change events

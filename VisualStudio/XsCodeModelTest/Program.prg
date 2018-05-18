@@ -52,7 +52,7 @@ return
 				if oChild:aParams != null
 					? "  Parameters: ", oChild:aParams:Count
 					foreach oParam as EntityParamsObject in oChild:aParams
-						? "      Parameter:" , oParam:cName, oParam:cType, oParam:lReference
+						? "      Parameter:" , oParam:cName, oParam:cType, oParam:nParamType
 					next
 				endif
 			next

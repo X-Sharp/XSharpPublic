@@ -60,26 +60,19 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VulcanMacroCompiler, Version=4.0.401.0, Culture=neutral, PublicKeyToken=0e73a8bf006af00c">
-      <Name>VulcanMacroCompiler</Name>
-      <AssemblyName>VulcanMacroCompiler.dll</AssemblyName>
+    <Reference Include="XSharp.Core, Version=2.0.0.1, Culture=neutral, PublicKeyToken=null">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\VNRuntime\4.0.1\v4.0\VulcanMacroCompiler.dll</HintPath>
+      <HintPath>..\..\..\Runtime\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="VulcanRT, Version=4.0.401.0, Culture=neutral, PublicKeyToken=0e73a8bf006af00c">
-      <Name>VulcanRT</Name>
-      <AssemblyName>VulcanRT.dll</AssemblyName>
+    <Reference Include="XSharp.VO, Version=2.0.0.1, Culture=neutral, PublicKeyToken=null">
+      <Name>XSharp.VO</Name>
+      <AssemblyName>XSharp.VO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\VNRuntime\4.0.1\v4.0\VulcanRT.dll</HintPath>
-    </Reference>
-    <Reference Include="VulcanRTFuncs, Version=4.0.401.0, Culture=neutral, PublicKeyToken=0e73a8bf006af00c">
-      <Name>VulcanRTFuncs</Name>
-      <AssemblyName>VulcanRTFuncs.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\VNRuntime\4.0.1\v4.0\VulcanRTFuncs.dll</HintPath>
+      <HintPath>..\..\..\Runtime\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

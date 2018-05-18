@@ -1285,8 +1285,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                     {"_SIZEOF", SIZEOF},
                     {"_TYPEOF", TYPEOF},
-                    {"IF", IF},
-                    {"IIF", IIF},
                     {"CLASS", CLASS},  // For Anonymous types
                     {"DELEGATE", DELEGATE},  // For Delegate expressions
 
@@ -1466,7 +1464,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             foreach (var text in keywords.Keys)
             {
                 var token = keywords[text];
-                ids.Add(text, token);
+                // Better safe than sorry
+                if (! ids.ContainsKey(text))
+                    ids.Add(text, token);
             }
             return ids.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }

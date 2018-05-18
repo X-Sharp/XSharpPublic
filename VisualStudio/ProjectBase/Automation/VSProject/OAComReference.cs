@@ -86,6 +86,42 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return version.ToString();
             }
         }
+
+        public override bool SpecificVersion
+        {
+            get
+            {
+                var data = this.BaseReferenceNode.ItemNode.GetMetadata(ProjectFileConstants.SpecificVersion);
+                if (String.IsNullOrEmpty(data))
+                    return false;
+                return string.Compare(data, "True", true) == 0;
+
+            }
+        }
+
+        public override bool Isolated
+        {
+            get
+            {
+                var data = this.BaseReferenceNode.ItemNode.GetMetadata(ProjectFileConstants.Isolated);
+                if (String.IsNullOrEmpty(data))
+                {
+                    return false;
+                }
+                else
+                {
+                    return string.Compare(data, "True", true) == 0;
+                }
+            }
+
+        }
+        public override string RuntimeVersion
+        {
+            get
+            {
+                return "";
+            }
+        }
         #endregion
     }
 }

@@ -53,18 +53,26 @@ abstract class XSharp.CodeBlock implements ICodeBlock
 [DebuggerDisplay( "{_cMacro}", Type := "_CODEBLOCK" )] ;
 public class XSharp._CodeBlock inherit XSharp.CodeBlock
 	protect _innerBlock as ICodeBlock 
-	protect _cMacro		as string
+	PROTECT _cMacro		AS STRING
+	protect _lIsBlock   as LOGIC
 
-	public constructor(innerBlock as ICodeBlock, cMacro as string)
+	public constructor(innerBlock as ICodeBlock, cMacro as string, lIsBlock as LOGIC)
 		super(innerBlock:Pcount())
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro
+		_lIsBlock   := lIsBlock
 		
-	public override method Eval(args params usual[]) as usual
-		var oArgs := __UsualArrayToObjectArray(args)
-		return (usual) self:_innerBlock:EvalBlock(oArgs)
+	PUBLIC OVERRIDE METHOD Eval(args PARAMS USUAL[]) AS USUAL
+		LOCAL uRes AS USUAL
+		LOCAL oRes as OBJECT
+		VAR oArgs := __UsualArrayToObjectArray(args)
+		oRes := SELF:_innerBlock:EvalBlock(oArgs)
+		uRes := __Usual{oRes}
+		return uRes
 	
 	public override method ToString() as string
-		return _cMacro
+		RETURN _cMacro
+	
+	public property IsBlock as LOGIC GET _lIsBlock
 end class
 

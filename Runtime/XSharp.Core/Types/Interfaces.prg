@@ -53,8 +53,11 @@ BEGIN NAMESPACE XSharp
 	INTERFACE IMacroCompiler
 		/// <summary>Compile a string into a runtime codeblock.</summary>
 		/// <param Name="macro">String to compile</param>
+		/// <param Name="lAllowSingleQuotes">Should single quotes be allowed</param>
+		/// <param Name="module">Module of the main app</param>
+		/// <param Name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.ICodeblock"/>
-		METHOD Compile(macro AS STRING) AS ICodeBlock
+		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module as System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
 	END INTERFACE
 END NAMESPACE

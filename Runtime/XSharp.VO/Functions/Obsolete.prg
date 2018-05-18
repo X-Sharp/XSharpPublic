@@ -633,3 +633,8 @@ function SEvalA(cSource as usual,block as usual,nStart as usual,nCount as usual)
 [ObsoleteAttribute( "'SysObject()' is not supported", true )] ;
 FUNCTION SysObject() AS USUAL
    RETURN NIL
+
+
+[Obsolete];
+FUNCTION MCSHORT(l AS USUAL) AS LOGIC
+	RETURN FALSE  

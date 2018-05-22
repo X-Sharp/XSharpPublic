@@ -93,10 +93,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             int compoundStringLength = 0;
             var type = expr.Type;
             
-            if (!type.SpecialType.IsNumericType() && type != Compilation.UsualType() && ! type.IsObjectType())
-            {
-                return expr;
-            }
             // normalize the type
             // we allow the following 'normal' types for the Index operator:
             // int32, uint32, int64, uint64
@@ -119,12 +115,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr= CreateConversion(expr, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
                     if (expr.HasErrors)
                     {
-                        Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, expr.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                        Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, type, Compilation.GetSpecialType(SpecialType.System_Int32));
                     }
                     opKind = BinaryOperatorKind.IntSubtraction;
                     break;
             }
-            // when ! ArrayZero then subtract one from the index
+            // Subtract one from the index
             var right = new BoundLiteral(expr.Syntax, ConstantValue.Create(1), expr.Type) { WasCompilerGenerated = true };
             // when the argument is a literal then we may be able to fold the subtract expression.
             var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)expr.Syntax, opKind, expr, right, expr.Type.SpecialType, diagnostics, ref compoundStringLength);
@@ -151,15 +147,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
                 // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
+                // So this is NOT compatible with Vulcan
                 if (cf == pszType && !Compilation.Options.ArrayZero && Compilation.Options.Dialect == XSharpDialect.VO )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        BoundExpression newarg = arg;
+                        BoundExpression newarg ;
                         if (!Compilation.Options.ArrayZero)
                         {
                             newarg = SubtractIndex(arg, diagnostics);
+                        }
+                        else
+                        {
+                            newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                            if (newarg.HasErrors)
+                            {
+                                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                            }
                         }
                         argsBuilder.Add(newarg);
                     }
@@ -180,10 +185,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        BoundExpression newarg = arg;
+                        BoundExpression newarg;
                         if (!Compilation.Options.ArrayZero)
                         {
                             newarg = SubtractIndex(arg, diagnostics);
+                        }
+                        else
+                        {
+                            newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                            if (newarg.HasErrors)
+                            {
+                                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                            }
                         }
                         argsBuilder.Add(newarg);
                     }

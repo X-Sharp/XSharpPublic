@@ -10,7 +10,7 @@
 /// </summary>
 /// <param name="cTime"> A valid military time in the form hh:mm:ss, where hh is hours in 24-hour format, mm is minutes, and ss is seconds.</param>
 /// <returns>
-/// An 11-character string in 12-hour format with either "am" or "pm."  If <cTime> does not represent a valid military time, a String.Empty is returned.
+/// An 11-character string in 12-hour format with either "am" or "pm."  If cTime does not represent a valid military time, a String.Empty is returned.
 /// </returns>
 FUNCTION AmPm(cTime AS STRING) AS STRING
 	local nSeconds as dword
@@ -66,6 +66,14 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
    RETURN _TimeString( dwHour, dwMinute, dwSeconds, FALSE, "", "" )
 
 
+/// <summary>
+/// Return the timestring from a DateTime structure
+/// </summary>
+/// <param name="dt"></param>
+/// <returns>
+/// </returns>
+FUNCTION ConTime(dt AS DateTime) AS STRING
+	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")   
 
 /// <summary>
 /// Convert the number that identifies a day into the name of the day.

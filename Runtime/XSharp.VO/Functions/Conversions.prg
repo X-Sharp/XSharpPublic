@@ -28,7 +28,7 @@ static class StringHelpers
 		endif
 		if nDec != 0
 			cFormat := "."
-			cFormat := cFormat:PadRight(nDec+1, '#')	// 1 extra for the Dot
+			cFormat := cFormat:PadRight(nDec+1, '0')	// 1 extra for the Dot
 		else
 			cFormat := ""
 		endif
@@ -75,13 +75,23 @@ function AsHexString(uValue as usual) as string
 function AsPadr(u as usual,dwLen as dword) as string
 	return PadR(AsString(u), dwLen)
 	
+
+/// <summary>
+/// Convert a value to a string.
+/// </summary>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
+function _AsString(u as Usual) as string
+	return	 AsString(u)
+
 	
-	/// <summary>
-	/// Convert a value to a string.
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
+/// <summary>
+/// Convert a value to a string.
+/// </summary>
+/// <param name="u"></param>
+/// <returns>
+/// </returns>
 function AsString(u as usual) as string
 	local result as string
 	do case
@@ -152,7 +162,7 @@ function Descend(uValue as usual) as usual
 	endif
 	return uValue
 
-internal function _descendingString(s as string)
+internal function _descendingString(s as string) as STRING
 	var sb  := StringBuilder{s}
 	var nlen := s:Length-1
 	local i as int
@@ -176,75 +186,51 @@ function DescendA(uValue REF usual) as usual
 	
 	
 	
-	/// <summary>
-	/// Convert a numeric expression to a left-trimmed string.
-	/// </summary>
-	/// <param name="n"></param>
-	/// <returns>
-	/// </returns>
+/// <summary>
+/// Convert a numeric expression to a left-trimmed string.
+/// </summary>
+/// <param name="n"></param>
+/// <returns>
+/// </returns>
 function NTrim(n as usual) as string
 	return Str1(n)	
 	
 	
 
-	/// <summary>
-	/// Pad character, numeric, and Date values with fill characters on the right.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <param name="nLen"></param>
-	/// <param name="cPad"></param>
-	/// <returns>
-	/// </returns>
-function Pad( uValue as usual, nLength as int ) as string
-	return PadR( uValue, nLength, " " )
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on the right.
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function Pad( uValue as usual, nLength as int, cPad := " " as string ) as string
+	return PadR( uValue, nLength, cPad )
 	
-function Pad( uValue as usual, nLength as dword ) as string
-	return PadR( uValue, (int) nLength, " " )
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on the right.
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function Pad( uValue as usual, nLength as dword, cPad := " " as string ) as string
+	return PadR( uValue, (int) nLength, cPad )
 	
-function Pad( uValue as usual, nLength as usual ) as string
-	return PadR( uValue, (int) nLength, " " )
-	
-function Pad( uValue as usual, nLength as int, cFillStr as string ) as string
-	return PadR( uValue, nLength, cFillStr )
-	
-function Pad( uValue as usual, nLength as dword, cFillStr as string ) as string
-	return PadR( uValue, (int) nLength, cFillStr )
-	
-function Pad( uValue as usual, nLength as usual, cFillStr as string ) as string
-	return PadR( uValue, (int) nLength, cFillStr )
-	
-	
-	
-	/// <summary>
-	/// Pad character, numeric, and Date values with fill characters on the right.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <param name="nLen"></param>
-	/// <param name="cPad"></param>
-	/// <returns>
-	/// </returns>
-	
-	
-	/// <summary>
-	/// Pad character, numeric, and Date values with fill characters on both the right and left.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <param name="nLen"></param>
-	/// <param name="cPad"></param>
-	/// <returns>
-	/// </returns>
-function PadC( uValue as usual, nLength as int ) as string
-	return PadC( uValue, nLength, " " )
-	
-function PadC( uValue as usual, nLength as dword ) as string
-	return PadC( uValue, (int) nLength, " " )
-	
-function PadC( uValue as usual, nLength as usual ) as string
-	return PadC( uValue, (int) nLength, " " )
-	
-function PadC( uValue as usual, nLength as int, cFillStr as string ) as string
-	if String.IsNullOrEmpty( cFillStr )
-		cFillStr := " "
+
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on both the right and left.
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function PadC( uValue as usual, nLength as int, cPad := " " as string ) as string
+	if String.IsNullOrEmpty( cPad )
+		cPad := " "
 	endif
 	
 	local ret     as string
@@ -260,39 +246,34 @@ function PadC( uValue as usual, nLength as int, cFillStr as string ) as string
 	if retlen > nLength
 		ret := ret:Remove( nLength )
 	else
-		ret := ret:PadLeft( ( nLength - retlen ) / 2, cFillStr[0] ):PadRight( nLength, cFillStr[0] )
+		ret := ret:PadLeft( ( nLength - retlen ) / 2, cPad[0] ):PadRight( nLength, cPad[0] )
 	endif
 	
 	return ret
+
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on both the right and left.
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function PadC( uValue as usual, nLength as dword, cPad := " " as string ) as string
+	return PadC( uValue, (int) nLength, cPad )
 	
-function PadC( uValue as usual, nLength as dword, cFillStr as string ) as string
-	return PadC( uValue, (int) nLength, cFillStr )
 	
-function PadC( uValue as usual, nLength as usual, cFillStr as string ) as string
-	return PadC( uValue, (int) nLength, cFillStr )
-	
-	
-	
-	/// <summary>
-	/// Pad character, numeric, and Date values with fill characters on the left.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <param name="nLen"></param>
-	/// <param name="cPad"></param>
-	/// <returns>
-	/// </returns>
-function PadL( uValue as usual, nLength as int ) as string
-	return PadL( uValue, nLength, " " )
-	
-function PadL( uValue as usual, nLength as dword ) as string
-	return PadL( uValue, (int) nLength, " " )
-	
-function PadL( uValue as usual, nLength as usual ) as string
-	return PadL( uValue, (int) nLength, " " )
-	
-function PadL( uValue as usual, nLength as int, cFillStr as string ) as string
-	if String.IsNullOrEmpty( cFillStr )
-		cFillStr := " "
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on the left.
+/// </summary>
+/// <param name="cSource"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function PadL( uValue as usual, nLength as int, cPad := " " as string ) as string
+	if String.IsNullOrEmpty( cPad )
+		cPad := " "
 	endif
 	local ret as string
 	if uValue:IsNumeric
@@ -300,40 +281,40 @@ function PadL( uValue as usual, nLength as int, cFillStr as string ) as string
 	else
 		ret := uValue:ToString()
 	endif
-	return iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cFillStr[0] ) )
+	return iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
 	
-function PadL( uValue as usual, nLength as dword, cFillStr as string ) as string
-	return PadL( uValue, (int) nLength, cFillStr )
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on the left.
+/// </summary>
+/// <param name="cSource"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function PadL( uValue as usual, nLength as dword, cPad := " " as string ) as string
+	return PadL( uValue, (int) nLength, cPad )
 	
-function PadL( uValue as usual, nLength as usual, cFillStr as string ) as string
-	return PadL( uValue, (int) nLength, cFillStr )
-	
-	
-	/// <summary>
-	/// Pad character, numeric, and Date values with fill characters on the right.
-	/// </summary>
-	/// <param name="cSource"></param>
-	/// <param name="nLen"></param>
-	/// <param name="cPad"></param>
-	/// <returns>
-	/// </returns>
-	
-function PadR( uValue as usual, nLength as int ) as string
-	return PadR( uValue, nLength, " " )
-	
-function PadR( uValue as usual, nLength as dword ) as string
-	return PadR( uValue, (int) nLength, " " )
-	
-function PadR( uValue as usual, nLength as usual ) as string
-	return PadR( uValue, (int) nLength, " " )
-	
-function PadR( uValue as usual, nLength as dword, cFillStr as string ) as string
-	return PadR( uValue, (int) nLength, cFillStr )
-	
-function PadR( uValue as usual, nLength as usual, cFillStr as string ) as string
-	return PadR( uValue, (int) nLength, cFillStr )
-	
-function PadR( uValue as usual, nLength as int, cFillStr as string ) as string
+
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on the right.
+/// </summary>
+/// <param name="uValue"></param>
+/// <param name="nLength"></param>
+/// <param name="cFillStr"></param>
+/// <returns>
+/// </returns>
+function PadR( uValue as usual, nLength as dword, cPad := " " as string ) as string
+	return PadR( uValue, (int) nLength, cPad )
+
+/// <summary>
+/// Pad character, numeric, and Date values with fill characters on the right.
+/// </summary>
+/// <param name="cSource"></param>
+/// <param name="nLength"></param>
+/// <param name="cPad"></param>
+/// <returns>
+/// </returns>
+function PadR( uValue as usual, nLength as int, cFillStr := " " as string ) as string
 	if String.IsNullOrEmpty( cFillStr )
 		cFillStr := " "
 	endif
@@ -346,17 +327,16 @@ function PadR( uValue as usual, nLength as int, cFillStr as string ) as string
 	endif
 	return iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cFillStr[0] ) )
 	
-	
+	 
 	
 /// <summary>
 /// Convert a numeric expression to a string.
 /// </summary>
 /// <param name="n"></param>
-/// <param name="nLen"></param>
+/// <param name="nLength"></param>
 /// <param name="nDec"></param>
-/// <returns>
-/// </returns>
-function Str(n ,nLen ,nDec ) as string
+/// <returns>The string with always a decimal separator that matches the current SetDecimalSep() setting.</returns>
+function Str(n ,nLen ,nDec ) as string CLIPPER
 	if PCount() < 1 .or. pCount() > 3
 		return ""
 	endif
@@ -368,7 +348,16 @@ function Str(n ,nLen ,nDec ) as string
 	endif
 	return result	
 
-function _Str(n ,nLen ,nDec ) as string
+
+/// <summary>
+/// Convert a numeric expression to a string.
+/// </summary>
+/// <param name="n"></param>
+/// <param name="nLength"></param>
+/// <param name="nDec"></param>
+/// <returns>The string with always a DOT as decimal separator.</returns>
+
+function _Str(n ,nLen ,nDec ) as string CLIPPER
 	if PCount() < 1 .or. pCount() > 3
 		return ""
 	endif
@@ -380,7 +369,7 @@ function _Str(n ,nLen ,nDec ) as string
 		if n:IsFloat
 			return Str1(n)
 		else
-			return StringHelpers.FormatNumber((int64), RuntimeState.Digits,0)
+			return StringHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
 		endif
 	case 2
 		if ! nLen:IsNumeric
@@ -389,7 +378,7 @@ function _Str(n ,nLen ,nDec ) as string
 		if n:IsFloat
 			return Str2(n, nLen)
 		else
-			return StringHelpers.FormatNumber((int64), nLen,0)
+			return StringHelpers.FormatNumber((int64) n, nLen,0)
 		endif
 	case 3
 		if ! nDec:IsNumeric
@@ -398,7 +387,7 @@ function _Str(n ,nLen ,nDec ) as string
 		if n:IsFloat
 			return Str3(n, nLen, nDec)
 		else
-			return StringHelpers.FormatNumber((int64), nLen,nDec)
+			return StringHelpers.FormatNumber((int64) n, nLen,nDec)
 		endif
 	end switch
 	return ""
@@ -606,4 +595,42 @@ FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS Float
 RETURN result
 
 
+
+
+
+/// <summary>
+/// Convert a string containing a numeric value to a numeric data type.
+/// </summary>
+/// <param name="c"></param>
+/// <returns>
+/// </returns>
+function Val(cNumber as string) as Usual
+	cNumber := cNumber:Trim()
+	IF String.IsNullOrEmpty(cNumber)
+		RETURN 0
+	ENDIF
+	LOCAL cDec AS CHAR
+	cDec := (CHAR) SetDecimalSep()
+	IF cNumber:Contains(cDec:ToString()) .or. cNumber:ToUpper():Contains("E") .or. cNumber:Contains(".")
+		local r8Result := 0 as Real8
+		if cDec != '.'
+			cNumber := cNumber:Replace(cDec, '.')
+		ENDIF
+		VAR style := NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent |  NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowThousands
+		IF System.Double.TryParse(cNumber, style, StringHelpers.usCulture, REF r8Result)
+			RETURN r8Result
+		endif
+	ELSE
+		LOCAL iResult := 0 AS INT64
+		VAR style := NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier
+		IF System.Int64.TryParse(cNumber, style, StringHelpers.usCulture, REF iResult)
+			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
+				RETURN (INT) iResult
+			ENDIF
+			return iResult
+		endif
+	ENDIF
+	return 0
+	
+		
 

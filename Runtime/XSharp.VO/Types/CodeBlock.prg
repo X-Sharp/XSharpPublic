@@ -9,8 +9,9 @@ using System.Linq
 using System.Diagnostics
 
 using System.Runtime.CompilerServices
-
-// Base class for runtime compiled macros and compiletime codeblocks
+	/// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
+	/// This type has method that normally are never directly called from user code.
+	/// </summary>
 [DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 abstract class XSharp.CodeBlock implements ICodeBlock
 	private initonly _pcount as int
@@ -34,10 +35,7 @@ abstract class XSharp.CodeBlock implements ICodeBlock
 		
 	public VIRTUAL method EvalBlock(args params object[] ) as object
 		var num := args:Length
-		var uArgs := usual[]{num}
-		for var i := 1 to num
-			uArgs[i] := (usual) args[i]
-		next
+		var uArgs := __ObjectArrayToUsualArray(args)
 		return self:Eval(uArgs)
 		
 	public override method ToString() as string
@@ -49,26 +47,32 @@ abstract class XSharp.CodeBlock implements ICodeBlock
          return iif( index < args:Length, args[index + 1], NIL )
 	end class
 
-// Base class for runtime compiled macros	
+
+/// <summary>Internal type that is the base class for compile time macros.
+/// </summary>
 [DebuggerDisplay( "{_cMacro}", Type := "_CODEBLOCK" )] ;
 public class XSharp._CodeBlock inherit XSharp.CodeBlock
 	protect _innerBlock as ICodeBlock 
-	protect _cMacro		as string
+	PROTECT _cMacro		AS STRING
+	protect _lIsBlock   as LOGIC
 
-	public constructor(innerBlock as ICodeBlock, cMacro as string)
+	public constructor(innerBlock as ICodeBlock, cMacro as string, lIsBlock as LOGIC)
 		super(innerBlock:Pcount())
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro
+		_lIsBlock   := lIsBlock
 		
-	public override method Eval(args params usual[]) as usual
-		var num := args:Length
-		var oArgs := object[]{num}
-		for var i := 1 to num
-			oArgs[i] := (object) args[i]
-		next
-		return (usual) self:_innerBlock:EvalBlock(oArgs)
+	PUBLIC OVERRIDE METHOD Eval(args PARAMS USUAL[]) AS USUAL
+		LOCAL uRes AS USUAL
+		LOCAL oRes as OBJECT
+		VAR oArgs := __UsualArrayToObjectArray(args)
+		oRes := SELF:_innerBlock:EvalBlock(oArgs)
+		uRes := __Usual{oRes}
+		return uRes
 	
 	public override method ToString() as string
-		return _cMacro
+		RETURN _cMacro
+	
+	public property IsBlock as LOGIC GET _lIsBlock
 end class
 

@@ -46,4 +46,3 @@ function DosErrString(nDosErr as dword) as string
 	return cResult
 
 
-

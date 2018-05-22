@@ -3,6 +3,12 @@ USING System.Globalization
 USING System.Resources
 
 
+function SetLiteral(dwRes as DWORD) as string
+	RETURN __CavoStr( dwRes )
+
+function GetStringDXAX(dwRes as dword) as string
+	return __CavoStr( dwRes )
+
 FUNCTION VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
 	RETURN VO_Sprintf( __CavoStr( format ), args )
 	

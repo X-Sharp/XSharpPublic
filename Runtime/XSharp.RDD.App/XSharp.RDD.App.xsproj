@@ -13,6 +13,7 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <OutputName>XSharp.RDD.App</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

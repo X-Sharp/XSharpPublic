@@ -7,15 +7,15 @@
 USING System.Collections.Generic
 USING System.Threading
 USING XSharp.RDD
+USING XSharp.RDD.Enums
 
-/// <Summary>
+/// <summary>
 /// Container Class that holds the XSharp Runtime state
-/// </Summary>
-/// <Remarks>
-/// Please note that unlike in Visual Objects and Vulcan.NET every thread has 
-/// its own copy of the runtime state.</br>
+/// </summary>
+/// <remarks>
+/// Please note that unlike in Visual Objects and Vulcan.NET every thread has its own copy of the runtime state.<br/>
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
-/// </Remarks>
+/// </remarks>
 
 
 CLASS XSharp.RuntimeState
@@ -26,11 +26,10 @@ CLASS XSharp.RuntimeState
 	static constructor
 		initialState	:= RuntimeState{true}
 		
-	/// <Summary>Retrieve the runtime state for the current thread</Summary>
+	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
-	/// <Summary>List of number - value pairs </Summary>
 	PRIVATE oSettings AS Dictionary<INT, OBJECT> 
 
 	PRIVATE CONSTRUCTOR(initialize as logic)       
@@ -99,25 +98,31 @@ CLASS XSharp.RuntimeState
 		END LOCK
 		RETURN oNew     
 		
-	/// <Summary>Retrieve state name</Summary>
-	/// <Returns>String value, such as "State for Thread 123"</Returns>
+	/// <summary>Retrieve state name</summary>
+	/// <returns>String value, such as "State for Thread 123"</returns>
 	PUBLIC PROPERTY Name AS STRING AUTO
+	/// <summary>Current Break Level. Gets set by compiler generated code for BEGIN SEQUENCE .. END constructs.</summary>
 	PUBLIC PROPERTY BreakLevel as INT AUTO
-	/// <Summary>ToString() override</Summary>
-	/// <Returns>String value, such as "State for Thread 123"</Returns>
+	/// <summary>ToString() override</summary>
+	/// <returns>String value, such as "State for Thread 123"</returns>
 	PUBLIC VIRTUAL METHOD ToString() AS STRING
 		RETURN SELF:Name
 
+	/// <summary>Retrieve a value from the state of the current Thread.</summary>
+	/// <param name="nSetting">Setting number to retrieve. Must be defined in the SET enum.</param>
+	/// <typeparam name="T">The return type expected for this setting.</typeparam>
+	/// <returns>The current value, or a default value of type T.</returns>
 	PUBLIC STATIC METHOD GetValue<T> (nSetting AS INT) AS T
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
 
+	/// <summary>Set a value for the state of the current Thread.</summary>
+	/// <param name="nSetting">Setting number to retrieve. Must be defined in the SET enum.</param>
+	/// <param name="oValue">The new value for the setting.</param>
+	/// <typeparam name="T">The return type expected for this setting.</typeparam>
+	/// <returns>The previous value, or a default value of type T when the setting was not yetr defined.</returns>
 	PUBLIC STATIC METHOD SetValue<T> (nSetting AS INT, oValue AS T) AS T
 		RETURN currentState:Value:_SetThreadValue<T>(nSetting, oValue)
 
-	/// <Summary>Get the value for a certain setting</Summary>
-	/// <param Name="nSetting"> The number of the setting to change</param>
-	/// <typeparam Name="T"> The expected return type of the value</typeparam>
-	/// <Returns>The new value</Returns>
 	PRIVATE METHOD _GetThreadValue<T> (nSetting AS INT) AS T
 		BEGIN LOCK oSettings
 			IF oSettings.ContainsKey(nSetting)
@@ -126,9 +131,6 @@ CLASS XSharp.RuntimeState
 		END LOCK
 		RETURN Default(T)
 
-	/// <Summary>Set the value for a certain setting</Summary>
-	/// <param Name="nSetting"> The number of the setting to change</param>
-	/// <param Name="oValue"> The new value of the setting.</param>
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS INT, oValue AS T) AS T
 		LOCAL result AS T
 		BEGIN LOCK oSettings
@@ -143,161 +145,179 @@ CLASS XSharp.RuntimeState
 
 	#region properties from the Vulcan RuntimeState that are emulated
 
+	/// <summary>The current compiler setting for the VO11 compiler option as defined when compiling the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
 	static property CompilerOptionVO11 as logic ;
         GET GetValue<LOGIC>(Set.OPTIONVO11);
         SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
 
+	/// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
 	static property CompilerOptionOVF as logic ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
-	
+
+	/// <summary>The current compiler setting for the FOVF compiler option as defined when compiling the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
 	static property CompilerOptionFOVF as logic ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
 
+	/// <summary>The System.Reflection.Module for the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
     STATIC PROPERTY AppModule AS  System.Reflection.Module;
         GET GetValue<System.Reflection.Module>(Set.AppModule);
         set SetValue<System.Reflection.Module>(Set.AppModule, value)
 	#endregion
 
+
+	/// <summary>The current ANSI setting</summary>
     STATIC PROPERTY @@Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
         SET SetValue<LOGIC>(Set.Ansi, VALUE)
 
-
-
+	/// <summary>The current AutoOrder setting (used by the RDD system).</summary>
     STATIC PROPERTY AutoOrder AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOrder);
         SET SetValue<LOGIC>(Set.AutoOrder, VALUE)
 
+	/// <summary>The current AutoOpen setting (used by the RDD system).</summary>
     STATIC PROPERTY AutoOpen AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOpen);
         SET SetValue<LOGIC>(Set.AutoOpen, VALUE)
 
+	/// <summary>The current AutoShareMode setting (used by the RDD system).</summary>
     STATIC PROPERTY AutoShareMode AS AutoShareMode ;
         GET GetValue<AutoShareMode>(Set.AutoShare);
         SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
 
+
+	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, VALUE)
 
+	/// <summary>The current Collation mode (used by the RDD system).</summary>
    STATIC PROPERTY CollationMode AS CollationMode ;
         GET GetValue<CollationMode>(Set.CollationMode);
         SET SetValue<CollationMode>(Set.CollationMode, VALUE)
 
+	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
    STATIC PROPERTY DateCountry AS INT ;
         GET GetValue<INT>(Set.DateCountry);
         SET SetValue<INT>(Set.DateCountry, VALUE)
 
-	/// <Summary>The current Date format</Summary>
-	/// <Remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br>
+	/// <summary>The current Date format</summary>
+	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
 	/// For example DD-MM-YYYY for italian date format, MM/DD/YYYY for American date format or DD/MM/YYYY for British Date format.
 	/// Note that all other characters except the four groups mentioned above are copied to the output string verbatim.
-	/// </Remarks>
-	/// <Returns>String value</Returns>
+	/// </remarks>
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(Value)
 
-	/// <Summary>The default number of decimals for new FLOAT values that are created without explicit decimals</Summary>
-	/// <Returns>DWORD value</Returns>
+	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
+
     STATIC PROPERTY Decimals AS LONG ;
         GET GetValue<LONG>(Set.DECIMALS);
         SET SetValue<LONG>(Set.DECIMALS, VALUE)
 
-	/// <Summary>The default number of decimals for new FLOAT values that are created without explicit decimals</Summary>
-	/// <Returns>DWORD value</Returns>
+	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
     STATIC PROPERTY DecimalSep AS WORD ;
         GET GetValue<WORD>(Set.DecimalSep);
         SET SetValue<WORD>(Set.DecimalSep, VALUE)
 
-	/// <Summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</Summary>
-	/// <Returns>Logic value</Returns>
+	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.DELETED);
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
 
-	/// <Summary>The default number of digits for new FLOAT values that are created without explicit decimals</Summary>
-	/// <Returns>DWORD value</Returns>
+	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
     STATIC PROPERTY Digits AS LONG ;
         GET GetValue<LONG>(Set.DIGITS);
         SET SetValue<LONG>(Set.DIGITS, VALUE)
 
-	/// <Summary>Date Epoch value that determines how dates without century digits are interpreted.</Summary>
-	/// <Returns>DWORD value</Returns>
+	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     STATIC PROPERTY Epoch AS DWORD ;
         GET GetValue<DWORD>(Set.EPOCH);
         SET SetValue<DWORD>(Set.EPOCH, VALUE)
 
+	/// <summary>Date Epoch Year value. This gets set by the SetEpoch() function to the Epoch year % 100.</summary>
     STATIC PROPERTY EpochYear AS DWORD ;
         GET GetValue<DWORD>(Set.EPOCHYEar)
 
+	/// <summary>Date Epoch Century value. This gets set by the SetEpoch() function to the century in which the Epoch year falls.</summary>
     STATIC PROPERTY EpochCent AS DWORD ;
         GET GetValue<DWORD>(Set.EPOCHCent)
 
 
-	/// <Summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</Summary>
-	/// <Returns>Logic value</Returns>
+	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
     STATIC PROPERTY Exact AS LOGIC ;
         GET GetValue<LOGIC>(Set.EXACT);
         SET SetValue<LOGIC>(Set.EXACT, VALUE)
 
-   STATIC PROPERTY FLoatDelta AS Real8 ;
+	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
+   STATIC PROPERTY FloatDelta AS Real8 ;
         GET GetValue<Real8>(Set.FloatDelta);
         SET SetValue<Real8>(Set.FloatDelta, VALUE)
 
+	/// <summary>Current SetInternational Setting.</summary>
      STATIC PROPERTY International AS CollationMode ;
         GET GetValue<CollationMode>(Set.Intl);
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
+	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     STATIC PROPERTY LockTries AS LONG ;
         GET GetValue<LONG>(Set.LOCKTRIES);
         SET SetValue<LONG>(Set.LOCKTRIES, VALUE)
 
+	/// <summary>The current default MemoBlock size.</summary>
     STATIC PROPERTY MemoBlockSize AS LONG ;
         GET GetValue<LONG>(Set.MEMOBLOCKSIZE);
         SET SetValue<LONG>(Set.MEMOBLOCKSIZE, VALUE)
 
 
+	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
     STATIC PROPERTY NetErr AS LOGIC;
         GET GetValue<LOGIC>(Set.NETERR);
         SET SetValue<LOGIC>(Set.NETERR, VALUE)
-	/// <Summary>RDD Optimize Flag</Summary>
-	/// <Returns>Logic value</Returns>
+
+	/// <summary>RDD Optimize Flag</summary>
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIMIZE);
         SET SetValue<LOGIC>(Set.OPTIMIZE, VALUE)
 
+	/// <summary>The current SetSoftSeek flag.</summary>
     STATIC PROPERTY SoftSeek AS LOGIC ;
-        GET GetValue<LOGIC>(Set.SoftSeek);
-        SET SetValue<LOGIC>(Set.SoftSeek, VALUE)
+        GET GetValue<LOGIC>(Set.SOFTSEEK);
+        SET SetValue<LOGIC>(Set.SOFTSEEK, VALUE)
 
-	/// <Summary>The default number of decimals for new FLOAT values that are created without explicit decimals</Summary>
-	/// <Returns>DWORD value</Returns>
+	/// <summary>The Thousand separator</summary>
     STATIC PROPERTY ThousandSep AS WORD ;
-        GET GetValue<WORD>(Set.ThousandSep);
-        SET SetValue<WORD>(Set.ThousandSep, VALUE)
+        GET GetValue<WORD>(Set.THOUSANDSEP);
+        SET SetValue<WORD>(Set.THOUSANDSEP, VALUE)
 
 
+	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     STATIC PROPERTY Unique AS LOGIC ;
-        GET GetValue<LOGIC>(Set.Unique);
-        SET SetValue<LOGIC>(Set.Unique, VALUE)
+        GET GetValue<LOGIC>(Set.UNIQUE);
+        SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
 
+	/// <summary>The name of the method that was called in the last late bound method call.</summary>
     STATIC PROPERTY NoMethod AS STRING ;
         GET GetValue<STRING>(Set.NoMethod);
         SET SetValue<STRING>(Set.NoMethod, VALUE)
 
 
 
-	STATIC METHOD SetInternational(mode AS CollationMode, force := FALSE AS LOGIC) AS VOID
-		IF mode != RuntimeState.International	.or. force
-			if mode == CollationMode.Clipper
-				currentState:Value:_SetInternationalClipper()				
-			ELSE
-				currentState:Value:_SetInternationalWindows()				
-			ENDIF
-		ENDIF
+//	STATIC METHOD SetInternational(mode AS CollationMode, force := FALSE AS LOGIC) AS VOID
+//		IF mode != RuntimeState.International	.or. force
+//			if mode == CollationMode.Clipper
+//				currentState:Value:_SetInternationalClipper()				
+//			ELSE
+//				currentState:Value:_SetInternationalWindows()				
+//			ENDIF
+//		ENDIF
 	internal method _SetInternationalClipper() as void
 		self:_SetThreadValue(Set.AMEXT, "")
 		self:_SetThreadValue(Set.PMEXT, "")
@@ -305,8 +325,8 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.Century, FALSE)
 		self:_SetThreadValue(Set.DateCountry, 1)
 		self:_SetThreadValue(Set.Decimals, 2)
-		self:_SetThreadValue(Set.DECIMALSEP, (word) 46) // .
-		self:_SetThreadValue(Set.THOUSANDSEP, (word) 44)	// ,
+		self:_SetThreadValue(Set.DECIMALSEP, (word) 46)		// DOT .
+		self:_SetThreadValue(Set.THOUSANDSEP, (word) 44)	// COMMA ,
 		self:_SetThreadValue(Set.DateFormat, "MM/DD/YYYY")
 		self:_SetThreadValue(Set.Intl, CollationMode.Clipper)
 
@@ -316,9 +336,9 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
 		var separator := dtInfo:TimeSeparator
 		if String.IsNullOrEmpty(separator)
-			self:_SetThreadValue(Set.TimeSep, (dword) 0)
+			self:_SetThreadValue(Set.TimeSep, (word) 0)
 		else
-			self:_SetThreadValue(Set.TimeSep, (dword) separator[0])
+			self:_SetThreadValue(Set.TimeSep, (word) separator[0])
 		endif
 		self:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
@@ -332,6 +352,8 @@ CLASS XSharp.RuntimeState
 			dateformat		:= dateformat:Replace("dd", "d")
 		ENDIF
 		_SetThreadValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
+		_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
 		self:_SetThreadValue(Set.DateFormat,  dateformat)
 		self:_SetThreadValue(Set.DateCountry, 1)
@@ -383,6 +405,7 @@ CLASS XSharp.RuntimeState
 		END SWITCH
 
 	private _workareas as WorkAreas
+	/// <summary>The workarea information for the current Thread.</summary>
 	public property Workareas as WorkAreas
 	get
 		if _workareas == null_object
@@ -390,7 +413,11 @@ CLASS XSharp.RuntimeState
 		endif
 		return _workareas
 	end get
-	end property
+	END PROPERTY
+
+	STATIC PRIVATE _macrocompiler AS System.Type
+	public STATIC property MacroCompiler as System.Type GET _macrocompiler SET _macrocompiler := Value
+
 END CLASS
 
 

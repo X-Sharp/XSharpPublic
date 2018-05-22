@@ -29,7 +29,7 @@ VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}
 
-VIRTUAL METHOD OpenMemFile( ) AS LOGIC
+VIRTUAL METHOD OpenMemFile( info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}
 
 VIRTUAL PROPERTY SysName AS STRING GET typeof(DbfMemo):ToString()

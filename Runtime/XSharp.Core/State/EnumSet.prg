@@ -5,7 +5,7 @@
 //
 using XSharp
 BEGIN NAMESPACE XSharp
-	/// <Summary>Values that match the Visual Objects SET_* defines </Summary>
+	/// <summary>Values that match the Visual Objects SET_* defines </summary>
 	ENUM Set                                
 		MEMBER EXACT       := 1			// LOGIC
 		MEMBER FIXED	   := 2			// LOGIC
@@ -81,7 +81,9 @@ BEGIN NAMESPACE XSharp
 		member APPMODULE	:= 77	// System.Reflection.Module
 		MEMBER PATHARRAY    := 78	// String[]
 		MEMBER NatDLL		:= 79   // string
-		member CollationTable := 80  // byte[]
+		MEMBER CollationTable := 80  // byte[]
+		MEMBER ErrorLevel   := 81  // DWORD
+		member ErrorBlock   := 82  // CodeBlock
 
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC

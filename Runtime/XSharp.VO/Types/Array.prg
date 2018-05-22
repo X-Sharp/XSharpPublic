@@ -11,17 +11,22 @@ using System.Reflection
 using System.Text
 using XSharp
 begin namespace XSharp	
-	
+	/// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
+	/// This type has methods and properties that normally are never directly called from user code.
+	/// </summary>
 	[DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
 	[DebuggerTypeProxy(typeof(ArrayDebugView))];
 	public sealed class __Array inherit __ArrayBase<usual>
 		
+		/// <inheritdoc />
 		constructor()
 			super()
 		
+		/// <inheritdoc />
 		constructor(capacity as dword)
 			super(capacity)
 
+		/// <inheritdoc />
 		constructor( elements as usual[] )
 			self()
 			if elements == null
@@ -31,6 +36,7 @@ begin namespace XSharp
 			_internalList:AddRange(elements) 
 			return
 		
+		/// <inheritdoc />
 		constructor( elements as object[] )
 			self()
 			if elements == null
@@ -45,7 +51,7 @@ begin namespace XSharp
 			next
 			return
 		
-		public static method ArrayCreate(dimensions params int[] ) as Array
+		internal static method ArrayCreate(dimensions params int[] ) as Array
 			local count := dimensions:Length as int
 			if count <= 0
 				throw ArgumentException{"No dimensions provided."}
@@ -64,7 +70,7 @@ begin namespace XSharp
 			endif
 			return arrayNew
 		
-		public static method __ArrayNew( dimensions params int[] ) as __Array
+		internal static method __ArrayNew( dimensions params int[] ) as __Array
 			local newArray as Array 
 			if dimensions:Length != 0 
 				newArray := __ArrayNewHelper(dimensions,1)
@@ -73,7 +79,7 @@ begin namespace XSharp
 			endif
 			return newArray
 		
-		public static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
+		internal static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
 			local capacity  as dword // one based ?
 			local newArray as Array
 			capacity := (dword) dimensions[currentDim]
@@ -108,6 +114,7 @@ begin namespace XSharp
 		internal method CloneShallow() as Array
 			return (Array) super:Clone()
 
+			/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
 		public property self[i as dword, j as dword, k as DWORD] as usual
 			get
 				return __GetElement((int)i,(int)j, (int) k)
@@ -117,6 +124,7 @@ begin namespace XSharp
 			end set
 		end property
 
+		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
 		public property self[i as dword, j as dword] as usual
 			get
 				return __GetElement((int)i,(int)j)
@@ -126,6 +134,7 @@ begin namespace XSharp
 			end set
 		end property
 	
+		/// <inheritdoc />
 		new property self[index as dword] as usual
 			get
 				return __GetElement((int)index)
@@ -135,15 +144,13 @@ begin namespace XSharp
 			end set
 		end property
 		
-		new public method Swap(position as dword, element as usual) as usual
+		new internal method Swap(position as dword, element as usual) as usual
 			return super:Swap(position, element)
 
-		new public method Swap(position as int, element as usual) as usual
+		new internal method Swap(position as int, element as usual) as usual
 			return super:Swap(position, element)
 
-		///
-		/// <Summary>Access the array element using ZERO based array index</Summary>
-		///
+		/// <inheritdoc />
 		public method __GetElement(index params int[]) as usual
 			local indexLength := index:Length as int
 			local currentArray := self as Array
@@ -159,7 +166,8 @@ begin namespace XSharp
 				endif
 				currentArray := (Array) u
 			next
-			return currentArray:_internalList[ index[i] ]
+			RETURN currentArray:_internalList[ index[i] ]
+
 		internal method DebuggerString() as string
 			local sb as StringBuilder
 			local cnt, tot as long
@@ -183,6 +191,9 @@ begin namespace XSharp
 			next		
 			sb:Append("}")
 			return sb:ToString()
+
+
+		/// <inheritdoc />
 		public method __SetElement(u as usual, index params int[] ) as usual
 			// indices are 0 based
 			if self:CheckLock()
@@ -199,14 +210,47 @@ begin namespace XSharp
 				currentArray:_internalList[index[length]] := u
 			endif
 			return u
-		
+
+			internal STATIC METHOD Copy(aSource AS Array,aTarget AS Array,;
+				start AS DWORD, sourceLen as DWORD, offSet as dword, targetLen as dword ) AS Void
+				LOCAL x AS DWORD
+				// Adjust
+				start-=1
+				offSet-=1
+				sourceLen-=1
+				targetLen-=1
+				IF start < sourceLen 
+					 FOR x := start UPTO sourceLen
+						aTarget:_InternalList[(INT) offSet] := aSource:_InternalList[(INT) x]
+						offSet++
+						IF offSet > targetLen
+						   EXIT
+						ENDIF
+					 NEXT           
+				  ELSE
+					 FOR x := start DOWNTO sourceLen
+						aTarget:_InternalList[(INT) offSet] := aSource:_InternalList[(INT) x]
+						offSet++
+						IF offSet > targetLen
+						   EXIT
+						ENDIF
+					 NEXT           
+				  ENDIF
+				return				
+
+			new internal method Sort(startIndex as int, count as int, comparer as IComparer<__USUAL>) as void
+			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
+			return
+
+
 		internal class ArrayDebugView
 			private _value as Array
 			public constructor (a as Array)
 				_value := a
 			//[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
 			public property Elements as List<usual> get _value:_internalList
-			
+		
+		
 		end class
 		
 	end	class

@@ -8,571 +8,633 @@
 // And also all the OldSpace functions
 
 [Obsolete( "'DynMemDump()' is not supported and always returns FALSE" )] ;
-function DynMemDump(cFile as string,nOptions as dword) as logic
-    return false   
-
+FUNCTION DynMemDump(cFile AS STRING,nOptions AS DWORD) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'DynCheckError()' is not supported and always returns 0" )] ;
-function DynCheckError() as dword
-    return 0
-
+FUNCTION DynCheckError() AS DWORD
+	RETURN 0
+	
 [Obsolete( "'DynInfoFree()' is not supported and always returns 0" )] ;
-function DynInfoFree() as dword
-    return 0
-
+FUNCTION DynInfoFree() AS DWORD
+	RETURN 0
+	
 [Obsolete( "'DynInfoMax()' is not supported and always returns 0" )] ;
-function DynInfoMax() as dword
-    return 0
-
+FUNCTION DynInfoMax() AS DWORD
+	RETURN 0
+	
 [Obsolete( "'DynInfoSize()' is not supported and always returns 0" )] ;
-function DynInfoSize() as dword
-    return 0
-
+FUNCTION DynInfoSize() AS DWORD
+	RETURN 0
+	
 [Obsolete( "'DynInfoUsed()' is not supported and always returns 0" )] ;
-function DynInfoUsed() as dword
-    return 0
-
+FUNCTION DynInfoUsed() AS DWORD
+	RETURN 0
+	
 [Obsolete( "'DynLock()' is not supported and has no effect" )] ;
-function DynLock() as void
-    return
-
+FUNCTION DynLock() AS VOID
+	RETURN
+	
 [Obsolete( "'DynProtect()' is not supported and always returns FALSE" )] ;
-function DynProtect( lSet as logic ) as logic
-    return false
-
+FUNCTION DynProtect( lSet AS LOGIC ) AS LOGIC
+	RETURN FALSE
+	
 [Obsolete( "'DynShrink()' is not supported and always returns 0" )] ;
-function DynShrink() as dword
-    return 0
-
+FUNCTION DynShrink() AS DWORD
+	RETURN 0
+	
 [Obsolete( "'DynSize()' is not supported and always returns 0" )] ;
-function DynSize() as dword
-    return 0
-
-
+FUNCTION DynSize() AS DWORD
+	RETURN 0
+	
+	
 [Obsolete( "DynStack2Array() is not supported and returns an empty array")] ; 
-function DynStack2Array() as array
-    return null_array   
-
-
+FUNCTION DynStack2Array() AS ARRAY
+	RETURN NULL_ARRAY   
+	
+	
 [Obsolete( "DynToOldSpace() is not supported and returns the original usual")] ; 
-function DynToOldSpace( u as usual ) as usual
-    return u
-
+FUNCTION DynToOldSpace( u AS USUAL ) AS USUAL
+	RETURN u
+	
 [Obsolete( "DynToOldSpaceArray() is not supported and returns the original array")] ; 
-function DynToOldSpaceArray( a as array ) as array
-    return a
-
+FUNCTION DynToOldSpaceArray( a AS ARRAY ) AS ARRAY
+	RETURN a
+	
 [Obsolete( "DynToOldSpaceFloat() is not supported and returns the original float" )] ; 
-function DynToOldSpaceFloat( f as float ) as float
-    return f
-
+FUNCTION DynToOldSpaceFloat( f AS FLOAT ) AS FLOAT
+	RETURN f
+	
 [Obsolete( "DynToOldSpaceObject() is not supported and returns the original object" )] ; 
-function DynToOldSpaceObject( o as object ) as object
-    return o
-
+FUNCTION DynToOldSpaceObject( o AS OBJECT ) AS OBJECT
+	RETURN o
+	
 [Obsolete( "DynToOldSpaceString() is not supported and returns the original string" )] ; 
-function DynToOldSpaceString( s as string ) as string
-    return s
-
+FUNCTION DynToOldSpaceString( s AS STRING ) AS STRING
+	RETURN s
+	
 [Obsolete( "'DynUnlock()' is not supported and has no effect" )] ;
-function DynUnLock() as void
-    return
-
-
+FUNCTION DynUnLock() AS VOID
+	RETURN
+	
+	
 [Obsolete( "'IsOldSpaceFloat()' is not supported and always returns FALSE" )] ;
-function IsOldSpaceFloat(f as float) as logic
-    return false   
-
-
+FUNCTION IsOldSpaceFloat(f AS FLOAT) AS LOGIC
+	RETURN FALSE   
+	
+	
 [Obsolete( "'IsOldSpaceString()' is not supported and always returns FALSE" )] ;
-function IsOldSpaceString(c as string) as logic
-    return false 
-
-
+FUNCTION IsOldSpaceString(c AS STRING) AS LOGIC
+	RETURN FALSE 
+	
+	
 [Obsolete( "'OldSpaceFreeFloat()' is not supported and has no effect")] ;
-function OldSpaceFreeFloat(f as float) as void
-    return
-
-
-
+FUNCTION OldSpaceFreeFloat(f AS FLOAT) AS VOID
+	RETURN
+	
+	
+	
 [Obsolete( "'ReDal()' is not supported and has no effect" )] ;
-function ReDal() as void
-    return
-
-
-
+FUNCTION ReDal() AS VOID
+	RETURN
+	
+	
+	
 [Obsolete( "'RTExit()' is not supported and always returns 0" )] ;
-function RTExit() as dword
-    return 0   
-
+FUNCTION RTExit() AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'RegisterKid()' is not supported and has no effect" )] ;
-function RegisterKid(ptrKid as IntPtr,dwCount as dword,lItem as logic) as void
-    return
-
+FUNCTION RegisterKid(ptrKid AS IntPtr,dwCount AS DWORD,lItem AS LOGIC) AS VOID
+	RETURN
+	
 [Obsolete( "'FreeStaticObject()' is not supported and always returns FALSE" )] ;
-function FreeStaticObject(o as object) as logic
-    return false   
-
-
+FUNCTION FreeStaticObject(o AS OBJECT) AS LOGIC
+	RETURN FALSE   
+	
+	
 [Obsolete( "'Memory()' is not supported and always returns 0" )] ;
-function Memory(iFunc as int) as dword
-	return 0   
-
+FUNCTION Memory(iFunc AS INT) AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'OldSpaceFree()' is not supported and has no effect" )] ;
-function OldSpaceFree(u as usual) as void
-    return
-
+FUNCTION OldSpaceFree(u AS USUAL) AS VOID
+	RETURN
+	
 [Obsolete( "'OldSpaceFreeObject()' is not supported and has no effect" )] ;
-function OldSpaceFreeObject(o as object) as void
-    return
-
-
+FUNCTION OldSpaceFreeObject(o AS OBJECT) AS VOID
+	RETURN
+	
+	
 [Obsolete( "'IsOldSpaceArray()' is not supported and always returns FALSE" )] ;
-function IsOldSpaceArray(a as array) as logic
-    return false   
-
+FUNCTION IsOldSpaceArray(a AS ARRAY) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'OldSpaceFreeArray()' is not supported and has no effect" )] ;
-function OldSpaceFreeArray(a as array) as void
-    return 
-
+FUNCTION OldSpaceFreeArray(a AS ARRAY) AS VOID
+	RETURN 
+	
 [Obsolete( "'IsOldSpace()' is not supported and always returns FALSE" )] ;
-function IsOldSpace(u as usual) as logic
-    return false   
-
+FUNCTION IsOldSpace(u AS USUAL) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'IsOldSpaceObject()' is not supported and always returns FALSE" )] ;
-function IsOldSpaceObject(o as object) as logic
-    return false   
-
+FUNCTION IsOldSpaceObject(o AS OBJECT) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'MemCheckPtr()' is not supported and always returns TRUE" )] ;
-unsafe	 function MemCheckPtr( pMemory as ptr, dwSize as dword ) as logic
-return true
-
-
+UNSAFE	 FUNCTION MemCheckPtr( pMemory AS PTR, dwSize AS DWORD ) AS LOGIC
+	RETURN	 TRUE
+	
+	
 [Obsolete( "'SetKidStackSize()' is not supported and always returns 0" )] ;
-function SetKidStackSize(dwBytes as dword) as dword
-    return 0   
-
+FUNCTION SetKidStackSize(dwBytes AS DWORD) AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'SetMaxDynSize()' is not supported and always returns 0" )] ;
-function SetMaxDynSize(dwBytes as dword) as dword
-    return 0   
-
+FUNCTION SetMaxDynSize(dwBytes AS DWORD) AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'SetMaxRegisteredAxitMethods()' is not supported and always returns 0" )] ;
-function SetMaxRegisteredAxitMethods(dwCount as dword) as dword
-    return 0   
-
+FUNCTION SetMaxRegisteredAxitMethods(dwCount AS DWORD) AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'SetMaxRegisteredKids()' is not supported and always returns 0" )] ;
-function SetMaxRegisteredKids(dwCount as dword) as dword
-    return 0   
-
+FUNCTION SetMaxRegisteredKids(dwCount AS DWORD) AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'SetMaxThreadDynSize()' is not supported and always returns 0" )] ;
-function SetMaxThreadDynSize(dwBytes as dword) as dword
-    return 0   
-
+FUNCTION SetMaxThreadDynSize(dwBytes AS DWORD) AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'SetWipeDynSpace()' is not supported and always returns FALSE" )] ;
-function SetWipeDynSpace(lWipe as logic) as logic
-    return false   
-
-
+FUNCTION SetWipeDynSpace(lWipe AS LOGIC) AS LOGIC
+	RETURN FALSE   
+	
+	
 [Obsolete( "'PtrLen()' is not supported and always returns 0" )] ;
-function PtrLen( lpv as IntPtr ) as dword
-    return 0
-
+FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
+	RETURN 0
+	
 [Obsolete( "'PtrLenWrite()' is not supported and always returns 0" )] ;
-function PtrLenWrite( lpv as IntPtr ) as dword
-    return 0
-
-
+FUNCTION PtrLenWrite( lpv AS IntPtr ) AS DWORD
+	RETURN 0
+	
+	
 [Obsolete( "'ExitVOThread()' is not supported and has no effect" )] ;
-function ExitVOThread(nRetVal as int) as void
-    return   
-
-
+FUNCTION ExitVOThread(nRetVal AS INT) AS VOID
+	RETURN   
+	
+	
 [Obsolete( "'WriteAtomTable()' is not supported always returns 0" )] ;
-function WriteAtomTable(hf as dword) as dword
-    return 0  
-
+FUNCTION WriteAtomTable(hf AS DWORD) AS DWORD
+	RETURN 0  
+	
 [Obsolete( "'CreateVOThread()' is not supported always returns IntPtr.Zero" )] ;
-function CreateVOThread(pSecAttr as IntPtr,nStackSize as dword,pFunc as IntPtr,pParam as IntPtr,dwFlags as dword,pdwID ref dword ) as IntPtr
-    return IntPtr.Zero
-
-
+FUNCTION CreateVOThread(pSecAttr AS IntPtr,nStackSize AS DWORD,pFunc AS IntPtr,pParam AS IntPtr,dwFlags AS DWORD,pdwID REF DWORD ) AS IntPtr
+	RETURN IntPtr.Zero
+	
+	
 [Obsolete( "'StrEvaluate()' is not supported" )] ;
-function StrEvaluate( s as string ) as string
-   return s
-
+FUNCTION StrEvaluate( s AS STRING ) AS STRING
+	RETURN s
+	
 [Obsolete( "'TerminateVOThread()' is not supported always returns FALSE" )] ;
-function TerminateVOThread(pH as IntPtr,dwCode as dword) as logic
-    return false   
-
-
+FUNCTION TerminateVOThread(pH AS IntPtr,dwCode AS DWORD) AS LOGIC
+	RETURN FALSE   
+	
+	
 [Obsolete( "'Usual2Variant()' is not supported always returns FALSE" )] ;
-function Usual2Variant(pItem as IntPtr,pvarg as IntPtr) as logic
-    return false   
-
+FUNCTION Usual2Variant(pItem AS IntPtr,pvarg AS IntPtr) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'Variant2Usual()' is not supported always returns FALSE" )] ;
-function Variant2Usual(pvarg as IntPtr,pItem as IntPtr) as logic
-    return false 
-
-
-
+FUNCTION Variant2Usual(pvarg AS IntPtr,pItem AS IntPtr) AS LOGIC
+	RETURN FALSE 
+	
+	
+	
 [Obsolete( "'UnRegisterKid()' is not supported always returns FALSE" )];
-function UnRegisterKid(ptrKid as IntPtr) as logic
-    return false   
-
+FUNCTION UnRegisterKid(ptrKid AS IntPtr) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'UnRegisterKid()' is not supported always returns 0" )];
-function VOSendMessage(hwnd as IntPtr,nMsg as dword,dwParam as dword,lParam as long) as long
-    return 0	
-
-
+FUNCTION VOSendMessage(hwnd AS IntPtr,nMsg AS DWORD,dwParam AS DWORD,lParam AS LONG) AS LONG
+	RETURN 0	
+	
+	
 [Obsolete( "'LabelJump()' is not supported and has no effect" )] ;
-function LabelJump(uError as usual) as usual
-    return NIL   
-
+FUNCTION LabelJump(uError AS USUAL) AS USUAL
+	RETURN NIL   
+	
 [Obsolete( "'LabelPush()' is not supported and has no effect" )] ;
-function LabelPop() as void
-    return
-
-
+FUNCTION LabelPop() AS VOID
+	RETURN
+	
+	
 [Obsolete( "'LabelPush()' is not supported and has no effect" )] ;
-function LabelPush(ptrLabel as IntPtr) as void
-    return 
-
+FUNCTION LabelPush(ptrLabel AS IntPtr) AS VOID
+	RETURN 
+	
 [Obsolete( "'IsVOString()' is not supported always returns FALSE" )];
-function IsVOString(cString as string) as logic
-    return false   
-
-
+FUNCTION IsVOString(cString AS STRING) AS LOGIC
+	RETURN FALSE   
+	
+	
 [Obsolete( "'Multi2Wide()' is not supported always returns the original string" )];
-function Multi2Wide(c as string) as string
-    return c
-
+FUNCTION Multi2Wide(c AS STRING) AS STRING
+	RETURN c
+	
 [Obsolete( "'Wide2Multi()' is not supported always returns the original string" )];
-function Wide2Multi(cBstr as string) as string
-    return cBStr
-
+FUNCTION Wide2Multi(cBstr AS STRING) AS STRING
+	RETURN cBStr
+	
 [Obsolete( "'OldSpaceFreeString()' is not supported and has no effect" )] ;
-function OldSpaceFreeString(c as string) as void
-    return
-
+FUNCTION OldSpaceFreeString(c AS STRING) AS VOID
+	RETURN
+	
 [Obsolete( "'DbcsNext()' is not supported and always returns NULL_PSZ" )] ;
-function DbcsNext(pszSource as psz) as psz
-    return IntPtr.Zero
-
+FUNCTION DbcsNext(pszSource AS PSZ) AS PSZ
+	RETURN IntPtr.Zero
+	
 [Obsolete( "'DbcsPrev()' is not supported and always returns NULL_PSZ" )] ;
-function DbcsPrev(pszSource as psz,pszCurr as psz) as psz
-    return IntPtr.Zero
-
-
+FUNCTION DbcsPrev(pszSource AS PSZ,pszCurr AS PSZ) AS PSZ
+	RETURN IntPtr.Zero
+	
+	
 [Obsolete( "'KillAtomTable()' is not supported and has no effect")] ;
-function KillAtomTable() as void
-    return	
-
+FUNCTION KillAtomTable() AS VOID
+	RETURN	
+	
 [Obsolete( "'LeaveCGCSection()' is not supported and has no effect")] ;
-function LeaveCGCSection() as void
-    return
-
+FUNCTION LeaveCGCSection() AS VOID
+	RETURN
+	
 [Obsolete( "'EnterCGCSection()' is not supported and has no effect")] ;
-function EnterCGCSection() as void
-    return  
-
-
+FUNCTION EnterCGCSection() AS VOID
+	RETURN  
+	
+	
 [Obsolete( "'KidStackFree()' is not supported and always returns 0" )] ;
-function KidStackFree() as dword
-    return 0   
-
+FUNCTION KidStackFree() AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'KidStackSize()' is not supported and always returns 0" )] ;
-function KidStackSize() as dword
-    return 0   
-
-
+FUNCTION KidStackSize() AS DWORD
+	RETURN 0   
+	
+	
 [Obsolete( "'LongJmp()' is not supported and has no effect" )] ;
-function LongJmp(strucMark as IntPtr,n as int) as void
-    return
-
-
-
+FUNCTION LongJmp(strucMark AS IntPtr,n AS INT) AS VOID
+	RETURN
+	
+	
+	
 [Obsolete( "'VOEnterCriticalSection()' is not supported and has no effect" )] ;
-function VOEnterCriticalSection(lpCriticalSection as IntPtr) as void
-    return
-
+FUNCTION VOEnterCriticalSection(lpCriticalSection AS IntPtr) AS VOID
+	RETURN
+	
 [Obsolete( "'VOLeaveCriticalSection()' is not supported and has no effect" )] ;	
-function VOLeaveCriticalSection(lpCriticalSection as IntPtr) as void
-    return
-
-
-
+FUNCTION VOLeaveCriticalSection(lpCriticalSection AS IntPtr) AS VOID
+	RETURN
+	
+	
+	
 [Obsolete( "'AtomExit()' is not supported and always returns 0" )] ;
-function AtomExit() as dword
-    return 0   
-
+FUNCTION AtomExit() AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'AtomInit()' is not supported and always returns 0" )] ;
-function AtomInit() as dword
-    return 0   
-
+FUNCTION AtomInit() AS DWORD
+	RETURN 0   
+	
 [Obsolete( "'AtomTableSetDirty()' is not supported and always returns FALSE" )] ;
-function AtomTableGetDirty() as logic
-    return false   
-
+FUNCTION AtomTableGetDirty() AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'AtomTableSetDirty()' is not supported and always returns 0" )] ;
-function AtomTableSetDirty(f as logic) as dword
-    return 0   
-
-
-
+FUNCTION AtomTableSetDirty(f AS LOGIC) AS DWORD
+	RETURN 0   
+	
+	
+	
 [Obsolete( "'AllocInstance()' is not supported and returns the same as CreateInstance" )] ;
-function AllocInstance(symClassName as usual) as object
-    return CreateInstance(symClassName)
-
+FUNCTION AllocInstance(symClassName AS USUAL) AS OBJECT
+	RETURN CreateInstance(symClassName)
+	
 [Obsolete( "'AllocInstanceStatic()' is not supported and returns the same as CreateInstance" )] ;
-function AllocInstanceStatic(symClassName as usual) as object
-    return CreateInstance(symClassName)
-
-
-
-
-
-
+FUNCTION AllocInstanceStatic(symClassName AS USUAL) AS OBJECT
+	RETURN CreateInstance(symClassName)
+	
+	
 [Obsolete( "'CreateInstanceStatic()' is not supported and returns the same as CreateInstance" )] ;
-function CreateInstanceStatic(symClassName as usual) as object
-    return CreateInstance(symClassName)
-
+FUNCTION CreateInstanceStatic(args PARAMS USUAL[]) AS OBJECT 
+	RETURN CreateInstance(args)
+	
 [Obsolete( "'MathCheck()' is not supported and always returns FALSE" )] ;
-function MathCheck() as logic
-    return false   
-
+FUNCTION MathCheck() AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'MathInit()' is not supported and has no effect" )] ;
-function MathInit() as void
-    return
-
+FUNCTION MathInit() AS VOID
+	RETURN
+	
 [Obsolete( "'MyDal()' is not supported and has no effect" )] ;
-function MyDal() as void
-    return
-
+FUNCTION MyDal() AS VOID
+	RETURN
+	
 [Obsolete( "'MyDalFloat()' is not supported and has no effect" )] ;
-function MyDalFloat() as void
-    return
-
+FUNCTION MyDalFloat() AS VOID
+	RETURN
+	
 [Obsolete( "'MyDalFloatFSTP()' is not supported and has no effect" )] ;
-function MyDalFloatFSTP() as void
-    return
-
+FUNCTION MyDalFloatFSTP() AS VOID
+	RETURN
+	
 [Obsolete( "'MyDalPtr()' is not supported and has no effect" )] ;
-function MyDalPtr() as void
-    return
-
-
-
+FUNCTION MyDalPtr() AS VOID
+	RETURN
+	
+	
+	
 [Obsolete( "'DynAllocEnd()' is not supported and has no effect" )] ;
-function DynAllocEnd() as void
-    return  
-
+FUNCTION DynAllocEnd() AS VOID
+	RETURN  
+	
 [Obsolete( "'DynAllocStart()' is not supported and always returns 0" )] ;
-function DynAllocStart() as dword
-    return 0   
-
-
+FUNCTION DynAllocStart() AS DWORD
+	RETURN 0   
+	
+	
 [Obsolete( "'DynCheckErrorInfo()' is not supported and always returns 0" )] ;
-function DynCheckErrorInfo() as dword
-    return 0   
-
-
-
+FUNCTION DynCheckErrorInfo() AS DWORD
+	RETURN 0   
+	
+	
+	
 [Obsolete( "'DynCheckErrorInfo()' is not supported and always returns NULL_SYMBOL" )] ;
-function DynCheckErrorSym() as symbol
-    return null_symbol   
-
-
-
-
+FUNCTION DynCheckErrorSym() AS SYMBOL
+	RETURN NULL_SYMBOL   
+	
+	
+	
+	
 [Obsolete( "'CreateGCDump()' is not supported and always returns 0" )] ;
-function CreateGCDump(pDump as IntPtr,nValType as dword) as dword
-    return 0   
-
-
-
+FUNCTION CreateGCDump(pDump AS IntPtr,nValType AS DWORD) AS DWORD
+	RETURN 0   
+	
+	
+	
 [Obsolete( "'DBToSB()' is not supported" )] ;
-function DBToSB(c as string) as string
-    return string.Empty 
-
+FUNCTION DBToSB(c AS STRING) AS STRING
+	RETURN string.Empty 
+	
 [Obsolete( "'ToHira()' is not supported" )] ;
-function ToHira(c as string) as string
-    return String.Empty   
-
+FUNCTION ToHira(c AS STRING) AS STRING
+	RETURN String.Empty   
+	
 [Obsolete( "'ToJNum()' is not supported" )] ;
-function ToJNum(c as string) as string
-    return String.Empty   
-
-
+FUNCTION ToJNum(c AS STRING) AS STRING
+	RETURN String.Empty   
+	
+	
 [Obsolete( "'ToKata()' is not supported" )] ;
-function ToKata(c as string) as string
-    return String.Empty  
-
-
+FUNCTION ToKata(c AS STRING) AS STRING
+	RETURN String.Empty  
+	
+	
 [Obsolete( "'IsKanji()' is not supported" )] ;
-function IsKanji(c as string) as logic
-    return false   
-
+FUNCTION IsKanji(c AS STRING) AS LOGIC
+	RETURN FALSE   
+	
 [Obsolete( "'WagnerInit()' is not supported and always returns 0" )] ;
-function WagnerInit() as dword
-    return     0   
-
-
+FUNCTION WagnerInit() AS DWORD
+	RETURN     0   
+	
+	
 [Obsolete( "'WagnerExit()' is not supported and always returns 0" )] ;
-function WagnerExit() as dword
-    return     0   
-
-
+FUNCTION WagnerExit() AS DWORD
+	RETURN     0   
+	
+	
 [Obsolete( "'Buffer()' is not supported, use MemAlloc() and MemFree() instead" )] ;
 FUNCTION Buffer( n AS DWORD ) AS STRING
-  return null
-
+	RETURN NULL
+	
 [Obsolete( "'GetPrivPtr()' is not supported and always returns IntPtr.Zero" )] ;
 FUNCTION GetPrivPtr() AS IntPtr
 	RETURN IntPtr.Zero   
-
+	
 [Obsolete( "'GetStgServer()' is not supported and always returns ''" )] ;
 FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
 	RETURN String.Empty   
-
+	
 [Obsolete( "'FxOpen()' is not supported and always returns IntPtr.Zero" )] ;
-function FxOpen(cFile as string,dwMode as dword,cPath as string) as IntPtr
-	return IntPtr.Zero
-
+FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS IntPtr
+	RETURN IntPtr.Zero
+	
 [Obsolete( "'ErrorBuild()' is not supported and always returns an empty Error Object" )] ;
-function ErrorBuild(pErrInfo as IntPtr) as XSharp.ERROR
-	return  XSharp.Error{ES_ERROR,0}
-
-
+FUNCTION ErrorBuild(pErrInfo AS IntPtr) AS XSharp.ERROR
+	RETURN  XSharp.Error{ES_ERROR,0}
+	
+	
 [Obsolete( "'ErrorExec()' is not supported and always returns NIL" )] ;
-function ErrorExec(pErrInfo as IntPtr) as Usual
-return NIL   
-
-
+FUNCTION ErrorExec(pErrInfo AS IntPtr) AS USUAL
+	RETURN	 NIL   
+	
+	
 [Obsolete( "'JNTOCMONTH()' is not supported and always returns ''" )] ;
 FUNCTION JNTOCMONTH(wMonth AS WORD) AS STRING
 	RETURN String.Empty   
-
+	
 [Obsolete( "'JNTOCYEAR()' is not supported and always returns ''" )] ;
 FUNCTION JNTOCYEAR(wYear AS WORD) AS STRING
 	RETURN String.Empty   
-
-
+	
+	
 [Obsolete( "'CreateAtomTable()' is not supported and always returns 0" )] ;
 FUNCTION CreateAtomTable(dwVS AS DWORD,dwStep AS DWORD) AS DWORD
-RETURN 0   
-
+	RETURN 0   
+	
 [Obsolete( "'ReadAtomTable()' is not supported and always returns 0" )] ;
 FUNCTION ReadAtomTable(hf AS DWORD) AS DWORD
-RETURN 0   
-
+	RETURN 0   
+	
 [Obsolete( "'PszLenW()' is not supported and always returns 0" )] ;
-function PszLenW(pszUnicode as Psz) as dword
-	return 0
-
+FUNCTION PszLenW(pszUnicode AS PSZ) AS DWORD
+	RETURN 0
+	
 [Obsolete( "'ReleaseString()' is not supported and always returns NULL_PSZ" )] ;
-function ReleaseString() AS Psz
-	return null_psz
-
+FUNCTION ReleaseString() AS PSZ
+	RETURN NULL_PSZ
+	
 [Obsolete( "'AMemSize()' is not supported and always returns 0" )] ;
-FUNCTION AMemSize(a AS Array) AS DWORD
+FUNCTION AMemSize(a AS ARRAY) AS DWORD
 	RETURN 0   
-
+	
 [Obsolete( "'APageCount()' is not supported and always returns 0" )] ;
-FUNCTION APageCount(a AS Array) AS DWORD
+FUNCTION APageCount(a AS ARRAY) AS DWORD
 	RETURN 0   
-
-
+	
+	
 [Obsolete( "'ArrayGetPtr()' is not supported and always returns IntPtr.Zero" )] ;
-function ArrayGetPtr(a as array,dwEl as dword) as intPtr
-	return IntPtr.Zero
-
-
+FUNCTION ArrayGetPtr(a AS ARRAY,dwEl AS DWORD) AS intPtr
+	RETURN IntPtr.Zero
+	
+	
 [Obsolete( "'IVarPutSuper()' is not supported and always returns the value that is set" )] ;
-function IVarPutSuper(o as object,symIvar as Symbol,u as Usual,symClassName as Symbol) as Usual
-	return u   
-
+FUNCTION IVarPutSuper(o AS OBJECT,symIvar AS SYMBOL,u AS USUAL,symClassName AS SYMBOL) AS USUAL
+	RETURN u   
+	
 [Obsolete( "'IVarGetSuper()' is not supported and always returns NIL" )] ;
-function IVarGetSuper(o as object,symIvar as Symbol,symClassName as Symbol) as Usual
-	return NIL
-
+FUNCTION IVarGetSuper(o AS OBJECT,symIvar AS SYMBOL,symClassName AS SYMBOL) AS USUAL
+	RETURN NIL
+	
 [ObsoleteAttribute( "'SendClass()' is not supported and always returns NIL")] ;
-function SendClass( o , symMethod , symClassName ) as usual 
-   return NIL
-
+FUNCTION SendClass( o , symMethod , symClassName ) AS USUAL CLIPPER
+	RETURN NIL
+	
 [ObsoleteAttribute( "'OClone()' is not supported and always returns NULL_OBJECT")] ;
-function OClone(o as object) as object
-	return null_object   
-
+FUNCTION OClone(o AS OBJECT) AS OBJECT
+	RETURN NULL_OBJECT   
+	
 [ObsoleteAttribute( "'OMemSize()' is not supported and always returns 0")] ;
-function OMemSize(o as object) as dword
-	return 0  
-
+FUNCTION OMemSize(o AS OBJECT) AS DWORD
+	RETURN 0  
+	
 [ObsoleteAttribute( "'PClone()' is not supported and always returns NIL")];
-function PClone(x as Usual) as Usual
-	return NIL   
-
+FUNCTION PClone(x AS USUAL) AS USUAL
+	RETURN NIL   
+	
 [ObsoleteAttribute( "'Bin2F()' is not supported and always returns 0")];
-function Bin2F(c as string) as float
-// VO stores the 8 bytes real8 + float header = 12 bytes.
-RETURN 0   
-
+FUNCTION Bin2F(c AS STRING) AS FLOAT
+	// VO stores the 8 bytes real8 + float header = 12 bytes.
+	RETURN 0   
+	
 [ObsoleteAttribute( "'F2Bin()' is not supported and always returns an empty string")];
-function F2Bin(f as float) as string
-// VO stores the 8 bytes real8 + float header = 12 bytes.
-RETURN String.Empty
-
-
+FUNCTION F2Bin(f AS FLOAT) AS STRING
+	// VO stores the 8 bytes real8 + float header = 12 bytes.
+	RETURN String.Empty
+	
+	
 [ObsoleteAttribute( "'FloatNext()' is not supported and always returns 0")];
-FUNCTION FloatNext(f AS Float) AS Float
-RETURN 0   
-
+FUNCTION FloatNext(f AS FLOAT) AS FLOAT
+	RETURN 0   
+	
 [ObsoleteAttribute( "'Psz2Float()' is not supported and always returns 0")];
-function Psz2Float(ptrBuff as IntPtr,nLen as int,nDec as int) as float
-	return 0   
-
+FUNCTION Psz2Float(ptrBuff AS IntPtr,nLen AS INT,nDec AS INT) AS FLOAT
+	RETURN 0   
+	
 [ObsoleteAttribute( "'Any2Usual()' is not supported and always returns NIL")];
-function Any2Usual(x as usual,nType as dword) as usual
-	return NIL   
-
-
+FUNCTION Any2Usual(x AS USUAL,nType AS DWORD) AS USUAL
+	RETURN NIL   
+	
+	
 [ObsoleteAttribute( "'StrToLong()' is not supported and always returns 0")];
-FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS Float
-RETURN 0   
-
-
+FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS FLOAT
+	RETURN 0   
+	
+	
 [ObsoleteAttribute( "'ObjAsPsz()' is not supported and always returns NULL_PSZ")];
-function ObjAsPsz(pObj as IntPtr) as Psz
-	return NULL_PSZ
-
-
+FUNCTION ObjAsPsz(pObj AS IntPtr) AS PSZ
+	RETURN NULL_PSZ
+	
+	
 [ObsoleteAttribute( "'Float2Str()' is not supported and always returns an empty string")];
-function Float2Str(ptrUsual AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-return ""
-
+FUNCTION Float2Str(ptrUsual AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	RETURN	 ""
+	
 [Obsolete];
 FUNCTION FunctionCount() AS DWORD
-return 0   
-
+	RETURN	 0   
+	
 [Obsolete];
-FUNCTION FunctionList() AS Array
-RETURN NULL_ARRAY   
-
-
+FUNCTION FunctionList() AS ARRAY
+	RETURN NULL_ARRAY   
+	
+	
 [Obsolete];
-FUNCTION UnDeclareClass(symClass AS Symbol) AS INT
-RETURN 0   
-
+FUNCTION UnDeclareClass(symClass AS SYMBOL) AS INT
+	RETURN 0   
+	
 [Obsolete];
-FUNCTION DeclareMethod(symClass AS Symbol,symMeth AS Symbol,nType AS DWORD,pFunc AS IntPTR,nArgs AS DWORD) AS INT
-RETURN 0   
-
-
-[Obsolete];
-FUNCTION FunctionSym2Ptr(symFunc AS Symbol) AS IntPTR
-RETURN IntPtr.Zero
+FUNCTION DeclareMethod(symClass AS SYMBOL,symMeth AS SYMBOL,nType AS DWORD,pFunc AS IntPTR,nArgs AS DWORD) AS INT
+	RETURN 0   
 
 
 [Obsolete];
-function ArgCount() as dword
-return 0   
+FUNCTION FunctionSym2Ptr(symFunc AS SYMBOL) AS IntPTR
+	RETURN IntPtr.Zero
+	
+[Obsolete] ;
+FUNCTION ASendClass( a, symMethod, symClassName ) AS ARRAY CLIPPER
+	RETURN a
+	
+[Obsolete] ;
+FUNCTION _CallClipFuncPtr(pFunc AS IntPtr,aArgs AS ARRAY) AS USUAL
+	RETURN NIL   
+	
+[Obsolete] ;
+FUNCTION _Call(ptrFunc AS PTR) AS USUAL
+	RETURN NIL   
+	
+[Obsolete] ;
+FUNCTION _AsPsz(u AS USUAL) AS PSZ
+	RETURN NULL_PSZ
+
+[Obsolete] ;
+function AsPsz(u as __Usual) as Psz
+	RETURN NULL_PSZ
+
+[Obsolete] ;
+FUNCTION ErrorCount(dw AS USUAL) AS DWORD
+	RETURN 0  
+
+[Obsolete] ;
+function ErrorFunc(ptrFunc as Usual) as Usual
+	return NIL   
+
+[Obsolete] ;
+function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
+	RETURN 0  
+
+[Obsolete] ;
+FUNCTION IsVOObject(oObject AS OBJECT) AS LOGIC
+	RETURN FALSE   
+
+[Obsolete] ;
+FUNCTION _ArrayGetPoly(a AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN NIL   
+
+[Obsolete] ;
+FUNCTION _ArrayGetCollection(a AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN NIL   
+
+[Obsolete] ;
+FUNCTION _ArrayPutCollection(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN		 NIL   
+
+[Obsolete] ;
+FUNCTION _ArrayPutPoly(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
+	RETURN NIL  
+
+[Obsolete] ;
+function CompString() as int
+	return 0   
+
+[Obsolete] ;
+function SBTODB(c as string) as string
+	RETURN String.Empty   
+
+[Obsolete];
+function SEvalA(cSource as usual,block as usual,nStart as usual,nCount as usual) as string
+	RETURN cSource
+
+[ObsoleteAttribute( "'SysObject()' is not supported", true )] ;
+FUNCTION SysObject() AS USUAL
+   RETURN NIL
 
 
+[Obsolete];
+FUNCTION MCSHORT(l AS USUAL) AS LOGIC
+	RETURN FALSE  

@@ -10,13 +10,14 @@ using System.Text
 using System.Reflection
 begin namespace XSharp
 	
-	
+	/// <summary>Internal type that implements the VO Compatible PSZ type.<br/>
+	/// This type has many operators and implicit converters that normally are never directly called from user code.
+	/// </summary>
 	[DebuggerDisplay( "{DebuggerString(),nq}", Type := "PSZ" ) ] ;
 	structure __Psz
 		private _value as byte ptr
 		static property _NULL_PSZ as __Psz get (__Psz) IntPtr.zero
 		private static _pszList as List< IntPtr>
-
 		internal static method RegisterPsz(pszToRegister as PSZ) as void
 			if _pszList == null
 				_pszList := List<IntPtr>{}
@@ -58,7 +59,7 @@ begin namespace XSharp
 			return iif( _value == null_ptr, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
 		
 		
-		method equals( p as Psz ) as logic
+		method Equals( p as Psz ) as logic
 			
 			local ret := false as logic
 			if _value == p:_value

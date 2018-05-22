@@ -2,7 +2,7 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-
+using static XSharp.Core.Functions
 BEGIN NAMESPACE XSharp.RDD.App
 
     FUNCTION Start() AS VOID

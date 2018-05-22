@@ -39,7 +39,7 @@ function GetChunkBase64(b1 as byte,b2 as byte,b3 as byte,nPad as int) as string
 	return String.Empty   
 	
 	/// <summary>
-	/// Get the current <%APP%> search path for opening file.
+	/// Get the current X# search path for opening file.
 	/// </summary>
 	/// <returns>
 	/// </returns>
@@ -56,7 +56,7 @@ function GetDASPtr() as IntPtr
 	
 	
 	/// <summary>
-	/// Return the <%APP%> default drive and directory.
+	/// Return the X# default drive and directory.
 	/// </summary>
 	/// <returns>
 	/// </returns>
@@ -96,14 +96,6 @@ function GetPMExt() as string
 	
 	
 
-	/// <summary>
-	/// </summary>
-	/// <param name="dwRes"></param>
-	/// <returns>
-	/// </returns>
-function GetStringDXAX(dwRes as dword) as string
-	/// THROW NotImplementedException{}
-	return String.Empty
 	
 	
 	/// <summary>
@@ -111,8 +103,8 @@ function GetStringDXAX(dwRes as dword) as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetTimeSep() as dword
-	getstate dword Set.TimeSep
+function GetTimeSep() as word
+	getstate word Set.TimeSep
 	
 	/// <summary>
 	/// Returns TimeZone difference for current timezone in Hours
@@ -120,7 +112,7 @@ function GetTimeSep() as dword
 	/// <returns>
 	/// </returns>
 function GetTimeZoneDiff() as int
-return TimeZoneInfo.Local.BaseUtcOffSet:Hours
+	return TimeZoneInfo.Local.BaseUtcOffSet:Hours
 
 function GetYield as logic
 	return SetYield()

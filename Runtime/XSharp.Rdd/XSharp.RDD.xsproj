@@ -43,7 +43,7 @@
     <Name>XSharp.RDD</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>Core</Dialect>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
   </PropertyGroup>
@@ -56,9 +56,9 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <DisabledWarnings>9001;1591</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>c:\xsharp\dev\xsharp\src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>

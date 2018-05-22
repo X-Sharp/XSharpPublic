@@ -13,7 +13,7 @@
 /// <param name="y">Lower value to compare against.</param>
 /// <param name="z">Upper value to compare against.</param>
 /// <returns>
-/// True if x is >= y and <= z otherwise false.
+/// True if x is &gt;= y and &lt;= z otherwise false.
 /// </returns>
 function Between(val as Usual,min as Usual,max as Usual) as logic
 	return val >=min .and.  val<=max
@@ -58,7 +58,7 @@ function InListExact(u as usual, args params usual[]) as logic
 	return _InListWorker(u, args, TRUE)
 
 
-internal function _InListWorker( u as usual, args as const usual[], lExact as logic)
+internal function _InListWorker( u as usual, args as const usual[], lExact as logic) as logic 
 	local i, nLen as int
 	nLen := args:Length
 	if lExact

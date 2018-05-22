@@ -13,23 +13,24 @@ using XUnit
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VO.Tests
 
-	CLASS RuntimeArrayTests
+	CLASS ArrayTests
 	 
  		[Trait("Category", "Array")];
 		[Fact]; 
 		METHOD ArrayCreateTest() as void
 			local testArray := ArrayNew(2,3) as Array 
 			Assert.NotEqual(null,testArray)
-			Assert.Equal((dword)2,testArray:Length) 
-			Assert.Equal((dword)3,((Array)testArray[1]):Length)
+			Assert.Equal((dword)2, Alen(testArray)) 
+			Assert.Equal((dword)3,(Alen(testArray[1])))
 		RETURN
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayFillTest() as void
 			local testArray := Array{3} as Array
-			testArray[1] := 1
-			testArray[2] := 2
-			testArray[3] := 3
+			Afill(testArray, 42)
+			Assert.Equal( 42 , (int) testArray[1])
+			Assert.Equal( 42 , (INT) testArray[2])
+			Assert.Equal( 42 , (int) testArray[3])
 		return
  		[Trait("Category", "Array")];
 		[Fact];
@@ -46,8 +47,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ArrayDeleteTest() as void
 			local testArray := {1,2,3} as Array
 			Adel(testArray, 1)
-			Assert.Equal( (dword)3 , testArray:Length)
+			Assert.Equal( (dword)3 , Alen(testArray))
 			Assert.Equal( NIL ,  testArray[3])
+
 		return
 		
  		[Trait("Category", "Array")];
@@ -58,7 +60,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			ASize(testArray, 4)
 			Assert.Equal( NIL ,  testArray[4])
 			ASize(testArray, 2)
-			Assert.Equal((dword)2,testArray:Length)
+			Assert.Equal((dword)2,Alen(testArray))
 		return
 
  		[Trait("Category", "Array")];
@@ -96,6 +98,107 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			mainArray[5][2] := "anothertest"
 			u := mainArray[5][2]
 			Assert.Equal( "anothertest", (string) u)
-		return
+		RETURN
+
+ 		[Trait("Category", "Array")];
+		[Fact];
+		METHOD ArraySortTest() as void
+			LOCAL a := {1,3,2,5,4,6} AS array
+			ASort(a)
+			Assert.Equal( 1, (INT) a[1])
+			Assert.Equal( 2, (int) a[2])
+			Assert.Equal( 3, (INT) a[3])
+			Assert.Equal( 4, (int) a[4])
+			Assert.Equal( 5, (int) a[5])
+			Assert.Equal( 6, (INT) a[6])
+			ASort(a, 1, alen(a), {|x,y| x > y })
+			Assert.Equal( 6,(INT) a[1])
+			Assert.Equal( 5,(int) a[2])
+			Assert.Equal( 4,(INT) a[3])
+			Assert.Equal( 3, (int) a[4])
+			Assert.Equal( 2, (int) a[5])
+			Assert.Equal( 1, (INT) a[6])
+			a := {"Fred", "Kate", "ALVIN", "friend"}
+
+			ASort(a,,, {|x, y| Upper(x) <= Upper(y)})        // {ALVIN, FRED, FRIEND, KATE}
+			Assert.Equal( "ALVIN",(string) a[1])
+			Assert.Equal( "Fred",(string) a[2])
+			Assert.Equal( "friend",(string) a[3])
+			Assert.Equal( "Kate" ,(string) a[4])
+
+		[Trait("Category", "Array")];
+		[Fact];
+		METHOD AscanTest() as void
+			LOCAL a := {1,3,2,5,4,6} AS array
+			Assert.Equal( 1, (INT) Ascan(a, 1))
+			Assert.Equal( 3, (int) Ascan(a, 2))
+			Assert.Equal( 2, (INT) Ascan(a, 3))
+			Assert.Equal( 5, (int) Ascan(a, 4))
+			Assert.Equal( 4, (int) Ascan(a, 5))
+			Assert.Equal( 6, (int) Ascan(a, 6))
+			ASort(a)
+			Assert.Equal( 1, (INT) Ascan(a, 1))
+			Assert.Equal( 2, (int) Ascan(a, 2))
+			Assert.Equal( 3, (INT) Ascan(a, 3))
+			Assert.Equal( 4, (int) Ascan(a, 4))
+			Assert.Equal( 5, (int) Ascan(a, 5))
+			Assert.Equal( 6, (int) Ascan(a, 6))
+			a := {"Fred", "Kate", "ALVIN", "friend"}
+			Assert.Equal( 3, (int)  Ascan(a, "ALVIN"))
+			Assert.Equal( 1, (int) Ascan(a, "Fred"))
+			Assert.Equal( 4, (int) Ascan(a, "friend"))
+			Assert.Equal( 2, (int) Ascan(a, "Kate"))
+
+			ASort(a,,, {|x, y| Upper(x) <= Upper(y)})        // {ALVIN, FRED, FRIEND, KATE}
+			Assert.Equal( 1, (int) Ascan(a, "ALVIN"))
+			Assert.Equal( 2, (int) Ascan(a, "Fred"))
+			Assert.Equal( 3, (int) Ascan(a, {|e| e == "friend"}))
+			Assert.Equal( 4, (int) Ascan(a, {|e| e == "Kate" }))
+			Assert.Equal( 2, (INT) AscanBin(a, "Fred"))
+			SetExact(FALSE)
+			Assert.Equal( 2, (INT) AscanBin(a, "Fre"))
+			Assert.Equal( 0, (INT) AscanBinExact(a, "Fre"))
+		[Trait("Category", "Array")];
+		[Fact];
+		METHOD AevalTest() AS VOID
+			LOCAL aValues := {1,2,3} AS ARRAY
+			LOCAL nCounter  AS LONG
+			nCounter := 0
+			Aeval(aValues, {|x| nCounter++})
+			Assert.Equal( 3, nCounter)
+			nCounter := 0
+			Aeval(aValues, {|x| nCounter++}, 2)
+			Assert.Equal( 2, nCounter)
+
+			nCounter := 0
+			Aeval(aValues, {|x| nCounter++}, 2,1)
+			Assert.Equal( 1, nCounter)
+			nCounter := 0
+			// AevalA assigns the return value to the array
+			AevalA(aValues, {|x| nCounter++, x*2})
+			Assert.Equal( 3, nCounter)
+			Assert.Equal( 2, (INT) aValues[1])
+			Assert.Equal( 4, (int) aValues[2])
+			Assert.Equal( 6, (int) aValues[3])
+			// AevalOld passes an extra parameter
+			nCounter := 0
+			AevalOld(aValues, {|x, n| nCounter+=n})
+			Assert.Equal( 6, nCounter)
+		[Trait("Category", "Array")];
+		[Fact];
+		METHOD ACopyTest() AS VOID
+			LOCAL aValues := {1,2,3} AS ARRAY
+			LOCAL aDest   := ArrayNew(3) AS ARRAY
+			ACopy(aValues, aDest)
+			Assert.Equal( 1, (INT) aDest[1])
+			Assert.Equal( 2, (int) aDest[2])
+			Assert.Equal( 3, (INT) aDest[3])
+			aDest   := ArrayNew(2) 
+			ACopy(aValues, aDest)
+			Assert.Equal( 1, (INT) aDest[1])
+			Assert.Equal( 2, (int) aDest[2])
+
+
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

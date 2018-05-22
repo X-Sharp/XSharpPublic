@@ -3,16 +3,19 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
-FUNCTION OleDateTimeAsDate(lSet) AS LOGIC
+INTERNAL GLOBAL lAsDate := FALSE AS LOGIC
+FUNCTION OleDateTimeAsDate(lSet AS LOGIC) AS LOGIC 
 	// Global setting for Date/Time return values
-	STATIC lAsDate := FALSE AS LOGIC
-	IF IsLogic(lSet)
-		lAsDate := lSet
-	ENDIF
+	LOCAL lOld AS LOGIC
+	lOld := lAsDate 
+	lAsDate := lSet
+	RETURN lOld
+	
+FUNCTION OleDateTimeAsDate() AS LOGIC 
+	// Global setting for Date/Time return values
 	RETURN lAsDate
-	
-	
+
+/// <summary>VO Compatible class to store DateTime values in OLE Automation</summary>	
 CLASS XSharp.OleDateTime
 	PROTECT dt AS System.DateTime
 	
@@ -33,13 +36,21 @@ CLASS XSharp.OleDateTime
 		
 	PROPERTY DateTime AS System.DateTime GET dt SET dt := VALUE
 	
-	CONSTRUCTOR(uDate) 
+	CONSTRUCTOR() 
+		dt := DateTime.MinValue
+
+	CONSTRUCTOR(val  as System.DateTime)
+		dt := val
+
+	CONSTRUCTOR(uDate AS USUAL) 
 		IF IsNumeric(uDate)
 			dt := DateTime.FromOADate( (REAL8) uDate)
 		ELSEIF IsDate(uDate)
 			dt := ((DATE) uDate):ToDateTime()
 		ELSEIF IsString(uDate)         
 			dt := DateTime.Parse((STRING) uDate)
+		ELSE
+			dt := DateTime.MinValue
 		ENDIF
 		RETURN 
 		
@@ -69,6 +80,13 @@ CLASS XSharp.OleDateTime
 		
 	VIRTUAL METHOD ToString() AS STRING
 		RETURN dt:ToString()
+
+	STATIC OPERATOR IMPLICIT(odt AS OleDateTime) AS DateTime
+		RETURN oDt:DateTime
+
+	STATIC OPERATOR IMPLICIT(odt AS DateTime) AS OleDateTime
+		RETURN OleDateTime{oDT}
+
 		
 END CLASS
 

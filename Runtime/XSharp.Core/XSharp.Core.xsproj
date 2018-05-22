@@ -46,6 +46,7 @@
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
+    <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,17 +60,17 @@
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>168;1591;9001</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption>
-    </CommandLineOption>
     <PPO>false</PPO>
-    <NoStdDef>false</NoStdDef>
+    <NoStdDef>true</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -82,18 +83,17 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>168;1591,162</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption>
-    </CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>false</NoStandardDefs>
     <Prefer32Bit>False</Prefer32Bit>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -106,8 +106,6 @@
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -273,10 +271,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Language\Swedish.resx">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Language\Uk.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

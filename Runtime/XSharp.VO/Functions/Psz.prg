@@ -21,7 +21,7 @@ function Oem2AnsiBuff(pszDest as psz,pszSource as psz,dwCount as dword) as psz
 	var aSource := byte[]{dwCount}
 	var aDest   := byte[]{dwCount}
 	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
-	global::Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
+	XSharp.Core.Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
 	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
 	return pszDest
 
@@ -37,20 +37,12 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	var aSource := byte[]{dwCount}
 	var aDest   := byte[]{dwCount}
 	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
-	global::Functions.Ansi2OemBuff(aDest, aSource, dwCount)
+	XSharp.Core.Functions.Ansi2OemBuff(aDest, aSource, dwCount)
 	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
 	return pszDest
 	
 	
-	/// <summary>
-	/// Convert a value to a static Psz.
-	/// </summary>
-	/// <param name="u"></param>
-	/// <returns>
-	/// </returns>
-	function AsPsz(u as __Usual) as Psz
-		/// THROW NotImplementedException{}
-		return (Psz) IntPtr.Zero
+
 	
 	/// <summary>
 	/// Convert a string containing an 8-bit logical into a logical value.
@@ -73,18 +65,7 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	function EmptyPSZ(PSZValue as Psz) as logic
 		   RETURN PSZValue:IsEmpty
 	
-	/// <summary>
-	/// </summary>
-	/// <param name="pszText"></param>
-	/// <param name="pszCapt"></param>
-	/// <param name="dwB1"></param>
-	/// <param name="dwB2"></param>
-	/// <param name="dwB3"></param>
-	/// <returns>
-	/// </returns>
-	function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
-		/// THROW NotImplementedException{}
-		return 0     
+   
 		
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.

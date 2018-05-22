@@ -13,5 +13,5 @@
 //
 [assembly: AssemblyTitle("XSharp.VO")]
 [assembly: AssemblyDescription("")]
-
+[assembly: ImplicitNamespace("XSharp")]
 

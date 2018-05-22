@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp
 USING XSharp.RDD
-
+using XSharp.RDD.ENums
 
 CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
     PRIVATE oRDD as ADSRDD 

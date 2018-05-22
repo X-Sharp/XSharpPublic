@@ -5,43 +5,73 @@
 //
 using System.IO
 using XSharp.RDD
+USING XSharp.RDD.Enums
+
 BEGIN NAMESPACE XSharp.RDD
 
+/// <summary>Base class for DBF based RDDs. Holds common propertis such as the Workarea number, Alias, Fields list and various flags.</summary> 
 CLASS Workarea IMPLEMENTS IRdd  
 	// This class does NOT implement file based (DBF stuff). 
 	// That is handled in the DBF class which inherits from RddBase
 	#region Fields
-	PUBLIC _Area			AS LONG		// Workarea Number (1 based)
-	PUBLIC _Alias			AS STRING	// Unique Alias
+	/// <summary>Workarea Number (1 based) </summary>
+	PUBLIC _Area			AS LONG		
+	/// <summary> Unique Alias </summary>
+	PUBLIC _Alias			AS STRING	
+	/// <summary>File name of the main file</summary>
 	PUBLIC _FileName		AS STRING
-	PUBLIC _Fields		    AS RddFieldInfo[]	// List of Fields
-	PUBLIC _Bof			    AS LOGIC	// Is BOF ?
-	PUBLIC _Bottom		    AS LOGIC	// Is at Bottom ?
-	PUBLIC _Eof			    AS LOGIC	// Is EOF
-	PUBLIC _Found			AS LOGIC	// Is Found ?
-	PUBLIC _Top			    AS LOGIC	// Is at Top
+	/// <summary>List of Fields</summary>
+	PUBLIC _Fields		    AS RddFieldInfo[]	
+	/// <summary>Is at BOF ?</summary>
+	PUBLIC _Bof			    AS LOGIC	
+	/// <summary>Is at bottom ?</summary>
+	PUBLIC _Bottom		    AS LOGIC	
+	/// <summary>Is at EOF ?</summary>
+	PUBLIC _Eof			    AS LOGIC	
+	/// <summary>Result of last SEEK operation</summary>
+	PUBLIC _Found			AS LOGIC	
+	/// <summary>Is at top?</summary>
+	PUBLIC _Top			    AS LOGIC	
+	/// <summary>Result of last macro evaluation</summary>
 	PUBLIC _Result		    AS OBJECT                
+	/// <summary>Current Scope</summary>
 	PUBLIC _ScopeInfo		AS DbScopeInfo
+	/// <summary>Current Filter</summary>
 	PUBLIC _FilterInfo	    AS DbFilterInfo  
+	/// <summary>Current Order condition</summary>
 	PUBLIC _OrderCondInfo	AS DbOrderCondInfo
+	/// <summary>Current Relation info</summary>
 	PUBLIC _RelInfo		    AS DbRelInfo
-	PUBLIC _Parents		    AS LONG		// # of parents   
+	/// <summary># of parents</summary>
+	PUBLIC _Parents		    AS LONG		
+	/// <summary>Maximum fieldname length (Advantage supports field names > 10 characters)</summary>
 	PUBLIC _MaxFieldNameLength AS LONG	// 
 
 	// Some flags that are stored here but managed in subclasses
 	PUBLIC _TransRec		AS LOGIC
-	PUBLIC _RecordLength	AS WORD   	// Size of record
-	PUBLIC _RecordBuffer	AS BYTE[]	// Current Record
+	/// <summary>Size of record</summary>
+	PUBLIC _RecordLength	AS WORD   	
+	/// <summary>Current Record</summary>
+	PUBLIC _RecordBuffer	AS BYTE[]	
+	/// <summary>Size of current record buffer</summary>
 	PUBLIC _BufferSize		AS LONG
-	PUBLIC _Delimiter		AS STRING	// Field Delimiter
-	PUBLIC _Separator	    AS STRING	// Field Separator
-	PUBLIC _ReadOnly		AS LOGIC	// ReadOnly ?  
-	PUBLIC _Shared			AS LOGIC	// Shared ?  
+	/// <summary>Field delimiter (for DELIM RDD)</summary>
+	PUBLIC _Delimiter		AS STRING	
+	/// <summary>Field separator (for DELIM RDD)</summary>
+	PUBLIC _Separator	    AS STRING	
+	/// <summary> Is the file opened ReadOnly ?</summary>
+	PUBLIC _ReadOnly		AS LOGIC	
+	/// <summary> Is the file opened Shared ?</summary>
+	PUBLIC _Shared			AS LOGIC	
+	/// <summary>File handle of the current file</summary>
 	PUBLIC _hFile			AS IntPtr
-	PUBLIC _Flush			AS LOGIC		// Must flush ? 
+	/// <summary>Should the file be flushed (it is dirty) ?</summary>
+	PUBLIC _Flush			AS LOGIC		
 
 	// Memo and Order Implementation
+	/// <summary>Current memo implementation.</summary>
 	PUBLIC _Memo			AS IMemo
+	/// <summary>Current index implementation.</summary>
 	PUBLIC _Order			AS IOrder
 
 	#endregion
@@ -63,23 +93,27 @@ CLASS Workarea IMPLEMENTS IRdd
 		SELF:_RelInfo    := NULL
 		SELF:_Alias		 := String.Empty
 		SELF:_RecordBuffer := NULL
-			
+/// <inheritdoc />			
 VIRTUAL METHOD DbEval(info AS XSharp.RDD.DbEvalInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
-
+/// <inheritdoc />
 VIRTUAL METHOD GoTop( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GoBottom( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GoTo(nRec AS INT) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GoToId(oRec AS OBJECT) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Skip(nToSkip AS INT) AS LOGIC
 	LOCAL lToSkip AS LONG
 	IF nToSkip == 0
@@ -110,6 +144,7 @@ VIRTUAL METHOD Skip(nToSkip AS INT) AS LOGIC
 	ENDIF
 	RETURN TRUE	
 
+/// <inheritdoc />
 VIRTUAL METHOD SkipFilter(nToSkip AS INT) AS LOGIC
 	LOCAL Bottom /*, Deleted */ AS LOGIC
 	// When no active filter, record is Ok
@@ -190,33 +225,43 @@ while( ! pArea->fBof && ! pArea->fEof )
    RETURN errCode; 
 */		
 
+/// <inheritdoc />
 VIRTUAL METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD SkipScope(nToSkip AS INT) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Delete( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GetRec( ) AS BYTE[]
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Pack( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD PutRec(aRec AS BYTE[]) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Recall( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Zap( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Close( ) AS LOGIC
 	SELF:ClearFilter()
 	SELF:ClearRel()
@@ -224,12 +269,15 @@ VIRTUAL METHOD Close( ) AS LOGIC
 	// close all parent relations
 	RETURN TRUE
 
+/// <inheritdoc />
 VIRTUAL METHOD Create(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD ClearFilter( ) AS LOGIC
 	IF SELF:_FilterInfo != NULL
 		SELF:_FilterInfo:Clear()
@@ -237,6 +285,8 @@ VIRTUAL METHOD ClearFilter( ) AS LOGIC
 		SELF:_FilterInfo := DbFilterInfo{}
 	ENDIF
     RETURN TRUE
+
+/// <inheritdoc />
 VIRTUAL METHOD ClearScope( ) AS LOGIC
 	IF SELF:_ScopeInfo != NULL        
 		SELF:_ScopeInfo:Clear()
@@ -245,18 +295,22 @@ VIRTUAL METHOD ClearScope( ) AS LOGIC
 	ENDIF 
 	RETURN TRUE
 
+/// <inheritdoc />
 VIRTUAL METHOD Continue( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GetScope( ) AS XSharp.RDD.DbScopeInfo
 	IF SELF:_ScopeInfo != NULL_OBJECT
 		RETURN SELF:_ScopeInfo:Clone()
 	ENDIF
 	RETURN DbScopeInfo{}
 
+/// <inheritdoc />
 VIRTUAL METHOD ScopeInfo(nOrdinal AS INT) AS OBJECT
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 	SELF:ClearFilter()
 	IF (info != NULL_OBJECT)
@@ -265,6 +319,7 @@ VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 	ENDIF
 	RETURN TRUE
 
+/// <inheritdoc />
 VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
 	SELF:ClearScope()
 	IF (info != NULL_OBJECT)
@@ -272,12 +327,15 @@ VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
 	ENDIF
     RETURN TRUE
 
+/// <inheritdoc />
 VIRTUAL METHOD AddField(info AS DbFieldInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD CreateFields(fields AS RddFieldInfo[]) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
 	LOCAL nMax AS INT
 	nMax := SELF:FieldCount
@@ -289,6 +347,7 @@ VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
 	NEXT 
 	RETURN 0
 	
+/// <inheritdoc />
 PROTECTED METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 	LOCAL nMax AS INT
 	// Note that nFldPos is 1 based
@@ -298,6 +357,7 @@ PROTECTED METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 	ENDIF
 	RETURN TRUE	
 
+/// <inheritdoc />
 VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 	// Note that nFldPos is 1 based
 	IF SELF:_FieldIndexValidate(nFldPos)
@@ -307,6 +367,7 @@ VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT)
 	ENDIF
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
 	// Note that nFldPos is 1 based
 	IF SELF:_FieldIndexValidate(nFldPos)
@@ -317,85 +378,109 @@ VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
 	ENDIF          
 	RETURN String.Empty
 
+/// <inheritdoc />
 VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
 	// Note that nFldPos is 1 based
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	// Note that nFldPos is 1 based
 	RETURN _Memo:GetValueFile(nFldPos, fileName )
 
+/// <inheritdoc />
 VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
 	// Note that nFldPos is 1 based
 	RETURN _Memo:GetValueLength(nFldPos )
 
+/// <inheritdoc />
 VIRTUAL METHOD Flush( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GoCold( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD GoHot( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	// Note that nFldPos is 1 based
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	// Note that nFldPos is 1 based
 	RETURN _Memo:PutValueFile(nFldPos, fileName )
 
+/// <inheritdoc />
 VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Lock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	RETURN SELF:_Memo:CloseMemFile()
 
+/// <inheritdoc />
 VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 	RETURN SELF:_Memo:CreateMemFile(info)
 
-VIRTUAL METHOD OpenMemFile( ) AS LOGIC
-	RETURN SELF:_Memo:OpenMemFile()
+/// <inheritdoc />
+VIRTUAL METHOD OpenMemFile( info AS DbOpenInfo) AS LOGIC
+	RETURN SELF:_Memo:OpenMemFile(info )
 
 #region Orders Not implemented
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 	RETURN SELF:_Order:OrderCondition(info)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 	RETURN SELF:_Order:OrderCreate(info)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderDestroy(info)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
    /* CA-Cl*pper does not generate RT error when default ORDERINFO() method
     * is called
     */
    	RETURN SELF:_Order:OrderInfo(nOrdinal)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderListAdd(info)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderListDelete(info)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderListFocus(info)
 
+/// <inheritdoc />
 VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 	RETURN SELF:_Order:OrderListRebuild()
 
+/// <inheritdoc />
 VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
 	RETURN SELF:_Order:Seek(info)
 #endregion
@@ -403,33 +488,43 @@ VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
 
 #region Relations
             
+/// <inheritdoc />
 VIRTUAL METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD ChildStart(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD ChildSync(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD ClearRel( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD ForceRel( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD RelArea(nRelNum AS INT) AS INT
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD RelEval(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD RelText(nRelNum AS INT) AS STRING
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD SetRel(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD SyncChildren( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
@@ -437,23 +532,29 @@ VIRTUAL METHOD SyncChildren( ) AS LOGIC
 
 #region Trans not implemented
 
+/// <inheritdoc />
 VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 #endregion
 
+/// <inheritdoc />
 VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Compile(sBlock AS STRING) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT
 	THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	LOCAL oResult AS OBJECT
 	SWITCH nOrdinal
@@ -513,6 +614,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	RETURN oResult
 		
 
+/// <inheritdoc />
 	VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
 		LOCAL oResult AS OBJECT
 		SWITCH nOrdinal
@@ -523,37 +625,53 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 		END SWITCH
 		RETURN oResult
 
+/// <inheritdoc />
 	VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
 		THROW NotImplementedException{__ENTITY__}
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY Alias AS STRING GET _Alias
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY Area AS LONG GET _Area
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY BoF AS LOGIC GET _Bof
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
 
+/// <inheritdoc />
     VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY EoF AS LOGIC GET _Eof
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY Exclusive AS LOGIC GET FALSE
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY FieldCount AS LONG GET (LONG) _Fields?:Length
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := VALUE
 
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY RecCount AS INT GET 0
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY RecId AS OBJECT GET NULL
+/// <inheritdoc />
 	VIRTUAL PROPERTY RecNo AS LONG GET   0	
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY Shared AS LOGIC GET FALSE
 
+/// <inheritdoc />
 	VIRTUAL PROPERTY SysName AS STRING GET typeof(Workarea):ToString()
 
 END CLASS

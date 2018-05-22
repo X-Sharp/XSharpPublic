@@ -139,7 +139,7 @@ function SetCpu(nCpu as dword) as dword
 
 
 /// <summary>
-/// Return the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
+/// Return the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
 /// </summary>
 /// <param name="dwCountry"></param>
 /// <returns>
@@ -148,7 +148,7 @@ function SetDateCountry() as long
 	getstate long Set.DATECOUNTRY
 
 /// <summary>
-/// Return and optionally change the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
+/// Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
 /// </summary>
 /// <param name="dwCountry"></param>
 /// <returns>
@@ -168,7 +168,7 @@ function GetDateFormat() as string
 	getstate string Set.DateFormat
 
 /// <summary>
-/// Change the setting that determines the <%APP%> date format.
+/// Change the setting that determines the X# date format.
 /// </summary>
 /// <param name="cDateFormat"></param>
 /// <returns>
@@ -557,8 +557,8 @@ function SetThousandSep(wSep as word) as word
 /// </summary>
 /// <returns>
 /// </returns>
-function SetTimeSep() as dword
-	getstate dword Set.TimeSep 
+function SetTimeSep() as word
+	getstate word Set.TimeSep 
 
 /// <summary>
 /// Change the setting that determines the separation character to be used in time strings.
@@ -566,8 +566,8 @@ function SetTimeSep() as dword
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-function SetTimeSep(dwChar as dword) as dword
-	setstate dword Set.TimeSep dwChar
+function SetTimeSep(dwChar as word) as word
+	setstate word Set.TimeSep dwChar
 
 /// <summary>
 /// Return the setting that determines whether to include unique record keys in an order.
@@ -603,3 +603,21 @@ function SetYield() as logic
 function SetYield(lSet as logic) as logic
 	setstate logic Set.Yield lSet
 
+
+/// <summary>
+/// Retrieve and set the X# return code.
+/// </summary>
+/// <param name="dw"></param>
+/// <returns>
+/// </returns>
+function ErrorLevel(dw as dword) as dword 
+	setstate DWORD Set.ErrorLevel dw
+
+
+/// <summary>
+/// Retrieve the X# return code.
+/// </summary>
+/// <returns>
+/// </returns>
+function ErrorLevel() as dword 
+	getstate DWORD Set.ErrorLevel

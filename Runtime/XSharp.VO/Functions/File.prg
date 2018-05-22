@@ -36,11 +36,11 @@ function FRead(pHandle as IntPtr,pData as IntPtr,dwCount as dword) as dword
 /// <param name="nBuffLen"></param>
 /// <returns>
 /// </returns>
-function FReadLine(pFile ,nBuffLen) as string
+function FReadLine(pFile ,nBuffLen) as string CLIPPER
 	if nBuffLen == NIL
-		return global::Functions.FreadLine(pFile, 0)
+		return XSharp.Core.Functions.FreadLine(pFile, 0)
 	else
-		return global::Functions.FreadLine(pFile, nBuffLen)
+		return XSharp.Core.Functions.FreadLine(pFile, nBuffLen)
 	endif
 
 
@@ -52,11 +52,11 @@ function FReadLine(pFile ,nBuffLen) as string
 /// <param name="nOrigin"></param>
 /// <returns>
 /// </returns>
-function FSeek(hFile ,nOffset ,nOrigin ) as long
+function FSeek(hFile ,nOffset ,nOrigin ) as long CLIPPER
 	if nOrigin == NIL
-		return global::Functions.FSeek3(hFile, nOffSet, FS_SET)
+		return XSharp.Core.Functions.FSeek3(hFile, nOffSet, FS_SET)
 	else
-		return global::Functions.FSeek3(hFile, nOffSet, nOrigin)
+		return XSharp.Core.Functions.FSeek3(hFile, nOffSet, nOrigin)
 	endif
 	
 
@@ -69,11 +69,11 @@ function FSeek(hFile ,nOffset ,nOrigin ) as long
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWrite(pHandle ,c ,nCount ) as dword
+function FWrite(pHandle ,c ,nCount ) as dword CLIPPER
 	if nCount == NIL
-		return global::Functions.Fwrite(pHandle, c)
+		return XSharp.Core.Functions.Fwrite(pHandle, c)
 	else
-		return global::Functions.Fwrite3(pHandle, c, nCount)
+		return XSharp.Core.Functions.Fwrite3(pHandle, c, nCount)
 	endif
 
 /// <summary>
@@ -84,11 +84,11 @@ function FWrite(pHandle ,c ,nCount ) as dword
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteLine(pFile ,c ,nCount) as dword
+function FWriteLine(pFile ,c ,nCount) as dword CLIPPER
 	if nCount == NIL
-		return global::Functions.FwriteLine(pFile, c)
+		return XSharp.Core.Functions.FwriteLine(pFile, c)
 	else
-		return global::Functions.FwriteLine3(pFile, c, nCount)
+		return XSharp.Core.Functions.FwriteLine3(pFile, c, nCount)
 	endif
 
 /// <summary>
@@ -99,11 +99,11 @@ function FWriteLine(pFile ,c ,nCount) as dword
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteText(pHandle ,c ,nCount ) as dword
+function FWriteText(pHandle ,c ,nCount ) as dword CLIPPER
 	if nCount == NIL
-		return global::Functions.FWriteText3(pHandle, c, Slen(c))
+		return XSharp.Core.Functions.FWriteText3(pHandle, c, Slen(c))
 	else
-		return global::Functions.FWriteText3(pHandle, c, nCount)
+		return XSharp.Core.Functions.FWriteText3(pHandle, c, nCount)
 	endif 
 
 

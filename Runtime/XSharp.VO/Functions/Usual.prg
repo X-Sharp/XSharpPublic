@@ -53,16 +53,6 @@ function EmptyUsual(dwType as dword) as __Usual
 		throw Error.ArgumentError(__ENTITY__, nameof(dwType) , "Unknown type parameter")
 	end switch
 	return result
-/// <summary>
-/// Convert a string containing a numeric value to a numeric data type.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-function Val(c as string) as __Usual
-	/// THROW NotImplementedException{}
-	return	 __Usual._NIL   
-
 
 /// <summary>
 /// Determine if a value is an Array.

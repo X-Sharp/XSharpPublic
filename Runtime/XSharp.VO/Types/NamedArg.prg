@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+/// <summary>VO Compatible type to allow name/value pairs for Ole Automation parameters</summary>
 CLASS XSharp.NamedArg
    PROPERTY ArgName AS STRING AUTO
    PROPERTY Value   AS USUAL AUTO

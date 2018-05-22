@@ -6,19 +6,6 @@
 
 using System.Reflection
 using System.Diagnostics
-/// <summary>
-/// Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.
-/// </summary>
-/// <param name="nMode">This parameter is ignored in X#</param>
-/// <returns>
-/// </returns>
-/// <Remarks>This function is inlined by the compiler </remarks>
-function AltD(nMode as Usual) as void
-	if System.Diagnostics.Debugger.IsAttached
-		System.Diagnostics.Debugger.Break()
-	endif
-	return  
-
 
 
 /// <summary>
@@ -27,7 +14,7 @@ function AltD(nMode as Usual) as void
 /// <returns>
 /// </returns>
 FUNCTION _DebOut32( u AS USUAL) AS VOID
-   global::Functions._DebOut32( AsString(u))
+   XSharp.Core.Functions._DebOut32( AsString(u))
    return
 
 
@@ -37,7 +24,7 @@ FUNCTION _DebOut32( u AS USUAL) AS VOID
 /// <returns>
 /// </returns>
 FUNCTION DebOut32( u AS USUAL) AS VOID
-   global::Functions.DebOut32( AsString(u))
+   XSharp.Core.Functions.DebOut32( AsString(u))
    return
 
 
@@ -51,7 +38,7 @@ function CanBreak() as logic
 
 
 /// <summary>
-/// Returns the version of <%APP%> you are using.
+/// Returns the version of X# you are using.
 /// </summary>
 /// <returns>
 /// </returns>

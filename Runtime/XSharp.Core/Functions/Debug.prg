@@ -130,3 +130,30 @@ function ProcName(activation as int) as string
    ENDIF
    
    RETURN name
+
+
+/// <summary>
+/// Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.
+/// </summary>
+/// <param name="nMode">This parameter is ignored in X#</param>
+/// <returns>
+/// </returns>
+/// <remarks>This function is inlined by the compiler </remarks>
+function AltD() as void
+	if System.Diagnostics.Debugger.IsAttached
+		System.Diagnostics.Debugger.Break()
+	endif
+	return  
+
+/// <summary>
+/// Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.
+/// </summary>
+/// <param name="nMode">This parameter is ignored in X#</param>
+/// <returns>
+/// </returns>
+/// <remarks>This function is inlined by the compiler </remarks>
+function AltD(nMode as Int) as void
+	if System.Diagnostics.Debugger.IsAttached
+		System.Diagnostics.Debugger.Break()
+	endif
+	return  

@@ -96,7 +96,7 @@ function AscA(c as string) as dword
 /// <param name="cSearch">The string to search for.</param>
 /// <param name="c">The string to search in.</param>
 /// <returns>
-/// The position of the first occurrence of <cSearch> within <cTarget>.  If <cSearch> is not found, At() returns 0.
+/// The position of the first occurrence of cSearch within cTarget.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
 function At(cSearch as string,c as string) as dword
@@ -112,7 +112,7 @@ function At(cSearch as string,c as string) as dword
 /// <param name="cSearch">The string to search for.</param>
 /// <param name="c">The string to search in.</param>
 /// <returns>
-/// The position of the first occurrence of <cSearch> within <cTarget>.  If <cSearch> is not found, At() returns 0.
+/// The position of the first occurrence of cSearch within cTarget.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
 function At2(cSearch as string,c as string) as dword
@@ -126,7 +126,7 @@ function At2(cSearch as string,c as string) as dword
 /// <param name="c">The string to search in.</param>
 /// <param name="dwOff">The position to begin the search with. This offset is ZERO based</param>
 /// <returns>
-/// The position of the first occurrence of <cSearch> within <cTarget> behind the give position.  If <cSearch> is not found, At() returns 0.
+/// The position of the first occurrence of cSearch within cTarget behind the give position.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At3() returns 0.
 /// </returns>
 function At3(cSearch as string,c as string,dwOff as dword) as dword
@@ -246,7 +246,7 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// </summary>
 /// <param name="c">The string from which the even characters shall be extracted.</param>
 /// <returns>
-/// A string which is assembled from the even characters in <c>.
+/// A string which is assembled from the even characters in c.
 /// </returns>
 function CharEven(c as string) as string
 	local evenChars:=null as string
@@ -300,9 +300,10 @@ function CharMix(cOdd as string,cEven as string) as string
 
 /// <summary>
 /// Return the odd-numbered characters in a string.
+/// </summary>
 /// <param name="c">The string from which the odd characters shall be extracted.</param>
 /// <returns>
-/// A string which is assembled from the odd characters in <c>.
+/// A string which is assembled from the odd characters in c.
 /// </returns>
 function CharOdd(c as string) as string
 	local oddChars:=null as string
@@ -373,9 +374,9 @@ function ChrA(c as dword) as string
       LOCAL chars := Char[]{ 1 } AS Char[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
       LOCAL decoder := encoding:GetDecoder() AS Decoder
-      bytes[0] := b
+      bytes[__ARRAYBASE__] := b
       decoder:GetChars( bytes, 0, 1, chars, 0 )
-      ret := chars[1]:ToString()
+      ret := chars[__ARRAYBASE__]:ToString()
 
    ENDIF
 
@@ -591,23 +592,6 @@ function LTrim(c as string) as string
 	return c:TrimStart(trimChars)
 
 
-/// <summary>
-/// Count the number of lines in a string or memo field.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-function MemLines(c as string) as dword
-	local nLines := 0as dword
-	if c != null
-		nLines := 1 
-		foreach ch as char in c
-			if ch == c'\r' 
-				nLines++
-			endif
-		next
-	endif
-	return nLines
 
 /// <summary>
 /// Return the number of times a substring occurs in a string.
@@ -958,15 +942,7 @@ function RTrim(c as string) as string
 	return c:TrimEnd(trimChars)
 
 
-/// <summary>
-/// Convert single-byte kana characters in a string to their double-byte equivalents.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-function SBTODB(c as string) as string
-	/// THROW NotImplementedException{}
-	return String.Empty   
+
 
 /// <summary>
 /// Create new character variable with the same characters as the original string.

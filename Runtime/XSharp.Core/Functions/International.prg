@@ -21,7 +21,7 @@ function MBAllTrim(cMBString as string) as string
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBAt3().)</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAt() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAt() returns zero.</returns>
 /// <remarks>This function is the same as At() since .Net has unicode strings</remarks>
 function MBAt(cSearch as string,cTarget as string) as dword
 	return At( cSearch, cTarget ) 
@@ -31,7 +31,7 @@ function MBAt(cSearch as string,cTarget as string) as dword
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBAt3().)</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAt2() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAt2() returns zero.</returns>
 /// <remarks>This function is the same as At2 since .Net has unicode strings</remarks>
 function MBAt2(cSearch as string,cTarget as string) as dword
 	return At2( cSearch, cTarget )
@@ -42,7 +42,7 @@ function MBAt2(cSearch as string,cTarget as string) as dword
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
 /// <param name="wOffset">The position in the string at which to start searching.  A value of zero corresponds to the first character.</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAt3() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAt3() returns zero.</returns>
 /// <remarks>This function is the same as At3 since .Net has unicode strings</remarks>
 function MBAt3(cSearch as string,cTarget as string,wOffset as dword) as dword
 	return At3( cSearch, cTarget, wOffset ) 
@@ -52,7 +52,7 @@ function MBAt3(cSearch as string,cTarget as string,wOffset as dword) as dword
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAtC() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAtC() returns zero.</returns>
 /// <remarks>This function is the same as AtC since .Net has unicode strings</remarks>
 function MBAtC(cSearch as string,cTarget as string) as dword
 	return AtC(cSearch, cTarget)   
@@ -62,7 +62,7 @@ function MBAtC(cSearch as string,cTarget as string) as dword
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAtC2() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAtC2() returns zero.</returns>
 /// <remarks>This function is the same as AtC2 since .Net has unicode strings</remarks>
 function MBAtC2(cSearch as string,cTarget as string) as dword
 	return AtC2(cSearch, cTarget)   
@@ -72,7 +72,7 @@ function MBAtC2(cSearch as string,cTarget as string) as dword
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAtLine() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAtLine() returns zero.</returns>
 /// <remarks>This function is the same as AtLine() since .Net has unicode strings</remarks>
 function MBAtLine(cSearch as string,cTarget as string) as longint
 	return (long) AtLine(cSearch, cTarget)   
@@ -82,7 +82,7 @@ function MBAtLine(cSearch as string,cTarget as string) as longint
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
-/// <returns>The position of the first occurrence of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBAtLine() returns zero.</returns>
+/// <returns>The position of the first occurrence of cMBSearch within cMBTarget.  If cMBSearch is not found, MBAtLine() returns zero.</returns>
 /// <remarks>This function is the same as AtLine2() since .Net has unicode strings</remarks>
 function MBAtLine2(cSearch as string,cTarget as string) as dword
 	return AtLine2(cSearch, cTarget)   
@@ -92,7 +92,7 @@ function MBAtLine2(cSearch as string,cTarget as string) as dword
 /// </summary>
 /// <param name="c">The string from which to extract characters. </param>
 /// <param name="wLen">The number of characters to extract.</param>
-/// <returns>The leftmost <wCount> characters of <cMBString> — each character counts as one character.  If <wCount> is zero, MBLeft() returns a NULL_STRING.  If <wCount> is larger than the length of the string, MBLeft() returns the entire string.</returns>
+/// <returns>The leftmost wCount characters of cMBString — each character counts as one character.  If wCount is zero, MBLeft() returns a NULL_STRING.  If wCount is larger than the length of the string, MBLeft() returns the entire string.</returns>
 /// <remarks>This function is the same as Left() since .Net has unicode strings</remarks>
 function MBLEFT(c as string,wLen as dword) as string
 	return Left(c, wLen)   
@@ -101,7 +101,7 @@ function MBLEFT(c as string,wLen as dword) as string
 /// Return the length of a string containing double-byte characters.
 /// </summary>
 /// <param name="cMBString">The string to measure.  Each character counts as one .</param>
-/// <returns>The length of <uMBValue> in which each character counts as one.</returns>
+/// <returns>The length of cMBString in which each character counts as one.</returns>
 /// <remarks>This function is the same as SLen() since .Net has unicode strings</remarks>
 function MBLEN(cMBString as string) as dword
 	return SLen(cMBString)
@@ -110,7 +110,7 @@ function MBLEN(cMBString as string) as dword
 /// Remove leading spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMBString"></param>
-/// <returns><cMBString> with the leading spaces removed.  If <cMBString> is a NULL_STRING or all spaces, MBLTrim() returns a NULL_STRING.
+/// <returns>cMBString with the leading spaces removed.  If cMBString is a NULL_STRING or all spaces, MBLTrim() returns a NULL_STRING.</returns>
 /// <remarks>This function is the same as LTrim() since .Net has unicode strings</remarks>
 function MBLTrim(cMBString as string) as string
 	return LTrim(cMBString)
@@ -120,7 +120,7 @@ function MBLTrim(cMBString as string) as string
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBRAt3().)</param>
-/// <returns>The position of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBRAt() returns zero.</returns>
+/// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat() since .Net has unicode strings</remarks>
 function MBRat(cSearch as string,cTarget as string) as longint
 	return (long) Rat(cSearch, cTarget)
@@ -130,7 +130,7 @@ function MBRat(cSearch as string,cTarget as string) as longint
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBRAt3().)</param>
-/// <returns>The position of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBRAt() returns zero.</returns>
+/// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat2() since .Net has unicode strings</remarks>
 function MBRat2(cSearch as string,cTarget as string) as dword
 	return Rat2(cSearch, cTarget)
@@ -141,7 +141,7 @@ function MBRat2(cSearch as string,cTarget as string) as dword
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBRAt3().)</param>
 /// <param name="wOffset">The position in the string at which to start searching.  A value of zero specifies the first character.</param>
-/// <returns>The position of <cMBSearch> within <cMBTarget>.  If <cMBSearch> is not found, MBRAt() returns zero.</returns>
+/// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat3() since .Net has unicode strings</remarks>
 function MBRat3(cSearch as string,cTarget as string,wOffset as dword) as dword
 	return Rat3(cSearch, cTarget, wOffSet)
@@ -151,7 +151,7 @@ function MBRat3(cSearch as string,cTarget as string,wOffset as dword) as dword
 /// </summary>
 /// <param name="cMbString">The string from which to extract characters.</param>
 /// <param name="wLen">The number of characters to extract. </param>
-/// <returns>The rightmost <wCount> characters of <cMBString>.  If <wCount> is zero, MBRight() returns a NULL_STRING.  If <wCount> is larger than the length of the string, MBRight() returns <cMBString>.</returns>
+/// <returns>The rightmost wCount characters of cMBString.  If wCount is zero, MBRight() returns a NULL_STRING.  If wCount is larger than the length of the string, MBRight() returns cMBString.</returns>
 /// <remarks>This function is the same as Right() since .Net has unicode strings</remarks>
 function MBRight(cMbString as string,wLen as dword) as string
 	return Right(cMbString, wLen)
@@ -160,7 +160,7 @@ function MBRight(cMbString as string,wLen as dword) as string
 /// Remove trailing spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMbString">The string to trim.</param>
-/// <returns><cMBString> with the trailing spaces removed.  If <cMBString> is a NULL_STRING or all spaces, MBRTrim() returns a NULL_STRING.</returns>
+/// <returns>cMBString with the trailing spaces removed.  If cMBString is a NULL_STRING or all spaces, MBRTrim() returns a NULL_STRING.</returns>
 /// <remarks>This function is the same as RTrim() since .Net has unicode strings</remarks>
 function MBRTrim(cMbString as string) as string
 	return RTrim(cMbString)
@@ -169,7 +169,7 @@ function MBRTrim(cMbString as string) as string
 /// Return the length of a strongly typed string containing double-byte characters.
 /// </summary>
 /// <param name="cMbString">The string to count.</param>
-/// <returns>The length of <cMBString> in which character counts as one.  If the string is a NULL_STRING, MBSLen() returns zero.</returns>
+/// <returns>The length of cMBString in which character counts as one.  If the string is a NULL_STRING, MBSLen() returns zero.</returns>
 /// <remarks>This function is the same as Slen() since .Net has unicode strings</remarks>
 function MBSLen(cMbString as string) as dword
 	return SLen(cMbString)
@@ -178,10 +178,10 @@ function MBSLen(cMbString as string) as dword
 /// Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
 /// </summary>
 /// <param name="cMBTarget">The string into which characters are inserted and deleted. </param>
-/// <param name="wStart">The position in <cMBTarget> where the insertion/deletion occurs.</param>
+/// <param name="wStart">The position in cMBTarget where the insertion/deletion occurs.</param>
 /// <param name="wDel">The number of characters to delete.</param>
 /// <param name="cIns">The string to insert.</param>
-/// <returns><cMBTarget> with the specified characters deleted and <cMBInsert> inserted.</returns>
+/// <returns>cMBTarget with the specified characters deleted and cMBInsert inserted.</returns>
 /// <remarks>This function is the same as Stuff() since .Net has unicode strings</remarks>
 function MBStuff(cMBTarget as string,wStart as dword,wDel as dword,cIns as string) as string
 	return Stuff(cMBTarget, wStart, wDel, cIns)
@@ -192,7 +192,7 @@ function MBStuff(cMBTarget as string,wStart as dword,wDel as dword,cIns as strin
 /// Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cMbString">The string from which to extract a substring.</param>
-/// <param name="wStart">The starting position relative to the leftmost character in <cMBTarget>. </param>
+/// <param name="wStart">The starting position relative to the leftmost character in cMBTarget. </param>
 /// <returns>MBSubstr2() is a typed version of MBSubstr().</returns>
 /// <remarks>This function is the same as Substr2() since .Net has unicode strings</remarks>
 function MBSubstr2(cMbString as string,wStart as dword) as string
@@ -202,9 +202,9 @@ function MBSubstr2(cMbString as string,wStart as dword) as string
 /// Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cMbString">The string from which to extract a substring.</param>
-/// <param name="wStart">The starting position relative to the leftmost character in <cMBTarget>. </param>
-/// <param name="wLen">The number of characters to extract — double-byte characters count as one character.  If <wCount> is greater than the number of characters from <wStart> to the end of <cMBTarget>, the extra is ignored.</param>
-/// <returns>The substring.  If the substring is not present, or if you specify <wStart> as zero, MBSubstr3() returns a NULL_STRING.</returns>
+/// <param name="wStart">The starting position relative to the leftmost character in cMBTarget. </param>
+/// <param name="wLen">The number of characters to extract — double-byte characters count as one character.  If wCount is greater than the number of characters from wStart to the end of cMBTarget, the extra is ignored.</param>
+/// <returns>The substring.  If the substring is not present, or if you specify wStart as zero, MBSubstr3() returns a NULL_STRING.</returns>
 /// <remarks>This function is the same as Substr3() since .Net has unicode strings</remarks>
 function MBSubstr3(cMbString as string,wStart as dword,wLen as dword) as string
 	return Substr3(cMbString, wStart, wLen)
@@ -213,7 +213,7 @@ function MBSubstr3(cMbString as string,wStart as dword,wLen as dword) as string
 /// Remove trailing spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMBString">The string to trim.</param>
-/// <returns><cMBString> with the trailing spaces removed.  If <cMBString> is a NULL_STRING or all spaces, MBTrim() returns a NULL_STRING.</returns>
+/// <returns>cMBString with the trailing spaces removed.  If cMBString is a NULL_STRING or all spaces, MBTrim() returns a NULL_STRING.</returns>
 /// <remarks>This function is the same as Trim() since .Net has unicode strings</remarks>
 function MBTrim(cMBString as string) as string
 	return Trim(cMBString)
@@ -273,22 +273,12 @@ function SetWinCompFunc(pFunc as object) as IntPtr
 	/// THROW NotImplementedException{}
 	return IntPtr.Zero
 
-
-/// <summary>
-/// </summary>
-/// <param name="dwInst"></param>
-/// <returns>
-/// </returns>
+[Obsolete];
 function NationInit(dwInst as dword) as int
-	/// THROW NotImplementedException{}
 	return 0   
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+[Obsolete];
 function NationExit() as int
-	/// THROW NotImplementedException{}
 	return 0   
 
 

@@ -7,6 +7,7 @@
 using System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>Class that contains the list of open workareas. Each thread will have its own list.</summary>
 CLASS WorkAreas
 	// Not static because every thread can have its own workareas structure
 	#region Constants
@@ -19,7 +20,7 @@ CLASS WorkAreas
 	PRIVATE iCurrentWorkarea as LONG
 	PUBLIC LastException AS Exception 
 
-	///<Summary>Get singleton Workareas object for current thread</Summary>
+	///<summary>Get singleton Workareas object for current thread</summary>
 	STATIC METHOD GetInstance() as WorkAreas
 		VAR oState	:= XSharp.RuntimeState.GetInstance() 
 		VAR oInstance := oState:WorkAreas 
@@ -30,7 +31,8 @@ CLASS WorkAreas
 		Aliases 			:= Dictionary<STRING, LONG>{MaxWorkAreas}
 		RDDs				:= IRDD[]{MaxWorkAreas}   
 		iCurrentWorkArea	:= 1
-	///<Summary>Convert 1 based Workarea number to 0 based with validation</Summary>
+
+	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
 	PRIVATE METHOD AdjustArea( nArea REF LONG) AS LOGIC
 		IF  nArea > 0 .and.  nArea <= MaxWorkAreas
 			 nArea -=1
@@ -38,7 +40,7 @@ CLASS WorkAreas
 		ENDIF          
 		RETURN FALSE
 	
-	///<Summary>Close All RDDs referenced by this workarea list</Summary>
+	///<summary>Close All RDDs referenced by this workarea list</summary>
 	PUBLIC METHOD CloseAll() AS LOGIC
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
@@ -59,7 +61,7 @@ CLASS WorkAreas
 		END LOCK                       
 		RETURN lResult 
 
-	///<Summary>Commit changes in all workares in this workarea list</Summary>
+	///<summary>Commit changes in all workares in this workarea list</summary>
 	PUBLIC METHOD CommitAll() AS LOGIC
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
@@ -78,7 +80,7 @@ CLASS WorkAreas
 		END LOCK                       
 		RETURN lResult 
 
-	///<Summary>Close area with 1 based workarea number</Summary>
+	///<summary>Close area with 1 based workarea number</summary>
 	PUBLIC METHOD CloseArea( nArea AS LONG) AS LOGIC
 		LOCAL lResult := FALSE AS LOGIC
 		IF AdjustArea(REF  nArea)
@@ -101,7 +103,7 @@ CLASS WorkAreas
 		ENDIF
 		RETURN lResult   
 
-	///<Summary> Return 1 based Workarea Number for Alias or 0 when no found</Summary>
+	///<summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
 	PUBLIC METHOD FindAlias(sAlias AS STRING) AS LONG
 		sAlias := sAlias:ToUpperInvariant()
 		BEGIN LOCK RDDs 
@@ -111,7 +113,7 @@ CLASS WorkAreas
 		END LOCK  
 		RETURN 0  
 
-	///<Summary> Return 1 based empty Workarea</Summary>
+	///<summary> Return 1 based empty Workarea</summary>
 	PUBLIC METHOD FindEmptyArea(fromStart AS LOGIC) AS LONG
 		LOCAL i AS LONG
 		BEGIN LOCK RDDs                                  
@@ -131,7 +133,7 @@ CLASS WorkAreas
 		END LOCK  
 		RETURN 0
 
-	///<Summary>Get Alias for 1 based Workarea Number</Summary>
+	///<summary>Get Alias for 1 based Workarea Number</summary>
 	PUBLIC METHOD GetAlias( nArea AS LONG) AS STRING
 		IF AdjustArea(REF nArea) 
 			BEGIN LOCK RDDs
@@ -142,7 +144,7 @@ CLASS WorkAreas
 		ENDIF
 		RETURN NULL       
 		    
-	///<Summary>Get RDD object for 1 based Workarea Number</Summary>
+	///<summary>Get RDD object for 1 based Workarea Number</summary>
 	PUBLIC METHOD GetRDD( nArea AS LONG) AS IRDD
 		IF AdjustArea(REF nArea)
 			BEGIN LOCK RDDs
@@ -151,7 +153,7 @@ CLASS WorkAreas
 		ENDIF
 		RETURN NULL
 		
-	///<Summary>Set RDD object and ALias for 1 based Workarea Number</Summary>
+	///<summary>Set RDD object and ALias for 1 based Workarea Number</summary>
 	PUBLIC METHOD SetArea( nArea AS LONG, sAlias AS STRING, oRDD AS IRDD) AS LOGIC
 		// sAlias and oRdd may be empty (when clearing the RDD)
 		IF AdjustArea(REF nArea)
@@ -166,10 +168,10 @@ CLASS WorkAreas
 		ENDIF          
 		RETURN FALSE   
 
-	///<Summary>Get 1 based Current workarea Number</Summary>
+	///<summary>Get 1 based Current workarea Number</summary>
 	PUBLIC PROPERTY CurrentWorkAreaNO as LONG GET iCurrentWorkArea
 
-	///<Summary>Get Current workarea Object</Summary>
+	///<summary>Get Current workarea Object</summary>
 	PUBLIC PROPERTY CurrentWorkArea AS IRDD
 		GET                               
 			LOCAL  nArea AS LONG

@@ -5,6 +5,7 @@
 //
 using XSharp
 using XSharp.RDD
+USING XSharp.RDD.Enums
 
 /// <summary>
 /// Return the full path of the file

@@ -945,7 +945,6 @@ function GetFMask(cFileMask as string) as string
 	endif
 	return cResult
 	
-/// </summary>
 /// <param name="cAttr"> One or more of the following constants or strings: ADHSRV</param>
 /// <returns>
 /// </returns>

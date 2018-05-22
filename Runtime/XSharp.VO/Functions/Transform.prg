@@ -164,7 +164,7 @@ FUNCTION Transform( lValue AS LOGIC, cPicture AS STRING ) AS STRING
    
 
 
-STATIC FUNCTION TransformNumeric( nValue AS USUAL, cPicture AS STRING ) AS STRING
+INTERNAL FUNCTION TransformNumeric( nValue AS USUAL, cPicture AS STRING ) AS STRING
    //
    // Note: A,N,X,L and Y template chars are treated as normal letters in VO for numeric pictures
    //
@@ -428,23 +428,21 @@ FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
    ENDIF
    RETURN cReturn
 
-FUNCTION Transform( uValue AS USUAL, picture AS STRING ) AS STRING
+FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
   LOCAL ret AS USUAL
 
    IF uValue:IsNumeric
-      ret := TransformNumeric( uValue, picture )
+      ret := TransformNumeric( uValue, cPicture )
    ELSEIF uValue:IsDate
-      ret := Transform( (DATE) uValue, picture )
+      ret := Transform( (DATE) uValue, cPicture )
    ELSEIF uValue:IsLogic
-      ret := Transform( (LOGIC) uValue, picture )
+      ret := Transform( (LOGIC) uValue, cPicture )
    ELSEIF uValue:IsString
-      ret := Transform( (STRING) uValue, picture )
+      ret := Transform( (STRING) uValue, cPicture )
    ELSEIF uValue:IsNil
       ret := ""
    elseif uValue:IsObject && IsMethod( uValue, #Transform )
-	// todo
-      //ret := Send( expr, #Transform, picture )
-	  ret := ""
+      ret := Send( uValue, "Transform" , cPicture )
    ELSE
       BREAK Error.ArgumentError( __ENTITY__, nameof(uValue),  "Invalid argument type"  ,1)
    ENDIF
@@ -453,6 +451,360 @@ FUNCTION Transform( uValue AS USUAL, picture AS STRING ) AS STRING
 
 
 //Todo: Implement unformat
-function Unformat( cString, cPicture, cType)
-	return NIL
+
+
+
+
+INTERNAL FUNCTION UnformatSplitPict(cSayPicture AS STRING, cPic OUT STRING, cFunc OUT STRING) AS LOGIC
+	LOCAL iFuncLen  AS INT
+	LOCAL lRInsert	:= FALSE AS LOGIC
+	cPic := cFunc := ""
+	IF cSayPicture:Length > 1 .and. cSayPicture[0]  == '@'
+		iFuncLen := INT(At(" ",cSayPicture))
+		IFuncLen -= 2
+		IF iFuncLen < 0
+			iFuncLen := INT(SLen(cSayPicture))-1	// RvdH 031120
+		ENDIF
+		cPic  := AllTrim( SubStr(cSayPicture,iFuncLen+2) )
+		cFunc := Upper( SubStr(cSayPicture,2,iFuncLen) )
+
+		IF Instr("R",cFunc)
+			lRInsert := TRUE
+		ENDIF
+	ENDIF
+	RETURN lRInsert
+
+
+
+FUNCTION Unformat( 	cValue	AS STRING,  cSayPicture AS STRING, cType AS STRING)	AS USUAL PASCAL
+	LOCAL uRetVal		AS USUAL
+	LOCAL lNullable     AS LOGIC
+
+	IF (SLen(CType) == 2)
+		lNullable := (Right(cType, 1) == "0")
+	ELSE
+		lNullable := FALSE
+	ENDIF
+
+	cType		:= Upper(Left(cType, 1))
+	cSayPicture := Upper( cSayPicture )
+	SWITCH cType
+	CASE "N"
+		uRetVal := __UnformatN(	cValue, cSayPicture, lNullable)
+
+	CASE "C"
+		uRetVal := __UnformatC(cValue, cSayPicture, lNullable)
+
+	CASE "L"
+		uRetVal := __UnformatL(	cValue, cSayPicture, lNullable)
+
+	CASE "D"
+		uRetVal := __UnformatD(	cValue, cSayPicture, lNullable)
+	OTHERWISE
+		uRetVal := NIL
+	END SWITCH
+
+	RETURN uRetVal
+
+
+INTERNAL FUNCTION __UnformatC(cValue AS STRING, cSayPicture AS STRING, lNullable AS LOGIC) AS STRING PASCAL
+
+	LOCAL lRInsert			:= FALSE AS LOGIC
+	LOCAL cFunc 			:= ""	AS STRING
+	LOCAL wValueLen 		:= 0	AS DWORD
+	LOCAL wPictureLen		:= 0	AS DWORD
+	LOCAL w 				:= 0	AS DWORD
+	LOCAL wValueIdx 		:= 0	AS DWORD
+	LOCAL wPictureIdx		:= 0	AS DWORD
+	LOCAL cRet				:= ""	AS STRING
+	LOCAL cPic				:= ""   AS STRING
+	LOCAL cString			as STRING
+	wPictureIdx := 1
+	UnformatSplitPict(cSayPicture, REF cPic, REF cFunc)
+	lRInsert	:= cFunc:Contains("R")
+	cSayPicture := cPic
+	wPictureLen 	:= SLen(cSayPicture)
+	IF lRInsert
+		VAR sb := StringBuilder{}
+		wValueIdx := 0
+		FOR w :=wPictureIdx TO wPictureLen
+			wValueIdx += 1
+			IF wValueIdx > wValueLen
+				EXIT
+			ENDIF
+			IF "ANX9#YL!":IndexOf(cSayPicture[(int) w-1]) < 0
+				LOOP
+			ENDIF
+			sb:Append(cValue[(int) wValueIdx-1])
+		NEXT
+		IF wValueIdx < wValueLen
+			sb:Append(SubStr2( cValue, wValueIdx+1))
+		ENDIF
+		cString := sb:ToString()
+	ELSE
+		cString := cValue
+	ENDIF
+	IF Empty(cString) .AND. lNullable
+		cRet := ""
+	ELSE
+		cRet := cString
+	ENDIF
+
+	RETURN cRet
+
+
+INTERNAL FUNCTION __UnformatD(cValue AS STRING, cSayPicture AS STRING, lNullable   AS LOGIC)    AS DATE PASCAL
+	LOCAL cFunc 			AS STRING
+	LOCAL cTempValue		AS STRING
+	LOCAL dRet				AS DATE
+
+	UnformatSplitPict(cSayPicture, OUT cTempValue, OUT cFunc)
+	cTempValue := AllTrim(cValue)
+
+	LOCAL cFormat			AS STRING
+	IF cFunc:Contains("E")
+		cFormat := iif ( SetCentury(), "dd/mm/yyyy","dd/mm/yy")
+	ELSE
+		cFormat := GetDateFormat()
+	ENDIF
+	dRet 	:= CToD(cTempValue, cFormat)
+	IF Empty(dRet) .AND. lNullable
+		dRet := NULL_DATE
+	ENDIF
+
+	RETURN dRet
+
+
+INTERNAL FUNCTION __UnformatN(cValue AS STRING, cSayPicture AS STRING, lNullable   AS LOGIC)    AS USUAL PASCAL
+	LOCAL lNegative 			:= FALSE AS LOGIC
+	LOCAL lDecimalFound 		:= FALSE AS LOGIC
+	LOCAL cFunc 				AS STRING
+	LOCAL cChar 				AS STRING
+	LOCAL cNumString			:= NULL_STRING	AS STRING
+	LOCAL cDecimal				:= "" AS STRING
+	LOCAL cTempValue			:= "" AS STRING
+	LOCAL cPic					:= "" AS STRING
+	LOCAL wNegSignCnt			AS DWORD
+	LOCAL wValueLen 			AS DWORD
+	LOCAL wPictureLen			AS DWORD
+	LOCAL wValueIdx 			AS DWORD
+	LOCAL wPictureIdx			AS DWORD
+	LOCAL wValDecPos			AS DWORD
+	LOCAL wPicDecPos			AS DWORD
+	LOCAL uRetVal				:= NIL AS USUAL
+	LOCAL nDecSave				AS DWORD
+
+	UnformatSplitPict(cSayPicture, OUT cPic, OUT cFunc)
+
+	cTempValue := AllTrim(cValue)
+	wValueLen  := SLen(cTempValue)
+
+	IF Instr("X",cFunc) .AND. SubStr3(cTempValue,wValueLen-1,2) == "DB"
+		lNegative	:= TRUE
+		cTempValue	:= AllTrim( SubStr3(cTempValue,1,wValueLen-2) )
+		wValueLen	:= SLen(cTempValue)
+	ENDIF
+	IF ( Instr(")",cFunc) .OR. Instr("(",cFunc) )	;
+		.AND. SubStr3(cTempValue,1,1) == "(" 		;
+		.AND. SubStr3(cTempValue,wValueLen,1) == ")"
+		lNegative := TRUE
+		cTempValue := AllTrim( SubStr3(cTempValue,2,SLen(cTempValue)-2) )
+		wValueLen := SLen(cTempValue)
+	ELSEIF Instr("C",cFunc) .AND. SubStr3(cTempValue,wValueLen-1,2) == "CR"
+		cTempValue := AllTrim( SubStr3(cTempValue,1,wValueLen-2) )
+		wValueLen := SLen(cTempValue)
+	ENDIF
+	IF Instr("D", cFunc)
+		LOCAL aMDY[3,2]	AS ARRAY
+		LOCAL wTemp1	AS DWORD
+		LOCAL wTemp2	AS DWORD
+		LOCAL cDateFormat := "" AS STRING
+		LOCAL cDate 	  := "" AS STRING
+
+		cDateFormat:=GetDateFormat()
+		aMDY[1,1] :=At("MM",cDateformat)
+		aMDY[1,2] :=2
+		aMDY[2,1] :=At("DD",cDateformat)
+		aMDY[2,2] :=2
+		IF Instr("YYYY",cDateformat)
+			aMDY[3,1] :=At("YYYY",cDateformat)
+			aMDY[3,2] :=4
+		ELSE
+			aMDY[3,1] :=At("YY",cDateformat)
+			aMDY[3,2] :=2
+		ENDIF
+		LOCAL w AS DWORD
+		FOR w:=1 UPTO 2
+			LOCAL i AS DWORD
+			FOR i:=1 UPTO 2
+				IF aMDY[i,1]>aMDY[i+1,1]
+					wTemp1:=aMDY[i+1,1]
+					wTemp2:=aMDY[i+1,2]
+					aMDY[i+1,1]:=aMDY[i,1]
+					aMDY[i+1,2]:=aMDY[i,2]
+					aMDY[i,1]:=wTemp1
+					aMDY[i,2]:=wTemp2
+				ENDIF
+			NEXT
+		NEXT
+		FOR w:=1 UPTO 3
+			cDate += SubStr3(cValue,aMDY[w,1],aMDY[w,2])
+		NEXT
+		uRetVal := Val(cDate)
+		RETURN uRetVal
+	ENDIF
+	IF (wNegSignCnt := Occurs("-",cTempValue)) > 0
+		IF wNegSignCnt > Occurs("-",cPic)
+			lNegative := TRUE
+		ENDIF
+	ENDIF
+
+	IF cPic==""
+		uRetVal := Abs( Val(cTempValue) )
+	ELSE
+		cDecimal := Chr( SetDecimalSep() )
+
+		wPictureLen := SLen(cPic)
+		wValDecPos  := At(cDecimal,cTempValue)
+		IF wValDecPos == 0
+			wValDecPos := wValueLen+1
+		ENDIF
+
+		wPicDecPos := At(".",cPic)
+
+		IF wPicDecPos == 0
+			wPicDecPos := wPictureLen+1
+		ENDIF
+
+		IF wValDecPos > wPicDecPos
+			wValueIdx := wValDecPos-wPicDecPos
+			wPictureIdx := 1
+		ELSE
+			wPictureIdx := wPicDecPos-wValDecPos+1
+			wValueIdx := 0
+		ENDIF
+		FOR VAR w:=wPictureIdx TO wPictureLen
+			wValueIdx += 1
+			IF wValueIdx > wValueLen
+				EXIT
+			ENDIF
+			cChar := SubStr3(cTempValue,wValueIdx,1)
+			IF cChar == cDecimal .AND. ! lDecimalfound
+				IF Empty(cNumString) .AND. lNullable
+					uRetVal := NIL
+				ELSE
+					uRetVal := Val(cNumString)
+				ENDIF
+				cNumString := ""
+				lDecimalfound := TRUE
+			ENDIF
+			IF Instr(SubStr3(cPic,w,1),"9#$*")
+				IF IsDigit(cChar)
+					cNumString += cChar
+				ELSEIF cChar == "-"
+					lNegative := TRUE
+				ENDIF
+			ENDIF
+		NEXT
+		IF wValueIdx < wValueLen
+			cNumString += SubStr3( cTempValue, wValueIdx+1, wValueLen-wValueIdx )
+		ENDIF
+
+		IF lDecimalFound
+			VAR w := SLen(cNumString)
+			IF w > 0
+				nDecSave	:= SetDecimal(w)
+				IF !(Empty(cNumString) .AND. lNullable)
+					uRetVal += Val(cNumString) / (10**w)
+				ENDIF
+				SetDecimal(nDecSave)
+			ENDIF
+		ELSE
+			IF Empty(cNumString) .AND. lNullable
+				uRetVal := NIL
+			ELSE
+				uRetVal := Val(cNumString)
+			ENDIF
+		ENDIF
+	ENDIF
+	IF lNegative
+		uRetval := -uRetVal
+	ENDIF
+	RETURN uRetVal
+
+
+INTERNAL FUNCTION __UnformatL(cValue AS STRING, cSayPicture AS STRING, lNullable AS LOGIC) AS LOGIC PASCAL
+	LOCAL cTempValue    := "" AS STRING
+	LOCAL cChar         := "" AS STRING
+	LOCAL nValueLen     := 0  AS DWORD
+	LOCAL nValIdx       := 0  AS DWORD
+	LOCAL cPic          := "" AS STRING
+	LOCAL cFunc         := "" AS STRING
+	LOCAL lRInsert	    := FALSE AS LOGIC
+	LOCAL nPictureLen	:= 0  AS DWORD
+	LOCAL n, nTemp		:= 0  AS DWORD
+	LOCAL lRet          := FALSE AS LOGIC
+
+	cPic := cSayPicture
+
+	cTempValue := AllTrim(cValue)
+	nValueLen  := SLen(cTempValue)
+	UnformatSplitPict(cSayPicture, REF cPic, REF cFunc)
+	lRInsert   := cFunc:Contains("R")
+
+	IF Empty(cTempValue) .AND. lNullable
+		lRet := .F.
+	ELSE
+		LOCAL aTemp AS ARRAY
+		aTemp    := ArrayCreate(5)
+		IF Instr("L", cPic) .OR. Instr("L", cFunc)
+			aTemp[1] := "TRUE"
+			aTemp[2] := ".T."
+			aTemp[3] := "T"
+			aTemp[4] := "YES"
+			aTemp[5] := "Y"
+		ELSE
+			aTemp[1] := SetLiteral(VOErrors.RT_MSG_Long_True)
+			aTemp[2] := ".T."
+			aTemp[3] := SetLiteral(VOErrors.RT_MSG_Short_True)
+			aTemp[4] := SetLiteral(VOErrors.RT_MSG_Long_Yes)
+			aTemp[5] := SetLiteral(VOErrors.RT_MSG_Short_Yes)
+		ENDIF
+
+		IF cPic == ""
+			nTemp := AScanExact( aTemp, Upper(cTempValue) )
+			IF nTemp > 0
+				lRet := .T.
+			ENDIF
+		ELSE
+			nPictureLen := SLen(cPic)
+			IF lRInsert
+				nValIdx := 0
+				FOR n := 1 TO nPictureLen
+					nValIdx += 1
+					IF nValIdx > nValueLen
+						EXIT
+					ENDIF
+					IF Instr(SubStr(cPic,n,1),"YL")
+						cChar := SubStr(cValue,nValIdx,1)
+						nTemp := AScanExact( aTemp, Upper(cChar) )
+						IF nTemp > 0
+							lRet := .T.
+						ENDIF
+						EXIT
+					ENDIF
+				NEXT
+			ELSE
+				cChar := SubStr(cValue,1,1)
+				nTemp := AScanExact( aTemp, Upper(cChar) )
+				IF nTemp > 0
+					lRet := .T.
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+
+	RETURN lRet
+
+
 

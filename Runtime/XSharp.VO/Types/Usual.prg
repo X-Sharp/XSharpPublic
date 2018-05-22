@@ -4,10 +4,14 @@
 // See License.txt in the project root for license information.
 //
 using System
-using System.Runtime.InteropServices
+USING System.Runtime.InteropServices
+using System.Runtime.CompilerServices
 using System.Diagnostics
 using XSharp.Internal
 begin namespace XSharp
+	/// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
+	/// This type has many operators and implicit converters that normally are never directly called from user code.
+	/// </summary>
     [StructLayout(LayoutKind.Sequential, Pack := 4)];
     [DebuggerDisplay("{Value,nq} ({_usualType})", Type := "USUAL")];
     [DebuggerTypeProxy(typeof(UsualDebugView))];
@@ -28,6 +32,7 @@ begin namespace XSharp
             return
             
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(u as __Usual)
             self:_flags     := u:_flags
             self:_valueData	:= u:_valueData
@@ -35,6 +40,7 @@ begin namespace XSharp
             
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(f as Float)
             self:_valueData:r8		:= f:Value
             self:_flags:usualType	:= UsualType.Float
@@ -43,6 +49,7 @@ begin namespace XSharp
             
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(r8 as real8)
             self:_valueData:r8		:= r8
             self:_flags:usualType	:= UsualType.Float
@@ -51,37 +58,43 @@ begin namespace XSharp
             
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as logic)
             self:_flags:usualType	:= UsualType.LOGIC
             self:_valueData:l		:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Array)
             self:_flags:usualType	:= UsualType.Array
             self:_refData			:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Date)
             self:_flags:usualType	:= UsualType.Date
             self:_valueData:d		:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as System.DateTime)
             self:_flags:usualType	:= UsualType.DateTime
             self:_valueData:dt		:= value
-            
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as long)
             self:_flags:usualType	:= UsualType.LONG
             _valueData:i			:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as int64)
             self:_flags:usualType	:= UsualType.INT64
             self:_valueData:i64		:= value
             return
             
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as uint64)
             if value < Int64.MaxValue
                 self:_flags:usualType	:= UsualType.INT64
@@ -216,7 +229,10 @@ begin namespace XSharp
 								self:_valueData:r8		:= f:Value
 								self:_flags:usualType	:= UsualType.Float
 								self:_flags:Width		:= (Sbyte) f:Digits
-								self:_flags:Decimals	:= (Sbyte) f:Decimals
+								SELF:_flags:Decimals	:= (Sbyte) f:Decimals
+							elseif o is ICodeBlock
+                                SELF:_flags:usualType := UsualType.CodeBlock
+                                self:_refData := o
                             ELSE
                                 SELF:_flags:usualType := UsualType.Object
                                 self:_refData := o
@@ -230,11 +246,14 @@ begin namespace XSharp
             self:_flags:usualType	:= UsualType.STRING
             self:_refData 			:= s
             return
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(s as symbol)
             self:_flags:usualType	:= UsualType.SYMBOL
             self:_valueData:s       := s
             return
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(o as object, lIsNull as logic)
             self:_flags:usualType	:= UsualType.OBJECT
             self:_refData 			:= null
@@ -275,7 +294,7 @@ begin namespace XSharp
 			internal property IsLong		as logic get _usualtype == UsualType.Long
 			internal property IsInteger		as logic get _usualtype == UsualType.Long .or. _usualtype == UsualType.Int64
 			internal property Type			as UsualType get _flags:usualType 
-			internal property IsNumeric
+			internal property IsNumeric as logic
 				get
 					switch _usualType
 					case UsualType.Long
@@ -417,6 +436,7 @@ begin namespace XSharp
         
         
         #region implementation IComparable
+            /// <summary>This method is needed to implement the IComparable interface.</summary>
             public method CompareTo(o as object) as long
             local rhs as __Usual
             rhs := (__Usual) o
@@ -509,7 +529,8 @@ begin namespace XSharp
         #endregion
         
         #region Comparison Operators 
-            static operator >(lhs as __Usual, rhs as __Usual) as logic
+		/// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        static operator >(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
                 case UsualType.Long
                     switch rhs:_usualType
@@ -583,6 +604,7 @@ begin namespace XSharp
             end switch
             throw BinaryError(">", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
+			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator >=(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
                 case UsualType.Long
@@ -655,7 +677,8 @@ begin namespace XSharp
             end switch
             throw BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
-            static operator <(lhs as __Usual, rhs as __Usual) as logic
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+			static operator <(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
                 case UsualType.Long
                     switch rhs:_usualType
@@ -727,6 +750,7 @@ begin namespace XSharp
             end switch
             throw BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator <=(lhs as __Usual, rhs as __Usual) as logic
             switch lhs:_usualType
                 case UsualType.Long
@@ -816,9 +840,11 @@ begin namespace XSharp
 				endif
 				return oValue:GetHashCode()
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator ==(lhs as __Usual, rhs as __Usual) as logic
 				return lhs:UsualEquals(rhs, "==")
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator !=(lhs as __Usual, rhs as __Usual) as logic
             if lhs:_usualType == UsualType.STRING .and. rhs:_usualType == UsualType.STRING
                 // Todo __StringEquals
@@ -955,12 +981,14 @@ begin namespace XSharp
         #endregion
         
         #region Unary Operators
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator !(u as __Usual) as logic
             if u:_usualType == UsualType.LOGIC
                 return !u:_logicValue
             endif
             throw UnaryError("!", u)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator ~(u as __Usual) as __Usual
             if u:_usualType == UsualType.Long
                 return ~u:_intValue
@@ -970,6 +998,7 @@ begin namespace XSharp
             endif
             throw UnaryError("~", u)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator -(u as __Usual) as __Usual
             switch u:_usualType
                 case UsualType.LONG		; return -u:_intValue
@@ -980,17 +1009,19 @@ begin namespace XSharp
                     throw UnaryError("-", u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator +(u as __Usual) as __Usual
             switch u:_usualType
                 case UsualType.LONG		; return u:_intValue
                 case UsualType.Int64		; return u:_i64Value
                 case UsualType.Float		; return u:_floatValue
-                case UsualType.Decimal	; return u:_decimalValue
+                case UsualType.Decimal	; return u:_decimalValue 
                 otherwise
                     throw UnaryError("+", u)
             end switch
             
-            static operator --(u as __Usual) as __Usual
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+			static operator --(u as __Usual) as __Usual
             switch u:_usualType
                 case UsualType.LONG		; return u:_intValue - 1
                 case UsualType.Int64		; return u:_i64Value - 1
@@ -1000,6 +1031,7 @@ begin namespace XSharp
                     throw UnaryError("--", u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator ++(u as __Usual) as __Usual
             switch u:_usualType
                 case UsualType.LONG		; return u:_intValue + 1	
@@ -1013,6 +1045,7 @@ begin namespace XSharp
         #endregion
         #region Numeric Operators for Add, Delete etc (also for strings)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator +(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
                 case UsualType.Long
@@ -1081,6 +1114,7 @@ begin namespace XSharp
             end switch
             throw BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator -(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
                 case UsualType.Long
@@ -1146,6 +1180,8 @@ begin namespace XSharp
                     throw BinaryError("-", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
             end switch
             throw BinaryError("-", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator /(lhs as __Usual, rhs as __Usual) as __Usual
             
             switch lhs:_usualType
@@ -1244,6 +1280,7 @@ begin namespace XSharp
             end switch
             throw BinaryError("/", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator %(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
                 case UsualType.Long
@@ -1288,6 +1325,7 @@ begin namespace XSharp
             end switch
             throw BinaryError("%", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator *(lhs as __Usual, rhs as __Usual) as __Usual
             switch lhs:_usualType
                 case UsualType.Long
@@ -1331,6 +1369,7 @@ begin namespace XSharp
             end switch
             throw BinaryError("*", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator >>(lhs as __Usual, rhs as int) as __Usual
             // Right shift
             switch lhs:_usualType
@@ -1340,6 +1379,7 @@ begin namespace XSharp
                     throw BinaryError(">>", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator <<(lhs as __Usual, rhs as long) as __Usual
             // Left shift
             switch (lhs:_usualType)
@@ -1350,6 +1390,7 @@ begin namespace XSharp
             end switch
             
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator &(lhs as __Usual, rhs as __Usual) as __Usual
             // Bitwise And
             switch (lhs:_usualType)
@@ -1370,6 +1411,7 @@ begin namespace XSharp
             end switch
             throw BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), false, lhs, rhs)
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator |(lhs as __Usual, rhs as __Usual) as __Usual
             // Bitwise or
             switch (lhs:_usualType)
@@ -1393,6 +1435,7 @@ begin namespace XSharp
         
         #region Implicit From Usual to Other Type
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as Array
             switch u:_usualType
                 case UsualType.Array	; return (Array) u:_refData
@@ -1410,6 +1453,7 @@ begin namespace XSharp
             //STATIC OPERATOR IMPLICIT(u AS __Usual) AS CodeBlock
             //	THROW NotImplementedException{}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as logic
             switch u:_usualType
                 case UsualType.Logic		; return u:_logicValue
@@ -1421,6 +1465,7 @@ begin namespace XSharp
                     throw ConversionError(LOGIC, typeof(logic), u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as Date
             switch u:_usualType
                 case UsualType.Date		; return u:_dateValue
@@ -1430,6 +1475,7 @@ begin namespace XSharp
                     throw ConversionError(DATE, typeof(Date), u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as DateTime
             switch u:_usualType
                 case UsualType.Date		; return (DateTime) u:_dateValue
@@ -1439,6 +1485,7 @@ begin namespace XSharp
                     throw ConversionError(DATE, typeof(Date), u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as System.IntPtr
             switch u:_usualType
                 CASE UsualType.Ptr		; RETURN u:_ptrValue
@@ -1451,6 +1498,7 @@ begin namespace XSharp
                     throw ConversionError(PTR, typeof(IntPtr), u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as string
             switch u:_usualType
                 case UsualType.String	; return u:_stringValue
@@ -1460,6 +1508,7 @@ begin namespace XSharp
                     throw ConversionError(STRING, typeof(string), u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as Symbol
             switch u:_usualType
                 case UsualType.String	; return (Symbol) u:_stringValue
@@ -1469,6 +1518,7 @@ begin namespace XSharp
                     throw ConversionError(SYMBOL, typeof(Symbol), u)
             end switch
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as Psz
             switch u:_usualType
                 case UsualType.Ptr	; return (Psz) u:_ptrValue
@@ -1480,6 +1530,7 @@ begin namespace XSharp
             
         #endregion
         #region Implicit Numeric Operators
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as byte
             try
                 switch u:_usualType
@@ -1507,6 +1558,7 @@ begin namespace XSharp
             end try
             return 0
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as short
             try
                 // todo use CompilerOptionVO11 for types with decimal
@@ -1536,6 +1588,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "SHORT", typeof(short), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as long
             try
                 switch u:_usualType
@@ -1562,6 +1615,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "LONG", typeof(long), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as int64
             try
                 switch u:_usualType
@@ -1589,6 +1643,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "INT64", typeof(int64), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as System.Decimal
             try
                 switch u:_usualType
@@ -1605,6 +1660,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "DECIMAL", typeof(int64), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as SByte
             try
                 switch u:_usualType
@@ -1622,6 +1678,7 @@ begin namespace XSharp
             end try
             
             // Unsigned
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as word
             try
                 switch u:_usualType
@@ -1638,6 +1695,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "WORD", typeof(word), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as dword
             try
                 switch u:_usualType
@@ -1654,6 +1712,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "DWORD", typeof(dword), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as uint64
             try
                 switch u:_usualType
@@ -1671,6 +1730,7 @@ begin namespace XSharp
             end try
             
             // Single, Double and FLoat
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as real4
             try
                 switch u:_usualType
@@ -1687,6 +1747,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "REAL4", typeof(real4), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as real8
             try
                 switch u:_usualType
@@ -1703,6 +1764,7 @@ begin namespace XSharp
                 throw OverflowError(ex, "REAL8", typeof(real8), u)
             end try
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(u as __Usual) as Float
             try
                 switch u:_usualType
@@ -1722,6 +1784,7 @@ begin namespace XSharp
         #endregion
         #region Implicit from Other Type to Usual
 
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as object) as Usual
 				local result as USUAL
 				if value != null .and. value:GetType() == typeof(__Usual)
@@ -1733,71 +1796,93 @@ begin namespace XSharp
 				endif
 				return result
 
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as logic) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as byte) as __Usual
             return __Usual{(int)value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as Array) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as Date) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as System.DateTime) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as Float) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as real8) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as short) as __Usual
             return __Usual{(int)value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as long) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as int64) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as uint64) as __Usual
             return __Usual{value}
 
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as symbol) as __Usual
 				return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as System.Decimal) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as System.IntPtr) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as SByte) as __Usual
             return __Usual{(int)value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as real4) as __Usual
             return __Usual{(real8)value }
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as string) as __Usual
             return __Usual{value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as word) as __Usual
             return __Usual{(int)value}
             
+            /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as dword) as __Usual
             return iif((value <= 0x7fffffff),__Usual{(long)value },__Usual{(Float)value })
         #endregion
         
         #region implementation IConvertable
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToBoolean(provider as System.IFormatProvider) as logic
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToByte(provider as System.IFormatProvider) as byte
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToChar(provider as System.IFormatProvider) as char
             var o := __Usual.ToObject(self)
             if o is IConvertible
@@ -1805,24 +1890,31 @@ begin namespace XSharp
             endif
             throw InvalidCastException{}
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToDateTime(provider as System.IFormatProvider) as System.DateTime
             return (Date) self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToDecimal(provider as System.IFormatProvider) as Decimal
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToDouble(provider as System.IFormatProvider) as real8
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToInt16(provider as System.IFormatProvider) as short
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToInt32(provider as System.IFormatProvider) as long
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToInt64(provider as System.IFormatProvider) as int64
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             static method ToObject(u as __Usual) as object
             switch u:_usualType
                 case UsualType.ARRAY		; return u:_refData
@@ -1842,13 +1934,15 @@ begin namespace XSharp
                 otherwise					; return null
             end switch
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToSByte(provider as System.IFormatProvider) as SByte
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToSingle(provider as System.IFormatProvider) as real4
             return self
            
-			public method AsString()
+			public method AsString() as string strict
 				return self:ToString()
 			
 			
@@ -1913,12 +2007,15 @@ begin namespace XSharp
                 endif
             endif
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToUInt16(provider as System.IFormatProvider) as word
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToUInt32(provider as System.IFormatProvider) as dword
             return self
             
+            /// <summary>This method is needed to implement the IConvertible interface.</summary>
             public method ToUInt64(provider as System.IFormatProvider) as uint64
             return self
             
@@ -1964,7 +2061,7 @@ begin namespace XSharp
             end switch
 			return "?"                        
 
-            static method ConversionError(toTypeString as string, toType as System.Type, u as Usual) as Error
+            static internal method ConversionError(toTypeString as string, toType as System.Type, u as Usual) as Error
 				var err			:= Error{InvalidCastException{}}
 				err:GenCode		:= GenCode.EG_DataType
 				err:ArgTypeReq	:= toType
@@ -1975,7 +2072,7 @@ begin namespace XSharp
 				err:Args        := <OBJECT>{u}
 				return err
 
-            static method ConversionError(typeNum as DWORD, toType as System.Type, u as Usual) as Error
+            static internal method ConversionError(typeNum as DWORD, toType as System.Type, u as Usual) as Error
 				var err			:= Error{ InvalidCastException{} }
 				err:GenCode		:= GenCode.EG_DataType
 				err:ArgTypeReq	:= toType
@@ -1987,7 +2084,7 @@ begin namespace XSharp
 				err:Args        := <OBJECT>{u}
 				return err
             
-            static method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as Usual) as Error
+            static internal method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as Usual) as Error
 				var err			 := Error{ex}
 				err:GenCode		 := GenCode.EG_NUMOVERFLOW
 				err:ArgTypeReq	 := toType
@@ -1998,7 +2095,7 @@ begin namespace XSharp
 				err:Args		 := <OBJECT>{u}
 				return err
             
-            static method BinaryError( cOperator as string, message as string, left as logic, lhs as Usual, rhs as Usual) as Error
+            static internal method BinaryError( cOperator as string, message as string, left as logic, lhs as Usual, rhs as Usual) as Error
 				var err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
 				err:ArgNum		 := iif (left, 1, 2)
@@ -2008,7 +2105,7 @@ begin namespace XSharp
 				err:Args         := <OBJECT> {lhs, rhs}
 				return err
             
-            static method UnaryError( cOperator as string, u as Usual) as Error
+            static internal method UnaryError( cOperator as string, u as Usual) as Error
 				var err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
 				err:ArgNum		 := 1
@@ -2022,6 +2119,7 @@ begin namespace XSharp
         #endregion
 
 		#region Special methods used by the compiler
+        /// <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
 		static method __InexactEquals( lhs as usual, rhs as usual ) as logic
 			if lhs:IsString .and. rhs:IsString
 				return __StringEquals( lhs:_stringValue, rhs:_stringValue)
@@ -2029,6 +2127,7 @@ begin namespace XSharp
 				return lhs:UsualEquals(rhs, "=")
 			endif
 
+        /// <summary>This method is used by the compiler for code that does an inexact comparison between a usual and a string.</summary>
 		static method __InexactEquals( lhs as usual, rhs as string ) as logic
 			if lhs:IsString 
 				return __StringEquals( lhs:_stringValue, rhs)
@@ -2036,6 +2135,7 @@ begin namespace XSharp
 				throw BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
 			endif
 
+        /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
 		static method __InexactNotEquals( lhs as usual, rhs as usual ) as logic
 			// emulate VO behavior for "" and NIL
 			// "" = NIL but also "" != NIL, NIL = "" and NIL != ""
@@ -2046,6 +2146,7 @@ begin namespace XSharp
 			else
 				return ! lhs:UsualEquals(rhs, "<>")
 			endif
+        /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
 		static method __InexactNotEquals( lhs as usual, rhs as string ) as logic
 			if lhs:IsString 
 				return __StringNotEquals( lhs:_stringValue, rhs)
@@ -2069,16 +2170,16 @@ begin namespace XSharp
     
     
     [StructLayout(LayoutKind.Explicit)];
-    public structure _UsualData
+    internal structure _UsualData
         // Fields
-        [FieldOffset(0)] export d as __VoDate
-        [FieldOffset(0)] export r8 as real8
-        [FieldOffset(0)] export i as long
-        [FieldOffset(0)] export i64 as int64
-        [FieldOffset(0)] export l as logic
-        [FieldOffset(0)] export p as System.IntPtr
-        [FieldOffset(0)] export s as symbol
-        [FieldOffset(0)] export dt as System.DateTime
+        [FieldOffset(0)] internal d as __VoDate
+        [FieldOffset(0)] internal r8 as real8
+        [FieldOffset(0)] internal i as long
+        [FieldOffset(0)] internal i64 as int64
+        [FieldOffset(0)] internal l as logic
+        [FieldOffset(0)] internal p as System.IntPtr
+        [FieldOffset(0)] internal s as symbol
+        [FieldOffset(0)] internal dt as System.DateTime
         
     end structure
     
@@ -2142,7 +2243,7 @@ function UsualType(u as __Usual) as dword
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function UsualVal(u as const  Usual) as Usual
+function UsualVal(u as Usual) as Usual
 	return u
 
 /// <summary>
@@ -2151,7 +2252,7 @@ function UsualVal(u as const  Usual) as Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function ValType(u as const Usual) as string
+function ValType(u as Usual) as string
 	return u:ValType()
 
     

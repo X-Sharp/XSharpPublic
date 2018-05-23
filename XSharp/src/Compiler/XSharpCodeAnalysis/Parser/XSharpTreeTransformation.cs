@@ -3206,6 +3206,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
 
+            // check the accessor list. if none of the Gets/Sets have a body then generate a warning
+            if ( context.Auto == null)
+            {
+                var hasBody = false;
+                foreach (var accessor in accessorList.Accessors)
+                {
+                    if (accessor.Body != null && accessor.Body.Statements.Count > 0)
+                    {
+                        hasBody = true;
+                        break;
+                    }
+                }
+                if (!hasBody)
+                {
+                    accessorList = accessorList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));
+                }
+            }
+
+
             if (context.ParamList == null || context.ParamList._Params.Count == 0)
             {
                 MemberDeclarationSyntax propertydecl = _syntaxFactory.PropertyDeclaration(
@@ -3310,16 +3329,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ,
                 expressionBody: null,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            if (context.Expr == null && context.ExprList == null && ! isAbstract)
-            {
-                if (! property.isInInterface())
-                {
-                    decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));
-                }
-            }
-            context.Put(decl);
+             context.Put(decl);
         }
-
 
         #endregion
 
@@ -4991,6 +5002,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitInterfaceModifiers([NotNull] XP.InterfaceModifiersContext context)
         {
             HandleDefaultTypeModifiers(context, context._Tokens, true);
+        }
+
+        public override void ExitAccessorModifiers([NotNull] XP.AccessorModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            bool isInInterface = context.Parent.isInInterface();
+            AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
+            context.PutList(modifiers.ToList<SyntaxToken>());
+            _pool.Free(modifiers);
         }
 
         public override void ExitMemberModifiers([NotNull] XP.MemberModifiersContext context)

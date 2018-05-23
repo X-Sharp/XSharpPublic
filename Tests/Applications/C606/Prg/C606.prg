@@ -6,7 +6,7 @@ FUNCTION Start( ) AS VOID
 	o := TestClass{}
 	
 	xAssert(o:MyProp1 == 0)
-	xAssert(o:MyProp7 == 7)
+	//xAssert(o:MyProp7 == 7)
 	xAssert(o:MyProp8 == 8)
 	xAssert(o:MyProp9 == 9)
 	xAssert(o:MyProp10 == 10)
@@ -22,7 +22,7 @@ CLASS TestClass
 	// error XS0106: The modifier 'override' is not valid for this item
 	// error XS0273: The accessibility modifier of the 'TestClass.MyProp3.set' accessor must be more restrictive than the property or indexer 'TestClass.MyProp3'
 	PROPERTY MyProp4 AS INT AUTO GET PROTECTED SET 	// error XS0106
-	PROPERTY MyProp5 AS INT AUTO GET PUBLIC SET 	// error XS0106, XS0273
+	PROTECTED PROPERTY MyProp5 AS INT AUTO GET PUBLIC SET 	// error XS0106, XS0273
 	PROPERTY MyProp6 AS INT AUTO GET INTERNAL SET 	// error XS0106
 
 	// The following report error XS0106, but also a warning:

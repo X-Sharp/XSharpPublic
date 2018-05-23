@@ -7,14 +7,22 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines Compile time and runtime codeblocks
 	/// </summary>
+	/// <seealso cref="T:XSharp.CodeBlock"/>
+	/// <seealso cref="T:XSharp._CodeBlock"/>
 	INTERFACE ICodeBlock
+		/// <summary>Evaluate the codeblock</summary>
 		METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
+		/// <summary>
+		/// Returns the number of parameters defined for the codeblock
+		/// </summary>
 		METHOD	PCount AS LONG 
 	END INTERFACE
 
 	/// <summary>
 	/// This interface defines Date values
 	/// </summary>
+	/// <seealso cref="T:XSharp.__VODate"/>
+	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	INTERFACE IDate
 		/// <summary>Year part of the date. A number between 0 and 9999</summary>
 		/// <returns>Integer value</returns>
@@ -27,7 +35,7 @@ BEGIN NAMESPACE XSharp
 		PROPERTY Day		AS INT GET
 		/// <summary>Date as System.DateTime structure</summary>
 		/// <returns>System.DateTime value</returns>
-		PROPERTY Value		AS DateTime GET 
+		PROPERTY @@Value	AS DateTime GET 
 		/// <summary>Is the date empty (NULL_DATE)</summary>
 		/// <returns>Logical value</returns>
 		PROPERTY IsEmpty	AS LOGIC GET
@@ -36,6 +44,8 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines FLOAT values
 	/// </summary>
+	/// <seealso cref="T:XSharp.__VOFloat"/>
+	/// <seealso cref="T:XSharp.RDD.DbFloat"/>
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>
 		/// <returns>Integer value</returns>
@@ -50,14 +60,17 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines the Macro compiler subsystem
 	/// </summary>
+	/// <seealso cref="M:XSharp.VO.Functions.SetMacroCompiler(System.Type)"/>
+	/// <seealso cref="M:XSharp.VO.Functions.GetMacroCompiler"/>
+	/// <seealso cref="T:XSharp.ICodeBlock"/>
 	INTERFACE IMacroCompiler
 		/// <summary>Compile a string into a runtime codeblock.</summary>
-		/// <param Name="macro">String to compile</param>
-		/// <param Name="lAllowSingleQuotes">Should single quotes be allowed</param>
-		/// <param Name="module">Module of the main app</param>
-		/// <param Name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
+		/// <param name="macro">String to compile</param>
+		/// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
+		/// <param name="module">Module of the main app</param>
+		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
 		/// <returns>A compiled codeblock</returns>
-		/// <seealso cref="T:XSharp.ICodeblock"/>
+		/// <seealso cref="T:XSharp.ICodeBlock"/>
 		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module as System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
 	END INTERFACE
 END NAMESPACE

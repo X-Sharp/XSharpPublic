@@ -68,31 +68,28 @@ INTERNAL STATIC CLASS MacroHelpers
 		ENDIF
 		RETURN
 		
-	END	CLASS
+END	CLASS
 		
 		
 		
-		
-		
-		
-	/// <summary>
-	/// Evaluate an expression contained in a string.
-	/// </summary>
-	/// <param name="cExpression">The string containing the expression to evaluate.</param>
-	/// <returns>The value of the expression.</returns>
-	/// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
-	/// <seealso>M:XSharp.VO.Functions.MCompile</seealso>
+/// <summary>
+/// Evaluate an expression contained in a string.
+/// </summary>
+/// <param name="cExpression">The string containing the expression to evaluate.</param>
+/// <returns>The value of the expression.</returns>
+/// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
+/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String)" />
 FUNCTION Evaluate(cExpression AS STRING) AS USUAL
 	RETURN Evaluate(cExpression, TRUE)
 	
-	/// <summary>
-	/// Evaluate an expression contained in a string.
-	/// </summary>
-	/// <param name="cExpression">The string containing the expression to evaluate.</param>
-	/// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
-	/// <returns>The value of the expression.</returns>
-	/// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
-	/// <seealso>M:XSharp.VO.Functions.MCompile</seealso>
+/// <summary>
+/// Evaluate an expression contained in a string.
+/// </summary>
+/// <param name="cExpression">The string containing the expression to evaluate.</param>
+/// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
+/// <returns>The value of the expression.</returns>
+/// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
+/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._CODEBLOCK 
 	LOCAL uRes   AS USUAL
@@ -106,28 +103,30 @@ FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	RETURN uRes
 	
 	
-	/// <summary>
-	/// Macro compile a string.
-	/// </summary>
-	/// <param name="cMacro">The string to compile.</param>
-	/// <returns>The string in a macro-compiled form.</returns>
-	/// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
-	/// <seealso>T:XSharp._CodeBlock</seealso>
-	/// <seealso>M:XSharp.VO.Functions.MExec</seealso>
+/// <summary>
+/// Macro compile a string.
+/// </summary>
+/// <param name="cMacro">The string to compile.</param>
+/// <returns>The string in a macro-compiled form.</returns>
+/// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
+/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
+/// <seealso cref="T:XSharp._CodeBlock" />
+/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String,System.Boolean)" />
+/// <seealso cref="M:XSharp.VO.Functions.MExec(XSharp.CodeBlock)" />
 FUNCTION MCompile(cMacro AS STRING) AS XSharp._CODEBLOCK
 	RETURN MCompile(cMacro, TRUE)
 	
-	/// <summary>
-	/// Macro compile a string.
-	/// </summary>
-	/// <param name="cMacro">The string to compile.</param>
-	/// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
-	/// <returns>The string in a macro-compiled form.</returns>
-	/// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
-	/// <seealso>T:XSharp._CodeBlock</seealso>
-	/// <seealso>M:XSharp.VO.Functions.MExec</seealso>
+/// <summary>
+/// Macro compile a string.
+/// </summary>
+/// <param name="cMacro">The string to compile.</param>
+/// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
+/// <returns>The string in a macro-compiled form.</returns>
+/// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
+/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
+/// <seealso cref="T:XSharp._CodeBlock" />
+/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String)" />
+/// <seealso cref="M:XSharp.VO.Functions.MExec(XSharp.CodeBlock)" />
 FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._CodeBlock
 	
 	VAR oMC := MacroHelpers.Compiler
@@ -152,8 +151,9 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 	/// <param name="cb">The macro-compiled codeblock.</param>
 	/// <returns>The result of evalating the macro compiled expression.</returns>
 	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net. Therefore the parameter of MExec is a Codeblock</note>
-	/// <seealso>T:XSharp._CodeBlock</seealso>
-	/// <seealso>M:XSharp.VO.Functions.MCompile</seealso>
+	/// <seealso cref="T:XSharp._CodeBlock" />
+	/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String)" />
+	/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION MExec(cb AS CODEBLOCK) AS USUAL
 	IF cb:PCount() == -1
 		RETURN cb:EvalBlock()
@@ -205,7 +205,7 @@ FUNCTION TYPE(cExpression AS STRING) AS STRING
 /// Get the type of the class that is used to compile macros
 /// </summary>
 /// <returns>The type of the currently defined MacroCompiler. This may be NULL if no type has been set yet and no macros have been compiled.</returns>
-
+/// <seealso cref="T:XSharp.IMacroCompiler"/>
 FUNCTION GetMacroCompiler () AS System.Type
 	RETURN XSharp.RuntimeState.MacroCompiler
 	
@@ -214,7 +214,7 @@ FUNCTION GetMacroCompiler () AS System.Type
 /// </summary>
 /// <param name="oCompiler">The type of the class that implements the macro compiler. This type MUST implement IMacroCompiler.</param>
 /// <returns>The type of the previously defined MacroCompiler. This may be NULL if no type has been set yet and no macros have been compiled.</returns>
-
+/// <seealso cref="T:XSharp.IMacroCompiler"/>
 FUNCTION SetMacroCompiler (oCompiler AS System.Type) AS System.Type
 VAR old := XSharp.RuntimeState.MacroCompiler
 XSharp.RuntimeState.MacroCompiler := oCompiler

@@ -5,13 +5,30 @@
 //
 
 /// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary> 
-CLASS XSharp.RDD.DbFLoat IMPLEMENTS IFLoat
-	property Value		as Real8 auto
-	property Digits		as int auto
-	property Decimals	as int auto
-	constructor(val as real8, len as int, dec as int)
-		Value := val
+/// <seealso cref="T:XSharp.IFloat"/>
+CLASS XSharp.RDD.DbFloat IMPLEMENTS IFLoat
+	PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
+	PROPERTY Digits		AS INT AUTO GET PRIVATE SET
+	PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
+	CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
+		VALUE := val
 		Digits := len
 		Decimals := dec
-
-end class
+		
+END	CLASS
+		
+/// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary> 
+/// <seealso cref="T:XSharp.IDate"/>
+CLASS XSharp.RDD.DbDate IMPLEMENTS IDate
+	PROPERTY Year		AS INT AUTO GET PRIVATE SET
+	PROPERTY Month		AS INT AUTO GET PRIVATE SET
+	PROPERTY Day		AS INT AUTO GET PRIVATE SET
+	PROPERTY @@Value	AS DateTime GET DateTime{Year, Month, Day}
+	PROPERTY IsEmpty	AS LOGIC GET Month != 0
+	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)
+		Year	:= nYear
+		Month   := nMonth
+		Day     := nDay
+		RETURN
+		
+END CLASS

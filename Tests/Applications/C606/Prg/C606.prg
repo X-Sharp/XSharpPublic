@@ -32,9 +32,13 @@ CLASS TestClass
 	PROPERTY MyProp8 AS INT INTERNAL GET 8 SET 		// error XS0106
 	PROPERTY MyProp9 AS INT GET 9 INTERNAL SET 	// error XS0106
 	PROPERTY MyProp10 AS INT GET 10 PROTECTED SET 	// error XS0106
-*/
+
 END CLASS
 
+
+INTERFACE TestInterface
+	PROPERTY MyProp1 AS INT GET // SHould not generate a warning about a missing body
+END INTERFACE
 
 PROC xAssert(l AS LOGIC)
 IF l

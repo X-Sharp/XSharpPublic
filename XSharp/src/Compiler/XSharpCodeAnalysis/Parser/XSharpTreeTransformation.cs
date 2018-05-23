@@ -3207,7 +3207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
 
             // check the accessor list. if none of the Gets/Sets have a body then generate a warning
-            if ( context.Auto == null)
+            if ( context.Auto == null && !isInInterface)
             {
                 var hasBody = false;
                 foreach (var accessor in accessorList.Accessors)

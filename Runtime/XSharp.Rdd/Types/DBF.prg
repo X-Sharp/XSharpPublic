@@ -94,7 +94,19 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN FALSE
             
-            //	METHOD GoToId(oRec AS OBJECT) AS LOGIC
+        METHOD GoToId(oRec AS OBJECT) AS LOGIC
+            LOCAL result AS LOGIC
+            //
+            TRY
+                VAR nRec := Convert.ToInt32( oRec )
+                result := Self:Goto( nRec )
+            CATCH
+                result := false
+            END TRY
+            RETURN result
+
+
+
         METHOD Skip(nToSkip AS INT) AS LOGIC
             LOCAL result AS LOGIC
             //
@@ -133,7 +145,7 @@ BEGIN NAMESPACE XSharp.RDD
             //	METHOD Zap() AS LOGIC   
             
             // Open and Close   
-        VIRTUAL METHOD Close() 			AS LOGIC 
+        METHOD Close() 			AS LOGIC 
             IF ( SELF:_hFile != NULL )
                 VAR isOk := TRUE
                 //
@@ -152,7 +164,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             //	METHOD Create(info AS DbOpenInfo) AS LOGIC  
             
-        VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+        METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
             //
             isOk := FALSE
@@ -494,14 +506,18 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE                            
                 RETURN SUPER:GetValueLength(nFldPos)
             ENDIF
+
         METHOD Flush() 			AS LOGIC
             IF _oMemo != NULL_OBJECT                    
                 RETURN _oMemo:Flush()
             ELSE                            
                 RETURN SUPER:Flush()
             ENDIF
+
             //	METHOD GoCold()			AS LOGIC
+
             //	METHOD GoHot()			AS LOGIC   
+
         METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             IF _oMemo != NULL_OBJECT                    
                 RETURN _oMemo:PutValue(nFldPos, oValue)

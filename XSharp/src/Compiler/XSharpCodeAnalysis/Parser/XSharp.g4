@@ -282,12 +282,12 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
                     ;
 
 
-eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers?
+eventLineAccessor   : Attributes=attributes? Modifiers=accessorModifiers?
                       ( {InputStream.La(2) != REMOVE}? Key=ADD ExprList=expressionList?
                       | {InputStream.La(2) != ADD}?    Key=REMOVE ExprList=expressionList?
                       | Key=(ADD|REMOVE) )
                     ;
-eventAccessor       : Attributes=attributes? Modifiers=eventModifiers?
+eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
                       | Key=REMOVE  end=eos StmtBlk=statementBlock END REMOVE? )
                       end=eos
@@ -325,13 +325,16 @@ propertyParameterList
                     | LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN		// Allow Parentheses as well
                     ;
 
-propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET|SET)
+propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET)
                     ;
 
-propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers?
+propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
                       ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
                       | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
                       | Key=(GET|SET) )
+                    ;
+
+accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL ) )+
                     ;
 
 expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*

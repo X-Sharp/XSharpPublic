@@ -38,6 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_SizeofUnsafe = 233,
     XS_WRN:ERR_SealedNonOverride = 238,
     XS_WRN:ERR_UseDefViolationOut = 269,
+    XS_WRN:ERR_InvalidPropertyAccessMod = 273,
     XS_WRN:ERR_MemberNameSameAsType = 542,
     XS_WRN:ERR_NewVirtualInSealed = 549,
     XS_WRN:ERR_CantCallSpecialMethod = 571,

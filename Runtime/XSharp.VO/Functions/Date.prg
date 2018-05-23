@@ -69,6 +69,13 @@ function ConDate(dwY as dword,dwM as dword,dwDay as dword) as date
 function CToD(cDate as string) as DATE
 	return CTOD(cDate, XSharp.RuntimeState.DateFormat)
 
+/// <summary>
+/// Convert a Date string to DATE format using a specified Date Format string
+/// </summary>
+/// <param name="cDate"></param>
+/// <param name="cDateFormat"></param>
+/// <returns>
+/// </returns>
 function CToD(cDate as string, cDateFormat as string) as date
 	local dDate as date
 	local nDay, nMonth, nYear as dword

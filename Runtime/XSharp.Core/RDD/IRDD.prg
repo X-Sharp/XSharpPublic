@@ -3,8 +3,10 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp.RDD.Enums
-INTERFACE XSharp.RDD.IRDD
+USING XSharp.RDD.Enums
+/// <summary>Definition for the interface that each RDD must implement</summary>
+/// <seealso cref="T:XSharp.Workarea"/>
+INTERFACE XSharp.RDD.IRdd
 	// Navigation         
 	/// <summary>Evaluate a code block for each row.</summary>
 	/// <param name="info">object containing the information about which rows to visit.</param>

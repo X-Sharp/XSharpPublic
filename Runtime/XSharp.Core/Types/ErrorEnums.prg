@@ -6,6 +6,9 @@
 
 begin namespace XSharp
 	/// <summary>Error code Enum that matches the Visual Objecs and Vulcan Generic Error Codes</summary>
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "Gencode." prefix.
+	/// </note>
 	enum Gencode as dword
 		member EG_UNKNOWN      := 0
 		member EG_ARG          := 1
@@ -72,7 +75,11 @@ begin namespace XSharp
 		// Last Member                        
 		member EG_MAX          := 59
 		
-	end enum
+	END ENUM
+	/// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codes</summary>
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "Severity." prefix.
+	/// </note>
 	enum Severity
 		member ES_WHOCARES     := 0
 		member ES_WARNING      := 1
@@ -80,6 +87,10 @@ begin namespace XSharp
 		member ES_CATASTROPHIC := 3
 	end enum 
 	
+	/// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Sub Codes</summary>
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "Subcodes." prefix.
+	/// </note>
 	enum Subcodes
 		member ENOERROR := 0
 		// Database errors - HOST side

@@ -62,7 +62,7 @@ begin namespace XSharp
 					return (_internalList:Count == 0)
 				end get 
 			end property
-			
+			/// <summary>Length of the array.</summary>
 			public property Length as dword
 				get
 					return (dword)_internalList:Count
@@ -71,7 +71,7 @@ begin namespace XSharp
 		#endregion
 		
 		#region Enumerators
-			public method GetEnumerator() as IEnumerator<T>
+			public method IEnumerable<T>.GetEnumerator() as IEnumerator<T>
 				return _internalList:GetEnumerator()
 			
 			public method IEnumerable.GetEnumerator() as IEnumerator
@@ -219,7 +219,7 @@ begin namespace XSharp
 				wasLocked := self:_islocked
 				self:_islocked := lLocked
 				return wasLocked
-			
+			/// <summary>Is the array locked?</summary>
 			property Locked as logic get _islocked
 			internal method CheckLock as logic
 				if self:_islocked

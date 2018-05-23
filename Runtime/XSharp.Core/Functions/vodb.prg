@@ -6,7 +6,7 @@
 using XSharp
 using XSharp.RDD
 USING XSharp.RDD.Enums
-
+#ifdef NOTDEFINED
 /// <summary>
 /// Return the full path of the file
 /// </summary>
@@ -381,7 +381,10 @@ FUNCTION VODBFilter() AS STRING
 FUNCTION VODBFlock() AS LOGIC
 	VAR oWA := RDDHelpers.CWA("VODBFlock")
 	IF (oWA != NULL)
-		RETURN oWA:Lock(DbLockMode.Lock)
+		 LOCAL dbli AS DBLOCKINFO
+         dbli:Result := FALSE
+         dbli:@@Method := DBLOCKINFO.LockMethod.File
+		 RETURN oWA:Lock(dbli)
 	ENDIF
 	RETURN FALSE   
 
@@ -1050,3 +1053,4 @@ FUNCTION VODBZap() AS LOGIC
 	ENDIF                            
 	RETURN FALSE
 //
+#endif

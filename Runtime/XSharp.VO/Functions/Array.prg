@@ -239,7 +239,6 @@ INTERNAL STATIC CLASS ArrayHelpers
 	END CLASS
 		
 		
-		
 /// <summary>
 /// Create an uninitialized, one-dimensional Array.
 /// </summary>
@@ -247,10 +246,6 @@ INTERNAL STATIC CLASS ArrayHelpers
 /// <returns>
 /// An uninitialized of the given length.
 /// </returns>
-	
-
-		
-	
 FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY 
 	RETURN __Array{dwDim}
 	
@@ -308,8 +303,7 @@ FUNCTION AAdd<T>(a AS __ArrayBase<T>,x AS T) AS T WHERE T IS NEW()
 	a:Add(x)
 	RETURN x 	
 	
-/// <summary>
-/// Duplicate a multidimensional Array.
+/// Duplicate an array .
 /// </summary>
 /// <param name="a"></param>
 /// <returns>
@@ -844,6 +838,8 @@ FUNCTION ArrayNew<T>(nSize as DWORD) AS __ArrayBase<T> where T is NEW()
 	RETURN __ArrayBase<T>{nSize}
 	
 	
+	
+
 /// <summary>
 /// To create an Array and fill its elements with a default value.
 /// </summary>
@@ -851,13 +847,13 @@ FUNCTION ArrayNew<T>(nSize as DWORD) AS __ArrayBase<T> where T is NEW()
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AReplicate<T>(x AS USUAL,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	VAR a:=__ArrayBase<T>{nCount} 
-	//Todo
-	//Array.ArrayFill(a,x)
+FUNCTION AReplicate(x AS USUAL,nCount AS DWORD) AS ARRAY
+	VAR a:= __Array{nCount} 
+	LOCAL i as DWORD
+	FOR i := 1 TO nCount
+		a[i] := x
+	NEXT
 	RETURN a
-	
-	
 	
 	
 /// <summary>
@@ -869,15 +865,10 @@ FUNCTION AReplicate<T>(x AS USUAL,nCount AS DWORD) AS __ArrayBase<T> WHERE T IS 
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION ASort(uArray ,startIndex ,nCount ,cbOrder ) AS ARRAY CLIPPER
+FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
 	LOCAL nLen AS DWORD
-	LOCAL aArray as ARRAY
 	DEFAULT( REF startIndex, 1 )
 	
-	IF ! uArray:IsArray
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(uArray), 1, <OBJECT>{ uArray } )
-	ENDIF
-	aArray := uArray
 	nLen := Alen(aArray) 
 
 	EnforceNumeric( startIndex )
@@ -955,7 +946,7 @@ END STRUCTURE
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION ASort1<T>(aArray as __ArrayBase<T> ,startIndex as INT,nCount as INT,cbOrder as @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ASort<T>(aArray as __ArrayBase<T> ,startIndex as INT,nCount as INT,cbOrder as @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
 
 	aArray:Sort( startIndex, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
 	
@@ -1180,7 +1171,7 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cb as ICodeBlock, iStart as INT ) AS ARRAY
 	uCount := NIL
 	uStart  := iStart
 	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE) 
 
 
 /// <summary>

@@ -12,7 +12,7 @@ using System.Collections.Generic
 #define MAXDIGITS               30
 #define MAXDECIMALS             15	
 
-static class StringHelpers
+internal static class ConversionHelpers
 	static internal usCulture as CultureInfo
 	static private formatStrings as Dictionary<Int, String>
 	static constructor
@@ -369,7 +369,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str1(n)
 		else
-			return StringHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
+			return ConversionHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
 		endif
 	case 2
 		if ! nLen:IsNumeric
@@ -378,7 +378,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str2(n, nLen)
 		else
-			return StringHelpers.FormatNumber((int64) n, nLen,0)
+			return ConversionHelpers.FormatNumber((int64) n, nLen,0)
 		endif
 	case 3
 		if ! nDec:IsNumeric
@@ -387,7 +387,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str3(n, nLen, nDec)
 		else
-			return StringHelpers.FormatNumber((int64) n, nLen,nDec)
+			return ConversionHelpers.FormatNumber((int64) n, nLen,nDec)
 		endif
 	end switch
 	return ""
@@ -517,7 +517,7 @@ function _Str1(f as float) as string
 	if nDigits < 0
 		nDigits := RuntimeState.Digits
 	endif
-	return StringHelpers.FormatNumber(f, nDigits, nDecimals )
+	return ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
  
 
 FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
@@ -536,7 +536,7 @@ FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
-   RETURN StringHelpers.FormatNumber(f, (int) dwLen, f:Decimals )
+   RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, f:Decimals )
  
 
 /// <summary>
@@ -567,7 +567,7 @@ function _Str3(f as float,dwLen as dword,dwDec as dword) as string
    IF dwDec > 0 && dwLen != UInt32.MaxValue && ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ '*', (INT) dwLen }
    endif
-   return StringHelpers.FormatNumber(f, (int) dwLen, (int) dwDec)
+   return ConversionHelpers.FormatNumber(f, (int) dwLen, (int) dwDec)
 
 
 /// <summary>
@@ -617,13 +617,13 @@ function Val(cNumber as string) as Usual
 			cNumber := cNumber:Replace(cDec, '.')
 		ENDIF
 		VAR style := NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent |  NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowThousands
-		IF System.Double.TryParse(cNumber, style, StringHelpers.usCulture, REF r8Result)
+		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
 			RETURN r8Result
 		endif
 	ELSE
 		LOCAL iResult := 0 AS INT64
 		VAR style := NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier
-		IF System.Int64.TryParse(cNumber, style, StringHelpers.usCulture, REF iResult)
+		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
 			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
 				RETURN (INT) iResult
 			ENDIF

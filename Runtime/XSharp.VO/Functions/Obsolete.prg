@@ -638,3 +638,117 @@ FUNCTION SysObject() AS USUAL
 [Obsolete];
 FUNCTION MCSHORT(l AS USUAL) AS LOGIC
 	RETURN FALSE  
+
+
+[Obsolete];
+FUNCTION MPrepare(s AS STRING) AS STRING
+	RETURN s
+
+[Obsolete];
+FUNCTION ItemArrayGet(ptrAny AS IntPtr,dwElem AS DWORD) AS USUAL
+RETURN NIL   
+
+[Obsolete];
+FUNCTION ItemArrayNew(dwSize AS DWORD) AS USUAL
+RETURN NIL   
+
+[Obsolete];
+FUNCTION ItemArrayPut(px AS IntPtr,dw AS DWORD,pa AS IntPtr) AS IntPtr
+RETURN IntPtr.Zero
+
+
+[Obsolete];
+FUNCTION ItemCopyC(pszVal AS Psz,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
+RETURN 0   
+
+[Obsolete];
+FUNCTION ItemFreeC(pszVal AS Psz) AS LOGIC
+RETURN FALSE   
+
+[Obsolete];
+FUNCTION ItemGetC(ptrAny AS IntPtr) AS Psz
+RETURN NULL_PSZ
+
+[Obsolete];
+FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS Psz) AS Psz
+RETURN NULL_PSZ
+
+[Obsolete];
+FUNCTION ItemGetDL(ptrAny AS IntPtr) AS LONG
+RETURN 0   
+
+[Obsolete];
+FUNCTION ItemGetL(ptrAny AS IntPtr) AS LOGIC
+RETURN FALSE   
+
+[Obsolete];
+FUNCTION ItemGetND(ptrAny AS IntPtr) AS REAL8
+RETURN 0   
+
+[Obsolete];
+FUNCTION ItemGetNL(ptrAny AS IntPtr) AS LONG
+RETURN 0   
+
+[Obsolete];
+FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS Psz
+RETURN NULL_PSZ
+
+[Obsolete];
+FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS Psz) AS IntPtr
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS Psz,uilen AS DWORD) AS IntPtr
+	/// THROW NotImplementedException{}
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS Psz) AS IntPtr
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS Psz,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemPutDL(ptrAny AS IntPtr,lDate AS LONG) AS IntPtr
+RETURN IntPtr.Zero
+
+
+
+
+[Obsolete];
+FUNCTION ItemPutL(ptrAny AS IntPtr,fVal AS LOGIC) AS IntPtr
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemPutND(ptrAny AS IntPtr,r8 AS REAL8) AS IntPtr
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemPutNL(ptrAny AS IntPtr,lNum AS LONG) AS IntPtr
+RETURN IntPtr.Zero
+
+[Obsolete];
+FUNCTION ItemRegister(ptrAny AS IntPtr) AS LOGIC
+RETURN FALSE   
+
+[Obsolete];
+FUNCTION ItemRelease(ptrAny AS IntPtr) AS LOGIC
+RETURN FALSE   
+
+
+[Obsolete];
+FUNCTION ItemReturn(ptrAny AS IntPtr) AS USUAL
+RETURN NIL   
+
+[Obsolete];
+FUNCTION ItemSize(ptrAny AS IntPtr) AS DWORD
+RETURN 0   
+
+[Obsolete];
+FUNCTION ItemType(ptrAny AS IntPtr) AS DWORD
+
+RETURN 0   
+
+

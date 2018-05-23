@@ -142,7 +142,15 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 /// <param name="pszSource"></param>
 /// <returns>
 /// </returns>
-function __UpperPsz(pszSource as Psz) as Psz
+FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
+	LOCAL bp AS BYTE ptr
+	bp := pszSource
+	DO WHILE bp[1] != 0
+		IF bp[1] >= 97 .and. bp[1] <= 122
+			bp[1] -= 32
+		ENDIF
+		bp++
+	enddo
 	return pszSource	
 
 function String2Mem(s as string) as IntPtr

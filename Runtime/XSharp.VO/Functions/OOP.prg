@@ -12,7 +12,7 @@ USING System.Collections.Generic
 USING System.Linq
 using System.Runtime.CompilerServices
 
-STATIC CLASS OOPHelpers
+INTERNAL STATIC CLASS OOPHelpers
 
 	STATIC METHOD FindOurAssemblies AS IEnumerable<Assembly>
 		RETURN	FROM asm IN AppDomain.CurrentDomain:GetAssemblies() ;

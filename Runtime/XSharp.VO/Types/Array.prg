@@ -150,7 +150,9 @@ begin namespace XSharp
 		new internal method Swap(position as int, element as usual) as usual
 			return super:Swap(position, element)
 
-		/// <inheritdoc />
+		///
+		/// <summary>Access the array element using ZERO based array indexes</summary>
+		///
 		public method __GetElement(index params int[]) as usual
 			local indexLength := index:Length as int
 			local currentArray := self as Array
@@ -193,7 +195,9 @@ begin namespace XSharp
 			return sb:ToString()
 
 
-		/// <inheritdoc />
+		///
+		/// <summary>Assign the array element using ZERO based array indexes</summary>
+		///
 		public method __SetElement(u as usual, index params int[] ) as usual
 			// indices are 0 based
 			if self:CheckLock()

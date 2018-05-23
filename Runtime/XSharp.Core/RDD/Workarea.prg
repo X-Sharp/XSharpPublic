@@ -424,7 +424,7 @@ VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD Lock(uiMode AS DbLockMode) AS LOGIC
+VIRTUAL METHOD Lock(uiMode AS DbLockInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -551,8 +551,8 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT
-	THROW NotImplementedException{__ENTITY__}
+VIRTUAL METHOD EvalBlock(oBlock AS ICodeBlock) AS OBJECT
+	return oBlock:EvalBlock()
 
 /// <inheritdoc />
 VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT

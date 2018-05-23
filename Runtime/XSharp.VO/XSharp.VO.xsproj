@@ -26,7 +26,7 @@
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
     <INS>false</INS>
-    <NS>false</NS>
+    <NS>true</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
     <VO3>false</VO3>
@@ -68,7 +68,7 @@
     <NoStandardDefs>true</NoStandardDefs>
     <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
+    <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -147,7 +147,6 @@
     <Compile Include="Functions\Transform.prg" />
     <Compile Include="Functions\Usual.prg" />
     <Compile Include="Functions\Vodb.prg" />
-    <Compile Include="Functions\ItemAPI.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Types\Array.prg" />
     <Compile Include="Types\CodeBlock.prg" />

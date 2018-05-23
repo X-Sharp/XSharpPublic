@@ -970,6 +970,16 @@ function Space(dwSize as dword) as string
 	return string{' ',(int)dwSize}
 
 /// <summary>
+/// Create a string of spaces.
+/// </summary>
+/// <param name="dwSize"></param>
+/// <returns>
+/// </returns>
+function Space(iSize as int) as string
+	return string{' ',iSize}
+
+
+/// <summary>
 /// Return the length of a strongly typed string.
 /// </summary>
 /// <param name="c">String which length should be calculated.</param>

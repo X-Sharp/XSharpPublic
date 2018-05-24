@@ -67,12 +67,16 @@ namespace XSharp.MacroCompiler.Syntax
                         ilg.Emit(OpCodes.Mul);
                         break;
                     case BinaryOperatorKind.Division:
-                        //ilg.Emit(OpCodes.Div_Un);
-                        ilg.Emit(OpCodes.Div);
+                        if (Datatype.NativeType.IsUnsigned())
+                            ilg.Emit(OpCodes.Div_Un);
+                        else
+                            ilg.Emit(OpCodes.Div);
                         break;
                     case BinaryOperatorKind.Remainder:
-                        //ilg.Emit(OpCodes.Rem_Un);
-                        ilg.Emit(OpCodes.Rem);
+                        if (Datatype.NativeType.IsUnsigned())
+                            ilg.Emit(OpCodes.Rem_Un);
+                        else
+                            ilg.Emit(OpCodes.Rem);
                         break;
                     default:
                         throw new NotImplementedException();

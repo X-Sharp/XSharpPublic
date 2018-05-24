@@ -1088,16 +1088,16 @@ function Stuff(c as string,nStart as dword,nToDelete as dword,cIns as string) as
 		if string.IsNullOrEmpty(cIns)
 			cIns := ""
 		endif
-		if (nStart > 0)
+		if nStart > 0
 			nStart -= 1
 		endif
 		local part1 := c as string
-		if ( (int) nStart < c:Length )
+		if  (int) nStart < c:Length 
 			part1 := c:Substring(0,(int)nStart)
 		endif
 		local part2 := "" as string
 		var iOffSet := (int) (nStart + nToDelete)
-		if ( iOffSet  < c:length )
+		if  iOffSet  < c:length 
 			part2 := c:Substring( iOffSet )
 		endif
 		result := part1 + cIns + part2

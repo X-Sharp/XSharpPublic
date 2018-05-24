@@ -68,7 +68,8 @@
     <NoStandardDefs>true</NoStandardDefs>
     <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption>/noclipcall</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

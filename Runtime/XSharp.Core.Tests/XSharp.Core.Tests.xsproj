@@ -36,7 +36,6 @@
     <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.Default.props" />
   <PropertyGroup>
     <ProjectGuid>a2376bbc-9ff4-47eb-bf57-913cbd850dad</ProjectGuid>
     <OutputType>Library</OutputType>

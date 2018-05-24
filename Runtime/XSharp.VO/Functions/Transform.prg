@@ -346,6 +346,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 		Upper       := 512
 		YesNo       := 1024
 	END ENUM
+
 	STATIC METHOD TransformS(cValue AS STRING, cPicture AS STRING) AS STRING
 		LOCAL nPicFunc AS TransformPictures
 		LOCAL cTemplate AS STRING
@@ -384,6 +385,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 				cReturn := sb:ToString()
 			ENDIF
 		RETURN cReturn
+	
 	STATIC METHOD TransformL( lValue AS LOGIC, cPicture AS STRING ) AS STRING
 		LOCAL nPicFunc AS TransformPictures
 		LOCAL cTemplate AS STRING
@@ -438,20 +440,21 @@ INTERNAL STATIC CLASS TransFormHelpers
 		RETURN cReturn
 
 
+	
 	STATIC METHOD GetLogicLiteral(lValue AS LOGIC, lYesNo AS LOGIC) AS STRING
 		// Get Literal from the string tables
 		LOCAL cReturn as STRING
 		IF lYesNo
 			IF lValue
-				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_YES)
+				cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_YES)
 			ELSE
-				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_NO)
+				cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_NO)
 			ENDIF
 		ELSE
 			IF lValue
-				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_TRUE)
+				cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_TRUE)
 			ELSE
-				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_FALSE)
+				cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_FALSE)
 			ENDIF
 		ENDIF
 		RETURN cReturn
@@ -484,6 +487,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 		ENDCASE
 		
 		RETURN cReturn
+
 	STATIC METHOD TransformN( nValue AS Float, cPicture AS STRING, lIsInt as LOGIC ) AS STRING
 		//
 		// Note: A,N,X,L and Y template chars are treated as normal letters in VO for numeric pictures
@@ -545,6 +549,9 @@ INTERNAL STATIC CLASS TransFormHelpers
 				ELSE
 					nDecimal ++ // multiple dots don't make sense (although VO somehow allows them)
 				END IF
+			OTHERWISE
+				// What else ?
+				NOP
 			END SWITCH
 		NEXT
 		LOCAL nLength AS INT
@@ -662,13 +669,14 @@ INTERNAL STATIC CLASS TransFormHelpers
 				cReturn := "(" + cReturn:Substring(1) + ")" // ugly, but so is VO here, too :)
 			ELSEIF  nPicFunc:HasFlag(  TransformPictures.ParenRight ) 
 				cTemp := cReturn:Trim()
-				nLen := cReturn:Length - cTemp:Length
+				nLen  := cReturn:Length - cTemp:Length
 				IF nLen == 0
 					cTemp := cTemp:Substring(1)
 				ELSE
 					nLen --
 				END IF
-				cReturn := Space(nLen) + "(" + cTemp + ")"
+				cTemp := "(" + cTemp + ")"
+				cReturn := cTemp:PadLeft(cReturn:Length,' ')
 			END IF
 		END IF
 		
@@ -684,8 +692,9 @@ INTERNAL STATIC CLASS TransFormHelpers
 			ENDIF
 		ENDIF
 		
-		IF  nPicFunc:HasFlag( TransformPictures.Left ) 
-			cReturn := cReturn:TrimStart():PadRight( cReturn:Length)
+		IF  nPicFunc:HasFlag( TransformPictures.Left )  .and. cReturn[0] == ' '
+			nLen	:= cReturn:Length
+			cReturn := cReturn:TrimStart():PadRight( nLen,' ')
 		ENDIF
 		
 		RETURN cReturn

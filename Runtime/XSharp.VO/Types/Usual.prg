@@ -266,7 +266,7 @@ begin namespace XSharp
         
         #region properties
 			private property _isByRef		as LOGIC	get _flags:isByRef
-            private property _usualType		as UsualType get _flags:usualType 
+            internal property _usualType		as UsualType get _flags:usualType 
 
 			private property _arrayValue    as array	get iif(IsArray, (array) _refData , null_array)
 			private property _codeblockValue as codeblock	get iif(IsCodeBlock, (Codeblock) _refData , null_codeblock)
@@ -315,7 +315,6 @@ begin namespace XSharp
 			internal property IsSymbol		as logic get _usualtype == UsualType.Symbol
 			internal property IsString		as logic get _usualtype == UsualType.String
 			internal property IsByRef		as logic get _isByRef
-            
             private property IsReferenceType as logic
                 get
                     switch _usualType

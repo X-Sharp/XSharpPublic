@@ -767,27 +767,30 @@ FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
 	
 FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
 	LOCAL ret AS USUAL
-	
-	IF uValue:isFLOAT
+	SWITCH uValue:_UsualType
+	CASE UsualType.Float
+	CASE UsualType.Decimal
 		ret := TransformHelpers.TransformN( uValue, cPicture , FALSE)
-	ELSEIF uValue:IsInt64
+	CASE UsualType.Int64
+	CASE UsualType.Long
 		ret := TransformHelpers.TransformN( uValue, cPicture , TRUE)
-	ELSEIF uValue:IsLong
-		ret := TransformHelpers.TransformN( uValue, cPicture , TRUE)
-	ELSEIF uValue:IsDate
+	CASE UsualType.Date
+	CASE UsualType.DateTime
 		ret := TransformHelpers.TransformD( uValue, cPicture )
-	ELSEIF uValue:IsLogic
+	CASE UsualType.Logic
 		ret := TransformHelpers.TransformL( uValue, cPicture )
-	ELSEIF uValue:IsString
+	CASE UsualType.String
+	CASE UsualType.Psz
 		ret := TransformHelpers.TransformS( uValue, cPicture )
-	ELSEIF uValue:IsNil
+	CASE UsualType.Void
 		ret := ""
-	ELSEIF uValue:IsObject && IsMethod( uValue, #Transform )
-		ret := Send( uValue, "Transform" , cPicture )
-	ELSE
-		BREAK Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)
-	ENDIF
-	
+	OTHERWISE
+		IF uValue:IsObject && IsMethod( uValue, #Transform )
+			ret := Send( uValue, "Transform" , cPicture )
+		ELSE
+			THROW Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)
+		ENDIF
+	END SWITCH
 	RETURN ret
 	
 	
@@ -803,17 +806,14 @@ FUNCTION Unformat( 	cValue	AS STRING,  cSayPicture AS STRING, cType AS STRING)	A
 
 	cType		:= Upper(Left(cType, 1))
 	cSayPicture := Upper( cSayPicture )
-	SWITCH cType
-	CASE "N"
+	SWITCH cType[0]
+	CASE 'N'
 		uRetVal := UnformatHelpers.UnformatN(cValue, cSayPicture, lNullable)
-		
-	CASE "C"
+	CASE 'C'
 		uRetVal := UnformatHelpers.UnformatC(cValue, cSayPicture, lNullable)
-		
-	CASE "L"
+	CASE 'L'
 		uRetVal := UnformatHelpers.UnformatL(cValue, cSayPicture, lNullable)
-		
-	CASE "D"
+	CASE 'D'
 		uRetVal := UnformatHelpers.UnformatD(cValue, cSayPicture, lNullable)
 	OTHERWISE
 		uRetVal := NIL

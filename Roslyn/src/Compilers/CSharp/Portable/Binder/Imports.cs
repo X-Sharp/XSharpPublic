@@ -212,7 +212,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                         if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
                             continue;
-                        if (HandleVulcanImport(usingDirective,usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
+                        if (HandleXSharpImport(usingDirective,usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
                             continue;
 #endif
                         var declarationBinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);

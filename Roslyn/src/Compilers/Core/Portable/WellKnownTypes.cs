@@ -292,6 +292,7 @@ namespace Microsoft.CodeAnalysis
         XSharp___Psz,
         XSharp___Usual,
         XSharp___Array,
+        XSharp___ArrayBase_T1,
         XSharp___WinBool,
 #endif
 
@@ -581,6 +582,7 @@ namespace Microsoft.CodeAnalysis
             "XSharp.__Psz",
             "XSharp.__Usual",
             "XSharp.__Array",
+            "XSharp.__ArrayBase`1",
             "XSharp.__WinBool"
 #endif
         };

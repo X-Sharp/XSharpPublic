@@ -29,6 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
         private XSharpMacroCompiler(bool lVoStyleStrings)
         {
             xoptions = new XSharpSpecificCompilationOptions() { Dialect = lVoStyleStrings ? XSharpDialect.VO : XSharpDialect.Vulcan};
+            xoptions.RuntimeAssemblies = RuntimeAssemblies.XSharpCore | RuntimeAssemblies.XSharpVO;
             options = new CSharpParseOptions(kind: SourceCodeKind.Script)
                 .WithMacroScript(true)
                 .WithXSharpSpecificOptions(xoptions);

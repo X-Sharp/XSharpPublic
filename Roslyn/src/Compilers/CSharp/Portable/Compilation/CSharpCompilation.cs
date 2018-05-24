@@ -693,7 +693,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = XSharpSpecialNames.CoreFunctionsClass;
+                        Options.MainTypeName = XSharpSpecialNames.FunctionsClass;
                     }
                     def = InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(trees, isApp, Options.TargetDLL);
                 }

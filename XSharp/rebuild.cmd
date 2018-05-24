@@ -16,8 +16,8 @@ rename msbuild1.log build-debug.log
 rename msbuild2.log build-release.log
 msbuild Tools.sln /fl1 /p:Configuration=Debug	/t:ReBuild /property:OfficialBuild=true /m /v:m /nologo
 msbuild Tools.sln /fl2 /p:Configuration=Release	/t:ReBuild /property:OfficialBuild=true /m /v:m /nologo
-if exist build-debug.log del tools-debug.log
-if exist build-release.log del tools-release.log
+if exist tools-debug.log del tools-debug.log
+if exist tools-release.log del tools-release.log
 rename msbuild1.log tools-debug.log
 rename msbuild2.log tools-release.log
 set XSharpDev=%tmpXSharpDev%

@@ -101,6 +101,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
             }
         }
+        static internal NamedTypeSymbol ArrayBaseType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+            {
+                return compilation.GetWellKnownType(WellKnownType.XSharp___ArrayBase_T1);
+            }
+            else
+            {
+                return compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
+            }
+        }
 
         static internal NamedTypeSymbol CodeBlockType(this CSharpCompilation compilation)
         {

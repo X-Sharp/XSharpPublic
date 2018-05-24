@@ -141,7 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private static int _unique = 0;
         protected static object gate = new object();
 
-        protected string GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
+        protected string GlobalClassName = XSharpSpecialNames.FunctionsClass;
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -200,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     className = XSharpSpecialNames.XSharpVOFunctionsClass;
                     break;
                 default:
-                    className = XSharpSpecialNames.CoreFunctionsClass;
+                    className = XSharpSpecialNames.FunctionsClass;
                     break;
             }
             return className;
@@ -7188,6 +7188,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Data Types
+
+        public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
+        {
+            context.Put(NotInDialect(_objectType, "ARRAY OF <type>"));
+        }
 
         public override void ExitPtrDatatype([NotNull] XP.PtrDatatypeContext context)
         {

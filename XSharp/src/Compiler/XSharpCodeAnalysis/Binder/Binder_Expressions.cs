@@ -142,6 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO)
             {
                 var arrayType = Compilation.ArrayType();
+                var arrayBaseType = Compilation.ArrayBaseType();
                 var usualType = Compilation.UsualType();
                 var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
@@ -178,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
                     cf = arrayType;
                 }
-                if (cf == arrayType)
+                if (cf == arrayType || (cf.ConstructedFrom != null && cf.ConstructedFrom == arrayBaseType))
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -715,7 +716,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         case SymbolKind.Field:
                             if (onlyDef)
                             {
-                                if (sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
+                                if (sym.ContainingType.Name == XSharpSpecialNames.FunctionsClass)
                                 {
                                     add = true;
                                 }

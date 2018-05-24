@@ -25,6 +25,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("T x", TransForm(true, "@R L x"))
 			Assert.Equal("F x", TransForm(false, "@R L x"))
 			Assert.Equal("Y x", TransForm(true, "@R YYx"))
+			Assert.Equal("N x", TransForm(FALSE, "@R YYx"))
+			SetNatDLL("French.DLL")
+			Assert.Equal("O", TransForm(true, "Y"))
+			Assert.Equal("N", TransForm(false, "Y"))
+			Assert.Equal("V", TransForm(true, "L"))
+			Assert.Equal("F", TransForm(false, "L"))
+			Assert.Equal("V x", TransForm(true, "@R L x"))
+			Assert.Equal("F x", TransForm(false, "@R L x"))
+			Assert.Equal("O x", TransForm(true, "@R YYx"))
 			Assert.Equal("N x", TransForm(false, "@R YYx"))
 
 		[Fact, Trait("Category", "TransForm")];
@@ -45,11 +54,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("1234 AB", Transform("1234ab", "@R 9999 !!"))
 
 		[Fact, Trait("Category", "TransForm")];
-		method LongTest() as void 
+		METHOD LongTest() AS VOID 
+			SetDecimalSep('.')
+			SetThousandSep(',')
 			Assert.Equal("  1", Transform(1, "999"))
 			Assert.Equal("123", Transform(123, "###"))
-			Assert.Equal("23", Transform(123, "##"))			// todo: should return **
-			Assert.Equal("23", Transform(123, "99"))			// todo: should return **
+			Assert.Equal("**", Transform(123, "##"))			
+			Assert.Equal("**", Transform(123, "99"))			
 			Assert.Equal("(1)", Transform(-1, "@( 99"))
 			Assert.Equal("(-1)", Transform(-1, "@( 999"))
 			Assert.Equal("( -1)", Transform(-1, "@( 9999"))
@@ -62,14 +73,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("  1 CR", Transform(1, "@C 999"))
 			Assert.Equal("  0", Transform(0, "@C 999"))
 			Assert.Equal("1,234", Transform(1234, "9,999"))
+			SetDecimalSep(',')
+			SetThousandSep('.')
+			Assert.Equal("1.234", Transform(1234, "9,999"))
+
 
 		[Fact, Trait("Category", "TransForm")];
 		method FLoatTest() as void 
-			SetDecimalSep (  46)	// .
-			SetThousandSep (  44)	// ,
+			SetDecimalSep('.')
+			SetThousandSep(',')
 			Assert.Equal("1.23", Transform(1.23, "9.99"))
 			Assert.Equal("1,23", Transform(1.23, "@E 9.99"))
-
+			Assert.Equal("*.**", Transform(12.34, "9.99"))			
 
 	end class
 end NAMESPACE

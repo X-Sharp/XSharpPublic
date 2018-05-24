@@ -27,12 +27,13 @@ internal static class ConversionHelpers
 			return formatStrings[nKey]
 		endif
 		if nDec != 0
-			cFormat := "."
-			cFormat := cFormat:PadRight(nDec+1, '0')	// 1 extra for the Dot
+			cFormat := "0."
+			cFormat := cFormat:PadRight(nDec+2, '0')	// 2 extra for the 0 + Dot
 		else
-			cFormat := ""
-		endif
+			cFormat := "0"
+		ENDIF
 		cFormat := cFormat:PadLeft(nLen, '#')
+		cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
 		formatStrings:Add(nKey, cFormat)
 		return cFormat
 
@@ -40,15 +41,21 @@ internal static class ConversionHelpers
 		local cFormat as string
 		local result as string
 		cFormat := GetFormatString(nLen, nDec)
-		result := n:ToString(cFormat, usCulture)
-		return result:PadLeft(nLen, ' ')
+		result := String.Format(usCulture, cFormat, n)
+		IF result:Length > nLen
+			result := Replicate("*", (DWORD) nLen)
+		endif
+		return result
 
 	static method FormatNumber(n as Int64, nLen as int, nDec as int) as string
 		local cFormat as string
 		local result as string
 		cFormat := GetFormatString(nLen, 0)
-		result := n:ToString(cFormat, usCulture)
-		return result:PadLeft(nLen, ' ')
+		result := String.Format(usCulture, cFormat, n)
+		IF result:Length > nLen
+			result := Replicate("*", (DWORD) nLen)
+		endif
+		return result
 
 	
 end class
@@ -502,26 +509,18 @@ internal function AdjustDecimalSeparator(cString as string) as string
 function Str1(f as float) as string
 	return AdjustDecimalSeparator(_Str1(f))
 	
-/// <summary>
-/// Convert a numeric expression to a string.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-function _Str1(f as float) as string
+INTERNAL function _Str1(f as float) as string
 	var nDecimals := f:decimals
 	var nDigits   := f:Digits
 	if nDecimals < 0
 		nDecimals := RuntimeState.Decimals
 	endif
+
 	if nDigits < 0
 		nDigits := RuntimeState.Digits
 	endif
 	return ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
  
-
-FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
-	return AdjustDecimalSeparator(_Str2(f, dwLen))
 
 /// <summary>
 /// Convert a numeric expression to a string of a specified length.
@@ -530,13 +529,22 @@ FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
 /// <param name="dwLen"></param>
 /// <returns>
 /// </returns>
-FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
+FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
+	return AdjustDecimalSeparator(_Str2(f, dwLen))
+
+
+
+INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
   IF dwLen == 0
       dwLen := (DWORD) RuntimeState.Digits
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
-   RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, f:Decimals )
+   var nDecimals := f:decimals
+	if nDecimals < 0
+		nDecimals := RuntimeState.Decimals
+	endif
+   RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, nDecimals)
  
 
 /// <summary>

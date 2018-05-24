@@ -370,17 +370,17 @@ INTERNAL STATIC CLASS TransFormHelpers
 				SWITCH Char.ToUpper(cChar)
 					CASE '!'
 						sb:Append(Char.ToUpper(cValue[nPos]))
-			nPos++
-		CASE 'A' ; CASE 'N' ; CASE 'X' ; CASE '9'; CASE '#'
-							sb:Append(cValue[nPos])
-							nPos++
-						OTHERWISE
-							sb:Append(cChar)
-							IF ! nPicFunc:hasFlag(TransformPictures.NonTemplate)
-								npos++
-							ENDIF
-						END SWITCH
-					NEXT
+						nPos++
+					CASE 'A' ; CASE 'N' ; CASE 'X' ; CASE '9'; CASE '#'
+						sb:Append(cValue[nPos])
+						nPos++
+					OTHERWISE
+						sb:Append(cChar)
+						IF ! nPicFunc:hasFlag(TransformPictures.NonTemplate)
+							npos++
+						ENDIF
+					END SWITCH
+				NEXT
 				cReturn := sb:ToString()
 			ENDIF
 		RETURN cReturn
@@ -412,32 +412,50 @@ INTERNAL STATIC CLASS TransFormHelpers
 			FOREACH c AS CHAR IN cTemplate
 				SWITCH c
 				CASE 'L' ; CASE 'l'
-						sReturn:Append( IIF( lDone, ' ', IIF( lValue, 'T', 'F') ) )
-						lDone := TRUE
+					sReturn:Append( IIF( lDone, " ", GetLogicLiteral(lValue, FALSE) ) )
+					lDone := TRUE
 				CASE 'Y' ; CASE 'y'	
-						sReturn:Append( IIF( lDone, ' ', IIF( lValue, 'Y', 'N' ) ) )
-						lDone := TRUE
-					OTHERWISE
-						sReturn:Append( c )
-					END SWITCH
+					sReturn:Append( IIF( lDone, " ", GetLogicLiteral(lValue, TRUE) ) )
+					lDone := TRUE
+				OTHERWISE
+					sReturn:Append( c )
+				END SWITCH
 			NEXT
 			cReturn := sReturn:ToString()
 			
 		ELSE
 			// No @R so simply convert
-			// Todo: Use nation module for translation of Y and N
 			cChar := cTemplate[0]
-			IF cChar == 'Y' .or. cChar == 'y' .or. nPicFunc:HasFlag(TransformPictures.YesNo) .and. (cChar == 'L' .or. cChar == 'l')
-				cReturn := IIF( lValue, "Y", "N" )
+			IF cChar == 'Y' .or. cChar == 'y' .or. (nPicFunc:HasFlag(TransformPictures.YesNo) .and. (cChar == 'L' .or. cChar == 'l'))
+				cReturn := GetLogicLiteral(lValue, TRUE)
 			ELSEIF cChar == 'L' .or. cChar == 'l'
-				cReturn := IIF( lValue, "T", "F" )
+				cReturn := GetLogicLiteral(lValue, FALSE)
 			ELSE
 				cReturn := cChar:ToString()
 			ENDIF
 			
 		ENDIF
-		
 		RETURN cReturn
+
+
+	STATIC METHOD GetLogicLiteral(lValue AS LOGIC, lYesNo AS LOGIC) AS STRING
+		// Get Literal from the string tables
+		LOCAL cReturn as STRING
+		IF lYesNo
+			IF lValue
+				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_YES)
+			ELSE
+				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_NO)
+			ENDIF
+		ELSE
+			IF lValue
+				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_TRUE)
+			ELSE
+				cReturn := __CavoStr(VOErrors.RT_MSG_SHORT_FALSE)
+			ENDIF
+		ENDIF
+		RETURN cReturn
+
 	STATIC METHOD TransformD( dValue AS DATE, cPicture AS STRING ) AS STRING
 		LOCAL nPicFunc AS TransformPictures
 		LOCAL cReturn AS STRING
@@ -466,7 +484,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 		ENDCASE
 		
 		RETURN cReturn
-	STATIC METHOD TransformN( nValue AS USUAL, cPicture AS STRING ) AS STRING
+	STATIC METHOD TransformN( nValue AS Float, cPicture AS STRING, lIsInt as LOGIC ) AS STRING
 		//
 		// Note: A,N,X,L and Y template chars are treated as normal letters in VO for numeric pictures
 		//
@@ -481,17 +499,12 @@ INTERNAL STATIC CLASS TransFormHelpers
 		LOCAL nLen              AS INT
 		
 		LOCAL x                 AS INT
-		LOCAL lIsInt64 := FALSE AS LOGIC
 		LOCAL lIsFloat := FALSE AS LOGIC
 		nWhole := nDecimal := 0
-		lIsInt64 := UsualType(nValue) == INT64
-		IF .not. lIsInt64
-			nValue := (FLOAT)nValue // Cpc 2014-06-14 build 303, for backwards compatibility with previous builds were nValue was typed as FLOAT
-			lIsFloat := TRUE // Could add specific support for INT32 in the future
-		END IF
+		lIsFloat := ! lIsInt
 		
-		cDec := (CHAR)  RuntimeState.DecimalSep
-		cThous := (CHAR)RuntimeState.ThousandSep
+		cDec	:= (CHAR) RuntimeState.DecimalSep
+		cThous	:= (CHAR) RuntimeState.ThousandSep
 		
 		cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT nPicFunc )
 		
@@ -505,8 +518,8 @@ INTERNAL STATIC CLASS TransFormHelpers
 		IF cTemplate:Length == 0
 			cTemplate := System.String{'#' , IIF(nValue < 10000000000 , 10 , 20) }
 			IF lIsFloat
-				IF ((FLOAT)nValue):Decimals != 0
-					cTemplate += "." + System.String{'9' , ((FLOAT)nValue):Decimals}
+				IF nValue:Decimals != 0
+					cTemplate += "." + System.String{'9' , nValue:Decimals}
 				END IF
 			END IF
 			cOriginalTemplate := cTemplate
@@ -516,7 +529,6 @@ INTERNAL STATIC CLASS TransFormHelpers
 		
 		// Convert the arithmetic chars of the VO style template into the .NET format string
 		lWhole := TRUE
-		nLen   := cTemplate:Length - 1
 		
 		FOREACH VAR cChar IN cTemplate
 		SWITCH cChar
@@ -535,8 +547,11 @@ INTERNAL STATIC CLASS TransFormHelpers
 				END IF
 			END SWITCH
 		NEXT
-			
-		cTemplate := ConversionHelpers.GetFormatString(nWhole+nDecimal+1, nDecimal)
+		LOCAL nLength AS INT
+		nLength := nWhole
+		IF nDecimal > 0
+			nLength += nDecimal + 1
+		ENDIF 		
 		
 		// check for overflow
 		LOCAL fTemp AS FLOAT
@@ -545,32 +560,36 @@ INTERNAL STATIC CLASS TransFormHelpers
 		
 		DO CASE
 			CASE fTemp == 0.0
-				cTemp		:= Str(fTemp , nWhole , 0)
+				cTemp		:= Str2(fTemp , (DWORD) nWhole )
 			CASE fTemp < 0.0
 				IF nWhole <= 1
 					cTemp   := "*"
 				ELSE
 					fTemp	:= -fTemp:CastToInt64()
-					cTemp	:= Str(fTemp , nWhole - 1 , 0)
+					cTemp	:= Str2(fTemp , (DWORD) nWhole  )
 				ENDIF
 			OTHERWISE
 				fTemp := fTemp:CastToInt64()
-				cTemp := Str(fTemp , nWhole , 0)
+				cTemp := Str2(fTemp , (DWORD) nWhole )
 		END CASE
 		IF cTemp:IndexOf('*') > -1	// overflow error
-			cReturn := cTemplate:Replace('#' , '*'):Replace('0' , '*')
+			cReturn := Replicate("*", (DWORD) nLength)
+			IF nDecimal > 0
+				cReturn := Stuff(cReturn, (DWORD) nLength-nDecimal,1,".")
+			ENDIF
 		ELSE
-			IF lIsInt64
-				cReturn := ((INT64)nValue):ToString( cTemplate , ConversionHelpers.usCulture)
+
+			IF lIsInt
+				cReturn := ConversionHelpers.FormatNumber((Int64) nValue, nLength, nDecimal)
 			ELSE
-				cReturn := ((FLOAT)nValue):Value:ToString( cTemplate , ConversionHelpers.usCulture)
+				cReturn := ConversionHelpers.FormatNumber((Real8) nValue, nLength, nDecimal)
 			ENDIF
 			
 			IF nPicFunc:HasFLag(TransformPictures.ZeroBlank ) 
 				IF nValue == 0
 					cReturn := Space(cReturn:Length)
 					
-				ELSEIF lIsFloat .and. Math.Abs(((FLOAT)nValue):Value) < 1.0
+				ELSEIF lIsFloat .and. Math.Abs(nValue:Value) < 1.0
 					x := cReturn:IndexOf(cDec)
 					IF x == -1
 						cReturn := Space(cReturn:Length)
@@ -594,11 +613,15 @@ INTERNAL STATIC CLASS TransFormHelpers
 		
 		FOR x := nLen DOWNTO 0
 			VAR cChar := cOriginalTemplate[x]
-	SWITCH cChar
-CASE '9' ; CASE '#' ; CASE '*' ; CASE '$' ; CASE '.'
+				SWITCH cChar
+				CASE '9' ; CASE '#' ; CASE '*' ; CASE '$' ; CASE '.'
 					IF nMap >= 0
-						IF lForceEuropean .and. cChar == '.'
-							sb:Insert(0 , ',')
+						IF cChar == '.'
+							IF lForceEuropean 
+								sb:Insert(0 , ',')
+							else
+								sb:Insert(0, cDec)
+							endif
 						ELSE
 							sb:Insert(0 , cReturn[nMap])
 						END IF
@@ -729,10 +752,15 @@ FUNCTION Transform( dValue AS DATE, cPicture AS STRING ) AS STRING
 	
 FUNCTION Transform( lValue AS LOGIC, cPicture AS STRING ) AS STRING
 	RETURN TransFormHelpers.TransformL(lValue, cPicture)
-	
+
+FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
+	RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
+
+FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
+	RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
 	
 FUNCTION Transform( nValue AS FLOAT, cPicture AS STRING ) AS STRING
-	RETURN TransFormHelpers.TransformN( nValue, cPicture)
+	RETURN TransFormHelpers.TransformN( nValue, cPicture, FALSE)
 	
 FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
 	RETURN TransFormHelpers.TransformS(cValue, cPicture)
@@ -740,8 +768,12 @@ FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
 FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
 	LOCAL ret AS USUAL
 	
-	IF uValue:IsNumeric
-		ret := TransformHelpers.TransformN( uValue, cPicture )
+	IF uValue:isFLOAT
+		ret := TransformHelpers.TransformN( uValue, cPicture , FALSE)
+	ELSEIF uValue:IsInt64
+		ret := TransformHelpers.TransformN( uValue, cPicture , TRUE)
+	ELSEIF uValue:IsLong
+		ret := TransformHelpers.TransformN( uValue, cPicture , TRUE)
 	ELSEIF uValue:IsDate
 		ret := TransformHelpers.TransformD( uValue, cPicture )
 	ELSEIF uValue:IsLogic

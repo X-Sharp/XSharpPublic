@@ -74,7 +74,55 @@ namespace XSharp.MacroCompiler
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
-        internal virtual TypeSymbol Type { get { throw new NotImplementedException(); } }
+        internal virtual TypeSymbol Type {
+            get {
+                switch (OpType)
+                {
+                    case BinaryOperatorType.Object:
+                        return Compilation.GetNativeType(NativeType.Object);
+                    case BinaryOperatorType.String:
+                        return Compilation.GetNativeType(NativeType.String);
+                    case BinaryOperatorType.ObjectAndString:
+                        return Compilation.GetNativeType(NativeType.String);
+                    case BinaryOperatorType.StringAndObject:
+                        return Compilation.GetNativeType(NativeType.String);
+                    case BinaryOperatorType.Int:
+                        return Compilation.GetNativeType(NativeType.Int32);
+                    case BinaryOperatorType.UInt:
+                        return Compilation.GetNativeType(NativeType.UInt32);
+                    case BinaryOperatorType.Long:
+                        return Compilation.GetNativeType(NativeType.Int64);
+                    case BinaryOperatorType.ULong:
+                        return Compilation.GetNativeType(NativeType.UInt64);
+                    case BinaryOperatorType.Float:
+                        return Compilation.GetNativeType(NativeType.Single);
+                    case BinaryOperatorType.Double:
+                        return Compilation.GetNativeType(NativeType.Double);
+                    case BinaryOperatorType.Decimal:
+                        return Compilation.GetNativeType(NativeType.Decimal);
+                    case BinaryOperatorType.Bool:
+                        return Compilation.GetNativeType(NativeType.Boolean);
+                    case BinaryOperatorType.NullableInt:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.Int32));
+                    case BinaryOperatorType.NullableUInt:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.UInt32));
+                    case BinaryOperatorType.NullableLong:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.Int64));
+                    case BinaryOperatorType.NullableULong:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.UInt64));
+                    case BinaryOperatorType.NullableFloat:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.Single));
+                    case BinaryOperatorType.NullableDouble:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.Double));
+                    case BinaryOperatorType.NullableDecimal:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.Decimal));
+                    case BinaryOperatorType.NullableBool:
+                        return Binder.NullableType(Compilation.GetNativeType(NativeType.Boolean));
+                    default:
+                        return null;
+                }
+            }
+        }
 
         private static readonly BinaryOperatorSymbol[,] simpleOp;
         private static readonly bool[] s_nullable;
@@ -241,7 +289,7 @@ namespace XSharp.MacroCompiler
                 default:
                     return null;
             }
-    }
+        }
     }
 
     internal class BinaryOperatorSymbolWithMethod : BinaryOperatorSymbol

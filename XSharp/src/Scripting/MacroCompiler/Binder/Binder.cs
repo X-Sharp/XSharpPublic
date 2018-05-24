@@ -134,6 +134,18 @@ namespace XSharp.MacroCompiler
             return v;
         }
 
+        internal static TypeSymbol NullableType(TypeSymbol t)
+        {
+            if (t == null)
+                return null;
+            var nt = Nullable.GetUnderlyingType(t.Type);
+            if (nt.IsValueType)
+            {
+                nt = typeof(Nullable<>).MakeGenericType(nt);
+            }
+            return FindType(nt);
+        }
+
         internal Symbol Lookup(Symbol decl, string name)
         {
             if (decl != null)

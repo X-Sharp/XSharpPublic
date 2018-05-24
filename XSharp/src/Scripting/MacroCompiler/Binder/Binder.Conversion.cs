@@ -13,13 +13,15 @@ namespace XSharp.MacroCompiler
     {
         internal static void Convert(ref Expr e, TypeSymbol type, ConversionSymbol conv)
         {
-            e = TypeConversion.Bound(e, type, conv);
+            if (conv.Kind != ConversionKind.Identity)
+                e = TypeConversion.Bound(e, type, conv);
         }
 
         internal static void Convert(ref Expr e, TypeSymbol type)
         {
             var conv = Conversion(e, type);
-            e = TypeConversion.Bound(e, type, conv);
+            if (conv.Kind != ConversionKind.Identity)
+                e = TypeConversion.Bound(e, type, conv);
         }
 
         internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type)

@@ -27,9 +27,9 @@ begin namespace MacroCompilerTest
 
         //var test_source := "Console.WriteLine(123)";
         //var test_source := "Test(12345)";
-        //var test_source := "Test(U(12345)+1)";
-        //var test_source := "Test(123+45)";
-        var test_source := "TestR(123)";
+        //var test_source := "Test(U(12345)-1)";
+        var test_source := "Test(123+45)";
+        //var test_source := "TestR(123)";
         //var test_source := "TestI(123.456)";
 
         ReportMemory("initial")

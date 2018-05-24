@@ -14,6 +14,14 @@ namespace XSharp.MacroCompiler
     {
         internal static BinaryOperatorSymbol BinaryOperation(BinaryOperatorKind kind, ref Expr left, ref Expr right)
         {
+            var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);
+            if (sym != null)
+            {
+                Convert(ref left, sym.Type);
+                Convert(ref right, sym.Type);
+                return sym;
+            }
+
             var name = BinaryOperatorSymbol.OperatorName(kind);
             if (name != null)
             {

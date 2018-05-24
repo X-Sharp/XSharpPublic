@@ -51,7 +51,35 @@ namespace XSharp.MacroCompiler.Syntax
                 Right.Emit(ilg);
                 ilg.Emit(OpCodes.Call, op.Method.Method);
             }
-            else {
+            else if (Symbol is BinaryOperatorSymbol) {
+                var op = (BinaryOperatorSymbol)Symbol;
+                Left.Emit(ilg);
+                Right.Emit(ilg);
+                switch (op.Kind)
+                {
+                    case BinaryOperatorKind.Addition:
+                        ilg.Emit(OpCodes.Add);
+                        break;
+                    case BinaryOperatorKind.Subtraction:
+                        ilg.Emit(OpCodes.Sub);
+                        break;
+                    case BinaryOperatorKind.Multiplication:
+                        ilg.Emit(OpCodes.Mul);
+                        break;
+                    case BinaryOperatorKind.Division:
+                        //ilg.Emit(OpCodes.Div_Un);
+                        ilg.Emit(OpCodes.Div);
+                        break;
+                    case BinaryOperatorKind.Remainder:
+                        //ilg.Emit(OpCodes.Rem_Un);
+                        ilg.Emit(OpCodes.Rem);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+            else
+            {
                 throw new NotImplementedException();
             }
             if (!preserve)
@@ -116,7 +144,7 @@ namespace XSharp.MacroCompiler.Syntax
                         ilg.Emit(OpCodes.Box, Datatype.Type);
                         break;
                     case ConversionKind.Unboxing:
-                        ilg.Emit(OpCodes.Box, Datatype.Type);
+                        ilg.Emit(OpCodes.Unbox, Datatype.Type);
                         break;
                     case ConversionKind.ImplicitReference:
                     case ConversionKind.ExplicitReference:

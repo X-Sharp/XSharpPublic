@@ -5,42 +5,45 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
 CLASS DBFFPT INHERIT DBF 
 	CONSTRUCTOR
 	SUPER()
 	SELF:_oMemo := FptMemo{SELF}
-		
-VIRTUAL PROPERTY SysName AS STRING GET typeof(DBFFPT):ToString()
-
+	/// <inheritdoc />	
+	VIRTUAL PROPERTY SysName AS STRING GET typeof(DBFFPT):ToString()
+	
+	/// <summary>FPT Memo class. Implements the FTP support.</summary>
     CLASS FptMemo INHERIT BaseMemo  IMPLEMENTS IMemo
 	    PROTECT _oRDD AS DBF
 	    CONSTRUCTOR (oRDD AS DBF)
 		    SUPER(oRDD)
 		    SELF:_oRdd := oRDD
-
+	/// <inheritdoc />
     METHOD Flush() 			AS LOGIC		
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     METHOD GetValue(nFldPos AS INT) AS OBJECT
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     METHOD GetValueLength(nFldPos AS INT) AS INT
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	    THROW NotImplementedException{}
+	/// <inheritdoc />
     VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 	    THROW NotImplementedException{}
-
+	/// <inheritdoc />
     VIRTUAL METHOD OpenMemFile( ) AS LOGIC
 	    THROW NotImplementedException{}
     END CLASS    

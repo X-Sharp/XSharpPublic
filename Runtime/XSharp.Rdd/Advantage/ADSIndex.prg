@@ -11,38 +11,46 @@ USING System.Text
 USING XSharp
 USING XSharp.RDD
 
-
+/// <summary>Advantage Index support.</summary>
 CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PRIVATE oRDD as ADSRDD
-
+	/// <inheritdoc />
 	CONSTRUCTOR(oArea as WorkArea)
 		SUPER(oArea)
         oRdd := oArea ASTYPE ADSRDD
-
+	/// <inheritdoc />
     VIRTUAL METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD OrderListRebuild( ) AS LOGIC
 		THROW NotImplementedException{}
 
+	/// <inheritdoc />
     VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
 		THROW NotImplementedException{}
 

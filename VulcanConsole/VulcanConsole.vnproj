@@ -64,5 +64,11 @@
     </PostBuildEvent>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Documentation' ">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <OutputPath>bin\Documentation\</OutputPath>
+  </PropertyGroup>
   <ProjectExtensions />
 </Project>

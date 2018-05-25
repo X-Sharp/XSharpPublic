@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>DBFBLOB RDD. For stand alone DBV files.</summary>
 CLASS DBFBLOB INHERIT Workarea
 END CLASS
 END NAMESPACE

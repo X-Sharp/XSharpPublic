@@ -15,16 +15,15 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
     <OutputPath>Help\</OutputPath>
     <HtmlHelpName>XSharpRuntime</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.Core.xml" />
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.VO.xml" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.dll" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" /></DocumentationSources>
     <HelpTitle>XSharp Runtime Documentation</HelpTitle>
     <HelpFileVersion>2.0.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -240,18 +239,4 @@
     </PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.Rdd</Name>
-      <Project>e83c6c8c-773f-4b01-a597-3d38398a9362</Project>
-    </ProjectReference>
-    <ProjectReference Include="Runtime\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>ef8d2bf2-e81a-479a-ba4f-294c4c348b66</Project>
-    </ProjectReference>
-    <ProjectReference Include="Runtime\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>535dff14-efb7-43f5-a4e1-71c1c4280040</Project>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

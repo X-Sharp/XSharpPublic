@@ -5,6 +5,7 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <ProjectGuid>ef8d2bf2-e81a-479a-ba4f-294c4c348b66</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -51,13 +52,11 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>162,171,553,1591</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
@@ -66,7 +65,6 @@
     <NoStdDef>true</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
-    <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>
     </CommandLineOption>
@@ -76,12 +74,10 @@
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>162,171,553,1591</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
@@ -193,5 +189,30 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PPO>false</PPO>
+    <NoStdDef>true</NoStdDef>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <NoStandardDefs>true</NoStandardDefs>
+    <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
 </Project>

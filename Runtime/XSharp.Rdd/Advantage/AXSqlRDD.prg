@@ -11,12 +11,14 @@ USING XSharp.RDD.Enums
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC m_hStatement AS System.IntPtr
 
+	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SELF:m_hStatement := System.IntPtr.Zero
         SUPER:m_strDriver := "Advantage.AXSQLRDD"
 
+	/// <inheritdoc />
     VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLRDD):ToString()
-
+	/// <inheritdoc />
     VIRTUAL METHOD Close() AS Logic
         IF (! SUPER:Close())
             RETURN FALSE
@@ -33,12 +35,13 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
     PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:m_hStatement
 
+	/// <inheritdoc />
     VIRTUAL METHOD Info(uiOrdinal AS Int, oNewValue as Object) AS Object
         IF (uiOrdinal == DBInfo.DBI_GET_ACE_STMT_HANDLE )
             Return SELF:m_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
-
+	/// <inheritdoc />
     VIRTUAL METHOD Open(lpOpenInfo AS DBOPENINFO) AS Logic
         //LOCAL sName AS string
         //LOCAL usual3 AS Usual
@@ -191,6 +194,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         RETURN SUPER:RecordMovement()
  
 
+	/// <inheritdoc />
    VIRTUAL METHOD RecInfo(iRecID AS Object, uiOrdinal AS Int, oNewValue as OBJECT) AS OBJECT
     LOCAL isLive AS Byte
     LOCAL recNum AS DWord

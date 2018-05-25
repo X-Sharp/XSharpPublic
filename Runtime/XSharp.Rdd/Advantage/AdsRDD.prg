@@ -33,7 +33,8 @@ CLASS XSharp.ADS.AdsRDD Inherit Workarea
     PUBLIC m_usTableType AS Word
     PUBLIC MAX_KEY_SIZE AS Word
 #endregion
- 
+
+/// <summary>Create instande of RDD </summary>
 CONSTRUCTOR()
     SUPER()
     SELF:_Order         := AdsIndex{SELF}
@@ -53,20 +54,20 @@ CONSTRUCTOR()
         ENDIF
         RETURN 
 
-
-    METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD) AS void
+	
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD) AS void
         SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
 
-    METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity as DWORD) AS void
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity as DWORD) AS void
         SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
 
-    METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string) AS void
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string) AS void
         SELF:ADSERROR(iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
 
-    METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string, strMessage AS string) AS void
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string, strMessage AS string) AS void
         SELF:ADSERROR(iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
 
-    METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string, strMessage AS string, iSeverity AS DWORD) AS void
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string, strMessage AS string, iSeverity AS DWORD) AS void
         LOCAL lastError AS DWord
         LOCAL pucBuf AS Char[]
         LOCAL wBufLen AS Word
@@ -156,16 +157,19 @@ CONSTRUCTOR()
         //ENDIF
         RETURN TRUE
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoBottom() AS Logic
         SELF:ACECALL(SELF:AxCheckVODeletedFlag())
         SELF:ACECALL(ACE.AdsGotoBottom(SELF:ACEORDER()))
         RETURN SELF:RecordMovement()
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoTop() AS Logic
         SELF:ACECALL(SELF:AxCheckVODeletedFlag())
         SELF:ACECALL(ACE.AdsGotoTop(SELF:ACEORDER()))
         RETURN SELF:RecordMovement()
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoTo(lRec AS DWord) AS Logic
         LOCAL recordnum AS DWord
         LOCAL atEOF AS Word
@@ -183,6 +187,7 @@ CONSTRUCTOR()
         ENDIF
         RETURN SELF:RecordMovement()
     
+	/// <inheritdoc />
     VIRTUAL METHOD GoToId(oRecnum AS Object) AS Logic
         LOCAL recNum AS DWord
         TRY
@@ -193,6 +198,7 @@ CONSTRUCTOR()
         END TRY
         RETURN SELF:GoTo(recNum)
     
+	/// <inheritdoc />
     VIRTUAL METHOD Skip(lCount AS Long) AS Logic
         LOCAL result AS DWord
         LOCAL flag AS Logic
@@ -216,15 +222,18 @@ CONSTRUCTOR()
         ENDIF
         RETURN flag
 
+	/// <inheritdoc />
     VIRTUAL METHOD SkipFilter(lCount AS Long) AS Logic
         // No difference with normal skip
         RETURN SELF:Skip(lCount)
 
+	/// <inheritdoc />
     VIRTUAL METHOD SkipRaw(lCount AS Long) AS Logic
         // No difference with normal skip
         RETURN SELF:Skip(lCount)
 
 
+	/// <inheritdoc />
     VIRTUAL METHOD Seek(seekinfo AS DBSEEKINFO) AS Logic
         LOCAL mode AS Word
         LOCAL found AS Word
@@ -284,13 +293,16 @@ CONSTRUCTOR()
     #endregion
     #region Updates 
     
+	/// <inheritdoc />
     VIRTUAL METHOD Flush() AS Logic
         RETURN SELF:GoCold()
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoCold() AS Logic
         SELF:ACECALL(ACE.AdsWriteRecord(SELF:m_hTable))
         RETURN SELF:RecordMovement()
  
+	/// <inheritdoc />
     VIRTUAL METHOD GoHot() AS Logic
         LOCAL options AS DWord
         LOCAL isTableLocked AS Word
@@ -336,6 +348,7 @@ CONSTRUCTOR()
         ENDIF
         RETURN TRUE
 
+	/// <inheritdoc />
     VIRTUAL METHOD Zap() AS Logic
         LOCAL options AS DWord
         SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:m_hTable, out options))
@@ -351,6 +364,7 @@ CONSTRUCTOR()
         RETURN SELF:GoTop()
 
  
+	/// <inheritdoc />
     VIRTUAL METHOD Append(fReleaseLocks AS Logic) AS Logic
         LOCAL result AS DWord
         LOCAL handleType AS Word
@@ -390,13 +404,17 @@ CONSTRUCTOR()
     PROPERTY ACEConnectionHandle AS IntPtr GET m_hConnection
     PROPERTY ACEIndexHandle AS IntPtr GET m_hIndex
     PROPERTY ACETableHandle AS IntPtr GET m_hTable
+	/// <inheritdoc />
     PROPERTY BOF AS Logic GET SUPER:_Bof
+	/// <inheritdoc />
     PROPERTY EOF AS Logic GET SUPER:_Eof
+	/// <inheritdoc />
     PROPERTY Found as LOGIC GET SUPER:_Found
     PRIVATE PROPERTY IsADT AS LOGIC GET m_usTableType == ACE.ADS_ADT
     VIRTUAL PROPERTY SysName AS STRING GET typeof(ADSRDD):ToString()
 
 
+	/// <inheritdoc />
     PROPERTY Deleted as LOGIC
     GET
         LOCAL isDeleted AS Word
@@ -424,6 +442,7 @@ CONSTRUCTOR()
 #region Locking
  
 
+	/// <inheritdoc />
     VIRTUAL METHOD Lock(lockInfo AS DBLOCKINFO) AS Logic
     LOCAL lRecno := 0 AS DWord
     LOCAL result := 0 AS DWord
@@ -471,6 +490,7 @@ CONSTRUCTOR()
  
 
  
+	/// <inheritdoc />
     VIRTUAL METHOD Unlock(recordID AS Object) AS Logic
     LOCAL result AS DWord
     LOCAL numRecord := 0 AS DWord
@@ -495,6 +515,7 @@ CONSTRUCTOR()
 #endregion
 
 #region Filters
+	/// <inheritdoc />
     VIRTUAL METHOD ClearFilter() AS Logic
         LOCAL ulRetCode AS DWord
         IF (SELF:m_hTable != System.IntPtr.Zero)
@@ -512,6 +533,7 @@ CONSTRUCTOR()
         SELF:_FilterInfo := DbFilterInfo{}
         RETURN TRUE
 
+	/// <inheritdoc />
     VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS Logic
         LOCAL ulRetCode AS DWord
         // Get the current date format so we can handle literal dates in the filter
@@ -540,12 +562,14 @@ CONSTRUCTOR()
 
 #endregion
 #region Relations 
+	/// <inheritdoc />
     VIRTUAL METHOD ClearRel() AS Logic
         IF SELF:m_hTable != System.IntPtr.Zero
             SELF:ACECALL(ACE.AdsClearRelation(SELF:m_hTable))
         ENDIF
         RETURN SUPER:ClearRel()
 
+	/// <inheritdoc />
     VIRTUAL METHOD SetRel(relinfo AS DBRELINFO) AS Logic
         IF relinfo:Child:Driver != SELF:m_strDriver
             SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
@@ -558,6 +582,7 @@ CONSTRUCTOR()
 #endregion
 
 #region Info
+	/// <inheritdoc />
 VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) AS OBJECT
     LOCAL fieldType AS Word
     LOCAL length    AS DWord
@@ -593,6 +618,7 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
     RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
 
  
+	/// <inheritdoc />
  VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue as Object) AS OBJECT
     LOCAL aDate AS Char[]
     LOCAL DateLen AS Word
@@ -753,27 +779,28 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
 #endregion
 
 #region Unsupported
+	/// <inheritdoc />
     VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS Logic
         RETURN SELF:Unsupported("AppendLock")
 
 
+	/// <inheritdoc />
     VIRTUAL METHOD BlobInfo(uiPos AS DWord, uiOrdinal AS DWord) AS OBJECT
         SELF:Unsupported("BlobInfo")
         RETURN NULL
 
+	/// <inheritdoc />
     VIRTUAL METHOD ForceRel() AS Logic
         RETURN SELF:Unsupported("ForceRel")
 
+	/// <inheritdoc />
     VIRTUAL METHOD GetRec() AS Byte[]
         SELF:Unsupported("GetRec")
         RETURN NULL
 
+	/// <inheritdoc />
     VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
         RETURN SELF:Unsupported("HeaderLock")
-
-
- 
-
 
  
 

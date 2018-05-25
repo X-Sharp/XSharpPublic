@@ -4,6 +4,7 @@
   <PropertyGroup Label="Globals">
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <AZ>true</AZ>
     <CS>false</CS>
@@ -53,13 +54,11 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>168;1591;9001</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
@@ -70,19 +69,16 @@
     <NoStandardDefs>true</NoStandardDefs>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
-    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>168;1591,162</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
@@ -132,6 +128,7 @@
     <Compile Include="Defines.prg" />
     <Compile Include="ErrorEnum.prg" />
     <Compile Include="Functions\Convert.prg" />
+    <Compile Include="Functions\Db.prg" />
     <Compile Include="Functions\Debug.prg" />
     <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\FileSearch.prg" />
@@ -288,5 +285,30 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>168;1591;9001</DisabledWarnings>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PPO>false</PPO>
+    <NoStdDef>true</NoStdDef>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <NoStandardDefs>true</NoStandardDefs>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
 </Project>

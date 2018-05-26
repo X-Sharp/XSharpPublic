@@ -221,3 +221,4 @@ Tools/Converter/PrjConvert.exe
 *.vc.db
 /Help/Working
 /Help
+/Binaries/Documentation

@@ -46,6 +46,10 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	
 	/// <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
 	///</summary>
+	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "DbFieldInfo." prefix.
+	/// </note>
+
 	enum DbFieldInfo
 		member DBS_NAME				:= 1
 		member DBS_TYPE				:= 2

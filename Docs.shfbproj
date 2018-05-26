@@ -15,16 +15,15 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
     <OutputPath>Help\</OutputPath>
-    <HtmlHelpName>XSharp.Runtime</HtmlHelpName>
+    <HtmlHelpName>XSharpRuntime</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.Core.xml" />
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\XSharp.VO.xml" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.dll" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" /></DocumentationSources>
     <HelpTitle>XSharp Runtime Documentation</HelpTitle>
     <HelpFileVersion>2.0.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -59,8 +58,8 @@
         <Filter entryType="Class" fullName="XSharp.RuntimeState" filterName="RuntimeState" isExposed="True" />
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.Core" isExposed="False">
-		  <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True">
-		  </Filter>
+        <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True">
+        </Filter>
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.IO" isExposed="False" />
       <Filter entryType="Namespace" fullName="XSharp.VO" isExposed="False">
@@ -91,57 +90,68 @@
       </Filter>
     </ApiFilter>
     <NamespaceSummaries>
-      <NamespaceSummaryItem name="(global)" isDocumented="True">The global namespace is the location of the Core functions</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="(global)" isDocumented="True" />
       <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (attributes) used by the compiler. They  normally not used in End users  (your) code</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (attributes) used by the compiler. These are normally not used in End users  (your) code</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True" />
-      <NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True" />
+      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL</NamespaceSummaryItem>
     </NamespaceSummaries>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">
         <component id="Syntax Component">
-  <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="false" />
-  <generators>
+          <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="false" />
+          <generators>
     {@SyntaxFilters}
 </generators>
-  <containerElement name="codeSnippetGroup" addNoExampleTabs="true" includeOnSingleSnippets="false" groupingEnabled="{@CodeSnippetGrouping}" />
-  <configurations>
-    <generator id="X#" />
-    <generator id="C#" />
-    <generator id="Visual Basic">
-      <includeLineContinuation value="false" />
-    </generator>
-    <generator id="Visual Basic Usage">
-      <includeLineContinuation value="false" />
-    </generator>
-    <generator id="Managed C++" />
-    <generator id="F#" />
-    <generator id="J#" />
-    <generator id="JScript" />
-    <generator id="JavaScript" />
-    <generator id="XAML Usage" />
-    <generator id="ASP.NET" />
-  </configurations>
-</component>
+          <containerElement name="codeSnippetGroup" addNoExampleTabs="true" includeOnSingleSnippets="false" groupingEnabled="{@CodeSnippetGrouping}" />
+          <configurations>
+            <generator id="X#" />
+            <generator id="C#" />
+            <generator id="Visual Basic">
+              <includeLineContinuation value="false" />
+            </generator>
+            <generator id="Visual Basic Usage">
+              <includeLineContinuation value="false" />
+            </generator>
+            <generator id="Managed C++" />
+            <generator id="F#" />
+            <generator id="J#" />
+            <generator id="JScript" />
+            <generator id="JavaScript" />
+            <generator id="XAML Usage" />
+            <generator id="ASP.NET" />
+          </configurations>
+        </component>
       </ComponentConfig>
-<ComponentConfig id="Code Block Component" enabled="True"><component id="Code Block Component">
-  <basePath value="{@HtmlEncProjectFolder}" />
-  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
-  <allowMissingSource value="true" />
-  <removeRegionMarkers value="true" />
-  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="none" tabSize="0" numberLines="true" outlining="true" keepSeeTags="true" defaultTitle="true" />
-</component></ComponentConfig>
-<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">{@TokenFiles}
-<replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
-<ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True"><component id="Comments Index Data (ESENT Cache)"><index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="{@WorkingFolder}CommentsIndexCache">
+      <ComponentConfig id="Code Block Component" enabled="True">
+        <component id="Code Block Component">
+          <basePath value="{@HtmlEncProjectFolder}" />
+          <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+          <allowMissingSource value="true" />
+          <removeRegionMarkers value="true" />
+          <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="none" tabSize="0" numberLines="true" outlining="true" keepSeeTags="true" defaultTitle="true" />
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="API Token Resolution" enabled="True">
+        <component id="API Token Resolution">{@TokenFiles}
+<replace elements="/*//token" item="string(.)" /></component>
+      </ComponentConfig>
+      <ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True">
+        <component id="Comments Index Data (ESENT Cache)">
+          <index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="{@WorkingFolder}CommentsIndexCache">
 	{@FrameworkCommentList}
 	{@CommentFileList}
-</index><copy name="comments" source="*" target="/document/comments" /></component></ComponentConfig>
-<ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True"><component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
+</index>
+          <copy name="comments" source="*" target="/document/comments" />
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True">
+        <component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
 <locale value="{@Locale}" /><linkTarget value="{@SdkLinkTarget}" /><helpOutput format="HtmlHelp1"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@HtmlSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="MSHelpViewer"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@MSHelpViewerSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
@@ -152,8 +162,14 @@
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="Markdown"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@WebsiteSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
-	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component></ComponentConfig>
-<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig></ComponentConfigurations>
+	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component>
+      </ComponentConfig>
+      <ComponentConfig id="IntelliSense Component" enabled="True">
+        <component id="IntelliSense Component">
+          <output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
+        </component>
+      </ComponentConfig>
+    </ComponentConfigurations>
     <MissingTags>None</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
@@ -187,11 +203,12 @@
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
     <VendorName>XSharp</VendorName>
-    <ProductTitle>X#</ProductTitle>
+    <ProductTitle>XSharp</ProductTitle>
     <TocParentId>-1</TocParentId>
     <TocParentVersion>100</TocParentVersion>
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>None</MSHelpViewerSdkLinkType>
+    <CatalogName>VisualStudio14</CatalogName>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
@@ -222,18 +239,4 @@
     </PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.Rdd</Name>
-      <Project>e83c6c8c-773f-4b01-a597-3d38398a9362</Project>
-    </ProjectReference>
-    <ProjectReference Include="Runtime\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>ef8d2bf2-e81a-479a-ba4f-294c4c348b66</Project>
-    </ProjectReference>
-    <ProjectReference Include="Runtime\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>535dff14-efb7-43f5-a4e1-71c1c4280040</Project>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

@@ -3,9 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+ 
 using XSharp.RDD
-
+#ifdef COMPILEIT
 /// <summary>
 /// Get the contents of a field that is identified by its work area and a Symbol.
 /// </summary>
@@ -387,3 +387,4 @@ FUNCTION VODBUnlock(uRecno AS Usual) AS LOGIC
 	THROW  NotImplementedException{}
 RETURN FALSE   
 
+#endif

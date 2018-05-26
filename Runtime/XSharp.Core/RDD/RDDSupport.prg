@@ -271,9 +271,9 @@ END STRUCTURE
 
 /// <summary>Helper class to store information needed to perform a physical sort. </summary> 
 CLASS DbSortInfo 
-	// <summary>A DbTransInfo object holding the destination work area, column transfer information, and scoping information for the Sort() method. </summary>
+	/// <summary>A DbTransInfo object holding the destination work area, column transfer information, and scoping information for the Sort() method. </summary>
 	PUBLIC TransInfo AS DbTransInfo
-	// <summary>An array of DbSortItem structures defining the key values for the sort.  Note that the key values are processed in the order that they appear in this array. </summary>
+	/// <summary>An array of DbSortItem structures defining the key values for the sort.  Note that the key values are processed in the order that they appear in this array. </summary>
 	PUBLIC Items	 AS DbSortItem[]
 END CLASS
 

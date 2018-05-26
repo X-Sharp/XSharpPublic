@@ -26,7 +26,7 @@ begin namespace XSharp
 		constructor(capacity as dword)
 			super(capacity)
 
-		/// <inheritdoc />
+		/// <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
 		constructor( elements as usual[] )
 			self()
 			if elements == null
@@ -114,7 +114,7 @@ begin namespace XSharp
 		internal method CloneShallow() as Array
 			return (Array) super:Clone()
 
-			/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
+		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
 		public property self[i as dword, j as dword, k as DWORD] as usual
 			get
 				return __GetElement((int)i,(int)j, (int) k)
@@ -134,7 +134,7 @@ begin namespace XSharp
 			end set
 		end property
 	
-		/// <inheritdoc />
+		/// <summary>Get/Set array elements with a ZERO based array index</summary>
 		new property self[index as dword] as usual
 			get
 				return __GetElement((int)index)
@@ -150,7 +150,9 @@ begin namespace XSharp
 		new internal method Swap(position as int, element as usual) as usual
 			return super:Swap(position, element)
 
-		/// <inheritdoc />
+		///
+		/// <summary>Access the array element using ZERO based array indexes</summary>
+		///
 		public method __GetElement(index params int[]) as usual
 			local indexLength := index:Length as int
 			local currentArray := self as Array
@@ -193,7 +195,9 @@ begin namespace XSharp
 			return sb:ToString()
 
 
-		/// <inheritdoc />
+		///
+		/// <summary>Assign the array element using ZERO based array indexes</summary>
+		///
 		public method __SetElement(u as usual, index params int[] ) as usual
 			// indices are 0 based
 			if self:CheckLock()

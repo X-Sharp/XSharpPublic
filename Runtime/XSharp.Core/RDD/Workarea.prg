@@ -10,6 +10,7 @@ USING XSharp.RDD.Enums
 BEGIN NAMESPACE XSharp.RDD
 
 /// <summary>Base class for DBF based RDDs. Holds common propertis such as the Workarea number, Alias, Fields list and various flags.</summary> 
+/// <seealso cref="T:XSharp.IRdd"/>
 CLASS Workarea IMPLEMENTS IRdd  
 	// This class does NOT implement file based (DBF stuff). 
 	// That is handled in the DBF class which inherits from RddBase
@@ -424,7 +425,7 @@ VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD Lock(uiMode AS DbLockMode) AS LOGIC
+VIRTUAL METHOD Lock(uiMode AS DbLockInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -551,8 +552,8 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT
-	THROW NotImplementedException{__ENTITY__}
+VIRTUAL METHOD EvalBlock(oBlock AS ICodeBlock) AS OBJECT
+	return oBlock:EvalBlock()
 
 /// <inheritdoc />
 VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT

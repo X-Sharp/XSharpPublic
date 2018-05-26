@@ -12,7 +12,7 @@ USING System.Collections.Generic
 USING System.Linq
 using System.Runtime.CompilerServices
 
-STATIC CLASS OOPHelpers
+INTERNAL STATIC CLASS OOPHelpers
 
 	STATIC METHOD FindOurAssemblies AS IEnumerable<Assembly>
 		RETURN	FROM asm IN AppDomain.CurrentDomain:GetAssemblies() ;
@@ -1034,7 +1034,7 @@ FUNCTION _CallClipFunc(symFunction AS STRING,aArgs AS ARRAY) AS USUAL
 
 /// <summary>Call a function by name</summary>
 /// <param name="symFunction">The name of the function to call.</param>
-/// <param name="uArgs">The comma separated list of arguments to pass to the function</param>
+/// <param name="uArgs">The list of arguments to pass to the function</param>
 /// <returns>The return value of the function</returns>
 /// <remarks>Note that you can't call functions that are overloaded.</remarks>
 FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL

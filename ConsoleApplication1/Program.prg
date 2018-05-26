@@ -1,5 +1,27 @@
-﻿function Start() as void
-	local nX as dword
+﻿USING System.Globalization
+
+function Start as void
+	LOCAL aDir AS ARRAY
+	aDir := Directory("C:\XSharp\DevRt\Runtime", "AHSD")
+	FOREACH VAR aFile IN aDir
+		? aFile[1], aFile[2], aFile[3], aFile[4], aFile[5]
+	NEXT
+	LOCAL aFiles AS ARRAY
+
+	aFiles := ArrayCreate(ADir("C:\XSharp\DevRt\Runtime\XSharp.Core\*.prg"))
+
+	ADir("C:\XSharp\DevRt\Runtime\XSharp.Core\*.prg", aFiles)
+
+	AEval(aFiles, {|element| QOut(element)})
+
+	WAIT
+	RETURN
+
+function Start1() as void
+	LOCAL nX AS DWORD
+	CultureInfo.DefaultThreadCurrentCulture := CultureInfo{"EN-us"}
+	CultureInfo.DefaultThreadCurrentUICulture := CultureInfo{"EN-us"}
+
 	? Version()
 	? "Size of IntPtr", IntPtr.Size
 	? "Size of USUAL", SizeOf(USUAL)
@@ -7,8 +29,13 @@
 	? "Size of DATE", SizeOf(DATE)
 	? "Size of SYMBOL", SizeOf(SYMBOL)
 	? 
+	? 1.234:ToString()
 	? SetNatDLL("Dutch.DLL")
 	? GetNatDLL()
+	? GetAppLocaleID()
+	? SetAppLocaleID(1043)
+	? GetAppLocaleID()
+	? 1.234:ToString()
 	? __CavoStr(VOErrors.TMSG_PRESSANYKEY)
 	? VO_Sprintf(VOErrors.__WCSLOADLIBRARYERROR, "CaTo3Cnt.DLL")
 	? DosErrString(2)

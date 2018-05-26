@@ -12,7 +12,7 @@ using System.Collections.Generic
 #define MAXDIGITS               30
 #define MAXDECIMALS             15	
 
-static class StringHelpers
+internal static class ConversionHelpers
 	static internal usCulture as CultureInfo
 	static private formatStrings as Dictionary<Int, String>
 	static constructor
@@ -27,12 +27,13 @@ static class StringHelpers
 			return formatStrings[nKey]
 		endif
 		if nDec != 0
-			cFormat := "."
-			cFormat := cFormat:PadRight(nDec+1, '0')	// 1 extra for the Dot
+			cFormat := "0."
+			cFormat := cFormat:PadRight(nDec+2, '0')	// 2 extra for the 0 + Dot
 		else
-			cFormat := ""
-		endif
+			cFormat := "0"
+		ENDIF
 		cFormat := cFormat:PadLeft(nLen, '#')
+		cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
 		formatStrings:Add(nKey, cFormat)
 		return cFormat
 
@@ -40,15 +41,21 @@ static class StringHelpers
 		local cFormat as string
 		local result as string
 		cFormat := GetFormatString(nLen, nDec)
-		result := n:ToString(cFormat, usCulture)
-		return result:PadLeft(nLen, ' ')
+		result := String.Format(usCulture, cFormat, n)
+		IF result:Length > nLen
+			result := Replicate("*", (DWORD) nLen)
+		endif
+		return result
 
 	static method FormatNumber(n as Int64, nLen as int, nDec as int) as string
 		local cFormat as string
 		local result as string
 		cFormat := GetFormatString(nLen, 0)
-		result := n:ToString(cFormat, usCulture)
-		return result:PadLeft(nLen, ' ')
+		result := String.Format(usCulture, cFormat, n)
+		IF result:Length > nLen
+			result := Replicate("*", (DWORD) nLen)
+		endif
+		return result
 
 	
 end class
@@ -369,7 +376,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str1(n)
 		else
-			return StringHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
+			return ConversionHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
 		endif
 	case 2
 		if ! nLen:IsNumeric
@@ -378,7 +385,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str2(n, nLen)
 		else
-			return StringHelpers.FormatNumber((int64) n, nLen,0)
+			return ConversionHelpers.FormatNumber((int64) n, nLen,0)
 		endif
 	case 3
 		if ! nDec:IsNumeric
@@ -387,7 +394,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
 		if n:IsFloat
 			return Str3(n, nLen, nDec)
 		else
-			return StringHelpers.FormatNumber((int64) n, nLen,nDec)
+			return ConversionHelpers.FormatNumber((int64) n, nLen,nDec)
 		endif
 	end switch
 	return ""
@@ -502,26 +509,18 @@ internal function AdjustDecimalSeparator(cString as string) as string
 function Str1(f as float) as string
 	return AdjustDecimalSeparator(_Str1(f))
 	
-/// <summary>
-/// Convert a numeric expression to a string.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-function _Str1(f as float) as string
+INTERNAL function _Str1(f as float) as string
 	var nDecimals := f:decimals
 	var nDigits   := f:Digits
 	if nDecimals < 0
 		nDecimals := RuntimeState.Decimals
 	endif
+
 	if nDigits < 0
 		nDigits := RuntimeState.Digits
 	endif
-	return StringHelpers.FormatNumber(f, nDigits, nDecimals )
+	return ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
  
-
-FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
-	return AdjustDecimalSeparator(_Str2(f, dwLen))
 
 /// <summary>
 /// Convert a numeric expression to a string of a specified length.
@@ -530,13 +529,22 @@ FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
 /// <param name="dwLen"></param>
 /// <returns>
 /// </returns>
-FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
+FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
+	return AdjustDecimalSeparator(_Str2(f, dwLen))
+
+
+
+INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
   IF dwLen == 0
       dwLen := (DWORD) RuntimeState.Digits
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
-   RETURN StringHelpers.FormatNumber(f, (int) dwLen, f:Decimals )
+   var nDecimals := f:decimals
+	if nDecimals < 0
+		nDecimals := RuntimeState.Decimals
+	endif
+   RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, nDecimals)
  
 
 /// <summary>
@@ -567,7 +575,7 @@ function _Str3(f as float,dwLen as dword,dwDec as dword) as string
    IF dwDec > 0 && dwLen != UInt32.MaxValue && ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ '*', (INT) dwLen }
    endif
-   return StringHelpers.FormatNumber(f, (int) dwLen, (int) dwDec)
+   return ConversionHelpers.FormatNumber(f, (int) dwLen, (int) dwDec)
 
 
 /// <summary>
@@ -617,13 +625,13 @@ function Val(cNumber as string) as Usual
 			cNumber := cNumber:Replace(cDec, '.')
 		ENDIF
 		VAR style := NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent |  NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowThousands
-		IF System.Double.TryParse(cNumber, style, StringHelpers.usCulture, REF r8Result)
+		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
 			RETURN r8Result
 		endif
 	ELSE
 		LOCAL iResult := 0 AS INT64
 		VAR style := NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier
-		IF System.Int64.TryParse(cNumber, style, StringHelpers.usCulture, REF iResult)
+		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
 			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
 				RETURN (INT) iResult
 			ENDIF

@@ -1149,17 +1149,6 @@ BEGIN NAMESPACE XSharp.RDD
                 reccount := ( fSize - SELF:_Header:HeaderLen ) / SELF:_Header:RecordLen
             ENDIF
             RETURN reccount
-            
-                IF ( SELF:_hFile != F_ERROR )
-                    VAR current := FTell( SELF:_hFile )
-                    VAR fSize := FSeek3( SELF:_hFile, 0, FS_END )
-                    FSeek3( SELF:_hFile, (LONG)current, FS_SET )
-                    RETURN ( fSize - SELF:_Header:HeaderLen ) / SELF:_Header:RecordLen
-                ENDIF
-                // -1 ??
-                RETURN 0
-            END GET
-        END PROPERTY
         
 		/// <inheritdoc />
         PROPERTY RecNo		AS INT GET SELF:_RecNo

@@ -138,6 +138,47 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             ENDIF
             RETURN
             
+        [Fact, Trait("Dbf", "Append")];
+        METHOD CheckAppend() AS VOID
+            //
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Append( FALSE )
+                //
+                Assert.Equal(  myDBF:RecCount, nbrBefore+1 )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
+            
+        [Fact, Trait("Dbf", "AppendData")];
+        METHOD CheckAppendData() AS VOID
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Append( FALSE )
+                //
+                Assert.Equal(  myDBF:RecCount, nbrBefore+1 )
+                // Now, Add some Data
+                //"CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
+                myDBF:PutValue( 1, 5 )
+                Assert.Equal( myDBF:GetValue( 1 ), 5 )
+                myDBF:PutValue( 2, "Fabrice" )
+                Assert.Equal( myDBF:GetValue( 1 ),"Fabrice" )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
+            
         [Fact, Trait("Dbf", "Move")];
         METHOD CheckSkip() AS VOID
             VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }

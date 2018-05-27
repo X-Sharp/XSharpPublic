@@ -6,13 +6,15 @@ using static XSharp.Core.Functions
 BEGIN NAMESPACE XSharp.RDD.App
 
     FUNCTION Start() AS VOID
-        VAR myTest := TestDBF{}
+        LOCAL myTest := TestDBF{} AS TestDBF
         //
         myTest:OpenDBF()
         myTest:OpenDBFShowFields()
         myTest:CheckFieldInfo()
         myTest:WriteDataValue()
         myTest:CheckSkip()
+        myTest:CheckAppend()
+        myTest:CheckAppendData()
         //
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")
@@ -120,6 +122,44 @@ BEGIN NAMESPACE XSharp.RDD.App
                 Assert.Equal( TRUE, myDBF:Bof )
                 myDBF:Close()
             ENDIF
+
+        METHOD CheckAppend() AS VOID
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            VAR myDBF := DBF{}
+            IF myDBF:Open( dbInfo ) 
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Append( false )
+                //
+                Assert.Equal(  myDBF:RecCount, nbrBefore+1 )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
+
+        METHOD CheckAppendData() AS VOID
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Append( FALSE )
+                //
+                Assert.Equal(  myDBF:RecCount, nbrBefore+1 )
+                // Now, Add some Data
+                //"CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
+                myDBF:PutValue( 1, 5 )
+                Assert.Equal( myDBF:GetValue( 1 ), 5 )
+                myDBF:PutValue( 2, "Fabrice" )
+                Assert.Equal( myDBF:GetValue( 1 ),"Fabrice" )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
             
     END CLASS
     

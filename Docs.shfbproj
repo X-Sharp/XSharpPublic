@@ -32,7 +32,7 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Self</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpFileFormat>Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
@@ -209,6 +209,31 @@
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>None</MSHelpViewerSdkLinkType>
     <CatalogName>VisualStudio14</CatalogName>
+    <ProjectSummary>This is the generated documentation for the XSharp Runtime.&amp;lt%3bbr/&amp;gt%3b
+Please note that DotNet does not know the concept of a function. Therefore the compiler converts functions to static methods of a compiler generated functions class. &amp;lt%3bbr/&amp;gt%3b
+The same is true for DEFINES. These are added as constants fields in the functions class.&amp;lt%3bbr/&amp;gt%3b
+The XSharp runtime has two of these classes:&amp;lt%3bbr/&amp;gt%3b
+&amp;lt%3blist type=&amp;quot%3bbullet&amp;quot%3b&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bXSharp.Core.Functions&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bXSharp.VO.Functions&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3b/list&amp;gt%3b
+There is no need to do anything special when writing code. The compiler will automatically resolve function calls, such as:
+&amp;lt%3bc&amp;gt%3bLeft%28cString,10%29 &amp;lt%3b/c&amp;gt%3b and will generate the following output  &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.Left%28cString,10%29&amp;lt%3b/c&amp;gt%3b.
+The compiler will also translate a define such as  &amp;lt%3bc&amp;gt%3bFA_NORMAL &amp;lt%3b/c&amp;gt%3b  to   &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.FA_NORMAL&amp;lt%3b/c&amp;gt%3b.&amp;lt%3bbr/&amp;gt%3b
+In fact the compiler will include the value of this DEFINE in the generated code.  You will not be able to see in the generated code that the value  &amp;lt%3bc&amp;gt%3b0x00000080 &amp;lt%3b/c&amp;gt%3bwas read from the &amp;lt%3bc&amp;gt%3bFA_NORMAL&amp;lt%3b/c&amp;gt%3b define.&amp;lt%3bbr/&amp;gt%3b
+The source code for the XSharp Runtime is available &amp;lt%3ba href=&amp;quot%3bhttps://github.com/X-Sharp/XSharpPublic/tree/feature/Runtime/&amp;quot%3b _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon GitHub. &amp;lt%3b/a&amp;gt%3b &amp;lt%3bbr/&amp;gt%3b
+If you find bugs with this code, please report them  by sending an email to  bugreports%40xsharp.eu.&amp;lt%3bbr/&amp;gt%3b
+Or even better,  locate the bug and send us a bugfix.&amp;lt%3bbr/&amp;gt%3b
+The best way to do that is :&amp;lt%3bbr/&amp;gt%3b
+&amp;lt%3blist type=&amp;quot%3bbullet&amp;quot%3b&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bCreate a Fork of our Github repository&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bCreate a unit test in the appropriate unit tests project&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bFix the problem&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bSend us a pull request for the unit test and the bug fix&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3b/list&amp;gt%3b
+Of course you can also discuss issues you have or send us your comments on the forum &amp;lt%3ba href=&amp;quot%3bhttps://www.xsharp.info&amp;quot%3b  _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon our website &amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr/&amp;gt%3b
+Finally, if you like what you are seeing, you can help to support the X# development by subscribing to the &amp;quot%3bFriends Of XSharp&amp;quot%3b %28FOX%29 program. &amp;lt%3bbr/&amp;gt%3b
+More information about that program can be found at our website as well.&amp;lt%3bbr/&amp;gt%3b</ProjectSummary>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

@@ -1429,7 +1429,6 @@ function DBMemoField        (xField)
 //
 
 function DoError        (nSymFunc, nTries)
-	//RvdH 030926 Changed from as USUAL to as Error
 	local oError    as Error
 	
 	oError := ErrorBuild(_VODBErrInfoPtr())

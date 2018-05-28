@@ -17,7 +17,7 @@ INTERNAL STATIC CLASS UnformatHelpers
 			iFuncLen := INT(At(" ",cSayPicture))
 			IFuncLen -= 2
 			IF iFuncLen < 0
-				iFuncLen := INT(SLen(cSayPicture))-1	// RvdH 031120
+				iFuncLen := INT(SLen(cSayPicture))-1	
 			ENDIF
 			cPic  := AllTrim( SubStr(cSayPicture,iFuncLen+2) )
 			cFunc := Upper( SubStr(cSayPicture,2,iFuncLen) )

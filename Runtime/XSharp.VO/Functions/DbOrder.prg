@@ -293,17 +293,14 @@ FUNCTION OrdCondSet(   cFor,       ;
 	
 	
 	IF !IsNil(uCobFor)
-		//RvdH 041007 Changed USUALS to Items
 		MemCopy(@dbOrdCondInfo.itmCobFor, @uCobFor, _SIZEOF(_ITEM))
 	ENDIF
 	
 	IF !IsNil(uCobWhile)
-		//RvdH 041007 Changed USUALS to Items
 		MemCopy(@dbOrdCondInfo.itmCobWhile,  @uCobWhile, _SIZEOF(_ITEM))
 	ENDIF
 	
 	IF !IsNil(uCobEval)
-		//RvdH 041007 Changed USUALS to Items
 		MemCopy(@dbOrdCondInfo.itmCobEval , @uCobEval, _SIZEOF(_ITEM))
 	ENDIF
 	

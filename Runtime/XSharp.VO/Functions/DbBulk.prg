@@ -194,7 +194,6 @@ function DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 			break ParamError(array, 2)
 		endif
 		
-		//RvdH 061218 Added aHidden
 		DBUSEAREA(true, cDriver, cFile, __UniqueAlias(cFile), true, true,/*aStru*/,/*cDelim*/, aHidden)
 		siFrom := VODBGetSelect()
 		
@@ -1250,8 +1249,6 @@ function __TargetFields  (cAlias as string, aNames as array, ppJoinList as ptr) 
 	
 	n := ALen(aStruct)
 	
-	//RvdH 050616 FdW reported that the line below used the wrong SIZEOF
-	//nBytes      := n * (_sizeof(_JOINFIELD)) +  2 * (_sizeof(WORD))
 	nBytes      := n * _sizeof(_JOINFIELD) + _sizeof(_JOINLIST)		// This allocates 1 element too much, but that does not hurt...
 	pJoinList   := MemAlloc(nBytes)
 	

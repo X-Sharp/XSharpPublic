@@ -84,7 +84,7 @@ INTERFACE XSharp.RDD.IRdd
 		
 	// Fields                          
 	/// <summary>Add a column.</summary>
-	METHOD AddField(info AS DbFieldInfo)	AS LOGIC
+	METHOD AddField(info AS RddFieldInfo)	AS LOGIC
 	/// <summary>Add columns defined in an array.</summary>
 	METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
 	/// <summary>Return the ONE based field index for a field name.</summary>

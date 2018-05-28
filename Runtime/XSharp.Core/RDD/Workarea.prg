@@ -329,7 +329,7 @@ VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
     RETURN TRUE
 
 /// <inheritdoc />
-VIRTUAL METHOD AddField(info AS DbFieldInfo) AS LOGIC
+VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />

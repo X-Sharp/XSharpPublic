@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             
         [Fact, Trait("Dbf", "Fields")];
         METHOD CheckFieldValue() AS VOID
-            VAR values := <OBJECT>{ 2.0, "Robert", "Evans","732 Johnson Street","New York","NY","11501", "(212)764-1246", "(212)764-1877" }
+            VAR values := <OBJECT>{ 2, "Robert", "Evans","732 Johnson Street","New York","NY","11501", "(212)764-1246", "(212)764-1877" }
             //
             VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
             //
@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 //
                 myDBF:Append( FALSE )
                 //
-                Assert.Equal(  myDBF:RecCount, nbrBefore+1 )
+                Assert.Equal( nbrBefore+1, myDBF:RecCount )
                 //
                 myDBF:Close()
             ENDIF
@@ -171,9 +171,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 // Now, Add some Data
                 //"CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
                 myDBF:PutValue( 1, 5 )
-                Assert.Equal( myDBF:GetValue( 1 ), 5 )
                 myDBF:PutValue( 2, "Fabrice" )
-                Assert.Equal( myDBF:GetValue( 1 ),"Fabrice" )
+                Assert.Equal( 5, myDBF:GetValue( 1 ) )
+                Assert.Equal( "Fabrice", myDBF:GetValue( 2 ) )
                 //
                 myDBF:Close()
             ENDIF
@@ -209,6 +209,204 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 myDBF:Close()
             ENDIF
             RETURN
+            
+        [Fact, Trait("Dbf", "DeleteRecall")];
+        METHOD CheckDeleteRecall() AS VOID
+            VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                // Move to Bottom
+                myDBF:GoBottom()
+                Assert.Equal( myDBF:RecCount, myDBF:RecNo )
+                Assert.Equal( FALSE, myDBF:Eof )
+                // Delete Record
+                myDBF:Delete()
+                Assert.Equal( TRUE, myDBF:Deleted )
+                // Now, move and Come Back
+                // Move to Top
+                myDBF:GoTop()
+                Assert.Equal( 1, myDBF:RecNo )
+                Assert.Equal( FALSE, myDBF:Bof )
+                // Move to Bottom
+                myDBF:GoBottom()
+                Assert.Equal( myDBF:RecCount, myDBF:RecNo )
+                Assert.Equal( FALSE, myDBF:Eof )
+                // Still Deleted ?
+                Assert.Equal( TRUE, myDBF:Deleted )
+                // Ok, now try to Recall
+                myDBF:Recall()
+                Assert.Equal( FALSE, myDBF:Deleted )
+                // And again...
+                // Move to Top
+                myDBF:GoTop()
+                Assert.Equal( 1, myDBF:RecNo )
+                Assert.Equal( FALSE, myDBF:Bof )
+                // Move to Bottom
+                myDBF:GoBottom()
+                Assert.Equal( myDBF:RecCount, myDBF:RecNo )
+                Assert.Equal( FALSE, myDBF:Eof )
+                // Still Alive ?
+                Assert.Equal( FALSE, myDBF:Deleted )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN
+            
+        [Fact, Trait("Dbf", "Fields")];
+        METHOD CheckAddFields() AS VOID
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
+            LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            VAR dbInfo := DbOpenInfo{ "XSharpTest.DBF", "XSharpTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            // Let's say Three Fields
+            myDBF:SetFieldExtent( fields:Length )
+            Assert.Equal( fields:Length, myDBF:FieldCount )
+            //
+            LOCAL fieldInfo AS STRING[]
+            FOR VAR i := 1 TO myDBF:FIELDCount
+                // 
+                LOCAL currentField AS RddFieldInfo
+                fieldInfo := fields[i]:Split( ',' )
+                currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+                myDBF:AddField( currentField )
+            NEXT
+            // Now Check
+            // Right number of Fields ?
+            Assert.Equal(fields:Length, myDBF:FieldCount)
+            FOR VAR i := 1 TO myDBF:FIELDCount
+                // Right decoding ?
+                fieldInfo := fields[i]:Split( ',' )
+                Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_NAME, NIL ) )
+                Assert.Equal( fieldInfo[DBS_TYPE], myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
+                Assert.Equal( Convert.ToInt32(fieldInfo[DBS_LEN]), myDBF:FieldInfo( i, DBS_LEN, NIL ) )
+                Assert.Equal( Convert.ToInt32(fieldInfo[DBS_DEC]), myDBF:FieldInfo( i, DBS_DEC, NIL ) )
+                Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_ALIAS, NIL ) )
+            NEXT
+            //
+            RETURN
+            
+        [Fact, Trait("Dbf", "Fields")];
+        METHOD CheckCreateFields() AS VOID
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
+            LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            VAR dbInfo := DbOpenInfo{ "XSharpTest.DBF", "XSharpTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            LOCAL fieldInfo AS STRING[]
+            LOCAL rddInfo AS RddFieldInfo[]
+            rddInfo := RddFieldInfo[]{fields:Length}
+            FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL currentField AS RddFieldInfo
+                fieldInfo := fields[i]:Split( ',' )
+                currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+                rddInfo[i] := currentField
+            NEXT
+            //
+            myDBF:SetFieldExtent( fields:Length )
+            myDBF:CreateFields( rddInfo )
+            // Now Check
+            // Right number of Fields ?
+            Assert.Equal(fields:Length, myDBF:FieldCount)
+            FOR VAR i := 1 TO myDBF:FIELDCount
+                // Right decoding ?
+                fieldInfo := fields[i]:Split( ',' )
+                Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_NAME, NIL ) )
+                Assert.Equal( fieldInfo[DBS_TYPE], myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
+                Assert.Equal( Convert.ToInt32(fieldInfo[DBS_LEN]), myDBF:FieldInfo( i, DBS_LEN, NIL ) )
+                Assert.Equal( Convert.ToInt32(fieldInfo[DBS_DEC]), myDBF:FieldInfo( i, DBS_DEC, NIL ) )
+                Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_ALIAS, NIL ) )
+            NEXT
+            //
+            RETURN
+            
+        [Fact, Trait("Dbf", "Create")];
+        METHOD CheckCreateDBF() AS VOID
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
+            LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            LOCAL fieldInfo AS STRING[]
+            LOCAL rddInfo AS RddFieldInfo[]
+            rddInfo := RddFieldInfo[]{fields:Length}
+            FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL currentField AS RddFieldInfo
+                fieldInfo := fields[i]:Split( ',' )
+                currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+                rddInfo[i] := currentField
+            NEXT
+            //
+            myDBF:SetFieldExtent( fields:Length )
+            myDBF:CreateFields( rddInfo )
+            // Now Check
+            Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
+            //
+            myDBF:Close()
+            RETURN
+            
+        [Fact, Trait("Dbf", "CreateAppend")];
+        METHOD CheckCreateAppendDBF() AS VOID
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
+            LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            LOCAL fieldInfo AS STRING[]
+            LOCAL rddInfo AS RddFieldInfo[]
+            rddInfo := RddFieldInfo[]{fields:Length}
+            FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL currentField AS RddFieldInfo
+                fieldInfo := fields[i]:Split( ',' )
+                currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+                rddInfo[i] := currentField
+            NEXT
+            //
+            myDBF:SetFieldExtent( fields:Length )
+            myDBF:CreateFields( rddInfo )
+            // Now Check
+            Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
+            // Now, Add some Data
+            //"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
+            LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
+            LOCAL data := datas:Split( ';' ) AS STRING[]
+            //
+            FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL elt := data[i]:Split( ',' ) AS STRING[]
+                myDBF:Append( FALSE )
+                myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
+                myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
+                myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",true)==0 )
+                myDBF:PutValue( 4, DateTime.Now )
+            NEXT
+            myDBF:Close()
+            // Now, Verify
+            myDBF:Open( dbInfo )
+            FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL elt := data[i]:Split( ',' ) AS STRING[]
+                Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), myDBF:GetValue(1) )
+                Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
+                Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
+                LOCAL o AS OBJECT
+                LOCAL dt as DateTime
+                o := myDBF:GetValue(4)
+                IF ( o IS DateTime )
+                    dt := (DateTime)o
+                ENDIF
+                Assert.Equal( true, o IS DateTime )
+                Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
+                myDBF:Skip(1)
+            NEXT
+            //
+            myDBF:Close()
+            RETURN
+            
             
             
     END CLASS

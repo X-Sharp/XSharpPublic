@@ -34,6 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             VAR dbInfo := DbOpenInfo{ "noFile.DBF", "noFile", 1, FALSE, FALSE }
             //
             VAR myDBF := DBF{}
+            
             Assert.Equal( FALSE, myDBF:Open( dbInfo ) )
             //
             myDBF:Close()

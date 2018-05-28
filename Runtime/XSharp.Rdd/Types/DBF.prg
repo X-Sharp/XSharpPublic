@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _HasAutoInc		AS LOGIC 
         PROTECT _HasTimeStamp	AS LOGIC
         //PROTECT _LastUpdate	    AS DateTime
-        //PROTECT _RecCount		AS LONG		
+        PROTECT _RecCount		AS LONG		
         PROTECT _RecNo			AS LONG
         //PROTECT _Temporary		AS LOGIC    
         //PROTECT _NullCount		AS LONG
@@ -84,6 +84,10 @@ BEGIN NAMESPACE XSharp.RDD
             IF ( SELF:_hFile != F_ERROR )
                 // Validate any pending change
                 SELF:GoCold()
+                // On Shared env, it can be correct of changes has been made
+                IF ( SELF:_Shared .AND. nRec > SELF:RecCount )
+                    SELF:_RecCount := SELF:_calculateRecCount()
+                ENDIF
                 IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
                     // virtual pos
                     SELF:_RecNo := nRec
@@ -166,12 +170,13 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_RecordBuffer[ i ] := (BYTE)' '
                         NEXT
                         // Now, update state
-                        SELF:_RecNo := SELF:RecCount + 1
+                        SELF:_RecCount++
+                        SELF:_RecNo := SELF:RecCount
                         SELF:_EOF := FALSE		
                         SELF:_Bof := FALSE
                         SELF:_Deleted := FALSE
                         SELF:_BufferValid := TRUE
-                        //
+                        // Mark RecordBuffer and Header as Hot
                         SELF:_Hot := TRUE
                         SELF:_Header:isHot := TRUE
                         // Now, Save
@@ -234,8 +239,37 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN isOk
             
-            //	METHOD Pack() AS LOGIC
-            //	METHOD Zap() AS LOGIC   
+            //METHOD Pack() AS LOGIC
+            
+            
+        METHOD Zap() AS LOGIC
+            LOCAL isOk AS LOGIC
+            //
+            IF ( SELF:_ReadOnly )
+                // Error !! Cannot be written !
+                SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+                RETURN FALSE
+            ENDIF
+            //
+            IF ( SELF:_Shared )
+                // Error !! Cannot be written !
+                SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
+                RETURN FALSE
+            ENDIF
+            //
+            isOk := SELF:GoCold()
+            IF isOk
+                SELF:Goto(0)
+                // Zap means, set the RecCount to zero, so any other write with overwrite datas
+                SELF:_RecCount := 0
+                SELF:_Header:isHot := TRUE
+                SELF:_writeHeader()
+                // Memo File ?
+                IF ( SELF:_HasMemo )
+                    // Zap Memo
+                ENDIF
+            ENDIF
+            RETURN isOk
             
             // Open and Close   
             /// <inheritdoc />
@@ -246,6 +280,11 @@ BEGIN NAMESPACE XSharp.RDD
                 isOk := SELF:GoCold()
                 //
                 IF ( isOk )
+                    IF ( !SELF:_ReadOnly )
+                        SELF:Flush()
+                        SELF:_putEndOfFileMarker()
+                    ENDIF
+                    //
                     TRY
                         //SUPER:Close()
                         isOk := FClose( SELF:_hFile )
@@ -253,6 +292,21 @@ BEGIN NAMESPACE XSharp.RDD
                         isOk := FALSE
                     END TRY
                     SELF:_hFile := NULL
+                ENDIF
+            ENDIF
+            RETURN isOk
+            
+        PRIVATE METHOD _putEndOfFileMarker() AS LOGIC
+            // According to DBASE.com Knowledge base :
+            // The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
+            LOCAL lOffset := SELF:_Header:HeaderLen + SELF:_RecCount * SELF:_Header:RecordLen AS LONG
+            LOCAL isOk := ( FSeek3( SELF:_hFile, lOffset, FS_SET ) == lOffset ) AS LOGIC
+            LOCAL eofMarker := <BYTE>{ 26 } AS BYTE[]
+            IF ( isOk )
+                isOk := ( FWrite3( SELF:_hFile, eofMarker, 1 ) == 1 )
+                IF isOk
+                    // Fix length of File
+                    isOk := FChSize( SELF:_hFile, (DWORD)lOffset+1)
                 ENDIF
             ENDIF
             RETURN isOk
@@ -320,7 +374,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_DbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_CREATE )
             ENDIF
             RETURN isOK
-
+            
         PRIVATE METHOD _writeFieldsHeader() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL fieldCount :=  SELF:_Fields:Length AS INT
@@ -379,7 +433,9 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:_DbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_CORRUPTION )
                 ENDIF
             ELSE
-                SELF:_DbfError( ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
+                // Error or just FALSE ?
+                isOK := FALSE
+                //SELF:_DbfError( ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
             ENDIF
             //
             RETURN isOk
@@ -395,6 +451,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( fieldCount <= 0 )
                     RETURN FALSE
                 ENDIF
+                SELF:_RecCount := SELF:_Header:RecCount
                 // Move to top, after header
                 isOk := ( FSeek3( SELF:_hFile, HDROFFSETS.SIZE, SeekOrigin.Begin ) == HDROFFSETS.SIZE )
                 IF ( isOk )
@@ -613,7 +670,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbFieldInfo.DBS_COUNTER
                 CASE DbFieldInfo.DBS_STEP    
                 
-            CASE DbFieldInfo.DBS_BLOB_GET     
+                CASE DbFieldInfo.DBS_BLOB_GET     
                 CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
                     // is more efficient than using Type() or ValType()
                     // since the data itself does not have to be retrieved
@@ -624,7 +681,7 @@ BEGIN NAMESPACE XSharp.RDD
                     // file. This pointer can be used with BLOBDirectGet(),
                     // BLOBDirectImport(), etc.
                     
-                CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
+            CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
                 CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN		
                 
                 CASE DbFieldInfo.DBS_STRUCT				
@@ -755,7 +812,7 @@ BEGIN NAMESPACE XSharp.RDD
             //
             data := NULL
             SWITCH fieldType
-            CASE DbFieldType.Float
+                CASE DbFieldType.Float
                 CASE DbFieldType.Number
                 CASE DbFieldType.Double
                     //
@@ -826,7 +883,7 @@ BEGIN NAMESPACE XSharp.RDD
                         //                            data := 0.0
                         //                        ENDIF
                     ENDIF
-                CASE DbFieldType.Memo
+            CASE DbFieldType.Memo
                 CASE DbFieldType.OLE
                 CASE DbFieldType.Picture
                 OTHERWISE
@@ -838,7 +895,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL objType AS System.Type
             LOCAL objTypeCode AS System.TypeCode
             LOCAL encoding AS ASCIIEncoding
-            LOCAL isOk AS LOGIC
+            LOCAL isOk := FALSE AS LOGIC
             LOCAL str AS STRING
             // 
             encoding := ASCIIEncoding{}
@@ -846,7 +903,7 @@ BEGIN NAMESPACE XSharp.RDD
             objTypeCode := Type.GetTypeCode( objType )
             //
             SWITCH objTypeCode
-                CASE TypeCode.String
+            CASE TypeCode.String
                 CASE TypeCode.Char
                     IF ( fieldType == DbFieldType.Character )
                         IF ( objTypeCode == TypeCode.Char )
@@ -873,7 +930,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE TypeCode.Double
                 CASE TypeCode.Single
                 
-            CASE TypeCode.Byte
+                CASE TypeCode.Byte
                 CASE TypeCode.SByte
                 CASE TypeCode.Int16
                 CASE TypeCode.Int32
@@ -899,6 +956,7 @@ BEGIN NAMESPACE XSharp.RDD
                         ELSE
                             str := str:PadLeft(buffer:Length)
                             encoding:GetBytes( str, 0, buffer:Length, buffer, 0 )
+                            isOk := TRUE
                         ENDIF
                     ELSE
                         // Type Error !
@@ -908,6 +966,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE TypeCode.Boolean
                     IF ( fieldType == DbFieldType.Logic )
                         buffer[0] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
+                        isOk := TRUE
                     ELSE
                         // Type Error !
                         isOk := FALSE
@@ -920,6 +979,7 @@ BEGIN NAMESPACE XSharp.RDD
                         //
                         str := dt:ToString( "yyyyMMdd" )
                         encoding:GetBytes( str, 0, buffer:Length, buffer, 0 )
+                        isOk := TRUE
                     ELSEIF ( fieldType == DbFieldType.DateTime )
                         LOCAL dat AS LONG
                         LOCAL tim AS LONG
@@ -934,6 +994,7 @@ BEGIN NAMESPACE XSharp.RDD
                         //
                         Array.Copy( datBytes, 0, buffer, 0, 4 )
                         Array.Copy( timBytes, 0, buffer, 4, 4 )
+                        isOk := TRUE
                     ELSE
                         // Type Error !
                         isOk := FALSE
@@ -1009,7 +1070,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( ( fieldType == DbFieldType.Memo ) || ;
                 ( fieldType == DbFieldType.OLE ) || ;
                 ( fieldType == DbFieldType.Picture ) )
-                    IF _oMemo != NULL_OBJECT                    
+                    IF _oMemo != NULL                    
                         RETURN _oMemo:GetValue(nFldPos)
                     ELSE                            
                         RETURN SUPER:GetValue(nFldPos)
@@ -1029,7 +1090,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-            IF _oMemo != NULL_OBJECT                    
+            IF _oMemo != NULL                    
                 RETURN _oMemo:GetValueFile(nFldPos, fileName)
             ELSE                            
                 RETURN SUPER:GetValueFile(nFldPos, fileName)
@@ -1037,7 +1098,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD GetValueLength(nFldPos AS LONG) AS LONG
-            IF _oMemo != NULL_OBJECT                    
+            IF _oMemo != NULL                    
                 RETURN _oMemo:GetValueLength(nFldPos)
             ELSE                            
                 RETURN SUPER:GetValueLength(nFldPos)
@@ -1045,11 +1106,21 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD Flush() 			AS LOGIC
-            IF _oMemo != NULL_OBJECT                    
-                RETURN _oMemo:Flush()
-            ELSE                            
-                RETURN SUPER:Flush()
+            LOCAL isOk AS LOGIC
+            //
+            isOk := SELF:GoCold()
+            IF isOk 
+                SELF:_writeHeader()
+                IF ( ! SELF:_Shared )
+                    SELF:_putEndOfFileMarker()        
+                ENDIF
             ENDIF
+            //
+            FFlush( SELF:_hFile )
+            IF _oMemo != NULL                 
+                RETURN _oMemo:Flush()
+            ENDIF
+            RETURN isOk
             
             // Save any Pending Change            
         METHOD GoCold()			AS LOGIC
@@ -1101,7 +1172,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF ( ( fieldType == DbFieldType.Memo ) || ;
             ( fieldType == DbFieldType.OLE ) || ;
             ( fieldType == DbFieldType.Picture ) )
-                IF _oMemo != NULL_OBJECT                    
+                IF _oMemo != NULL           
                     RETURN _oMemo:PutValue(nFldPos, oValue)
                 ELSE                            
                     RETURN SUPER:PutValue(nFldPos, oValue)
@@ -1119,7 +1190,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-            IF _oMemo != NULL_OBJECT                    
+            IF _oMemo != NULL   
                 RETURN _oMemo:PutValueFile(nFldPos, fileName)
             ELSE                            
                 RETURN SUPER:PutValue(nFldPos, fileName)
@@ -1135,14 +1206,14 @@ BEGIN NAMESPACE XSharp.RDD
             // Memo File Access 
             /// <inheritdoc />
         METHOD CloseMemFile() 	AS LOGIC    
-            IF _oMemo != NULL_OBJECT                    
+            IF _oMemo != NULL                    
                 RETURN _oMemo:CloseMemFile()
             ELSE                            
                 RETURN SUPER:CloseMemFile()
             ENDIF
             /// <inheritdoc />
         METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
-            IF _oMemo != NULL_OBJECT                    
+            IF _oMemo != NULL                    
                 RETURN _oMemo:CreateMemFile(info)
             ELSE                            
                 RETURN SUPER:CreateMemFile(info)
@@ -1150,7 +1221,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC   
-            IF _oMemo != NULL_OBJECT                    
+            IF _oMemo != NULL                    
                 RETURN _oMemo:OpenMemFile(info)
             ELSE                            
                 RETURN SUPER:OpenMemFile(info)
@@ -1159,7 +1230,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Indexes
             /// <inheritdoc />
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderCondition(info)
             ELSE
                 RETURN SUPER:OrderCondition(info)
@@ -1167,7 +1238,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderCreate(info)
             ELSE
                 RETURN SUPER:OrderCreate(info)
@@ -1175,7 +1246,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderDestroy(info)
             ELSE
                 RETURN SUPER:OrderDestroy(info)
@@ -1183,7 +1254,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD OrderInfo(nOrdinal AS LONG) AS OBJECT
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderInfo(nOrdinal)
             ELSE
                 RETURN SUPER:OrderInfo(nOrdinal)
@@ -1191,7 +1262,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderListAdd(info)
             ELSE
                 RETURN SUPER:OrderListAdd(info)
@@ -1199,28 +1270,28 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderListDelete(info)
             ELSE
                 RETURN SUPER:OrderListDelete(info)
             ENDIF
             /// <inheritdoc />
         METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderListFocus(info)
             ELSE
                 RETURN SUPER:OrderListFocus(info)
             ENDIF
             /// <inheritdoc />
         METHOD OrderListRebuild() AS LOGIC 
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:OrderListRebuild()
             ELSE
                 RETURN SUPER:OrderListRebuild()
             ENDIF
             /// <inheritdoc />
         METHOD Seek(info AS DbSeekInfo) AS LOGIC
-            IF _oIndex != NULL_OBJECT
+            IF _oIndex != NULL
                 RETURN _oIndex:Seek(info)
             ELSE
                 RETURN SUPER:Seek(info)
@@ -1370,7 +1441,10 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         PROPERTY RecCount	AS LONG 
             GET
-                RETURN SELF:_calculateRecCount()
+                IF ( SELF:_Shared )
+                    SELF:_RecCount := SELF:_calculateRecCount()
+                ENDIF
+                RETURN SELF:_RecCount
             END GET
         END PROPERTY
         
@@ -1573,7 +1647,7 @@ BEGIN NAMESPACE XSharp.RDD
                     see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
                     
                     */
-                END STRUCTURE
+                    END STRUCTURE
             /// <summary>DBF Field.</summary>                            
             STRUCTURE DbfField   
                 // Fixed Buffer of 32 bytes

@@ -239,7 +239,59 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN isOk
             
-            //METHOD Pack() AS LOGIC
+        METHOD Pack() AS LOGIC
+            LOCAL isOk AS LOGIC
+            //
+            IF ( SELF:_ReadOnly )
+                // Error !! Cannot be written !
+                SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+                RETURN FALSE
+            ENDIF
+            //
+            IF ( SELF:_Shared )
+                // Error !! Cannot be written !
+                SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
+                RETURN FALSE
+            ENDIF
+            //
+            isOk := SELF:GoCold()
+            IF isOk
+                LOCAL nToRead AS LONG
+                LOCAL nMoveTo AS LONG
+                LOCAL nTotal AS LONG
+                LOCAL lDeleted AS LOGIC
+                //
+                nToRead := 1
+                nMoveTo := 1
+                nTotal := 0
+                WHILE ( nToRead <= SELF:RecCount )
+                    // Move
+                    SELF:GoTo( nToRead )
+                    // and get Data
+                    SELF:_readRecord()
+                    lDeleted := SELF:_Deleted
+                    //
+                    IF ( !lDeleted )
+                        nTotal++
+                        IF ( nToRead != nMoveTo )
+                            SELF:_RecNo := nMoveTo
+                            SELF:_writeRecord()
+                        ENDIF
+                    ENDIF
+                    // Next
+                    nToRead ++
+                    IF ( !lDeleted )
+                        nMoveTo++
+                    ENDIF
+                ENDDO
+                //
+                SELF:_Hot := FALSE
+                SELF:_RecCount := nTotal
+                SELF:Flush()
+                //
+            ENDIF
+            RETURN isOk
+
             
             
         METHOD Zap() AS LOGIC
@@ -746,7 +798,9 @@ BEGIN NAMESPACE XSharp.RDD
                             FWrite3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_Header:RecordLen )
                             // Don't forget to Update Header
                             SELF:_Header:isHot := TRUE
-                            SELF:_writeHeader()
+                            IF ( SELF:_Shared )
+                                SELF:_writeHeader()
+                            ENDIF
                         CATCH 
                             SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
                         END TRY
@@ -856,7 +910,7 @@ BEGIN NAMESPACE XSharp.RDD
                     //
                     IF (! String.IsNullOrWhiteSpace(str))
                         //
-                        data := ( String.Compare( str, "T", TRUE ) == 0 )
+                        data := ( ( String.Compare( str, "T", TRUE ) == 0 ) .OR. ( String.Compare( str, "Y", TRUE ) == 0 ) )
                     ENDIF
                     //                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
                     //                        //

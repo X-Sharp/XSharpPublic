@@ -408,7 +408,81 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             myDBF:Close()
             RETURN
             
+        [Fact, Trait("Dbf", "Zap")];
+        METHOD CheckZap() AS VOID
+            //
+            SELF:CheckCreateAppendDBF()
+            //
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Zap( )
+                //
+                Assert.Equal(  0, myDBF:RecCount )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN            
             
-            
+        [Fact, Trait("Dbf", "Zap")];
+        METHOD CheckZapAppend() AS VOID
+            //
+            SELF:CheckCreateAppendDBF()
+            //
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Zap( )
+                //
+                Assert.Equal(  0, myDBF:RecCount )
+                //
+                 myDBF:Append( FALSE )
+                //
+                Assert.Equal(  1, myDBF:RecCount )
+                // Now, Add some Data
+                // "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" 
+                myDBF:PutValue( 1, 5 )
+                myDBF:PutValue( 2, "Fabrice" )
+                Assert.Equal( 5, myDBF:GetValue( 1 ) )
+                Assert.Equal( "Fabrice", myDBF:GetValue( 2 ) )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN  
+
+        [Fact, Trait("Dbf", "Pack")];
+        METHOD CheckPack() AS VOID
+            //
+            SELF:CheckCreateAppendDBF()
+            //
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBF{} AS DBF
+            IF myDBF:Open( dbInfo ) 
+                // Delete the First
+                myDBF:GoTop()
+                myDBF:Delete()
+                // and the Last
+                myDbf:GoBottom()
+                myDbf:Delete()
+                //
+                LOCAL nbrBefore := myDBF:RecCount AS LONG
+                //
+                myDBF:Pack( )
+                //
+                Assert.Equal( nbrBefore-2, myDBF:RecCount )
+                //
+                myDBF:Close()
+            ENDIF
+            RETURN  
+
     END CLASS
 END NAMESPACE // XSharp.RDD.Tests

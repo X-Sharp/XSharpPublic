@@ -143,6 +143,7 @@
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Functions\vodb.prg" />
+    <Compile Include="Functions\Win32.prg" />
     <Compile Include="Messages.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />

@@ -58,10 +58,12 @@ internal static class ConversionHelpers
 		return result
 
 
-	static method AdjustDecimalSeparator(cString as string) as string
-		var wSep   := SetDecimalSep()
-		if wSep != 46 // .
-			cString := cString:Replace('.', (char) wSep)
+	STATIC METHOD AdjustDecimalSeparator(cString AS STRING) AS STRING
+		if cString:IndexOf(".") >= 0 
+			var wSep   := SetDecimalSep()
+			if wSep != 46
+				cString := cString:Replace('.', (char) wSep)
+			endif
 		endif
 		return cString
 

@@ -2144,9 +2144,14 @@ begin namespace XSharp
 		static method __InexactNotEquals( lhs as usual, rhs as usual ) as logic
 			// emulate VO behavior for "" and NIL
 			// "" = NIL but also "" != NIL, NIL = "" and NIL != ""
-			if lhs:IsString .and. rhs:IsNil .and. lhs:_stringValue != null .and. lhs:_stringValue:Length == 0
-				return false
-			elseif rhs:IsString .and. lhs:IsNil .and. rhs:_stringValue != null .and. rhs:_stringValue:Length == 0
+			IF lhs:IsString 
+				if rhs:IsString
+					return __StringNotEquals( lhs:_stringValue, rhs:_stringValue)
+				elseif rhs:IsNil .and. lhs:_stringValue != null .and. lhs:_stringValue:Length == 0
+					RETURN FALSE
+				ENDIF
+			endif
+			if rhs:IsString .and. lhs:IsNil .and. rhs:_stringValue != null .and. rhs:_stringValue:Length == 0
 				return false
 			else
 				return ! lhs:UsualEquals(rhs, "<>")

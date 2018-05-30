@@ -347,11 +347,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             name = GetNestedName(context.Parent);
             if (context is XP.FunctionContext)
             {
+                string modName = _options.CommandLineArguments?.CompilationOptions.ModuleName;
+                if (modName == null)
+                {
+                    modName = _options.CommandLineArguments?.SourceFiles.FirstOrDefault().Path;
+                    modName = PathUtilities.GetFileName(modName, false);
+                }
+
                 XP.FunctionContext fc = (XP.FunctionContext)context;
                 if (name.Length == 0)
                     name = GlobalClassName + "." + fc.Id.GetText();
                 else
                     name += fc.Id.GetText();
+                if (name.Contains("."))
+                {
+                    name = modName + ":" + name.Substring(name.IndexOf(".")+1);
+                }
 
                 RetType = fc.Type;
                 Params = fc.ParamList;

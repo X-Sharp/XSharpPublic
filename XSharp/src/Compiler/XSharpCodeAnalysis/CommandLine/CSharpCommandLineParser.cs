@@ -304,17 +304,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "system":
                     if (! options.ClrVersionWasSet )
                     {
-                        if (filename.ToLower().Contains("\\v2"))
+                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
                         {
                             options.ClrVersionWasSet = true;
                             options.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v3"))
+                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
                         {
                             options.ClrVersionWasSet = true;
                             options.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v4"))
+                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
                         {
                             options.ClrVersionWasSet = true;
                             options.ClrVersion = 4;

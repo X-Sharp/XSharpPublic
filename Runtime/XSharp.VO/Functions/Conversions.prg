@@ -57,7 +57,14 @@ internal static class ConversionHelpers
 		endif
 		return result
 
-	
+
+	static method AdjustDecimalSeparator(cString as string) as string
+		var wSep   := SetDecimalSep()
+		if wSep != 46 // .
+			cString := cString:Replace('.', (char) wSep)
+		endif
+		return cString
+
 end class
 
 
@@ -199,8 +206,9 @@ function DescendA(uValue REF usual) as usual
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function NTrim(n as usual) as string
-	return Str1(n)	
+FUNCTION NTrim(n AS USUAL) AS STRING
+	RETURN Str1((FLOAT)n)
+			
 	
 	
 
@@ -349,11 +357,7 @@ function Str(n ,nLen ,nDec ) as string CLIPPER
 	endif
 	local result as string
 	result := _str3(n, nLen, nDec)
-	var wSep   := SetDecimalSep()
-	if wSep != 46 // .
-		result := result:Replace('.', (char) wSep)
-	endif
-	return result	
+	return ConversionHelpers.AdjustDecimalSeparator(result)
 
 
 /// <summary>
@@ -373,11 +377,7 @@ function _Str(n ,nLen ,nDec ) as string CLIPPER
     ENDIF
 	switch PCount()
 	case 1
-		if n:IsFloat
-			return Str1(n)
-		else
-			return ConversionHelpers.FormatNumber((int64) n, RuntimeState.Digits,0)
-		endif
+		return Str1( n)
 	case 2
 		if ! nLen:IsNumeric
 			THROW Error.DataTypeError( __ENTITY__, nameof(nLen),2,n, nLen, nDec)
@@ -492,12 +492,6 @@ function StrFloat(flSource as float,dwLen as dword,dwDec as dword) as String
 	
 	
 
-internal function AdjustDecimalSeparator(cString as string) as string
-	var wSep   := SetDecimalSep()
-	if wSep != 46 // .
-		cString := cString:Replace('.', (char) wSep)
-	endif
-	return cString
 
 
 /// <summary>
@@ -506,20 +500,29 @@ internal function AdjustDecimalSeparator(cString as string) as string
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-function Str1(f as float) as string
-	return AdjustDecimalSeparator(_Str1(f))
-	
+FUNCTION Str1(f AS USUAL) AS STRING
+	if f:IsFloat
+		return ConversionHelpers.AdjustDecimalSeparator(_Str1( (float) f))
+	ELSE
+		return ConversionHelpers.FormatNumber( (long) f, RuntimeState.Digits, 0):Trim()
+	ENDIF
+		
 INTERNAL function _Str1(f as float) as string
 	var nDecimals := f:decimals
-	var nDigits   := f:Digits
+	VAR nDigits   := f:Digits
+	var ltrim	  := FALSE
 	if nDecimals < 0
 		nDecimals := RuntimeState.Decimals
-	endif
-
-	if nDigits < 0
+	ENDIF
+	if nDigits <= 0
 		nDigits := RuntimeState.Digits
+		ltrim   := true
 	endif
-	return ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
+	VAR result := ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
+	IF (ltrim)
+		result := result:TrimStart()
+	ENDIF
+	return result
  
 
 /// <summary>
@@ -530,8 +533,7 @@ INTERNAL function _Str1(f as float) as string
 /// <returns>
 /// </returns>
 FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
-	return AdjustDecimalSeparator(_Str2(f, dwLen))
-
+	return ConversionHelpers.AdjustDecimalSeparator(_Str2(f, dwLen))
 
 
 INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
@@ -556,7 +558,7 @@ INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION Str3(f AS Float,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	return AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
+	return ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
 
 function _Str3(f as float,dwLen as dword,dwDec as dword) as string
 

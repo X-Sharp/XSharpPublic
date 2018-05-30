@@ -123,7 +123,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	[Fact, Trait("Category", "String")];
 	method HardCRTest() as void
 		local s as string
-		s := "aaa" + ((char) 141):ToString() + "bbb"
+		s := "aaa" + ((char) 141):ToString() +chr(10)+ "bbb"
 		Assert.Equal(1U, MlCount1(s))
 		Assert.Equal(2U, MlCount1(HardCR(s)))
 	

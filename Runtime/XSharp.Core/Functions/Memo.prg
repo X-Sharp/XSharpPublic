@@ -26,7 +26,9 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nLines := 0 AS DWORD
 		LOCAL nIndex := 0 AS INT
 		LOCAL lError AS LOGIC
-
+		IF cMemo == NULL
+			return 0
+		endif
 		IF nLineLen > 0 .and. nLineLen <= MemoHelpers.MAX_WIDTH
 	
 			IF nTabSize > nLineLen

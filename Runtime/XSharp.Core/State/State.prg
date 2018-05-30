@@ -60,7 +60,8 @@ CLASS XSharp.RuntimeState
 			self:_SetThreadValue(Set.Digits , 10)
 			self:_SetThreadValue(Set.Exact , TRUE)
 			self:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
-
+			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
+			self:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
 			// Add null value for Clipper collation 
 			SELF:_SetThreadValue<Byte[]>(Set.CollationTable, null )
 
@@ -237,6 +238,12 @@ CLASS XSharp.RuntimeState
         GET GetValue<LONG>(Set.DIGITS);
         SET SetValue<LONG>(Set.DIGITS, VALUE)
 
+	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
+    STATIC PROPERTY DosCodePage AS LONG ;
+        GET GetValue<LONG>(Set.DOSCODEPAGE);
+        SET SetValue<LONG>(Set.DOSCODEPAGE, VALUE)
+
+
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     STATIC PROPERTY Epoch AS DWORD ;
         GET GetValue<DWORD>(Set.EPOCH);
@@ -302,6 +309,12 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Unique AS LOGIC ;
         GET GetValue<LOGIC>(Set.UNIQUE);
         SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
+
+	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
+    STATIC PROPERTY WinCodePage AS LONG ;
+        GET GetValue<LONG>(Set.WINCODEPAGE);
+        SET SetValue<LONG>(Set.WINCODEPAGE, VALUE)
+
 
 	/// <summary>The name of the method that was called in the last late bound method call.</summary>
     STATIC PROPERTY NoMethod AS STRING ;

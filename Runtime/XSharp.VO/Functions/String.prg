@@ -1,9 +1,9 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Text
+USING System.Text
 
 /// <summary>
 /// Execute a code block for each of the individual characters in a string.
@@ -20,23 +20,23 @@ FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
 	ENDIF
 	IF ! block:IsCodeBlock .or. block == NULL_CODEBLOCK
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(block), 2, <OBJECT>{ block} )
-	endif
+	ENDIF
 	IF nStart == NIL
 		nStart := 1
 	ELSEIF ! IsNumeric(nStart)
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
 	ENDIF
 	IF nCount == NIL
-		nStart := Slen(cSource) - nStart + 1
+		nStart := SLen(cSource) - nStart + 1
 	ELSEIF ! IsNumeric(nCount)
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
 	ENDIF
 	RETURN SEvalWorker(cSource, block, nStart, nCount)
 
 
-INTERNAL FUNCTION SEvalWorker(cSource AS STRING, oBlock AS CODEBLOCK, nStart AS INT, nCount AS INT) as STRING
+INTERNAL FUNCTION SEvalWorker(cSource AS STRING, oBlock AS CODEBLOCK, nStart AS INT, nCount AS INT) AS STRING
 	LOCAL elements AS INT
-	local nLast		as iNT
+	LOCAL nLast		AS INT
 	LOCAL x AS LONG
 	elements := cSource:Length
 	nLast := nStart + nCount -1
@@ -54,12 +54,12 @@ INTERNAL FUNCTION SEvalWorker(cSource AS STRING, oBlock AS CODEBLOCK, nStart AS 
 			oBlock:Eval(cSource[x - 1], x )  
         NEXT
 	ENDIF
-	return cSource
+	RETURN cSource
 
-internal FUNCTION __AtLenForStrTran( c1 AS STRING, c2 AS STRING, uiLen AS INT, c2offset AS INT ) AS INT
+INTERNAL FUNCTION __AtLenForStrTran( c1 AS STRING, c2 AS STRING, uiLen AS INT, c2offset AS INT ) AS INT
    LOCAL uiPos  := 0 AS INT
    LOCAL i      := 0 AS INT
-   LOCAL fFound := false AS LOGIC
+   LOCAL fFound := FALSE AS LOGIC
 
    IF c1 == "" || c2 == ""
       RETURN 0
@@ -294,8 +294,8 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function SubS(c ,iStart ,wLen ) as string CLIPPER
-	return SubStr(c, iStart, wLen)
+FUNCTION SubS(c ,iStart ,wLen ) AS STRING CLIPPER
+	RETURN SubStr(c, iStart, wLen)
 
 
 /// <summary>
@@ -306,45 +306,49 @@ function SubS(c ,iStart ,wLen ) as string CLIPPER
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function SubStr(c ,uStart ,uLen ) as string CLIPPER
-	if ! c:IsString
-		throw Error.ArgumentError(__ENTITY__, nameof(c), 1, <OBJECT>{c})
-	endif
-	if uStart:IsNil
+FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
+	IF ! c:IsString
+		THROW Error.ArgumentError(__ENTITY__, nameof(c), 1, <OBJECT>{c})
+	ENDIF
+	IF uStart:IsNil
 		uStart := 1
-	elseif ! uStart:IsNumeric
-		throw Error.ArgumentError(__ENTITY__, nameof(uStart), 2, <OBJECT>{uStart})
-	endif
-	var start := (int) uStart 
-	var strValue := (string) c 
-	if uLen:isNil
-		local nLen as int
+	ELSEIF ! uStart:IsNumeric
+		THROW Error.ArgumentError(__ENTITY__, nameof(uStart), 2, <OBJECT>{uStart})
+	ENDIF
+	VAR start := (INT) uStart 
+	VAR strValue := (STRING) c 
+	IF uLen:isNil
+		LOCAL nLen AS INT
 		nLen := strValue:Length
-		if start < 0
-			start := Math.Abs(start)
-		endif
-		if nLen > start
-			nLen := start 
-		endif
-		return __SubStr(strValue, start, nLen - start + 1)
-	elseif uLen:IsNumeric
-		return __SubStr(strValue, start, (int) uLen)
-	else
-		throw Error.ArgumentError(__ENTITY__, nameof(uLen), 3, <OBJECT>{uLen})
-	endif
+		IF start < 0
+			IF Math.Abs(start) > strValue:Length
+				RETURN ""
+			ELSE
+				start := strValue:Length - Math.Abs(start) + 1
+			END IF
+		ENDIF
+		IF nLen > strValue:Length - start + 1
+			nLen := strValue:Length - start + 1
+		ENDIF
+		RETURN __SubStr(strValue, start, nLen )
+	ELSEIF uLen:IsNumeric
+		RETURN __SubStr(strValue, start, (INT) uLen)
+	ELSE
+		THROW Error.ArgumentError(__ENTITY__, nameof(uLen), 3, <OBJECT>{uLen})
+	ENDIF
 
-function EmptyString (s as string) as logic
-	if !String.IsNullOrEmpty(s)
-		foreach c as char in s
-			switch c
-			case '\r'
-			case '\n'
-			case '\t'
-			case ' '
-				nop
-			otherwise
-				return false
-			end switch
-		next
-	endif
-	return true
+FUNCTION EmptyString (s AS STRING) AS LOGIC
+	IF !String.IsNullOrEmpty(s)
+		FOREACH c AS char IN s
+			SWITCH c
+			CASE '\r'
+			CASE '\n'
+			CASE '\t'
+			CASE ' '
+				NOP
+			OTHERWISE
+				RETURN FALSE
+			END SWITCH
+		NEXT
+	ENDIF
+	RETURN TRUE

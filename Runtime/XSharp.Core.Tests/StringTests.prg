@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -36,8 +36,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD AscTest() as void
 		local value := " 123" as string
 		Assert.Equal((dword)32,Asc(value))
+		Assert.Equal((dword)150,Asc("Î¨"))  // greek codepage 737
 		Assert.Equal((dword)32,Asc(" "))
-		Assert.Equal((dword)137,Asc("ë"))
 		Assert.Equal((dword)63,Asc(((char) 512):ToString())) // ?
 		Assert.Equal((dword)0,Asc(null))
 	RETURN
@@ -56,7 +56,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		local value := " 123" as string
 		Assert.Equal((dword)32,AscA(value))
 		Assert.Equal((dword)32,AscA(" "))
-		Assert.Equal((dword)235,AscA("ë"))
+		Assert.Equal((dword)235,AscA("Î»"))
 		Assert.Equal((dword)63,Asc(((char) 512):ToString()))	// ?
 		Assert.Equal((dword)0,AscA(null))
 	RETURN
@@ -374,8 +374,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  test := e"first line\r\nsecond line\r\nthird line"
 	  Assert.Equal(3U, MemLines(test))     
 	  Assert.Equal(3U, MlCount1(test))     
-	  Assert.Equal(1U, MemLines(""))  
-	  Assert.Equal(1U, MlCount1(""))  
+	  Assert.Equal(0U, MemLines(""))
+	  Assert.Equal(1U, MemLines(" "))
+	  Assert.Equal(0U, MlCount1(""))
+	  Assert.Equal(1U, MlCount1(" "))
 	  Assert.Equal(0U, MemLines(null))  
 	  Assert.Equal(0U, MlCount1(NULL))  
 	  return

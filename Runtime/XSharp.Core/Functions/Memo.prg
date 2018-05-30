@@ -306,6 +306,8 @@ FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD) AS STRING
 /// </returns>
 FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset REF DWORD) AS STRING
 	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
+FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset AS DWORD) AS STRING
+	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
 	
 	
 /// <summary>
@@ -341,7 +343,7 @@ FUNCTION MLine3(cMemo AS STRING,nLineNum AS DWORD,nOffSet REF DWORD) AS STRING
 FUNCTION MemoLine(cMemo AS STRING, nLineLen := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNum := 1 AS DWORD,;
 nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	LOCAL dPos := 0 AS INT
-	RETURN MemoHelpers.MLine(cMemo, (int) nLineLen, (int) nLineNum, (int) nTabSize, lWrap, FALSE, REF DPos)
+	RETURN MemoHelpers.MLine(cMemo, (int) nLineNum, (int) nLineLen, (int) nTabSize, lWrap, FALSE, REF DPos)
 	
 /// <summary>
 /// Return the contents of a text file as a string.

@@ -447,7 +447,9 @@ CLASS XSharp.RuntimeState
 	SET
 		GetInstance():_collationTable  := VALUE
 		SetValue(Set.CollationTable, VALUE)
-		OnCollationChanged(GetInstance(), EventArgs{})
+		if OnCollationChanged != NULL
+			OnCollationChanged(GetInstance(), EventArgs{})
+		ENDIF
 	END SET
 	end property
 

@@ -17,6 +17,61 @@
 ///  1 strA follows strB in the sort order. 
 /// Note this this function should respect SetCollation() and SetInternational() and SetExact()
 /// </returns>
+using System.Globalization
+
+INTERNAL STATIC CLASS StringCompareHelpers
+	PRIVATE STATIC collationTable AS BYTE[]
+	PRIVATE STATIC encWin AS System.Text.Encoding
+	PRIVATE STATIC encDos AS System.Text.Encoding
+	PRIVATE STATIC nCP	 as LONG
+
+	STATIC CONSTRUCTOR
+		RuntimeState.OnCodePageChanged += Changed
+		RuntimeState.OnCollationChanged += Changed
+		getValues()
+
+static method Changed (o as object, e as eventArgs) as void
+	getvalues()
+
+static method GetValues() as void
+	nCP := runtimestate.WinCodePage
+	encWin := System.Text.Encoding.GetEncoding(nCP)
+	collationTable := RuntimeState.CollationTable
+	encDos   := System.Text.Encoding.GetEncoding(runtimestate.DosCodePage)
+	return
+
+STATIC METHOD CompareWindows(strLHS AS STRING, strRHS AS STRING) AS INT
+	local bLHS AS BYTE[]
+	LOCAL bRHS AS BYTE[]
+	bLHS  := encWin:GetBytes(strLHS)
+	bRHS  := encWin:GetBytes(strRHS)
+	RETURN Win32.CompareString_ByteArray(nCP, Win32.SORT_STRINGSORT,bLHS, strLHS:Length, bRHS, strRHS:Length) -2
+
+STATIC METHOD CompareClipper(strLHS AS STRING, strRHS AS STRING) AS INT
+	local bLHS AS BYTE[]
+	LOCAL bRHS AS BYTE[]
+	bLHS  := encDos:GetBytes(strLHS)
+	bRHS  := encDos:GetBytes(strRHS)
+	LOCAL nLen AS LONG
+	LOCAL nPos AS LONG
+	nLen := strLHS:Length
+	FOR nPos := 1 TO nLen
+		LOCAL nLHSWeight, nRHSWeight AS BYTE
+		nLHSWeight := collationTable[bLHS[nPos]]
+		nRHSWeight := collationTable[bRHS[nPos]]
+		IF nLHSWeight < nRHSWeight
+			RETURN -1
+		ELSEIF nLHSWeight > nRHSWeight
+			RETURN 1
+		else
+			// equal, so continue with the next chars
+		endif
+	NEXT
+	// all chars equal so return 0
+	return 0
+
+
+end class
 
 function __StringCompare(strLHS as string, strRHS as string) as int
 	local ret as int
@@ -31,7 +86,7 @@ function __StringCompare(strLHS as string, strRHS as string) as int
 		ret := 1
 	else							// both not null
 		// With Not Exact comparison we only compare the length of the RHS string
-		if .not. RuntimeState.Exact
+		if  .not. RuntimeState.Exact
 			local lengthRHS as int
 			lengthRHS := strRHS:Length
 			if lengthRHS == 0 
@@ -43,10 +98,19 @@ function __StringCompare(strLHS as string, strRHS as string) as int
 			endif
 		endif
 		// either exact or RHS longer than LHS
-		// TODO: Use Clipper Collation based comparison
-		ret := String.Compare( strLHS, 0, strRHS, 0, strRHS:Length, StringComparison.Ordinal )
+		var mode := RuntimeState.CollationMode 
+		SWITCH mode
+		case CollationMode.Windows
+			ret := StringCompareHelpers.CompareWindows(strLHS, strRHS) 
+		case CollationMode.Clipper
+			ret := StringCompareHelpers.CompareClipper(strLHS, strRHS)
+		case CollationMode.Unicode
+			ret := String.Compare(strLHS, strRHS)
+		OTHERWISE
+			ret := String.CompareOrdinal(strLHS, strRHS)
+		end switch
 	endif
-	return ret
+	RETURN ret
 
 
 /// <summary>

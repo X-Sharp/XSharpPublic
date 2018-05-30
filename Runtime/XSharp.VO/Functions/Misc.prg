@@ -15,8 +15,8 @@
 /// <returns>
 /// True if x is &gt;= y and &lt;= z otherwise false.
 /// </returns>
-function Between(val as Usual,min as Usual,max as Usual) as logic
-	return val >=min .and.  val<=max
+FUNCTION Between(val AS USUAL,min AS USUAL,max AS USUAL) AS LOGIC
+	RETURN val >=min .and.  val<=max
 
 
  
@@ -46,35 +46,35 @@ function Between(val as Usual,min as Usual,max as Usual) as logic
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function InList(u as usual, args params usual[]) as logic
-	return _InListWorker(u, args, FALSE)
+FUNCTION InList(u AS USUAL, args params USUAL[]) AS LOGIC
+	RETURN _InListWorker(u, args, FALSE)
 /// <summary>
 /// Indicate whether the first expression in a series is repeated in the exact same form later in the series.
 /// </summary>
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function InListExact(u as usual, args params usual[]) as logic
-	return _InListWorker(u, args, TRUE)
+FUNCTION InListExact(u AS USUAL, args params USUAL[]) AS LOGIC
+	RETURN _InListWorker(u, args, TRUE)
 
 
-internal function _InListWorker( u as usual, args as const usual[], lExact as logic) as logic 
-	local i, nLen as int
+INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], lExact AS LOGIC) AS LOGIC 
+	LOCAL i, nLen AS INT
 	nLen := args:Length
-	if lExact
-		for i := 1 to nLen
-			if args[i] == u
-				return true
-			endif
-		next
-	else
-		for i := 1 to nLen
-			if args[i]  = u
-				return true
-			endif
-		next
-	endif
-	return false
+	IF lExact
+		FOR i := 1 TO nLen
+			IF args[i] == u
+				RETURN TRUE
+			ENDIF
+		NEXT
+	ELSE
+		FOR i := 1 TO nLen
+			IF u = args[i] 
+				RETURN TRUE
+			ENDIF
+		NEXT
+	ENDIF
+	RETURN FALSE
 
 
 
@@ -96,31 +96,31 @@ internal function _InListWorker( u as usual, args as const usual[], lExact as lo
 /// <param name="u2"></param>
 /// <returns>
 /// </returns>
-function Max(u1 as Usual,u2 as Usual) as Usual
+FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 
-	if u1:IsNumeric .and. u2:IsNumeric
+	IF u1:IsNumeric .and. u2:IsNumeric
 
-		if u1:IsFloat .or. u2:IsFloat
-			return (USUAL) Math.Max( (Real8) u1, (Real8) u2)
+		IF u1:IsFloat .or. u2:IsFloat
+			RETURN (USUAL) Math.Max( (REAL8) u1, (REAL8) u2)
 
-		elseif u1:IsDecimal .or. u2:IsDecimal
-			return (usual) Math.Max( (Decimal) u1, (Decimal) u2)
+		ELSEIF u1:IsDecimal .or. u2:IsDecimal
+			RETURN (USUAL) Math.Max( (Decimal) u1, (Decimal) u2)
 
-		elseif u1:IsInt64 .or. u2:IsInt64
-			return (USUAL) Math.Max( (Int64) u1, (Int64) u2)
-		endif
-		return (USUAL) Math.Max( (Long) u1, (Long) u2)
+		ELSEIF u1:IsInt64 .or. u2:IsInt64
+			RETURN (USUAL) Math.Max( (INT64) u1, (INT64) u2)
+		ENDIF
+		RETURN (USUAL) Math.Max( (LONG) u1, (LONG) u2)
 
-	elseif u1:IsDate .and. u2:IsDate
-		return iif ((date) u1 > (date) u2, u1, u2)
+	ELSEIF u1:IsDate .and. u2:IsDate
+		RETURN iif ((DATE) u1 > (DATE) u2, u1, u2)
 
-	elseif u1:IsString .and. u2:IsString
-		return iif ((string) u1 > (string) u2, u1, u2)
+	ELSEIF u1:IsString .and. u2:IsString
+		RETURN iif ((STRING) u1 > (STRING) u2, u1, u2)
 
-	else
-        throw Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
-	endif
-	return u1
+	ELSE
+        THROW Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
+	ENDIF
+	RETURN u1
 
 
 
@@ -131,30 +131,30 @@ function Max(u1 as Usual,u2 as Usual) as Usual
 /// <param name="u2"></param>
 /// <returns>
 /// </returns>
-function Min(u1 as Usual,u2 as Usual) as Usual
-	if u1:IsNumeric .and. u2:IsNumeric
+FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
+	IF u1:IsNumeric .and. u2:IsNumeric
 
-		if u1:IsFloat .or. u2:IsFloat
+		IF u1:IsFloat .or. u2:IsFloat
 			
-			return (USUAL) Math.Min((Real8) u1, (Real8) u2)
+			RETURN (USUAL) Math.Min((REAL8) u1, (REAL8) u2)
 		
-		elseif u1:IsDecimal .or. u2:IsDecimal
-			return (usual) Math.Min( (Decimal) u1, (Decimal) u2)
+		ELSEIF u1:IsDecimal .or. u2:IsDecimal
+			RETURN (USUAL) Math.Min( (Decimal) u1, (Decimal) u2)
 		
-		elseif u1:IsInt64 .or. u2:IsInt64
-			return (USUAL) Math.Min( (Int64) u1, (Int64) u2)
-		endif
-		return (USUAL) Math.Min( (Long) u1, (Long) u2)
+		ELSEIF u1:IsInt64 .or. u2:IsInt64
+			RETURN (USUAL) Math.Min( (INT64) u1, (INT64) u2)
+		ENDIF
+		RETURN (USUAL) Math.Min( (LONG) u1, (LONG) u2)
 	
-	elseif u1:IsDate .and. u2:IsDate
-		return iif ((date) u1 <(date) u2, u1, u2)
+	ELSEIF u1:IsDate .and. u2:IsDate
+		RETURN iif ((DATE) u1 <(DATE) u2, u1, u2)
 	
-	elseif u1:IsString .and. u2:IsString
-		return iif ((string) u1 <(string) u2, u1, u2)
-	else
-        throw Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
-	endif
-	return u1
+	ELSEIF u1:IsString .and. u2:IsString
+		RETURN iif ((STRING) u1 <(STRING) u2, u1, u2)
+	ELSE
+        THROW Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
+	ENDIF
+	RETURN u1
 
 
 
@@ -166,18 +166,18 @@ function Min(u1 as Usual,u2 as Usual) as Usual
 /// <param name="bB"></param>
 /// <returns>
 /// </returns>
-function PaletteRGB(bR as Usual,bG as Usual,bB as byte) as int
+FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 	/// THROW NotImplementedException{}
-	return 0   
+	RETURN 0   
 
 /// <summary>
 /// Display a system modal dialog box to pause the current application.
 /// </summary>
 /// <returns>
 /// </returns>
-function Pause() as dword
+FUNCTION Pause() AS DWORD
 	/// THROW NotImplementedException{}
-	return 0   
+	RETURN 0   
 
 
 /// <summary>
@@ -188,9 +188,9 @@ function Pause() as dword
 /// <param name="bB"></param>
 /// <returns>
 /// </returns>
-function RGB(bR as Usual,bG as Usual,bB as byte) as int
+FUNCTION RGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 	/// THROW NotImplementedException{}
-	return 0   
+	RETURN 0   
 
 
 
@@ -202,9 +202,9 @@ function RGB(bR as Usual,bG as Usual,bB as byte) as int
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function SysObject(o as Usual) as object
+FUNCTION SysObject(o AS USUAL) AS OBJECT
 	/// THROW NotImplementedException{}
-	return null_object   
+	RETURN null_object   
 
 
 /// <summary>
@@ -214,6 +214,6 @@ function SysObject(o as Usual) as object
 /// <param name="dwDur"></param>
 /// <returns>
 /// </returns>
-function Tone(dwFreq as dword,dwDur as dword) as Usual
+FUNCTION Tone(dwFreq AS DWORD,dwDur AS DWORD) AS USUAL
 	Console.Beep( (INT)dwFreq, (INT)dwDur * 1000 / 18 )
-return	 NIL   
+RETURN	 NIL   

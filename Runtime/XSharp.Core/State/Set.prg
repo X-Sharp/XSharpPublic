@@ -203,8 +203,8 @@ function SetDecimal(nDec as dword) as dword
 /// <returns>
 /// </returns>
 
-function SetDecimalSep() as word
-	getstate word Set.DecimalSep 
+function SetDecimalSep() as Dword
+	getstate dword Set.DecimalSep 
 
 /// <summary>
 /// Return and change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
@@ -212,8 +212,8 @@ function SetDecimalSep() as word
 /// <param name="wSep"></param>
 /// <returns>
 /// </returns>
-function SetDecimalSep(wSep as word) as word
-	setstate word Set.DecimalSep wSep
+function SetDecimalSep(wSep as Dword) as Dword
+	setstate dword Set.DecimalSep wSep
 
 /// <summary>
 /// Return the setting that determines the default drive and directory.
@@ -425,13 +425,14 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	_SetCollation(cBase)
 	return String.Compare(Messages.CurrentLanguageName, cBase, true) == 0
 
-INTERNAL FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
+/// </exclude>
+FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", typeof(Functions):Assembly }
 	VAR obj := rm:GetObject(cBase) 
 	if obj != NULL
 		VAR bytes := obj ASTYPE BYTE[]
 		if bytes != null
-			XSharp.RuntimeState.SetValue< BYTE[] >( Set.CollationTable, bytes )
+			XSharp.RuntimeState.CollationTable := bytes 
 			return true
 		endif
 	ENDIF
@@ -540,8 +541,8 @@ function SetSoftSeek(lSet as logic) as logic
 /// </summary>
 /// <returns>
 /// </returns>
-function SetThousandSep() as word
-	getstate word Set.ThousandSep 
+function SetThousandSep() as dword
+	getstate dword Set.ThousandSep 
 
 /// <summary>
 /// Change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
@@ -549,16 +550,16 @@ function SetThousandSep() as word
 /// <param name="wSep"></param>
 /// <returns>
 /// </returns>
-function SetThousandSep(wSep as word) as word
-	setstate word Set.ThousandSep wSep
+function SetThousandSep(wSep as dword) as dword
+	setstate dword Set.ThousandSep wSep
 
 /// <summary>
 /// Return the setting that determines the separation character to be used in time strings.
 /// </summary>
 /// <returns>
 /// </returns>
-function SetTimeSep() as word
-	getstate word Set.TimeSep 
+function SetTimeSep() as dword
+	getstate dword Set.TimeSep 
 
 /// <summary>
 /// Change the setting that determines the separation character to be used in time strings.
@@ -566,8 +567,8 @@ function SetTimeSep() as word
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-function SetTimeSep(dwChar as word) as word
-	setstate word Set.TimeSep dwChar
+function SetTimeSep(dwChar as dword) as dword
+	setstate dword Set.TimeSep dwChar
 
 /// <summary>
 /// Return the setting that determines whether to include unique record keys in an order.
@@ -620,4 +621,89 @@ function ErrorLevel(dw as dword) as dword
 /// <returns>
 /// </returns>
 function ErrorLevel() as dword 
-	getstate DWORD Set.ErrorLevel
+	GETSTATE DWORD Set.ErrorLevel
+
+
+/// <summary>
+/// Return the setting that determines the international mode for the application
+/// </summary>
+/// <returns>The current setting, either "Windows" (the default) or  "Clipper"
+/// </returns>
+FUNCTION SetInternational() AS STRING
+	return RuntimeState.International:ToString():ToUpper()
+
+/// <summary>
+/// Return and change the setting that determines the international mode for the application
+/// </summary>
+// <param name="cMode">The collation mode to use. The available modes are "Windows" (the default) and "Clipper". "Unicode" and "Ordinal" can be used as synonym for "Windows".</param>
+/// <returns>The current setting, either "Windows" (the default) or  "Clipper"
+/// </returns>
+/// <remarks>
+/// SetInternational() allows XSharp apps to operate in different international modes.  
+/// The "Clipper" mode is provided for compatibility with CA-Clipper applications and uses an 
+/// internationalization routine defined in the nation module.  The "Windows" mode uses international services provided by Windows.
+/// When you set this mode several settings will be changed
+/// <list type="table">
+/// <listheader>
+/// <term>Setting</term> <description>Value in #Clipper mode</description>
+/// </listheader>
+///	<item><term>SetAmExt</term> <description>Empty String</description></item>  
+/// <item><term>SetPmExt</term> <description>Empty String</description></item>  
+/// <item><term>SetAmPm</term> <description>FALSE (24 hour format)</description></item>   
+/// <item><term>SetCentury</term> <description>FALSE</description></item>   
+/// <item><term>SetDateCountry</term> <description>American (1)</description></item> 
+/// <item><term>SetDateFormat</term> <description>mm/dd/yy</description></item> 
+/// <item><term>SetDecimal</term> <description>2</description></item>   
+/// <item><term>SetDecimalSep</term> <description>Period (.)</description></item>
+/// <item><term>SetThousandSep</term> <description>Comma (,)</description></item>  
+/// <item><term>SetTimeSep</term> <description>Colon(:)</description></item> 
+/// </list>
+/// </remarks>
+Function SetInternational(cMode as string) as STRING
+	LOCAL cOld AS STRING
+	cOld := RuntimeState.International:ToString():ToUpper()
+	SWITCH cMode:ToUpper()
+	CASE "CLIPPER"
+		RuntimeState.GetInstance()._SetInternationalClipper()
+	CASE "WINDOWS"
+	CASE "UNICODE"
+	CASE "ORDINAL"
+		RuntimeState.GetInstance()._SetInternationalWindows()
+	OTHERWISE
+		throw Error.ArgumentError(__ENTITY__, nameof(cMode), "Unsupported international mode: "+ cMode)
+	END SWITCH
+	return cOld
+
+
+/// <summary>
+/// Return the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
+/// The Core dialect always compares according to the Unicode rules.
+/// </summary>
+/// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal"
+/// </returns>
+FUNCTION SetCollation() AS STRING 
+	RETURN RuntimeState.CollationMode:ToString():ToUpper()
+
+/// <summary>
+/// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
+/// The Core dialect always compares according to the Unicode rules.
+/// </summary>
+// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
+/// <returns>
+/// </returns>
+FUNCTION SetCollation(cCollation AS STRING)  AS STRING
+	LOCAL cOld AS STRING
+	cOld := RuntimeState.CollationMode:ToString():ToUpper()
+	SWITCH cCollation:ToUpper()
+	CASE "CLIPPER"
+		RuntimeState.CollationMode := CollationMode.Clipper
+	CASE "WINDOWS"
+		RuntimeState.CollationMode := CollationMode.Windows
+	CASE "UNICODE"
+		RuntimeState.CollationMode := CollationMode.Unicode
+	CASE "ORDINAL"
+		RuntimeState.CollationMode := CollationMode.Ordinal
+	OTHERWISE
+		throw Error.ArgumentError(__ENTITY__, nameof(cCollation), "Unsupported collation mode: "+cCollation)
+	END SWITCH
+	return cOld

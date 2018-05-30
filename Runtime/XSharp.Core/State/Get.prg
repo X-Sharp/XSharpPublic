@@ -103,8 +103,8 @@ function GetPMExt() as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetTimeSep() as word
-	getstate word Set.TimeSep
+function GetTimeSep() as Dword
+	getstate dword Set.TimeSep
 	
 	/// <summary>
 	/// Returns TimeZone difference for current timezone in Hours

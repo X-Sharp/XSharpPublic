@@ -25,12 +25,11 @@ internal function _Asc(c as string, lAnsi as logic) as dword
 		chValue := c[0]
 		ascValue := (dword) chValue
 		if ascValue > 127
-			// Todo: use DOS codepage here
 			local encoding as Encoding
 			if lAnsi
-				encoding := Encoding.Default
+				encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
 			else
-				encoding := Encoding.GetEncoding(850) 
+				encoding := Encoding.GetEncoding(RuntimeState.DOSCodePage) 
 			endif
 			local buffer as byte[]
 			var chars := <char> {chValue}

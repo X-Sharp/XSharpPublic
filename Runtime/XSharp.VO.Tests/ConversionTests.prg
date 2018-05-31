@@ -23,6 +23,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u := #A123
 			Assert.Equal("A123", AsString(u))
 
+			Assert.Equal("1", AsString(1))
 			var c1 := GetRTFullPath()
 			Assert.Equal(true, c1:ToLower():IndexOf(".vo.dll") > 0)
 

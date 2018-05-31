@@ -58,24 +58,15 @@ CLASS XSharp.RuntimeState
 			self:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
 			self:_SetThreadValue(Set.Decimals , 2)
 			self:_SetThreadValue(Set.Digits , 10)
-			self:_SetThreadValue(Set.Exact , TRUE)
+			self:_SetThreadValue(Set.Exact , FALSE)
 			self:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
-
+			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
+			self:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
 			// Add null value for Clipper collation 
 			SELF:_SetThreadValue<Byte[]>(Set.CollationTable, null )
-
+			SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
 			// Date and time settings
 			SELF:_SetInternationalWindows()
-
-			// Other settings
-			// Collation Table including Compare delegates
-			// Nation DLL
-			// Macro Compiler
-			// WinCodePage ?
-			// DosCodePage ?
-			// LCID
-			// SetDateFormat should also set DateCountry
-			// Empty and Internal Dateformat strings 
 
 
 		ENDIF
@@ -198,9 +189,17 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.Century, VALUE)
 
 	/// <summary>The current Collation mode (used by the RDD system).</summary>
-   STATIC PROPERTY CollationMode AS CollationMode ;
-        GET GetValue<CollationMode>(Set.CollationMode);
-        SET SetValue<CollationMode>(Set.CollationMode, VALUE)
+   STATIC PROPERTY CollationMode AS CollationMode 
+        GET 
+			RETURN GetValue<CollationMode>(Set.CollationMode)
+		end get
+        SET 
+			SetValue<CollationMode>(Set.CollationMode, VALUE)
+			if OnCollationChanged != null
+				OnCollationChanged(GetInstance(), EVentArgs{})
+			endif
+		END SET
+	end property
 
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
    STATIC PROPERTY DateCountry AS INT ;
@@ -223,9 +222,9 @@ CLASS XSharp.RuntimeState
         SET SetValue<LONG>(Set.DECIMALS, VALUE)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
-    STATIC PROPERTY DecimalSep AS WORD ;
-        GET GetValue<WORD>(Set.DecimalSep);
-        SET SetValue<WORD>(Set.DecimalSep, VALUE)
+    STATIC PROPERTY DecimalSep AS DWORD ;
+        GET GetValue<DWORD>(Set.DecimalSep);
+        SET SetValue<DWORD>(Set.DecimalSep, VALUE)
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
     STATIC PROPERTY Deleted AS LOGIC ;
@@ -236,6 +235,19 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Digits AS LONG ;
         GET GetValue<LONG>(Set.DIGITS);
         SET SetValue<LONG>(Set.DIGITS, VALUE)
+
+	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
+    STATIC PROPERTY DosCodePage AS LONG 
+        GET 
+			RETURN GetValue<LONG>(Set.DOSCODEPAGE)
+		end get
+        SET 
+			SetValue<LONG>(Set.DOSCODEPAGE, VALUE) 
+			if OnCodePageChanged != null
+				OnCodePageChanged(GetInstance(), EventArgs{})
+			endif
+		end set
+	END PROPERTY
 
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     STATIC PROPERTY Epoch AS DWORD ;
@@ -293,15 +305,29 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.SOFTSEEK, VALUE)
 
 	/// <summary>The Thousand separator</summary>
-    STATIC PROPERTY ThousandSep AS WORD ;
-        GET GetValue<WORD>(Set.THOUSANDSEP);
-        SET SetValue<WORD>(Set.THOUSANDSEP, VALUE)
+    STATIC PROPERTY ThousandSep AS DWORD ;
+        GET GetValue<DWORD>(Set.THOUSANDSEP);
+        SET SetValue<DWORD>(Set.THOUSANDSEP, VALUE)
 
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     STATIC PROPERTY Unique AS LOGIC ;
         GET GetValue<LOGIC>(Set.UNIQUE);
         SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
+
+	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
+    STATIC PROPERTY WinCodePage AS LONG 
+	GET
+        RETURN GetValue<LONG>(Set.WINCODEPAGE)
+	END GET
+	set 
+        SetValue<LONG>(Set.WINCODEPAGE, VALUE)
+			if OnCodePageChanged != null
+				OnCodePageChanged(GetInstance(), EventArgs{})
+			endif
+	END SET
+	end property
+
 
 	/// <summary>The name of the method that was called in the last late bound method call.</summary>
     STATIC PROPERTY NoMethod AS STRING ;
@@ -310,14 +336,7 @@ CLASS XSharp.RuntimeState
 
 
 
-//	STATIC METHOD SetInternational(mode AS CollationMode, force := FALSE AS LOGIC) AS VOID
-//		IF mode != RuntimeState.International	.or. force
-//			if mode == CollationMode.Clipper
-//				currentState:Value:_SetInternationalClipper()				
-//			ELSE
-//				currentState:Value:_SetInternationalWindows()				
-//			ENDIF
-//		ENDIF
+
 	internal method _SetInternationalClipper() as void
 		self:_SetThreadValue(Set.AMEXT, "")
 		self:_SetThreadValue(Set.PMEXT, "")
@@ -325,9 +344,9 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.Century, FALSE)
 		self:_SetThreadValue(Set.DateCountry, 1)
 		self:_SetThreadValue(Set.Decimals, 2)
-		self:_SetThreadValue(Set.DECIMALSEP, (word) 46)		// DOT .
-		self:_SetThreadValue(Set.THOUSANDSEP, (word) 44)	// COMMA ,
-		self:_SetThreadValue(Set.DateFormat, "MM/DD/YYYY")
+		self:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
+		self:_SetThreadValue(Set.THOUSANDSEP, (Dword) 44)	// COMMA ,
+		self:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
 		self:_SetThreadValue(Set.Intl, CollationMode.Clipper)
 
 	internal method _SetInternationalWindows() as void
@@ -336,9 +355,9 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
 		var separator := dtInfo:TimeSeparator
 		if String.IsNullOrEmpty(separator)
-			self:_SetThreadValue(Set.TimeSep, (word) 0)
+			self:_SetThreadValue(Set.TimeSep, (Dword) 0)
 		else
-			self:_SetThreadValue(Set.TimeSep, (word) separator[0])
+			self:_SetThreadValue(Set.TimeSep, (Dword) separator[0])
 		endif
 		self:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
@@ -359,8 +378,8 @@ CLASS XSharp.RuntimeState
 		self:_SetThreadValue(Set.DateCountry, 1)
 		self:_SetThreadValue(Set.DECIMALS , 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-		self:_SetThreadValue(Set.DECIMALSEP, (Word) numberformat:NumberDecimalSeparator[0])
-		self:_SetThreadValue(Set.THOUSANDSEP, (word) numberformat:NumberGroupSeparator[0])
+		self:_SetThreadValue(Set.DECIMALSEP, (DWord) numberformat:NumberDecimalSeparator[0])
+		self:_SetThreadValue(Set.THOUSANDSEP, (Dword) numberformat:NumberGroupSeparator[0])
 		self:_SetThreadValue(Set.EPOCH, 1910U)
 		self:_SetThreadValue(Set.EpochYear, 10U)
 		self:_SetThreadValue(Set.EpochCent, 1900U)
@@ -414,10 +433,30 @@ CLASS XSharp.RuntimeState
 		return _workareas
 	end get
 	END PROPERTY
+	private _collationTable as byte[]
+	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
+	GET
+		LOCAL coll AS BYTE[]
+		coll := GetInstance():_collationTable 
+		if coll == NULL .or. coll :Length < 256
+			_SetCollation("Generic")
+			coll := GetInstance():_collationTable := GetValue<BYTE[]>(SET.CollationTable)
+		ENDIF
+		return coll
+	END GET
+	SET
+		GetInstance():_collationTable  := VALUE
+		SetValue(Set.CollationTable, VALUE)
+		if OnCollationChanged != NULL
+			OnCollationChanged(GetInstance(), EventArgs{})
+		ENDIF
+	END SET
+	end property
 
 	STATIC PRIVATE _macrocompiler AS System.Type
 	public STATIC property MacroCompiler as System.Type GET _macrocompiler SET _macrocompiler := Value
-
+	PUBLIC STATIC EVENT OnCodePageChanged as EventHandler
+	public STATIC Event OnCollationChanged as EventHandler
 END CLASS
 
 

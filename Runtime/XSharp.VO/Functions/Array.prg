@@ -144,7 +144,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		LOCAL x      AS DWORD
 		
 		IF nStart == 0
-			BREAK Error.ArgumentError( __ENTITY__, "nStart", 3, __CavoStr( VOErrors.ArgCannotBeZero ), { nStart } )
+			THROW  Error.ArgumentError( __ENTITY__, "nStart", 3, __CavoStr( VOErrors.ArgCannotBeZero ), { nStart } )
 		ENDIF
 		
 		IF nCount != 0

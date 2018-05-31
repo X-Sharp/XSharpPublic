@@ -4,18 +4,23 @@
 // See License.txt in the project root for license information.
 //
 
+	/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
+BEGIN NAMESPACE XSharp
+	enum CollationMode
+		member @@Windows
+		MEMBER @@Clipper
+		MEMBER @@Unicode
+		member @@Ordinal
+	end enum
+end NAMESPACE
+
+
 BEGIN NAMESPACE XSharp.RDD.Enums
 	/// <summary>This enum specifies how files should be opened.</summary>
 	enum AutoShareMode
 		member NoChange		 := 0
 		member @@Auto		 := 1
 		member ForceExclusive := 2
-	end enum
-	
-	/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
-	enum CollationMode
-		member @@WINDOWS
-		member @@CLIPPER
 	end enum
 	
 	/// <summary>This enum specifies the lock modes.</summary>

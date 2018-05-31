@@ -26,7 +26,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		[Trait("Category", "OS")];
 		[Fact];
 		method TestEnv as void
-			local c1, c2 as string
+			LOCAL c1, c2 AS STRING
+			SetEnv("Robert", null)
 			c1 := GetEnv("Robert")
 			Assert.Equal(true, SetEnv("Robert", "IsSet"))
 			c2 := GetEnv("Robert")

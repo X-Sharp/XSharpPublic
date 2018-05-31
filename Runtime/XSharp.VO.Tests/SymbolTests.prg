@@ -30,7 +30,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "Symbol")];
 		METHOD GreaterSymbolTest() as void
 			var sym1 := #TestSymbol1
-			var sym2 := #TestSymbol2
+			VAR sym2 := #TestSymbol2
+			Assert.Equal(#Windows,SetCollation())
+			SetCollation(#Ordinal)
 			Assert.Equal(true,sym1<=sym2)
 			Assert.Equal(true,sym1<sym2)
 			Assert.Equal(false,sym1 > sym2)

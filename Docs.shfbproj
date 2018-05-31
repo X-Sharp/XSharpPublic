@@ -21,9 +21,10 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.XML" />
-<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.dll" />
-<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
-<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.dll" />
+      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
+      <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" />
+    </DocumentationSources>
     <HelpTitle>XSharp Runtime Documentation</HelpTitle>
     <HelpFileVersion>2.0.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -32,7 +33,7 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Self</SdkLinkTarget>
-    <HelpFileFormat>Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>

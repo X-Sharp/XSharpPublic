@@ -86,5 +86,46 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("1,23", Transform(1.23, "@E 9.99"))
 			Assert.Equal("*.**", Transform(12.34, "9.99"))			
 
+// some new failing tests:
+	[Fact, Trait("Category", "TransForm")];
+	METHOD IntLiteralTest() AS VOID
+		LOCAL dec AS dword
+		LOCAL thou AS DWORD
+
+		dec := SetDecimalSep(Asc(","))
+		thou := SetThousandSep(Asc("."))
+		Assert.Equal(" 12.345,00" , Transform(12345.0, "999,999.99"))
+		// this fails:
+		Assert.Equal(" 12.345,00" , Transform(12345, "999,999.99"))
+        
+		SetDecimalSep(Asc("."))
+		SetThousandSep(Asc(","))
+		Assert.Equal(" 12,345.00" , Transform(12345.0, "999,999.99"))
+		Assert.Equal(" 12,345.00" , Transform(12345, "999,999.99"))
+
+		SetDecimalSep(dec)
+		SetThousandSep(thou)
+	RETURN
+
+// this should go in a string.prg in VO.Tests
+	[Fact, Trait("Category", "StringEq")];
+	METHOD StringEquality() AS VOID
+		LOCAL c1,c2 AS STRING
+		LOCAL u1,u2 AS USUAL
+		local exact as LOGIC
+		u1 := c1 := "TESTLONG"
+		u2 := c2 := "TEST"
+		exact := SetExact( FALSE )
+		
+		Assert.Equal(true, c1 = c2)
+		Assert.Equal(true, c1 != c2)
+
+		Assert.Equal(true, u1 = u2)
+		Assert.Equal(false, u1 != u2)
+
+		SetExact( exact )
+		
+	RETURN
+
 	end class
 end NAMESPACE

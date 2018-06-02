@@ -107,7 +107,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		SetThousandSep(thou)
 	RETURN
 
-// this should go in a string.prg in VO.Tests
+
+
+// Tests that need to be moved in separate files in VO.Tests:
 	[Fact, Trait("Category", "StringEq")];
 	METHOD StringEquality() AS VOID
 		LOCAL c1,c2 AS STRING
@@ -123,8 +125,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal(true, u1 = u2)
 		Assert.Equal(false, u1 != u2)
 
-		SetExact( exact )
+		SetExact( exact )	
+	RETURN
+
+	[Fact, Trait("Category", "Val")];
+	METHOD ValTests() AS VOID
+		Assert.Equal(true, Val("123") == 123)
+		Assert.Equal(true, Val("123.456") == 123.456)
+
+		Assert.Equal(true, Val("") == 0)
+		Assert.Equal(true, Val("") == 0.0)
+
+		Assert.Equal(true, Val("abc") == 0)
+		Assert.Equal(true, Val("123abc") == 123)
+		Assert.Equal(true, Val("123abc456") == 123)
+		Assert.Equal(true, Val("123abc456.789") == 123)
+		Assert.Equal(true, Val("abc123456.789") == 0)
+	RETURN
+
+	[Fact, Trait("Category", "SplitPath")];
+	METHOD SplitPathTests() AS VOID
+		LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
+		SplitPath("C:\folder\file.ext" , cDrive , cDir , cFile , cExt)
 		
+		Assert.Equal("C:" , cDrive)
+		Assert.Equal("\folder\" , cDir)
+
+		Assert.Equal("file" , cFile)
+		Assert.Equal(".ext" , cExt)
 	RETURN
 
 	end class

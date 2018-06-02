@@ -342,7 +342,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.PMEXT, "")
 		SELF:_SetThreadValue(Set.AMPM, FALSE)
 		SELF:_SetThreadValue(Set.Century, FALSE)
-		SELF:_SetThreadValue(Set.DateCountry, 1)
+		SELF:_SetThreadValue(Set.DateCountry, (DWORD)1)
 		SELF:_SetThreadValue(Set.Decimals, (DWORD) 2)
 		SELF:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,

@@ -60,7 +60,7 @@ FUNCTION FloatFormat(f AS Float,nLen AS INT,nDec AS INT) AS Float
 		local nDigits as int
 		nDigits := f:Digits
 		if nDigits < 0
-			nDigits := RuntimeState.Digits
+			nDigits := (short) RuntimeState.Digits
 		endif
 		local fTemp as float
 		fTemp := float{f:value, nDigits, nDec}

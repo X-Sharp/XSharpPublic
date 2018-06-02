@@ -56,8 +56,8 @@ CLASS XSharp.RuntimeState
 			// Console Settings
 			SELF:_SetThreadValue(Set.Bell , TRUE)
 			SELF:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
-			SELF:_SetThreadValue(Set.Decimals , 2)
-			SELF:_SetThreadValue(Set.Digits , 10)
+			SELF:_SetThreadValue(Set.Decimals , (DWORD) 2)
+			SELF:_SetThreadValue(Set.Digits , (DWORD) 10 )
 			SELF:_SetThreadValue(Set.Exact , FALSE)
 			SELF:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
 			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
@@ -202,9 +202,9 @@ CLASS XSharp.RuntimeState
 	END PROPERTY
 
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
-   STATIC PROPERTY DateCountry AS INT ;
-        GET GetValue<INT>(Set.DateCountry);
-        SET SetValue<INT>(Set.DateCountry, VALUE)
+   STATIC PROPERTY DateCountry AS DWORD ;
+        GET GetValue<DWORD>(Set.DateCountry);
+        SET SetValue<DWORD>(Set.DateCountry, VALUE)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
@@ -217,9 +217,9 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
 
-    STATIC PROPERTY Decimals AS LONG ;
-        GET GetValue<LONG>(Set.DECIMALS);
-        SET SetValue<LONG>(Set.DECIMALS, VALUE)
+    STATIC PROPERTY Decimals AS DWORD ;
+        GET GetValue<DWORD>(Set.DECIMALS);
+        SET SetValue<DWORD>(Set.DECIMALS, VALUE)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
     STATIC PROPERTY DecimalSep AS DWORD ;
@@ -232,9 +232,9 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
-    STATIC PROPERTY Digits AS LONG ;
-        GET GetValue<LONG>(Set.DIGITS);
-        SET SetValue<LONG>(Set.DIGITS, VALUE)
+    STATIC PROPERTY Digits AS DWORD ;
+        GET GetValue<DWORD>(Set.DIGITS);
+        SET SetValue<DWORD>(Set.DIGITS, VALUE)
 
 	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
     STATIC PROPERTY DosCodePage AS LONG 
@@ -279,14 +279,14 @@ CLASS XSharp.RuntimeState
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
-    STATIC PROPERTY LockTries AS LONG ;
-        GET GetValue<LONG>(Set.LOCKTRIES);
-        SET SetValue<LONG>(Set.LOCKTRIES, VALUE)
+    STATIC PROPERTY LockTries AS DWORD ;
+        GET GetValue<DWORD>(Set.LOCKTRIES);
+        SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
 
 	/// <summary>The current default MemoBlock size.</summary>
-    STATIC PROPERTY MemoBlockSize AS LONG ;
-        GET GetValue<LONG>(Set.MEMOBLOCKSIZE);
-        SET SetValue<LONG>(Set.MEMOBLOCKSIZE, VALUE)
+    STATIC PROPERTY MemoBlockSize AS DWORD;
+        GET GetValue<DWORD>(Set.MEMOBLOCKSIZE);
+        SET SetValue<DWORD>(Set.MEMOBLOCKSIZE, VALUE)
 
 
 	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
@@ -316,7 +316,7 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
 
 	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
-    STATIC PROPERTY WinCodePage AS LONG 
+    STATIC PROPERTY WinCodePage AS LONG
 	GET
         RETURN GetValue<LONG>(Set.WINCODEPAGE)
 	END GET
@@ -343,7 +343,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.AMPM, FALSE)
 		SELF:_SetThreadValue(Set.Century, FALSE)
 		SELF:_SetThreadValue(Set.DateCountry, 1)
-		SELF:_SetThreadValue(Set.Decimals, 2)
+		SELF:_SetThreadValue(Set.Decimals, (DWORD) 2)
 		SELF:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
 		SELF:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
@@ -375,17 +375,18 @@ CLASS XSharp.RuntimeState
 		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
 		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
-		SELF:_SetThreadValue(Set.DateCountry, 1)
-		SELF:_SetThreadValue(Set.DECIMALS , 2)
+		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
+		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
 		SELF:_SetThreadValue(Set.DECIMALSEP, (DWORD) numberformat:NumberDecimalSeparator[0])
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) numberformat:NumberGroupSeparator[0])
-		SELF:_SetThreadValue(Set.EPOCH, 1910U)
-		SELF:_SetThreadValue(Set.EpochYear, 10U)
-		SELF:_SetThreadValue(Set.EpochCent, 1900U)
+		SELF:_SetThreadValue(Set.EPOCH, (DWORD) 1910)
+		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
+		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 1900)
 
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
 		RETURN
+
 
 	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
@@ -400,27 +401,27 @@ CLASS XSharp.RuntimeState
 		SWITCH format
 			CASE "MM/DD/YY"
 			CASE "MM/DD/YYYY"
-				SetValue(Set.DATECOUNTRY, 1)	// American
+				SetValue(Set.DATECOUNTRY, (DWORD) 1)	// American
 			CASE "YY.MM.DD"
 			CASE "YYYY.MM.DD"
-				SetValue(Set.DATECOUNTRY, 2)	// Ansi
+				SetValue(Set.DATECOUNTRY, (DWORD)2)	// Ansi
 			CASE "DD/MM/YY"
 			CASE "DD/MM/YYYY"
-				SetValue(Set.DATECOUNTRY, 3)	// British & french
+				SetValue(Set.DATECOUNTRY, (DWORD)3)	// British & french
 			CASE "DD.MM.YY"
 			CASE "DD.MM.YYYY"
-				SetValue(Set.DATECOUNTRY, 5)	// German
+				SetValue(Set.DATECOUNTRY, (DWORD)5)	// German
 			CASE "DD-MM-YY"
 			CASE "DD-MM-YYYY"
-				SetValue(Set.DATECOUNTRY, 6)	// Italian
+				SetValue(Set.DATECOUNTRY, (DWORD)6)	// Italian
 			CASE "YY/MM/DD"
 			CASE "YYYY/MM/DD"
-				SetValue(Set.DATECOUNTRY, 7)	// Japanese
+				SetValue(Set.DATECOUNTRY, (DWORD)7)	// Japanese
 			CASE "MM-DD-YY"
 			CASE "MM-DD-YYYY"
-				SetValue(Set.DATECOUNTRY, 8)	// USA
+				SetValue(Set.DATECOUNTRY, (DWORD)8)	// USA
 			OTHERWISE
-				SetValue(Set.DATECOUNTRY, 0)	
+				SetValue(Set.DATECOUNTRY, (DWORD)0)	
 		END SWITCH
 
 	PRIVATE _workareas AS WorkAreas

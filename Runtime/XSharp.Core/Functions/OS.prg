@@ -251,7 +251,7 @@ FUNCTION NetErr( lValue AS LOGIC ) AS LOGIC
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function LockTries() as int
+function LockTries() as DWORD
 	return RuntimeState.LockTries
 
 /// <summary>
@@ -259,8 +259,8 @@ function LockTries() as int
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function LockTries(nValue as int) as int
-	local nResult as int
+function LockTries(nValue as DWORD) as DWORD
+	local nResult as DWORD
 	nResult := RuntimeState.LockTries
 	RuntimeState.LockTries := nValue
 	return nValue

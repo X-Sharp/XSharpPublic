@@ -584,10 +584,6 @@ BEGIN NAMESPACE XSharp.RDD
             //	METHOD SetScope(info AS DbScopeInfo) AS LOGIC
             
             // Fields
-            
-            
-            
-            
         METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
             // Initialize the Fields array
             SELF:_Fields := RddFieldInfo[]{ fieldCount }
@@ -1059,19 +1055,22 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
             
             
-        PRIVATE METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
+        INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
             
-        PRIVATE METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
+        INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
             
-        PRIVATE METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
+        INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
             
-        PRIVATE METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
+        INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
             
-        PRIVATE METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
+        INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
+            LOCAL lastError AS DWORD
+            LOCAL pucBuf AS CHAR[]
+            LOCAL wBufLen AS WORD
             LOCAL oError AS RddError
             //
             oError := RddError{}
@@ -1553,7 +1552,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         //	PROPERTY Shared		AS LOGIC GET
         /// <inheritdoc />
-        VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
+       VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
         
         //	
         // Error Handling

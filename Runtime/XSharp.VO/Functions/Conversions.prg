@@ -213,7 +213,7 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 	SWITCH n:_UsualType
 	CASE usualType.Int64
 	case usualType.Long
-      ret := ConversionHelpers.FormatNumber( (int64) n, RuntimeState.Digits, 0):Trim()	
+      ret := ConversionHelpers.FormatNumber( (int64) n, (int) RuntimeState.Digits, 0):Trim()	
 	Case UsualType.Date
       ret := AsString( n )
     CASE UsualType.Float
@@ -518,7 +518,7 @@ FUNCTION Str1(f AS USUAL) AS STRING
 	if f:IsFloat
 		return ConversionHelpers.AdjustDecimalSeparator(_Str1( (float) f))
 	ELSE
-		return ConversionHelpers.FormatNumber( (long) f, RuntimeState.Digits, 0):Trim()
+		return ConversionHelpers.FormatNumber( (long) f, (int) RuntimeState.Digits, 0):Trim()
 	ENDIF
 		
 INTERNAL function _Str1(f as float) as string
@@ -526,10 +526,10 @@ INTERNAL function _Str1(f as float) as string
 	VAR nDigits   := f:Digits
 	var ltrim	  := FALSE
 	if nDecimals < 0
-		nDecimals := RuntimeState.Decimals
+		nDecimals := (short) RuntimeState.Decimals
 	ENDIF
 	if nDigits <= 0
-		nDigits := RuntimeState.Digits
+		nDigits := (short) RuntimeState.Digits
 		ltrim   := true
 	endif
 	VAR result := ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
@@ -558,7 +558,7 @@ INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
    ENDIF
    var nDecimals := f:decimals
 	if nDecimals < 0
-		nDecimals := RuntimeState.Decimals
+		nDecimals := (short) RuntimeState.Decimals
 	endif
    RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, nDecimals)
  

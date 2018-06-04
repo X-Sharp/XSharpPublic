@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c := STR3(2.50012,4,2)
 			assert.Equal("2.50", c )  
 
-		[Fact, Trait("Category", "Conversion")];
+		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID
 			LOCAL u AS USUAL
 			u := Val("1.234")

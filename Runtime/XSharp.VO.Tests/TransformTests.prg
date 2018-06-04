@@ -159,23 +159,28 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 	[Fact, Trait("Category", "Val")];
 	METHOD ValTests() AS VOID
-		Assert.Equal(true, Val("123") == 123)
-		Assert.Equal(true, Val("123.456") == 123.456)
+		Assert.Equal(123, (int) Val("123") )
+		Assert.Equal(123.456, (real8) Val("123.456") )
 
-		Assert.Equal(true, Val("") == 0)
-		Assert.Equal(true, Val("") == 0.0)
+		Assert.Equal(0, (int) Val("") )
 
-		Assert.Equal(true, Val("abc") == 0)
-		Assert.Equal(true, Val("123abc") == 123)
-		Assert.Equal(true, Val("123abc456") == 123)
-		Assert.Equal(true, Val("123abc456.789") == 123)
-		Assert.Equal(true, Val("abc123456.789") == 0)
+		Assert.Equal(0, (int) Val("abc") )
+		Assert.Equal(123, (int) Val("123abc") )
+		Assert.Equal(123, (int) Val("123abc456") )
+		Assert.Equal(123, (int) Val("123abc456.789") )
+		Assert.Equal(0, (INT) Val("abc123456.789") )
+		Assert.Equal(255, (INT) Val("0xFF") )
+		Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
+		Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
+		Assert.Equal(11, (INT) Val("11L11") )
+		Assert.Equal(1.000, (REAL8) Val("1,000.1") )
+		Assert.Equal(1.001, (real8) Val("1,001.1") )
 	RETURN
 
 	[Fact, Trait("Category", "SplitPath")];
 	METHOD SplitPathTests() AS VOID
 		LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
-		SplitPath("C:\folder\file.ext" , cDrive , cDir , cFile , cExt)
+		SplitPath("C:\folder\file.ext" ,  cDrive , cDir , cFile , cExt)
 		
 		Assert.Equal("C:" , cDrive)
 		Assert.Equal("\folder\" , cDir)

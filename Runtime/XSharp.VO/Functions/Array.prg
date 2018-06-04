@@ -42,7 +42,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		ELSE
 			FOR i := nStart DOWNTO nSize
 				IF nCount > 0
-					IF Eval( x, a[i] )
+					IF Eval( cb, a[i] )
 						nRet := i
 						EXIT
 					ENDIF

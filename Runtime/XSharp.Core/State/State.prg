@@ -204,7 +204,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
    STATIC PROPERTY DateCountry AS DWORD ;
         GET GetValue<DWORD>(Set.DateCountry);
-        SET SetValue<DWORD>(Set.DateCountry, VALUE)
+        SET _SetDateCountry(VALUE)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
@@ -382,7 +382,7 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) numberformat:NumberGroupSeparator[0])
 		SELF:_SetThreadValue(Set.EPOCH, (DWORD) 1910)
 		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
-		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 1900)
+		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
 
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
 		RETURN
@@ -423,6 +423,40 @@ CLASS XSharp.RuntimeState
 			OTHERWISE
 				SetValue(Set.DATECOUNTRY, (DWORD)0)	
 		END SWITCH
+
+
+	INTERNAL STATIC METHOD _SetDateCountry(country AS DWORD) AS VOID
+		IF country > 8
+			RETURN
+		END IF
+
+		SetValue<DWORD>(Set.DateCountry, country)
+		
+		LOCAL format, year AS STRING
+		year := iif(Century , "YYYY" , "YY")
+		SWITCH country
+			CASE 1 // American
+				format := "MM/DD/" + year
+			CASE 2 // Ansi
+				format := year + ".MM.DD"
+			CASE 3 // British & french
+			CASE 4 // British & french
+				format := "DD/MM/" + year
+			CASE 5 // German
+				format := "DD.MM." + year
+			CASE 6 // Italian
+				format := "DD-MM-" + year
+			CASE 7 // Japanese
+				format := year + "/MM/DD"
+			CASE 8 // USA
+				format := "MM-DD-" + year
+			OTHERWISE
+				format := "MM/DD/" + year
+		END SWITCH
+		// this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
+		_SetDateFormat(format) 
+
+
 
 	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>

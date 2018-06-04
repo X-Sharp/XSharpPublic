@@ -128,6 +128,35 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		SetExact( exact )	
 	RETURN
 
+	[Fact, Trait("Category", "Str")];
+	METHOD StrTests() AS VOID
+		local exact,thou,digit,decimal,fixed_,digitfixed as usual
+		exact := SetDecimalSep(Asc("."))
+		thou := SetThousandSep(Asc(","))
+		digit := SetDigit(6)
+		decimal := SetDecimal(3)
+		fixed_ := SetFixed(FALSE)
+		digitfixed := SetDigitFixed(FALSE)
+
+		Assert.Equal( "     1.2"			, Str(1.2) )
+		Assert.Equal( "    12.3"			, Str(12.3) )
+		Assert.Equal( "    12.34"			, Str(12.34) )
+		Assert.Equal( "   123.456"			, Str(123.456) )
+		Assert.Equal( "  1234.567"			, Str(1234.567) )
+		Assert.Equal( "  1234.5678"			, Str(1234.5678) )
+		Assert.Equal( "  1234.5679012345"	, Str(1234.5679012345) )
+		Assert.Equal( "123456.78901234567"	, Str(123456.78901234567) )
+		Assert.Equal( "999999" , Str(999999) )
+		Assert.Equal( "******" , Str(1000000) )
+
+		SetDecimalSep(exact)
+		SetThousandSep(thou)
+		SetDigit(digit)
+		SetDecimal(decimal)
+		SetFixed(fixed_)
+		SetDigitFixed(digitfixed)
+	RETURN
+
 	[Fact, Trait("Category", "Val")];
 	METHOD ValTests() AS VOID
 		Assert.Equal(true, Val("123") == 123)
@@ -153,6 +182,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		Assert.Equal("file" , cFile)
 		Assert.Equal(".ext" , cExt)
+	RETURN
+
+	[Fact, Trait("Category", "SplitPathVO")];
+	METHOD SplitPathVO() AS VOID
+		LOCAL cPath ,cDrive ,cDir ,cFile ,cExt AS STRING
+		LOCAL pszDrive, pszDir AS PSZ
+		LOCAL pszFile, pszExt AS PSZ
+	
+		cPath := "C:\testfolder\testfile.prg"
+	
+		pszDrive := MemAlloc(2+1)
+		pszDir   := MemAlloc(255+1)
+		pszFile  := MemAlloc(255+1)
+		pszExt   := MemAlloc(7+1) 
+	
+		SplitPath(String2Psz(cPath), pszDrive, pszDir,        ;
+			 pszFile, pszExt)
+	
+		cDrive := Psz2String(pszDrive)
+		cDir   := Psz2String(pszDir)
+		cFile  := Psz2String(pszFile)
+		cExt   := Psz2String(pszExt)
+	
+		MemFree(pszDrive)
+		MemFree(pszDir)
+		MemFree(pszFile)
+		MemFree(pszExt)
+	
+		Assert.Equal("\testfolder\" , cDir)
+		Assert.Equal("\testfolder\" , cDir)
+		Assert.Equal("testfile" , cFile)
+		Assert.Equal(".prg" , cExt)
 	RETURN
 
 	end class

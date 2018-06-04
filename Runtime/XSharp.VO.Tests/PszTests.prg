@@ -15,7 +15,7 @@ begin namespace XSharp.VO.Tests
 		[Fact, Trait("Category", "Psz")];
 		method CreatePszTest() as void
 			local p as psz
-			p := psz{"Robert was here"}
+			p := String2Psz("Robert was here")
 			Assert.Equal("Robert was here", Psz2String(p))
 			Assert.Equal((int) PszLen(p), 15)
 

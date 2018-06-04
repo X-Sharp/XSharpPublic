@@ -108,7 +108,7 @@ FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT
 	cSep := Path.DirectorySeparatorChar:ToString()
 	nPos := cPath:IndexOf(Path.VolumeSeparatorChar)
 	IF nPos > 0
-		cDrive := cPath:Substring(0, nPos)
+		cDrive := cPath:Substring(0, nPos+1)
 		cPath  := cPath:SubString(nPos + 1)
 	ENDIF
 	

@@ -207,7 +207,68 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		//Assert.Equal("12:00:00", Tstring( r8))
 		RETURN
 
+		[Fact, Trait("Category", "Date")];
+		method SToDTests() as void
+			SetEpoch(1910)
+			Assert.Equal(2005.01.31 , SToD("00050131"))
+			Assert.Equal(1915.01.31 , SToD("00150131"))
+
+		[Fact, Trait("Category", "Date")];
+		method InvalidLiteralDateTests() as void
+			Assert.Equal(NULL_DATE , 50.50.50)
+			Assert.Equal(NULL_DATE , 0000.00.00)
+			Assert.Equal(NULL_DATE , 00.00.00)
+			Assert.Equal(NULL_DATE , 0.0.0)
+
+		[Fact, Trait("Category", "Date")];
+		method SetDateCountryTests() as void
+			local dDate as date
+
+			dDate := 2000.01.31
+			
+			SetCentury(TRUE)
+
+			SetDateCountry(0)
+			Assert.Equal("01/31/2000", DToC(dDate))
+			SetDateCountry(1) // American
+			Assert.Equal("01/31/2000", DToC(dDate))
+			SetDateCountry(2) // Ansi
+			Assert.Equal("2000.01.31", DToC(dDate))
+			SetDateCountry(3) // British & French
+			Assert.Equal("31/01/2000", DToC(dDate))
+			SetDateCountry(4) // 
+			Assert.Equal("31/01/2000", DToC(dDate))
+			SetDateCountry(5) // German
+			Assert.Equal("31.01.2000", DToC(dDate))
+			SetDateCountry(6) // Italian
+			Assert.Equal("31-01-2000", DToC(dDate))
+			SetDateCountry(7) // Japanese
+			Assert.Equal("2000/01/31", DToC(dDate))
+			SetDateCountry(8) // USA
+			Assert.Equal("01-31-2000", DToC(dDate))
 				 
+			SetCentury(FALSE)
+
+			SetDateCountry(0)
+			Assert.Equal("01/31/00", DToC(dDate))
+			SetDateCountry(1) // American
+			Assert.Equal("01/31/00", DToC(dDate))
+			SetDateCountry(2) // Ansi
+			Assert.Equal("00.01.31", DToC(dDate))
+			SetDateCountry(3) // British & French
+			Assert.Equal("31/01/00", DToC(dDate))
+			SetDateCountry(4) // 
+			Assert.Equal("31/01/00", DToC(dDate))
+			SetDateCountry(5) // German
+			Assert.Equal("31.01.00", DToC(dDate))
+			SetDateCountry(6) // Italian
+			Assert.Equal("31-01-00", DToC(dDate))
+			SetDateCountry(7) // Japanese
+			Assert.Equal("00/01/31", DToC(dDate))
+			SetDateCountry(8) // USA
+			Assert.Equal("01-31-00", DToC(dDate))
+				 
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

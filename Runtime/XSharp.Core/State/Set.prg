@@ -155,7 +155,10 @@ FUNCTION SetDateCountry() AS DWORD
 /// </returns>
 FUNCTION SetDateCountry(dwCountry AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}
-	setstate DWORD Set.DATECOUNTRY dwCountry
+//	setstate DWORD Set.DATECOUNTRY dwCountry
+	LOCAL dwOld := RuntimeState.DateCountry AS DWORD
+	RuntimeState.DateCountry := dwCountry
+	RETURN dwOld
 
 
 

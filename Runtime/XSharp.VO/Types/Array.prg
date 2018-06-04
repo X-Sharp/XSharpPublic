@@ -163,7 +163,7 @@ begin namespace XSharp
 				if u:IsNil 
 					return u
 				endif
-				if u:IsArray
+				if !u:IsArray
 					throw InvalidOperationException{"out of range error."}
 				endif
 				currentArray := (Array) u

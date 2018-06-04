@@ -157,6 +157,98 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		SetDigitFixed(digitfixed)
 	RETURN
 
+	[Fact, Trait("Category", "Str")];
+	METHOD Str_With_SetFixed_TRUE() AS VOID
+
+	   SetDecimalSep(Asc(".")) 
+	   SetThousandSep(Asc(",")) 
+	   SetDecimal(3)
+	   SetDigit(12)
+
+	   SetFixed(TRUE)
+	   SetDigitFixed(TRUE)
+   
+	   Assert.Equal( Str(12.34)            		, "          12.340")
+	   Assert.Equal( Str1(12.34)          		, "          12.340")
+	   Assert.Equal( Str(123.456)         		, "         123.456")
+	   Assert.Equal( Str1(123.456)       		, "         123.456")
+	   Assert.Equal( Str(1230.4567)         	, "        1230.457")
+	   Assert.Equal( Str1(1230.4567)        	, "        1230.457")
+	   Assert.Equal( Str(100000001234.4567)		, "100000001234.457")
+	   Assert.Equal( Str1(100000001234.4567)	, "100000001234.457")
+	   Assert.Equal( Str(1000000001234.4567)	, "****************")
+	   Assert.Equal( Str1(1000000001234.4567)	, "****************")
+	   Assert.Equal( Str(12.3)              	, "          12.300")
+	   Assert.Equal( Str1(12.3)            		, "          12.300")
+	   Assert.Equal( Str(12.34567)        	 	, "          12.346")
+	   Assert.Equal( Str1(12.34567)        		, "          12.346")
+	   Assert.Equal( Str(12.34 , 10, 2)    		, "     12.34")
+	   Assert.Equal( Str(12.34 , 5, 2)     		, "12.34")
+	   Assert.Equal( Str(12.34 , 4, 2)     		, "12.3")
+	   Assert.Equal( Str(12.34 , 4, 1)     		, "12.3")
+	   Assert.Equal( Str(12.34 , 2, 1)     		, "**")
+	   Assert.Equal( Str3(12.34 , 10, 2)   		, "     12.34")
+	   Assert.Equal( Str3(12.34 , 5, 2)    		, "12.34")
+	   Assert.Equal( Str3(12.34 , 4, 2)     	, "12.3")
+	   Assert.Equal( Str3(12.34 , 4, 1)     	, "12.3")
+	   Assert.Equal( Str3(12.34 , 2, 1)    		, "**")
+	   Assert.Equal( Str(-12.34)            	, "         -12.340")
+	   Assert.Equal( Str1(-12.34)           	, "         -12.340")
+	   Assert.Equal( Str(-12.3456)         		, "         -12.346")
+	   Assert.Equal( Str1(-12.3456)         	, "         -12.346")
+	   Assert.Equal( Str(-12.34 , 10, 2)    	, "    -12.34")
+	   Assert.Equal( Str(-12.34 , 5, 2)     	, "-12.3")	 //VO wrong: -2.34
+	   Assert.Equal( Str(-12.34 , 4, 2)     	, "-12.")
+	   Assert.Equal( Str(-12.34 , 4, 1)     	, " -12")    //VO wrong: -2.3
+	   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
+	RETURN
+
+	[Fact, Trait("Category", "Str")];
+	METHOD Str_With_SetFixed_FALSE() AS VOID
+
+	   SetDecimalSep(Asc(".")) 
+	   SetThousandSep(Asc(",")) 
+	   SetDecimal(3)
+	   SetDigit(12)
+
+	   SetFixed(FALSE)
+	   SetDigitFixed(FALSE)
+   
+	   Assert.Equal( Str(12.34)            		, "          12.34")
+	   Assert.Equal( Str1(12.34)          		, "          12.34")
+	   Assert.Equal( Str(123.456)         		, "         123.456")
+	   Assert.Equal( Str1(123.456)				, "         123.456")
+	   Assert.Equal( Str(1230.4567)         	, "        1230.4567")
+	   Assert.Equal( Str1(1230.4567)        	, "        1230.4567")
+	   Assert.Equal( Str(100000001234.4567)		, "100000001234.4567")
+	   Assert.Equal( Str1(100000001234.4567)	, "100000001234.4567")
+	   Assert.Equal( Str(1000000001234.4567)	, "*****************")
+	   Assert.Equal( Str1(1000000001234.4567)	, "*****************")
+	   Assert.Equal( Str(12.3)              	, "          12.3")
+	   Assert.Equal( Str1(12.3)            		, "          12.3")
+	   Assert.Equal( Str(12.34567)         		, "          12.34567")
+	   Assert.Equal( Str1(12.34567)        		, "          12.34567")
+	   Assert.Equal( Str(12.34 , 10, 2)    		, "     12.34")
+	   Assert.Equal( Str(12.34 , 5, 2)     		, "12.34")
+	   Assert.Equal( Str(12.34 , 4, 2)     		, "12.3")
+	   Assert.Equal( Str(12.34 , 4, 1)     		, "12.3")
+	   Assert.Equal( Str(12.34 , 2, 1)     		, "**")
+	   Assert.Equal( Str3(12.34 , 10, 2)   		, "     12.34")
+	   Assert.Equal( Str3(12.34 , 5, 2)    		, "12.34")
+	   Assert.Equal( Str3(12.34 , 4, 2)     	, "12.3")
+	   Assert.Equal( Str3(12.34 , 4, 1)     	, "12.3")
+	   Assert.Equal( Str3(12.34 , 2, 1)    		, "**")
+	   Assert.Equal( Str(-12.34)            	, "         -12.34")
+	   Assert.Equal( Str1(-12.34)           	, "         -12.34")
+	   Assert.Equal( Str(-12.3456)         		, "         -12.3456")
+	   Assert.Equal( Str1(-12.3456)         	, "         -12.3456")
+	   Assert.Equal( Str(-12.34 , 10, 2)    	, "    -12.34")
+	   Assert.Equal( Str(-12.34 , 5, 2)     	, "-12.3")	 //VO: -2.34
+	   Assert.Equal( Str(-12.34 , 4, 2)     	, "-12.")
+	   Assert.Equal( Str(-12.34 , 4, 1)     	, " -12")    //VO: -2.3
+	   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
+
+
 	[Fact, Trait("Category", "Val")];
 	METHOD ValTests() AS VOID
 		Assert.Equal(123, (int) Val("123") )

@@ -252,7 +252,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	[Fact, Trait("Category", "Val")];
 	METHOD ValTests() AS VOID
 		Assert.Equal(123, (int) Val("123") )
-		Assert.Equal(123.456, (real8) Val("123.456") )
+		Assert.Equal(123.456, (float) Val("123.456") )
 
 		Assert.Equal(0, (int) Val("") )
 
@@ -265,8 +265,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
 		Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
 		Assert.Equal(11, (INT) Val("11L11") )
-		Assert.Equal(1.000, (REAL8) Val("1,000.1") )
-		Assert.Equal(1.001, (real8) Val("1,001.1") )
+		Assert.Equal(1.000, (float) Val("1,000.1") )
+		Assert.Equal(1.001, (float) Val("1,001.1") )
 	RETURN
 
 	[Fact, Trait("Category", "SplitPath")];

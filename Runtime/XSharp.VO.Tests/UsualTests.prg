@@ -200,13 +200,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			u :=   1.0
 			u += 1
-			Assert.Equal((Real8) u, 2.0)
+			Assert.Equal((Float) u, 2.0)
 			u += (int64) 1
-			Assert.Equal((Real8) u, 3.0)
+			Assert.Equal((Float) u, 3.0)
 			u += 1.0
-			Assert.Equal((Real8) u, 4.0)
+			Assert.Equal((Float) u, 4.0)
 			u ++
-			Assert.Equal((Real8) u, 5.0)
+			Assert.Equal((Float) u, 5.0)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
 			u := "abc"
@@ -247,13 +247,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			u := 111.1
 			u -= 1
-			Assert.Equal((Real8) u, 110.1)
+			Assert.Equal((Float) u, 110.1)
 			u -= (int64) 1
-			Assert.Equal((Real8) u, 109.1)
+			Assert.Equal((Float) u, 109.1)
 			u -= 1.0
-			Assert.Equal((Real8) u, 108.1)
+			Assert.Equal((Float) u, 108.1)
 			u--
-			Assert.Equal((Real8) u, 107.1)
+			Assert.Equal((Float) u, 107.1)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
 			u := "abc"

@@ -637,7 +637,8 @@ function Val(cNumber as string) as Usual
 	VAR pos := 0
 	VAR done := FALSE
 	VAR hex  := FALSE
-	var hasdec := FALSE
+	VAR hasdec := FALSE
+	var hasexp := false
 	var cDec := (CHAR) SetDecimalSep()
 	if cDec != '.'
 		cNumber := cNumber:Replace(cDec, '.')
@@ -675,7 +676,7 @@ function Val(cNumber as string) as Usual
 		CASE 'E' 
 			// exponentional notation only allowed if decimal separator was there
 			if hasdec
-				NOP
+				hasexp := true
 			ELSE
 				done := true
 			endif
@@ -705,6 +706,9 @@ function Val(cNumber as string) as Usual
 			cNumber := cNumber:Replace(cDec, '.')
 		ENDIF
 		VAR style := NumberStyles.Number
+		IF hasexp
+			style |= NumberStyles.AllowExponent
+		ENDIF
 		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
 			RETURN r8Result
 		endif

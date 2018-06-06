@@ -7,6 +7,38 @@
 
 INTERNAL STATIC CLASS ArrayHelpers
 
+	STATIC METHOD aScan<T>(aTarget AS __ArrayBase<T>, element  as T , nStart as LONG, nCount as LONG) as DWORD WHERE T IS NEW()
+		LOCAL nItem AS LONG
+		LOCAL nLen  AS LONG
+		nLen := (int) aTarget:Length
+		FOR nItem := nStart TO nLen
+			if object.Equals(aTarget[(DWORD) nItem], element)
+				RETURN (DWORD) nItem
+			ENDIF
+			nCount -= 1
+			IF nCount == 0
+				EXIT
+			ENDIF
+		NEXT
+		RETURN 0
+
+	STATIC METHOD aScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart as LONG, nCount as LONG) as DWORD WHERE T IS NEW()
+		LOCAL nItem AS LONG
+		LOCAL nLen  AS LONG
+		nLen := (int) aTarget:Length
+		FOR nItem := nStart TO nLen
+			VAR oElement := aTarget[(DWORD) nItem]
+			IF bAction(oElement)
+				RETURN  (DWORD) nItem
+			ENDIF
+			nCount -= 1
+			IF nCount == 0
+				EXIT
+			ENDIF
+		NEXT
+		RETURN 0
+
+
 	STATIC METHOD aScan( aTarget AS USUAL, x AS USUAL, uStart AS USUAL, uCount AS USUAL, lExact AS LOGIC ) AS DWORD
 		LOCAL nSize		AS DWORD
 		IF ! ArrayHelpers.ValidateArrayParams(REF aTarget, REF uStart, REF uCount, OUT nSize)
@@ -54,6 +86,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		ENDIF
 		
 		RETURN nRet
+
 	STATIC METHOD AscanBin(cFuncName AS STRING, a AS ARRAY, seekVal AS USUAL, lExact AS LOGIC ) AS DWORD
 		LOCAL dwLow        AS DWORD
 		LOCAL dwHigh       AS DWORD
@@ -600,9 +633,30 @@ FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS
 /// <param name="nStart">The number of the element to be replaced.</param>
 /// <param name="nCount">The new value.</param>
 /// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
-FUNCTION Ascan(aTarget, uSearch,nStart,nCount) AS DWORD CLIPPER
+FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL,nStart as LONG,nCount as LONG) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, SetExact()) 
+
+/// <summary>
+/// Scan an array until a value is found or a code block returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="uSearch">The number of the element to be replaced.</param>
+/// <param name="nStart">The number of the element to be replaced.</param>
+/// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
+FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL,nStart as LONG) AS DWORD 
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, Alen(aTarget), SetExact()) 
+
+
+/// <summary>
+/// Scan an array until a value is found or a code block returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="uSearch">The number of the element to be replaced.</param>
+/// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
+FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, Alen(aTarget), SetExact()) 
 	
+
 /// <summary>
 /// Scan an array until an exact match with a value is found or a code block returns TRUE.
 /// </summary>
@@ -611,8 +665,30 @@ FUNCTION Ascan(aTarget, uSearch,nStart,nCount) AS DWORD CLIPPER
 /// <param name="nStart">The number of the element to be replaced.</param>
 /// <param name="nCount">The new value.</param>
 /// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
-FUNCTION AScanExact( aTarget, uSearch, nStart, nCount ) AS DWORD CLIPPER
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart as INT, nCount AS INT) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
+
+/// <summary>
+/// Scan an array until an exact match with a value is found or a code block returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="uSearch">The number of the element to be replaced.</param>
+/// <param name="nStart">The number of the element to be replaced.</param>
+/// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart as INT) AS DWORD 
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, Alen(aTarget), TRUE )
+
+
+/// <summary>
+/// Scan an array until an exact match with a value is found or a code block returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="uSearch">The number of the element to be replaced.</param>
+/// <param name="nStart">The number of the element to be replaced.</param>
+/// <returns>If uSearch is a code block, AScan() returns the position of the first element for which the code block returns TRUE.  Otherwise, AScan() returns the position of the first matching element.  AScan() returns 0 if no match is found.</returns>
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, Alen(aTarget), TRUE )
+
 	
 /// <summary>
 /// Scan a sorted Array until a value is found or a code block returns 0.
@@ -633,7 +709,72 @@ FUNCTION AScanBin(a AS ARRAY,x AS USUAL) AS DWORD
 /// </returns>
 FUNCTION AScanBinExact(a AS ARRAY,x AS USUAL) AS DWORD
 	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, TRUE )
-	
+
+
+/// <summary>
+/// Scan an array until value is found.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="act">The lambda expression to use for looking up the correct element.</param>
+/// <returns>AScan() returns the position of the first element for which the expression returns TRUE.</returns>
+FUNCTION Ascan<T>(aTarget as __ArrayBase<T>, element as T) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, element,1, (int) aTarget:Length) 
+
+/// <summary>
+/// Scan an array until an expression returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="act">The lambda expression to use for looking up the correct element.</param>
+/// <returns>AScan() returns the position of the first element for which the expression returns TRUE.</returns>
+FUNCTION Ascan<T>(aTarget as __ArrayBase<T>, act as @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, act,1, (int) aTarget:Length) 
+
+
+/// <summary>
+/// Scan an array until value is found.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="act">The lambda expression to use for looking up the correct element.</param>
+/// <param name="nStart">The starting element.  Negative values are not supported for the typed arrays.</param>
+/// <returns>AScan() returns the position of the first element for which the expression returns TRUE.</returns>
+FUNCTION Ascan<T>(aTarget as __ArrayBase<T>, element as T, nStart as LONG) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, (int) aTarget:Length- nStart +1) 
+
+
+/// <summary>
+/// Scan an array until an expression returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="act">The lambda expression to use for looking up the correct element.</param>
+/// <param name="nStart">The starting element.  Negative values are not supported for the typed arrays.</param>
+/// <returns>AScan() returns the position of the first element for which the expression returns TRUE.</returns>
+FUNCTION Ascan<T>(aTarget as __ArrayBase<T>, act as @@Func<T,LOGIC>, nStart as LONG) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, (int) aTarget:Length - nStart +1) 
+
+
+
+/// <summary>
+/// Scan an array until value is found.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="act">The lambda expression to use for looking up the correct element.</param>
+/// <param name="nStart">The starting element.  Negative values are not supported for the typed arrays.</param>
+/// <param name="nCount">The number of elements to process from nStart.</param>
+/// <returns>AScan() returns the position of the first element for which the expression returns TRUE.</returns>
+FUNCTION Ascan<T>(aTarget as __ArrayBase<T>, element as T, nStart as LONG, nCount as LONG) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, nCount) 
+
+/// <summary>
+/// Scan an array until an expression returns TRUE.
+/// </summary>
+/// <param name="aTarget">The array whose element will be replaced with a new value.</param>
+/// <param name="act">The lambda expression to use for looking up the correct element.</param>
+/// <param name="nStart">The starting element.  Negative values are not supported for the typed arrays.</param>
+/// <param name="nCount">The number of elements to process from nStart.</param>
+/// <returns>AScan() returns the position of the first element for which the expression returns TRUE.</returns>
+FUNCTION Ascan<T>(aTarget as __ArrayBase<T>, act as @@Func<T,LOGIC>, nStart as LONG, nCount as LONG) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, nCount) 
+
 	
 /// <summary>
 /// Grow or shrink an Array.
@@ -949,6 +1090,22 @@ END STRUCTURE
 FUNCTION ASort<T>(aArray as __ArrayBase<T> ,startIndex as INT,nCount as INT,cbOrder as @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
 
 	aArray:Sort( startIndex, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
+	
+	RETURN aArray
+
+
+/// <summary>
+/// Sort an Array.
+/// </summary>
+/// <param name="a"></param>
+/// <param name="iStart"></param>
+/// <param name="iCount"></param>
+/// <param name="cb"></param>
+/// <returns>
+/// </returns>
+FUNCTION ASort<T>(aArray as __ArrayBase<T> ,cbOrder as @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+
+	aArray:Sort( ArraySortComparer<T, LOGIC> { cbOrder } )
 	
 	RETURN aArray
 

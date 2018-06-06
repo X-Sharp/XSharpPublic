@@ -7,47 +7,47 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
-using System.Globalization
+USING XUnit
+USING System.Globalization
 
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
-	class TransFormTests
+	CLASS TransFormTests
 
 		[Fact, Trait("Category", "TransForm")];
-		method LogicalTest() as void 
+		METHOD LogicalTest() AS VOID 
 			// with @R other chars are appended, but only a single YN or TF flag is written. Other positions become a space
-			Assert.Equal("Y", TransForm(true, "Y"))
-			Assert.Equal("N", TransForm(false, "Y"))
-			Assert.Equal("T", TransForm(true, "L"))
-			Assert.Equal("F", TransForm(false, "L"))
-			Assert.Equal("T x", TransForm(true, "@R L x"))
-			Assert.Equal("F x", TransForm(false, "@R L x"))
-			Assert.Equal("Y x", TransForm(true, "@R YYx"))
-			Assert.Equal("N x", TransForm(FALSE, "@R YYx"))
-			SetNatDLL("French.DLL")
-			Assert.Equal("O", TransForm(true, "Y"))
-			Assert.Equal("N", TransForm(false, "Y"))
-			Assert.Equal("V", TransForm(true, "L"))
-			Assert.Equal("F", TransForm(false, "L"))
-			Assert.Equal("V x", TransForm(true, "@R L x"))
-			Assert.Equal("F x", TransForm(false, "@R L x"))
-			Assert.Equal("O x", TransForm(true, "@R YYx"))
-			Assert.Equal("N x", TransForm(false, "@R YYx"))
+			Assert.Equal("Y", Transform(TRUE, "Y"))
+			Assert.Equal("N", Transform(FALSE, "Y"))
+			Assert.Equal("T", Transform(TRUE, "L"))
+			Assert.Equal("F", Transform(FALSE, "L"))
+			Assert.Equal("T x", Transform(TRUE, "@R L x"))
+			Assert.Equal("F x", Transform(FALSE, "@R L x"))
+			Assert.Equal("Y x", Transform(TRUE, "@R YYx"))
+			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
+			SetNatDll("French.DLL")
+			Assert.Equal("O", Transform(TRUE, "Y"))
+			Assert.Equal("N", Transform(FALSE, "Y"))
+			Assert.Equal("V", Transform(TRUE, "L"))
+			Assert.Equal("F", Transform(FALSE, "L"))
+			Assert.Equal("V x", Transform(TRUE, "@R L x"))
+			Assert.Equal("F x", Transform(FALSE, "@R L x"))
+			Assert.Equal("O x", Transform(TRUE, "@R YYx"))
+			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
 
 		[Fact, Trait("Category", "TransForm")];
-		method DateTest() as void 
+		METHOD DateTest() AS VOID 
 			// with @R other chars are appended, but only a single YN or TF flag is written. Other positions become a space
-			Assert.Equal("10/12/2010", TransForm(2010.12.10,"@E"))
-			Assert.Equal("20/11/2010", TransForm(2010.11.20,"@E"))
+			Assert.Equal("10/12/2010", Transform(2010.12.10,"@E"))
+			Assert.Equal("20/11/2010", Transform(2010.11.20,"@E"))
 			SetDateFormat("dd-mm-yyyy")
-			Assert.Equal("20-11-2010", TransForm(2010.11.20,"@D"))
+			Assert.Equal("20-11-2010", Transform(2010.11.20,"@D"))
 			SetDateFormat("dd-mm-yy")
-			Assert.Equal("20-11-10", TransForm(2010.11.20,"@D"))
+			Assert.Equal("20-11-10", Transform(2010.11.20,"@D"))
 
 		[Fact, Trait("Category", "TransForm")];
-		method StringTest() as void 
+		METHOD StringTest() AS VOID 
 			Assert.Equal("ABC", Transform("abc", "@!"))
 			Assert.Equal("AbC", Transform("abc", "!a!"))
 			Assert.Equal("1234 AB", Transform("1234ab", "@R! 9999 AA"))
@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		[Fact, Trait("Category", "TransForm")];
-		method FLoatTest() as void 
+		METHOD FLoatTest() AS VOID 
 			SetDecimalSep('.')
 			SetThousandSep(',')
 			Assert.Equal("1.23", Transform(1.23, "9.99"))
@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 // some new failing tests:
 	[Fact, Trait("Category", "TransForm")];
 	METHOD IntLiteralTest() AS VOID
-		LOCAL dec AS dword
+		LOCAL dec AS DWORD
 		LOCAL thou AS DWORD
 
 		dec := SetDecimalSep(Asc(","))
@@ -114,23 +114,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	METHOD StringEquality() AS VOID
 		LOCAL c1,c2 AS STRING
 		LOCAL u1,u2 AS USUAL
-		local exact as LOGIC
+		LOCAL exact AS LOGIC
 		u1 := c1 := "TESTLONG"
 		u2 := c2 := "TEST"
 		exact := SetExact( FALSE )
 		
-		Assert.Equal(true, c1 = c2)
-		Assert.Equal(true, c1 != c2)
+		Assert.Equal(TRUE, c1 = c2)
+		Assert.Equal(TRUE, c1 != c2)
 
-		Assert.Equal(true, u1 = u2)
-		Assert.Equal(false, u1 != u2)
+		Assert.Equal(TRUE, u1 = u2)
+		Assert.Equal(FALSE, u1 != u2)
 
 		SetExact( exact )	
 	RETURN
 
 	[Fact, Trait("Category", "Str")];
 	METHOD StrTests() AS VOID
-		local exact,thou,digit,decimal,fixed_,digitfixed as usual
+		LOCAL exact,thou,digit,decimal,fixed_,digitfixed AS USUAL
 		exact := SetDecimalSep(Asc("."))
 		thou := SetThousandSep(Asc(","))
 		digit := SetDigit(6)
@@ -251,22 +251,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 	[Fact, Trait("Category", "Val")];
 	METHOD ValTests() AS VOID
-		Assert.Equal(123, (int) Val("123") )
-		Assert.Equal(123.456, (float) Val("123.456") )
+		Assert.Equal(123, (INT) Val("123") )
+		Assert.Equal(123.456, (FLOAT) Val("123.456") )
 
-		Assert.Equal(0, (int) Val("") )
+		Assert.Equal(0, (INT) Val("") )
 
-		Assert.Equal(0, (int) Val("abc") )
-		Assert.Equal(123, (int) Val("123abc") )
-		Assert.Equal(123, (int) Val("123abc456") )
-		Assert.Equal(123, (int) Val("123abc456.789") )
+		Assert.Equal(0, (INT) Val("abc") )
+		Assert.Equal(123, (INT) Val("123abc") )
+		Assert.Equal(123, (INT) Val("123abc456") )
+		Assert.Equal(123, (INT) Val("123abc456.789") )
 		Assert.Equal(0, (INT) Val("abc123456.789") )
 		Assert.Equal(255, (INT) Val("0xFF") )
 		Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
 		Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
 		Assert.Equal(11, (INT) Val("11L11") )
-		Assert.Equal(1.000, (float) Val("1,000.1") )
-		Assert.Equal(1.001, (float) Val("1,001.1") )
+		Assert.Equal(1.000, (FLOAT) Val("1,000.1") )
+		Assert.Equal(1.001, (FLOAT) Val("1,001.1") )
 	RETURN
 
 	[Fact, Trait("Category", "SplitPath")];
@@ -313,5 +313,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal(".prg" , cExt)
 	RETURN
 
-	end class
-end NAMESPACE
+	[Fact, Trait("Category", "Directory")];
+	METHOD DirectoryTests() AS VOID
+		Assert.Equal(0u , ALen(Directory("K:\drive does not exist")))
+		Assert.Equal(0u , ALen(Directory("K:\drive does not exist","V")))
+		Assert.Equal(0u , ALen(Directory("C:\invalid:path")))
+		Assert.Equal(1u , ALen(Directory("C:\invalid:path","V")))
+		Assert.Equal(0u , ALen(Directory("C:invalid:path")))
+		Assert.Equal(1u , ALen(Directory("C:invalid:path","V")))
+		Assert.Equal(0u , ALen(Directory("M:")))
+		Assert.Equal(0u , ALen(Directory("M:","V")))
+
+	END CLASS
+END NAMESPACE

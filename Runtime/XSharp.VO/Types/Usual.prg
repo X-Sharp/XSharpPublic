@@ -346,6 +346,8 @@ begin namespace XSharp
 					return _decimalValue == 0
 				case UsualType.Long
 					return _intValue == 0
+				case UsualType.Logic
+					return _logicValue == false
 				case UsualType.Ptr
 					return _ptrValue == IntPtr.Zero
 				case UsualType.String

@@ -270,14 +270,15 @@ begin namespace XSharp
 
 			private property _arrayValue    as array	get iif(IsArray, (array) _refData , null_array)
 			private property _codeblockValue as codeblock	get iif(IsCodeBlock, (Codeblock) _refData , null_codeblock)
-            private property _dateValue		as Date get _valueData:d 
+            private property _dateValue		as Date		get _valueData:d 
             private property _dateTimeValue as DateTime get _valueData:dt
             private property _decimalValue	as System.Decimal get (System.Decimal) _refData 
-            private property _floatValue    as Float get Float{ _valueData:r8, _width, _decimals}
+            private property _floatValue    as Float	get Float{ _valueData:r8, _width, _decimals}
             private property _i64Value		as int64	get _valueData:i64 
             private property _intValue		as int		get _valueData:i  
             private property _logicValue	as logic	get _valueData:l 
-            private property _ptrValue		as IntPtr	get _valueData:p 
+            PRIVATE PROPERTY _ptrValue		AS IntPtr	GET _valueData:p 
+			private property _pszValue		as IntPtr	get _valueData:p 
             private property _r8Value		as real8	get _valueData:r8 
             private property _stringValue   as string	get iif(IsString, (string) _refData , String.Empty)
             private property _symValue		as Symbol	get _valueData:s 
@@ -331,33 +332,21 @@ begin namespace XSharp
   			internal property IsEmpty as logic
 				get
 				switch _usualType
-				case UsualType.Array
-					return _refData == null .or. ((Array)_refData):Length == 0
-				case UsualType.CodeBlock
-				case UsualType.Object
-					return _refData == null 
-				case UsualType.Date
-					return _dateValue:IsEmpty
-				case UsualType.DateTime
-					return _dateTimeValue == DateTime.MinValue
-				case UsualType.Float
-					return _floatValue == 0.0
-				case UsualType.Decimal
-					return _decimalValue == 0
-				case UsualType.Long
-					return _intValue == 0
-				case UsualType.Logic
-					return _logicValue == false
-				case UsualType.Ptr
-					return _ptrValue == IntPtr.Zero
-				case UsualType.String
-					return EmptyString(_stringValue)
-				case UsualType.Symbol
-					return _symValue == 0
-				case UsualType.Psz
-					return _ptrValue == IntPtr.Zero
-				case UsualType.Void
-					return true
+				case UsualType.Array		; return _arrayValue == null .or. _arrayValue:Length == 0
+				CASE UsualType.CodeBlock	; return _codeblockValue == null 
+				case UsualType.Date			; return _dateValue:IsEmpty
+				case UsualType.DateTime		; return _dateTimeValue == DateTime.MinValue
+				case UsualType.Decimal		; return _decimalValue == 0
+				case UsualType.Float		; return _floatValue == 0.0
+				case UsualType.Int64		; return _i64Value == 0
+				case UsualType.Logic		; return _logicValue == false
+				CASE UsualType.Long			; return _intValue == 0
+				case UsualType.Object		; return _refData == null 
+				case UsualType.Ptr			; return _ptrValue == IntPtr.Zero
+				case UsualType.String		; return EmptyString(_stringValue)
+				case UsualType.Symbol		; return _symValue == 0
+				case UsualType.Psz			; return _pszValue == IntPtr.Zero
+				case UsualType.Void			; return true
 				otherwise
 					Debug.Fail( "Unhandled data type in Usual:Empty()" )
 				end switch
@@ -377,34 +366,20 @@ begin namespace XSharp
             internal property SystemType as System.Type
                 get
 					switch _usualType
-					case UsualType.Array
-						return typeof(Array)
-					case UsualType.Codeblock
-						return typeof(Codeblock)
-					case UsualType.Date
-						return typeof(Date)
-					case UsualType.DateTime
-						return typeof(System.DateTime)
-					case UsualType.Decimal
-						return typeof(System.Decimal)
-					case UsualType.Float
-						return typeof(Float)
-					case UsualType.Long
-						return typeof(INT)
-					case UsualType.Int64
-						return typeof(INT64)
-					case UsualType.Logic
-						return typeof(LOGIC)
-					case UsualType.OBJECT
-						return typeof(OBJECT)
-					case UsualType.PTR
-						return typeof(IntPtr)
-					case UsualType.STRING
-						return typeof(STRING)
-					case UsualType.SYMBOL
-						return typeof(SYMBOL)
-					case UsualType.VOID
-						return typeof(USUAL)
+					case UsualType.Array		; return typeof(Array)
+					case UsualType.Codeblock	; return typeof(Codeblock)
+					case UsualType.Date			; return typeof(Date)
+					case UsualType.DateTime		; return typeof(System.DateTime)
+					case UsualType.Decimal		; return typeof(System.Decimal)
+					case UsualType.Float		; return typeof(Float)
+					case UsualType.Int64		; return typeof(INT64)
+					case UsualType.Logic		; return typeof(LOGIC)
+					case UsualType.Long			; return typeof(INT)
+					case UsualType.Object		; return typeof(OBJECT)
+					case UsualType.Ptr			; return typeof(IntPtr)
+					case UsualType.String		; return typeof(STRING)
+					case UsualType.Symbol		; return typeof(SYMBOL)
+					case UsualType.Void			; return typeof(USUAL)
 					otherwise
 						Debug.Fail( "Unhandled data type in Usual:SystemType" )
 					end switch 					                    
@@ -416,26 +391,28 @@ begin namespace XSharp
         #endregion
         #region Properties for the Debugger
 			/// <exclude />
-            property Value as object 
-                get
-                    switch _UsualType
-                        case UsualType.Array		; return (Array) _refData
-                        case UsualType.Date		; return _dateValue
-                        case UsualType.DateTime	; return _dateTimeValue
-                        case UsualType.Decimal	; return _decimalValue
-                        case UsualType.Float		; return _r8Value
-                        case UsualType.Int64		; return _i64Value
-                        case UsualType.Long		; return _intValue
-                        case UsualType.Logic		; return _logicValue
-                        case UsualType.Ptr		; return _ptrValue
-                        case UsualType.Symbol		; return _symValue
-                        case UsualType.String		; return _stringValue
-                        case UsualType.Void		; return "NIL"
-                        case UsualType.Object
-                        otherwise					; return _refData
-                    end switch
-                end get
-            end property
+            PROPERTY Value AS OBJECT 
+                GET
+                    SWITCH _UsualType
+                        CASE UsualType.Array		; RETURN _arrayValue
+						CASE UsualType.Codeblock	; RETURN _codeblockValue
+                        CASE UsualType.Date			; RETURN _dateValue
+                        CASE UsualType.DateTime		; RETURN _dateTimeValue
+                        CASE UsualType.Decimal		; RETURN _decimalValue
+                        CASE UsualType.Float		; RETURN _floatValue
+                        CASE UsualType.Int64		; RETURN _i64Value
+                        CASE UsualType.Logic		; RETURN _logicValue
+                        CASE UsualType.Long			; RETURN _intValue
+						CASE UsualType.Object		; RETURN _refData
+                        CASE UsualType.Ptr			; RETURN _ptrValue
+                        CASE UsualType.Psz			; RETURN _pszValue
+                        CASE UsualType.String		; RETURN _stringValue
+                        CASE UsualType.Symbol		; RETURN _symValue
+                        CASE UsualType.Void			; RETURN "NIL"
+                        OTHERWISE					; RETURN _refData
+                    END SWITCH
+                END GET
+            END PROPERTY
             
         #endregion
         
@@ -1249,7 +1226,8 @@ begin namespace XSharp
                                 return lhs:_i64Value / rhs:_i64Value
                             endif
                         case UsualType.Float
-                            return Float{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                            RETURN FLOAT{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
+
                         case UsualType.Decimal
                             local result as int64
                             local remainder as int64
@@ -1495,7 +1473,7 @@ begin namespace XSharp
             static operator implicit(u as __Usual) as System.IntPtr
             switch u:_usualType
                 CASE UsualType.Ptr		; RETURN u:_ptrValue
-				case UsualType.Psz		; return u:_ptrValue
+				case UsualType.Psz		; return u:_pszValue
                 case UsualType.LONG		; return (IntPtr) u:_intValue
                 case UsualType.Int64		; return (IntPtr) u:_i64Value
                 case UsualType.Decimal	; return (IntPtr) u:_decimalValue 
@@ -1776,7 +1754,7 @@ begin namespace XSharp
                 switch u:_usualType
                     case UsualType.Long	; return checked(Float{(real8) u:_intValue})
                     case UsualType.Int64	; return checked(Float{(real8) u:_i64Value})
-                    case UsualType.Float	; return checked(Float{(real8) u:_r8Value, u:_flags:Width, u:_flags:Decimals})
+                    case UsualType.Float	; return u:_floatValue
                     case UsualType.Decimal; return checked(Float{(real8) u:_decimalValue})
                     case UsualType.Logic	; return Float{iif(u:_logicValue, 1, 0)}
                     case UsualType.Void	; return Float{0}
@@ -1922,17 +1900,17 @@ begin namespace XSharp
 			/// <exclude />            
             static method ToObject(u as __Usual) as object
             switch u:_usualType
-                case UsualType.ARRAY		; return u:_refData
-                case UsualType.CodeBlock	; return u:_refData			
-                case UsualType.Date		; return u:_dateValue
-                case UsualType.DateTime	; return u:_dateTimeValue
-                case UsualType.Decimal	; return u:_decimalValue
-                case UsualType.FLOAT		; return Float{u:_r8Value, u:_width, u:_decimals}
+                case UsualType.ARRAY		; return u:_arrayValue
+                case UsualType.CodeBlock	; return u:_codeblockValue
+                case UsualType.Date			; return u:_dateValue
+                case UsualType.DateTime		; return u:_dateTimeValue
+                case UsualType.Decimal		; return u:_decimalValue
+                case UsualType.FLOAT		; return u:_floatValue
                 case UsualType.Int64		; return u:_i64Value
-                case UsualType.Long		; return u:_intValue
+                case UsualType.Long			; return u:_intValue
                 case UsualType.LOGIC		; return u:_logicValue
                 case UsualType.OBJECT		; return u:_refData
-                case UsualType.PTR		; return u:_ptrValue
+                case UsualType.PTR			; return u:_ptrValue
                 case UsualType.STRING		; return u:_refData
                 case UsualType.SYMBOL		; return u:_symValue
                 case UsualType.Void		; return null

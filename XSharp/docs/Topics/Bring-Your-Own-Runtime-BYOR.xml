@@ -9,7 +9,7 @@
     <para styleclass="Normal" style="padding:5px; border-color:#000000; border-style:single; border-width:1px;"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff99; head-row-background-color:#ffff99; alt-row-background-color:#ffff99;">
       <thead style="vertical-align:top">
         <td>
-          <para styleclass="Normal" style="padding:5px; border-color:#000000; border-style:single; border-width:1px;"><text style="font-weight:bold;">With the full release of X# Banjol you will no longer need the Vulcan Runtime. </text><br/><text style="font-weight:bold;">At this moment we do not have the support for RDDs and for the SDK Libraries,.so if you need these you should use the Vulcan runtime.</text></para>
+          <para styleclass="Normal" style="padding:5px; border-color:#000000; border-style:single; border-width:1px;"><text style="font-weight:bold;">With the full release of X# Bandol you will no longer need the Vulcan Runtime. </text><br/><text style="font-weight:bold;">At this moment we do not have the support for RDDs and for the SDK Libraries,.so if you need these you should use the Vulcan runtime.</text></para>
         </td>
       </thead>
     </table></para>

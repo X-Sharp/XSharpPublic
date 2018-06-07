@@ -13,7 +13,7 @@
     <para styleclass="Normal">We will also list here the features that are not supported yet.</para>
     <para styleclass="Heading2">Introduction</para>
     <para styleclass="Normal">When we designed the X# compile and X# Runtime we had a few focus points in mind:</para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
       <li styleclass="Normal">We want our runtime to be fully Unicode and AnyCPU. It should run on any platform and also both in x86 and x64 mode. &#160;That has caused some challenges because VO is Ansi (and not Unicode) and also X86. In VO you can cast a LONG to a PTR. That will not work in X64 mode because a LONG is 32 bits and a PTR 64 bits</li>
       <li styleclass="Normal">We want the code to compile in &quot;Safe&quot; mode. No unsafe code when not strictly needed. The biggest problem / challenge here is the PTR type. With a PTR you can access memory directly and read/write from memory, even if you don&apos;t &quot;own&quot; that memory. However the same PTR type is also used as &quot;unique identifier&quot; for example in the low level file i/o and in the GUI classes for Window and Control handles. These PTR values are never used to read/write memory but are like object references. We have decided to use the .Net IntPtr type for this kind of handles. Of course the compiler can transparently convert between PTR and IntPtr.</li>
@@ -41,25 +41,10 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="width:251px;">
-          <para styleclass="Normal">XSharp.Core.DLL</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Core">XSharp.Core.DLL</link></para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal">This is the base DLL of the X# Runtime. It contains:</para>
-          <list id="9" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
-            <li styleclass="List">Common interfaces, such as IDate, IFloat, ICodeBlock, IMacroCompiler, used by other X# components</li>
-            <li styleclass="List">Runtime functions that use standard .Net datatypes such as SLen(), AllTrim(), SLen().</li>
-          </list>
-          <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="List">The Runtime State (SetDeleted(), SetExact() etc)</li>
-            <li styleclass="List">The Workarea information </li>
-            <li styleclass="List">The nation resources and collations.</li>
-          </list>
-          <list id="11" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
-            <li styleclass="List">RDD related functions that do not depend on XBase types as DATE, USUAL and FLOAT.</li>
-          </list>
-          <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="List">The low level File/IO </li>
-          </list>
+          <para styleclass="Normal">This is the base DLL of the X# Runtime.</para>
         </td>
         <td style="width:271px;">
           <para styleclass="Normal">X# Core</para>
@@ -70,23 +55,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:251px;">
-          <para styleclass="Normal">XSharp.VO.DLL</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal">This DLL adds the following features to the runtime:</para>
-          <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="List">XBase specific types , such as DATE, ARRAY, USUAL, PSZ, SYMBOL etc </li>
-            <li styleclass="List">CodeBlock type (base class for compile time codeblocks)</li>
-            <li styleclass="List">_CodeBlock type (base class for macro compiled codeblocks)</li>
-            <li styleclass="List">Runtime functions that accept parameters of these types.</li>
-            <li styleclass="List">Memory related functions (MemAlloc, MemFree etc) </li>
-            <li styleclass="List">Terminal IO functions (QOut(), Accept, Wait).</li>
-            <li styleclass="List">RDD Related functions that have optional parameters or parameters of XBase Type</li>
-            <li styleclass="List">Functions to compile and evaluate macros (MComp, MExec)</li>
-            <li styleclass="List">Late binding functions such as Send(), IVarGet() etc</li>
-            <li styleclass="List">VObject type</li>
-            <li styleclass="List">OLEAutoObject type</li>
-          </list>
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the VO dialect.</para>
         </td>
         <td style="width:271px;">
           <para styleclass="Normal">X# VO</para>
@@ -97,21 +69,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:251px;">
-          <para styleclass="Normal">XSharp.Macrocompiler.DLL</para>
-          <para styleclass="Normal"> assemblies it depends on:</para>
-          <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal">XSharp.Scripting.DLL</li>
-            <li styleclass="Normal">XSharp.CodeAnalysis.DLL</li>
-            <li styleclass="Normal">System.Collections.Immutable</li>
-            <li styleclass="Normal">System.Reflection.Metadata</li>
-            <li styleclass="Normal">System.Runtime.Loader</li>
-          </list>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler">XSharp.Macrocompiler.DLL</link></para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal">This DLL is the X# &quot;full&quot; macro compiler. It contains of a class wrapper on top of the X# scripting engine<br/><br/>We are working on a smaller and faster macro compiler. More news about that will follow.<br/><br/>Please note that there is no link between XSharp.VO.DLL and XSharp.Macrocompiler.DLL. When you compile a macro then the runtime will look for the XSharp.Macrocompiler.DLL in the folder where XSharp.VO was found. You can override this mechanism by calling SetMacroCompiler() with the type of the class that implements the macro compiler. This type should implement the XSharp.IMacroCompiler interface.</para>
+          <para styleclass="Normal">This DLL is the X# &quot;full&quot; macro compiler.</para>
         </td>
         <td style="width:271px;">
-          <para styleclass="Normal">X# Core<br/><br/>C# (because it uses Roslyn code)<br/>C# (because it uses Roslyn code)<br/></para>
+          <para styleclass="Normal">X# Core</para>
         </td>
         <td style="width:154px;">
           <para styleclass="Normal">4.6</para>
@@ -119,7 +83,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:251px;">
-          <para styleclass="Normal">XSharp.RDD.DLL</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
         </td>
         <td style="width:618px;">
           <para styleclass="Normal">This will contain the various RDDs implemented for X#. <text style="font-weight:bold; font-style:italic;">It is not included yet.</text></para>
@@ -148,7 +112,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Known Issues</para>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Some of the string conversion functions such as Str() and NTrim() do not always return the same string as VO . In VO the return value of these functions heavily depends on state settings such as SetFixed, SetDecimals, SetScience and more. This will be most likely fixed in Beta 2</li>
       <li styleclass="Normal">Some of the TransForm() pictures also depend on the same settings as Str() and NTrim() and have the same problems</li>
       <li styleclass="Normal">The macro compiler in this release is fully functional but not as fast as we&apos;d like. We are working on a smaller and faster macro compiler.</li>
@@ -493,7 +457,7 @@
           <para styleclass="Body Text"><text styleclass="Normal">The Low level memory functions work both in 32 bits and 64 bits mode. If you use them yourself and your code should also work in both modes we recommend that you are extremely cautious. Casting can have unwanted effects if you are not careful !</text></para>
           <para styleclass="Body Text"><text styleclass="Normal">We have also implemented Memory Groups. These groups do not &quot;control&quot; the pointers allocated for these groups (like in VO where closing a group automatically releases all memory allocated for the group). </text></para>
           <para styleclass="Body Text"><text styleclass="Normal">If you want to trace static memory allocations in the X# runtime then do the following:</text></para>
-          <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="List">Call MemTrace(TRUE) before you start allocating memory</li>
             <li styleclass="List">Create a function or method that implements the MemWalker() delegate:<br/>DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</li>
             <li styleclass="List">Call MemWalk() and pass it your function or method</li>

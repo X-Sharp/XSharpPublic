@@ -1,11 +1,21 @@
 You are allowed to distribute the following XSharp DLLs with your projects:
 
+XSharp.Runtime
+================
+XSharp.Core.dll
+XSharp.VO.dll
+XSharp.MacroCompiler.dll
+XSharp.Scripting.dll
+XSharp.CodeAnalysis.dll
+
 
 XSharp Scripting
 ================
 Xsi.exe
 XSharp.Scripting.dll
 XSharp.CodeAnalysis.dll
+
+These scripting files can all be found in the <Program Files>\XSharp\Bin folder
 
 Support files
 =============
@@ -30,5 +40,5 @@ System.Xml.XmlDocument.dll
 System.Xml.XPath.dll
 System.Xml.XPath.XDocument.dll
 
-These files can all be found in the <Program Files>\XSharp\Bin folder
+These support files can all be found in the <Program Files>\XSharp\Bin folder
 

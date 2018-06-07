@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Workaround for https://github.com/NuGet/Home/issues/1471 -->
-    <Reference Include="$(NuGetPackageRoot)\System.Runtime.Loader\$(SystemRuntimeLoaderVersion)\ref\netstandard1.5\System.Runtime.Loader.dll">
+    <Reference Include="C:\Users\robert\.nuget\packages\System.Runtime.Loader\4.3.0\ref\netstandard1.5\System.Runtime.Loader.dll">
       <Private>False</Private>
     </Reference>
   </ItemGroup>

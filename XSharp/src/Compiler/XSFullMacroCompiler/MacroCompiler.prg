@@ -40,14 +40,14 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
             cMacro := "{||}"
         ENDIF
         lIsBlock := cMacro:Replace(" ",""):StartsWith("{|")
+        IF cache:ContainsKey(cMacro)
+	       	RETURN cache[cMacro]
+        ENDIF
         IF options == NULL
             options := ScriptOptions:Default:WithReferences( ;
 			System.AppDomain:CurrentDomain:GetAssemblies().Where({a => !string.IsNullOrEmpty(a:Location)}) ;
 			)
         ENDIF                                         
-        IF cache:ContainsKey(cMacro)
-	       	RETURN cache[cMacro]
-        ENDIF
         VAR result := XSharpMacro.Compile<XSharp.Codeblock>(cMacro, options, lAllowSingleQuotes)
         cache:Add(cMacro, result)
         RETURN result

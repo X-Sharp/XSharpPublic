@@ -63,84 +63,83 @@
     </helpwindows>
     <styleclasses>
       <styleclass name="Normal" shortcut="0">
-        <style-set media="screen" type="text">font-family:Arial; font-size:11pt; letter-spacing:normal; </style-set>
+        <style-set media="screen" type="text">font-family:Arial; font-size:11pt; letter-spacing:normal;</style-set>
       </styleclass>
       <styleclass name="Body Text" parentclass="Normal" shortcut="114">
-        <style-set media="screen" type="para">margin-bottom:10px; </style-set>
+        <style-set media="screen" type="para">margin-bottom:10px;</style-set>
       </styleclass>
       <styleclass name="List" parentclass="Body Text" shortcut="32882">
-        <style-set media="screen" type="para">text-indent:-48px; margin-bottom:0px; margin-left:48px; tabstops:48px left,96px left,144px left ; </style-set>
+        <style-set media="screen" type="para">text-indent:-48px; margin-bottom:0px; margin-left:48px; tabstops:48px left,96px left,144px left ;</style-set>
       </styleclass>
       <styleclass name="Callouts" parentclass="Normal" shortcut="0">
-        <style-set media="screen" type="para">margin-bottom:5px; </style-set>
-        <style-set media="screen" type="text">font-family:Verdana; font-size:10pt; letter-spacing:-1px; </style-set>
+        <style-set media="screen" type="para">margin-bottom:5px;</style-set>
+        <style-set media="screen" type="text">font-family:Verdana; font-size:10pt; letter-spacing:-1px;</style-set>
       </styleclass>
       <styleclass name="Code Example" parentclass="Normal" shortcut="24643">
-        <style-set media="screen" type="para">margin-left:48px; </style-set>
-        <style-set media="screen" type="text">font-family:Consolas; font-size:9pt; </style-set>
+        <style-set media="screen" type="para">margin-left:48px;</style-set>
+        <style-set media="screen" type="text">font-family:Consolas; font-size:10pt;</style-set>
       </styleclass>
       <styleclass name="Code with box" parentclass="Code Example" shortcut="16507">
-        <style-set media="screen" type="para">margin-right:24px; margin-left:24px; padding:10px; border-style:single; border-width:1px; </style-set>
+        <style-set media="screen" type="para">margin-right:24px; margin-left:24px; padding:10px; border-style:single; border-width:1px;</style-set>
       </styleclass>
       <styleclass name="Comment" parentclass="Normal" shortcut="0">
-        <style-set media="screen" type="para">text-align:center; </style-set>
+        <style-set media="screen" type="para">text-align:center;</style-set>
       </styleclass>
       <styleclass name="Heading1" parentclass="Normal" nextclass="Normal" shortcut="41009">
-        <style-set media="screen" type="para">margin-top:24px; page-break-after:avoid; </style-set>
-        <style-set media="screen" type="text">font-size:16pt; font-weight:bold; color:#000000; </style-set>
+        <style-set media="screen" type="para">margin-top:24px; page-break-after:avoid;</style-set>
+        <style-set media="screen" type="text">font-size:16pt; font-weight:bold; color:#000000;</style-set>
       </styleclass>
       <styleclass name="Heading1 Black" parentclass="Heading1" nextclass="Normal" shortcut="0">
-        <style-set media="screen" type="para">margin-top:24px; </style-set>
-        <style-set media="screen" type="text">color:#000000; </style-set>
+        <style-set media="screen" type="para">margin-top:24px;</style-set>
+        <style-set media="screen" type="text">color:#000000;</style-set>
       </styleclass>
       <styleclass name="Heading2" parentclass="Heading1" nextclass="Normal" shortcut="41010">
-        <style-set media="screen" type="para">margin-top:24px; border:none; </style-set>
-        <style-set media="screen" type="text">font-size:14pt; </style-set>
+        <style-set media="screen" type="para">margin-top:24px; border:none;</style-set>
+        <style-set media="screen" type="text">font-size:14pt;</style-set>
       </styleclass>
       <styleclass name="Heading3" parentclass="Heading2" nextclass="Normal" shortcut="41011">
-        <style-set media="screen" type="para">border:none; </style-set>
-        <style-set media="screen" type="text">font-size:12pt; </style-set>
+        <style-set media="screen" type="para">border:none;</style-set>
+        <style-set media="screen" type="text">font-size:12pt;</style-set>
       </styleclass>
       <styleclass name="Image Caption" parentclass="Normal" shortcut="0">
-        <style-set media="screen" type="text">font-style:italic; </style-set>
+        <style-set media="screen" type="text">font-style:italic;</style-set>
       </styleclass>
       <styleclass name="Notes" parentclass="Normal" shortcut="0">
-        <style-set media="screen" type="text">font-style:italic; </style-set>
+        <style-set media="screen" type="text">font-style:italic;</style-set>
       </styleclass>
       <styleclass name="NotesBox" parentclass="Notes" shortcut="0">
-        <style-set media="screen" type="para">margin-top:10px; </style-set>
+        <style-set media="screen" type="para">margin-top:10px;</style-set>
       </styleclass>
       <styleclass name="Popup Box" parentclass="Normal" shortcut="0">
-        <style-set media="screen" type="text">font-size:9pt; </style-set>
+        <style-set media="screen" type="text">font-size:9pt;</style-set>
       </styleclass>
       <styleclass name="SeeAlso" parentclass="Normal" nextclass="Normal" shortcut="0">
-        <style-set media="screen" type="para">margin-top:10px; page-break-after:avoid; </style-set>
-        <style-set media="screen" type="text">font-size:12pt; font-style:italic; </style-set>
-        <style-set media="print" type="para"/>
-        <style-set media="print" type="text">font-size:12pt; font-weight:bold; font-style:italic; </style-set>
+        <style-set media="screen" type="para">margin-top:10px; page-break-after:avoid;</style-set>
+        <style-set media="screen" type="text">font-size:12pt; font-style:italic;</style-set>
+        <style-set media="print" type="text">font-size:12pt; font-weight:bold; font-style:italic;</style-set>
       </styleclass>
       <styleclass name="Tip Body" parentclass="Normal" shortcut="0">
-        <style-set media="screen" type="text">font-family:Verdana; letter-spacing:-1px; </style-set>
-        <style-set media="print" type="text">font-size:9pt; </style-set>
+        <style-set media="screen" type="text">font-family:Verdana; letter-spacing:-1px;</style-set>
+        <style-set media="print" type="text">font-size:9pt;</style-set>
       </styleclass>
       <styleclass name="Tip Heading" parentclass="Normal" nextclass="Body Text HowTo" shortcut="0">
-        <style-set media="screen" type="text">font-family:Tahoma; font-weight:bold; </style-set>
+        <style-set media="screen" type="text">font-family:Tahoma; font-weight:bold;</style-set>
       </styleclass>
       <styleclass name="T_Emphasis" shortcut="0">
-        <style-set media="screen" type="text">font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%; </style-set>
+        <style-set media="screen" type="text">font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;</style-set>
       </styleclass>
       <styleclass name="T_Entry" shortcut="24645">
-        <style-set media="screen" type="text">font-family:'Courier New'; font-size:11pt; font-weight:bold; font-style:normal; letter-spacing:-1px; </style-set>
+        <style-set media="screen" type="text">font-family:'Courier New'; font-size:11pt; font-weight:bold; font-style:normal; letter-spacing:-1px;</style-set>
       </styleclass>
       <styleclass name="T_Entry 10pt" parentclass="T_Entry" shortcut="0">
-        <style-set media="screen" type="text">font-size:10pt; font-style:italic; </style-set>
+        <style-set media="screen" type="text">font-size:10pt; font-style:italic;</style-set>
       </styleclass>
       <styleclass name="T_Menu" shortcut="24653">
-        <style-set media="screen" type="text">font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; color:#000000; letter-spacing:normal; </style-set>
+        <style-set media="screen" type="text">font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; color:#000000; letter-spacing:normal;</style-set>
       </styleclass>
       <styleclass name="T_Menu 10p" parentclass="T_Menu" shortcut="0"/>
       <tablestyleclass name="Default">
-        <style-set media="screen">width:100%; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff; </style-set>
+        <style-set media="screen">width:100%; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;</style-set>
       </tablestyleclass>
     </styleclasses>
     <config-group name="project">

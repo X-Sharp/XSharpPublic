@@ -685,8 +685,8 @@
     </table></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="List">Requires VulcanRT.DLL</li>
-      <li styleclass="List">Requires VulcanRTFuncs.DLL</li>
+      <li styleclass="List">Requires VulcanRT.DLL or XSharp.VO.DLL</li>
+      <li styleclass="List">Requires VulcanRTFuncs.DLL or XSharp.VO.DLL</li>
       <li styleclass="List">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</li>
       <li styleclass="List">Only supported inside functions and methods with Clipper Calling convention</li>
       <li styleclass="List">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>

@@ -12,6 +12,18 @@
       </topicref>
       <topicref type="topic" id="432585631903751" build="ALL" modified="2018-06-07T11:14:11.511Z" icon="0" href="The-X-Runtime">
         <caption translate="true">The X# Runtime</caption>
+        <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
+          <caption translate="true">XSharp.Core</caption>
+        </topicref>
+        <topicref type="topic" id="432586107516927" build="ALL" modified="2018-06-07T17:53:59.687Z" icon="0" href="XSharp_VO">
+          <caption translate="true">XSharp.VO</caption>
+        </topicref>
+        <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
+          <caption translate="true">XSharp.Macrocompiler</caption>
+        </topicref>
+        <topicref type="topic" id="432587430200533" build="ALL" modified="2018-06-07T17:54:16.764Z" icon="0" href="XSharp_RDD">
+          <caption translate="true">XSharp.RDD</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
         <caption translate="true">Dialects</caption>
@@ -21,6 +33,9 @@
       </topicref>
       <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
         <caption translate="true">Known Issues</caption>
+      </topicref>
+      <topicref type="topic" id="432589452071368" build="ALL" modified="2018-06-07T18:01:46.553Z" icon="0" href="Installation">
+        <caption translate="true">Installation</caption>
       </topicref>
       <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
         <caption translate="true">New language features </caption>

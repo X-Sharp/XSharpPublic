@@ -1,20 +1,12 @@
 @echo off
-if "%1" == "Debug" goto Ok
-if "%1" == "debug" goto Ok
-if "%1" == "Release" goto Ok
-if "%1" == "release" goto Ok
-goto Error
-:Ok
-Echo Building Compiler 
-rem Reset the XSharpDev path so we will not use the compiler we are generating
 set tmpXSharpDev=%XSharpDev%
 set XSharpDev=
-msbuild Compiler.sln 		/fl1 /flp1:Append /p:Configuration=%1	    /t:Build /p:OfficialBuild=true /m /v:m /nologo
-if exist build-%1.log del build-%1.log
-rename msbuild1.log build-%1.log
+taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"
+Echo Building Compiler 
+msbuild Master.sln /fl1 /p:Configuration=Debug		/t:Build /property:OfficialBuild=true /m /v:m /nologo
+msbuild Master.sln /fl2 /p:Configuration=Release	/t:Build /property:OfficialBuild=true /m /v:m /nologo
+if exist build-debug.log del build-debug.log
+if exist build-release.log del build-release.log
+rename msbuild1.log build-debug.log
+rename msbuild2.log build-release.log
 set XSharpDev=%tmpXSharpDev%
-Goto End
-:Error
-echo Syntax: Build Debug or Build Release
-:End
-

@@ -140,7 +140,7 @@
       </styleclass>
       <styleclass name="T_Menu 10p" parentclass="T_Menu" shortcut="0"/>
       <tablestyleclass name="Default">
-        <style-set media="screen">width:100%; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:none; </style-set>
+        <style-set media="screen">width:100%; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff; </style-set>
       </tablestyleclass>
     </styleclasses>
     <config-group name="project">
@@ -474,7 +474,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">4</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">4</config-value>

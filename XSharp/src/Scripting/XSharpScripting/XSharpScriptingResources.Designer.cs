@@ -10,7 +10,6 @@
 
 namespace LanguageService.CodeAnalysis.Scripting {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class XSharpScriptingResources {
@@ -40,7 +39,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.XSharpScriptingResources", typeof(XSharpScriptingResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.XSharpScriptingResources", typeof(XSharpScriptingResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,7 +69,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         ///  /help                          Display this usage message (alternative form: /?)
         ///  /version                       Display the version and exit
         ///  /i                             Drop to REPL after executing the specified script.
-        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative form:  [rest of string was truncated]&quot;;.
+        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternativ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InteractiveHelp {
             get {

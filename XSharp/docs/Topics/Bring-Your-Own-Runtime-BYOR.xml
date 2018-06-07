@@ -1,18 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Bring Your Own Runtime (BYOR)</title>
   <body>
     <header>
       <para styleclass="Heading1">Bring Your Own Runtime (BYOR)</para>
     </header>
-    <para styleclass="Normal">VO and Vulcan support is available in this build of XSharp through what we call the Bring Your Own Runtime principle.</para>
+    <para styleclass="Normal" style="padding:5px; border-color:#000000; border-style:single; border-width:1px;"><table styleclass="Default" rowcount="1" colcount="1" style="background-color:#ffff99; head-row-background-color:#ffff99; alt-row-background-color:#ffff99;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="padding:5px; border-color:#000000; border-style:single; border-width:1px;"><text style="font-weight:bold;">With the full release of X# Banjol you will no longer need the Vulcan Runtime. </text><br/><text style="font-weight:bold;">At this moment we do not have the support for RDDs and for the SDK Libraries,.so if you need these you should use the Vulcan runtime.</text></para>
+        </td>
+      </thead>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">VO and Vulcan support is available in this build of XSharp through what we call the Bring Your Own Runtime principle.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you own a license of Vulcan, you can copy the DLLs that you find in the &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 folder to a folder that is inside your solution.</para>
     <para styleclass="Normal">Then add references to the DLLs that you need in your project.</para>
     <para styleclass="Heading3">DLLs you <text style="color:#ff0000;">MUST</text> add if you compile for the VO/Vulcan dialect:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanRT.DLL</li>
       <li styleclass="Normal">VulcanRTFuncs.DLL</li>
     </list>
@@ -20,7 +28,7 @@
     <para styleclass="Normal">These 2 files are NEVER added to your Vulcan projects, Vulcan adds a reference to these DLLs automatically. XSharp does not do that, so you should add them yourself. </para>
     <para styleclass="Heading3">DLLs that you <text style="color:#ff0000;">MAY</text> want to add, depending on what you are using in your application:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanVOSystemClasses.dll </li>
       <li styleclass="Normal">VulcanVORDDClasses.dll </li>
       <li styleclass="Normal">VulcanVOGUIClasses.dll </li>
@@ -31,7 +39,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">DLLs that you normally do <text style="color:#ff0000;">NOT</text> add to your project (these are handled automatically by the Vulcan Runtime)</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanRDD.DLL</li>
       <li styleclass="Normal">VulcanMacroCompiler.DLL</li>
       <li styleclass="Normal">VulcanDBFCDX.dll </li>

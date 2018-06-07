@@ -10,7 +10,6 @@
 
 namespace LanguageService.CodeAnalysis.Scripting {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ScriptingResources {
@@ -40,7 +39,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.ScriptingResources", typeof(ScriptingResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.ScriptingResources", typeof(ScriptingResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -160,8 +159,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         ///  Ctrl-C        Exit the REPL.
         ///REPL commands:
         ///  #help         Display help on available commands and key bindings.
-        ///Script directives:
-        ///  #r [rest of string was truncated]&quot;;.
+        ///Script directiv [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HelpText {
             get {

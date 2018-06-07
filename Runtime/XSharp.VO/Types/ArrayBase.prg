@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 				oProp	 := __GetProperty( sPropertyName)
 				oElement := _internalList[(INT) index ]
-				RETURN oProp:GetValue(oElement)
+				RETURN oProp:GetValue(oElement, null)
 			END GET
 			SET
 				IF  index > _internalList:Count-1
@@ -170,7 +170,7 @@ BEGIN NAMESPACE XSharp
 					LOCAL oProp    AS PropertyInfo
 					oProp	 := __GetProperty( sPropertyName)
 					oElement := _internalList[(INT) index ]
-					oProp:SetValue(oElement, VALUE)
+					oProp:SetValue(oElement, VALUE,null)
 				ENDIF
 			END SET
 		END PROPERTY

@@ -57,7 +57,7 @@ abstract class XSharp.CodeBlock implements ICodeBlock
 	end class
 
 
-/// <summary>Internal type that is the base class for compile time macros.
+/// <summary>Internal type that is the base class for runtime macros.
 /// </summary>
 /// <seealso cref="T:XSharp.ICodeBlock"/>
 /// <seealso cref="T:XSharp.IMacroCompiler"/>

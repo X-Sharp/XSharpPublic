@@ -830,7 +830,7 @@ FUNCTION Object2Array(o AS OBJECT) AS ARRAY
 	FOREACH p AS PropertyInfo IN aProps
 		local uVal as usual
 		IF p:CanRead 
-			uVal := p:GetValue(o)
+			uVal := p:GetValue(o,null)
 			AADD(aResult, uVal)
 		endif
 	NEXT

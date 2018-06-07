@@ -324,5 +324,41 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal(0u , ALen(Directory("M:")))
 		Assert.Equal(0u , ALen(Directory("M:","V")))
 
+	[Fact, Trait("Category", "Empty")];
+	METHOD EmptyFuncTests() AS VOID
+		Assert.True(Empty(0))
+		Assert.True(Empty(false))
+		Assert.True(Empty(""))
+		Assert.True(Empty(Chr(10) + Chr(9) + Chr(13)))
+		Assert.True(Empty(NULL_SYMBOL))
+		Assert.True(Empty(0000.00.00))
+		Assert.True(Empty({}))
+
+		Assert.True(Empty(NULL_PTR))
+		LOCAL p AS PTR
+		p := NULL_PTR
+		Assert.True(Empty(p))
+
+		Assert.True(Empty(NULL_PSZ))
+		LOCAL z AS PSZ
+		z := NULL_PSZ
+		Assert.True(Empty(z))
+		
+		
+
+		Assert.False(Empty(1))
+		Assert.False(Empty(true))
+		Assert.False(Empty("a"))
+		Assert.False(Empty(Chr(1)))
+		Assert.False(Empty(#abc))
+		Assert.False(Empty(2000.01.01))
+		Assert.False(Empty({{}}))
+		
+		p := @p
+		Assert.False(Empty(p))
+		z := String2Psz("test")
+		Assert.False(Empty(z))
+
+
 	END CLASS
 END NAMESPACE

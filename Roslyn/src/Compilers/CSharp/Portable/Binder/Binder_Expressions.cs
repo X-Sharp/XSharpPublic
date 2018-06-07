@@ -6435,7 +6435,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case TypeKind.Class:
                 case TypeKind.Struct:
 #if XSHARP
-                    return BindIndexerOrVulcanArrayAccess(node, expr, arguments, diagnostics);
+                    return BindIndexerOrVOArrayAccess(node, expr, arguments, diagnostics);
 
 #endif
                 case TypeKind.Interface:

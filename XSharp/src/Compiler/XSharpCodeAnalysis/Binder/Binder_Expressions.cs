@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-        private BoundExpression BindIndexerOrVulcanArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        private BoundExpression BindIndexerOrVOArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
             if (Compilation.Options.IsDialectVO)
             {
@@ -183,20 +183,39 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                    int argno = 0;
                     foreach (var arg in analyzedArguments.Arguments)
                     {
                         BoundExpression newarg;
-                        if (!Compilation.Options.ArrayZero)
+                        bool mustSubtract = false;
+                        bool mustBeNumeric = false;
+                        ++argno;
+                        if (cf.ConstructedFrom == arrayBaseType)
+                        {
+                            mustSubtract = argno == 1 && !Compilation.Options.ArrayZero;
+                            mustBeNumeric = argno == 1;
+                        }
+                        else
+                        {
+                            mustSubtract = !Compilation.Options.ArrayZero;
+                            mustBeNumeric = true;
+                        }
+
+                        if (mustSubtract)
                         {
                             newarg = SubtractIndex(arg, diagnostics);
                         }
-                        else
+                        else if (mustBeNumeric)
                         {
                             newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
                             if (newarg.HasErrors)
                             {
                                 Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
                             }
+                        }
+                        else
+                        {
+                            newarg = arg;
                         }
                         argsBuilder.Add(newarg);
                     }

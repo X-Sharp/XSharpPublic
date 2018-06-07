@@ -95,7 +95,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
         ENDIF
         RETURN 0
         // Only available in 4.5
-     [MethodImpl(MethodImplOptions.AggressiveInlining)];
+     //[MethodImpl(MethodImplOptions.AggressiveInlining)];
      PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
         LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
         IF Is32Bits
@@ -106,7 +106,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
         RETURN pMemBlockStart
         
      // Only available in 4.5
-     [MethodImpl(MethodImplOptions.AggressiveInlining)];
+     //[MethodImpl(MethodImplOptions.AggressiveInlining)];
      PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPTR ) AS FixedMemBlockEnd PTR
         VAR pMemBlockStart := _GetMemBlockStart (pMemory)
         IF Is32Bits
@@ -173,6 +173,8 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
                     Marshal.FreeHGlobal(pMemBlockStart)
                     result := FixedMemory.SUCCESS
                 ENDIF
+			ELSE
+				// TODO: Throw an exception or log the result
             ENDIF
         CATCH
             result := FixedMemory.FAILURE
@@ -267,20 +269,20 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
         END TRY
         RETURN pResult
         
-    [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
     INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPTR
         // No pointer validation for speed. Should be done in wrapper function
         _memSetDelegate(pMemory, 0, iCount)
         RETURN pMemory
         
         
-    [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
     INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         _memCopyDelegate(pDestination, pSource, iCount)
         RETURN pDestination
         
-    [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
     INTERNAL STATIC METHOD SET( pMemory AS IntPtr, b AS BYTE, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         _memSetDelegate(pMemory, b, iCount)

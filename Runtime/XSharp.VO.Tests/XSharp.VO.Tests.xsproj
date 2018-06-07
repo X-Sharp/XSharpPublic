@@ -69,7 +69,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
@@ -83,6 +83,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths />
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -122,6 +133,7 @@
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="ClipperCallingTests.prg" />
     <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="MacroTest.prg" />
     <Compile Include="OemTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="ErrorTests.prg" />

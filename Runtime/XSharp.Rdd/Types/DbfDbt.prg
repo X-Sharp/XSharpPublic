@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     str := oValue ASTYPE STRING
                 ENDIF
-                
+				return true                
                 
                 /// <inheritdoc />
             VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
@@ -91,13 +91,14 @@ BEGIN NAMESPACE XSharp.RDD
                 isOk := ( SELF:_hFile != F_ERROR )
                 IF isOk
                     // Per default, Header Block Size if 512
-                    LOCAL memoHeader AS BYTE[]{ 512 }
+                    LOCAL memoHeader AS BYTE[]
                     LOCAL nextBlock AS LONG
                     //
+					memoheader := byte[]{ 512 }
                     nextBlock := 1
                     Array.Copy(BitConverter.GetBytes(nextBlock),0, memoHeader, 0, SIZEOF(LONG))
                     //
-                    FWrite3( SELF:_File, memoHeader, 512 )
+                    FWrite3( SELF:_hFile, memoHeader, 512 )
                 ELSE
                     SELF:_oRDD:_DbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
                 ENDIF
@@ -122,9 +123,9 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 RETURN isOk
                 
-            PROPERTY NextBlock 	 AS LONG ;
-            GET BitConverter.ToInt32( SELF:_memoBlock, 0);
-            SET Array.Copy(BitConverter.GetBytes(VALUE),0, SELF:_memoBlock, 0, SIZEOF(LONG))
+//            PROPERTY NextBlock 	 AS LONG ;
+//            GET BitConverter.ToInt32( SELF:_memoBlock, 0);
+//            SET Array.Copy(BitConverter.GetBytes(VALUE),0, SELF:_memoBlock, 0, SIZEOF(LONG))
             
             
         END CLASS    

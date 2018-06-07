@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0664</para>
+    <para styleclass="Heading1">Error XS0664</para>
   </header>
   <para styleclass="Normal">Literal of type double cannot be implicitly converted to type &apos;{1}&apos;; use an &apos;{0}&apos; suffix to create a literal of this type</para>
   <para styleclass="Normal"></para>

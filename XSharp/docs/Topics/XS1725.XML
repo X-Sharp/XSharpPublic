@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1725</para>
+    <para styleclass="Heading1">Error XS1725</para>
   </header>
   <para styleclass="Normal">Friend assembly reference &apos;{0}&apos; is invalid. InternalsVisibleTo declarations cannot have a version, culture, public key token, or processor architecture specified.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7024</para>
+    <para styleclass="Heading1">Error XS7024</para>
   </header>
   <para styleclass="Normal">Delegate &apos;{0}&apos; has no invoke method or an invoke method with a return type or parameter types that are not supported.</para>
   <para styleclass="Normal"></para>

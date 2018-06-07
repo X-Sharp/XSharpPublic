@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0677</para>
+    <para styleclass="Heading1">Error XS0677</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: a volatile field cannot be of the type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

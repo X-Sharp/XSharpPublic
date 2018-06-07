@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9024</para>
+      <para styleclass="Heading1">Error XS9024</para>
     </header>
     <para styleclass="Normal">The EXIT statement is not allowed inside a SWITCH statement</para>
   </body>

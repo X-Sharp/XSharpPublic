@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8179</para>
+    <para styleclass="Heading1">Error XS8179</para>
   </header>
   <para styleclass="Normal">Predefined type &apos;{0}&apos; is not defined or imported</para>
   <para styleclass="Normal"></para>

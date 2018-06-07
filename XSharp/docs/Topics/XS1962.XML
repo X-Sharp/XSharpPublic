@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1962</para>
+    <para styleclass="Heading1">Error XS1962</para>
   </header>
   <para styleclass="Normal">The typeof operator cannot be used on the dynamic type</para>
   <para styleclass="Normal"></para>

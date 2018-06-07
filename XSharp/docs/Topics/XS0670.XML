@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0670</para>
+    <para styleclass="Heading1">Error XS0670</para>
   </header>
   <para styleclass="Normal">Field cannot have void type</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8198</para>
+    <para styleclass="Heading1">Error XS8198</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain an out argument variable declaration.</para>
   <para styleclass="Normal"></para>

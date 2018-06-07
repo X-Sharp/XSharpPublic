@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1528</para>
+    <para styleclass="Heading1">Error XS1528</para>
   </header>
   <para styleclass="Normal">Expected ; or = (cannot specify constructor arguments in declaration)</para>
   <para styleclass="Normal"></para>

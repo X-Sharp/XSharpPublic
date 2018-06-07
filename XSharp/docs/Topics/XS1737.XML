@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1737</para>
+    <para styleclass="Heading1">Error XS1737</para>
   </header>
   <para styleclass="Normal">Optional parameters must appear after all required parameters</para>
   <para styleclass="Normal"></para>

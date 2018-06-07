@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0262</para>
+    <para styleclass="Heading1">Error XS0262</para>
   </header>
   <para styleclass="Normal">Partial declarations of &apos;{0}&apos; have conflicting accessibility modifiers</para>
   <para styleclass="Normal"></para>

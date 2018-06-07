@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0106</title>
   <keywords>
     <keyword>XS0106</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0106</para>
+      <para styleclass="Heading1">Error XS0106</para>
     </header>
     <para styleclass="Normal">The modifier &apos;modifier&apos; is not valid for this item</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">A class or interface member was marked with an invalid access modifier. The following examples describe some of these invalid modifiers:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">The static and public modifiers are not permitted on interface methods.</li>
       <li styleclass="Normal" style="margin-left:13px;">The<text styleclass="Code Example"> public</text> keyword is not allowed on an explicit interface declaration. In this case, remove the <text styleclass="Code Example">public</text> keyword from the explicit interface declaration.</li>
       <li styleclass="Normal" style="margin-left:13px;">The abstract keyword is not allowed on an explicit interface declaration because an explicit interface implementation can never be overridden.</li>
@@ -27,7 +27,7 @@
     <para styleclass="Normal">The following sample generates XS0106.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0106.prg  <br/></para>
+    <para styleclass="Code with box">// XS0106.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

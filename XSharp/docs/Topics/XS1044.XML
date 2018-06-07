@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1044</para>
+    <para styleclass="Heading1">Error XS1044</para>
   </header>
   <para styleclass="Normal">Cannot use more than one type in a for, using, fixed, or declaration statement</para>
   <para styleclass="Normal"></para>

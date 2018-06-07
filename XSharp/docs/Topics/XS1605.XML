@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1605</para>
+    <para styleclass="Heading1">Error XS1605</para>
   </header>
   <para styleclass="Normal">Cannot pass &apos;{0}&apos; as a ref or out argument because it is read-only</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0735</para>
+    <para styleclass="Heading1">Error XS0735</para>
   </header>
   <para styleclass="Normal">Invalid type specified as an argument for TypeForwardedTo attribute</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0236</para>
+    <para styleclass="Heading1">Error XS0236</para>
   </header>
   <para styleclass="Normal">A field initializer cannot reference the non-static field, method, or property &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

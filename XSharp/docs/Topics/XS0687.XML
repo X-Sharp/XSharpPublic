@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0687</para>
+    <para styleclass="Heading1">Error XS0687</para>
   </header>
   <para styleclass="Normal">The namespace alias qualifier &apos;::&apos; always resolves to a type or namespace so is illegal here. Consider using &apos;.&apos; instead.</para>
   <para styleclass="Normal"></para>

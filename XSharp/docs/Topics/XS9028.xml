@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9028</para>
+      <para styleclass="Heading1">Error XS9028</para>
     </header>
     <para styleclass="Normal">Unknown Literal Typename {0} found in VOTypeNameExpression</para>
     <para styleclass="Normal"></para>

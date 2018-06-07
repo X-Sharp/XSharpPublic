@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2044</para>
+    <para styleclass="Heading1">Error XS2044</para>
   </header>
   <para styleclass="Normal">/sourcelink switch is only supported when emitting Portable PDB (/debug:portable or /debug:embedded must be specified).</para>
   <para styleclass="Normal"></para>

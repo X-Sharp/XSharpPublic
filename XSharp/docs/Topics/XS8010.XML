@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8010</para>
+    <para styleclass="Heading1">Error XS8010</para>
   </header>
   <para styleclass="Normal">Agnostic assembly cannot have a processor specific module &apos;{0}&apos;.</para>
   <para styleclass="Normal"></para>

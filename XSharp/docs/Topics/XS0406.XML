@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0406</para>
+    <para styleclass="Heading1">Error XS0406</para>
   </header>
   <para styleclass="Normal">The class type constraint &apos;{0}&apos; must come before any other constraints</para>
   <para styleclass="Normal"></para>

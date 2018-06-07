@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0815</para>
+    <para styleclass="Heading1">Error XS0815</para>
   </header>
   <para styleclass="Normal">Cannot assign {0} to an implicitly-typed variable</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS3028</para>
+    <para styleclass="Heading1">Error XS3028</para>
   </header>
   <para styleclass="Normal">Algorithm &apos;{0}&apos; is not supported</para>
   <para styleclass="Normal"></para>

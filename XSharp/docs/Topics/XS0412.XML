@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0412</para>
+    <para styleclass="Heading1">Error XS0412</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: a parameter or local variable cannot have the same name as a method type parameter</para>
   <para styleclass="Normal"></para>

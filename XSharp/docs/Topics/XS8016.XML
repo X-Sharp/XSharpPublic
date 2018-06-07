@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8016</para>
+    <para styleclass="Heading1">Error XS8016</para>
   </header>
   <para styleclass="Normal">Transparent identifier member access failed for field &apos;{0}&apos; of &apos;{1}&apos;.  Does the data being queried implement the query pattern?</para>
   <para styleclass="Normal"></para>

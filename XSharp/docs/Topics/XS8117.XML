@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8117</para>
+    <para styleclass="Heading1">Error XS8117</para>
   </header>
   <para styleclass="Normal">Invalid operand for pattern match; value required, but found &apos;{0}&apos;.</para>
   <para styleclass="Normal"></para>

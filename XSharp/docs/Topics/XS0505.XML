@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0505</para>
+    <para styleclass="Heading1">Error XS0505</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot override because &apos;{1}&apos; is not a function</para>
   <para styleclass="Normal"></para>

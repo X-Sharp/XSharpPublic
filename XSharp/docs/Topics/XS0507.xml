@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0507</para>
+      <para styleclass="Heading1">Error XS0507</para>
     </header>
     <para styleclass="Normal">&apos;function1&apos; : cannot change access modifiers when overriding &apos;access&apos; inherited member &apos;function2&apos;</para>
     <para styleclass="Normal"></para>

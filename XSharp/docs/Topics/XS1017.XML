@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1017</para>
+    <para styleclass="Heading1">Error XS1017</para>
   </header>
   <para styleclass="Normal">Catch clauses cannot follow the general catch clause of a try statement</para>
   <para styleclass="Normal"></para>

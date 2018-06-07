@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0138</title>
-<keywords>
-<keyword>XS0138</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0138</para>
-  </header>
-  <para styleclass="Normal">A &apos;using namespace&apos; directive can only be applied to namespaces; &apos;{0}&apos; is a type not a namespace. Consider a &apos;using static&apos; directive instead</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0138</title>
+  <keywords>
+    <keyword>XS0138</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0138</para>
+    </header>
+    <para styleclass="Normal">A &apos;using namespace&apos; directive can only be applied to namespaces; &apos;{0}&apos; is a type not a namespace. Consider a &apos;using static&apos; directive instead</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

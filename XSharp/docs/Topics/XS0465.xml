@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0465</para>
+      <para styleclass="Heading1">Error XS0465</para>
     </header>
     <para styleclass="Normal">Introducing a &apos;Finalize&apos; method can interfere with destructor invocation. Did you intend to declare a destructor?</para>
     <para styleclass="Normal"></para>

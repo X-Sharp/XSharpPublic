@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1936</para>
+      <para styleclass="Heading1">Error XS1936</para>
     </header>
     <para styleclass="Normal">Could not find an implementation of the query pattern for source type &apos;type&apos;. &apos;method&apos; not found.</para>
     <para styleclass="Normal"></para>

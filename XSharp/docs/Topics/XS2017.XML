@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2017</para>
+    <para styleclass="Heading1">Error XS2017</para>
   </header>
   <para styleclass="Normal">Cannot specify /main if building a module or library</para>
   <para styleclass="Normal"></para>

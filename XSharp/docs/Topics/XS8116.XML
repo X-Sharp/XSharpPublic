@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8116</para>
+    <para styleclass="Heading1">Error XS8116</para>
   </header>
   <para styleclass="Normal">It is not legal to use nullable type &apos;{0}&apos; in a pattern; use the underlying type &apos;{1}&apos; instead.</para>
   <para styleclass="Normal"></para>

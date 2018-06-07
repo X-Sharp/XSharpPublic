@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0268</para>
+    <para styleclass="Heading1">Error XS0268</para>
   </header>
   <para styleclass="Normal">Imported type &apos;{0}&apos; is invalid. It contains a circular base class dependency.</para>
   <para styleclass="Normal"></para>

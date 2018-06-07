@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0573</para>
+    <para styleclass="Heading1">Error XS0573</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot have instance property or field initializers in structs</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1914</para>
+    <para styleclass="Heading1">Error XS1914</para>
   </header>
   <para styleclass="Normal">Static field or property &apos;{0}&apos; cannot be assigned in an object initializer</para>
   <para styleclass="Normal"></para>

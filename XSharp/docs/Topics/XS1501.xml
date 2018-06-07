@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1501</para>
+      <para styleclass="Heading1">Error XS1501</para>
     </header>
     <para styleclass="Normal">No overload for method &apos;method&apos; takes &apos;number&apos; arguments</para>
     <para styleclass="Normal"></para>

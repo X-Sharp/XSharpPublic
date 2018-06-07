@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1637</para>
+    <para styleclass="Heading1">Error XS1637</para>
   </header>
   <para styleclass="Normal">Iterators cannot have unsafe parameters or yield types</para>
   <para styleclass="Normal"></para>

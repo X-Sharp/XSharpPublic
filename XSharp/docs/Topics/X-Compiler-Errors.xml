@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Compiler Errors</title>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# Compiler Errors and Warnings</title>
   <body>
     <header>
-      <para styleclass="Heading1">X# Compiler Errors</para>
+      <para styleclass="Heading1">X# Compiler Errors and Warnings</para>
     </header>
-    <para styleclass="Normal">On the following pages you will find descriptions of the most common compiler errors.</para>
-    <para styleclass="Normal">The compiler errors with numbers &lt; 9000 are &quot;standard&quot; Roslyn (C#) compiler errors.</para>
-    <para styleclass="Normal">The compiler errors with numbers &gt; 9000 are specific X# compiler errors.</para>
+    <para styleclass="Normal">On the following pages you will find descriptions of the most common compiler errors and warnings</para>
+    <para styleclass="Normal">The compiler errors with numbers &lt; 9000 are &quot;standard&quot; Roslyn (C#) compiler errors and warnings</para>
+    <para styleclass="Normal">The compiler errors with numbers &gt; 9000 are specific for X#.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

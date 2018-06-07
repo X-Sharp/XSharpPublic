@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0855</para>
+    <para styleclass="Heading1">Error XS0855</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain an indexed property</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0751</para>
+    <para styleclass="Heading1">Error XS0751</para>
   </header>
   <para styleclass="Normal">A partial method must be declared within a partial class or partial struct</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7064</para>
+    <para styleclass="Heading1">Error XS7064</para>
   </header>
   <para styleclass="Normal">Error opening icon file {0} -- {1}</para>
   <para styleclass="Normal"></para>

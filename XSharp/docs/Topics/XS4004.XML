@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4004</para>
+    <para styleclass="Heading1">Error XS4004</para>
   </header>
   <para styleclass="Normal">Cannot await in an unsafe context</para>
   <para styleclass="Normal"></para>

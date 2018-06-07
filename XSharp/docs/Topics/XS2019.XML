@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2019</para>
+    <para styleclass="Heading1">Error XS2019</para>
   </header>
   <para styleclass="Normal">Invalid target type for /target: must specify &apos;exe&apos;, &apos;winexe&apos;, &apos;library&apos;, or &apos;module&apos;</para>
   <para styleclass="Normal"></para>

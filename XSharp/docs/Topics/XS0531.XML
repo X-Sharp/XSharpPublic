@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0531</para>
+    <para styleclass="Heading1">Error XS0531</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: interface members cannot have a definition</para>
   <para styleclass="Normal"></para>

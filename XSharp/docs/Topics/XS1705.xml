@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1705</para>
+      <para styleclass="Heading1">Error XS1705</para>
     </header>
     <para styleclass="Normal">Assembly &apos;AssemblyName1&apos; uses &apos;TypeName&apos; which has a higher version than referenced assembly &apos;AssemblyName2&apos;</para>
     <para styleclass="Normal"></para>

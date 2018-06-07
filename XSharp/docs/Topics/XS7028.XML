@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7028</para>
+    <para styleclass="Heading1">Error XS7028</para>
   </header>
   <para styleclass="Normal">Error signing output with public key from container &apos;{0}&apos; -- {1}</para>
   <para styleclass="Normal"></para>

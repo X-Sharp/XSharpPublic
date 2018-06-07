@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1763</para>
+    <para styleclass="Heading1">Error XS1763</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; is of type &apos;{1}&apos;. A default parameter value of a reference type other than string can only be initialized with null</para>
   <para styleclass="Normal"></para>

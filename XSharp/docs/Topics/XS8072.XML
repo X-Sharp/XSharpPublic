@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8072</para>
+    <para styleclass="Heading1">Error XS8072</para>
   </header>
   <para styleclass="Normal">An expression tree lambda may not contain a null propagating operator.</para>
   <para styleclass="Normal"></para>

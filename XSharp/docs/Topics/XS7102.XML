@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7102</para>
+    <para styleclass="Heading1">Error XS7102</para>
   </header>
   <para styleclass="Normal">Compilation options &apos;{0}&apos; and &apos;{1}&apos; can&apos;t both be specified at the same time.</para>
   <para styleclass="Normal"></para>

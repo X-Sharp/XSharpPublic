@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9061</para>
+      <para styleclass="Heading1">Error XS9061</para>
     </header>
     <para styleclass="Normal">The &quot;PTR(..) operation&quot; is not allowed for method or function calls. If the method or function returns a pointer then consider using the (&lt;Type&gt; PTR) syntax instead.</para>
   </body>

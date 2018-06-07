@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1511</para>
+    <para styleclass="Heading1">Error XS1511</para>
   </header>
   <para styleclass="Normal">Keyword &apos;SUPER&apos; is not available in a static method</para>
   <para styleclass="Normal"></para>

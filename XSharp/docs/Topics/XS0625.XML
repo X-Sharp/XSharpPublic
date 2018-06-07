@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0625</para>
+    <para styleclass="Heading1">Error XS0625</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: instance field types marked with StructLayout(LayoutKind.Explicit) must have a FieldOffset attribute</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0547</para>
+    <para styleclass="Heading1">Error XS0547</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: property or indexer cannot have void type</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1662</para>
+    <para styleclass="Heading1">Error XS1662</para>
   </header>
   <para styleclass="Normal">Cannot convert {0} to intended delegate type because some of the return types in the block are not implicitly convertible to the delegate return type</para>
   <para styleclass="Normal"></para>

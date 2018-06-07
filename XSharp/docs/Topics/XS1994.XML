@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1994</para>
+    <para styleclass="Heading1">Error XS1994</para>
   </header>
   <para styleclass="Normal">The &apos;async&apos; modifier can only be used in methods that have a body.</para>
   <para styleclass="Normal"></para>

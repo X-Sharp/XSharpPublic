@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8132</para>
+    <para styleclass="Heading1">Error XS8132</para>
   </header>
   <para styleclass="Normal">Cannot deconstruct a tuple of &apos;{0}&apos; elements into &apos;{1}&apos; variables.</para>
   <para styleclass="Normal"></para>

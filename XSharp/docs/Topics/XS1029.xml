@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1029</para>
+      <para styleclass="Heading1">Error XS1029</para>
     </header>
     <para styleclass="Normal">#error: &apos;text&apos;</para>
     <para styleclass="Normal"></para>

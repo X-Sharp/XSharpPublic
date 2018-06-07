@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0529</para>
+    <para styleclass="Heading1">Error XS0529</para>
   </header>
   <para styleclass="Normal">Inherited interface &apos;{1}&apos; causes a cycle in the interface hierarchy of &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

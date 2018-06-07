@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0267</para>
+    <para styleclass="Heading1">Error XS0267</para>
   </header>
   <para styleclass="Normal">The &apos;partial&apos; modifier can only appear immediately before &apos;class&apos;, &apos;struct&apos;, &apos;interface&apos;, or &apos;void&apos;</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8168</para>
+    <para styleclass="Heading1">Error XS8168</para>
   </header>
   <para styleclass="Normal">Cannot return local &apos;{0}&apos; by reference because it is not a ref local</para>
   <para styleclass="Normal"></para>

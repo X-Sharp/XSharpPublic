@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1508</para>
+    <para styleclass="Heading1">Error XS1508</para>
   </header>
   <para styleclass="Normal">Resource identifier &apos;{0}&apos; has already been used in this assembly</para>
   <para styleclass="Normal"></para>

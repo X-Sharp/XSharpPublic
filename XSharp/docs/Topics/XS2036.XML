@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2036</para>
+    <para styleclass="Heading1">Error XS2036</para>
   </header>
   <para styleclass="Normal">The /pdb option requires that the /debug option also be used</para>
   <para styleclass="Normal"></para>

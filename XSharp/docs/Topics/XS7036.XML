@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7036</para>
+    <para styleclass="Heading1">Error XS7036</para>
   </header>
   <para styleclass="Normal">There is no argument given that corresponds to the required formal parameter &apos;{0}&apos; of &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0506</para>
+    <para styleclass="Heading1">Error XS0506</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot override inherited member &apos;{1}&apos; because it is not marked virtual, abstract, or override</para>
   <para styleclass="Normal"></para>

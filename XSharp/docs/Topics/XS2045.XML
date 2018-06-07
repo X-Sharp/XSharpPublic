@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2045</para>
+    <para styleclass="Heading1">Error XS2045</para>
   </header>
   <para styleclass="Normal">/embed switch is only supported when emitting Portable PDB (/debug:portable or /debug:embedded).</para>
   <para styleclass="Normal"></para>

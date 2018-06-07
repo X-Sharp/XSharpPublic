@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7054</para>
+    <para styleclass="Heading1">Error XS7054</para>
   </header>
   <para styleclass="Normal">Unmanaged type &apos;{0}&apos; not valid for fields.</para>
   <para styleclass="Normal"></para>

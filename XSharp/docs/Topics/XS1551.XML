@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1551</para>
+    <para styleclass="Heading1">Error XS1551</para>
   </header>
   <para styleclass="Normal">Indexers must have at least one parameter</para>
   <para styleclass="Normal"></para>

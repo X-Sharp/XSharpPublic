@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS4014</title>
   <keywords>
     <keyword>XS4014</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS4014</para>
+      <para styleclass="Heading1">Warning XS4014</para>
     </header>
     <para styleclass="Normal">Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the &apos;await&apos; operator to the result of the call.</para>
     <para styleclass="Normal"></para>
@@ -37,12 +37,12 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following Windows Presentation Foundation (WPF) application contains the methods from the previous example. The following steps set up the application.</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Create a WPF application, and name it AsyncWarning.</li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Studio Code Editor, choose the MainWindow.xaml tab.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;">     If the tab isn&apos;t visible, open the shortcut menu for MainWindow.xaml in Solution Explorer, and then choose View Code.</para>
-    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Replace the code in the XAML view of MainWindow.xaml with the following code.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>

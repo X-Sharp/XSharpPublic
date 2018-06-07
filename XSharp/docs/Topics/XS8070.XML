@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8070</para>
+    <para styleclass="Heading1">Error XS8070</para>
   </header>
   <para styleclass="Normal">Control cannot fall out of switch from final case label (&apos;{0}&apos;)</para>
   <para styleclass="Normal"></para>

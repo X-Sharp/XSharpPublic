@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9031</para>
+      <para styleclass="Heading1">Error XS9031</para>
     </header>
     <para styleclass="Normal">Array initializers cannot be combined with initial dimensions.</para>
   </body>

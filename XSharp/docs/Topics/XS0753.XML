@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0753</para>
+    <para styleclass="Heading1">Error XS0753</para>
   </header>
   <para styleclass="Normal">Only methods, classes, structs, or interfaces may be partial</para>
   <para styleclass="Normal"></para>

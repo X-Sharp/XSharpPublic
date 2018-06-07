@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9017</para>
+      <para styleclass="Heading1">Error XS9017</para>
     </header>
     <para styleclass="Normal">Invalid dialect {0}. Must be &apos;Core&apos;, &apos;Vo&apos;, &apos;Vulcan&apos;, &apos;dBase&apos;, &apos;FoxPro&apos;, &apos;Harbour&apos; or &apos;XBasepp&apos;</para>
   </body>

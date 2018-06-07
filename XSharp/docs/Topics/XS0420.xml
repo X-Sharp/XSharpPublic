@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0420</para>
+      <para styleclass="Heading1">Error XS0420</para>
     </header>
     <para styleclass="Normal">&apos;identifier&apos;: a reference to a volatile field will not be treated as volatile</para>
     <para styleclass="Normal"></para>

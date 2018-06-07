@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8074</para>
+    <para styleclass="Heading1">Error XS8074</para>
   </header>
   <para styleclass="Normal">An expression tree lambda may not contain a dictionary initializer.</para>
   <para styleclass="Normal"></para>

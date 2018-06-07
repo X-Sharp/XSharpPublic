@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0416</para>
+    <para styleclass="Heading1">Error XS0416</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: an attribute argument cannot use type parameters</para>
   <para styleclass="Normal"></para>

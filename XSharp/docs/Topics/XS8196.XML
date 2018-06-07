@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8196</para>
+    <para styleclass="Heading1">Error XS8196</para>
   </header>
   <para styleclass="Normal">Reference to an implicitly-typed out variable &apos;{0}&apos; is not permitted in the same argument list.</para>
   <para styleclass="Normal"></para>

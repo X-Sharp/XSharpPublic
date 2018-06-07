@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0845</para>
+      <para styleclass="Heading1">Error XS0845</para>
     </header>
     <para styleclass="Normal">An expression tree lambda may not contain a coalescing operator with a null literal left-hand side.</para>
     <para styleclass="Normal"></para>

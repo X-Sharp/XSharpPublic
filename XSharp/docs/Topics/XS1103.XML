@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1103</para>
+    <para styleclass="Heading1">Error XS1103</para>
   </header>
   <para styleclass="Normal">The first parameter of an extension method cannot be of type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

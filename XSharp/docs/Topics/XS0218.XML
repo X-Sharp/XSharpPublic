@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0218</para>
+    <para styleclass="Heading1">Error XS0218</para>
   </header>
   <para styleclass="Normal">In order for &apos;{0}&apos; to be applicable as a short circuit operator, its declaring type &apos;{1}&apos; must define operator true and operator false</para>
   <para styleclass="Normal"></para>

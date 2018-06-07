@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1585</para>
+    <para styleclass="Heading1">Error XS1585</para>
   </header>
   <para styleclass="Normal">Member modifier &apos;{0}&apos; must precede the member type and name</para>
   <para styleclass="Normal"></para>

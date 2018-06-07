@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0247</para>
+    <para styleclass="Heading1">Error XS0247</para>
   </header>
   <para styleclass="Normal">Cannot use a negative size with stackalloc</para>
   <para styleclass="Normal"></para>

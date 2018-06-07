@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2011</para>
+    <para styleclass="Heading1">Error XS2011</para>
   </header>
   <para styleclass="Normal">Error opening response file &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

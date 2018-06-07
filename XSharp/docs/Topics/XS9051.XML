@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS9051</title>
-<keywords>
-<keyword>XS9051</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS9051</para>
-  </header>
-  <para styleclass="Normal">A get accessor is automatically generated for a set accessor without body.</para>
-  <para styleclass="Normal"></para>
-</body>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9051</title>
+  <keywords>
+    <keyword>XS9051</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9051</para>
+    </header>
+    <para styleclass="Normal">A get accessor is automatically generated for a set accessor without body.</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

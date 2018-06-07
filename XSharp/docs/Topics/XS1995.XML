@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1995</para>
+    <para styleclass="Heading1">Error XS1995</para>
   </header>
   <para styleclass="Normal">The &apos;await&apos; operator may only be used in a query expression within the first collection expression of the initial &apos;from&apos; clause or within the collection expression of a &apos;join&apos; clause</para>
   <para styleclass="Normal"></para>

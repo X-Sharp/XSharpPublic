@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7098</para>
+    <para styleclass="Heading1">Error XS7098</para>
   </header>
   <para styleclass="Normal">Linked netmodule metadata must provide a full PE image: &apos;{0}&apos;.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7085</para>
+    <para styleclass="Heading1">Error XS7085</para>
   </header>
   <para styleclass="Normal">By-reference return type &apos;ref {0}&apos; is not supported.</para>
   <para styleclass="Normal"></para>

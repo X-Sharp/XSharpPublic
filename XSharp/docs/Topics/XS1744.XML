@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1744</para>
+    <para styleclass="Heading1">Error XS1744</para>
   </header>
   <para styleclass="Normal">Named argument &apos;{0}&apos; specifies a parameter for which a positional argument has already been given</para>
   <para styleclass="Normal"></para>

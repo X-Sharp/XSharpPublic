@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0582</para>
+    <para styleclass="Heading1">Error XS0582</para>
   </header>
   <para styleclass="Normal">The Conditional attribute is not valid on interface members</para>
   <para styleclass="Normal"></para>

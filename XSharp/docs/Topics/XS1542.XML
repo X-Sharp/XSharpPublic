@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1542</para>
+    <para styleclass="Heading1">Error XS1542</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot be added to this assembly because it already is an assembly</para>
   <para styleclass="Normal"></para>

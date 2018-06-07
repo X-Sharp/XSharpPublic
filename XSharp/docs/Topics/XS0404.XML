@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0404</para>
+    <para styleclass="Heading1">Error XS0404</para>
   </header>
   <para styleclass="Normal">Cannot apply attribute class &apos;{0}&apos; because it is generic</para>
   <para styleclass="Normal"></para>

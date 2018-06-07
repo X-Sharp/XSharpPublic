@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7043</para>
+    <para styleclass="Heading1">Error XS7043</para>
   </header>
   <para styleclass="Normal">Cannot update &apos;{0}&apos;; attribute &apos;{1}&apos; is missing.</para>
   <para styleclass="Normal"></para>

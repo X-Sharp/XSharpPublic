@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7070</para>
+    <para styleclass="Heading1">Error XS7070</para>
   </header>
   <para styleclass="Normal">Security attribute &apos;{0}&apos; is not valid on this declaration type. Security attributes are only valid on assembly, type and method declarations.</para>
   <para styleclass="Normal"></para>

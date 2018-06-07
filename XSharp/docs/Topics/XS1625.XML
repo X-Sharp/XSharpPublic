@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1625</para>
+    <para styleclass="Heading1">Error XS1625</para>
   </header>
   <para styleclass="Normal">Cannot yield in the body of a finally clause</para>
   <para styleclass="Normal"></para>

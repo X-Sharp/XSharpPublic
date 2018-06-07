@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0504</para>
+      <para styleclass="Heading1">Error XS0504</para>
     </header>
     <para styleclass="Normal">The constant &apos;variable&apos; cannot be marked static</para>
     <para styleclass="Normal"></para>

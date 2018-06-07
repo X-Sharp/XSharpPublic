@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0431</para>
+    <para styleclass="Heading1">Error XS0431</para>
   </header>
   <para styleclass="Normal">Cannot use alias &apos;{0}&apos; with &apos;::&apos; since the alias references a type. Use &apos;.&apos; instead.</para>
   <para styleclass="Normal"></para>

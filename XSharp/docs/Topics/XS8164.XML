@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8164</para>
+    <para styleclass="Heading1">Error XS8164</para>
   </header>
   <para styleclass="Normal">Cannot return by reference a result of &apos;{0}&apos; because the argument passed to parameter &apos;{1}&apos; cannot be returned by reference</para>
   <para styleclass="Normal"></para>

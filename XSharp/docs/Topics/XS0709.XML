@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0709</para>
+    <para styleclass="Heading1">Error XS0709</para>
   </header>
   <para styleclass="Normal">&apos;{1}&apos;: cannot derive from static class &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

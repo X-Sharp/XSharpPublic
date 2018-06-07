@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0438</para>
+    <para styleclass="Heading1">Error XS0438</para>
   </header>
   <para styleclass="Normal">The type &apos;{1}&apos; in &apos;{0}&apos; conflicts with the namespace &apos;{3}&apos; in &apos;{2}&apos;</para>
   <para styleclass="Normal"></para>

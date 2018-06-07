@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0698</para>
+    <para styleclass="Heading1">Error XS0698</para>
   </header>
   <para styleclass="Normal">A generic type cannot derive from &apos;{0}&apos; because it is an attribute class</para>
   <para styleclass="Normal"></para>

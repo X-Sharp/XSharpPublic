@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7083</para>
+    <para styleclass="Heading1">Error XS7083</para>
   </header>
   <para styleclass="Normal">Expression must be implicitly convertible to Boolean or its type &apos;{0}&apos; must define operator &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

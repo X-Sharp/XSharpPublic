@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1527</para>
+    <para styleclass="Heading1">Error XS1527</para>
   </header>
   <para styleclass="Normal">Elements defined in a namespace cannot be explicitly declared as private, protected, or protected internal</para>
   <para styleclass="Normal"></para>

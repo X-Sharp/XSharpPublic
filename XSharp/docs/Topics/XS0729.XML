@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0729</para>
+    <para styleclass="Heading1">Error XS0729</para>
   </header>
   <para styleclass="Normal">Type &apos;{0}&apos; is defined in this assembly, but a type forwarder is specified for it</para>
   <para styleclass="Normal"></para>

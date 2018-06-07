@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1932</para>
+    <para styleclass="Heading1">Error XS1932</para>
   </header>
   <para styleclass="Normal">Cannot assign {0} to a range variable</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0623</para>
+    <para styleclass="Heading1">Error XS0623</para>
   </header>
   <para styleclass="Normal">Array initializers can only be used in a variable or field initializer. Try using a new expression instead.</para>
   <para styleclass="Normal"></para>

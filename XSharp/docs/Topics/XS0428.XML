@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0428</para>
+    <para styleclass="Heading1">Error XS0428</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; is a method and cannot be converted to &apos;{1}&apos;. Did you forget the parenthesis?</para>
   <para styleclass="Normal"></para>

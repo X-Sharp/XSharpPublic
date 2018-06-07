@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8166</para>
+    <para styleclass="Heading1">Error XS8166</para>
   </header>
   <para styleclass="Normal">Cannot return a parameter by reference &apos;{0}&apos; because it is not a ref or out parameter</para>
   <para styleclass="Normal"></para>

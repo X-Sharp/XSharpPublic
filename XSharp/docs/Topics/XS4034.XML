@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4034</para>
+    <para styleclass="Heading1">Error XS4034</para>
   </header>
   <para styleclass="Normal">The &apos;await&apos; operator can only be used within an async {0}. Consider marking this {0} with the &apos;async&apos; modifier.</para>
   <para styleclass="Normal"></para>

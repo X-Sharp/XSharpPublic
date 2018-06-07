@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0591</para>
+    <para styleclass="Heading1">Error XS0591</para>
   </header>
   <para styleclass="Normal">Invalid value for argument to &apos;{0}&apos; attribute</para>
   <para styleclass="Normal"></para>

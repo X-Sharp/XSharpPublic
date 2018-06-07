@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0767</para>
+    <para styleclass="Heading1">Error XS0767</para>
   </header>
   <para styleclass="Normal">Cannot inherit interface &apos;{0}&apos; with the specified type parameters because it causes method &apos;{1}&apos; to contain overloads which differ only on ref and out</para>
   <para styleclass="Normal"></para>

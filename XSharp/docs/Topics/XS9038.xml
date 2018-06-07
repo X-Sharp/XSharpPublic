@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9038</para>
+      <para styleclass="Heading1">Error XS9038</para>
     </header>
     <para styleclass="Normal">Error locating the generated Delegate &apos;{1}&apos; for the pseudo function &apos;{0}&apos;.</para>
   </body>

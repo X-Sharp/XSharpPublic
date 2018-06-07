@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0270</para>
+      <para styleclass="Heading1">Error XS0270</para>
     </header>
     <para styleclass="Normal">Array size cannot be specified in a variable declaration (try initializing with a &apos;new&apos; expression)</para>
     <para styleclass="Normal"></para>

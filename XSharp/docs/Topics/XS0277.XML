@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0277</para>
+    <para styleclass="Heading1">Error XS0277</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; does not implement interface member &apos;{1}&apos;. &apos;{2}&apos; is not public.</para>
   <para styleclass="Normal"></para>

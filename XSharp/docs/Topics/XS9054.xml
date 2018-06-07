@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9054</para>
+      <para styleclass="Heading1">Warning XS9054</para>
     </header>
     <para styleclass="Normal">Possible conflict between assignment to local variable {0} and named argument syntax. <br/>The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</para>
   </body>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7048</para>
+    <para styleclass="Heading1">Error XS7048</para>
   </header>
   <para styleclass="Normal">First argument to a security attribute must be a valid SecurityAction</para>
   <para styleclass="Normal"></para>

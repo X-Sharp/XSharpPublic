@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7053</para>
+    <para styleclass="Heading1">Error XS7053</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

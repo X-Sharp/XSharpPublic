@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1988</para>
+    <para styleclass="Heading1">Error XS1988</para>
   </header>
   <para styleclass="Normal">Async methods cannot have ref or out parameters</para>
   <para styleclass="Normal"></para>

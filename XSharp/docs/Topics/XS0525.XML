@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0525</para>
+    <para styleclass="Heading1">Error XS0525</para>
   </header>
   <para styleclass="Normal">Interfaces cannot contain fields</para>
   <para styleclass="Normal"></para>

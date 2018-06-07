@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0260</para>
+      <para styleclass="Heading1">Error XS0260</para>
     </header>
     <para styleclass="Normal">Missing partial modifier on declaration of type &apos;type&apos;; another partial declaration of this type exists</para>
     <para styleclass="Normal"></para>

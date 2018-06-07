@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9041</para>
+      <para styleclass="Heading1">Error XS9041</para>
     </header>
     <para styleclass="Normal">Override of virtual method &apos;{0}&apos; has STRICT calling convention but overridden method in parent class is CLIPPER</para>
   </body>

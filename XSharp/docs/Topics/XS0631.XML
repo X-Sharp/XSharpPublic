@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0631</para>
+    <para styleclass="Heading1">Error XS0631</para>
   </header>
   <para styleclass="Normal">ref and out are not valid in this context</para>
   <para styleclass="Normal"></para>

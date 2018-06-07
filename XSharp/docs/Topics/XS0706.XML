@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0706</para>
+    <para styleclass="Heading1">Error XS0706</para>
   </header>
   <para styleclass="Normal">Invalid constraint type. A type used as a constraint must be an interface, a non-sealed class or a type parameter.</para>
   <para styleclass="Normal"></para>

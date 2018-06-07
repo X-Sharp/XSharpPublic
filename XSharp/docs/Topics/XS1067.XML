@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1067</para>
+    <para styleclass="Heading1">Error XS1067</para>
   </header>
   <para styleclass="Normal">Partial declarations of &apos;{0}&apos; must have the same type parameter names and variance modifiers in the same order</para>
   <para styleclass="Normal"></para>

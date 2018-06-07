@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1948</para>
+    <para styleclass="Heading1">Error XS1948</para>
   </header>
   <para styleclass="Normal">The range variable &apos;{0}&apos; cannot have the same name as a method type parameter</para>
   <para styleclass="Normal"></para>

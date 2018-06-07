@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0255</para>
+    <para styleclass="Heading1">Error XS0255</para>
   </header>
   <para styleclass="Normal">stackalloc may not be used in a catch or finally block</para>
   <para styleclass="Normal"></para>

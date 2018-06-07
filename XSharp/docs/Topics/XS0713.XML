@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0713</title>
-<keywords>
-<keyword>XS0713</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0713</para>
-  </header>
-  <para styleclass="Normal">Static class &apos;{0}&apos; cannot derive from type &apos;{1}&apos;. Static classes must derive from object.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0713</title>
+  <keywords>
+    <keyword>XS0713</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0713</para>
+    </header>
+    <para styleclass="Normal">Static class &apos;{0}&apos; cannot derive from type &apos;{1}&apos;. Static classes must derive from object.</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

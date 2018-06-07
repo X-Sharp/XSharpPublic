@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9055</para>
+      <para styleclass="Heading1">Error XS9055</para>
     </header>
     <para styleclass="Normal">Codeblocks cannot be declared with the Lambda Expression Syntax.</para>
   </body>

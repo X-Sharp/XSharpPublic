@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1681</para>
+    <para styleclass="Heading1">Error XS1681</para>
   </header>
   <para styleclass="Normal">You cannot redefine the global extern alias</para>
   <para styleclass="Normal"></para>

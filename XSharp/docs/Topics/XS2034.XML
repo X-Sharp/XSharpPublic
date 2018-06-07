@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2034</para>
+    <para styleclass="Heading1">Error XS2034</para>
   </header>
   <para styleclass="Normal">A /reference option that declares an extern alias can only have one filename. To specify multiple aliases or filenames, use multiple /reference options.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8093</para>
+    <para styleclass="Heading1">Error XS8093</para>
   </header>
   <para styleclass="Normal">Extension method groups are not allowed as an argument to &apos;nameof&apos;.</para>
   <para styleclass="Normal"></para>

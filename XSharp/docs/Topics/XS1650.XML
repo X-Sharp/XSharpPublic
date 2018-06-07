@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1650</para>
+    <para styleclass="Heading1">Error XS1650</para>
   </header>
   <para styleclass="Normal">Fields of static readonly field &apos;{0}&apos; cannot be assigned to (except in a static constructor or a variable initializer)</para>
   <para styleclass="Normal"></para>

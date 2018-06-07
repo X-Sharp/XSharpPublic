@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1664</para>
+    <para styleclass="Heading1">Error XS1664</para>
   </header>
   <para styleclass="Normal">Fixed size buffer of length {0} and type &apos;{1}&apos; is too big</para>
   <para styleclass="Normal"></para>

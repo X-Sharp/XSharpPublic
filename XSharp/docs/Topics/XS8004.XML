@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8004</para>
+    <para styleclass="Heading1">Error XS8004</para>
   </header>
   <para styleclass="Normal">Type &apos;{0}&apos; exported from module &apos;{1}&apos; conflicts with type declared in primary module of this assembly.</para>
   <para styleclass="Normal"></para>

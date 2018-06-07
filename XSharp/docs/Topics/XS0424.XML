@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0424</para>
+    <para styleclass="Heading1">Error XS0424</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: a class with the ComImport attribute cannot specify a base class</para>
   <para styleclass="Normal"></para>

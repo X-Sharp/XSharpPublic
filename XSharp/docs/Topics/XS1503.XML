@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1503</para>
+    <para styleclass="Heading1">Error XS1503</para>
   </header>
   <para styleclass="Normal">Argument {0}: cannot convert from &apos;{1}&apos; to &apos;{2}&apos;</para>
   <para styleclass="Normal"></para>

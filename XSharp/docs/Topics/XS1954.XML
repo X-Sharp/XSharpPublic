@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1954</para>
+    <para styleclass="Heading1">Error XS1954</para>
   </header>
   <para styleclass="Normal">The best overloaded method match &apos;{0}&apos; for the collection initializer element cannot be used. Collection initializer &apos;Add&apos; methods cannot have ref or out parameters.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1641</para>
+    <para styleclass="Heading1">Error XS1641</para>
   </header>
   <para styleclass="Normal">A fixed size buffer field must have the array size specifier after the field name</para>
   <para styleclass="Normal"></para>

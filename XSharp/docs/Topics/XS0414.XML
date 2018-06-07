@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0414</title>
-<keywords>
-<keyword>XS0414</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0414</para>
-  </header>
-  <para styleclass="Normal">The field &apos;{0}&apos; is assigned but its value is never used</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0414</title>
+  <keywords>
+    <keyword>XS0414</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0414</para>
+    </header>
+    <para styleclass="Normal">The field &apos;{0}&apos; is assigned but its value is never used</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

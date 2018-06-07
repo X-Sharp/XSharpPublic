@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0430</para>
+    <para styleclass="Heading1">Error XS0430</para>
   </header>
   <para styleclass="Normal">The extern alias &apos;{0}&apos; was not specified in a /reference option</para>
   <para styleclass="Normal"></para>

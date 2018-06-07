@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9008</para>
+      <para styleclass="Heading1">Error XS9008</para>
     </header>
     <para styleclass="Normal">Untyped arrays are not available in the selected dialect &apos;{0}&apos;</para>
     <para styleclass="Normal"></para>

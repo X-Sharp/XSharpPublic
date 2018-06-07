@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1612</para>
+      <para styleclass="Heading1">Error XS1612</para>
     </header>
     <para styleclass="Normal">Cannot modify the return value of &apos;expression&apos; because it is not a variable</para>
     <para styleclass="Normal"></para>

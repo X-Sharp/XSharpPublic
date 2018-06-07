@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1940</para>
+    <para styleclass="Heading1">Error XS1940</para>
   </header>
   <para styleclass="Normal">Multiple implementations of the query pattern were found for source type &apos;{0}&apos;.  Ambiguous call to &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

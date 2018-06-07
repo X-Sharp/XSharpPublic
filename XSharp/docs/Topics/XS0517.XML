@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0517</para>
+    <para styleclass="Heading1">Error XS0517</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; has no base class and cannot call a base constructor</para>
   <para styleclass="Normal"></para>

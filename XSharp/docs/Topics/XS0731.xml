@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0731</para>
+      <para styleclass="Heading1">Error XS0731</para>
     </header>
     <para styleclass="Normal">The type forwarder for type &apos;type&apos; in assembly &apos;assembly&apos; causes a cycle</para>
     <para styleclass="Normal"></para>

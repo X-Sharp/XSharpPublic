@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4012</para>
+    <para styleclass="Heading1">Error XS4012</para>
   </header>
   <para styleclass="Normal">Parameters or locals of type &apos;{0}&apos; cannot be declared in async methods or lambda expressions.</para>
   <para styleclass="Normal"></para>

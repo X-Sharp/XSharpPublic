@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9049</para>
+      <para styleclass="Heading1">Error XS9049</para>
     </header>
     <para styleclass="Normal">ACCESS and ASSIGN methods cannot have Clipper Calling Convention</para>
     <para styleclass="Normal"></para>

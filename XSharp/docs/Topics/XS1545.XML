@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1545</para>
+    <para styleclass="Heading1">Error XS1545</para>
   </header>
   <para styleclass="Normal">Property, indexer, or event &apos;{0}&apos; is not supported by the language; try directly calling accessor methods &apos;{1}&apos; or &apos;{2}&apos;</para>
   <para styleclass="Normal"></para>

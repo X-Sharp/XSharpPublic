@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8052</para>
+    <para styleclass="Heading1">Error XS8052</para>
   </header>
   <para styleclass="Normal">Auto-implemented properties inside interfaces cannot have initializers.</para>
   <para styleclass="Normal"></para>

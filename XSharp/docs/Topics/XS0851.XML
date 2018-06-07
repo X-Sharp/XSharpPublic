@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0851</para>
+    <para styleclass="Heading1">Error XS0851</para>
   </header>
   <para styleclass="Normal">Cannot define overloaded constructor &apos;{0}&apos; because it differs from another constructor only on ref and out</para>
   <para styleclass="Normal"></para>

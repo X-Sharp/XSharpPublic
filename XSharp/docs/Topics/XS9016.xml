@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9016</para>
+      <para styleclass="Heading1">Error XS9016</para>
     </header>
     <para styleclass="Normal">Class name {0} for method differs from parent class name {1}</para>
   </body>

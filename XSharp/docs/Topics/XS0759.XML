@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0759</para>
+    <para styleclass="Heading1">Error XS0759</para>
   </header>
   <para styleclass="Normal">No defining declaration found for implementing declaration of partial method &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

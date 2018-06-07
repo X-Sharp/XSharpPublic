@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4010</para>
+    <para styleclass="Heading1">Error XS4010</para>
   </header>
   <para styleclass="Normal">Cannot convert async {0} to delegate type &apos;{1}&apos;. An async {0} may return void, Task or Task<T>, none of which are convertible to &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0163</title>
   <keywords>
     <keyword>XS0163</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0163</para>
+      <para styleclass="Heading1">Error XS0163</para>
     </header>
     <para styleclass="Normal">Control cannot fall through from one case label (&apos;label&apos;) to another</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When a switch statement contains more than one switch section, you must explicitly terminate each section, including the last one, by using one of the following keywords:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">return</li>
       <li styleclass="Normal" style="margin-left:13px;">goto</li>
       <li styleclass="Normal" style="margin-left:13px;">break</li>
@@ -26,6 +26,6 @@
     <para styleclass="Normal">The following sample generates XS0163.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0163.prg  <br/></para>
+    <para styleclass="Code with box">// XS0163.prg &#160;<br/></para>
   </body>
 </topic>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1722</para>
+    <para styleclass="Heading1">Error XS1722</para>
   </header>
   <para styleclass="Normal">Base class &apos;{0}&apos; must come before any interfaces</para>
   <para styleclass="Normal"></para>

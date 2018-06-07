@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7057</para>
+    <para styleclass="Heading1">Error XS7057</para>
   </header>
   <para styleclass="Normal">Error reading file &apos;{0}&apos; specified for the named argument &apos;{1}&apos; for PermissionSet attribute: &apos;{2}&apos;</para>
   <para styleclass="Normal"></para>

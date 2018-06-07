@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7084</para>
+    <para styleclass="Heading1">Error XS7084</para>
   </header>
   <para styleclass="Normal">A Windows Runtime event may not be passed as an out or ref parameter.</para>
   <para styleclass="Normal"></para>

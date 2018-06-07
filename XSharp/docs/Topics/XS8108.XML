@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8108</para>
+    <para styleclass="Heading1">Error XS8108</para>
   </header>
   <para styleclass="Normal">Cannot pass argument with dynamic type to params parameter &apos;{0}&apos; of local function &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

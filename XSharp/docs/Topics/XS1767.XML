@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1767</para>
+    <para styleclass="Heading1">Error XS1767</para>
   </header>
   <para styleclass="Normal">Interface &apos;{0}&apos; has an invalid source interface which is required to embed event &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

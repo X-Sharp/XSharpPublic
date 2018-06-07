@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1975</para>
+    <para styleclass="Heading1">Error XS1975</para>
   </header>
   <para styleclass="Normal">The constructor call needs to be dynamically dispatched, but cannot be because it is part of a constructor initializer. Consider casting the dynamic arguments.</para>
   <para styleclass="Normal"></para>

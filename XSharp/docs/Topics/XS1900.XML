@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1900</para>
+    <para styleclass="Heading1">Error XS1900</para>
   </header>
   <para styleclass="Normal">Warning level must be in the range 0-4</para>
   <para styleclass="Normal"></para>

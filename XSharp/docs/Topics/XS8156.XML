@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8156</para>
+    <para styleclass="Heading1">Error XS8156</para>
   </header>
   <para styleclass="Normal">An expression cannot be used in this context because it may not be returned by reference</para>
   <para styleclass="Normal"></para>

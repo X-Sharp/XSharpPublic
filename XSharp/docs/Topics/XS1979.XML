@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1979</para>
+    <para styleclass="Heading1">Error XS1979</para>
   </header>
   <para styleclass="Normal">Query expressions over source type &apos;dynamic&apos; or with a join sequence of type &apos;dynamic&apos; are not allowed</para>
   <para styleclass="Normal"></para>

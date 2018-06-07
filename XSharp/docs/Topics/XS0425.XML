@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0425</para>
+    <para styleclass="Heading1">Error XS0425</para>
   </header>
   <para styleclass="Normal">The constraints for type parameter &apos;{0}&apos; of method &apos;{1}&apos; must match the constraints for type parameter &apos;{2}&apos; of interface method &apos;{3}&apos;. Consider using an explicit interface implementation instead.</para>
   <para styleclass="Normal"></para>

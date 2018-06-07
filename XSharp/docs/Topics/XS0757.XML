@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0757</para>
+    <para styleclass="Heading1">Error XS0757</para>
   </header>
   <para styleclass="Normal">A partial method may not have multiple implementing declarations</para>
   <para styleclass="Normal"></para>

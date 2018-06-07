@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8181</para>
+    <para styleclass="Heading1">Error XS8181</para>
   </header>
   <para styleclass="Normal">&apos;new&apos; cannot be used with tuple type. Use a tuple literal expression instead.</para>
   <para styleclass="Normal"></para>

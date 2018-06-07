@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0678</para>
+    <para styleclass="Heading1">Error XS0678</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: a field cannot be both volatile and readonly</para>
   <para styleclass="Normal"></para>

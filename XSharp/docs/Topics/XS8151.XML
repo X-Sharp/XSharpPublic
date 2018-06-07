@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8151</para>
+    <para styleclass="Heading1">Error XS8151</para>
   </header>
   <para styleclass="Normal">The return expression must be of type &apos;{0}&apos; because this method returns by reference</para>
   <para styleclass="Normal"></para>

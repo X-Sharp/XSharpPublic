@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1599</para>
+    <para styleclass="Heading1">Error XS1599</para>
   </header>
   <para styleclass="Normal">Method or delegate cannot return type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

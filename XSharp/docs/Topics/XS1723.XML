@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS1723</title>
-<keywords>
-<keyword>XS1723</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS1723</para>
-  </header>
-  <para styleclass="Normal">XML comment has cref attribute &apos;{0}&apos; that refers to a type parameter</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1723</title>
+  <keywords>
+    <keyword>XS1723</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1723</para>
+    </header>
+    <para styleclass="Normal">XML comment has cref attribute &apos;{0}&apos; that refers to a type parameter</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

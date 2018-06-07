@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7041</para>
+    <para styleclass="Heading1">Error XS7041</para>
   </header>
   <para styleclass="Normal">Each linked resource and module must have a unique filename. Filename &apos;{0}&apos; is specified more than once in this assembly</para>
   <para styleclass="Normal"></para>

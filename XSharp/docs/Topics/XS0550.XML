@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0550</para>
+    <para styleclass="Heading1">Error XS0550</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; adds an accessor not found in interface member &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

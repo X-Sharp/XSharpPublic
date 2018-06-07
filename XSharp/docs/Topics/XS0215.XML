@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0215</para>
+    <para styleclass="Heading1">Error XS0215</para>
   </header>
   <para styleclass="Normal">The return type of operator True or False must be bool</para>
   <para styleclass="Normal"></para>

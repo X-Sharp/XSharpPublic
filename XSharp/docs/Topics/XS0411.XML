@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0411</para>
+    <para styleclass="Heading1">Error XS0411</para>
   </header>
   <para styleclass="Normal">The type arguments for method &apos;{0}&apos; cannot be inferred from the usage. Try specifying the type arguments explicitly.</para>
   <para styleclass="Normal"></para>

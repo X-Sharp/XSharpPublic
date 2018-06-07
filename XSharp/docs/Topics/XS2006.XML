@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2006</para>
+    <para styleclass="Heading1">Error XS2006</para>
   </header>
   <para styleclass="Normal">Command-line syntax error: Missing &apos;{0}&apos; for &apos;{1}&apos; option</para>
   <para styleclass="Normal"></para>

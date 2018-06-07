@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1764</para>
+    <para styleclass="Heading1">Error XS1764</para>
   </header>
   <para styleclass="Normal">Cannot use fixed local &apos;{0}&apos; inside an anonymous method, lambda expression, or query expression</para>
   <para styleclass="Normal"></para>

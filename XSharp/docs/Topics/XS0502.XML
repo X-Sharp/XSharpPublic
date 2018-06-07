@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0502</para>
+    <para styleclass="Heading1">Error XS0502</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot be both abstract and sealed</para>
   <para styleclass="Normal"></para>

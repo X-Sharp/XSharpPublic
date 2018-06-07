@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0509</para>
+    <para styleclass="Heading1">Error XS0509</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot derive from sealed type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

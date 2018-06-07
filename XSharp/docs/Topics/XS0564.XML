@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0564</para>
+    <para styleclass="Heading1">Error XS0564</para>
   </header>
   <para styleclass="Normal">The first operand of an overloaded shift operator must have the same type as the containing type, and the type of the second operand must be int</para>
   <para styleclass="Normal"></para>

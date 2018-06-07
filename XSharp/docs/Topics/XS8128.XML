@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8128</para>
+    <para styleclass="Heading1">Error XS8128</para>
   </header>
   <para styleclass="Normal">Member &apos;{0}&apos; was not found on type &apos;{1}&apos; from assembly &apos;{2}&apos;.</para>
   <para styleclass="Normal"></para>

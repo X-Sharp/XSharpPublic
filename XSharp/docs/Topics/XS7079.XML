@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7079</para>
+    <para styleclass="Heading1">Error XS7079</para>
   </header>
   <para styleclass="Normal">The type &apos;{0}&apos; is defined in a module that has not been added. You must add the module &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

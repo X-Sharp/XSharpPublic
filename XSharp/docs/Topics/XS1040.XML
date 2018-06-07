@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1040</para>
+    <para styleclass="Heading1">Error XS1040</para>
   </header>
   <para styleclass="Normal">Preprocessor directives must appear as the first non-whitespace character on a line</para>
   <para styleclass="Normal"></para>

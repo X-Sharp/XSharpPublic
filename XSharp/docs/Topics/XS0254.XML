@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0254</para>
+    <para styleclass="Heading1">Error XS0254</para>
   </header>
   <para styleclass="Normal">The right hand side of a fixed statement assignment may not be a cast expression</para>
   <para styleclass="Normal"></para>

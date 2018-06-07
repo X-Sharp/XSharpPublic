@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1774</para>
+    <para styleclass="Heading1">Error XS1774</para>
   </header>
   <para styleclass="Normal">Embedded interop method &apos;{0}&apos; contains a body.</para>
   <para styleclass="Normal"></para>

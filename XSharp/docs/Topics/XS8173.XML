@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8173</para>
+    <para styleclass="Heading1">Error XS8173</para>
   </header>
   <para styleclass="Normal">The expression must be of type &apos;{0}&apos; because it is being assigned by reference</para>
   <para styleclass="Normal"></para>

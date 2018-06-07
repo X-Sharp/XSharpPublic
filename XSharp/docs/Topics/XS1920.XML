@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1920</para>
+    <para styleclass="Heading1">Error XS1920</para>
   </header>
   <para styleclass="Normal">Element initializer cannot be empty</para>
   <para styleclass="Normal"></para>

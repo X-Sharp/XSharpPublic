@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8176</para>
+    <para styleclass="Heading1">Error XS8176</para>
   </header>
   <para styleclass="Normal">Iterators cannot have by reference locals</para>
   <para styleclass="Normal"></para>

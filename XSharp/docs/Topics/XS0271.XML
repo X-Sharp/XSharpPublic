@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0271</para>
+    <para styleclass="Heading1">Error XS0271</para>
   </header>
   <para styleclass="Normal">The property or indexer &apos;{0}&apos; cannot be used in this context because the get accessor is inaccessible</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1930</para>
+    <para styleclass="Heading1">Error XS1930</para>
   </header>
   <para styleclass="Normal">The range variable &apos;{0}&apos; has already been declared</para>
   <para styleclass="Normal"></para>

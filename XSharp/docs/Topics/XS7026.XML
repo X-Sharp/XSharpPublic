@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7026</para>
+    <para styleclass="Heading1">Error XS7026</para>
   </header>
   <para styleclass="Normal">Assembly and module attributes are not allowed in this context</para>
   <para styleclass="Normal"></para>

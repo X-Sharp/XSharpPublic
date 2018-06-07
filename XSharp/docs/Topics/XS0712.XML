@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0712</para>
+    <para styleclass="Heading1">Error XS0712</para>
   </header>
   <para styleclass="Normal">Cannot create an instance of the static class &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

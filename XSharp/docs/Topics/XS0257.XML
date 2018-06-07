@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0257</para>
+    <para styleclass="Heading1">Error XS0257</para>
   </header>
   <para styleclass="Normal">An ellipsis parameter (...) must be the last parameter in a formal parameter list</para>
   <para styleclass="Normal"></para>

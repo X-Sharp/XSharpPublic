@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8157</para>
+    <para styleclass="Heading1">Error XS8157</para>
   </header>
   <para styleclass="Normal">Cannot return &apos;{0}&apos; by reference because it was initialized to a value that cannot be returned by reference</para>
   <para styleclass="Normal"></para>

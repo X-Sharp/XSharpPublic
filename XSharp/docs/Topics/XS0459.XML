@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0459</para>
+    <para styleclass="Heading1">Error XS0459</para>
   </header>
   <para styleclass="Normal">Cannot take the address of a read-only local variable</para>
   <para styleclass="Normal"></para>

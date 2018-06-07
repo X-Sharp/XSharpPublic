@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1073</para>
+    <para styleclass="Heading1">Error XS1073</para>
   </header>
   <para styleclass="Normal">Unexpected token &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

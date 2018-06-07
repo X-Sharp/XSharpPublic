@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0556</para>
+    <para styleclass="Heading1">Error XS0556</para>
   </header>
   <para styleclass="Normal">User-defined conversion must convert to or from the enclosing type</para>
   <para styleclass="Normal"></para>

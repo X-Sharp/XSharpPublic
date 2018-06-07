@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4015</para>
+    <para styleclass="Heading1">Error XS4015</para>
   </header>
   <para styleclass="Normal">&apos;MethodImplOptions.Synchronized&apos; cannot be applied to an async method</para>
   <para styleclass="Normal"></para>

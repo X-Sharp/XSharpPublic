@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS1956</title>
   <keywords>
     <keyword>XS1956</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1956</para>
+      <para styleclass="Heading1">Warning XS1956</para>
     </header>
     <para styleclass="Normal">Member &apos;name&apos; implements interface member &apos;name&apos; in type &apos;type&apos;. There are multiple matches for the interface member at run-time. It is implementation dependent which method will be called.</para>
     <para styleclass="Normal"></para>
@@ -17,7 +17,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To avoid this warning</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Give the compiler some way to differentiate the methods. For example, you can give them different names or provide an additional parameter on one of them.</li>
     </list>
     <para styleclass="Heading2">Example</para>

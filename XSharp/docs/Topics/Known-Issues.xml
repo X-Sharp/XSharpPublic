@@ -10,7 +10,7 @@
     <para styleclass="Body Text">We consider the Vulcan Compatibility of the compiler finished. All Vulcan code should compile without problems now.<br/>The next builds of the compiler will focus on bug fixing and adding some VO compatibility options which are listed below as well as adding some new features.</para>
     <para styleclass="Normal">Below is the complete (but short) list of things that are not supported yet or are known problems in the current build of X#.</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Some VO <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-By-Category">compatibility compiler options</link> are not implemented yet. The command line options are recognized but nothing is done with them<br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">/cs: Case Sensitivity (the compiler is now always Case Insensitive)</text><br/><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">/vo 11: VO Compatible Numeric conversions</text></li>
       <li styleclass="Normal">The compiler pragmas (#pragma warnings and #pragma options) do not work. They are ignored by the compiler.</li>
       <li styleclass="Normal">Parser errors need improvements<br/>Erroneous code may generate compiler runtime errors</li>
@@ -19,12 +19,12 @@
       <li styleclass="Normal">Sometimes you may see a &quot;<text style="font-weight:bold;">Include file not found</text>&quot; error, where the file DOES exist. This seems to be a side effect of the codepage that was used to save the include files. <br/>When you save the file as UTF8 (File Advanced Save Options in Visual Studio) then this problem almost always disappears.</li>
     </list>
     <para styleclass="Heading2">Visual Studio</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Intellisense still needs some work</li>
       <li styleclass="Normal">New features in the Debugger, such as a window for Globals and RDD Workareas</li>
     </list>
     <para styleclass="Heading2">VO Xporter</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">DbServer and Fieldspec binaries are not exported yet</li>
     </list>
   </body>

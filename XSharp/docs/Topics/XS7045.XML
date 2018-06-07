@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7045</para>
+    <para styleclass="Heading1">Error XS7045</para>
   </header>
   <para styleclass="Normal">Parameter not valid for the specified unmanaged type.</para>
   <para styleclass="Normal"></para>

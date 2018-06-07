@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9018</para>
+      <para styleclass="Heading1">Error XS9018</para>
     </header>
     <para styleclass="Normal">Using a numeric DLL entrypoint &apos;{0}&apos; is not supported in .NET</para>
   </body>

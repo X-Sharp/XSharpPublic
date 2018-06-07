@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0622</para>
+    <para styleclass="Heading1">Error XS0622</para>
   </header>
   <para styleclass="Normal">Can only use array initializer expressions to assign to array types. Try using a new expression instead.</para>
   <para styleclass="Normal"></para>

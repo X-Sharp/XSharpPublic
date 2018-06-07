@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1742</para>
+    <para styleclass="Heading1">Error XS1742</para>
   </header>
   <para styleclass="Normal">An array access may not have a named argument specifier</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1773</para>
+    <para styleclass="Heading1">Error XS1773</para>
   </header>
   <para styleclass="Normal">Invalid version {0} for /subsystemversion. The version must be 6.02 or greater for ARM or AppContainerExe, and 4.00 or greater otherwise</para>
   <para styleclass="Normal"></para>

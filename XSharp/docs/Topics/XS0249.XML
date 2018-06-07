@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0249</para>
+    <para styleclass="Heading1">Error XS0249</para>
   </header>
   <para styleclass="Normal">Do not override object.Finalize. Instead, provide a destructor.</para>
   <para styleclass="Normal"></para>

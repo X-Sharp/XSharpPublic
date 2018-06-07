@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1964</para>
+    <para styleclass="Heading1">Error XS1964</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: user-defined conversions to or from the dynamic type are not allowed</para>
   <para styleclass="Normal"></para>

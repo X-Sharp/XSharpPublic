@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0211</para>
+    <para styleclass="Heading1">Error XS0211</para>
   </header>
   <para styleclass="Normal">Cannot take the address of the given expression</para>
   <para styleclass="Normal"></para>

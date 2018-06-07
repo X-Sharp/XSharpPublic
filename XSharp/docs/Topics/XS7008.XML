@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7008</para>
+    <para styleclass="Heading1">Error XS7008</para>
   </header>
   <para styleclass="Normal">The assembly name &apos;{0}&apos; is reserved and cannot be used as a reference in an interactive session</para>
   <para styleclass="Normal"></para>

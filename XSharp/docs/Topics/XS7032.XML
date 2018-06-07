@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7032</para>
+    <para styleclass="Heading1">Error XS7032</para>
   </header>
   <para styleclass="Normal">Key file &apos;{0}&apos; is missing the private key needed for signing</para>
   <para styleclass="Normal"></para>

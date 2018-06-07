@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8121</para>
+    <para styleclass="Heading1">Error XS8121</para>
   </header>
   <para styleclass="Normal">An expression of type {0} cannot be handled by a pattern of type {1}.</para>
   <para styleclass="Normal"></para>

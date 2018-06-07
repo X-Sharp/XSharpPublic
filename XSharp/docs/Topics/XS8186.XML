@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8186</para>
+    <para styleclass="Heading1">Error XS8186</para>
   </header>
   <para styleclass="Normal">A foreach loop must declare its iteration variables.</para>
   <para styleclass="Normal"></para>

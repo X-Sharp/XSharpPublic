@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8077</para>
+    <para styleclass="Heading1">Error XS8077</para>
   </header>
   <para styleclass="Normal">A single-line comment may not be used in an interpolated string.</para>
   <para styleclass="Normal"></para>

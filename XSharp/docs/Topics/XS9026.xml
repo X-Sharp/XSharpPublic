@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9026</title>
   <keywords>
     <keyword>XS9026</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9026</para>
+      <para styleclass="Heading1">Warning XS9026</para>
     </header>
     <para styleclass="Normal">Missing RETURN value. A default &apos;empty&apos; return value is returned</para>
   </body>

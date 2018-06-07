@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1661</para>
+    <para styleclass="Heading1">Error XS1661</para>
   </header>
   <para styleclass="Normal">Cannot convert {0} to delegate type &apos;{1}&apos; because the parameter types do not match the delegate parameter types</para>
   <para styleclass="Normal"></para>

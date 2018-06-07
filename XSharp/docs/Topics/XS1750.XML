@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1750</para>
+    <para styleclass="Heading1">Error XS1750</para>
   </header>
   <para styleclass="Normal">A value of type &apos;{0}&apos; cannot be used as a default parameter because there are no standard conversions to type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

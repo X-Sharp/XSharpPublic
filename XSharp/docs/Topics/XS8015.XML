@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8015</para>
+    <para styleclass="Heading1">Error XS8015</para>
   </header>
   <para styleclass="Normal">Module &apos;{0}&apos; is already defined in this assembly. Each module must have a unique filename.</para>
   <para styleclass="Normal"></para>

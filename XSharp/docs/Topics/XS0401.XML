@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0401</para>
+    <para styleclass="Heading1">Error XS0401</para>
   </header>
   <para styleclass="Normal">The new() constraint must be the last constraint specified</para>
   <para styleclass="Normal"></para>

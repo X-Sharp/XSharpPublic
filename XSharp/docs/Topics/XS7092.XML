@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7092</para>
+    <para styleclass="Heading1">Error XS7092</para>
   </header>
   <para styleclass="Normal">A fixed buffer may only have one dimension.</para>
   <para styleclass="Normal"></para>

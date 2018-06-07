@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0629</para>
+    <para styleclass="Heading1">Error XS0629</para>
   </header>
   <para styleclass="Normal">Conditional member &apos;{0}&apos; cannot implement interface member &apos;{1}&apos; in type &apos;{2}&apos;</para>
   <para styleclass="Normal"></para>

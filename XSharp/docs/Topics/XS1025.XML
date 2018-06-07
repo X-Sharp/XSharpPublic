@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1025</para>
+    <para styleclass="Heading1">Error XS1025</para>
   </header>
   <para styleclass="Normal">Single-line comment or end-of-line expected</para>
   <para styleclass="Normal"></para>

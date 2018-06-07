@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1632</para>
+    <para styleclass="Heading1">Error XS1632</para>
   </header>
   <para styleclass="Normal">Control cannot leave the body of an anonymous method or lambda expression</para>
   <para styleclass="Normal"></para>

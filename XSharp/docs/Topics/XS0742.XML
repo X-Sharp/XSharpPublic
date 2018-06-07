@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0742</para>
+    <para styleclass="Heading1">Error XS0742</para>
   </header>
   <para styleclass="Normal">A query body must end with a select clause or a group clause</para>
   <para styleclass="Normal"></para>

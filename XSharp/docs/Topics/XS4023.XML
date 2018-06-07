@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4023</para>
+    <para styleclass="Heading1">Error XS4023</para>
   </header>
   <para styleclass="Normal">/platform:anycpu32bitpreferred can only be used with /t:exe, /t:winexe and /t:appcontainerexe</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0562</para>
+    <para styleclass="Heading1">Error XS0562</para>
   </header>
   <para styleclass="Normal">The parameter of a unary operator must be the containing type</para>
   <para styleclass="Normal"></para>

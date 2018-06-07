@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7019</para>
+    <para styleclass="Heading1">Error XS7019</para>
   </header>
   <para styleclass="Normal">Type of &apos;{0}&apos; cannot be inferred since its initializer directly or indirectly refers to the definition.</para>
   <para styleclass="Normal"></para>

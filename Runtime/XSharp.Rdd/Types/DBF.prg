@@ -1258,7 +1258,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ELSE
                 //
-                LOCAL iOffset := SELF:_getFieldOffset(nFldPos)
+                LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
                 LOCAL nArrPos := nFldPos AS LONG
                 IF __ARRAYBASE__ == 0
                     nArrPos -= 1

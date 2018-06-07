@@ -67,7 +67,7 @@
     <CommandLineOption>
     </CommandLineOption>
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
     <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
@@ -93,7 +93,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>

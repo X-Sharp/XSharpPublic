@@ -1,6 +1,28 @@
 ﻿USING System.Globalization
 
 function Start as void
+	LOCAL cA, cB AS STRING
+	LOCAL nI, nMax AS Int64
+	LOCAL lOk AS LOGIC
+	nMax := 10000000// 40000000
+	cA := "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG"
+	//cB := Left(CA, Slen(Ca)-1)+Lower(right(cA,1))
+	cb := lower(ca)
+	LOCAL aColl AS STRING[]
+	aColl := <STRING>{"Windows", "Clipper","Unicode", "Ordinal"}
+	FOREACH VAR s IN aColl
+		SetCollation(s)
+		LOCAL nSecs AS float
+		nSecs := Seconds()
+		FOR nI := 1 TO nMax 
+			lOk := cA <= cB
+		NEXT
+		? SetCollation(), transform(nMax,"999,999,999"), seconds() - nSecs
+	NEXT
+	_wait()
+	return 
+
+function Start2 as void
 	LOCAL aDir AS ARRAY
 	aDir := Directory("C:\XSharp\DevRt\Runtime", "AHSD")
 	FOREACH VAR aFile IN aDir
@@ -14,7 +36,7 @@ function Start as void
 
 	AEval(aFiles, {|element| QOut(element)})
 
-	WAIT
+	_Wait()
 	RETURN
 
 function Start1() as void

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
-	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS IEnumerable<T> where T is New()
+	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS IEnumerable<T> where T IS NEW()
 		INTERNAL _internalList AS List<T> 
 		PRIVATE _islocked AS LOGIC 
 		#region constructors
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp
 			/// <summary>Create an array with a certain number of elements. Each element will be filled with a default value.</summary>
 		CONSTRUCTOR(capacity AS DWORD)
 			_internalList := List<T>{ (INT) capacity}
-			_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
+			_internalList:AddRange(Enumerable.Repeat(Default(T),(INT) capacity))
 			RETURN 
 			
 			/// <summary>Create an array and fill it with elements from an existing collection.</summary>
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			FOREACH element AS OBJECT IN elements
 				IF element == NULL
-					_internalList:add(DEFAULT(T))
+					_internalList:add(Default(T))
 				ELSEIF element IS T
 					_internalList:Add( (T) element)
 				ELSE
@@ -89,6 +89,10 @@ BEGIN NAMESPACE XSharp
 			nCount := (DWORD) _internalList:Count
 			aResult := (__ArrayBase<T>) Activator.CreateInstance(SELF:GetType(), NULL)
 			ASize(aResult, nCount)
+			IF nCount == 0
+				// warning, nCount-1 below will become MAXDWORD for nCount == 0
+				RETURN aResult
+			END IF
 			FOR VAR I := 0 TO nCount-1
 				aResult:_internalList[i] := _internalList[i]
 			NEXT
@@ -159,7 +163,7 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 				oProp	 := __GetProperty( sPropertyName)
 				oElement := _internalList[(INT) index ]
-				RETURN oProp:GetValue(oElement, null)
+				RETURN oProp:GetValue(oElement, NULL)
 			END GET
 			SET
 				IF  index > _internalList:Count-1
@@ -170,7 +174,7 @@ BEGIN NAMESPACE XSharp
 					LOCAL oProp    AS PropertyInfo
 					oProp	 := __GetProperty( sPropertyName)
 					oElement := _internalList[(INT) index ]
-					oProp:SetValue(oElement, VALUE,null)
+					oProp:SetValue(oElement, VALUE,NULL)
 				ENDIF
 			END SET
 		END PROPERTY
@@ -197,7 +201,7 @@ BEGIN NAMESPACE XSharp
 			RETURN
 			
 		INTERNAL METHOD Insert(position AS DWORD) AS __ArrayBase<T>
-			SELF:Insert( position, DEFAULT(T))
+			SELF:Insert( position, Default(T))
 			RETURN SELF
 			
 			

@@ -108,7 +108,11 @@ BEGIN NAMESPACE XSharp
 				VAR u := _internalList[i]
 				IF u:isArray
 					VAR aElement := (ARRAY) u
-					aResult:_internalList[i] := aElement:Clone()
+					if aElement != NULL_ARRAY
+						aResult:_internalList[i] := aElement:Clone()
+					ELSE
+						aResult:_internalList[i] := aElement
+					ENDIF
 				ELSE
 					aResult:_internalList[i] := u
 				ENDIF

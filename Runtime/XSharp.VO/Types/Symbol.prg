@@ -74,23 +74,24 @@ begin namespace XSharp
 		end property
 		
 		#region methods
+			/// <inheritdoc />	
 			virtual method Equals(obj as object) as logic 
 				local rhs as symbol
 				if (obj == null)
 					return false
-				endif
-				rhs := (symbol)(obj)
-				if (rhs == null)
-					return false
-				endif
-				return self:Equals(rhs)
-			
+				ENDIF
+				rhs := (symbol) obj
+				RETURN SELF:Equals(rhs)
+
+			/// <inheritdoc />	
 			virtual method GetHashCode() as long
-				return self:_index:GetHashCode()
-			
-			method GetHashCode(obj as Symbol) as long
-				return obj:GetHashCode()
-			
+				RETURN (INT) SELF:_index
+
+			/// <inheritdoc />	
+			method GetHashCode(s as __Symbol) as long
+				RETURN (INT) s:_index
+
+			/// <inheritdoc />	
 			virtual method ToString() as string
 				return _value
 
@@ -107,11 +108,11 @@ begin namespace XSharp
 		#endregion
 		
 		#region Equality
-			/// <exclude />	
+			/// <inheritdoc />		
 			method Equals(symOther as symbol) as logic
 				return self:_index == symOther:_index
 			
-			/// <exclude />	
+			/// <inheritdoc />	
 			method Equals(x as symbol, y as symbol) as logic
 				return x:_index == y:_index
 			

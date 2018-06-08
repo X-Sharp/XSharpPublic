@@ -1,0 +1,12 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+#command GETSTATE <type> <set>	      =>				 ;
+		RETURN XSharp.RuntimeState.GetValue\< <type> \>( <set> )
+
+#command SETSTATE <type> <set>	<value> =>				 ;
+		RETURN XSharp.RuntimeState.SetValue\< <type> \>( <set> , <value> )			 ;;
+

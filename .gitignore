@@ -219,3 +219,7 @@ Tools/Converter/PrjConvert.exe
 # CSharp Project System DB files
 *.opendb
 *.vc.db
+/Help/Working
+/Help
+/Binaries/Documentation
+/Binaries/Help

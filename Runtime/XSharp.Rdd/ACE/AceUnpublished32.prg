@@ -1,8 +1,8 @@
 ﻿using System
 using System.Runtime.InteropServices
 
-BEGIN namespace AdvantageClientEngine
-
+BEGIN namespace XSharp.ADS
+ 
 	INTERNAL CLASS ACEUNPUB32
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];

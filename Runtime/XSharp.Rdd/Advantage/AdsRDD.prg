@@ -8,14 +8,13 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-USING XSharp
 USING XSharp.RDD
-using AdvantageClientEngine
+USING XSharp.RDD.Enums
 
 /// <summary>
-/// The Ads class.
+/// The AdsRDD class. 
 /// </summary>
-CLASS XSharp.RDD.AdsRDD Inherit Workarea
+CLASS XSharp.ADS.AdsRDD Inherit Workarea
 #region Fields
     //PRIVATE m_CallbackFn AS CallbackFn
     //PRIVATE m_CalltraceFile AS System.IO.StreamWriter
@@ -34,7 +33,8 @@ CLASS XSharp.RDD.AdsRDD Inherit Workarea
     PUBLIC m_usTableType AS Word
     PUBLIC MAX_KEY_SIZE AS Word
 #endregion
- 
+
+/// <summary>Create instande of RDD </summary>
 CONSTRUCTOR()
     SUPER()
     SELF:_Order         := AdsIndex{SELF}
@@ -50,24 +50,24 @@ CONSTRUCTOR()
 
     INTERNAL METHOD ACECALL(ulRetCode AS DWORD) AS VOID
         IF (ulRetCode != 0)
-            SELF:ADSERROR((int) ulRetCode, 27)
+            SELF:ADSERROR( ulRetCode, 27)
         ENDIF
         RETURN 
 
+	
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
 
-    METHOD ADSERROR(iSubCode AS INT, iGenCode AS INT) AS void
-        SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, ES_ERROR)
-
-    METHOD ADSERROR(iSubCode AS INT, iGenCode AS INT, iSeverity as INT) AS void
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity as DWORD) AS void
         SELF:ADSERROR(iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
 
-    METHOD ADSERROR(iSubCode AS INT, iGenCode AS INT, strFunction AS string) AS void
-        SELF:ADSERROR(iSubCode, iGenCode, strFunction, String.Empty, ES_ERROR)
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
 
-    METHOD ADSERROR(iSubCode AS int, iGenCode AS Int, strFunction AS string, strMessage AS string) AS void
-        SELF:ADSERROR(iSubCode, iGenCode, strFunction,strMessage, ES_ERROR)
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string, strMessage AS string) AS void
+        SELF:ADSERROR(iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
 
-    METHOD ADSERROR(iSubCode AS int, iGenCode AS int, strFunction AS string, strMessage AS string, iSeverity AS Int) AS void
+    INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS string, strMessage AS string, iSeverity AS DWORD) AS void
         LOCAL lastError AS DWord
         LOCAL pucBuf AS Char[]
         LOCAL wBufLen AS Word
@@ -94,7 +94,7 @@ CONSTRUCTOR()
         
 
     INTERNAL METHOD Unsupported(strFunctionName AS string) AS Logic
-        SELF:ADSERROR(ERDD_UNSUPPORTED, EG_UNSUPPORTED, strFunctionName)
+        SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UnSupported, strFunctionName)
         RETURN FALSE
 
 
@@ -107,14 +107,14 @@ CONSTRUCTOR()
         RETURN SELF:m_hTable
 
     PRIVATE METHOD AxCheckVODeletedFlag() AS DWord
-        SELF:ACECALL(ACE.AdsShowDeleted(IIF(Runtime.State.Deleted,(Word)0 ,(Word)1 )))
+        SELF:ACECALL(ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(Word)0 ,(Word)1 )))
         RETURN 0
   
     PRIVATE METHOD AxCheckVODateFormat() AS Logic
-        SELF:ACECALL(ACE.AdsSetDateFormat(Runtime.State.DateFormat))
-        SELF:ACECALL(ACE.AdsSetExact(IIF(Runtime.State.Exact,(Word)1 ,(Word)0 )))
-        SELF:ACECALL(ACE.AdsSetDecimals((Word)Runtime.State.Decimals ))
-        SELF:ACECALL(ACE.AdsSetEpoch((Word)Runtime.State.Epoch ))
+        SELF:ACECALL(ACE.AdsSetDateFormat(RuntimeState.DateFormat))
+        SELF:ACECALL(ACE.AdsSetExact(IIF(RuntimeState.Exact,(Word)1 ,(Word)0 )))
+        SELF:ACECALL(ACE.AdsSetDecimals((Word)RuntimeState.Decimals ))
+        SELF:ACECALL(ACE.AdsSetEpoch((Word)RuntimeState.Epoch ))
         RETURN TRUE
     
     PRIVATE METHOD AxAnsi2Unicode(source AS Char[], iLength AS Long) AS string
@@ -157,16 +157,19 @@ CONSTRUCTOR()
         //ENDIF
         RETURN TRUE
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoBottom() AS Logic
         SELF:ACECALL(SELF:AxCheckVODeletedFlag())
         SELF:ACECALL(ACE.AdsGotoBottom(SELF:ACEORDER()))
         RETURN SELF:RecordMovement()
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoTop() AS Logic
         SELF:ACECALL(SELF:AxCheckVODeletedFlag())
         SELF:ACECALL(ACE.AdsGotoTop(SELF:ACEORDER()))
         RETURN SELF:RecordMovement()
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoTo(lRec AS DWord) AS Logic
         LOCAL recordnum AS DWord
         LOCAL atEOF AS Word
@@ -184,16 +187,18 @@ CONSTRUCTOR()
         ENDIF
         RETURN SELF:RecordMovement()
     
+	/// <inheritdoc />
     VIRTUAL METHOD GoToId(oRecnum AS Object) AS Logic
         LOCAL recNum AS DWord
         TRY
             recNum := System.Convert.ToUInt32(oRecnum)
         CATCH e as Exception
-            SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "GoToId",e:Message)
+            SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DataType, "GoToId",e:Message)
             RETURN FALSE
         END TRY
         RETURN SELF:GoTo(recNum)
     
+	/// <inheritdoc />
     VIRTUAL METHOD Skip(lCount AS Long) AS Logic
         LOCAL result AS DWord
         LOCAL flag AS Logic
@@ -217,15 +222,18 @@ CONSTRUCTOR()
         ENDIF
         RETURN flag
 
+	/// <inheritdoc />
     VIRTUAL METHOD SkipFilter(lCount AS Long) AS Logic
         // No difference with normal skip
         RETURN SELF:Skip(lCount)
 
+	/// <inheritdoc />
     VIRTUAL METHOD SkipRaw(lCount AS Long) AS Logic
         // No difference with normal skip
         RETURN SELF:Skip(lCount)
 
 
+	/// <inheritdoc />
     VIRTUAL METHOD Seek(seekinfo AS DBSEEKINFO) AS Logic
         LOCAL mode AS Word
         LOCAL found AS Word
@@ -233,7 +241,7 @@ CONSTRUCTOR()
         LOCAL atBOF AS Word
         LOCAL Key AS string
         IF (SELF:m_hIndex == System.IntPtr.Zero)
-            SELF:ADSERROR(ERDD_DATATYPE, EG_NOORDER, "Seek")
+            SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_NOORDER, "Seek")
         ENDIF
         SELF:ACECALL(SELF:AxCheckVODeletedFlag())
         Key := seekinfo:value:ToString()
@@ -285,13 +293,16 @@ CONSTRUCTOR()
     #endregion
     #region Updates 
     
+	/// <inheritdoc />
     VIRTUAL METHOD Flush() AS Logic
         RETURN SELF:GoCold()
 
+	/// <inheritdoc />
     VIRTUAL METHOD GoCold() AS Logic
         SELF:ACECALL(ACE.AdsWriteRecord(SELF:m_hTable))
         RETURN SELF:RecordMovement()
  
+	/// <inheritdoc />
     VIRTUAL METHOD GoHot() AS Logic
         LOCAL options AS DWord
         LOCAL isTableLocked AS Word
@@ -305,7 +316,7 @@ CONSTRUCTOR()
         IF ((options & ACE.ADS_EXCLUSIVE) != ACE.ADS_EXCLUSIVE)
             // Only allowed when not Readonly
             IF ((options & ACE.ADS_READONLY) == ACE.ADS_READONLY)
-                SELF:ADSERROR(ERDD_READONLY, EG_READONLY)
+                SELF:ADSERROR(ERDD.READONLY, XSharp.Gencode.EG_READONLY)
             ENDIF
             SELF:ACECALL(ACE.AdsIsTableLocked(SELF:m_hTable, out isTableLocked))
             IF isTableLocked == 0
@@ -331,27 +342,29 @@ CONSTRUCTOR()
                             SELF:ACECALL(ulRetCode)
                         ENDIF
                     ENDIF
-                    SELF:ADSERROR(ERDD_UNLOCKED, EG_STROVERFLOW, ES_ERROR)
+                    SELF:ADSERROR(ERDD.UNLOCKED, XSharp.Gencode.EG_STROVERFLOW, XSharp.Severity.ES_ERROR)
                 ENDIF
             ENDIF
         ENDIF
         RETURN TRUE
 
+	/// <inheritdoc />
     VIRTUAL METHOD Zap() AS Logic
         LOCAL options AS DWord
         SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:m_hTable, out options))
         // Only allowed when opened exclusively
         IF (options & ACE.ADS_EXCLUSIVE) != ACE.ADS_EXCLUSIVE
-            SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED , "Zap")
+            SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, XSharp.Gencode.EG_SHARED , "Zap")
         ENDIF
         // Only allowed when not Readonly
         IF ((options & ACE.ADS_READONLY) == ACE.ADS_READONLY)
-            SELF:ADSERROR(ERDD_READONLY, EG_READONLY, "Zap")
+            SELF:ADSERROR(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "Zap")
         ENDIF
         SELF:ACECALL(ACE.AdsZapTable(SELF:m_hTable))
         RETURN SELF:GoTop()
 
  
+	/// <inheritdoc />
     VIRTUAL METHOD Append(fReleaseLocks AS Logic) AS Logic
         LOCAL result AS DWord
         LOCAL handleType AS Word
@@ -391,13 +404,17 @@ CONSTRUCTOR()
     PROPERTY ACEConnectionHandle AS IntPtr GET m_hConnection
     PROPERTY ACEIndexHandle AS IntPtr GET m_hIndex
     PROPERTY ACETableHandle AS IntPtr GET m_hTable
+	/// <inheritdoc />
     PROPERTY BOF AS Logic GET SUPER:_Bof
+	/// <inheritdoc />
     PROPERTY EOF AS Logic GET SUPER:_Eof
+	/// <inheritdoc />
     PROPERTY Found as LOGIC GET SUPER:_Found
     PRIVATE PROPERTY IsADT AS LOGIC GET m_usTableType == ACE.ADS_ADT
     VIRTUAL PROPERTY SysName AS STRING GET typeof(ADSRDD):ToString()
 
 
+	/// <inheritdoc />
     PROPERTY Deleted as LOGIC
     GET
         LOCAL isDeleted AS Word
@@ -425,6 +442,7 @@ CONSTRUCTOR()
 #region Locking
  
 
+	/// <inheritdoc />
     VIRTUAL METHOD Lock(lockInfo AS DBLOCKINFO) AS Logic
     LOCAL lRecno := 0 AS DWord
     LOCAL result := 0 AS DWord
@@ -440,7 +458,7 @@ CONSTRUCTOR()
         TRY
             lRecno := System.Convert.ToUInt32(lockInfo:recID)
         CATCH e as Exception
-            SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "Lock", e:Message)
+            SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "Lock", e:Message)
         END TRY
     ENDIF
     IF (lockInfo:@@Method == DBLockInfo.LockMethod.File)
@@ -472,6 +490,7 @@ CONSTRUCTOR()
  
 
  
+	/// <inheritdoc />
     VIRTUAL METHOD Unlock(recordID AS Object) AS Logic
     LOCAL result AS DWord
     LOCAL numRecord := 0 AS DWord
@@ -479,7 +498,7 @@ CONSTRUCTOR()
         numRecord := System.Convert.ToUInt32(recordID)
     CATCH e as Exception
         //
-        SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "Unlock",e:Message)
+        SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "Unlock",e:Message)
     END TRY
     IF (numRecord == 0)
         result := ACE.AdsUnlockTable(SELF:m_hTable)
@@ -496,6 +515,7 @@ CONSTRUCTOR()
 #endregion
 
 #region Filters
+	/// <inheritdoc />
     VIRTUAL METHOD ClearFilter() AS Logic
         LOCAL ulRetCode AS DWord
         IF (SELF:m_hTable != System.IntPtr.Zero)
@@ -513,6 +533,7 @@ CONSTRUCTOR()
         SELF:_FilterInfo := DbFilterInfo{}
         RETURN TRUE
 
+	/// <inheritdoc />
     VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS Logic
         LOCAL ulRetCode AS DWord
         // Get the current date format so we can handle literal dates in the filter
@@ -529,7 +550,7 @@ CONSTRUCTOR()
                 SELF:ACECALL(ulRetCode)
             ENDIF
         ELSE
-            IF Runtime.State.Optimize
+            IF RuntimeState.Optimize
                 SELF:ACECALL(ACE.AdsSetAOF(SELF:m_hTable, fi:FilterText, (WORD) ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF))
             ELSE
                 SELF:ACECALL(ACE.AdsSetFilter(SELF:m_hTable, fi:FilterText))
@@ -541,15 +562,17 @@ CONSTRUCTOR()
 
 #endregion
 #region Relations 
+	/// <inheritdoc />
     VIRTUAL METHOD ClearRel() AS Logic
         IF SELF:m_hTable != System.IntPtr.Zero
             SELF:ACECALL(ACE.AdsClearRelation(SELF:m_hTable))
         ENDIF
         RETURN SUPER:ClearRel()
 
+	/// <inheritdoc />
     VIRTUAL METHOD SetRel(relinfo AS DBRELINFO) AS Logic
         IF relinfo:Child:Driver != SELF:m_strDriver
-            SELF:ADSERROR(ERDD_UNSUPPORTED, EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
+            SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
             RETURN FALSE
         ENDIF
         VAR child := relInfo:Child astype ADSRDD
@@ -559,12 +582,13 @@ CONSTRUCTOR()
 #endregion
 
 #region Info
+	/// <inheritdoc />
 VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) AS OBJECT
     LOCAL fieldType AS Word
     LOCAL length    AS DWord
     LOCAL ulRetCode AS DWord
     SWITCH uiOrdinal
-    CASE DBS_BLOB_TYPE
+    CASE DbFieldInfo.DBS_BLOB_TYPE
         SELF:ACECALL(ACE.AdsGetFieldType(SELF:m_hTable, (DWord)(uiPos + 1) ,  out fieldType))
         //
         SWITCH fieldType
@@ -573,7 +597,7 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
         CASE ACE.ADS_IMAGE
             return "?"
         END SWITCH
-    CASE DBS_BLOB_LEN
+    CASE DbFieldInfo.DBS_BLOB_LEN
         //
         IF (SUPER:_fields[uiPos + 1]:fieldType != DBFieldType.Memo  )
             return -1
@@ -587,13 +611,14 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
             return length
         ENDIF
         
-    CASE DBS_BLOB_POINTER
+    CASE DbFieldInfo.DBS_BLOB_POINTER
         return null
 
     END SWITCH
     RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
 
  
+	/// <inheritdoc />
  VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue as Object) AS OBJECT
     LOCAL aDate AS Char[]
     LOCAL DateLen AS Word
@@ -604,19 +629,19 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
     LOCAL options AS DWord
     LOCAL memoBlockSize AS Word
     LOCAL ulRetCode AS DWord
-    IF uiOrdinal <= DBI_MEMOFIELD  
+    IF uiOrdinal <= DbInfo.DBI_MEMOFIELD  
         SWITCH uiOrdinal
-        CASE DBI_ISDBF
+        CASE DbInfo.DBI_ISDBF
             return !SELF:IsADT
-        CASE DBI_CANPUTREC
+        CASE DbInfo.DBI_CANPUTREC
             return FALSE
-        CASE DBI_GETHEADERSIZE
+        CASE DbInfo.DBI_GETHEADERSIZE
             IF SELF:IsADT
                 return 400 + SUPER:_Fields:Length * 200
             ELSE
                 return 2 + SUPER:_Fields:Length * 32 + 2
             ENDIF
-        CASE DBI_LASTUPDATE
+        CASE DbInfo.DBI_LASTUPDATE
             aDate := Char[]{ACE.ADS_MAX_DATEMASK}
             DateLen := (WORD) aDate:Length
             SELF:ACECALL(ACE.AdsSetDateFormat("MM/DD/YY"))
@@ -626,16 +651,16 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
                 SELF:ACECALL(1)
             ENDIF
             return (Long)julDate
-        CASE DBI_SETDELIMITER 
-        CASE DBI_VALIDBUFFER 
-        CASE DBI_LOCKOFFSET 
-        CASE DBI_MEMOHANDLE 
-        CASE DBI_NEWINDEXLOCK 
-        CASE DBI_MEMOFIELD 
+        CASE DbInfo.DBI_SETDELIMITER 
+        CASE DbInfo.DBI_VALIDBUFFER 
+        CASE DbInfo.DBI_LOCKOFFSET 
+        CASE DbInfo.DBI_MEMOHANDLE 
+        CASE DbInfo.DBI_NEWINDEXLOCK 
+        CASE DbInfo.DBI_MEMOFIELD 
             return NULL
-        CASE DBI_GETRECSIZE
+        CASE DbInfo.DBI_GETRECSIZE
             RETURN SUPER:_RecordLength
-        CASE DBI_GETLOCKARRAY
+        CASE DbInfo.DBI_GETLOCKARRAY
             SELF:ACECALL(ACE.AdsGetNumLocks(SELF:m_hTable, out numLocks))
             IF numLocks > 0
                 IF SELF:m_palRlocks == null .OR. SELF:m_palRlocks:Length < numLocks
@@ -646,31 +671,31 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
             ELSE
                 return NULL
             ENDIF
-        CASE DBI_TABLEEXT
+        CASE DbInfo.DBI_TABLEEXT
             IF SELF:IsADT
                 return ".ADT"
             ELSE
                 return ".DBF"
             ENDIF
-        CASE DBI_ISFLOCK
+        CASE DbInfo.DBI_ISFLOCK
             SELF:ACECALL(ACE.AdsIsTableLocked(SELF:m_hTable, out isLocked))
             RETURN isLocked != 0
-        CASE DBI_FILEHANDLE
+        CASE DbInfo.DBI_FILEHANDLE
             RETURN IntPtr.Zero
-        CASE DBI_FULLPATH
+        CASE DbInfo.DBI_FULLPATH
             RETURN SUPER:_FileName
-        CASE DBI_ISANSI
+        CASE DbInfo.DBI_ISANSI
             RETURN FALSE
-        CASE DBI_FOUND
+        CASE DbInfo.DBI_FOUND
             SELF:ACECALL(ACE.AdsIsFound(SELF:m_hTable, OUT isFound))
             return isFound != 0
-        CASE DBI_LOCKCOUNT
+        CASE DbInfo.DBI_LOCKCOUNT
             SELF:ACECALL(ACE.AdsGetNumLocks(SELF:m_hTable, out numLocks))
             return numLocks
-        CASE DBI_SHARED
+        CASE DbInfo.DBI_SHARED
             SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:m_hTable, out options))
             return (options & ACE.ADS_EXCLUSIVE) != ACE.ADS_EXCLUSIVE
-        CASE DBI_MEMOEXT
+        CASE DbInfo.DBI_MEMOEXT
             SWITCH SELF:m_usTableType 
             CASE ACE.ADS_ADT
                 return ".ADM"
@@ -681,7 +706,7 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
             return ".DBT"
             END SWITCH
             
-        CASE DBI_MEMOBLOCKSIZE
+        CASE DbInfo.DBI_MEMOBLOCKSIZE
             ulRetCode := ACE.AdsGetMemoBlockSize(SELF:m_hTable, out memoBlockSize)
             IF ulRetCode != ACE.AE_NO_MEMO_FILE 
                 SELF:ACECALL(ulRetCode)
@@ -689,60 +714,63 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
             ELSE
                 return NULL
             ENDIF
-        CASE DBI_CODEPAGE
+        CASE DbInfo.DBI_CODEPAGE
             return SELF:m_Encoding:CodePage
-        CASE DBI_DB_VERSION
+        CASE DbInfo.DBI_DB_VERSION
             return 0
-        CASE DBI_RDD_VERSION
+        CASE DbInfo.DBI_RDD_VERSION
             return System.Reflection.Assembly.GetExecutingAssembly():GetName():Version:ToString()
         END SWITCH
     ELSE
         SWITCH uiOrdinal
-        CASE BLOB_INFO_HANDLE
-        CASE BLOB_FILE_RECOVER 
-        CASE BLOB_FILE_INTEGRITY 
-        CASE BLOB_OFFSET 
-        CASE BLOB_POINTER 
-        CASE BLOB_LEN 
-        CASE BLOB_TYPE 
-        CASE BLOB_EXPORT 
-        CASE BLOB_ROOT_UNLOCK 
-        CASE BLOB_ROOT_PUT 
-        CASE BLOB_ROOT_GET 
-        CASE BLOB_ROOT_LOCK 
-        CASE BLOB_IMPORT 
-        CASE BLOB_DIRECT_PUT 
-        CASE BLOB_DIRECT_GET 
-        CASE BLOB_GET 
-        CASE BLOB_DIRECT_EXPORT 
-        CASE BLOB_DIRECT_IMPORT 
-        CASE BLOB_NMODE 
-        CASE BLOB_EXPORT_APPEND 
-        CASE BLOB_EXPORT_OVERWRITE 
+        CASE DbInfo.BLOB_INFO_HANDLE
+        CASE DbInfo.BLOB_FILE_RECOVER 
+        CASE DbInfo.BLOB_FILE_INTEGRITY 
+        CASE DbInfo.BLOB_OFFSET 
+        CASE DbInfo.BLOB_POINTER 
+        CASE DbInfo.BLOB_LEN 
+        CASE DbInfo.BLOB_TYPE 
+        CASE DbInfo.BLOB_EXPORT 
+        CASE DbInfo.BLOB_ROOT_UNLOCK 
+        CASE DbInfo.BLOB_ROOT_PUT 
+        CASE DbInfo.BLOB_ROOT_GET 
+        CASE DbInfo.BLOB_ROOT_LOCK 
+        CASE DbInfo.BLOB_IMPORT 
+        CASE DbInfo.BLOB_DIRECT_PUT 
+        CASE DbInfo.BLOB_DIRECT_GET 
+        CASE DbInfo.BLOB_GET 
+        CASE DbInfo.BLOB_DIRECT_EXPORT 
+        CASE DbInfo.BLOB_DIRECT_IMPORT 
+        CASE DbInfo.BLOB_NMODE 
+        CASE DbInfo.BLOB_EXPORT_APPEND 
+        CASE DbInfo.BLOB_EXPORT_OVERWRITE 
             return null
-        CASE  DBI_RL_AND 
-        CASE DBI_RL_CLEAR 
-        CASE DBI_RL_COUNT 
-        CASE DBI_RL_DESTROY 
-        CASE DBI_RL_EXFILTER 
-        CASE DBI_RL_GETFILTER 
-        CASE DBI_RL_HASMAYBE 
-        CASE DBI_RL_LEN 
-        CASE DBI_RL_MAYBEEVAL 
-        CASE DBI_RL_NEW 
-        CASE DBI_RL_NEWDUP 
-        CASE DBI_RL_NEWQUERY 
-        CASE DBI_RL_NEXTRECNO 
-        CASE DBI_RL_NOT 
-        CASE DBI_RL_OR 
-        CASE DBI_RL_PREVRECNO 
-        CASE DBI_RL_SET 
-        CASE DBI_RL_SETFILTER 
-        CASE DBI_RL_TEST  
+        CASE DbInfo.DBI_RL_AND 
+        CASE DbInfo.DBI_RL_CLEAR 
+        CASE DbInfo.DBI_RL_COUNT 
+        CASE DbInfo.DBI_RL_DESTROY 
+        CASE DbInfo.DBI_RL_EXFILTER 
+        CASE DbInfo.DBI_RL_GETFILTER 
+        CASE DbInfo.DBI_RL_HASMAYBE 
+        CASE DbInfo.DBI_RL_LEN 
+        CASE DbInfo.DBI_RL_MAYBEEVAL 
+        CASE DbInfo.DBI_RL_NEW 
+        CASE DbInfo.DBI_RL_NEWDUP 
+        CASE DbInfo.DBI_RL_NEWQUERY 
+        CASE DbInfo.DBI_RL_NEXTRECNO 
+        CASE DbInfo.DBI_RL_NOT 
+        CASE DbInfo.DBI_RL_OR 
+        CASE DbInfo.DBI_RL_PREVRECNO 
+        CASE DbInfo.DBI_RL_SET 
+        CASE DbInfo.DBI_RL_SETFILTER 
+        CASE DbInfo.DBI_RL_TEST  
             return null
-        CASE DBI_GET_ACE_TABLE_HANDLE
-            Return SELF:m_hTable
-        END SWITCH
+        CASE DbInfo.DBI_GET_ACE_TABLE_HANDLE
+            return self:m_hTable
+		otherwise
+			RETURN SUPER:Info(uiOrdinal, oNewValue)
+        end switch
+
 
     ENDIF
     RETURN SUPER:Info(uiOrdinal, oNewValue)
@@ -751,27 +779,28 @@ VIRTUAL METHOD FieldInfo(uiPos AS Long, uiOrdinal AS INT, oNewValue as OBJECT) A
 #endregion
 
 #region Unsupported
+	/// <inheritdoc />
     VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS Logic
         RETURN SELF:Unsupported("AppendLock")
 
 
+	/// <inheritdoc />
     VIRTUAL METHOD BlobInfo(uiPos AS DWord, uiOrdinal AS DWord) AS OBJECT
         SELF:Unsupported("BlobInfo")
         RETURN NULL
 
+	/// <inheritdoc />
     VIRTUAL METHOD ForceRel() AS Logic
         RETURN SELF:Unsupported("ForceRel")
 
+	/// <inheritdoc />
     VIRTUAL METHOD GetRec() AS Byte[]
         SELF:Unsupported("GetRec")
         RETURN NULL
 
+	/// <inheritdoc />
     VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
         RETURN SELF:Unsupported("HeaderLock")
-
-
- 
-
 
  
 

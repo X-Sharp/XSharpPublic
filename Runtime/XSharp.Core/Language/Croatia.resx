@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EDB_SEEK" xml:space="preserve">
+    <value>Neplatný argument pro vyhledávání</value>
+  </data>
+  <data name="EDB_SKIP" xml:space="preserve">
+    <value>Neplatný poèet skokù</value>
+  </data>
+  <data name="EDB_GOTO" xml:space="preserve">
+    <value>Prázdný identifikátor záznamu</value>
+  </data>
+  <data name="EDB_SETRELATION" xml:space="preserve">
+    <value>Neplatný ALIAS pro databázi-potomek</value>
+  </data>
+  <data name="EDB_USE" xml:space="preserve">
+    <value>Neplatná specifikace jména souboru</value>
+  </data>
+  <data name="EDB_CREATEINDEX" xml:space="preserve">
+    <value>Neplatná specifikace jména souboru</value>
+  </data>
+  <data name="EDB_SETORDER" xml:space="preserve">
+    <value>Neplatná specifikace poøadí</value>
+  </data>
+  <data name="EDB_SETINDEX" xml:space="preserve">
+    <value>Neplatná specifikace jména souboru</value>
+  </data>
+  <data name="EDB_FIELDNAME" xml:space="preserve">
+    <value>Neplatné jméno pole</value>
+  </data>
+  <data name="EDB_BADALIAS" xml:space="preserve">
+    <value>Neplatná specifikace alias</value>
+  </data>
+  <data name="EDB_DUPALIAS" xml:space="preserve">
+    <value>Alias je už definován</value>
+  </data>
+  <data name="EDB_SETFILTER" xml:space="preserve">
+    <value>Chyba nastavení filtru</value>
+  </data>
+  <data name="EDB_CYCLICREL" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="EDB_CREATETABLE" xml:space="preserve">
+    <value>Chyba vytvoøení tabulky</value>
+  </data>
+  <data name="EDB_RDDNOTFOUND" xml:space="preserve">
+    <value>RDD nenalezeno</value>
+  </data>
+  <data name="EDB_FIELDINDEX" xml:space="preserve">
+    <value>Neplatné pole indexu</value>
+  </data>
+  <data name="EDB_SELECT" xml:space="preserve">
+    <value>Neplatné èíslo pracovní oblasti</value>
+  </data>
+  <data name="EDB_SYMSELECT" xml:space="preserve">
+    <value>Neplatná specifikace alias</value>
+  </data>
+  <data name="EDB_TOTAL" xml:space="preserve">
+    <value>Chyba vytváøení souètù</value>
+  </data>
+  <data name="EDB_RECNO" xml:space="preserve">
+    <value>Neplatný argument èísla záznamu</value>
+  </data>
+  <data name="EDB_EXPRESSION" xml:space="preserve">
+    <value>Výraz pro kompilátor maker neprošel</value>
+  </data>
+  <data name="EDB_EXPR_WIDTH" xml:space="preserve">
+    <value>Výraz je pro kompilátor maker pøíliš dlouhý</value>
+  </data>
+  <data name="EDB_DRIVERLOAD" xml:space="preserve">
+    <value>RDD nelze natáhout</value>
+  </data>
+  <data name="EDB_PARAM" xml:space="preserve">
+    <value>Neplatný argument (#%u) funkce %s</value>
+  </data>
+  <data name="EDB_NOAREAS" xml:space="preserve">
+    <value>Neexistuje volná pracovní oblast</value>
+  </data>
+  <data name="EDB_NOMEM" xml:space="preserve">
+    <value>Pøekroèení pamìi</value>
+  </data>
+  <data name="EDB_NOFIELDS" xml:space="preserve">
+    <value>Nejsou definována pole</value>
+  </data>
+  <data name="EDB_BAD_ERROR_INFO" xml:space="preserve">
+    <value>Chybová informace RDD poškozena</value>
+  </data>
+  <data name="EDB_WRONGFIELDNAME" xml:space="preserve">
+    <value>Pole s tímto jménem už existuje</value>
+  </data>
+  <data name="EDB_ORDDESTROY" xml:space="preserve">
+    <value>Není specifikováno poøadí</value>
+  </data>
+  <data name="EDB_NOINITFUNC" xml:space="preserve">
+    <value>Chybí funkce RDD Init</value>
+  </data>
+  <data name="EDB_ERRORINIT" xml:space="preserve">
+    <value>Funkce RDD Init selhala</value>
+  </data>
+  <data name="EDB_DBSTRUCT" xml:space="preserve">
+    <value>Neodpovídá struktura</value>
+  </data>
+  <data name="EDB_NOTABLE" xml:space="preserve">
+    <value>Aktuální pracovní oblast neobsahuje tabulku</value>
+  </data>
+  <data name="EDB_NOORDER" xml:space="preserve">
+    <value>Nespecifikováno poøadí</value>
+  </data>
+  <data name="EDB_ASSERTION" xml:space="preserve">
+    <value>Prosazování selhalo</value>
+  </data>
+  <data name="ERDD_OPEN_FILE" xml:space="preserve">
+    <value>Otevøení databáze</value>
+  </data>
+  <data name="ERDD_OPEN_MEMO" xml:space="preserve">
+    <value>Otevøení memo souboru</value>
+  </data>
+  <data name="ERDD_OPEN_ORDER" xml:space="preserve">
+    <value>Otevøení indexového souboru</value>
+  </data>
+  <data name="ERDD_CREATE_FILE" xml:space="preserve">
+    <value>Vytvoøení databáze</value>
+  </data>
+  <data name="ERDD_CREATE_MEMO" xml:space="preserve">
+    <value>Vytvoøení memo souboru</value>
+  </data>
+  <data name="ERDD_CREATE_ORDER" xml:space="preserve">
+    <value>Vytvoøení indexového souboru</value>
+  </data>
+  <data name="ERDD_READ" xml:space="preserve">
+    <value>Chyba ètení</value>
+  </data>
+  <data name="ERDD_WRITE" xml:space="preserve">
+    <value>Chyba zápisu</value>
+  </data>
+  <data name="ERDD_CORRUPT" xml:space="preserve">
+    <value>Poškození dat</value>
+  </data>
+  <data name="ERDD_CORRUPT_HEADER" xml:space="preserve">
+    <value>Hlavièka databáze je poškozena</value>
+  </data>
+  <data name="ERDD_RDDVERSION" xml:space="preserve">
+    <value>Nesprávná verze ovladaèe</value>
+  </data>
+  <data name="ERDD_DATATYPE" xml:space="preserve">
+    <value>Chyba typu dat</value>
+  </data>
+  <data name="ERDD_DATAWIDTH" xml:space="preserve">
+    <value>Chyba délky dat</value>
+  </data>
+  <data name="ERDD_UNLOCKED" xml:space="preserve">
+    <value>Vìta byla uzamèená</value>
+  </data>
+  <data name="ERDD_SHARED" xml:space="preserve">
+    <value>Chyba sdílení</value>
+  </data>
+  <data name="ERDD_APPENDLOCK" xml:space="preserve">
+    <value>Chyba uzamèení pøi Append</value>
+  </data>
+  <data name="ERDD_READONLY" xml:space="preserve">
+    <value>Pouze pro ètení</value>
+  </data>
+  <data name="ERDD_NULLKEY" xml:space="preserve">
+    <value>Prázdný klíè</value>
+  </data>
+  <data name="ERDD_NTXLIMIT" xml:space="preserve">
+    <value>Pøekroèen limit indexových souborù</value>
+  </data>
+  <data name="ERDD_TAGLIMIT" xml:space="preserve">
+    <value>Pøekroèen limit prvkù indexového souboru</value>
+  </data>
+  <data name="ERDD_INIT_LOCK" xml:space="preserve">
+    <value>Chyba inicializování shématu uzamykání</value>
+  </data>
+  <data name="ERDD_READ_LOCK" xml:space="preserve">
+    <value>Není možno uzamknout pro ètení</value>
+  </data>
+  <data name="ERDD_WRITE_LOCK" xml:space="preserve">
+    <value>Chyba zámku pøi zápisu</value>
+  </data>
+  <data name="ERDD_READ_UNLOCK" xml:space="preserve">
+    <value>Chyba zámku pøi ètení</value>
+  </data>
+  <data name="ERDD_WRITE_UNLOCK" xml:space="preserve">
+    <value>Chyba odemknutí pøi zápisu</value>
+  </data>
+  <data name="ERDD_READ_LOCK_TIMEOUT" xml:space="preserve">
+    <value>Èasová prodleva uzamykání pro ètení indexového souboru</value>
+  </data>
+  <data name="ERDD_WRITE_LOCK_TIMEOUT" xml:space="preserve">
+    <value>Èasová prodleva uzamykání pro zápis indexového souboru</value>
+  </data>
+  <data name="ERDD_READ_UNLOCK_TIMEOUT" xml:space="preserve">
+    <value>Èasová prodleva odemykání indexového souboru uzamèeného pro ètení</value>
+  </data>
+  <data name="ERDD_WRITE_UNLOCK_TIMEOUT" xml:space="preserve">
+    <value>Èasová prodleva odemykání indexového souboru uzamèeného pro zápis</value>
+  </data>
+  <data name="ERDD_CLOSE_FILE" xml:space="preserve">
+    <value>Uzavøení databáze</value>
+  </data>
+  <data name="ERDD_CLOSE_MEMO" xml:space="preserve">
+    <value>Uzavøení memo souboru</value>
+  </data>
+  <data name="ERDD_CLOSE_ORDER" xml:space="preserve">
+    <value>Uzavøení indexového souboru</value>
+  </data>
+  <data name="ERDD_INVALID_ORDER" xml:space="preserve">
+    <value>Chybná specifikace poøadí</value>
+  </data>
+  <data name="ERDD_RECNO_MISSING" xml:space="preserve">
+    <value>Èíslo záznamu nenalezeno</value>
+  </data>
+  <data name="ERDD_NOORDER" xml:space="preserve">
+    <value>Aktuální pracovní oblast neobsahuje žádné poøadí</value>
+  </data>
+  <data name="ERDD_UNSUPPORTED" xml:space="preserve">
+    <value>Operace není podporována aktuálním RDD</value>
+  </data>
+  <data name="ERDD_WRITE_NTX" xml:space="preserve">
+    <value>Chyba zápisu do NTX souboru</value>
+  </data>
+  <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
+    <value>Klíè nenalezen</value>
+  </data>
+  <data name="ERDD_KEY_EVAL" xml:space="preserve">
+    <value>Neznámý nebo chybný klíèový výraz</value>
+  </data>
+  <data name="ERDD_VAR_TYPE" xml:space="preserve">
+    <value>Typ promìnné</value>
+  </data>
+  <data name="ERDD_READ_BUFFER" xml:space="preserve">
+    <value>Chyba ètení z disku</value>
+  </data>
+  <data name="ERDD_SORT_INIT" xml:space="preserve">
+    <value>Inicializace tøídìní</value>
+  </data>
+  <data name="ERDD_SORT_ADVANCE" xml:space="preserve">
+    <value>Probíhá tøídìní</value>
+  </data>
+  <data name="ERDD_SORT_SORT" xml:space="preserve">
+    <value>Chyba tøídìní</value>
+  </data>
+  <data name="ERDD_SORT_COMPLETE" xml:space="preserve">
+    <value>Chyba dokonèení tøídìní</value>
+  </data>
+  <data name="ERDD_SORT_END" xml:space="preserve">
+    <value>Chybné ukonèení tøídìní</value>
+  </data>
+  <data name="ERDD_READ_TEMPFILE" xml:space="preserve">
+    <value>Chyba ètení doèasného souboru</value>
+  </data>
+  <data name="ERDD_STREAM_NUM" xml:space="preserve">
+    <value>Chybný poèet proudù pro tøídìní</value>
+  </data>
+  <data name="ERDD_CREATE_TEMPFILE" xml:space="preserve">
+    <value>Chyba vytvoøení doèasného souboru</value>
+  </data>
+  <data name="DISKIO_WRITE" xml:space="preserve">
+    <value>Chybný zápis do vyrovnávací pamìti</value>
+  </data>
+  <data name="ERDD_WRONG_DRIVERTYPE" xml:space="preserve">
+    <value>Neplatné použití databázového ovladaèe</value>
+  </data>
+  <data name="ERDD_OUTOFMEMORY" xml:space="preserve">
+    <value>Nepodaøilo se pøidìlit pamì</value>
+  </data>
+  <data name="ERDD_INVALIDARG" xml:space="preserve">
+    <value>Neplatný argument pøedán do info funkce</value>
+  </data>
+  <data name="RT_MSG_MONTH1" xml:space="preserve">
+    <value>Leden</value>
+  </data>
+  <data name="RT_MSG_MONTH2" xml:space="preserve">
+    <value>Únor</value>
+  </data>
+  <data name="RT_MSG_MONTH3" xml:space="preserve">
+    <value>Bøezen</value>
+  </data>
+  <data name="RT_MSG_MONTH4" xml:space="preserve">
+    <value>Duben</value>
+  </data>
+  <data name="RT_MSG_MONTH5" xml:space="preserve">
+    <value>Kvìten</value>
+  </data>
+  <data name="RT_MSG_MONTH6" xml:space="preserve">
+    <value>Èerven</value>
+  </data>
+  <data name="RT_MSG_MONTH7" xml:space="preserve">
+    <value>Èervenec</value>
+  </data>
+  <data name="RT_MSG_MONTH8" xml:space="preserve">
+    <value>Srpen</value>
+  </data>
+  <data name="RT_MSG_MONTH9" xml:space="preserve">
+    <value>Záøí</value>
+  </data>
+  <data name="RT_MSG_MONTH10" xml:space="preserve">
+    <value>Øíjen</value>
+  </data>
+  <data name="RT_MSG_MONTH11" xml:space="preserve">
+    <value>Listopad</value>
+  </data>
+  <data name="RT_MSG_MONTH12" xml:space="preserve">
+    <value>Prosinec</value>
+  </data>
+  <data name="RT_MSG_DAY1" xml:space="preserve">
+    <value>Nedìle</value>
+  </data>
+  <data name="RT_MSG_DAY2" xml:space="preserve">
+    <value>Pondìlí</value>
+  </data>
+  <data name="RT_MSG_DAY3" xml:space="preserve">
+    <value>Úterý</value>
+  </data>
+  <data name="RT_MSG_DAY4" xml:space="preserve">
+    <value>Støeda</value>
+  </data>
+  <data name="RT_MSG_DAY5" xml:space="preserve">
+    <value>Ètvrtek</value>
+  </data>
+  <data name="RT_MSG_DAY6" xml:space="preserve">
+    <value>Pátek</value>
+  </data>
+  <data name="RT_MSG_DAY7" xml:space="preserve">
+    <value>Sobota</value>
+  </data>
+  <data name="RT_MSG_INFOSTRING" xml:space="preserve">
+    <value>US ASCII</value>
+  </data>
+  <data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
+    <value>P</value>
+  </data>
+  <data name="RT_MSG_SHORT_FALSE" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="RT_MSG_LONG_TRUE" xml:space="preserve">
+    <value>PRAVDA</value>
+  </data>
+  <data name="RT_MSG_LONG_FALSE" xml:space="preserve">
+    <value>NEPRAVDA</value>
+  </data>
+  <data name="RT_MSG_SHORT_YES" xml:space="preserve">
+    <value>A</value>
+  </data>
+  <data name="RT_MSG_SHORT_NO" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="RT_MSG_LONG_YES" xml:space="preserve">
+    <value>ANO</value>
+  </data>
+  <data name="RT_MSG_LONG_NO" xml:space="preserve">
+    <value>NE</value>
+  </data>
+  <data name="RT_MSG_ERR_0" xml:space="preserve">
+    <value>Èekejte...</value>
+  </data>
+  <data name="RT_MSG_ERR_1" xml:space="preserve">
+    <value>Chyba argumentu</value>
+  </data>
+  <data name="RT_MSG_ERR_2" xml:space="preserve">
+    <value>Chyba meze</value>
+  </data>
+  <data name="RT_MSG_ERR_3" xml:space="preserve">
+    <value>Pøeteèení øetìzce</value>
+  </data>
+  <data name="RT_MSG_ERR_4" xml:space="preserve">
+    <value>Numerické pøeteèení</value>
+  </data>
+  <data name="RT_MSG_ERR_5" xml:space="preserve">
+    <value>Dìlitel nula</value>
+  </data>
+  <data name="RT_MSG_ERR_6" xml:space="preserve">
+    <value>Numerická chyba</value>
+  </data>
+  <data name="RT_MSG_ERR_7" xml:space="preserve">
+    <value>Chyba syntaxe</value>
+  </data>
+  <data name="RT_MSG_ERR_8" xml:space="preserve">
+    <value>Operace je pøíliš složitá</value>
+  </data>
+  <data name="RT_MSG_ERR_9" xml:space="preserve">
+    <value>Pøeteèení bloku pamìti</value>
+  </data>
+  <data name="RT_MSG_ERR_10" xml:space="preserve">
+    <value>Chyba SEQUENCE</value>
+  </data>
+  <data name="RT_MSG_ERR_11" xml:space="preserve">
+    <value>Málo pamìti</value>
+  </data>
+  <data name="RT_MSG_ERR_12" xml:space="preserve">
+    <value>Nedefinovaná funkce</value>
+  </data>
+  <data name="RT_MSG_ERR_13" xml:space="preserve">
+    <value>Neexistuje exportovaná metoda</value>
+  </data>
+  <data name="RT_MSG_ERR_14" xml:space="preserve">
+    <value>Promìnná neexistuje</value>
+  </data>
+  <data name="RT_MSG_ERR_15" xml:space="preserve">
+    <value>Alias neexistuje</value>
+  </data>
+  <data name="RT_MSG_ERR_16" xml:space="preserve">
+    <value>Neexistuje exportovaná promìnná</value>
+  </data>
+  <data name="RT_MSG_ERR_17" xml:space="preserve">
+    <value>Chybný znak v aliasu</value>
+  </data>
+  <data name="RT_MSG_ERR_18" xml:space="preserve">
+    <value>Alias se už používá</value>
+  </data>
+  <data name="RT_MSG_ERR_19" xml:space="preserve">
+    <value>Variable not initialized</value>
+  </data>
+  <data name="RT_MSG_ERR_20" xml:space="preserve">
+    <value>Chyba vytvoøení</value>
+  </data>
+  <data name="RT_MSG_ERR_21" xml:space="preserve">
+    <value>Chyba otevøení</value>
+  </data>
+  <data name="RT_MSG_ERR_22" xml:space="preserve">
+    <value>Chyba uzavøení</value>
+  </data>
+  <data name="RT_MSG_ERR_23" xml:space="preserve">
+    <value>Chyba ètení</value>
+  </data>
+  <data name="RT_MSG_ERR_24" xml:space="preserve">
+    <value>Chyba zápisu</value>
+  </data>
+  <data name="RT_MSG_ERR_25" xml:space="preserve">
+    <value>Chyba tisku</value>
+  </data>
+  <data name="RT_MSG_ERR_26" xml:space="preserve">
+    <value>Nedefinovaný symbol</value>
+  </data>
+  <data name="RT_MSG_ERR_27" xml:space="preserve">
+    <value>Nedefinovaná tøída</value>
+  </data>
+  <data name="RT_MSG_ERR_28" xml:space="preserve">
+    <value>Chybná tøída</value>
+  </data>
+  <data name="RT_MSG_ERR_29" xml:space="preserve">
+    <value>Nedovolený odkaz</value>
+  </data>
+  <data name="RT_MSG_ERR_30" xml:space="preserve">
+    <value>Operace není podporována</value>
+  </data>
+  <data name="RT_MSG_ERR_31" xml:space="preserve">
+    <value>Limit je pøekroèen</value>
+  </data>
+  <data name="RT_MSG_ERR_32" xml:space="preserve">
+    <value>Detekováno poškození dat</value>
+  </data>
+  <data name="RT_MSG_ERR_33" xml:space="preserve">
+    <value>Chyba typu dat</value>
+  </data>
+  <data name="RT_MSG_ERR_34" xml:space="preserve">
+    <value>Chyba délky dat</value>
+  </data>
+  <data name="RT_MSG_ERR_35" xml:space="preserve">
+    <value>Pracovní oblast se nepoužívá</value>
+  </data>
+  <data name="RT_MSG_ERR_36" xml:space="preserve">
+    <value>Pracovní oblast není indexována</value>
+  </data>
+  <data name="RT_MSG_ERR_37" xml:space="preserve">
+    <value>Požaduje se exkluzivní pøístup</value>
+  </data>
+  <data name="RT_MSG_ERR_38" xml:space="preserve">
+    <value>Požaduje se uzamèení</value>
+  </data>
+  <data name="RT_MSG_ERR_39" xml:space="preserve">
+    <value>Zápis není dovolen</value>
+  </data>
+  <data name="RT_MSG_ERR_40" xml:space="preserve">
+    <value>Selhání uzamèení pøi Append</value>
+  </data>
+  <data name="RT_MSG_ERR_41" xml:space="preserve">
+    <value>Selhání uzamèení</value>
+  </data>
+  <data name="RT_MSG_ERR_42" xml:space="preserve">
+    <value>To many threads</value>
+  </data>
+  <data name="RT_MSG_ERR_43" xml:space="preserve">
+    <value>Rezervované èíslo chyby</value>
+  </data>
+  <data name="RT_MSG_ERR_44" xml:space="preserve">
+    <value>Rezervované èíslo chyby</value>
+  </data>
+  <data name="RT_MSG_ERR_45" xml:space="preserve">
+    <value>Chyba uzamèení</value>
+  </data>
+  <data name="RT_MSG_ERR_46" xml:space="preserve">
+    <value>Èasová prodleva uzamèení</value>
+  </data>
+  <data name="RT_MSG_ERR_47" xml:space="preserve">
+    <value>Chyba zásobníku procesoru</value>
+  </data>
+  <data name="RT_MSG_ERR_48" xml:space="preserve">
+    <value>Chyba vyhodnocovacího zásobníku</value>
+  </data>
+  <data name="RT_MSG_ERR_49" xml:space="preserve">
+    <value>Neexistuje errorblock</value>
+  </data>
+  <data name="RT_MSG_ERR_50" xml:space="preserve">
+    <value>Obecné porušení ochrany</value>
+  </data>
+  <data name="RT_MSG_ERR_51" xml:space="preserve">
+    <value>Chybný ukazatel</value>
+  </data>
+  <data name="RT_MSG_ERR_52" xml:space="preserve">
+    <value>Chybná stránka</value>
+  </data>
+  <data name="RT_MSG_ERR_53" xml:space="preserve">
+    <value>Chyba vytvoøení objektu Error</value>
+  </data>
+  <data name="RT_MSG_ERR_54" xml:space="preserve">
+    <value>DynAlloc: PTR do DynData</value>
+  </data>
+  <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_CORRUPTION" xml:space="preserve">
+    <value>problém s pamìtí</value>
+  </data>
+  <data name="RT_MSG_FATAL" xml:space="preserve">
+    <value>Chyba QUIT</value>
+  </data>
+  <data name="RT_MSG_APPLI" xml:space="preserve">
+    <value>Aplikace</value>
+  </data>
+  <data name="RT_MSG_LINE" xml:space="preserve">
+    <value>Èára</value>
+  </data>
+  <data name="RT_MSG_FUNC" xml:space="preserve">
+    <value>Funkce</value>
+  </data>
+  <data name="RT_MSG_RELEASE" xml:space="preserve">
+    <value>Version 2.8 SP3</value>
+  </data>
+  <data name="RT_MSG_DOSERR_0" xml:space="preserve">
+    <value>Žádná chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_1" xml:space="preserve">
+    <value>Neplatné èíslo funkce</value>
+  </data>
+  <data name="RT_MSG_DOSERR_2" xml:space="preserve">
+    <value>Soubor nenalezen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_3" xml:space="preserve">
+    <value>Cesta nenalezena</value>
+  </data>
+  <data name="RT_MSG_DOSERR_4" xml:space="preserve">
+    <value>Pøíliš mnoho otevøených souborù</value>
+  </data>
+  <data name="RT_MSG_DOSERR_5" xml:space="preserve">
+    <value>Pøístup není možný</value>
+  </data>
+  <data name="RT_MSG_DOSERR_6" xml:space="preserve">
+    <value>Chybný manipulátor souboru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_7" xml:space="preserve">
+    <value>Øídící bloky pamìti znièeny</value>
+  </data>
+  <data name="RT_MSG_DOSERR_8" xml:space="preserve">
+    <value>Nedostatek pamìti</value>
+  </data>
+  <data name="RT_MSG_DOSERR_9" xml:space="preserve">
+    <value>Chybná adresa pamìového bloku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_10" xml:space="preserve">
+    <value>Chybná systémová pamì</value>
+  </data>
+  <data name="RT_MSG_DOSERR_11" xml:space="preserve">
+    <value>Chybný formát</value>
+  </data>
+  <data name="RT_MSG_DOSERR_12" xml:space="preserve">
+    <value>Chybný pøístupový kód</value>
+  </data>
+  <data name="RT_MSG_DOSERR_13" xml:space="preserve">
+    <value>Chybná data</value>
+  </data>
+  <data name="RT_MSG_DOSERR_14" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_15" xml:space="preserve">
+    <value>Chybná identifikace zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_16" xml:space="preserve">
+    <value>Pokus o zrušení aktuálního adresáøe</value>
+  </data>
+  <data name="RT_MSG_DOSERR_17" xml:space="preserve">
+    <value>Jiné zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_18" xml:space="preserve">
+    <value>Další soubor(y) nenalezen(y)</value>
+  </data>
+  <data name="RT_MSG_DOSERR_19" xml:space="preserve">
+    <value>Disketa je chránìna proti zápisu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_20" xml:space="preserve">
+    <value>Neznámé zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_21" xml:space="preserve">
+    <value>Zaøízení není pøipraveno</value>
+  </data>
+  <data name="RT_MSG_DOSERR_22" xml:space="preserve">
+    <value>Neznámý povel</value>
+  </data>
+  <data name="RT_MSG_DOSERR_23" xml:space="preserve">
+    <value>Chyba CRC</value>
+  </data>
+  <data name="RT_MSG_DOSERR_24" xml:space="preserve">
+    <value>Chybná délka sektoru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_25" xml:space="preserve">
+    <value>Chyba vystavení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_26" xml:space="preserve">
+    <value>Neznámý typ média</value>
+  </data>
+  <data name="RT_MSG_DOSERR_27" xml:space="preserve">
+    <value>Sektor nenalezen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_28" xml:space="preserve">
+    <value>Konec papíru v tiskárnì</value>
+  </data>
+  <data name="RT_MSG_DOSERR_29" xml:space="preserve">
+    <value>Chyba zápisu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_30" xml:space="preserve">
+    <value>Chyba ètení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_31" xml:space="preserve">
+    <value>Obecná chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_32" xml:space="preserve">
+    <value>Narušení sdílení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_33" xml:space="preserve">
+    <value>Narušení uzamèení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_34" xml:space="preserve">
+    <value>Nedovolená výmìna disku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_35" xml:space="preserve">
+    <value>FCB není dostupné</value>
+  </data>
+  <data name="RT_MSG_DOSERR_36" xml:space="preserve">
+    <value>Pøeteèení vyrovnávací pamìti pøi sdíleném pøístupu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_37" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_38" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_39" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_40" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_41" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_42" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_43" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_44" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_45" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_46" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_47" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_48" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_49" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_50" xml:space="preserve">
+    <value>Síové požadavky nejsou podporovány</value>
+  </data>
+  <data name="RT_MSG_DOSERR_51" xml:space="preserve">
+    <value>Poèítaè v síti neodpovídá</value>
+  </data>
+  <data name="RT_MSG_DOSERR_52" xml:space="preserve">
+    <value>Duplicitní jméno v síti</value>
+  </data>
+  <data name="RT_MSG_DOSERR_53" xml:space="preserve">
+    <value>Jméno v síti nenalezeno</value>
+  </data>
+  <data name="RT_MSG_DOSERR_54" xml:space="preserve">
+    <value>Sí je zaneprázdnìna</value>
+  </data>
+  <data name="RT_MSG_DOSERR_55" xml:space="preserve">
+    <value>Zaøízení v síti již neexistuje</value>
+  </data>
+  <data name="RT_MSG_DOSERR_56" xml:space="preserve">
+    <value>Pøíkaz je pro Net BIOS pøíliš veliký</value>
+  </data>
+  <data name="RT_MSG_DOSERR_57" xml:space="preserve">
+    <value>Hardwarová chyba síové karty</value>
+  </data>
+  <data name="RT_MSG_DOSERR_58" xml:space="preserve">
+    <value>Chybná odpovìï ze sítì</value>
+  </data>
+  <data name="RT_MSG_DOSERR_59" xml:space="preserve">
+    <value>Neoèekávaná chyba sítì</value>
+  </data>
+  <data name="RT_MSG_DOSERR_60" xml:space="preserve">
+    <value>Síová karta cílového poèítaèe je nekompatibilní</value>
+  </data>
+  <data name="RT_MSG_DOSERR_61" xml:space="preserve">
+    <value>Tisková fronta je plná</value>
+  </data>
+  <data name="RT_MSG_DOSERR_62" xml:space="preserve">
+    <value>Nedostateèné místo pro tisk souboru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_63" xml:space="preserve">
+    <value>Tisk souboru byl pøerušen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_64" xml:space="preserve">
+    <value>Jméno v síti bylo zrušeno</value>
+  </data>
+  <data name="RT_MSG_DOSERR_65" xml:space="preserve">
+    <value>Pøístup není možný</value>
+  </data>
+  <data name="RT_MSG_DOSERR_66" xml:space="preserve">
+    <value>Chybný typ síového zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_67" xml:space="preserve">
+    <value>Jméno v síti nenalezeno</value>
+  </data>
+  <data name="RT_MSG_DOSERR_68" xml:space="preserve">
+    <value>Jméno v síti je pøíliš dlouhé</value>
+  </data>
+  <data name="RT_MSG_DOSERR_69" xml:space="preserve">
+    <value>Pøekroèena kapacita Net BIOS sezení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_70" xml:space="preserve">
+    <value>Doèasné zastavení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_71" xml:space="preserve">
+    <value>Síový požadavek neakceptován</value>
+  </data>
+  <data name="RT_MSG_DOSERR_72" xml:space="preserve">
+    <value>Pøesmìrování tiskárny nebo disku pozastaveno</value>
+  </data>
+  <data name="RT_MSG_DOSERR_73" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_74" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_75" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_76" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_77" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_78" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_79" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_80" xml:space="preserve">
+    <value>Soubor už existuje</value>
+  </data>
+  <data name="RT_MSG_DOSERR_81" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_82" xml:space="preserve">
+    <value>Nelze vytvoøit adresáø</value>
+  </data>
+  <data name="RT_MSG_DOSERR_83" xml:space="preserve">
+    <value>Chyba pøerušení 24h</value>
+  </data>
+  <data name="RT_MSG_DOSERR_84" xml:space="preserve">
+    <value>Pøíliš mnoho pøesmìrování</value>
+  </data>
+  <data name="RT_MSG_DOSERR_85" xml:space="preserve">
+    <value>Duplicitní pøesmìrování</value>
+  </data>
+  <data name="RT_MSG_DOSERR_86" xml:space="preserve">
+    <value>Chybné heslo</value>
+  </data>
+  <data name="RT_MSG_DOSERR_87" xml:space="preserve">
+    <value>Chybný parametr</value>
+  </data>
+  <data name="RT_MSG_DOSERR_88" xml:space="preserve">
+    <value>Chyba síového zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_89" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_90" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_91" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_92" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_93" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_94" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_95" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_96" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_97" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_98" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_99" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_100" xml:space="preserve">
+    <value>Chyba ètení z disku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_101" xml:space="preserve">
+    <value>Chyba zápisu na disk</value>
+  </data>
+  <data name="RT_MSG_DOSERR_102" xml:space="preserve">
+    <value>Soubor není pøiøazen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_103" xml:space="preserve">
+    <value>Soubor není otevøen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_104" xml:space="preserve">
+    <value>Soubor není otevøen pro vstup</value>
+  </data>
+  <data name="RT_MSG_DOSERR_105" xml:space="preserve">
+    <value>Soubor není otevøen pro výstup</value>
+  </data>
+  <data name="RT_MSG_DOSERR_106" xml:space="preserve">
+    <value>Chybný numerický formát</value>
+  </data>
+  <data name="RT_MSG_DOSERR_107" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_108" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_109" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_110" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_111" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_112" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_113" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_114" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_115" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_116" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_117" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_118" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_119" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_120" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_121" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_122" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_123" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_124" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_125" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_126" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_127" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_128" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_129" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_130" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_131" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_132" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_133" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_134" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_135" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_136" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_137" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_138" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_139" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_140" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_141" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_142" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_143" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_144" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_145" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_146" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_147" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_148" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_149" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_150" xml:space="preserve">
+    <value>Disk je chránìn proti zápisu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_151" xml:space="preserve">
+    <value>Neznámá jednotka</value>
+  </data>
+  <data name="RT_MSG_DOSERR_152" xml:space="preserve">
+    <value>Zaøízení není pøipraveno</value>
+  </data>
+  <data name="RT_MSG_DOSERR_153" xml:space="preserve">
+    <value>Neznámý povel</value>
+  </data>
+  <data name="RT_MSG_DOSERR_154" xml:space="preserve">
+    <value>Chyba CRC v datech</value>
+  </data>
+  <data name="RT_MSG_DOSERR_155" xml:space="preserve">
+    <value>Chybná délka sektoru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_156" xml:space="preserve">
+    <value>Chyba vystavení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_157" xml:space="preserve">
+    <value>Neznámý typ disku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_158" xml:space="preserve">
+    <value>Sektor nenalezen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_159" xml:space="preserve">
+    <value>Konec papíru v tiskárnì</value>
+  </data>
+  <data name="RT_MSG_DOSERR_160" xml:space="preserve">
+    <value>Chyba zápisu na zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_161" xml:space="preserve">
+    <value>Chyba ètení ze zaøízení</value>
+  </data>
+  <data name="RT_MSG_DOSERR_162" xml:space="preserve">
+    <value>Hardwarová chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_163" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_164" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_165" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_166" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_167" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_168" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_169" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_170" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_171" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_172" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_173" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_174" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_175" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_176" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_177" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_178" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_179" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_180" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_181" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_182" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_183" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_184" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_185" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_186" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_187" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_188" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_189" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_190" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_191" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_192" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_193" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_194" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_195" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_196" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_197" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_198" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_199" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_200" xml:space="preserve">
+    <value>Dìlení nulou</value>
+  </data>
+  <data name="RT_MSG_DOSERR_201" xml:space="preserve">
+    <value>Chyba rozsahu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_202" xml:space="preserve">
+    <value>Pøeteèení zásobníku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_203" xml:space="preserve">
+    <value>Pøeteèení hromady</value>
+  </data>
+  <data name="RT_MSG_DOSERR_204" xml:space="preserve">
+    <value>Chybná operace s ukazatelem</value>
+  </data>
+  <data name="RT_MSG_DOSERR_205" xml:space="preserve">
+    <value>Pøeteèení v pohyblivé øádové èárce</value>
+  </data>
+  <data name="RT_MSG_DOSERR_206" xml:space="preserve">
+    <value>Nedoplnìní v pohyblivé øádové èárce</value>
+  </data>
+  <data name="RT_MSG_DOSERR_207" xml:space="preserve">
+    <value>Chybná operace v pohyblivé øádové èárce</value>
+  </data>
+  <data name="RT_MSG_DOSERR_208" xml:space="preserve">
+    <value>Manažer pøekrývání není instalován</value>
+  </data>
+  <data name="RT_MSG_DOSERR_209" xml:space="preserve">
+    <value>Chyba ètení pøekryvného souboru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_210" xml:space="preserve">
+    <value>Objekt není inicializován</value>
+  </data>
+  <data name="RT_MSG_DOSERR_211" xml:space="preserve">
+    <value>Volání abstraktní metody</value>
+  </data>
+  <data name="RT_MSG_DOSERR_212" xml:space="preserve">
+    <value>Chyba registrace proudu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_213" xml:space="preserve">
+    <value>Sbìrný index mimo rozsah</value>
+  </data>
+  <data name="RT_MSG_DOSERR_214" xml:space="preserve">
+    <value>Chyba pøeteèení pøi sbìru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_215" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_216" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_217" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_218" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_219" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_220" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_221" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_222" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_223" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_224" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_225" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_226" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_227" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_228" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_229" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_230" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_231" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_232" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_233" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_234" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_235" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_236" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_237" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_238" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_239" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_240" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_241" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_242" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_243" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_244" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_245" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_246" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_247" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_248" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_249" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_250" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_251" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_252" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_253" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_254" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_DOSERR_255" xml:space="preserve">
+    <value>Program je pøerušen</value>
+  </data>
+  <data name="RT_MSG_DOSERR_256" xml:space="preserve">
+    <value>Plný disk</value>
+  </data>
+  <data name="RT_MSG_DOSERR_257" xml:space="preserve">
+    <value>Konec souboru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_258" xml:space="preserve">
+    <value>Chybné parametry</value>
+  </data>
+  <data name="RT_MSG_DOSERR_FFFF" xml:space="preserve">
+    <value>Falešný disk</value>
+  </data>
+  <data name="RT_MSG_DOSERR_UNKNOWN" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
+    <value>ERRORBUILD: ERRORFUNC není instalována</value>
+  </data>
+  <data name="RT_MSG_ERR_GURU" xml:space="preserve">
+    <value>ERRORBUILD: chybí Guru tabulka</value>
+  </data>
+  <data name="RT_MSG_ERR_STACK" xml:space="preserve">
+    <value>ERRORBUILD: malá oblast pro zásobník</value>
+  </data>
+  <data name="RT_MSG_ERR_PARAM" xml:space="preserve">
+    <value>ERRORBUILD: chybná strucparam</value>
+  </data>
+  <data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
+    <value>ERRORBUILD: Nenalazeno CLIPPER ERRORFUNC</value>
+  </data>
+
+</root>

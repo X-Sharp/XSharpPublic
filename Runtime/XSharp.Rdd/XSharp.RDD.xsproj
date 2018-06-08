@@ -6,7 +6,7 @@
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <Prefer32Bit>False</Prefer32Bit>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <AZ>false</AZ>
+    <AZ>true</AZ>
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
@@ -29,12 +29,15 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>e83c6c8c-773f-4b01-a597-3d38398a9362</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.Rdd</RootNamespace>
+    <RootNamespace>XSharp.RDD</RootNamespace>
     <AssemblyName>XSharp.Rdd</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>XSharp.RDD</Name>
@@ -46,16 +49,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <DisabledWarnings>9001;1591</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>c:\xsharp\dev\xsharp\src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
@@ -79,7 +82,8 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/unsafe</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
@@ -115,13 +119,8 @@
     <Compile Include="Advantage\AXSqlRDD.prg" />
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
-    <Compile Include="Functions\RddHelpers.prg" />
-    <Compile Include="RddError.prg" />
     <Compile Include="SubCodes.prg" />
     <Compile Include="_Dummy.prg" />
-    <Compile Include="RddState.prg" />
-    <Compile Include="Types\BaseIndex.prg" />
-    <Compile Include="Types\BaseMemo.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
     <Compile Include="Types\DbfCdx.prg" />
@@ -132,17 +131,8 @@
     <Compile Include="Types\DbfNtx.prg" />
     <Compile Include="Types\DbfSmt.prg" />
     <Compile Include="Types\DbMemo.prg" />
-    <Compile Include="Types\Defines.prg" />
     <Compile Include="Types\DELIM.prg" />
-    <Compile Include="Types\Enums.prg" />
-    <Compile Include="Types\FileStream.prg" />
     <Compile Include="Types\SDF.prg" />
-    <Compile Include="Types\Support.prg" />
-    <Compile Include="Types\Workarea.prg" />
-    <Compile Include="Types\Workareas.prg" />
-    <Compile Include="Interfaces\IOrder.prg" />
-    <Compile Include="Interfaces\IMemo.prg" />
-    <Compile Include="Interfaces\IRDD.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -151,7 +141,6 @@
     <Folder Include="Advantage\" />
     <Folder Include="ACE" />
     <Folder Include="Types" />
-    <Folder Include="Interfaces" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -161,13 +150,12 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Folder Include="Functions" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
-      <Name>XSharp.Base</Name>
-      <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
@@ -191,5 +179,28 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <DisabledWarnings>9001;1591</DisabledWarnings>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <NoStdDef>false</NoStdDef>
+    <Prefer32Bit>False</Prefer32Bit>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
   </PropertyGroup>
 </Project>

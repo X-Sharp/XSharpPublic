@@ -1,10 +1,11 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Copyright (c) B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+using XSharp.RDD
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>DBFNSX RDD. For DBF/SMT/NSX.</summary>
 CLASS DBFNSX INHERIT DBFSMT
 	CONSTRUCTOR()
 		SUPER()
@@ -13,30 +14,42 @@ CLASS DBFNSX INHERIT DBFSMT
 		
 	PROPERTY SysName AS STRING GET typeof(DbfNsx):ToString()
 
+/// <summary>DBFNSX worker class that implements the NSX support.</summary>
 CLASS NsxIndex INHERIT BaseIndex    
 	PROTECT _oRDD AS DBF
+	/// <inheritdoc />
 	CONSTRUCTOR(oRDD AS DBF)
 		SUPER(oRDD)   
 		_oRDD := oRDD
 		
-METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
+/// <inheritdoc />
+METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
+/// <inheritdoc />
+METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
     THROW NotImplementedException{}
-METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+/// <inheritdoc />
+METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
 	THROW NotImplementedException{}
-METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+/// <inheritdoc />
+METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+/// <inheritdoc />
+METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
-METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+/// <inheritdoc />
+METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD OrderListRebuild( ) AS LOGIC
 	THROW NotImplementedException{}
-METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC		
+/// <inheritdoc />
+METHOD Seek(info AS DbSeekInfo) AS LOGIC		
     THROW NotImplementedException{}
+/// <inheritdoc />
 VIRTUAL PROPERTY Found AS LOGIC	
 GET
 	THROW NotImplementedException{}

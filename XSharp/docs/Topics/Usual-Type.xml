@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Usual Type</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Usual Type</para>
+    </header>
+    <para styleclass="Normal">The USUAL type in X# is implemented as a .Net structure. It contains a type flag and a value. The value can be one of the following types:</para>
+    <para styleclass="Normal">NIL, Long, Date, Float, Array, Object, String, Logic, Codeblock, Symbol, Psz, Ptr, Int64, DateTime, Decimal, DateTime<br/></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="16" colcount="2" style="width:100%; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Usual Type Number</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">NIL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Long</para>
+        </td>
+        <td>
+          <para styleclass="Normal">1</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Date</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Float</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Array</para>
+        </td>
+        <td>
+          <para styleclass="Normal">5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Object</para>
+        </td>
+        <td>
+          <para styleclass="Normal">6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">String</para>
+        </td>
+        <td>
+          <para styleclass="Normal">7</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Logic</para>
+        </td>
+        <td>
+          <para styleclass="Normal">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Codeblock</para>
+        </td>
+        <td>
+          <para styleclass="Normal">9</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Symbol</para>
+        </td>
+        <td>
+          <para styleclass="Normal">10</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Psz</para>
+        </td>
+        <td>
+          <para styleclass="Normal">17</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Ptr</para>
+        </td>
+        <td>
+          <para styleclass="Normal">18</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Int64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">22</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DateTime</para>
+        </td>
+        <td>
+          <para styleclass="Normal">26</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Decimal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">27</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that some numbers are not included in this table. There are defines in the compiler for these numbers, but they are never stored in a USUAL.<br/>So you can write UsualType(uValue) == REAL8 but that will NEVER be true.</para>
+    <para styleclass="Normal"><br/>You can assign values of these other types to a USUAL but the values will be converted to a type listed in the first table. For example if you assign a DWORD to a USUAL then the runtime will look at the value of the DWORD and if it is smaller or equal to MAX_LONG then it will store the value as a LONG. Otherwise it will store it as a FLOAT. Please note that although we support the Int64 type the DWORD conversion does not use this to be compatible with VO.<br/></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2" style="background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Usual Type Number</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Byte</para>
+        </td>
+        <td>
+          <para styleclass="Normal">11</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Short</para>
+        </td>
+        <td>
+          <para styleclass="Normal">12</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Word</para>
+        </td>
+        <td>
+          <para styleclass="Normal">13</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DWord</para>
+        </td>
+        <td>
+          <para styleclass="Normal">14</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Real4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">15</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Real8</para>
+        </td>
+        <td>
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Usual By Ref</para>
+        </td>
+        <td>
+          <para styleclass="Normal">19</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">UInt64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">23</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Char</para>
+        </td>
+        <td>
+          <para styleclass="Normal">24</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Dynamic</para>
+        </td>
+        <td>
+          <para styleclass="Normal">25</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

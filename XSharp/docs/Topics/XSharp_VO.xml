@@ -7,7 +7,7 @@
       <para styleclass="Heading1">XSharp.VO</para>
     </header>
     <para styleclass="Normal">This DLL adds the following features to the runtime:</para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">XBase specific types , such as DATE, ARRAY, USUAL, PSZ, SYMBOL etc </li>
       <li styleclass="List">CodeBlock type (base class for compile time codeblocks)</li>
       <li styleclass="List">_CodeBlock type (base class for macro compiled codeblocks)</li>
@@ -20,5 +20,7 @@
       <li styleclass="List">VObject type</li>
       <li styleclass="List">OLEAutoObject type</li>
     </list>
+    <para styleclass="List"></para>
+    <para styleclass="List">This assembly should be linked in when you compile for the VO and Vulcan dialect</para>
   </body>
 </topic>

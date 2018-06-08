@@ -10,21 +10,6 @@
       <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
         <caption translate="true">Version History</caption>
       </topicref>
-      <topicref type="topic" id="432585631903751" build="ALL" modified="2018-06-07T11:14:11.511Z" icon="0" href="The-X-Runtime">
-        <caption translate="true">The X# Runtime</caption>
-        <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
-          <caption translate="true">XSharp.Core</caption>
-        </topicref>
-        <topicref type="topic" id="432586107516927" build="ALL" modified="2018-06-07T17:53:59.687Z" icon="0" href="XSharp_VO">
-          <caption translate="true">XSharp.VO</caption>
-        </topicref>
-        <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
-          <caption translate="true">XSharp.Macrocompiler</caption>
-        </topicref>
-        <topicref type="topic" id="432587430200533" build="ALL" modified="2018-06-07T17:54:16.764Z" icon="0" href="XSharp_RDD">
-          <caption translate="true">XSharp.RDD</caption>
-        </topicref>
-      </topicref>
       <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
         <caption translate="true">Dialects</caption>
       </topicref>
@@ -153,6 +138,51 @@
       </topicref>
       <topicref type="topic" id="42897067116215" build="ALL" modified="2017-06-20T09:23:11.986Z" icon="0" href="Example-4-The-Email-Client-Exa">
         <caption translate="true">Example 5: OCX - The Email Client Example </caption>
+      </topicref>
+    </topicref>
+    <topicref type="topic" id="432585631903751" build="ALL" modified="2018-06-07T11:14:11.511Z" icon="0" href="The-X-Runtime">
+      <caption translate="true">The X# Runtime</caption>
+      <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
+        <caption translate="true">XSharp.Core</caption>
+      </topicref>
+      <topicref type="topic" id="432586107516927" build="ALL" modified="2018-06-07T17:53:59.687Z" icon="0" href="XSharp_VO">
+        <caption translate="true">XSharp.VO</caption>
+      </topicref>
+      <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
+        <caption translate="true">XSharp.Macrocompiler</caption>
+      </topicref>
+      <topicref type="topic" id="432587430200533" build="ALL" modified="2018-06-07T17:54:16.764Z" icon="0" href="XSharp_RDD">
+        <caption translate="true">XSharp.RDD</caption>
+      </topicref>
+      <topicref type="topic" id="432593740906377" build="ALL" modified="2018-06-08T11:21:25.514Z" icon="0" href="XBase-Types">
+        <caption translate="true">XBase Types</caption>
+        <topicref type="topic" id="4324375231264" build="ALL" modified="2018-06-08T11:59:24.252Z" icon="0" href="Array-Of-Type">
+          <caption translate="true">Array Of Type</caption>
+        </topicref>
+        <topicref type="topic" id="432595826581620" build="ALL" modified="2018-06-08T11:59:13.016Z" icon="0" href="Array-Type">
+          <caption translate="true">Array Type</caption>
+        </topicref>
+        <topicref type="topic" id="432593702345260" build="ALL" modified="2018-06-08T12:00:16.997Z" icon="0" href="CodeBlock2">
+          <caption translate="true">CodeBlock</caption>
+        </topicref>
+        <topicref type="topic" id="43260467791936" build="ALL" modified="2018-06-08T11:46:48.259Z" icon="0" href="Date-Type">
+          <caption translate="true">Date Type</caption>
+        </topicref>
+        <topicref type="topic" id="43260881319952" build="ALL" modified="2018-06-08T11:47:01.043Z" icon="0" href="Float-Type">
+          <caption translate="true">Float Type</caption>
+        </topicref>
+        <topicref type="topic" id="432595534205569" build="ALL" modified="2018-06-08T12:01:44.263Z" icon="0" href="Logic-Ttype">
+          <caption translate="true">Logic Ttype</caption>
+        </topicref>
+        <topicref type="topic" id="432595483084228" build="ALL" modified="2018-06-08T11:59:00.829Z" icon="0" href="PSZ-Type">
+          <caption translate="true">PSZ Type</caption>
+        </topicref>
+        <topicref type="topic" id="432592958115729" build="ALL" modified="2018-06-08T11:47:08.561Z" icon="0" href="Symbol-Type">
+          <caption translate="true">Symbol Type</caption>
+        </topicref>
+        <topicref type="topic" id="432595738250661" build="ALL" modified="2018-06-08T11:45:01.543Z" icon="0" href="Usual-Type">
+          <caption translate="true">Usual Type</caption>
+        </topicref>
       </topicref>
     </topicref>
     <topicref type="topic" id="428725168955982" build="ALL" modified="2017-05-17T09:41:40.642Z" icon="0" href="X-Scripting">
@@ -4837,12 +4867,9 @@
           <caption translate="true">XS9064</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="427443697979586" build="ALL" modified="2017-01-09T09:13:33.910Z" icon="0" href="Classes">
-        <caption translate="true">Classes</caption>
-      </topicref>
-      <topicref type="topic" id="427443334774203" build="ALL" modified="2017-01-09T09:13:34.216Z" icon="0" href="Functions">
-        <caption translate="true">Functions</caption>
-      </topicref>
+      <navref href="XsRuntime.chm::\XsRuntime.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
+        <caption translate="true">XsRuntime.chm::\XsRuntime.hhc</caption>
+      </navref>
     </topicref>
     <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
       <caption translate="true">X# Examples</caption>

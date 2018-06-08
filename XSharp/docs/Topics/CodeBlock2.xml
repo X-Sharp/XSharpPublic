@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CodeBlock</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">CodeBlock</para>
+    </header>
+    <para styleclass="Normal">This is the parent class for compile time codeblocks.</para>
+    <para styleclass="Normal">There is also a subclass _CodeBlock which is the parent class for macro compiled (runtime) codeblocks</para>
+  </body>
+</topic>

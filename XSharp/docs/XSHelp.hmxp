@@ -47,7 +47,7 @@
     </export-task-groups>
     <helpwindows>
       <helpwindow name="Main" left="86" top="51" width="800" height="600">
-        <caption translate="true">X# Documentation</caption>
+        <caption translate="true">(X#) XSharp Runtime Documentation</caption>
         <window-options-chm navigation="true" navigationwidth="220" search="true" favorite="true" saveregistry="true" buttons="14462">
           <user-button name="jump1">
             <caption translate="true">jump1</caption>
@@ -473,7 +473,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">4</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">4</config-value>
@@ -529,7 +529,6 @@
       <config-value name="colortext">0</config-value>
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
-      <config-value name="defaultprinter">HP LJ300-400 color MFP M375-M475 PCL 6</config-value>
       <config-value name="tocname">Table of Contents</config-value>
     </config-group>
     <variables>

@@ -6,19 +6,20 @@
     <header>
       <para styleclass="Heading1">The X# Runtime</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text style="font-weight:bold;">In X# version 2 - Bandol we have introduced the X# runtime.</text></para>
+    <para styleclass="Heading2"><text style="font-weight:bold;">In X# version 2 - Bandol we have introduced the X# runtime.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In this chapter we would like to give you an overview of the design decisions that we made, what the runtime looks like, where you can find which types and functions etc.</para>
     <para styleclass="Normal">We will also list here the features that are not supported yet.</para>
     <para styleclass="Heading2">Introduction</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal">When we designed the X# compile and X# Runtime we had a few focus points in mind:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
       <li styleclass="Normal">We want our runtime to be fully Unicode and AnyCPU. It should run on any platform and also both in x86 and x64 mode. &#160;That has caused some challenges because VO is Ansi (and not Unicode) and also X86. In VO you can cast a LONG to a PTR. That will not work in X64 mode because a LONG is 32 bits and a PTR 64 bits</li>
       <li styleclass="Normal">We want the code to compile in &quot;Safe&quot; mode. No unsafe code when not strictly needed. The biggest problem / challenge here is the PTR type. With a PTR you can access memory directly and read/write from memory, even if you don&apos;t &quot;own&quot; that memory. However the same PTR type is also used as &quot;unique identifier&quot; for example in the low level file i/o and in the GUI classes for Window and Control handles. These PTR values are never used to read/write memory but are like object references. We have decided to use the .Net IntPtr type for this kind of handles. Of course the compiler can transparently convert between PTR and IntPtr.</li>
       <li styleclass="Normal">We want to prove that the X# language is a first class .Net development language. That is why we decided to write the X# runtime in X#. By doing that we also create a large codebase to test the compiler. So that is a win - win situation.</li>
       <li styleclass="Normal">We want the runtime to be thread safe. Each thread has its own &quot;global&quot; state and its own list of open workareas. When a new thread is started it will inherit the state of the main thread but will not inherit the workareas from the main thread</li>
+      <li styleclass="Normal">At this moment the X# Runtime is compiled against .Net Framework 4.0 The only exception to this is the macro compiler which requires .Net Framework 4.6.</li>
     </list>
     <para styleclass="Heading2">Assemblies in the X# Runtime</para>
     <para styleclass="Normal"></para>
@@ -112,12 +113,13 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Known Issues</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Some of the string conversion functions such as Str() and NTrim() do not always return the same string as VO . In VO the return value of these functions heavily depends on state settings such as SetFixed, SetDecimals, SetScience and more. This will be most likely fixed in Beta 2</li>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Some of the string conversion functions such as Str() and NTrim() do not always return the same string as VO . In VO the return value of these functions heavily depends on state settings such as SetFixed, SetDecimals, SetScience and more. This will be most likely fixed in Beta 2</li>
       <li styleclass="Normal">Some of the TransForm() pictures also depend on the same settings as Str() and NTrim() and have the same problems</li>
       <li styleclass="Normal">The macro compiler in this release is fully functional but not as fast as we&apos;d like. We are working on a smaller and faster macro compiler.</li>
     </list>
-    <para styleclass="Heading2">Missing Features</para>
+    <para styleclass="Heading2">Missing or incomplete Features </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="3" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
@@ -179,7 +181,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Description of Various Subsystems</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2" style="background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:376px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Subsystem</text></para>
@@ -198,271 +200,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:376px;">
-          <para styleclass="Body Text">Usual Type</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Normal">The USUAL type in X# is implemented as a .Net structure. It basically is a type flag and a value. We support the following types in a USUAL:</para>
-          <para styleclass="Normal"><table styleclass="Default" rowcount="16" colcount="2" style="width:100%; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
-            <thead style="vertical-align:top">
-              <td>
-                <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
-              </td>
-              <td>
-                <para styleclass="Normal"><text style="font-weight:bold;">Usual Type Number</text></para>
-              </td>
-            </thead>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">NIL</para>
-              </td>
-              <td>
-                <para styleclass="Normal">0</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Long</para>
-              </td>
-              <td>
-                <para styleclass="Normal">1</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Date</para>
-              </td>
-              <td>
-                <para styleclass="Normal">2</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Float</para>
-              </td>
-              <td>
-                <para styleclass="Normal">3</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Array</para>
-              </td>
-              <td>
-                <para styleclass="Normal">5</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Object</para>
-              </td>
-              <td>
-                <para styleclass="Normal">6</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">String</para>
-              </td>
-              <td>
-                <para styleclass="Normal">7</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Logic</para>
-              </td>
-              <td>
-                <para styleclass="Normal">8</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Codeblock</para>
-              </td>
-              <td>
-                <para styleclass="Normal">9</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Symbol</para>
-              </td>
-              <td>
-                <para styleclass="Normal">10</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Psz</para>
-              </td>
-              <td>
-                <para styleclass="Normal">17</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Ptr</para>
-              </td>
-              <td>
-                <para styleclass="Normal">18</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Int64</para>
-              </td>
-              <td>
-                <para styleclass="Normal">22</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">DateTime</para>
-              </td>
-              <td>
-                <para styleclass="Normal">26</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Decimal</para>
-              </td>
-              <td>
-                <para styleclass="Normal">27</para>
-              </td>
-            </tr>
-          </table></para>
-          <para styleclass="Normal"></para>
-          <para styleclass="Normal">Note that some numbers are not included in this table. There are defines in the compiler for these numbers, but they are never stored in a USUAL.<br/>So you can write UsualType(uValue) == REAL8 but that will NEVER be true.</para>
-          <para styleclass="Normal"><br/>You can assign values of these other types to a USUAL but the values will be converted to a type listed in the first table. For example if you assign a DWORD to a USUAL then the runtime will look at the value of the DWORD and if it is smaller or equal to MAX_LONG then it will store the value as a LONG. Otherwise it will store it as a FLOAT. Please note that although we support the Int64 type the DWORD conversion does not use this to be compatible with VO.<br/></para>
-          <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2" style="background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
-            <thead style="vertical-align:top">
-              <td>
-                <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
-              </td>
-              <td>
-                <para styleclass="Normal"><text style="font-weight:bold;">Usual Type Number</text></para>
-              </td>
-            </thead>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Byte</para>
-              </td>
-              <td>
-                <para styleclass="Normal">11</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Short</para>
-              </td>
-              <td>
-                <para styleclass="Normal">12</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Word</para>
-              </td>
-              <td>
-                <para styleclass="Normal">13</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">DWord</para>
-              </td>
-              <td>
-                <para styleclass="Normal">14</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Real4</para>
-              </td>
-              <td>
-                <para styleclass="Normal">15</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Real8</para>
-              </td>
-              <td>
-                <para styleclass="Normal">16</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Usual By Ref</para>
-              </td>
-              <td>
-                <para styleclass="Normal">19</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">UInt64</para>
-              </td>
-              <td>
-                <para styleclass="Normal">23</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Char</para>
-              </td>
-              <td>
-                <para styleclass="Normal">24</para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal">Dynamic</para>
-              </td>
-              <td>
-                <para styleclass="Normal">25</para>
-              </td>
-            </tr>
-          </table></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:376px;">
-          <para styleclass="Body Text">Date Type</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Normal">The Date type is implemented in the XSharp.__VODate structure. This structure uses the DateTime type for calculations and stores the Year, Month and Date in a compact 32 bit value.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:376px;">
-          <para styleclass="Body Text">Float Type</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Body Text">The Float type in X# is implemented in the XSharp.__VOFloat structure. This Float structure contains a Real8 for the value and 2 flags to hold the with and number of decimals. That means that it is not a reference type like the VO Float type. The &quot;penalty&quot; for using a float in X# is not so big when compared to VO. </para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:376px;">
           <para styleclass="Body Text">Static Memory IO</para>
         </td>
         <td style="width:938px;">
-          <para styleclass="Body Text">The static memory functions allocate memory from the DotNet runtime by calling Marshal.AllocHGlobal.</para>
-          <para styleclass="Body Text"><text styleclass="Normal">The return type of the functions that returned a PTR in VO is IntPtr. But in this case these IntPtrs represent a real pointer to memory, unlike the IntPtr returned from the low level file io functions. </text></para>
-          <para styleclass="Body Text"><text styleclass="Normal">Just like in VO each block of memory has 2 so called &quot;guard blocks&quot;. One block before the pointer that is returned and one block after the end of the block.</text></para>
-          <para styleclass="Body Text">These guard blocks are the structures FixedMemBlockStart and FixedMemBlockEnd. These blocks contain information about the size and the memory group this block belongs to as well as &apos;magic numbers&apos; so we can detect accidental writing outside the boundaries of the allocated memory.</para>
-          <para styleclass="Body Text"><text styleclass="Normal">The size of the guard blocks is &#160;24 bytes in total per allocated block.</text></para>
-          <para styleclass="Body Text"><text styleclass="Normal">When you free a memory block we check to see if the guard blocks are still intact. When they are not, then we do not release the memory but return 65635. This is compatible with VO. We are considering to throw an exception or provide some logging option when this happens. Please let us know what you think about that. </text></para>
-          <para styleclass="Body Text"><text styleclass="Normal">The Low level memory functions work both in 32 bits and 64 bits mode. If you use them yourself and your code should also work in both modes we recommend that you are extremely cautious. Casting can have unwanted effects if you are not careful !</text></para>
-          <para styleclass="Body Text"><text styleclass="Normal">We have also implemented Memory Groups. These groups do not &quot;control&quot; the pointers allocated for these groups (like in VO where closing a group automatically releases all memory allocated for the group). </text></para>
-          <para styleclass="Body Text"><text styleclass="Normal">If you want to trace static memory allocations in the X# runtime then do the following:</text></para>
-          <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="List">Call MemTrace(TRUE) before you start allocating memory</li>
-            <li styleclass="List">Create a function or method that implements the MemWalker() delegate:<br/>DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</li>
-            <li styleclass="List">Call MemWalk() and pass it your function or method</li>
-            <li styleclass="List">The runtime will then call your function for every memory block allocated and not freed since you enabled MemTrace(TRUE)</li>
-          </list>
+          <para styleclass="Body Text">The static memory subsystem allocates memory using the Marshal.AllocHGlobal functionality. Each memory block has 2 guard blocks that contain information about the group number, size and a magic number. We have also implemented memory groups.<br/>Unlike in VO you cannot release all blocks in a group by simply closing the Memory Group. <br/>If you want to enumerate allocated blocks you should first call MemTrace(TRUE) to enable block tracing.<br/>Then create a function with the following prototype</para>
+          <para styleclass="Body Text"><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">FUNCTION MyMemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</text></para>
+          <para styleclass="Body Text">Then call MemWalk and pass your function as parameter. The runtime will call your function and will pass in all memory blocks that have been allocated and not released yet.</para>
+          <para styleclass="Body Text"></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -470,29 +214,32 @@
           <para styleclass="Body Text">Late Binding Support</para>
         </td>
         <td style="width:938px;">
-          <para styleclass="Body Text">The X# runtime fully supports late binding at this moment. However this code could use some optimizations. These will be added in Beta 2 or Beta 3.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:376px;">
-          <para styleclass="Body Text">PSZ Type</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Body Text">The PSZ Type is supported but should not be used for new code. In .Net there is a much better solution for passing Ansi Zero terminated strings to Win32 API Functions. <br/><text styleclass="Normal">Consider the following function definition from the Win32 API Library in VO:</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#000000;">_DLL FUNCTION GetWindowText(hwnd AS PTR, lpString AS PSZ, nMaxCount AS INT) AS INT PASCAL:USER32.GetWindowTextA</text></para>
-          <para styleclass="Body Text">This function can be rewritten so you no longer need to convert strings to PSZ:</para>
-          <para styleclass="Body Text"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#000000;">[DllImport(CharSet:=CharSet.Ansi)];</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#000000;">_DLL FUNCTION GetWindowText(hwnd AS PTR, lpString AS STRING, nMaxCount AS INT) AS INT PASCAL:USER32.GetWindowTextA</text></para>
-          <para styleclass="Code Example"></para>
-          <para styleclass="Body Text">The attribute tells the .Net runtime that the external function in User32 wants an Ansi string. That&apos;s all.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:376px;">
-          <para styleclass="Body Text">More to come</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Body Text"></para>
+          <para styleclass="Body Text">The Runtime fully supports late binding. The late binding support still needs some optimizations.<br/>We recommend to only use this when necessary. New code should either use the DYNAMIC type or try to use early bound code as much as possible.</para>
         </td>
       </tr>
     </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Combining the X# Runtime and Vulcan Runtime</para>
+    <para styleclass="Normal">Technically it is possible to include both the X# and the Vulcan runtime libraries in your application. When you do so then the compiler will assume that you want to use the X# implementations for the XBase types such as USUAL and DATE. If the compiler does not find the XSharp.Core and XSharp.VO assemblies then it will assume you want to map these types to the Vulcan runtime types.</para>
+    <para styleclass="Normal">So you can mix things. However if you want to call code in the Vulcan runtime DLLs you may have to use the fully qualified classnames or typenames.</para>
+    <para styleclass="Normal">And remember: there is no automatic translation between the X# types and Vulcan types. </para>
+    <para styleclass="Normal">If you want to convert an X# variable to a Vulcan variable you may have to cast it to an intermediate type &#160;first.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Call Vulcans implementation of Left()</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">LOCAL cValue as STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cValue := VulcanRTFuncs.Functions.Left(&quot;abcdefg&quot;,2)</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you want to convert an X# usual to a Vulcan usual, cast to OBJECT</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">LOCAL xUsual as USUAL</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">LOCAL vUsual as Vulcan.__Usual</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xUsual := 10</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vUsual := (OBJECT) xUsual</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For dates you can do something similar. In that case you should cast the X# date to a DateTime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">LOCAL xDate as DATE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">LOCAL vDate as Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:italic; color:#339966;">// will call the X# implementation of ToDay()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vDate := (System.DateTime) xDate</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -2,8 +2,8 @@
 ; Note that all folder name variables include the trailing backslash !
 ;
 
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 #define FOX
 
 
@@ -12,7 +12,7 @@
 #define Version             "2.0.0.1"
 #define FileNameVersion     "2Beta1"
 #define VIVersion           "2.0.0.1"
-#define TouchDate           "2018-06-07"
+#define TouchDate           "2018-06-08"
 #define TouchTime           "02:00:01"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -362,15 +362,15 @@ Source: "{#BinFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Redi
 Source: "{#BinFolder}System.Collections.Immutable.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Reflection.Metadata.dll";       DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 
-Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug";  Flags: {#StdFlags} signonce;
-Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug";  Flags: {#StdFlags} ;
-Source: "{#BinRtDFolder}XSharp.VO.dll";                      DestDir: "{app}\Debug";  Flags: {#StdFlags} signonce;
-Source: "{#BinRtDFolder}XSharp.VO.pdb";                      DestDir: "{app}\Debug";  Flags: {#StdFlags} ;
-Source: "{#BinDFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
+Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
+Source: "{#BinRtDFolder}XSharp.VO.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtDFolder}XSharp.VO.pdb";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
+Source: "{#BinDFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce ; StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
 Source: "{#BinDFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce ;  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
+Source: "{#BinDFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce ;  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
 
 Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags} {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
@@ -531,10 +531,8 @@ Components: main\script; Root: HKCR; Subkey: "{#XSScript}";                     
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\DefaultIcon";          ValueData: "{app}\Images\xsharp.ico,0";  ValueType: string;  ValueName: ""
 Components: main\script; Root: HKCR; Subkey: "{#XSScript}\shell\open\command";   ValueData: """{app}\bin\xsi.exe"" ""%1"" %*";  ValueType: string;  ValueName: ""
 
-
 ; Location for the files that appear in the Add Reference dialog inside Visual Studio
 Root: HKLM; Subkey: "Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp"; ValueData: "{app}\Assemblies"; ValueType: string; 
-
 
 ; todo - see registration from Vulcan
 ; associate .xsproj extension

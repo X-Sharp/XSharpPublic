@@ -13,12 +13,15 @@ begin namespace XSharp
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
 	/// </summary>
 	/// <seealso cref="T:XSharp.IFloat"/>
+	/// <seealso cref="T:XSharp.RDD.DbFloat"/>
 	[StructLayout(LayoutKind.Explicit, Pack := 4)];
 	public structure __VOFloat implements IFLoat, ;
 		IConvertible,; 
 		IFormattable, ;
 		IComparable<__VoFloat>, ;
+		IEquatable<__VoFloat>, ;
 		IComparable
+	
 		[FieldOffset(0)]  private initonly _value as real8
 		[FieldOffset(8)]  private initonly _length as shortint
 		[FieldOffset(10)] private initonly _decimals as shortint
@@ -424,6 +427,7 @@ begin namespace XSharp
 			public method CompareTo(rhs as object) as int
 				return self:CompareTo( (Float) rhs)
 		#endregion
+
 	end structure
 	
 end namespace

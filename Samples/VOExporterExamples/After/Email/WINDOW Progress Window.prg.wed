@@ -1,0 +1,140 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,ProgressWindow_Vo
+GUID=97A48CAF-5287-48FE-934A-9CED8AA65E04
+  Name=ProgressWindow_Vo
+  Class=DIALOGWINDOW
+  Caption=
+  Order=0
+  Left=44
+  Width=354
+  Top=44
+  Height=184
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160066692
+  Exstyles=257
+  Property=HyperLabel=#ProgressWindow_Vo,,,
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=8ADF81B6-076B-42AB-991B-6F9174F4FF73
+  Name=txtMessage
+  Class=FIXEDTEXT
+  Caption=
+  Order=1
+  Left=8
+  Width=332
+  Top=9
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=#txtMessage,,,
+
+CONTROL=FIXEDTEXT
+GUID=B60E3E17-8BE5-4102-B4F3-2FCBE30C925D
+  Name=txtFeedback
+  Class=FIXEDTEXT
+  Caption=
+  Order=3
+  Left=9
+  Width=158
+  Top=90
+  Height=17
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=#txtFeedback,,,
+
+CONTROL=FIXEDTEXT
+GUID=041A1608-658B-4A8A-843F-CFAB6EB195A3
+  Name=txtPercent
+  Class=FIXEDTEXT
+  Caption=
+  Order=4
+  Left=308
+  Width=32
+  Top=90
+  Height=17
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741826
+  Exstyles=0
+  Property=HyperLabel=#txtPercent,,,
+
+CONTROL=PROGRESSBAR
+GUID=19E6392B-3037-45E8-8A36-6CF5925C0B83
+  Name=barFeedback
+  Class=PROGRESSBAR
+  Caption=
+  Order=5
+  Left=9
+  Width=332
+  Top=109
+  Height=17
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=TooltipText="Laufbalken 1-100%"
+  Property=HyperLabel=#barFeedback,,,
+
+CONTROL=PUSHBUTTON
+GUID=C4FCB7A9-0448-4AF2-B82A-52FEBC0463F3
+  Name=pshCancel
+  Class=PUSHBUTTON
+  Caption=&Cancel
+  Order=6
+  Left=144
+  Width=63
+  Top=131
+  Height=18
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Cancel",,
+  Property=UseHLforToolTip=True
+  Property=HyperLabel=#pshCancel,,,
+
+CONTROL=ANIMATIONCONTROL
+GUID=8A4CCDE0-37DB-4F71-A111-C75CF6F4A9A8
+  Name=Animation
+  Class=ANIMATIONCONTROL
+  Caption=
+  Order=7
+  Left=41
+  Width=270
+  Top=29
+  Height=60
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741831
+  Exstyles=0
+  Property=HyperLabel=#Animation,,,
+
+SUBCONTROLSEND
+DESIGNEREND = ProgressWindow_Vo
+

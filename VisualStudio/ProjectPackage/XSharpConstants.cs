@@ -35,6 +35,10 @@ namespace XSharp.Project
 
         public const string WPFProjectFactory = "5ADB76EC-7017-476A-A8E0-25D4202FFCF0";
         public const string WPFFlavor = "14989543-69A4-4C47-A31C-74B6A6DB719B";
+
+        public const string LibraryManagerService = "93F79240-85A9-4697-9A1C-71DE150BA363";
+        public const string LibraryManager = "1A36F2B9-EB46-42C7-8421-D5DF35653ED4";
+        public const string Library = "3AB768D9-DF41-443F-BECE-497EB5C234DB";
     }
     public static class XSharpProjectFileConstants
     {

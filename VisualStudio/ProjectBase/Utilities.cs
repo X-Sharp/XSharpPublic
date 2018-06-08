@@ -429,7 +429,8 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch (COMException ex)
                 {
-                    Debug.WriteLine("Failed to get active configuration because of {0}", ex);
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        Debug.WriteLine("Failed to get active configuration because of {0}", ex);
                 }
             }
             return currentConfigName;
@@ -462,7 +463,8 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch (COMException ex)
                 {
-                    Debug.WriteLine("Failed to get active platform because of {0}", ex);
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        Debug.WriteLine("Failed to get active platform because of {0}", ex);
                 }
 			}
 

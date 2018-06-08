@@ -118,7 +118,7 @@ namespace XSharp.Project
         {
             int result = base.IncludeInProject();
             DetermineSubType();
-            if (this.FileType == XFileType.SourceCode)
+            //if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;
                 prjNode.ProjectModel.AddFile(this.Url);
@@ -128,7 +128,7 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
-            if (this.FileType == XFileType.SourceCode)
+            //if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;
                 prjNode.ProjectModel.RemoveFile(this.Url);

@@ -40,4 +40,30 @@ namespace XSharpColorizer
         }
     }
 
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpBraceOpenFormat)]
+    [Name(ColorizerConstants.XSharpBraceOpenFormat)]
+    [UserVisible(false)]
+    [Order(After = Priority.Default)]
+    internal sealed class XSharpBraceOpenFormat : ClassificationFormatDefinition
+    {
+        public XSharpBraceOpenFormat()
+        {
+            this.DisplayName = "XSharp Brace Open";
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpBraceCloseFormat)]
+    [Name(ColorizerConstants.XSharpBraceCloseFormat)]
+    [UserVisible(false)]
+    [Order(After = Priority.Default)]
+    internal sealed class XSharpBraceCloseFormat : ClassificationFormatDefinition
+    {
+        public XSharpBraceCloseFormat()
+        {
+            this.DisplayName = "XSharp Brace Close";
+        }
+    }
+
 }

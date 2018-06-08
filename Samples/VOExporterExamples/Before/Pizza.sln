@@ -2,6 +2,6 @@
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Pizza", "Pizza\Pizza.xsproj", "{586A9E7D-64DE-4557-831D-4F228E16B010}"
+Project("{54B887A3-93F9-4C9B-BE17-7AA822896F8A}") = "Pizza", "Pizza\Pizza.xsproj", "{7023F87A-0EFF-4860-9A26-16F101AA5FFC}"
 EndProject
 

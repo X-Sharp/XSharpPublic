@@ -1,0 +1,247 @@
+DESIGNERSTART = VOWindowEditor,DATAWINDOW,EmailComposeDialog
+GUID=0C619D6E-B8D4-48EE-B478-AF42710E6121
+  Name=EmailComposeDialog
+  Class=DATAWINDOW
+  Caption=
+  Order=0
+  Left=56
+  Width=275
+  Top=56
+  Height=286
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=#EmailComposeDialog,,,
+  Property=NoAcc=Yes
+  Property=InheritClassName=EMailDialog
+
+SUBCONTROLSSTART
+CONTROL=MULTILINEEDIT
+GUID=95CA4FBF-F6C9-4277-BF27-BE464DBD9CB8
+  Name=ToMLE
+  Class=MULTILINEEDIT
+  Caption=
+  Order=1
+  Left=66
+  Width=208
+  Top=2
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1084297284
+  Exstyles=512
+  Property=HyperLabel=#ToMLE,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=MULTILINEEDIT
+GUID=59024C69-80E9-47AA-9D9E-F7BC6FE41969
+  Name=CcMLE
+  Class=MULTILINEEDIT
+  Caption=
+  Order=2
+  Left=66
+  Width=208
+  Top=23
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1084297284
+  Exstyles=512
+  Property=HyperLabel=#CcMLE,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=MULTILINEEDIT
+GUID=9EBD75EC-7A28-43C2-8FBD-508F70E4D251
+  Name=BccMLE
+  Class=MULTILINEEDIT
+  Caption=
+  Order=3
+  Left=66
+  Width=208
+  Top=44
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1084297284
+  Exstyles=512
+  Property=HyperLabel=#BccMLE,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=SINGLELINEEDIT
+GUID=DE991F3B-C3B2-44A6-BA57-4E7F8649A896
+  Name=SubjectSLE
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=4
+  Left=66
+  Width=208
+  Top=65
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=#SubjectSLE,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=LISTVIEW
+GUID=FEF288C9-5E82-487D-9C6C-D121660F5DA3
+  Name=Attachments
+  Class=LISTVIEW
+  Caption=
+  Order=5
+  Left=66
+  Width=208
+  Top=86
+  Height=27
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073742082
+  Exstyles=512
+  Property=HyperLabel=#Attachments,,,
+  Property=ContextMenu=ComposeEmailContextmenu
+  Property=InheritClassName=AttachmentListView
+
+CONTROL=PUSHBUTTON
+GUID=7841C8AD-48C0-4407-9F9B-406B61A5A3FA
+  Name=ToButton
+  Class=PUSHBUTTON
+  Caption=&TO:
+  Order=6
+  Left=2
+  Width=64
+  Top=2
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&TO:",,
+  Property=HyperLabel=#ToButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=2A618551-4D30-4675-ABD3-0F55440761C5
+  Name=CCButton
+  Class=PUSHBUTTON
+  Caption=&CC:
+  Order=7
+  Left=2
+  Width=64
+  Top=23
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&CC:",,
+  Property=HyperLabel=#CCButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=1B51533C-2BD9-49BA-8EDE-C7FB3B1132FE
+  Name=BccButton
+  Class=PUSHBUTTON
+  Caption=&BCC:
+  Order=8
+  Left=2
+  Width=64
+  Top=44
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&BCC:",,
+  Property=HyperLabel=#BccButton,,,
+
+CONTROL=PUSHBUTTON
+GUID=E44C07E6-29D4-4673-A452-08E241476FDF
+  Name=AttachButton
+  Class=PUSHBUTTON
+  Caption=&Attach:
+  Order=9
+  Left=2
+  Width=64
+  Top=86
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"&Attach:",,
+  Property=HyperLabel=#AttachButton,,,
+
+CONTROL=FIXEDTEXT
+GUID=5105AFAC-78FA-4AF4-B39A-71731CB67FDD
+  Name=Subject_FT
+  Class=FIXEDTEXT
+  Caption=Subject:
+  Order=10
+  Left=1
+  Width=64
+  Top=68
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741825
+  Exstyles=0
+  Property=HyperLabel=,"Subject:",,
+  Property=HyperLabel=#Subject_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+CONTROL=MULTILINEEDIT
+GUID=E8299089-1022-4A29-949E-6E63A0DEA720
+  Name=Body
+  Class=MULTILINEEDIT
+  Caption=
+  Order=11
+  Left=1
+  Width=273
+  Top=149
+  Height=136
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1085345860
+  Exstyles=512
+  Property=HyperLabel=#Body,,,
+  Property=NewFont=8:Courier New
+
+SUBCONTROLSEND
+DESIGNEREND = EmailComposeDialog
+

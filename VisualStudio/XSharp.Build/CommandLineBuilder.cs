@@ -26,9 +26,9 @@ namespace XSharp.Build
         internal void AppendNewLine()
         {
             if (fNewLine)
-            {
                 base.AppendTextUnquoted("\n");
-            }
+            else
+                base.AppendTextUnquoted(" ");
         }
         public new void AppendSwitch(string switchName)
         {
@@ -40,28 +40,18 @@ namespace XSharp.Build
         }
         public new void AppendSwitchIfNotNull(string switchName, string parameter)
         {
-            AppendSwitchIfNotNull(switchName, parameter, true);
-        }
-        public void AppendSwitchIfNotNull(string switchName, string parameter, bool newline = true)
-        {
             if (parameter != null && switchName != null)
             {
                 base.AppendSwitchIfNotNull(switchName, parameter);
-                if (newline)
-                    this.AppendNewLine();
+                this.AppendNewLine(); 
             }
         }
         public new void AppendSwitchIfNotNull(string switchName, ITaskItem parameter)
         {
-            AppendSwitchIfNotNull(switchName, parameter, true);
-        }
-        public void AppendSwitchIfNotNull(string switchName, ITaskItem parameter, bool newline = true)
-        {
             if (parameter != null && switchName != null)
             {
                 base.AppendSwitchIfNotNull(switchName, parameter);
-                if (newline)
-                    this.AppendNewLine();
+                this.AppendNewLine();
             }
         }
 
@@ -230,7 +220,7 @@ namespace XSharp.Build
             {
                 foreach (ITaskItem parameter in parameters)
                 {
-                    this.AppendSwitchIfNotNull(switchName, parameter.ItemSpec,false); 
+                    this.AppendSwitchIfNotNull(switchName, parameter.ItemSpec); 
 
                     if (metadataNames != null)
                     {

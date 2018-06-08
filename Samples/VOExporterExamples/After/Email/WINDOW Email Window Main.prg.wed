@@ -1,0 +1,116 @@
+DESIGNERSTART = VOWindowEditor,DATAWINDOW,EmailWindowMain
+GUID=3BA45B80-66FF-46CA-87A1-73FCFA648BDF
+  Name=EmailWindowMain
+  Class=DATAWINDOW
+  Caption=Visual Objects 2.7 Mail Client
+  Order=0
+  Left=70
+  Width=630
+  Top=70
+  Height=362
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Visual Objects 2.7 Mail Client",,
+  Property=HyperLabel=#EmailWindowMain,,,
+  Property=HyperLabel=,,"Visual Objects 2.7 Mail Client",
+  Property=ExpCtls=Yes
+  Property=Icon=AAP_EMAIL_ICON
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=0F4C990F-0012-45C6-A2E0-E107F884532F
+  Name=FTMode
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=2
+  Left=1
+  Width=630
+  Top=1
+  Height=44
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#FTMode,,,
+  Property=TextColor=COLORWHITE
+  Property=NewFont=26:Microsoft Sans Serif:Bold
+  Property=Background=128 128 128
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=LISTVIEW
+GUID=FE46E0BB-DABF-4ADF-9C7B-2E1A60F1A4D3
+  Name=EmailListView
+  Class=LISTVIEW
+  Caption=
+  Order=3
+  Left=193
+  Width=436
+  Top=45
+  Height=316
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741833
+  Exstyles=0
+  Property=HyperLabel=#EmailListView,,,
+  Property=FullRowSelect=True
+  Property=ContextMenu=EmailBrowserContextMenu
+  Property=OwnerAlignment=OA_WIDTH_HEIGHT
+
+CONTROL=TREEVIEW
+GUID=F8C12EAE-C4D6-4EC6-B291-73030FADD62A
+  Name=EmailTreeview
+  Class=TREEVIEW
+  Caption=
+  Order=4
+  Left=1
+  Width=192
+  Top=65
+  Height=296
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741863
+  Exstyles=0
+  Property=HyperLabel=#EmailTreeview,,,
+  Property=Background=190 255 255
+  Property=OwnerAlignment=OA_HEIGHT
+  Property=InheritClassName=MailTreeView
+
+CONTROL=FIXEDTEXT
+GUID=B03A0059-91C4-4ABD-82A3-963EFD13B552
+  Name=_StatusFT
+  Class=FIXEDTEXT
+  Caption=EMail - Folders
+  Order=5
+  Left=1
+  Width=192
+  Top=45
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073742336
+  Exstyles=0
+  Property=HyperLabel=#_StatusFT,,,
+  Property=HyperLabel=,"EMail - Folders",,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+SUBCONTROLSEND
+DESIGNEREND = EmailWindowMain
+

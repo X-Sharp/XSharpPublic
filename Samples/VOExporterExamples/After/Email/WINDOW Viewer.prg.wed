@@ -1,0 +1,85 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,ViewerDlg
+GUID=5164DA92-58AD-41B3-AA84-FFEF7F38DEE2
+  Name=ViewerDlg
+  Class=DIALOGWINDOW
+  Caption=
+  Order=0
+  Left=70
+  Width=401
+  Top=70
+  Height=240
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160852996
+  Exstyles=257
+  Property=HyperLabel=#ViewerDlg,,,
+
+SUBCONTROLSSTART
+CONTROL=MULTILINEEDIT
+GUID=4CC21AC1-F6E2-40BC-8880-DBBB67CD0EB7
+  Name=Info
+  Class=MULTILINEEDIT
+  Caption=
+  Order=1
+  Left=1
+  Width=393
+  Top=1
+  Height=174
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1085345860
+  Exstyles=512
+  Property=HyperLabel=#Info,,,
+  Property=OwnerAlignment=OA_WIDTH_HEIGHT
+  Property=NewFont=8:Courier New
+
+CONTROL=PUSHBUTTON
+GUID=803A3368-53D8-4A23-9315-323CCECC5E17
+  Name=BtnOK
+  Class=PUSHBUTTON
+  Caption=OK
+  Order=2
+  Left=292
+  Width=80
+  Top=181
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"OK",,
+  Property=HyperLabel=#BtnOK,,,
+  Property=OwnerAlignment=OA_X_Y
+
+CONTROL=VERTICALSCROLLBAR
+GUID=4B7F36C3-B79E-44FA-80CD-4161F88E5654
+  Name=Sizer
+  Class=VERTICALSCROLLBAR
+  Caption=
+  Order=3
+  Left=377
+  Width=21
+  Top=187
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1140850695
+  Exstyles=0
+  Property=HyperLabel=#Sizer,,,
+  Property=OwnerAlignment=OA_X_Y
+
+SUBCONTROLSEND
+DESIGNEREND = ViewerDlg
+

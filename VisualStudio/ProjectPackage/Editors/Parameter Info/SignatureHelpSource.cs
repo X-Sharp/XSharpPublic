@@ -83,9 +83,9 @@ namespace XSharp.Project
 
             int currentIndex = 0;
             int commaCount = 0;
-            if (comma)
-                commaCount += 1;
-           while (currentIndex < sigText.Length)
+            //if (comma)
+            //    commaCount += 1;
+            while (currentIndex < sigText.Length)
             {
                 int commaIndex = sigText.IndexOf(',', currentIndex);
                 if (commaIndex == -1)
@@ -185,7 +185,7 @@ namespace XSharp.Project
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
                 int start = (int)session.Properties["Start"];
                 int length = (int)session.Properties["Length"];
-                var comma  = (bool)session.Properties["Comma"];
+                var comma = (bool)session.Properties["Comma"];
                 m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
                  new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
 
@@ -304,7 +304,7 @@ namespace XSharp.Project
                 }
             }
             // fill members of parent class,but not for constructorsS
-            if (sType.BaseType != null && ! ctor)
+            if (sType.BaseType != null && !ctor)
             {
                 SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype, comma);
             }
@@ -339,14 +339,19 @@ namespace XSharp.Project
         {
             XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, methodDoc, null);
             // Moved : Done in the XSharpSignature constructor
-            //textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(sig.OnSubjectBufferChanged);
+            // textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(sig.OnSubjectBufferChanged);
 
-            //find the parameters in the method signature (expect methodname(one, two)
+            // find the parameters in the method signature :
+            // MyMethod( param1 AS TYPE1, param2 AS TYPE2 ) AS TYPE3 will turn to
+            // 0 : MyMethod
+            // 1 : param1 AS TYPE1
+            // 2 : param2 AS TYPE2
+            // 3 : AS TYPE3
             string[] pars = methodSig.Split(new char[] { '(', ',', ')' });
             List<IParameter> paramList = new List<IParameter>();
-
             int locusSearchStart = 0;
-            for (int i = 1; i < pars.Length; i++)
+            // i = 1 to skip the MethodName; Length-1 to Skip the ReturnType
+            for (int i = 1; i < pars.Length-1; i++)
             {
                 string param = pars[i].Trim();
                 if (string.IsNullOrEmpty(param))
@@ -417,7 +422,6 @@ namespace XSharp.Project
 
         internal void ComputeCurrentParameter()
         {
-
             //the number of commas in the string is the index of the current parameter
             string sigText = ApplicableToSpan.GetText(m_textBuffer.CurrentSnapshot);
 

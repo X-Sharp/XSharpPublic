@@ -135,7 +135,8 @@ namespace XSharpModel
         public static void Debug(string msg, params object[] o)
         {
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(String.Format("XModel: " + msg, o));
+            if (System.Diagnostics.Debugger.IsAttached)
+                System.Diagnostics.Debug.WriteLine(String.Format("XModel: " + msg, o));
 #endif
         }
     }

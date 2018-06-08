@@ -21,7 +21,7 @@
   
 	<!-- XML Doc file generation -->
    <ItemGroup>
-     <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName)" Condition="'$(DocumentationFile)'!=''"/>
+     <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).XML" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
   <!-- Common Project System support -->

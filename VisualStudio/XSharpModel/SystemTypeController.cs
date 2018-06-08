@@ -19,7 +19,7 @@ namespace XSharpModel
     public class SystemTypeController
     {
         static ConcurrentDictionary<String, AssemblyInfo> assemblies;
-        static Assembly mscorlib;
+        static AssemblyInfo  mscorlib;
 
         static SystemTypeController()
         {
@@ -32,7 +32,7 @@ namespace XSharpModel
             foreach (var pair in assemblies)
             {
                 var asm = pair.Value;
-                if (asm.Assembly != null && string.Compare(asm.Assembly.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
+                if (!String.IsNullOrEmpty(asm.FullName) && string.Compare(asm.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     return pair.Key; ;
                 }
@@ -41,22 +41,22 @@ namespace XSharpModel
 
         }
 
-        public static Assembly FindAssemblyByLocation(string location)
+        public static string FindAssemblyByLocation(string location)
         {
             if (assemblies.ContainsKey(location))
             { 
-                return assemblies[location].Assembly;
+                return assemblies[location].FullName;
             }
             return null;
         }
 
-        public static Assembly FindAssemblyByName(string fullName)
+        public static string FindAssemblyByName(string fullName)
         {
             foreach (var item in assemblies)
             {
                 var asm = item.Value;
-                if (asm.Assembly != null && string.Compare(asm.Assembly.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
-                    return asm.Assembly;
+                if (string.Compare(asm.FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0)
+                    return asm.FullName;
             }
             return null;
         }
@@ -84,12 +84,12 @@ namespace XSharpModel
             }
             if (cFileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
             {
-                mscorlib = assembly.Assembly;
+                mscorlib = new AssemblyInfo(cFileName, DateTime.MinValue);
             }
-            if (lastWriteTime != assembly.Modified)
-            {
-                assembly.UpdateAssembly(true);
-            }
+            //if (lastWriteTime != assembly.Modified)
+            //{
+            //    assembly.UpdateAssembly(true);
+            //}
             if (Path.GetFileName(cFileName).ToLower() == "system.dll")
             {
                 var mscorlib = Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll");
@@ -100,6 +100,8 @@ namespace XSharpModel
             }
             return assembly;
         }
+
+        public static AssemblyInfo MsCorLib => mscorlib;
 
         public static void RemoveAssembly(string cFileName)
         {
@@ -198,9 +200,9 @@ namespace XSharpModel
                 {
                     break;
                 }
-                if (assembly.Assembly != null)
+                if (assembly != null)
                 {
-                    sType = assembly.Assembly.GetType(typeName);
+                    sType = assembly.GetType(typeName);
                 }
                 if (sType != null)
                 {
@@ -245,5 +247,28 @@ namespace XSharpModel
             assemblies.Clear();
         }
 
+        public static void UnloadUnusedAssemblies()
+        {
+            var unused = new List<string>();
+            // collect list of assemblies which are no longer in use
+            foreach (var asm in assemblies)
+            {
+                if (!asm.Value.HasProjects)
+                {
+                    unused.Add(asm.Key);
+                }
+            }
+            foreach (var key in unused)
+            {
+                AssemblyInfo info;
+                assemblies.TryRemove(key, out info);
+            }
+            // when no assemblies left, then unload mscorlib
+            if (assemblies.Count == 0)
+            {
+                mscorlib = null;
+            }
+            GC.Collect();
+        }
     }
 }

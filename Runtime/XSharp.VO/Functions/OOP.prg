@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -10,7 +10,7 @@ USING XSharp.Internal
 USING System.Reflection
 USING System.Collections.Generic
 USING System.Linq
-using System.Runtime.CompilerServices
+USING System.Runtime.CompilerServices
 
 INTERNAL STATIC CLASS OOPHelpers
 
@@ -169,7 +169,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		LOCAL aResult AS ARRAY
 		aResult := {}
 		FOREACH VAR name IN list
-			aadd(aResult, String2Symbol(name))
+			AAdd(aResult, String2Symbol(name))
 		NEXT
 		RETURN aResult
 		
@@ -261,7 +261,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF propInfo != NULL_OBJECT .and. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
-		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar} )
+		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar} )
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
@@ -279,7 +279,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
-		Throw Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar})
+		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar})
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
@@ -415,7 +415,7 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	ELSEIF IsInstanceOf(oObject, symClassName)
 		RETURN TRUE
 	ENDIF
-	LOCAL oError := Error.VOError(EG_WRONGCLASS, "CHECKINSTANCEOF", NAMEOF(oObject),1, null) AS Error
+	LOCAL oError := Error.VOError(EG_WRONGCLASS, "CHECKINSTANCEOF", NAMEOF(oObject),1, NULL) AS Error
 	oError:Description := symClassName + " <-> " + oObject:GetType():Name
 	THROW oError
 	
@@ -479,7 +479,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	ENDIF
 	VAR constructors := t:getConstructors() 
 	IF constructors:Length > 1
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD, "CreateInstance", NAMEOF(cClassName), 0 , null)
+		THROW Error.VOError( EG_AMBIGUOUSMETHOD, "CreateInstance", NAMEOF(cClassName), 0 , NULL)
 	ENDIF
 	LOCAL ctor := constructors[1] AS ConstructorInfo
 	LOCAL nPCount AS INT
@@ -487,7 +487,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	nPCount := PCount()
 	LOCAL oRet AS OBJECT  
 	TRY
-		local oArgs as OBJECT[]
+		LOCAL oArgs AS OBJECT[]
 		IF ctor:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
 			LOCAL args AS USUAL[]
 			args := USUAL[]{nPCount-1}
@@ -511,7 +511,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 		ENDIF
 		oRet := ctor:Invoke( oArgs)	
 	CATCH
-		THROW Error.VOError( EG_NOMETHOD, "CreateInstance", "Constructor", 0 , null)
+		THROW Error.VOError( EG_NOMETHOD, "CreateInstance", "Constructor", 0 , NULL)
 		oRet := NULL_OBJECT
 	END TRY
 	RETURN oRet
@@ -584,7 +584,8 @@ FUNCTION IsClass(cClassName AS STRING) AS LOGIC
 FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 	LOCAL tSub   := OOPHelpers.FindClass(cClassName) AS Type
 	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
-	RETURN tSub != NULL .and. tSuper != NULL .and. tSub:IsSubclassOf(tSuper)
+	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
+	RETURN tSub != NULL .and. tSuper != NULL .and. (tSub == tSuper .or. tSub:IsSubclassOf(tSuper))
 	
 	
 	
@@ -822,25 +823,25 @@ FUNCTION Object2Array(o AS OBJECT) AS ARRAY
 		RETURN NULL_ARRAY
 	ENDIF
 	LOCAL aProps AS PropertyInfo[]
-	local aFields as FieldInfo[]
+	LOCAL aFields AS FieldInfo[]
 	LOCAL aResult AS ARRAY
 	aResult := {}
 	t := o:GetType()
 	aProps := t:GetProperties(BindingFlags.Instance | BindingFlags.Public)
 	FOREACH p AS PropertyInfo IN aProps
-		local uVal as usual
+		LOCAL uVal AS USUAL
 		IF p:CanRead 
-			uVal := p:GetValue(o,null)
-			AADD(aResult, uVal)
-		endif
+			uVal := p:GetValue(o,NULL)
+			AAdd(aResult, uVal)
+		ENDIF
 	NEXT
 	aFields := t:GetFields(BindingFlags.Instance | BindingFlags.Public)
 	FOREACH f AS FieldInfo IN aFields
-		local uVal as usual
+		LOCAL uVal AS USUAL
 		IF ! f:IsSpecialName
 			uVal := f:GetValue(o)
-			AADD(aResult, uVal)
-		endif
+			AAdd(aResult, uVal)
+		ENDIF
 	NEXT
 
 	RETURN aResult
@@ -871,7 +872,7 @@ FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
 /// <param name="o"></param>
 /// <param name="uMethod "></param>
 /// <returns>Return value of the method call. </returns>
-FUNCTION Send(o as USUAL,uMethod as USUAL, args PARAMS Usual[]) AS USUAL 
+FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL 
 	IF !o:IsObject
 	     THROW Error.VOError( EG_DATATYPE, "Send", nameof(o), 1, <OBJECT>{ o}  )
 	ENDIF
@@ -881,12 +882,12 @@ FUNCTION Send(o as USUAL,uMethod as USUAL, args PARAMS Usual[]) AS USUAL
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
 	LOCAL uResult AS USUAL
-	try
+	TRY
 		uResult := OopHelpers.DoSend(oObject, cMethod, args)
 	CATCH
 		uResult := NIL
 	END TRY
-	return uResult
+	RETURN uResult
 	
 /// <summary>Invoke a method.</summary>
 /// <param name="o"></param>

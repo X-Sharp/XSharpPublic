@@ -180,7 +180,8 @@ namespace XSharp.Project
                 this.Project.BuildTarget(ProjectFileConstants.AllProjectOutputGroups, out succeeded);
                 if (!succeeded)
                 {
-                    Debug.WriteLine("Failed to build target {0}", this.TargetName);
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        Debug.WriteLine("Failed to build target {0}", this.TargetName);
                     this.Outputs.Clear();
                     return;
                 }

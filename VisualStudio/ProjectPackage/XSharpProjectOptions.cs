@@ -32,7 +32,6 @@ namespace XSharp.Project
         private XSharpProjectNode _prjNode;
         internal ConfigCanonicalName ConfigCanonicalName { get; set; }
         public XSharpParseOptions ParseOptions { get; private set;}
-        public XSharpParseOptions LexOptions { get; private set; }
         public XSharpProjectOptions(XSharpProjectNode prjNode) : base()
         {
             _prjNode = prjNode;
@@ -132,19 +131,14 @@ namespace XSharp.Project
                 {
                     var cmdlineargs = xsCmdLineparser.Parse(args.ToArray(), null, null, null);
                     ParseOptions = cmdlineargs.ParseOptions;
-                    cmdlineargs = xsCmdLineparser.Parse(args.ToArray(), null, null, null);
-                    LexOptions = cmdlineargs.ParseOptions;
                 }
                 else
                 {
                     var cmdlineargs = xsCmdLineparser.Parse(new string[0], null, null, null);
                     ParseOptions = cmdlineargs.ParseOptions;
-                    cmdlineargs = xsCmdLineparser.Parse(new string[0], null, null, null);
-                    LexOptions = cmdlineargs.ParseOptions;
 
                 }
                 ParseOptions.ParseLevel = ParseLevel.Parse;
-                LexOptions.ParseLevel = ParseLevel.Lex;
             }
         }
 

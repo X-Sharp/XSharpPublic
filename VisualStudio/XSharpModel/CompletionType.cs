@@ -59,10 +59,22 @@ namespace XSharpModel
             }
             else
             {
-                XTypeMember member = element.Parent as XTypeMember;
-                if (member != null)
+                if (element is XTypeMember)
                 {
+                    XTypeMember member = element as XTypeMember;
                     CheckType(member.TypeName, member.File, member.Parent.NameSpace);
+                }
+                else if (element.Parent is XType)
+                {
+                    this._xtype = element.Parent as XType;
+                }
+                else
+                {
+                    XTypeMember member = element.Parent as XTypeMember;
+                    if (member != null)
+                    {
+                        CheckType(member.TypeName, member.File, member.Parent.NameSpace);
+                    }
                 }
             }
         }

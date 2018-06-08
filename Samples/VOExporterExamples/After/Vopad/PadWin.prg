@@ -389,9 +389,6 @@ END CLASS
 CLASS SearchBox INHERIT ComboBox
 	
 
-// constructor inserted by xPorter, remove superfluous arguments
-CONSTRUCTOR(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9) CLIPPER
-SUPER(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 METHOD Dispatch(e) 
 	
 	IF e:uMSg == wM_KEYDOWN .or.  e:uMSg == wM_KEYUP

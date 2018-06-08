@@ -25,6 +25,8 @@ namespace XSharpModel
         private TextInterval _interval;
         private XElement _parent;
 
+        protected bool _isStatic;
+
 
         public XElement(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange range, TextInterval interval)
         {
@@ -34,6 +36,7 @@ namespace XSharpModel
             _Visibility = visibility;
             _range = range;
             _interval = interval;
+            _isStatic = false;
         }
 
 
@@ -71,6 +74,19 @@ namespace XSharpModel
                 return this._Name;
             }
 
+        }
+
+        public bool IsStatic
+        {
+            get
+            {
+                return _isStatic;
+            }
+
+            set
+            {
+                _isStatic = value;
+            }
         }
 
         public void ForceComplete()
@@ -187,7 +203,7 @@ namespace XSharpModel
                 if (this._File.Project.ProjectNode != null)
                 {
                     // Note: Antlr Lines start with 1, Columns start with 0
-                    this._File.Project.ProjectNode.OpenElement(this._File.FullPath, this.Range.StartLine, this.Range.StartColumn+1);
+                    this._File.Project.ProjectNode.OpenElement(this._File.SourcePath, this.Range.StartLine, this.Range.StartColumn+1);
                 }
             }
         }
@@ -294,7 +310,6 @@ namespace XSharpModel
                         break;
                     case Kind.VOGlobal:
                     case Kind.Field:
-                    case Kind.ClassVar:
                         imgK = ImageListKind.Field;
                         break;
                     case Kind.Parameter:
@@ -385,7 +400,6 @@ namespace XSharpModel
                         break;
                     case Kind.Field:
                     case Kind.VOGlobal:
-                    case Kind.ClassVar:
                         imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                     case Kind.Union:
@@ -433,7 +447,10 @@ namespace XSharpModel
                     case Modifiers.ProtectedInternal:
                         imgI = StandardGlyphItem.GlyphItemProtected;
                         break;
-
+                }
+                if ( this.IsStatic )
+                {
+                    imgI = StandardGlyphItem.GlyphItemShortcut;
                 }
                 //
                 return imgI;
@@ -487,7 +504,6 @@ namespace XSharpModel
         Access,
         Assign,
         Property,
-        ClassVar,
         Function,
         Procedure,
         Field,
@@ -505,8 +521,7 @@ namespace XSharpModel
         VOStruct,
         Union,
         EnumMember,
-        Keyword,
-        Var
+        Keyword
     }
 
     /// <summary>
@@ -587,7 +602,6 @@ namespace XSharpModel
             switch (elementKind)
             {
                 case Kind.Field:
-                case Kind.ClassVar:
                 case Kind.VOGlobal:
                 case Kind.VODefine:
                     return true;
@@ -595,13 +609,12 @@ namespace XSharpModel
             return false;
         }
 
-        public static bool HasReturnType( this Kind elementKind)
+        public static bool HasReturnType(this Kind elementKind)
         {
             switch (elementKind)
             {
                 case Kind.Method:
                 case Kind.Access:
-                case Kind.ClassVar:
                 case Kind.Property:
                 case Kind.Function:
                 case Kind.Delegate:
@@ -610,10 +623,29 @@ namespace XSharpModel
                 case Kind.Local:
                 case Kind.VOGlobal:
                 case Kind.VODefine:
+                case Kind.Field:
                     return true;
             }
             return false;
         }
+
+        public static bool IsClassMember(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.Method:
+                case Kind.Assign:
+                case Kind.Access:
+                case Kind.Property:
+                case Kind.Event:
+                case Kind.Constructor:
+                case Kind.Destructor:
+                case Kind.Operator:
+                    return true;
+            }
+            return false;
+        }
+
 
         public static bool HasParameters(this Kind elementKind)
         {
@@ -633,5 +665,20 @@ namespace XSharpModel
             return false;
         }
 
+        public static string DisplayName(this Kind elementKind)
+        {
+            switch (elementKind)
+            {
+                case Kind.VODefine:
+                    return "DEFINE";
+                case Kind.VOGlobal:
+                    return "GLOBAL";
+                case Kind.EnumMember:
+                    return "MEMBER";
+                default:
+                    return elementKind.ToString().ToUpper();
+            }
+
+        }
     }
 }

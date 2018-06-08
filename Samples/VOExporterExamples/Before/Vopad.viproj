@@ -1,7 +1,7 @@
 [General]
 PROJECT = Vopad
-OutputFolder = C:\XporterOutput\Examples\Bin\
-GUID = B0EB3FD9-F845-476E-B794-F7C13D5A8AB8
+OutputFolder = C:\XporterOutput\Bin\
+GUID = 8F9FA120-0DA8-4C34-80A4-0E66929F6FF3
 PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 0
@@ -21,7 +21,7 @@ Extension =
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = 6E8B68BF-9192-423A-88BC-24EE6587509B
+GUID = 6C4320D7-9D00-4306-A6DE-5046CE2E9E0C
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -32,41 +32,37 @@ KeyFile =
 [Files]
 
 File = %AppPath%\PadShell.prg
-FileGUID = AD38C9D5-8B96-41CE-AB9C-FBA231088D04
+FileGUID = 208D3B57-1688-4FC0-B0BC-C23069A636A6
 FileType = Code
 NativeResourceFile = External , %AppPath%\PadShell.rc
-ResourceFileGuid = 8E87A001-AB6E-4D13-9EDB-DFBDF323398B
+ResourceFileGuid = EAA99BB7-2FE8-4FED-A6C2-127B93519DA8
 File = %AppPath%\PadStart.prg
-FileGUID = 0955E432-2D3E-4F28-974F-59E4931A447C
+FileGUID = 879613BA-3B27-4E36-82BA-87689C2396A6
 FileType = Code
 File = %AppPath%\PadHelp About.prg
-FileGUID = C54B92FD-695E-407D-B838-E4FB47A6EAFA
+FileGUID = DCB344D3-E603-4128-BB4A-90085BFCB13F
 FileType = Code
 NativeResourceFile = External , %AppPath%\PadHelp About.rc
-ResourceFileGuid = 474EB930-36AC-4E13-9721-979F1A461686
+ResourceFileGuid = CCC50E37-791A-443C-809C-8B653B82B2B4
 File = %AppPath%\PadWin.prg
-FileGUID = 59C59F3D-3248-4C8B-B557-A0592492202E
+FileGUID = 1D6D9AB2-C18A-46D2-AEBE-7729918D262A
 FileType = Code
-NativeResourceFile = External , %AppPath%\PadWin.rc
-ResourceFileGuid = 54E6658D-C489-4780-B338-919E633C1607
 File = %AppPath%\PadMenus.prg
-FileGUID = BBE29C4F-74D0-4CD2-93D8-AAD6A034E51B
+FileGUID = 5DEB39EA-5CB6-4608-931D-EA1330D6CD6E
 FileType = Code
-NativeResourceFile = External , %AppPath%\PadMenus.rc
-ResourceFileGuid = DDD8BFD4-4E01-442F-B770-9BB5FA5B3259
 File = %AppPath%\image.prg
-FileGUID = 03420039-D850-4C83-872E-F620293C1FDE
+FileGUID = 9E8484D2-C67A-4C8A-A402-B59EFBDFBC78
 FileType = Code
 NativeResourceFile = External , %AppPath%\image.rc
-ResourceFileGuid = 0A1BA1DD-C89E-4E4D-89A0-74A31A9EE6E6
+ResourceFileGuid = CD2021C2-076D-4DA7-982C-AF884E61E044
 File = %AppPath%\!Readme!.prg
-FileGUID = 6D3A8F37-D403-4C80-9331-58F04DA6CBA2
+FileGUID = 53CD79A5-48D4-4040-9C4C-379025338A07
 FileType = Code
 File = %AppPath%\Manifest.prg
-FileGUID = 6FF2701E-D2DE-4BA6-B0C4-5FB04BF26493
+FileGUID = F006DB7D-1298-48CE-A28D-3B417342130D
 FileType = Code
 NativeResourceFile = External , %AppPath%\Manifest.rc
-ResourceFileGuid = 515DA7B3-0A63-45A1-A130-9A486FFC99CF
+ResourceFileGuid = 3417F103-D2F1-4E8B-A516-47F805B9E9AB
 
 [References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
@@ -76,7 +72,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0, 0.0.0.0
-ReferenceBrowse = C:\XporterOutput\Examples\SDK_Defines.dll,1,1
+ReferenceBrowse = C:\XporterOutput\SDK_DEFINES.dll,1,1
 
 [General Options]
 Switches=/nowarn:9032,9043,618,162,649,9025

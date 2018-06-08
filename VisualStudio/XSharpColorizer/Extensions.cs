@@ -81,8 +81,20 @@ namespace XSharpColorizer
                 return file;
             }
             return null;
-
         }
+
+        public static String GetXAMLFile(this ITextBuffer buffer)
+        {
+            ITextDocument textDoc;
+            if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out textDoc))
+            {
+                return textDoc.FilePath;
+            }
+            return null;
+        }
+
+
+
         internal static bool IsXSharpDocument(this ITextDocumentFactoryService factory, ITextBuffer buffer)
         {
             string path = "";

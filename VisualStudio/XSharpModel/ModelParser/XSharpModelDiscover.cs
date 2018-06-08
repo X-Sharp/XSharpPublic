@@ -12,8 +12,6 @@ using LanguageService.CodeAnalysis.XSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.Text.Classification;
-using System.Collections.Immutable;
 
 namespace XSharpModel
 {
@@ -40,8 +38,8 @@ namespace XSharpModel
         private bool _currentVarStatic;
         private string _defaultNS;
         private XSharpParser.SourceContext _xSource;
-        IEnumerable<Diagnostic> _errors;
-        public XSharpModelDiscover(XFile file, XSharpParser.SourceContext ctx, IEnumerable<Diagnostic> errors)
+        IEnumerable<XError> _errors;
+        public XSharpModelDiscover(XFile file, XSharpParser.SourceContext ctx, IEnumerable<XError> errors)
         {
             // To store intermediate declarations
             this._file = file;
@@ -149,8 +147,9 @@ namespace XSharpModel
                    Kind.Class,
                    decodeModifiers(tokens), decodeVisibility(tokens),
                    new TextRange(context), new TextInterval(context));
-                //
-                newClass.NameSpace = this.currentNamespace;
+
+                newClass.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
+               
                 // and push into the current Namespace
                 //CurrentNamespace.Types.Add(newClass);
                 // Static Class ?
@@ -210,7 +209,9 @@ namespace XSharpModel
                    decodeVisibility(tokens),
                    new TextRange(context), new TextInterval(context));
             //
-            newStruct.NameSpace = this.currentNamespace;
+
+            newStruct.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
+
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
@@ -245,7 +246,9 @@ namespace XSharpModel
                 decodeVisibility(tokens),
                 new TextRange(context), new TextInterval(context));
             //
-            newIf.NameSpace = this.currentNamespace;
+
+            newIf.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
+
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
@@ -292,6 +295,8 @@ namespace XSharpModel
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
+
+            newStruct.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
             newStruct.IsStatic = isStatic(tokens);
             newStruct = addType(newStruct);
             pushType(newStruct);
@@ -311,6 +316,8 @@ namespace XSharpModel
                     new TextRange(context), new TextInterval(context));
             //
             // Todo additional properties ?
+
+            newStruct.NameSpace = decodeNamespace(context.Namespace, currentNamespace);
             newStruct = addType(newStruct);
             pushType(newStruct);
         }
@@ -504,7 +511,7 @@ namespace XSharpModel
         public override void EnterVostructmember([NotNull] XSharpParser.VostructmemberContext context)
         {
             XTypeMember newMember = new XTypeMember(context.Id.GetText(),
-                    Kind.ClassVar,
+                    Kind.Field,
                     Modifiers.Public,
                     Modifiers.Public,
                     new TextRange(context), new TextInterval(context), false);
@@ -732,7 +739,7 @@ namespace XSharpModel
                 var interval = new TextInterval(start.StartIndex, stop.StopIndex);
                 string typeName = current.DataType != null ? current.DataType.GetText() : "USUAL";
                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
-                    Kind.ClassVar, mods, this._currentVarVisibility,
+                    Kind.Field, mods, this._currentVarVisibility,
                     new TextRange(start.Line, start.Column, stop.Line, stop.Column + stop.Text.Length),
                     interval, typeName, _currentVarStatic);
                 newClassVar.File = this._file;
@@ -744,16 +751,11 @@ namespace XSharpModel
                 {
                     foreach (var err in _errors)
                     {
-                        if (err.Location.IsInSource)
+                        if (err.Span.Start.Line == newClassVar.Range.StartLine-1)
                         {
-                            var ls = err.Location.GetLineSpan();
-                            // Roslyns line numbers are 0 based
-                            // we have 1 based line numbers
-                            if (ls.StartLinePosition.Line == newClassVar.Range.StartLine-1)
-                            {
-                                bAdd = false;
-                            }
+                            bAdd = false;
                         }
+                        
                     }
                 }
                 if (bAdd)
@@ -830,6 +832,18 @@ namespace XSharpModel
 
 
         #region Helpers
+        private string decodeNamespace(XSharpParser.NameDotContext nameDot, string currentNamespace)
+        {
+            // When the class definition is in the form Namespace.ID 
+            // then return that namespace. Otherwise the current Namespace
+            string ns = currentNamespace;
+            if (nameDot != null)
+            {
+                ns = nameDot.GetText();
+                ns = ns.Substring(0, ns.Length - 1);
+            }
+            return ns;
+        }
 
         private Modifiers decodeModifiers(IList<IToken> tokens)
         {

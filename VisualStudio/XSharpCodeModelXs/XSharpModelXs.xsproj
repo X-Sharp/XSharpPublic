@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <PropertyGroup>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <ProjectGuid>EED6843B-B727-4F08-AA32-CA0F48FDDE3F</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharpCodeModel</RootNamespace>
+    <AssemblyName>XSharpModel</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <Name>XSharpModelXs</Name>
+    <Nologo>true</Nologo>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>Core</Dialect>
+    <OutputName>XSharp.VoEditors</OutputName>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <TargetFrameworkProfile />
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <VO1>false</VO1>
+    <VO2>false</VO2>
+    <VO3>false</VO3>
+    <VO4>false</VO4>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>false</VO14>
+    <VO15>false</VO15>
+    <VO16>false</VO16>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>165,219,1030,9047</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
+    <DefineConstants>DEBUG</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <Optimize>true</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>162,1030,165,219</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
+    <DefineConstants>
+    </DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="EnvDTE">
+      <Name>EnvDTE</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>EnvDTE.dll</AssemblyName>
+      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Name>Microsoft.CSharp</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.Intellisense">
+      <Name>Microsoft.VisualStudio.Language.Intellisense</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>Microsoft.VisualStudio.Language.Intellisense.dll</AssemblyName>
+      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.14.0">
+      <Name>Microsoft.VisualStudio.Shell.14.0</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>Microsoft.VisualStudio.Shell.14.0.dll</AssemblyName>
+      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Collections.Immutable</Name>
+      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Binaries\Debug\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Drawing</Name>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="VsLangProj">
+      <Name>VsLangProj</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>VsLangProj.dll</AssemblyName>
+      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\VsLangProj.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+	</Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=1.2.1.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CompletionType.prg" />
+    <Compile Include="ExtensionMethods.prg" />
+    <Compile Include="Interfaces.prg" />
+    <Compile Include="MetaData\AssemblyInfo.prg" />
+    <Compile Include="MetaData\SystemTypeController.prg" />
+    <Compile Include="Model\Enums.prg" />
+    <Compile Include="Model\XElement.prg" />
+    <Compile Include="Model\XType.prg" />
+    <Compile Include="Model\XTypeMember.prg" />
+    <Compile Include="Model\XVariable.prg" />
+    <Compile Include="ProjectSystem\OrphanedFilesProject.prg" />
+    <Compile Include="ProjectSystem\XFile.prg" />
+    <Compile Include="ProjectSystem\XProject.prg" />
+    <Compile Include="ProjectSystem\XSolution.prg" />
+    <Compile Include="Properties\AssembyInfo.prg" />
+    <Compile Include="Support.prg" />
+    <Compile Include="TextInterval.prg" />
+    <Compile Include="TextRange.prg" />
+    <Compile Include="TypeExtensions.prg" />
+    <Compile Include="Walker\ModelWalker.prg" />
+    <Compile Include="Walker\Parser.prg" />
+    <Compile Include="Walker\ParseResult.prg" />
+    <Compile Include="Walker\SourceWalker.prg" />
+    <Compile Include="XError.prg" />
+    <Compile Include="XFileTypeHelpers.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="MetaData" />
+    <Folder Include="ProjectSystem\" />
+    <Folder Include="Walker" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

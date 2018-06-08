@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <PropertyGroup>
+    <Name>VOXPorter</Name>
+    <ProjectGuid>939b111b-6ebd-490f-a7f4-ce923d758a3b</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VOXPorter</RootNamespace>
+    <AssemblyName>VOXPorter</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <Nologo>true</Nologo>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>Core</Dialect>
+    <OutputName>VOXPorter</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StartupObject />
+    <ApplicationIcon />
+    <VulcanCompatibleResources>True</VulcanCompatibleResources>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <VO1>false</VO1>
+    <VO2>false</VO2>
+    <VO3>false</VO3>
+    <VO4>false</VO4>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>false</VO14>
+    <VO15>false</VO15>
+    <VO16>false</VO16>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)Common</IncludePaths>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(SolutionDir)Common</IncludePaths>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="SDK_Defines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>SDK_Defines</Name>
+      <AssemblyName>SDK_Defines.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dll\SDK_Defines.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="XICOMMON, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XICOMMON</Name>
+      <AssemblyName>XICOMMON.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dll\XICOMMON.dll</HintPath>
+    </Reference>
+    <Reference Include="XIDED, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XIDED</Name>
+      <AssemblyName>XIDED.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dll\XIDED.dll</HintPath>
+    </Reference>
+    <Reference Include="XIRES, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XIRES</Name>
+      <AssemblyName>XIRES.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\Dll\XIRES.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="UI.prg">
+    </Compile>
+    <Compile Include="xPorter.prg">
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fab_VO_Entities\Fab_VO_Entities.xsproj">
+      <Name>Fab_VO_Entities</Name>
+      <Project>{73c0dca6-bfe5-40cb-9240-3db1c37f5b34}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Templates" />
+    <Folder Include="Resources" />
+    <Folder Include="Properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Designers.resources" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\ReadMe.rtf">
+      <Link>ReadMe.rtf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Templates\template_VS.sln">
+      <Link>Templates\template_VS.sln</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Templates\template_VS.xsproj">
+      <Link>Templates\template_VS.xsproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Templates\template_XIDE.xiapp">
+      <Link>Templates\template_XIDE.xiapp</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Templates\template_XIDE.xiproj">
+      <Link>Templates\template_XIDE.xiproj</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\VOXPorter.ini">
+      <Link>VOXPorter.ini</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

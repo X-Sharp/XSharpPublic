@@ -20,7 +20,7 @@
     <RootNamespace>XSharp.Debugger</RootNamespace>
     <AssemblyName>XSharpDebugger</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
     <TargetFrameworkProfile />
@@ -62,7 +62,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE;XSHARP</DefineConstants>
+    <DefineConstants>XSHARP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>

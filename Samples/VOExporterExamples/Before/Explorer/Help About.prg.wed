@@ -1,0 +1,84 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,HelpAboutDialog
+GUID=68C2A2DD-40BE-400D-B243-40DE80554AC4
+  Name=HelpAboutDialog
+  Class=DIALOGWINDOW
+  Caption=About Explorer Sample...
+  Order=0
+  Left=10
+  Width=309
+  Top=10
+  Height=137
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160066692
+  Exstyles=257
+  Property=HyperLabel=,"About Explorer Sample...",,
+  Property=HyperLabel=#HelpAboutDialog,,,
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=4BF1576C-CFCD-4F74-85D9-42607B2947A3
+  Name=Label1
+  Class=FIXEDTEXT
+  Caption=CA-Visual Objects 2.5a
+  Order=-1
+  Left=11
+  Width=280
+  Top=11
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741825
+  Exstyles=0
+  Property=HyperLabel=,"CA-Visual Objects 2.5a",,
+  Property=HyperLabel=#Label1,,,
+
+CONTROL=FIXEDTEXT
+GUID=D681C216-B0F2-4646-9396-62E70090EB32
+  Name=Label2
+  Class=FIXEDTEXT
+  Caption=Explorer Sample
+  Order=-1
+  Left=11
+  Width=280
+  Top=41
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741825
+  Exstyles=0
+  Property=HyperLabel=,"Explorer Sample",,
+  Property=HyperLabel=#Label2,,,
+
+CONTROL=PUSHBUTTON
+GUID=11D1132D-9800-411C-90C2-6F37D01D9EC2
+  Name=EndDialog
+  Class=PUSHBUTTON
+  Caption=OK
+  Order=-1
+  Left=111
+  Width=80
+  Top=81
+  Height=22
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807361
+  Exstyles=0
+  Property=HyperLabel=,"OK",,
+  Property=HyperLabel=#EndDialog,,,
+
+SUBCONTROLSEND
+DESIGNEREND = HelpAboutDialog
+

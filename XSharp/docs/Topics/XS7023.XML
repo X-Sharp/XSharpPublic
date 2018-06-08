@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7023</para>
+    <para styleclass="Heading1">Error XS7023</para>
   </header>
   <para styleclass="Normal">The second operand of an &apos;is&apos; or &apos;as&apos; operator may not be static type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

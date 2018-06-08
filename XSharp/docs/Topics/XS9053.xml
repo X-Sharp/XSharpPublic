@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9053</para>
+      <para styleclass="Heading1">Error XS9053</para>
     </header>
     <para styleclass="Normal">No overload for method &apos;{0}&apos; found with {1} arguments and default values for one or more arguments</para>
   </body>

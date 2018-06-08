@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1113</para>
+    <para styleclass="Heading1">Error XS1113</para>
   </header>
   <para styleclass="Normal">Extension method &apos;{0}&apos; defined on value type &apos;{1}&apos; cannot be used to create delegates</para>
   <para styleclass="Normal"></para>

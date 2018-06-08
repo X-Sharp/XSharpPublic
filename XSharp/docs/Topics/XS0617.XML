@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0617</para>
+    <para styleclass="Heading1">Error XS0617</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; is not a valid named attribute argument. Named attribute arguments must be fields which are not readonly, static, or const, or read-write properties which are public and not static.</para>
   <para styleclass="Normal"></para>

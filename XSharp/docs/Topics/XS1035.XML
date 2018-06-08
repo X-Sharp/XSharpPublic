@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1035</para>
+    <para styleclass="Heading1">Error XS1035</para>
   </header>
   <para styleclass="Normal">End-of-file found, &apos;*/&apos; expected</para>
   <para styleclass="Normal"></para>

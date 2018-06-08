@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1730</para>
+    <para styleclass="Heading1">Error XS1730</para>
   </header>
   <para styleclass="Normal">Assembly and module attributes must precede all other elements defined in a file except using clauses and extern alias declarations</para>
   <para styleclass="Normal"></para>

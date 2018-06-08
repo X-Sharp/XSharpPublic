@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1978</para>
+    <para styleclass="Heading1">Error XS1978</para>
   </header>
   <para styleclass="Normal">Cannot use an expression of type &apos;{0}&apos; as an argument to a dynamically dispatched operation.</para>
   <para styleclass="Normal"></para>

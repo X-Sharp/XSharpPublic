@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0460</para>
+    <para styleclass="Heading1">Error XS0460</para>
   </header>
   <para styleclass="Normal">Constraints for override and explicit interface implementation methods are inherited from the base method, so they cannot be specified directly</para>
   <para styleclass="Normal"></para>

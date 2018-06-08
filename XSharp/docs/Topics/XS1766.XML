@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1766</para>
+    <para styleclass="Heading1">Error XS1766</para>
   </header>
   <para styleclass="Normal">Source interface &apos;{0}&apos; is missing method &apos;{1}&apos; which is required to embed event &apos;{2}&apos;.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0265</para>
+    <para styleclass="Heading1">Error XS0265</para>
   </header>
   <para styleclass="Normal">Partial declarations of &apos;{0}&apos; have inconsistent constraints for type parameter &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

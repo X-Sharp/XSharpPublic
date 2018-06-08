@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0120</title>
   <keywords>
     <keyword>XS0120</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0120</para>
+      <para styleclass="Heading1">Error XS0120</para>
     </header>
     <para styleclass="Normal">An object reference is required for the nonstatic field, method, or property &apos;member&apos;</para>
     <para styleclass="Normal"></para>
@@ -16,17 +16,17 @@
     <para styleclass="Normal">The following sample generates XS0120:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0120_1.prg  <br/></para>
+    <para styleclass="Code with box">// XS0120_1.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">XS0120 will also be generated if there is a call to a non-static method from a static method, as follows:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0120_2.prg  <br/>// XS0120 expected  <br/></para>
+    <para styleclass="Code with box">// XS0120_2.prg &#160;<br/>// XS0120 expected &#160;<br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Similarly, a static method cannot call an instance method unless you explicitly give it an instance of the class, as follows:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0120_3.prg  <br/></para>
+    <para styleclass="Code with box">// XS0120_3.prg &#160;<br/></para>
   </body>
 </topic>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1041</para>
+    <para styleclass="Heading1">Error XS1041</para>
   </header>
   <para styleclass="Normal">Identifier expected; &apos;{1}&apos; is a keyword</para>
   <para styleclass="Normal"></para>

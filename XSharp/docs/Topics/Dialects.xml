@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text">The X# compiler can run in different dialects. The table below shows the differences between these dialects.<br/>You can use the /dialect compiler option to select the dialect that you want to use. The Core dialect is default.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="41" colcount="5" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="41" colcount="5" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td style="width:50%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
@@ -684,9 +684,9 @@
       </tr>
     </table></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Segoe UI Light&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="List">Requires VulcanRT.DLL</li>
-      <li styleclass="List">Requires VulcanRTFuncs.DLL</li>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="List">Requires VulcanRT.DLL or XSharp.VO.DLL</li>
+      <li styleclass="List">Requires VulcanRTFuncs.DLL or XSharp.VO.DLL</li>
       <li styleclass="List">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</li>
       <li styleclass="List">Only supported inside functions and methods with Clipper Calling convention</li>
       <li styleclass="List">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>

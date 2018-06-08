@@ -20,7 +20,6 @@
     </list>
     <para styleclass="Heading2">Visual Studio</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Intellisense still needs some work</li>
       <li styleclass="Normal">New features in the Debugger, such as a window for Globals and RDD Workareas</li>
     </list>
     <para styleclass="Heading2">VO Xporter</para>

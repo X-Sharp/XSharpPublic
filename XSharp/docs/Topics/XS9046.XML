@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS9046</para>
+    <para styleclass="Heading1">Error XS9046</para>
   </header>
   <para styleclass="Normal">Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

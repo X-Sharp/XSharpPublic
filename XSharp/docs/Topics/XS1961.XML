@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1961</para>
+    <para styleclass="Heading1">Error XS1961</para>
   </header>
   <para styleclass="Normal">Invalid variance: The type parameter &apos;{1}&apos; must be {3} valid on &apos;{0}&apos;. &apos;{1}&apos; is {2}.</para>
   <para styleclass="Normal"></para>

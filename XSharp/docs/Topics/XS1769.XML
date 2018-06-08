@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1769</para>
+    <para styleclass="Heading1">Error XS1769</para>
   </header>
   <para styleclass="Normal">Type &apos;{0}&apos; from assembly &apos;{1}&apos; cannot be used across assembly boundaries because it has a generic type parameter that is an embedded interop type.</para>
   <para styleclass="Normal"></para>

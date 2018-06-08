@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1958</para>
+    <para styleclass="Heading1">Error XS1958</para>
   </header>
   <para styleclass="Normal">Object and collection initializer expressions may not be applied to a delegate creation expression</para>
   <para styleclass="Normal"></para>

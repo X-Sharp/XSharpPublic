@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0846</para>
+    <para styleclass="Heading1">Error XS0846</para>
   </header>
   <para styleclass="Normal">A nested array initializer is expected</para>
   <para styleclass="Normal"></para>

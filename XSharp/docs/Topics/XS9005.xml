@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9005</para>
+      <para styleclass="Heading1">Error XS9005</para>
     </header>
     <para styleclass="Normal">Error directive: {0}</para>
     <para styleclass="Normal"></para>

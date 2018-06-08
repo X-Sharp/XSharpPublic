@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0462</para>
+    <para styleclass="Heading1">Error XS0462</para>
   </header>
   <para styleclass="Normal">The inherited members &apos;{0}&apos; and &apos;{1}&apos; have the same signature in type &apos;{2}&apos;, so they cannot be overridden</para>
   <para styleclass="Normal"></para>

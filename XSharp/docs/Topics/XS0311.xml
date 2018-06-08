@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0311</para>
+      <para styleclass="Heading1">Error XS0311</para>
     </header>
     <para styleclass="Normal">The type &apos;type1&apos; cannot be used as type parameter &apos;T&apos; in the generic type or method &apos;&lt;name&gt;&apos;. There is no implicit reference conversion from &apos;type1&apos; to &apos;type2&apos;.</para>
     <para styleclass="Normal"></para>

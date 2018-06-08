@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1636</para>
+    <para styleclass="Heading1">Error XS1636</para>
   </header>
   <para styleclass="Normal">__arglist is not allowed in the parameter list of iterators</para>
   <para styleclass="Normal"></para>

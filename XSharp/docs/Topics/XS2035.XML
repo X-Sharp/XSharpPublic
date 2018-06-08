@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2035</para>
+    <para styleclass="Heading1">Error XS2035</para>
   </header>
   <para styleclass="Normal">Command-line syntax error: Missing &apos;:<number>&apos; for &apos;{0}&apos; option</para>
   <para styleclass="Normal"></para>

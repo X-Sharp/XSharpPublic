@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7020</para>
+    <para styleclass="Heading1">Error XS7020</para>
   </header>
   <para styleclass="Normal">Cannot use &apos;yield&apos; in top-level script code</para>
   <para styleclass="Normal"></para>

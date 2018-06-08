@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0825</para>
+    <para styleclass="Heading1">Error XS0825</para>
   </header>
   <para styleclass="Normal">The contextual keyword &apos;var&apos; may only appear within a local variable declaration or in script code</para>
   <para styleclass="Normal"></para>

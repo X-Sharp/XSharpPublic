@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8147</para>
+    <para styleclass="Heading1">Error XS8147</para>
   </header>
   <para styleclass="Normal">Properties which return by reference cannot have set accessors</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0213</para>
+    <para styleclass="Heading1">Error XS0213</para>
   </header>
   <para styleclass="Normal">You cannot use the fixed statement to take the address of an already fixed expression</para>
   <para styleclass="Normal"></para>

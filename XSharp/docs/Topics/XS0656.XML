@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0656</para>
+    <para styleclass="Heading1">Error XS0656</para>
   </header>
   <para styleclass="Normal">Missing compiler required member &apos;{0}.{1}&apos;</para>
   <para styleclass="Normal"></para>

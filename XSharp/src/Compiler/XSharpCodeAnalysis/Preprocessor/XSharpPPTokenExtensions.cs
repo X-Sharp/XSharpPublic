@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal static class XSharpPPTokenExtensions
     {
 
-        internal static void TrimLeadingSpaces(this List<XSharpToken> tokens)
+        internal static void TrimLeadingSpaces(this IList<XSharpToken> tokens)
         {
             while (tokens.Count > 0 &&
                 tokens[0].Channel == XSharpLexer.Hidden)
@@ -145,7 +145,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 foreach (var t in tokens)
                 {
-                    result = result + t.Text + t.TrailingWs();
+                    result = result + t.Text ;
                 }
 
             }

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8098</para>
+    <para styleclass="Heading1">Error XS8098</para>
   </header>
   <para styleclass="Normal">Cannot use #load after first token in file</para>
   <para styleclass="Normal"></para>

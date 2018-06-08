@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4020</para>
+    <para styleclass="Heading1">Error XS4020</para>
   </header>
   <para styleclass="Normal">The CallerLineNumberAttribute may only be applied to parameters with default values</para>
   <para styleclass="Normal"></para>

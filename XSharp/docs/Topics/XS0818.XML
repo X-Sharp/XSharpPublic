@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0818</para>
+    <para styleclass="Heading1">Error XS0818</para>
   </header>
   <para styleclass="Normal">Implicitly-typed variables must be initialized</para>
   <para styleclass="Normal"></para>

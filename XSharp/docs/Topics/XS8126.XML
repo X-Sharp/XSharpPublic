@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8126</para>
+    <para styleclass="Heading1">Error XS8126</para>
   </header>
   <para styleclass="Normal">Tuple element name &apos;{0}&apos; is disallowed at any position.</para>
   <para styleclass="Normal"></para>

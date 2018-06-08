@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0541</para>
+    <para styleclass="Heading1">Error XS0541</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: explicit interface declaration can only be declared in a class or struct</para>
   <para styleclass="Normal"></para>

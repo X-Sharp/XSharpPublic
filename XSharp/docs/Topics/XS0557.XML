@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0557</para>
+    <para styleclass="Heading1">Error XS0557</para>
   </header>
   <para styleclass="Normal">Duplicate user-defined conversion in type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

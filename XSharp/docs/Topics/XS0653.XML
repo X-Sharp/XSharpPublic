@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0653</para>
+    <para styleclass="Heading1">Error XS0653</para>
   </header>
   <para styleclass="Normal">Cannot apply attribute class &apos;{0}&apos; because it is abstract</para>
   <para styleclass="Normal"></para>

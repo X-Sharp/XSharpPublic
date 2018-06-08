@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7025</para>
+    <para styleclass="Heading1">Error XS7025</para>
   </header>
   <para styleclass="Normal">Inconsistent accessibility: event type &apos;{1}&apos; is less accessible than event &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

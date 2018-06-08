@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS5001</para>
+    <para styleclass="Heading1">Error XS5001</para>
   </header>
   <para styleclass="Normal">Program does not contain a static &apos;Start&apos; method suitable for an entry point</para>
   <para styleclass="Normal"></para>

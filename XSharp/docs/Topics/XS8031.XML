@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8031</para>
+    <para styleclass="Heading1">Error XS8031</para>
   </header>
   <para styleclass="Normal">Async lambda expression converted to a &apos;Task&apos; returning delegate cannot return a value. Did you intend to return &apos;Task<T>&apos;?</para>
   <para styleclass="Normal"></para>

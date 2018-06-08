@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8174</para>
+    <para styleclass="Heading1">Error XS8174</para>
   </header>
   <para styleclass="Normal">A declaration of a by-reference variable must have an initializer</para>
   <para styleclass="Normal"></para>

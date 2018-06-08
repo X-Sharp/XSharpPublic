@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0821</para>
+    <para styleclass="Heading1">Error XS0821</para>
   </header>
   <para styleclass="Normal">Implicitly-typed local variables cannot be fixed</para>
   <para styleclass="Normal"></para>

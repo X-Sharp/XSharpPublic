@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1738</para>
+    <para styleclass="Heading1">Error XS1738</para>
   </header>
   <para styleclass="Normal">Named argument specifications must appear after all fixed arguments have been specified</para>
   <para styleclass="Normal"></para>

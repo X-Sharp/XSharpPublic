@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1063</para>
+    <para styleclass="Heading1">Error XS1063</para>
   </header>
   <para styleclass="Normal">The best overloaded Add method &apos;{0}&apos; for the collection initializer element is obsolete. {1}</para>
   <para styleclass="Normal"></para>

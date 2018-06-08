@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7056</para>
+    <para styleclass="Heading1">Error XS7056</para>
   </header>
   <para styleclass="Normal">Unable to resolve file path &apos;{0}&apos; specified for the named argument &apos;{1}&apos; for PermissionSet attribute</para>
   <para styleclass="Normal"></para>

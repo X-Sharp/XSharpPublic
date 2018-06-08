@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8153</para>
+    <para styleclass="Heading1">Error XS8153</para>
   </header>
   <para styleclass="Normal">An expression tree lambda may not contain a call to a method, property, or indexer that returns by reference</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1745</para>
+    <para styleclass="Heading1">Error XS1745</para>
   </header>
   <para styleclass="Normal">Cannot specify default parameter value in conjunction with DefaultParameterAttribute or OptionalAttribute</para>
   <para styleclass="Normal"></para>

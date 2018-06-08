@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1937</para>
+    <para styleclass="Heading1">Error XS1937</para>
   </header>
   <para styleclass="Normal">The name &apos;{0}&apos; is not in scope on the left side of &apos;equals&apos;.  Consider swapping the expressions on either side of &apos;equals&apos;.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7011</para>
+    <para styleclass="Heading1">Error XS7011</para>
   </header>
   <para styleclass="Normal">#r is only allowed in scripts</para>
   <para styleclass="Normal"></para>

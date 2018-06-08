@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0649</title>
-<keywords>
-<keyword>XS0649</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0649</para>
-  </header>
-  <para styleclass="Normal">Field &apos;{0}&apos; is never assigned to, and will always have its default value {1}</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0649</title>
+  <keywords>
+    <keyword>XS0649</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0649</para>
+    </header>
+    <para styleclass="Normal">Field &apos;{0}&apos; is never assigned to, and will always have its default value {1}</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

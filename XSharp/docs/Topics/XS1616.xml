@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1616</para>
+      <para styleclass="Heading1">Error XS1616</para>
     </header>
     <para styleclass="Normal">Option &apos;option&apos; overrides attribute &apos;attribute&apos; given in a source file or added module</para>
     <para styleclass="Normal"></para>

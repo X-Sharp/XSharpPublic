@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1748</para>
+    <para styleclass="Heading1">Error XS1748</para>
   </header>
   <para styleclass="Normal">Cannot find the interop type that matches the embedded interop type &apos;{0}&apos;. Are you missing an assembly reference?</para>
   <para styleclass="Normal"></para>

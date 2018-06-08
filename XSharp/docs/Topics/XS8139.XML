@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8139</para>
+    <para styleclass="Heading1">Error XS8139</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot change tuple element names when overriding inherited member &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

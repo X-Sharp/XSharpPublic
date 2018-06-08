@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8182</para>
+    <para styleclass="Heading1">Error XS8182</para>
   </header>
   <para styleclass="Normal">Predefined type &apos;{0}&apos; must be a struct.</para>
   <para styleclass="Normal"></para>

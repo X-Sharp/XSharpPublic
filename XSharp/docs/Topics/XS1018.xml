@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1018</para>
+      <para styleclass="Heading1">Error XS1018</para>
     </header>
     <para styleclass="Normal">Keyword &apos;SELF&apos; or &apos;SUPER&apos; expected</para>
     <para styleclass="Normal"></para>

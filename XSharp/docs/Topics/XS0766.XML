@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0766</para>
+    <para styleclass="Heading1">Error XS0766</para>
   </header>
   <para styleclass="Normal">Partial methods must have a void return type</para>
   <para styleclass="Normal"></para>

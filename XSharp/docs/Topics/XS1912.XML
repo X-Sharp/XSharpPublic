@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1912</para>
+    <para styleclass="Heading1">Error XS1912</para>
   </header>
   <para styleclass="Normal">Duplicate initialization of member &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

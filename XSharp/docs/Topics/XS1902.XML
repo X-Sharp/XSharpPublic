@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1902</para>
+    <para styleclass="Heading1">Error XS1902</para>
   </header>
   <para styleclass="Normal">Invalid option &apos;{0}&apos; for /debug; must be full or pdbonly</para>
   <para styleclass="Normal"></para>

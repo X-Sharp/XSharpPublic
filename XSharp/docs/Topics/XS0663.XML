@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0663</para>
+    <para styleclass="Heading1">Error XS0663</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot define overloaded methods that differ only on ref and out</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0413</para>
+      <para styleclass="Heading1">Error XS0413</para>
     </header>
     <para styleclass="Normal">The type parameter &apos;type parameter&apos; cannot be used with the &apos;as&apos; operator because it does not have a class type constraint nor a &apos;class&apos; constraint</para>
     <para styleclass="Normal"></para>

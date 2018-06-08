@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0516</para>
+    <para styleclass="Heading1">Error XS0516</para>
   </header>
   <para styleclass="Normal">Constructor &apos;{0}&apos; cannot call itself</para>
   <para styleclass="Normal"></para>

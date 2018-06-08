@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0220</para>
+    <para styleclass="Heading1">Error XS0220</para>
   </header>
   <para styleclass="Normal">The operation overflows at compile time in checked mode</para>
   <para styleclass="Normal"></para>

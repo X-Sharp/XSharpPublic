@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1910</para>
+    <para styleclass="Heading1">Error XS1910</para>
   </header>
   <para styleclass="Normal">Argument of type &apos;{0}&apos; is not applicable for the DefaultParameterValue attribute</para>
   <para styleclass="Normal"></para>

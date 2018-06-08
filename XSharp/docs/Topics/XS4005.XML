@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4005</para>
+    <para styleclass="Heading1">Error XS4005</para>
   </header>
   <para styleclass="Normal">Async methods cannot have unsafe parameters or return types</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8087</para>
+    <para styleclass="Heading1">Error XS8087</para>
   </header>
   <para styleclass="Normal">A &apos;{0}&apos; character may only be escaped by doubling &apos;{0}{0}&apos; in an interpolated string.</para>
   <para styleclass="Normal"></para>

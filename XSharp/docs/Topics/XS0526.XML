@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0526</para>
+    <para styleclass="Heading1">Error XS0526</para>
   </header>
   <para styleclass="Normal">Interfaces cannot contain constructors</para>
   <para styleclass="Normal"></para>

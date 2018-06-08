@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0686</para>
+      <para styleclass="Heading1">Error XS0686</para>
     </header>
     <para styleclass="Normal">Accessor &apos;accessor&apos; cannot implement interface member &apos;member&apos; for type &apos;type&apos;. Use an explicit interface implementation.</para>
     <para styleclass="Normal"></para>

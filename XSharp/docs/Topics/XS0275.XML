@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0275</para>
+    <para styleclass="Heading1">Error XS0275</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: accessibility modifiers may not be used on accessors in an interface</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1942</para>
+      <para styleclass="Heading1">Error XS1942</para>
     </header>
     <para styleclass="Normal">The type of the expression in the &apos;clause&apos; clause is incorrect. Type inference failed in the call to &apos;method&apos;.</para>
     <para styleclass="Normal"></para>

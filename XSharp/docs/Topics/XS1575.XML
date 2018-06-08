@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1575</para>
+    <para styleclass="Heading1">Error XS1575</para>
   </header>
   <para styleclass="Normal">A stackalloc expression requires [] after type</para>
   <para styleclass="Normal"></para>

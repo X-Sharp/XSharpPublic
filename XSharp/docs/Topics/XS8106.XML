@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8106</para>
+    <para styleclass="Heading1">Error XS8106</para>
   </header>
   <para styleclass="Normal">Option &apos;{0}&apos; must be an absolute path.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1102</para>
+    <para styleclass="Heading1">Error XS1102</para>
   </header>
   <para styleclass="Normal"> The parameter modifier &apos;out&apos; cannot be used with &apos;SELF&apos; </para>
   <para styleclass="Normal"></para>

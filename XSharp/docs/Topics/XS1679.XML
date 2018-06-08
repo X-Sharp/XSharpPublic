@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1679</para>
+    <para styleclass="Heading1">Error XS1679</para>
   </header>
   <para styleclass="Normal">Invalid extern alias for &apos;/reference&apos;; &apos;{0}&apos; is not a valid identifier</para>
   <para styleclass="Normal"></para>

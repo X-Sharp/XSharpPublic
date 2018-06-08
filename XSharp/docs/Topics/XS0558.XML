@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0558</para>
+    <para styleclass="Heading1">Error XS0558</para>
   </header>
   <para styleclass="Normal">User-defined operator &apos;{0}&apos; must be declared static and public</para>
   <para styleclass="Normal"></para>

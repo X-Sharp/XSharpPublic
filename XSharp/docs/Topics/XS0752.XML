@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0752</para>
+    <para styleclass="Heading1">Error XS0752</para>
   </header>
   <para styleclass="Normal">A partial method cannot have out parameters</para>
   <para styleclass="Normal"></para>

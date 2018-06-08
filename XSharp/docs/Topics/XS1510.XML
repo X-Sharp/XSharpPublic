@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1510</para>
+    <para styleclass="Heading1">Error XS1510</para>
   </header>
   <para styleclass="Normal">A ref or out argument must be an assignable variable</para>
   <para styleclass="Normal"></para>

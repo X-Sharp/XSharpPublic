@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1672</para>
+    <para styleclass="Heading1">Error XS1672</para>
   </header>
   <para styleclass="Normal">Invalid option &apos;{0}&apos; for /platform; must be anycpu, x86, Itanium or x64</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0524</para>
+    <para styleclass="Heading1">Error XS0524</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: interfaces cannot declare types</para>
   <para styleclass="Normal"></para>

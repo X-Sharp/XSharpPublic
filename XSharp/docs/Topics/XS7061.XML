@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7061</para>
+    <para styleclass="Heading1">Error XS7061</para>
   </header>
   <para styleclass="Normal">Duplicate &apos;{0}&apos; attribute in &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

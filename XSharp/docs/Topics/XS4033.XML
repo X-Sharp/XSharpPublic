@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4033</para>
+    <para styleclass="Heading1">Error XS4033</para>
   </header>
   <para styleclass="Normal">The &apos;await&apos; operator can only be used within an async method. Consider marking this method with the &apos;async&apos; modifier and changing its return type to &apos;Task&apos;.</para>
   <para styleclass="Normal"></para>

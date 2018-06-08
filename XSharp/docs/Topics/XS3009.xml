@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS3009</title>
   <keywords>
     <keyword>XS3009</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS3009</para>
+      <para styleclass="Heading1">Warning XS3009</para>
     </header>
     <para styleclass="Normal">&apos;type&apos;: base type &apos;type&apos; is not CLS-compliant</para>
     <para styleclass="Normal"></para>

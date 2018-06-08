@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7091</para>
+    <para styleclass="Heading1">Error XS7091</para>
   </header>
   <para styleclass="Normal">Attribute &apos;{0}&apos; given in a source file conflicts with option &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7086</para>
+    <para styleclass="Heading1">Error XS7086</para>
   </header>
   <para styleclass="Normal">Module name &apos;{0}&apos; stored in &apos;{1}&apos; must match its filename.</para>
   <para styleclass="Normal"></para>

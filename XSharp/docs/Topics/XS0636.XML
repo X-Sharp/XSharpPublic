@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0636</para>
+    <para styleclass="Heading1">Error XS0636</para>
   </header>
   <para styleclass="Normal">The FieldOffset attribute can only be placed on members of types marked with the StructLayout(LayoutKind.Explicit)</para>
   <para styleclass="Normal"></para>

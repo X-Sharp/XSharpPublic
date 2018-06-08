@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4017</para>
+    <para styleclass="Heading1">Error XS4017</para>
   </header>
   <para styleclass="Normal">CallerLineNumberAttribute cannot be applied because there are no standard conversions from type &apos;{0}&apos; to type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

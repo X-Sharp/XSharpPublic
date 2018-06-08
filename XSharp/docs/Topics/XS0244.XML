@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0244</para>
+    <para styleclass="Heading1">Error XS0244</para>
   </header>
   <para styleclass="Normal">Neither &apos;is&apos; nor &apos;as&apos; is valid on pointer types</para>
   <para styleclass="Normal"></para>

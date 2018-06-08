@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1059</para>
+    <para styleclass="Heading1">Error XS1059</para>
   </header>
   <para styleclass="Normal">The operand of an increment or decrement operator must be a variable, property or indexer</para>
   <para styleclass="Normal"></para>

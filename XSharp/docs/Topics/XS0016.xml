@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0016</title>
   <keywords>
     <keyword>XS0016</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0016</para>
+      <para styleclass="Heading1">Error XS0016</para>
     </header>
     <para styleclass="Normal">Could not write to output file &apos;file&apos; — &apos;reason&apos;</para>
     <para styleclass="Normal"></para>

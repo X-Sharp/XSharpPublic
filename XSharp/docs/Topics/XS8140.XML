@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8140</para>
+    <para styleclass="Heading1">Error XS8140</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; is already listed in the interface list on type &apos;{2}&apos; with different tuple element names, as &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

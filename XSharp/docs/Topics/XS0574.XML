@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0574</para>
+    <para styleclass="Heading1">Error XS0574</para>
   </header>
   <para styleclass="Normal">Name of destructor must match name of class</para>
   <para styleclass="Normal"></para>

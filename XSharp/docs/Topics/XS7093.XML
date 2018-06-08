@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7093</para>
+    <para styleclass="Heading1">Error XS7093</para>
   </header>
   <para styleclass="Normal">Cannot read config file &apos;{0}&apos; -- &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

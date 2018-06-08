@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0695</para>
+    <para styleclass="Heading1">Error XS0695</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot implement both &apos;{1}&apos; and &apos;{2}&apos; because they may unify for some type parameter substitutions</para>
   <para styleclass="Normal"></para>

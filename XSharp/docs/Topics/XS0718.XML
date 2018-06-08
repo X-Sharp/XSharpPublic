@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0718</para>
+    <para styleclass="Heading1">Error XS0718</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: static types cannot be used as type arguments</para>
   <para styleclass="Normal"></para>

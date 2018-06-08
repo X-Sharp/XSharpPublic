@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1014</para>
+    <para styleclass="Heading1">Error XS1014</para>
   </header>
   <para styleclass="Normal">A get or set accessor expected</para>
   <para styleclass="Normal"></para>

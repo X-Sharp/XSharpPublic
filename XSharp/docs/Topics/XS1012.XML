@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1012</para>
+    <para styleclass="Heading1">Error XS1012</para>
   </header>
   <para styleclass="Normal">Too many characters in character literal</para>
   <para styleclass="Normal"></para>

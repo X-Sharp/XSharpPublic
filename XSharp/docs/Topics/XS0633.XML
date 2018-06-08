@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0633</para>
+    <para styleclass="Heading1">Error XS0633</para>
   </header>
   <para styleclass="Normal">The argument to the &apos;{0}&apos; attribute must be a valid identifier</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0540</para>
+    <para styleclass="Heading1">Error XS0540</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: containing type does not implement interface &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

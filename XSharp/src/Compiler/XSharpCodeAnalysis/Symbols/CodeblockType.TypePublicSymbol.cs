@@ -76,10 +76,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal CodeblockEvalMethod(NamedTypeSymbol container)
                 : base(container, "Eval")
             {
-                _parameters = ImmutableArray.Create<ParameterSymbol>(
-                        new SynthesizedParamsParameterSymbol(this, this.Manager.Compilation.CreateArrayTypeSymbol(this.Manager.Vulcan_Usual), 0, RefKind.None, "args",
-                            customModifiers: new[] { CSharpCustomModifier.CreateOptional(this.Manager.Compilation.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsConst)) }.ToImmutableArray())
+                if (this.Manager.Compilation.Options.XSharpRuntime)
+                {
+                    _parameters = ImmutableArray.Create<ParameterSymbol>(
+                            new SynthesizedParamsParameterSymbol(this, this.Manager.Compilation.CreateArrayTypeSymbol(this.Manager.UsualType), 0, RefKind.None, "args")
                     );
+
+                }
+                else
+                {
+                    _parameters = ImmutableArray.Create<ParameterSymbol>(
+                            new SynthesizedParamsParameterSymbol(this, this.Manager.Compilation.CreateArrayTypeSymbol(this.Manager.UsualType), 0, RefKind.None, "args",
+                                customModifiers: new[] { CSharpCustomModifier.CreateOptional(this.Manager.Compilation.GetWellKnownType(WellKnownType.System_Runtime_CompilerServices_IsConst)) }.ToImmutableArray())
+                        );
+                }
             }
 
             public override MethodKind MethodKind
@@ -99,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             public override TypeSymbol ReturnType
             {
-                get { return this.Manager.Vulcan_Usual; }
+                get { return this.Manager.UsualType; }
             }
 
             public override ImmutableArray<ParameterSymbol> Parameters
@@ -160,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 for (int index = 0; index < invokeMethod.ParameterCount; index++)
                 {
-                    args[index] = F.StaticCall(manager.Vulcan_Codeblock, argMethod, paramArr, F.Literal(index));
+                    args[index] = F.StaticCall(manager.CodeblockType, argMethod, paramArr, F.Literal(index));
                 }
 
                 BoundExpression retExpression = F.Call(F.Field(F.This(), cbDel), invokeMethod, args);

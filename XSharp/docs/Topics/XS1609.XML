@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1609</para>
+    <para styleclass="Heading1">Error XS1609</para>
   </header>
   <para styleclass="Normal">Modifiers cannot be placed on event accessor declarations</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8141</para>
+    <para styleclass="Heading1">Error XS8141</para>
   </header>
   <para styleclass="Normal">The tuple element names in the signature of method &apos;{0}&apos; must match the tuple element names of interface method &apos;{1}&apos; (including on the return type).</para>
   <para styleclass="Normal"></para>

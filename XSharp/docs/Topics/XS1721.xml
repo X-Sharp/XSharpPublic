@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1721</para>
+      <para styleclass="Heading1">Error XS1721</para>
     </header>
     <para styleclass="Normal">Class &apos;class&apos; cannot have multiple base classes: &apos;class_1&apos; and &apos;class_2&apos;</para>
     <para styleclass="Normal"></para>

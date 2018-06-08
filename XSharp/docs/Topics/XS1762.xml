@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS1762</title>
   <keywords>
     <keyword>XS1762</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1762</para>
+      <para styleclass="Heading1">Warning XS1762</para>
     </header>
     <para styleclass="Normal">A reference was created to embedded interop assembly &apos;&lt;assembly1&gt;&apos; because of an indirect reference to that assembly from assembly &apos;&lt;assembly2&gt;&apos;. Consider changing the &apos;Embed Interop Types&apos; property on either assembly.</para>
     <para styleclass="Normal"></para>
@@ -17,7 +17,7 @@
     <para styleclass="Normal">Setting the Embed Interop Types property on an assembly reference to True is equivalent to referencing the assembly by using the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-link">/link</link> option for the command-line compiler.<br/></para>
     <para styleclass="Heading3">To address this warning</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">To embed interop type information for both assemblies, set the Embed Interop Types property on all references to assembly1 to True. For more information about how to set that property, see Walkthrough: Embedding Types from Managed Assemblies.</li>
       <li styleclass="Normal" style="margin-left:13px;">To remove the warning, you can set the Embed Interop Types property of assembly1 to False. In this case, a primary interop assembly (PIA) provides interop type information.</li>
     </list>

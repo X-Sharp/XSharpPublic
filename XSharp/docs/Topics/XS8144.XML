@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8144</para>
+    <para styleclass="Heading1">Error XS8144</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain a tuple conversion.</para>
   <para styleclass="Normal"></para>

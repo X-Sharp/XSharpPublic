@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8080</para>
+    <para styleclass="Heading1">Error XS8080</para>
   </header>
   <para styleclass="Normal">Auto-implemented properties must override all accessors of the overridden property.</para>
   <para styleclass="Normal"></para>

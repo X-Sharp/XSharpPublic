@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0762</para>
+    <para styleclass="Heading1">Error XS0762</para>
   </header>
   <para styleclass="Normal">Cannot create delegate from method &apos;{0}&apos; because it is a partial method without an implementing declaration</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0466</para>
+    <para styleclass="Heading1">Error XS0466</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; should not have a params parameter since &apos;{1}&apos; does not</para>
   <para styleclass="Normal"></para>

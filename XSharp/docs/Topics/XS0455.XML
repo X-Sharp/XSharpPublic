@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0455</para>
+    <para styleclass="Heading1">Error XS0455</para>
   </header>
   <para styleclass="Normal">Type parameter &apos;{0}&apos; inherits conflicting constraints &apos;{1}&apos; and &apos;{2}&apos;</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0470</para>
+    <para styleclass="Heading1">Error XS0470</para>
   </header>
   <para styleclass="Normal">Method &apos;{0}&apos; cannot implement interface accessor &apos;{1}&apos; for type &apos;{2}&apos;. Use an explicit interface implementation.</para>
   <para styleclass="Normal"></para>

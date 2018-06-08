@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0450</para>
+    <para styleclass="Heading1">Error XS0450</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot specify both a constraint class and the &apos;class&apos; or &apos;struct&apos; constraint</para>
   <para styleclass="Normal"></para>

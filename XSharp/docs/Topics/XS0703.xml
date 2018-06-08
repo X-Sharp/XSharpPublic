@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0703</para>
+      <para styleclass="Heading1">Error XS0703</para>
     </header>
     <para styleclass="Normal">Inconsistent accessibility: constraint type &apos;identifier&apos; is less accessible than &apos;identifier&apos;</para>
     <para styleclass="Normal"></para>

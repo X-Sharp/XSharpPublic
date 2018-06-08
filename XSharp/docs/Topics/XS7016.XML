@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7016</para>
+    <para styleclass="Heading1">Error XS7016</para>
   </header>
   <para styleclass="Normal">Alias &apos;{0}&apos; conflicts with {1} definition</para>
   <para styleclass="Normal"></para>

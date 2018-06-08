@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9064</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9064</para>
+    </header>
+    <para styleclass="Normal">Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning occurs when you are assigning a value directly to a foreach loop variable</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

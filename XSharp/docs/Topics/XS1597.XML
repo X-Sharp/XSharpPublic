@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1597</para>
+    <para styleclass="Heading1">Error XS1597</para>
   </header>
   <para styleclass="Normal">Semicolon after method or accessor block is not valid</para>
   <para styleclass="Normal"></para>

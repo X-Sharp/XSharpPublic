@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0226</para>
+    <para styleclass="Heading1">Error XS0226</para>
   </header>
   <para styleclass="Normal">An __arglist expression may only appear inside of a call or new expression</para>
   <para styleclass="Normal"></para>

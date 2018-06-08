@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0445</para>
+      <para styleclass="Heading1">Error XS0445</para>
     </header>
     <para styleclass="Normal">Cannot modify the result of an unboxing conversion</para>
     <para styleclass="Normal"></para>

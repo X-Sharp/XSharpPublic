@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9057</para>
+      <para styleclass="Heading1">Error XS9057</para>
     </header>
     <para styleclass="Normal">Typed parameters in codeblocks are not supported by the (Vulcan) runtime.</para>
   </body>

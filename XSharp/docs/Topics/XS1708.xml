@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1708</para>
+      <para styleclass="Heading1">Error XS1708</para>
     </header>
     <para styleclass="Normal">Fixed size buffers can only be accessed through locals or fields</para>
     <para styleclass="Normal"></para>

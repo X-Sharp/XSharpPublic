@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0704</para>
+    <para styleclass="Heading1">Error XS0704</para>
   </header>
   <para styleclass="Normal">Cannot do member lookup in &apos;{0}&apos; because it is a type parameter</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1619</para>
+    <para styleclass="Heading1">Error XS1619</para>
   </header>
   <para styleclass="Normal">Cannot create temporary file -- {0}</para>
   <para styleclass="Normal"></para>

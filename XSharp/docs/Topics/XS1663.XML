@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1663</para>
+    <para styleclass="Heading1">Error XS1663</para>
   </header>
   <para styleclass="Normal">Fixed size buffer type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float or double (also ptr or vostruct in vo/vulcan dialect)</para>
   <para styleclass="Normal"></para>

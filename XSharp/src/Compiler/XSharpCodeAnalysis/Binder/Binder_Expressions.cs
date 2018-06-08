@@ -93,10 +93,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             int compoundStringLength = 0;
             var type = expr.Type;
             
-            if (!type.SpecialType.IsNumericType() && type != Compilation.UsualType() && ! type.IsObjectType())
-            {
-                return expr;
-            }
             // normalize the type
             // we allow the following 'normal' types for the Index operator:
             // int32, uint32, int64, uint64
@@ -119,12 +115,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr= CreateConversion(expr, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
                     if (expr.HasErrors)
                     {
-                        Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, expr.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                        Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, type, Compilation.GetSpecialType(SpecialType.System_Int32));
                     }
                     opKind = BinaryOperatorKind.IntSubtraction;
                     break;
             }
-            // when ! ArrayZero then subtract one from the index
+            // Subtract one from the index
             var right = new BoundLiteral(expr.Syntax, ConstantValue.Create(1), expr.Type) { WasCompilerGenerated = true };
             // when the argument is a literal then we may be able to fold the subtract expression.
             var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)expr.Syntax, opKind, expr, right, expr.Type.SpecialType, diagnostics, ref compoundStringLength);
@@ -141,24 +137,34 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-        private BoundExpression BindIndexerOrVulcanArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        private BoundExpression BindIndexerOrVOArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
             if (Compilation.Options.IsDialectVO)
             {
                 var arrayType = Compilation.ArrayType();
+                var arrayBaseType = Compilation.ArrayBaseType();
                 var usualType = Compilation.UsualType();
                 var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
                 // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
+                // So this is NOT compatible with Vulcan
                 if (cf == pszType && !Compilation.Options.ArrayZero && Compilation.Options.Dialect == XSharpDialect.VO )
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        BoundExpression newarg = arg;
+                        BoundExpression newarg ;
                         if (!Compilation.Options.ArrayZero)
                         {
                             newarg = SubtractIndex(arg, diagnostics);
+                        }
+                        else
+                        {
+                            newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                            if (newarg.HasErrors)
+                            {
+                                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                            }
                         }
                         argsBuilder.Add(newarg);
                     }
@@ -173,16 +179,43 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
                     cf = arrayType;
                 }
-                if (cf == arrayType)
+                if (cf == arrayType || (cf.ConstructedFrom != null && cf.ConstructedFrom == arrayBaseType))
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                    int argno = 0;
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        BoundExpression newarg = arg;
-                        if (!Compilation.Options.ArrayZero)
+                        BoundExpression newarg;
+                        bool mustSubtract = false;
+                        bool mustBeNumeric = false;
+                        ++argno;
+                        if (cf.ConstructedFrom == arrayBaseType)
+                        {
+                            mustSubtract = argno == 1 && !Compilation.Options.ArrayZero;
+                            mustBeNumeric = argno == 1;
+                        }
+                        else
+                        {
+                            mustSubtract = !Compilation.Options.ArrayZero;
+                            mustBeNumeric = true;
+                        }
+
+                        if (mustSubtract)
                         {
                             newarg = SubtractIndex(arg, diagnostics);
+                        }
+                        else if (mustBeNumeric)
+                        {
+                            newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                            if (newarg.HasErrors)
+                            {
+                                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                            }
+                        }
+                        else
+                        {
+                            newarg = arg;
                         }
                         argsBuilder.Add(newarg);
                     }
@@ -702,7 +735,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         case SymbolKind.Field:
                             if (onlyDef)
                             {
-                                if (sym.ContainingType.Name == XSharpSpecialNames.CoreFunctionsClass)
+                                if (sym.ContainingType.Name == XSharpSpecialNames.FunctionsClass)
                                 {
                                     add = true;
                                 }

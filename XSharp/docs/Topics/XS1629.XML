@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1629</para>
+    <para styleclass="Heading1">Error XS1629</para>
   </header>
   <para styleclass="Normal">Unsafe code may not appear in iterators</para>
   <para styleclass="Normal"></para>

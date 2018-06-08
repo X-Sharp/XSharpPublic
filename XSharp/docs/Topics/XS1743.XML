@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1743</para>
+    <para styleclass="Heading1">Error XS1743</para>
   </header>
   <para styleclass="Normal">Cannot specify a default value for the &apos;SELF&apos; parameter</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0263</para>
+    <para styleclass="Heading1">Error XS0263</para>
   </header>
   <para styleclass="Normal">Partial declarations of &apos;{0}&apos; must not specify different base classes</para>
   <para styleclass="Normal"></para>

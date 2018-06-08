@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1973</para>
+    <para styleclass="Heading1">Error XS1973</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; has no applicable method named &apos;{1}&apos; but appears to have an extension method by that name. Extension methods cannot be dynamically dispatched. Consider casting the dynamic arguments or calling the extension method without the extension method syntax.</para>
   <para styleclass="Normal"></para>

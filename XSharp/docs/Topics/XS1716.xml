@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1716</para>
+      <para styleclass="Heading1">Error XS1716</para>
     </header>
     <para styleclass="Normal">Do not use &apos;System.Runtime.CompilerServices.FixedBuffer&apos; attribute. Use the &apos;fixed&apos; field modifier instead.</para>
     <para styleclass="Normal"></para>

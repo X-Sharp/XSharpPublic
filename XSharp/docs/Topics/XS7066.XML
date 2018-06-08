@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7066</para>
+    <para styleclass="Heading1">Error XS7066</para>
   </header>
   <para styleclass="Normal">Yield statements may not appear at the top level in interactive code.</para>
   <para styleclass="Normal"></para>

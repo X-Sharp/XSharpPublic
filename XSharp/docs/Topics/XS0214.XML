@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0214</para>
+    <para styleclass="Heading1">Error XS0214</para>
   </header>
   <para styleclass="Normal">Pointers and fixed size buffers may only be used in an unsafe context</para>
   <para styleclass="Normal"></para>

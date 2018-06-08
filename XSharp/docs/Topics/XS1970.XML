@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1970</para>
+    <para styleclass="Heading1">Error XS1970</para>
   </header>
   <para styleclass="Normal">Do not use &apos;System.Runtime.CompilerServices.DynamicAttribute&apos;. Use the &apos;dynamic&apos; keyword instead.</para>
   <para styleclass="Normal"></para>

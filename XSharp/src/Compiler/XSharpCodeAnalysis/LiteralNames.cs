@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
+        internal const string ArrayBase = "__ArrayBase";
         internal const string VOStructAttribute = "VOStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
@@ -60,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Psz = "global::XSharp.__Psz";
         internal const string Codeblock = "global::XSharp.Codeblock";
         internal const string WinBool = "global::XSharp.__WinBool";
-        internal const string RuntimeState = "global::XSharp.Runtime.State";
+        internal const string RuntimeState = "global::XSharp.RuntimeState";
         internal const string ClipperCallingConvention = "global::XSharp.Internal.ClipperCallingConventionAttribute";
         internal const string WrappedException = "global::XSharp.Internal.WrappedException";
         internal const string DefaultParameter = "global::XSharp.Internal.DefaultParameterValueAttribute";
@@ -94,13 +95,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal const string VoPszList = "Xs$PszList";
         internal const string ClipperArgs = "Xs$Args";
+        internal const string ClipperPCount = "Xs$PCount";
         internal const string RecoverVarName = "Xs$Obj";
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
 
-        internal const string CoreFunctionsClass = XSharpFunctionNames.FunctionsClass;
+        internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
-        internal const string XSharpCoreFunctionsClass = "Functions";
+        internal const string XSharpCoreFunctionsClass = "XSharp.Core.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string VODllFunctionsClass = ".Functions";
@@ -111,6 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class XSharpFunctionNames
     {
+        // these are all expected in the VO Function type
         internal const string StringCompare = "__StringCompare";
         internal const string StringEquals = "__StringEquals";
         internal const string StringSubtract = "StringSubtract";
@@ -122,10 +125,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Send = "__InternalSend";
         internal const string ASend = "ASend";
         internal const string Eval = "Eval";
-        internal const string FunctionsClass = "Functions";
-        internal const string RunInitProcs = "RunInitProcs";
         internal const string GetElement = "__GetElement";
         internal const string SetElement = "__SetElement";
+        // These are in the generated code
+        internal const string RunInitProcs = "RunInitProcs";
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -134,6 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSet = "global::VulcanRTFuncs.Functions.__FieldSet";
         internal const string FieldSetWa = "global::VulcanRTFuncs.Functions.__FieldSetWa";
         internal const string NullDate = "global::Vulcan.__VODate.NullDate";
+        // internal const string UsualNIL = "global::Vulcan.__Usual._NIL";
         internal const string PszRelease = "global::Vulcan.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::Vulcan.Internal.CompilerServices.String2Psz";
         internal const string ArrayNew = "global::Vulcan.__Array.__ArrayNew";
@@ -151,26 +155,29 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class XSharpQualifiedFunctionNames
     {
-        internal const string FieldGet = "global::XSharp.Functions.__FieldGet";
-        internal const string FieldGetWa = "global::XSharp.Functions.__FieldGetWa";
-        internal const string FieldSet = "global::XSharp.Functions.__FieldSet";
-        internal const string FieldSetWa = "global::XSharp.Functions.__FieldSetWa";
-        internal const string MemVarGet = "global::XSharp.Functions.__MemVarGet";
-        internal const string MemVarPut = "global::XSharp.Functions.__MemVarPut";
+        // In core
+        internal const string Chr = "global::XSharp.Core.Functions.Chr";
+        internal const string InStr = "global::XSharp.Core.Functions.Instr";
+        internal const string WrapException = "global::XSharp.Error.WrapRawException";
+        // In VO assembly
+        internal const string FieldGet = "global::XSharp.VO.Functions.__FieldGet";
+        internal const string FieldGetWa = "global::XSharp.VO.Functions.__FieldGetWa";
+        internal const string FieldSet = "global::XSharp.VO.Functions.__FieldSet";
+        internal const string FieldSetWa = "global::XSharp.VO.Functions.__FieldSetWa";
+        internal const string MemVarGet = "global::XSharp.VO.Functions.__MemVarGet";
+        internal const string MemVarPut = "global::XSharp.VO.Functions.__MemVarPut";
         internal const string NullDate = "global::XSharp.__VODate.NullDate";
+        //internal const string UsualNIL = "global::XSharp.__Usual._NIL";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::XSharp.Internal.CompilerServices.String2Psz";
         internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";
-        internal const string InStr = "global::XSharp.Functions.Instr";
         internal const string EnterSequence = "global::XSharp.Internal.CompilerServices.EnterBeginSequence";
         internal const string ExitSequence = "global::XSharp.Internal.CompilerServices.ExitBeginSequence";
-        internal const string WrapException = "global::XSharp.Error._WrapRawException";
-        internal const string QQout = "global::XSharp.Functions.QQOut";
-        internal const string Qout = "global::XSharp.Functions.QOut";
-        internal const string Chr = "global::XSharp.Functions.Chr";
-        internal const string PushWorkarea = "global::XSharp.Functions.__pushWorkarea";
-        internal const string PopWorkarea = "global::XSharp.Functions.__popWorkarea";
-        internal const string Evaluate = "global::XSharp.Functions.Evaluate";
+        internal const string QQout = "global::XSharp.VO.Functions.QQOut";
+        internal const string Qout = "global::XSharp.VO.Functions.QOut";
+        internal const string PushWorkarea = "global::XSharp.VO.Functions.__pushWorkarea";
+        internal const string PopWorkarea = "global::XSharp.VO.Functions.__popWorkarea";
+        internal const string Evaluate = "global::XSharp.VO.Functions.Evaluate";
     }
 
     internal static class OurAssemblyNames
@@ -178,7 +185,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         // please note that these MUST be lowercase !
         internal const string VulcanRT = "vulcanrt";
         internal const string VulcanRTFuncs = "vulcanrtfuncs";
-        internal const string XSharpBase = "xsharp.base";
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpVO = "xsharp.vo";
     }

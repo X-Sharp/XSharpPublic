@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0714</para>
+    <para styleclass="Heading1">Error XS0714</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: static classes cannot implement interfaces</para>
   <para styleclass="Normal"></para>

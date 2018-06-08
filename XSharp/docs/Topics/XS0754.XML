@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0754</para>
+    <para styleclass="Heading1">Error XS0754</para>
   </header>
   <para styleclass="Normal">A partial method may not explicitly implement an interface method</para>
   <para styleclass="Normal"></para>

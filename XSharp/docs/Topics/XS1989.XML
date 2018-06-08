@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1989</para>
+    <para styleclass="Heading1">Error XS1989</para>
   </header>
   <para styleclass="Normal">Async lambda expressions cannot be converted to expression trees</para>
   <para styleclass="Normal"></para>

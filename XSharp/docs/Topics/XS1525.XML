@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1525</para>
+    <para styleclass="Heading1">Error XS1525</para>
   </header>
   <para styleclass="Normal">Invalid expression term &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

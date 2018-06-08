@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1674</para>
+      <para styleclass="Heading1">Error XS1674</para>
     </header>
     <para styleclass="Normal">&apos;T&apos;: type used in a using statement must be implicitly convertible to &apos;System.IDisposable&apos;</para>
     <para styleclass="Normal"></para>

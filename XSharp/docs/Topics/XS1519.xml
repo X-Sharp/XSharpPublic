@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1519</para>
+      <para styleclass="Heading1">Error XS1519</para>
     </header>
     <para styleclass="Normal">Invalid token &apos;token&apos; in class, struct, or interface member declaration</para>
     <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4009</para>
+    <para styleclass="Heading1">Error XS4009</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: an entry point cannot be marked with the &apos;async&apos; modifier</para>
   <para styleclass="Normal"></para>

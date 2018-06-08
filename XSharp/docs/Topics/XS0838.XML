@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0838</para>
+    <para styleclass="Heading1">Error XS0838</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain a multidimensional array initializer</para>
   <para styleclass="Normal"></para>

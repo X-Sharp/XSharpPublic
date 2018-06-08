@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0716</para>
+    <para styleclass="Heading1">Error XS0716</para>
   </header>
   <para styleclass="Normal">Cannot convert to static type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

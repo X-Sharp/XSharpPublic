@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0274</para>
+    <para styleclass="Heading1">Error XS0274</para>
   </header>
   <para styleclass="Normal">Cannot specify accessibility modifiers for both accessors of the property or indexer &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

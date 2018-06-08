@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9019</para>
+      <para styleclass="Heading1">Error XS9019</para>
     </header>
     <para styleclass="Normal">Compiler option &apos;{0}&apos; ({1}) is not supported for dialect {2}</para>
   </body>

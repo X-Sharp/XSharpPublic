@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7046</para>
+    <para styleclass="Heading1">Error XS7046</para>
   </header>
   <para styleclass="Normal">Attribute parameter &apos;{0}&apos; must be specified.</para>
   <para styleclass="Normal"></para>

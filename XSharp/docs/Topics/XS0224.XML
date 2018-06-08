@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0224</para>
+    <para styleclass="Heading1">Error XS0224</para>
   </header>
   <para styleclass="Normal">A method with vararg cannot be generic, be in a generic type, or have a params parameter</para>
   <para styleclass="Normal"></para>

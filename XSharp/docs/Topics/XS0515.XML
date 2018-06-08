@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0515</para>
+    <para styleclass="Heading1">Error XS0515</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: access modifiers are not allowed on static constructors</para>
   <para styleclass="Normal"></para>

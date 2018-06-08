@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0820</para>
+    <para styleclass="Heading1">Error XS0820</para>
   </header>
   <para styleclass="Normal">Cannot initialize an implicitly-typed variable with an array initializer</para>
   <para styleclass="Normal"></para>

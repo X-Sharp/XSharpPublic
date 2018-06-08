@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0841</para>
+    <para styleclass="Heading1">Error XS0841</para>
   </header>
   <para styleclass="Normal">Cannot use local variable &apos;{0}&apos; before it is declared</para>
   <para styleclass="Normal"></para>

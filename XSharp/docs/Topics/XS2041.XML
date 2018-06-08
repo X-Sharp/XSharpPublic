@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2041</para>
+    <para styleclass="Heading1">Error XS2041</para>
   </header>
   <para styleclass="Normal">Invalid output name: {0}</para>
   <para styleclass="Normal"></para>

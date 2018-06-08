@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9022</para>
+      <para styleclass="Heading1">Error XS9022</para>
     </header>
     <para styleclass="Normal">Conflicting commandline options &apos;/ovf&apos; and &apos;/fovf&apos; are not allowed (both are internally mapped to /checked)</para>
   </body>

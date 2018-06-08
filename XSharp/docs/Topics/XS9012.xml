@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9012</title>
   <keywords>
     <keyword>XS9012</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9012</para>
+      <para styleclass="Heading1">Warning XS9012</para>
     </header>
     <para styleclass="Normal">Duplicate define with different value detected &apos;{0}&apos;, {1} &lt;=&gt; {2}</para>
     <para styleclass="Normal"></para>
@@ -17,7 +17,7 @@
     <para styleclass="Normal">So &quot;1&quot; is not the same as &quot;1L&quot; or &quot;1U&apos;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">#define MYDEFINE 1</para>
-    <para styleclass="Code Example">#define MYDEFINE 1U<tab /><tab />// Warning XS9012</para>
+    <para styleclass="Code Example">#define MYDEFINE 1U<tab/><tab/>// Warning XS9012</para>
     <para styleclass="Code Example"></para>
     <para styleclass="Normal"></para>
   </body>

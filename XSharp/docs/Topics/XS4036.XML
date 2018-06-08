@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4036</para>
+    <para styleclass="Heading1">Error XS4036</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; does not contain a definition for &apos;{1}&apos; and no extension method &apos;{1}&apos; accepting a first argument of type &apos;{0}&apos; could be found (are you missing a using directive for &apos;{2}&apos;?)</para>
   <para styleclass="Normal"></para>

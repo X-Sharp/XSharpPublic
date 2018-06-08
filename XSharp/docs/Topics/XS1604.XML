@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1604</para>
+    <para styleclass="Heading1">Error XS1604</para>
   </header>
   <para styleclass="Normal">Cannot assign to &apos;{0}&apos; because it is read-only</para>
   <para styleclass="Normal"></para>

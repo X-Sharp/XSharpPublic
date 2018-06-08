@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0819</para>
+    <para styleclass="Heading1">Error XS0819</para>
   </header>
   <para styleclass="Normal">Implicitly-typed variables cannot have multiple declarators</para>
   <para styleclass="Normal"></para>

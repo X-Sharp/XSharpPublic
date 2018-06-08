@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8201</para>
+    <para styleclass="Heading1">Error XS8201</para>
   </header>
   <para styleclass="Normal">Out variable and pattern variable declarations are not allowed within a query clause.</para>
   <para styleclass="Normal"></para>

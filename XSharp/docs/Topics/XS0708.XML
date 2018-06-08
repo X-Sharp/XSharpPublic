@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0708</para>
+    <para styleclass="Heading1">Error XS0708</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot declare instance members in a static class</para>
   <para styleclass="Normal"></para>

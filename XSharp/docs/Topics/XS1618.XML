@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1618</para>
+    <para styleclass="Heading1">Error XS1618</para>
   </header>
   <para styleclass="Normal">Cannot create delegate with &apos;{0}&apos; because it or a method it overrides has a Conditional attribute</para>
   <para styleclass="Normal"></para>

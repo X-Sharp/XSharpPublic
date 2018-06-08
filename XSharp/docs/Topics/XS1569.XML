@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1569</para>
+    <para styleclass="Heading1">Error XS1569</para>
   </header>
   <para styleclass="Normal">Error writing to XML documentation file: {0}</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7012</para>
+    <para styleclass="Heading1">Error XS7012</para>
   </header>
   <para styleclass="Normal">The name &apos;{0}&apos; does not exist in the current context (are you missing a reference to assembly &apos;{1}&apos;?)</para>
   <para styleclass="Normal"></para>

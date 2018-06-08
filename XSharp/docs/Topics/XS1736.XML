@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1736</para>
+    <para styleclass="Heading1">Error XS1736</para>
   </header>
   <para styleclass="Normal">Default parameter value for &apos;{0}&apos; must be a compile-time constant</para>
   <para styleclass="Normal"></para>

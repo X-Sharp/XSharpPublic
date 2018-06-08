@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1968</para>
+    <para styleclass="Heading1">Error XS1968</para>
   </header>
   <para styleclass="Normal">Constraint cannot be a dynamic type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

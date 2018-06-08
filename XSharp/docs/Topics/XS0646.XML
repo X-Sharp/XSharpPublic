@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0646</para>
+    <para styleclass="Heading1">Error XS0646</para>
   </header>
   <para styleclass="Normal">Cannot specify the DefaultMember attribute on a type containing an indexer</para>
   <para styleclass="Normal"></para>

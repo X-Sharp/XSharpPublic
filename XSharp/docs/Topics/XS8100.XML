@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8100</para>
+    <para styleclass="Heading1">Error XS8100</para>
   </header>
   <para styleclass="Normal">The &apos;await&apos; operator cannot be used in a static script variable initializer.</para>
   <para styleclass="Normal"></para>

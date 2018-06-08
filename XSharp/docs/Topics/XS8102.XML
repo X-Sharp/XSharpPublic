@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8102</para>
+    <para styleclass="Heading1">Error XS8102</para>
   </header>
   <para styleclass="Normal">Public signing was specified and requires a public key, but no public key was specified.</para>
   <para styleclass="Normal"></para>

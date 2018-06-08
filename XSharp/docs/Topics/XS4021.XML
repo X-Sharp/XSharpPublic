@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4021</para>
+    <para styleclass="Heading1">Error XS4021</para>
   </header>
   <para styleclass="Normal">The CallerFilePathAttribute may only be applied to parameters with default values</para>
   <para styleclass="Normal"></para>

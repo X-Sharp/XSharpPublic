@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0644</para>
+    <para styleclass="Heading1">Error XS0644</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot derive from special class &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

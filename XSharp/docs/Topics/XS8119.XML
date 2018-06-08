@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8119</para>
+    <para styleclass="Heading1">Error XS8119</para>
   </header>
   <para styleclass="Normal">The switch expression must be a value; found {0}.</para>
   <para styleclass="Normal"></para>

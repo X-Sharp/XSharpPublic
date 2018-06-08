@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8129</para>
+    <para styleclass="Heading1">Error XS8129</para>
   </header>
   <para styleclass="Normal">No Deconstruct instance or extension method was found for type &apos;{0}&apos;, with {1} out parameters and a void return type.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0409</para>
+    <para styleclass="Heading1">Error XS0409</para>
   </header>
   <para styleclass="Normal">A constraint clause has already been specified for type parameter &apos;{0}&apos;. All of the constraints for a type parameter must be specified in a single where clause.</para>
   <para styleclass="Normal"></para>

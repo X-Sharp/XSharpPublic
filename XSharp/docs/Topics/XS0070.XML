@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0070</title>
-<keywords>
-<keyword>XS0070</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0070</para>
-  </header>
-  <para styleclass="Normal">The event &apos;{0}&apos; can only appear on the left hand side of += or -= (except when used from within the type &apos;{1}&apos;)</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0070</title>
+  <keywords>
+    <keyword>XS0070</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0070</para>
+    </header>
+    <para styleclass="Normal">The event &apos;{0}&apos; can only appear on the left hand side of += or -= (except when used from within the type &apos;{1}&apos;)</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

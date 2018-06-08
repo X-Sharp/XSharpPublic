@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1963</para>
+    <para styleclass="Heading1">Error XS1963</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain a dynamic operation</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1952</para>
+    <para styleclass="Heading1">Error XS1952</para>
   </header>
   <para styleclass="Normal">An expression tree lambda may not contain a method with variable arguments</para>
   <para styleclass="Normal"></para>

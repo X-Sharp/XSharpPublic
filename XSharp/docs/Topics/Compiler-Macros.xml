@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Compiler Macros</title>
   <keywords>
     <keyword>__ARRAYBASE__</keyword>
@@ -80,7 +80,7 @@
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
+          <para styleclass="Normal">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -91,7 +91,7 @@
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
+          <para styleclass="Normal">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -102,7 +102,7 @@
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR2____CLRVERSION__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
+          <para styleclass="Normal"> &quot;2&quot; or &quot;4&quot;depending on the version. (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -359,5 +359,9 @@
         </td>
       </tr>
     </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Note</para>
+    <para styleclass="Normal">The CLR2 and CLR4 version is determined by the X# compiler by looking at the version of either system.dll or mscorlib.dll</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

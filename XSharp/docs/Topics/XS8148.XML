@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8148</para>
+    <para styleclass="Heading1">Error XS8148</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; must {2}return by reference to match overridden member &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

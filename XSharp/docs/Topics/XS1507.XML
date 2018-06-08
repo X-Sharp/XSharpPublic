@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1507</para>
+    <para styleclass="Heading1">Error XS1507</para>
   </header>
   <para styleclass="Normal">Cannot link resource files when building a module</para>
   <para styleclass="Normal"></para>

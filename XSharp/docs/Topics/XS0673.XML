@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0673</para>
+    <para styleclass="Heading1">Error XS0673</para>
   </header>
   <para styleclass="Normal">System.Void cannot be used from X# -- use typeof(void) to get the void type object</para>
   <para styleclass="Normal"></para>

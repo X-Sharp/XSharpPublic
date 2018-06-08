@@ -1,14 +1,41 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9032</title>
   <keywords>
     <keyword>XS9032</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9032</para>
+      <para styleclass="Heading1">Warning XS9032</para>
     </header>
     <para styleclass="Normal">This entity type cannot return a value. Return value ignored.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">VO unfortunately permits to return a value from an assign. Since this is not permitted in .NET, the X# compiler will return an error of</para>
+    <para styleclass="Body Text">Warning XS9032 This entity type cannot return a value. Return value ignored.</para>
+    <para styleclass="Body Text">The following code, perfectly valid in VO, will throw this warning in X#:</para>
+    <para styleclass="Code Example">class MyClass<br/> &#160;protect _cMyVar as string<br/>&#32;</para>
+    <para styleclass="Code Example">access MyVar</para>
+    <para styleclass="Code Example"><tab />return _cMyVar</para>
+    <para styleclass="Code Example"><br/>assign MyVar( cMyVar <br/> &#160;_cMyVar := cMyVar<br/>&#32;<br/> &#160;return _cMyVar</para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example">end class</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">to solve the problem simply remove the return value from the return statement inside the Assign:</para>
+    <para styleclass="Code Example">class MyClass<br/> &#160;protect _cMyVar as string<br/>&#32;<br/>access MyVar</para>
+    <para styleclass="Code Example"><tab />return _cMyVar</para>
+    <para styleclass="Code Example"><br/>assign MyVar( cMyVar )<br/> &#160;_cMyVar := cMyVar<br/><text style="font-weight:bold;"> &#160;return </text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example">end class</para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">and if you are changing the code anyway it is also a good idea to add typing to your access/assign:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example">class MyClass<br/> &#160;protect _cMyVar as string</para>
+    <para styleclass="Code Example"><br/>access MyVar<text style="font-weight:bold;"> as string</text></para>
+    <para styleclass="Code Example"><tab />return _cMyVar&#32;<br/>assign MyVar( cMyVar <text style="font-weight:bold;">as string</text> )<br/> &#160;_cMyVar := cMyVar<br/> &#160;return </para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example">end class</para>
+    <para styleclass="Code Example"></para>
   </body>
 </topic>

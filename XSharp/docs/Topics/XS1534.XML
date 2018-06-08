@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1534</para>
+    <para styleclass="Heading1">Error XS1534</para>
   </header>
   <para styleclass="Normal">Overloaded binary operator &apos;{0}&apos; takes two parameters</para>
   <para styleclass="Normal"></para>

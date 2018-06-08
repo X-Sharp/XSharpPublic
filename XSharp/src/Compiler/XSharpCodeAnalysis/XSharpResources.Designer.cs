@@ -12,7 +12,6 @@ namespace LanguageService.CodeAnalysis {
     using System;
     using System.Reflection;
 
-
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -11363,6 +11362,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_AssemblyAttributeFromModuleIsOverridden_Title {
             get {
                 return ResourceManager.GetString("WRN_AssemblyAttributeFromModuleIsOverridden_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
+        /// </summary>
+        internal static string WRN_AssgReadonlyLocalCause {
+            get {
+                return ResourceManager.GetString("WRN_AssgReadonlyLocalCause", resourceCulture);
             }
         }
         

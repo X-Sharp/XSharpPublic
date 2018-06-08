@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0856</para>
+    <para styleclass="Heading1">Error XS0856</para>
   </header>
   <para styleclass="Normal">Indexed property &apos;{0}&apos; has non-optional arguments which must be provided</para>
   <para styleclass="Normal"></para>

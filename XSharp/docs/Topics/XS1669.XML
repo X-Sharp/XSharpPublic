@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1669</para>
+    <para styleclass="Heading1">Error XS1669</para>
   </header>
   <para styleclass="Normal">__arglist is not valid in this context</para>
   <para styleclass="Normal"></para>

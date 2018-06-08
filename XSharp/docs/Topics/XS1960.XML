@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1960</para>
+    <para styleclass="Heading1">Error XS1960</para>
   </header>
   <para styleclass="Normal">Invalid variance modifier. Only interface and delegate type parameters can be specified as variant.</para>
   <para styleclass="Normal"></para>

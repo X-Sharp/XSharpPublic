@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1686</para>
+    <para styleclass="Heading1">Error XS1686</para>
   </header>
   <para styleclass="Normal">Local &apos;{0}&apos; or its members cannot have their address taken and be used inside an anonymous method or lambda expression</para>
   <para styleclass="Normal"></para>

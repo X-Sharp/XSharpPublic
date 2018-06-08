@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4019</para>
+    <para styleclass="Heading1">Error XS4019</para>
   </header>
   <para styleclass="Normal">CallerMemberNameAttribute cannot be applied because there are no standard conversions from type &apos;{0}&apos; to type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

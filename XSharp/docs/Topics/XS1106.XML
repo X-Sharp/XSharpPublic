@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1106</para>
+    <para styleclass="Heading1">Error XS1106</para>
   </header>
   <para styleclass="Normal">Extension method must be defined in a non-generic static class</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0611</para>
+    <para styleclass="Heading1">Error XS0611</para>
   </header>
   <para styleclass="Normal">Array elements cannot be of type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

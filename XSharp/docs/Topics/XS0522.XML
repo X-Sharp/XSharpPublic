@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0522</para>
+    <para styleclass="Heading1">Error XS0522</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: structs cannot call base class constructors</para>
   <para styleclass="Normal"></para>

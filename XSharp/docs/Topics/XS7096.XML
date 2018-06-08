@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7096</para>
+    <para styleclass="Heading1">Error XS7096</para>
   </header>
   <para styleclass="Normal">Cannot continue since the edit includes a reference to an embedded type: &apos;{0}&apos;.</para>
   <para styleclass="Normal"></para>

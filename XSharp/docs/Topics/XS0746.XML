@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0746</para>
+    <para styleclass="Heading1">Error XS0746</para>
   </header>
   <para styleclass="Normal">Invalid anonymous type member declarator. Anonymous type members must be declared with a member assignment, simple name or member access.</para>
   <para styleclass="Normal"></para>

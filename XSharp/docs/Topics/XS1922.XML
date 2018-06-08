@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1922</para>
+    <para styleclass="Heading1">Error XS1922</para>
   </header>
   <para styleclass="Normal">Cannot initialize type &apos;{0}&apos; with a collection initializer because it does not implement &apos;System.Collections.IEnumerable&apos;</para>
   <para styleclass="Normal"></para>

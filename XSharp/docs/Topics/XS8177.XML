@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8177</para>
+    <para styleclass="Heading1">Error XS8177</para>
   </header>
   <para styleclass="Normal">Async methods cannot have by reference locals</para>
   <para styleclass="Normal"></para>

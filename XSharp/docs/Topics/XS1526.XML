@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1526</para>
+    <para styleclass="Heading1">Error XS1526</para>
   </header>
   <para styleclass="Normal">A new expression requires (), [], or {} after type</para>
   <para styleclass="Normal"></para>

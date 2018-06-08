@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1728</para>
+    <para styleclass="Heading1">Error XS1728</para>
   </header>
   <para styleclass="Normal">Cannot bind delegate to &apos;{0}&apos; because it is a member of &apos;System.Nullable<T>&apos;</para>
   <para styleclass="Normal"></para>

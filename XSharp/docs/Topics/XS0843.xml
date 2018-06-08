@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0843</para>
+      <para styleclass="Heading1">Error XS0843</para>
     </header>
     <para styleclass="Normal">Backing field for automatically implemented property &apos;name&apos; must be fully assigned before control is returned to the caller. Consider calling the default constructor from a constructor initializer.</para>
     <para styleclass="Normal"></para>

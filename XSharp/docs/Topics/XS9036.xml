@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9036</para>
+      <para styleclass="Heading1">Error XS9036</para>
     </header>
     <para styleclass="Normal">The &apos;{0} pseudo function requires one generic type argument to describe its return type.</para>
   </body>

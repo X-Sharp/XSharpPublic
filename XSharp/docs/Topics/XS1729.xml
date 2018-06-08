@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1729</para>
+      <para styleclass="Heading1">Error XS1729</para>
     </header>
     <para styleclass="Normal">&apos;type&apos; does not contain a constructor that takes &apos;number&apos; arguments.</para>
     <para styleclass="Normal"></para>

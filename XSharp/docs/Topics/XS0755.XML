@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0755</para>
+    <para styleclass="Heading1">Error XS0755</para>
   </header>
   <para styleclass="Normal">Both partial method declarations must be extension methods or neither may be an extension method</para>
   <para styleclass="Normal"></para>

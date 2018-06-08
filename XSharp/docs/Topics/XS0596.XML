@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0596</para>
+    <para styleclass="Heading1">Error XS0596</para>
   </header>
   <para styleclass="Normal">The Guid attribute must be specified with the ComImport attribute</para>
   <para styleclass="Normal"></para>

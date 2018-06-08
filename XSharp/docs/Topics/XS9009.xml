@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9009</para>
+      <para styleclass="Heading1">Error XS9009</para>
     </header>
     <para styleclass="Normal">Typed Parameters are not supported in combination with CLIPPER calling convention</para>
   </body>

@@ -1,22 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0108</title>
   <keywords>
     <keyword>XS0108</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0108</para>
+      <para styleclass="Heading1">Warning XS0108</para>
     </header>
-    <para styleclass="Normal">&apos;member1&apos; hides inherited member &apos;member2&apos;. Use the new keyword if hiding was intended.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">A variable was declared with the same name as a variable in a base class. However, the new keyword was not used. This warning informs you that you should use new; the variable is declared as if new had been used in the declaration.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0108:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0108.prg  <br/>// compile with: /W:2  <br/></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">&apos;member1&apos; hides inherited member &apos;member2&apos;. Use the new keyword if hiding was intended.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">please check the compiler option /VO3 Virtual Instance Methods or add the keyword virtual to your methods.</para>
+    <para styleclass="Body Text">Bby default METHODs and PROPERTIEs in .Net are not VIRTUAL, meaning that you cannot override a method of a base class by redefining it in a child class, like we do in VO, this instead creates a completely new method, from the CLR&apos;s point of view. In order to allow a (base) method to be overwritten , you must explicitly mark it with the VIRTUAL keyword. Or, you van simply enable the “All instance methods virtual” project option, which tells the compiler to make all methods VIRTUAL by default, for compatibility with VO. Both ways should get rid of the warning.</para>
   </body>
 </topic>

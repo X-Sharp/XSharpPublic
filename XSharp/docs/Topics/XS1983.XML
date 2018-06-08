@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1983</para>
+    <para styleclass="Heading1">Error XS1983</para>
   </header>
   <para styleclass="Normal">The return type of an async method must be void, Task or Task<T></para>
   <para styleclass="Normal"></para>

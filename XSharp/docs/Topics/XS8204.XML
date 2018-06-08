@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8204</para>
+    <para styleclass="Heading1">Error XS8204</para>
   </header>
   <para styleclass="Normal">Attributes are not allowed on local function parameters or type parameters</para>
   <para styleclass="Normal"></para>

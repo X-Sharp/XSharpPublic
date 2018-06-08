@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7069</para>
+    <para styleclass="Heading1">Error XS7069</para>
   </header>
   <para styleclass="Normal">Reference to type &apos;{0}&apos; claims it is defined in &apos;{1}&apos;, but it could not be found</para>
   <para styleclass="Normal"></para>

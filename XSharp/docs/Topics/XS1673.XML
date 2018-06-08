@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1673</para>
+    <para styleclass="Heading1">Error XS1673</para>
   </header>
   <para styleclass="Normal">Anonymous methods, lambda expressions, and query expressions inside structs cannot access instance members of &apos;SELF&apos;. Consider copying &apos;SELF&apos; to a local variable outside the anonymous method, lambda expression or query expression and using the local instead.</para>
   <para styleclass="Normal"></para>

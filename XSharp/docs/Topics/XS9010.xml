@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9010</para>
+      <para styleclass="Heading1">Error XS9010</para>
     </header>
     <para styleclass="Normal">The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention</para>
   </body>

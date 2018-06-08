@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1639</para>
+    <para styleclass="Heading1">Error XS1639</para>
   </header>
   <para styleclass="Normal">The managed coclass wrapper class signature &apos;{0}&apos; for interface &apos;{1}&apos; is not a valid class name signature</para>
   <para styleclass="Normal"></para>

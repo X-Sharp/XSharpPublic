@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS8094</title>
-<keywords>
-<keyword>XS8094</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS8094</para>
-  </header>
-  <para styleclass="Normal">Alignment value {0} has a magnitude greater than {1} and may result in a large formatted string.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS8094</title>
+  <keywords>
+    <keyword>XS8094</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS8094</para>
+    </header>
+    <para styleclass="Normal">Alignment value {0} has a magnitude greater than {1} and may result in a large formatted string.</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

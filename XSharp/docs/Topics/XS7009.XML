@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7009</para>
+    <para styleclass="Heading1">Error XS7009</para>
   </header>
   <para styleclass="Normal">Cannot use #r after first token in file</para>
   <para styleclass="Normal"></para>

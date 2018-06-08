@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1512</para>
+    <para styleclass="Heading1">Error XS1512</para>
   </header>
   <para styleclass="Normal">Keyword &apos;SUPER&apos; is not available in the current context</para>
   <para styleclass="Normal"></para>

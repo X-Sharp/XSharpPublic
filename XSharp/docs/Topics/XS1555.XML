@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1555</para>
+    <para styleclass="Heading1">Error XS1555</para>
   </header>
   <para styleclass="Normal">Could not find &apos;{0}&apos; specified for Start method</para>
   <para styleclass="Normal"></para>

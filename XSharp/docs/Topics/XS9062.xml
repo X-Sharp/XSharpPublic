@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9062</para>
+      <para styleclass="Heading1">Error XS9062</para>
     </header>
     <para styleclass="Normal">The {0} name &apos;{1}&apos; conflicts with the compiler generated globals name &apos;{2}&apos;. You should either rename the type or the output assembly.</para>
     <para styleclass="Normal"></para>

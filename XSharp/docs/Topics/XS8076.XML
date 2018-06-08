@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8076</para>
+    <para styleclass="Heading1">Error XS8076</para>
   </header>
   <para styleclass="Normal">Missing close delimiter &apos;}&apos; for interpolated expression started with &apos;{&apos;.</para>
   <para styleclass="Normal"></para>

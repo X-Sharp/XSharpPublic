@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1943</para>
+      <para styleclass="Heading1">Error XS1943</para>
     </header>
     <para styleclass="Normal">An expression of type &apos;type&apos; is not allowed in a subsequent from clause in a query expression with source type &apos;type&apos;. Type inference failed in the call to &apos;method&apos;.</para>
     <para styleclass="Normal"></para>

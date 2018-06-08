@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2012</para>
+    <para styleclass="Heading1">Error XS2012</para>
   </header>
   <para styleclass="Normal">Cannot open &apos;{0}&apos; for writing -- &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

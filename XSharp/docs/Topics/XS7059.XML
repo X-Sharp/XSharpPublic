@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7059</para>
+    <para styleclass="Heading1">Error XS7059</para>
   </header>
   <para styleclass="Normal">Executables cannot be satellite assemblies; culture should always be empty</para>
   <para styleclass="Normal"></para>

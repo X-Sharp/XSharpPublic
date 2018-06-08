@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7007</para>
+    <para styleclass="Heading1">Error XS7007</para>
   </header>
   <para styleclass="Normal">A &apos;using static&apos; directive can only be applied to types; &apos;{0}&apos; is a namespace not a type. Consider a &apos;using namespace&apos; directive instead</para>
   <para styleclass="Normal"></para>

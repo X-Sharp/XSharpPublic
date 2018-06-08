@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7089</para>
+    <para styleclass="Heading1">Error XS7089</para>
   </header>
   <para styleclass="Normal">AppConfigPath must be absolute.</para>
   <para styleclass="Normal"></para>

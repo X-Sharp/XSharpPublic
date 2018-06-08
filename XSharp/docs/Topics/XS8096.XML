@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8096</para>
+    <para styleclass="Heading1">Error XS8096</para>
   </header>
   <para styleclass="Normal">Debug entry point must be a definition of a method declared in the current compilation.</para>
   <para styleclass="Normal"></para>

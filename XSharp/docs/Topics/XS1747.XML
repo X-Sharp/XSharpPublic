@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1747</para>
+    <para styleclass="Heading1">Error XS1747</para>
   </header>
   <para styleclass="Normal">Cannot embed interop types from assembly &apos;{0}&apos; because it is missing the &apos;{1}&apos; attribute.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8183</para>
+    <para styleclass="Heading1">Error XS8183</para>
   </header>
   <para styleclass="Normal">Cannot infer the type of implicitly-typed discard.</para>
   <para styleclass="Normal"></para>

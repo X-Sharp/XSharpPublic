@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0103</title>
   <keywords>
     <keyword>XS0103</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0103</para>
+      <para styleclass="Heading1">Error XS0103</para>
     </header>
     <para styleclass="Normal">The name &apos;identifier&apos; does not exist in the current context</para>
     <para styleclass="Normal"></para>
@@ -21,7 +21,7 @@
     <para styleclass="Normal">The following example resolves the error.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><br/>  </para>
+    <para styleclass="Code with box"><br/> &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

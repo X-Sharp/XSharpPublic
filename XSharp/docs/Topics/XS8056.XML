@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8056</para>
+    <para styleclass="Heading1">Error XS8056</para>
   </header>
   <para styleclass="Normal">Properties cannot combine accessor lists with expression bodies.</para>
   <para styleclass="Normal"></para>

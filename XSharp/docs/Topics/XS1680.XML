@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1680</para>
+    <para styleclass="Heading1">Error XS1680</para>
   </header>
   <para styleclass="Normal">Invalid reference alias option: &apos;{0}=&apos; -- missing filename</para>
   <para styleclass="Normal"></para>

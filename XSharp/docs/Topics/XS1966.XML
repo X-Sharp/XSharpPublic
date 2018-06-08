@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1966</para>
+    <para styleclass="Heading1">Error XS1966</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot implement a dynamic interface &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

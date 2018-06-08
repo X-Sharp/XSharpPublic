@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1959</para>
+    <para styleclass="Heading1">Error XS1959</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; is of type &apos;{1}&apos;. The type specified in a constant declaration must be sbyte, byte, short, ushort, int, uint, long, ulong, char, float, double, decimal, bool, string, an enum-type, or a reference-type.</para>
   <para styleclass="Normal"></para>

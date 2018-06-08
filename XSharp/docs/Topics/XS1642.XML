@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1642</para>
+    <para styleclass="Heading1">Error XS1642</para>
   </header>
   <para styleclass="Normal">Fixed size buffer fields may only be members of structs</para>
   <para styleclass="Normal"></para>

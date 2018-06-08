@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS9044</para>
+    <para styleclass="Heading1">Error XS9044</para>
   </header>
   <para styleclass="Normal">Implicitly-typed variables cannot be STATIC.</para>
   <para styleclass="Normal"></para>

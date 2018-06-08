@@ -283,7 +283,7 @@ namespace Microsoft.CodeAnalysis
         XSharp_Internal_VOStructAttribute,
         XSharp_Internal_ClassLibraryAttribute,
         XSharp_Internal_CompilerServices,
-        XSharp_Internal_ImplicitNamespaceAttribute,
+        XSharp_ImplicitNamespaceAttribute,
         XSharp_VO_Functions,
         XSharp_Codeblock,
         XSharp___VOFloat,
@@ -292,6 +292,7 @@ namespace Microsoft.CodeAnalysis
         XSharp___Psz,
         XSharp___Usual,
         XSharp___Array,
+        XSharp___ArrayBase_T1,
         XSharp___WinBool,
 #endif
 
@@ -572,7 +573,7 @@ namespace Microsoft.CodeAnalysis
             "XSharp.Internal.VOStructAttribute",
             "XSharp.Internal.ClassLibraryAttribute",
             "XSharp.Internal.CompilerServices",
-            "XSharp.Internal.ImplicitNamespaceAttribute",
+            "XSharp.ImplicitNamespaceAttribute",
             "XSharp.VO.Functions",
             "XSharp.Codeblock",
             "XSharp.__VOFloat",
@@ -581,6 +582,7 @@ namespace Microsoft.CodeAnalysis
             "XSharp.__Psz",
             "XSharp.__Usual",
             "XSharp.__Array",
+            "XSharp.__ArrayBase`1",
             "XSharp.__WinBool"
 #endif
         };

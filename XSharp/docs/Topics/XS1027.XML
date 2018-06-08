@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1027</para>
+    <para styleclass="Heading1">Error XS1027</para>
   </header>
   <para styleclass="Normal">#endif directive expected</para>
   <para styleclass="Normal"></para>

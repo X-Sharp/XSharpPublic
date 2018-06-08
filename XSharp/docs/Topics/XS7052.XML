@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7052</para>
+    <para styleclass="Heading1">Error XS7052</para>
   </header>
   <para styleclass="Normal">SecurityAction value &apos;{0}&apos; is invalid for PrincipalPermission attribute</para>
   <para styleclass="Normal"></para>

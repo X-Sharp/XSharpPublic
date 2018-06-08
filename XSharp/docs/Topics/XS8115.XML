@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8115</para>
+    <para styleclass="Heading1">Error XS8115</para>
   </header>
   <para styleclass="Normal">A throw expression is not allowed in this context.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0546</para>
+    <para styleclass="Heading1">Error XS0546</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot override because &apos;{1}&apos; does not have an overridable set accessor</para>
   <para styleclass="Normal"></para>

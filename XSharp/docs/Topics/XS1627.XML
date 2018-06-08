@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1627</para>
+    <para styleclass="Heading1">Error XS1627</para>
   </header>
   <para styleclass="Normal">Expression expected after yield return</para>
   <para styleclass="Normal"></para>

@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Installation</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Installation</para>
+    </header>
+    <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="16" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Contents</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">C:\Program Files (x86)\XSharp</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Main installation folder</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Assemblies</para>
+        </td>
+        <td>
+          <para styleclass="Normal">the runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Bin</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Extension</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The components that must be installed inside Visual Studio for the X# project system and Language support. If you want to reinstall the project systems you should run the deployvs2015.cmd &#160;and / or deployvs2017.cmd &#160;files in the Uninst folder</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Help</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The PDF, CHM help files and the Visual Studio help</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Images</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Some images</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Include</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharpDefs.xh and other header files needed by X#</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- MsBuild</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The MsBuild integration for XsProj files</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Portable</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A portable version of the X# compiler and script engine</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- ProjectSystem</para>
+        </td>
+        <td>
+          <para styleclass="Normal">VSIX files to install the project system and debugger inside Visual Studio.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Redist</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Files that you may want to include with your application compiled with X#.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Tools</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Tools that are used during installation,</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- Uninst</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside VS 2015 and/or VS 2017. It also contains cmd files to help generating native images of your X# compiler.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- VOXPorter</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The VOXPorter</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">- XIDE</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The XIDE installer</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">During installation X# also copies files to the following folders:</para>
+    <para styleclass="Heading3">For Visual Studio 2015</para>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">c:\Program Files (x86)\MSBuild\XSharp</li>
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\XSharp</li>
+    </list>
+    <para styleclass="Heading3">For Visual Studio 2017</para>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2017\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\Common7\IDE\Extensions\XSharp</li>
+      <li styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\2017\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text>\MSBuild\XSharp</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Registry</para>
+    <para styleclass="Normal">The installer will also write some changes to the registry:</para>
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">HKLM\Software\XSharp</li>
+      <li styleclass="Normal">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</li>
+      <li styleclass="Normal">HKCR\.ppo</li>
+      <li styleclass="Normal">HKCR\.prg</li>
+      <li styleclass="Normal">HKCR\.prgx</li>
+      <li styleclass="Normal">HKCR\.xh</li>
+      <li styleclass="Normal">HKCR\.xs</li>
+      <li styleclass="Normal">HKCR\.xsproj</li>
+      <li styleclass="Normal">HKCR\XSharpScript</li>
+      <li styleclass="Normal">HKCR\XSharp.headerfile</li>
+      <li styleclass="Normal">HKCR\XSharp.ppofile</li>
+      <li styleclass="Normal">HKCR\XSharp.sourcefile</li>
+    </list>
+  </body>
+</topic>

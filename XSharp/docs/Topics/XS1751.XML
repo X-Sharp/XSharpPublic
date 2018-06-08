@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1751</para>
+    <para styleclass="Heading1">Error XS1751</para>
   </header>
   <para styleclass="Normal">Cannot specify a default value for a parameter array</para>
   <para styleclass="Normal"></para>

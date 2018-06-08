@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1558</para>
+    <para styleclass="Heading1">Error XS1558</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; does not have a suitable static Start method</para>
   <para styleclass="Normal"></para>

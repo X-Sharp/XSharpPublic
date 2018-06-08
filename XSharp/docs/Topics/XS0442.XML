@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0442</para>
+    <para styleclass="Heading1">Error XS0442</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: abstract properties cannot have private accessors</para>
   <para styleclass="Normal"></para>

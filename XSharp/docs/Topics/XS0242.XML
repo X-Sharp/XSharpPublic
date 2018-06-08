@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0242</para>
+    <para styleclass="Heading1">Error XS0242</para>
   </header>
   <para styleclass="Normal">The operation in question is undefined on void pointers</para>
   <para styleclass="Normal"></para>

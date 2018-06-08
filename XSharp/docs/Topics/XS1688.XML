@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1688</para>
+    <para styleclass="Heading1">Error XS1688</para>
   </header>
   <para styleclass="Normal">Cannot convert anonymous method block without a parameter list to delegate type &apos;{0}&apos; because it has one or more out parameters</para>
   <para styleclass="Normal"></para>

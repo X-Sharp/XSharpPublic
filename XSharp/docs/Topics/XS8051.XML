@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8051</para>
+    <para styleclass="Heading1">Error XS8051</para>
   </header>
   <para styleclass="Normal">Auto-implemented properties must have get accessors.</para>
   <para styleclass="Normal"></para>

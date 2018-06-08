@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1565</para>
+    <para styleclass="Heading1">Error XS1565</para>
   </header>
   <para styleclass="Normal">Conflicting options specified: Win32 resource file; Win32 icon</para>
   <para styleclass="Normal"></para>

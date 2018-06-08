@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0282</title>
-<keywords>
-<keyword>XS0282</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0282</para>
-  </header>
-  <para styleclass="Normal">There is no defined ordering between fields in multiple declarations of partial struct &apos;{0}&apos;. To specify an ordering, all instance fields must be in the same declaration.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0282</title>
+  <keywords>
+    <keyword>XS0282</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0282</para>
+    </header>
+    <para styleclass="Normal">There is no defined ordering between fields in multiple declarations of partial struct &apos;{0}&apos;. To specify an ordering, all instance fields must be in the same declaration.</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0710</para>
+    <para styleclass="Heading1">Error XS0710</para>
   </header>
   <para styleclass="Normal">Static classes cannot have instance constructors</para>
   <para styleclass="Normal"></para>

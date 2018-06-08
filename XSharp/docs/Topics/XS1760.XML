@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1760</para>
+    <para styleclass="Heading1">Error XS1760</para>
   </header>
   <para styleclass="Normal">Assemblies &apos;{0}&apos; and &apos;{1}&apos; refer to the same metadata but only one is a linked reference (specified using /link option); consider removing one of the references.</para>
   <para styleclass="Normal"></para>

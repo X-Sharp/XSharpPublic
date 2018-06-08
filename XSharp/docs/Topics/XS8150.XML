@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8150</para>
+    <para styleclass="Heading1">Error XS8150</para>
   </header>
   <para styleclass="Normal">By-value returns may only be used in methods that return by value</para>
   <para styleclass="Normal"></para>

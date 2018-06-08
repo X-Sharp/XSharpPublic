@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1008</para>
+    <para styleclass="Heading1">Error XS1008</para>
   </header>
   <para styleclass="Normal">Type byte, sbyte, short, ushort, int, uint, long, or ulong expected</para>
   <para styleclass="Normal"></para>

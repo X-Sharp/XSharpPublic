@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9007</para>
+      <para styleclass="Heading1">Error XS9007</para>
     </header>
     <para styleclass="Normal">Feature &apos;{0}&apos; is not available in the selected dialect {1}</para>
     <para styleclass="Normal"></para>

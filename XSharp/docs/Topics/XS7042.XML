@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7042</para>
+    <para styleclass="Heading1">Error XS7042</para>
   </header>
   <para styleclass="Normal">The DllImport attribute cannot be applied to a method that is generic or contained in a generic type.</para>
   <para styleclass="Normal"></para>

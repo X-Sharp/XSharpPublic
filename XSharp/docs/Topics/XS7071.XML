@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7071</para>
+    <para styleclass="Heading1">Error XS7071</para>
   </header>
   <para styleclass="Normal">Assembly reference &apos;{0}&apos; is invalid and cannot be resolved</para>
   <para styleclass="Normal"></para>

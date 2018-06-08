@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8111</para>
+    <para styleclass="Heading1">Error XS8111</para>
   </header>
   <para styleclass="Normal">Invalid instrumentation kind: {0}</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9039</para>
+      <para styleclass="Heading1">Error XS9039</para>
     </header>
     <para styleclass="Normal">The parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters are the indexers and must be the same as the ACCESS parameters.</para>
   </body>

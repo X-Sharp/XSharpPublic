@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0592</para>
+      <para styleclass="Heading1">Error XS0592</para>
     </header>
     <para styleclass="Normal">Attribute &apos;attribute&apos; is not valid on this declaration type. It is valid on &apos;type&apos; declarations only.</para>
     <para styleclass="Normal"></para>

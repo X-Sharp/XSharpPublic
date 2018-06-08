@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0449</para>
+    <para styleclass="Heading1">Error XS0449</para>
   </header>
   <para styleclass="Normal">The &apos;class&apos; or &apos;struct&apos; constraint must come before any other constraints</para>
   <para styleclass="Normal"></para>

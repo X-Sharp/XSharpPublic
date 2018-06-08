@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9033</para>
+      <para styleclass="Heading1">Error XS9033</para>
     </header>
     <para styleclass="Normal">Init and Exit procedures cannot define parameters.</para>
     <para styleclass="Normal"></para>

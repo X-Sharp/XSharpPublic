@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8131</para>
+    <para styleclass="Heading1">Error XS8131</para>
   </header>
   <para styleclass="Normal">Deconstruct assignment requires an expression with a type on the right-hand-side.</para>
   <para styleclass="Normal"></para>

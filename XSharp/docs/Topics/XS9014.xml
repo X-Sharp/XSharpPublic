@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9014</para>
+      <para styleclass="Heading1">Error XS9014</para>
     </header>
     <para styleclass="Normal">The dialect &apos;{0}&apos; requires a reference to the runtime DLLs {1}.</para>
   </body>

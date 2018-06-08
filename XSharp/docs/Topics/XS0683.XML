@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0683</para>
+    <para styleclass="Heading1">Error XS0683</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; explicit method implementation cannot implement &apos;{1}&apos; because it is an accessor</para>
   <para styleclass="Normal"></para>

@@ -239,8 +239,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list
                 if (asm1 != asm2
-                    && string.Equals(m1.Member.ContainingType.Name, XSharpFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(m2.Member.ContainingType.Name, XSharpFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase) )
+                    && string.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase) )
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {

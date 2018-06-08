@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0250</para>
+    <para styleclass="Heading1">Error XS0250</para>
   </header>
   <para styleclass="Normal">Do not directly call your base class Finalize method. It is called automatically from your destructor.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8138</para>
+    <para styleclass="Heading1">Error XS8138</para>
   </header>
   <para styleclass="Normal">Cannot reference &apos;System.Runtime.CompilerServices.TupleElementNamesAttribute&apos; explicitly. Use the tuple syntax to define tuple names.</para>
   <para styleclass="Normal"></para>

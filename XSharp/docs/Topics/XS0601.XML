@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0601</para>
+    <para styleclass="Heading1">Error XS0601</para>
   </header>
   <para styleclass="Normal">The DllImport attribute must be specified on a method marked &apos;static&apos; and &apos;extern&apos;</para>
   <para styleclass="Normal"></para>

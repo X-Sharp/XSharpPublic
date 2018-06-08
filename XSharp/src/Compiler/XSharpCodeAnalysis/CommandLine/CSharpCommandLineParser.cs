@@ -58,7 +58,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.ArrayZero = positive;
                     break;
                 case "cf":
-                    options.CompactFramework = positive;
                     OptionNotImplemented(diagnostics, oldname, "Compiling for Compact Framework");
                     break;
                 case "dialect":
@@ -100,8 +99,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "lb":
                     options.LateBinding = positive;
                     break;
+                case "noclipcall":
+                    options.NoClipCall = positive; 
+                    break;
+
                 case "norun":
-                    options.NoRun = positive;
+                    OptionNotImplemented(diagnostics, oldname, "NoRun compiler option");
                     break;
 
                 case "nostddefs":
@@ -195,12 +198,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             foreach (var fname in  ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {
-                                CheckVulcanReference(fname);
+                                SetOptionFromReference(fname);
                             }
                         }
                         else
                         {
-                            CheckVulcanReference(filename);
+                            SetOptionFromReference(filename);
                         }
                     }
                     handled = false;
@@ -281,7 +284,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
              return handled;
         }
-        private void CheckVulcanReference(string filename)
+        private void SetOptionFromReference(string filename)
         {
             switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
             {
@@ -301,17 +304,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "system":
                     if (! options.ClrVersionWasSet )
                     {
-                        if (filename.ToLower().Contains("\\v2"))
+                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
                         {
                             options.ClrVersionWasSet = true;
                             options.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v3"))
+                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
                         {
                             options.ClrVersionWasSet = true;
                             options.ClrVersion = 2;
                         }
-                        else if (filename.ToLower().Contains("\\v4"))
+                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
                         {
                             options.ClrVersionWasSet = true;
                             options.ClrVersion = 4;

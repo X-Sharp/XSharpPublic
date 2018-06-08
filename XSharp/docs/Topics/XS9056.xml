@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9056</para>
+      <para styleclass="Heading1">Error XS9056</para>
     </header>
     <para styleclass="Normal">You cannot assign an untyped codeblock to a delegate of type {0}. Use the Lambda Expression syntax (=&gt;) in stead.</para>
   </body>

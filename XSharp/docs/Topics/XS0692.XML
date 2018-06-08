@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0692</para>
+    <para styleclass="Heading1">Error XS0692</para>
   </header>
   <para styleclass="Normal">Duplicate type parameter &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

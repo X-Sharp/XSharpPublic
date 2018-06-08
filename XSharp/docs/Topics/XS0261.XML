@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0261</para>
+    <para styleclass="Heading1">Error XS0261</para>
   </header>
   <para styleclass="Normal">Partial declarations of &apos;{0}&apos; must be all classes, all structs, or all interfaces</para>
   <para styleclass="Normal"></para>

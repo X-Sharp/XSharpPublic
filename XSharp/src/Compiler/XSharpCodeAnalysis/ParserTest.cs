@@ -13,24 +13,28 @@ namespace ParserTest
     {
         public static void Main(string[] args)
         {
-            if (args.Length == 0)
+            for (int i = 0; i < 10; i++)
             {
-                Parse(@"c:\XSharp\Dev\XSharp\src\Compiler\XSharpCodeAnalysis\Parser\test.prg");
-            }
-            else
-            {
-                foreach (string arg in args)
+                Console.WriteLine("Iteration {0}", i);
+                if (args.Length == 0)
                 {
-                    Console.WriteLine(arg);
-                    var dir = System.IO.Path.GetDirectoryName(arg);
-                    var mask = System.IO.Path.GetFileName(arg);
-                    foreach (var file in System.IO.Directory.GetFiles(dir, mask))
+                    Parse(@"c:\XIDE\Prg\error.prg");
+                }
+                else
+                {
+                    foreach (string arg in args)
                     {
-                        Console.WriteLine("Parsing " + file);
-                        var dt = DateTime.Now;
-                        Parse(file);
-                        TimeSpan took =DateTime.Now - dt;
-                        Console.WriteLine("Parsing took : {0:s'.'fff}", took);
+                        Console.WriteLine(arg);
+                        var dir = System.IO.Path.GetDirectoryName(arg);
+                        var mask = System.IO.Path.GetFileName(arg);
+                        foreach (var file in System.IO.Directory.GetFiles(dir, mask))
+                        {
+                            Console.WriteLine("Parsing " + file);
+                            var dt = DateTime.Now;
+                            Parse(file);
+                            TimeSpan took = DateTime.Now - dt;
+                            Console.WriteLine("Parsing took : {0:s'.'fff}", took);
+                        }
                     }
                 }
             }
@@ -52,9 +56,12 @@ namespace ParserTest
             parser.RemoveErrorListeners();
 
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
-            parser.Interpreter.reportAmbiguities = false;
+            parser.Interpreter.reportAmbiguities = true;
+
             parser.Interpreter.enable_global_context_dfa = true; // default false
-            parser.Interpreter.userWantsCtxSensitive = false; // default true
+            parser.Interpreter.optimize_tail_calls = true;
+            parser.Interpreter.tail_call_preserves_sll = true;
+            //parser.Interpreter.userWantsCtxSensitive = true; // default true
 
             parser.ErrorHandler = new XSharpErrorStrategy();
             parser.AddErrorListener(new XSharpErrorListener(fileName, parseErrors, true));
@@ -65,11 +72,14 @@ namespace ParserTest
             }
             catch (ParseCanceledException)
             {
-                Console.WriteLine("Parse error, Try LL mode");
+                Console.WriteLine("Parse error, Errors from SLL mode");
                 showErrors(parseErrors);
+                parseErrors.Clear();
                 parser.ErrorHandler = new XSharpErrorStrategy();
                 parser.AddErrorListener(new XSharpErrorListener(fileName, parseErrors, true));
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                parser.Interpreter.force_global_context = true;
+                parser.Interpreter.optimize_ll1 = false;
                 parser.Interpreter.reportAmbiguities = true;
                 parser.Reset();
                 try
@@ -94,6 +104,7 @@ namespace ParserTest
             {
                 walker.Walk(errchecker, tree);
             }
+            Console.WriteLine("Parse error, Errors:");
             showErrors(parseErrors);
 
         }

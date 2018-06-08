@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1758</para>
+    <para styleclass="Heading1">Error XS1758</para>
   </header>
   <para styleclass="Normal">Cannot embed interop type &apos;{0}&apos; found in both assembly &apos;{1}&apos; and &apos;{2}&apos;. Consider setting the &apos;Embed Interop Types&apos; property to false.</para>
   <para styleclass="Normal"></para>

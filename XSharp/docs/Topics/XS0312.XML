@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0312</para>
+    <para styleclass="Heading1">Error XS0312</para>
   </header>
   <para styleclass="Normal">The type &apos;{3}&apos; cannot be used as type parameter &apos;{2}&apos; in the generic type or method &apos;{0}&apos;. The nullable type &apos;{3}&apos; does not satisfy the constraint of &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

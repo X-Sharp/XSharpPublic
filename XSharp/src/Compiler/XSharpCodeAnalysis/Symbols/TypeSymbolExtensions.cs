@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             string aName = atype.ContainingAssembly.Name;
             if (String.Equals(aName, OurAssemblyNames.VulcanRT, System.StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(aName, OurAssemblyNames.XSharpBase, System.StringComparison.OrdinalIgnoreCase))
+                String.Equals(aName, OurAssemblyNames.XSharpCore, System.StringComparison.OrdinalIgnoreCase))
             {
                 return String.Equals(atype.Name, name, System.StringComparison.OrdinalIgnoreCase);
             }
@@ -156,7 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // TODO (nvk): there must be a better way!
             return
                 (object)_asm != null &&
-                (_asm.Name.ToLower() == OurAssemblyNames.XSharpBase|| _asm.Name.ToLower() == OurAssemblyNames.XSharpCore || _asm.Name.ToLower() == OurAssemblyNames.XSharpVO);
+                (_asm.Name.ToLower() == OurAssemblyNames.XSharpCore || _asm.Name.ToLower() == OurAssemblyNames.XSharpVO);
         }
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
@@ -271,12 +271,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return (NamedTypeSymbol)((CodeblockTypePublicSymbol)cbType).Properties[0].Type;
         }
-        public NamedTypeSymbol Vulcan_Codeblock
+        public NamedTypeSymbol CodeblockType
         {
             get { return this.Compilation.CodeBlockType(); }
         }
 
-        public NamedTypeSymbol Vulcan_Usual
+        public NamedTypeSymbol UsualType
         {
             get { return this.Compilation.UsualType(); }
         }

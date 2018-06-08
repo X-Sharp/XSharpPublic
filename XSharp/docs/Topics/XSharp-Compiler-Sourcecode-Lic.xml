@@ -4,7 +4,7 @@
   <title>XSharp Compiler Sourcecode License</title>
   <body>
     <header>
-      <para styleclass="Heading1">XSharp Compiler Sourcecode License</para>
+      <para styleclass="Heading1">Error XSharp Compiler Sourcecode License</para>
     </header>
     <para styleclass="Body Text">The source code to the XSharp compiler is available to registered FOX subscribers.<br/>If you want access to this source code then please send an email to <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;"> info@xsharp.eu</link>.<br/>We will then send you a personalized version of the license agreement below.<br/>We will grant you access to the closed source code repository on Github (<link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://github.com/X-Sharp/XSharpDev</link>) when we have received your signed version of this license agreement </para>
     <para styleclass="Code Example"></para>

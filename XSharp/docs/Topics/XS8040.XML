@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8040</para>
+    <para styleclass="Heading1">Error XS8040</para>
   </header>
   <para styleclass="Normal">Skipping some types in analyzer assembly {0} due to a ReflectionTypeLoadException : {1}.</para>
   <para styleclass="Normal"></para>

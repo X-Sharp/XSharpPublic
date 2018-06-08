@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1757</para>
+    <para styleclass="Heading1">Error XS1757</para>
   </header>
   <para styleclass="Normal">Embedded interop struct &apos;{0}&apos; can contain only public instance fields.</para>
   <para styleclass="Normal"></para>

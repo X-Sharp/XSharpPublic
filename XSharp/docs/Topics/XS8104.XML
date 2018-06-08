@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8104</para>
+    <para styleclass="Heading1">Error XS8104</para>
   </header>
   <para styleclass="Normal">An error occurred while writing the output file: {0}.</para>
   <para styleclass="Normal"></para>

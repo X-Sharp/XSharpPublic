@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0239</para>
+    <para styleclass="Heading1">Error XS0239</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot override inherited member &apos;{1}&apos; because it is sealed</para>
   <para styleclass="Normal"></para>

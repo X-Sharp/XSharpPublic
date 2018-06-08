@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0423</para>
+    <para styleclass="Heading1">Error XS0423</para>
   </header>
   <para styleclass="Normal">Since &apos;{1}&apos; has the ComImport attribute, &apos;{0}&apos; must be extern or abstract</para>
   <para styleclass="Normal"></para>

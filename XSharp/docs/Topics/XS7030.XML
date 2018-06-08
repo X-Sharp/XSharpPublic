@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7030</para>
+    <para styleclass="Heading1">Error XS7030</para>
   </header>
   <para styleclass="Normal">Cannot pass null for friend assembly name</para>
   <para styleclass="Normal"></para>

@@ -3594,7 +3594,7 @@ namespace XSharpLanguage
                         if (StringEquals(member.Name, currentToken))
                         {
                             method = member as MethodInfo;
-                            declType = method.ReturnType;
+                            declType = cType.SType; // method.ReturnType;
                             break;
                         }
                     }

@@ -10,8 +10,6 @@ using System.Collections.Generic
 using System.Diagnostics
 using static XSharp.Functions
 
-// Todo: Implement System.IConvertible ?
-
 begin namespace XSharp
 	/// <summary>Internal type that implements the VO Compatible SYMBOL type.<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.<br/>
@@ -22,18 +20,18 @@ begin namespace XSharp
 	public structure __Symbol ;
 		implements IEqualityComparer<__Symbol>, ;
 		IEquatable<__Symbol>,;
-		ICloneable ;
-		//IEnumerable ;
-		//System.IConvertible,;
+		IComparable<__Symbol>, ;
+		IComparable, ;
+		ICloneable , ;
+		IConvertible
 		
 		#region fields
 			private initonly _index		as dword
 			private static _PszDict			as Dictionary<DWORD, PSZ>
-			// next field is only used when someone requests a PSZ representation 
-			// by calling SysGetAtomName
 		#endregion
 		
 		#region constrúctors
+			/// <summary>Construct the type and create the SymbolTable.</summary>
 			static constructor
 				SymbolTable.Initialize()
 
@@ -92,10 +90,6 @@ begin namespace XSharp
 			
 			method GetHashCode(obj as Symbol) as long
 				return obj:GetHashCode()
-			
-			/// <exclude />	
-			method GetTypeCode() as TypeCode
-				return TypeCode.String
 			
 			virtual method ToString() as string
 				return _value
@@ -291,6 +285,68 @@ begin namespace XSharp
 			end class
 		#endregion
 		
+
+		METHOD CompareTo(o AS OBJECT) AS LONG
+			RETURN CompareTo((SYMBOL)o)
+			
+
+		METHOD CompareTo(rhs AS SYMBOL) AS LONG
+			return __StringCompare(SELF:_value, rhs:_value) 
+		
+  #region IConvertible Methods
+   
+    METHOD IConvertible.GetTypeCode() AS TypeCode
+      RETURN TypeCode.Object
+      
+    METHOD IConvertible.ToBoolean( provider AS IFormatProvider ) AS LOGIC
+      RETURN ((IConvertible)_value):ToBoolean( provider )
+   
+    METHOD IConvertible.ToByte( provider AS IFormatProvider ) AS BYTE
+      RETURN ((IConvertible)_value):ToByte( provider )
+   
+    METHOD IConvertible.ToChar( provider AS IFormatProvider ) AS Char
+      RETURN ((IConvertible)_value):ToChar( provider )
+   
+    METHOD IConvertible.ToDateTime( provider AS IFormatProvider ) AS DateTime
+      RETURN ((IConvertible)_value):ToDateTime( provider )
+   
+    METHOD IConvertible.ToDecimal( provider AS IFormatProvider ) AS Decimal
+      RETURN ((IConvertible)_value):ToDecimal( provider )
+   
+    METHOD IConvertible.ToDouble( provider AS IFormatProvider ) AS Double
+      RETURN ((IConvertible)_value):ToDouble( provider )
+   
+    METHOD IConvertible.ToInt16( provider AS IFormatProvider ) AS Int16
+      RETURN ((IConvertible)_value):ToInt16( provider )
+   
+    METHOD IConvertible.ToInt32( provider AS IFormatProvider ) AS Int32
+      RETURN ((IConvertible)_value):ToInt32( provider )
+   
+    METHOD IConvertible.ToInt64( provider AS IFormatProvider ) AS INT64
+      RETURN ((IConvertible)_value):ToInt64( provider )
+   
+    METHOD IConvertible.ToSByte( provider AS IFormatProvider ) AS SByte
+      RETURN ((IConvertible)_value):ToSByte( provider )
+   
+    METHOD IConvertible.ToSingle( provider AS IFormatProvider ) AS Single
+      RETURN ((IConvertible)_value):ToSingle( provider )
+   
+    METHOD IConvertible.ToString( provider AS IFormatProvider ) AS STRING
+      RETURN ((IConvertible)_value):ToString( provider )
+   
+    METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
+      RETURN ((IConvertible)_value):ToType( conversionType, provider )
+   
+    METHOD IConvertible.ToUInt16( provider AS IFormatProvider ) AS UInt16
+      RETURN ((IConvertible)_value):ToUInt16( provider )
+   
+    METHOD IConvertible.ToUInt32( provider AS IFormatProvider ) AS UInt32
+      RETURN ((IConvertible)_value):ToUInt32( provider )
+   
+    METHOD IConvertible.ToUInt64( provider AS IFormatProvider ) AS UInt64
+      RETURN ((IConvertible)_value):ToUInt64( provider )
+   
+   #endregion
 		#region IClonable
 			/// <exclude />	
 			method Clone() as object

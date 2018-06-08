@@ -12,8 +12,11 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp	
 	/// <summary>Internal type that implements the VO Compatible DATE type<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
+	/// It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic. 
+	/// There are implicit converters between Date and DateTime.
 	/// </summary>
 	/// <seealso cref="T:XSharp.IDate"/>
+	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	[DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
 	[DebuggerTypeProxy(typeof(DateDebugView))];
 	[StructLayout(LayoutKind.Explicit,Pack := 1)];

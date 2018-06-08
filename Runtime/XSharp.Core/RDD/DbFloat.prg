@@ -6,7 +6,7 @@
 
 /// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary> 
 /// <seealso cref="T:XSharp.IFloat"/>
-CLASS XSharp.RDD.DbFloat IMPLEMENTS IFLoat
+STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat
 	PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
 	PROPERTY Digits		AS INT AUTO GET PRIVATE SET
 	PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
@@ -15,11 +15,11 @@ CLASS XSharp.RDD.DbFloat IMPLEMENTS IFLoat
 		Digits := len
 		Decimals := dec
 		
-END	CLASS
+END	STRUCTURE
 		
 /// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary> 
 /// <seealso cref="T:XSharp.IDate"/>
-CLASS XSharp.RDD.DbDate IMPLEMENTS IDate
+STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	PROPERTY Year		AS INT AUTO GET PRIVATE SET
 	PROPERTY Month		AS INT AUTO GET PRIVATE SET
 	PROPERTY Day		AS INT AUTO GET PRIVATE SET
@@ -31,4 +31,4 @@ CLASS XSharp.RDD.DbDate IMPLEMENTS IDate
 		Day     := nDay
 		RETURN
 		
-END CLASS
+END STRUCTURE

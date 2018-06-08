@@ -25,7 +25,7 @@
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" />
     </DocumentationSources>
-    <HelpTitle>%28X#%29 XSharp Runtime Documentation</HelpTitle>
+    <HelpTitle>XSharp Runtime Documentation</HelpTitle>
     <HelpFileVersion>2.0.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
@@ -59,7 +59,6 @@
         <Filter entryType="Structure" fullName="XSharp.__Symbol" filterName="__Symbol" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.__Symbol.Clone" filterName="Clone" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__Symbol.Equals" filterName="Equals" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.__Symbol.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__Symbol.SysGetAtomName" filterName="SysGetAtomName" isExposed="False" />
         </Filter>
         <Filter entryType="Structure" fullName="XSharp.__Usual" filterName="__Usual" isExposed="True">
@@ -71,18 +70,12 @@
           <Filter entryType="Field" fullName="XSharp.__Usual._NIL" filterName="_NIL" isExposed="False" />
         </Filter>
         <Filter entryType="Structure" fullName="XSharp.__VODate" filterName="__VODate" isExposed="True">
-          <Filter entryType="Constructor" fullName="XSharp.__VODate.#ctor" filterName=".ctor" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__VODate.Add" filterName="Add" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__VODate.FromDateTime" filterName="FromDateTime" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.__VODate.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__VODate.NullDate" filterName="NullDate" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__VODate.Subtract" filterName="Subtract" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__VODate.ToDateTime" filterName="ToDateTime" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__VODate.Day" filterName="Day" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__VODate.IsEmpty" filterName="IsEmpty" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__VODate.Month" filterName="Month" isExposed="False" />
           <Filter entryType="Property" fullName="XSharp.__VODate.Value" filterName="Value" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__VODate.Year" filterName="Year" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.__VODate._dtCalc" filterName="_dtCalc" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.__VODate._NULL_DATE" filterName="_NULL_DATE" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.__VODate.VO_MAX_DATE" filterName="VO_MAX_DATE" isExposed="False" />
@@ -105,7 +98,6 @@
         </Filter>
         <Filter entryType="Class" fullName="XSharp.CodeBlock" filterName="CodeBlock" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.CodeBlock._BlockArg" filterName="_BlockArg" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.CodeBlock.ToString" filterName="ToString" isExposed="False" />
         </Filter>
         <Filter entryType="Class" fullName="XSharp.FixedMemory" filterName="FixedMemory" isExposed="False" />
         <Filter entryType="Class" fullName="XSharp.OleAutoObject" filterName="OleAutoObject" isExposed="True">
@@ -113,9 +105,6 @@
           <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIVarPut" filterName="__OleIVarPut" isExposed="False" />
           <Filter entryType="Property" fullName="XSharp.OleAutoObject.__ComObject" filterName="__ComObject" isExposed="False" />
         </Filter>
-      </Filter>
-      <Filter entryType="Namespace" fullName="XSharp.Core" isExposed="False">
-        <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True" />
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.IO" isExposed="False" />
       <Filter entryType="Namespace" fullName="XSharp.VO" isExposed="True">
@@ -252,7 +241,7 @@
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations />
-    <RootNamespaceTitle>%28X#%29 XSharp Runtime Documentation</RootNamespaceTitle>
+    <RootNamespaceTitle>XSharp Runtime Documentation</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2018 XSharp BV, All rights reserved</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>
@@ -260,7 +249,7 @@
     <CatalogVersion>100</CatalogVersion>
     <VendorName>XSharp</VendorName>
     <ProductTitle>XSharp</ProductTitle>
-    <TocParentId>X-Reference</TocParentId>
+    <TocParentId>xshelp_x-reference</TocParentId>
     <TocParentVersion>100</TocParentVersion>
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>

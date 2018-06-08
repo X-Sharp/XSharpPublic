@@ -38,7 +38,7 @@
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
@@ -57,10 +57,10 @@
     <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>

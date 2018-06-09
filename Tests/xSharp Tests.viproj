@@ -61937,6 +61937,206 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C609 - Failed to emit module with @ on array element, without /unsafe
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C610 - Accessing array elements with /az- *************
+Application = C610 - Accessing array elements with /az-
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C610\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C610
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3F3B45AE-15A3-4019-A83F-1C7D31724DE8
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C610 - Accessing array elements with /az- FileGroups]
+[C610 - Accessing array elements with /az- Files]
+File = %AppPath%\Prg\C610.prg
+FileGUID = E20E8353-8C4C-42C2-B4D6-65BE5962D811
+FileType = Code
+[C610 - Accessing array elements with /az- References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C610 - Accessing array elements with /az- Resources]
+[C610 - Accessing array elements with /az- Native Resources]
+[C610 - Accessing array elements with /az- License files]
+[C610 - Accessing array elements with /az- General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C610 - Accessing array elements with /az- Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C610 - Accessing array elements with /az-
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C611 - Accessing array elements with /az+ *************
+Application = C611 - Accessing array elements with /az+
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C611\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C611
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 16289D3B-4C1B-4190-80F4-1AB6960C383B
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C611 - Accessing array elements with /az+ FileGroups]
+[C611 - Accessing array elements with /az+ Files]
+File = %AppPath%\Prg\C611.prg
+FileGUID = 791E54E3-B83E-4204-9E48-0138FB9EFA39
+FileType = Code
+[C611 - Accessing array elements with /az+ References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C611 - Accessing array elements with /az+ Resources]
+[C611 - Accessing array elements with /az+ Native Resources]
+[C611 - Accessing array elements with /az+ License files]
+[C611 - Accessing array elements with /az+ General Options]
+Switches=
+ZeroArrays=1
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C611 - Accessing array elements with /az+ Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C611 - Accessing array elements with /az+
 [EndApplications]
 
 [Configurations]

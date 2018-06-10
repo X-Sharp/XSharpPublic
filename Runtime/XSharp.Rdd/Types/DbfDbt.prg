@@ -221,7 +221,6 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:LastWrittenBlockNumber := blockNbr
                 RETURN isOk
                 
-                
                 /// <inheritdoc />
             VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
                 THROW NotImplementedException{}

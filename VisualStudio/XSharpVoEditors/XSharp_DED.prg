@@ -5,7 +5,7 @@ USING System.IO
 USING Xide
 USING XSharpModel
 USING System.Reflection
-
+using XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	PROTECT oXProject as XProject
@@ -256,10 +256,10 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		oGenerator:BeginCode()
 		
 		cName := SELF:oMainDesign:GetProperty("classname"):TextValue
-		oGenerator:WriteEntity(EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)
-		oGenerator:WriteEntity(EntityType._Constructor,  cName , cName ,EntityOptions.None , oCode:aConstructor)
-		oGenerator:WriteEntity(EntityType._Access,  "FIELDDESC" , cName ,EntityOptions.None , oCode:aFieldDesc)
-		oGenerator:WriteEntity(EntityType._Access,  "INDEXLIST" , cName , EntityOptions.None, oCode:aIndexList)
+		oGenerator:WriteEntity(XIde.EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)
+		oGenerator:WriteEntity(XIde.EntityType._Constructor,  cName , cName ,EntityOptions.None , oCode:aConstructor)
+		oGenerator:WriteEntity(XIde.EntityType._Access,  "FIELDDESC" , cName ,EntityOptions.None , oCode:aFieldDesc)
+		oGenerator:WriteEntity(XIde.EntityType._Access,  "INDEXLIST" , cName , EntityOptions.None, oCode:aIndexList)
 
 		FOREACH aAdditional as List<String> in oCode:aAdditional
 			SELF:ProcessExtraEntity(aAdditional, oGenerator, cName, TRUE)
@@ -270,8 +270,8 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		FOREACH  oFieldSpec AS FSEDesignFieldSpec IN aFieldSpecs
 			oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
 			cName := oFieldSpec:GetProperty("classname"):TextValue
-			oGenerator:WriteEntity(EntityType._Class ,      cName , cName , EntityOptions.AddUser, oCode:aClass)
-			oGenerator:WriteEntity(EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
+			oGenerator:WriteEntity(XIde.EntityType._Class ,      cName , cName , EntityOptions.AddUser, oCode:aClass)
+			oGenerator:WriteEntity(XIde.EntityType._Constructor, cName , cName , EntityOptions.None, oCode:aConstructor)
 		NEXT
 		oGenerator:WriteEndClass(cName)
 		oGenerator:EndCode()
@@ -339,8 +339,8 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	RETURN
 END CLASS
 STATIC CLASS BufferExtensions
-		STATIC METHOD GetEntityObject(SELF editor as XSharpBuffer, nItem as LONG) as EntityObject
-			local oLine := editor:GetLine(nItem) as LineObject
+		STATIC METHOD GetEntityObject(SELF editor as XSharpBuffer, nItem as LONG) as XIDE.EntityObject
+			local oLine := editor:GetLine(nItem) as XIde.LineObject
 			IF oLine != NULL .and. oLine:ContainsEntity
 				return oLine:LastEntity
 			endif

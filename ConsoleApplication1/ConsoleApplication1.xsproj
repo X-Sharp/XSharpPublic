@@ -32,7 +32,7 @@
     <VO10>false</VO10>
     <VO11>false</VO11>
     <VO12>false</VO12>
-    <VO13>false</VO13>
+    <VO13>true</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
@@ -59,7 +59,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
@@ -81,7 +81,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>true</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>True</Prefer32Bit>
     <DebuggerCommand>$(TargetPath)</DebuggerCommand>

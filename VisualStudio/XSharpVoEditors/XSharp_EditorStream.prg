@@ -1,7 +1,7 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Text
-
+using XSharp.VODesigners
 USING Xide
 
 // inherits from vulcan's EditorStream
@@ -94,7 +94,9 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				lSuccess := TRUE
 				oWriter:Flush()
 			CATCH e as Exception
-				System.Diagnostics.Debug.WriteLine(e:Message)
+                if System.Diagnostics.Debugger:IsAttached
+					System.Diagnostics.Debug.WriteLine(e:Message)
+				endif
 			FINALLY
 				SELF:oStream:Close()
 			END TRY

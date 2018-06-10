@@ -2,8 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <ProjectGuid>875A0D48-7860-4C98-B24E-F316D418B864</ProjectGuid>
+    <ProjectGuid>70BB4A7D-5886-43A4-8E1A-6A48436BF4EE</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Email</RootNamespace>
@@ -40,8 +39,10 @@
     <VO13>true</VO13>
     <VO14>false</VO14>
     <VO15>true</VO15>
+    <VO16>true</VO16>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -50,34 +51,32 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
+    <PPO>false</PPO>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -103,12 +102,12 @@
     <Reference Include="VulcanVOWin32APILibrary">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="SDK_Defines.dll">
-      <Name>SDK_Defines.dll</Name>
-      <AssemblyName>SDK_Defines.dll.dll</AssemblyName>
+    <Reference Include="SDK_DEFINES.dll">
+      <Name>SDK_DEFINES.dll</Name>
+      <AssemblyName>SDK_DEFINES.dll.dll</AssemblyName>
       <SpecificVersion>false</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\\SDK_Defines.dll</HintPath>
+      <HintPath>..\SDK_DEFINES.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -121,18 +120,18 @@
     <NativeResource Include="WINDOW Email Window Main.EmailWindowMain.rc">
       <DependentUpon>WINDOW Email Window Main.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Email Window Main.EmailWindowMain.xsfrm">
-  <DependentUpon>WINDOW Email Window Main.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Email Window Main.EmailWindowMain.xsfrm">
+      <DependentUpon>WINDOW Email Window Main.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="WINDOW Configure.prg">
       <SubType>Code</SubType>
     </Compile>
     <NativeResource Include="WINDOW Configure.EmailConfig.rc">
       <DependentUpon>WINDOW Configure.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Configure.EmailConfig.xsfrm">
-  <DependentUpon>WINDOW Configure.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Configure.EmailConfig.xsfrm">
+      <DependentUpon>WINDOW Configure.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="CLASS RegSetup.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -181,9 +180,9 @@
     <NativeResource Include="WINDOW Email Address Book.EmailAddressBook.rc">
       <DependentUpon>WINDOW Email Address Book.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Email Address Book.EmailAddressBook.xsfrm">
-  <DependentUpon>WINDOW Email Address Book.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Email Address Book.EmailAddressBook.xsfrm">
+      <DependentUpon>WINDOW Email Address Book.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="WINDOW Address From Book.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -193,12 +192,12 @@
     <NativeResource Include="WINDOW Address From Book.Lookup.rc">
       <DependentUpon>WINDOW Address From Book.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Address From Book.AddressFrombook.xsfrm">
-  <DependentUpon>WINDOW Address From Book.prg</DependentUpon>
-</VOBinary>
-<VOBinary Include="WINDOW Address From Book.Lookup.xsfrm">
-  <DependentUpon>WINDOW Address From Book.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Address From Book.AddressFrombook.xsfrm">
+      <DependentUpon>WINDOW Address From Book.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="WINDOW Address From Book.Lookup.xsfrm">
+      <DependentUpon>WINDOW Address From Book.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="MyPop.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -217,27 +216,27 @@
     <NativeResource Include="WINDOW Choose Download.ChooseDownloadDialog.rc">
       <DependentUpon>WINDOW Choose Download.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Choose Download.ChooseDownloadDialog.xsfrm">
-  <DependentUpon>WINDOW Choose Download.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Choose Download.ChooseDownloadDialog.xsfrm">
+      <DependentUpon>WINDOW Choose Download.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="WINDOW Email Display.prg">
       <SubType>Code</SubType>
     </Compile>
     <NativeResource Include="WINDOW Email Display.EmailDisplayDialog.rc">
       <DependentUpon>WINDOW Email Display.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Email Display.EmailDisplayDialog.xsfrm">
-  <DependentUpon>WINDOW Email Display.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Email Display.EmailDisplayDialog.xsfrm">
+      <DependentUpon>WINDOW Email Display.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="WINDOW Email Compose.prg">
       <SubType>Code</SubType>
     </Compile>
     <NativeResource Include="WINDOW Email Compose.EmailComposeDialog.rc">
       <DependentUpon>WINDOW Email Compose.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Email Compose.EmailComposeDialog.xsfrm">
-  <DependentUpon>WINDOW Email Compose.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Email Compose.EmailComposeDialog.xsfrm">
+      <DependentUpon>WINDOW Email Compose.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="WINDOW Attachment dialogs.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -247,12 +246,12 @@
     <NativeResource Include="WINDOW Attachment dialogs.AttachmentsDialog.rc">
       <DependentUpon>WINDOW Attachment dialogs.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Attachment dialogs.AttachmentsDialog.xsfrm">
-  <DependentUpon>WINDOW Attachment dialogs.prg</DependentUpon>
-</VOBinary>
-<VOBinary Include="WINDOW Attachment dialogs.AttachmentAskDialog.xsfrm">
-  <DependentUpon>WINDOW Attachment dialogs.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Attachment dialogs.AttachmentsDialog.xsfrm">
+      <DependentUpon>WINDOW Attachment dialogs.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="WINDOW Attachment dialogs.AttachmentAskDialog.xsfrm">
+      <DependentUpon>WINDOW Attachment dialogs.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="CLASS AttachmentListView.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -262,7 +261,7 @@
     <NativeResource Include="Menus.EmailBrowserContextMenu.rc">
       <DependentUpon>Menus.prg</DependentUpon>
     </NativeResource>
-<NativeResource Include="Menus.ComposeEmailContextmenu.rc">
+    <NativeResource Include="Menus.ComposeEmailContextmenu.rc">
       <DependentUpon>Menus.prg</DependentUpon>
     </NativeResource>
     <NativeResource Include="Menus.ReplyMenu.rc">
@@ -271,18 +270,18 @@
     <NativeResource Include="Menus.SaveAttachmentsContextMenu.rc">
       <DependentUpon>Menus.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="Menus.EmailBrowserContextMenu.xsmnu">
-  <DependentUpon>Menus.prg</DependentUpon>
-</VOBinary>
-<VOBinary Include="Menus.SaveAttachmentsContextMenu.xsmnu">
-  <DependentUpon>Menus.prg</DependentUpon>
-</VOBinary>
-<VOBinary Include="Menus.ComposeEmailContextmenu.xsmnu">
-  <DependentUpon>Menus.prg</DependentUpon>
-</VOBinary>
-<VOBinary Include="Menus.ReplyMenu.xsmnu">
-  <DependentUpon>Menus.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="Menus.EmailBrowserContextMenu.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Menus.SaveAttachmentsContextMenu.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Menus.ComposeEmailContextmenu.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Menus.ReplyMenu.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="CLASS WebBrowser.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -292,9 +291,9 @@
     <NativeResource Include="WINDOW Email Properties Dial.EmailPropertiesDialog.rc">
       <DependentUpon>WINDOW Email Properties Dial.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Email Properties Dial.EmailPropertiesDialog.xsfrm">
-  <DependentUpon>WINDOW Email Properties Dial.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Email Properties Dial.EmailPropertiesDialog.xsfrm">
+      <DependentUpon>WINDOW Email Properties Dial.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="MyStorage.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -307,18 +306,18 @@
     <NativeResource Include="WINDOW Progress Window.ProgressWindow_Vo.rc">
       <DependentUpon>WINDOW Progress Window.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Progress Window.ProgressWindow_Vo.xsfrm">
-  <DependentUpon>WINDOW Progress Window.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Progress Window.ProgressWindow_Vo.xsfrm">
+      <DependentUpon>WINDOW Progress Window.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="WINDOW Viewer.prg">
       <SubType>Code</SubType>
     </Compile>
     <NativeResource Include="WINDOW Viewer.ViewerDlg.rc">
       <DependentUpon>WINDOW Viewer.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Viewer.ViewerDlg.xsfrm">
-  <DependentUpon>WINDOW Viewer.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Viewer.ViewerDlg.xsfrm">
+      <DependentUpon>WINDOW Viewer.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="CLASS MailTreeView.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -340,13 +339,14 @@
     <NativeResource Include="WINDOW Help About.POWVOBMP.rc">
       <DependentUpon>WINDOW Help About.prg</DependentUpon>
     </NativeResource>
-<VOBinary Include="WINDOW Help About.HELPABOUT.xsfrm">
-  <DependentUpon>WINDOW Help About.prg</DependentUpon>
-</VOBinary>
+    <VOBinary Include="WINDOW Help About.HELPABOUT.xsfrm">
+      <DependentUpon>WINDOW Help About.prg</DependentUpon>
+    </VOBinary>
     <Compile Include="CLASS Container.prg">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>

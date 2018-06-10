@@ -213,7 +213,7 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 	SWITCH n:_UsualType
 	CASE usualType.Int64
 	case usualType.Long
-      ret := ConversionHelpers.FormatNumber( (int64) n, RuntimeState.Digits, 0):Trim()	
+      ret := ConversionHelpers.FormatNumber( (int64) n, (int) RuntimeState.Digits, 0):Trim()	
 	Case UsualType.Date
       ret := AsString( n )
     CASE UsualType.Float
@@ -518,7 +518,7 @@ FUNCTION Str1(f AS USUAL) AS STRING
 	if f:IsFloat
 		return ConversionHelpers.AdjustDecimalSeparator(_Str1( (float) f))
 	ELSE
-		return ConversionHelpers.FormatNumber( (long) f, RuntimeState.Digits, 0):Trim()
+		return ConversionHelpers.FormatNumber( (long) f, (int) RuntimeState.Digits, 0):Trim()
 	ENDIF
 		
 INTERNAL function _Str1(f as float) as string
@@ -526,10 +526,10 @@ INTERNAL function _Str1(f as float) as string
 	VAR nDigits   := f:Digits
 	var ltrim	  := FALSE
 	if nDecimals < 0
-		nDecimals := RuntimeState.Decimals
+		nDecimals := (short) RuntimeState.Decimals
 	ENDIF
 	if nDigits <= 0
-		nDigits := RuntimeState.Digits
+		nDigits := (short) RuntimeState.Digits
 		ltrim   := true
 	endif
 	VAR result := ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
@@ -558,7 +558,7 @@ INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
    ENDIF
    var nDecimals := f:decimals
 	if nDecimals < 0
-		nDecimals := RuntimeState.Decimals
+		nDecimals := (short) RuntimeState.Decimals
 	endif
    RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, nDecimals)
  
@@ -629,24 +629,98 @@ RETURN result
 /// <returns>
 /// </returns>
 function Val(cNumber as string) as Usual
-	cNumber := cNumber:Trim()
+	cNumber := cNumber:Trim():ToUpper()
 	IF String.IsNullOrEmpty(cNumber)
 		RETURN 0
 	ENDIF
-	LOCAL cDec AS CHAR
-	cDec := (CHAR) SetDecimalSep()
-	IF cNumber:Contains(cDec:ToString()) .or. cNumber:ToUpper():Contains("E") .or. cNumber:Contains(".")
+	// find non numeric characters in cNumber and trim the field to that length
+	VAR pos := 0
+	VAR done := FALSE
+	VAR hex  := FALSE
+	VAR hasdec := FALSE
+	var hasexp := false
+	var cDec := (CHAR) SetDecimalSep()
+	if cDec != '.'
+		cNumber := cNumber:Replace(cDec, '.')
+	ENDIF
+	FOREACH var c IN cNumber
+		SWITCH c
+		CASE '0' 
+		case '1'
+		case '2'
+		case '3'
+		case '4'
+		case '5'
+		case '6'
+		case '7'
+		case '8'
+		CASE '9'
+		CASE '-'
+		CASE '+'
+			NOP
+		CASE '.'
+		CASE ','
+			IF hasdec
+				done := true
+			else
+				hasdec := TRUE
+			endif
+		CASE 'A' 
+		CASE 'B' 
+		CASE 'C' 
+		CASE 'D' 
+		CASE 'F' 
+			IF !hex
+				done := TRUE
+			endif
+		CASE 'E' 
+			// exponentional notation only allowed if decimal separator was there
+			if hasdec
+				hasexp := true
+			ELSE
+				done := true
+			endif
+		CASE 'L'	// LONG result
+		CASE 'U'	// DWORD result
+			done := TRUE
+		CASE 'X' 
+			IF pos == 1
+				hex := true
+			else
+				done := true
+			endif	
+		OTHERWISE
+			done := TRUE
+		end switch
+		IF done
+			EXIT
+		endif
+		pos += 1
+	NEXT
+	IF pos < cNumber:Length
+		cNumber := cNumber:SubString(0, pos)
+	endif
+	IF cNumber:IndexOfAny(<Char> {'.'}) > -1
 		local r8Result := 0 as Real8
 		if cDec != '.'
 			cNumber := cNumber:Replace(cDec, '.')
 		ENDIF
-		VAR style := NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent |  NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowThousands
+		VAR style := NumberStyles.Number
+		IF hasexp
+			style |= NumberStyles.AllowExponent
+		ENDIF
 		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
 			RETURN r8Result
 		endif
 	ELSE
 		LOCAL iResult := 0 AS INT64
-		VAR style := NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier
+		LOCAL style AS NumberStyles
+		IF hex
+			cNumber := cNumber:Substring(2)
+			style := NumberStyles.HexNumber 
+		ELSE
+			style := NumberStyles.Integer
+		ENDIF
 		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
 			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
 				RETURN (INT) iResult

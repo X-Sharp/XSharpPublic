@@ -106,6 +106,20 @@ function FWriteText(pHandle ,c ,nCount ) as dword CLIPPER
 		return XSharp.Core.Functions.FWriteText3(pHandle, c, nCount)
 	endif 
 
+/// <summary>
+/// Break a path name into its components.
+/// </summary>
+/// <param name="cPath"></param>
+/// <param name="cDrive"></param>
+/// <param name="cDir"></param>
+/// <param name="cName"></param>
+/// <param name="cExt"></param>
+/// <returns>
+/// </returns>
+FUNCTION SplitPath(cPath AS STRING,cDrive REF STRING,cDir REF STRING,cName REF STRING,cExt REF STRING) AS VOID
+   _SplitPath(cPath, out cDrive, out cDir, out cName, out cExt)
+	return
+
 
 /// <summary>
 /// Break a path name into its components.
@@ -126,17 +140,17 @@ function SplitPath(pszPath as Psz,pszDrive as Psz,pszDir as Psz,pszName as Psz,p
    cPath := Psz2String(pszPath)
    _SplitPath(cPath, out cDrive, out cDir, out cName, out cExt)
 	if pszDrive != null_psz
-		MemCopyString(pszDrive, cDrive, (DWORD) pszLen(pszDrive)+1)
+		MemCopyString(pszDrive, cDrive, (DWORD) Slen(cDrive)+1)
 	endif
 	if pszDir != null_psz
-		MemCopyString(pszDir, cDir, (DWORD) pszLen(pszDir)+1)
+		MemCopyString(pszDir, cDir, (DWORD) Slen(cDir)+1)
 	endif
 	if pszName != null_psz
-		MemCopyString(pszName, cName, (DWORD) pszLen(pszName)+1)
+		MemCopyString(pszName, cName, (DWORD) Slen(cName)+1)
 	endif
 	if pszExt != null_psz
-		MemCopyString(pszExt, cExt, (DWORD) pszLen(pszExt)+1)
+		MemCopyString(pszExt, cExt, (DWORD) Slen(cExt)+1)
 	endif
 
 
-	return
+//	return

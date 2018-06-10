@@ -16,8 +16,8 @@
     <Name>Documentation</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
-    <OutputPath>Help\</OutputPath>
-    <HtmlHelpName>XSharpRuntime</HtmlHelpName>
+    <OutputPath>Binaries\Help\</OutputPath>
+    <HtmlHelpName>XsRuntime</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.Core\XSharp.Core.XML" />
@@ -30,40 +30,84 @@
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
-    <NamespaceGrouping>False</NamespaceGrouping>
+    <NamespaceGrouping>True</NamespaceGrouping>
     <Preliminary>False</Preliminary>
-    <SdkLinkTarget>Self</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
-    <CleanIntermediates>False</CleanIntermediates>
+    <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>True</IndentHtml>
-    <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
+    <IndentHtml>False</IndentHtml>
+    <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, Protected, ProtectedInternalAsProtected, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <ApiFilter>
-      <Filter entryType="Namespace" fullName="" isExposed="False">
-        <Filter entryType="Class" fullName="Functions" isExposed="False">
-        </Filter>
-      </Filter>
+      <Filter entryType="Namespace" fullName="" isExposed="False" />
       <Filter entryType="Namespace" fullName="XSharp" isExposed="True">
-        <Filter entryType="Structure" fullName="XSharp.FixedMemBlockEnd" filterName="FixedMemBlockEnd" isExposed="False" />
-        <Filter entryType="Structure" fullName="XSharp.FixedMemBlockStart" filterName="FixedMemBlockStart" isExposed="False" />
+        <Filter entryType="Structure" fullName="XSharp.__Psz" filterName="__Psz" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.__Psz.DebuggerString" filterName="DebuggerString" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Psz.Equals" filterName="Equals" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Psz.Free" filterName="Free" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Psz._NULL_PSZ" filterName="_NULL_PSZ" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Psz.Address" filterName="Address" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Psz.IsEmpty" filterName="IsEmpty" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Psz.IsNull" filterName="IsNull" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Psz.Item" filterName="Item" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Psz.Length" filterName="Length" isExposed="False" />
+        </Filter>
+        <Filter entryType="Structure" fullName="XSharp.__Symbol" filterName="__Symbol" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.__Symbol.Clone" filterName="Clone" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Symbol.Equals" filterName="Equals" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Symbol.SysGetAtomName" filterName="SysGetAtomName" isExposed="False" />
+        </Filter>
+        <Filter entryType="Structure" fullName="XSharp.__Usual" filterName="__Usual" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.__Usual.AsString" filterName="AsString" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Usual.Clone" filterName="Clone" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Usual.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__Usual.ToObject" filterName="ToObject" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__Usual.Value" filterName="Value" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.__Usual._NIL" filterName="_NIL" isExposed="False" />
+        </Filter>
+        <Filter entryType="Structure" fullName="XSharp.__VODate" filterName="__VODate" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.__VODate.Add" filterName="Add" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VODate.FromDateTime" filterName="FromDateTime" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VODate.NullDate" filterName="NullDate" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VODate.Subtract" filterName="Subtract" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VODate.ToDateTime" filterName="ToDateTime" isExposed="False" />
+          <Filter entryType="Property" fullName="XSharp.__VODate.Value" filterName="Value" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.__VODate._dtCalc" filterName="_dtCalc" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.__VODate._NULL_DATE" filterName="_NULL_DATE" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.__VODate.VO_MAX_DATE" filterName="VO_MAX_DATE" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.__VODate.VO_MIN_DATE" filterName="VO_MIN_DATE" isExposed="False" />
+        </Filter>
+        <Filter entryType="Structure" fullName="XSharp.__VOFloat" filterName="__VOFloat" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.__VOFloat.Add" filterName="Add" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VOFloat.CastToInt" filterName="CastToInt" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VOFloat.CastToInt64" filterName="CastToInt64" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VOFloat.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
+          <Filter entryType="Method" fullName="XSharp.__VOFloat.Subtract" filterName="Subtract" isExposed="False" />
+        </Filter>
+        <Filter entryType="Structure" fullName="XSharp.__WinBool" filterName="__WinBool" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.__WinBool.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="XSharp._CodeBlock" filterName="_CodeBlock" isExposed="True">
+          <Filter entryType="Field" fullName="XSharp._CodeBlock._cMacro" filterName="_cMacro" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp._CodeBlock._innerBlock" filterName="_innerBlock" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp._CodeBlock._lIsBlock" filterName="_lIsBlock" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="XSharp.CodeBlock" filterName="CodeBlock" isExposed="True">
+          <Filter entryType="Method" fullName="XSharp.CodeBlock._BlockArg" filterName="_BlockArg" isExposed="False" />
+        </Filter>
         <Filter entryType="Class" fullName="XSharp.FixedMemory" filterName="FixedMemory" isExposed="False" />
         <Filter entryType="Class" fullName="XSharp.OleAutoObject" filterName="OleAutoObject" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIvarGet" filterName="__OleIvarGet" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIVarPut" filterName="__OleIVarPut" isExposed="False" />
           <Filter entryType="Property" fullName="XSharp.OleAutoObject.__ComObject" filterName="__ComObject" isExposed="False" />
         </Filter>
-        <Filter entryType="Class" fullName="XSharp.RuntimeState" filterName="RuntimeState" isExposed="True" />
-      </Filter>
-      <Filter entryType="Namespace" fullName="XSharp.Core" isExposed="False">
-        <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True">
-        </Filter>
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.IO" isExposed="False" />
-      <Filter entryType="Namespace" fullName="XSharp.VO" isExposed="False">
+      <Filter entryType="Namespace" fullName="XSharp.VO" isExposed="True">
         <Filter entryType="Class" fullName="XSharp.VO.Functions" filterName="Functions" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.VO.Functions.$Exit" filterName="$Exit" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.$Init1" filterName="$Init1" isExposed="False" />
@@ -171,7 +215,7 @@
         </component>
       </ComponentConfig>
     </ComponentConfigurations>
-    <MissingTags>None</MissingTags>
+    <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
       <Argument Key="logoHeight" Value="50" />
@@ -186,9 +230,9 @@
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
-    <BinaryTOC>False</BinaryTOC>
+    <BinaryTOC>True</BinaryTOC>
     <IncludeFavorites>True</IncludeFavorites>
-    <WebsiteSdkLinkType>None</WebsiteSdkLinkType>
+    <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
     <FeedbackEMailAddress>info%40xsharp..eu</FeedbackEMailAddress>
     <FeedbackEMailLinkText>info%40xsharp..eu</FeedbackEMailLinkText>
@@ -200,15 +244,15 @@
     <RootNamespaceTitle>XSharp Runtime Documentation</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2018 XSharp BV, All rights reserved</CopyrightText>
-    <BuildLogFile>C:\XSharp\DevRt\Help\BuildLog.log</BuildLogFile>
+    <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
     <VendorName>XSharp</VendorName>
     <ProductTitle>XSharp</ProductTitle>
-    <TocParentId>-1</TocParentId>
+    <TocParentId>xshelp_x-reference</TocParentId>
     <TocParentVersion>100</TocParentVersion>
     <TopicVersion>100</TopicVersion>
-    <MSHelpViewerSdkLinkType>None</MSHelpViewerSdkLinkType>
+    <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
     <CatalogName>VisualStudio14</CatalogName>
     <ProjectSummary>This is the generated documentation for the XSharp Runtime.&amp;lt%3bbr/&amp;gt%3b
 Please note that DotNet does not know the concept of a function. Therefore the compiler converts functions to static methods of a compiler generated functions class. &amp;lt%3bbr/&amp;gt%3b
@@ -235,6 +279,8 @@ The best way to do that is :&amp;lt%3bbr/&amp;gt%3b
 Of course you can also discuss issues you have or send us your comments on the forum &amp;lt%3ba href=&amp;quot%3bhttps://www.xsharp.info&amp;quot%3b  _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon our website &amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr/&amp;gt%3b
 Finally, if you like what you are seeing, you can help to support the X# development by subscribing to the &amp;quot%3bFriends Of XSharp&amp;quot%3b %28FOX%29 program. &amp;lt%3bbr/&amp;gt%3b
 More information about that program can be found at our website as well.&amp;lt%3bbr/&amp;gt%3b</ProjectSummary>
+    <WorkingPath>Binaries\obj\Help\</WorkingPath>
+    <SearchResultsDisplayVersion>X# Runtime</SearchResultsDisplayVersion>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

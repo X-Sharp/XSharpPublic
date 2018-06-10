@@ -1,7 +1,25 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Email", "Email\Email.xsproj", "{875A0D48-7860-4C98-B24E-F316D418B864}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Email", "Email\Email.xsproj", "{70BB4A7D-5886-43A4-8E1A-6A48436BF4EE}"
 EndProject
-
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70BB4A7D-5886-43A4-8E1A-6A48436BF4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BB4A7D-5886-43A4-8E1A-6A48436BF4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BB4A7D-5886-43A4-8E1A-6A48436BF4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BB4A7D-5886-43A4-8E1A-6A48436BF4EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A88D1EC-F7FB-4625-8FA8-55DD6FA737FE}
+	EndGlobalSection
+EndGlobal

@@ -2,8 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <ProjectGuid>586A9E7D-64DE-4557-831D-4F228E16B010</ProjectGuid>
+    <ProjectGuid>7023F87A-0EFF-4860-9A26-16F101AA5FFC</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Pizza</RootNamespace>
@@ -40,8 +39,10 @@
     <VO13>true</VO13>
     <VO14>false</VO14>
     <VO15>true</VO15>
+    <VO16>true</VO16>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -50,34 +51,31 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
+    <PPO>false</PPO>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <Import Project="$(MsBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -97,12 +95,12 @@
     <Reference Include="VulcanVOWin32APILibrary">
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="SDK_Defines.dll">
-      <Name>SDK_Defines.dll</Name>
-      <AssemblyName>SDK_Defines.dll.dll</AssemblyName>
+    <Reference Include="SDK_DEFINES.dll">
+      <Name>SDK_DEFINES.dll</Name>
+      <AssemblyName>SDK_DEFINES.dll.dll</AssemblyName>
       <SpecificVersion>false</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\\SDK_Defines.dll</HintPath>
+      <HintPath>..\SDK_DEFINES.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

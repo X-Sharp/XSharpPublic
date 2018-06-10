@@ -28,6 +28,7 @@ using XSharpColorizer;
 using XSharpModel;
 using XSharpLanguage;
 using System.Linq;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharp.Project
 {
@@ -45,7 +46,7 @@ namespace XSharp.Project
 
         ITextStructureNavigator m_navigator;
         IBufferTagAggregatorFactoryService _aggregator;
-
+        OptionsPages.IntellisenseOptionsPage _optionsPage;
 
 
 
@@ -60,6 +61,9 @@ namespace XSharp.Project
             _completionBroker = completionBroker;
             _signatureBroker = signatureBroker;
             _aggregator = aggregator;
+            var package = XSharpProjectPackage.Instance;
+            _optionsPage = package.GetIntellisenseOptionsPage();
+
         }
 
         private char GetTypeChar(IntPtr pvaIn)
@@ -70,7 +74,7 @@ namespace XSharp.Project
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             bool handled = false;
-            bool completeAndStart = false;
+            //bool completeAndStart = true;
             int hresult = VSConstants.S_OK;
 
             // 1. Pre-process
@@ -86,14 +90,14 @@ namespace XSharp.Project
                         handled = StartCompletionSession(nCmdID, '\0');
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
-                        handled = CompleteCompletionSession(false);
+                        handled = CompleteCompletionSession();
                         break;
                     case VSConstants.VSStd2KCmdID.UP:
                     case VSConstants.VSStd2KCmdID.DOWN:
                         //FormatLine(false);
                         break;
                     case VSConstants.VSStd2KCmdID.TAB:
-                        handled = CompleteCompletionSession(true);
+                        handled = CompleteCompletionSession();
                         break;
                     case VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
@@ -142,6 +146,11 @@ namespace XSharp.Project
                     case VSConstants.VSStd97CmdID.GotoDefn:
                         GotoDefn();
                         return VSConstants.S_OK;
+                    case VSConstants.VSStd97CmdID.Undo:
+                    case VSConstants.VSStd97CmdID.Redo:
+                        CancelSignatureSession();
+                        CancelCompletionSession();
+                        break;
                 }
             }
 
@@ -159,14 +168,18 @@ namespace XSharp.Project
                             char ch = GetTypeChar(pvaIn);
                             if (_completionSession != null)
                             {
-                                if (completeAndStart)
-                                {
-                                    StartCompletionSession(nCmdID, ch);
-                                }
+                                //if (completeAndStart)
+                                //{
+                                //    StartCompletionSession(nCmdID, ch);
+                                //}
                                 if (Char.IsLetterOrDigit(ch) || ch == '_')
-                                    Filter();
+                                    FilterCompletionSession(ch);
                                 else
+                                {
                                     CancelCompletionSession();
+                                    if ((ch == ':') || (ch == '.'))
+                                        StartCompletionSession(nCmdID, ch);
+                                }
                                 //
                             }
                             else
@@ -184,22 +197,21 @@ namespace XSharp.Project
                                         break;
                                     case ')':
                                     case '}':
-                                        if (_signatureSession != null)
-                                        {
-                                            _signatureSession.Dismiss();
-                                            _signatureSession = null;
-                                        }
+                                        CancelSignatureSession();
                                         break;
                                     case ',':
-                                        StartSignatureSession(true);
+                                        //StartSignatureSession(true);
                                         break;
                                     default:
+                                        if (_optionsPage.ShowAfterChar)
+                                            if (Char.IsLetterOrDigit(ch) || ch == '_')
+                                                StartCompletionSession(nCmdID, '\0');
                                         break;
                                 }
                             }
                             break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
-                            Filter();
+                            FilterCompletionSession('\0');
                             break;
 #if SMARTINDENT
                         case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
@@ -207,10 +219,15 @@ namespace XSharp.Project
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
-                            FormatLine(true);
+                            if (!handled)
+                            {
+                                CancelSignatureSession();
+                                FormatLine(true);
+                            }
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;
+
                     }
                 }
             }
@@ -229,6 +246,7 @@ namespace XSharp.Project
 }
          * */
 
+        #region Goto Definition
 
         private void GotoDefn()
         {
@@ -238,17 +256,19 @@ namespace XSharp.Project
                 // First, where are we ?
                 int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
                 int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
-                String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+                var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
                     return;
+                // Check if we can get the member where we are
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file);
-                // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
-                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
+
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 XSharpLanguage.CompletionElement gotoElement;
                 String currentNS = "";
@@ -256,20 +276,29 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                bool done = false;
-                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
                 //
-                if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber);
+                //
+                if (gotoElement != null)
                 {
-                    // Ok, find it ! Let's go ;)
-                    done = true;
+                    if (gotoElement.XSharpElement != null)
+                    {
+                        // Ok, find it ! Let's go ;)
+                        gotoElement.XSharpElement.OpenEditor();
+                        return;
+                    }
+                    else if (gotoElement.SystemElement != null)
+                    {
+                        gotoObjectBrowser(gotoElement.SystemElement);
+                        return;
+                    }
                 }
                 //
-                if (!done && tokenList.Count > 1)
+                if ( tokenList.Count > 1)
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                    cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber);
                 }
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {
@@ -288,25 +317,72 @@ namespace XSharp.Project
             }
         }
 
-        #region Completion Session
-        private void Filter()
+
+        private void gotoObjectBrowser( MemberInfo mbrInfo )
         {
+            ObjectBrowserHelper.GotoMemberDefinition(mbrInfo.Name);
+        }
+        #endregion
+
+        #region Completion Session
+        private void FilterCompletionSession(char ch)
+        {
+
+            //if ((ch == '\0') && (_completionSession == null))
+            //{
+            //    StartCompletionSession((int)VSConstants.VSStd2KCmdID.COMPLETEWORD, '\0');
+            //    return;
+            //}
+
             if (_completionSession == null)
                 return;
-            //
+
+
+            Trace.WriteLine(" --> in Filter");
             if (_completionSession.SelectedCompletionSet != null)
             {
+                Trace.WriteLine(" --> Filtering ?");
                 _completionSession.SelectedCompletionSet.Filter();
                 if (_completionSession.SelectedCompletionSet.Completions.Count == 0)
                     CancelCompletionSession();
                 else
+                //if (_completionSession.SelectedCompletionSet.Completions.Count > 0)
                 {
+                    Trace.WriteLine(" --> Selecting ");
                     _completionSession.SelectedCompletionSet.SelectBestMatch();
                     _completionSession.SelectedCompletionSet.Recalculate();
                 }
             }
-            //_completionSession.Filter();
+
+            //_completionSession.SelectedCompletionSet.Filter();
+            //_completionSession.SelectedCompletionSet.SelectBestMatch();
+            //_completionSession.SelectedCompletionSet.Recalculate();
+
+            //if (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected &&
+            //    _completionSession.SelectedCompletionSet.SelectionStatus.IsUnique)
+            //{
+            //    string insertedText = _completionSession.SelectedCompletionSet.ApplicableTo.GetText(TextView.TextSnapshot);
+            //    string selectedText = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
+            //    if (insertedText.TrimEnd().Equals(selectedText.TrimEnd(), StringComparison.CurrentCulture))
+            //    {
+            //        _completionSession.Dismiss();
+            //        return;
+            //    }
+            //    if (insertedText.TrimEnd().Equals(selectedText.TrimEnd(), StringComparison.CurrentCultureIgnoreCase))
+            //    {
+            //        _completionSession.Commit();
+            //        return;
+            //    }
+            //}
+
+            //if (!_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected)
+            //{
+            //    _completionSession.Dismiss();
+            //    StartCompletionSession((int)VSConstants.VSStd2KCmdID.COMPLETEWORD, '\0');
+            //}
+
         }
+
 
         bool CancelCompletionSession()
         {
@@ -318,22 +394,45 @@ namespace XSharp.Project
             return true;
         }
 
-        bool CompleteCompletionSession(bool force)
+        bool CompleteCompletionSession()
         {
             if (_completionSession == null)
                 return false;
+            Trace.WriteLine(" --> in Complete");
             if (_completionSession.SelectedCompletionSet != null)
             {
-                if (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected || force)
+                if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
+                    Trace.WriteLine(" --> Commit");
                     //
                     _completionSession.Commit();
                     return true;
                 }
             }
+            Trace.WriteLine(" --> Dismiss");
             _completionSession.Dismiss();
             return false;
         }
+
+        private bool cursorIsAfterSLComment(SnapshotPoint caret)
+        {
+
+            ////////////////////////////////////////////
+            //
+
+            var line = caret.GetContainingLine();
+
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            var tag = tags.LastOrDefault();
+            if (tag != null && tag.Tag.ClassificationType.Classification.ToLower() == "comment")
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         bool StartCompletionSession(uint nCmdId, char typedChar)
         {
@@ -344,6 +443,9 @@ namespace XSharp.Project
             }
 
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+            if (cursorIsAfterSLComment(caret))
+                return false;
+
             ITextSnapshot snapshot = caret.Snapshot;
 
             if (!_completionBroker.IsCompletionActive(TextView))
@@ -371,6 +473,7 @@ namespace XSharp.Project
             }
             return true;
         }
+
 
         private void OnCompletionSessionCommitted(object sender, EventArgs e)
         {
@@ -443,24 +546,23 @@ namespace XSharp.Project
                 } while (startLineNumber == lineNumber);
                 //
                 caretPos = ssp.Position;
-                String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+                var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
                 XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
                 if (file == null)
                     return false;
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
-                //ITokenStream tokenStream;
-                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true, file);
                 // Check if we can get the member where we are
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, file);
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
                 XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 String currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
                 }
-                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, currentText);
+                cType = XSharpLanguage.XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber);
             }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))
@@ -566,9 +668,6 @@ namespace XSharp.Project
             return Next.QueryStatus(pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
 
-
-
-
     }
 
     static class CommandFilterHelper
@@ -591,6 +690,8 @@ namespace XSharp.Project
             //
             var package = XSharp.Project.XSharpProjectPackage.Instance;
             var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.DisableCaseSynchronization)
+                return;
             int kwCase = optionsPage.KeywordCase;
             bool syncIdentifier = optionsPage.IdentifierCase;
             //
@@ -631,7 +732,7 @@ namespace XSharp.Project
                                 transform = txtInfo.ToTitleCase(keyword.ToLower());
                                 break;
                         }
-                        // Not none, and the tranfsform is not the same as the original
+                        // Not none, and the transform is not the same as the original
                         if (String.Compare(transform, keyword) != 0)
                             editSession.Replace(kwSpan, transform);
                     }
@@ -645,7 +746,8 @@ namespace XSharp.Project
                         string identifier = idSpan.GetText();
                         //
                         XFile _file = buffer.GetFile();
-                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(caret.Position, _file);
+                        var lineNumber = caret.GetContainingLine().LineNumber;
+                        XTypeMember currentMember = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
                         //
                         if (currentMember == null)
                             continue;
@@ -654,12 +756,17 @@ namespace XSharp.Project
                         XVariable element = null;
                         // Search in Parameters
                         if (currentMember.Parameters != null)
-                            element = currentMember.Parameters.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                        {
+                            element = (XVariable)currentMember.Parameters.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
+                        }
                         if (element == null)
                         {
                             // then Locals
-                            if (currentMember.Locals != null)
-                                element = currentMember.Locals.Find(x => XSharpLanguage.XSharpTokenTools.StringEquals(x.Name, identifier));
+                            var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber);
+                            if (locals != null)
+                            {
+                                element = locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
+                            }
                             if (element == null)
                             {
                                 if (currentMember.Parent != null)
@@ -729,5 +836,182 @@ namespace XSharp.Project
 
     }
 
+    
+    internal static class ObjectBrowserHelper
+    {
+
+        /// <summary>
+        ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
+        ///     Otherwise, opens the "Find Symbols" ToolWindow.
+        /// </summary>
+        public static void GotoMemberDefinition(string memberName, uint sreachOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
+        {
+            gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, sreachOptions);
+        }
+
+        public static void GotoClassDefinition(string typeName, uint sreachOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
+        {
+            gotoDefinition(typeName, _LIB_LISTTYPE.LLT_CLASSES, sreachOptions);
+        }
+
+        private static void gotoDefinition(string memberName, _LIB_LISTTYPE libListtype, uint sreachOptions)
+        {
+            if (gotoDefinitionInternal(memberName, libListtype, sreachOptions) == false)
+            {
+                // There was an ambiguity (more than one item found) or no items found at all.
+                if (ObjectBrowserHelper.canFindSymbols(memberName, sreachOptions) == false)
+                {
+                    Debug.WriteLine("Failed to FindSymbol for symbol " + memberName);
+                }
+            }
+        }
+
+        private static bool gotoDefinitionInternal(string typeOrMemberName, _LIB_LISTTYPE symbolType, uint sreachOptions)
+        {
+            IVsSimpleObjectList2 list;
+            if (ObjectBrowserHelper.tryFindSymbol(typeOrMemberName, out list, symbolType, sreachOptions))
+            {
+                int ok;
+                const VSOBJGOTOSRCTYPE whereToGo = VSOBJGOTOSRCTYPE.GS_DEFINITION;
+                //
+                return HResult.Succeeded(list.CanGoToSource(0, whereToGo, out ok)) &&
+                       HResult.Succeeded(ok) &&
+                       HResult.Succeeded(list.GoToSource(0, whereToGo));
+            }
+
+            return false;
+        }
+
+
+        private static IVsSimpleLibrary2 GetXSharpLibrary()
+        {
+            Guid guid = new Guid(XSharpConstants.Library);
+            IVsLibrary2 _library;
+            IVsSimpleLibrary2 simpleLibrary = null;
+            //
+            System.IServiceProvider provider = XSharpProjectPackage.Instance;
+            IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
+            if (mgr != null)
+            {
+                ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out _library));
+                simpleLibrary = _library as IVsSimpleLibrary2;
+            }
+            return simpleLibrary;
+        }
+
+        private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint sreachOptions)
+        {
+            IVsSimpleObjectList2 list;
+            if (ObjectBrowserHelper.tryFindSymbol(memberName, out list, _LIB_LISTTYPE.LLT_MEMBERS, sreachOptions))
+            {
+                return HResult.Succeeded(list.GetSourceContextWithOwnership(0, out fileName, out line));
+            }
+
+            fileName = null;
+            line = 0;
+            return false;
+        }
+
+        /// <summary>
+        ///     Tries to find a member (field/property/event/methods/etc).
+        /// </summary>
+        /// <param name="typeOrMemberName">The type or member we are searching for</param>
+        /// <param name="resultList">An IVsSimpleObjectList2 which contains a single result.</param>
+        /// <param name="symbolType">The type of symbol we are looking for (member/class/etc)</param>
+        /// <returns>
+        ///     True if a unique match was found. False if the member does not exist or there was an ambiguity
+        ///     (more than one member matched the search term).
+        /// </returns>
+        private static bool tryFindSymbol(string typeOrMemberName,
+            out IVsSimpleObjectList2 resultList,
+            _LIB_LISTTYPE symbolType,
+            uint sreachOptions)
+        {
+            try
+            {
+                // The Visual Studio API we're using here breaks with superfulous spaces
+                typeOrMemberName = typeOrMemberName.Replace(" ", "");
+                var library = ObjectBrowserHelper.GetXSharpLibrary();
+                IVsSimpleObjectList2 list;
+                var searchSucceed = HResult.Succeeded(library.GetList2((uint)symbolType,
+                    (uint)_LIB_LISTFLAGS.LLF_USESEARCHFILTER,
+                    createSearchCriteria(typeOrMemberName, sreachOptions),
+                    out list));
+                if (searchSucceed && list != null)
+                {
+                    // Check if there is an ambiguity (where there is more than one symbol that matches)
+                    if (getSymbolNames(list).Distinct().Count() == 1)
+                    {
+                        uint count;
+                        list.GetItemCount(out count);
+                        if (count > 1)
+                        {
+                            int ok;
+                            list.CanDelete((uint)1, out ok);
+                        }
+                        resultList = list;
+                        return true;
+                    }
+                }
+            }
+            catch (AccessViolationException e)
+            {
+                /* eat this type of exception (ripped from original implementation) */
+                Debug.WriteLine(e.Message);
+            }
+
+            resultList = null;
+            return false;
+        }
+
+        private static bool canFindSymbols(string memberName, uint sreachOptions)
+        {
+            System.IServiceProvider provider = XSharpProjectPackage.Instance;
+            IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            var guidSymbolScope = new Guid(XSharpConstants.Library);
+            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, sreachOptions)));
+        }
+
+        private static VSOBSEARCHCRITERIA2[] createSearchCriteria(string typeOrMemberName, uint sreachOptions)
+        {
+            return new[]
+            {
+                new VSOBSEARCHCRITERIA2
+                {
+                    eSrchType = VSOBSEARCHTYPE.SO_PRESTRING,
+                    //grfOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS,
+                    grfOptions = sreachOptions,
+                    szName = typeOrMemberName
+                }
+            };
+        }
+
+        private static IEnumerable<string> getSymbolNames(IVsSimpleObjectList2 list)
+        {
+            uint count;
+            if (HResult.Succeeded(list.GetItemCount(out count)))
+            {
+                for (uint i = 0; i < count; i++)
+                {
+                    object symbol;
+
+                    if (HResult.Succeeded(list.GetProperty(i,
+                        (int)_VSOBJLISTELEMPROPID.VSOBJLISTELEMPROPID_FULLNAME,
+                        out symbol)))
+                    {
+                        yield return (string)symbol;
+                    }
+                }
+            }
+        }
+    }
+
+    internal static class HResult
+    {
+        internal static bool Succeeded(int v)
+        {
+            return (v == VSConstants.S_OK);
+        }
+    }
 
 }

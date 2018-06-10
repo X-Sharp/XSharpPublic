@@ -43,7 +43,7 @@
     <VO11>false</VO11>
     <VO12>false</VO12>
     <VO13>false</VO13>
-    <VO14>false</VO14>
+    <VO14>true</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
@@ -61,6 +61,17 @@
     <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
     <DebuggerWorkingDirectory>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\</DebuggerWorkingDirectory>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths />
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -72,6 +83,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>true</NoStandardDefs>
+    <IncludePaths />
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -110,6 +132,8 @@
     <Compile Include="ConversionTests.prg" />
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="ClipperCallingTests.prg" />
+    <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="MacroTest.prg" />
     <Compile Include="OemTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="ErrorTests.prg" />

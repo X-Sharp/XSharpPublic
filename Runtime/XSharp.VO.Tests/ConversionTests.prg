@@ -47,18 +47,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c := STR3(2.50012,4,2)
 			assert.Equal("2.50", c )  
 
-		[Fact, Trait("Category", "Conversion")];
+		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID
 			LOCAL u AS USUAL
 			u := Val("1.234")
-			Assert.Equal(1.234, (REAL8)(FLOAT) u)
+			Assert.Equal(1.234, (FLOAT) u)
 			SetDecimalSep(44) // ,
 			u := Val("1,234")
-			Assert.Equal(1.234, (Real8)(Float) u)
+			Assert.Equal(1.234, (Float) u)
 			u := Val("1.23E2")
-			Assert.Equal(123, (REAL8)(FLOAT) u)
+			Assert.Equal(123.0, (FLOAT) u)
 			u := Val("1.2345E2")
-			Assert.Equal(123.45, (Real8)(Float) u)
+			Assert.Equal(123.45, (Float) u)
 
 
 	END CLASS

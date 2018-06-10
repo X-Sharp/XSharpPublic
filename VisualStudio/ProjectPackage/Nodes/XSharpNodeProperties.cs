@@ -172,7 +172,7 @@ namespace XSharp.Project
         [SRCategoryAttribute(SR.Misc)]
         [LocDisplayName(SR.Identity)]
         [SRDescriptionAttribute(SR.IdentityDescription)]
-        public string Identity
+        public virtual string Identity
         {
             get
             {
@@ -282,6 +282,14 @@ namespace XSharp.Project
                 return ((ReferenceNode)this.Node).Resolved;
             }
         }
+        [SRCategory(SR.Misc)]
+        [LocDisplayName(SR.EmbedInteropTypes)]
+        [SRDescription(SR.EmbedInteropTypesDescription)]
+        public virtual bool EmbedInteropTypes
+        {
+            get { return ((ReferenceNode)this.Node).EmbedInteropTypes; }
+            set { ((ReferenceNode)this.Node).EmbedInteropTypes = value; }
+        }
 
 
 
@@ -290,10 +298,12 @@ namespace XSharp.Project
     [ComVisible(true)]
     public class XSharpAssemblyReferenceNodeProperties : XSharpReferenceNodeProperties
     {
+        private AssemblyReferenceNode _node;
         #region ctors
         public XSharpAssemblyReferenceNodeProperties(AssemblyReferenceNode node)
             : base(node)
         {
+            _node = node;
         }
         #endregion
 
@@ -324,16 +334,46 @@ namespace XSharp.Project
             }
         }
 
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.Identity)]
+        [SRDescriptionAttribute(SR.IdentityDescription)]
+        public override string Identity
+        {
+            get
+            {
+                string result =_node.GetMsBuildProperty("name");
+                if (string.IsNullOrEmpty(result))
+                    result = base.Identity;
+                return result;
+            }
+        }
+
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.RuntimeVersion)]
+        [SRDescriptionAttribute(SR.RuntimeVersionDescription)]
+        public string RuntimeVersion
+        {
+
+            get
+            {
+                return _node.GetMsBuildProperty("imageruntime");
+            }
+        }
+
+
         #endregion
     }
 
     [ComVisible(true)]
     public class XSharpComReferenceNodeProperties : XSharpReferenceNodeProperties
     {
+        private ComReferenceNode _node;
+
         #region ctors
         public XSharpComReferenceNodeProperties(ComReferenceNode node)
             : base(node)
         {
+            _node = node;
         }
         #endregion
 
@@ -376,15 +416,6 @@ namespace XSharp.Project
             {
                 this.SetProperty(ProjectFileConstants.Isolated, value.ToString());
             }
-        }
-
-        [SRCategory(SR.Misc)]
-        [LocDisplayName(SR.EmbedInteropTypes)]
-        [SRDescription(SR.EmbedInteropTypesDescription)]
-        public virtual bool EmbedInteropTypes
-        {
-            get { return ((ComReferenceNode)this.Node).EmbedInteropTypes; }
-            set { ((ComReferenceNode)this.Node).EmbedInteropTypes = value; }
         }
 
         #endregion

@@ -154,7 +154,8 @@ namespace Microsoft.VisualStudio.Project
 					}
 					catch (Exception e)
 					{
-					  Debug.WriteLine("generator.DefaultExtension failed: " + e.Message);
+                        if (System.Diagnostics.Debugger.IsAttached)
+                            Debug.WriteLine("generator.DefaultExtension failed: " + e.Message);
 					}
 	                    //Find if any dependent node exists
                     string dependentNodeName = Path.GetFileNameWithoutExtension(fileNode.FileName) + extension;
@@ -196,7 +197,8 @@ namespace Microsoft.VisualStudio.Project
                }
                catch (Exception e)
                {
-                  Debug.WriteLine("generator.Generate failed: " + e.Message);
+                        if (System.Diagnostics.Debugger.IsAttached)
+                            Debug.WriteLine("generator.Generate failed: " + e.Message);
                }
                if (outPutSize > 0)
                {

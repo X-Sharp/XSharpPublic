@@ -5,7 +5,7 @@
 //
 
 /// <summary>Base Memo class. Does not implement anything. </summary>
-/// <seealso cref="T:XSharp.IMemo"/>
+/// <seealso cref="T:XSharp.RDD.IMemo"/>
 CLASS XSharp.RDD.BaseMemo Implements IMemo
 	PRIVATE _oArea AS WorkArea
 

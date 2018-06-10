@@ -24,7 +24,6 @@ namespace XSharpModel
         private List<XTypeMember> _members;
         private string _nameSpace;
         private bool _isPartial;
-        private bool _isStatic;
         private string _parentName;
 
         public XType(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position)
@@ -149,23 +148,6 @@ namespace XSharpModel
             }
         }
 
-        public bool IsStatic
-        {
-            get
-            {
-                return _isStatic;
-            }
-
-            set
-            {
-                _isStatic = value;
-            }
-        }
-
-        /// <summary>
-        /// Duplicate the current Object, so we have the same properties in another object
-        /// </summary>
-        /// <returns></returns>
         public XType Duplicate()
         {
             XType temp = new XType(this.Name, this.Kind, this.Modifiers, this.Visibility, this.Range, this.Interval);

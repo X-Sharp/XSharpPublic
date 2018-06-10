@@ -85,8 +85,8 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpBuildPropertyPage))]        // E994C210-9D6D-4CF4-A061-EBBEA2BC626B
     [ProvideObject(typeof(XSharpBuildEventsPropertyPage))]  // 49306259-9119-466E-8780-486CFBE2597D
     [ProvideObject(typeof(XSharpDebugPropertyPage))]        // 2955A638-C389-4675-BB1C-6B2BC173C1E7
-    [ProvideProjectFactory(typeof(XSharpProjectFactory), 
-        LanguageName, ProjectFileMask,ProjectExtension, ProjectExtensions,
+    [ProvideProjectFactory(typeof(XSharpProjectFactory),
+        LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
     [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName)]
@@ -98,24 +98,24 @@ namespace XSharp.Project
     [ProvideLanguageService(typeof(XSharpLanguageService),
                          LanguageName,
                          1,                            // resource ID of localized language name
-                         AutoOutlining =true,
+                         AutoOutlining = true,
                          CodeSense = true,             // Supports IntelliSense
                          CodeSenseDelay = 1000,        // Delay to wait
                          DefaultToInsertSpaces = true,
                          DefaultToNonHotURLs = true,
-                         EnableAdvancedMembersOption =true,
+                         EnableAdvancedMembersOption = true,
                          EnableAsyncCompletion = true, // Supports background parsing
                          EnableCommenting = true,      // Supports commenting out code
-                         EnableLineNumbers =true,
-                         MatchBraces =true,
-                         MatchBracesAtCaret =true,
-                         MaxErrorMessages =10,
+                         EnableLineNumbers = true,
+                         MatchBraces = true,
+                         MatchBracesAtCaret = true,
+                         MaxErrorMessages = 10,
                          QuickInfo = true,
                          RequestStockColors = false,   // Supplies custom colors
-                         ShowCompletion =true,
+                         ShowCompletion = true,
                          ShowDropDownOptions = true,    // Supports NavigationBar 
-                         ShowMatchingBrace =true,
-                        
+                         ShowMatchingBrace = true,
+
 #if SMARTINDENT
                          ShowSmartIndent = true,
                          EnableFormatSelection = true,
@@ -123,11 +123,11 @@ namespace XSharp.Project
                          ShowSmartIndent = false,
                          EnableFormatSelection = false,
 #endif
-                         HideAdvancedMembersByDefault =true,
+                         HideAdvancedMembersByDefault = true,
                          SingleCodeWindowOnly = false,
-                         ShowHotURLs =true,
+                         ShowHotURLs = true,
                          SupportCopyPasteOfHTML = true
-                         
+
                  )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
@@ -146,16 +146,7 @@ namespace XSharp.Project
                  "#201"         // Localized name of property page
                  )]
 
-    /*
-
-    [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", null, @"Code Style", pageNameResourceId: "#114", keywordListResourceId: 313)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.IntelliSenseOptionPage), "CSharp", null, "IntelliSense", pageNameResourceId: "#103", keywordListResourceId: 312)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingOptionPage), "CSharp", "Formatting", "General", pageNameResourceId: "#108", keywordListResourceId: 307)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingIndentationOptionPage), "CSharp", "Formatting", "Indentation", pageNameResourceId: "#109", keywordListResourceId: 308)]
-        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingWrappingPage), "CSharp", "Formatting", "Wrapping", pageNameResour
-    */
-    [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
+     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
         null,
@@ -163,12 +154,12 @@ namespace XSharp.Project
         null,
         LanguageVsTemplate = LanguageName,
         TemplateGroupIDsVsTemplate = "WPF",
-        ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority =100)]
+        ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority = 100)]
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID =109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), FileExtension2, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), PpoExtension, 0x42, DefaultName = EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), HeaderExtension1, 0x42, DefaultName = EditorName, NameResourceID = 109)]
@@ -181,9 +172,9 @@ namespace XSharp.Project
 
     // Editors for VOBinaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
-    [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
-    [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
-    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
+    [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
+    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
     [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
@@ -204,6 +195,7 @@ namespace XSharp.Project
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
         private uint shellCookie;
+        private XSharpLibraryManager _libraryManager;
 
         // =========================================================================================
         // Properties
@@ -229,15 +221,16 @@ namespace XSharp.Project
         }
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
-            var page = (IntellisenseOptionsPage) GetDialogPage(typeof(IntellisenseOptionsPage));
+            var page = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
             return page;
         }
+
         internal IVsTextManager4 GetTextManager()
         {
-            return (IVsTextManager4) GetService(typeof(SVsTextManager));
+            return (IVsTextManager4)GetService(typeof(SVsTextManager));
         }
 
-#region Overridden Implementation
+        #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -292,13 +285,47 @@ namespace XSharp.Project
             // register property changed event handler
             var shell = this.GetService(typeof(SVsShell)) as IVsShell;
             shell.AdviseShellPropertyChanges(this, out shellCookie);
+            //
+            // LibraryManager : Offers Object Browser and ClassView
+            // ObjectBrowser : Add the LibraryManager service as a Service provided by that container
+            IServiceContainer container = this as IServiceContainer;
+            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateService);
+            //
+            container.AddService(typeof(IXSharpLibraryManager), callback, true);
+        }
+
+
+        private object CreateService(IServiceContainer container, Type serviceType)
+        {
+            if (typeof(IXSharpLibraryManager) == serviceType)
+            {
+                return _libraryManager = new XSharpLibraryManager(this);
+            }
+            return null;
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (null != _libraryManager)
+                {
+                    _libraryManager.Dispose();
+                    _libraryManager = null;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
 
         private bool CheckKey(string editor, string extension)
         {
             var root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration);
-            var reg = root.OpenSubKey("editors\\"+editor+"\\Extensions");
+            var reg = root.OpenSubKey("editors\\" + editor + "\\Extensions");
             bool Ok = true;
             if (reg != null)
             {
@@ -312,7 +339,7 @@ namespace XSharp.Project
             return Ok;
         }
 
-         private void validateVulcanEditors()
+        private void validateVulcanEditors()
         {
             // check Vulcan Source code editor keys
             bool Ok = true;
@@ -324,20 +351,20 @@ namespace XSharp.Project
             Ok = Ok && CheckKey(GuidStrings.guidVulcanMenuEditor, "vnmnu");
             Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndbs");
             Ok = Ok && CheckKey(GuidStrings.guidVulcanFsEditor, "vnfs");
-            if (! Ok)
+            if (!Ok)
             {
                 int result = 0;
                 Guid tempGuid = Guid.Empty;
 
                 IVsUIShell VsUiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-                ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations", 
+                ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
                     "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
-                    "Failure to do so may result in unexpected behavior inside Visual Studio", 
+                    "Failure to do so may result in unexpected behavior inside Visual Studio",
                     null, 0,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
                     OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
             }
-            
+
 
 
 
@@ -359,9 +386,9 @@ namespace XSharp.Project
             get { return "XSharp"; }
         }
 
-#endregion
+        #endregion
 
-#region IOleComponent Members
+        #region IOleComponent Members
 
         public int FDoIdle(uint grfidlef)
         {
@@ -374,8 +401,11 @@ namespace XSharp.Project
             {
                 service.OnIdle(bPeriodic);
             }
+            if (_libraryManager != null)
+                _libraryManager.OnIdle();
+
             var walker = XSharpModel.ModelWalker.GetWalker();
-            if (!walker.IsWalkerRunning && walker.HasWork)
+            if (walker != null && !walker.IsWalkerRunning && walker.HasWork)
             {
                 walker.Walk();
             }
@@ -465,7 +495,8 @@ namespace XSharp.Project
         public static void Debug(string msg, params object[] o)
         {
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
+            if (System.Diagnostics.Debugger.IsAttached)
+                System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
 #endif
         }
     }

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -18,7 +17,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -46,7 +45,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CreateVsixContainer>False</CreateVsixContainer>
@@ -56,7 +55,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DeployExtension>False</DeployExtension>
@@ -78,7 +78,6 @@
     <Compile Include="XSharpClassifier.cs" />
     <Compile Include="XSharpClassifierProvider.cs" />
     <Compile Include="XSharpOutlining.cs" />
-    <Compile Include="XSharpRegionDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -121,10 +120,6 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.4.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -137,9 +132,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharpModel\XSharpModel.csproj">
-      <Project>{2c3b9217-e012-4681-97ce-f0a658c40336}</Project>
-      <Name>XSharpModel</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -151,10 +146,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.targets'))" />
   </Target>
-  <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.15.0.26201\build\Microsoft.VSSDK.BuildTools.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -4,15 +4,15 @@
 // See License.txt in the project root for license information.
 //
 
-using XSharp
+USING XSharp
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2Date(c as string) as DATE
-	return (DATE)(DWORD) Bin2L( c )
+FUNCTION Bin2Date(c AS STRING) AS DATE
+	RETURN (DATE)(DWORD) Bin2L( c )
 
 
 
@@ -23,13 +23,13 @@ function Bin2Date(c as string) as DATE
 /// <returns>
 /// A string for the calculated day of the week.
 /// </returns>
-function CDoW(d as DATE) as string		
-	local result := String.Empty as string
-	if d != null
-		local dt := d as Datetime
+FUNCTION CDoW(d AS DATE) AS STRING		
+	LOCAL result := String.Empty AS STRING
+	IF d != NULL
+		LOCAL dt := d AS Datetime
 		result := dt:ToString("dddd")
-	endif
-	return result
+	ENDIF
+	RETURN result
 
 /// <summary>
 /// Extract the name of the month from a Date.
@@ -38,8 +38,8 @@ function CDoW(d as DATE) as string
 /// <returns>
 /// A string with the name of the month.
 /// </returns>
-function CMonth(d as DATE) as string
-	return NTOCMonth( d:DMonth)
+FUNCTION CMonth(d AS DATE) AS STRING
+	RETURN NToCMonth( d:DMonth)
 
 /// <summary>
 /// Format a set of numbers representing a year, month, and day as a Date.
@@ -49,16 +49,16 @@ function CMonth(d as DATE) as string
 /// <param name="dwDay"></param>
 /// <returns>
 /// </returns>
-function ConDate(dwY as dword,dwM as dword,dwDay as dword) as date
-	if dwY < 100
-		local lAfter as logic
+FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
+	IF dwY < 100
+		LOCAL lAfter AS LOGIC
 		lAfter := dwY > XSharp.RuntimeState.EpochYear
 		dwY += XSharp.RuntimeState.EpochCent
-		if lAfter
+		IF lAfter
 			dwY -= 100
-		endif
-	endif
-	return Date{dwY,dwM,dwDay}   
+		ENDIF
+	ENDIF
+	RETURN DATE{dwY,dwM,dwDay}   
 
 /// <summary>
 /// Convert a Date string to DATE format.
@@ -66,8 +66,8 @@ function ConDate(dwY as dword,dwM as dword,dwDay as dword) as date
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-function CToD(cDate as string) as DATE
-	return CTOD(cDate, XSharp.RuntimeState.DateFormat)
+FUNCTION CToD(cDate AS STRING) AS DATE
+	RETURN CToD(cDate, XSharp.RuntimeState.DateFormat)
 
 /// <summary>
 /// Convert a Date string to DATE format using a specified Date Format string
@@ -76,61 +76,61 @@ function CToD(cDate as string) as DATE
 /// <param name="cDateFormat"></param>
 /// <returns>
 /// </returns>
-function CToD(cDate as string, cDateFormat as string) as date
-	local dDate as date
-	local nDay, nMonth, nYear as dword
-	local nDayPos, nMonthPos, nYearPos as int
+FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
+	LOCAL dDate AS DATE
+	LOCAL nDay, nMonth, nYear AS DWORD
+	LOCAL nDayPos, nMonthPos, nYearPos AS INT
 	dDate := (DATE) 0
-	if string.IsNullOrEmpty(cDate) .or. String.IsNullOrEmpty(cDateFormat)
-		return dDate
-	endif
-	local nPos as int
-	local cSep as string
+	IF string.IsNullOrEmpty(cDate) .or. String.IsNullOrEmpty(cDateFormat)
+		RETURN dDate
+	ENDIF
+	LOCAL nPos AS INT
+	LOCAL cSep AS STRING
 	nDayPos := nMonthPos := nYearPos := 0
 	cSep := "./-"
 	nPos := 0
-	foreach c as char in cDateFormat
-		switch c
-		case 'D'
-			if nDayPos == 0
+	FOREACH c AS char IN cDateFormat
+		SWITCH c
+		CASE 'D'
+			IF nDayPos == 0
 				++nPos
 				nDayPos  := nPos
-			endif
-		case 'M'
-			if nMonthPos == 0
+			ENDIF
+		CASE 'M'
+			IF nMonthPos == 0
 				++nPos
 				nMonthPos  := nPos
-			endif
-		case 'Y'
-			if nYearPos == 0
+			ENDIF
+		CASE 'Y'
+			IF nYearPos == 0
 				++nPos
 				nYearPos  := nPos
-			endif
-		otherwise
-			if cSep:IndexOf(c) == -1
+			ENDIF
+		OTHERWISE
+			IF cSep:IndexOf(c) == -1
 				cSep += c:ToString()
-			endif
-		end switch
-	next
-	if nDayPos == 0 .or. nMonthPos == 0 .or. nYearPos == 0
-		return dDate
-	endif
-	try
+			ENDIF
+		END SWITCH
+	NEXT
+	IF nDayPos == 0 .or. nMonthPos == 0 .or. nYearPos == 0
+		RETURN dDate
+	ENDIF
+	TRY
 		// we now know the seperators and the positions in the string
-		local aNums := cDate:Split(cSep:ToCharArray()) as string[]
+		LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
 		nDay   := Uint32.Parse(aNums[nDayPos])
 		nMonth := Uint32.Parse(aNums[nMonthPos])
 		nYear  := Uint32.Parse(aNums[nYearPos])
-		if aNums[nYearPos]:Length < 4
+		IF aNums[nYearPos]:Length < 4
 			// Century missing ?
 			dDate := ConDate(nYear, nMonth, nDay)
-		else
-			dDate := date{nYear, nMonth, nDay}
-		endif
-	catch 
+		ELSE
+			dDate := DATE{nYear, nMonth, nDay}
+		ENDIF
+	CATCH 
 		dDate := (DATE) 0
-	end try
-	return dDate
+	END TRY
+	RETURN dDate
 
 
 /// <summary>
@@ -139,8 +139,8 @@ function CToD(cDate as string, cDateFormat as string) as date
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-function CToDAnsi(cDate as string) as DATE
-	return CTOD(cDate, "YYYY.MM.DD")
+FUNCTION CToDAnsi(cDate AS STRING) AS DATE
+	RETURN CToD(cDate, "YYYY.MM.DD")
 
 
 /// <summary>
@@ -149,8 +149,8 @@ function CToDAnsi(cDate as string) as DATE
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function Date2Bin(d as date) as string
-	return L2Bin((Long) (Date) d)
+FUNCTION Date2Bin(d AS DATE) AS STRING
+	RETURN L2Bin((LONG) (DATE) d)
  
 
 /// <summary>
@@ -160,12 +160,12 @@ function Date2Bin(d as date) as string
 /// <returns>
 /// The day part of the given DATE.
 /// </returns>
-function Day(d as DATE) as dword
-	local day := 0  as dword
-	if ! d:IsEmpty
+FUNCTION Day(d AS DATE) AS DWORD
+	LOCAL day := 0  AS DWORD
+	IF ! d:IsEmpty
 		day :=  d:DDay
-	endif
-	return day
+	ENDIF
+	RETURN day
 
 /// <summary>
 /// Extract the number of the day of the week from a Date.
@@ -174,13 +174,13 @@ function Day(d as DATE) as dword
 /// <returns>
 /// The day of the week of the given DATE.
 /// </returns>
-function DoW(d as DATE) as dword
-	local day := 0  as dword
-	if ! d:IsEmpty
-		local dt := d as Datetime
-		day := (dword) dt:DayOfWeek	   
-	endif
-	return day
+FUNCTION DoW(d AS DATE) AS DWORD
+	LOCAL day := 0  AS DWORD
+	IF ! d:IsEmpty
+		LOCAL dt := d AS Datetime
+		day := (DWORD) dt:DayOfWeek	   
+	ENDIF
+	RETURN day
 
 
 /// <summary>
@@ -190,16 +190,16 @@ function DoW(d as DATE) as dword
 /// <returns>
 /// A string representation of the given Date, formatted in the current Date format.
 /// </returns>
-function DToC(d as DATE) as string
-	local result:="" as string		
-	local cFormat := XSharp.RuntimeState.GetValue<String>(Set.DateFormatNet) as string
-	if ! d:IsEmpty
-		local dt := d as Datetime
+FUNCTION DToC(d AS DATE) AS STRING
+	LOCAL result:="" AS STRING		
+	LOCAL cFormat := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet) AS STRING
+	IF ! d:IsEmpty
+		LOCAL dt := d AS Datetime
 		result := d:ToString(cFormat)
-	else
-		result := XSharp.RuntimeState.GetValue<String>(Set.DateFormatEmpty) 
-	endif
-	return result 
+	ELSE
+		result := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatEmpty) 
+	ENDIF
+	RETURN result 
 
 /// <summary>
 /// Convert a Date value to a string formatted as string in ANSI format
@@ -208,40 +208,40 @@ function DToC(d as DATE) as string
 /// <returns>
 /// The given Date as string in ANSI format
 /// </returns>
-function DToS(d as DATE) as string
-	local result:="        " as string		
-	if ! d:IsEmpty
-		local dt := d as Datetime
+FUNCTION DToS(d AS DATE) AS STRING
+	LOCAL result:="        " AS STRING		
+	IF ! d:IsEmpty
+		LOCAL dt := d AS Datetime
 		result := d:ToString("yyyyMMdd")
-	endif
-	return result 
+	ENDIF
+	RETURN result 
 
 /// <summary>
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function JCDOW(d as DATE) as string
+FUNCTION JCDOW(d AS DATE) AS STRING
 	/// THROW NotImplementedException{}
-	return	 String.Empty   
+	RETURN	 String.Empty   
 
 /// <summary>
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function JCMONTH(d as DATE) as string
+FUNCTION JCMONTH(d AS DATE) AS STRING
 	/// THROW NotImplementedException{}
-	return	 String.Empty   
+	RETURN	 String.Empty   
 
 /// <summary>
 /// </summary>
 /// <param name="d"></param>
 /// <returns>
 /// </returns>
-function JCYEAR(d as DATE) as string
+FUNCTION JCYEAR(d AS DATE) AS STRING
 	/// THROW NotImplementedException{}
-	return	 String.Empty   
+	RETURN	 String.Empty   
 
 /// <summary>
 /// Extract the number of the month from a DATE.
@@ -250,12 +250,12 @@ function JCYEAR(d as DATE) as string
 /// <returns>
 /// The month of the given Date.
 /// </returns>
-function Month(d as DATE) as dword
-	local month := 0  as dword
-	if !d:IsEmpty
+FUNCTION Month(d AS DATE) AS DWORD
+	LOCAL month := 0  AS DWORD
+	IF !d:IsEmpty
 		month :=  d:DMonth
-	endif
-	return month
+	ENDIF
+	RETURN month
 
 
 
@@ -266,14 +266,29 @@ function Month(d as DATE) as dword
 /// <param name="cDate"></param>
 /// <returns>
 /// </returns>
-function SToD(cDate as string) as DATE
-	local convertedDate as DATE
-	try
+FUNCTION SToD(cDate AS STRING) AS DATE
+	LOCAL convertedDate AS DATE
+	TRY
+		IF cDate:Length == 8 .and. cDate[0] == '0' .and. cDate[1] == '0'
+			// VO adjusts date strings like "00yyMMdd" to epoch-based year
+			LOCAL dwY AS DWORD
+			dwY := UInt32.Parse(cDate:Substring(0,4))
+			
+			// same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
+			LOCAL lAfter AS LOGIC
+			lAfter := dwY > XSharp.RuntimeState.EpochYear
+			dwY += XSharp.RuntimeState.EpochCent
+			IF lAfter
+				dwY -= 100
+			ENDIF
+			
+			cDate := dwY:ToString():PadLeft(4 , '0') + cDate:Substring(4)
+		END IF
 		convertedDate := (DATE)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-	catch
+	CATCH
 		convertedDate := DATE{} 
-	end try
-	return	 convertedDate
+	END TRY
+	RETURN	 convertedDate
 
 
 /// <summary>
@@ -281,8 +296,8 @@ function SToD(cDate as string) as DATE
 /// </summary>
 /// <returns>
 /// </returns>
-function Today() as DATE
-	return (DATE) DateTime.Now
+FUNCTION Today() AS DATE
+	RETURN (DATE) DateTime.Now
 
 
 
@@ -292,15 +307,15 @@ function Today() as DATE
 /// <param name="uSeconds"></param>
 /// <returns>
 /// </returns>
-function TString(uSeconds as Usual) as string
-	if uSeconds:IsNil
-		return XSharp.Core.Functions.Tstring( (DWORD) 0 )
-	elseif uSeconds:IsFLoat
-		return XSharp.Core.Functions.TString ( (float) uSeconds)
-	elseif uSeconds:IsInteger
-		return XSharp.Core.Functions.TString ( (dword) uSeconds)
-	endif
-	return String.Empty   
+FUNCTION TString(uSeconds AS USUAL) AS STRING
+	IF uSeconds:IsNil
+		RETURN XSharp.Core.Functions.Tstring( (DWORD) 0 )
+	ELSEIF uSeconds:IsFLoat
+		RETURN XSharp.Core.Functions.TString ( (FLOAT) uSeconds)
+	ELSEIF uSeconds:IsInteger
+		RETURN XSharp.Core.Functions.TString ( (DWORD) uSeconds)
+	ENDIF
+	RETURN String.Empty   
 
 
 
@@ -313,12 +328,12 @@ function TString(uSeconds as Usual) as string
 /// <returns>
 /// The year from the give DATE.
 /// </returns>
-function Year(d as Date) as dword
-	local year := 0  as dword
-	if ! d:IsEmpty
+FUNCTION Year(d AS DATE) AS DWORD
+	LOCAL year := 0  AS DWORD
+	IF ! d:IsEmpty
 		year := d:DYear
-	endif
-	return year
+	ENDIF
+	RETURN year
 
 
 

@@ -129,7 +129,7 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
 	/// <summary>Perform a lock.</summary>
 	/// <param name="uiMode">An object specifying the kind of lock to acquire.</param>
-	METHOD Lock(uiMode AS DBLOCKINFO)		AS LOGIC 
+	METHOD Lock(uiMode REF DBLOCKINFO)		AS LOGIC 
 	/// <summary>Release locks.</summary>
 	/// <param name="oRecId">The row number to unlock.  This argument is provided for drivers that support multiple row locks.  By convention, a value of zero indicates that all rows should be unlocked.</param>
 	METHOD UnLock(oRecId AS OBJECT)			AS LOGIC

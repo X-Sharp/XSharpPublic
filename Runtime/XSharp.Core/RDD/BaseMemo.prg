@@ -14,6 +14,8 @@ CLASS XSharp.RDD.BaseMemo Implements IMemo
 	CONSTRUCTOR(oArea as WorkArea)
 		_oArea := oArea
 
+    VIRTUAL PROPERTY LastWrittenBlockNumber AS LONG AUTO GET SET
+
 	// Read & Write		
 	/// <inheritdoc />
 	VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT

@@ -425,7 +425,7 @@ VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD Lock(uiMode AS DbLockInfo) AS LOGIC
+VIRTUAL METHOD Lock(uiMode REF DbLockInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />

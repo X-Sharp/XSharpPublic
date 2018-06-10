@@ -4,7 +4,7 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 using XSharpModel
-
+using XSharp.VODesigners
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
@@ -170,8 +170,8 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		FOREACH oDesign as FSEDesignFieldSpec in aDesign
 			oCode := GetCodeContents(oDesign)
 			VAR cName := oDesign:GetProperty("classname"):TextValue
-			oGenerator:WriteEntity(EntityType._Class	   , cName , cName , EntityOptions.AddUser, oCode:aClass)
-			oGenerator:WriteEntity(EntityType._Constructor , cName , cName , EntityOptions.None, oCode:aConstructor)
+			oGenerator:WriteEntity(XIde.EntityType._Class	   , cName , cName , EntityOptions.AddUser, oCode:aClass)
+			oGenerator:WriteEntity(XIde.EntityType._Constructor , cName , cName , EntityOptions.None, oCode:aConstructor)
 			oGenerator:WriteEndClass(cName)
 		NEXT
 		
@@ -182,8 +182,8 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		SELF:LoadUsedFieldSpecNames()
 		FOREACH cName as STRING IN aPrevNames
 			IF .not. SELF:aUsedFieldSpecNames:Contains(cName)
-				oGenerator:DeleteEntity(EntityType._Class , cName , cName)
-				oGenerator:DeleteEntity(EntityType._Constructor , cName , cName)
+				oGenerator:DeleteEntity(XIde.EntityType._Class , cName , cName)
+				oGenerator:DeleteEntity(XIde.EntityType._Constructor , cName , cName)
 			END IF
 		NEXT
 		oGenerator:EndCode()

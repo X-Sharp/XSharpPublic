@@ -84,6 +84,15 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get { return string.Empty; }
         }
+        public override bool SpecificVersion => false;
+        public override string RuntimeVersion
+        {
+            get
+            {
+                var project = SourceProject;
+                return project.Properties.Item("TargetFrameworkVersion").Value.ToString();
+            }
+        }
         #endregion
     }
 }

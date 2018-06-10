@@ -1,0 +1,64 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,SubmitDlg
+GUID=8DFB61B2-3E6E-4A2E-A8F2-79E6186E58FA
+  Name=SubmitDlg
+  Class=DIALOGWINDOW
+  Caption=Submit, Prepare and Deliver ...
+  Order=0
+  Left=6
+  Width=373
+  Top=6
+  Height=124
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160593028
+  Exstyles=257
+  Property=HyperLabel=,"Submit, Prepare and Deliver ...",,
+  Property=HyperLabel=#SubmitDlg,,,
+
+SUBCONTROLSSTART
+CONTROL=PROGRESSBAR
+GUID=8FE5251A-0FF7-49D4-86B2-E13B2151396D
+  Name=ProgressBar1
+  Class=PROGRESSBAR
+  Caption=
+  Order=-1
+  Left=16
+  Width=334
+  Top=21
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=131072
+  Property=HyperLabel=,"",,
+  Property=HyperLabel=#ProgressBar1,,,
+
+CONTROL=PUSHBUTTON
+GUID=93BC5E5E-151F-49C4-9C95-546BB5D711E5
+  Name=DoneButton
+  Class=PUSHBUTTON
+  Caption=Done
+  Order=-1
+  Left=131
+  Width=80
+  Top=62
+  Height=22
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"Done",,
+  Property=HyperLabel=#DoneButton,,,
+
+SUBCONTROLSEND
+DESIGNEREND = SubmitDlg
+

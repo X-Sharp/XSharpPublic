@@ -1,0 +1,33 @@
+ AttachmentAskDialog DIALOGEX  14, 29, 260, 157
+STYLE	4|128|2147483648|12582912|524288
+CAPTION	"Attachment Virus Warning"
+FONT	8, "MS Shell Dlg"
+BEGIN
+	CONTROL	"Select what you wish to do:", 100, "Button", 7|131072|1073741824, 18, 81, 222, 50
+	CONTROL	"Open this attachment - I accept the risk of viruses.", 101, "Button", 9|1073741824, 34, 96, 192, 12
+	CONTROL	"Save this attachment to another location.", 102, "Button", 9|1073741824, 34, 110, 176, 13
+	CONTROL	"Fixed Text", 103, "Static", 1073741824, 18, 36, 222, 40
+	CONTROL	"&Abort", 104, "Button", 65536|1073741824, 186, 137, 53, 16
+	CONTROL	"&Proceed", 105, "Button", 65536|1073741824, 130, 137, 53, 16
+	CONTROL	"", 106, "Button", 7|131072|1073741824, 18, 27, 222, 5
+	CONTROL	"Show this warning always", 107, "Button", 3|65536|1073741824, 18, 140, 104, 12
+	CONTROL	"Fixed Text", 108, "Static", 1073741824, 18, 4, 222, 20
+END
+
+
+ AttachmentsDialog DIALOGEX  36, 46, 271, 173
+STYLE	4|128|4096|2147483648|12582912|524288
+CAPTION	"Save Attachments"
+FONT	8, "MS Shell Dlg"
+BEGIN
+	CONTROL	"&Save", 100, "Button", 65536|1073741824, 202, 9, 59, 16
+	CONTROL	"&Open", 101, "Button", 65536|1073741824, 202, 32, 59, 14
+	CONTROL	"&Select All", 102, "Button", 65536|1073741824, 200, 93, 58, 15
+	CONTROL	"&Close", 103, "Button", 65536|1073741824, 200, 115, 58, 15
+	CONTROL	"", 104, "Edit", 128|65536|1073741824|8388608, 13, 155, 230, 13, 512
+	CONTROL	"", 105, "SysListView32", 2|8|256|2048|1073741824, 10, 9, 182, 121, 512
+	CONTROL	"Save to:", 106, "Static", 1073741824, 13, 140, 32, 10
+	CONTROL	"...", 107, "Button", 65536|1073741824, 242, 155, 16, 13
+END
+
+

@@ -5,7 +5,7 @@
 //
 USING XSharp.RDD.Enums
 /// <summary>Definition for the interface that each RDD must implement</summary>
-/// <seealso cref="T:XSharp.Workarea"/>
+/// <seealso cref="T:XSharp.RDD.Workarea"/>
 INTERFACE XSharp.RDD.IRdd
 	// Navigation         
 	/// <summary>Evaluate a code block for each row.</summary>

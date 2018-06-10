@@ -1,0 +1,296 @@
+DESIGNERSTART = VOWindowEditor,DATAWINDOW,EmailDisplayDialog
+GUID=A7E767CB-3C87-4E5C-87D8-47DD2A77F0DD
+  Name=EmailDisplayDialog
+  Class=DATAWINDOW
+  Caption=
+  Order=0
+  Left=40
+  Width=379
+  Top=40
+  Height=286
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=#EmailDisplayDialog,,,
+  Property=NoAcc=Yes
+  Property=InheritClassName=EMailDialog
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=C4043140-26C8-4499-B709-3AD80FF20CA1
+  Name=From_FT
+  Class=FIXEDTEXT
+  Caption=From:
+  Order=1
+  Left=8
+  Width=50
+  Top=4
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"From:",,
+  Property=HyperLabel=#From_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+CONTROL=FIXEDTEXT
+GUID=0A401D36-902F-4298-84E3-902E37DEDE9F
+  Name=FromText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=2
+  Left=62
+  Width=208
+  Top=4
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#FromText,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=FIXEDTEXT
+GUID=A5320863-C7DA-4224-B8D5-BC4DDA05B9CF
+  Name=Date_FT
+  Class=FIXEDTEXT
+  Caption=Date:
+  Order=3
+  Left=274
+  Width=38
+  Top=4
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Date:",,
+  Property=HyperLabel=#Date_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+  Property=OwnerAlignment=OA_X
+
+CONTROL=FIXEDTEXT
+GUID=711BC8D2-AA85-4C47-9B9E-28232B8D092B
+  Name=DateText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=4
+  Left=312
+  Width=65
+  Top=4
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#DateText,,,
+  Property=OwnerAlignment=OA_X
+
+CONTROL=FIXEDTEXT
+GUID=252BADD3-356E-423E-82B4-E1DBCFB0C6C1
+  Name=To_FT
+  Class=FIXEDTEXT
+  Caption=To:
+  Order=5
+  Left=8
+  Width=50
+  Top=25
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"To:",,
+  Property=HyperLabel=#To_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+CONTROL=MULTILINEEDIT
+GUID=B88E8645-1665-4FC9-B184-CDD5F6276A09
+  Name=ToMLE
+  Class=MULTILINEEDIT
+  Caption=
+  Order=6
+  Left=62
+  Width=316
+  Top=23
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1084297284
+  Exstyles=0
+  Property=HyperLabel=#ToMLE,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=FIXEDTEXT
+GUID=35B60A26-0121-4861-816C-700F4C7AD832
+  Name=CC_FT
+  Class=FIXEDTEXT
+  Caption=Cc:
+  Order=7
+  Left=8
+  Width=50
+  Top=46
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Cc:",,
+  Property=HyperLabel=#CC_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+CONTROL=MULTILINEEDIT
+GUID=D0CAC50C-CACA-4F7C-B805-1B21B3C67B80
+  Name=CcMLE
+  Class=MULTILINEEDIT
+  Caption=
+  Order=8
+  Left=62
+  Width=316
+  Top=44
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1084297284
+  Exstyles=0
+  Property=HyperLabel=#CcMLE,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=FIXEDTEXT
+GUID=8F941AEA-FA17-4322-8D8D-C18DC9F7923E
+  Name=Subject_FT
+  Class=FIXEDTEXT
+  Caption=Subject:
+  Order=9
+  Left=8
+  Width=50
+  Top=67
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Subject:",,
+  Property=HyperLabel=#Subject_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+CONTROL=FIXEDTEXT
+GUID=93DE6101-24A2-4B24-94E0-8597696F5B40
+  Name=SubjectText
+  Class=FIXEDTEXT
+  Caption=Fixed Text
+  Order=10
+  Left=62
+  Width=316
+  Top=67
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Fixed Text",,
+  Property=HyperLabel=#SubjectText,,,
+  Property=OwnerAlignment=OA_WIDTH
+
+CONTROL=FIXEDTEXT
+GUID=BA87B7F6-3264-416A-8C75-AA4A5618A8E3
+  Name=Attach_FT
+  Class=FIXEDTEXT
+  Caption=Attach:
+  Order=11
+  Left=9
+  Width=50
+  Top=88
+  Height=16
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Attach:",,
+  Property=HyperLabel=#Attach_FT,,,
+  Property=NewFont=8:Microsoft Sans Serif:Bold
+
+CONTROL=LISTVIEW
+GUID=B7BD92F7-CE69-43E3-A0CA-6BB4C896C239
+  Name=Attachments
+  Class=LISTVIEW
+  Caption=
+  Order=12
+  Left=62
+  Width=316
+  Top=86
+  Height=27
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082130690
+  Exstyles=0
+  Property=HyperLabel=#Attachments,,,
+  Property=ContextMenu=SaveAttachmentsContextMenu
+  Property=InheritClassName=AttachmentListView
+
+CONTROL=OLEOBJECT
+GUID=3D9C796F-8704-47AC-BF7B-EEC74A00837F
+  Name=WebBrowser
+  Class=OLEOBJECT
+  Caption=
+  Order=13
+  Left=1
+  Width=377
+  Top=145
+  Height=140
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=#WebBrowser,,,
+  Property=InheritClassName=WebBrowser
+
+SUBCONTROLSEND
+DESIGNEREND = EmailDisplayDialog
+

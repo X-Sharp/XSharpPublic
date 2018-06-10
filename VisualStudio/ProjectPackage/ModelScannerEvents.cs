@@ -48,13 +48,8 @@ namespace XSharp.Project
         }
         public override int OnAfterCloseSolution(object reserved)
         {
-            // Nothing really needed
             XSharpModel.XSolution.CloseAll();
             return VSConstants.S_OK;
-        }
-        public override int OnQueryCloseSolution(object pUnkReserved, ref int cancel)
-        {
-            return base.OnQueryCloseSolution(pUnkReserved, ref cancel);
         }
         #endregion
 

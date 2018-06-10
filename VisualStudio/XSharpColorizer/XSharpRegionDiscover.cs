@@ -335,6 +335,13 @@ namespace XSharpColorizer
                 {
                     LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
                     var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                    // Attribute ?
+                    if (context.Start.Text == "[")
+                    {
+                        // Skip it
+                        int newStart = getStatementForAttribute(_snapshot, context.Start.StartIndex);
+                        tokenSpan = new TextSpan(newStart, 1);
+                    }
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
                     tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
@@ -343,6 +350,14 @@ namespace XSharpColorizer
                 {
                     XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
                     var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                    // Attribute on top of Function/Method/... ?
+                    if ( context.Start.Text == "[")
+                    {
+                        // Skip it
+                        int newStart = getStatementForAttribute(_snapshot, context.Start.StartIndex);
+                        tokenSpan = new TextSpan(newStart, 1);
+                    }
+                    //
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStartType));
                     tokenSpan = new TextSpan(lastTokenInContext.Stop.StopIndex - 1, 1);
                     _regionTags.Add(tokenSpan.ToClassificationSpan(_snapshot, xsharpRegionStopType));
@@ -365,6 +380,81 @@ namespace XSharpColorizer
         public IImmutableList<ClassificationSpan> GetRegionTags()
         {
             return _regionTags.ToImmutableList();
+        }
+
+        private int getStatementForAttribute(ITextSnapshot snapshot, int start)
+        {
+            char car;
+            int currentPos = start;
+            int pos = 0;
+            char[] newLine = Environment.NewLine.ToCharArray();
+            bool attributeOpen = true;
+            bool continueNextLine = false;
+            //
+            do
+            {
+                car = snapshot[currentPos];
+                // Open/Close Attribute ?
+                if ( car == '[' )
+                {
+                    attributeOpen = true;
+                }
+                //
+                if ( attributeOpen )
+                {
+                    if (car == ']')
+                    {
+                        attributeOpen = false;
+                    }
+                    // Skip all chars inside attribute def
+                    currentPos++;
+                }
+                else
+                {
+                    // Semi Colon ?
+                    if (car == ';')
+                    {
+                        continueNextLine = true;
+                    }
+                    else
+                    {
+                        // NewLine ?
+                        if (car == newLine[pos])
+                        {
+                            if (pos == newLine.Length - 1)
+                            {
+                                if (!continueNextLine)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    pos = 0;
+                                    continueNextLine = false;
+                                }
+                            }
+                            else
+                                pos++;
+                        }
+                        else
+                        {
+                            // No Space / Tab
+                            if ((car != ' ') && (car != 9))
+                            {
+                                // Bye
+                                start = currentPos;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // move to next
+                    currentPos++;
+                }
+                //
+            } while (currentPos < snapshot.Length);
+            //
+            return start;
         }
     }
 }

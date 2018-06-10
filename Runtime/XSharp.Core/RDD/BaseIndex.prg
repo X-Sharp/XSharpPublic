@@ -6,7 +6,7 @@
 
 
 /// <summary>Base Index class. Does not implement anything. </summary>
-/// <seealso cref="T:XSharp.IOrder"/>
+/// <seealso cref="T:XSharp.RDD.IOrder"/>
 CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 	PRIVATE _oArea AS WorkArea
 	

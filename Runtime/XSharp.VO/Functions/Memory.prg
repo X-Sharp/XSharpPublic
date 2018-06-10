@@ -72,7 +72,7 @@ FUNCTION MemRealloc( pBuffer AS IntPtr, nSize AS DWORD ) AS IntPtr
 /// </summary>
 /// <returns>The total memory consumed by memory manager functions.  This value does not include the overhead used buy the memory manager
 /// </returns>
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
+//[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION MemTotal() AS DWORD
 	RETURN FixedMemory.Total
 
@@ -245,7 +245,7 @@ FUNCTION MemAtSpecial( pMemory AS IntPtr, dwCount AS DWORD ) AS DWORD
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of bChar within the first dwCount bytes of pMemory.  
 /// If bChar is not matched, MemChr() returns a NULL_PTR.</returns>
-FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
+FUNCTION MemByte( pMemory AS IntPtr, bChar AS BYTE, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
@@ -257,7 +257,7 @@ FUNCTION MemByte( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of bChar within the first dwCount bytes of pMemory.  
 /// If bChar is not matched, MemChr() returns a NULL_PTR.</returns>
-FUNCTION MemChr( pMemory AS PTR, bChar AS BYTE, dwCount AS DWORD ) AS BYTE PTR
+FUNCTION MemChr( pMemory AS IntPtr, bChar AS BYTE, dwCount AS DWORD ) AS IntPtr
 	LOCAL pChr   AS BYTE PTR
 	LOCAL pRet   as BYTE PTR
 	IF pMemory == IntPtr.Zero
@@ -290,7 +290,7 @@ FUNCTION MemClear( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 /// <param name="dwCount">The number of bytes to compare.</param>
 /// <returns>-1, 0, or 1 if the first dwCount bytes of pMem1 are less than, equal to, 
 /// or greater than the first dwCount bytes of pMem2, respectively.</returns>
-FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
+FUNCTION MemComp( pMem1 AS IntPtr, pMem2 AS IntPtr, dwCount AS DWORD ) AS INT
 	LOCAL pByte1 AS BYTE PTR
 	LOCAL pByte2 AS BYTE PTR
 	local result as INT
@@ -326,7 +326,7 @@ FUNCTION MemComp( pMem1 AS PTR, pMem2 AS PTR, dwCount AS DWORD ) AS INT
 /// <remarks>MemCopy() copies the specified number of bytes from the source memory buffer to the destination memory buffer.  
 /// If portions of memory occupied by the source string overlap with portions in the destination, the overlapping region 
 /// is overwritten.  Use MemMove() to copy overlapping regions before they are overwritten.</remarks>
-FUNCTION MemCopy( pDestination AS PTR, pSource AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemCopy( pDestination AS IntPtr, pSource AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pDestination == IntPtr.Zero
 		THROW Error.NullArgumentError(__ENTITY__,nameof(pDestination), 1)
 	ENDIF
@@ -374,7 +374,7 @@ FUNCTION MemCopyString( pDestination AS IntPtr, cSource AS STRING, dwCount AS DW
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of dwValue within the first dwCount bytes of pMemory.  
 /// If dwValue is not matched, MemDWord() returns a NULL_PTR.</returns>
-FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD PTR
+FUNCTION MemDWord( pMemory AS IntPtr, dwValue AS DWORD, dwCount AS DWORD ) AS IntPtr
 	LOCAL pDword AS DWORD PTR
 	LOCAL pRet   as DWORD PTR
 	IF pMemory == IntPtr.Zero
@@ -396,7 +396,7 @@ FUNCTION MemDWord( pMemory AS PTR, dwValue AS DWORD, dwCount AS DWORD ) AS DWORD
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of iValue within the first dwCount bytes of pMemory.  
 /// If iValue is not matched, MemInt() returns a NULL_PTR.</returns>
-FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR 
+FUNCTION MemInt( pMemory AS IntPtr, iValue AS INT, dwCount AS DWORD ) AS IntPtr
 	LOCAL pInt   AS INT PTR
 	LOCAL pRet   as INT PTR
 	IF pMemory == IntPtr.Zero
@@ -417,7 +417,7 @@ FUNCTION MemInt( pMemory AS PTR, iValue AS INT, dwCount AS DWORD ) AS INT PTR
 /// <param name="dwGroup"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemLen( pMemory AS PTR ) AS DWORD
+FUNCTION MemLen( pMemory AS IntPtr ) AS DWORD
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
@@ -429,7 +429,7 @@ FUNCTION MemLen( pMemory AS PTR ) AS DWORD
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of liValue within the first dwCount bytes of pMemory.  
 /// If liValue is not matched, MemLong() returns a NULL_PTR.</returns>
-FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS INT PTR
+FUNCTION MemLong( pMemory AS IntPtr, liValue AS INT, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__ENTITY__,nameof(pMemory), 1)
 	ENDIF
@@ -442,7 +442,7 @@ FUNCTION MemLong( pMemory AS PTR, liValue AS INT, dwCount AS DWORD ) AS INT PTR
 /// <param name="dwGroup"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	// Ansi based lower casing
 	LOCAL pChr   AS BYTE PTR
 	IF pMemory == IntPtr.Zero
@@ -465,7 +465,7 @@ FUNCTION MemLower( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 /// to the destination memory buffer.  If portions of the source buffer overlap with portions 
 /// of the destination buffer, the overlapping region is copied and kept for the duration of 
 /// the operation before it is overwritten.</remarks>
-FUNCTION MemMove( pDestination AS PTR, pSource AS PTR, nSize AS DWORD ) AS IntPtr
+FUNCTION MemMove( pDestination AS IntPtr, pSource AS IntPtr, nSize AS DWORD ) AS IntPtr
    LOCAL dst AS BYTE PTR
    LOCAL src AS BYTE PTR
 
@@ -507,7 +507,7 @@ FUNCTION MemSet( pMemory AS IntPtr, bValue AS BYTE, dwCount AS DWORD ) AS IntPtr
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of siValue within the first dwCount bytes of pMemory.  
 /// If siValue is not matched, MemShort() returns a NULL_PTR.</returns>
-FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) AS SHORT PTR
+FUNCTION MemShort( pMemory AS IntPtr, siValue AS SHORT, dwCount AS DWORD ) AS IntPtr
 	LOCAL pShort  AS SHORT PTR
 	LOCAL pRet   as SHORT PTR
 	IF pMemory == IntPtr.Zero
@@ -528,7 +528,7 @@ FUNCTION MemShort( pMemory AS PTR, siValue AS SHORT, dwCount AS DWORD ) AS SHORT
 /// <param name="dwGroup"></param>
 /// <returns>
 /// </returns>
-FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
+FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	// Ansi based upper casing
 	LOCAL pChr   AS BYTE PTR
 	IF pMemory == IntPtr.Zero
@@ -549,7 +549,7 @@ FUNCTION MemUpper( pMemory AS PTR, dwCount AS DWORD ) AS PTR
 /// <param name="dwCount">The number of bytes in the buffer to check. </param>
 /// <returns>A pointer to the first occurrence of wValue within the first dwCount bytes of pMemory.  
 /// If wValue is not matched, MemWord() returns a NULL_PTR.</returns>
-FUNCTION MemWord( pMemory AS PTR, wValue AS WORD, dwCount AS DWORD ) AS WORD PTR
+FUNCTION MemWord( pMemory AS IntPtr, wValue AS WORD, dwCount AS DWORD ) AS IntPtr
 	LOCAL pWord  AS WORD PTR
 	LOCAL pRet   as WORD PTR
 	IF pMemory == IntPtr.Zero

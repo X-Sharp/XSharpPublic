@@ -1,22 +1,7 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Email", "Email\Email.xsproj", "{875A0D48-7860-4C98-B24E-F316D418B864}"
+Project("{6DCCDCD5-59DE-44CD-ABA9-3DEE22CD72EA}") = "Email", "Email\Email.xsproj", "{70BB4A7D-5886-43A4-8E1A-6A48436BF4EE}"
 EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{875A0D48-7860-4C98-B24E-F316D418B864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{875A0D48-7860-4C98-B24E-F316D418B864}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{875A0D48-7860-4C98-B24E-F316D418B864}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{875A0D48-7860-4C98-B24E-F316D418B864}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-EndGlobal
+

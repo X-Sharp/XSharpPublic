@@ -1,7 +1,25 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{4F9A8705-6579-4746-822D-4DCAAF627452}") = "Explorer", "Explorer\\Explorer.xsproj", "{68B268CA-0F94-486F-A997-011B64E57AD0}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Explorer", "Explorer\Explorer.xsproj", "{BF102398-AABB-4141-BE44-2249006869DE}"
 EndProject
-
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF102398-AABB-4141-BE44-2249006869DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF102398-AABB-4141-BE44-2249006869DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF102398-AABB-4141-BE44-2249006869DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF102398-AABB-4141-BE44-2249006869DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E171F161-2C7D-4F0D-8DBE-A1254A3FF4C9}
+	EndGlobalSection
+EndGlobal

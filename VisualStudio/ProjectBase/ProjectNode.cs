@@ -2485,7 +2485,10 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "vsopts")]
         public virtual BuildResult Build(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target)
         {
-            System.Diagnostics.Trace.WriteLine("<<-- ProjectNode.Build()");
+            string cTarget = target;
+            if (String.IsNullOrEmpty(cTarget))
+                cTarget = "null";
+            System.Diagnostics.Trace.WriteLine("<<-- ProjectNode.Build("+cTarget+")");
             BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
@@ -3197,7 +3200,8 @@ namespace Microsoft.VisualStudio.Project
             }
 	         catch (Exception ex)
 	         {
-	             Debug.WriteLine( ex.ToString());
+                if (System.Diagnostics.Debugger.IsAttached)
+                    Debug.WriteLine( ex.ToString());
 	         }
             finally
             {
@@ -4027,6 +4031,9 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (currentConfigName == configCanonicalName) return;
                 }
+                if (string.IsNullOrEmpty(configCanonicalName.Platform)
+                    || string.IsNullOrEmpty(configCanonicalName.PlatformTarget))
+                    return;
                 throw new InvalidOperationException();
             }
 
@@ -5998,7 +6005,8 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 return false;
             }
             finally

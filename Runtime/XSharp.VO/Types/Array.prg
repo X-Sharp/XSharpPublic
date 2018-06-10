@@ -1,222 +1,230 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Collections
-using System.Collections.Generic
-using System.Linq
-using System.Diagnostics
-using System.Reflection
-using System.Text
-using XSharp
-begin namespace XSharp	
+USING System.Collections
+USING System.Collections.Generic
+USING System.Linq
+USING System.Diagnostics
+USING System.Reflection
+USING System.Text
+USING XSharp
+BEGIN NAMESPACE XSharp	
 	/// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
 	[DebuggerTypeProxy(typeof(ArrayDebugView))];
-	public sealed class __Array inherit __ArrayBase<usual>
+	PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL>
 		
 		/// <inheritdoc />
-		constructor()
-			super()
+		CONSTRUCTOR()
+			SUPER()
 		
 		/// <inheritdoc />
-		constructor(capacity as dword)
-			super(capacity)
+		CONSTRUCTOR(capacity AS DWORD)
+			SUPER(capacity)
 
 		/// <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
-		constructor( elements as usual[] )
-			self()
-			if elements == null
-				throw ArgumentNullException{nameof(elements)}
-			endif
+		CONSTRUCTOR( elements AS USUAL[] )
+			SELF()
+			IF elements == NULL
+				THROW ArgumentNullException{nameof(elements)}
+			ENDIF
 			_internalList:Capacity := elements:Length
 			_internalList:AddRange(elements) 
-			return
+			RETURN
 		
 		/// <inheritdoc />
-		constructor( elements as object[] )
-			self()
-			if elements == null
-				throw ArgumentNullException{nameof(elements)}
-			endif
-			foreach element as object in elements
-				if element == null
-					_internalList:add(default(usual))
-				else
-					_internalList:Add( usual{ element})
-				endif
-			next
-			return
+		CONSTRUCTOR( elements AS OBJECT[] )
+			SELF()
+			IF elements == NULL
+				THROW ArgumentNullException{nameof(elements)}
+			ENDIF
+			FOREACH element AS OBJECT IN elements
+				IF element == NULL
+					_internalList:add(Default(USUAL))
+				ELSE
+					_internalList:Add( USUAL{ element})
+				ENDIF
+			NEXT
+			RETURN
 		
-		internal static method ArrayCreate(dimensions params int[] ) as Array
-			local count := dimensions:Length as int
-			if count <= 0
-				throw ArgumentException{"No dimensions provided."}
-			endif
-			local initializer := object[]{dimensions[1]} as object[]
-			local arrayNew as Array
-			arrayNew := Array{initializer}
+		INTERNAL STATIC METHOD ArrayCreate(dimensions params INT[] ) AS ARRAY
+			LOCAL count := dimensions:Length AS INT
+			IF count <= 0
+				THROW ArgumentException{"No dimensions provided."}
+			ENDIF
+			LOCAL initializer := OBJECT[]{dimensions[1]} AS OBJECT[]
+			LOCAL arrayNew AS ARRAY
+			arrayNew := ARRAY{initializer}
 			
-			if count > 1
-				local i as int
-				for i:=0+__ARRAYBASE__  upto dimensions[1]-1+__ARRAYBASE__
-					local newParams := int[]{count-1} as int[]
+			IF count > 1
+				LOCAL i AS INT
+				FOR i:=0+__ARRAYBASE__  UPTO dimensions[1]-1+__ARRAYBASE__
+					LOCAL newParams := INT[]{count-1} AS INT[]
 					Array.Copy(dimensions,1,newParams,0,count-1)
-					arrayNew:_internalList[(int) i-__ARRAYBASE__ ] := __ArrayNew(newParams)
-				next
-			endif
-			return arrayNew
+					arrayNew:_internalList[(INT) i-__ARRAYBASE__ ] := __ArrayNew(newParams)
+				NEXT
+			ENDIF
+			RETURN arrayNew
 		
-		internal static method __ArrayNew( dimensions params int[] ) as __Array
-			local newArray as Array 
-			if dimensions:Length != 0 
+		INTERNAL STATIC METHOD __ArrayNew( dimensions params INT[] ) AS __Array
+			LOCAL newArray AS ARRAY 
+			IF dimensions:Length != 0 
 				newArray := __ArrayNewHelper(dimensions,1)
-			else
-				newArray := Array{}
-			endif
-			return newArray
+			ELSE
+				newArray := ARRAY{}
+			ENDIF
+			RETURN newArray
 		
-		internal static method __ArrayNewHelper(dimensions as int[], currentDim as int) as Array
-			local capacity  as dword // one based ?
-			local newArray as Array
-			capacity := (dword) dimensions[currentDim]
-			newArray := Array{capacity} 
-			if currentDim != dimensions:Length
-				local nextDim := currentDim+1 as int
-				local index   := 1 as int
-				do while index <= capacity
-					newArray:Add(usual{__ArrayNewHelper(dimensions,nextDim)})
+		INTERNAL STATIC METHOD __ArrayNewHelper(dimensions AS INT[], currentDim AS INT) AS ARRAY
+			LOCAL capacity  AS DWORD // one based ?
+			LOCAL newArray AS ARRAY
+			capacity := (DWORD) dimensions[currentDim]
+			newArray := ARRAY{capacity} 
+			IF currentDim != dimensions:Length
+				LOCAL nextDim := currentDim+1 AS INT
+				LOCAL index   := 1 AS INT
+				DO WHILE index <= capacity
+					newArray:Add(USUAL{__ArrayNewHelper(dimensions,nextDim)})
 					index+=1
-				enddo
-				return newArray
-			endif
-			return newArray
+				ENDDO
+				RETURN newArray
+			ENDIF
+			RETURN newArray
 
-		internal new method Clone() as Array
-			local aResult as Array
-			local nCount as dword
-			nCount := (dword) _internalList:Count
-			aResult := Array{nCount}
-			for var I := 0 to nCount-1
-				var u := _internalList[i]
-				if u:isArray
-					var aElement := (Array) u
-					aResult:_internalList[i] := aElement:Clone()
-				else
+		INTERNAL NEW METHOD Clone() AS ARRAY
+			LOCAL aResult AS ARRAY
+			LOCAL nCount AS DWORD
+			nCount := (DWORD) _internalList:Count
+			aResult := ARRAY{nCount}
+			IF nCount == 0
+				// warning, nCount-1 below will become MAXDWORD for nCount == 0
+				RETURN aResult
+			END IF
+			FOR VAR I := 0 TO nCount-1
+				VAR u := _internalList[i]
+				IF u:isArray
+					VAR aElement := (ARRAY) u
+					if aElement != NULL_ARRAY
+						aResult:_internalList[i] := aElement:Clone()
+					ELSE
+						aResult:_internalList[i] := aElement
+					ENDIF
+				ELSE
 					aResult:_internalList[i] := u
-				endif
-			next
-			return aResult
+				ENDIF
+			NEXT
+			RETURN aResult
 
-		internal method CloneShallow() as Array
-			return (Array) super:Clone()
-
-		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-		public property self[i as dword, j as dword, k as DWORD] as usual
-			get
-				return __GetElement((int)i,(int)j, (int) k)
-			end get
-			set
-				self:__SetElement(value,(int)i,(int)j,(int) k)
-			end set
-		end property
+		INTERNAL METHOD CloneShallow() AS ARRAY
+			RETURN (ARRAY) SUPER:Clone()
 
 		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-		public property self[i as dword, j as dword] as usual
-			get
-				return __GetElement((int)i,(int)j)
-			end get
-			set
-				self:__SetElement(value,(int)i,(int)j)
-			end set
-		end property
+		PUBLIC PROPERTY SELF[i AS DWORD, j AS DWORD, k AS DWORD] AS USUAL
+			GET
+				RETURN __GetElement((INT)i,(INT)j, (INT) k)
+			END GET
+			SET
+				SELF:__SetElement(VALUE,(INT)i,(INT)j,(INT) k)
+			END SET
+		END PROPERTY
+
+		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
+		PUBLIC PROPERTY SELF[i AS DWORD, j AS DWORD] AS USUAL
+			GET
+				RETURN __GetElement((INT)i,(INT)j)
+			END GET
+			SET
+				SELF:__SetElement(VALUE,(INT)i,(INT)j)
+			END SET
+		END PROPERTY
 	
 		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		new property self[index as dword] as usual
-			get
-				return __GetElement((int)index)
-			end get
-			set
-				__SetElement(value, (int)index)
-			end set
-		end property
+		NEW PROPERTY SELF[index AS DWORD] AS USUAL
+			GET
+				RETURN __GetElement((INT)index)
+			END GET
+			SET
+				__SetElement(VALUE, (INT)index)
+			END SET
+		END PROPERTY
 		
-		new internal method Swap(position as dword, element as usual) as usual
-			return super:Swap(position, element)
+		NEW INTERNAL METHOD Swap(position AS DWORD, element AS USUAL) AS USUAL
+			RETURN SUPER:Swap(position, element)
 
-		new internal method Swap(position as int, element as usual) as usual
-			return super:Swap(position, element)
+		NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
+			RETURN SUPER:Swap(position, element)
 
 		///
 		/// <summary>Access the array element using ZERO based array indexes</summary>
 		///
-		public method __GetElement(index params int[]) as usual
-			local indexLength := index:Length as int
-			local currentArray := self as Array
-			local i as int
+		PUBLIC METHOD __GetElement(index params INT[]) AS USUAL
+			LOCAL indexLength := index:Length AS INT
+			LOCAL currentArray := SELF AS ARRAY
+			LOCAL i AS INT
 			
-			for i:= 1  upto indexLength  -1 // walk all but the last level
-				local u := currentArray:_internalList[ index[i] ] as usual
-				if u:IsNil 
-					return u
-				endif
-				if u:IsArray
-					throw InvalidOperationException{"out of range error."}
-				endif
-				currentArray := (Array) u
-			next
+			FOR i:= 1  UPTO indexLength  -1 // walk all but the last level
+				LOCAL u := currentArray:_internalList[ index[i] ] AS USUAL
+				IF u:IsNil 
+					RETURN u
+				ENDIF
+				IF !u:IsArray
+					THROW InvalidOperationException{"out of range error."}
+				ENDIF
+				currentArray := (ARRAY) u
+			NEXT
 			RETURN currentArray:_internalList[ index[i] ]
 
-		internal method DebuggerString() as string
-			local sb as StringBuilder
-			local cnt, tot as long
+		INTERNAL METHOD DebuggerString() AS STRING
+			LOCAL sb AS StringBuilder
+			LOCAL cnt, tot AS LONG
 			sb := StringBuilder{}
-			sb:Append(self:ToString())
+			sb:Append(SELF:ToString())
 			sb:Append("{")
 			tot := _internallist:Count
 			cnt := 0
-			foreach var element in self:_internallist
-				if cnt > 0
+			FOREACH VAR element IN SELF:_internallist
+				IF cnt > 0
 					sb:Append(",")
-				endif
+				ENDIF
 				sb:Append(element:ToString())
 				cnt++
-				if cnt > 5 
-					if cnt < tot
+				IF cnt > 5 
+					IF cnt < tot
 						sb:Append(",..")
-					endif
-					exit
-				endif
-			next		
+					ENDIF
+					EXIT
+				ENDIF
+			NEXT		
 			sb:Append("}")
-			return sb:ToString()
+			RETURN sb:ToString()
 
 
 		///
 		/// <summary>Assign the array element using ZERO based array indexes</summary>
 		///
-		public method __SetElement(u as usual, index params int[] ) as usual
+		PUBLIC METHOD __SetElement(u AS USUAL, index params INT[] ) AS USUAL
 			// indices are 0 based
-			if self:CheckLock()
-				local length := index:Length as int
-				local currentArray := self as Array
+			IF SELF:CheckLock()
+				LOCAL length := index:Length AS INT
+				LOCAL currentArray := SELF AS ARRAY
 				
-				for var i := 1 upto length-1
-					local uArray := _internalList[index[i]] as usual
-					if !(uArray:IsArray)
-						throw InvalidOperationException{"Out of range error."}
-					endif
-					currentArray := (Array) uArray
-				next
+				FOR VAR i := 1 UPTO length-1
+					LOCAL uArray := _internalList[index[i]] AS USUAL
+					IF !(uArray:IsArray)
+						THROW InvalidOperationException{"Out of range error."}
+					ENDIF
+					currentArray := (ARRAY) uArray
+				NEXT
 				currentArray:_internalList[index[length]] := u
-			endif
-			return u
+			ENDIF
+			RETURN u
 
-			internal STATIC METHOD Copy(aSource AS Array,aTarget AS Array,;
-				start AS DWORD, sourceLen as DWORD, offSet as dword, targetLen as dword ) AS Void
+			INTERNAL STATIC METHOD Copy(aSource AS ARRAY,aTarget AS ARRAY,;
+				start AS DWORD, sourceLen AS DWORD, offSet AS DWORD, targetLen AS DWORD ) AS VOID
 				LOCAL x AS DWORD
 				// Adjust
 				start-=1
@@ -240,24 +248,24 @@ begin namespace XSharp
 						ENDIF
 					 NEXT           
 				  ENDIF
-				return				
+				RETURN				
 
-			new internal method Sort(startIndex as int, count as int, comparer as IComparer<__USUAL>) as void
+			NEW INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<__USUAL>) AS VOID
 			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
-			return
+			RETURN
 
 
-		internal class ArrayDebugView
-			private _value as Array
-			public constructor (a as Array)
+		INTERNAL CLASS ArrayDebugView
+			PRIVATE _value AS ARRAY
+			PUBLIC CONSTRUCTOR (a AS ARRAY)
 				_value := a
 			//[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-			public property Elements as List<usual> get _value:_internalList
+			PUBLIC PROPERTY Elements AS List<USUAL> GET _value:_internalList
 		
 		
-		end class
+		END CLASS
 		
-	end	class
+	END	CLASS
 	
 	
-end namespace
+END NAMESPACE

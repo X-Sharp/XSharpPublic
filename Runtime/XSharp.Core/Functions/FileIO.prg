@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -6,15 +6,15 @@
 
 // File and Disk IO Functions
 
-using System
-using System.Collections
-using System.IO
-using System.Linq
-using System.Runtime.InteropServices
-using System.Security
-using Microsoft.Win32.SafeHandles
-using System.Runtime
-using System.Runtime.ConstrainedExecution
+USING System
+USING System.Collections
+USING System.IO
+USING System.Linq
+USING System.Runtime.InteropServices
+USING System.Security
+USING Microsoft.Win32.SafeHandles
+USING System.Runtime
+USING System.Runtime.ConstrainedExecution
 
 
 	
@@ -24,15 +24,15 @@ using System.Runtime.ConstrainedExecution
 	/// <param name="cOldFile">The original file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.</param>
 	/// <param name="cNewFile">The new file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.  If the source directory is different from the target directory, the file moves to the target directory.  If cNewFile exists or is currently open, FRename() fails and returns FALSE.</param>
 	/// <returns>TRUE if the operation succeeds; otherwise, FALSE.  In the case of a failure, FError() can be used to determine the specific error.</returns>
-function FRename( cOldFile as string , cNewFile as string) as logic
-	local renamed := false as logic
-	try
+FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
+	LOCAL renamed := FALSE AS LOGIC
+	TRY
 		System.IO.File.Move(cOldFile, cNewFile)
-		renamed := true
-		catch 
-		FError((dword)Marshal.GetLastWin32Error())
-	end try
-	return renamed
+		renamed := TRUE
+		CATCH 
+		FError((DWORD)Marshal.GetLastWin32Error())
+	END TRY
+	RETURN renamed
 	
 	
 	/// <summary>
@@ -40,16 +40,16 @@ function FRename( cOldFile as string , cNewFile as string) as logic
 	/// </summary>
 	/// <param name="cFile">The file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.</param>
 	/// <returns>TRUE if the operation succeeds; otherwise, FALSE.  In the case of a failure, FError() can be used to determine the specific error.</returns>
-function FErase(fileName as string) as logic
-	local isDeleted := false as logic
-	try
+FUNCTION FErase(fileName AS STRING) AS LOGIC
+	LOCAL isDeleted := FALSE AS LOGIC
+	TRY
 		System.IO.File.Delete(fileName)
-		isDeleted := true
-		catch 
-		FError((dword)Marshal.GetLastWin32Error())
-		isDeleted := false
-	end try
-	return isDeleted
+		isDeleted := TRUE
+		CATCH 
+		FError((DWORD)Marshal.GetLastWin32Error())
+		isDeleted := FALSE
+	END TRY
+	RETURN isDeleted
 	
 	/// <summary>Copy a file to a new file or to a device.</summary>
 	/// <param name="cSourceFile">The name of the source file to copy, including an optional drive, directory, and extension.</param>
@@ -60,8 +60,8 @@ function FErase(fileName as string) as logic
 	/// If cSourceFile does not exist, a runtime error is raised.  
 	/// If cTargetFile does not exist, it is created.  
 	///</remarks>
-function FCopy(cSourceFile as string,cTargetFile as string) as logic
-	return FCopy(cSourceFile, cTargetFile, true)
+FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
+	RETURN FCopy(cSourceFile, cTargetFile, TRUE)
 	
 	/// <summary>Copy a file to a new file or to a device.</summary>
 	/// <param name="cSourceFile">The name of the source file to copy, including an optional drive, directory, and extension.</param>
@@ -73,15 +73,15 @@ function FCopy(cSourceFile as string,cTargetFile as string) as logic
 	/// If cSourceFile does not exist, a runtime error is raised.  
 	/// If cTargetFile does not exist, it is created.  If it exists it is only overwritten if lOverWrite = TRUE
 	///</remarks>
-function FCopy(cSourceFile as string,cTargetFile as string, lOverWrite as logic) as logic
-	local IsCopied := true as logic
-	try
+FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
+	LOCAL IsCopied := TRUE AS LOGIC
+	TRY
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
-		catch 
-		FError((dword)Marshal.GetLastWin32Error())
-		IsCopied := false
-	end try
-	return IsCopied
+		CATCH 
+		FError((DWORD)Marshal.GetLastWin32Error())
+		IsCopied := FALSE
+	END TRY
+	RETURN IsCopied
 	
 	
 	
@@ -95,39 +95,39 @@ function FCopy(cSourceFile as string,cTargetFile as string, lOverWrite as logic)
 	/// <param name="cExt"></param>
 	/// <returns>
 	/// </returns>
-function _SplitPath(cPath as string, cDrive out string,cDir out string,cName out string,cExt out string) as void
-	local nPos as long
-	local cSep as STRING
+FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT STRING,cExt OUT STRING) AS VOID
+	LOCAL nPos AS LONG
+	LOCAL cSep AS STRING
 	cDrive	:= ""
 	cDir	:= ""
 	cName	:= ""
 	cExt	:= ""
-	if String.IsNullOrEmpty(cPath)
-		return
-	endif
+	IF String.IsNullOrEmpty(cPath)
+		RETURN
+	ENDIF
 	cSep := Path.DirectorySeparatorChar:ToString()
 	nPos := cPath:IndexOf(Path.VolumeSeparatorChar)
-	if nPos > 0
-		cDrive := cPath:Substring(0, nPos)
-		cPath  := cPath:SubString(nPos)
-	endif
+	IF nPos > 0
+		cDrive := cPath:Substring(0, nPos+1)
+		cPath  := cPath:SubString(nPos + 1)
+	ENDIF
 	
-	if cPath:Trim() != ""
+	IF cPath:Trim() != ""
 		cDir := Path.GetDirectoryName(cPath)
-	endif
+	ENDIF
 	
-	if String.IsNullOrEmpty( cDir )
-		if cPath:StartsWith(cSep)
+	IF String.IsNullOrEmpty( cDir )
+		IF cPath:StartsWith(cSep)
 			cDir := cSep
-		else
+		ELSE
 			cDir := ""
-		endif
-	elseif ! cDir:EndsWith(cSep)
+		ENDIF
+	ELSEIF ! cDir:EndsWith(cSep)
 		cDir += cSep
-	endif
+	ENDIF
 	
 	cName := Path.GetFileNameWithoutExtension(cPath)
 	cExt  := Path.GetExtension(cPath)
 	
-	return
+	RETURN
 	

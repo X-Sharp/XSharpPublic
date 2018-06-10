@@ -22,9 +22,9 @@ CLASS XSharp.RuntimeState
 	// Static Fields
 	PRIVATE INITONLY STATIC initialState  AS RuntimeState 
 	// Static Methods and Constructor
-	private static currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()} }  as ThreadLocal<RuntimeState> 
-	static constructor
-		initialState	:= RuntimeState{true}
+	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()} }  AS ThreadLocal<RuntimeState> 
+	STATIC CONSTRUCTOR
+		initialState	:= RuntimeState{TRUE}
 		
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
@@ -32,38 +32,38 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE oSettings AS Dictionary<INT, OBJECT> 
 
-	PRIVATE CONSTRUCTOR(initialize as logic)       
-		var oThread := Thread.CurrentThread
-		self:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
+	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
+		VAR oThread := Thread.CurrentThread
+		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
 		oSettings := Dictionary<INT, OBJECT>{}
-		if initialize
-			self:BreakLevel := 0 
-			self:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
-			self:_SetThreadValue(Set.Epoch, 1900U)
-			self:_SetThreadValue(Set.EpochYear, 0U)
-			self:_SetThreadValue(Set.EpochCent, 1900U)
+		IF initialize
+			SELF:BreakLevel := 0 
+			SELF:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
+			SELF:_SetThreadValue(Set.Epoch, 1900U)
+			SELF:_SetThreadValue(Set.EpochYear, 0U)
+			SELF:_SetThreadValue(Set.EpochCent, 1900U)
 			// Initialize the values that are not 'blank'
 			// RDD Settings
-			self:_SetThreadValue(Set.Ansi , true)
-			self:_SetThreadValue(Set.AutoOpen , true)
-			self:_SetThreadValue(Set.AutoOrder , true)
-			self:_SetThreadValue(Set.Optimize , true)
-			self:_SetThreadValue(Set.AutoShare, AutoShareMode.Auto)
-			self:_SetThreadValue(Set.LOCKTRIES , 1)
-			self:_SetThreadValue(Set.MemoBlockSize , 32)
-			self:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
-			self:_SetThreadValue(Set.Exclusive , TRUE)
+			SELF:_SetThreadValue(Set.Ansi , TRUE)
+			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
+			SELF:_SetThreadValue(Set.AutoOrder , TRUE)
+			SELF:_SetThreadValue(Set.Optimize , TRUE)
+			SELF:_SetThreadValue(Set.AutoShare, AutoShareMode.Auto)
+			SELF:_SetThreadValue(Set.LOCKTRIES , 1)
+			SELF:_SetThreadValue(Set.MemoBlockSize , 32)
+			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
+			SELF:_SetThreadValue(Set.Exclusive , TRUE)
 			// Console Settings
-			self:_SetThreadValue(Set.Bell , TRUE)
-			self:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
-			self:_SetThreadValue(Set.Decimals , 2)
-			self:_SetThreadValue(Set.Digits , 10)
-			self:_SetThreadValue(Set.Exact , FALSE)
-			self:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
+			SELF:_SetThreadValue(Set.Bell , TRUE)
+			SELF:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
+			SELF:_SetThreadValue(Set.Decimals , (DWORD) 2)
+			SELF:_SetThreadValue(Set.Digits , (DWORD) 10 )
+			SELF:_SetThreadValue(Set.Exact , FALSE)
+			SELF:_SetThreadValue(Set.FLoatDelta , 0.0000000000001)
 			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
-			self:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+			SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
 			// Add null value for Clipper collation 
-			SELF:_SetThreadValue<Byte[]>(Set.CollationTable, null )
+			SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
 			// Date and time settings
 			SELF:_SetInternationalWindows()
@@ -74,13 +74,13 @@ CLASS XSharp.RuntimeState
 
 	DESTRUCTOR()
 		// What do we need to clean ?
-		if oSettings != null
+		IF oSettings != NULL
 			oSettings:Clear()
-		endif
+		ENDIF
 
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
-		oNew := RuntimeState{false}		
+		oNew := RuntimeState{FALSE}		
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
 			FOREACH VAR element IN oSettings     
@@ -93,7 +93,7 @@ CLASS XSharp.RuntimeState
 	/// <returns>String value, such as "State for Thread 123"</returns>
 	PUBLIC PROPERTY Name AS STRING AUTO
 	/// <summary>Current Break Level. Gets set by compiler generated code for BEGIN SEQUENCE .. END constructs.</summary>
-	PUBLIC PROPERTY BreakLevel as INT AUTO
+	PUBLIC PROPERTY BreakLevel AS INT AUTO
 	/// <summary>ToString() override</summary>
 	/// <returns>String value, such as "State for Thread 123"</returns>
 	PUBLIC VIRTUAL METHOD ToString() AS STRING
@@ -138,19 +138,19 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current compiler setting for the VO11 compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
-	static property CompilerOptionVO11 as logic ;
+	STATIC PROPERTY CompilerOptionVO11 AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONVO11);
         SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
 
 	/// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
-	static property CompilerOptionOVF as logic ;
+	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
 
 	/// <summary>The current compiler setting for the FOVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
-	static property CompilerOptionFOVF as logic ;
+	STATIC PROPERTY CompilerOptionFOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
         SET SetValue<LOGIC>(Set.OPTIONOVF, VALUE)
 
@@ -158,7 +158,7 @@ CLASS XSharp.RuntimeState
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
     STATIC PROPERTY AppModule AS  System.Reflection.Module;
         GET GetValue<System.Reflection.Module>(Set.AppModule);
-        set SetValue<System.Reflection.Module>(Set.AppModule, value)
+        SET SetValue<System.Reflection.Module>(Set.AppModule, VALUE)
 	#endregion
 
 
@@ -192,19 +192,19 @@ CLASS XSharp.RuntimeState
    STATIC PROPERTY CollationMode AS CollationMode 
         GET 
 			RETURN GetValue<CollationMode>(Set.CollationMode)
-		end get
+		END GET
         SET 
 			SetValue<CollationMode>(Set.CollationMode, VALUE)
-			if OnCollationChanged != null
+			IF OnCollationChanged != NULL
 				OnCollationChanged(GetInstance(), EVentArgs{})
-			endif
+			ENDIF
 		END SET
-	end property
+	END PROPERTY
 
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
-   STATIC PROPERTY DateCountry AS INT ;
-        GET GetValue<INT>(Set.DateCountry);
-        SET SetValue<INT>(Set.DateCountry, VALUE)
+   STATIC PROPERTY DateCountry AS DWORD ;
+        GET GetValue<DWORD>(Set.DateCountry);
+        SET _SetDateCountry(VALUE)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
@@ -213,13 +213,13 @@ CLASS XSharp.RuntimeState
 	/// </remarks>
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
-        SET _SetDateFormat(Value)
+        SET _SetDateFormat(VALUE)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
 
-    STATIC PROPERTY Decimals AS LONG ;
-        GET GetValue<LONG>(Set.DECIMALS);
-        SET SetValue<LONG>(Set.DECIMALS, VALUE)
+    STATIC PROPERTY Decimals AS DWORD ;
+        GET GetValue<DWORD>(Set.DECIMALS);
+        SET SetValue<DWORD>(Set.DECIMALS, VALUE)
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
     STATIC PROPERTY DecimalSep AS DWORD ;
@@ -232,21 +232,21 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
-    STATIC PROPERTY Digits AS LONG ;
-        GET GetValue<LONG>(Set.DIGITS);
-        SET SetValue<LONG>(Set.DIGITS, VALUE)
+    STATIC PROPERTY Digits AS DWORD ;
+        GET GetValue<DWORD>(Set.DIGITS);
+        SET SetValue<DWORD>(Set.DIGITS, VALUE)
 
 	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
     STATIC PROPERTY DosCodePage AS LONG 
         GET 
 			RETURN GetValue<LONG>(Set.DOSCODEPAGE)
-		end get
+		END GET
         SET 
 			SetValue<LONG>(Set.DOSCODEPAGE, VALUE) 
-			if OnCodePageChanged != null
+			IF OnCodePageChanged != NULL
 				OnCodePageChanged(GetInstance(), EventArgs{})
-			endif
-		end set
+			ENDIF
+		END SET
 	END PROPERTY
 
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
@@ -269,9 +269,9 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.EXACT, VALUE)
 
 	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
-   STATIC PROPERTY FloatDelta AS Real8 ;
-        GET GetValue<Real8>(Set.FloatDelta);
-        SET SetValue<Real8>(Set.FloatDelta, VALUE)
+   STATIC PROPERTY FloatDelta AS REAL8 ;
+        GET GetValue<REAL8>(Set.FloatDelta);
+        SET SetValue<REAL8>(Set.FloatDelta, VALUE)
 
 	/// <summary>Current SetInternational Setting.</summary>
      STATIC PROPERTY International AS CollationMode ;
@@ -279,14 +279,14 @@ CLASS XSharp.RuntimeState
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
-    STATIC PROPERTY LockTries AS LONG ;
-        GET GetValue<LONG>(Set.LOCKTRIES);
-        SET SetValue<LONG>(Set.LOCKTRIES, VALUE)
+    STATIC PROPERTY LockTries AS DWORD ;
+        GET GetValue<DWORD>(Set.LOCKTRIES);
+        SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
 
 	/// <summary>The current default MemoBlock size.</summary>
-    STATIC PROPERTY MemoBlockSize AS LONG ;
-        GET GetValue<LONG>(Set.MEMOBLOCKSIZE);
-        SET SetValue<LONG>(Set.MEMOBLOCKSIZE, VALUE)
+    STATIC PROPERTY MemoBlockSize AS DWORD;
+        GET GetValue<DWORD>(Set.MEMOBLOCKSIZE);
+        SET SetValue<DWORD>(Set.MEMOBLOCKSIZE, VALUE)
 
 
 	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
@@ -316,17 +316,17 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
 
 	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
-    STATIC PROPERTY WinCodePage AS LONG 
+    STATIC PROPERTY WinCodePage AS LONG
 	GET
         RETURN GetValue<LONG>(Set.WINCODEPAGE)
 	END GET
-	set 
+	SET 
         SetValue<LONG>(Set.WINCODEPAGE, VALUE)
-			if OnCodePageChanged != null
+			IF OnCodePageChanged != NULL
 				OnCodePageChanged(GetInstance(), EventArgs{})
-			endif
+			ENDIF
 	END SET
-	end property
+	END PROPERTY
 
 
 	/// <summary>The name of the method that was called in the last late bound method call.</summary>
@@ -337,32 +337,32 @@ CLASS XSharp.RuntimeState
 
 
 
-	internal method _SetInternationalClipper() as void
-		self:_SetThreadValue(Set.AMEXT, "")
-		self:_SetThreadValue(Set.PMEXT, "")
-		self:_SetThreadValue(Set.AMPM, FALSE)
-		self:_SetThreadValue(Set.Century, FALSE)
-		self:_SetThreadValue(Set.DateCountry, 1)
-		self:_SetThreadValue(Set.Decimals, 2)
-		self:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
-		self:_SetThreadValue(Set.THOUSANDSEP, (Dword) 44)	// COMMA ,
-		self:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
-		self:_SetThreadValue(Set.Intl, CollationMode.Clipper)
+	INTERNAL METHOD _SetInternationalClipper() AS VOID
+		SELF:_SetThreadValue(Set.AMEXT, "")
+		SELF:_SetThreadValue(Set.PMEXT, "")
+		SELF:_SetThreadValue(Set.AMPM, FALSE)
+		SELF:_SetThreadValue(Set.Century, FALSE)
+		SELF:_SetThreadValue(Set.DateCountry, (DWORD)1)
+		SELF:_SetThreadValue(Set.Decimals, (DWORD) 2)
+		SELF:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
+		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
+		SELF:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
+		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
 
-	internal method _SetInternationalWindows() as void
+	INTERNAL METHOD _SetInternationalWindows() AS VOID
 		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-		self:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
-		self:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
-		var separator := dtInfo:TimeSeparator
-		if String.IsNullOrEmpty(separator)
-			self:_SetThreadValue(Set.TimeSep, (Dword) 0)
-		else
-			self:_SetThreadValue(Set.TimeSep, (Dword) separator[0])
-		endif
-		self:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+		SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
+		SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		VAR separator := dtInfo:TimeSeparator
+		IF String.IsNullOrEmpty(separator)
+			SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
+		ELSE
+			SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
+		ENDIF
+		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d
-		if (dateformat.IndexOf("mm") != -1)
+		IF (dateformat.IndexOf("mm") != -1)
 			dateformat		:= dateformat:Replace("mmmm", "m")
 			dateformat		:= dateformat:Replace("mmm", "m")
 			dateformat		:= dateformat:Replace("mm", "m")
@@ -374,25 +374,26 @@ CLASS XSharp.RuntimeState
 		_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
 		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-		self:_SetThreadValue(Set.DateFormat,  dateformat)
-		self:_SetThreadValue(Set.DateCountry, 1)
-		self:_SetThreadValue(Set.DECIMALS , 2)
+		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
+		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
+		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-		self:_SetThreadValue(Set.DECIMALSEP, (DWord) numberformat:NumberDecimalSeparator[0])
-		self:_SetThreadValue(Set.THOUSANDSEP, (Dword) numberformat:NumberGroupSeparator[0])
-		self:_SetThreadValue(Set.EPOCH, 1910U)
-		self:_SetThreadValue(Set.EpochYear, 10U)
-		self:_SetThreadValue(Set.EpochCent, 1900U)
+		SELF:_SetThreadValue(Set.DECIMALSEP, (DWORD) numberformat:NumberDecimalSeparator[0])
+		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) numberformat:NumberGroupSeparator[0])
+		SELF:_SetThreadValue(Set.EPOCH, (DWORD) 1910)
+		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
+		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
 
-		self:_SetThreadValue(Set.Intl, CollationMode.Windows)
+		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
 		RETURN
+
 
 	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
 		// ensure we have dd, mm and yy
-		if format:IndexOf("DD") == -1 .or. format:IndexOf("MM") == -1 .or. format:IndexOf("YY") == -1
-			return
-		endif
+		IF format:IndexOf("DD") == -1 .or. format:IndexOf("MM") == -1 .or. format:IndexOf("YY") == -1
+			RETURN
+		ENDIF
 		SetValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
 		SetValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		SetValue(SET.CENTURY, format:Contains("YYYY"))
@@ -400,63 +401,97 @@ CLASS XSharp.RuntimeState
 		SWITCH format
 			CASE "MM/DD/YY"
 			CASE "MM/DD/YYYY"
-				SetValue(Set.DATECOUNTRY, 1)	// American
+				SetValue(Set.DATECOUNTRY, (DWORD) 1)	// American
 			CASE "YY.MM.DD"
 			CASE "YYYY.MM.DD"
-				SetValue(Set.DATECOUNTRY, 2)	// Ansi
+				SetValue(Set.DATECOUNTRY, (DWORD)2)	// Ansi
 			CASE "DD/MM/YY"
 			CASE "DD/MM/YYYY"
-				SetValue(Set.DATECOUNTRY, 3)	// British & french
+				SetValue(Set.DATECOUNTRY, (DWORD)3)	// British & french
 			CASE "DD.MM.YY"
 			CASE "DD.MM.YYYY"
-				SetValue(Set.DATECOUNTRY, 5)	// German
+				SetValue(Set.DATECOUNTRY, (DWORD)5)	// German
 			CASE "DD-MM-YY"
 			CASE "DD-MM-YYYY"
-				SetValue(Set.DATECOUNTRY, 6)	// Italian
+				SetValue(Set.DATECOUNTRY, (DWORD)6)	// Italian
 			CASE "YY/MM/DD"
 			CASE "YYYY/MM/DD"
-				SetValue(Set.DATECOUNTRY, 7)	// Japanese
+				SetValue(Set.DATECOUNTRY, (DWORD)7)	// Japanese
 			CASE "MM-DD-YY"
 			CASE "MM-DD-YYYY"
-				SetValue(Set.DATECOUNTRY, 8)	// USA
+				SetValue(Set.DATECOUNTRY, (DWORD)8)	// USA
 			OTHERWISE
-				SetValue(Set.DATECOUNTRY, 0)	
+				SetValue(Set.DATECOUNTRY, (DWORD)0)	
 		END SWITCH
 
-	private _workareas as WorkAreas
+
+	INTERNAL STATIC METHOD _SetDateCountry(country AS DWORD) AS VOID
+		IF country > 8
+			RETURN
+		END IF
+
+		SetValue<DWORD>(Set.DateCountry, country)
+		
+		LOCAL format, year AS STRING
+		year := iif(Century , "YYYY" , "YY")
+		SWITCH country
+			CASE 1 // American
+				format := "MM/DD/" + year
+			CASE 2 // Ansi
+				format := year + ".MM.DD"
+			CASE 3 // British & french
+			CASE 4 // British & french
+				format := "DD/MM/" + year
+			CASE 5 // German
+				format := "DD.MM." + year
+			CASE 6 // Italian
+				format := "DD-MM-" + year
+			CASE 7 // Japanese
+				format := year + "/MM/DD"
+			CASE 8 // USA
+				format := "MM-DD-" + year
+			OTHERWISE
+				format := "MM/DD/" + year
+		END SWITCH
+		// this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
+		_SetDateFormat(format) 
+
+
+
+	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
-	public property Workareas as WorkAreas
-	get
-		if _workareas == null_object
+	PUBLIC PROPERTY Workareas AS WorkAreas
+	GET
+		IF _workareas == null_object
 			_workareas := WorkAreas{}
-		endif
-		return _workareas
-	end get
+		ENDIF
+		RETURN _workareas
+	END GET
 	END PROPERTY
-	private _collationTable as byte[]
+	PRIVATE _collationTable AS BYTE[]
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]
 		coll := GetInstance():_collationTable 
-		if coll == NULL .or. coll :Length < 256
+		IF coll == NULL .or. coll :Length < 256
 			_SetCollation("Generic")
 			coll := GetInstance():_collationTable := GetValue<BYTE[]>(SET.CollationTable)
 		ENDIF
-		return coll
+		RETURN coll
 	END GET
 	SET
 		GetInstance():_collationTable  := VALUE
 		SetValue(Set.CollationTable, VALUE)
-		if OnCollationChanged != NULL
+		IF OnCollationChanged != NULL
 			OnCollationChanged(GetInstance(), EventArgs{})
 		ENDIF
 	END SET
-	end property
+	END PROPERTY
 
 	STATIC PRIVATE _macrocompiler AS System.Type
-	public STATIC property MacroCompiler as System.Type GET _macrocompiler SET _macrocompiler := Value
-	PUBLIC STATIC EVENT OnCodePageChanged as EventHandler
-	public STATIC Event OnCollationChanged as EventHandler
+	PUBLIC STATIC PROPERTY MacroCompiler AS System.Type GET _macrocompiler SET _macrocompiler := VALUE
+	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
+	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
 END CLASS
 
 

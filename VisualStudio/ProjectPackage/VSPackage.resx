@@ -138,12 +138,12 @@
     <value>Template.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="110" xml:space="preserve">
-    <value>XSharp Visual Studio Project System</value>
+    <value>X# Visual Studio Project System</value>
     <comment>Text that appears in the list window on the Help about dialog</comment>
   </data>
   <data name="112" xml:space="preserve">
     <value>The X# Project system allows you to edit, compile and debug your X# application inside Visual Studio.
-Copyright (c) XSharp BV 2015-2017 . All rights reserved.
+Copyright (c) XSharp BV 2015-2018. All rights reserved.
 http://www.xsharp.info</value>
     <comment>Text that appears in the details window on the Help about dialog</comment>
   </data>
@@ -185,5 +185,9 @@ http://www.xsharp.info</value>
   <data name="201" xml:space="preserve">
     <value>Intellisense</value>
     <comment>Caption of Intellisense Options page in Tools/Option/TextEditor</comment>
+  </data>
+  <data name="202" xml:space="preserve">
+    <value>Editor Options</value>
+    <comment>Text for the debug switches page</comment>
   </data>
 </root>

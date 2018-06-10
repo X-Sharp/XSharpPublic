@@ -19,7 +19,6 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Classification;
 using XSharpColorizer;
 using XSharpModel;
-using System.Collections.Immutable;
 namespace XSharpColorizer
 {
 
@@ -110,7 +109,7 @@ namespace XSharpColorizer
                 //
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                IImmutableList<ClassificationSpan> classifications = xsClassifier.GetRegionTags();
+                var classifications = xsClassifier.GetRegionTags();
                 
                 SnapshotSpan fullSpan = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(snapshot, SpanTrackingMode.EdgeExclusive);
                 int startLineNumber = fullSpan.Start.GetContainingLine().LineNumber;
@@ -119,8 +118,6 @@ namespace XSharpColorizer
                 Stack<ClassificationSpan> startStack = new Stack<ClassificationSpan>();
                 // convert classifications to an array so there will be no crash when the classifications are changed
                 // in another thread.
-                
-
                 
                 // Now, let's have a look at all the Classifications we have in the document
                 foreach (var tag in classifications)
@@ -137,14 +134,28 @@ namespace XSharpColorizer
                         var startLine = startTag.Span.Start.GetContainingLine();
                         var endLine = tag.Span.End.GetContainingLine();
                         //
-                        if (startLine.LineNumber <= endLineNumber && endLine.LineNumber >= startLineNumber)
+                        if ( startTag.Span.Start < tag.Span.End && 
+                            startLine.LineNumber <= endLineNumber 
+                            && endLine.LineNumber >= startLineNumber)
                         {
-                            SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, endLine.End);
+                            SnapshotSpan sSpan;
+                            try
+                            {
+                                sSpan = new SnapshotSpan(startLine.Start, endLine.End);
+                            }
+                            catch (Exception e)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Incorrect span " + e.Message);
+                                sSpan = new SnapshotSpan(startLine.Start, startLine.Start);
+                            }
                             hoverText = sSpan.GetText();
+                            if (hoverText.Length > 1024)
+                            {
+                                hoverText = hoverText.Substring(0, 1024)+"\r\n......";
+                            }
                             //
                             sSpan = new SnapshotSpan(startLine.Start, startLine.End);
-                            String lineText = sSpan.GetText();
-                           ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
+                            ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
                             yield return new TagSpan<IOutliningRegionTag>(
                                 new SnapshotSpan(startLine.End, endLine.End),
                                 new OutliningRegionTag(false, true, ellipsis, hoverText));

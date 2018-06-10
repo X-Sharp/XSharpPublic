@@ -366,7 +366,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal("1232527292", CHarMix("13579","2"))
 
 	  return
-   [Fact, Trait("Category", "String")];
+   [Fact, Trait("Category", "Memo")];
    method AtLineTest() as void
 	  local test as string
 	  test := e"first line\r\nsecond line\r\nthird line"
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	 
 	  return
 
-   [Fact, Trait("Category", "String")];
+   [Fact, Trait("Category", "Memo")];
    method MemLinesTest() as void
 	  local test as string
 	  test := e"first line\r\nsecond line\r\nthird line"
@@ -397,7 +397,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 
 
-   [Fact, Trait("Category", "String")];
+   [Fact, Trait("Category", "Memo")];
 	method MemoTest() as void
 		local sToWrite := "test" as string
 		MemoWrit("test.txt", sToWrite)

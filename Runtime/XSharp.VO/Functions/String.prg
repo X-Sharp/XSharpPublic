@@ -27,7 +27,7 @@ FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
 	ENDIF
 	IF nCount == NIL
-		nStart := SLen(cSource) - nStart + 1
+		nCount := SLen(cSource) - nStart + 1
 	ELSEIF ! IsNumeric(nCount)
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
 	ENDIF

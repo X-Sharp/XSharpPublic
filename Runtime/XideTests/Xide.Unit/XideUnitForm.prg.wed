@@ -1,0 +1,58 @@
+DESIGNERSTART = Form,Form,UnitForm
+GUID=CE479F3C-2076-4782-8AAC-3CA8C65D66EB
+Name=UnitForm
+Text=Xide Unit Tests
+Location=100 , 100
+ClientSize=904 , 456
+ControlPrefix=o
+CallPreResumeLayout=No
+CallSuperInitialize=No
+UseGrid=Yes
+GridX=8
+GridY=8
+SUBCONTROLSSTART
+  
+  CONTROL=System.Windows.Forms.TextBox
+  GUID=80D5FC4F-B710-4443-9ADC-D2155FFC9515
+  Multiline=True
+  Name=InfoText
+  ScrollBars=Vertical
+  Location=528 , 40
+  Size=368 , 408
+  TabIndex=3
+  Anchor=Top,Bottom,Left,Right
+  
+  CONTROL=System.Windows.Forms.Button
+  GUID=4D59D0AA-44EC-495B-B619-6A76FE7C450C
+  Name=RunSelectedButton
+  Text=Run selected tests
+  Location=656 , 8
+  Size=130 , 30
+  TabIndex=2
+  Click=RunSelectedButtonClick
+  
+  CONTROL=System.Windows.Forms.Button
+  GUID=8C2A2948-CBC7-48D5-9EEB-216557B868DB
+  Name=RunAllButton
+  Text=Run all tests
+  Location=528 , 8
+  Size=112 , 30
+  TabIndex=1
+  Click=RunAllButtonClick
+  
+  CONTROL=System.Windows.Forms.ListView
+  GUID=9802FE56-A249-4EEA-8F75-C9AFF0C01467
+  FullRowSelect=True
+  HideSelection=False
+  Name=TestsList
+  Location=8 , 8
+  Size=514 , 440
+  TabIndex=0
+  View=Details
+  Anchor=Top,Bottom,Left
+  SelectedIndexChanged=TestsList_SelectedIndexChanged
+
+SUBCONTROLSEND
+DESIGNEREND = UnitForm
+
+

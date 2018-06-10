@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -27,50 +27,50 @@ FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 	LOCAL aSizes	:= NULL_ARRAY AS ARRAY
 	LOCAL aDates	:= NULL_ARRAY AS ARRAY
 	LOCAL aTimes    := NULL_ARRAY AS ARRAY
-	LOCAL aAttribs  := NULL_ARRAY as array
+	LOCAL aAttribs  := NULL_ARRAY AS ARRAY
 	aFiles := Directory(cPath,FA_NORMAL)
-	IF ISArray(aFName)
+	IF IsArray(aFName)
 		aNames  := aFName
 		lHasArg := TRUE
 	ENDIF
-	IF ISArray(aFSize)
+	IF IsArray(aFSize)
 		aSizes  := aFSize
 		lHasArg := TRUE
 	ENDIF
-	IF ISArray(aFDate)
+	IF IsArray(aFDate)
 		aDates  := aFDate
 		lHasArg := TRUE
 	ENDIF
-	IF ISArray(aFTIME)
+	IF IsArray(aFTIME)
 		aTimes  := aFTIME
 		lHasArg := TRUE
 	ENDIF
-	IF ISArray(aFAttr)
+	IF IsArray(aFAttr)
 		aAttribs  := aFAttr
 		lHasArg := TRUE
 	ENDIF
-	IF Alen(aFiles) > 0 .and. lHasArg
-		LOCAL x as DWORD
-		FOR x := 1 TO alen(aFiles)
-			var aFile := aFiles[x]
-			IF aNames != NULL_ARRAY .and. x <= Alen(aNames)
+	IF ALen(aFiles) > 0 .and. lHasArg
+		LOCAL x AS DWORD
+		FOR x := 1 TO ALen(aFiles)
+			VAR aFile := aFiles[x]
+			IF aNames != NULL_ARRAY .and. x <= ALen(aNames)
 				aNames[x] := aFile[ F_NAME]
-			endif
-			IF aSizes != NULL_ARRAY .and. x <= Alen(aSizes)
+			ENDIF
+			IF aSizes != NULL_ARRAY .and. x <= ALen(aSizes)
 				aSizes[x] := aFile[ F_SIZE]
-			endif
-			IF aDates != NULL_ARRAY .and. x <= Alen(aDates)
+			ENDIF
+			IF aDates != NULL_ARRAY .and. x <= ALen(aDates)
 				aDates[x] := aFile[ F_DATE]
-			endif
-			IF aTimes != NULL_ARRAY .and. x <= Alen(aTimes)
+			ENDIF
+			IF aTimes != NULL_ARRAY .and. x <= ALen(aTimes)
 				aTimes[x] := aFile[ F_TIME]
-			endif
-			IF aAttribs != NULL_ARRAY .and. x <= Alen(aAttribs)
+			ENDIF
+			IF aAttribs != NULL_ARRAY .and. x <= ALen(aAttribs)
 				aAttribs[x] := aFile[ F_ATTR]
-			endif
+			ENDIF
 		NEXT
 	ENDIF
-	RETURN aLen(aFiles)
+	RETURN ALen(aFiles)
 	
 	
 	
@@ -98,7 +98,9 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	ENDIF
 	aReturn := {}
 	IF (nAttr & FA_VOLUME ) != 0
-		aadd(aReturn, {DriveInfo{cFileSpec}:VolumeLabel, 0, NULL_DATE, "00:00:00", "V"})
+		TRY
+			AAdd(aReturn, {DriveInfo{cFileSpec}:VolumeLabel, 0, NULL_DATE, "00:00:00", "V"})
+		END TRY
 	ENDIF
 	IF System.IO.Directory.Exists(cFileSpec)
 		cFileSpec += "\*.*"
@@ -161,7 +163,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 		END TRY
 	ENDIF
 	
-	IF aLen(aReturn) > 1
+	IF ALen(aReturn) > 1
 		aReturn := ASort( aReturn, 1, aReturn:Length, {|x,y| x[1] < y[1] } )	
 	ENDIF
 	RETURN aReturn
@@ -187,11 +189,11 @@ INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS FileInfo, nAt
 		cAttribute += "A"
 	ENDIF
 	IF lOk
-		if oFile:Length < Int32.MaxValue
+		IF oFile:Length < Int32.MaxValue
 			AAdd(aReturn,{oFile:Name, (LONG) oFile:Length, d, cTime, cAttribute})
-		else
-			AAdd(aReturn,{oFile:Name, (Int64) oFile:Length, d, cTime, cAttribute})
-		endif
+		ELSE
+			AAdd(aReturn,{oFile:Name, (INT64) oFile:Length, d, cTime, cAttribute})
+		ENDIF
 	ENDIF
 	RETURN
 	

@@ -658,7 +658,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    System.Diagnostics.Debug.WriteLine(e.Message);
             }
             finally
             {

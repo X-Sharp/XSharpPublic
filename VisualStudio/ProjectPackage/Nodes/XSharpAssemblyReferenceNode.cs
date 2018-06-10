@@ -19,16 +19,18 @@ namespace XSharp.Project
          //BindReferenceData();
 
       }
-      internal XSharpAssemblyReferenceNode(ProjectNode root, string assemblyPath)
-         : base(root, assemblyPath)
-      {
-         //Binding reference data at startup will cause a 'project has changed' method
-         BindReferenceData();
-      }
-      protected override NodeProperties CreatePropertiesObject()
-      {
-          return new XSharpAssemblyReferenceNodeProperties(this);
-      }
+        internal XSharpAssemblyReferenceNode(ProjectNode root, string assemblyPath)
+           : base(root, assemblyPath)
+        {
+            //Binding reference data at startup will cause a 'project has changed' method
+            BindReferenceData();
+            ResolveAssemblyReference();
+
+        }
+        protected override NodeProperties CreatePropertiesObject()
+        {
+            return new XSharpAssemblyReferenceNodeProperties(this);
+        }
 
 
    }

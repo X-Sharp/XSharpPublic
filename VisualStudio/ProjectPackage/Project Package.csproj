@@ -19,7 +19,7 @@
     <RootNamespace>XSharp.Project</RootNamespace>
     <AssemblyName>XSharpProject</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
     <TargetFrameworkProfile />
@@ -51,7 +51,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XSHARP; SMARTINDENT</DefineConstants>
+    <DefineConstants>DEBUG;XSHARP; SMARTINDENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -66,7 +66,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE;XSHARP; SMARTINDENT</DefineConstants>
+    <DefineConstants>XSHARP; SMARTINDENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -260,6 +260,11 @@
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
     <Compile Include="Editors\Formatting\Formatting.cs" />
+    <Compile Include="Editors\HighlightWord\HighlightWord.cs" />
+    <Compile Include="Editors\LightBulb\CreateStubAction.cs" />
+    <Compile Include="Editors\LightBulb\CreateStubProvider.cs" />
+    <Compile Include="Editors\LightBulb\ImplementInterfaceAction.cs" />
+    <Compile Include="Editors\LightBulb\ImplementInterfaceProvider.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Editors\Parameter Info\SignatureHelpSourceProvider.cs" />
     <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />
@@ -268,12 +273,22 @@
     <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
     <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
+    <Compile Include="Editors\XAMLCompletionSource.cs" />
     <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
     <Compile Include="Editors\XSharpErrorColorizer.cs" />
     <Compile Include="Editors\XSharpQuickInfo.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
+    <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="Library\Library.cs" />
+    <Compile Include="Library\LibraryNode.cs" />
+    <Compile Include="Library\MultiValueDictionary.cs" />
+    <Compile Include="Library\TextLineEventListener.cs" />
+    <Compile Include="Library\XSharpLibraryManager.cs" />
+    <Compile Include="Library\XSharpLibraryNode.cs" />
+    <Compile Include="Library\XSharpLibraryProject.cs" />
+    <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>
@@ -786,15 +801,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharpModel\XSharpModel.csproj">
-      <Project>{2c3b9217-e012-4681-97ce-f0a658c40336}</Project>
-      <Name>XSharpModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModelXs</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpColorizer\XSharpColorizer.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>

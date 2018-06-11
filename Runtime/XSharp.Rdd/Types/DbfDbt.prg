@@ -45,6 +45,7 @@ BEGIN NAMESPACE XSharp.RDD
             PROTECT _ReadOnly   AS LOGIC
             PROTECT _oRDD       AS DBF
             PROTECT _blockSize  AS LONG
+            PROTECT _lockScheme     AS DbfLocking
             
             
             CONSTRUCTOR (oRDD AS DBF)
@@ -52,6 +53,9 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_oRdd := oRDD
                 SELF:_blockSize := 512
                 SELF:_hFile := F_ERROR
+                SELF:_Shared := SELF:_oRDD:_Shared
+                SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
+                SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
                 
                 
                 /// <inheritdoc />
@@ -134,13 +138,13 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN blockLen
                 
                 /// <inheritdoc />
-                
             VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
                 LOCAL objType AS System.Type
                 LOCAL objTypeCode AS System.TypeCode
                 LOCAL str AS STRING
                 LOCAL memoBlock AS BYTE[]
                 LOCAL isOk := FALSE AS LOGIC
+                LOCAL locked := FALSE AS LOGIC
                 // 
                 objType := oValue:GetType()
                 objTypeCode := Type.GetTypeCode( objType )
@@ -176,6 +180,9 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
                 IF newBlock
+                    IF ( SELF:_Shared )
+                        locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, 123 )
+                    ENDIF
                     // Go to the end of end, where we will add the new data
                     FSeek3( SELF:_hFile, 0, FS_END )
                     LOCAL fileSize := (LONG)FTell( SELF:_hFile ) AS LONG
@@ -212,6 +219,9 @@ BEGIN NAMESPACE XSharp.RDD
                     IF isOk
                         isOk := SELF:Flush()
                     ENDIF
+                ENDIF
+                IF ( locked )
+                    SELF:_unlock( SELF:_lockScheme:Offset, 1 )
                 ENDIF
                 //
                 IF !isOk
@@ -320,7 +330,38 @@ BEGIN NAMESPACE XSharp.RDD
                 
             END PROPERTY
             
-            
+            // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
+            // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
+            // Return the result of the operation
+            PROTECTED METHOD _tryLock( nOffset AS UINT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
+                LOCAL locked AS LOGIC
+                //
+                REPEAT
+                    TRY
+                        locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
+                    CATCH
+                        locked := FALSE
+                    END TRY
+                    IF ( !locked )
+                        nTries --
+                        IF ( nTries > 0 )
+                            System.Threading.Thread.Sleep( 1 )
+                        ENDIF
+                    ENDIF
+                UNTIL ( locked .OR. (nTries==0) )
+                //
+                RETURN locked
+                
+            PROTECTED METHOD _unlock( nOffset AS UINT64, nLong AS LONG ) AS LOGIC
+                LOCAL unlocked AS LOGIC
+                //
+                TRY
+                    unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
+                CATCH
+                    unlocked := FALSE
+                END TRY
+                RETURN unlocked
+                
         END CLASS    
         
     END CLASS

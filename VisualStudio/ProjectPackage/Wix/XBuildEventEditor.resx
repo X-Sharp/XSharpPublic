@@ -181,7 +181,7 @@
     <value>contentTextBox</value>
   </data>
   <data name="&gt;&gt;contentTextBox.Type" xml:space="preserve">
-    <value>XSharp.Project.XBuildEventTextBox, XSharpProject, Version=0.2.9.1, Culture=neutral, PublicKeyToken=31c59c566fa38f21</value>
+    <value>XSharp.Project.XBuildEventTextBox, XSharpProject, Version=2.0.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586</value>
   </data>
   <data name="&gt;&gt;contentTextBox.Parent" xml:space="preserve">
     <value>$this</value>

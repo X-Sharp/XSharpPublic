@@ -23,7 +23,7 @@ using System.Reflection;
 #else
 [assembly: AssemblyConfiguration("Release")]
 #endif	
-[assembly: AssemblyProduct(XSharp.Constants.Product)]
+[assembly: AssemblyProduct(XSharp.Constants.ProductName)]
 [assembly: AssemblyCompany(XSharp.Constants.Company)]
 [assembly: AssemblyCopyright(XSharp.Constants.Copyright)]
 [assembly: AssemblyCulture("")]

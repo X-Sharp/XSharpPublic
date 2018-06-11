@@ -179,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
                     cf = arrayType;
                 }
-                if (cf == arrayType || (cf.ConstructedFrom != null && cf.ConstructedFrom == arrayBaseType))
+                if (cf == arrayType || (Compilation.Options.XSharpRuntime && cf.ConstructedFrom == arrayBaseType))
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -187,30 +187,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var arg in analyzedArguments.Arguments)
                     {
                         BoundExpression newarg;
-                        bool mustSubtract = false;
                         bool mustBeNumeric = false;
                         ++argno;
-                        if (cf.ConstructedFrom == arrayBaseType)
+                        if (Compilation.Options.XSharpRuntime && cf.ConstructedFrom == arrayBaseType )
                         {
-                            mustSubtract = argno == 1 && !Compilation.Options.ArrayZero;
                             mustBeNumeric = argno == 1;
                         }
                         else
                         {
-                            mustSubtract = !Compilation.Options.ArrayZero;
                             mustBeNumeric = true;
                         }
-
-                        if (mustSubtract)
+                        if (mustBeNumeric)
                         {
-                            newarg = SubtractIndex(arg, diagnostics);
-                        }
-                        else if (mustBeNumeric)
-                        {
-                            newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
-                            if (newarg.HasErrors)
+                            if (!Compilation.Options.ArrayZero)
                             {
-                                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                                newarg = SubtractIndex(arg, diagnostics);
+                            }
+                            else
+                            {
+                                newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                                if (newarg.HasErrors)
+                                {
+                                    Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                                }
                             }
                         }
                         else

@@ -61540,7 +61540,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C605 - No compiler error with using event assignment as return value
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C606 - Some issues with PROPERTY GET/SET visibility modifiers *************
 Application = C606 - Some issues with PROPERTY GET/SET visibility modifiers
 IDEVersion = 1.06
@@ -61638,7 +61638,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C606 - Some issues with PROPERTY GET/SET visibility modifiers
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C607 - Incorrect ARRAY element accesed when using Enum as subscript *************
 Application = C607 - Incorrect ARRAY element accesed when using Enum as subscript
 IDEVersion = 1.06
@@ -61938,7 +61938,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C609 - Failed to emit module with @ on array element, without /unsafe
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C610 - Accessing array elements with /az- *************
 Application = C610 - Accessing array elements with /az-
 IDEVersion = 1.06
@@ -62038,7 +62038,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C610 - Accessing array elements with /az-
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C611 - Accessing array elements with /az+ *************
 Application = C611 - Accessing array elements with /az+
 IDEVersion = 1.06

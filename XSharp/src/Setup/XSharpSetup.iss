@@ -12,7 +12,7 @@
 #define Version             "2.0.0.1"
 #define FileNameVersion     "2Beta1"
 #define VIVersion           "2.0.0.1"
-#define TouchDate           "2018-06-08"
+#define TouchDate           "2018-06-11"
 #define TouchTime           "02:00:01"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -59,11 +59,8 @@
 
 #define CommonFolder        DevFolder + "\src\Common\"
 #define ToolsFolder         DevFolder + "\src\Tools\"
-;#define VOXporterFolder     DevFolder + "\src\Tools\VOXPorter\"
-#define VOXporterFolder   DevPublicFolder + "\Binaries\Release\"
-
-;#define VOXporterBinFolder  DevFolder + "\src\Tools\VOXPorter\Bin\Release\"
-#define VOXporterBinFolder   DevPublicFolder + "\Binaries\Release\"
+#define VOXporterFolder     DevPublicFolder + "\Binaries\Release\"
+#define VOXporterBinFolder  DevPublicFolder + "\Binaries\Release\"
 #define ExamplesFolder      DevPublicFolder + "\Samples\"
 #define ScriptFolder        DevPublicFolder + "\ScriptSamples\"
 #define OutPutFolder        DevFolder + "\Binaries\Setup"
@@ -73,16 +70,19 @@
 #define XIDESetup           "XIDE_Set_up_1.13.exe"
 #define XIDEVersion         "1.13"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
-#define GACInstall          "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
+#define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
+#define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define Provider            "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="
 #define ImmutableVersion    "System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define MetadataVersion     "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+#define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
 #define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586"
 
 ;
 ; preprocess the help cab files
 ;
 #expr Exec( SetupFolder+'\makecabs.cmd')
+#expr Exec( 'taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"')
 
 ; Write version to VSIX files
 ; The updatevsix.exe is created from updatevsix.prg in this folder
@@ -251,15 +251,15 @@ Source: "{#BinFolder}Portable\XSharp.Scripting.dll";      DestDir: "{app}\Portab
 Source: "{#BinFolder}Portable\XSharp.Scripting.pdb";      DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
 
 
-; GAC files in Bin folder, must be found by intellisense as well
-Source: "{#BinFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall};
-Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall};
+; GAC files in Bin folder, must be found by intellisense or Macro compiler as well
+Source: "{#BinFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}";  Flags: {#StdFlags} {#GACShared};
+Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";   Flags: {#StdFlags} {#GACShared};
+Source: "{#BinFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; StrongAssemblyName: "{#ValueTupleVersion}"; Flags: {#StdFlags} {#GACShared};
 
 ; 'Normal' Ms Runtime DLLs needed by 4.6 version
 Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Security.Crypt*.Alg*.dll";    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 Source: "{#BinFolder}System.Text.Encoding.*.dll";         DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 
 ; 'Normal' Ms Runtime DLLs needed by Portable Version
 Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\portable"; Flags: {#StdFlags} ; 
@@ -292,7 +292,7 @@ Source: "{#VOXPorterBinFolder}SDK_DEFINES.dll";           DestDir: "{app}\VOXPor
 Source: "{#VOXPorterFolder}VOXporter.ini";                DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 Source: "{#VOXPorterFolder}ReadMe.rtf";                   DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
 ; Templates
-Source: "{#VOXPorterFolder}Templates\*";                 DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
+Source: "{#VOXPorterFolder}Templates\*";                   DestDir: "{app}\VOXPorter\Templates"; Flags: {#StdFlags} ; 
 
 ; pdb files needed ?
 ;Source: "{#VOXPorterBinFolder}VOXporter.pdb";             DestDir: "{app}\VOXPorter"; Flags: {#StdFlags} ; 
@@ -361,6 +361,7 @@ Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redi
 Source: "{#BinFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Collections.Immutable.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Reflection.Metadata.dll";       DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
+Source: "{#BinFolder}System.Valuetuple.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 
 Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
 Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
@@ -425,6 +426,7 @@ Components: vs2015 or vs2017; Source: "{#BinPFolder}Itemtemplates\R*.Zip";      
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*test*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*unit*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Test";     Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\C*.zip";           DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*Cons*.zip";       DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
 Components: vs2015 or vs2017; Source: "{#BinPFolder}ProjectTemplates\*App*.zip";        DestDir: "{app}\Extension\Project\ProjectTemplates\Windows";  Flags: recursesubdirs {#StdFlags}; 
 ; Snippets
 Components: vs2015 or vs2017; Source: "{#SnippetsSource}*.*";                          DestDir: "{app}\Extension\{# SnippetsPath}";          Flags: recursesubdirs {#StdFlags}; 
@@ -794,7 +796,7 @@ begin
 
     { App string to the end of the path variable }
     Paths := Paths + ';'+ Path +';'
-
+    StringChangeEx(Paths, ';;',';',true);
     { Overwrite (or create if missing) path environment variable }
     if RegWriteStringValue(HKEY_LOCAL_MACHINE, {#EnvironmentKey}, 'Path', Paths)
     then Log(Format('The [%s] added to PATH: [%s]', [Path, Paths]))
@@ -816,7 +818,7 @@ begin
 
     { Update path variable }
     Delete(Paths, P - 1, Length(Path) + 1);
-
+    StringChangeEx(Paths, ';;',';',true);
     { Overwrite path environment variable }
     if RegWriteStringValue(HKEY_LOCAL_MACHINE, {#EnvironmentKey}, 'Path', Paths)
     then Log(Format('The [%s] removed from PATH: [%s]', [Path, Paths]))

@@ -232,3 +232,4 @@ Tests/Applications/C493/Resources/NativeResources.res
 *.opendb
 /XSharp/src/Setup/updatevsix.prg.cfg
 /XSharp/docs/~*
+/XSharp/Runtime

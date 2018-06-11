@@ -3,7 +3,9 @@
 ;
 
 ;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#ifndef Compression
+#define Compression     "lzma2/fast"
+#endif
 #define FOX
 
 
@@ -72,11 +74,11 @@
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
-#define Provider            "XSharp.CodeDom.XSharpCodeDomProvider, Culture=neutral, PublicKeyToken=31c59c566fa38f21, Version="
 #define ImmutableVersion    "System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define MetadataVersion     "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
-#define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586"
+#define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
+
 
 ;
 ; preprocess the help cab files
@@ -393,7 +395,7 @@ Components: vs2015 or vs2017; Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";    
 ; Codedom provider must go to the gac because of WPF
 ; always install this, also on a build server
 
-Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#Provider}{#Version}"; Flags: {#StdFlags} {#GACInstall};
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extension\Project"; StrongAssemblyName: "XSharpCodeDomProvider{#XSharpVersion}" ; Flags: {#StdFlags} {#GACInstall};
 Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
 
@@ -878,7 +880,7 @@ begin
                   if vs2017Count = 3 then
                      vs2017InstanceId3 := vs2017InstanceId;
 
-               end
+               end;
                token := 'InstallationPath:';
                if Pos(token, line) > 0  then 
                 begin
@@ -891,7 +893,7 @@ begin
                   if vs2017Count = 3 then
                      vs2017BaseDir3 := vs2017BaseDir;
                   vs2017Installed := true;
-                end
+                end;
                token := 'Product:';
                if Pos(token, line) > 0 then
                 begin
@@ -908,7 +910,7 @@ begin
                 end
             end
         end
-      end
+      end;
 
       Log('Vs 2017 # of installations: '+IntToStr(vs2017Count));
       if vs2017Count > 0 then
@@ -917,14 +919,14 @@ begin
         Log('Vs 2017 installation dir 1: '+vs2017BaseDir1);
         Log('Vs 2017 product version 1 : '+vs2017Version1);
         vs2017path1 := vs2017BaseDir1 + '\Common7\Ide\';
-      end
+      end;
       if vs2017Count > 1 then
       begin
         Log('Vs 2017 instanceId 2      : '+vs2017InstanceId2);
         Log('Vs 2017 installation dir 2: '+vs2017BaseDir2);
         Log('Vs 2017 product version 2 : '+vs2017Version2);
         vs2017path2 := vs2017BaseDir2 + '\Common7\Ide\';
-      end
+      end;
       if vs2017Count > 2 then
       begin
         Log('Vs 2017 instanceId 3      : '+vs2017InstanceId3);
@@ -932,7 +934,7 @@ begin
         Log('Vs 2017 product version  3: '+vs2017Version3);
         vs2017path3 := vs2017BaseDir3 + '\Common7\Ide\';
       end
-  end
+  end;
   Log('Detect 2017 end');
 end;
 
@@ -957,7 +959,7 @@ begin
       begin
       VulcanPrgAssociation := (UpperCase(VulcanGuid) = '{8D3F6D25-C81C-4FD8-9599-2F72B5D4B0C9}');
       end
-  end
+  end;
   Log('End VS Detection');
   OurHelp22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help22Installed',temp) ;
   OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;
@@ -1098,7 +1100,7 @@ begin
         commands := commands + CopyToVsFolder(Vs2017Path1);
         commands := commands + DelFolder(Vs2017BaseDir1+'\MsBuild\XSharp');
         commands := commands + CopyMsBuild(Vs2017BaseDir1+'\MsBuild\XSharp');
-       end
+       end;
       if HasVs2017_2() then 
       begin
         commands := commands + DelFolder(Vs2017Path2+'Extensions\XSharp');
@@ -1106,7 +1108,7 @@ begin
         commands := commands + CopyToVsFolder(Vs2017Path2);
         commands := commands + DelFolder(Vs2017BaseDir2+'\MsBuild\XSharp');
         commands := commands + CopyMsBuild(Vs2017BaseDir2+'\MsBuild\XSharp');
-       end
+       end ;
       if HasVs2017_3() then 
       begin
         commands := commands + DelFolder(Vs2017Path3+'Extensions\XSharp');
@@ -1114,7 +1116,7 @@ begin
         commands := commands + CopyToVsFolder(Vs2017Path3);
         commands := commands + DelFolder(Vs2017BaseDir3+'\MsBuild\XSharp');
         commands := commands + CopyMsBuild(Vs2017BaseDir3+'\MsBuild\XSharp');
-      end
+      end;
 
       SaveStringToFile( ExpandConstant('{app}\uninst\deployvs2017.cmd'), commands, False);
   end
@@ -1210,14 +1212,14 @@ begin
   begin
     Caption := WizardForm.ComponentsList.ItemCaption[i];
     if (Pos('2017',Caption) > 0) and (Pos('documentation', Caption) > 0) then VsHelpItem := i;
-  end
+  end;
    
   if Vs2017Installed and Not HelpViewer23Installed then
   begin
      WizardForm.ComponentsList.ItemCaption[VsHelpItem] := 'Cannot install the VS 2017 documentation because the Help Viewer component is not installed';
      WizardForm.ComponentsList.ItemEnabled[VsHelpItem] := false;
      WizardForm.ComponentsList.Checked[VsHelpItem] := false;
-  end
+  end;
 
 end;
 
@@ -1248,7 +1250,7 @@ begin
   begin
      FolderName := GetVs2017IdeDir3('');
      Ok := true;
-  end
+  end;
   if Ok then begin
     for i := 1 to 2 do
     begin
@@ -1293,11 +1295,11 @@ begin
       if FileExists(Vs2015Path+vfile) then
       begin
         if HasVs2017_1 then 
-          FileCopy(Vs2015Path+vfile, Vs2017Path1+vfile, false)
+          FileCopy(Vs2015Path+vfile, Vs2017Path1+vfile, false);
         if HasVs2017_2 then 
-          FileCopy(Vs2015Path+vfile, Vs2017Path2+vfile, false)
+          FileCopy(Vs2015Path+vfile, Vs2017Path2+vfile, false);
         if HasVs2017_3 then 
-          FileCopy(Vs2015Path+vfile, Vs2017Path3+vfile, false)
+          FileCopy(Vs2015Path+vfile, Vs2017Path3+vfile, false);
       end
     end
   end
@@ -1410,9 +1412,10 @@ begin
         commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsc.exe')+'" /queue' +#13+#10;
         commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xsi.exe') +'" /queue'+#13+#10;
         commands := commands + ngenpath + ' install "' +ExpandConstant('{app}\bin\xscompiler.exe') +'" /queue'+#13+#10;
-      end
+      end;
       SaveStringToFile( ExpandConstant('{app}\uninst\instngen.cmd '), commands, False);
       StringChangeEx(commands, ' install ', ' uninstall ', false);
+      StringChangeEx(commands, '/queue', '', false);
       SaveStringToFile( ExpandConstant('{app}\uninst\uninstngen.cmd '), commands, False);
       result := true;
 end;

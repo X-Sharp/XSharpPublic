@@ -7,5 +7,10 @@
       <para styleclass="Heading1">PSZ Type</para>
     </header>
     <para styleclass="Normal">This structure contains a pointer to a memory block with an Ansi string. When created with String2Psz() and Cast2Psz() then the compiler will take care of releasing these memory blocks. When created with other runtime functions such as StringAlloc() then you are responsible of releasing the memory yourself.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note</para>
+    <para styleclass="Normal">Please do not use the PSZ type for new code. It is only included for backward compatibility.</para>
+    <para styleclass="Normal">Even new code that calls the windows API can use a better alternative, for example using the [DllImportAttribute] from the framework</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

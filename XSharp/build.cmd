@@ -3,8 +3,8 @@ set tmpXSharpDev=%XSharpDev%
 set XSharpDev=
 taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"
 Echo Building Compiler 
-msbuild Master.sln /fl1 /p:Configuration=Debug		/t:Build /property:OfficialBuild=true /m /v:m /nologo
-msbuild Master.sln /fl2 /p:Configuration=Release	/t:Build /property:OfficialBuild=true /m /v:m /nologo
+msbuild Master.sln /fl1 /p:Configuration=Debug		/t:Build /m /v:q /nologo
+msbuild Master.sln /fl2 /p:Configuration=Release	/t:Build /m /v:q /nologo
 if exist build-debug.log del build-debug.log
 if exist build-release.log del build-release.log
 rename msbuild1.log build-debug.log

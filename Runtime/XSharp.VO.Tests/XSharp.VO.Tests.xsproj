@@ -25,7 +25,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <AZ>false</AZ>
     <CS>false</CS>
-    <LB>false</LB>
+    <LB>true</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
     <INS>false</INS>

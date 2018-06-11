@@ -382,7 +382,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 myDBF:Append( FALSE )
                 myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
                 myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
-                myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",true)==0 )
+                myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0 )
                 myDBF:PutValue( 4, DateTime.Now )
             NEXT
             myDBF:Close()
@@ -395,12 +395,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
                 Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
                 LOCAL o AS OBJECT
-                LOCAL dt as DateTime
+                LOCAL dt AS DateTime
                 o := myDBF:GetValue(4)
                 IF ( o IS DateTime )
                     dt := (DateTime)o
                 ENDIF
-                Assert.Equal( true, o IS DateTime )
+                Assert.Equal( TRUE, o IS DateTime )
                 Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
                 myDBF:Skip(1)
             NEXT
@@ -444,7 +444,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 //
                 Assert.Equal(  0, myDBF:RecCount )
                 //
-                 myDBF:Append( FALSE )
+                myDBF:Append( FALSE )
                 //
                 Assert.Equal(  1, myDBF:RecCount )
                 // Now, Add some Data
@@ -457,7 +457,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 myDBF:Close()
             ENDIF
             RETURN  
-
+            
         [Fact, Trait("Dbf", "Pack")];
         METHOD CheckPack() AS VOID
             //
@@ -482,7 +482,178 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 //
                 myDBF:Close()
             ENDIF
+            RETURN 
+            
+        [Fact, Trait("Dbf", "CreateWithMemo")];
+        METHOD CheckCreateDBFMemo() AS VOID
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
+            LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBFDBT{} AS DBFDBT
+            LOCAL fieldInfo AS STRING[]
+            LOCAL rddInfo AS RddFieldInfo[]
+            rddInfo := RddFieldInfo[]{fields:Length}
+            FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL currentField AS RddFieldInfo
+                fieldInfo := fields[i]:Split( ',' )
+                currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+                rddInfo[i] := currentField
+            NEXT
+            //
+            myDBF:SetFieldExtent( fields:Length )
+            myDBF:CreateFields( rddInfo )
+            // Now Check
+            Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
+            //
+            myDBF:Close()
+            //
+            LOCAL isFile := System.IO.File.Exists( "XMenTest.DBT" ) AS LOGIC
+            Assert.Equal( TRUE, isFile  )
+            RETURN           
+            
+        [Fact, Trait("Dbf", "CreateAppendDBT")];
+        METHOD CheckCreateAppendDBFDBT() AS VOID
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
+            LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            //
+            LOCAL myDBF := DBFDBT{} AS DBFDBT
+            LOCAL fieldInfo AS STRING[]
+            LOCAL rddInfo AS RddFieldInfo[]
+            rddInfo := RddFieldInfo[]{fields:Length}
+            FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL currentField AS RddFieldInfo
+                fieldInfo := fields[i]:Split( ',' )
+                currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+                rddInfo[i] := currentField
+            NEXT
+            //
+            myDBF:SetFieldExtent( fields:Length )
+            myDBF:CreateFields( rddInfo )
+            // Now Check
+            Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
+            // Now, Add some Data
+            //"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
+            LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
+            LOCAL data := datas:Split( ';' ) AS STRING[]
+            VAR Memos := List<STRING>{} 
+            //
+            FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL elt := data[i]:Split( ',' ) AS STRING[]
+                myDBF:Append( FALSE )
+                myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
+                myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
+                myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0 )
+                myDBF:PutValue( 4, DateTime.Now )
+                Memos:Add( LoremIpsum( 600 ) )
+                myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
+            NEXT
+            myDBF:Close()
+            // Now, Verify
+            myDBF:Open( dbInfo )
+            FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
+                // 
+                LOCAL elt := data[i]:Split( ',' ) AS STRING[]
+                Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), myDBF:GetValue(1) )
+                Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
+                Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
+                LOCAL o AS OBJECT
+                LOCAL dt AS DateTime
+                o := myDBF:GetValue(4)
+                IF ( o IS DateTime )
+                    dt := (DateTime)o
+                ENDIF
+                Assert.Equal( TRUE, o IS DateTime )
+                Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
+                // Now the Memo
+                LOCAL temp1 AS STRING
+                LOCAL temp2 AS STRING
+                temp1 :=  Memos[ i - __ARRAYBASE__ ]
+                temp2 :=  (STRING)myDBF:GetValue(5)
+                VAR res := String.Compare( temp1, temp2 )
+                Assert.Equal( TRUE, res == 0 )
+                myDBF:Skip(1)
+            NEXT
+            //
+            myDBF:Close()
             RETURN  
-
+            
+            
+        [Fact, Trait("Dbf", "ModifyDBT")];
+        METHOD CheckModifyDBT() AS VOID
+            // Create and put some Data
+            SELF:CheckCreateAppendDBFDBT()
+            // Now Modify in the same space
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            LOCAL myDBF := DBFDBT{} AS DBFDBT
+            VAR Memos := List<STRING>{} 
+            // Now, Modify the Memo
+            myDBF:Open( dbInfo )
+            WHILE !myDBF:EoF
+                // 
+                Memos:Add( LoremIpsum( 600 ) )
+                myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
+                myDBF:Skip(1)
+            ENDDO
+            //
+            myDBF:Close()
+            // And verify
+            LOCAL i := __ARRAYBASE__ AS LONG
+            myDBF:Open( dbInfo )
+            WHILE !myDBF:EoF
+                // 
+                LOCAL temp1 AS STRING
+                LOCAL temp2 AS STRING
+                temp1 :=  Memos[ i - __ARRAYBASE__ ]
+                temp2 :=  (STRING)myDBF:GetValue(5)
+                VAR res := String.Compare( temp1, temp2 )
+                Assert.Equal( TRUE, res == 0 )
+                i++
+                myDBF:Skip(1)
+            ENDDO
+            //
+            myDBF:Close()
+            RETURN  
+            
+        [Fact, Trait("Dbf", "ModifyDBT_2")];
+        METHOD CheckModifyDBT_2() AS VOID
+            // Create and put some Data
+            SELF:CheckCreateAppendDBFDBT()
+            // Now Modify in the same space
+            VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+            LOCAL myDBF := DBFDBT{} AS DBFDBT
+            VAR Memos := List<STRING>{} 
+            // Now, Modify the Memo
+            myDBF:Open( dbInfo )
+            WHILE !myDBF:EoF
+                // Now the new block is bigger
+                Memos:Add( LoremIpsum( 1900 ) )
+                myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
+                myDBF:Skip(1)
+            ENDDO
+            //
+            myDBF:Close()
+            // And verify
+            LOCAL i := __ARRAYBASE__ AS LONG
+            myDBF:Open( dbInfo )
+            WHILE !myDBF:EoF
+                // 
+                LOCAL temp1 AS STRING
+                LOCAL temp2 AS STRING
+                temp1 :=  Memos[ i - __ARRAYBASE__ ]
+                temp2 :=  (STRING)myDBF:GetValue(5)
+                VAR res := String.Compare( temp1, temp2 )
+                Assert.Equal( TRUE, res == 0 )
+                i++
+                myDBF:Skip(1)
+            ENDDO
+            //
+            myDBF:Close()
+            RETURN  
+            
     END CLASS
 END NAMESPACE // XSharp.RDD.Tests

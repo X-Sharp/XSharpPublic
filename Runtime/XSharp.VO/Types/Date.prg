@@ -12,8 +12,11 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp	
 	/// <summary>Internal type that implements the VO Compatible DATE type<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
+	/// It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic. 
+	/// There are implicit converters between Date and DateTime.
 	/// </summary>
 	/// <seealso cref="T:XSharp.IDate"/>
+	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	[DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
 	[DebuggerTypeProxy(typeof(DateDebugView))];
 	[StructLayout(LayoutKind.Explicit,Pack := 1)];
@@ -77,38 +80,40 @@ BEGIN NAMESPACE XSharp
 				_dtCalc     := DateTime{1901,1,1}
 				RETURN       
 			
-			/// <exclude />	
+			/// <summary>Construct a date from a DateTime value.</summary>
 			CONSTRUCTOR(lhs AS System.DateTime)
 				_year  := (WORD) lhs:Year
 				_month := (BYTE) lhs:Month
 				_day   := (BYTE) lhs:Day
 				RETURN
 			
-			/// <exclude />	
-			CONSTRUCTOR(lhs AS iDate)
-				_year  := (WORD) lhs:Year
-				_month := (BYTE) lhs:Month
-				_day   := (BYTE) lhs:Day
+			/// <summary>Construct a date from another IDate type.</summary>
+			CONSTRUCTOR(d AS iDate)
+				_year  := (WORD) d:Year
+				_month := (BYTE) d:Month
+				_day   := (BYTE) d:Day
 				RETURN
 			
-			/// <exclude />	
+			/// <summary>Construct a date from a number of Ticks.</summary>
 			CONSTRUCTOR(ticks AS INT64)
 				SELF(System.DateTime{ticks})
 				RETURN
 			
-			PRIVATE CONSTRUCTOR(v AS INT, lValueAssign AS LOGIC)
-				_value := v
-				RETURN
-			
-			
-			/// <exclude />	
+			/// <summary>Construct a date from a string. This assumes the string is in current Date format</summary>
 			CONSTRUCTOR(strDate AS STRING)
 				LOCAL dValue := CToD(strDate) AS DATE
 				_year  := dValue:_year
 				_month := dValue:_month
 				_day   := dValue:_day
+
+			/// <summary>Construct a date from a string using the specified Date Format.</summary>
+			CONSTRUCTOR(strDate AS STRING, strFormat AS STRING)
+				LOCAL dValue := CToD(strDate,strFormat) AS DATE
+				_year  := dValue:_year
+				_month := dValue:_month
+				_day   := dValue:_day
 			
-			/// <exclude />	
+			/// <summary>Construct a date from year, month, day </summary>
 			CONSTRUCTOR(year AS INT, month AS INT, day AS INT)
 				TRY
 					// this may throw an exception when the combination is not valid
@@ -122,7 +127,7 @@ BEGIN NAMESPACE XSharp
 				END TRY
 				RETURN
 			
-			/// <exclude />	
+			/// <summary>Construct a date from year, month, day </summary>
 			CONSTRUCTOR(year AS DWORD, month AS DWORD, day AS DWORD)
 				// Chain to Int constructor
 				SELF( (INT) year, (INT) month, (INT) day)
@@ -131,18 +136,20 @@ BEGIN NAMESPACE XSharp
 		#endregion
 		
 		#region methods
-			
+			/// <inheritdoc />			
 			METHOD CompareTo(o AS OBJECT) AS LONG
 				VAR rhs := (DATE)o 
 				RETURN _value:CompareTo(rhs:_value)
-			
+
+			/// <inheritdoc />			
 			METHOD CompareTo(rhs AS DATE) AS LONG
 				RETURN _value:CompareTo(rhs:_value)
-			
+			/// <inheritdoc />	
+
 			OVERRIDE METHOD GetHashCode() AS LONG
-			RETURN _value:GetHashCode()
+				RETURN _value:GetHashCode()
 			
-			/// <exclude />	
+			/// <inheritdoc />	
 			METHOD GetTypeCode() AS System.TypeCode
 				RETURN TypeCode.DateTime
 		#endregion
@@ -217,9 +224,12 @@ BEGIN NAMESPACE XSharp
 			
 		#endregion
 		#region Equality Operators
+			
+			/// <inheritdoc />	
 			METHOD Equals(lhs AS DATE) AS LOGIC
 				RETURN _value == lhs:_value
 			
+			/// <inheritdoc />	
 			OVERRIDE METHOD Equals(o AS OBJECT) AS LOGIC
 				IF o != NULL
 					IF o:getType() == typeof(DATE)
@@ -504,19 +514,19 @@ BEGIN NAMESPACE XSharp
 					RETURN "NULL_DATE"
 				ENDIF
 			RETURN DToC(SELF)
-			
+			/// <inheritdoc />
 			METHOD ToString(provider AS System.IFormatProvider) AS STRING
 				IF (_value == 0)
 					RETURN "NULL_DATE"
 				ENDIF
 				RETURN Value:ToString(provider)
-			
+			/// <inheritdoc />
 			METHOD ToString(s AS STRING) AS STRING
 				IF (_value == 0)
 					RETURN "NULL_DATE"
 				ENDIF
 				RETURN Value:ToString(s)
-			
+			/// <inheritdoc />
 			METHOD ToString(s AS STRING, fp AS System.IFormatProvider) AS STRING
 				IF (_value == 0)
 					RETURN "NULL_DATE"
@@ -528,17 +538,17 @@ BEGIN NAMESPACE XSharp
 		#endregion
 		#region properties
 			
-			/// <exclude />	
+			/// <inheritdoc />
 			PROPERTY IsEmpty AS LOGIC
 				GET
 					RETURN _value == 0
 				END GET
 			END PROPERTY
-			/// <exclude />	
+			/// <inheritdoc />
 			PROPERTY Month	AS INT GET _month 
-			/// <exclude />	
+			/// <inheritdoc />
 			PROPERTY Year	AS INT GET _year 
-			/// <exclude />	
+			/// <inheritdoc />
 			PROPERTY Day	AS INT GET _day 
 			// Next properties for easy access in right type
 			INTERNAL PROPERTY DYear		AS DWORD GET _year

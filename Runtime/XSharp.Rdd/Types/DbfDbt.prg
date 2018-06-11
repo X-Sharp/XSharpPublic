@@ -39,8 +39,8 @@ BEGIN NAMESPACE XSharp.RDD
             // See https://www.clicketyclick.dk/databases/xbase/format/dbt.html#DBT_STRUCT/
             //
         CLASS DBTMemo INHERIT BaseMemo IMPLEMENTS IMemo
-            PROTECT _hFile	    AS IntPtr
-            PROTECT _FileName   AS STRING
+            INTERNAL _hFile	    AS IntPtr
+            INTERNAL _FileName  AS STRING
             PROTECT _Shared     AS LOGIC
             PROTECT _ReadOnly   AS LOGIC
             PROTECT _oRDD       AS DBF

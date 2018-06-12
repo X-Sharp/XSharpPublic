@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			local u   as Usual
 		    now := System.DateTime.Now
 			u := now
+			// cannot call u:ToString directly because of late binding in other tests
 			var s := u:ToString()
 			Assert.Equal(now:ToString(),u:ToString())
 			local check as DateTime
@@ -44,8 +45,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(3,  (Decimal) u)
 			u += 1U
 			Assert.Equal(4,  (Decimal) u)
-			u += 1.0
-			Assert.Equal(5,  (Decimal) u)
+			// Note: adding a float to a usual results in a usual of type FLOAT
+			// Therefore we must add the m suffix here
+			u += 1.0m
+			Assert.Equal(5, (Decimal) u)
 			u := Decimal.MaxValue
 			RETURN
 

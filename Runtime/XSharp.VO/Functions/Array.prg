@@ -901,6 +901,16 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	
 	
 /// <summary>
+/// Fill Array elements with NIL.
+/// </summary>
+/// <param name="a"></param>
+/// <returns>
+/// </returns>
+FUNCTION AFill(a AS ARRAY) AS ARRAY 
+	RETURN AFill(a, NIL, 1, (INT) ALen(a))
+	
+	
+/// <summary>
 /// Fill Array elements with a specified value.
 /// </summary>
 /// <param name="a"></param>
@@ -931,33 +941,44 @@ FUNCTION AFill(a AS ARRAY,fill AS USUAL,Start AS LONG) AS ARRAY
 /// <param name="Stop"></param>
 /// <returns>
 /// </returns>
-FUNCTION AFill(a AS ARRAY,fill AS USUAL, start AS LONG, Stop AS LONG) AS ARRAY 
+FUNCTION AFill(a AS ARRAY,fill AS USUAL, start AS LONG, count AS LONG) AS ARRAY 
+	// The behavior of AFill() in VO is different than what is descibed in the help file
+	// - if start <= 0 throws an error
+	// - if start == NIL, then start becomes 1
+	// - if count < 0 then it does nothing, unless start == nil, in which case start becomes 1 and count becomes 1, too (yeah, crap!)
+	// - if count == nil, then it fills from start to lenght of array
+	
+	// warning, with the current definition of the function, it is not possible for the user to omit the start param
 	LOCAL nLen := ALen( a ) AS DWORD
-	LOCAL x			AS INT
 	IF nLen > 0
-		IF start > nLen 
+
+		LOCAL lStartWasNil := FALSE AS LOGIC
+		IF start == NIL
+			start := 1
+			lStartWasNil := TRUE
+		ENDIF
+
+		IF start > nLen .or. start <= 0
 			THROW Error.BoundError( "AFill", "start", 3, <OBJECT>{ start } )
 		ENDIF
-		IF stop > 0
-			IF stop > nLen
-				THROW Error.BoundError( "AFill", "Stop", 4, <OBJECT>{ Stop } )
-			ENDIF
-			Stop := Math.Min( Stop, Start + stop - 1 )
+		IF count == NIL
+			count := (INT)nLen - start + 1
+		ELSEIF count > 0
+			// VO does not throw an error if count is longer than the array
+			IF start + count - 1 > nLen
+				count := (INT)nLen - start + 1
+			END IF
 		ELSE
-			IF Stop < -nLen
-				THROW Error.BoundError( "AFill", "Stop", 4, <OBJECT>{ Stop } )
-			ENDIF
-			Stop := Math.Max( 1, Start + stop - 1 )
-		ENDIF   
-		IF Start < Stop
-			FOR x := Start UPTO Stop
-				a[(DWORD) x] := fill
-			NEXT
-		ELSE
-			FOR x := Stop DOWNTO Start
-				a[ (DWORD) x] := fill
-			NEXT
-		ENDIF
+			IF lStartWasNil
+				count := 1
+			ELSE
+				RETURN a
+			END IF
+		END IF
+
+		FOR LOCAL x := start AS INT UPTO start + count - 1
+			a[(DWORD) x] := fill
+		NEXT
 	ENDIF
 	RETURN a
 	

@@ -93,7 +93,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 }
             }
-
+            // Ticket C575: Assign Interface to USUAL
+            // Implementation in LocalRewriter_Conversion.cs
+            if (destination == Compilation.UsualType())
+            {
+                if (source.IsInterfaceType())
+                    return true;
+            }
             return result;
         }
 

@@ -64,7 +64,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     nts = nts.ConstructedFrom;
                 }
-
+                // Ticket C575: Assign Interface to USUAL
+                // Marked as Boxing in Conversions.cs
+                // Implementation here
+                if (nts.IsInterface && rewrittenType == usualType)
+                {
+                    var members = usualType.GetMembers("op_Implicit");
+                    foreach (var m in members)
+                    {
+                        var pt = m.GetParameterTypes()[0] as TypeSymbol;
+                        if (pt == _compilation.GetSpecialType(SpecialType.System_Object))
+                        { 
+                            rewrittenOperand = _factory.StaticCall(rewrittenType, (MethodSymbol) m, rewrittenOperand);
+                            rewrittenOperand.WasCompilerGenerated = true;
+                            return ConversionKind.Identity;
+                        }
+                    }
+                }
 
                 if (nts == usualType)
                 {

@@ -901,8 +901,9 @@ FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	// This is called by the compiler when a late bound call is made on a USUAL.
 	// It is strongly typed and more efficient than Send(), which must use the
 	// CLIPPER calling convention for compatiblity with VO.
-FUNCTION __InternalSend( oObject AS OBJECT, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
-//	oObject := (OBJECT)(USUAL)oObject // workaround to get value from boxed usual
+	// Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
+	//       The compiler expects that
+FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
 /// <summary>Helper function to convert ARRAY to USUAL[]</summary>	

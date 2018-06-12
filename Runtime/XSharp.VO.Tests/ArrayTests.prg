@@ -221,8 +221,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD AFillTests() AS VOID
 			LOCAL arr := {1,2,3,4} AS ARRAY
 			
-			#warning AFill(arr , val , , count) is not supported due to AFill() being strongly typed
-//			AFill(arr , "a" , , 3)
+			//#warning AFill(arr , val , , count) is not supported due to AFill() being strongly typed
+			AFill(arr , "a" , , 3)
 			AFill(arr , "a" , 1 , 3)
 			Assert.True( arr[1] == "a")
 			Assert.True( arr[2] == "a")

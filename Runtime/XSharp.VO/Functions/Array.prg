@@ -901,38 +901,6 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	
 	
 /// <summary>
-/// Fill Array elements with NIL.
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION AFill(a AS ARRAY) AS ARRAY 
-	RETURN AFill(a, NIL, 1, (INT) ALen(a))
-	
-	
-/// <summary>
-/// Fill Array elements with a specified value.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-FUNCTION AFill(a AS ARRAY,fill AS USUAL) AS ARRAY 
-	RETURN AFill(a, fill, 1, (INT) ALen(a))
-	
-	
-/// <summary>
-/// Fill Array elements with a specified value.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <param name="Start"></param>
-/// <returns>
-/// </returns>
-FUNCTION AFill(a AS ARRAY,fill AS USUAL,Start AS LONG) AS ARRAY 
-	RETURN AFill(a, fill, Start, (LONG) ALen(a))
-	
-/// <summary>
 /// Fill Array elements with a specified value.
 /// </summary>
 /// <param name="a"></param>
@@ -941,7 +909,7 @@ FUNCTION AFill(a AS ARRAY,fill AS USUAL,Start AS LONG) AS ARRAY
 /// <param name="Stop"></param>
 /// <returns>
 /// </returns>
-FUNCTION AFill(a AS ARRAY,fill AS USUAL, start AS LONG, count AS LONG) AS ARRAY 
+FUNCTION AFill(a AS ARRAY,fill := NIL AS USUAL, start := NIL AS USUAL, count := NIL AS USUAL) AS ARRAY 
 	// The behavior of AFill() in VO is different than what is descibed in the help file
 	// - if start <= 0 throws an error
 	// - if start == NIL, then start becomes 1

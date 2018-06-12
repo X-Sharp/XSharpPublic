@@ -31,12 +31,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 builder.Insert(0, prologue);
             }
-
+#if !XSHARP
+            // Suppress epilogue for blocks so there is only 1 step in the debugger
             BoundStatement epilogue = _instrumenter.CreateBlockEpilogue(node);
             if (epilogue != null)
             {
                 builder.Add(epilogue);
             }
+#endif
 
             return new BoundBlock(node.Syntax, synthesizedLocal == null ? node.Locals : node.Locals.Add(synthesizedLocal), node.LocalFunctions, builder.ToImmutableAndFree(), node.HasErrors);
         }

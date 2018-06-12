@@ -47,11 +47,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 expressions);
         }
 
-        private bool BindVulcanPointerDereference(CastExpressionSyntax node, TypeSymbol targetType, BoundExpression operand, 
+        private bool BindVOPointerDereference(CastExpressionSyntax node, TypeSymbol targetType, BoundExpression operand, 
             DiagnosticBag diagnostics, out BoundExpression expression)
         {
             // Type(pPointer) -> Dereference pointer
-            // Vulcan only allows this with pPointer is of tyope PTR (Void pointer)
+            // Vulcan only allows this with pPointer is of type PTR (Void pointer)
             if (node.XNode is PrimaryExpressionContext)
             {
                 PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
@@ -412,7 +412,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
-        private BoundExpression CheckVulcanIndexedValue(BoundExpression expr, BindValueKind valueKind, DiagnosticBag diagnostics)
+        private BoundExpression CheckVOIndexedValue(BoundExpression expr, BindValueKind valueKind, DiagnosticBag diagnostics)
         {
             var originalexpr = expr;
             expr = CheckValue(expr, BindValueKind.RValue, diagnostics);

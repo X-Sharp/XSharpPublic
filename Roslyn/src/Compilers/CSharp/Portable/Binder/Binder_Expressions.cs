@@ -1845,7 +1845,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             BoundExpression expression;
-            if (BindVulcanPointerDereference(node, targetType, operand, diagnostics, out expression))
+            if (BindVOPointerDereference(node, targetType, operand, diagnostics, out expression))
             {
                 return expression;
             }
@@ -6361,7 +6361,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindIndexedPropertyAccess(node, propertyGroup.ReceiverOpt, propertyGroup.Properties, analyzedArguments, diagnostics);
                 }
 #if XSHARP
-                receiver = CheckVulcanIndexedValue(receiver, BindValueKind.RValue, diagnostics);
+                receiver = CheckVOIndexedValue(receiver, BindValueKind.RValue, diagnostics);
 #else
                 receiver = CheckValue(receiver, BindValueKind.RValue, diagnostics);
 #endif

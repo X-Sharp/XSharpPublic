@@ -1325,14 +1325,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        protected ExpressionSyntax GenerateMethodCall(string MethodName)
+        protected ExpressionSyntax GenerateMethodCall(string MethodName, bool markAsGenerated = false)
         {
-            return GenerateMethodCall(MethodName, EmptyArgumentList());
+            return GenerateMethodCall(MethodName, EmptyArgumentList(), markAsGenerated);
         }
 
-        protected ExpressionSyntax GenerateMethodCall(string MethodName, ArgumentListSyntax args)
+        protected ExpressionSyntax GenerateMethodCall(string MethodName, ArgumentListSyntax args, bool markAsGenerated = false)
         {
             ExpressionSyntax expr = _syntaxFactory.InvocationExpression(GenerateQualifiedName(MethodName), args);
+            expr.XGenerated = markAsGenerated;
             return expr;
         }
 

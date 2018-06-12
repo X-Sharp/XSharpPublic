@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ToObject = "ToObject";
         internal const string IVarGet = "IVarGet";
         internal const string IVarPut = "IVarPut";
-        internal const string Send = "__InternalSend";
+        internal const string InternalSend = "__InternalSend";
         internal const string ASend = "ASend";
         internal const string Eval = "Eval";
         internal const string GetElement = "__GetElement";

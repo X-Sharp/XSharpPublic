@@ -16,6 +16,10 @@ call build debug
 Echo Build Runtime
 cd \xsharp\devrt
 call rebuildrt.cmd
+Echo build XML for documentation
+msbuild runtime.sln /p:Configuration=Documentation /t:Build /m /v:m /nologo
+Echo build reference documentation
+msbuild docs.shfbproj /p:Configuration=Documentation /t:Build /m /v:m /nologo
 Echo Build VSIntegration
 cd \xsharp\devpublic
 call rebuild.cmd
@@ -23,6 +27,7 @@ cd \xsharp\dev\xsharp
 if exist msbuild3.log del msbuild3.log
 Echo recompile macrocompiler which depends on xsharp.core and xsharp.vo
 msbuild macrocompiler.sln /fl3 /p:Configuration=Release	/t:Build /m /v:m /nologo
+if exist build-macro.log del build-macro.log
 rename msbuild3.log build-macro.log
 Echo Creating Help files
 call createhelp.cmd

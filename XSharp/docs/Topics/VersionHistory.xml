@@ -34,6 +34,9 @@
       <li styleclass="List">Abstract properties should no longer generate a warning about a body</li>
       <li styleclass="List">You can now correctly use ENUM values as array indexes. </li>
       <li styleclass="List">Fixed a problem for Properties with PUBLIC GET and PRIVATE SET accessors.</li>
+      <li styleclass="List">Fixed an issue where assigning an Interface to a USUAL required a cast to Object</li>
+      <li styleclass="List">Fixed an issue where IIF expressions with literal types were returning the wrong type (the L or U suffix was ignored)</li>
+      <li styleclass="List">Fixed an issue where the declaration LOCAL x[10] was not compiled correctly. This now compiles into a local VO Array with 10 elements.</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

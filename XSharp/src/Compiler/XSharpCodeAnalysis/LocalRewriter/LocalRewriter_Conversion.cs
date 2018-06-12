@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Ticket C575: Assign Interface to USUAL
                 // Marked as Boxing in Conversions.cs
                 // Implementation here
-                if (nts.IsInterface && rewrittenType == usualType)
+                if (nts != null && nts.IsInterface && rewrittenType == usualType)
                 {
                     var members = usualType.GetMembers("op_Implicit");
                     foreach (var m in members)

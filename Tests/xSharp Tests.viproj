@@ -58352,7 +58352,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C574 - Errror message needs improvement, when using keyword as identifier
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C575 - Interface in usual *************
 Application = C575 - Interface in usual
 IDEVersion = 1.06
@@ -61344,7 +61344,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C603 Vulcan default parameters and CallerMemberName attribute
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C604 - iif() returns incorrect data types *************
 Application = C604 - iif() returns incorrect data types
 IDEVersion = 1.06
@@ -62138,7 +62138,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C611 - Accessing array elements with /az+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C612 - Problem with LOCAL arr[length] syntax *************
 Application = C612 - Problem with LOCAL arr[length] syntax
 IDEVersion = 1.06
@@ -62178,8 +62178,8 @@ FileGUID = 0DB2880C-55E9-4E6E-AA40-FC6ED40DFE64
 FileType = Code
 [C612 - Problem with LOCAL arr[length] syntax References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,3.0.303.0
+ReferenceBrowse = C:\XIDE\Prg\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XIDE\Prg\XSharp.VO.dll,1,1
 [C612 - Problem with LOCAL arr[length] syntax Resources]
 [C612 - Problem with LOCAL arr[length] syntax Native Resources]
 [C612 - Problem with LOCAL arr[length] syntax License files]

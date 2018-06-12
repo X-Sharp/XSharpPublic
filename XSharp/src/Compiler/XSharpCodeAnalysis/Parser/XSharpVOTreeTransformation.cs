@@ -62,8 +62,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Static Fields
         private static SyntaxList<AttributeListSyntax> _voClassAttribs = null;
-        private static ParameterListSyntax _clipperParams = null;
-        private static AttributeListSyntax _actualArgs = null;
+        private ParameterListSyntax _clipperParams = null;
+        private AttributeListSyntax _actualArgs = null;
 
         #endregion
 

@@ -20,7 +20,6 @@
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
     <Dialect>Core</Dialect>
-    <NoStandardDefs>true</NoStandardDefs>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

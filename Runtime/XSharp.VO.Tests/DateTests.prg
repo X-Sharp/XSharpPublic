@@ -33,7 +33,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Date")];
 		METHOD STODTest() as void
-			Assert.Equal(Date{2016,05,06},STOD("20160506"))
+			Assert.Equal(DATE{2016,05,06},STOD("20160506"))
+			Assert.Equal(NULL_DATE, STOD("20181313"))
+			Assert.Equal(NULL_DATE, STOD("AAAAAAAA"))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -44,6 +46,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("Dienstag",CDOW(Condate(2016,5,24)))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
 			Assert.Equal("dinsdag",CDOW(Condate(2016,5,24)))
+			Assert.Equal("", CDOW(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -54,16 +57,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("Mai",CMonth(Condate(2016,5,24)))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
 			Assert.Equal("mei",CMonth(Condate(2016,5,24)))
+			Assert.Equal("", CMonth(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD DayTest() as void
-			Assert.Equal((dword)24,Day(Condate(2016,5,24)))
+			Assert.Equal((DWORD)24,Day(Condate(2016,5,24)))
+			Assert.Equal((dword)0,Day(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD DOWTest() as void
-			Assert.Equal((dword)2,DOW(Condate(2016,5,24)))
+		METHOD DOWTest() AS VOID
+			// DOW should return 0  for empty dates
+			// 1 = Sunday, 2 = Monday, .... 7 = Saturday
+
+			Assert.Equal((DWORD)3,DOW(Condate(2016,5,24)))
+			Assert.Equal((DWORD)4,DOW(Condate(2018,6,13)))
+			Assert.Equal((DWORD)0,DOW(Condate(0,0,0)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -83,16 +93,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "Date")];
 		METHOD DTOSTest() as void
 			Assert.Equal("20160524",DTOS(Condate(2016,5,24)))
+			Assert.Equal("        ", DTOS(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD MonthTest() as void
-			Assert.Equal((dword)5,MONTH(Condate(2016,5,24)))
+			Assert.Equal((DWORD)5,MONTH(Condate(2016,5,24)))
+			Assert.Equal((dword)0,MONTH(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
 		METHOD YearTest() as void
-			Assert.Equal((dword)2016,YEAR(Condate(2016,5,24)))
+			Assert.Equal((DWORD)2016,YEAR(Condate(2016,5,24)))
+			Assert.Equal((dword)0,YEAR(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];

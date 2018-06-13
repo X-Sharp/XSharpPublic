@@ -4,6 +4,18 @@ function Start as void
 	LOCAL cA, cB AS STRING
 	LOCAL nI, nMax AS Int64
 	LOCAL lOk AS LOGIC
+	LOCAL p AS PTR
+	p := MemAlloc(100)
+	MemFree(p)
+	SetInternational(#Clipper)
+	SetNatDLL("ITALIAN")
+	? DateTime.Now:DayOfWeek:ToString()
+	? (INT) DateTime.Now:DayOfWeek
+	? DOW(Today())
+	? CDOW(Today())
+	? CMonth(Today())
+	wait
+
 	nMax := 10000000// 40000000
 	cA := "THE QUICK BROWN FOX JUMP OVER THE LAZY DOG"
 	//cB := Left(CA, Slen(Ca)-1)+Lower(right(cA,1))
@@ -39,7 +51,7 @@ function Start2 as void
 	_Wait()
 	RETURN
 
-function Start1() as void
+function StartA() as void
 	LOCAL nX AS DWORD
 	CultureInfo.DefaultThreadCurrentCulture := CultureInfo{"EN-us"}
 	CultureInfo.DefaultThreadCurrentUICulture := CultureInfo{"EN-us"}

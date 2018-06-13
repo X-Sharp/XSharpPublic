@@ -452,7 +452,7 @@ BEGIN NAMESPACE XSharp.RDD
             // LockMethod.Exclusive : Unlock all records and lock the indicated record
             // LockMethod.Multiple  : Loc the indicated record
         PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
-            LOCAL nToLock AS UINT64
+            LOCAL nToLock := 0 AS UINT64
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE

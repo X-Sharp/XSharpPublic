@@ -424,7 +424,6 @@ FUNCTION ModuleName( lFull AS LOGIC ) AS STRING
 
 
 FUNCTION GetMimeType(sFileName AS STRING) AS STRING
-    LOCAL iDot AS DWORD
     LOCAL sExt AS STRING
 	sExt := System.IO.Path.GetExtension(sFileName)
     RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()

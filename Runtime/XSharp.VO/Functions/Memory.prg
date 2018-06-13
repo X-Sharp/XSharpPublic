@@ -72,7 +72,7 @@ FUNCTION MemRealloc( pBuffer AS IntPtr, nSize AS DWORD ) AS IntPtr
 /// </summary>
 /// <returns>The total memory consumed by memory manager functions.  This value does not include the overhead used buy the memory manager
 /// </returns>
-//[MethodImpl(MethodImplOptions.AggressiveInlining)];
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION MemTotal() AS DWORD
 	RETURN FixedMemory.Total
 

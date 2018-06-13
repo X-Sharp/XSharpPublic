@@ -222,7 +222,7 @@ function MBTrim(cMBString as string) as string
 /// <summary>
 /// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
 /// </summary>
-/// <returns>
+/// <returns>Locale ID: System.Globalization.CultureInfo.CurrentCulture:LCID
 /// </returns>
 FUNCTION GetAppLocaleID() AS DWORD
 	LOCAL oCI AS CultureInfo
@@ -234,7 +234,7 @@ FUNCTION GetAppLocaleID() AS DWORD
 /// Sets the locale that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
 /// </summary>
 /// <param name="dwLocaleId"></param>
-/// <returns>
+/// <returns>Previous Locale ID: System.Globalization.CultureInfo.CurrentCulture:LCID
 /// </returns>
 [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread := true)];
 FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
@@ -250,7 +250,7 @@ FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 function SetClipCompFunc(pFunc as object) as IntPtr
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return IntPtr.Zero
 
 
@@ -261,7 +261,7 @@ function SetClipCompFunc(pFunc as object) as IntPtr
 /// <returns>
 /// </returns>
 function SetWinCompFlags(n as object) as long
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return 0   
 
 /// <summary>
@@ -270,7 +270,7 @@ function SetWinCompFlags(n as object) as long
 /// <returns>
 /// </returns>
 function SetWinCompFunc(pFunc as object) as IntPtr
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return IntPtr.Zero
 
 [Obsolete];
@@ -288,7 +288,7 @@ function NationExit() as int
 /// <returns>
 /// </returns>
 function NVersion() as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty 
 
 
@@ -306,5 +306,6 @@ FUNCTION IsBiDi() AS LOGIC
 _DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
 
 
+[Obsolete];
 function GetNatDllHandle() as IntPtr strict
 	return IntPtr.Zero

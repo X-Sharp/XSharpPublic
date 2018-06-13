@@ -167,7 +167,7 @@ FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
 /// <returns>
 /// </returns>
 FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	RETURN 0   
 
 /// <summary>
@@ -176,7 +176,7 @@ FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 /// <returns>
 /// </returns>
 FUNCTION Pause() AS DWORD
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	RETURN 0   
 
 
@@ -189,7 +189,7 @@ FUNCTION Pause() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION RGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	RETURN 0   
 
 
@@ -202,8 +202,8 @@ FUNCTION RGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
+[Obsolete];
 FUNCTION SysObject(o AS USUAL) AS OBJECT
-	/// THROW NotImplementedException{}
 	RETURN null_object   
 
 

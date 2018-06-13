@@ -78,13 +78,20 @@ FUNCTION ConTime(dt AS DateTime) AS STRING
 /// <summary>
 /// Convert the number that identifies a day into the name of the day.
 /// </summary>
-/// <param name="dwDay"></param>
+/// <param name="dwDay">A number from 1 to 7.</param>
 /// <returns>
 /// </returns>
 FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
-	LOCAL culture := System.Globalization.CultureInfo.CurrentCulture AS System.Globalization.CultureInfo
-	RETURN culture:DateTimeFormat:GetDayName((System.DayOfWeek)dwDay)
-
+	LOCAL result AS STRING
+	IF dwDay < 1 .or. dwDay > 7
+		result := ""
+	ELSEIF RuntimeState.International == CollationMode.Clipper
+		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDay -1)
+	ELSE
+		var culture := System.Globalization.CultureInfo.CurrentCulture 
+		result := culture:DateTimeFormat:GetDayName((DayOfWeek) dwDay-1)   
+	ENDIF
+	return result
 /// <summary>
 /// Convert the number that identifies a month into the name of the month.
 /// </summary>
@@ -92,14 +99,22 @@ FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION NToCMonth(dwMonth AS DWORD) AS STRING
-	LOCAL culture := System.Globalization.CultureInfo.CurrentCulture AS System.Globalization.CultureInfo
-	RETURN culture:DateTimeFormat:GetMonthName((INT)dwMonth)   
+	LOCAL result AS STRING
+	IF dwMonth < 1 .or. dwMonth > 12
+		result := ""
+	ELSEIF RuntimeState.International == CollationMode.Clipper
+		result := __CavoStr(VOErrors.RT_MSG_MONTH1 + dwMonth -1)
+	else
+		var culture := System.Globalization.CultureInfo.CurrentCulture 
+		result := culture:DateTimeFormat:GetMonthName((INT)dwMonth)   
+	ENDIF
+	RETURN result
 
 /// <summary>
 /// Return a time as the number of seconds that have elapsed since midnight.
 /// </summary>
-/// <param name="cTime"></param>
-/// <returns>
+/// <param name="cTime">The time to convert to seconds, in the form hh:mm:ss.</param>
+/// <returns>The number of seconds from midnight to the time specified.  The return value cannot be greater than 86,400, the number of seconds in a day.
 /// </returns>
 FUNCTION Secs(cTime AS STRING) AS DWORD
 	local cSeparator as string
@@ -131,14 +146,18 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 	RETURN result
 
 
-FUNCTION Days(n AS REAL8) AS INT
-   RETURN (INT) (n / 84600) // 24*60*60
+/// <summary>
+/// Convert a specified number of seconds to days.
+/// </summary>
+// <param name="nSeconds">The number of seconds to convert to days.</param>
+/// <returns>The number of days to the nearest day.</returns>
+FUNCTION Days(nSeconds AS REAL8) AS INT
+   RETURN (INT) (nSeconds / 84600) // 24*60*60
 
 /// <summary>
 /// Return the number of seconds that have elapsed since midnight.
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>The number of seconds that have elapsed since midnight in the form seconds.hundredths.  Numbers range from 0 to 86,399.</returns>
 FUNCTION Seconds() AS Real8
 	var dt := DateTime.Now
 	return dt:Hour * 3600 + dt:Minute * 60 + dt:Second + Math.Round( (real8) dt:Millisecond/1000,2)

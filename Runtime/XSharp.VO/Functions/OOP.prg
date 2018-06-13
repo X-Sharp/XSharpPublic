@@ -271,6 +271,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF fldInfo != NULL_OBJECT .and. IsFieldVisible(fldInfo, lSelf)
 			oValue := MyConvert(oValue, fldInfo:FieldType)
 			fldInfo:SetValue(oObject, oValue)
+			RETURN
 		ENDIF
 		LOCAL propInfo AS PropertyInfo
 		propInfo := FindProperty(t, cIVar, lSelf)
@@ -900,7 +901,9 @@ FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	// This is called by the compiler when a late bound call is made on a USUAL.
 	// It is strongly typed and more efficient than Send(), which must use the
 	// CLIPPER calling convention for compatiblity with VO.
-FUNCTION __InternalSend( oObject AS OBJECT, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
+	// Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
+	//       The compiler expects that
+FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
 /// <summary>Helper function to convert ARRAY to USUAL[]</summary>	

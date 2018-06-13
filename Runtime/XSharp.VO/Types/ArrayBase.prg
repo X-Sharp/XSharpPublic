@@ -196,6 +196,7 @@ BEGIN NAMESPACE XSharp
 			
 		INTERNAL METHOD Insert(index AS DWORD,u AS T) AS VOID
 			IF SELF:CheckLock()
+				_internalList:RemoveAt(_internalList:Count - 1)
 				_internalList:Insert((INT) index-__ARRAYBASE__ ,u)
 			ENDIF
 			RETURN

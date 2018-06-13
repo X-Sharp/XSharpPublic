@@ -227,7 +227,6 @@
       <Argument Key="defaultLanguage" Value="xs" />
       <Argument Key="includeEnumValues" Value="true" />
       <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/tree/feature/Runtime/" />
-      <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>

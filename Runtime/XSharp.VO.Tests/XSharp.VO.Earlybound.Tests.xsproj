@@ -15,7 +15,7 @@
     <RootNamespace>XSharp.Runtime.VO.Tests</RootNamespace>
     <AssemblyName>XSharp.Runtime.VO.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSharp.VO.Tests</Name>
+    <Name>XSharp.VO.Earlybound.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Vulcan</Dialect>
@@ -139,7 +139,6 @@
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FloatTests.prg" />
     <Compile Include="MemoryTests.prg" />
-    <Compile Include="OOPTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

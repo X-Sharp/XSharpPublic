@@ -4,7 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-USING STATIC XSharp.Functions
 USING System.IO
 /// <summary>
 /// Fill a series of Array with directory information.

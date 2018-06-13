@@ -321,8 +321,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal(1u , ALen(Directory("C:\invalid:path","V")))
 		Assert.Equal(0u , ALen(Directory("C:invalid:path")))
 		Assert.Equal(1u , ALen(Directory("C:invalid:path","V")))
-		Assert.Equal(0u , ALen(Directory("M:")))
-		Assert.Equal(0u , ALen(Directory("M:","V")))
+		Assert.Equal(0u , ALen(Directory("N:")))
+		Assert.Equal(0u , ALen(Directory("N:","V")))
 
 	[Fact, Trait("Category", "Empty")];
 	METHOD EmptyFuncTests() AS VOID
@@ -378,7 +378,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.True(  AClone({1,{},4})[3] == 4  )
 
 		Assert.True(AClone(NULL_ARRAY)==NULL_ARRAY)
-		LOCAL aNull AS ARRAY
+		LOCAL aNull := NULL_ARRAY AS ARRAY
 		Assert.True(AClone(aNull)==NULL_ARRAY)
 		Assert.True(ALen(AClone({}))==0)
 		Assert.True(ALen(AClone({{}}))==1)
@@ -398,6 +398,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		Assert.True(ACloneShallow(NULL_ARRAY)==NULL_ARRAY)
 		LOCAL aNull AS ARRAY
+		aNull := NULL_ARRAY
 		Assert.True(ACloneShallow(aNull)==NULL_ARRAY)
 		Assert.True(ALen(ACloneShallow({}))==0)
 		Assert.True(ALen(ACloneShallow({{}}))==1)

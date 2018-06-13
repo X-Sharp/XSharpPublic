@@ -84,6 +84,7 @@ BEGIN NAMESPACE XSharp
 			/// <summary>Construct a date from a DateTime value.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(lhs AS System.DateTime)
+				_value := 0
 				_year  := (WORD) lhs:Year
 				_month := (BYTE) lhs:Month
 				_day   := (BYTE) lhs:Day
@@ -92,6 +93,7 @@ BEGIN NAMESPACE XSharp
 			/// <summary>Construct a date from another IDate type.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(d AS iDate)
+				_value := 0
 				_year  := (WORD) d:Year
 				_month := (BYTE) d:Month
 				_day   := (BYTE) d:Day
@@ -107,6 +109,7 @@ BEGIN NAMESPACE XSharp
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(strDate AS STRING)
 				LOCAL dValue := CToD(strDate) AS DATE
+				_value := 0
 				_year  := dValue:_year
 				_month := dValue:_month
 				_day   := dValue:_day
@@ -115,6 +118,7 @@ BEGIN NAMESPACE XSharp
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(strDate AS STRING, strFormat AS STRING)
 				LOCAL dValue := CToD(strDate,strFormat) AS DATE
+				_value := 0
 				_year  := dValue:_year
 				_month := dValue:_month
 				_day   := dValue:_day
@@ -125,11 +129,15 @@ BEGIN NAMESPACE XSharp
 				TRY
 					// this may throw an exception when the combination is not valid
 					VAR lhs := System.DateTime{year, month, day}
+					_value := 0
 					_year  := (WORD) lhs:Year
 					_month := (BYTE) lhs:Month
 					_day   := (BYTE) lhs:Day
 				CATCH /*e*/ AS Exception
 					_value := 0 // null_date
+					_year  := 0
+					_month := 0
+					_day   := 0
 					// THROW e // cpc: VO allows invalid DATE literals, which are treated as NULL_DATE
 				END TRY
 				RETURN

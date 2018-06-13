@@ -38,7 +38,6 @@ internal static class XSharp.FileSearch
 			next
 		else
 			local oDirInfo as DirectoryInfo
-			local lAllowDir as logic
 			oDirInfo := DirectoryInfo{cPath}
 			if (attributes & FA_DIRECTORY) == FA_DIRECTORY
 					local directories := oDirInfo:GetDirectories(cMask) as FileSystemInfo[]
@@ -254,7 +253,6 @@ function File(cFile as string) as logic
 	else
 		// wildcard, so use Directory.GetFiles()
 		LOCAL files     AS STRING[]
-		local paths     as string[]
 
 		if Path.IsPathRooted(cFile)
 			files := Directory.GetFiles( Path.GetDirectoryName( cFile ), Path.GetFileName( cFile ) )

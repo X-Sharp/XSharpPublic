@@ -62,8 +62,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD DOWTest() as void
-			Assert.Equal((dword)2,DOW(Condate(2016,5,24)))
+		METHOD DOWTest() AS VOID
+			// DOW should return 0  for empty dates
+			// 1 = Sunday, 2 = Monday, .... 7 = Saturday
+
+			Assert.Equal((DWORD)2,DOW(Condate(2016,5,24)))
+			Assert.Equal((DWORD)2,DOW(Condate(2016,5,24)))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];

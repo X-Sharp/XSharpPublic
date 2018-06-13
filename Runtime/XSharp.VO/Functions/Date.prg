@@ -5,15 +5,15 @@
 //
 
 USING XSharp
+using System.Globalization
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
-/// <param name="c"></param>
-/// <returns>
+/// <param name="cString">A 32-bit binary date represented as a string — least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
+/// <returns>A date value that corresponds to the date specified in cString.  If cString is not a valid binary date, Bin2Date() returns a NULL_DATE.
 /// </returns>
-FUNCTION Bin2Date(c AS STRING) AS DATE
-	RETURN (DATE)(DWORD) Bin2L( c )
-
+FUNCTION Bin2Date(cString AS STRING) AS DATE
+	RETURN (DATE)(DWORD) Bin2L( cString )
 
 
 /// <summary>
@@ -24,12 +24,7 @@ FUNCTION Bin2Date(c AS STRING) AS DATE
 /// A string for the calculated day of the week.
 /// </returns>
 FUNCTION CDoW(d AS DATE) AS STRING		
-	LOCAL result := String.Empty AS STRING
-	IF d != NULL
-		LOCAL dt := d AS Datetime
-		result := dt:ToString("dddd")
-	ENDIF
-	RETURN result
+	RETURN NToCDow(Dow(d))
 
 /// <summary>
 /// Extract the name of the month from a Date.
@@ -44,11 +39,10 @@ FUNCTION CMonth(d AS DATE) AS STRING
 /// <summary>
 /// Format a set of numbers representing a year, month, and day as a Date.
 /// </summary>
-/// <param name="dwY"></param>
-/// <param name="dwM"></param>
-/// <param name="dwDay"></param>
-/// <returns>
-/// </returns>
+/// <param name="dwY">A valid year.  If the century digits are not specified, the century is determined by the rules of SetEpoch(). </param>
+/// <param name="dwM">A number from 1 through 12 representing a valid month. </param>
+/// <param name="dwDay">A number representing a valid day of dwMonth.</param>
+/// <returns>The date that corresponds to the passed arguments.  If any of the arguments specified do not represent a valid year, month, or day, a NULL_DATE is returned.</returns>
 FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
 	IF dwY < 100
 		LOCAL lAfter AS LOGIC
@@ -61,20 +55,20 @@ FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
 	RETURN DATE{dwY,dwM,dwDay}   
 
 /// <summary>
-/// Convert a Date string to DATE format.
+/// Convert a Date string to date format.
 /// </summary>
-/// <param name="cDate"></param>
-/// <returns>
+/// <param name="cDate">A string of numbers representing the month, day, and year, separated by any character other than a number.  The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().  If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
+/// <returns>The date value that corresponds to the numbers specified in cDate.  If cDate is not a valid date, CToD() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToD(cDate AS STRING) AS DATE
 	RETURN CToD(cDate, XSharp.RuntimeState.DateFormat)
 
 /// <summary>
-/// Convert a Date string to DATE format using a specified Date Format string
+/// Convert a Date string to date format using a specified Date Format string
 /// </summary>
-/// <param name="cDate"></param>
-/// <param name="cDateFormat"></param>
-/// <returns>
+/// <param name="cDate">A string of numbers representing the month, day, and year, separated by any character other than a number.  The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().  If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
+/// <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
+/// <returns>The date value that corresponds to the numbers specified in cDate.  If cDate is not a valid date, CToD() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 	LOCAL dDate AS DATE
@@ -134,10 +128,13 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 
 
 /// <summary>
-/// Convert an ANSI Date string to Date format.
+/// Convert an ANSI date string to date format.
 /// </summary>
-/// <param name="cDate"></param>
-/// <returns>
+/// <param name="cDate">A string in the ANSI form yyyy.mm.dd, where yy, mm, and dd represent year, month, and day respectively.  
+/// The year, month, and day can be separated by any character other than a number. 
+/// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().  
+/// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
+/// <returns>The date value that corresponds to the numbers specified in <cDate>.  If cDate is not a valid ANSI date, CToDAnsi() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 	RETURN CToD(cDate, "YYYY.MM.DD")
@@ -146,11 +143,11 @@ FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 /// <summary>
 /// Convert a Date to a 32-bit binary Date string.
 /// </summary>
-/// <param name="d"></param>
-/// <returns>
+/// <param name="dValue">The date value to convert.</param>
+/// <returns>Date2Bin() is a conversion function that converts a date data type into a 4-byte string.  Typical applications include reading foreign file types in their native format and then saving, reading, decrypting, and transmitting date types in their compressed binary form instead of in strings.  Its inverse is Bin2Date().
 /// </returns>
-FUNCTION Date2Bin(d AS DATE) AS STRING
-	RETURN L2Bin((LONG) (DATE) d)
+FUNCTION Date2Bin(dValue AS DATE) AS STRING
+	RETURN L2Bin((LONG) (DATE) dValue)
  
 
 /// <summary>
@@ -158,7 +155,7 @@ FUNCTION Date2Bin(d AS DATE) AS STRING
 /// </summary>
 /// <param name="d">The Date to extract the day from.</param>
 /// <returns>
-/// The day part of the given DATE.
+/// The day of the month, as a number in the range 0 to 31.  For a NULL_DATE, Day() returns 0.
 /// </returns>
 FUNCTION Day(d AS DATE) AS DWORD
 	LOCAL day := 0  AS DWORD
@@ -172,13 +169,13 @@ FUNCTION Day(d AS DATE) AS DWORD
 /// </summary>
 /// <param name="d">The Date to extract the day of the week from.</param>
 /// <returns>
-/// The day of the week of the given DATE.
+/// The day of the week as a number from 1 to 7, where 1 is Sunday, 2 is Monday, and so on.  For a NULL_DATE, DoW() returns 0.
 /// </returns>
 FUNCTION DoW(d AS DATE) AS DWORD
 	LOCAL day := 0  AS DWORD
 	IF ! d:IsEmpty
 		LOCAL dt := d AS Datetime
-		day := (DWORD) dt:DayOfWeek	   
+		day := (DWORD) (dt:DayOfWeek	+1  )
 	ENDIF
 	RETURN day
 
@@ -204,15 +201,14 @@ FUNCTION DToC(d AS DATE) AS STRING
 /// <summary>
 /// Convert a Date value to a string formatted as string in ANSI format
 /// </summary>
-/// <param name="d">The Date to be converted</param>
+/// <param name="dDate">The Date to be converted</param>
 /// <returns>
-/// The given Date as string in ANSI format
+/// An 8-character string in the format yyyymmdd.  If dDate is a NULL_DATE, a string of eight spaces is returned.  The return value is not affected by the current date format.
 /// </returns>
-FUNCTION DToS(d AS DATE) AS STRING
+FUNCTION DToS(dDate AS DATE) AS STRING
 	LOCAL result:="        " AS STRING		
-	IF ! d:IsEmpty
-		LOCAL dt := d AS Datetime
-		result := d:ToString("yyyyMMdd")
+	IF ! dDate:IsEmpty
+		result := dDate:ToString("yyyyMMdd")
 	ENDIF
 	RETURN result 
 
@@ -222,8 +218,10 @@ FUNCTION DToS(d AS DATE) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION JCDOW(d AS DATE) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN	 String.Empty   
+	LOCAL dt := d AS DateTime
+	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
+	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") as CultureInfo
+	return culture:DateTimeFormat:GetDayName(dt:DayOfWeek)
 
 /// <summary>
 /// </summary>
@@ -231,8 +229,12 @@ FUNCTION JCDOW(d AS DATE) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION JCMONTH(d AS DATE) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN	 String.Empty   
+	LOCAL dt := d AS DateTime
+	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
+	LOCAL month := cal:GetMonth(dt) AS INT
+	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") as CultureInfo
+	return culture:DateTimeFormat:GetMonthName(month)
+
 
 /// <summary>
 /// </summary>
@@ -240,8 +242,7 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION JCYEAR(d AS DATE) AS STRING
-	/// THROW NotImplementedException{}
-	RETURN	 String.Empty   
+	return Year(d):ToString()
 
 /// <summary>
 /// Extract the number of the month from a DATE.

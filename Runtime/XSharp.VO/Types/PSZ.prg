@@ -104,6 +104,7 @@ begin namespace XSharp
 			
 		return ret
 		
+		/// <inheritdoc />
 		override method GetHashCode() as int
 			return (int) _value
 		

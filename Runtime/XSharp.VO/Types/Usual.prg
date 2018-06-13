@@ -33,11 +33,16 @@ begin namespace XSharp
         #region constructors
 			/// <exclude />
             static constructor
-            _NIL := __Usual{}
+            _NIL := __Usual{UsualType.Void}
             return
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            private constructor(type as UsualType )
+				SELF:_valueData := _UsualData{}
+				SELF:_flags     := UsualFlags{type}
+				self:_refData   := NULL
             
-            
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(u as __Usual)
             self:_flags     := u:_flags
             self:_valueData	:= u:_valueData
@@ -45,89 +50,88 @@ begin namespace XSharp
             
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(f as Float)
-            self:_valueData:r8		:= f:Value
-            self:_flags:usualType	:= UsualType.Float
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            PRIVATE CONSTRUCTOR(f AS FLOAT)
+			SELF(UsualType.Float)
+            SELF:_valueData:r8		:= f:Value
             self:_flags:Width		:= (Sbyte) f:Digits
             self:_flags:Decimals	:= (Sbyte) f:Decimals
-            
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(r8 as real8)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            PRIVATE CONSTRUCTOR(r8 AS REAL8)
+			SELF(UsualType.Float)
             self:_valueData:r8		:= r8
-            self:_flags:usualType	:= UsualType.Float
             self:_flags:Width		:= -1
             self:_flags:Decimals	:= -1
-            
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as logic)
-            self:_flags:usualType	:= UsualType.LOGIC
-            self:_valueData:l		:= value
+			SELF(UsualType.LOGIC)
+			SELF:_valueData:l		:= VALUE
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as Array)
-            self:_flags:usualType	:= UsualType.Array
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            PRIVATE CONSTRUCTOR(VALUE AS ARRAY)
+			SELF(UsualType.ARRAY)
             self:_refData			:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Date)
-            self:_flags:usualType	:= UsualType.Date
-            self:_valueData:d		:= value
+			SELF(UsualType.DATE)
+            SELF:_valueData:d		:= VALUE
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as System.DateTime)
-            self:_flags:usualType	:= UsualType.DateTime
-            self:_valueData:dt		:= value
+			SELF(UsualType.DateTime)
+            SELF:_valueData:dt		:= VALUE
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as long)
-            self:_flags:usualType	:= UsualType.LONG
-            _valueData:i			:= value
+			SELF(UsualType.Long)
+            _valueData:i			:= VALUE
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as int64)
-            self:_flags:usualType	:= UsualType.INT64
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            PRIVATE CONSTRUCTOR(VALUE AS INT64)
+			SELF(UsualType.Int64)
             self:_valueData:i64		:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as uint64)
             if value < Int64.MaxValue
-                self:_flags:usualType	:= UsualType.INT64
+				SELF(UsualType.Int64)
                 self:_valueData:i64:= (int64) value
             else
-                self:_flags:usualType	:= UsualType.FLOAT
+				SELF(UsualType.Float)
                 self:_valueData:r8 := value
             endif
             return
             
             private constructor(d as System.Decimal)
-            self:_flags:usualType  := UsualType.Decimal
-            self:_refdata	:= d
+         		SELF(UsualType.Decimal)
+	            self:_refdata	:= d
             
             
             private constructor(value as System.IntPtr)
-            self:_flags:usualType	:= UsualType.PTR
+            SELF(UsualType.PTR)
             self:_valueData:p		:= value
             return
 
 
             private constructor(value as PSZ)
-				self:_flags:usualType	:= UsualType.STRING
+				SELF(UsualType.String)
 				self:_refData			:= Psz2String(value)
             return           
    			/// <summary>This constructor is used in code generated by the compiler when needed.</summary>
             public constructor(o as object)
-            local u				as __Usual
+            LOCAL u				AS __Usual
+			SELF(UsualType.Void)
             if o != null
                 if o:GetType() == typeof(__Usual)
                     // boxed __Usual
@@ -141,133 +145,137 @@ begin namespace XSharp
                     var typeCode := System.Type.GetTypeCode(vartype)
                     switch typeCode
                         case  System.TypeCode.DBNull
-                            self:_flags:usualType := UsualType.Void
+                            self:_flags				:= UsualFlags{UsualType.Void}
                             self:_refData	:= null
                         
                         case System.TypeCode.Boolean
-                            self:_flags:usualType := UsualType.LOGIC
+                            self:_flags				:= UsualFlags{UsualType.Logic}
                             self:_valueData:l := (logic)o 
                         
                         case System.TypeCode.Char
-                            self:_flags:usualType		:= UsualType.Long
+                            self:_flags				:= UsualFlags{UsualType.Long}
                             self:_valueData:i	:= (char)o 
                         
                         case System.TypeCode.SByte
-                            self:_flags:usualType		:= UsualType.Long
+                            self:_flags				:= UsualFlags{UsualType.Long}
                             self:_valueData:i	:= (SByte)o 
                         
                         case System.TypeCode.Byte
-                            self:_flags:usualType		:= UsualType.Long
+                            self:_flags				:= UsualFlags{UsualType.Long}
                             self:_valueData:i	:= (byte)o 
                         
                         case System.TypeCode.Int16 
-                            self:_flags:usualType		:= UsualType.Long
+                            self:_flags				:= UsualFlags{UsualType.Long}
                             self:_valueData:i	:= (short)o 
                         
                         case System.TypeCode.UInt16
-                            self:_flags:usualType		:= UsualType.Long
+                            self:_flags				:= UsualFlags{UsualType.Long}
                             self:_valueData:i	:= (word)o 
                         
                         case System.TypeCode.Int32
-                            self:_flags:usualType		:= UsualType.Long
+                            self:_flags				:= UsualFlags{UsualType.Long}
                             self:_valueData:i	:= (long)o 
                         
                         case System.TypeCode.UInt32
                             if (dword)o  <= Int32.MaxValue
-                                self:_flags:usualType := UsualType.Long
+                                self:_flags				:= UsualFlags{UsualType.Long}
                                 self:_valueData:i := (long)(dword)o  
                             else
-                                self:_flags:usualType := UsualType.Float
+                                self:_flags				:= UsualFlags{UsualType.Float}
                                 self:_valueData:r8:= (real8) (UInt32) o 
                                 self:_flags:width	:= -1
                                 self:_flags:decimals := -1
                             endif
                         case System.TypeCode.Int64 
-                            self:_flags:usualType		:= UsualType.Int64
+                            self:_flags				:= UsualFlags{UsualType.Int64}
                             self:_valueData:i64	:= (int64)o 
                         
                         case System.TypeCode.UInt64 
                             if (uint64) o  <= Int64.MaxValue
-                                self:_flags:usualType	:= UsualType.Int64
+                                self:_flags				:= UsualFlags{UsualType.Int64}
                                 self:_valueData:i64		:= (int64)(uint64)o  
                             else
-                                self:_flags:usualType := UsualType.FLOAT
+                                self:_flags				:= UsualFlags{UsualType.Float}
                                 self:_valueData:r8 := (real8)(uint64)o  
                                 self:_flags:width	:= -1
                                 self:_flags:decimals := -1
                             endif
                         case System.TypeCode.Single  
-                            self:_flags:usualType		:= UsualType.Float
+                            self:_flags				:= UsualFlags{UsualType.Float}
                             self:_valueData:r8	:= (real8)o 
                             self:_flags:width	:= -1
                             self:_flags:decimals := -1
                         
                         case System.TypeCode.Double 
-                            self:_flags:usualType := UsualType.Float
+                            self:_flags				:= UsualFlags{UsualType.Float}
                             self:_valueData:r8 := (real8)o 
                             self:_flags:width := -1
                             self:_flags:decimals := -1
                         
                         case System.TypeCode.Decimal 
-                            self:_flags:usualType := UsualType.Decimal
+                            self:_flags				:= UsualFlags{UsualType.Decimal}
                             self:_refData  := o
                         
                         case System.TypeCode.DateTime 
-                            self:_flags:usualType := UsualType.DateTime
+                            self:_flags				:= UsualFlags{UsualType.DateTime}
                             self:_valueData:dt := (System.DateTime) o 
                         
                         case System.TypeCode.String 
-                            self:_flags:usualType := UsualType.STRING
+                            self:_flags				:= UsualFlags{UsualType.String}
                             self:_refData  := (string)o 
                         
                         otherwise
                             IF vartype == typeof(ARRAY)
-                                SELF:_flags:usualType := UsualType.Array
+                                self:_flags				:= UsualFlags{UsualType.Array}
                                 self:_refData  := o
 							// CodeBlock ?
 							// _CodeBlock ?
                             ELSEIF vartype == typeof(DATE)
-                                SELF:_flags:usualType := UsualType.Date
-                                SELF:_valueData:d :=  (DATE) o
+                                self:_flags				:= UsualFlags{UsualType.Date}
+                                SELF:_valueData:d		:=  (DATE) o
                             ELSEIF vartype == typeof(SYMBOL)
-                                SELF:_flags:usualType := UsualType.Symbol
-                                SELF:_valueData:s :=   (SYMBOL) o
+                                self:_flags				:= UsualFlags{UsualType.Symbol}
+                                SELF:_valueData:s		:=   (SYMBOL) o
                             ELSEIF vartype == typeof(System.Reflection.Pointer)
-                                self:_flags:usualType := UsualType.Ptr
-                                self:_valueData:p	  := Intptr{System.Reflection.Pointer.UnBox(o)}
+                                self:_flags				:= UsualFlags{UsualType.Ptr}
+                                self:_valueData:p		:= Intptr{System.Reflection.Pointer.UnBox(o)}
+							elseif o is IDate
+								self:_flags				:= UsualFlags{UsualType.Date}
+								self:_valueData:d		:= Date{(IDate) o }
 							elseif o is IFloat
+								self:_flags				:= UsualFlags{UsualType.Float}
 								local f := (IFLoat) o as IFloat
 								self:_valueData:r8		:= f:Value
-								self:_flags:usualType	:= UsualType.Float
 								self:_flags:Width		:= (Sbyte) f:Digits
 								SELF:_flags:Decimals	:= (Sbyte) f:Decimals
 							elseif o is ICodeBlock
-                                SELF:_flags:usualType := UsualType.CodeBlock
+                                self:_flags				:= UsualFlags{UsualType.Codeblock}
                                 self:_refData := o
                             ELSE
-                                SELF:_flags:usualType := UsualType.Object
+                                self:_flags				:= UsualFlags{UsualType.Object}
                                 self:_refData := o
                             endif
                     end switch
-                endif
+                ENDIF
             endif
             return
             
-            private constructor(s as string)
-            self:_flags:usualType	:= UsualType.STRING
-            self:_refData 			:= s
+		[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        private constructor(s as string)
+				SELF(UsualType.String)
+	            self:_refData 			:= s
             return
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(s as symbol)
-            self:_flags:usualType	:= UsualType.SYMBOL
+            SELF(UsualType.Symbol)
             self:_valueData:s       := s
             return
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(o as object, lIsNull as logic)
-            self:_flags:usualType	:= UsualType.OBJECT
-            self:_refData 			:= null
+            SELF(UsualType.Object)
+
             return
 
         #endregion
@@ -275,21 +283,21 @@ begin namespace XSharp
         #region properties
 			private property _isByRef		as LOGIC	get _flags:isByRef
             internal property _usualType		as UsualType get _flags:usualType 
-
-			private property _arrayValue    as array	get iif(IsArray, (array) _refData , null_array)
-			private property _codeblockValue as codeblock	get iif(IsCodeBlock, (Codeblock) _refData , null_codeblock)
-            private property _dateValue		as Date		get _valueData:d 
-            private property _dateTimeValue as DateTime get _valueData:dt
-            private property _decimalValue	as System.Decimal get (System.Decimal) _refData 
-            private property _floatValue    as Float	get Float{ _valueData:r8, _width, _decimals}
-            private property _i64Value		as int64	get _valueData:i64 
-            private property _intValue		as int		get _valueData:i  
-            private property _logicValue	as logic	get _valueData:l 
-            PRIVATE PROPERTY _ptrValue		AS IntPtr	GET _valueData:p 
-			private property _pszValue		as IntPtr	get __psz.CreatePsz(_stringValue)
-            private property _r8Value		as real8	get _valueData:r8 
-            private property _stringValue   as string	get iif(IsString, (string) _refData , String.Empty)
-            private property _symValue		as Symbol	get _valueData:s 
+			
+			/// No checks for typeflag. These private properties should always be accessed after checking the correct type
+			private property _arrayValue    as array			get (array) _refData 
+			private property _codeblockValue as codeblock		get (Codeblock) _refData 
+            private property _dateValue		as Date				get _valueData:d 
+            private property _dateTimeValue as DateTime			get _valueData:dt
+            private property _decimalValue	as System.Decimal	get (System.Decimal) _refData 
+            private property _floatValue    as Float			get Float{ _valueData:r8, _width, _decimals}
+            private property _i64Value		as int64			get _valueData:i64 
+            private property _intValue		as int				get _valueData:i  
+            private property _logicValue	as logic			get _valueData:l 
+            PRIVATE PROPERTY _ptrValue		AS IntPtr			GET _valueData:p 
+            private property _r8Value		as real8			get _valueData:r8 
+            private property _stringValue   as string			get (string) _refData 
+            private property _symValue		as Symbol			get _valueData:s 
 
             // properties for floats
             private property _width			as SBYTE get _flags:width 
@@ -813,7 +821,8 @@ begin namespace XSharp
         #endregion
 
 		#region IEquatable<T>
-		public method Equals(u as USUAL) as logic
+		/// <inheritdoc />
+		public method Equals(u as __Usual) as logic
 				if u:IsNil
 					return self:IsNil
 				endif
@@ -821,6 +830,7 @@ begin namespace XSharp
 
 		#endregion        
         #region Operators for Equality
+			/// <inheritdoc />
             public method Equals(obj as object) as logic
 				if obj == null
 					return self:IsNil
@@ -828,6 +838,7 @@ begin namespace XSharp
 				return UsualEquals((USUAL) obj, "Usual.Equals()")
 
             
+			/// <inheritdoc />
             public method GetHashCode() as int
 				local oValue as object
 				oValue := self:Value
@@ -1789,60 +1800,62 @@ begin namespace XSharp
         #region Implicit from Other Type to Usual
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as object) as Usual
-				local result as USUAL
+			/// Note this generates error XS0553. 
+			/// However our compiler needs this one. Therefore disable XS0553
+            static operator implicit(value as object) as __Usual
+				local result as __Usual
 				if value != null .and. value:GetType() == typeof(__Usual)
-					result := (Usual) value
+					result := (__Usual) value
 				elseif value == null
-					result := Usual{NULL, true}
+					result := __Usual{NULL, true}
 				else
-					result := usual{value}
+					result := __Usual{value}
 				endif
 				return result
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as logic) as __Usual
-            return __Usual{value}
+	            return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as byte) as __Usual
-            return __Usual{(int)value}
+				return __Usual{(int)value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as Array) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as Date) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as System.DateTime) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as Float) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as real8) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as short) as __Usual
-            return __Usual{(int)value}
+				return __Usual{(int)value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as long) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as int64) as __Usual
-            return __Usual{value}
+				return __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
             static operator implicit(value as uint64) as __Usual
-            return __Usual{value}
+				return __Usual{value}
 
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
@@ -1883,15 +1896,15 @@ begin namespace XSharp
         #endregion
         
         #region implementation IConvertable
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+			/// <inheritdoc />
             public method IConvertible.ToBoolean(provider as System.IFormatProvider) as logic
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+			/// <inheritdoc />
             public method IConvertible.ToByte(provider as System.IFormatProvider) as byte
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+			/// <inheritdoc />
             public method IConvertible.ToChar(provider as System.IFormatProvider) as char
             var o := __Usual.ToObject(self)
             if o is IConvertible
@@ -1899,29 +1912,30 @@ begin namespace XSharp
             endif
             throw InvalidCastException{}
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToDateTime(provider as System.IFormatProvider) as System.DateTime
             return (Date) self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToDecimal(provider as System.IFormatProvider) as Decimal
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToDouble(provider as System.IFormatProvider) as real8
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToInt16(provider as System.IFormatProvider) as short
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToInt32(provider as System.IFormatProvider) as long
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToInt64(provider as System.IFormatProvider) as int64
-            return self
+				RETURN SELF
+
 			/// <exclude />            
             static method ToObject(u as __Usual) as object
             switch u:_usualType
@@ -1942,11 +1956,11 @@ begin namespace XSharp
                 otherwise					; return null
             end switch
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToSByte(provider as System.IFormatProvider) as SByte
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToSingle(provider as System.IFormatProvider) as real4
             return self
            
@@ -1955,16 +1969,16 @@ begin namespace XSharp
 				return self:ToString()
 			
 			/// <exclude />
-			public method Clone() as usual
+			public method Clone() as __Usual
 				// clone types that need cloning
-				local result as usual
+				local result as __Usual
 				switch self:_usualType
 				case UsualType.Object
-					result := usual{self:value}
+					result := __Usual{self:value}
 				case UsualType.String
-					result := usual { String.Copy(self:_stringValue)}
+					result := __Usual { String.Copy(self:_stringValue)}
 				case UsualType.Array
-					result := usual { Aclone(self:_arrayValue) }
+					result := __Usual { Aclone(self:_arrayValue) }
 				otherwise
 					result := self
 				end switch
@@ -2016,15 +2030,15 @@ begin namespace XSharp
                 endif
             endif
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToUInt16(provider as System.IFormatProvider) as word
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToUInt32(provider as System.IFormatProvider) as dword
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToUInt64(provider as System.IFormatProvider) as uint64
             return self
             
@@ -2050,7 +2064,8 @@ begin namespace XSharp
         #endregion
         
         #region Error Method
-           internal method ValType() as string
+           INTERNAL PROPERTY ValType AS STRING
+		   get
             switch self:_usualType
                 case UsualType.Array		; return "A"
                 case UsualType.CodeBlock	; return "B"
@@ -2070,8 +2085,9 @@ begin namespace XSharp
 					Debug.Fail( "Unhandled data type in Usual:Valtype" )
             end switch
 			return "?"                        
-
-            static internal method ConversionError(toTypeString as string, toType as System.Type, u as Usual) as Error
+			end get
+			end property
+            static internal method ConversionError(toTypeString as string, toType as System.Type, u as __Usual) as Error
 				var err			:= Error{InvalidCastException{}}
 				err:GenCode		:= GenCode.EG_DataType
 				err:ArgTypeReq	:= toType
@@ -2082,7 +2098,7 @@ begin namespace XSharp
 				err:Args        := <OBJECT>{u}
 				return err
 
-            static internal method ConversionError(typeNum as DWORD, toType as System.Type, u as Usual) as Error
+            static internal method ConversionError(typeNum as DWORD, toType as System.Type, u as __Usual) as Error
 				var err			:= Error{ InvalidCastException{} }
 				err:GenCode		:= GenCode.EG_DataType
 				err:ArgTypeReq	:= toType
@@ -2094,7 +2110,7 @@ begin namespace XSharp
 				err:Args        := <OBJECT>{u}
 				return err
             
-            static internal method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as Usual) as Error
+            static internal method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as __Usual) as Error
 				var err			 := Error{ex}
 				err:GenCode		 := GenCode.EG_NUMOVERFLOW
 				err:ArgTypeReq	 := toType
@@ -2105,7 +2121,7 @@ begin namespace XSharp
 				err:Args		 := <OBJECT>{u}
 				return err
             
-            static internal method BinaryError( cOperator as string, message as string, left as logic, lhs as Usual, rhs as Usual) as Error
+            static internal method BinaryError( cOperator as string, message as string, left as logic, lhs as __Usual, rhs as __Usual) as Error
 				var err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
 				err:ArgNum		 := iif (left, 1, 2)
@@ -2115,7 +2131,7 @@ begin namespace XSharp
 				err:Args         := <OBJECT> {lhs, rhs}
 				return err
             
-            static internal method UnaryError( cOperator as string, u as Usual) as Error
+            static internal method UnaryError( cOperator as string, u as __Usual) as Error
 				var err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
 				err:ArgNum		 := 1
@@ -2130,7 +2146,7 @@ begin namespace XSharp
 
 		#region Special methods used by the compiler
         /// <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
-		static method __InexactEquals( lhs as usual, rhs as usual ) as logic
+		static method __InexactEquals( lhs as __Usual, rhs as __Usual ) as logic
 			if lhs:IsString .and. rhs:IsString
 				return __StringEquals( lhs:_stringValue, rhs:_stringValue)
 			else
@@ -2138,7 +2154,7 @@ begin namespace XSharp
 			endif
 
         /// <summary>This method is used by the compiler for code that does an inexact comparison between a usual and a string.</summary>
-		static method __InexactEquals( lhs as usual, rhs as string ) as logic
+		static method __InexactEquals( lhs as __Usual, rhs as string ) as logic
 			if lhs:IsString 
 				return __StringEquals( lhs:_stringValue, rhs)
 			else
@@ -2146,7 +2162,7 @@ begin namespace XSharp
 			endif
 
         /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
-		static method __InexactNotEquals( lhs as usual, rhs as usual ) as logic
+		static method __InexactNotEquals( lhs as __Usual, rhs as __Usual ) as logic
 			// emulate VO behavior for "" and NIL
 			// "" = NIL but also "" != NIL, NIL = "" and NIL != ""
 			IF lhs:IsString 
@@ -2162,7 +2178,7 @@ begin namespace XSharp
 				return ! lhs:UsualEquals(rhs, "<>")
 			endif
         /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
-		static method __InexactNotEquals( lhs as usual, rhs as string ) as logic
+		static method __InexactNotEquals( lhs as __Usual, rhs as string ) as logic
 			if lhs:IsString 
 				return __StringNotEquals( lhs:_stringValue, rhs)
 			else
@@ -2195,7 +2211,6 @@ begin namespace XSharp
         [FieldOffset(0)] internal p as System.IntPtr
         [FieldOffset(0)] internal s as symbol
         [FieldOffset(0)] internal dt as System.DateTime
-        
     end structure
     
     internal enum UsualType as byte
@@ -2241,8 +2256,12 @@ begin namespace XSharp
         [FieldOffset(3)] export isByRef as logic
         
         constructor(type as UsualType)
-        usualType := type
-    end structure
+			usualType := type
+			width	  := 0
+			decimals  := 0
+			isByRef   := false
+    END STRUCTURE
+
 /// <summary>
 /// Determine the data type of an expression.
 /// </summary>
@@ -2258,7 +2277,7 @@ function UsualType(u as __Usual) as dword
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function UsualVal(u as Usual) as Usual
+function UsualVal(u as __Usual) as __Usual
 	return u
 
 /// <summary>
@@ -2267,8 +2286,8 @@ function UsualVal(u as Usual) as Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function ValType(u as Usual) as string
-	return u:ValType()
+function ValType(u as __Usual) as string
+	return u:ValType
 
     
 end namespace

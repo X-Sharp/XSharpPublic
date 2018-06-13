@@ -25,7 +25,6 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nTempLen AS INT
 		LOCAL nLines := 0 AS DWORD
 		LOCAL nIndex := 0 AS INT
-		LOCAL lError AS LOGIC
 		IF cMemo == NULL
 			return 0
 		endif
@@ -355,7 +354,6 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 /// </returns>
 FUNCTION MemoRead(cFile AS STRING) AS STRING
 	LOCAL cResult AS STRING
-	LOCAL lOk AS LOGIC
 	TRY
 		IF File(cFile)
 			cFile := FPathName()

@@ -321,8 +321,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal(1u , ALen(Directory("C:\invalid:path","V")))
 		Assert.Equal(0u , ALen(Directory("C:invalid:path")))
 		Assert.Equal(1u , ALen(Directory("C:invalid:path","V")))
-		Assert.Equal(0u , ALen(Directory("M:")))
-		Assert.Equal(0u , ALen(Directory("M:","V")))
+		Assert.Equal(0u , ALen(Directory("N:")))
+		Assert.Equal(0u , ALen(Directory("N:","V")))
 
 	[Fact, Trait("Category", "Empty")];
 	METHOD EmptyFuncTests() AS VOID

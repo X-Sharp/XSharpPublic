@@ -37,7 +37,7 @@ begin namespace XSharp
             return
             
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(u as __Usual)
             self:_flags     := u:_flags
             self:_valueData	:= u:_valueData
@@ -45,7 +45,7 @@ begin namespace XSharp
             
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(f as Float)
             self:_valueData:r8		:= f:Value
             self:_flags:usualType	:= UsualType.Float
@@ -54,7 +54,7 @@ begin namespace XSharp
             
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(r8 as real8)
             self:_valueData:r8		:= r8
             self:_flags:usualType	:= UsualType.Float
@@ -63,43 +63,43 @@ begin namespace XSharp
             
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as logic)
             self:_flags:usualType	:= UsualType.LOGIC
             self:_valueData:l		:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Array)
             self:_flags:usualType	:= UsualType.Array
             self:_refData			:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as Date)
             self:_flags:usualType	:= UsualType.Date
             self:_valueData:d		:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as System.DateTime)
             self:_flags:usualType	:= UsualType.DateTime
             self:_valueData:dt		:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as long)
             self:_flags:usualType	:= UsualType.LONG
             _valueData:i			:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as int64)
             self:_flags:usualType	:= UsualType.INT64
             self:_valueData:i64		:= value
             return
             
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             private constructor(value as uint64)
             if value < Int64.MaxValue
                 self:_flags:usualType	:= UsualType.INT64
@@ -258,13 +258,13 @@ begin namespace XSharp
             self:_refData 			:= s
             return
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(s as symbol)
             self:_flags:usualType	:= UsualType.SYMBOL
             self:_valueData:s       := s
             return
 
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         private constructor(o as object, lIsNull as logic)
             self:_flags:usualType	:= UsualType.OBJECT
             self:_refData 			:= null
@@ -813,6 +813,7 @@ begin namespace XSharp
         #endregion
 
 		#region IEquatable<T>
+		/// <inheritdoc />
 		public method Equals(u as USUAL) as logic
 				if u:IsNil
 					return self:IsNil
@@ -821,6 +822,7 @@ begin namespace XSharp
 
 		#endregion        
         #region Operators for Equality
+			/// <inheritdoc />
             public method Equals(obj as object) as logic
 				if obj == null
 					return self:IsNil
@@ -828,6 +830,7 @@ begin namespace XSharp
 				return UsualEquals((USUAL) obj, "Usual.Equals()")
 
             
+			/// <inheritdoc />
             public method GetHashCode() as int
 				local oValue as object
 				oValue := self:Value
@@ -1883,15 +1886,15 @@ begin namespace XSharp
         #endregion
         
         #region implementation IConvertable
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+			/// <inheritdoc />
             public method IConvertible.ToBoolean(provider as System.IFormatProvider) as logic
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+			/// <inheritdoc />
             public method IConvertible.ToByte(provider as System.IFormatProvider) as byte
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+			/// <inheritdoc />
             public method IConvertible.ToChar(provider as System.IFormatProvider) as char
             var o := __Usual.ToObject(self)
             if o is IConvertible
@@ -1899,29 +1902,30 @@ begin namespace XSharp
             endif
             throw InvalidCastException{}
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToDateTime(provider as System.IFormatProvider) as System.DateTime
             return (Date) self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToDecimal(provider as System.IFormatProvider) as Decimal
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToDouble(provider as System.IFormatProvider) as real8
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToInt16(provider as System.IFormatProvider) as short
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToInt32(provider as System.IFormatProvider) as long
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToInt64(provider as System.IFormatProvider) as int64
-            return self
+				RETURN SELF
+
 			/// <exclude />            
             static method ToObject(u as __Usual) as object
             switch u:_usualType
@@ -1942,11 +1946,11 @@ begin namespace XSharp
                 otherwise					; return null
             end switch
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToSByte(provider as System.IFormatProvider) as SByte
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToSingle(provider as System.IFormatProvider) as real4
             return self
            
@@ -2016,15 +2020,15 @@ begin namespace XSharp
                 endif
             endif
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToUInt16(provider as System.IFormatProvider) as word
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToUInt32(provider as System.IFormatProvider) as dword
             return self
             
-            /// <summary>This method is needed to implement the IConvertible interface.</summary>
+            /// <inheritdoc />
             public method IConvertible.ToUInt64(provider as System.IFormatProvider) as uint64
             return self
             

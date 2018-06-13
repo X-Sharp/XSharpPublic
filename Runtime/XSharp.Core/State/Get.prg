@@ -46,14 +46,6 @@ function GetChunkBase64(b1 as byte,b2 as byte,b3 as byte,nPad as int) as string
 function GetCurPath() as string
 	getstate string Set.Path
 	
-	/// <summary>
-	/// </summary>
-	/// <returns>
-	/// </returns>
-function GetDASPtr() as IntPtr
-	/// THROW NotImplementedException{}
-	return IntPtr.Zero   
-	
 	
 	/// <summary>
 	/// Return the X# default drive and directory.
@@ -74,7 +66,7 @@ function GetDefaultDir() as string
 	
 
 function GetMimType(c as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 	
 	/// <summary>

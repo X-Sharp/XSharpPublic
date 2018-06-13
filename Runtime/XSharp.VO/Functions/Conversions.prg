@@ -69,7 +69,12 @@ internal static class ConversionHelpers
 
 end class
 
-
+	/// <summary>
+	/// Convert a value to a hexadecimal string.
+	/// </summary>
+	/// <param name="uValue">A string or Numeric value.</param>
+	/// <returns>A string with the hex representation of the value
+	/// </returns>
 function AsHexString(uValue as usual) as string
 	local result as string
 	if IsString(uValue)
@@ -84,20 +89,15 @@ function AsHexString(uValue as usual) as string
 	/// <summary>
 	/// Convert a value to a right-padded string.
 	/// </summary>
-	/// <param name="u"></param>
-	/// <param name="dwLen"></param>
-	/// <returns>
+	/// <param name="u">The value to be converted.</param>
+	/// <param name="dwLen">The length of the padded string.</param>
+	/// <returns>A right-padded string of length dwLen containing the converted value.
 	/// </returns>
 function AsPadr(u as usual,dwLen as dword) as string
 	return PadR(AsString(u), dwLen)
 	
 
-/// <summary>
-/// Convert a value to a string.
-/// </summary>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 function _AsString(u as Usual) as string
 	return	 AsString(u)
 
@@ -105,8 +105,8 @@ function _AsString(u as Usual) as string
 /// <summary>
 /// Convert a value to a string.
 /// </summary>
-/// <param name="u"></param>
-/// <returns>
+/// <param name="u">The value to be converted.</param>
+/// <returns>A string containing the converted value.  Please note that this is NOT the same as the .Net ToString(). AsString() tries to emulate the VO Behaviour as correctly as possible.
 /// </returns>
 function AsString(u as usual) as string
 	local result as string

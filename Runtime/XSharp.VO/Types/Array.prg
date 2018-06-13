@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			RETURN arrayNew
 		
-		INTERNAL STATIC METHOD __ArrayNew( dimensions params INT[] ) AS __Array
+		STATIC METHOD __ArrayNew( dimensions params INT[] ) AS __Array
 			LOCAL newArray AS ARRAY 
 			IF dimensions:Length != 0 
 				newArray := __ArrayNewHelper(dimensions,1)

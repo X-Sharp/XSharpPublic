@@ -1,9 +1,12 @@
 @echo off
 Color 07
-rem cd \xsharp\dev\Roslyn
-rem call restore.cmd
+cd \xsharp\dev\Roslyn
+Echo Restore Nuget Packages for Roslyn code
+call restore.cmd
 cd \xsharp\dev\xsharp
-Echo Restore Packages for Compiler and Tools
+Echo kill running XSCompiler processes
+taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"
+Echo Restore Nuget Packages for Compiler and Tools
 nuget restore compiler.sln -V q
 nuget restore macrocompiler.sln -V q
 nuget restore tools.sln -V q

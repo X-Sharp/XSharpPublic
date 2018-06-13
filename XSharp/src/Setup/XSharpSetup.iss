@@ -2,7 +2,7 @@
 ; Note that all folder name variables include the trailing backslash !
 ;
 
-;#define Compression     "lzma2/ultra64"
+#define Compression     "lzma2/ultra64"
 #ifndef Compression
 #define Compression     "lzma2/fast"
 #endif
@@ -14,7 +14,7 @@
 #define Version             "2.0.0.1"
 #define FileNameVersion     "2Beta1"
 #define VIVersion           "2.0.0.1"
-#define TouchDate           "2018-06-11"
+#define TouchDate           "2018-06-13"
 #define TouchTime           "02:00:01"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -141,6 +141,7 @@ Compression={#Compression}
 SolidCompression=yes
 SetupLogging=yes
 
+
 ; Version Info for Installer and uninstaller
 VersionInfoVersion={#= VIVersion}
 VersionInfoDescription={# ProdBuild}
@@ -165,6 +166,7 @@ TouchTime={#=TouchTime}
 
 ; Make sure they are admins
 PrivilegesRequired=admin
+UsedUserAreasWarning=false
 ; Make sure they are running on Windows 2000 Or Higher
 Minversion=6.0.600
 
@@ -335,26 +337,12 @@ Source: "{#BinRtHelpFolder}XSRuntime.cab";               DestDir: "{app}\Help"; 
 ;XIDE
 Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; 
 
-;VsProjectSystem
-; Note that CodeAnalysis.DLL and CodeDomProvider must both go to the PrivateAssemblies folder.
-; and also to the Extension folder, until we find why the PrivateAssemblies is still needed
-; We register CodeDomProvider also in the GAC because some processes read machine.config and that file does
-; not have location information
-
-Components: vs2015; Source: "{#BinPFolder}XSharpProject.vsix";        DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
-Components: vs2015; Source: "{#BinPFolder}XSharpDebugger.vsix";       DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
-
-Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";        DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Security.Crypt*.Alg*.dll";     DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Text.Encoding.*.dll";          DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Valuetuple.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-
 ; Runtime
-Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
 Source: "{#BinRtFolder}XSharp.Core.pdb";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
 Source: "{#BinRtFolder}XSharp.VO.pdb";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-
+; Macro compiler
 Source: "{#BinFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
 Source: "{#BinFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
@@ -364,26 +352,30 @@ Source: "{#BinFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Redi
 Source: "{#BinFolder}System.Collections.Immutable.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Reflection.Metadata.dll";       DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Valuetuple.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-
+;Debug versions
 Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
 Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
 Source: "{#BinRtDFolder}XSharp.VO.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
 Source: "{#BinRtDFolder}XSharp.VO.pdb";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinDFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce ; StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
+Source: "{#BinDFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
 Source: "{#BinDFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce ;  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce ;  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
+Source: "{#BinDFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
-
-Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags} {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
-Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Assemblies"; Flags: {#StdFlags} {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
+; Assemblies for Add References Dialog
+Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
+Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
 
 Source: "{#BinPFolder}SetupCheck2017.exe";          DestDir: "{tmp}";      Flags: signonce {#StdFlags};
 
+
+Components: vs2015; Source: "{#BinPFolder}XSharpProject.vsix";        DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
+Components: vs2015; Source: "{#BinPFolder}XSharpDebugger.vsix";       DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
+
 ; Deploy and Cleanup VS folders
 ; this images are the triggers to delete old files in the various VS Installations
-Components: vs2015;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Project"; Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
+Components: vs2015;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Project";  Flags: {#StdFlags}; BeforeInstall: DeleteOldFiles(2015);
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir1}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017_1; BeforeInstall: DeleteOldFiles(20171);
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir2}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017_2; BeforeInstall: DeleteOldFiles(20172);
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir3}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017_3; BeforeInstall: DeleteOldFiles(20173);

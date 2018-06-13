@@ -13,13 +13,13 @@
     <para styleclass="Heading2">Introduction</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When we designed the X# compile and X# Runtime we had a few focus points in mind:</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
       <li styleclass="Normal">We want our runtime to be fully Unicode and AnyCPU. It should run on any platform and also both in x86 and x64 mode. &#160;That has caused some challenges because VO is Ansi (and not Unicode) and also X86. In VO you can cast a LONG to a PTR. That will not work in X64 mode because a LONG is 32 bits and a PTR 64 bits</li>
       <li styleclass="Normal">We want the code to compile in &quot;Safe&quot; mode. No unsafe code when not strictly needed. The biggest problem / challenge here is the PTR type. With a PTR you can access memory directly and read/write from memory, even if you don&apos;t &quot;own&quot; that memory. However the same PTR type is also used as &quot;unique identifier&quot; for example in the low level file i/o and in the GUI classes for Window and Control handles. These PTR values are never used to read/write memory but are like object references. We have decided to use the .Net IntPtr type for this kind of handles. Of course the compiler can transparently convert between PTR and IntPtr.</li>
       <li styleclass="Normal">We want to prove that the X# language is a first class .Net development language. That is why we decided to write the X# runtime in X#. By doing that we also create a large codebase to test the compiler. So that is a win - win situation.</li>
       <li styleclass="Normal">We want the runtime to be thread safe. Each thread has its own &quot;global&quot; state and its own list of open workareas. When a new thread is started it will inherit the state of the main thread but will not inherit the workareas from the main thread</li>
-      <li styleclass="Normal">At this moment the X# Runtime is compiled against .Net Framework 4.0 The only exception to this is the macro compiler which requires .Net Framework 4.6.</li>
+      <li styleclass="Normal">At this moment the X# Runtime is compiled against .Net Framework 4.6.</li>
     </list>
     <para styleclass="Heading2">Assemblies in the X# Runtime</para>
     <para styleclass="Normal"></para>
@@ -51,7 +51,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td style="width:154px;">
-          <para styleclass="Normal">4.0</para>
+          <para styleclass="Normal">4.6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -65,7 +65,7 @@
           <para styleclass="Normal">X# VO</para>
         </td>
         <td style="width:154px;">
-          <para styleclass="Normal">4.0</para>
+          <para styleclass="Normal">4.6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -93,7 +93,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td style="width:154px;">
-          <para styleclass="Normal">4.0</para>
+          <para styleclass="Normal">4.6</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -108,16 +108,19 @@
           <para styleclass="Normal">X# VO</para>
         </td>
         <td style="width:154px;">
-          <para styleclass="Normal">4.0</para>
+          <para styleclass="Normal">4.6</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Heading2">Known Issues</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Some of the string conversion functions such as Str() and NTrim() do not always return the same string as VO . In VO the return value of these functions heavily depends on state settings such as SetFixed, SetDecimals, SetScience and more. This will be most likely fixed in Beta 2</li>
       <li styleclass="Normal">Some of the TransForm() pictures also depend on the same settings as Str() and NTrim() and have the same problems</li>
       <li styleclass="Normal">The macro compiler in this release is fully functional but not as fast as we&apos;d like. We are working on a smaller and faster macro compiler.</li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The RDD system as well as the Db..() and VoDb..() functions are missing</li>
     </list>
     <para styleclass="Heading2">Missing or incomplete Features </para>
     <para styleclass="Normal"></para>

@@ -72,7 +72,7 @@
           <para styleclass="Body Text">Sandcastle Help File Builder</para>
         </td>
         <td>
-          <para styleclass="Body Text">The documentation for the runtime is/will be generated with the Sandcastle Help File Builder product. (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/EWSoftware/SHFB" target="_blank">github.com/EWSoftware/SHFB</link>)</para>
+          <para styleclass="Body Text">The documentation for the runtime is generated with a special version of the Sandcastle Help File Builder product. (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/EWSoftware/SHFB" target="_blank">github.com/EWSoftware/SHFB</link>)</para>
         </td>
       </tr>
     </table></para>

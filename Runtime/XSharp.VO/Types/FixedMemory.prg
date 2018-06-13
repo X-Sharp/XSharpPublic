@@ -94,8 +94,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
             RETURN pMemBlockStart:dwGroup
         ENDIF
         RETURN 0
-        // Only available in 4.5
-     //[MethodImpl(MethodImplOptions.AggressiveInlining)];
+     [MethodImpl(MethodImplOptions.AggressiveInlining)];
      PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
         LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
         IF Is32Bits
@@ -105,8 +104,7 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
         ENDIF
         RETURN pMemBlockStart
         
-     // Only available in 4.5
-     //[MethodImpl(MethodImplOptions.AggressiveInlining)];
+     [MethodImpl(MethodImplOptions.AggressiveInlining)];
      PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPTR ) AS FixedMemBlockEnd PTR
         VAR pMemBlockStart := _GetMemBlockStart (pMemory)
         IF Is32Bits
@@ -269,20 +267,20 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
         END TRY
         RETURN pResult
         
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];        
     INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPTR
         // No pointer validation for speed. Should be done in wrapper function
         _memSetDelegate(pMemory, 0, iCount)
         RETURN pMemory
         
         
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];        
     INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         _memCopyDelegate(pDestination, pSource, iCount)
         RETURN pDestination
         
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];        
     INTERNAL STATIC METHOD SET( pMemory AS IntPtr, b AS BYTE, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         _memSetDelegate(pMemory, b, iCount)
@@ -301,12 +299,14 @@ STRUCTURE	 XSharp.FixedMemBlockStart
     [FieldOffSet(12)] EXPORT dwSize  AS DWORD	// Size of Data Block excluding Guard Blocks
     CONST MAGIC  := 0x21522358 AS DWORD  // !R#X
     
+   [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize(nGroup AS DWORD, nSize AS DWORD) AS VOID
         dwMagic := MAGIC
         dwCargo := 0
         dwGroup := nGroup
         dwSize  := nSize
         
+   [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC
         
@@ -321,10 +321,12 @@ STRUCTURE	 XSharp.FixedMemBlockEnd
     CONST MAGIC  := 0x524E4643 AS DWORD  // Chris, Fabrice, Nikos, Robert 
     
     
+   [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize() AS VOID
         dwMagic := MAGIC
         dwZero  := 0
         
+   [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC
         

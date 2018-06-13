@@ -214,7 +214,7 @@ function ATLine2(cSearch as string,c as string) as dword
 /// <returns>
 /// </returns>
 function B64EncFile(c as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 /// <summary>
@@ -223,7 +223,7 @@ function B64EncFile(c as string) as string
 /// <returns>
 /// </returns>
 function B64EncString(cIn as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 
@@ -402,7 +402,7 @@ function ChrW(c as dword) as string
 /// <returns>
 /// </returns>
 function Crypt(cSource as string,cKey as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 /// <summary>
@@ -413,7 +413,7 @@ function Crypt(cSource as string,cKey as string) as string
 /// <returns>
 /// </returns>
 function CryptA(cSource as string,cKey as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 /// <summary>
@@ -802,7 +802,7 @@ function ProperA(c ref string) as string
 /// <returns>
 /// </returns>
 function QPEncString(cIn as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 
@@ -1205,7 +1205,7 @@ function UpperA(cSource ref string) as string
 /// <returns>
 /// </returns>
 unsafe function UUDecodeLine(cLine as string,hfOut as ptr) as dword
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 return 0   
 
 /// <summary>
@@ -1214,7 +1214,7 @@ return 0
 /// <returns>
 /// </returns>
 function UUEncFile(c as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 /// <summary>
@@ -1223,7 +1223,7 @@ function UUEncFile(c as string) as string
 /// <returns>
 /// </returns>
 function UUEncLine(c as string) as string
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return String.Empty   
 
 

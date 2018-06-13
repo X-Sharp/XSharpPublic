@@ -287,7 +287,7 @@ FUNCTION SToD(cDate AS STRING) AS DATE
 		END IF
 		convertedDate := (DATE)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
 	CATCH
-		convertedDate := DATE{} 
+		convertedDate := NULL_DATE
 	END TRY
 	RETURN	 convertedDate
 

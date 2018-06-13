@@ -188,12 +188,20 @@ function ATCLine2(cSearch as string,c as string) as dword
 /// <returns>
 /// </returns>
 function ATLine(cSearch as string,c as string) as dword
-	local nPos as dword
-	
+	LOCAL nPos AS DWORD
+	IF String.IsNullOrEmpty(c) .or. String.IsNullOrEmpty(cSearch)
+		RETURN 0
+	endif
+	IF c:StartsWith(cSearch) 
+		return 1
+	endif
 	nPos    := At( cSearch, c )
 	if (nPos > 0)
 		c := Left( c, nPos - 1 )
 		nPos := MemLines( c)
+		IF c:EndsWith(e"\r\n")
+			nPos++
+		endif
 	endif
 	return nPos
 

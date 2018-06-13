@@ -699,7 +699,6 @@ RETURN IntPtr.Zero
 
 [Obsolete];
 FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS Psz,uilen AS DWORD) AS IntPtr
-	/// THROW NotImplementedException{}
 RETURN IntPtr.Zero
 
 [Obsolete];
@@ -748,7 +747,11 @@ RETURN 0
 
 [Obsolete];
 FUNCTION ItemType(ptrAny AS IntPtr) AS DWORD
-
 RETURN 0   
+
+[Obsolete( "'GetDASPtr()' is not supported and always returns IntPtr.Zero" )] ;
+function GetDASPtr() as IntPtr
+	return IntPtr.Zero   
+	
 
 

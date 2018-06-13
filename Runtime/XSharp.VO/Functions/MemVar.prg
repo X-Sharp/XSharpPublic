@@ -84,7 +84,7 @@ return	 NIL
 /// <returns>
 /// </returns>
 function VarGetSym(symVar as Symbol) as Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return NIL   
 
 /// <summary>
@@ -94,7 +94,7 @@ function VarGetSym(symVar as Symbol) as Usual
 /// <returns>
 /// </returns>
 function VarPutSym(symVar as Symbol,u as Usual) as Usual
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	return NIL  
 
 	/// <summary>
@@ -113,7 +113,7 @@ function VarPutSym(symVar as Symbol,u as Usual) as Usual
 	/// <returns> 
 	/// </returns>
 	FUNCTION MemVarGetSym(symVar AS Symbol) AS Usual
-		/// THROW NotImplementedException{}
+		THROW NotImplementedException{}
 	RETURN NIL   
 
 	/// <summary>
@@ -123,5 +123,5 @@ function VarPutSym(symVar as Symbol,u as Usual) as Usual
 	/// <returns>
 	/// </returns>
 	FUNCTION MemVarPutSym(symVar AS Symbol,u AS Usual) AS Usual
-		/// THROW NotImplementedException{}
+		THROW NotImplementedException{}
 	RETURN NIL      

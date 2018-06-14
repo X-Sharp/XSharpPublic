@@ -248,5 +248,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( arr[3] == #abc)
 			Assert.True( arr[4] == #abc)
 
+ 		[Trait("Category", "Array")];
+		[Fact];
+		METHOD ArraySignedUnsignedTest() AS VOID
+			LOCAL a AS ARRAY
+			a := arrayNew(10L)
+			a := arrayNew(10U)
+			LOCAL n1 as int
+			LOCAL n2 AS DWORD
+			FOR n1 := 1 TO 10
+				a[n1] := n1
+			next
+			FOR n2 := 1 TO 10
+				a[n2] := n2
+			next
+			Assert.Equal(1, (int) a[1L])
+			Assert.Equal(2, (int) a[2U])
+
+		RETURN
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

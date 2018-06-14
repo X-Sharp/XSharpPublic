@@ -153,11 +153,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         public static bool IsXSharpRT(this AssemblySymbol _asm)
         {
-            // TODO (nvk): there must be a better way!
-            return
-                (object)_asm != null &&
-                (_asm.Name.ToLower() == OurAssemblyNames.XSharpCore || _asm.Name.ToLower() == OurAssemblyNames.XSharpVO);
+            return _asm.IsXSharpCore() || _asm.IsXSharpVO();
         }
+        public static bool IsXSharpCore(this AssemblySymbol _asm)
+        {
+            // TODO (nvk): there must be a better way!
+            return (object)_asm != null && _asm.Name.ToLower() == OurAssemblyNames.XSharpCore ;
+        }
+        public static bool IsXSharpVO(this AssemblySymbol _asm)
+        {
+            // TODO (nvk): there must be a better way!
+            return (object)_asm != null && _asm.Name.ToLower() == OurAssemblyNames.XSharpVO;
+        }
+
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
         {

@@ -43,6 +43,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var asm2 = m2.Member.ContainingAssembly;
                 if (asm1 != asm2)
                 {
+                    // prefer XSharpCore over XSharpVO, so typed versions get preference over untyped versions
+                    if (asm1.IsXSharpCore() && asm2.IsXSharpVO())
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    // prefer non runtime over runtime to allow overriding built-in functions
                     if (asm1.IsVulcanRT() || asm1.IsXSharpRT())
                     {
                         result = BetterResult.Right;

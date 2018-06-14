@@ -2088,36 +2088,30 @@ begin namespace XSharp
 			end get
 			end property
             static internal method ConversionError(toTypeString as string, toType as System.Type, u as __Usual) as Error
-				var err			:= Error{InvalidCastException{}}
-				err:GenCode		:= GenCode.EG_DataType
+				var	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)  
+				VAR err			:= Error{GenCode.EG_DataType,"USUAL", cMessage}
 				err:ArgTypeReq	:= toType
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+toTypeString
-				err:Description := VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)  
-				err:Arg			:= "USUAL"
 				err:Args        := <OBJECT>{u}
 				return err
 
             static internal method ConversionError(typeNum as DWORD, toType as System.Type, u as __Usual) as Error
-				var err			:= Error{ InvalidCastException{} }
-				err:GenCode		:= GenCode.EG_DataType
+				var	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), typeString(DWORD(typeNum)))  
+				VAR err			:= Error{GenCode.EG_DataType,"USUAL", cMessage}
 				err:ArgTypeReq	:= toType
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+TypeString((DWORD) typeNum)
 				err:ArgType		:= typeNum
-				err:Description := VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), typeString(DWORD(typeNum)))  
-				err:Arg			:= "USUAL"
 				err:Args        := <OBJECT>{u}
 				return err
             
             static internal method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as __Usual) as Error
-				var err			 := Error{ex}
-				err:GenCode		 := GenCode.EG_NUMOVERFLOW
+				var message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)  
+				var err			 := Error{GenCode.EG_NUMOVERFLOW, "USUAL", message}
 				err:ArgTypeReq	 := toType
 				err:ArgNum		 := 1
 				err:FuncSym		 := "USUAL => "+toTypeString
-				err:Description  := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)  
-				err:Arg			 := "USUAL"
 				err:Args		 := <OBJECT>{u}
 				return err
             

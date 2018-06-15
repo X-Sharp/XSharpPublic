@@ -126,9 +126,7 @@ BEGIN NAMESPACE XSharp
 			RETURN oProp
 			
 			
-			// Note: Zero based !			
-			/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		// Note: Zero based !			
+		// Note: Zero based, compiler handles subtraction			
 		/// <summary>Get/Set array elements with a ZERO based array index</summary>
 		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
 		/// <returns>The element stored at the indicated location in the collection.</returns>
@@ -148,8 +146,29 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 			END SET
 		END PROPERTY
+
+		// Note: Zero based , compiler handles subtraction			
+		/// <summary>Get/Set array elements with a ZERO based array index</summary>
+		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
+		/// <returns>The element stored at the indicated location in the collection.</returns>
+		PUBLIC PROPERTY SELF[i AS INT] AS T
+			GET
+				IF  i > _internalList:Count-1
+					THROW ArgumentOutOfRangeException{}
+				ENDIF
+				RETURN _internalList[i ]
+			END GET
+			SET
+				IF SELF:CheckLock()
+					IF i > _internalList:Count-1
+						THROW ArgumentOutOfRangeException{}
+					ENDIF
+					_internalList[i] := VALUE
+				ENDIF
+			END SET
+		END PROPERTY
 		
-		// Note: Zero based !			
+		// Note: Zero based , compiler handles subtraction			
 		/// <summary>Get/Set array elements with a ZERO based array index</summary>
 		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
 		/// <param name="sPropertyName">Name of the property from the element stored in the location index</param>
@@ -174,6 +193,36 @@ BEGIN NAMESPACE XSharp
 					LOCAL oProp    AS PropertyInfo
 					oProp	 := __GetProperty( sPropertyName)
 					oElement := _internalList[(INT) index ]
+					oProp:SetValue(oElement, VALUE,NULL)
+				ENDIF
+			END SET
+		END PROPERTY
+
+		// Note: Zero based, compiler handles subtraction			
+		/// <summary>Get/Set array elements with a ZERO based array index</summary>
+		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
+		/// <param name="sPropertyName">Name of the property from the element stored in the location index</param>
+		/// <returns>The value of the property of the element stored at the indicated location in the collection.</returns>
+		PUBLIC PROPERTY SELF[index AS INT, sPropertyName AS STRING] AS USUAL
+			GET
+				LOCAL oElement AS T
+				LOCAL oProp    AS PropertyInfo
+				IF  index > _internalList:Count-1
+					THROW ArgumentOutOfRangeException{}
+				ENDIF
+				oProp	 := __GetProperty( sPropertyName)
+				oElement := _internalList[index ]
+				RETURN oProp:GetValue(oElement, NULL)
+			END GET
+			SET
+				IF  index > _internalList:Count-1
+					THROW ArgumentOutOfRangeException{}
+				ENDIF
+				IF SELF:CheckLock()
+					LOCAL oElement AS T
+					LOCAL oProp    AS PropertyInfo
+					oProp	 := __GetProperty( sPropertyName)
+					oElement := _internalList[index ]
 					oProp:SetValue(oElement, VALUE,NULL)
 				ENDIF
 			END SET

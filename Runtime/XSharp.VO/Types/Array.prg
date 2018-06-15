@@ -134,16 +134,6 @@ BEGIN NAMESPACE XSharp
 			END SET
 		END PROPERTY
 
-		/// Note: Zero based, compiler handles subtraction
-		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-		PUBLIC PROPERTY SELF[i AS DWORD, j AS DWORD, k AS DWORD] AS USUAL
-			GET
-				RETURN __GetElement((INT)i,(INT)j,  (INT)k)
-			END GET
-			SET
-				SELF:__SetElement(VALUE,(INT)i,(INT)j,(INT)k)
-			END SET
-		END PROPERTY
 
 		/// Note: Zero based, compiler handles subtraction
 		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
@@ -155,20 +145,7 @@ BEGIN NAMESPACE XSharp
 				SELF:__SetElement(VALUE,i,j)
 			END SET
 		END PROPERTY	
-		/// Note: Zero based, compiler handles subtraction
-		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-		PUBLIC PROPERTY SELF[i AS DWORD, j AS DWORD] AS USUAL
-			GET
-				RETURN __GetElement((INT)i,(INT)j)
-			END GET
-			SET
-				SELF:__SetElement(VALUE,(INT)i,(INT)j)
-			END SET
-		END PROPERTY	
 		
-		NEW INTERNAL METHOD Swap(position AS DWORD, element AS USUAL) AS USUAL
-			RETURN SUPER:Swap(position, element)
-
 		NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
 			RETURN SUPER:Swap(position, element)
 

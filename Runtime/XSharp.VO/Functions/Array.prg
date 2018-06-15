@@ -392,7 +392,7 @@ FUNCTION ACloneShallow<T>(a AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW(
 /// <returns>
 /// </returns>
 FUNCTION ADel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
-	a:Delete(dwEl)  
+	a:Delete((INT) dwEl)  
 	RETURN a
 	
 /// <summary>
@@ -403,7 +403,7 @@ FUNCTION ADel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
 /// <returns>
 /// </returns>
 FUNCTION ADel<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:Delete(dwEl)  
+	a:Delete((INT) dwEl)  
 	RETURN a
 	
 /// <summary>
@@ -414,7 +414,7 @@ FUNCTION ADel<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS
 /// <returns>
 /// </returns>
 FUNCTION ATrueDel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
-	a:RemoveAt(dwEl)  
+	a:RemoveAt((INT) dwEl)  
 	RETURN a
 	
 /// <summary>
@@ -425,7 +425,7 @@ FUNCTION ATrueDel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
 /// <returns>
 /// </returns>
 FUNCTION ATrueDel<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:RemoveAt(dwEl)  
+	a:RemoveAt((INT) dwEl)  
 	RETURN a
 	
 /// <summary>Calculate the # of dimensions in an array</summary>
@@ -462,7 +462,7 @@ FUNCTION ADimPic(a AS ARRAY) AS STRING
 /// <param name="dwEl">The position at which the element will be inserted.</param>
 /// <returns>A reference to the original array</returns>
 FUNCTION AIns(a AS ARRAY,dwEl AS DWORD) AS ARRAY 
-	a:Insert(dwEl) 
+	a:Insert((INT) dwEl) 
 	RETURN a
 	
 /// <summary>
@@ -472,7 +472,7 @@ FUNCTION AIns(a AS ARRAY,dwEl AS DWORD) AS ARRAY
 /// <param name="dwEl">The position at which the element will be inserted.</param>
 /// <returns>A reference to the original array</returns>
 FUNCTION AIns<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:Insert(dwEl) 
+	a:Insert((INT) dwEl) 
 	RETURN a
 	
 /// <summary>
@@ -625,7 +625,7 @@ FUNCTION ArrayStore<T>(a AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWOR
 /// <param name="u">The new value.</param>
 /// <returns>The original value that was replaced by u.</returns>
 FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
-	RETURN a:Swap(dwEl, u)
+	RETURN a:Swap((int) dwEl, u)
 	
 /// <summary>
 /// Replace an Array element with a new value and return the old value.
@@ -635,7 +635,7 @@ FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
 /// <param name="u">The new value.</param>
 /// <returns>The original value that was replaced by u.</returns>
 FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS NEW()
-	RETURN a:Swap(dwEl, u)
+	RETURN a:Swap((int) dwEl, u)
 	
 /// <summary>
 /// Scan an array until a value is found or a code block returns TRUE.
@@ -796,7 +796,7 @@ FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
 /// <returns>
 /// </returns>
 FUNCTION ASize(a AS ARRAY,dwDim AS DWORD) AS ARRAY
-	a:Resize(dwDim) 
+	a:Resize((INT) dwDim) 
 	RETURN a  
 	
 /// <summary>
@@ -807,7 +807,7 @@ FUNCTION ASize(a AS ARRAY,dwDim AS DWORD) AS ARRAY
 /// <returns>
 /// </returns>
 FUNCTION ASize<T>(a AS __ArrayBase<T>,dwDim AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:Resize(dwDim) 
+	a:Resize((INT) dwDim) 
 	RETURN a  
 	
 	

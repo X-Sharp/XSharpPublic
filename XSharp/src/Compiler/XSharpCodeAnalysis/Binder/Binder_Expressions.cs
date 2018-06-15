@@ -89,42 +89,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics)
         {
-            BinaryOperatorKind opKind;
             int compoundStringLength = 0;
             var type = expr.Type;
             
-            // normalize the type
-            // we allow the following 'normal' types for the Index operator:
-            // int32, uint32, int64, uint64
-            // all other types (usual, float, real4, real8, decimal) are converted to int32
-            switch (type.SpecialType)
+            // normalize the type: all types are converted to int32
+            if (expr.Type.SpecialType != SpecialType.System_Int32)
             {
-                case SpecialType.System_Int32:
-                    opKind = BinaryOperatorKind.IntSubtraction;
-                    break;
-                case SpecialType.System_UInt32:
-                    opKind = BinaryOperatorKind.UIntSubtraction;
-                    break;
-                case SpecialType.System_Int64:
-                    opKind = BinaryOperatorKind.LongSubtraction;
-                    break;
-                case SpecialType.System_UInt64:
-                    opKind = BinaryOperatorKind.ULongSubtraction;
-                    break;
-                default:
-                    expr= CreateConversion(expr, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
-                    if (expr.HasErrors)
-                    {
-                        Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, type, Compilation.GetSpecialType(SpecialType.System_Int32));
-                    }
-                    opKind = BinaryOperatorKind.IntSubtraction;
-                    break;
+                expr = CreateConversion(expr, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
+                if (expr.HasErrors)
+                {
+                    Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                }
             }
             // Subtract one from the index
             var right = new BoundLiteral(expr.Syntax, ConstantValue.Create(1), expr.Type) { WasCompilerGenerated = true };
             // when the argument is a literal then we may be able to fold the subtract expression.
-            var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)expr.Syntax, opKind, expr, right, expr.Type.SpecialType, diagnostics, ref compoundStringLength);
-            var sig = this.Compilation.builtInOperators.GetSignature(opKind);
+            var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)expr.Syntax, BinaryOperatorKind.IntSubtraction, expr, right, expr.Type.SpecialType, diagnostics, ref compoundStringLength);
+            var sig = this.Compilation.builtInOperators.GetSignature(BinaryOperatorKind.IntSubtraction);
             return new BoundBinaryOperator(expr.Syntax, BinaryOperatorKind.Subtraction,
                 expr, right,
                 resultConstant,
@@ -153,18 +134,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
-                        BoundExpression newarg ;
-                        if (!Compilation.Options.ArrayZero)
-                        {
-                            newarg = SubtractIndex(arg, diagnostics);
-                        }
-                        else
+                        BoundExpression newarg = arg ;
+                        if (arg.Type.SpecialType != SpecialType.System_Int32)
                         {
                             newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
                             if (newarg.HasErrors)
                             {
                                 Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
                             }
+                        }
+                        if (!Compilation.Options.ArrayZero)
+                        {
+                            newarg = SubtractIndex(newarg, diagnostics);
                         }
                         argsBuilder.Add(newarg);
                     }
@@ -199,17 +180,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         if (mustBeNumeric)
                         {
-                            if (!Compilation.Options.ArrayZero)
-                            {
-                                newarg = SubtractIndex(arg, diagnostics);
-                            }
-                            else
+                            newarg = arg;
+                            if (arg.Type.SpecialType != SpecialType.System_Int32)
                             {
                                 newarg = CreateConversion(arg, Compilation.GetSpecialType(SpecialType.System_Int32), diagnostics);
                                 if (newarg.HasErrors)
                                 {
                                     Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
                                 }
+                            }
+                            if (!Compilation.Options.ArrayZero)
+                            {
+                                newarg = SubtractIndex(newarg, diagnostics);
                             }
                         }
                         else

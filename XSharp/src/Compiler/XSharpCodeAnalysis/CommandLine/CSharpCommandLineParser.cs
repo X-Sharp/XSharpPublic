@@ -400,6 +400,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo5", "Implicit CLIPPER calling convention", options.Dialect.ToString());
                     options.Vo5 = false;
                 }
+                if (options.Vo6)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo6", "Implicit pointer conversions", options.Dialect.ToString());
+                    options.Vo6 = false;
+                }
+                if (options.Vo7)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo7", "Implicit casts and Conversions", options.Dialect.ToString());
+                    options.Vo7 = false;
+                }
+                if (options.Vo11)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo11", "Compatible numeric conversions", options.Dialect.ToString());
+                    options.Vo11 = false;
+                }
                 if (options.Vo12)
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo12", "Clipper Integer divisions", options.Dialect.ToString());

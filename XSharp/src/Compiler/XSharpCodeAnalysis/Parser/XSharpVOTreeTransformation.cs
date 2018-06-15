@@ -481,6 +481,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool needsExtraReturn = false;
             bool needsReturnValue = false;
             bool hasReturnVar = false;
+            var lastStmt = originalbody.Statements.Last;
+            if (lastStmt == null)
+                lastStmt = originalbody;
+            var lastXnode = lastStmt.XNode;
             var newbody = new List<StatementSyntax>();     // contains the copied and adjusted statements
             var endbody = new List<StatementSyntax>();     // contains the cleanup code
             TryStatementSyntax trystmt = null;
@@ -520,8 +524,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             hasReturnVar = true;
                         }
                         needsReturnValue = true;
-                        var assignStmt = MakeSimpleAssignment(GenerateSimpleName(XSharpSpecialNames.ReturnName), retExpr);
-                        newbody.Add(GenerateExpressionStatement(assignStmt, true));
+                        var assignStmt = GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(XSharpSpecialNames.ReturnName), retExpr), true);
+                        assignStmt.XNode = lastXnode;
+                        newbody.Add(assignStmt);
                     }
                 }
                 else
@@ -587,7 +592,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 else
                                     clearExpr = MakeDefault(type);
                                 var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
-                                endbody.Add(GenerateExpressionStatement(expr, true));
+                                var estmt = GenerateExpressionStatement(expr, true);
+                                estmt.XNode = lastXnode;
+                                endbody.Add(estmt);
                             }
                         }
                     }
@@ -604,17 +611,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 newbody.Add(GenerateExpressionStatement(call, true));
                 newbody.Add(trystmt);
             }
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true), true));
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect, true), true));
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true), true));
+            // the next statements should all be linked to the last line of code in the start function
+            // so we do not skip back to the start line in the debugger
+            StatementSyntax newStmt = GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true), true);
+            newStmt.XNode = lastXnode;
+            newbody.Add(newStmt);
+            newStmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect, true), true);
+            newStmt.XNode = lastXnode;
+            newbody.Add(newStmt);
+
+            newStmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true), true);
+            newStmt.XNode = lastXnode;
+            newbody.Add(newStmt);
             if (needsExtraReturn)
             {
                 if (needsReturnValue)
-                    newbody.Add(GenerateReturn(GenerateSimpleName(XSharpSpecialNames.ReturnName)));
+                {
+                    newStmt = GenerateReturn(GenerateSimpleName(XSharpSpecialNames.ReturnName));
+                }
                 else
-                    newbody.Add(GenerateReturn(null));
-            }
+                {
+                    newStmt = GenerateReturn(null);
+                }
+                newStmt.XNode = lastXnode;
+                newbody.Add(newStmt);
 
+            }
             return MakeBlock(newbody);
         }
         #endregion

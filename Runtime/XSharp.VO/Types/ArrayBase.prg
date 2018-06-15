@@ -125,28 +125,6 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			RETURN oProp
 			
-			
-		// Note: Zero based, compiler handles subtraction			
-		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
-		/// <returns>The element stored at the indicated location in the collection.</returns>
-		PUBLIC PROPERTY SELF[i AS DWORD] AS T
-			GET
-				IF  i > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
-				ENDIF
-				RETURN _internalList[(INT) i ]
-			END GET
-			SET
-				IF SELF:CheckLock()
-					IF i > _internalList:Count-1
-						THROW ArgumentOutOfRangeException{}
-					ENDIF
-					_internalList[(INT) i] := VALUE
-				ENDIF
-			END SET
-		END PROPERTY
-
 		// Note: Zero based , compiler handles subtraction			
 		/// <summary>Get/Set array elements with a ZERO based array index</summary>
 		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
@@ -168,36 +146,6 @@ BEGIN NAMESPACE XSharp
 			END SET
 		END PROPERTY
 		
-		// Note: Zero based , compiler handles subtraction			
-		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
-		/// <param name="sPropertyName">Name of the property from the element stored in the location index</param>
-		/// <returns>The value of the property of the element stored at the indicated location in the collection.</returns>
-		PUBLIC PROPERTY SELF[index AS DWORD, sPropertyName AS STRING] AS USUAL
-			GET
-				LOCAL oElement AS T
-				LOCAL oProp    AS PropertyInfo
-				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
-				ENDIF
-				oProp	 := __GetProperty( sPropertyName)
-				oElement := _internalList[(INT) index ]
-				RETURN oProp:GetValue(oElement, NULL)
-			END GET
-			SET
-				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
-				ENDIF
-				IF SELF:CheckLock()
-					LOCAL oElement AS T
-					LOCAL oProp    AS PropertyInfo
-					oProp	 := __GetProperty( sPropertyName)
-					oElement := _internalList[(INT) index ]
-					oProp:SetValue(oElement, VALUE,NULL)
-				ENDIF
-			END SET
-		END PROPERTY
-
 		// Note: Zero based, compiler handles subtraction			
 		/// <summary>Get/Set array elements with a ZERO based array index</summary>
 		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
@@ -238,37 +186,37 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			RETURN
 			
-		INTERNAL METHOD Delete(position AS DWORD) AS __ArrayBase<T>
+		INTERNAL METHOD Delete(position AS INT) AS __ArrayBase<T>
 			SELF:RemoveAt(position)
 			SELF:Add(T{})
 			RETURN SELF	
 			
-		INTERNAL METHOD Insert(index AS DWORD,u AS T) AS VOID
+		INTERNAL METHOD Insert(index AS INT,u AS T) AS VOID
 			IF SELF:CheckLock()
 				_internalList:RemoveAt(_internalList:Count - 1)
 				_internalList:Insert((INT) index-__ARRAYBASE__ ,u)
 			ENDIF
 			RETURN
 			
-		INTERNAL METHOD Insert(position AS DWORD) AS __ArrayBase<T>
+		INTERNAL METHOD Insert(position AS INT) AS __ArrayBase<T>
 			SELF:Insert( position, Default(T))
 			RETURN SELF
 			
 			
-		INTERNAL METHOD RemoveAt(index AS DWORD) AS VOID
+		INTERNAL METHOD RemoveAt(index AS INT) AS VOID
 			IF SELF:CheckLock()
-				_internalList:RemoveRange((INT) index-__ARRAYBASE__,1 )
+				_internalList:RemoveRange(index-__ARRAYBASE__,1 )
 			ENDIF
 			RETURN
 			
-		INTERNAL METHOD Resize(newSize AS DWORD) AS VOID
-			LOCAL count := SELF:Length AS DWORD
+		INTERNAL METHOD Resize(newSize AS INT) AS VOID
 			IF SELF:CheckLock()
 				IF newSize == 0 
 					_internalList:Clear()
 				ELSE
+					LOCAL count := _internalList:Count as INT
 					IF newSize <= count 
-						_internalList:RemoveRange((INT)newSize, (INT)(count - newSize))
+						_internalList:RemoveRange(newSize, count - newSize)
 					ELSE
 						count+=1
 						DO WHILE count <= newSize
@@ -297,11 +245,8 @@ BEGIN NAMESPACE XSharp
 			RETURN
 			
 		INTERNAL METHOD Swap(position AS INT, element AS T) AS T
-			RETURN Swap( (DWORD) position, element)
-			
-		INTERNAL METHOD Swap(position AS DWORD, element AS T) AS T
-			LOCAL original := _internalList[(INT) position - __ARRAYBASE__] AS T
-			_internalList[(INT) position - __ARRAYBASE__]:=element
+			LOCAL original := _internalList[position - __ARRAYBASE__] AS T
+			_internalList[ position - __ARRAYBASE__]:=element
 			RETURN original
 			
 		INTERNAL METHOD Swap(position AS INT, element AS OBJECT) AS T
@@ -312,8 +257,6 @@ BEGIN NAMESPACE XSharp
 			//	throw ArgumentException{"Parameter is of incorrect type "+element:GetType():FullName,nameof(element)}
 			//end try
 			
-		INTERNAL METHOD Swap(position AS DWORD, element AS OBJECT) AS T
-			RETURN SELF:Swap((INT) position, element)		
 			
 		INTERNAL METHOD Tail() AS T
 			RETURN _internalList:LastOrDefault()

@@ -966,8 +966,25 @@ FUNCTION ArrayBuild() AS ARRAY
 /// <param name="nDim"></param>
 /// <returns>
 /// </returns>
-FUNCTION ArrayNew(nDim PARAMS INT[]) AS ARRAY
-	RETURN __Array.ArrayCreate(nDim)
+FUNCTION ArrayNew(aDims PARAMS INT[]) AS ARRAY
+	RETURN __Array.ArrayCreate(aDims)
+
+
+/// <summary>
+/// Create an uninitialized Array with the specified number of elements and dimensions.
+/// </summary>
+/// <param name="nDim"></param>
+/// <returns>
+/// </returns>
+FUNCTION ArrayNew(aDims PARAMS DWORD[]) AS ARRAY
+	LOCAL aDimInt AS INT[]
+	LOCAL i as INT
+	aDimInt := INT[]{aDims:Length}
+	FOR i := 1 TO aDims:Length
+		aDimInt[i] := (int) aDims[i]
+	NEXT
+	RETURN __Array.ArrayCreate(aDimInt)
+
 
 
 /// <summary>
@@ -980,6 +997,14 @@ FUNCTION ArrayNew<T>(nSize AS DWORD) AS __ArrayBase<T> where T IS NEW()
 	RETURN __ArrayBase<T>{nSize}
 	
 	
+/// <summary>
+/// Create an uninitialized Array with the specified number of elements and dimensions.
+/// </summary>
+/// <param name="nDim"></param>
+/// <returns>
+/// </returns>
+FUNCTION ArrayNew<T>(nSize AS INT) AS __ArrayBase<T> where T IS NEW()
+	RETURN __ArrayBase<T>{(DWORD) nSize}
 	
 
 /// <summary>

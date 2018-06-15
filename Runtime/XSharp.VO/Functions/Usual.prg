@@ -213,76 +213,7 @@ function Len(u as Usual) as dword
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="dwType"></param>
-/// <returns>
-/// </returns>
-FUNCTION TypeString( nType AS DWORD ) AS STRING
-   LOCAL ret AS STRING
-   switch nType
-   case 0
-      ret := "NIL"
-   CASE  1
-      ret := "LONGINT"
-   CASE  2
-      ret := "DATE"
-   CASE  3
-      ret := "NUMERIC"
-   CASE  4
-      ret := "FIXED"
-   CASE  5
-      ret := "ARRAY"
-   CASE  6
-      ret := "OBJECT"
-   CASE  7
-      ret := "STRING"
-   CASE  8
-      ret := "LOGIC"
-   CASE  9
-      ret := "CODEBLOCK"
-   CASE  10
-      ret := "SYMBOL"
-   CASE  11
-      ret := "BYTE"
-   CASE  12
-      ret := "SHORTINT"
-   CASE  13
-      ret := "WORD"
-   CASE  14
-      ret := "DWORD"
-   CASE  15
-      ret := "REAL4"
-   CASE  16
-      ret := "REAL8"
-   CASE  17
-      ret := "PSZ"
-   CASE  18
-      ret := "PTR"
-   CASE  19
-      ret := "USUAL"
-   CASE  20
-      ret := "UNKNOWN"
-   CASE  21
-      ret := "@"
-   CASE  22
-      ret := "INT64"
-   CASE  23
-      ret := "UINT64"
-   CASE  24
-      ret := "CHAR"
-   CASE  25
-      ret := "DYNAMIC"
-   CASE  26
-      ret := "DATETIME"
-   CASE  27
-      ret := "DECIMAL"
-   CASE  32
-      ret := "MEMO"
-   OTHERWISE
-      ret := "UNKNOWN"
-   END SWITCH 
-   RETURN ret     
+  
 
 
 /// <summary>

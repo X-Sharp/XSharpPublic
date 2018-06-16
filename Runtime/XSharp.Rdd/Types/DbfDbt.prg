@@ -17,14 +17,9 @@ BEGIN NAMESPACE XSharp.RDD
         
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
-            LOCAL fieldType AS DbFieldType
-            LOCAL cType AS STRING
             LOCAL buffer AS BYTE[]
-            //
-            cType := (STRING)SELF:FieldInfo( nFldPos, DbFieldInfo.DBS_TYPE, NULL )
-            fieldType := (DbFieldType) Char.ToUpper(cType[0])
             // not a memo ?
-            IF ( fieldType == DbFieldType.Memo )
+            IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
                 LOCAL encoding AS ASCIIEncoding

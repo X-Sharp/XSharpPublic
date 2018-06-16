@@ -60,7 +60,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>165</DisabledWarnings>
+    <DisabledWarnings>
+    </DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
@@ -131,6 +132,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorTests.prg" />
     <Compile Include="RegistryChecks.prg" />
     <Compile Include="FileSearchTest.prg" />
     <Compile Include="OSTests.prg" />

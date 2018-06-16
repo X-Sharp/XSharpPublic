@@ -99,6 +99,31 @@ BEGIN NAMESPACE XSharp
 			SELF:Gencode := dwgencode
 			SELF:SubCode := dwSubcode
 
+
+		OVERRIDE METHOD ToString() AS STRING
+			LOCAL sb AS StringBuilder
+			sb := StringBuilder{}
+			sb:AppendLine("Description     :" + SELF:Description)
+			sb:AppendLine("SubSystem       :" + SELF:SubSystem )
+			sb:AppendLine("SubCode         :" + SELF:SubCode   )
+			sb:AppendLine("GenCode         :" + ErrString(SELF:GenCode)  )
+			sb:AppendLine("OsCode          :" + SELF:OsCode:ToString() )
+			sb:AppendLine("ArgType         :" + TypeString(SELF:ArgType    ) )
+			sb:AppendLine("ArgNum          :" + SELF:ArgNum:ToString()    )
+			sb:AppendLine("FuncSym         :" + SELF:FuncSym   )
+			sb:AppendLine("Severity        :" + SELF:Severity ) 
+			sb:AppendLine("CanDefault      :" + SELF:CanDefault)
+			sb:AppendLine("CanRetry        :" + SELF:CanRetry ) 
+			sb:AppendLine("CanSubstitute   :" + SELF:CanSubstitute)
+			sb:AppendLine("Operation       :" + SELF:Operation) 
+			sb:AppendLine("FileName        :" + SELF:FileName ) 
+			sb:AppendLine("Tries           :" + SELF:Tries    ) 
+			sb:AppendLine("SubCodeText     :" + SELF:SubCodeText)
+			sb:AppendLine("Arg             :" + SELF:Arg) 
+			sb:AppendLine("ArgTypeReq      :" + SELF:ArgTypeReq:Name )
+			sb:AppendLine("CallFuncSym     :" + SELF:CallFuncSym  )
+			return sb:ToString()
+
 			
 		METHOD @@Throw AS VOID STRICT
 			// must override in subclass

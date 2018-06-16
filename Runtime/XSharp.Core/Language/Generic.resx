@@ -3427,7 +3427,7 @@
     <value>{0} operator not available for USUAL type '{1}'</value>
   </data>
   <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Conversion Error from USUAL {0}  to {1}</value>
+    <value>Conversion Error from USUAL ({0})  to {1}</value>
   </data>
   <data name="VERSION" xml:space="preserve">
     <value>Version: </value>

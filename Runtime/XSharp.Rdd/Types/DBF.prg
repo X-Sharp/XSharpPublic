@@ -636,6 +636,11 @@ BEGIN NAMESPACE XSharp.RDD
                 // Memo File ?
                 IF ( SELF:_HasMemo )
                     // Zap Memo
+                    IF _oMemo != NULL
+                        RETURN _oMemo:Zap()
+                    ELSE                            
+                        RETURN SUPER:Zap()
+                    ENDIF
                 ENDIF
             ENDIF
             RETURN isOk
@@ -1078,12 +1083,12 @@ BEGIN NAMESPACE XSharp.RDD
                     CASE DbFieldInfo.DBS_COUNTER
                     CASE DbFieldInfo.DBS_STEP    
                     
-                CASE DbFieldInfo.DBS_BLOB_GET     
+                    CASE DbFieldInfo.DBS_BLOB_GET     
                     CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
                         // is more efficient than using Type() or ValType()
                         // since the data itself does not have to be retrieved
                         // from the BLOB file in order to determine the type.
-                    CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file	
+                CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file	
                     CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
                     CASE DbFieldInfo.DBS_BLOB_POINTER	// Returns a numeric pointer to the data in a blob
                         // file. This pointer can be used with BLOBDirectGet(),
@@ -1330,7 +1335,7 @@ BEGIN NAMESPACE XSharp.RDD
                         LOCAL len, i AS LONG
                         len := Math.Min( str:Length, buffer:Length )
                         encoding:GetBytes( str, 0, len, buffer, 0 )
-                        // Pad with spaces
+                        // Pad with spaces (Is it a good idea ???)
                         FOR i := len TO buffer:Length -1
                             buffer[i] := (BYTE)' '
                         NEXT
@@ -1479,7 +1484,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN SELF:_Fields[ nArrPos ]:FieldType
-
+            
             // Indicate if a Field is a Memo
             // At DBF Level, TRUE only for DbFieldType.Memo
         INTERNAL VIRTUAL METHOD _isMemoField( nFldPos AS LONG ) AS LOGIC

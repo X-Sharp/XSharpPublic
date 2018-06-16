@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PROPERTY BlockSize 	 AS SHORT
+        VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 
                 RETURN SELF:_blockSize
             END GET

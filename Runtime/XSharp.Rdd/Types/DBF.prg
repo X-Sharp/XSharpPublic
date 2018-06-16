@@ -876,7 +876,9 @@ BEGIN NAMESPACE XSharp.RDD
                     //
                     Array.Copy( fieldsBuffer, i*FLDOFFSETS.SIZE, currentField:Buffer, 0, FLDOFFSETS.SIZE )
                     SELF:_Fields[ i ] := DbfRddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
-                    IF SELF:_isMemoField( i )
+                    // !!! WARNING !!! The Field Index MUST NOT BE corrected by __ARRAYBASE__ when
+                    // calling _isMemoField()
+                    IF SELF:_isMemoField( i + ( 1 - nStart ))
                         SELF:_HasMemo := TRUE
                     ENDIF
                 NEXT
@@ -952,9 +954,11 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             FOR VAR i := nStart TO SELF:_Fields:Length - ( 1 - nStart )
                 //
-                isOk := ( String.Compare( info:Name, SELF:_Fields[i]:Name, TRUE ) != 0 )
-                IF !isOk
-                    EXIT
+                IF ( SELF:_Fields[i] != NULL )
+                    isOk := ( String.Compare( info:Name, SELF:_Fields[i]:Name, TRUE ) != 0 )
+                    IF !isOk
+                        EXIT
+                    ENDIF
                 ENDIF
             NEXT
             IF isOk
@@ -1080,7 +1084,7 @@ BEGIN NAMESPACE XSharp.RDD
                         oResult := SELF:_Fields[nArrPos]:Alias
                         
                     CASE DbFieldInfo.DBS_ISNULL
-                    CASE DbFieldInfo.DBS_COUNTER
+                CASE DbFieldInfo.DBS_COUNTER
                     CASE DbFieldInfo.DBS_STEP    
                     
                     CASE DbFieldInfo.DBS_BLOB_GET     
@@ -1465,7 +1469,7 @@ BEGIN NAMESPACE XSharp.RDD
                 nArrPos -= 1
                 nStart -= 1
             ENDIF
-            fld := SELF:_Fields[ nArrPos-1] ASTYPE DbfRddFieldInfo
+            fld := SELF:_Fields[ nArrPos ] ASTYPE DbfRddFieldInfo
             IF ( fld:Offset == -1 )
                 FOR i := nStart TO (nArrPos-1)
                     iOffset += SELF:_Fields[i]:Length
@@ -1811,7 +1815,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oResult AS OBJECT
             oResult := NULL
             SWITCH nOrdinal
-                CASE DbInfo.DBI_ISDBF
+            CASE DbInfo.DBI_ISDBF
                 CASE DbInfo.DBI_CANPUTREC
                     oResult := TRUE		
                 CASE DbInfo.DBI_LASTUPDATE
@@ -1856,7 +1860,7 @@ BEGIN NAMESPACE XSharp.RDD
                     
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
-            END SWITCH
+                END SWITCH
             RETURN oResult  
             
             
@@ -1881,8 +1885,8 @@ BEGIN NAMESPACE XSharp.RDD
             IF isOk
                 //
                 SWITCH nOrdinal
-                CASE DBRI_DELETED
-                    CASE DBRI_ENCRYPTED
+                    CASE DBRI_DELETED
+                CASE DBRI_ENCRYPTED
                     CASE DBRI_RAWRECORD
                     CASE DBRI_RAWMEMOS
                     CASE DBRI_RAWDATA
@@ -2161,7 +2165,7 @@ BEGIN NAMESPACE XSharp.RDD
                         see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
                         
                         */
-                    END STRUCTURE
+                        END STRUCTURE
                 /// <summary>DBF Field.</summary>                            
                 STRUCTURE DbfField   
                     // Fixed Buffer of 32 bytes

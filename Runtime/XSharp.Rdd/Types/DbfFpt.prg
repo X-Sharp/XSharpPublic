@@ -17,19 +17,18 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(DBFFPT):ToString()
         
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
-            LOCAL fieldType AS DbFieldType
-            LOCAL cType AS STRING
             LOCAL rawData AS BYTE[]
             LOCAL buffer AS BYTE[]
-            //
-            cType := (STRING)SELF:FieldInfo( nFldPos, DbFieldInfo.DBS_TYPE, NULL )
-            fieldType := (DbFieldType) Char.ToUpper(cType[0])
+            LOCAL nType AS LONG
             // At this level, the return value is the raw Data, in BYTE[]
             rawData := (BYTE[])SUPER:GetValue(nFldPos)
             // So, extract the "real" Data
             buffer := BYTE[]{ rawData:Length - 8}
             Array.Copy(rawData,8, buffer, 0, buffer:Length)
-            IF ( fieldType == DbFieldType.Memo )
+            // Get the Underlying type from the MemoBlock
+            // 0 : Picture (on MacOS); 1: Memo; 2 : Object
+            nType := BitConverter.ToInt32( rawData, 0)
+            IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
                 LOCAL encoding AS ASCIIEncoding
                 LOCAL str AS STRING
                 encoding := ASCIIEncoding{}
@@ -39,15 +38,18 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN buffer
             
-            
+            // Indicate if a Field is a Memo; Called by GetValue() in Parent Class
+            // At DbfFpt Level, TRUE for DbFieldType.Memo, DbFieldType.Picture, DbFieldType.Object
+        INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
+            RETURN ( ( fieldType == DbFieldType.Memo ) .OR. ( fieldType == DbFieldType.Picture ) .OR. ( fieldType == DbFieldType.Ole ) )
             
             
             END CLASS
-        
-        
+            
+            
     /// <summary>FPT Memo class. Implements the FTP support.</summary>
     INTERNAL CLASS FptMemo INHERIT DBTMemo 
-        
+    
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             //
@@ -160,9 +162,15 @@ BEGIN NAMESPACE XSharp.RDD
             Array.Copy(BitConverter.GetBytes(memoBlock:Length),0, memoBlock, 4, SIZEOF(LONG))
             // And finally, put the Data Type
             // 0 : Picture (on MacOS); 1: Memo; 2 : Object
-            Array.Copy(BitConverter.GetBytes((LONG) 1 ),0, memoBlock, 0, SIZEOF(SHORT))
+            LOCAL nType := 2 AS LONG
+            IF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Memo )
+                nType := 1
+            ELSEIF ( SELF:_oRdd:_FieldType( nFldPos ) == DbFieldType.Picture )
+                nType := 0
+            ENDIF
+            Array.Copy(BitConverter.GetBytes( nType ),0, memoBlock, 0, SIZEOF(LONG))
             // Ok, we now have a FPT Memoblock, save
-            RETURN SUPER:PutValue( memoBlock )
+            RETURN SUPER:PutValue( nFldPos, memoBlock )
             
             /// <inheritdoc />
         VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC

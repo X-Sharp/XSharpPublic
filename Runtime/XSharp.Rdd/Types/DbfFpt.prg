@@ -189,7 +189,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:OpenMemFile( info )
             
             
-        PROPERTY BlockSize 	 AS SHORT
+        Virtual PROPERTY BlockSize 	 AS SHORT
             GET 
                 LOCAL nSize := 0 AS SHORT
                 LOCAL isOk AS LOGIC

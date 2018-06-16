@@ -69,6 +69,7 @@ BEGIN NAMESPACE XSharp
 				NEXT
 			ENDIF
 			RETURN arrayNew
+
 		
 		STATIC METHOD __ArrayNew( dimensions params INT[] ) AS __Array
 			LOCAL newArray AS ARRAY 
@@ -122,39 +123,29 @@ BEGIN NAMESPACE XSharp
 		INTERNAL METHOD CloneShallow() AS ARRAY
 			RETURN (ARRAY) SUPER:Clone()
 
+		/// Note: Zero based, compiler handles subtraction
 		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-		PUBLIC PROPERTY SELF[i AS DWORD, j AS DWORD, k AS DWORD] AS USUAL
+		PUBLIC PROPERTY SELF[i AS INT, j AS INT, k AS INT] AS USUAL
 			GET
-				RETURN __GetElement((INT)i,(INT)j, (INT) k)
+				RETURN __GetElement(i,j,  k)
 			END GET
 			SET
-				SELF:__SetElement(VALUE,(INT)i,(INT)j,(INT) k)
+				SELF:__SetElement(VALUE,i,j,k)
 			END SET
 		END PROPERTY
 
+
+		/// Note: Zero based, compiler handles subtraction
 		/// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-		PUBLIC PROPERTY SELF[i AS DWORD, j AS DWORD] AS USUAL
+		PUBLIC PROPERTY SELF[i AS INT, j AS INT] AS USUAL
 			GET
-				RETURN __GetElement((INT)i,(INT)j)
+				RETURN __GetElement(i,j)
 			END GET
 			SET
-				SELF:__SetElement(VALUE,(INT)i,(INT)j)
+				SELF:__SetElement(VALUE,i,j)
 			END SET
-		END PROPERTY
-	
-		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		NEW PROPERTY SELF[index AS DWORD] AS USUAL
-			GET
-				RETURN __GetElement((INT)index)
-			END GET
-			SET
-				__SetElement(VALUE, (INT)index)
-			END SET
-		END PROPERTY
+		END PROPERTY	
 		
-		NEW INTERNAL METHOD Swap(position AS DWORD, element AS USUAL) AS USUAL
-			RETURN SUPER:Swap(position, element)
-
 		NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
 			RETURN SUPER:Swap(position, element)
 

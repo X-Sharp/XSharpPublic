@@ -666,7 +666,9 @@ BEGIN NAMESPACE XSharp.RDD
                     TRY
                         //SUPER:Close()
                         isOk := FClose( SELF:_hFile )
-                        SELF:CloseMemFile()
+                        IF ( SElF:_HasMemo )
+                            SELF:CloseMemFile()
+                           ENDIF
                     CATCH
                         isOk := FALSE
                     END TRY

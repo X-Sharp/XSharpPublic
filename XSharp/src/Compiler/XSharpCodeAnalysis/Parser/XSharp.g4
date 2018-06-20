@@ -495,10 +495,10 @@ statement           : Decl=localdecl                                            
                       (e=END TRY? eos)?								#tryStmt
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END LOCK? end=eos)?						#blockStmt
+                      (e=END LOCK? eos)?						#blockStmt
                     | BEGIN Key=SCOPE end=eos
                       StmtBlk=statementBlock
-                      (e=END SCOPE? end=eos)?						#blockStmt
+                      (e=END SCOPE? eos)?						#blockStmt
                     //
                     // New XSharp Statements
                     //

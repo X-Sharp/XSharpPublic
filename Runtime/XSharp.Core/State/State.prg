@@ -362,18 +362,19 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d
-		IF (dateformat.IndexOf("mm") != -1)
-			dateformat		:= dateformat:Replace("mmmm", "m")
-			dateformat		:= dateformat:Replace("mmm", "m")
+		do while (dateformat.IndexOf("mm") != -1)
 			dateformat		:= dateformat:Replace("mm", "m")
-		ENDIF
-		IF dateformat.IndexOf("dd") != -1
+		enddo
+		// make sure we have a double mm to get double digit dates
+
+		DO WHILE dateformat.IndexOf("dd") != -1
 			dateformat		:= dateformat:Replace("dd", "d")
-		ENDIF
+		ENDDO
+		// change dates to dd and mm
+		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
 		_SetThreadValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
 		_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
 		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
 		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
 		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
 		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)

@@ -194,7 +194,7 @@ FUNCTION DToC(d AS DATE) AS STRING
 		LOCAL dt := d AS Datetime
 		result := d:ToString(cFormat)
 	ELSE
-		result := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatEmpty) 
+		result := XSharp.__VODate._NullDateString
 	ENDIF
 	RETURN result 
 

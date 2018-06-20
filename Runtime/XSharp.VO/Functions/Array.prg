@@ -12,7 +12,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		LOCAL nLen  AS LONG
 		nLen := (INT) aTarget:Length
 		FOR nItem := nStart TO nLen
-			IF object.Equals(aTarget[(DWORD) nItem], element)
+			IF object.Equals(aTarget[ nItem], element)
 				RETURN (DWORD) nItem
 			ENDIF
 			nCount -= 1
@@ -27,7 +27,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		LOCAL nLen  AS LONG
 		nLen := (INT) aTarget:Length
 		FOR nItem := nStart TO nLen
-			VAR oElement := aTarget[(DWORD) nItem]
+			VAR oElement := aTarget[ nItem]
 			IF bAction(oElement)
 				RETURN  (DWORD) nItem
 			ENDIF

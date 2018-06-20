@@ -569,27 +569,29 @@ BEGIN NAMESPACE XSharp
 		
 		#region ToString()
 			// Use DateTime ToString) methods as helpers
+			INTERNAL STATIC PROPERTY _NullDateString AS STRING GET RuntimeState.GetValue<STRING>(Set.DateFormatEmpty)
+			/// <inheritdoc />
 			OVERRIDE METHOD ToString() AS STRING
 				IF (_value == 0)
-					RETURN "NULL_DATE"
+					RETURN _NullDateString
 				ENDIF
 			RETURN DToC(SELF)
 			/// <inheritdoc />
 			METHOD ToString(provider AS System.IFormatProvider) AS STRING
 				IF (_value == 0)
-					RETURN "NULL_DATE"
+					RETURN _NullDateString
 				ENDIF
 				RETURN Value:ToString(provider)
 			/// <inheritdoc />
 			METHOD ToString(s AS STRING) AS STRING
 				IF (_value == 0)
-					RETURN "NULL_DATE"
+					RETURN _NullDateString
 				ENDIF
 				RETURN Value:ToString(s)
 			/// <inheritdoc />
 			METHOD ToString(s AS STRING, fp AS System.IFormatProvider) AS STRING
 				IF (_value == 0)
-					RETURN "NULL_DATE"
+					RETURN _NullDateString
 				ENDIF
 				IF (s == NULL)
 					s := XSharp.RuntimeState.DateFormat

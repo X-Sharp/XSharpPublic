@@ -121,6 +121,7 @@
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
     <Compile Include="SubCodes.prg" />
+    <Compile Include="Types\DbfNtx\NtxHeader.prg" />
     <Compile Include="_Dummy.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
@@ -143,6 +144,7 @@
     <Folder Include="ACE" />
     <Folder Include="Types" />
     <Folder Include="Properties\" />
+    <Folder Include="Types\DbfNtx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

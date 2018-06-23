@@ -8,6 +8,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.IO
 
 BEGIN NAMESPACE XSharp.RDD
 
@@ -15,8 +16,35 @@ BEGIN NAMESPACE XSharp.RDD
     /// The NtxHeader class.
     /// </summary>
     CLASS NtxHeader
-    
-        CONSTRUCTOR()
+        PROTECTED _hFile AS IntPtr
+        
+        PROPERTY Bytes AS DbfNtxHeader AUTO GET 
+        
+        
+        METHOD Read() AS LOGIC
+            LOCAL isOk AS LOGIC
+            // Move to top
+            FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
+            // Read Buffer
+            isOk := ( FRead3(SELF:_hFile, SELF:Bytes:Buffer, NTXOFFSETS.SIZE) == NTXOFFSETS.SIZE )
+            //
+            RETURN isOk
+            
+        METHOD Write() AS LOGIC
+            LOCAL isOk AS LOGIC
+            // Move to top
+            FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
+            // Write Buffer
+            isOk := ( FWrite3(SELF:_hFile, SELF:Bytes:Buffer, NTXOFFSETS.SIZE) == NTXOFFSETS.SIZE )
+            //
+            RETURN isOk
+            
+            
+            
+        CONSTRUCTOR( fileHandle AS IntPtr )
+            //
+            SELF:_hFile := fileHandle
+            
             RETURN
             
             
@@ -35,36 +63,36 @@ BEGIN NAMESPACE XSharp.RDD
             SET Buffer[NTXOFFSETS.SIG] := (BYTE) VALUE
             
                 PROPERTY IndexingVersion		AS WORD			;
-                GET BitConverter.ToInt16(Buffer, NTXOFFSETS.INDEXING_VER);
+                GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.INDEXING_VER);
                 SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.INDEXING_VER, SIZEOF(WORD))
                 
                     PROPERTY FirstPageOffset		AS DWORD			;
-                    GET BitConverter.ToInt16(Buffer, NTXOFFSETS.FPAGE_OFFSET);
+                    GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.FPAGE_OFFSET);
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.FPAGE_OFFSET, SIZEOF(WORD))
                     
                         PROPERTY NextUnusedPageOffset		AS DWORD			;
-                        GET BitConverter.ToInt16(Buffer, NTXOFFSETS.NUPAGE_OFFSET);
+                        GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.NUPAGE_OFFSET);
                         SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.NUPAGE_OFFSET, SIZEOF(WORD))
                         
                         // keysize + 2 longs. ie.e Left pointer + record no.
                         PROPERTY EntrySize		AS WORD			;
-                        GET BitConverter.ToInt16(Buffer, NTXOFFSETS.ENTRYSIZE);
+                        GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.ENTRYSIZE);
                         SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.ENTRYSIZE, SIZEOF(WORD))
                         
                         PROPERTY KeySize		AS WORD			;
-                        GET BitConverter.ToInt16(Buffer, NTXOFFSETS.KEYSIZE);
+                        GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.KEYSIZE);
                         SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.KEYSIZE, SIZEOF(WORD))
                         
                         PROPERTY KeyDecimals	AS WORD			;
-                        GET BitConverter.ToInt16(Buffer, NTXOFFSETS.KEYDECIMALS);
+                        GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.KEYDECIMALS);
                         SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.KEYDECIMALS, SIZEOF(WORD))
                         
                         PROPERTY MaxItem	AS WORD			;
-                        GET BitConverter.ToInt16(Buffer, NTXOFFSETS.MAXITEM);
+                        GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.MAXITEM);
                         SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.MAXITEM, SIZEOF(WORD))
                         
                         PROPERTY HalfPage	AS WORD			;
-                        GET BitConverter.ToInt16(Buffer, NTXOFFSETS.HALFPAGE);
+                        GET BitConverter.ToUInt16(Buffer, NTXOFFSETS.HALFPAGE);
                         SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, NTXOFFSETS.HALFPAGE, SIZEOF(WORD))
                         
                         PROPERTY KeyExpression	 AS STRING
@@ -89,9 +117,9 @@ BEGIN NAMESPACE XSharp.RDD
                         END SET
                     END PROPERTY
                     
-                    PROPERTY Unique	AS LOGIC			;
-                    GET Buffer[NTXOFFSETS.UNIQUE] != 0 	;
-                    SET Array.Copy(BitConverter.GetBytes((BYTE)IIF(VALUE,1,0)), 0, Buffer, NTXOFFSETS.UNIQUE, SIZEOF(BYTE)), isHot := TRUE
+                    PROPERTY Unique	AS LOGIC  ;
+                    GET Buffer[NTXOFFSETS.UNIQUE] != 0 ;
+                    SET Buffer[ NTXOFFSETS.UNIQUE ] := IIF(VALUE,1,0), isHot := TRUE
                     
                     PROPERTY ForExpression	 AS STRING
                     GET 

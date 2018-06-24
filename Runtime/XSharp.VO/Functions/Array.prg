@@ -625,7 +625,7 @@ FUNCTION ArrayStore<T>(a AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWOR
 /// <param name="u">The new value.</param>
 /// <returns>The original value that was replaced by u.</returns>
 FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
-	RETURN a:Swap((int) dwEl, u)
+	RETURN a:Swap((INT) dwEl, u)
 	
 /// <summary>
 /// Replace an Array element with a new value and return the old value.
@@ -635,7 +635,7 @@ FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
 /// <param name="u">The new value.</param>
 /// <returns>The original value that was replaced by u.</returns>
 FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS NEW()
-	RETURN a:Swap((int) dwEl, u)
+	RETURN a:Swap((INT) dwEl, u)
 	
 /// <summary>
 /// Scan an array until a value is found or a code block returns TRUE.
@@ -978,10 +978,10 @@ FUNCTION ArrayNew(aDims PARAMS INT[]) AS ARRAY
 /// </returns>
 FUNCTION ArrayNew(aDims PARAMS DWORD[]) AS ARRAY
 	LOCAL aDimInt AS INT[]
-	LOCAL i as INT
+	LOCAL i AS INT
 	aDimInt := INT[]{aDims:Length}
 	FOR i := 1 TO aDims:Length
-		aDimInt[i] := (int) aDims[i]
+		aDimInt[i] := (INT) aDims[i]
 	NEXT
 	RETURN __Array.ArrayCreate(aDimInt)
 
@@ -1037,17 +1037,31 @@ FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUA
 	Default( REF startIndex, 1 )
 	
 	nLen := ALen(aArray) 
+	IF nLen == 0 // Let it execute if nLen == 1, maybe the codeblock is important to be executed in this case for some (user) reason
+		RETURN aArray
+	END IF
 
 	EnforceNumeric( startIndex )
 	Default( REF nCount, nLen - startIndex + 1 )
-	EnforceNumeric( nCount )	
+	EnforceNumeric( nCount )
 	
-	IF startIndex < 1 .or. startIndex > nLen
+	// Note: ASort() in VO accepts arguments out of bounds and translates them this way:
+	IF startIndex <= 0
+		startIndex := 1
+	ELSEIF startIndex > nLen
+		RETURN aArray
+	END IF
+	
+	IF nCount <= 0 .or. startIndex + nCount - 1 > nLen
+		nCount := nLen - startIndex + 1
+	ENDIF
+	
+/*	IF startIndex < 1 .or. startIndex > nLen
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(startIndex), 2, <OBJECT>{ startIndex } )
 	ENDIF 
 	IF nCount + startIndex > ALen((ARRAY)aArray)+1
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 3, <OBJECT>{ nCount } )
-	ENDIF 
+	ENDIF */
 	
 	
 	IF cbOrder != NIL && ( ( ! cbOrder:IsCodeBlock ) || ((CODEBLOCK)cbOrder):PCount() != 2 )

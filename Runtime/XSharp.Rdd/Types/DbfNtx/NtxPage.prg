@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
         
         PROTECTED _Bytes AS BYTE[]
         
-        // Page Number
+        // Current Page Number
         PROPERTY Number AS LONG GET SELF:_Number
         
         PROPERTY ItemCount AS WORD
@@ -53,6 +53,20 @@ BEGIN NAMESPACE XSharp.RDD
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
                 RETURN nCount
+            END GET
+        END PROPERTY
+        
+        PROPERTY SELF[ index AS LONG ] AS NtxItem
+            GET
+                LOCAL nOffset := 0 AS WORD
+                LOCAL item := null AS NtxItem
+                TRY
+                    nOffset := BitConverter.ToInt16( SELF:_Bytes, index * 2 )
+                    item := NtxItem{ SELF, nOffset }
+                CATCH e AS Exception
+                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                END TRY
+                RETURN item
             END GET
         END PROPERTY
         

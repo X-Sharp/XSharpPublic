@@ -283,6 +283,14 @@ namespace XSharp.Project
                 {
                     if (gotoElement.XSharpElement != null)
                     {
+                        if ( gotoElement.XSharpElement is XTypeMember )
+                        {
+                            if ( ( (XTypeMember)gotoElement.XSharpElement).Namesake().Count > 1 )
+                            {
+                                ObjectBrowserHelper.FindSymbols(gotoElement.XSharpElement.Name);
+                                return;
+                            }
+                        }
                         // Ok, find it ! Let's go ;)
                         gotoElement.XSharpElement.OpenEditor();
                         return;
@@ -839,37 +847,54 @@ namespace XSharp.Project
     
     internal static class ObjectBrowserHelper
     {
+        private static Guid GUID_VsSymbolScope_All = new Guid(0xa5a527ea, 0xcf0a, 0x4abf, 0xb5, 0x1, 0xea, 0xfe, 0x6b, 0x3b, 0xa5, 0xc6);
+        private static Guid GUID_VsSymbolScope_Solution = new Guid( 0xb1ba9461, 0xfc54, 0x45b3, 0xa4, 0x84, 0xcb, 0x6d, 0xd0, 0xb9, 0x5c, 0x94);
+        private static Guid GUID_VsSymbolScope_Frameworks = new Guid( 0x3168518c, 0xb7c9, 0x4e0c, 0xbd, 0x51, 0xe3, 0x32, 0x1c, 0xa7, 0xb4, 0xd8);
+
+        /*
+        DEFINE_GUID(GUID_VsSymbolScope_All, 0xa5a527ea, 0xcf0a, 0x4abf, 0xb5, 0x1, 0xea, 0xfe, 0x6b, 0x3b, 0xa5, 0xc6);
+        DEFINE_GUID(GUID_VsSymbolScope_OBSelectedComponents, 0x41fd0b24, 0x8d2b, 0x48c1, 0xb1, 0xda, 0xaa, 0xcf, 0x13, 0xa5, 0x57, 0xf);
+        DEFINE_GUID(GUID_VsSymbolScope_FSSelectedComponents, 0xc2146638, 0xc2fe, 0x4c1e, 0xa4, 0x9d, 0x64, 0xae, 0x97, 0x1e, 0xef, 0x39);
+        DEFINE_GUID(GUID_VsSymbolScope_Frameworks, 0x3168518c, 0xb7c9, 0x4e0c, 0xbd, 0x51, 0xe3, 0x32, 0x1c, 0xa7, 0xb4, 0xd8);
+        DEFINE_GUID(GUID_VsSymbolScope_Solution, 0xb1ba9461, 0xfc54, 0x45b3, 0xa4, 0x84, 0xcb, 0x6d, 0xd0, 0xb9, 0x5c, 0x94);
+        */
 
         /// <summary>
         ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
         ///     Otherwise, opens the "Find Symbols" ToolWindow.
         /// </summary>
-        public static void GotoMemberDefinition(string memberName, uint sreachOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
+        public static void GotoMemberDefinition(string memberName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
         {
-            gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, sreachOptions);
+            gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions);
         }
 
-        public static void GotoClassDefinition(string typeName, uint sreachOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
+        public static void GotoClassDefinition(string typeName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
         {
-            gotoDefinition(typeName, _LIB_LISTTYPE.LLT_CLASSES, sreachOptions);
+            gotoDefinition(typeName, _LIB_LISTTYPE.LLT_CLASSES, searchOptions);
         }
 
-        private static void gotoDefinition(string memberName, _LIB_LISTTYPE libListtype, uint sreachOptions)
+        public static void FindSymbols(string memberName )
         {
-            if (gotoDefinitionInternal(memberName, libListtype, sreachOptions) == false)
+            ObjectBrowserHelper.canFindSymbols(memberName, (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS);
+        }
+
+
+        private static void gotoDefinition(string memberName, _LIB_LISTTYPE libListtype, uint searchOptions)
+        {
+            if (gotoDefinitionInternal(memberName, libListtype, searchOptions) == false)
             {
                 // There was an ambiguity (more than one item found) or no items found at all.
-                if (ObjectBrowserHelper.canFindSymbols(memberName, sreachOptions) == false)
+                if (ObjectBrowserHelper.canFindAllSymbols(memberName, searchOptions) == false)
                 {
                     Debug.WriteLine("Failed to FindSymbol for symbol " + memberName);
                 }
             }
         }
 
-        private static bool gotoDefinitionInternal(string typeOrMemberName, _LIB_LISTTYPE symbolType, uint sreachOptions)
+        private static bool gotoDefinitionInternal(string typeOrMemberName, _LIB_LISTTYPE symbolType, uint searchOptions)
         {
             IVsSimpleObjectList2 list;
-            if (ObjectBrowserHelper.tryFindSymbol(typeOrMemberName, out list, symbolType, sreachOptions))
+            if (ObjectBrowserHelper.tryFindSymbol(typeOrMemberName, out list, symbolType, searchOptions))
             {
                 int ok;
                 const VSOBJGOTOSRCTYPE whereToGo = VSOBJGOTOSRCTYPE.GS_DEFINITION;
@@ -882,7 +907,7 @@ namespace XSharp.Project
             return false;
         }
 
-
+        // Searching in the XSharp Library (Current Solution)
         private static IVsSimpleLibrary2 GetXSharpLibrary()
         {
             Guid guid = new Guid(XSharpConstants.Library);
@@ -899,10 +924,10 @@ namespace XSharp.Project
             return simpleLibrary;
         }
 
-        private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint sreachOptions)
+        private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint searchOptions)
         {
             IVsSimpleObjectList2 list;
-            if (ObjectBrowserHelper.tryFindSymbol(memberName, out list, _LIB_LISTTYPE.LLT_MEMBERS, sreachOptions))
+            if (ObjectBrowserHelper.tryFindSymbol(memberName, out list, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions))
             {
                 return HResult.Succeeded(list.GetSourceContextWithOwnership(0, out fileName, out line));
             }
@@ -925,7 +950,7 @@ namespace XSharp.Project
         private static bool tryFindSymbol(string typeOrMemberName,
             out IVsSimpleObjectList2 resultList,
             _LIB_LISTTYPE symbolType,
-            uint sreachOptions)
+            uint searchOptions)
         {
             try
             {
@@ -935,7 +960,7 @@ namespace XSharp.Project
                 IVsSimpleObjectList2 list;
                 var searchSucceed = HResult.Succeeded(library.GetList2((uint)symbolType,
                     (uint)_LIB_LISTFLAGS.LLF_USESEARCHFILTER,
-                    createSearchCriteria(typeOrMemberName, sreachOptions),
+                    createSearchCriteria(typeOrMemberName, searchOptions),
                     out list));
                 if (searchSucceed && list != null)
                 {
@@ -964,23 +989,33 @@ namespace XSharp.Project
             return false;
         }
 
-        private static bool canFindSymbols(string memberName, uint sreachOptions)
+        private static bool canFindSymbols(string memberName, uint searchOptions)
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             var guidSymbolScope = new Guid(XSharpConstants.Library);
-            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, sreachOptions)));
+            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
         }
 
-        private static VSOBSEARCHCRITERIA2[] createSearchCriteria(string typeOrMemberName, uint sreachOptions)
+        private static bool canFindAllSymbols(string memberName, uint searchOptions)
+        {
+            System.IServiceProvider provider = XSharpProjectPackage.Instance;
+            IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
+            //
+            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+        }
+
+        private static VSOBSEARCHCRITERIA2[] createSearchCriteria(string typeOrMemberName, uint searchOptions)
         {
             return new[]
             {
                 new VSOBSEARCHCRITERIA2
                 {
-                    eSrchType = VSOBSEARCHTYPE.SO_PRESTRING,
+                    eSrchType = VSOBSEARCHTYPE.SO_ENTIREWORD,
+                    //eSrchType = VSOBSEARCHTYPE.SO_PRESTRING,
                     //grfOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS,
-                    grfOptions = sreachOptions,
+                    grfOptions = searchOptions,
                     szName = typeOrMemberName
                 }
             };

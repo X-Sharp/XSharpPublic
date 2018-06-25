@@ -2798,11 +2798,49 @@ namespace XSharpLanguage
                 stopWatch.Start();
 #endif
             foundElement = null;
+            CompletionType cType = null;
+            int currentPos = 0;
+            String currentToken = "";
+            //
             if (currentMember == null)
             {
                 // try to find the first member in the file
                 if (file != null)
-                    currentMember = file.FirstMember();
+                {
+                    XElement elt = file.FindMemberAtRow(currentLine);
+                    if (elt is XTypeMember)
+                    {
+                        currentMember = (XTypeMember)elt;
+                    }
+                    else if (elt is XType)
+                    {
+                        // We might be in the Class Declaration !?
+                        switch (stopToken.Type)
+                        {
+                            case XSharpLexer.IMPLEMENTS:
+                            case XSharpLexer.INHERIT:
+                                if (tokenList.Count == 1)
+                                {
+                                    currentToken = tokenList[currentPos];
+                                    cType = new CompletionType(currentToken, file, ((XType)(elt)).NameSpace);
+                                }
+                                break;
+                            default:
+                                cType = new CompletionType(elt);
+                                break;
+                        }
+                        if (!cType.IsEmpty())
+                        {
+                            SearchConstructorIn(cType, Modifiers.Private, out foundElement);
+                            if (foundElement.XSharpElement == null && cType.XType != null)
+                            {
+                                foundElement = new CompletionElement(cType.XType);
+                            }
+                            return cType;
+                        }
+                    }
+                }
+                //
                 if (currentMember == null)
                 {
 #if TRACE
@@ -2819,9 +2857,8 @@ namespace XSharpLanguage
             //
             // we have to walk the tokenList, searching for the current Type
             // As we have separators every even token, we will walk by step 2
-            int currentPos = 0;
-            String currentToken = "";
-            CompletionType cType = null;
+
+
             CompletionType cTemp = null;
             if (tokenList.Count == 0)
                 return null;

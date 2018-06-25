@@ -319,8 +319,8 @@ begin namespace XSharpModel
 				endif
 				return self:FullPath
 			end get
-		end property
-		
+		END PROPERTY
+
 		property TypeList as IDictionary<string, XType>
 			get
 				if ! self:HasCode

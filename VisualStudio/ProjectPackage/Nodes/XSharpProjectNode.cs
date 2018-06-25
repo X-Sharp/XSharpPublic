@@ -425,7 +425,15 @@ namespace XSharp.Project
         protected internal override FolderNode CreateFolderNode(string path, ProjectElement element)
         {
             Utilities.ArgumentNotNull("element", element);
-            FolderNode folderNode = new XSharpFolderNode(this, path, element, element.IsVirtual);
+            FolderNode folderNode;
+            if (String.Compare(Path.GetDirectoryName(path), "properties", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                folderNode = new XSharpPropertiesFolderNode(this, path, element);
+            }
+            else
+            {
+                folderNode = new XSharpFolderNode(this, path, element, element.IsVirtual);
+            }
             return folderNode;
         }
 
@@ -509,6 +517,31 @@ namespace XSharp.Project
             };
             return result;
         }
+
+        private HierarchyNode _GetAppDesignerFolder(bool createIfNotExist)
+        {
+            HierarchyNode node = null;
+
+            List<XSharpPropertiesFolderNode> folderNodes = new List<XSharpPropertiesFolderNode>();
+            FindNodesOfType<XSharpPropertiesFolderNode>(folderNodes);
+
+            if (folderNodes.Count > 0) // really only should be 0 or 1
+            {
+                node = folderNodes[0];
+            }
+            else if (createIfNotExist)
+            {
+                HierarchyNode child = CreateFolderNodes("Properties");
+
+                if (child != null)
+                {
+                    ((XSharpPropertiesFolderNode)child).CreateDirectory("Properties");
+                }
+
+                node = _GetAppDesignerFolder(false);
+            }
+            return node;
+        }
         /// <summary>
         /// Allows you to query the project for special files and optionally create them.
         /// </summary>
@@ -522,45 +555,59 @@ namespace XSharp.Project
             bool fCreateInPropertiesFolder = false;
             HierarchyNode propsFolder = null;
             string props = "Properties";
-            fileName = _GetFilenameForSpecialFiles(fileId, out fCreateInPropertiesFolder);
-            string fullPath = Path.Combine(ProjectFolder, fileName);
-
-            if (fCreateInPropertiesFolder)
+            bool createIfNotExist = (((__PSFFLAGS)flags) & __PSFFLAGS.PSFF_CreateIfNotExist) != 0;
+            if (fileId == (int)__PSFFILEID2.PSFFILEID_AppDesigner)       // Special case, this returns a folder instead of a file
             {
-                propsFolder = this.FindURL(Path.Combine(ProjectFolder, props));
-                if (propsFolder == null)
+                var propertiesNode = _GetAppDesignerFolder(createIfNotExist);
+                itemid = 0;
+                fileName = string.Empty;
+                if (propertiesNode != null)
                 {
-                    propsFolder = CreateFolderNode(props);
-                    AddChild(propsFolder);
-                }
-                fileName = props + "\\" + fileName;
-                fullPath = Path.Combine(ProjectFolder, fileName);
-
-            }
-            HierarchyNode fileNode = this.FindURL(fullPath);
-            if (fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0)
-            {
-                // Create a zero-length file if does not exist already.
-                //
-                if (!File.Exists(fullPath))
-                {
-                    File.WriteAllText(fullPath, string.Empty);
-                }
-                fileNode = CreateFileNode(fileName);
-                if (fCreateInPropertiesFolder && propsFolder != null)
-                {
-                    propsFolder.AddChild(fileNode);
-                }
-                else
-                {
-                    AddChild(fileNode);
+                    itemid = propertiesNode.ID;
+                    fileName = propertiesNode.Url;
                 }
             }
+            else
+            {
+                fileName = _GetFilenameForSpecialFiles(fileId, out fCreateInPropertiesFolder);
+                string fullPath = Path.Combine(ProjectFolder, fileName);
 
-            itemid = fileNode != null ? fileNode.ID : uint.MaxValue;
-            if ((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
-                fileName = fullPath;
+                if (fCreateInPropertiesFolder)
+                {
+                    propsFolder = this.FindURL(Path.Combine(ProjectFolder, props));
+                    if (propsFolder == null)
+                    {
+                        propsFolder = CreateFolderNode(props);
+                        AddChild(propsFolder);
+                    }
+                    fileName = props + "\\" + fileName;
+                    fullPath = Path.Combine(ProjectFolder, fileName);
 
+                }
+                HierarchyNode fileNode = this.FindURL(fullPath);
+                if (fileNode == null && createIfNotExist)
+                {
+                    // Create a zero-length file if does not exist already.
+                    //
+                    if (!File.Exists(fullPath))
+                    {
+                        File.WriteAllText(fullPath, string.Empty);
+                    }
+                    fileNode = CreateFileNode(fileName);
+                    if (fCreateInPropertiesFolder && propsFolder != null)
+                    {
+                        propsFolder.AddChild(fileNode);
+                    }
+                    else
+                    {
+                        AddChild(fileNode);
+                    }
+                }
+
+                itemid = fileNode != null ? fileNode.ID : uint.MaxValue;
+                if ((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
+                    fileName = fullPath;
+            }
             return VSConstants.S_OK;
         }
 
@@ -568,6 +615,7 @@ namespace XSharp.Project
         {
             string fileName = "";
             fCreateInPropertiesFolder = false;
+
             switch (fileId)
             {
                 case (int)__PSFFILEID.PSFFILEID_AppConfig:
@@ -1771,11 +1819,8 @@ namespace XSharp.Project
         public override int Close()
         {
 
-            // remove our Reference Cache
-            AssemblyReferenceNode.RemoveFromCache(this);
             // First remove the Navigation Data
             //
-
             if (this.Site != null)
             {
 

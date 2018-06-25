@@ -38,12 +38,13 @@ namespace XSharp.Build
                 this.AppendNewLine();
             }
         }
-        public new void AppendSwitchIfNotNull(string switchName, string parameter)
+        public void AppendSwitchIfNotNull(string switchName, string parameter, bool fNewLine = true)
         {
             if (parameter != null && switchName != null)
             {
                 base.AppendSwitchIfNotNull(switchName, parameter);
-                this.AppendNewLine(); 
+                if (fNewLine)
+                    this.AppendNewLine(); 
             }
         }
         public new void AppendSwitchIfNotNull(string switchName, ITaskItem parameter)
@@ -220,8 +221,8 @@ namespace XSharp.Build
             {
                 foreach (ITaskItem parameter in parameters)
                 {
-                    this.AppendSwitchIfNotNull(switchName, parameter.ItemSpec); 
-
+                    // do not add a newline after the ItemSpec
+                    this.AppendSwitchIfNotNull(switchName, parameter.ItemSpec,false);
                     if (metadataNames != null)
                     {
                         for (int i = 0; i < metadataNames.Length; ++i)
@@ -274,7 +275,7 @@ namespace XSharp.Build
                 }
             }
 
-
+            
         }
     }
 

@@ -305,10 +305,18 @@ CLASS AssemblyInfo
 									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
 								ENDIF
 								found += 1
+							CASE "XSharp.Internal.ClassLibraryAttribute"
+								SELF:_globalClassName := type:GetProperty("GlobalClassName"):GetValue(custattr, NULL):ToString()
+								VAR defaultNs := type:GetProperty("DefaultNamespace"):GetValue(custattr, NULL):ToString()
+								IF ! String.IsNullOrEmpty(defaultNs)
+									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
+								ENDIF
+								found += 1
 							CASE "System.Runtime.CompilerServices.ExtensionAttribute"
 								SELF:_HasExtensions  := TRUE
 								found += 2
 							CASE "Vulcan.VulcanImplicitNamespaceAttribute"
+							CASE "XSharp.ImplicitNamespaceAttribute"
 								VAR ns := type:GetProperty("Namespace"):GetValue(custattr, NULL):ToString()
 								IF ! String.IsNullOrEmpty(ns)
 									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(ns)

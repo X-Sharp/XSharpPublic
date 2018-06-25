@@ -38,8 +38,7 @@ namespace Microsoft.VisualStudio.Project
         /// Defines the listener that would listen on file changes on the nested project node.
         /// </summary>
         private FileChangeManager fileChangeListener;
-        static private Dictionary<ProjectNode, ProjectItemInstance[]> referenceCache = new Dictionary<ProjectNode, ProjectItemInstance[]>(); // cache to speed up loading of projects.
-
+        
         /// <summary>
         /// A flag for specifying if the object was disposed.
         /// </summary>
@@ -155,15 +154,6 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region methods
-
-        internal static void RemoveFromCache(ProjectNode project)
-        {
-            if (project != null && referenceCache.ContainsKey(project))
-            {
-                referenceCache.Remove(project);
-            }
-        }
-
         /// <summary>
         /// Closes the node.
         /// </summary>
@@ -172,7 +162,6 @@ namespace Microsoft.VisualStudio.Project
         {
             try
             {
-                RemoveFromCache(this.ProjectMgr);
                 this.Dispose(true);
             }
             finally
@@ -471,19 +460,13 @@ namespace Microsoft.VisualStudio.Project
 			}
             
 			var instance = this.ProjectMgr.ProjectInstance;
-            ProjectItemInstance[] group = null;
-            if (referenceCache.ContainsKey(this.ProjectMgr))
-            {
-                group = referenceCache[this.ProjectMgr];
-            }
-            // get list of unprocessed references. If the number is different from the cache items then we
             // must call MsBuild again
-            var list = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.Reference).ToArray();
-            if (group == null || group.Length != list.Length)
+            var group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
+            // RvdH Only call ResolveAsemblyReferences when we cannot find any items
+            if (group == null || group.Length == 0)
             {
                 BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
                 group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
-                referenceCache[this.ProjectMgr] = group;
 
             }
             if (group != null)

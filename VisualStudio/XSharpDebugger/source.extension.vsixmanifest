@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="XSharp.Debugger" Version="1.2.2.0" Language="en-US" Publisher="XSharp BV" />
+    <Identity Id="XSharp.Debugger" Version="2.0.0.2" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Visual Studio Debugger Support</DisplayName>
     <Description xml:space="preserve">XSharp Visual Studio Debugger Support. 
 Adds X# language support to the callstack, locals window and more</Description>

@@ -1,0 +1,1990 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="__WCSTYPEERROR" xml:space="preserve">
+    <value>Ongeldig argumenttype</value>
+  </data>
+  <data name="__WCSLOADLIBRARYERROR" xml:space="preserve">
+    <value>%V1s Kan DLL niet laden: %s</value>
+  </data>
+  <data name="__WCSERROR" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="__WCSUNKNOWN" xml:space="preserve">
+    <value>Onbekend:</value>
+  </data>
+  <data name="__WCSWARNING" xml:space="preserve">
+    <value>Waarschuwing!</value>
+  </data>
+  <data name="__WCSCHGDISCARD" xml:space="preserve">
+    <value>Uw veranderingen zullen niet worden doorgevoerd.</value>
+  </data>
+  <data name="__WCSDATAWINDOW" xml:space="preserve">
+    <value>%V1s Data Window: %s</value>
+  </data>
+  <data name="__WCSDWUNTITLED" xml:space="preserve">
+    <value>DataWindow: &lt;untitled&gt;</value>
+  </data>
+  <data name="__WCSUNKNOWNSTATUS" xml:space="preserve">
+    <value>&lt;&lt;&lt; Onbekende status &gt;&gt;&gt;</value>
+  </data>
+  <data name="__WCSUNKNOWNSTATUSMSG" xml:space="preserve">
+    <value>Onbekend Status melding</value>
+  </data>
+  <data name="__WCSERROR2" xml:space="preserve">
+    <value>Fout :</value>
+  </data>
+  <data name="__WCSDSNOTOPEN" xml:space="preserve">
+    <value>%V1s%V2s DataServer %s ( %s ) niet geopend</value>
+  </data>
+  <data name="__WCSDELETEFAILED" xml:space="preserve">
+    <value>Verwijderen mislukt</value>
+  </data>
+  <data name="__WCSCHANGINGVIEW" xml:space="preserve">
+    <value>Verandering van weergave zal uw wijzigingen verwerpen.</value>
+  </data>
+  <data name="__WCSDELETEFAILEDMSG" xml:space="preserve">
+    <value>Verwijderen Record mislukt - Onbekende oorzaak</value>
+  </data>
+  <data name="__WCSDELETEDRECORD" xml:space="preserve">
+    <value>&gt;&gt;&gt; VERWIJDERD RECORD &lt;&lt;&lt;</value>
+  </data>
+  <data name="__WCSIPCSERVERNOTFOUND" xml:space="preserve">
+    <value>Server Niet Gevonden</value>
+  </data>
+  <data name="__WCSIPCTOPICNOTFOUND" xml:space="preserve">
+    <value>Topic niet gevonden in de server</value>
+  </data>
+  <data name="__WCSIPCITEMNOTFOUND" xml:space="preserve">
+    <value>Item  niet gevonden in de server</value>
+  </data>
+  <data name="__WCSIPCOUTOFMEMORY" xml:space="preserve">
+    <value>Systeem heeft teweinig Geheugen</value>
+  </data>
+  <data name="__WCSALLFILES" xml:space="preserve">
+    <value>Alle Bestanden (*.*)|*.*|</value>
+  </data>
+  <data name="__WCSPRINTERNODISKSPACE" xml:space="preserve">
+    <value>Systeem heeft te weinig schijfruimte</value>
+  </data>
+  <data name="__WCSDATADIALOG" xml:space="preserve">
+    <value>%V1s Data Dialog: %s</value>
+  </data>
+  <data name="__WCSDBROWSEROBJECT" xml:space="preserve">
+    <value>(Data Browser Object)</value>
+  </data>
+  <data name="__WCSCREATECTLFAILED" xml:space="preserve">
+    <value>Aanmaken Control mislukt</value>
+  </data>
+  <data name="__WCSCREATEDLGFAILED" xml:space="preserve">
+    <value>Aanmaken Dialoog uit resource mislukt</value>
+  </data>
+  <data name="__WCSHOSTVOAPP" xml:space="preserve">
+    <value>Visual Objects Toepassing</value>
+  </data>
+  <data name="__WCSHOSTDATABROWSER" xml:space="preserve">
+    <value>Visual Objects Data Browser</value>
+  </data>
+  <data name="__WCSHOSTDATAWINDOW" xml:space="preserve">
+    <value>Visual Objects Data Window</value>
+  </data>
+  <data name="__WCSPICTUREYN" xml:space="preserve">
+    <value>JNjn</value>
+  </data>
+  <data name="__WCSPICTURETFYN" xml:space="preserve">
+    <value>TFJNtfjn</value>
+  </data>
+  <data name="__WCSNOOLESUPPORT" xml:space="preserve">
+    <value>Deze toepassing ondersteunt geen OLE. De OLE-Databasevelden worden genegeerd.</value>
+  </data>
+  <data name="__WCSTEXTBOX" xml:space="preserve">
+    <value>Tekstdialoog</value>
+  </data>
+  <data name="__WCSINFOBOX" xml:space="preserve">
+    <value>Informatiedialoog</value>
+  </data>
+  <data name="__WCSCAPAINTLOADFAILED" xml:space="preserve">
+    <value>CAPAINT.DLL kon niet worden geladen</value>
+  </data>
+  <data name="__WCSCNOAUTOMATION" xml:space="preserve">
+    <value>De OLE Automation Server ondersteuning is niet beschikbaar.\n Neem OLE Server op in de lijst mee te linken DLL's</value>
+  </data>
+  <data name="RT_MSG_MONTH1" xml:space="preserve">
+    <value>januari</value>
+  </data>
+  <data name="RT_MSG_MONTH2" xml:space="preserve">
+    <value>februari</value>
+  </data>
+  <data name="RT_MSG_MONTH3" xml:space="preserve">
+    <value>maart</value>
+  </data>
+  <data name="RT_MSG_MONTH4" xml:space="preserve">
+    <value>april</value>
+  </data>
+  <data name="RT_MSG_MONTH5" xml:space="preserve">
+    <value>mei</value>
+  </data>
+  <data name="RT_MSG_MONTH6" xml:space="preserve">
+    <value>juni</value>
+  </data>
+  <data name="RT_MSG_MONTH7" xml:space="preserve">
+    <value>juli</value>
+  </data>
+  <data name="RT_MSG_MONTH8" xml:space="preserve">
+    <value>augustus</value>
+  </data>
+  <data name="RT_MSG_MONTH9" xml:space="preserve">
+    <value>september</value>
+  </data>
+  <data name="RT_MSG_MONTH10" xml:space="preserve">
+    <value>oktober</value>
+  </data>
+  <data name="RT_MSG_MONTH11" xml:space="preserve">
+    <value>november</value>
+  </data>
+  <data name="RT_MSG_MONTH12" xml:space="preserve">
+    <value>december</value>
+  </data>
+  <data name="RT_MSG_DAY1" xml:space="preserve">
+    <value>zondag</value>
+  </data>
+  <data name="RT_MSG_DAY2" xml:space="preserve">
+    <value>maandag</value>
+  </data>
+  <data name="RT_MSG_DAY3" xml:space="preserve">
+    <value>dinsdag</value>
+  </data>
+  <data name="RT_MSG_DAY4" xml:space="preserve">
+    <value>woensdag</value>
+  </data>
+  <data name="RT_MSG_DAY5" xml:space="preserve">
+    <value>donderdag</value>
+  </data>
+  <data name="RT_MSG_DAY6" xml:space="preserve">
+    <value>vrijdag</value>
+  </data>
+  <data name="RT_MSG_DAY7" xml:space="preserve">
+    <value>zaterdag</value>
+  </data>
+  <data name="RT_MSG_INFOSTRING" xml:space="preserve">
+    <value>Dutch ASCII</value>
+  </data>
+  <data name="IDT_NEWSHEET" xml:space="preserve">
+    <value>Nieuw Blad</value>
+  </data>
+  <data name="IDT_OPEN" xml:space="preserve">
+    <value>Openen</value>
+  </data>
+  <data name="IDT_CLOSE" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="IDT_SAVE" xml:space="preserve">
+    <value>Opslaan</value>
+  </data>
+  <data name="IDT_PRINT" xml:space="preserve">
+    <value>Afdrukken</value>
+  </data>
+  <data name="IDT_PREVIEW" xml:space="preserve">
+    <value>Afdrukvoorbeeld</value>
+  </data>
+  <data name="IDT_SUM" xml:space="preserve">
+    <value>Optellen</value>
+  </data>
+  <data name="IDT_BOLD" xml:space="preserve">
+    <value>Vet</value>
+  </data>
+  <data name="IDT_ITALIC" xml:space="preserve">
+    <value>Cursief</value>
+  </data>
+  <data name="IDT_UNDERLINE" xml:space="preserve">
+    <value>Onderstrepen</value>
+  </data>
+  <data name="IDT_CROSSOUT" xml:space="preserve">
+    <value>Doorstrepen</value>
+  </data>
+  <data name="IDT_SIZEPLUS" xml:space="preserve">
+    <value>Grootte+</value>
+  </data>
+  <data name="IDT_SIZEMINUS" xml:space="preserve">
+    <value>Grootte-</value>
+  </data>
+  <data name="IDT_SUPERSCRIPT" xml:space="preserve">
+    <value>Superscript</value>
+  </data>
+  <data name="IDT_SUBSCRIPT" xml:space="preserve">
+    <value>Subscript</value>
+  </data>
+  <data name="IDT_CURRENCY" xml:space="preserve">
+    <value>Valuta</value>
+  </data>
+  <data name="IDT_PERCENT" xml:space="preserve">
+    <value>Procent</value>
+  </data>
+  <data name="IDT_COMMA" xml:space="preserve">
+    <value>Komma</value>
+  </data>
+  <data name="IDT_DECIMALPLUS" xml:space="preserve">
+    <value>Decimaal+</value>
+  </data>
+  <data name="IDT_DECIMALMINUS" xml:space="preserve">
+    <value>Decimaal-</value>
+  </data>
+  <data name="IDT_LEFT" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="IDT_CENTER" xml:space="preserve">
+    <value>Midden</value>
+  </data>
+  <data name="IDT_RIGHT" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="IDT_JUSTIFY" xml:space="preserve">
+    <value>Uitvullen</value>
+  </data>
+  <data name="IDT_ADDTEXT" xml:space="preserve">
+    <value>Voeg Tekst toe</value>
+  </data>
+  <data name="IDT_CENTERTEXT" xml:space="preserve">
+    <value>Centreer Tekst</value>
+  </data>
+  <data name="IDT_TABLE" xml:space="preserve">
+    <value>Tabel</value>
+  </data>
+  <data name="IDT_BORDERRECT" xml:space="preserve">
+    <value>Rand</value>
+  </data>
+  <data name="IDT_BORDERLOW" xml:space="preserve">
+    <value>Onderkant</value>
+  </data>
+  <data name="IDT_LIGHTSHADING" xml:space="preserve">
+    <value>Schaduw</value>
+  </data>
+  <data name="IDT_COPY" xml:space="preserve">
+    <value>Kopieer</value>
+  </data>
+  <data name="IDT_PASTEFORMAT" xml:space="preserve">
+    <value>Formaat Plakken</value>
+  </data>
+  <data name="IDT_PASTEVALUE" xml:space="preserve">
+    <value>Waarde Plakken</value>
+  </data>
+  <data name="IDT_UNDO" xml:space="preserve">
+    <value>Ongedaan maken</value>
+  </data>
+  <data name="IDT_REPEAT" xml:space="preserve">
+    <value>Herhalen</value>
+  </data>
+  <data name="IDT_ZOOMIN" xml:space="preserve">
+    <value>Inzoomen</value>
+  </data>
+  <data name="IDT_ZOOMOUT" xml:space="preserve">
+    <value>Uitzoomen</value>
+  </data>
+  <data name="IDT_SORTATOZ" xml:space="preserve">
+    <value>Sorteren A-Z</value>
+  </data>
+  <data name="IDT_SORTZTOA" xml:space="preserve">
+    <value>Sorteren Z-A</value>
+  </data>
+  <data name="IDT_LOCK" xml:space="preserve">
+    <value>Blokkeren</value>
+  </data>
+  <data name="IDT_OUTLINESYMBOL" xml:space="preserve">
+    <value>Uitlijnen</value>
+  </data>
+  <data name="IDT_SELECTCELL" xml:space="preserve">
+    <value>Selecteer Cel</value>
+  </data>
+  <data name="IDT_SCROLLMINUS" xml:space="preserve">
+    <value>Scroll-</value>
+  </data>
+  <data name="IDT_SCROLLPLUS" xml:space="preserve">
+    <value>Scroll+</value>
+  </data>
+  <data name="IDT_BUTTON" xml:space="preserve">
+    <value>Knop</value>
+  </data>
+  <data name="IDT_PICTURE" xml:space="preserve">
+    <value>Afbeelding</value>
+  </data>
+  <data name="IDT_SPELLCHECK" xml:space="preserve">
+    <value>Spellingscontrole</value>
+  </data>
+  <data name="IDT_CALCULATE" xml:space="preserve">
+    <value>Berekenen</value>
+  </data>
+  <data name="IDT_AREACHART" xml:space="preserve">
+    <value>Gebied</value>
+  </data>
+  <data name="IDT_BARCHART" xml:space="preserve">
+    <value>Staaf</value>
+  </data>
+  <data name="IDT_COLUMNCHART" xml:space="preserve">
+    <value>Kolom</value>
+  </data>
+  <data name="IDT_STACKCHART" xml:space="preserve">
+    <value>Stapel</value>
+  </data>
+  <data name="IDT_LINECHART" xml:space="preserve">
+    <value>Lijn</value>
+  </data>
+  <data name="IDT_PIECHART" xml:space="preserve">
+    <value>Taart</value>
+  </data>
+  <data name="IDT_SCATTERCHART" xml:space="preserve">
+    <value>Scatter</value>
+  </data>
+  <data name="IDT_3DAREACHART" xml:space="preserve">
+    <value>3D Gebied</value>
+  </data>
+  <data name="IDT_3DBARCHART" xml:space="preserve">
+    <value>3D Staaf</value>
+  </data>
+  <data name="IDT_3DCOLUMNCHART" xml:space="preserve">
+    <value>3D Kolom</value>
+  </data>
+  <data name="IDT_3DCOLUMNAREACHART" xml:space="preserve">
+    <value>3D Kolom-Gebied</value>
+  </data>
+  <data name="IDT_3DLINECHART" xml:space="preserve">
+    <value>3D Lijn</value>
+  </data>
+  <data name="IDT_3DPIECHART" xml:space="preserve">
+    <value>3D Taart</value>
+  </data>
+  <data name="IDT_3DSURFACECHART" xml:space="preserve">
+    <value>3D Oppervlakte</value>
+  </data>
+  <data name="IDT_RADARCHART" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="IDT_COLUMNLINECHART" xml:space="preserve">
+    <value>Kolom-Lijn</value>
+  </data>
+  <data name="IDT_COLUMNSTOCKCHART" xml:space="preserve">
+    <value>Kolom-Koers</value>
+  </data>
+  <data name="IDT_CHARTFORMAT" xml:space="preserve">
+    <value>Grafiek opmaak</value>
+  </data>
+  <data name="IDT_EDITCHART" xml:space="preserve">
+    <value>Grafiek wijzigen</value>
+  </data>
+  <data name="IDT_LINE" xml:space="preserve">
+    <value>Lijn</value>
+  </data>
+  <data name="IDT_ARROW" xml:space="preserve">
+    <value>Pijl</value>
+  </data>
+  <data name="IDT_FREEHAND" xml:space="preserve">
+    <value>Vrije hand</value>
+  </data>
+  <data name="IDT_RECTANGLE" xml:space="preserve">
+    <value>Rechthoek</value>
+  </data>
+  <data name="IDT_ELLIPSE" xml:space="preserve">
+    <value>Ellips</value>
+  </data>
+  <data name="IDT_ARC" xml:space="preserve">
+    <value>Boog</value>
+  </data>
+  <data name="IDT_POLYGON" xml:space="preserve">
+    <value>Polygoon</value>
+  </data>
+  <data name="IDT_FILLEDRECTANGLE" xml:space="preserve">
+    <value>Gevulde Rechthoek</value>
+  </data>
+  <data name="IDT_FILLEDELLIPSE" xml:space="preserve">
+    <value>Gevulde Ellips</value>
+  </data>
+  <data name="IDT_FILLEDARC" xml:space="preserve">
+    <value>Gevulde Boog</value>
+  </data>
+  <data name="IDT_FILLEDPOLYGON" xml:space="preserve">
+    <value>Gevulde Polygoon</value>
+  </data>
+  <data name="IDT_SELECTOBJECT" xml:space="preserve">
+    <value>Selecteer Object</value>
+  </data>
+  <data name="IDT_EDITPOINT" xml:space="preserve">
+    <value>Wijzig Punt</value>
+  </data>
+  <data name="IDT_GROUP" xml:space="preserve">
+    <value>Groepeer</value>
+  </data>
+  <data name="IDT_UNGROUP" xml:space="preserve">
+    <value>Scheidt</value>
+  </data>
+  <data name="IDT_FRONT" xml:space="preserve">
+    <value>Voorgrond</value>
+  </data>
+  <data name="IDT_BACK" xml:space="preserve">
+    <value>Achtergrond</value>
+  </data>
+  <data name="IDT_COLOR" xml:space="preserve">
+    <value>Kleur</value>
+  </data>
+  <data name="IDT_3DFRAME" xml:space="preserve">
+    <value>3D Kader</value>
+  </data>
+  <data name="IDT_NEWMACRO" xml:space="preserve">
+    <value>Nieuwe Macro</value>
+  </data>
+  <data name="IDT_FUNCTION" xml:space="preserve">
+    <value>Functie</value>
+  </data>
+  <data name="IDT_CALC" xml:space="preserve">
+    <value>Bereken</value>
+  </data>
+  <data name="IDT_GOMACRO" xml:space="preserve">
+    <value>Gaan</value>
+  </data>
+  <data name="IDT_STEPMACRO" xml:space="preserve">
+    <value>Stap</value>
+  </data>
+  <data name="IDT_TRACEOUTMACRO" xml:space="preserve">
+    <value>Trace Out</value>
+  </data>
+  <data name="IDT_TRACEINMACRO" xml:space="preserve">
+    <value>Trace In</value>
+  </data>
+  <data name="IDT_RUNMACRO" xml:space="preserve">
+    <value>Uitvoeren</value>
+  </data>
+  <data name="IDT_SKIPMACRO" xml:space="preserve">
+    <value>Spring</value>
+  </data>
+  <data name="IDT_RESETMACRO" xml:space="preserve">
+    <value>Terugstellen</value>
+  </data>
+  <data name="IDT_RECORDMACRO" xml:space="preserve">
+    <value>Opnemen</value>
+  </data>
+  <data name="IDT_STOPMACRO" xml:space="preserve">
+    <value>Stoppen</value>
+  </data>
+  <data name="IDT_PAUSEMACRO" xml:space="preserve">
+    <value>Pauze</value>
+  </data>
+  <data name="IDT_NEW" xml:space="preserve">
+    <value>Nieuw</value>
+  </data>
+  <data name="IDT_CUT" xml:space="preserve">
+    <value>Knippen</value>
+  </data>
+  <data name="IDT_PASTE" xml:space="preserve">
+    <value>Plakken</value>
+  </data>
+  <data name="IDT_NUMBERLIST" xml:space="preserve">
+    <value>Genummerde lijst</value>
+  </data>
+  <data name="IDT_BULLETLIST" xml:space="preserve">
+    <value>Opsomtekens</value>
+  </data>
+  <data name="IDT_UNINDENT" xml:space="preserve">
+    <value>Inspringen-</value>
+  </data>
+  <data name="IDT_INDENT" xml:space="preserve">
+    <value>Inspringen+</value>
+  </data>
+  <data name="IDT_COLUMNFORMAT" xml:space="preserve">
+    <value>Kolom opmaak</value>
+  </data>
+  <data name="IDT_FRAME" xml:space="preserve">
+    <value>Kader</value>
+  </data>
+  <data name="IDT_OBJECT" xml:space="preserve">
+    <value>Object</value>
+  </data>
+  <data name="IDT_GRAPH" xml:space="preserve">
+    <value>Grafiek</value>
+  </data>
+  <data name="IDT_ENVELOPE" xml:space="preserve">
+    <value>Envelop</value>
+  </data>
+  <data name="IDT_PAGELAYOUT" xml:space="preserve">
+    <value>Pagina opmaak</value>
+  </data>
+  <data name="IDT_PAGENORMAL" xml:space="preserve">
+    <value>Pagina normaal</value>
+  </data>
+  <data name="IDT_PAGEFIT" xml:space="preserve">
+    <value>Pagina pasvorm</value>
+  </data>
+  <data name="IDT_LEFTTAB" xml:space="preserve">
+    <value>Linker Tab</value>
+  </data>
+  <data name="IDT_CENTERTAB" xml:space="preserve">
+    <value>Midden Tab</value>
+  </data>
+  <data name="IDT_RIGHTTAB" xml:space="preserve">
+    <value>Rechter Tab</value>
+  </data>
+  <data name="IDT_DECIMALTAB" xml:space="preserve">
+    <value>Decimaal Tab</value>
+  </data>
+  <data name="IDT_PARAGRAPH" xml:space="preserve">
+    <value>Paragraaf</value>
+  </data>
+  <data name="IDT_HELP" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="IDT_DELETE" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="IDT_TIME" xml:space="preserve">
+    <value>Tijd</value>
+  </data>
+  <data name="IDT_MAIL" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="IDT_TUTORIAL" xml:space="preserve">
+    <value>Leerprogramma</value>
+  </data>
+  <data name="IDT_DISKETTEIO" xml:space="preserve">
+    <value>Disk I/O</value>
+  </data>
+  <data name="IDT_FIND" xml:space="preserve">
+    <value>Zoeken</value>
+  </data>
+  <data name="IDT_PREVREC" xml:space="preserve">
+    <value>Vorige</value>
+  </data>
+  <data name="IDT_NEXTREC" xml:space="preserve">
+    <value>Volgende</value>
+  </data>
+  <data name="IDT_STARTREC" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="IDT_ENDREC" xml:space="preserve">
+    <value>Einde</value>
+  </data>
+  <data name="IDT_VGBROWSE" xml:space="preserve">
+    <value>Tabel opmaak</value>
+  </data>
+  <data name="IDT_CUSTOMBITMAP" xml:space="preserve">
+    <value>Formulier opmaak</value>
+  </data>
+  <data name="IDTT_NEWSHEET" xml:space="preserve">
+    <value>Creëert nieuw het werkblad</value>
+  </data>
+  <data name="IDTT_OPEN" xml:space="preserve">
+    <value>Opent een bestaand document</value>
+  </data>
+  <data name="IDTT_CLOSE" xml:space="preserve">
+    <value>Sluit een document</value>
+  </data>
+  <data name="IDTT_SAVE" xml:space="preserve">
+    <value>Slaat gemaakte veranderingen in actief document op</value>
+  </data>
+  <data name="IDTT_PRINT" xml:space="preserve">
+    <value>Drukt een actief document af</value>
+  </data>
+  <data name="IDTT_PREVIEW" xml:space="preserve">
+    <value>Geeft een afdrukvoorbeeld op het scherm</value>
+  </data>
+  <data name="IDTT_SUM" xml:space="preserve">
+    <value>Berekent optelling</value>
+  </data>
+  <data name="IDTT_BOLD" xml:space="preserve">
+    <value>Zet geselecteerd lettertype om naar vet</value>
+  </data>
+  <data name="IDTT_ITALIC" xml:space="preserve">
+    <value>Zet geselecteerd lettertype om naar cursief</value>
+  </data>
+  <data name="IDTT_UNDERLINE" xml:space="preserve">
+    <value>Onderstreept geselecteerde tekst</value>
+  </data>
+  <data name="IDTT_CROSSOUT" xml:space="preserve">
+    <value>Streept geselecteerde tekst door</value>
+  </data>
+  <data name="IDTT_SIZEPLUS" xml:space="preserve">
+    <value>Vergroot het lettertype van geselecteerde tekst</value>
+  </data>
+  <data name="IDTT_SIZEMINUS" xml:space="preserve">
+    <value>Verkleint het lettertype van geselecteerde tekst</value>
+  </data>
+  <data name="IDTT_SUPERSCRIPT" xml:space="preserve">
+    <value>Zet geselecteerde tekst om naar superscript</value>
+  </data>
+  <data name="IDTT_SUBSCRIPT" xml:space="preserve">
+    <value>Zet geselecteerde tekst om naar subscript</value>
+  </data>
+  <data name="IDTT_CURRENCY" xml:space="preserve">
+    <value>Past valutastijl op geselecteerde cellen toe</value>
+  </data>
+  <data name="IDTT_PERCENT" xml:space="preserve">
+    <value>Past percentagestijl op geselecteerde cellen toe</value>
+  </data>
+  <data name="IDTT_COMMA" xml:space="preserve">
+    <value>Past kommastijl op geselecteerde cellen toe</value>
+  </data>
+  <data name="IDTT_DECIMALPLUS" xml:space="preserve">
+    <value>Voegt één decimaal toe</value>
+  </data>
+  <data name="IDTT_DECIMALMINUS" xml:space="preserve">
+    <value>Verwijderd één decimaal</value>
+  </data>
+  <data name="IDTT_LEFT" xml:space="preserve">
+    <value>Lijnt tekst links uit</value>
+  </data>
+  <data name="IDTT_CENTER" xml:space="preserve">
+    <value>Centreert tekst</value>
+  </data>
+  <data name="IDTT_RIGHT" xml:space="preserve">
+    <value>Lijnt tekst rechts uit</value>
+  </data>
+  <data name="IDTT_JUSTIFY" xml:space="preserve">
+    <value>Vult tekst uit</value>
+  </data>
+  <data name="IDTT_ADDTEXT" xml:space="preserve">
+    <value>Voegt losse tekst of een tekstvakje toe</value>
+  </data>
+  <data name="IDTT_CENTERTEXT" xml:space="preserve">
+    <value>Centreert tekst over geselecteerde kolommen</value>
+  </data>
+  <data name="IDTT_TABLE" xml:space="preserve">
+    <value>Past lijstformaat toe</value>
+  </data>
+  <data name="IDTT_BORDERRECT" xml:space="preserve">
+    <value>Voegt lijnen rond celranden toe</value>
+  </data>
+  <data name="IDTT_BORDERLOW" xml:space="preserve">
+    <value>Voegt een lijn toe aan de onderkant van de cel</value>
+  </data>
+  <data name="IDTT_LIGHTSHADING" xml:space="preserve">
+    <value>Past schaduwranden toe</value>
+  </data>
+  <data name="IDTT_COPY" xml:space="preserve">
+    <value>Kopieert selectie naar klembord</value>
+  </data>
+  <data name="IDTT_PASTEFORMAT" xml:space="preserve">
+    <value>Plakt alleen de opmaak van gekopieerde cel</value>
+  </data>
+  <data name="IDTT_PASTEVALUE" xml:space="preserve">
+    <value>Plakt alleen de waarde van gekopieerde cel</value>
+  </data>
+  <data name="IDTT_UNDO" xml:space="preserve">
+    <value>Maakt laatste actie of commando ongedaan</value>
+  </data>
+  <data name="IDTT_REPEAT" xml:space="preserve">
+    <value>Herhaalt laatste actie of commando</value>
+  </data>
+  <data name="IDTT_ZOOMIN" xml:space="preserve">
+    <value>Vergroot de weergave van het getoond document</value>
+  </data>
+  <data name="IDTT_ZOOMOUT" xml:space="preserve">
+    <value>Verkleint de weergave van het getoond document</value>
+  </data>
+  <data name="IDTT_SORTATOZ" xml:space="preserve">
+    <value>Sorteert geselecteerde regels in oplopende volgorde</value>
+  </data>
+  <data name="IDTT_SORTZTOA" xml:space="preserve">
+    <value>Sorteert geselecteerde regels in aflopende volgorde</value>
+  </data>
+  <data name="IDTT_LOCK" xml:space="preserve">
+    <value>Blokkeren en vrijgeven van geselecteerde cellen and objecten</value>
+  </data>
+  <data name="IDTT_OUTLINESYMBOL" xml:space="preserve">
+    <value>Toont en verbergt opmaaksymbolen</value>
+  </data>
+  <data name="IDTT_SELECTCELL" xml:space="preserve">
+    <value>Selecteert alleen zichtbare cellen in selectie</value>
+  </data>
+  <data name="IDTT_SCROLLMINUS" xml:space="preserve">
+    <value>Bevordert geselecteerde rijen of kolommen</value>
+  </data>
+  <data name="IDTT_SCROLLPLUS" xml:space="preserve">
+    <value>Degradeert geselecteerde rijen of kolommen</value>
+  </data>
+  <data name="IDTT_BUTTON" xml:space="preserve">
+    <value>Tekent een knop voor de toewijzing van een macro</value>
+  </data>
+  <data name="IDTT_PICTURE" xml:space="preserve">
+    <value>Plakt een afbeelding van de gekoppelde selectie</value>
+  </data>
+  <data name="IDTT_SPELLCHECK" xml:space="preserve">
+    <value>Start spellingscontrole</value>
+  </data>
+  <data name="IDTT_CALCULATE" xml:space="preserve">
+    <value>Berekend formules voor document</value>
+  </data>
+  <data name="IDTT_AREACHART" xml:space="preserve">
+    <value>Tekent een eenvoudige gebiedsdiagram</value>
+  </data>
+  <data name="IDTT_BARCHART" xml:space="preserve">
+    <value>Tekent een eenvoudige staafdiagram</value>
+  </data>
+  <data name="IDTT_COLUMNCHART" xml:space="preserve">
+    <value>Tekent een eenvoudige kolomgrafiek</value>
+  </data>
+  <data name="IDTT_STACKCHART" xml:space="preserve">
+    <value>Tekent een gestapelde kolomgrafiek</value>
+  </data>
+  <data name="IDTT_LINECHART" xml:space="preserve">
+    <value>Tekent een eenvoudige lijngrafiek</value>
+  </data>
+  <data name="IDTT_PIECHART" xml:space="preserve">
+    <value>Tekent een taartdiagram met percentage labels</value>
+  </data>
+  <data name="IDTT_SCATTERCHART" xml:space="preserve">
+    <value>Tekent een verspreiding (of van XY) grafiek</value>
+  </data>
+  <data name="IDTT_3DAREACHART" xml:space="preserve">
+    <value>Tekent een 3D gebiedsdiagram</value>
+  </data>
+  <data name="IDTT_3DBARCHART" xml:space="preserve">
+    <value>Tekent een 3D staafdiagram</value>
+  </data>
+  <data name="IDTT_3DCOLUMNCHART" xml:space="preserve">
+    <value>Tekent een 3D kolomgrafiek</value>
+  </data>
+  <data name="IDTT_3DCOLUMNAREACHART" xml:space="preserve">
+    <value>Tekent een 3D kolomgrafiek met 3D teken gebied</value>
+  </data>
+  <data name="IDTT_3DLINECHART" xml:space="preserve">
+    <value>Tekent een 3D lijngrafiek</value>
+  </data>
+  <data name="IDTT_3DPIECHART" xml:space="preserve">
+    <value>Tekent een 3D taartdiagram met percentage labels</value>
+  </data>
+  <data name="IDTT_3DSURFACECHART" xml:space="preserve">
+    <value>Tekent een 3D oppervlakte grafiek</value>
+  </data>
+  <data name="IDTT_RADARCHART" xml:space="preserve">
+    <value>Tekent een radar diagram</value>
+  </data>
+  <data name="IDTT_COLUMNLINECHART" xml:space="preserve">
+    <value>Tekent een kolomgrafiek met een lijngrafiek</value>
+  </data>
+  <data name="IDTT_COLUMNSTOCKCHART" xml:space="preserve">
+    <value>Tekent een kolom grafiek voor voorraadprijzen</value>
+  </data>
+  <data name="IDTT_CHARTFORMAT" xml:space="preserve">
+    <value>Ingebedde grafiek in voorkeursopmaak</value>
+  </data>
+  <data name="IDTT_EDITCHART" xml:space="preserve">
+    <value>Maak of wijzig een aangepaste grafiek</value>
+  </data>
+  <data name="IDTT_LINE" xml:space="preserve">
+    <value>Trekt een lijn</value>
+  </data>
+  <data name="IDTT_ARROW" xml:space="preserve">
+    <value>Tekent een pijl</value>
+  </data>
+  <data name="IDTT_FREEHAND" xml:space="preserve">
+    <value>Tekent uit de vrije hand</value>
+  </data>
+  <data name="IDTT_RECTANGLE" xml:space="preserve">
+    <value>Tekent een rechthoek of vierkant</value>
+  </data>
+  <data name="IDTT_ELLIPSE" xml:space="preserve">
+    <value>Tekent een ovaal of cirkel</value>
+  </data>
+  <data name="IDTT_ARC" xml:space="preserve">
+    <value>Tekent een boog of cirkelsegment</value>
+  </data>
+  <data name="IDTT_POLYGON" xml:space="preserve">
+    <value>Tekent een polygoon</value>
+  </data>
+  <data name="IDTT_FILLEDRECTANGLE" xml:space="preserve">
+    <value>Tekent een gevulde rechthoek</value>
+  </data>
+  <data name="IDTT_FILLEDELLIPSE" xml:space="preserve">
+    <value>Tekent een gevulde ovaal of cirkel</value>
+  </data>
+  <data name="IDTT_FILLEDARC" xml:space="preserve">
+    <value>Tekent een gevulde boog of cirkelsegment</value>
+  </data>
+  <data name="IDTT_FILLEDPOLYGON" xml:space="preserve">
+    <value>Tekent een gevulde polygoon</value>
+  </data>
+  <data name="IDTT_SELECTOBJECT" xml:space="preserve">
+    <value>Selecteert een grafisch object</value>
+  </data>
+  <data name="IDTT_EDITPOINT" xml:space="preserve">
+    <value>Verandert de vorm van een polygoon</value>
+  </data>
+  <data name="IDTT_GROUP" xml:space="preserve">
+    <value>Vormt van geselecteerde grafische objecten een op zichzelf staand object</value>
+  </data>
+  <data name="IDTT_UNGROUP" xml:space="preserve">
+    <value>Splits een gegroepeerd object in op zichzelf staande objecten</value>
+  </data>
+  <data name="IDTT_FRONT" xml:space="preserve">
+    <value>Plaatst geselecteerde objecten op de voorgrond</value>
+  </data>
+  <data name="IDTT_BACK" xml:space="preserve">
+    <value>Plaatst geselecteerde objecten op de achtergrond</value>
+  </data>
+  <data name="IDTT_COLOR" xml:space="preserve">
+    <value>Wijzigt de voorgrondkleur van een cel of object</value>
+  </data>
+  <data name="IDTT_3DFRAME" xml:space="preserve">
+    <value>Plaatst schaduwranden om cellen of objecten</value>
+  </data>
+  <data name="IDTT_NEWMACRO" xml:space="preserve">
+    <value>Maakt een nieuwe macro aan</value>
+  </data>
+  <data name="IDTT_FUNCTION" xml:space="preserve">
+    <value>Voegt een functie in</value>
+  </data>
+  <data name="IDTT_CALC" xml:space="preserve">
+    <value>Herberekenen van alle waardes</value>
+  </data>
+  <data name="IDTT_GOMACRO" xml:space="preserve">
+    <value>Speelt een macro af</value>
+  </data>
+  <data name="IDTT_STEPMACRO" xml:space="preserve">
+    <value>Stap voor stap door een geselecteerde macro</value>
+  </data>
+  <data name="IDTT_TRACEOUTMACRO" xml:space="preserve">
+    <value>Opsporen buiten macro in stappen</value>
+  </data>
+  <data name="IDTT_TRACEINMACRO" xml:space="preserve">
+    <value>Opsporen binnen macro in stappen</value>
+  </data>
+  <data name="IDTT_RUNMACRO" xml:space="preserve">
+    <value>Voert een macro uit</value>
+  </data>
+  <data name="IDTT_SKIPMACRO" xml:space="preserve">
+    <value>Slaat een macrostap over</value>
+  </data>
+  <data name="IDTT_RESETMACRO" xml:space="preserve">
+    <value>Stelt een macroproces terug</value>
+  </data>
+  <data name="IDTT_RECORDMACRO" xml:space="preserve">
+    <value>Neemt acties op om een macro tot stand te brengen</value>
+  </data>
+  <data name="IDTT_STOPMACRO" xml:space="preserve">
+    <value>Stopt de macro opname</value>
+  </data>
+  <data name="IDTT_PAUSEMACRO" xml:space="preserve">
+    <value>Pauzeert een macro proces</value>
+  </data>
+  <data name="IDTT_NEW" xml:space="preserve">
+    <value>Maakt een a nieuw document aan</value>
+  </data>
+  <data name="IDTT_CUT" xml:space="preserve">
+    <value>Knipt het geselecteerde en plaatst het op het klembord</value>
+  </data>
+  <data name="IDTT_PASTE" xml:space="preserve">
+    <value>Voegt de inhoud van het klembord in op het invoegpunt</value>
+  </data>
+  <data name="IDTT_NUMBERLIST" xml:space="preserve">
+    <value>Creëert een genummerde lijst gebaseerd op huidige standaard instellingen</value>
+  </data>
+  <data name="IDTT_BULLETLIST" xml:space="preserve">
+    <value>Creëert een lijst met opsomtekens, gebaseerd op huidige standaard instellingen</value>
+  </data>
+  <data name="IDTT_UNINDENT" xml:space="preserve">
+    <value>Verplaatst de linkerparagraaf naar het vorige tabstop</value>
+  </data>
+  <data name="IDTT_INDENT" xml:space="preserve">
+    <value>Verplaatst de linkerparagraaf naar het volgende tabstop</value>
+  </data>
+  <data name="IDTT_COLUMNFORMAT" xml:space="preserve">
+    <value>Verandert het kolomopmaak binnen de secties</value>
+  </data>
+  <data name="IDTT_FRAME" xml:space="preserve">
+    <value>Voegt een leeg kader in of omkadert de geselecteerde tekst</value>
+  </data>
+  <data name="IDTT_OBJECT" xml:space="preserve">
+    <value>Voegt een object in</value>
+  </data>
+  <data name="IDTT_GRAPH" xml:space="preserve">
+    <value>Voegt een grafiek/diagram in</value>
+  </data>
+  <data name="IDTT_ENVELOPE" xml:space="preserve">
+    <value>Creëert een envelop die samen met het huidige document zal worden afgedrukt</value>
+  </data>
+  <data name="IDTT_PAGELAYOUT" xml:space="preserve">
+    <value>Schaalt de wijzigweergave tot de gehele pagina</value>
+  </data>
+  <data name="IDTT_PAGENORMAL" xml:space="preserve">
+    <value>Schaalt de wijzigweergave tot 100%</value>
+  </data>
+  <data name="IDTT_PAGEFIT" xml:space="preserve">
+    <value>Schaalt de wijzigweergave tot de paginabreedte</value>
+  </data>
+  <data name="IDTT_LEFTTAB" xml:space="preserve">
+    <value>Zet een links-uitlijn tab</value>
+  </data>
+  <data name="IDTT_CENTERTAB" xml:space="preserve">
+    <value>Zet een gecentreerde tab</value>
+  </data>
+  <data name="IDTT_RIGHTTAB" xml:space="preserve">
+    <value>Zet een rechts-uitlijn tab</value>
+  </data>
+  <data name="IDTT_DECIMALTAB" xml:space="preserve">
+    <value>Zet een tab op het decimale scheidingsteken</value>
+  </data>
+  <data name="IDTT_PARAGRAPH" xml:space="preserve">
+    <value>Begint een nieuwe paragraaf</value>
+  </data>
+  <data name="IDTT_HELP" xml:space="preserve">
+    <value>Activeert help menu</value>
+  </data>
+  <data name="IDTT_DELETE" xml:space="preserve">
+    <value>Verwijdert geselecteerde tekst</value>
+  </data>
+  <data name="IDTT_TIME" xml:space="preserve">
+    <value>Zet een time</value>
+  </data>
+  <data name="IDTT_MAIL" xml:space="preserve">
+    <value>Zet een emailbericht</value>
+  </data>
+  <data name="IDTT_TUTORIAL" xml:space="preserve">
+    <value>Start een leerprogramma</value>
+  </data>
+  <data name="IDTT_DISKETTEIO" xml:space="preserve">
+    <value>Lezen/Schrijven van en naar diskette</value>
+  </data>
+  <data name="IDTT_FIND" xml:space="preserve">
+    <value>Zoek een gespecificeerd object of tekst</value>
+  </data>
+  <data name="IDTT_PREVREC" xml:space="preserve">
+    <value>Ga naar vorige het record</value>
+  </data>
+  <data name="IDTT_NEXTREC" xml:space="preserve">
+    <value>Ga naar het volgende record</value>
+  </data>
+  <data name="IDTT_STARTREC" xml:space="preserve">
+    <value>Ga naar het eerste record</value>
+  </data>
+  <data name="IDTT_ENDREC" xml:space="preserve">
+    <value>Ga naar het laatste record</value>
+  </data>
+  <data name="IDTT_VGBROWSE" xml:space="preserve">
+    <value>Wijzig naar tabelweergave</value>
+  </data>
+  <data name="IDTT_CUSTOMBITMAP" xml:space="preserve">
+    <value>Wijzig naar formulierweergave</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable moet afmeting n by 2 hebben</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARG" xml:space="preserve">
+    <value>%V1s Arg: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARG_ERROR" xml:space="preserve">
+    <value>&lt;Fout Arg&gt;</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGNUM" xml:space="preserve">
+    <value>%V1s ArgNum: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGS" xml:space="preserve">
+    <value>Argumenten:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGTYPE" xml:space="preserve">
+    <value>%V1s ArgType: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ARGTYPE_REQ" xml:space="preserve">
+    <value>%V1s geldig ArgType: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CALLED_FROM" xml:space="preserve">
+    <value>%V1s Aangeroepen vanuit: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CHOICE" xml:space="preserve">
+    <value>%V1s%V2s Keuze: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CMD_LINE" xml:space="preserve">
+    <value>%V1s Commando regel: %-23s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION" xml:space="preserve">
+    <value>%V1s in Conversion %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CURDIR" xml:space="preserve">
+    <value>CurDir</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DANGER" xml:space="preserve">
+    <value>* Gevaarlijk *:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK" xml:space="preserve">
+    <value>Schijf</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DISK_FREE" xml:space="preserve">
+    <value>Beschikbaar</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_DOS_ERROR" xml:space="preserve">
+    <value>%V1s DOS Fout: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ENTITY" xml:space="preserve">
+    <value>%V1s Entiteit: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERR_IN_ERR" xml:space="preserve">
+    <value>Fout in Fout</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_ERROR" xml:space="preserve">
+    <value>%V1s %s. Fout</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE" xml:space="preserve">
+    <value>%V1s Bestand: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FILE_HANDLE" xml:space="preserve">
+    <value>%V1s Filehandle: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCPTR" xml:space="preserve">
+    <value>%V1s%V2s FuncPtr: %s %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCTION" xml:space="preserve">
+    <value>%V1s Functie: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE" xml:space="preserve">
+    <value>HND</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_CUR" xml:space="preserve">
+    <value>cur</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_HANDLE_END" xml:space="preserve">
+    <value>end</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_IVARS" xml:space="preserve">
+    <value>%V1s IVars: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_LINE" xml:space="preserve">
+    <value>%V1s Regel: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MAX" xml:space="preserve">
+    <value>%V1s Max: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_MODULE" xml:space="preserve">
+    <value>%V1s Module: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OBJECT" xml:space="preserve">
+    <value>%V1s Object: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OPERATION" xml:space="preserve">
+    <value>%V1s Verrichting: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBCODE" xml:space="preserve">
+    <value>%V1s SubCode: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBST_TYPE" xml:space="preserve">
+    <value>%V1s returneerd: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_SUBSYSTEM" xml:space="preserve">
+    <value>%V1s SubSysteem: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TO" xml:space="preserve">
+    <value>%V1s  tot %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_TRIES" xml:space="preserve">
+    <value>%V1s Pogingen: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_WARNING" xml:space="preserve">
+    <value>Waarschuwing:</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_OLEBASE" xml:space="preserve">
+    <value>OLE Base</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_CALLED_FROM" xml:space="preserve">
+    <value>%V1s%V2s in Conversie %s aangeroepen door: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_CONVERSION_TO" xml:space="preserve">
+    <value>%V1s%V2s in Conversion %s to %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_FUNCTION_CALLED_FROM" xml:space="preserve">
+    <value>%V1s%V2s in Functie %s aangeroepen door: %s</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_NOMEM" xml:space="preserve">
+    <value>Te weinig geheugen</value>
+  </data>
+  <data name="__CAVOSTR_SYSLIB_INCTYPES" xml:space="preserve">
+    <value>Onbegrijpelijke gegevenstypen</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADCAPTION" xml:space="preserve">
+    <value>Ongeldige titel</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADDESCRIPTION" xml:space="preserve">
+    <value>Ongeldige Beschrijving</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADHELPCONTEXT" xml:space="preserve">
+    <value>Ongeldige HelpContext</value>
+  </data>
+  <data name="__CAVOSTR_SYSCLASS_BADNAME" xml:space="preserve">
+    <value>Naam ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_ALIAS" xml:space="preserve">
+    <value>%V1s Alias: %s</value>
+    <comment> </comment>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADCHILD" xml:space="preserve">
+    <value>Ongeldig parameter type: oDBChild</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADEXPRESSION" xml:space="preserve">
+    <value>%V1s Ongeldig parameter type: acbExpression [ %s ]</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFIELDMATCH" xml:space="preserve">
+    <value>Fieldspec gegevens stemmen niet overeen</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFILENAME" xml:space="preserve">
+    <value>Ongeldige Bestandsnaam</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFILTERBLOCK" xml:space="preserve">
+    <value>Ongeldig parameter type, cbFilterBlock</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADNEXT" xml:space="preserve">
+    <value>Next argument kan niet negatief zijn</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADNEXT_CAPTION" xml:space="preserve">
+    <value>Onjuist Next argument</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADREADONLYMODE" xml:space="preserve">
+    <value>Alleenlezenmodus parameter ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADSHAREMODE" xml:space="preserve">
+    <value>Deelmodus parameter ogeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_FIELDSPEC" xml:space="preserve">
+    <value>Onjuiste veld specificaties</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_LOCKFAILED" xml:space="preserve">
+    <value>Poging record te blokkeren mislukt</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_LOCKFAILED_CAPTION" xml:space="preserve">
+    <value>Blokkering mislukt</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_MISMATCH" xml:space="preserve">
+    <value>Array lengte stemt niet overeen met acbExpression en aFieldList</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NODATAFIELDSEXIST" xml:space="preserve">
+    <value>Geen bestaande Datavelden, moeten worden gecreëerd voordat ze vervangen worden</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOFIELDS" xml:space="preserve">
+    <value>Geen velden opgegeven</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOFILENAME" xml:space="preserve">
+    <value>Bestandsnaam parameter ontbreekt</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOGOTOP" xml:space="preserve">
+    <value>GoTop() mislukt</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOGOTOP_CAPTION" xml:space="preserve">
+    <value>Kon GoTop niet uitvoeren</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOSEEK" xml:space="preserve">
+    <value>Zoeken op zoek waarde mislukt</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOSELECTIONACTIVE" xml:space="preserve">
+    <value>Geen selectie momenteel actief</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOTABLE" xml:space="preserve">
+    <value>Tabel kon niet worden geopend</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOTABLE_CAPTION" xml:space="preserve">
+    <value>Geen tabel</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOTABLE2" xml:space="preserve">
+    <value>Tabel niet geopend</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_RECORDCHANGED" xml:space="preserve">
+    <value>Record is gewijzigd ten opzichte van de vorige leesactie</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_RECORDCHANGED_CAPTION" xml:space="preserve">
+    <value>Record Gewijzigd</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_SELECTIVENOTFOUND" xml:space="preserve">
+    <value>Selectiewaarde niet gevonden</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_SELECTIVESEEK" xml:space="preserve">
+    <value>Selectiewaarde komt niet overeen met zoekwaarde</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_SELECTIVEVALUE" xml:space="preserve">
+    <value>Selectiewaarde komt niet overeen met index expressie</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFS" xml:space="preserve">
+    <value>oFS ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADHLNAME" xml:space="preserve">
+    <value>oHLName ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN" xml:space="preserve">
+    <value>Ongeldige parameter voor Assign ConcurrencyControl</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADFIELDPOSITION" xml:space="preserve">
+    <value>nFieldPosition ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADTRANSLATIONARRAY" xml:space="preserve">
+    <value>aLookupTable is geen array of een lege array</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADCB" xml:space="preserve">
+    <value>Ongeldige cb</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADDECIMALS" xml:space="preserve">
+    <value>uDecimals ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADDRIVE" xml:space="preserve">
+    <value>Ongeldige Drive</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADEXTENSION" xml:space="preserve">
+    <value>Ondeldige expressie</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADHL" xml:space="preserve">
+    <value>oHL ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADLENGTH" xml:space="preserve">
+    <value>uLength ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADLREQ" xml:space="preserve">
+    <value>lReq ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADNAME" xml:space="preserve">
+    <value>oHLName ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADPATH" xml:space="preserve">
+    <value>Ongeldig Pad</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADSI" xml:space="preserve">
+    <value>si ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADSTRING" xml:space="preserve">
+    <value>cString is geen STRING type</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADTYPE" xml:space="preserve">
+    <value>uType ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADTYPE2" xml:space="preserve">
+    <value>uType ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDLENGTH" xml:space="preserve">
+    <value>%V1s%V2s %s : maximum lengte is %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDMAX" xml:space="preserve">
+    <value>%V1s%V2s %s mag niet groter zijn dan %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDMIN" xml:space="preserve">
+    <value>%V1s%V2s %s moet tenminste %s zijn</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDMINLENGTH" xml:space="preserve">
+    <value>%V1s%V2s %s : minimum lengte is %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDRANGE" xml:space="preserve">
+    <value>%V1s%V2s%V3s %s bereik is %s van %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDTYPE" xml:space="preserve">
+    <value>%V1s%V2s %s : ongeldig gegevenstype, moet zijn %s</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDVALUE" xml:space="preserve">
+    <value>%V1s %s : ongeldige waarde</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_REQUIRED" xml:space="preserve">
+    <value>%V1s %s is noodzakelijk</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE" xml:space="preserve">
+    <value>IntentToMove geeft onwaar terug</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION" xml:space="preserve">
+    <value>IntentToMove mislukt.</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADPARENT" xml:space="preserve">
+    <value>Ongeldige Parent opgegeven</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDINDEX" xml:space="preserve">
+    <value>Ongeldig index bestand</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_KEYVALUE" xml:space="preserve">
+    <value>cKeyValue of cbKeyValue moet worden opgegeven</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_INVALIDORDER" xml:space="preserve">
+    <value>Ongeldige volgorde</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_NOFIELDMATCH" xml:space="preserve">
+    <value>Geen van de velden komt overeen met DBF velden</value>
+  </data>
+  <data name="__CAVOSTR_DBFCLASS_BADALIAS" xml:space="preserve">
+    <value>Ongeldige alias</value>
+  </data>
+  <data name="OLEAUTO_ERROR_FIRST" xml:space="preserve">
+    <value>OLE Automation Client</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_GET_PROPERTY" xml:space="preserve">
+    <value>Geen Get-property</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_SET_PROPERTY" xml:space="preserve">
+    <value>Geen Set-property</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_UNKNOWN_ERROR" xml:space="preserve">
+    <value>Onbekende OLE Fout opgetreden</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_MEMORY" xml:space="preserve">
+    <value>Onvoldoende geheugen</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_CONVERTERR" xml:space="preserve">
+    <value>Fout bij omzetting VO argument in OLE variant</value>
+  </data>
+  <data name="OLEAUTO_ERROR_EXP_NO_DESC" xml:space="preserve">
+    <value>OLE automation server geeft uitzonderingstoestand aan</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_GET_PROPERTY_FAILED" xml:space="preserve">
+    <value>Aanroep Get property mislukt</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_SET_PROPERTY_FAILED" xml:space="preserve">
+    <value>Aanroep Set property mislukt</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NO_METHOD" xml:space="preserve">
+    <value>Geen method</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_METHOD_FAILED" xml:space="preserve">
+    <value>Aanroep Method mislukt</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_PARAM_MISSING" xml:space="preserve">
+    <value>Onvoldoende parameters voor method</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NAMED_ARG" xml:space="preserve">
+    <value>Named argument niet gevonden</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_INIT_FAILED" xml:space="preserve">
+    <value>Initialiseren mislukt</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NAMED_ARG_LAST" xml:space="preserve">
+    <value>Named Arguments kunnen niet overweg met Regular Arguments in de Argument-lijst</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_NAMED_ARG_NOTSUPP" xml:space="preserve">
+    <value>Named Arguments worden alleen ondersteund voor method aanroepen</value>
+  </data>
+  <data name="OLEAUTO_ERROR_MSG_VARIANT_ARGS" xml:space="preserve">
+    <value>Aanroep van OLE Method met Array van Variant Parameters wordt niet ondersteund</value>
+  </data>
+  <data name="OLEAUTO_ERROR_NO_IDISPATCH_INTERFACE" xml:space="preserve">
+    <value>OLE AutoObject is niet geinitialiseerd of is reeds vernietigd</value>
+  </data>
+  <data name="OLEAUTO_ERROR_NO_ITYPELIB_INTERFACE" xml:space="preserve">
+    <value>OLE AutoObject ondersteunt geen ITypeLib Interface of is reeds vernietigd</value>
+  </data>
+  <data name="IDS_OLERUNTIME" xml:space="preserve">
+    <value>Visual Objects OLE Run Time</value>
+  </data>
+  <data name="IDS_NOAPPDOCFILE" xml:space="preserve">
+    <value>Kon Applicatie Doc bestand niet vinden:</value>
+  </data>
+  <data name="IDS_NOINSERT" xml:space="preserve">
+    <value>Kan Object niet invoegen, OLE control moet focus hebben</value>
+  </data>
+  <data name="IDS_CREATEFAILED" xml:space="preserve">
+    <value>Aanmaak Object mislukt</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_CLOSEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s heeft rapport afgesloten %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_COMMANDERROR1" xml:space="preserve">
+    <value>%V1s%V2s ReportQueue heeft een geopend rapport nodig voor verzending DDE command : %s to %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_COMMANDERROR2" xml:space="preserve">
+    <value>%V1s%V2s%V3s %s tot %s %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_COMPLETEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s heeft rapport %s voltooid</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_DETECTEDERRORS" xml:space="preserve">
+    <value>%V1s%V2s %s heeft fouten gevonden tijdens het voltooien van rapport %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_OPENEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s heeft rapport %s geopend</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SAVEDREPORT" xml:space="preserve">
+    <value>%V1s%V2s %s heeft rapport opgeslagen als %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO1" xml:space="preserve">
+    <value>Programmeerfout in Parameter 2 van ReportQueue:SaveToFile</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SAVETOFILEINFO2" xml:space="preserve">
+    <value>Defaulting filetype to 'RTF', other option is 'TEXT'</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_THEREPORT" xml:space="preserve">
+    <value>%V1s het report %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_TOCLOSEFILE" xml:space="preserve">
+    <value>%V1s%V2s %s om bestand %s te sluiten</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_SYNCHRONOUS" xml:space="preserve">
+    <value>Synchroon</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ASYNCHRONOUS" xml:space="preserve">
+    <value>ASynchroon</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_DDE_PENDING" xml:space="preserve">
+    <value>%V1s%V2s %s DDE commando in wachtrij %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_REPORTS_OPEN" xml:space="preserve">
+    <value>%V1s %s rapporten zijn nu geopend :</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_REPORT" xml:space="preserve">
+    <value>%V1s%V2s    Rapport %s is %s</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ISCLOSED" xml:space="preserve">
+    <value>%V1s %s is gesloten</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ABOUTTITLE" xml:space="preserve">
+    <value>Info over CA-Visual Objects Report Editor</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_ABOUTBODY" xml:space="preserve">
+    <value>Computer Associates International, Inc.\nCA-Visual Objects Report Editor</value>
+  </data>
+  <data name="__CAVOSTR_REPORTCLASS_PARAMERROR" xml:space="preserve">
+    <value>Ongeldige Parameter</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS_SUBSYS" xml:space="preserve">
+    <value>VO-ODBC</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__ENV_ALLOC" xml:space="preserve">
+    <value>Omgeving reeds toegewezen</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__ENV_FREE" xml:space="preserve">
+    <value>Omgeving reeds vrijgegeven</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CON_ALLOC" xml:space="preserve">
+    <value>Verbinding reeds toegewezen</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CON_FREE" xml:space="preserve">
+    <value>Verbinding reeds vrijgegeven</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CONNECTED" xml:space="preserve">
+    <value>Reeds verbonden</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NOT_CONN" xml:space="preserve">
+    <value>Niet verbonden</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__CANCELLED" xml:space="preserve">
+    <value>Verzoek geannuleerd</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__ODBC_VO" xml:space="preserve">
+    <value>[CA][ODBC VO]</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__GENERAL_ERR" xml:space="preserve">
+    <value>S1000</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__STMT_NOT_ALLOC" xml:space="preserve">
+    <value>Statement niet toegewezen</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__STMT_PREP" xml:space="preserve">
+    <value>Statement reeds voorbereid</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_STMT" xml:space="preserve">
+    <value>Ontbrekend statement</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__STMT_ALLOC" xml:space="preserve">
+    <value>Statement reeds toegewezen</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__FUNCSEQ_ERR" xml:space="preserve">
+    <value>S1010</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__PARM_TYPE" xml:space="preserve">
+    <value>Niet ondersteund parameter type</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__MEM_ALLOC" xml:space="preserve">
+    <value>Kan geen geheugen toewijzen</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADCOL" xml:space="preserve">
+    <value>Ongeldige kolom</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADFLD" xml:space="preserve">
+    <value>Ongeldig veld</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADPAR" xml:space="preserve">
+    <value>Ongeldige parameter</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADRECNO" xml:space="preserve">
+    <value>Ongeldig recordnummer</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BACKWARDS" xml:space="preserve">
+    <value>Poging om achteruit uit de buffer te springen</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BOF" xml:space="preserve">
+    <value>Reeds op de eerste regel</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__EOF" xml:space="preserve">
+    <value>Reeds aan het einde van het bestand</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NOFLDS" xml:space="preserve">
+    <value>Geen velden gespecificeerd</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_KEY" xml:space="preserve">
+    <value>Geen primaire sleutel gedefinieerd</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_ROW" xml:space="preserve">
+    <value>Regel(s) niet gevonden</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_INS" xml:space="preserve">
+    <value>Regel niet ingevoegd</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__INV_OP" xml:space="preserve">
+    <value>Ongeldige verrichting</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NO_CSR" xml:space="preserve">
+    <value>Sequence fout; Cursor is niet geopend</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADVALID" xml:space="preserve">
+    <value>Veld validatiefout</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__EMPTY" xml:space="preserve">
+    <value>Tabel is leeg</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__UPDATE_COL" xml:space="preserve">
+    <value>Kan kolom niet updaten !</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__NODATAFIELDSEXIST" xml:space="preserve">
+    <value>Geen bestaande Datavelden, moeten worden gecreëerd voordat ze vervangen worden</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__BADFIELDPOSITION" xml:space="preserve">
+    <value>nFieldPosition ontbreekt of ongeldig</value>
+  </data>
+  <data name="__CAVOSTR_SQLCLASS__INVALIDCOLATT" xml:space="preserve">
+    <value>ColumnAttributes Parameter ongeldig</value>
+  </data>
+  <data name="TMSG_YN" xml:space="preserve">
+    <value>J/N</value>
+  </data>
+  <data name="TMSG_ALERTDEFAULT" xml:space="preserve">
+    <value>Er is een fout opgetreden</value>
+  </data>
+  <data name="TMSG_NOTERMWIN" xml:space="preserve">
+    <value>Het Systeem kan het standaard venster niet creëren</value>
+  </data>
+  <data name="TMSG_FNTCHNG" xml:space="preserve">
+    <value>Wijzig Lettertype</value>
+  </data>
+  <data name="TMSG_MARK" xml:space="preserve">
+    <value>Scherm naar Klembord</value>
+  </data>
+  <data name="TMSG_SCREEN2FILE" xml:space="preserve">
+    <value>Scherm naar Bestand</value>
+  </data>
+  <data name="TMSG_MEMRECOUR" xml:space="preserve">
+    <value>Recursieve MemCheck() aanroep</value>
+  </data>
+  <data name="TMSG_DYNCHECKERR" xml:space="preserve">
+    <value>&gt;&gt;DYNCHECK MISLUKT!!</value>
+  </data>
+  <data name="TMSG_HNDLINE" xml:space="preserve">
+    <value>Regel</value>
+  </data>
+  <data name="TMSG_HNDENTITY" xml:space="preserve">
+    <value>Entiteit</value>
+  </data>
+  <data name="TMSG_HNDCONTENTS" xml:space="preserve">
+    <value>Bevat:</value>
+  </data>
+  <data name="TMSG_HNDVAR" xml:space="preserve">
+    <value>Variabele</value>
+  </data>
+  <data name="TMSG_NOCHANGE" xml:space="preserve">
+    <value>Lettertype kan niet worden gewijzigd gedurende het gebruik van Memoedit()</value>
+  </data>
+  <data name="TMSG_FONTCHGERR" xml:space="preserve">
+    <value>Wijzigen Lettertype onmogelijk</value>
+  </data>
+  <data name="TMSG_MUSTSELECT" xml:space="preserve">
+    <value>U MOET een device selecteren!</value>
+  </data>
+  <data name="TMSG_NODEVSEL" xml:space="preserve">
+    <value>Geen device geselecteerd</value>
+  </data>
+  <data name="TMSG_NOLINK" xml:space="preserve">
+    <value>Kan verbinding met printer niet tot stand brengen. Geen DC beschikbaar, of onjuiste win.ini:device instellingen</value>
+  </data>
+  <data name="TMSG_PRNSETUP" xml:space="preserve">
+    <value>Terminal:Printer setup</value>
+  </data>
+  <data name="TMSG_PAGENO" xml:space="preserve">
+    <value>Pagina Nr.</value>
+  </data>
+  <data name="TMSG_PRESSANYKEY" xml:space="preserve">
+    <value>Druk op een toets om verder te gaan...</value>
+  </data>
+  <data name="TMSG_APPENDSCREEN" xml:space="preserve">
+    <value>Scherm toevoegen aan bestand</value>
+  </data>
+  <data name="TMSG_APPENDALL" xml:space="preserve">
+    <value>Alle bestanden</value>
+  </data>
+  <data name="TMSG_LOCKEDFONT" xml:space="preserve">
+    <value>Lettertype kan nog even niet gewijzigd worden</value>
+  </data>
+  <data name="TMSG_NOACCELERATORS" xml:space="preserve">
+    <value>Sneltoetsen kunnen niet worden geladen, Opstarten programma afgebroken</value>
+  </data>
+  <data name="TMSG_ONTOP" xml:space="preserve">
+    <value>Blijf op de voorgrond</value>
+  </data>
+  <data name="RT_MSG_SHORT_TRUE" xml:space="preserve">
+    <value>W</value>
+  </data>
+  <data name="RT_MSG_SHORT_FALSE" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="RT_MSG_LONG_TRUE" xml:space="preserve">
+    <value>WAAR</value>
+  </data>
+  <data name="RT_MSG_LONG_FALSE" xml:space="preserve">
+    <value>NIET WAAR</value>
+  </data>
+  <data name="RT_MSG_SHORT_YES" xml:space="preserve">
+    <value>J</value>
+  </data>
+  <data name="RT_MSG_SHORT_NO" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="RT_MSG_LONG_YES" xml:space="preserve">
+    <value>JA</value>
+  </data>
+  <data name="RT_MSG_LONG_NO" xml:space="preserve">
+    <value>NEE</value>
+  </data>
+  <data name="RT_MSG_CURRENCY" xml:space="preserve">
+    <value>$</value>
+  </data>
+  <data name="RT_MSG_YNSTRING" xml:space="preserve">
+    <value>Y/N</value>
+  </data>
+  <data name="ERROR_INTERNET_OUT_OF_HANDLES" xml:space="preserve">
+    <value>Te weinig handles beschikbaar</value>
+  </data>
+  <data name="ERROR_INTERNET_TIMEOUT" xml:space="preserve">
+    <value>Tijd verstreken</value>
+  </data>
+  <data name="ERROR_INTERNET_EXTENDED_ERROR" xml:space="preserve">
+    <value>Uitgebreide Fout</value>
+  </data>
+  <data name="ERROR_INTERNET_INTERNAL_ERROR" xml:space="preserve">
+    <value>Interne Fout</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_URL" xml:space="preserve">
+    <value>Ongeldige URL</value>
+  </data>
+  <data name="ERROR_INTERNET_UNRECOGNIZED_SCHEME" xml:space="preserve">
+    <value>Niet herkend schema</value>
+  </data>
+  <data name="ERROR_INTERNET_NAME_NOT_RESOLVED" xml:space="preserve">
+    <value>Naam niet opgelost</value>
+  </data>
+  <data name="ERROR_INTERNET_PROTOCOL_NOT_FOUND" xml:space="preserve">
+    <value>Protocol niet gevonden</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_OPTION" xml:space="preserve">
+    <value>Ongeldige optie</value>
+  </data>
+  <data name="ERROR_INTERNET_BAD_OPTION_LENGTH" xml:space="preserve">
+    <value>Onjuiste optie lengte</value>
+  </data>
+  <data name="ERROR_INTERNET_OPTION_NOT_SETTABLE" xml:space="preserve">
+    <value>Optie niet instelbaar</value>
+  </data>
+  <data name="ERROR_INTERNET_SHUTDOWN" xml:space="preserve">
+    <value>Afsluiten</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_USER_NAME" xml:space="preserve">
+    <value>Onjuiste gebruikersnaam</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_PASSWORD" xml:space="preserve">
+    <value>Onjuist wachtwoord</value>
+  </data>
+  <data name="ERROR_INTERNET_LOGIN_FAILURE" xml:space="preserve">
+    <value>Mislukte aanmelding</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_OPERATION" xml:space="preserve">
+    <value>Ongeldige verrichting</value>
+  </data>
+  <data name="ERROR_INTERNET_OPERATION_CANCELLED" xml:space="preserve">
+    <value>Verrichting geannuleerd</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_HANDLE_TYPE" xml:space="preserve">
+    <value>Onjuist handle type</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_HANDLE_STATE" xml:space="preserve">
+    <value>Onjuiste handle toestand</value>
+  </data>
+  <data name="ERROR_INTERNET_NOT_PROXY_REQUEST" xml:space="preserve">
+    <value>Geen proxy verzoek</value>
+  </data>
+  <data name="ERROR_INTERNET_REGISTRY_VALUE_NOT_FOUND" xml:space="preserve">
+    <value>Registerwaarde niet gevonden</value>
+  </data>
+  <data name="ERROR_INTERNET_BAD_REGISTRY_PARAMETER" xml:space="preserve">
+    <value>Onjuiste register parameter</value>
+  </data>
+  <data name="ERROR_INTERNET_NO_DIRECT_ACCESS" xml:space="preserve">
+    <value>Geen directe toegang</value>
+  </data>
+  <data name="ERROR_INTERNET_NO_CONTEXT" xml:space="preserve">
+    <value>Geen context</value>
+  </data>
+  <data name="ERROR_INTERNET_NO_CALLBACK" xml:space="preserve">
+    <value>Geen callback</value>
+  </data>
+  <data name="ERROR_INTERNET_REQUEST_PENDING" xml:space="preserve">
+    <value>Verzoek in afwachting</value>
+  </data>
+  <data name="ERROR_INTERNET_INCORRECT_FORMAT" xml:space="preserve">
+    <value>Onjuist formaat</value>
+  </data>
+  <data name="ERROR_INTERNET_ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Item niet gevonden</value>
+  </data>
+  <data name="ERROR_INTERNET_CANNOT_CONNECT" xml:space="preserve">
+    <value>Kan verbinding niet maken</value>
+  </data>
+  <data name="ERROR_INTERNET_CONNECTION_ABORTED" xml:space="preserve">
+    <value>Verbinding afgebroken</value>
+  </data>
+  <data name="ERROR_INTERNET_CONNECTION_RESET" xml:space="preserve">
+    <value>Verbinding opnieuw ingesteld</value>
+  </data>
+  <data name="ERROR_INTERNET_FORCE_RETRY" xml:space="preserve">
+    <value>Probeer opnieuw</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_PROXY_REQUEST" xml:space="preserve">
+    <value>Onjuist proxy verzoek</value>
+  </data>
+  <data name="ERROR_INTERNET_NEED_UI" xml:space="preserve">
+    <value>UI nodig</value>
+  </data>
+  <data name="ERROR_INTERNET_HANDLE_EXISTS" xml:space="preserve">
+    <value>Handle bestaat</value>
+  </data>
+  <data name="ERROR_INTERNET_SEC_CERT_DATE_INVALID" xml:space="preserve">
+    <value>Sec cert datum ongeldig</value>
+  </data>
+  <data name="ERROR_INTERNET_SEC_CERT_CN_INVALID" xml:space="preserve">
+    <value>Sec cert cn ongeldig</value>
+  </data>
+  <data name="ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR" xml:space="preserve">
+    <value>Http naar https omleiding</value>
+  </data>
+  <data name="ERROR_INTERNET_HTTPS_TO_HTTP_ON_REDIR" xml:space="preserve">
+    <value>Https naar http omleiding</value>
+  </data>
+  <data name="ERROR_INTERNET_MIXED_SECURITY" xml:space="preserve">
+    <value>Gemengde beveiliging</value>
+  </data>
+  <data name="ERROR_INTERNET_CHG_POST_IS_NON_SECURE" xml:space="preserve">
+    <value>Chg post is niet veilig</value>
+  </data>
+  <data name="ERROR_INTERNET_POST_IS_NON_SECURE" xml:space="preserve">
+    <value>Post is niet veilig</value>
+  </data>
+  <data name="ERROR_INTERNET_CLIENT_AUTH_CERT_NEEDED" xml:space="preserve">
+    <value>Client auth cert noodzakelijk</value>
+  </data>
+  <data name="ERROR_INTERNET_INVALID_CA" xml:space="preserve">
+    <value>Ongeldig ca</value>
+  </data>
+  <data name="ERROR_INTERNET_CLIENT_AUTH_NOT_SETUP" xml:space="preserve">
+    <value>Client auth niet ingesteld</value>
+  </data>
+  <data name="ERROR_INTERNET_ASYNC_THREAD_FAILED" xml:space="preserve">
+    <value>Async thread mislukt</value>
+  </data>
+  <data name="ERROR_INTERNET_REDIRECT_SCHEME_CHANGE" xml:space="preserve">
+    <value>Omleiding veranderd schema</value>
+  </data>
+  <data name="ERROR_FTP_TRANSFER_IN_PROGRESS" xml:space="preserve">
+    <value>Overdracht in uitvoering</value>
+  </data>
+  <data name="ERROR_FTP_DROPPED" xml:space="preserve">
+    <value>Ftp vervallen</value>
+  </data>
+  <data name="ERROR_GOPHER_PROTOCOL_ERROR" xml:space="preserve">
+    <value>Protocol fout</value>
+  </data>
+  <data name="ERROR_GOPHER_NOT_FILE" xml:space="preserve">
+    <value>Geen bestand</value>
+  </data>
+  <data name="ERROR_GOPHER_DATA_ERROR" xml:space="preserve">
+    <value>Gegevens fout</value>
+  </data>
+  <data name="ERROR_GOPHER_END_OF_DATA" xml:space="preserve">
+    <value>Einde van gegevensreeks</value>
+  </data>
+  <data name="ERROR_GOPHER_INVALID_LOCATOR" xml:space="preserve">
+    <value>Ongeldig merkteken</value>
+  </data>
+  <data name="ERROR_GOPHER_INCORRECT_LOCATOR_TYPE" xml:space="preserve">
+    <value>Ongeldig merkteken type</value>
+  </data>
+  <data name="ERROR_GOPHER_NOT_GOPHER_PLUS" xml:space="preserve">
+    <value>Geen gopher plus</value>
+  </data>
+  <data name="ERROR_GOPHER_ATTRIBUTE_NOT_FOUND" xml:space="preserve">
+    <value>Attribuut niet gevonden</value>
+  </data>
+  <data name="ERROR_GOPHER_UNKNOWN_LOCATOR" xml:space="preserve">
+    <value>Onbekend merkteken</value>
+  </data>
+  <data name="ERROR_HTTP_HEADER_NOT_FOUND" xml:space="preserve">
+    <value>Header niet gevonden</value>
+  </data>
+  <data name="ERROR_HTTP_DOWNLEVEL_SERVER" xml:space="preserve">
+    <value>Downlevel server</value>
+  </data>
+  <data name="ERROR_HTTP_INVALID_SERVER_RESPONSE" xml:space="preserve">
+    <value>Ongeldige server reactie</value>
+  </data>
+  <data name="ERROR_HTTP_INVALID_HEADER" xml:space="preserve">
+    <value>Ongeldige header</value>
+  </data>
+  <data name="ERROR_HTTP_INVALID_QUERY_REQUEST" xml:space="preserve">
+    <value>Ongeldig query verzoek</value>
+  </data>
+  <data name="ERROR_HTTP_HEADER_ALREADY_EXISTS" xml:space="preserve">
+    <value>Header bestaat reeds</value>
+  </data>
+  <data name="ERROR_HTTP_REDIRECT_FAILED" xml:space="preserve">
+    <value>Omleding mislukt</value>
+  </data>
+  <data name="ERROR_INTERNET_SECURITY_CHANNEL_ERROR" xml:space="preserve">
+    <value>Veiligheidskanaal fout</value>
+  </data>
+  <data name="ERROR_INTERNET_UNABLE_TO_CACHE_FILE" xml:space="preserve">
+    <value>Niet mogelijk bestand te cachen</value>
+  </data>
+  <data name="ERROR_INTERNET_TCPIP_NOT_INSTALLED" xml:space="preserve">
+    <value>TCP/IP niet geïnstalleerd</value>
+  </data>
+  <data name="ERROR_HTTP_NOT_REDIRECTED" xml:space="preserve">
+    <value>Niet omgeleid</value>
+  </data>
+  <data name="ERR_LOGON_FAILED" xml:space="preserve">
+    <value>Aanmelding mislukt</value>
+  </data>
+  <data name="ERR_FILE_EXISTS" xml:space="preserve">
+    <value>Remote bestand bestaat reeds</value>
+  </data>
+  <data name="ERR_UNKNOWN_CODE_TYPE" xml:space="preserve">
+    <value>Onbekend encoding type</value>
+  </data>
+  <data name="ERR_WSA_WAIT_TIMEOUT" xml:space="preserve">
+    <value>Fout tijdens wachttijd</value>
+  </data>
+  <data name="ERR_NEWSGROUP_MISSING" xml:space="preserve">
+    <value>Nieuwsgroep niet aanwezig</value>
+  </data>
+  <data name="ERR_NO_NEWSGROUP" xml:space="preserve">
+    <value>Geen nieuwsgroep geselecteerd</value>
+  </data>
+  <data name="ERR_NO_ARTICLE_SELECTED" xml:space="preserve">
+    <value>Geen bestaand bericht geselecteerd</value>
+  </data>
+  <data name="ERR_NO_ARTICLE_NUMBER" xml:space="preserve">
+    <value>Geen dergelijk berichtnummer in deze groep</value>
+  </data>
+  <data name="ERR_NO_ARTICLE" xml:space="preserve">
+    <value>Dergelijk bericht niet gevonden</value>
+  </data>
+</root>

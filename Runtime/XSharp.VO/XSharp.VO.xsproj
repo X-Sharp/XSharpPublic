@@ -5,16 +5,17 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <ProjectGuid>ef8d2bf2-e81a-479a-ba4f-294c4c348b66</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VO</RootNamespace>
     <AssemblyName>XSharp.VO</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>XSharp.VO</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.VO</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -26,7 +27,7 @@
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
     <INS>false</INS>
-    <NS>false</NS>
+    <NS>true</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
     <VO3>false</VO3>
@@ -43,121 +44,137 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
+    <VulcanCompatibleResources>True</VulcanCompatibleResources>
+    <AssemblyOriginatorKeyFile>$(SOlutionDir)Common\xsharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>162,553</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PPO>false</PPO>
+    <NoStdDef>true</NoStdDef>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <NoStandardDefs>true</NoStandardDefs>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption>
+    </CommandLineOption>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>162,553</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
     <PPO>false</PPO>
+    <NoStdDef>true</NoStdDef>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Functions\Conversions.prg" />
-    <Compile Include="Functions\File.prg" />
-    <Compile Include="Functions\functions_array.prg" />
-    <Compile Include="Functions\Functions_Codeblock.prg" />
-    <Compile Include="Functions\functions_date.prg" />
-    <Compile Include="Functions\Functions_Float.prg" />
-    <Compile Include="Functions\functions_internal.prg" />
-    <Compile Include="Functions\Functions_Macro.prg" />
-    <Compile Include="Functions\Functions_Memo.prg" />
-    <Compile Include="Functions\Functions_Memory.prg" />
-    <Compile Include="Functions\Functions_MemVar.prg" />
-    <Compile Include="Functions\Functions_Meta.prg" />
-    <Compile Include="Functions\functions_misc.prg" />
-    <Compile Include="Functions\functions_multibyte.prg" />
-    <Compile Include="Functions\functions_psz.prg" />
-    <Compile Include="Functions\Functions_Registry.prg" />
-    <Compile Include="Functions\Functions_Symbol.prg" />
-    <Compile Include="Functions\Functions_Usual.prg" />
-    <Compile Include="Functions\functions_vodb.prg" />
-    <Compile Include="Functions\ItemAPI.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>commonAssemblyInfo.prg</Link>
     </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>constants.prg</Link>
+    </Compile>
+    <Compile Include="Functions\Blob.prg" />
+    <Compile Include="Functions\Codeblock.prg" />
+    <Compile Include="Functions\CompilerSupport.prg" />
+    <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\Db.prg" />
+    <Compile Include="Functions\DbBulk.prg" />
+    <Compile Include="Functions\DbOrder.prg" />
+    <Compile Include="Functions\Debugging.prg" />
+    <Compile Include="Functions\DiskIO.prg" />
+    <Compile Include="Functions\Error.prg" />
+    <Compile Include="Functions\File.prg" />
+    <Compile Include="Functions\Array.prg" />
+    <Compile Include="Functions\Date.prg" />
+    <Compile Include="Functions\Math.prg" />
+    <Compile Include="Functions\OS.prg" />
+    <Compile Include="Functions\Psz.prg" />
+    <Compile Include="Functions\Float.prg" />
+    <Compile Include="Functions\GC.prg" />
+    <Compile Include="Functions\International.prg" />
+    <Compile Include="Functions\Macro.prg" />
+    <Compile Include="Functions\Memo.prg" />
+    <Compile Include="Functions\Memory.prg" />
+    <Compile Include="Functions\MemVar.prg" />
+    <Compile Include="Functions\Misc.prg" />
+    <Compile Include="Functions\Obsolete.prg" />
+    <Compile Include="Functions\OOP.prg" />
+    <Compile Include="Functions\String.prg" />
+    <Compile Include="Functions\Symbol.prg" />
+    <Compile Include="Functions\Terminal.prg" />
+    <Compile Include="Functions\Transform.prg" />
+    <Compile Include="Functions\Usual.prg" />
+    <Compile Include="Functions\Vodb.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Types\Array.prg" />
     <Compile Include="Types\CodeBlock.prg" />
+    <Compile Include="Types\ArrayBase.prg" />
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
+    <Compile Include="Types\NamedArg.prg" />
+    <Compile Include="Types\OleAutoObject.prg" />
+    <Compile Include="Types\OleAutoObjectFromFile.prg" />
+    <Compile Include="Types\OleDateTime.prg" />
     <Compile Include="Types\PSZ.prg" />
+    <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />
     <Compile Include="Types\Usual.prg" />
-    <Compile Include="Types\Various.prg" />
+    <Compile Include="Types\VObject.prg" />
     <Compile Include="Types\WinBool.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>Properties\constants.prg</Link>
-    </Compile>
     <Folder Include="Functions" />
     <Folder Include="Properties\" />
     <Folder Include="Types\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.Base\XSharp.Base.xsproj">
-      <Name>XSharp.Base</Name>
-      <Project>{214b74ac-5fc9-4256-9e10-6bdfe5b12ce0}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
@@ -169,12 +186,38 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent />
+    <PostBuildEvent>rem Copy Files for the Macro Compiler
+copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PPO>false</PPO>
+    <NoStdDef>true</NoStdDef>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <NoStandardDefs>true</NoStandardDefs>
+    <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
 </Project>

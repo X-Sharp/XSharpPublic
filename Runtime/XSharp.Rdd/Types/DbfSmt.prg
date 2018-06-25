@@ -6,6 +6,7 @@
 
 BEGIN NAMESPACE XSharp.RDD
 
+/// <summary>DBFSMT RDD. For DBF/SMT. No index support at this level</summary>
 CLASS DBFSMT INHERIT DBF
 	CONSTRUCTOR
 	SUPER()
@@ -13,35 +14,46 @@ CLASS DBFSMT INHERIT DBF
 
 VIRTUAL PROPERTY SysName AS STRING GET typeof(DbfSmt):ToString()
 
+/// <summary>SMT Memo class. Implements the SMT support.</summary>
 CLASS SMTMemo INHERIT BaseMemo  IMPLEMENTS IMemo
 	PROTECT _oRDD AS DBF
+/// <inheritdoc />
 	CONSTRUCTOR (oRDD AS DBF)
 		SUPER(oRDD)
 		SELF:_oRdd := oRDD
 
+/// <inheritdoc />
 METHOD Flush() 			AS LOGIC		
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 METHOD GetValue(nFldPos AS INT) AS OBJECT
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 METHOD GetValueLength(nFldPos AS INT) AS INT
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	THROW NotImplementedException{}
+/// <inheritdoc />
 VIRTUAL METHOD CloseMemFile( ) AS LOGIC
 	THROW NotImplementedException{}
 
-VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+/// <inheritdoc />
+VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 VIRTUAL METHOD OpenMemFile( ) AS LOGIC
 	THROW NotImplementedException{}
 END CLASS 

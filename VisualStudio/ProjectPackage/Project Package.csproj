@@ -470,6 +470,11 @@
     <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\XUnitTestClassLibrary.png" />
     <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\XUnitTestClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\Test\XUnitClassLibrary\XUnitTestClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\VOConsole\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\VOConsole\VOConsole.png" />
+    <ZipProject Include="Templates\Projects\VOConsole\VOConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\VOConsole\VOConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\VOConsole\Program.prg" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

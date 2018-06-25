@@ -1,0 +1,1452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EDB_SEEK" xml:space="preserve">
+    <value>Niepoprawny argument wyszukiwania</value>
+  </data>
+  <data name="EDB_SKIP" xml:space="preserve">
+    <value>Niepoprawny numer przesuniêcia wskaŸnika</value>
+  </data>
+  <data name="EDB_GOTO" xml:space="preserve">
+    <value>Pusty identyfikator rekordu</value>
+  </data>
+  <data name="EDB_SETRELATION" xml:space="preserve">
+    <value>Niepoprawny ALIAS podrzêdnej bazy danych</value>
+  </data>
+  <data name="EDB_USE" xml:space="preserve">
+    <value>Niepoprawna nazwa pliku</value>
+  </data>
+  <data name="EDB_CREATEINDEX" xml:space="preserve">
+    <value>Niepoprawna nazwa pliku</value>
+  </data>
+  <data name="EDB_SETORDER" xml:space="preserve">
+    <value>Niepoprawna specyfikacja porz¹dku</value>
+  </data>
+  <data name="EDB_SETINDEX" xml:space="preserve">
+    <value>Niepoprawna nazwa pliku</value>
+  </data>
+  <data name="EDB_FIELDNAME" xml:space="preserve">
+    <value>Niepoprawna nazwa pola</value>
+  </data>
+  <data name="EDB_BADALIAS" xml:space="preserve">
+    <value>Niepoprawna specyfikacja aliasu</value>
+  </data>
+  <data name="EDB_DUPALIAS" xml:space="preserve">
+    <value>Alias jest ju¿ zdefiniowany</value>
+  </data>
+  <data name="EDB_SETFILTER" xml:space="preserve">
+    <value>B³¹d aktywacji filtru</value>
+  </data>
+  <data name="EDB_CYCLICREL" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="EDB_CREATETABLE" xml:space="preserve">
+    <value>B³¹d tworzenia tabeli</value>
+  </data>
+  <data name="EDB_RDDNOTFOUND" xml:space="preserve">
+    <value>RDD nie znaleziony</value>
+  </data>
+  <data name="EDB_FIELDINDEX" xml:space="preserve">
+    <value>Niepoprawny indeks pola</value>
+  </data>
+  <data name="EDB_SELECT" xml:space="preserve">
+    <value>Niepoprawny numer obszaru roboczego</value>
+  </data>
+  <data name="EDB_SYMSELECT" xml:space="preserve">
+    <value>Niepoprawna specyfikacja aliasu</value>
+  </data>
+  <data name="EDB_TOTAL" xml:space="preserve">
+    <value>B³¹d tworzenia podsumowañ</value>
+  </data>
+  <data name="EDB_RECNO" xml:space="preserve">
+    <value>Niepoprawny numer rekordu</value>
+  </data>
+  <data name="EDB_EXPRESSION" xml:space="preserve">
+    <value>Pozostawiono wyra¿enia dla kompilatora makrodefinicji</value>
+  </data>
+  <data name="EDB_EXPR_WIDTH" xml:space="preserve">
+    <value>Zbyt d³ugie wyra¿enie dla kompilatora makrodefinicji</value>
+  </data>
+  <data name="EDB_DRIVERLOAD" xml:space="preserve">
+    <value>Nie mo¿na wczytaæ RDD</value>
+  </data>
+  <data name="EDB_PARAM" xml:space="preserve">
+    <value>Niepoprawny  argument (#%u) dla funkcji %s</value>
+  </data>
+  <data name="EDB_NOAREAS" xml:space="preserve">
+    <value>Brak wolnych obszarów roboczych</value>
+  </data>
+  <data name="EDB_NOMEM" xml:space="preserve">
+    <value>Brak pamiêci</value>
+  </data>
+  <data name="EDB_NOFIELDS" xml:space="preserve">
+    <value>Nie zdefiniowano ¿adnego pola</value>
+  </data>
+  <data name="EDB_BAD_ERROR_INFO" xml:space="preserve">
+    <value>Uszkodzona informacja o b³êdzie RDD</value>
+  </data>
+  <data name="EDB_WRONGFIELDNAME" xml:space="preserve">
+    <value>Pole o tej nazwie ju¿ istnieje</value>
+  </data>
+  <data name="EDB_ORDDESTROY" xml:space="preserve">
+    <value>Nie podano porz¹dku</value>
+  </data>
+  <data name="EDB_NOINITFUNC" xml:space="preserve">
+    <value>Brak funkcji inicjalizacji RDD</value>
+  </data>
+  <data name="EDB_ERRORINIT" xml:space="preserve">
+    <value>B³¹d funkcji inicjalizacji RDD</value>
+  </data>
+  <data name="EDB_DBSTRUCT" xml:space="preserve">
+    <value>Struktura nie odpowiada</value>
+  </data>
+  <data name="EDB_NOTABLE" xml:space="preserve">
+    <value>Aktualny obszar roboczy nie zawiera tabeli</value>
+  </data>
+  <data name="EDB_NOORDER" xml:space="preserve">
+    <value>Nie podano porz¹dku</value>
+  </data>
+  <data name="EDB_ASSERTION" xml:space="preserve">
+    <value>Asercja zawiod³a</value>
+  </data>
+  <data name="ERDD_OPEN_FILE" xml:space="preserve">
+    <value>Otwórz bazê danych</value>
+  </data>
+  <data name="ERDD_OPEN_MEMO" xml:space="preserve">
+    <value>Otwórz plik memo</value>
+  </data>
+  <data name="ERDD_OPEN_ORDER" xml:space="preserve">
+    <value>Otwórz plik indeksowy</value>
+  </data>
+  <data name="ERDD_CREATE_FILE" xml:space="preserve">
+    <value>Utwórz bazê danych</value>
+  </data>
+  <data name="ERDD_CREATE_MEMO" xml:space="preserve">
+    <value>Utwórz plik memo</value>
+  </data>
+  <data name="ERDD_CREATE_ORDER" xml:space="preserve">
+    <value>Utwórz plik indeksowy</value>
+  </data>
+  <data name="ERDD_READ" xml:space="preserve">
+    <value>B³¹d odczytu</value>
+  </data>
+  <data name="ERDD_WRITE" xml:space="preserve">
+    <value>B³¹d zapisu</value>
+  </data>
+  <data name="ERDD_CORRUPT" xml:space="preserve">
+    <value>Uszkodzone dane</value>
+  </data>
+  <data name="ERDD_CORRUPT_HEADER" xml:space="preserve">
+    <value>Uszkodzony nag³ówek bazy danych</value>
+  </data>
+  <data name="ERDD_RDDVERSION" xml:space="preserve">
+    <value>Niepoprawna wersja sterownika</value>
+  </data>
+  <data name="ERDD_DATATYPE" xml:space="preserve">
+    <value>B³êdny typ danych</value>
+  </data>
+  <data name="ERDD_DATAWIDTH" xml:space="preserve">
+    <value>B³êdna szerokoœæ danych</value>
+  </data>
+  <data name="ERDD_UNLOCKED" xml:space="preserve">
+    <value>Rekord musi byæ zablokowany</value>
+  </data>
+  <data name="ERDD_SHARED" xml:space="preserve">
+    <value>B³¹d dzielenia zasobów</value>
+  </data>
+  <data name="ERDD_APPENDLOCK" xml:space="preserve">
+    <value>B³¹d blokowania w trakcie dodawania rekordu</value>
+  </data>
+  <data name="ERDD_READONLY" xml:space="preserve">
+    <value>Tylko do odczytu</value>
+  </data>
+  <data name="ERDD_NULLKEY" xml:space="preserve">
+    <value>Pusty klucz</value>
+  </data>
+  <data name="ERDD_NTXLIMIT" xml:space="preserve">
+    <value>Przekroczony limit pliku indeksowego</value>
+  </data>
+  <data name="ERDD_TAGLIMIT" xml:space="preserve">
+    <value>Przekroczony limit znaczników pliku indeksowego</value>
+  </data>
+  <data name="ERDD_INIT_LOCK" xml:space="preserve">
+    <value>B³¹d inicjalizacji schematu blokowania</value>
+  </data>
+  <data name="ERDD_READ_LOCK" xml:space="preserve">
+    <value>Zablokowanie do odczytu niemo¿liwe</value>
+  </data>
+  <data name="ERDD_WRITE_LOCK" xml:space="preserve">
+    <value>B³¹d blokowania do zapisu</value>
+  </data>
+  <data name="ERDD_READ_UNLOCK" xml:space="preserve">
+    <value>B³¹d blokowania do odczytu</value>
+  </data>
+  <data name="ERDD_WRITE_UNLOCK" xml:space="preserve">
+    <value>B³¹d przy zwalnianiu blokady do zapisu</value>
+  </data>
+  <data name="ERDD_READ_LOCK_TIMEOUT" xml:space="preserve">
+    <value>Przekroczenie czasu przy blokowaniu indeksu do odczytu</value>
+  </data>
+  <data name="ERDD_WRITE_LOCK_TIMEOUT" xml:space="preserve">
+    <value>Przekroczenie czasu przy blokowaniu indeksu do zapisu</value>
+  </data>
+  <data name="ERDD_READ_UNLOCK_TIMEOUT" xml:space="preserve">
+    <value>Przekroczenie czasu przy zwalnianiu blokady indeksu do odczytu</value>
+  </data>
+  <data name="ERDD_WRITE_UNLOCK_TIMEOUT" xml:space="preserve">
+    <value>Przekroczenie czasu przy zwalnianiu blokady indeksu do zapisu</value>
+  </data>
+  <data name="ERDD_CLOSE_FILE" xml:space="preserve">
+    <value>Zamknij bazê danych</value>
+  </data>
+  <data name="ERDD_CLOSE_MEMO" xml:space="preserve">
+    <value>Zamknij plik memo</value>
+  </data>
+  <data name="ERDD_CLOSE_ORDER" xml:space="preserve">
+    <value>Zamknij plik indeksowy</value>
+  </data>
+  <data name="ERDD_INVALID_ORDER" xml:space="preserve">
+    <value>Niepoprawna specyfikacja porz¹dku</value>
+  </data>
+  <data name="ERDD_RECNO_MISSING" xml:space="preserve">
+    <value>Numer rekordu nie znaleziony</value>
+  </data>
+  <data name="ERDD_NOORDER" xml:space="preserve">
+    <value>Aktualny obszar  roboczy nie zawiera porz¹dku</value>
+  </data>
+  <data name="ERDD_UNSUPPORTED" xml:space="preserve">
+    <value>Operacja nieobs³ugiwana przez aktualny RDD</value>
+  </data>
+  <data name="ERDD_WRITE_NTX" xml:space="preserve">
+    <value>B³¹d zapisu pliku NTX</value>
+  </data>
+  <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
+    <value>Nie znaleziono klucza</value>
+  </data>
+  <data name="ERDD_KEY_EVAL" xml:space="preserve">
+    <value>Nieznane lub niepoprawne wyra¿enie kluczowe</value>
+  </data>
+  <data name="ERDD_VAR_TYPE" xml:space="preserve">
+    <value>Typ zmienny</value>
+  </data>
+  <data name="ERDD_READ_BUFFER" xml:space="preserve">
+    <value>B³¹d czytania z dysku</value>
+  </data>
+  <data name="ERDD_SORT_INIT" xml:space="preserve">
+    <value>Inicjalizacja sortowania</value>
+  </data>
+  <data name="ERDD_SORT_ADVANCE" xml:space="preserve">
+    <value>Progresja sortowania</value>
+  </data>
+  <data name="ERDD_SORT_SORT" xml:space="preserve">
+    <value>B³¹d sortowania</value>
+  </data>
+  <data name="ERDD_SORT_COMPLETE" xml:space="preserve">
+    <value>B³¹d zakoñczenia sortowania</value>
+  </data>
+  <data name="ERDD_SORT_END" xml:space="preserve">
+    <value>B³¹d koñca sortowania</value>
+  </data>
+  <data name="ERDD_READ_TEMPFILE" xml:space="preserve">
+    <value>B³¹d odczytu pliku tymczasowego</value>
+  </data>
+  <data name="ERDD_STREAM_NUM" xml:space="preserve">
+    <value>Niepoprawna iloœæ strumieni sortowania</value>
+  </data>
+  <data name="ERDD_CREATE_TEMPFILE" xml:space="preserve">
+    <value>B³¹d tworzenia pliku tymczasowego</value>
+  </data>
+  <data name="DISKIO_WRITE" xml:space="preserve">
+    <value>B³¹d zapisu bufora</value>
+  </data>
+  <data name="ERDD_WRONG_DRIVERTYPE" xml:space="preserve">
+    <value>Niepoprawne u¿ycie sterownika bazy danych</value>
+  </data>
+  <data name="ERDD_OUTOFMEMORY" xml:space="preserve">
+    <value>B³¹d przydzia³u pamiêci</value>
+  </data>
+  <data name="ERDD_INVALIDARG" xml:space="preserve">
+    <value>Niepoprawny argument przekazany do funkcji info</value>
+  </data>
+  <data name="RT_MSG_MONTH1" xml:space="preserve">
+    <value>styczeń</value>
+  </data>
+  <data name="RT_MSG_MONTH2" xml:space="preserve">
+    <value>luty</value>
+  </data>
+  <data name="RT_MSG_MONTH3" xml:space="preserve">
+    <value>marzec</value>
+  </data>
+  <data name="RT_MSG_MONTH4" xml:space="preserve">
+    <value>kwiecień</value>
+  </data>
+  <data name="RT_MSG_MONTH5" xml:space="preserve">
+    <value>maj</value>
+  </data>
+  <data name="RT_MSG_MONTH6" xml:space="preserve">
+    <value>czerwiec</value>
+  </data>
+  <data name="RT_MSG_MONTH7" xml:space="preserve">
+    <value>lipiec</value>
+  </data>
+  <data name="RT_MSG_MONTH8" xml:space="preserve">
+    <value>sierpień</value>
+  </data>
+  <data name="RT_MSG_MONTH9" xml:space="preserve">
+    <value>wrzesień</value>
+  </data>
+  <data name="RT_MSG_MONTH10" xml:space="preserve">
+    <value>październik</value>
+  </data>
+  <data name="RT_MSG_MONTH11" xml:space="preserve">
+    <value>listopad</value>
+  </data>
+  <data name="RT_MSG_MONTH12" xml:space="preserve">
+    <value>grudzień</value>
+  </data>
+  <data name="RT_MSG_DAY1" xml:space="preserve">
+    <value>poniedziałek</value>
+  </data>
+  <data name="RT_MSG_DAY2" xml:space="preserve">
+    <value>wtorek</value>
+  </data>
+  <data name="RT_MSG_DAY3" xml:space="preserve">
+    <value>środa</value>
+  </data>
+  <data name="RT_MSG_DAY4" xml:space="preserve">
+    <value>czwartek</value>
+  </data>
+  <data name="RT_MSG_DAY5" xml:space="preserve">
+    <value>piątek</value>
+  </data>
+  <data name="RT_MSG_DAY6" xml:space="preserve">
+    <value>Sobota</value>
+  </data>
+  <data name="RT_MSG_DAY7" xml:space="preserve">
+    <value>Niedziela</value>
+  </data>
+  <data name="RT_MSG_INFOSTRING" xml:space="preserve">
+    <value>US ASCII</value>
+  </data>
+  <data name="RT_MSG_LONG_TRUE" xml:space="preserve">
+    <value>PRAWDA</value>
+  </data>
+  <data name="RT_MSG_LONG_FALSE" xml:space="preserve">
+    <value>FA£SZ</value>
+  </data>
+  <data name="RT_MSG_SHORT_YES" xml:space="preserve">
+    <value>T</value>
+  </data>
+  <data name="RT_MSG_SHORT_NO" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="RT_MSG_LONG_YES" xml:space="preserve">
+    <value>TAK</value>
+  </data>
+  <data name="RT_MSG_LONG_NO" xml:space="preserve">
+    <value>NIE</value>
+  </data>
+  <data name="RT_MSG_ERR_0" xml:space="preserve">
+    <value>Czekam...</value>
+  </data>
+  <data name="RT_MSG_ERR_1" xml:space="preserve">
+    <value>Niepoprawny argument</value>
+  </data>
+  <data name="RT_MSG_ERR_2" xml:space="preserve">
+    <value>B³¹d zakresu</value>
+  </data>
+  <data name="RT_MSG_ERR_3" xml:space="preserve">
+    <value>Przepe³nienie ci¹gu znaków</value>
+  </data>
+  <data name="RT_MSG_ERR_4" xml:space="preserve">
+    <value>Przepe³nienie numeryczne</value>
+  </data>
+  <data name="RT_MSG_ERR_5" xml:space="preserve">
+    <value>Zerowy dzielnik</value>
+  </data>
+  <data name="RT_MSG_ERR_6" xml:space="preserve">
+    <value>B³¹d numeryczny</value>
+  </data>
+  <data name="RT_MSG_ERR_7" xml:space="preserve">
+    <value>B³¹d sk³adni</value>
+  </data>
+  <data name="RT_MSG_ERR_8" xml:space="preserve">
+    <value>Operacja zbyt skomplikowana</value>
+  </data>
+  <data name="RT_MSG_ERR_9" xml:space="preserve">
+    <value>Przepe³nienie bloku pamiêci</value>
+  </data>
+  <data name="RT_MSG_ERR_10" xml:space="preserve">
+    <value>B³¹d SEQUENCE</value>
+  </data>
+  <data name="RT_MSG_ERR_11" xml:space="preserve">
+    <value>Ma³o pamiêci</value>
+  </data>
+  <data name="RT_MSG_ERR_12" xml:space="preserve">
+    <value>Niezdefiniowana funkcja</value>
+  </data>
+  <data name="RT_MSG_ERR_13" xml:space="preserve">
+    <value>Brak eksportowanych metod</value>
+  </data>
+  <data name="RT_MSG_ERR_14" xml:space="preserve">
+    <value>Zmienna nie istnieje</value>
+  </data>
+  <data name="RT_MSG_ERR_15" xml:space="preserve">
+    <value>Alias nie istnieje</value>
+  </data>
+  <data name="RT_MSG_ERR_16" xml:space="preserve">
+    <value>Brak wyeksportowanych zmiennych</value>
+  </data>
+  <data name="RT_MSG_ERR_17" xml:space="preserve">
+    <value>Niepoprawny znak w nazwie aliasu</value>
+  </data>
+  <data name="RT_MSG_ERR_18" xml:space="preserve">
+    <value>Alias jest u¿ywany</value>
+  </data>
+  <data name="RT_MSG_ERR_19" xml:space="preserve">
+    <value>Variable not initialized</value>
+  </data>
+  <data name="RT_MSG_ERR_20" xml:space="preserve">
+    <value>B³¹d tworzenia</value>
+  </data>
+  <data name="RT_MSG_ERR_21" xml:space="preserve">
+    <value>B³¹d otwarcia</value>
+  </data>
+  <data name="RT_MSG_ERR_22" xml:space="preserve">
+    <value>B³¹d zamkniêcia</value>
+  </data>
+  <data name="RT_MSG_ERR_23" xml:space="preserve">
+    <value>B³¹d czytania</value>
+  </data>
+  <data name="RT_MSG_ERR_24" xml:space="preserve">
+    <value>B³¹d zapisu</value>
+  </data>
+  <data name="RT_MSG_ERR_25" xml:space="preserve">
+    <value>B³¹d drukowania</value>
+  </data>
+  <data name="RT_MSG_ERR_26" xml:space="preserve">
+    <value>Niezdefiniowany symbol</value>
+  </data>
+  <data name="RT_MSG_ERR_27" xml:space="preserve">
+    <value>Niezdefiniowana klasa</value>
+  </data>
+  <data name="RT_MSG_ERR_28" xml:space="preserve">
+    <value>Niepoprawna klasa</value>
+  </data>
+  <data name="RT_MSG_ERR_29" xml:space="preserve">
+    <value>Niepoprawne odwo³anie</value>
+  </data>
+  <data name="RT_MSG_ERR_30" xml:space="preserve">
+    <value>Niedozwolona operacja</value>
+  </data>
+  <data name="RT_MSG_ERR_31" xml:space="preserve">
+    <value>Przekroczona granica</value>
+  </data>
+  <data name="RT_MSG_ERR_32" xml:space="preserve">
+    <value>Wykryto uszkodzenie</value>
+  </data>
+  <data name="RT_MSG_ERR_33" xml:space="preserve">
+    <value>B³¹d typu danych</value>
+  </data>
+  <data name="RT_MSG_ERR_34" xml:space="preserve">
+    <value>B³¹d szerokoœci danych</value>
+  </data>
+  <data name="RT_MSG_ERR_35" xml:space="preserve">
+    <value>Obszar roboczy nie jest u¿ywany</value>
+  </data>
+  <data name="RT_MSG_ERR_36" xml:space="preserve">
+    <value>Obszar roboczy nie posiada indeksu</value>
+  </data>
+  <data name="RT_MSG_ERR_37" xml:space="preserve">
+    <value>Wymagana wy³¹cznoœæ</value>
+  </data>
+  <data name="RT_MSG_ERR_38" xml:space="preserve">
+    <value>Wymagane zablokowanie</value>
+  </data>
+  <data name="RT_MSG_ERR_39" xml:space="preserve">
+    <value>Zapis nie dozwolony</value>
+  </data>
+  <data name="RT_MSG_ERR_40" xml:space="preserve">
+    <value>Blokowanie rekordu przy dodawaniu rekordu nieudane</value>
+  </data>
+  <data name="RT_MSG_ERR_41" xml:space="preserve">
+    <value>Blokowanie nieudane</value>
+  </data>
+  <data name="RT_MSG_ERR_42" xml:space="preserve">
+    <value>To many threads</value>
+  </data>
+  <data name="RT_MSG_ERR_43" xml:space="preserve">
+    <value>Numer b³êdu zarezerwowany</value>
+  </data>
+  <data name="RT_MSG_ERR_44" xml:space="preserve">
+    <value>Numer b³êdu zarezerwowany</value>
+  </data>
+  <data name="RT_MSG_ERR_45" xml:space="preserve">
+    <value>B³¹d blokowania</value>
+  </data>
+  <data name="RT_MSG_ERR_46" xml:space="preserve">
+    <value>Przekroczenie czasu przy próbie blokowania</value>
+  </data>
+  <data name="RT_MSG_ERR_47" xml:space="preserve">
+    <value>B³¹d stosu procesora</value>
+  </data>
+  <data name="RT_MSG_ERR_48" xml:space="preserve">
+    <value>B³¹d stosu obliczeñ</value>
+  </data>
+  <data name="RT_MSG_ERR_49" xml:space="preserve">
+    <value>Blok b³êdów nie istnieje</value>
+  </data>
+  <data name="RT_MSG_ERR_50" xml:space="preserve">
+    <value>B³¹d ochrony</value>
+  </data>
+  <data name="RT_MSG_ERR_51" xml:space="preserve">
+    <value>Niepoprawny wskaŸnik</value>
+  </data>
+  <data name="RT_MSG_ERR_52" xml:space="preserve">
+    <value>B³¹d strony</value>
+  </data>
+  <data name="RT_MSG_ERR_53" xml:space="preserve">
+    <value>B³¹d tworzenia Errorobject</value>
+  </data>
+  <data name="RT_MSG_ERR_54" xml:space="preserve">
+    <value>DynAlloc: PTR dla DynData</value>
+  </data>
+  <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_CORRUPTION" xml:space="preserve">
+    <value>problem z pamiêci¹</value>
+  </data>
+  <data name="RT_MSG_FATAL" xml:space="preserve">
+    <value>b³¹d QUIT</value>
+  </data>
+  <data name="RT_MSG_APPLI" xml:space="preserve">
+    <value>Aplikacja</value>
+  </data>
+  <data name="RT_MSG_LINE" xml:space="preserve">
+    <value>Linia</value>
+  </data>
+  <data name="RT_MSG_FUNC" xml:space="preserve">
+    <value>Funkcja</value>
+  </data>
+  <data name="RT_MSG_RELEASE" xml:space="preserve">
+    <value>Version 2.8 SP3</value>
+  </data>
+  <data name="RT_MSG_DOSERR_0" xml:space="preserve">
+    <value>Ukoñczono pomyœlnie</value>
+  </data>
+  <data name="RT_MSG_DOSERR_1" xml:space="preserve">
+    <value>Niepoprawny numer funkcji</value>
+  </data>
+  <data name="RT_MSG_DOSERR_2" xml:space="preserve">
+    <value>Nie znaleziono pola</value>
+  </data>
+  <data name="RT_MSG_DOSERR_3" xml:space="preserve">
+    <value>Nie znaleziono œcie¿ki</value>
+  </data>
+  <data name="RT_MSG_DOSERR_4" xml:space="preserve">
+    <value>Zbyt wiele otwartych plików</value>
+  </data>
+  <data name="RT_MSG_DOSERR_5" xml:space="preserve">
+    <value>Dostêp zabroniony</value>
+  </data>
+  <data name="RT_MSG_DOSERR_6" xml:space="preserve">
+    <value>Niepoprawny znacznik pliku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_7" xml:space="preserve">
+    <value>Zniszczone bloki sterowania pamiêci¹</value>
+  </data>
+  <data name="RT_MSG_DOSERR_8" xml:space="preserve">
+    <value>Zbyt ma³o pamiêci</value>
+  </data>
+  <data name="RT_MSG_DOSERR_9" xml:space="preserve">
+    <value>Niepoprawny adres bloku pamiêci</value>
+  </data>
+  <data name="RT_MSG_DOSERR_10" xml:space="preserve">
+    <value>Niepoprawne  œrodowisko</value>
+  </data>
+  <data name="RT_MSG_DOSERR_11" xml:space="preserve">
+    <value>Niepoprawny format</value>
+  </data>
+  <data name="RT_MSG_DOSERR_12" xml:space="preserve">
+    <value>Niepoprawny kod dostêpu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_13" xml:space="preserve">
+    <value>Niepoprawne dane</value>
+  </data>
+  <data name="RT_MSG_DOSERR_14" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_15" xml:space="preserve">
+    <value>Niepoprawny numer dysku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_16" xml:space="preserve">
+    <value>Nie mo¿na usun¹æ aktualnego katalogu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_17" xml:space="preserve">
+    <value>Nie to samo urz¹dzenie</value>
+  </data>
+  <data name="RT_MSG_DOSERR_18" xml:space="preserve">
+    <value>Nie ma wiêcej plików</value>
+  </data>
+  <data name="RT_MSG_DOSERR_19" xml:space="preserve">
+    <value>Dyskietka zabezpieczona przed zapisem</value>
+  </data>
+  <data name="RT_MSG_DOSERR_20" xml:space="preserve">
+    <value>Nieznana jednostka</value>
+  </data>
+  <data name="RT_MSG_DOSERR_21" xml:space="preserve">
+    <value>Dysk nie jest gotowy</value>
+  </data>
+  <data name="RT_MSG_DOSERR_22" xml:space="preserve">
+    <value>Nieznane polecenie</value>
+  </data>
+  <data name="RT_MSG_DOSERR_23" xml:space="preserve">
+    <value>B³¹d danych (CRC)</value>
+  </data>
+  <data name="RT_MSG_DOSERR_24" xml:space="preserve">
+    <value>Niepoprawna d³ugoœæ struktury ¿¹dania</value>
+  </data>
+  <data name="RT_MSG_DOSERR_25" xml:space="preserve">
+    <value>B³¹d szukania</value>
+  </data>
+  <data name="RT_MSG_DOSERR_26" xml:space="preserve">
+    <value>Nieznany typ noœnika</value>
+  </data>
+  <data name="RT_MSG_DOSERR_27" xml:space="preserve">
+    <value>Nie znaleziono sektora</value>
+  </data>
+  <data name="RT_MSG_DOSERR_28" xml:space="preserve">
+    <value>Brak papieru</value>
+  </data>
+  <data name="RT_MSG_DOSERR_29" xml:space="preserve">
+    <value>B³¹d zapisu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_30" xml:space="preserve">
+    <value>B³¹d odczytu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_31" xml:space="preserve">
+    <value>Generalny b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_32" xml:space="preserve">
+    <value>Naruszenie wspólnego dostêpu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_33" xml:space="preserve">
+    <value>Naruszenie blokady</value>
+  </data>
+  <data name="RT_MSG_DOSERR_34" xml:space="preserve">
+    <value>Niepoprawna wymiana dysku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_35" xml:space="preserve">
+    <value>FCB niedostêpny</value>
+  </data>
+  <data name="RT_MSG_DOSERR_36" xml:space="preserve">
+    <value>Przepe³nienie bufora wspólnego dostêpu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_37" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_38" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_39" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_40" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_41" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_42" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_43" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_44" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_45" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_46" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_47" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_48" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_49" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_50" xml:space="preserve">
+    <value>Brak obs³ugi ¿¹dania sieciowego</value>
+  </data>
+  <data name="RT_MSG_DOSERR_51" xml:space="preserve">
+    <value>Odleg³y komputer nie odpowiada</value>
+  </data>
+  <data name="RT_MSG_DOSERR_52" xml:space="preserve">
+    <value>Nazwa ju¿ istnieje w sieci</value>
+  </data>
+  <data name="RT_MSG_DOSERR_53" xml:space="preserve">
+    <value>Nazwa sieciowa nie znaleziona</value>
+  </data>
+  <data name="RT_MSG_DOSERR_54" xml:space="preserve">
+    <value>Sieæ jest zajêta</value>
+  </data>
+  <data name="RT_MSG_DOSERR_55" xml:space="preserve">
+    <value>Urz¹dzenie sieciowe nie istnieje</value>
+  </data>
+  <data name="RT_MSG_DOSERR_56" xml:space="preserve">
+    <value>Przekroczona d³ugoœæ polecenia Net BIOS</value>
+  </data>
+  <data name="RT_MSG_DOSERR_57" xml:space="preserve">
+    <value>B³¹d sprzêtowy adaptera sieciowego</value>
+  </data>
+  <data name="RT_MSG_DOSERR_58" xml:space="preserve">
+    <value>Niepoprawna odpowiedŸ z sieci</value>
+  </data>
+  <data name="RT_MSG_DOSERR_59" xml:space="preserve">
+    <value>Nieoczekiwany b³¹d sieciowy</value>
+  </data>
+  <data name="RT_MSG_DOSERR_60" xml:space="preserve">
+    <value>Odleg³y adapter sieciowy jest niekompatybilny</value>
+  </data>
+  <data name="RT_MSG_DOSERR_61" xml:space="preserve">
+    <value>Kolejka drukarki jest pe³na</value>
+  </data>
+  <data name="RT_MSG_DOSERR_62" xml:space="preserve">
+    <value>Brak miejsca na plik wydruku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_63" xml:space="preserve">
+    <value>Plik wydruku zosta³ usuniêty</value>
+  </data>
+  <data name="RT_MSG_DOSERR_64" xml:space="preserve">
+    <value>Nazwa sieciowa zosta³a usuniêta</value>
+  </data>
+  <data name="RT_MSG_DOSERR_65" xml:space="preserve">
+    <value>Dostêp zabroniony</value>
+  </data>
+  <data name="RT_MSG_DOSERR_66" xml:space="preserve">
+    <value>Niepoprawny typ urz¹dzenia sieciowego</value>
+  </data>
+  <data name="RT_MSG_DOSERR_67" xml:space="preserve">
+    <value>Nazwa sieciowa nie znaleziona</value>
+  </data>
+  <data name="RT_MSG_DOSERR_68" xml:space="preserve">
+    <value>Przekroczone ograniczenie nazwy sieciowej</value>
+  </data>
+  <data name="RT_MSG_DOSERR_69" xml:space="preserve">
+    <value>Przekroczone ograniczenie sesji Net BIOS</value>
+  </data>
+  <data name="RT_MSG_DOSERR_70" xml:space="preserve">
+    <value>Tymczasowe zatrzymanie</value>
+  </data>
+  <data name="RT_MSG_DOSERR_71" xml:space="preserve">
+    <value>¯¹danie sieciowe nie akceptowane</value>
+  </data>
+  <data name="RT_MSG_DOSERR_72" xml:space="preserve">
+    <value>Przekierunkowanie drukarki lub dysku wstrzymane</value>
+  </data>
+  <data name="RT_MSG_DOSERR_73" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_74" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_75" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_76" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_77" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_78" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_79" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_80" xml:space="preserve">
+    <value>Plik istnieje</value>
+  </data>
+  <data name="RT_MSG_DOSERR_81" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_82" xml:space="preserve">
+    <value>Utworzenie nowego katalogu niemo¿liwe</value>
+  </data>
+  <data name="RT_MSG_DOSERR_83" xml:space="preserve">
+    <value>B³¹d przerwania INT 24</value>
+  </data>
+  <data name="RT_MSG_DOSERR_84" xml:space="preserve">
+    <value>Zbyt wiele przekierunkowañ</value>
+  </data>
+  <data name="RT_MSG_DOSERR_85" xml:space="preserve">
+    <value>Powtórzenie przekierunkowania</value>
+  </data>
+  <data name="RT_MSG_DOSERR_86" xml:space="preserve">
+    <value>Niepoprawne has³o</value>
+  </data>
+  <data name="RT_MSG_DOSERR_87" xml:space="preserve">
+    <value>Niepoprawny parametr</value>
+  </data>
+  <data name="RT_MSG_DOSERR_88" xml:space="preserve">
+    <value>Awaria urz¹dzenia sieciowego</value>
+  </data>
+  <data name="RT_MSG_DOSERR_89" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_90" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_91" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_92" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_93" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_94" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_95" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_96" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_97" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_98" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_99" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_100" xml:space="preserve">
+    <value>B³¹d odczytu z dysku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_101" xml:space="preserve">
+    <value>B³¹d zapisu na dysk</value>
+  </data>
+  <data name="RT_MSG_DOSERR_102" xml:space="preserve">
+    <value>Plik nie jest przydzielony</value>
+  </data>
+  <data name="RT_MSG_DOSERR_103" xml:space="preserve">
+    <value>Plik nie jest otwarty</value>
+  </data>
+  <data name="RT_MSG_DOSERR_104" xml:space="preserve">
+    <value>Plik nie jest otwarty do zapisu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_105" xml:space="preserve">
+    <value>Plik nie jest otwarty do odczytu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_106" xml:space="preserve">
+    <value>Niepoprawny format numeryczny</value>
+  </data>
+  <data name="RT_MSG_DOSERR_107" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_108" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_109" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_110" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_111" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_112" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_113" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_114" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_115" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_116" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_117" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_118" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_119" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_120" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_121" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_122" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_123" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_124" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_125" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_126" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_127" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_128" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_129" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_130" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_131" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_132" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_133" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_134" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_135" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_136" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_137" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_138" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_139" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_140" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_141" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_142" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_143" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_144" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_145" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_146" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_147" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_148" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_149" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_150" xml:space="preserve">
+    <value>Dysk zabezpieczony przed zapisem</value>
+  </data>
+  <data name="RT_MSG_DOSERR_151" xml:space="preserve">
+    <value>Nieznana jednostka</value>
+  </data>
+  <data name="RT_MSG_DOSERR_152" xml:space="preserve">
+    <value>Dysk nie jest gotowy</value>
+  </data>
+  <data name="RT_MSG_DOSERR_153" xml:space="preserve">
+    <value>Nieznane polecenie</value>
+  </data>
+  <data name="RT_MSG_DOSERR_154" xml:space="preserve">
+    <value>B³¹d CRC w danych</value>
+  </data>
+  <data name="RT_MSG_DOSERR_155" xml:space="preserve">
+    <value>Niepoprawna d³ugoœæ struktury ¿¹dania dysku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_156" xml:space="preserve">
+    <value>B³¹d szukania na dysku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_157" xml:space="preserve">
+    <value>Nieznany typ noœnika</value>
+  </data>
+  <data name="RT_MSG_DOSERR_158" xml:space="preserve">
+    <value>Sektor nie znaleziony</value>
+  </data>
+  <data name="RT_MSG_DOSERR_159" xml:space="preserve">
+    <value>Brak papieru w drukarce</value>
+  </data>
+  <data name="RT_MSG_DOSERR_160" xml:space="preserve">
+    <value>B³¹d zapisu do urz¹dzenia</value>
+  </data>
+  <data name="RT_MSG_DOSERR_161" xml:space="preserve">
+    <value>B³¹d odczytu z urz¹dzenia</value>
+  </data>
+  <data name="RT_MSG_DOSERR_162" xml:space="preserve">
+    <value>B³¹d sprzêtowy</value>
+  </data>
+  <data name="RT_MSG_DOSERR_163" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_164" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_165" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_166" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_167" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_168" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_169" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_170" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_171" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_172" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_173" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_174" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_175" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_176" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_177" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_178" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_179" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_180" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_181" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_182" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_183" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_184" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_185" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_186" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_187" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_188" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_189" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_190" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_191" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_192" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_193" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_194" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_195" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_196" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_197" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_198" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_199" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_200" xml:space="preserve">
+    <value>Dzielenie przez zero</value>
+  </data>
+  <data name="RT_MSG_DOSERR_201" xml:space="preserve">
+    <value>B³¹d kontroli zakresu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_202" xml:space="preserve">
+    <value>Przepe³nienie stosu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_203" xml:space="preserve">
+    <value>Przepe³nienie stogu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_204" xml:space="preserve">
+    <value>Niepoprawna operacja na wskaŸnikach</value>
+  </data>
+  <data name="RT_MSG_DOSERR_205" xml:space="preserve">
+    <value>Przepe³nienie przy operacji zmiennoprzecinkowej</value>
+  </data>
+  <data name="RT_MSG_DOSERR_206" xml:space="preserve">
+    <value>Niedomiar przy operacji zmiennoprzecinkowej</value>
+  </data>
+  <data name="RT_MSG_DOSERR_207" xml:space="preserve">
+    <value>Niepoprawna operacja zmiennoprzecinkowa</value>
+  </data>
+  <data name="RT_MSG_DOSERR_208" xml:space="preserve">
+    <value>Menad¿er nak³adek nie jest zainstalowany</value>
+  </data>
+  <data name="RT_MSG_DOSERR_209" xml:space="preserve">
+    <value>B³¹d odczytu pliku nak³adkowego</value>
+  </data>
+  <data name="RT_MSG_DOSERR_210" xml:space="preserve">
+    <value>Obiekt nie zainicjalizowany</value>
+  </data>
+  <data name="RT_MSG_DOSERR_211" xml:space="preserve">
+    <value>Odwo³anie do abstrakcyjnej metody</value>
+  </data>
+  <data name="RT_MSG_DOSERR_212" xml:space="preserve">
+    <value>B³¹d rejestracji strumienia</value>
+  </data>
+  <data name="RT_MSG_DOSERR_213" xml:space="preserve">
+    <value>Indeks pobierania poza zakresem</value>
+  </data>
+  <data name="RT_MSG_DOSERR_214" xml:space="preserve">
+    <value>B³¹d przepe³nienia przy pobieraniu</value>
+  </data>
+  <data name="RT_MSG_DOSERR_215" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_216" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_217" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_218" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_219" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_220" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_221" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_222" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_223" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_224" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_225" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_226" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_227" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_228" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_229" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_230" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_231" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_232" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_233" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_234" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_235" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_236" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_237" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_238" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_239" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_240" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_241" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_242" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_243" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_244" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_245" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_246" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_247" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_248" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_249" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_250" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_251" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_252" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_253" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_254" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_DOSERR_255" xml:space="preserve">
+    <value>Program przerwany</value>
+  </data>
+  <data name="RT_MSG_DOSERR_256" xml:space="preserve">
+    <value>Dysk jest pe³ny</value>
+  </data>
+  <data name="RT_MSG_DOSERR_257" xml:space="preserve">
+    <value>Koniec pliku</value>
+  </data>
+  <data name="RT_MSG_DOSERR_258" xml:space="preserve">
+    <value>Niepoprawny parametr</value>
+  </data>
+  <data name="RT_MSG_DOSERR_FFFF" xml:space="preserve">
+    <value>Bogus disk</value>
+  </data>
+  <data name="RT_MSG_DOSERR_UNKNOWN" xml:space="preserve">
+    <value>Nieznany b³¹d</value>
+  </data>
+  <data name="RT_MSG_ERR_INSTALLED" xml:space="preserve">
+    <value>ERRORBUILD: nie zainstalowano ERRORFUNC</value>
+  </data>
+  <data name="RT_MSG_ERR_GURU" xml:space="preserve">
+    <value>ERRORBUILD: brak tabeli Guru</value>
+  </data>
+  <data name="RT_MSG_ERR_STACK" xml:space="preserve">
+    <value>ERRORBUILD: zbyt ma³y obszar stosu</value>
+  </data>
+  <data name="RT_MSG_ERR_PARAM" xml:space="preserve">
+    <value>ERRORBUILD: niepoprawny strucparam</value>
+  </data>
+  <data name="RT_MSG_ERR_NOCLIPPER" xml:space="preserve">
+    <value>ERRORBUILD: nie znaleziono CLIPPER ERRORFUNC</value>
+  </data>
+  <data name="RT_MSG_ERR_ARGCOUNT" xml:space="preserve">
+    <value>ERRORBUILD: iloœæ argumentów ERRORFUNC &lt;&gt;1</value>
+  </data>
+</root>

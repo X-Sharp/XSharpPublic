@@ -164,8 +164,8 @@ STATIC UNSAFE CLASS XSharp.FixedMemory
                 VAR nTotal			:= nSize + SIZEOF(FixedMemBlockStart) + SIZEOF(FixedMemBlockEnd)
                 Total -= nSize
                 oGroup := FindGroup(pMemBlockStart:dwGroup)
-                // Clear memory so it will not be valid anymore
-                SET(pMemBlockStart, 0, (INT) nTotal)			
+                // Overwrite memory so it will not be valid anymore
+                SET(pMemBlockStart, 0xFF, (INT) nTotal)			
                 IF oGroup != NULL_OBJECT
                     oGroup:Allocated -= nSize
                     Marshal.FreeHGlobal(pMemBlockStart)
@@ -305,7 +305,7 @@ STRUCTURE	 XSharp.FixedMemBlockStart
         dwCargo := 0
         dwGroup := nGroup
         dwSize  := nSize
-        
+
    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC
@@ -324,8 +324,7 @@ STRUCTURE	 XSharp.FixedMemBlockEnd
    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize() AS VOID
         dwMagic := MAGIC
-        dwZero  := 0
-        
+		dwZero := 0        
    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC

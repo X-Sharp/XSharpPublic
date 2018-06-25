@@ -17,14 +17,9 @@ BEGIN NAMESPACE XSharp.RDD
         
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
-            LOCAL fieldType AS DbFieldType
-            LOCAL cType AS STRING
             LOCAL buffer AS BYTE[]
-            //
-            cType := (STRING)SELF:FieldInfo( nFldPos, DbFieldInfo.DBS_TYPE, NULL )
-            fieldType := (DbFieldType) Char.ToUpper(cType[0])
             // not a memo ?
-            IF ( fieldType == DbFieldType.Memo )
+            IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
                 LOCAL encoding AS ASCIIEncoding
@@ -39,10 +34,10 @@ BEGIN NAMESPACE XSharp.RDD
             
             
             END CLASS
-        
-        
-        
-        
+            
+            
+            
+            
         /// <summary>DBT Memo class. Implements the DBT support.</summary>
         // See https://www.clicketyclick.dk/databases/xbase/format/dbt.html#DBT_STRUCT/
     //
@@ -65,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PROPERTY BlockSize 	 AS SHORT
+        VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 
                 RETURN SELF:_blockSize
             END GET
@@ -184,7 +179,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             LOCAL objType AS System.Type
             LOCAL objTypeCode AS System.TypeCode
-            LOCAL str := null AS STRING
+            LOCAL str := NULL AS STRING
             LOCAL memoBlock AS BYTE[]
             LOCAL isOk := FALSE AS LOGIC
             LOCAL locked := FALSE AS LOGIC
@@ -227,24 +222,24 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             IF newBlock
-                    IF ( SELF:_Shared )
-                        locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, 123 )
-                    ENDIF
-                    // Go to the end of end, where we will add the new data
-                    FSeek3( SELF:_hFile, 0, FS_END )
-                    LOCAL fileSize := (LONG)FTell( SELF:_hFile ) AS LONG
-                    // But first, check that the Size of Memo file is multiple of BlockSize
-                    LOCAL toAdd := fileSize % SELF:BlockSize AS LONG
-                    // No ! Fill the gap
-                    IF ( toAdd > 0 )
-                        toAdd := SELF:BlockSize - toAdd
-                        LOCAL dummy AS BYTE[]
-                        dummy := BYTE[]{ toAdd }
-                        FWrite3( SELF:_hfile, dummy, (DWORD)toAdd )
-                        // so, new size is
-                        fileSize := (LONG)FTell( SELF:_hFile )
-                    ENDIF
-                    // The new block Number to write to is (I supposed we should use NextAvailableBlock, no ?)
+                IF ( SELF:_Shared )
+                    locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, 123 )
+                ENDIF
+                // Go to the end of end, where we will add the new data
+                FSeek3( SELF:_hFile, 0, FS_END )
+                LOCAL fileSize := (LONG)FTell( SELF:_hFile ) AS LONG
+                // But first, check that the Size of Memo file is multiple of BlockSize
+                LOCAL toAdd := fileSize % SELF:BlockSize AS LONG
+                // No ! Fill the gap
+                IF ( toAdd > 0 )
+                    toAdd := SELF:BlockSize - toAdd
+                    LOCAL dummy AS BYTE[]
+                    dummy := BYTE[]{ toAdd }
+                    FWrite3( SELF:_hfile, dummy, (DWORD)toAdd )
+                    // so, new size is
+                    fileSize := (LONG)FTell( SELF:_hFile )
+                ENDIF
+                // The new block Number to write to is (I supposed we should use NextAvailableBlock, no ?)
                 blockNbr := fileSize / SELF:BlockSize
             ELSE
                 // Go to the position of the blockNbr
@@ -289,7 +284,7 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 TRY
                     isOk := FClose( SELF:_hFile )
-                    CATCH
+                CATCH
                     isOk := FALSE
                 END TRY
                 SELF:_hFile := F_ERROR
@@ -307,16 +302,16 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_hFile     := FCreate( SELF:_FileName) 
             isOk := ( SELF:_hFile != F_ERROR )
             IF isOk
-                    // Per default, Header Block Size if 512
-                    LOCAL memoHeader AS BYTE[]
-                    LOCAL nextBlock AS LONG
-                    //
-                    memoHeader := BYTE[]{ DBTMemo.HeaderSize }
-                    nextBlock := 1
-                    Array.Copy(BitConverter.GetBytes(nextBlock),0, memoHeader, 0, SIZEOF(LONG))
-                    //
-                    FWrite3( SELF:_hFile, memoHeader, DBTMemo.HeaderSize )
-                    //
+                // Per default, Header Block Size if 512
+                LOCAL memoHeader AS BYTE[]
+                LOCAL nextBlock AS LONG
+                //
+                memoHeader := BYTE[]{ DBTMemo.HeaderSize }
+                nextBlock := 1
+                Array.Copy(BitConverter.GetBytes(nextBlock),0, memoHeader, 0, SIZEOF(LONG))
+                //
+                FWrite3( SELF:_hFile, memoHeader, DBTMemo.HeaderSize )
+                //
                 SELF:_initContext()
             ELSE
                 SELF:_oRDD:_DbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
@@ -335,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_hFile     := Fopen(SELF:_FileName, info:FileMode)
             isOk := ( SELF:_hFile != F_ERROR )
             IF isOk
-                    // Per default, Block Size if 512
+                // Per default, Block Size if 512
                 SELF:_initContext()
             ELSE
                 SELF:_oRDD:_DbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
@@ -388,7 +383,7 @@ BEGIN NAMESPACE XSharp.RDD
             REPEAT
                 TRY
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-                    CATCH
+                CATCH
                     locked := FALSE
                 END TRY
                 IF ( !locked )
@@ -406,10 +401,13 @@ BEGIN NAMESPACE XSharp.RDD
             //
             TRY
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-                CATCH
+            CATCH
                 unlocked := FALSE
             END TRY
             RETURN unlocked
+            
+        VIRTUAL METHOD Zap() AS LOGIC
+            THROW NotImplementedException{}
             
     END CLASS    
     

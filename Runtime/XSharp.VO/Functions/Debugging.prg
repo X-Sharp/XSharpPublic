@@ -8,14 +8,6 @@ using System.Reflection
 using System.Diagnostics
 
 
-/// <summary>
-/// Write information to the Debug Terminal Program
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION _DebOut32( u AS USUAL) AS VOID
-   XSharp.Core.Functions._DebOut32( AsString(u))
-   return
 
 
 /// <summary>
@@ -23,9 +15,18 @@ FUNCTION _DebOut32( u AS USUAL) AS VOID
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DebOut32( u AS USUAL) AS VOID
-   XSharp.Core.Functions.DebOut32( AsString(u))
-   return
+FUNCTION	DebOut()	AS	VOID CLIPPER
+	LOCAL C AS STRING
+	LOCAL X AS DWORD
+	C:=""
+	FOR X:=1 UPTO PCount()
+		IF X<>1
+			C+=", "
+		END
+		C+=AsString(_GetFParam(X))
+	NEXT
+	Debout32(C)
+	RETURN
 
 
 /// <summary>

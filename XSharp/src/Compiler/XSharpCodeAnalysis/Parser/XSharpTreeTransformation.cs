@@ -5177,6 +5177,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitLocalvar([NotNull] XP.LocalvarContext context)
         {
             // nvk: Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
+            context.SetSequencePoint();
         }
 
         protected virtual TypeSyntax _getMissingType()

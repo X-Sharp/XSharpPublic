@@ -126,6 +126,40 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( "friend",(STRING) a[3])
 			Assert.Equal( "Kate" ,(STRING) a[4])
 
+			a := {8,2,1,4,3,0}
+			ASort(a , 2 , 4)
+			Assert.Equal( 8, (INT) a[1])
+			Assert.Equal( 1, (INT) a[2])
+			Assert.Equal( 2, (INT) a[3])
+			Assert.Equal( 3, (INT) a[4])
+			Assert.Equal( 4, (INT) a[5])
+			Assert.Equal( 0, (INT) a[6])
+			? a[1],a[2],a[3],a[4],a[5]
+			
+			a := {}
+			ASort(a)
+			ASort(a , 0)
+			ASort(a , 10)
+			ASort(a , 10 , 10)
+
+			a := {8,2,1,4,3,0}
+			ASort(a , 10)
+			Assert.Equal( 8, (INT) a[1])
+			Assert.Equal( 0, (INT) a[6])
+			ASort(a , 10 , 10)
+			Assert.Equal( 8, (INT) a[1])
+			Assert.Equal( 0, (INT) a[6])
+
+			ASort(a , 0)
+			Assert.Equal( 0, (INT) a[1])
+			Assert.Equal( 8, (INT) a[6])
+
+			a := {8,2,1,4,3,0}
+			ASort(a , 0 , 100)
+			Assert.Equal( 0, (INT) a[1])
+			Assert.Equal( 8, (INT) a[6])
+
+
 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD AscanTest() AS VOID
@@ -252,18 +286,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
 		METHOD ArraySignedUnsignedTest() AS VOID
 			LOCAL a AS ARRAY
-			a := arrayNew(10L)
-			a := arrayNew(10U)
-			LOCAL n1 as int
+			a := ArrayNew(10L)
+			a := ArrayNew(10U)
+			LOCAL n1 AS INT
 			LOCAL n2 AS DWORD
 			FOR n1 := 1 TO 10
 				a[n1] := n1
-			next
+			NEXT
 			FOR n2 := 1 TO 10
 				a[n2] := n2
-			next
-			Assert.Equal(1, (int) a[1L])
-			Assert.Equal(2, (int) a[2U])
+			NEXT
+			Assert.Equal(1, (INT) a[1L])
+			Assert.Equal(2, (INT) a[2U])
 
 		RETURN
 

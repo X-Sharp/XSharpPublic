@@ -328,7 +328,7 @@ STRUCTURE DbTransItem
 END STRUCTURE
 
 /// <summary> </summary> 
-STRUCTURE RddFieldInfo
+CLASS RddFieldInfo
 	PUBLIC Name 		AS STRING
 	PUBLIC FieldType 	AS DBFieldType
 	PUBLIC Length 		AS LONG
@@ -353,7 +353,7 @@ STRUCTURE RddFieldInfo
 		Alias       := sName
 		RETURN
 	
-END STRUCTURE
+END CLASS
 
 CLASS DbJoinList
 END CLASS

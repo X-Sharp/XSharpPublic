@@ -6,18 +6,19 @@
 
 USING System
 USING XSharp.RDD
-USING AdvantageClientEngine
+USING XSharp.RDD.Enums
 
-
-CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
+CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC m_hStatement AS System.IntPtr
 
+	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SELF:m_hStatement := System.IntPtr.Zero
         SUPER:m_strDriver := "Advantage.AXSQLRDD"
 
+	/// <inheritdoc />
     VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLRDD):ToString()
-
+	/// <inheritdoc />
     VIRTUAL METHOD Close() AS Logic
         IF (! SUPER:Close())
             RETURN FALSE
@@ -34,24 +35,25 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
 
     PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:m_hStatement
 
+	/// <inheritdoc />
     VIRTUAL METHOD Info(uiOrdinal AS Int, oNewValue as Object) AS Object
-        IF (uiOrdinal == DBI_GET_ACE_STMT_HANDLE )
+        IF (uiOrdinal == DBInfo.DBI_GET_ACE_STMT_HANDLE )
             Return SELF:m_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
-
+	/// <inheritdoc />
     VIRTUAL METHOD Open(lpOpenInfo AS DBOPENINFO) AS Logic
         //LOCAL sName AS string
-        //LOCAL usual3 AS __Usual
-        //LOCAL usual AS __Usual
-        //LOCAL @@array AS __Array
+        //LOCAL usual3 AS Usual
+        //LOCAL usual AS Usual
+        //LOCAL @@array AS Array
         //LOCAL i AS Long
-        //LOCAL array2 AS __Array
+        //LOCAL array2 AS Array
         //LOCAL pucTableName AS string
         //LOCAL pucPassword AS string
         //LOCAL pucName AS Char[]
         //LOCAL length AS Word
-        //LOCAL usual2 AS __Usual
+        //LOCAL usual2 AS Usual
         ////
         //SUPER:PrintCallTrace(<string>{"Open"})
         //SUPER:AxCheckRDDInfo()
@@ -60,7 +62,7 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
             //SUPER:ACECALL(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."))
             //RETURN FALSE
         //ENDIF
-        //usual3 := __Usual._NIL
+        //usual3 := Usual._NIL
         //IF (Functions.VODBRDDInfo(205, @(usual3)))
             ////
             //sName := usual3
@@ -124,8 +126,8 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
             ////
             //RETURN FALSE
         //ENDIF
-        //usual := __Usual._NIL
-        //IF (Functions.VODBRDDInfo(206, @(usual)) .AND. (usual != __Usual._NIL))
+        //usual := Usual._NIL
+        //IF (Functions.VODBRDDInfo(206, @(usual)) .AND. (usual != Usual._NIL))
             ////
             //TRY
                 ////
@@ -184,7 +186,7 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
             //SUPER:m_Encoding := System.Text.Encoding.GetEncoding((Long)SUPER:GetWinCodePage() )
         //ENDIF
         //SUPER:m_uiArea := lpOpenInfo:uiArea
-        //usual2 := (__Usual)lpOpenInfo:sAlias:Substring(0, lpOpenInfo:sAlias:IndexOf(' ')) 
+        //usual2 := (Usual)lpOpenInfo:sAlias:Substring(0, lpOpenInfo:sAlias:IndexOf(' ')) 
         //Functions.Default(@(usual2), "")
         //SUPER:m_alias := Functions.__ConstructUniqueAlias(usual2)
         //RDDBase.aliases[((Long)RuntimeState.get_CurrentWorkarea()  - 1) + 1] := SUPER:m_alias
@@ -192,12 +194,13 @@ CLASS XSharp.RDD.AXSQLRDD INHERIT ADSRDD
         RETURN SUPER:RecordMovement()
  
 
+	/// <inheritdoc />
    VIRTUAL METHOD RecInfo(iRecID AS Object, uiOrdinal AS Int, oNewValue as OBJECT) AS OBJECT
     LOCAL isLive AS Byte
     LOCAL recNum AS DWord
     LOCAL dwCRC AS DWord
     LOCAL dwCRC2 AS DWord
-    IF uiOrdinal != DBRI_UPDATED  
+    IF uiOrdinal != DBRecordInfo.DBRI_UPDATED  
         RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:m_hTable, out isLive) == 0 .AND. isLive == 0

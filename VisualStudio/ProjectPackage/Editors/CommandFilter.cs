@@ -297,7 +297,7 @@ namespace XSharp.Project
                     }
                     else if (gotoElement.SystemElement != null)
                     {
-                        gotoObjectBrowser(gotoElement.SystemElement);
+                        //gotoObjectBrowser(gotoElement.SystemElement);
                         return;
                     }
                 }

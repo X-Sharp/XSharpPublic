@@ -13,7 +13,7 @@ The assembly must be registered in the GAC
    <compilers>
       <compiler language="XSharp" extension=".prg"
           type="XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider,
-          Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21,
+          Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586,
           ProcessorArchitecture=MSIL"/>
     </compilers>
 </system.codedom>

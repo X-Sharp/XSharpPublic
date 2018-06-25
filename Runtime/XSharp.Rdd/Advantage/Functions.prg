@@ -4,8 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-using AdvantageClientEngine
-
+using XSharp.ADS
+#ifdef NOTIMPLEMENTED 
 
 // Return the AXS locking status
 FUNCTION AX_AXSLocking( ) AS LOGIC 
@@ -174,13 +174,16 @@ FUNCTION AX_Transaction( ) AS LOGIC // Transaction call
 FUNCTION AX_UsingClientServer( ) AS LOGIC
     // return .T. if the current workarea is using Advantage Server or AIS Server and
     // .F. IF USING Advantage RDD IN a LOCAL mode
+	THROW NotImplementedException{}
+	/*
     LOCAL ulRetCode AS DWORD
     LOCAL ConnectionHandle := 0 AS IntPtr
     LOCAL usServerType := 0 AS WORD
     LOCAL strFileName AS STRING
-    strFileName := (String) DBINFO( DBI_FULLPATH )
+    strFileName := (String) XSharp.Core.Functions.DBINFO( DBInfo.DBI_FULLPATH )
     ulRetCode := ACE.AdsFindConnection(  strFileName , OUT ConnectionHandle )
     ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )
     RETURN ( usServerType == ACE.ADS_REMOTE_SERVER ) .OR. ( usServerType == ACE.ADS_AIS_SERVER )
+	*/
 
-
+#endif

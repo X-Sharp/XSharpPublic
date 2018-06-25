@@ -10,10 +10,10 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp
 USING XSharp.RDD
-using AdvantageClientEngine
+using XSharp.RDD.ENums
 
-CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
-    PRIVATE oRDD as ADSRDD
+CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
+    PRIVATE oRDD as ADSRDD 
 
 	CONSTRUCTOR(oArea as WorkArea)
 		SUPER(oArea)
@@ -21,10 +21,12 @@ CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
 
 	// Read & Write		
 
+	/// <inheritdoc />
 	VIRTUAL METHOD Flush() 			AS LOGIC
 		RETURN oRDD:Flush()
 
     
+	/// <inheritdoc />
 	VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
         LOCAL aFormat  AS Char[]
         LOCAL wLength  AS WORD
@@ -49,27 +51,34 @@ CLASS XSharp.RDD.ADSMemo INHERIT BaseMemo
 
 
     #region Unsupported
+	/// <inheritdoc />
     VIRTUAL METHOD CloseMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CloseMemFile")
 
+	/// <inheritdoc />
     VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CreateMemFile")
 
+	/// <inheritdoc />
 	VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
 	    RETURN oRDD:Unsupported("GetValue")
 
+	/// <inheritdoc />
 	VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 	    RETURN oRDD:Unsupported("GetValueFile")
 
+	/// <inheritdoc />
     VIRTUAL METHOD OpenMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("OpenMemFile")
 
+	/// <inheritdoc />
 	VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
         RETURN oRDD:Unsupported("PutValue")
 
+	/// <inheritdoc />
 	VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("PutValueFile")

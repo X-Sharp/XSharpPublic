@@ -6,24 +6,29 @@
 
 USING System
 USING XSharp.RDD
-USING AdvantageClientEngine
 
-CLASS XSharp.RDD.AXDBFVFP INHERIT ADSRDD
+
+/// <summary>Advantage.AXDBFVFP RDD </summary>
+CLASS XSharp.ADS.AXDBFVFP INHERIT ADSRDD
+	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SUPER()
         SUPER:m_usTableType := ACE.ADS_VFP
         SUPER:m_strDriver := "Advantage.AXDBFVFP"
         SUPER:MAX_KEY_SIZE := 240
-    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXDBFVFP):ToString()
-
+	/// <inheritdoc />
+		VIRTUAL PROPERTY SysName AS STRING GET m_strDriver
 END CLASS
 
-CLASS XSharp.RDD.AXSQLVFP INHERIT AXSQLRDD 
+/// <summary>Advantage.AXSQLVFP RDD </summary>
+CLASS XSharp.ADS.AXSQLVFP INHERIT AXSQLRDD 
+	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SUPER()
         SUPER:m_usTableType := ACE.ADS_VFP
         SUPER:m_strDriver := "Advantage.AXSQLVFP"
         SUPER:MAX_KEY_SIZE := 240
-    VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLVFP):ToString()
+	/// <inheritdoc />
+		VIRTUAL PROPERTY SysName AS STRING GET m_strDriver
 
 END CLASS

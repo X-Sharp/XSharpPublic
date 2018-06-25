@@ -5,56 +5,69 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>SDF RDD. For reading and writing text files.</summary>
 CLASS SDF INHERIT Workarea  
 	CONSTRUCTOR
 		SUPER()     
-		SELF:_Stream := NULL
+		SELF:_hFile    := IntPtr.Zero
 		SELF:_TransRec := TRUE
 		SELF:_RecordLength := 0
 		SELF:_BufferSize := 0
 //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
+/// <inheritdoc />
 METHOD GoTop() AS LOGIC
 	THROW NotImplementedException{}
 //	METHOD GoBottom() AS LOGIC   
+/// <inheritdoc />
 METHOD GoTo(nRec AS LONG) AS LOGIC
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD GoToId(oRec AS OBJECT) AS LOGIC
 	THROW NotImplementedException{}
 //	METHOD Skip(nToSkip AS INT) AS LOGIC
 //	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
+/// <inheritdoc />
 METHOD SkipRaw(nToSkip AS INT) AS LOGIC 
 	THROW NotImplementedException{}
 //	METHOD SkipScope(nToSkip AS INT) AS LOGIC
 
 	// Append and Delete
+/// <inheritdoc />
 METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD Delete() AS LOGIC   
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD GetRec() AS BYTE[]  
 	THROW NotImplementedException{}
 //	METHOD Pack() AS LOGIC
+/// <inheritdoc />
 METHOD PutRec(aRec AS BYTE[]) AS LOGIC 
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD Recall() AS LOGIC
 	THROW NotImplementedException{}
 //	METHOD Zap() AS LOGIC   
 		
 	// Open and Close   
+/// <inheritdoc />
 METHOD Close() 			AS LOGIC      
-	IF SELF:_Stream != NULL
+	IF SELF:_hFile   != IntPtr.Zero
 		SELF:GoCold()
-		IF !SELF:_ReadOnly // && hb_setGetEOF
-			SELF:_Stream:WriteByte(32)
+		if !self:_ReadOnly // && hb_setGetEOF
+			FWrite(self:_hFile, " ", 1)
 			SELF:_Flush := TRUE
 		ENDIF                  
 		SELF:Flush()
-		SELF:_Stream:Close()
-		SELF:_Stream := NULL
+		FClose(SELF:_hFile)
+		SELF:_hFile := IntPtr.Zero
 	ENDIF
 	RETURN SUPER:Close()
+/// <inheritdoc />
 METHOD Create(info AS DbOpenInfo) AS LOGIC  
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD Open(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{}		
 // Filtering and Scoping 
@@ -70,19 +83,24 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 //	METHOD FieldIndex(fieldName AS STRING) AS LONG 
 //  METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 //	METHOD FieldName(nFldPos AS LONG) AS STRING 
+/// <inheritdoc />
 METHOD GetValue(nFldPos AS INT) AS OBJECT
 	THROW NotImplementedException{}
 //  METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 
 //	METHOD GetValueLength(nFldPos AS INT) AS INT
+/// <inheritdoc />
 METHOD Flush() 			AS LOGIC
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 METHOD GoCold()			AS LOGIC
 	THROW NotImplementedException{}
+/// <inheritdoc />
 METHOD GoHot()			AS LOGIC   
 	THROW NotImplementedException{}
 
+/// <inheritdoc />
 METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
 	THROW NotImplementedException{}
 // METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
@@ -130,6 +148,7 @@ METHOD Trans(info AS DbTransInfo) 		AS LOGIC
 //	METHOD Compile(sBlock AS STRING) AS LOGIC
 //	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT	
 	// Other
+/// <inheritdoc />
 METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	THROW NotImplementedException{}
 //	METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
@@ -138,16 +157,21 @@ METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	// Properties
 //	PROPERTY Alias 		AS STRING GET
 //	PROPERTY BoF 		AS LOGIC GET
+	/// <inheritdoc />
 	PROPERTY Deleted 	AS LOGIC GET 	FALSE
 //	PROPERTY EoF 		AS LOGIC GET
 //	PROPERTY Exclusive	AS LOGIC GET
 //	PROPERTY FieldCount AS LONG GET 
 //	PROPERTY FilterText	AS STRING GET 
 //	PROPERTY Found		AS LOGIC GET 
+	/// <inheritdoc />
 	PROPERTY RecCount	AS LONG GET		0 
+	/// <inheritdoc />
 	PROPERTY RecId		AS OBJECT GET   NULL
+	/// <inheritdoc />
 	PROPERTY RecNo		AS LONG 	GET   0
 //	PROPERTY Shared		AS LOGIC GET
+/// <inheritdoc />
 VIRTUAL PROPERTY SysName AS STRING GET typeof(SDF):ToString()
 //	
 	// Error Handling

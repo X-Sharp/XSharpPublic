@@ -1,7 +1,7 @@
 ﻿using System
 using System.Runtime.InteropServices
 
-BEGIN namespace AdvantageClientEngine
+BEGIN namespace XSharp.ADS
 
 	INTERNAL CLASS ACEUNPUB
 		PRIVATE ENUM PathInfo

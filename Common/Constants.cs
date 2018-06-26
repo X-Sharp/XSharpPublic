@@ -9,7 +9,7 @@ namespace XSharp
     {
 
         internal const string Company = "XSharpBV";
-        internal const string ProductName = "XSharp Bandol Beta 1";
+        internal const string ProductName = "XSharp Bandol Beta 2";
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
         internal const string Version = "2.0.0.2";

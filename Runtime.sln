@@ -38,8 +38,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ConsoleApplication1", "Cons
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD.App", "Runtime\XSharp.RDD.App\XSharp.RDD.App.xsproj", "{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}"
 EndProject
-Project("{5891B814-A2E0-4E64-9A2F-2C2ECAB940FE}") = "ConsoleApplication2", "ConsoleApplication2\ConsoleApplication2.vnproj", "{07E557F2-B164-4C32-A832-4494DDD79DEC}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.Latebound.Tests", "Runtime\XSharp.VO.Latebound.Tests\XSharp.VO.Latebound.Tests.xsproj", "{0F183FB6-5A76-46ED-A4D9-5F9D5C5F1DE9}"
 EndProject
 Global
@@ -97,12 +95,6 @@ Global
 		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07E557F2-B164-4C32-A832-4494DDD79DEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07E557F2-B164-4C32-A832-4494DDD79DEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07E557F2-B164-4C32-A832-4494DDD79DEC}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{07E557F2-B164-4C32-A832-4494DDD79DEC}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{07E557F2-B164-4C32-A832-4494DDD79DEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07E557F2-B164-4C32-A832-4494DDD79DEC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F183FB6-5A76-46ED-A4D9-5F9D5C5F1DE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F183FB6-5A76-46ED-A4D9-5F9D5C5F1DE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F183FB6-5A76-46ED-A4D9-5F9D5C5F1DE9}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU

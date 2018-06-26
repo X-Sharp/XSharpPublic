@@ -10,6 +10,40 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading1">Changes in 2.0.0.1 (Bandol Beta 2)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The compiler now transparently accepts both Int and Dword parameters for XBase Array indices</li>
+      <li styleclass="List">When the compiler finds a weakly typed function in XSharp.VO and a strongly typed version in XSharp.Core then it will choose the strongly typed version in XSharp.Core now.</li>
+      <li styleclass="List">In the VO and Vulcan dialect sometimes an (incorrect) warning &apos;duplicate usings&apos; was displayed. This is now suppressed.</li>
+      <li styleclass="List">The debugger information for the Start function has been improved to avoid unnecessary step back to line 1 at the end of the code</li>
+      <li styleclass="List">The debugger break point information for BEGIN LOCK and BEGIN SCOPE has been improved</li>
+      <li styleclass="List">The debugger break point information for multi line properties has been improved</li>
+      <li styleclass="List">/vo6, /vo7 and /vo11 are now only supported in the VO/Vulcan dialect</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Removed DWORD overloads for Array indexers</li>
+      <li styleclass="List">Fixed overload problem for ErrString()</li>
+      <li styleclass="List">Fixed overload problem for _DebOut()</li>
+      <li styleclass="List">Fixed problems in DTOC() and Date:ToString() </li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed ASort() incompatibilities with VO</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed memory blocks now get filled with 0xFF when they are released to help detect problems </text></li>
+    </list>
+    <para styleclass="Heading2">Visual Studio</para>
+    <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fix &apos;Hang&apos; in VS2017 when building</li>
+      <li styleclass="List">Fix &apos;Hang&apos; in VS2017 when a tooltip (QuickInfo) was displayed</li>
+      <li styleclass="List">Fixed problem with debugging x64 apps</li>
+      <li styleclass="List">You can no longer rename or delete the Properties folder</li>
+      <li styleclass="List">Selecting &apos;Open&apos; from the context menu on the the Properties folder now opens the project properties screen</li>
+      <li styleclass="List">Updated several icons in the Project Tree </li>
+      <li styleclass="List">Enhancements in the Goto Definition</li>
+    </list>
+    <para styleclass="Heading2">Build System</para>
+    <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fix problem with CRLF in embedded resource commandline option</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.0.1 (Bandol Beta 1)</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">New features</para>

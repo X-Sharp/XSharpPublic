@@ -66,7 +66,7 @@ entity              : namespace_
                     | vounion					// Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     ;
 
-eos					: EOS+
+eos					: EOS+ 
 					;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
@@ -274,7 +274,7 @@ event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
                        EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=eos
                         | (LineAccessors += eventLineAccessor)+ end=eos
-                        | Multi=end=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? eos
+                        | Multi=eos (Accessors+=eventAccessor)+ END EVENT? Ignored=identifier? eos
                        )
                     ;
 
@@ -316,7 +316,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
-                      | Multi=end=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
+                      | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
                       )
                     ;
 

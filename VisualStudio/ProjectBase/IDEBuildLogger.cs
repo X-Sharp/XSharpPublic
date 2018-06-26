@@ -387,9 +387,12 @@ namespace Microsoft.VisualStudio.Project
             OutputQueueEntry output;
             lock (outputQueue)
             {
-                while (this.outputQueue.TryDequeue(out output))
+                if (!outputQueue.IsEmpty)
                 {
-                    ErrorHandler.ThrowOnFailure(output.Pane.OutputString(output.Message));
+                    while (this.outputQueue.TryDequeue(out output))
+                    {
+                        ErrorHandler.ThrowOnFailure(output.Pane.OutputString(output.Message));
+                    }
                 }
             }
         }

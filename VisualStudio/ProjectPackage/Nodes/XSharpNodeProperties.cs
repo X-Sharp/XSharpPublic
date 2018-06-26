@@ -19,6 +19,69 @@ using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
+    [CLSCompliant(false), ComVisible(true)]
+    public class XSharpPropertiesFolderNodeProperties : NodeProperties
+    {
+        #region properties
+        [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
+        [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
+        [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+        [AutomationBrowsable(false)]
+        public string FolderName
+        {
+            get
+            {
+                return this.Node.Caption;
+            }
+        }
+
+        #region properties - used for automation only
+        [Browsable(false)]
+        [AutomationBrowsable(true)]
+        public string FileName
+        {
+            get
+            {
+                return this.Node.Caption;
+            }
+        }
+
+        [Browsable(false)]
+        [AutomationBrowsable(true)]
+        public string FullPath
+        {
+            get
+            {
+                string fullPath = this.Node.GetMkDocument();
+                if (!fullPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                {
+                    return fullPath + Path.DirectorySeparatorChar;
+                }
+                else
+                {
+                    return fullPath;
+                }
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region ctors
+        public XSharpPropertiesFolderNodeProperties(HierarchyNode node)
+           : base(node)
+        {
+        }
+        #endregion
+
+        #region overridden methods
+        public override string GetClassName()
+        {
+            return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
+        }
+        #endregion
+    }
+
 
     [ComVisible(true), CLSCompliant(false)]
     [Guid("17A040D4-EED7-4a74-B87B-1984F9193CFA")]

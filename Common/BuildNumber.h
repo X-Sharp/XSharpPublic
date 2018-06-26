@@ -24,7 +24,8 @@
 #else
 	#define ASSEMBLY_CONFIGURATION "Release"
 #endif
+#define XSHARP_CORE_FUNCTIONS "XSharp.Core.Functions"
 #define BUILDNUMBER_H
 #endif
 
-#define XSHARP_CORE_FUNCTIONS "XSharp.Core.Functions"
+

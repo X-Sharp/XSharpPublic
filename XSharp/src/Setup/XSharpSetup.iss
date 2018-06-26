@@ -2,6 +2,9 @@
 ; Note that all folder name variables include the trailing backslash !
 ;
 
+; mssigntool = "c:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x86\signtool.exe"   $p
+
+
 #define Compression     "lzma2/ultra64"
 #ifndef Compression
 #define Compression     "lzma2/fast"
@@ -11,11 +14,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.0.1"
-#define FileNameVersion     "2Beta1"
-#define VIVersion           "2.0.0.1"
-#define TouchDate           "2018-06-13"
-#define TouchTime           "02:00:01"
+#define Version             "2.0.0.2"
+#define FileNameVersion     "2Beta2"
+#define VIVersion           "2.0.0.2"
+#define TouchDate           "2018-06-26"
+#define TouchTime           "02:00:02"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"

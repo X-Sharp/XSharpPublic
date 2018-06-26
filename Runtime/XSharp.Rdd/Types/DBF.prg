@@ -220,7 +220,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Lock the "future" record (Recno+1) and the Header
             // Unlock the Header
         METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
-            LOCAL isOk AS LOGIC
+            LOCAL isOk := FALSE AS LOGIC
             //
             BEGIN LOCK SELF
                 IF ( lockMode == DbLockMode.Lock )
@@ -530,7 +530,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             // Retrieve the raw content of a record
         METHOD GetRec() AS BYTE[]  
-            LOCAL records AS BYTE[]
+            LOCAL records := NULL AS BYTE[]
             // Read Record to Buffer
             BEGIN LOCK SELF
                 IF SELF:_readRecord()
@@ -1048,7 +1048,6 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         METHOD FieldIndex(fieldName AS STRING) AS LONG
-            LOCAL cName AS STRING
             IF ( SELF:_hFile != F_ERROR )
                 LOCAL i AS LONG
                 // FieldIndex is One-Based
@@ -1870,7 +1869,6 @@ BEGIN NAMESPACE XSharp.RDD
             
             /// <inheritdoc />
         VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
-            LOCAL oResult AS OBJECT
             LOCAL nCurrent := 0 AS LONG
             LOCAL isOk AS LOGIC
             //

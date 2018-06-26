@@ -130,8 +130,6 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL str AS STRING
             LOCAL rawData AS BYTE[]
             LOCAL memoBlock AS BYTE[]
-            LOCAL isOk := FALSE AS LOGIC
-            LOCAL locked := FALSE AS LOGIC
             //
             IF ( SELF:_hFile == F_ERROR )
                 RETURN FALSE
@@ -144,6 +142,8 @@ BEGIN NAMESPACE XSharp.RDD
                 str := STRING{ (CHAR)oValue, 1 }
             ELSEIF ( objTypeCode == TypeCode.String )
                 str := oValue ASTYPE STRING
+			ELSE
+				str := NULL
             ENDIF
             // Not a Char, Not a String
             IF ( str == NULL )

@@ -48,8 +48,15 @@ namespace XSharp.Project
          BindReferenceData();
        }
 
+        public override int ImageIndex
+        {
+            get
+            {
+                return XSharpImageListIndex.ReferenceContainer + XSharpProjectNode.imageOffset;
+            }
+        }
 
-      public XSharpComReferenceNode(ProjectNode root, VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
+        public XSharpComReferenceNode(ProjectNode root, VSCOMPONENTSELECTORDATA selectorData, string wrapperTool)
          : base(root, selectorData, wrapperTool)
       {
          if (String.IsNullOrEmpty(wrapperTool))

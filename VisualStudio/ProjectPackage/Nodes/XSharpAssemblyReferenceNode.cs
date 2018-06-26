@@ -32,6 +32,13 @@ namespace XSharp.Project
             return new XSharpAssemblyReferenceNodeProperties(this);
         }
 
+        public override int ImageIndex
+        {
+            get
+            {
+                return XSharpImageListIndex.ReferenceContainer + XSharpProjectNode.imageOffset;
+            }
+        }
 
-   }
+    }
 }

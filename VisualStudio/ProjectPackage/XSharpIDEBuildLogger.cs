@@ -56,31 +56,60 @@ namespace XSharp.Project
 
         protected override void BuildStartedHandler(object sender, BuildStartedEventArgs buildEvent)
         {
-            base.BuildStartedHandler(sender, buildEvent);
-            errorlistManager.ClearBuildErrors();
-            errors = warnings = 0;
-            didCompile = false;
+            try
+            {
+                base.BuildStartedHandler(sender, buildEvent);
+                errorlistManager.ClearBuildErrors();
+                errors = warnings = 0;
+                didCompile = false;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
         }
         protected override void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
         {
             if (didCompile)
             {
-                QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
+                try
+                {
+                    QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
+                    base.BuildFinishedHandler(sender, buildEvent);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             }
-            base.BuildFinishedHandler(sender, buildEvent);
         }
         protected override void ProjectStartedHandler(object sender, ProjectStartedEventArgs buildEvent)
         {
-            base.ProjectStartedHandler(sender, buildEvent);
-            mustLog = true;
+            try
+            {
+                base.ProjectStartedHandler(sender, buildEvent);
+                mustLog = true;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
         }
         protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
         {
-            base.ProjectFinishedHandler(sender, buildEvent);
-            if (didCompile)
+            try
             {
-                errorlistManager.Refresh();
+                base.ProjectFinishedHandler(sender, buildEvent);
+                if (didCompile)
+                {
+                    errorlistManager.Refresh();
+                }
             }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
         }
 
         protected override void QueueTaskEvent(BuildEventArgs errorEvent)
@@ -109,9 +138,9 @@ namespace XSharp.Project
         }
         protected override void MessageHandler(object sender, BuildMessageEventArgs messageEvent)
         {
-            base.MessageHandler(sender, messageEvent);
             try
             {
+                base.MessageHandler(sender, messageEvent);
                 if (messageEvent is TaskCommandLineEventArgs)
                 {
                     var taskEvent = messageEvent as TaskCommandLineEventArgs;
@@ -136,12 +165,25 @@ namespace XSharp.Project
         }
         protected void ReportError(BuildErrorEventArgs args)
         {
-            errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
-
+            try
+            {
+                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
         }
         protected void ReportWarning(BuildWarningEventArgs args)
         {
-            errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
+            try
+            {
+                errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
         }
     }
 }

@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD
             GET
                 LOCAL nCount := 0 AS WORD
                 TRY
-                    nCount := BitConverter.ToInt16( SELF:_Bytes, 0)
+                    nCount := BitConverter.ToUInt16( SELF:_Bytes, 0)
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL nOffset := 0 AS WORD
                 LOCAL item := null AS NtxItem
                 TRY
-                    nOffset := BitConverter.ToInt16( SELF:_Bytes, index * 2 )
+                    nOffset := BitConverter.ToUInt16( SELF:_Bytes, index * 2 )
                     item := NtxItem{ SELF, nOffset }
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )

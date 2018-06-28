@@ -481,9 +481,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool needsExtraReturn = false;
             bool needsReturnValue = false;
             bool hasReturnVar = false;
-            var lastStmt = originalbody.Statements.Last;
-            if (lastStmt == null)
-                lastStmt = originalbody;
+            var lastStmt = (StatementSyntax) originalbody ;
+            if (originalbody.Statements.Count > 0)
+                lastStmt = originalbody.Statements.Last;
             var lastXnode = lastStmt.XNode;
             var newbody = new List<StatementSyntax>();     // contains the copied and adjusted statements
             var endbody = new List<StatementSyntax>();     // contains the cleanup code
@@ -774,12 +774,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.ArraySub != null && context.Dim == null && 
                 (context.DataType == null || 
-                    context.DataType.Get<TypeSyntax>() == _arrayType ))
+                    context.DataType.Get<TypeSyntax>() == _arrayType ||
+                    context.DataType.Get<TypeSyntax>() == _usualType))
             {
                 // Change LOCAL a[20]   to LOCAL a[20] AS ARRAY
                 // Build the whole tree because when this is used in Start() then we try to determine if
                 // the locals needs to be assigned with NULL and that code expects the complete tree
-                if (context.DataType == null)
+                if (context.DataType == null )
                 {
                     var dataType = FixPosition(new XP.DatatypeContext(context, 0), context.Stop);
                     var sdt = new XP.SimpleDatatypeContext(dataType);
@@ -793,6 +794,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     typeName.AddChild(xBaseType);
                     var token = new XSharpToken(XP.ARRAY, "ARRAY");
                     xBaseType.Start = token;
+                }
+                if (context.DataType.Get<TypeSyntax>() == _usualType)
+                {
+                    context.DataType.CsNode = _arrayType;
                 }
                 var initializer = GenerateVOArrayInitializer(context.ArraySub);
                 if (context.Expression != null)

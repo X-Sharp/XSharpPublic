@@ -36,7 +36,10 @@ namespace XSharp.Project
         {
             get
             {
-                return XSharpImageListIndex.ReferenceContainer + XSharpProjectNode.imageOffset;
+                if (this.CanShowDefaultIcon())
+                    return XSharpImageListIndex.Reference + XSharpProjectNode.imageOffset;
+                else
+                    return XSharpImageListIndex.DanglingReference + XSharpProjectNode.imageOffset;
             }
         }
 

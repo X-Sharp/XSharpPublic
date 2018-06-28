@@ -63,7 +63,8 @@ namespace XSharp.Project
         public const int Grid = 7;
         public const int Test = 8;
         public const int Properties = 9;
-        public const int ReferenceContainer = 10;
+        public const int Reference = 10;
+        public const int DanglingReference = 11;
 
     }
 }

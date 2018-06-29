@@ -123,6 +123,24 @@ begin namespace XSharpModel
 				return parameters
 			end get
 		end property
+
+		property ComboParameterList as string
+			get
+				var parameters := ""
+				foreach variable as XVariable in self:Parameters
+					if (parameters:Length > 0)
+						parameters := parameters + ", "
+					ENDIF
+					var cType := variable:ShortTypeName
+					IF variable:IsTyped .and. variable:ParamType != ParamType.As
+						parameters += variable:ParamTypeDesc + cType
+					ELSE
+						parameters += cType
+					endif
+				next
+				return parameters
+			end get
+		end property
 		
 		property Parameters as IEnumerable<XVariable> 
 		get  
@@ -144,6 +162,19 @@ begin namespace XSharpModel
 			end get
 		end property
 		
+		property ComboPrototype as string
+			get
+				var vars := ""
+				if self:Kind:HasParameters()
+					vars := "(" + self:ComboParameterList + ")"
+				endif
+				var desc := super:Name + vars
+				if self:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(self:TypeName)
+					desc := desc + AsKeyWord + self:TypeName
+				endif
+				return desc
+			end get
+		end property		
 		property TypeName as string get self:_typeName
 		#endregion
 	end class

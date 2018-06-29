@@ -52,6 +52,7 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY Parent AS XElement GET SELF:_parent SET SELF:_parent := VALUE
 			VIRTUAL PROPERTY ParentName AS STRING GET SELF:_parent?:FullName
 			VIRTUAL PROPERTY Prototype AS STRING GET SELF:Name
+			VIRTUAL PROPERTY ComboPrototype AS STRING GET SELF:Name
 			PROPERTY Range AS TextRange GET SELF:_range
 			PROPERTY Visibility AS Modifiers GET SELF:_Visibility
 			

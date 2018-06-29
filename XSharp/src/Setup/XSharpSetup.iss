@@ -5,12 +5,11 @@
 ; mssigntool = "c:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x86\signtool.exe"   $p
 
 
-#define Compression     "none" 
-#define Compression     "lzma2/ultra64"
 #ifndef Compression
-#define Compression     "lzma2/fast"
+#define Compression     "lzma2/ultra64"
 #endif
-#define FOX
+;#define FOX
+#undef FOX
 
 
 ; version info and similar stuff.
@@ -18,7 +17,7 @@
 #define Version             "2.0.0.2"
 #define FileNameVersion     "2Beta2"
 #define VIVersion           "2.0.0.2"
-#define TouchDate           "2018-06-28"
+#define TouchDate           "2018-06-29"
 #define TouchTime           "02:00:02"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -204,7 +203,9 @@ Name: "xide";             Description: "Include the XIDE {# XIDEVersion} install
 [Dirs]
 Name: "{app}\Assemblies";
 Name: "{app}\Bin";
+#ifdef FOX
 Name: "{app}\Debug";
+#endif
 Name: "{app}\Help";
 Name: "{app}\Images";
 Name: "{app}\Include";
@@ -356,6 +357,7 @@ Source: "{#BinFolder}System.Collections.Immutable.dll";     DestDir: "{app}\Redi
 Source: "{#BinFolder}System.Reflection.Metadata.dll";       DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Valuetuple.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 ;Debug versions
+#ifdef FOX
 Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
 Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
 Source: "{#BinRtDFolder}XSharp.VO.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
@@ -366,6 +368,7 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Deb
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
 Source: "{#BinDFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
 Source: "{#BinDFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
+#endif
 ; Assemblies for Add References Dialog
 Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
 Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
@@ -633,7 +636,9 @@ Type: files;          Name: "{app}\License.rtf";
 Type: filesandordirs; Name: "{app}\Xide"; 
 Type: filesandordirs; Name: "{app}\VOXporter"; 
 Type: filesandordirs; Name: "{app}\Bin"; 
+#ifdef FOX
 Type: filesandordirs; Name: "{app}\Debug"; 
+#endif
 Type: filesandordirs; Name: "{app}\Extension"; 
 Type: filesandordirs; Name: "{app}\MsBuild"; 
 Type: filesandordirs; Name: "{app}\Assemblies"; 
@@ -663,7 +668,9 @@ Type: filesandordirs; Name: "{group}" ;
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Assemblies"                    ; 
 Type: filesandordirs; Name: "{app}\Bin"                           ; 
+#ifdef FOX
 Type: filesandordirs; Name: "{app}\Debug"; 
+#endif
 Type: filesandordirs; Name: "{app}\Extension"                     ; 
 Type: filesandordirs; Name: "{app}\Help"                          ; 
 Type: filesandordirs; Name: "{app}\Images"                        ; 
@@ -1295,7 +1302,6 @@ end;
 
 /////////////////////////////////////////////////////////////////////
 Procedure CurPageChanged(CurPage: Integer);
-var vfile : string;
 begin
   PrintButton.Visible := CurPage = wpLicense;
   Checkvs2017Help;

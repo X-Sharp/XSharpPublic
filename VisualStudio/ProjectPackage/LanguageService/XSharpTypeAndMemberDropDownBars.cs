@@ -118,7 +118,7 @@ namespace XSharp.LanguageService
                 for (int i = 0; i < dropDownMembers.Count; i++)
                 {
                     var member = (XDropDownMember) dropDownMembers[i];
-                    if (member.Element.Prototype == selectedElement.Prototype)
+                    if (member.Element.ComboPrototype == selectedElement.ComboPrototype)
                     {
                         selectedMember = i;
                         break;
@@ -270,7 +270,7 @@ namespace XSharp.LanguageService
                             ft = member.File == file ? DROPDOWNFONTATTR.FONTATTR_PLAIN : DROPDOWNFONTATTR.FONTATTR_GRAY;
                         }
 
-                        string prototype = member.Prototype;
+                        string prototype = member.ComboPrototype;
                         elt = new XDropDownMember(prototype, spM, member.Glyph, ft);
                         nSelect = dropDownMembers.Add(elt);
                         elt.Element = member;

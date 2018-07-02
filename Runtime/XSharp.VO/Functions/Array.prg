@@ -961,6 +961,14 @@ FUNCTION ArrayBuild() AS ARRAY
 	RETURN ARRAY{}
 	
 /// <summary>
+/// Create an uninitialized Array with a single dimension and no elements.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION ArrayNew() AS ARRAY
+	RETURN ArrayNew(0)
+	
+/// <summary>
 /// Create an uninitialized Array with the specified number of elements and dimensions.
 /// </summary>
 /// <param name="nDim"></param>

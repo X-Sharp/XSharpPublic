@@ -301,5 +301,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		RETURN
 
+ 		[Trait("Category", "ArrayNew")];
+		[Fact];
+		METHOD ArrayNewTest() AS VOID
+			LOCAL a AS ARRAY
+			a := ArrayNew(0)
+			Assert.Equal(0, (INT) ALen(a))
+			a := ArrayNew()
+			Assert.Equal(0, (INT) ALen(a))
+		RETURN
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

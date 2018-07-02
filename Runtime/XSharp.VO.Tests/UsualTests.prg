@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 
@@ -16,23 +16,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS UsualTests
 
 		[Fact, Trait("Category", "Usual")];
-		METHOD UsualDateTimeTest() as void
-			local now as DateTime
-			local u   as Usual
+		METHOD UsualDateTimeTest() AS VOID
+			LOCAL now AS DateTime
+			LOCAL u   AS USUAL
 		    now := System.DateTime.Now
 			u := now
 			// cannot call u:ToString directly because of late binding in other tests
-			var s := u:ToString()
+			VAR s := u:ToString()
 			Assert.Equal(now:ToString(),u:ToString())
-			local check as DateTime
+			LOCAL check AS DateTime
 			check := u
 			Assert.Equal(now, check)
 		RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDecimalTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL l as Decimal
+			LOCAL u AS USUAL
+			LOCAL l AS Decimal
 			l := 1
 			u := l
 			Assert.Equal(UsualType(u), (DWORD) 27)
@@ -55,23 +55,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualInt64Tests() AS VOID
-			LOCAL u AS Usual
-			LOCAL l as Int64
+			LOCAL u AS USUAL
+			LOCAL l AS INT64
 			u :=  1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
 			Assert.Equal(l,1)
-			Assert.Equal(l,  (Int64) u)
+			Assert.Equal(l,  (INT64) u)
 			u := UInt64.MaxValue
-			Assert.Throws(typeof(Error), { => l := (Int64) u})	// Overflow Error
+			Assert.Throws(typeof(Error), { => l := (INT64) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => l := (Int64) u})	// Conversion Error
+			Assert.Throws(typeof(Error), { => l := (INT64) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualLongTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL l as LONG
+			LOCAL u AS USUAL
+			LOCAL l AS LONG
 			u := 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
@@ -86,9 +86,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualShortTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL l as LONG
-			u := (Usual) (Short)1
+			LOCAL u AS USUAL
+			LOCAL l AS LONG
+			u := (USUAL) (SHORT)1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
 			Assert.Equal(l,1)
@@ -102,8 +102,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSByteTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL l as SByte
+			LOCAL u AS USUAL
+			LOCAL l AS SByte
 			u := (SByte)1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			l := u
@@ -117,8 +117,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualUInt64Tests() AS VOID
-			LOCAL u AS Usual
-			LOCAL d as UInt64
+			LOCAL u AS USUAL
+			LOCAL d AS UInt64
 			u := (Uint64) 1
 			Assert.Equal(UsualType(u), (DWORD) INT64)
 			d := u
@@ -132,8 +132,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualDwordTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL d as DWORD
+			LOCAL u AS USUAL
+			LOCAL d AS DWORD
 			u := (DWORD) 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			d := u
@@ -147,8 +147,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualwordTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL w as WORD
+			LOCAL u AS USUAL
+			LOCAL w AS WORD
 			u :=  (WORD) 1
 			Assert.Equal(UsualType(u), (DWORD) LONG)
 			w := u
@@ -162,8 +162,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualByteTests() AS VOID
-			LOCAL u AS Usual
-			LOCAL b as Byte
+			LOCAL u AS USUAL
+			LOCAL b AS BYTE
 			b := 1
 			u :=  b
 			Assert.Equal(UsualType(u), (DWORD) LONG)
@@ -178,91 +178,114 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualAddOperatorTests() AS VOID
-			LOCAL u AS Usual
+			LOCAL u AS USUAL
 			u :=  1
 			u += 1
-			Assert.Equal((Int) u, 2)
-			u += (int64) 1
-			Assert.Equal((Int) u, 3)
+			Assert.Equal((INT) u, 2)
+			u += (INT64) 1
+			Assert.Equal((INT) u, 3)
 			u += 1.0
-			Assert.Equal((Int) u, 4)
+			Assert.Equal((INT) u, 4)
 			u++
-			Assert.Equal((Int) u, 5)
+			Assert.Equal((INT) u, 5)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
 			u := (INT64) 1
-			u += (int) 1
-			Assert.Equal((Int64) u, 2)
-			u += (int64) 1
-			Assert.Equal((Int64) u, 3)
+			u += (INT) 1
+			Assert.Equal((INT64) u, 2)
+			u += (INT64) 1
+			Assert.Equal((INT64) u, 3)
 			u += 1.0
-			Assert.Equal((Int64) u, 4)
+			Assert.Equal((INT64) u, 4)
 			u++
-			Assert.Equal((Int64) u, 5)
+			Assert.Equal((INT64) u, 5)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
 			u :=   1.0
 			u += 1
-			Assert.Equal((Float) u, 2.0)
-			u += (int64) 1
-			Assert.Equal((Float) u, 3.0)
+			Assert.Equal((FLOAT) u, 2.0)
+			u += (INT64) 1
+			Assert.Equal((FLOAT) u, 3.0)
 			u += 1.0
-			Assert.Equal((Float) u, 4.0)
+			Assert.Equal((FLOAT) u, 4.0)
 			u ++
-			Assert.Equal((Float) u, 5.0)
+			Assert.Equal((FLOAT) u, 5.0)
 			Assert.Throws(typeof(Error), { => u += "a"})	
 
 			u := "abc"
 			u += "def"
-			Assert.Equal((string) u, "abcdef")
+			Assert.Equal((STRING) u, "abcdef")
 			Assert.Throws(typeof(Error), { => u += 1})	
 
-			var d := (Date) datetime.Now
+			VAR d := (DATE) datetime.Now
 			u := d
 			u += 1
 			d += 1
-			Assert.Equal((Date) u,  d)
+			Assert.Equal((DATE) u,  d)
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSubOperatorTests() AS VOID
-			LOCAL u AS Usual
+			LOCAL u AS USUAL
 			u := 100
 			u -= 1
-			Assert.Equal((Int) u, 99)
-			u -= (int64) 1
-			Assert.Equal((Int) u, 98)
+			Assert.Equal((INT) u, 99)
+			u -= (INT64) 1
+			Assert.Equal((INT) u, 98)
 			u -= 1.0
-			Assert.Equal((Int) u, 97)
+			Assert.Equal((INT) u, 97)
 			u--
-			Assert.Equal((Int) u, 96)
+			Assert.Equal((INT) u, 96)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
 			u := (INT64) 1000
-			u -= (int) 1
-			Assert.Equal((Int64) u, 999)
-			u -= (int64) 1
-			Assert.Equal((Int64) u, 998)
+			u -= (INT) 1
+			Assert.Equal((INT64) u, 999)
+			u -= (INT64) 1
+			Assert.Equal((INT64) u, 998)
 			u -= 1.0
-			Assert.Equal((Int64) u, 997)
+			Assert.Equal((INT64) u, 997)
 			u--
-			Assert.Equal((Int64) u, 996)
+			Assert.Equal((INT64) u, 996)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
 			u := 111.1
 			u -= 1
-			Assert.Equal((Float) u, 110.1)
-			u -= (int64) 1
-			Assert.Equal((Float) u, 109.1)
+			Assert.Equal((FLOAT) u, 110.1)
+			u -= (INT64) 1
+			Assert.Equal((FLOAT) u, 109.1)
 			u -= 1.0
-			Assert.Equal((Float) u, 108.1)
+			Assert.Equal((FLOAT) u, 108.1)
 			u--
-			Assert.Equal((Float) u, 107.1)
+			Assert.Equal((FLOAT) u, 107.1)
 			Assert.Throws(typeof(Error), { => u -= "a"})	
 
 			u := "abc"
 			u -= "def"
-			Assert.Equal((string) u, "abcdef")
+			Assert.Equal((STRING) u, "abcdef")
 			Assert.Throws(typeof(Error), { => u -= 1})	
+
+		[Fact, Trait("Category", "Usual string comparisons")];
+		METHOD UsualStringComparisons() AS VOID
+			LOCAL lExact := SetExact() AS LOGIC
+			LOCAL u AS USUAL
+			
+			FOR LOCAL n := 1 AS INT UPTO 2
+				SetExact(n == 1)
+				u := "ABC"
+				// do not chnage to Assert.Equal(), we need to test the operators
+				Assert.False(u = "123456")
+				Assert.False(u == "123456")
+				Assert.True(u != "123456")
+				Assert.True(u <> "123456")
+
+				u := "123456"
+				Assert.False(u = "ABC")
+				Assert.False(u == "ABC")
+				Assert.True(u != "ABC")
+				Assert.True(u <> "ABC")
+			NEXT
+			
+			SetExact(lExact)
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

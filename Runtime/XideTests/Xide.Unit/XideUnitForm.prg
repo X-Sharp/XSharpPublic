@@ -33,6 +33,7 @@ PARTIAL CLASS UnitForm INHERIT System.Windows.Forms.Form
 			oTest := oItem:Tag ASTYPE TestInfo
 			SELF:RunTest(oTest)
 		NEXT
+		SELF:ShowResults()
 	RETURN
 	
 	METHOD RunSelectedButtonClick(sender AS System.Object , e AS System.EventArgs) AS VOID
@@ -41,6 +42,7 @@ PARTIAL CLASS UnitForm INHERIT System.Windows.Forms.Form
 			oTest := oItem:Tag ASTYPE TestInfo
 			SELF:RunTest(oTest)
 		NEXT
+		SELF:ShowResults()
 	RETURN
 
 	METHOD RunTest(oTest AS TestInfo) AS VOID
@@ -96,6 +98,17 @@ PARTIAL CLASS UnitForm INHERIT System.Windows.Forms.Form
 			oItem:SubItems[1]:Text := oException:GetType():ToString()
 		END IF*/
 		
+	RETURN
+	
+	METHOD ShowResults() AS VOID
+		LOCAL nFailed := 0, nTotal := 0 AS INT
+		FOREACH oItem AS ListViewItem IN SELF:oTestsList:Items
+			LOCAL oTest AS TestInfo
+			oTest := oItem:Tag ASTYPE TestInfo
+			nFailed += oTest:CountFailedSubTests()
+			nTotal += oTest:SubTests:Count
+		NEXT
+		SELF:Text := System.String.Format("Failed {0} out of {1} tests" , nFailed , nTotal)
 	RETURN
 	
 	METHOD GetTestItem(oTest AS TestInfo) AS ListViewItem

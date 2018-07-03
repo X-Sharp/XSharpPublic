@@ -189,7 +189,7 @@ namespace XSharp.Project
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent, IVsShellPropertyEvents
+    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent, IVsShellPropertyEvents, IVsDebuggerEvents
     {
         private uint m_componentID;
         private static XSharpProjectPackage instance;
@@ -244,7 +244,7 @@ namespace XSharp.Project
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
             validateVulcanEditors();
-
+            this.RegisterDebuggerEvents();
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
@@ -309,6 +309,7 @@ namespace XSharp.Project
         {
             try
             {
+                this.UnRegisterDebuggerEvents();
                 if (null != _libraryManager)
                 {
                     _libraryManager.Dispose();
@@ -485,7 +486,46 @@ namespace XSharp.Project
             }
             return VSConstants.S_OK;
         }
+        #endregion
 
+        #region IVSDebuggerEvents
+        private IVsDebugger m_debugger = null;
+        private uint m_Debuggercookie = 0;
+        DBGMODE[] modeArray = new DBGMODE[1];
+        private void RegisterDebuggerEvents()
+        {
+            int hr;
+            m_debugger = base.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
+            if (m_debugger != null)
+            {
+                hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                // Get initial value
+                hr = m_debugger.GetMode(modeArray);
+
+            }
+        }
+        private void UnRegisterDebuggerEvents()
+        {
+            int hr;
+            if (m_debugger != null)
+            {
+                if (m_Debuggercookie != 0)
+                {
+                    hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                    m_Debuggercookie = 0;
+                }
+                m_debugger = null;
+            }
+
+        }
+        public int OnModeChange(DBGMODE dbgmodeNew)
+        {
+            modeArray[0] = dbgmodeNew;
+            return VSConstants.S_OK;
+        }
+        internal bool DebuggerIsRunning => modeArray[0] != DBGMODE.DBGMODE_Design;
         #endregion
 
 

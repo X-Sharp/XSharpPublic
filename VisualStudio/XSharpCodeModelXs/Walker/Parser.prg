@@ -1419,7 +1419,8 @@ begin namespace XSharpModel
 				case EntityType._Constructor
 				case EntityType._Destructor
 				case EntityType._Operator
-				case EntityType._Event
+				CASE EntityType._Event
+				case EntityType._EnumMember
 					return true
 			end switch
 			return false

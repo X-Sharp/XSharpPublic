@@ -2502,6 +2502,10 @@ namespace XSharpLanguage
                 //return tokenList;
             }
             nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+            if (stopToken == null)
+            {
+                stopToken = nextToken;
+            }
             // Now, let's build the Token chain, so we can guess what to add in the CompletionList
             IToken triggerToken = null;
             token = "";
@@ -3003,6 +3007,10 @@ namespace XSharpLanguage
                             cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
                         }
                     }
+                    if (foundElement == null)
+                    {
+                        cType = SearchType(file, currentToken, out foundElement);
+                    }
                 }
                 //
                 if (cType.IsEmpty())
@@ -3045,6 +3053,27 @@ namespace XSharpLanguage
             return cType;
         }
 
+        static public CompletionType SearchType(XFile xFile, string currentToken, out CompletionElement foundElement)
+        {
+            foundElement = null;
+            CompletionType cType = null;
+            var type = xFile.Project.Lookup(currentToken, true);
+            if (type != null)
+            {
+                cType = new CompletionType(type);
+                foundElement = new CompletionElement(type);
+            }
+            else
+            {
+                var type2 = xFile.Project.FindSystemType(currentToken, xFile.Usings);
+                if (type2 != null)
+                {
+                    cType = new CompletionType(type2);
+                    foundElement = new CompletionElement(type2);
+                }
+            }
+            return cType;
+        }
 
 
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,

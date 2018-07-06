@@ -2804,6 +2804,7 @@ namespace XSharpLanguage
             foundElement = null;
             CompletionType cType = null;
             int currentPos = 0;
+            var startOfExpression = true;
             String currentToken = "";
             //
             if (currentMember == null)
@@ -2873,6 +2874,8 @@ namespace XSharpLanguage
             while (currentPos < tokenList.Count)
             {
                 currentToken = tokenList[currentPos];
+                var lastToken = currentToken;
+
                 //
                 int dotPos = currentToken.LastIndexOf(".");
                 if (dotPos > -1)
@@ -2898,6 +2901,7 @@ namespace XSharpLanguage
                     if (!cType.IsEmpty())
                     {
                         currentToken = currentToken.Substring(dotPos + 1);
+                        startOfExpression = false;
                         if (String.IsNullOrEmpty(currentToken))
                         {
                             currentPos += 2;
@@ -2994,7 +2998,7 @@ namespace XSharpLanguage
                         currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     }
                     // First token, so it could be a parameter or a local var
-                    if (currentPos == 0)
+                    if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine);
@@ -3009,7 +3013,7 @@ namespace XSharpLanguage
                     }
                     if (foundElement == null)
                     {
-                        cType = SearchType(file, currentToken, out foundElement);
+                        cType = SearchType(file, currentToken, out foundElement, currentMember.Parent.NameSpace);
                     }
                 }
                 //
@@ -3019,10 +3023,27 @@ namespace XSharpLanguage
                     cType = null;
                 }
                 // Next Token
-                currentPos += 2;
+                currentPos += 1;
                 if (currentPos >= tokenList.Count)
                 {
                     break;
+                }
+                currentToken = tokenList[currentPos];
+                if (currentToken == "." || currentToken == ":")
+                {
+                    currentPos += 1;
+                    if (currentPos >= tokenList.Count)
+                    {
+                        break;
+                    }
+                }
+                if (lastToken.EndsWith("(") || lastToken.EndsWith(")") || lastToken.EndsWith("{") || lastToken.EndsWith("}"))
+                {
+                    startOfExpression = true;
+                }
+                else
+                {
+                    startOfExpression = false;
                 }
                 //
                 visibility = Modifiers.Public;
@@ -3053,11 +3074,15 @@ namespace XSharpLanguage
             return cType;
         }
 
-        static public CompletionType SearchType(XFile xFile, string currentToken, out CompletionElement foundElement)
+        static public CompletionType SearchType(XFile xFile, string currentToken, out CompletionElement foundElement, string currentNs)
         {
             foundElement = null;
             CompletionType cType = null;
             var type = xFile.Project.Lookup(currentToken, true);
+            if (type == null && !string.IsNullOrEmpty(currentNs ))
+            {
+                type = xFile.Project.Lookup(currentNs+"."+currentToken, true);
+            }
             if (type != null)
             {
                 cType = new CompletionType(type);

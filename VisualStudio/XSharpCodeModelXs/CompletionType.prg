@@ -145,15 +145,14 @@ begin namespace XSharpModel
 		
 		private method CheckProjectType(typeName as string, xprj as XProject, usings as IList<string>) as void
 			local xType as XType
-			local fqn as string
 			//
 			xType := xprj:Lookup(typeName, true)
 			if xType == null
 				xType := xprj:LookupFullName(typeName, true)
 				if xType == null .AND. usings != null
 
-					foreach usingStatement as string in usings:Expanded()
-						fqn := fqn + "." + typeName
+					foreach name as string in usings:Expanded()
+						var fqn := name + "." + typeName
 						xType := xprj:LookupFullName(fqn, true)
 						if (xType != null)
 							exit
@@ -167,11 +166,10 @@ begin namespace XSharpModel
 		
 		private method CheckStrangerProjectType(typeName as string, xprj as XProject, usings as IList<string>) as void
 			local codeElt as CodeElement
-            		LOCAL fqn AS string
 			codeElt := xprj:LookupForStranger(typeName, true)
 			if codeElt == null
-				foreach usingStatement as string in usings:Expanded()
-					fqn :=  usingStatement +  "." + typeName
+				foreach name as string in usings:Expanded()
+					var fqn :=  name +  "." + typeName
 					codeElt := xprj:LookupForStranger(fqn, true)
 					if codeElt != null
 						exit

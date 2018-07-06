@@ -179,7 +179,7 @@ begin namespace XSharpModel
 			aUsingStatics	:= List<String>{}
 			foreach oElement as EntityObject in oInfo:Types
 				oType   := XType.create(self, oElement,oInfo)
-				aTypes:Add( oType:Name, oType)
+				aTypes:Add( oType:FullName, oType)
 				self:Project:RemoveMergedType(oType)
 			next
 			foreach oLine as LineObject in oInfo:SpecialLines

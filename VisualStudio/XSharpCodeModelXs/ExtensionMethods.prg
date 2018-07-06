@@ -90,7 +90,8 @@ begin namespace XSharpModel
 			switch elementKind
 				case Kind.Field 
 				case Kind.VOGlobal 
-				case Kind.VODefine 
+				CASE Kind.VODefine 
+				case Kind.EnumMember
 					return true
 			end switch
 			return false

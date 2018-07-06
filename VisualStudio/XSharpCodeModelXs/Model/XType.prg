@@ -49,7 +49,8 @@ begin namespace XSharpModel
             self:ParentName := oOther:ParentName
             self:IsPartial := oOther:IsPartial
             self:IsStatic := oOther:IsStatic
-            self:File := oOther:File
+            SELF:File := oOther:File
+			self:NameSpace := oOther:NameSpace
 			self:AddMembers(oOther:Members)
 			return
 
@@ -66,10 +67,8 @@ begin namespace XSharpModel
 			mods &= ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 			
 			CalculateRange(oElement, oInfo, OUT span, OUT intv)
-			IF (! String.IsNullOrEmpty(oElement:cClassNamespace))
-				cName := oElement:cClassNamespace+"."+cName
-			endif
 			oXType := XType{cName, kind, mods, vis, span, intv}
+			oXType:NameSpace := oElement:cClassNamespace
 			oXType:File := oFile
 			oXType:ParentName := oElement:cInherit
 			if String.IsNullOrEmpty(oXType:ParentName) .and. ! oXType:IsPartial
@@ -88,6 +87,10 @@ begin namespace XSharpModel
 					local xMember as XTypeMember
 					xMember := XTypeMember.Create(oElement, oInfo, oFile, oXType)
 					oXType:AddMember(xMember)
+				ENDIF
+				IF oXType.Kind == Kind.Enum
+					
+					System.Diagnostics.Debug.WriteLine("")
 				endif
 			endif
 
@@ -167,8 +170,7 @@ begin namespace XSharpModel
 			return clone
 		
 		
-		property NameSpace as string get _namespace set _namespace := value
-		
+		PROPERTY NameSpace AS STRING GET _namespace SET _namespace := value
 		
         /// <summary>
         /// If this XType is a Partial type, return a Copy of it, merged with all other informations

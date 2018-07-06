@@ -54,7 +54,6 @@ namespace XSharp.Project
                     }
                     lastTriggerPoint = subjectTriggerPoint.Value.Position;
                     ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
-                    SnapshotSpan querySpan = new SnapshotSpan(subjectTriggerPoint.Value, 0);
 
                     //look for occurrences of our QuickInfo words in the span
                     ITextStructureNavigator navigator = _provider.NavigatorService.GetTextStructureNavigator(_subjectBuffer);
@@ -72,7 +71,8 @@ namespace XSharp.Project
                     //ITokenStream tokenStream;
                     XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
                     XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
-                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, _file, false, member);
+                    // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
+                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos+1, lineNumber, snapshot, out stopToken, true, _file, false, member);
                     // Check if we can get the member where we are
                     //if (tokenList.Count > 1)
                     //{
@@ -94,7 +94,6 @@ namespace XSharp.Project
                         // Ok, find it ! Let's go ;)
                         applicableToSpan = currentSnapshot.CreateTrackingSpan
                             (
-                                                    //querySpan.Start.Add(foundIndex).Position, 9, SpanTrackingMode.EdgeInclusive
                                                     extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
                             );
 

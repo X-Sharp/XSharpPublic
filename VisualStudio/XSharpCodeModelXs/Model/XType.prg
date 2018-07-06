@@ -65,7 +65,10 @@ begin namespace XSharpModel
 			local oXType as XType
 			mods &= ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 			
-			CalculateRange(oElement, oInfo, out span, out intv)
+			CalculateRange(oElement, oInfo, OUT span, OUT intv)
+			IF (! String.IsNullOrEmpty(oElement:cClassNamespace))
+				cName := oElement:cClassNamespace+"."+cName
+			endif
 			oXType := XType{cName, kind, mods, vis, span, intv}
 			oXType:File := oFile
 			oXType:ParentName := oElement:cInherit

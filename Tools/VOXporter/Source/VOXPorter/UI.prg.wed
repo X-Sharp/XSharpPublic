@@ -79,14 +79,14 @@ SUBCONTROLSSTART
     Text=Do not overwrite project files if they already exist
     Location=18 , 226
     Size=289 , 27
-    TabIndex=1
+    TabIndex=13
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=F70B4F7F-AEFC-4919-90B1-60E84FF0644C
     Name=TextAppName
     Location=171 , 201
     Size=137 , 20
-    TabIndex=14
+    TabIndex=12
     
     CONTROL=System.Windows.Forms.Label
     GUID=668E0583-3044-4B4E-9638-B658EDC4C064
@@ -95,14 +95,14 @@ SUBCONTROLSSTART
     Text=App / library name:
     Location=171 , 183
     Size=99 , 17
-    TabIndex=13
+    TabIndex=11
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=8E3A8325-CFFF-4495-82AA-246AD6A51608
     Name=TextSolutionName
     Location=18 , 201
     Size=137 , 20
-    TabIndex=12
+    TabIndex=10
     
     CONTROL=System.Windows.Forms.Label
     GUID=61C34B46-9E79-4975-AEB6-D0B28A3107F6
@@ -111,7 +111,7 @@ SUBCONTROLSSTART
     Text=Solution name:
     Location=18 , 183
     Size=80 , 17
-    TabIndex=11
+    TabIndex=9
     
     CONTROL=System.Windows.Forms.Button
     GUID=42DD4799-E7F7-43C2-9D6E-5067DA137318
@@ -119,7 +119,7 @@ SUBCONTROLSSTART
     Text=...
     Location=279 , 158
     Size=27 , 20
-    TabIndex=10
+    TabIndex=8
     Click=ButtonOutput_Click
     
     CONTROL=System.Windows.Forms.Button
@@ -128,7 +128,7 @@ SUBCONTROLSSTART
     Text=...
     Location=279 , 116
     Size=27 , 20
-    TabIndex=7
+    TabIndex=5
     Click=ButtonSource_Click
     
     CONTROL=System.Windows.Forms.TextBox
@@ -136,7 +136,7 @@ SUBCONTROLSSTART
     Name=TextOutput
     Location=18 , 158
     Size=254 , 20
-    TabIndex=9
+    TabIndex=7
     
     CONTROL=System.Windows.Forms.Label
     GUID=05E9503F-41F4-44BA-A7E0-62EBBCFEBE67
@@ -145,7 +145,7 @@ SUBCONTROLSSTART
     Text=Output folder:
     Location=18 , 140
     Size=73 , 17
-    TabIndex=8
+    TabIndex=6
     
     CONTROL=System.Windows.Forms.Label
     GUID=E49C768A-2C00-44EC-AAE4-A05FA88692DA
@@ -154,14 +154,14 @@ SUBCONTROLSSTART
     Text=Source folder:
     Location=18 , 98
     Size=75 , 17
-    TabIndex=5
+    TabIndex=3
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=6682F52D-19EE-4C2E-B4D0-4D259947CEA9
     Name=TextSource
     Location=18 , 116
     Size=254 , 20
-    TabIndex=6
+    TabIndex=4
     TextChanged=TextSource_TextChanged
     
     CONTROL=System.Windows.Forms.RadioButton

@@ -147,18 +147,15 @@ begin namespace XSharpModel
 			local xType as XType
 			//
 			xType := xprj:Lookup(typeName, true)
-			if xType == null
-				xType := xprj:LookupFullName(typeName, true)
-				if xType == null .AND. usings != null
+			if xType == null .AND. usings != null
 
-					foreach name as string in usings:Expanded()
-						var fqn := name + "." + typeName
-						xType := xprj:LookupFullName(fqn, true)
-						if (xType != null)
-							exit
-						endif
-					next
-				endif
+				foreach name as string in usings:Expanded()
+					var fqn := name + "." + typeName
+					xType := xprj:Lookup(fqn, true)
+					if (xType != null)
+						exit
+					endif
+				next
 			endif
 			if xType != null
 				self:_xtype := xType

@@ -438,7 +438,7 @@ namespace XSharpLanguage
                                     }
                                 }
                                 // Now Add Functions and Procedures
-                                BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
+                                BuildCompletionList(compList, _file.Project.Lookup(XType.GlobalName, true), Modifiers.Public, false, filterText);
                                 // and Add NameSpaces
                                 AddNamespaces(compList, _file.Project, filterText);
                                 // and Types
@@ -3131,6 +3131,14 @@ namespace XSharpLanguage
                     if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
                     {
                         element = member.File.GlobalType.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                    }
+                    if (element == null)
+                    {
+                        var type = member.File.Project.Lookup(XSharpModel.XType.GlobalName, true);
+                        if (type != null)
+                        {
+                            element = type.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                        }
                     }
                     if (element == null)
                     {

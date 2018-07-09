@@ -1547,7 +1547,7 @@ namespace XSharp.Project
         {
             var model = this.ProjectModel;
             //
-            XType result = model.LookupFullName(name, true);
+            XType result = model.Lookup(name, true);
             if (result != null)
                 return result;
             // try to find with explicit usings
@@ -1556,7 +1556,7 @@ namespace XSharp.Project
                 foreach (var usingName in usings)
                 {
                     var fullname = usingName + "." + name;
-                    result = model.LookupFullName(fullname, true);
+                    result = model.Lookup(fullname, true);
                     if (result != null)
                         return result;
                 }

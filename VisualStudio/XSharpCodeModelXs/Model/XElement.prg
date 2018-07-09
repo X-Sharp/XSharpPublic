@@ -74,10 +74,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 				IF SELF:File != NULL
 				
-					tmp := SELF:File:Project:LookupFullName(parentName, TRUE)
-					IF tmp == NULL
-						tmp := SELF:File:Project:Lookup(parentName, TRUE)
-					ENDIF
+					tmp := SELF:File:Project:Lookup(parentName, TRUE)
 					IF tmp != NULL
 					
 						SELF:_parent := tmp

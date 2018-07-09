@@ -228,7 +228,7 @@ namespace XSharp.LanguageService
                 if (currentType != typeGlobal && currentType.IsPartial)
                 {
                     // retrieve members from other files ?
-                    var fullType = file.Project.LookupFullName(currentType.FullName, true);
+                    var fullType = file.Project.Lookup(currentType.FullName, true);
                     hasPartial = true;
                     members = fullType.Members;
                 }

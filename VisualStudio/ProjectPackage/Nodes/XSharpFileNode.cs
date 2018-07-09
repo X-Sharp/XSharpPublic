@@ -701,9 +701,17 @@ namespace XSharp.Project
 
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {
+            
             var result = base.RenameDocument(oldName, newName, out newNodeOut);
             if (result)
             {
+                XSharpProjectNode project = ProjectMgr as XSharpProjectNode;
+                if (project != null)
+                {
+                    project.ProjectModel.RemoveFile(oldName);
+                    project.ProjectModel.AddFile(newName);
+                    project.ProjectModel.Walk();
+                }
                 _fileType = XFileTypeHelpers.GetFileType(newName);
             }
             return result;

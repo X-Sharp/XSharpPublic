@@ -180,7 +180,7 @@ begin namespace XSharpModel
 		property Clone as XType
 			get
 				if self:IsPartial
-					return super:File:Project:LookupFullName(self:FullName, true)
+					return super:File:Project:Lookup(self:FullName, true)
 				endif
 				return self
 			end get

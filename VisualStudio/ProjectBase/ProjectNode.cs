@@ -5773,14 +5773,24 @@ namespace Microsoft.VisualStudio.Project
             frame = null;
 
             HierarchyNode n = this.NodeFromItemId(itemId);
+
+
             if (n == null)
             {
                 throw new ArgumentException(SR.GetString(SR.ParameterMustBeAValidItemId, CultureInfo.CurrentUICulture), "itemId");
             }
-
+            IVsUIHierarchy hier;
+            uint itemId2;
+            IVsWindowFrame windowFrame;
+            bool isOpen = VsShellUtilities.IsDocumentOpen(this.Site, n.Url, Guid.Empty, out hier, out itemId2, out windowFrame);
+            if (isOpen)
+            {
+                frame = windowFrame;
+                return VSConstants.S_OK;
+            }
             // Delegate to the document manager object that knows how to open the item
             DocumentManager documentManager = n.GetDocumentManager();
-            if (documentManager != null)
+            if (documentManager != null )
             {
                 return documentManager.Open(ref logicalView, punkDocDataExisting, out frame, WindowFrameShowAction.DoNotShow);
             }

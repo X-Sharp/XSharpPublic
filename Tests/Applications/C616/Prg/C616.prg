@@ -3,7 +3,7 @@
 	PtrToStructure() has 4 overloads:
 
 	STATIC METHOD PtrToStructure(@@ptr AS IntPtr, @@structure AS OBJECT) AS VOID
-	STATIC METHOD PtrToStructure(@@ptr AS IntPtr, @@structure AS T) AS VOID
+	STATIC METHOD PtrToStructure<T>(@@ptr AS IntPtr, @@structure AS T) AS VOID
 	STATIC METHOD PtrToStructure(@@ptr AS IntPtr, structureType AS Type) AS OBJECT
 	STATIC METHOD PtrToStructure(@@ptr AS IntPtr) AS T
 	
@@ -12,6 +12,9 @@
 	Marshal.PtrToStructure(p,TypeOf(TestStruc))
 	
 the compiler incorrectly picks the "OBJECT" overload, instead of the "Type" one.
+
+RvdH 20180710 in fact: it did not pick the one with OBJECT but the generic one
+
 */
 
 USING System.Runtime.InteropServices

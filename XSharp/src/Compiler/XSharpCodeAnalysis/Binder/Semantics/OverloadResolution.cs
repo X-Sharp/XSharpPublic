@@ -84,8 +84,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (arguments.Count < len)
                         len = arguments.Count;
 
+                    bool equalLeft = true;
+                    bool equalRight = true;
                     // check if all left types are equal
-                    bool equal = true;
                     if (parsLeft.Length == arguments.Count)
                     {
                         for (int i = 0; i < len; i++)
@@ -94,35 +95,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var arg = arguments[i];
                             if (parLeft.Type != arg.Type)
                             {
-                                equal = false;
+                                equalLeft = false;
                                 break;
                             }
-                        }
-                        if (equal)
-                        {
-                            result = BetterResult.Left;
-                            return true;
                         }
                     }
                     // check if all right types are equal
                     if (parsRight.Length == arguments.Count)
                     {
-                        equal = true;
                         for (int i = 0; i < len; i++)
                         {
                             var parRight = parsRight[i];
                             var arg = arguments[i];
                             if (parRight.Type != arg.Type)
                             {
-                                equal = false;
+                                equalRight = false;
                                 break;
                             }
                         }
-                        if (equal)
-                        {
-                            result = BetterResult.Right;
-                            return true;
-                        }
+                    }
+                    // Only exit here when one of the two is better than the other
+                    if (equalLeft && ! equalRight)
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    if (equalRight && !equalLeft)
+                    {
+                        result = BetterResult.Right;
+                        return true;
                     }
                     for (int i = 0; i < len; i++)
                     {

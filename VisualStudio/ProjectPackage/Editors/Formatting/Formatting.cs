@@ -178,7 +178,7 @@ namespace XSharp.Project
         static CommandFilter()
         {
             getKeywords();
-            getOptions();
+            GetOptions();
         }
 
         #endregion
@@ -190,7 +190,7 @@ namespace XSharp.Project
         private void FormatLine(bool previous)
         {
             //
-            getOptions();
+            GetOptions();
             _buffer = this.TextView.TextBuffer;
             _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
             //
@@ -234,7 +234,7 @@ namespace XSharp.Project
         private void FormatDocument()
         {
             // Read Settings
-            getOptions();
+            GetOptions();
             _buffer = this.TextView.TextBuffer;
             _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
 
@@ -693,8 +693,12 @@ namespace XSharp.Project
         private static int _indentSize;
         private static bool _alignDoCase;
         private static bool _alignMethod;
+        private static int _keywordCase;
+        private static bool _identifierCase;
         private static vsIndentStyle _indentStyle;
         private static bool _optionsValid = false;
+        internal static int KeywordCase => _keywordCase;
+        internal static bool IdentifierCase => _identifierCase;
         //private IEditorOptions _options;
         //
         private ITextBuffer _buffer;
@@ -705,7 +709,7 @@ namespace XSharp.Project
             _optionsValid = false;
         }
 
-        private static void getOptions()
+        internal static void GetOptions()
         {
             if (!_optionsValid)
             {
@@ -715,6 +719,8 @@ namespace XSharp.Project
                 //
                 _alignDoCase = optionsPage.AlignDoCase;
                 _alignMethod = optionsPage.AlignMethod;
+                _keywordCase = optionsPage.KeywordCase;
+                _identifierCase = optionsPage.IdentifierCase;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
                 var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
@@ -732,7 +738,7 @@ namespace XSharp.Project
 
         private void Options_OptionChanged(object sender, EditorOptionChangedEventArgs e)
         {
-            getOptions();
+            GetOptions();
 
         }
 

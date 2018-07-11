@@ -62338,7 +62338,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C613 - Ambiguous overloads
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect *************
 Application = C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect
 IDEVersion = 1.06
@@ -62377,8 +62377,8 @@ File = %AppPath%\Prg\C614.prg
 FileGUID = DDA6BF34-EF66-401E-917D-14E349A1BF83
 FileType = Code
 [C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect References]
-ReferenceGAC = CLR4,VulcanRT,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect Resources]
 [C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect Native Resources]
 [C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect License files]
@@ -62437,7 +62437,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C614 - Problem resolving AS/REF overload when /vo7 is enabled in Core dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C615 - Problem with LOCAL a[<len>] AS USUAL syntax *************
 Application = C615 - Problem with LOCAL a[<len>] AS USUAL syntax
 IDEVersion = 1.06
@@ -62537,7 +62537,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C615 - Problem with LOCAL a[<len>] AS USUAL syntax
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C616 - Wrong OBJECT/TYPE param overload used *************
 Application = C616 - Wrong OBJECT/TYPE param overload used
 IDEVersion = 1.06

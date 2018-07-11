@@ -10,7 +10,7 @@ END CLASS
 
 PARTIAL CLASS TestClass INHERIT ParentClass
 	ACCESS TestProp
-	RETURN NULL
+	RETURN NULL                   
 END CLASS
 
 

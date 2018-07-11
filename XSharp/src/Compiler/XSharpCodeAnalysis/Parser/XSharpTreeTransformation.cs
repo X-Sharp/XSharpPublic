@@ -3736,6 +3736,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else  // method and access
                 {
                     returntype = _getMissingType();
+                    returntype.XNode = context;
                 }
             }
             else

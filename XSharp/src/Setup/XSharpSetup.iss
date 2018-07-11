@@ -14,11 +14,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.0.2"
-#define FileNameVersion     "2Beta2"
-#define VIVersion           "2.0.0.2"
-#define TouchDate           "2018-06-29"
-#define TouchTime           "02:00:02"
+#define Version             "2.0.0.3"
+#define FileNameVersion     "2Beta3"
+#define VIVersion           "2.0.0.3"
+#define TouchDate           "2018-07-11"
+#define TouchTime           "02:00:03"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -72,8 +72,8 @@
 #define DocFolder           DevFolder + "\Binaries\Help\"
 #define XIDEFolder          DevFolder + "\Xide\"
 #define SnippetsSource      DevPublicFolder + "\VisualStudio\ProjectPackage\Snippets\"
-#define XIDESetup           "XIDE_Set_up_1.13.exe"
-#define XIDEVersion         "1.13"
+#define XIDESetup           "XIDE_Set_up_1.14.exe"
+#define XIDEVersion         "1.14"
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"

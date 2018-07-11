@@ -63,7 +63,31 @@ namespace XSharp.Project
             _aggregator = aggregator;
             var package = XSharpProjectPackage.Instance;
             _optionsPage = package.GetIntellisenseOptionsPage();
+            formatBuffer();
 
+        }
+
+        private void formatBuffer()
+        {
+            int kwcase = _optionsPage.KeywordCase;
+            if (kwcase == 0)
+                return ;
+            var buffer = TextView.TextBuffer;
+            int version = buffer.CurrentSnapshot.Version.VersionNumber;
+            var edit = buffer.CreateEdit(EditOptions.DefaultMinimalChange, version, null);
+            try
+            {
+                var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+                foreach (var line in buffer.CurrentSnapshot.Lines)
+                {
+                    CommandFilterHelper.FormatLineCase(_aggregator, TextView, edit, line);
+                }
+            }
+            finally
+            {
+                edit.Apply();
+            }
+            return ;
         }
 
         private char GetTypeChar(IntPtr pvaIn)
@@ -695,13 +719,15 @@ namespace XSharp.Project
 
         static public void FormatLineCase(IBufferTagAggregatorFactoryService Aggregator, ITextView TextView, ITextEdit editSession, ITextSnapshotLine line)
         {
-            //
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableCaseSynchronization)
-                return;
-            int kwCase = optionsPage.KeywordCase;
-            bool syncIdentifier = optionsPage.IdentifierCase;
+            // Note that this will only work if the Tags are already updated.
+            // That means: only when you type slowly.
+            // We need to fix this later by doing:
+            // register the lines we are interested in
+            // wait for tagAggregator.TagsChanged event
+            // then retrieve the tags that we need and apply the formatting
+            CommandFilter.GetOptions();
+            int kwCase = CommandFilter.KeywordCase;
+            bool syncIdentifier = CommandFilter.IdentifierCase;
             //
             SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
             //
@@ -741,8 +767,10 @@ namespace XSharp.Project
                                 break;
                         }
                         // Not none, and the transform is not the same as the original
-                        if (String.Compare(transform, keyword) != 0)
+                        if (String.Compare(transform, keyword) != 0 && keyword[0] != '#')
+                        {
                             editSession.Replace(kwSpan, transform);
+                        }
                     }
                 }
                 else if ((name == "identifier") && syncIdentifier)
@@ -803,7 +831,9 @@ namespace XSharp.Project
                         if (foundElement != null)
                         {
                             if ((String.Compare(foundElement.Name, identifier) != 0))
+                            {
                                 editSession.Replace(idSpan, foundElement.Name);
+                            }
                         }
                     }
                 }

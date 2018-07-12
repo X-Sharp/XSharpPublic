@@ -161,22 +161,6 @@ begin namespace XSharpModel
 				self:_xtype := xType
 			endif
 		
-		private method CheckStrangerProjectType(typeName as string, xprj as XProject, usings as IList<string>) as void
-			local codeElt as CodeElement
-			codeElt := xprj:LookupForStranger(typeName, true)
-			if codeElt == null
-				foreach name as string in usings:Expanded()
-					var fqn :=  name +  "." + typeName
-					codeElt := xprj:LookupForStranger(fqn, true)
-					if codeElt != null
-						exit
-					endif
-				next
-			endif
-			if codeElt != null
-				self:_codeElt := codeElt
-			endif
-		
 		private method CheckSystemType(typeName as string, usings as IList<string>) as void
 			local sType as System.Type
 			sType := self:SimpleTypeToSystemType(typeName)

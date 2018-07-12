@@ -158,16 +158,12 @@ begin namespace XSharpModel
 		static method Lookup(typeName as string, theirassemblies as IList<AssemblyInfo>) as System.Type
 			local sType as System.Type
 			sType := null
-			foreach var assembly in theirassemblies
-				if assembly:Types:Count == 0
-					assembly:UpdateAssembly()
-				endif
+			FOREACH VAR assembly IN theirassemblies
+				assembly:Refresh()
 				if assembly:Types:TryGetValue(typeName, out sType) .and. sType != NULL
 					exit
 				endif
-				if assembly != null
-					sType := assembly:GetType(typeName)
-				endif
+				sType := assembly:GetType(typeName)
 				if sType != null
 					exit
 				endif

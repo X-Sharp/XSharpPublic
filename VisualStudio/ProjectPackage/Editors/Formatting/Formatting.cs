@@ -187,20 +187,18 @@ namespace XSharp.Project
 
 #if SMARTINDENT
 
-        private void FormatLine(bool previous)
+        private void FormatLine()
         {
             //
             GetOptions();
-            _buffer = this.TextView.TextBuffer;
-            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             // On what line are we ?
             bool alignOnPrev = false;
-            int lineNumber = line.LineNumber;
+            int lineNumber = currentLine;
             int? indentation = null;
-            if ((lineNumber > 0) && previous)
+            if ((lineNumber >= 0) )
             {
                 //
                 if (caret.Position < line.End.Position)
@@ -215,12 +213,6 @@ namespace XSharp.Project
                 //
                 try
                 {
-                    // but we may need to re-Format the previous line for Casing and Indentifiers
-                    // so, do it before indenting the current line.
-                    lineNumber = lineNumber - 1;
-                    ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    CommandFilterHelper.FormatLineCase(this._aggregator, this.TextView, editSession, prevLine);
-                    //
                     CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, line, indentation);
                 }
                 finally
@@ -235,17 +227,10 @@ namespace XSharp.Project
         {
             // Read Settings
             GetOptions();
-            _buffer = this.TextView.TextBuffer;
-            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
+            formatCaseForBuffer();
 
             // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
-            if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-            {
-                xsClassifier = _buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-            }
-            //
-            if (xsClassifier != null)
+            if (_classifier != null)
             {
 #if TRACE
                 //
@@ -253,9 +238,9 @@ namespace XSharp.Project
                 stopWatch.Start();
 #endif
                 //
-                ITextSnapshot snapshot = xsClassifier.Snapshot;
+                ITextSnapshot snapshot = _classifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var classifications = xsClassifier.GetRegionTags();
+                var classifications = _classifier.GetRegionTags();
                 // We cannot use SortedList, because we may have several Classification that start at the same position
                 List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
                 foreach (var tag in classifications)
@@ -329,10 +314,8 @@ namespace XSharp.Project
                                 }
                             }
                         }
-                        //
-                        CommandFilterHelper.FormatLine(this._aggregator, this.TextView, editSession, snapLine, indentSize);
+                        CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, snapLine, indentSize);
                     }
-                    //
                 }
                 finally
                 {
@@ -570,22 +553,21 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        private List<IMappingTagSpan<IClassificationTag>> getTagsInLine(ITextSnapshotLine line)
+        private IMappingTagSpan<IClassificationTag>[] getTagsInLine(ITextSnapshotLine line)
         {
             //
+            if (!getTagAggregator())
+                return null;
             SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
             var tags = _tagAggregator.GetTags(lineSpan);
-            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
-            foreach (var tag in tags)
-            {
-                tagList.Add(tag);
-            }
-            return tagList;
+            return tags.ToArray();
         }
 
         private List<IMappingTagSpan<IClassificationTag>> getTagsInLine(ITextSnapshot snapshot, int start, int length)
         {
             //
+            if (!getTagAggregator())
+                return null;
             SnapshotSpan lineSpan = new SnapshotSpan(snapshot, start, length);
             var tags = _tagAggregator.GetTags(lineSpan);
             List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
@@ -702,7 +684,7 @@ namespace XSharp.Project
         //private IEditorOptions _options;
         //
         private ITextBuffer _buffer;
-        private ITagAggregator<IClassificationTag> _tagAggregator;
+        private ITagAggregator<IClassificationTag> _tagAggregator = null;
 
         internal static void InvalidateOptions()
         {
@@ -904,10 +886,10 @@ namespace XSharp.Project
                     // We need to analyze the Previous line
                     lineNumber = lineNumber - 1;
                     ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
-                    List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line);
+                    var tagList = getTagsInLine(line);
                     String currentKeyword = "";
                     //
-                    if (tagList.Count > 0)
+                    if (tagList.Length > 0)
                     {
                         IMappingSpan currentSpan = tagList[0].Span;
                         String startOfLine = line.GetText();
@@ -1085,7 +1067,7 @@ namespace XSharp.Project
         {
             minIndent = -1;
             doSkipped = false;
-            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line);
+            var tagList = getTagsInLine(line);
             string keyword = "";
             //
             string startOfLine = line.GetText();
@@ -1093,12 +1075,12 @@ namespace XSharp.Project
             // So, at least, to align to previous line, we will need...
             minIndent = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
             //
-            if (tagList.Count > 0)
+            if (tagList.Length > 0)
             {
                 IMappingSpan currentSpan = tagList[0].Span;
                 //
                 int tagIndex = 0;
-                while (tagIndex < tagList.Count)
+                while (tagIndex < tagList.Length)
                 {
                     IClassificationTag currentTag = tagList[tagIndex].Tag;
                     currentSpan = tagList[tagIndex].Span;

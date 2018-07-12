@@ -3055,7 +3055,8 @@ RETURN
 			oOptions := oTabControl:GetTabPageOptions()
 			oOptions:cName := (STRING)oDesign:GetProperty("_PageName"):Value
 			oOptions:cCaption := (STRING)oDesign:GetProperty("_PageCaption"):Value
-			oOptions:lDataAware := (INT)oDesign:GetProperty("_IsDataPage"):Value == 0
+//			oOptions:lDataAware := (INT)oDesign:GetProperty("_IsDataPage"):Value == 0
+			oOptions:lDataAware := Convert.ToInt32(oDesign:GetProperty("_IsDataPage"):Value) == 0
 			oTabControl:SetTabPageOptions(oOptions)
 
 		CASE oProp:cMember == "Background" .or. oProp:cMember == "BackgroundColor"

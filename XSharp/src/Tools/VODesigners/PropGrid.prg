@@ -555,7 +555,8 @@ CLASS PropertyPanel INHERIT PictureBox
 				IF SELF:oProperty:cSpecialClass != NULL .and. SELF:oProperty:Value:GetType() != TypeOf(INT)
 					SELF:oCombo:SelectedIndex := -1
 				ELSE
-					SELF:oCombo:SelectedIndex := INT(SELF:oProperty:Value)
+//					SELF:oCombo:SelectedIndex := INT(SELF:oProperty:Value)
+					SELF:oCombo:SelectedIndex := Convert.ToInt32(SELF:oProperty:Value)
 				ENDIF
 			END IF
 			SELF:oCombo:nProperty := SELF:nCurY

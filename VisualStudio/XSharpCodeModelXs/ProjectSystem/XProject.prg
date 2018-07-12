@@ -78,17 +78,17 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_AssemblyReferences:Clear()
 				
 				
-			METHOD RemoveAssemblyReference(fileName AS STRING) AS VOID
+		METHOD RemoveAssemblyReference(fileName AS STRING) AS VOID
 			
-				IF _unprocessedAssemblyReferences:ContainsKey(fileName)
-					_unprocessedAssemblyReferences:Remove(fileName)
+			IF _unprocessedAssemblyReferences:ContainsKey(fileName)
+				_unprocessedAssemblyReferences:Remove(fileName)
+			ENDIF
+			FOREACH info AS AssemblyInfo IN SELF:_AssemblyReferences
+				IF String.Equals(info:FileName, fileName, System.StringComparison.OrdinalIgnoreCase)
+					SELF:_AssemblyReferences:Remove(info)
+					EXIT
 				ENDIF
-				FOREACH info AS AssemblyInfo IN SELF:_AssemblyReferences
-					IF String.Equals(info:FileName, fileName, System.StringComparison.OrdinalIgnoreCase)
-						SELF:_AssemblyReferences:Remove(info)
-						EXIT
-					ENDIF
-				NEXT
+			NEXT
 				
 		PRIVATE METHOD ResolveUnprocessedAssemblyReferences() AS VOID
 			LOCAL loaded AS List<STRING>
@@ -202,7 +202,6 @@ BEGIN NAMESPACE XSharpModel
 					ENDIF
 				NEXT
 				FOREACH sProject AS STRING IN existing
-					//
 					SELF:_unprocessedProjectReferences:Remove(sProject)
 				NEXT
 			ENDIF
@@ -211,31 +210,43 @@ BEGIN NAMESPACE XSharpModel
 				
 		#region References to other project systems
 		METHOD AddStrangerProjectReference(url AS STRING) AS LOGIC
-			IF (! SELF:_unprocessedStrangerProjectReferences:Contains(url))
+			IF ! SELF:_unprocessedStrangerProjectReferences:Contains(url)
 				SELF:_unprocessedStrangerProjectReferences:Add(url)
 				RETURN TRUE
 			ENDIF
 			RETURN FALSE
-			
+		
+		PRIVATE METHOD saveGetProperty(props AS EnvDte.Properties, name AS STRING) AS EnvDte.Property
+			LOCAL p AS EnvDte.Property
+			try
+				p := props:Item(name)
+			CATCH
+				p := NULL
+			END TRY
+			return p
+
 		PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS Project) AS STRING
 			VAR outputFile := ""
 			TRY
-				VAR activeConfiguration := p:ConfigurationManager:ActiveConfiguration
-				VAR item := activeConfiguration:Properties:Item("OutputPath")
-				VAR path := ""
-				IF item != NULL
-					path := (STRING) item:Value
-				ENDIF
-				FOREACH GROUP AS OutputGroup IN activeConfiguration:OutputGroups
-					IF GROUP:FileCount == 1  .AND. GROUP:CanonicalName == "Built"
-						VAR names := (System.Array) GROUP:Filenames
-						FOREACH str AS STRING	 IN names
-							outputFile := System.IO.Path.Combine(path, str)
-						NEXT
+				LOCAL propTypepropName := NULL AS EnvDte.Property
+				var propType := saveGetProperty(p:Properties, "OutputType") 
+				var propName := saveGetProperty(p:Properties, "AssemblyName") 
+				var propPath := saveGetProperty(p:ConfigurationManager:ActiveConfiguration:Properties, "OutputPath")
+				IF propName != NULL .and. propPath != NULL .and. propType != null
+					VAR path    := (STRING) propPath:Value
+					var type    := (int) propType:Value
+					outputFile	:= (STRING) propName:Value 
+					IF type == 2 // __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY
+						outputFile	+= ".dll"
+					ELSE
+						outputFile	+= ".exe"
+					endif
+					outputFile	:= System.IO.Path.Combine(path, outputFile) 
+					IF ! System.IO.Path.IsPathRooted(outputFile)
+						outputFile := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sProject), outputFile)
+						// remove ../ and other garbage from the path
+						outputFile := System.IO.Path.GetFullPath(outputFile)
 					ENDIF
-				NEXT
-				IF ! System.IO.Path.IsPathRooted(path)
-					outputFile := System.IO.Path.Combine(System.IO.Path.GetDirectoryName(sProject), path)
 				ENDIF
 			CATCH exception AS Exception
 				IF (System.Diagnostics.Debugger.IsAttached)
@@ -243,9 +254,6 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			END TRY
 			RETURN outputFile
-			
-		METHOD LookupForStranger(typeName AS STRING, caseInvariant AS LOGIC) AS CodeElement
-			RETURN NULL
 			
 			
 		METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
@@ -261,7 +269,25 @@ BEGIN NAMESPACE XSharpModel
 				RETURN TRUE
 			ENDIF
 			RETURN FALSE
-			
+
+		PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
+			// Check if any DLL has changed
+			FOREACH p AS EnvDte.Project IN SELF:_StrangerProjects
+				VAR sProjectURL := p:FullName
+				VAR mustAdd     := FALSE
+				VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
+				IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
+					IF outputFile:ToLower() != SELF:_projectOutputDLLs:Item[sProjectURL]:ToLower()
+						SELF:_projectOutputDLLs:Remove(sProjectURL)
+						mustAdd := TRUE
+					ENDIF
+				ELSE
+					mustAdd := TRUE
+				ENDIF
+				IF mustAdd
+					SELF:_unprocessedStrangerProjectReferences:Add(sProjectURL)
+				ENDIF
+			NEXT
 			
 		PRIVATE METHOD ResolveUnprocessedStrangerReferences() AS VOID
 			LOCAL existing AS List<STRING>
@@ -272,10 +298,12 @@ BEGIN NAMESPACE XSharpModel
 				FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences
 					p := SELF:ProjectNode:FindProject(sProject)
 					IF (p != NULL)
-						existing:Add(sProject)
 						SELF:_StrangerProjects:Add(p)
 						outputFile := SELF:GetStrangerOutputDLL(sProject, p)
-						SELF:AddProjectOutput(sProject, outputFile)
+						if !String.IsNullOrEmpty(outputFile)
+							existing:Add(sProject)
+							SELF:AddProjectOutput(sProject, outputFile)
+						endif
 					ENDIF
 				NEXT
 				FOREACH sProject AS STRING IN existing
@@ -366,6 +394,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN NULL
 			
 		METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS Type
+			SELF:RefreshStrangerProjectDLLOutputFiles()
 			SELF:ResolveProjectReferenceDLLs()
 			RETURN SELF:_typeController:FindType(name, usings, SELF:_AssemblyReferences)
 			

@@ -267,6 +267,12 @@ CLASS AssemblyInfo
 			IF SELF:_projects:Contains(project)
 				SELF:_projects := SELF:_projects:Remove(project)
 			ENDIF
+		
+		METHOD Refresh() AS VOID
+			VAR currentDT  := System.IO.File.GetLastWriteTime(SELF:FileName)
+			IF currentDT != SELF:Modified
+				SELF:UpdateAssembly()
+			ENDIF
 			
 		INTERNAL METHOD UpdateAssembly() AS VOID
 			LOCAL aTypes AS Dictionary<STRING, System.Type>
@@ -393,7 +399,7 @@ CLASS AssemblyInfo
 							simpleName := type:Name:Replace('+', '.')
 							// Not Empty namespace, not a generic, not nested, not starting with underscore
 							IF String.IsNullOrEmpty(type:Namespace) .AND. simpleName:IndexOf('`') == -1 .AND. ;
-simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
+									simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
 								SELF:_zeroNamespace:AddType(simpleName, SELF:GetTypeTypesFromType(type))
 							ENDIF
 							// Public Type, not Nested and no Underscore

@@ -183,7 +183,17 @@ BEGIN NAMESPACE XSharpModel
 			aUsingStatics	:= List<STRING>{}
 			FOREACH oElement AS EntityObject IN oInfo:Types
 				oType   := XType.create(SELF, oElement,oInfo)
-				aTypes:Add( oType:FullName, oType)
+				if !aTypes:ContainsKey(oType:FullName)
+					aTypes:Add( oType:FullName, oType)
+				else
+					// this should only happen if there are two PARTIAL CLASS parts in the same file
+					// now merge the second in the first
+					LOCAL oType2 := aTypes[oType:FullName] AS XType
+					if oType2:File == oType:File
+						oType2 := oType2:Merge(oType)
+						aTypes[oType:FullName] := oType2
+					endif
+				endif
 				SELF:Project:RemoveMergedType(oType:FullName)
 			NEXT
 			FOREACH oLine AS LineObject IN oInfo:SpecialLines

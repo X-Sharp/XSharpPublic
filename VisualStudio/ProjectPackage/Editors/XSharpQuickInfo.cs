@@ -57,9 +57,14 @@ namespace XSharp.Project
                     if (subjectTriggerPoint.Value.Position == lastTriggerPoint)
                     {
                         if (!string.IsNullOrEmpty(lastHelp))
+                        {
                             qiContent.Add(lastHelp);
-                        applicableToSpan = currentSnapshot.CreateTrackingSpan(
-                            lastSpan.GetSpan(currentSnapshot), SpanTrackingMode.EdgeInclusive);
+                        }
+                        if (lastSpan != null)
+                        {
+                            applicableToSpan = currentSnapshot.CreateTrackingSpan(
+                                lastSpan.GetSpan(currentSnapshot), SpanTrackingMode.EdgeInclusive);
+                        }
                         return;
                     }
 

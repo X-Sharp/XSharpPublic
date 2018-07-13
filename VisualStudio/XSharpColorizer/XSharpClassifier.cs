@@ -353,9 +353,18 @@ namespace XSharpColorizer
                         int nStart, nEnd;
                         nStart = oElement.nOffSet;
                         nEnd = oElement.nOffSet;
-                        if (oElement.oNext != null)
+                        var oNext = oElement.oNext;
+                        if (oElement.eType == EntityType._VOStruct
+                            || oElement.eType == EntityType._Union)
                         {
-                            var nLine = oElement.oNext.nStartLine;
+                            while (oNext != null && oNext.eType == EntityType._Field)
+                            {
+                                oNext = oNext.oNext;
+                            }
+                        }
+                        if (oNext != null)
+                        {
+                            var nLine = oNext.nStartLine;
                             // our lines are 1 based and we want the line before, so -2
                             nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
                         }

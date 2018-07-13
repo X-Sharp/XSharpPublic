@@ -37,7 +37,7 @@ begin namespace XSharpModel
 		
 		internal method AddProject(xProject as XProject) as void
 			//
-			System.Diagnostics.Trace.WriteLine("-->> ModelWalker.AddProject()")
+			WriteOutputMessage("-->> AddProject() "+xProject:Name)
 			begin lock self
 				//
 				var lAdd2Queue := true
@@ -59,7 +59,7 @@ begin namespace XSharpModel
 					self:Walk()
 				endif
 			end lock
-			System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.AddProject()")
+			WriteOutputMessage("<<-- AddProject()")
 		
 		internal method FileWalk(file as XFile) as void
 			var lastWriteTime := System.IO.File.GetLastWriteTime(file:SourcePath)
@@ -81,8 +81,8 @@ begin namespace XSharpModel
 						endif
 						return
 						
-					catch 
-						
+					catch e as Exception
+						XSolution.WriteException(e)	
 					finally
 						if walker != null
 							//
@@ -112,9 +112,9 @@ begin namespace XSharpModel
 				if (self:_WalkerThread:IsAlive)
 					self:_WalkerThread:Abort()
 				endif
-			catch exception as System.Exception
-				Support.Debug("Cannot stop Background walker Thread : ")
-				Support.Debug(exception:Message)
+			CATCH exception AS System.Exception
+				WriteOutputMessage("Cannot stop Background walker Thread : ")
+				XSolution.WriteException(exception)
 			end try
 			self:_WalkerThread := null
 		
@@ -134,8 +134,9 @@ begin namespace XSharpModel
 					self:_WalkerThread:Name := "ModelWalker"
 					self:_WalkerThread:Start()
 				catch exception as System.Exception
-					Support.Debug("Cannot start Background walker Thread : ")
-					Support.Debug(exception:Message)
+					WriteOutputMessage("Cannot start Background walker Thread : ")
+					XSolution.WriteException(exception)
+					
 				end try
 			endif
 
@@ -159,7 +160,7 @@ begin namespace XSharpModel
 						endif
 						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
 					end lock
-					System.Diagnostics.Trace.WriteLine("-->> ModelWalker.Walker("+project.Name+")")
+					WriteOutputMessage("-->> Walker("+project.Name+")")
 					aFiles := project:SourceFiles:ToArray()
 					iProcessed := 0
 					parallelOptions := ParallelOptions{}
@@ -173,7 +174,7 @@ begin namespace XSharpModel
 					end lock
 					project:ProjectNode:SetStatusBarText("")
 					project:ProjectNode:SetStatusBarAnimation(false, 0)
-					System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker("+project.Name+")")
+					WriteOutputMessage("<<-- Walker("+project.Name+")")
 				enddo
 
 
@@ -192,9 +193,9 @@ begin namespace XSharpModel
 							exit
 						endif
 					end lock
-					System.Diagnostics.Trace.WriteLine("-->> ModelWalker.Walker() Resolve types "+project:Name)
-					project:ResolveProjectReferenceDLLs()
-					System.Diagnostics.Trace.WriteLine("<<-- ModelWalker.Walker() Resolve types "+project:Name)
+					WriteOutputMessage("-->> Walker() Resolve types "+project:Name)
+					project:ResolveReferences()
+					WriteOutputMessage("<<-- Walker() Resolve types "+project:Name)
 				enddo
 
 			endif
@@ -235,13 +236,15 @@ begin namespace XSharpModel
 					endif
 				catch exception as System.Exception
 					//
-					Support.Debug("Cannot check Background walker Thread : ")
-					Support.Debug(exception:Message)
+					WriteOutputMessage("Cannot check Background walker Thread : ")
+					XSolution.WriteException(exception)
 				end try
 				return false
 			end get
 		end property
 		
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS void
+			XSolution.WriteOutputMessage("XModel.Walker "+message)
 		
 	end class
 	

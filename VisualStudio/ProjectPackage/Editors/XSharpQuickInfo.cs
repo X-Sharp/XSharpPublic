@@ -31,7 +31,8 @@ namespace XSharp.Project
             _file = _subjectBuffer.GetFile();
         }
         private int lastTriggerPoint = -1;
-
+        private string lastHelp = "";
+        private ITrackingSpan lastSpan = null;
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
@@ -48,12 +49,21 @@ namespace XSharp.Project
 
                     // Map the trigger point down to our buffer.
                     SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
-                    if (!subjectTriggerPoint.HasValue || subjectTriggerPoint.Value.Position == lastTriggerPoint)
+                    if (!subjectTriggerPoint.HasValue )
                     {
                         return;
                     }
-                    lastTriggerPoint = subjectTriggerPoint.Value.Position;
                     ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
+                    if (subjectTriggerPoint.Value.Position == lastTriggerPoint)
+                    {
+                        if (!string.IsNullOrEmpty(lastHelp))
+                            qiContent.Add(lastHelp);
+                        applicableToSpan = currentSnapshot.CreateTrackingSpan(
+                            lastSpan.GetSpan(currentSnapshot), SpanTrackingMode.EdgeInclusive);
+                        return;
+                    }
+
+                    lastTriggerPoint = subjectTriggerPoint.Value.Position;
 
                     //look for occurrences of our QuickInfo words in the span
                     ITextStructureNavigator navigator = _provider.NavigatorService.GetTextStructureNavigator(_subjectBuffer);
@@ -138,37 +148,20 @@ namespace XSharp.Project
                                     }
                                 }
                             }
-                            else if (gotoElement.CodeElement != null)
-                            {
-                                analysis = new XSharpLanguage.MemberAnalysis(gotoElement.CodeElement);
-                                if (analysis.IsInitialized)
-                                {
-                                    if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.CodeElement != null))
-                                    {
-                                        if (cType.CodeElement.IsCodeType)
-                                        {
-                                            XSharpLanguage.TypeAnalysis typeAnalysis;
-                                            typeAnalysis = new XSharpLanguage.TypeAnalysis((EnvDTE.CodeType)cType.CodeElement);
-                                            if (typeAnalysis.IsInitialized)
-                                            {
-                                                qiContent.Add(typeAnalysis.Description);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        qiContent.Add(analysis.Description);
-                                    }
-                                }
-                            }
 
+                        }
+                        if (qiContent.Count > 0)
+                        {
+                            lastHelp = (string)qiContent[0];
+                            lastSpan = applicableToSpan;
                         }
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine("XSharpQuickInfo.AugmentQuickInfoSession Exception : " + ex.Message);
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : " );
+                    XSharpProjectPackage.Instance.DisplayException(ex);
                 }
                 finally
                 {
@@ -251,7 +244,8 @@ namespace XSharp.Project
                     }
                     catch (Exception ex)
                     {
-                        Trace.WriteLine("XSharpQuickInfo.OnTextViewMouseHover Exception : " + ex.Message);
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.OnTextViewMouseHover failed" );
+                        XSharpProjectPackage.Instance.DisplayException(ex);
                     }
                 }
             }

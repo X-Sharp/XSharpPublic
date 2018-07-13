@@ -23,55 +23,68 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _AssemblyReferences						AS List<AssemblyInfo>
 		PRIVATE _parseOptions := NULL					AS XSharpParseOptions
 		PRIVATE _projectNode							AS IXSharpProject
-		PRIVATE _projectOutputDLLs						AS Dictionary<STRING, STRING>
+		PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
 		PRIVATE _ReferencedProjects						AS List<XProject>
 		PRIVATE _StrangerProjects						AS List<EnvDTE.Project>
 		PRIVATE _typeController							AS SystemTypeController
-		PRIVATE _unprocessedAssemblyReferences			AS Dictionary<STRING, STRING>
+		PRIVATE _unprocessedAssemblyReferences			AS ConcurrentDictionary<STRING, STRING>
 		PRIVATE _unprocessedProjectReferences			AS List<STRING>
 		PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
-		PRIVATE _mergedTypes							AS Dictionary<STRING, XType>
+		PRIVATE _mergedTypes							AS ConcurrentDictionary<STRING, XType>
 		PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
 		PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
 		PRIVATE _SourceFilesDict						AS ConcurrentDictionary<STRING, XFile>
-		PRIVATE _TypeDict								AS Dictionary<STRING, List<STRING>>
+		PRIVATE _TypeDict								AS ConcurrentDictionary<STRING, List<STRING>>
+		PRIVATE _ExternalTypeCache						as ConcurrentDictionary<STRING, System.Type> 
 		
 		
 		CONSTRUCTOR(project AS IXSharpProject)
 			SUPER()
 			SELF:_AssemblyReferences := List<AssemblyInfo>{} 
-			SELF:_unprocessedAssemblyReferences := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase} 
+			SELF:_unprocessedAssemblyReferences := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase} 
 			SELF:_unprocessedProjectReferences := List<STRING>{} 
 			SELF:_unprocessedStrangerProjectReferences := List<STRING>{} 
-			SELF:_projectOutputDLLs := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase} 
-			SELF:_mergedTypes   := Dictionary<STRING, XType>{StringComparer.OrdinalIgnoreCase} 
+			SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase} 
+			SELF:_mergedTypes   := ConcurrentDictionary<STRING, XType>{StringComparer.OrdinalIgnoreCase} 
 			SELF:_ReferencedProjects := List<XProject>{} 
 			SELF:_StrangerProjects := List<Project>{} 
 			SELF:_projectNode := project
 			SELF:_SourceFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
 			SELF:_OtherFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
 			SELF:_typeController := SystemTypeController{}
-			SELF:_TypeDict := Dictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
+			SELF:_TypeDict := ConcurrentDictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
+			SELF:_ExternalTypeCache := ConcurrentDictionary<STRING, System.Type > {StringComparer.OrdinalIgnoreCase}
 			SELF:Loaded := TRUE
 			
+		PRIVATE METHOD _clearTypeCache() AS VOID
+			SELF:_ExternalTypeCache:Clear()
+			RETURN
 		#region AssemblyReferences		
 			
 		METHOD AddAssemblyReference(path AS STRING) AS VOID
+			SELF:WriteOutputMessage("AddAssemblyReference (string) "+path)
+			SELF:_clearTypeCache()
 			IF ! _unprocessedAssemblyReferences:ContainsKey(path)
-				_unprocessedAssemblyReferences.Add(path,path)
+				_unprocessedAssemblyReferences.TryAdd(path,path)
 			ENDIF
 				
 		METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
 			LOCAL assemblyInfo AS AssemblyInfo
-			IF ! String.IsNullorEmpty(reference:Path)
-				AddAssemblyReference(reference:Path)
-			ELSE
-				assemblyInfo := SystemTypeController.LoadAssembly(reference)
-				SELF:_AssemblyReferences:Add(assemblyInfo)
-				assemblyInfo:AddProject(SELF)
+			SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
+			SELF:_clearTypeCache()
+			if ! AssemblyInfo.DisableAssemblyReferences
+				IF ! String.IsNullorEmpty(reference:Path)
+					AddAssemblyReference(reference:Path)
+				ELSE
+					assemblyInfo := SystemTypeController.LoadAssembly(reference)
+					SELF:_AssemblyReferences:Add(assemblyInfo)
+					assemblyInfo:AddProject(SELF)
+				ENDIF
 			ENDIF
-				
+
 		METHOD ClearAssemblyReferences() AS VOID
+			SELF:WriteOutputMessage("ClearAssemblyReferences() ")
+			SELF:_clearTypeCache()
 			FOREACH asm AS AssemblyInfo IN SELF:_AssemblyReferences
 				asm:RemoveProject(SELF)
 			NEXT
@@ -79,9 +92,11 @@ BEGIN NAMESPACE XSharpModel
 				
 				
 		METHOD RemoveAssemblyReference(fileName AS STRING) AS VOID
-			
+			SELF:WriteOutputMessage("RemoveAssemblyReference() "+fileName)
+			SELF:_clearTypeCache()
+			local cOld as string
 			IF _unprocessedAssemblyReferences:ContainsKey(fileName)
-				_unprocessedAssemblyReferences:Remove(fileName)
+				_unprocessedAssemblyReferences:TryRemove(fileName, out cOld)
 			ENDIF
 			FOREACH info AS AssemblyInfo IN SELF:_AssemblyReferences
 				IF String.Equals(info:FileName, fileName, System.StringComparison.OrdinalIgnoreCase)
@@ -93,7 +108,8 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE METHOD ResolveUnprocessedAssemblyReferences() AS VOID
 			LOCAL loaded AS List<STRING>
 			//
-			IF SELF:_unprocessedAssemblyReferences:Count != 0
+			IF SELF:_unprocessedAssemblyReferences:Count > 0 .and. ! AssemblyInfo.DisableAssemblyReferences
+				SELF:WriteOutputMessage("ResolveUnprocessedAssemblyReferences()")
 				loaded := List<STRING>{}
 				FOREACH path AS STRING IN SELF:_unprocessedAssemblyReferences:Keys
 					LOCAL assemblyInfo AS AssemblyInfo
@@ -106,15 +122,17 @@ BEGIN NAMESPACE XSharpModel
 				NEXT
 				FOREACH path AS STRING IN Loaded
 					IF SELF:_unprocessedAssemblyReferences:ContainsKey(path)
-						SELF:_unprocessedAssemblyReferences:Remove(path)
+						local cOld as string
+						SELF:_unprocessedAssemblyReferences:TryRemove(path, out cOld)
 					ENDIF
 				NEXT
+				SELF:_clearTypeCache()
 			ENDIF
 			RETURN 
 				
-		METHOD ResolveProjectReferenceDLLs() AS VOID
-			IF SELF:hasUnprocessedReferences
-				System.Diagnostics.Trace.WriteLine("<<-- ResolveProjectReferenceDLLs()")
+		METHOD ResolveReferences() AS VOID
+			IF SELF:hasUnprocessedReferences  
+				SELF:WriteOutputMessage("<<-- ResolveReferences()")
 				SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
 				SELF:ProjectNode:SetStatusBarAnimation(TRUE, 0)
 					
@@ -124,6 +142,7 @@ BEGIN NAMESPACE XSharpModel
 					SELF:ResolveUnprocessedStrangerReferences()
 					FOREACH DLL AS STRING IN SELF:_projectOutputDLLs:Values
 						IF SystemTypeController.FindAssemblyByLocation(DLL) == NULL
+							SELF:WriteOutputMessage("ResolveReferences: No need to load types for Foreign assembly. Assembly is already loaded: "+DLL)
 							SELF:AddAssemblyReference(DLL)
 						ENDIF
 					NEXT
@@ -132,20 +151,22 @@ BEGIN NAMESPACE XSharpModel
 				END TRY
 				SELF:ProjectNode:SetStatusBarAnimation(FALSE, 0)
 				SELF:ProjectNode:SetStatusBarText("")
-				System.Diagnostics.Trace.WriteLine(">>-- ResolveProjectReferenceDLLs()")
+				SELF:WriteOutputMessage(">>-- ResolveReferences()")
 			ENDIF
 			RETURN
 				
 				
 		METHOD UpdateAssemblyReference(fileName AS STRING) AS VOID
-			SystemTypeController.LoadAssembly(fileName):AddProject(SELF)
-				
+			IF ! AssemblyInfo.DisableAssemblyReferences
+				SystemTypeController.LoadAssembly(fileName):AddProject(SELF)
+			ENDIF
 				
 		#endregion
 				
 		#region ProjectReferences
 			
 		METHOD AddProjectReference(url AS STRING) AS LOGIC
+			SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
 			IF ! SELF:_unprocessedProjectReferences:Contains(url)
 				SELF:_unprocessedProjectReferences:Add(url)
 				RETURN TRUE
@@ -153,21 +174,28 @@ BEGIN NAMESPACE XSharpModel
 			RETURN FALSE
 				
 		METHOD AddProjectOutput(sProjectURL AS STRING, sOutputDLL AS STRING) AS VOID
+			SELF:WriteOutputMessage("AddProjectOutput "+sProjectURL+"("+sOutputDLL+")")
 			IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
 				SELF:_projectOutputDLLs:Item[sProjectURL] := sOutputDLL
 			ELSE
-				SELF:_projectOutputDLLs:Add(sProjectURL, sOutputDLL)
+				SELF:_projectOutputDLLs:TryAdd(sProjectURL, sOutputDLL)
 			ENDIF
+			SELF:_clearTypeCache()
 				
 		METHOD RemoveProjectOutput(sProjectURL AS STRING) AS VOID
+			WriteOutputMessage("RemoveProjectOutput() "+sProjectURL)
 			IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
 				SELF:RemoveProjectReferenceDLL(SELF:_projectOutputDLLs:Item[sProjectURL])
-				SELF:_projectOutputDLLs:Remove(sProjectURL)
+				local cOld as string
+				SELF:_projectOutputDLLs:TryRemove(sProjectURL, out cOld)
 			ENDIF
+			SELF:_clearTypeCache()
 				
 		METHOD RemoveProjectReference(url AS STRING) AS LOGIC
 			LOCAL prj AS XProject
 			LOCAL outputname AS STRING
+			WriteOutputMessage("RemoveProjectReference() "+url)
+			SELF:_clearTypeCache()
 			IF SELF:_unprocessedProjectReferences:Contains(url)
 				SELF:_unprocessedProjectReferences:Remove(url)
 				RETURN TRUE
@@ -184,13 +212,16 @@ BEGIN NAMESPACE XSharpModel
 			RETURN FALSE
 				
 		METHOD RemoveProjectReferenceDLL(DLL AS STRING) AS VOID
+			WriteOutputMessage("RemoveProjectReferenceDLL() "+DLL)
+			SELF:_clearTypeCache()
 			SELF:RemoveAssemblyReference(DLL)
 				
 		PRIVATE METHOD ResolveUnprocessedProjectReferences() AS VOID
 			LOCAL existing AS List<STRING>
 			LOCAL p AS XProject
 			LOCAL outputFile AS STRING
-			IF SELF:_unprocessedProjectReferences:Count != 0
+			IF SELF:_unprocessedProjectReferences:Count > 0  .and. ! AssemblyInfo.DisableXSharpProjectReferences
+				WriteOutputMessage("ResolveUnprocessedProjectReferences()")
 				existing := List<STRING>{}
 				FOREACH sProject AS STRING IN SELF:_unprocessedProjectReferences
 					p := XSolution.FindProject(sProject)
@@ -204,12 +235,14 @@ BEGIN NAMESPACE XSharpModel
 				FOREACH sProject AS STRING IN existing
 					SELF:_unprocessedProjectReferences:Remove(sProject)
 				NEXT
+				SELF:_clearTypeCache()
 			ENDIF
 				
 		#endregion
 				
 		#region References to other project systems
 		METHOD AddStrangerProjectReference(url AS STRING) AS LOGIC
+			WriteOutputMessage("Add Foreign ProjectReference"+url)
 			IF ! SELF:_unprocessedStrangerProjectReferences:Contains(url)
 				SELF:_unprocessedStrangerProjectReferences:Add(url)
 				RETURN TRUE
@@ -249,15 +282,15 @@ BEGIN NAMESPACE XSharpModel
 					ENDIF
 				ENDIF
 			CATCH exception AS Exception
-				IF (System.Diagnostics.Debugger.IsAttached)
-					System.Diagnostics.Debug.WriteLine(exception:Message)
-				ENDIF
+				XSolution.WriteException(exception)
 			END TRY
 			RETURN outputFile
 			
 			
 		METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
 			LOCAL prj AS Project
+			WriteOutputMessage("RemoveStrangerProjectReference() "+url)
+			SELF:_clearTypeCache()
 			IF SELF:_unprocessedStrangerProjectReferences:Contains(url)
 				SELF:_unprocessedStrangerProjectReferences:Remove(url)
 				RETURN TRUE
@@ -272,28 +305,37 @@ BEGIN NAMESPACE XSharpModel
 
 		PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
 			// Check if any DLL has changed
-			FOREACH p AS EnvDte.Project IN SELF:_StrangerProjects
-				VAR sProjectURL := p:FullName
-				VAR mustAdd     := FALSE
-				VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
-				IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
-					IF outputFile:ToLower() != SELF:_projectOutputDLLs:Item[sProjectURL]:ToLower()
-						SELF:_projectOutputDLLs:Remove(sProjectURL)
+			IF SELF:_StrangerProjects:Count > 0 .and. ! AssemblyInfo.DisableForeignProjectReferences 
+				WriteOutputMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count())
+				FOREACH p AS EnvDte.Project IN SELF:_StrangerProjects
+					VAR sProjectURL := p:FullName
+					VAR mustAdd     := FALSE
+					VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
+					IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
+						// when the output file name of the referenced project has changed
+						// then remove the old name
+						IF outputFile:ToLower() != SELF:_projectOutputDLLs:Item[sProjectURL]:ToLower()
+							WriteOutputMessage(i"DLL has been renamed to {outputFile} so remove the old DLL {SELF:_projectOutputDLLs:Item[sProjectURL]}")
+							local cOld as string
+							SELF:_projectOutputDLLs:TryRemove(sProjectURL, out cOld)
+							mustAdd := TRUE
+						ENDIF
+					ELSE
 						mustAdd := TRUE
 					ENDIF
-				ELSE
-					mustAdd := TRUE
-				ENDIF
-				IF mustAdd
-					SELF:_unprocessedStrangerProjectReferences:Add(sProjectURL)
-				ENDIF
-			NEXT
-			
+					IF mustAdd
+						SELF:_unprocessedStrangerProjectReferences:Add(sProjectURL)
+					ENDIF
+				NEXT
+				WriteOutputMessage("<-- RefreshStrangerProjectDLLOutputFiles()")
+			ENDIF
+						
 		PRIVATE METHOD ResolveUnprocessedStrangerReferences() AS VOID
 			LOCAL existing AS List<STRING>
 			LOCAL p AS Project
 			LOCAL outputFile AS STRING
-			IF SELF:_unprocessedStrangerProjectReferences:Count != 0
+			IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .and. ! AssemblyInfo.DisableForeignProjectReferences
+				WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count)
 				existing := List<STRING>{}
 				FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences
 					p := SELF:ProjectNode:FindProject(sProject)
@@ -309,6 +351,7 @@ BEGIN NAMESPACE XSharpModel
 				FOREACH sProject AS STRING IN existing
 					SELF:_unprocessedStrangerProjectReferences:Remove(sProject)
 				NEXT
+				SELF:_clearTypeCache()
 			ENDIF
 			
 			#endregion
@@ -377,6 +420,7 @@ BEGIN NAMESPACE XSharpModel
 			
 		#region Lookup Types and Functions
 		METHOD FindFunction(name AS STRING) AS XTypeMember
+			WriteOutputMessage("FindFunction() "+name)
 			IF _TypeDict:ContainsKey(XType.GlobalName)
 				VAR fileNames := _TypeDict[XType.GlobalName]:ToArray()
 				FOREACH sfile AS STRING IN filenames
@@ -385,6 +429,7 @@ BEGIN NAMESPACE XSharpModel
 					IF members != NULL
 						FOREACH oMember AS XTypeMember IN members
 							IF (oMember:Kind == Kind.Procedure .or. oMember:Kind == Kind.Function ) .and. string.Compare(oMember:Name, name, TRUE) == 0
+								WriteOutputMessage("FindFunction()  found: "+oMember:FullName)
 								RETURN oMember
 							ENDIF
 						NEXT
@@ -394,9 +439,30 @@ BEGIN NAMESPACE XSharpModel
 			RETURN NULL
 			
 		METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS Type
-			SELF:RefreshStrangerProjectDLLOutputFiles()
-			SELF:ResolveProjectReferenceDLLs()
-			RETURN SELF:_typeController:FindType(name, usings, SELF:_AssemblyReferences)
+			WriteOutputMessage("FindSystemType() "+name)
+			IF ! AssemblyInfo.DisableForeignProjectReferences
+				SELF:RefreshStrangerProjectDLLOutputFiles()
+			ENDIF
+			SELF:ResolveReferences()
+			IF _ExternalTypeCache:ContainsKey(name)
+				WriteOutputMessage("FindSystemType() "+name+" found in cache")
+				RETURN _ExternalTypeCache[name]
+			ENDIF
+			FOREACH VAR u IN usings
+				var fullname := u+"."+name
+				IF _ExternalTypeCache:ContainsKey(fullname)
+					WriteOutputMessage("FindSystemType() "+fullname+" found in cache")
+					RETURN _ExternalTypeCache[fullname]
+				ENDIF
+			next
+			VAR type := SELF:_typeController:FindType(name, usings, SELF:_AssemblyReferences)
+			IF type != NULL 
+				WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
+				if !_ExternalTypeCache:ContainsKey(type:FullName)
+					_ExternalTypeCache:TryAdd(type:FullName, type)
+				endif
+			ENDIF
+			RETURN type
 			
 		METHOD GetAssemblyNamespaces() AS IList<STRING>
 			RETURN SELF:_typeController:GetNamespaces(SELF:_AssemblyReferences)
@@ -404,8 +470,10 @@ BEGIN NAMESPACE XSharpModel
 		METHOD Lookup(typeName AS STRING, caseInvariant AS LOGIC) AS XType
 			LOCAL xType AS XType
 			LOCAL xTemp AS XType
+			WriteOutputMessage("Lookup() "+typeName)
 			xType := SELF:LookupMergedType(typeName)
 			IF xType != NULL
+				WriteOutputMessage("Lookup()  found: "+xType:FullName)
 				RETURN xType
 			ENDIF
 			xTemp := NULL
@@ -420,6 +488,7 @@ BEGIN NAMESPACE XSharpModel
 					ENDIF
 					IF xTemp != NULL
 						IF ! xTemp:IsPartial
+							WriteOutputMessage("Lookup()  found: "+xTemp:FullName)
 							RETURN xTemp
 						ENDIF
 						IF xType != NULL
@@ -432,30 +501,40 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			IF xType != NULL
 				SELF:AddMergedType(xType)
+				WriteOutputMessage("Lookup()  found: "+xType:FullName)
+			ENDIF
+			IF xType == NULL
+				xType := SELF:LookupReferenced(typeName, caseInvariant)
 			ENDIF
 			RETURN xType
 			
 		METHOD LookupReferenced(typeName AS STRING, caseInvariant AS LOGIC) AS XType
 			LOCAL xType AS XType
 			xType := NULL
-			FOREACH project AS XProject IN SELF:ReferencedProjects
-				xType := project:Lookup(typeName, caseInvariant)
-				IF xType != NULL
-					RETURN xType
-				ENDIF
-			NEXT
+			IF ! AssemblyInfo.DisableXSharpProjectReferences
+				WriteOutputMessage("LookupReferenced() "+typeName)
+				FOREACH project AS XProject IN SELF:ReferencedProjects
+					xType := project:Lookup(typeName, caseInvariant)
+					IF xType != NULL
+						WriteOutputMessage(String.Format("LookupReferenced() found in {0}: {1} ", project:Name, xType:FullName))
+						RETURN xType
+					ENDIF
+				NEXT
+			ENDIF
 			RETURN xType
 			
 			#endregion
 			
 		METHOD UnLoad() AS VOID
 			SELF:Loaded := FALSE
+			WriteOutputMessage("UnLoad() ")
 			FOREACH asm AS AssemblyInfo IN SELF:_AssemblyReferences
 				asm:RemoveProject(SELF)
 			NEXT
 			SELF:_AssemblyReferences:Clear()
 			
 		METHOD Walk() AS VOID
+			WriteOutputMessage("Walk() ")
 			ModelWalker.GetWalker():AddProject(SELF)
 			
 		METHOD WalkFile(file AS XFile) AS VOID
@@ -564,7 +643,8 @@ BEGIN NAMESPACE XSharpModel
 						SELF:_TypeDict[typeName]:Remove(filename)
 					ENDIF
 					IF SELF:_TypeDict[typeName]:Count == 0
-						SELF:_typeDict:Remove(typeName)
+						local cOld as List<string>
+						SELF:_typeDict:TryRemove(typeName, out cOld)
 					ENDIF
 				ENDIF
 			END LOCK
@@ -576,26 +656,32 @@ BEGIN NAMESPACE XSharpModel
 			IF xType:Name != XElement.GlobalName
 				VAR name := xType:FullName
 				IF SELF:_mergedTypes:ContainsKey(name)
-					SELF:_mergedTypes:Remove(name)
+					local oOld as XType
+					SELF:_mergedTypes:TryRemove(name, out oOld)
 				ENDIF
-				SELF:_mergedTypes:Add(name, xType)
+				SELF:_mergedTypes:TryAdd(name, xType)
 			ENDIF
 			RETURN
 			
 		INTERNAL METHOD RemoveMergedType(fullName AS STRING) AS VOID
 			IF fullName != XElement.GlobalName
 				IF SELF:_mergedTypes:ContainsKey(fullName)
-					SELF:_mergedTypes:Remove(fullName)
+					local oOld as XType
+					SELF:_mergedTypes:TryRemove(fullName, oOld)
 				ENDIF
 			ENDIF
 			RETURN
 			
 		INTERNAL METHOD LookupMergedType(fullName AS STRING) AS XType
 			IF _mergedTypes:ContainsKey(fullname)
+				WriteOutputMessage("LookupMergedType() found "+fullName)
 				RETURN _mergedTypes[fullName]
 			ENDIF
 			RETURN NULL
 			#endregion
+
+		PRIVATE METHOD WriteOutputMessage(message AS STRING) AS VOID
+			XSOlution.WriteOutputMessage("XModel.Project "+SELF:Name+" "+message)
 	END CLASS
 	
 END NAMESPACE 

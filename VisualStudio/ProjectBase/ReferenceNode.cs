@@ -21,6 +21,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -362,7 +363,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception" + e.ErrorCode);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
             finally

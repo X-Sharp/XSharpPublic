@@ -51,6 +51,8 @@ BEGIN NAMESPACE XSharpModel
             
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING) AS STRING
             //
+			// Todo: Rename to XSharp type names
+			//
             SWITCH typename:ToLower()
                 CASE "array"
                     RETURN "Vulcan.__Array"

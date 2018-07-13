@@ -189,6 +189,7 @@ namespace XSharp.Project
 
         private void FormatLine()
         {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatLine()");
             //
             GetOptions();
             //
@@ -206,6 +207,11 @@ namespace XSharp.Project
                     alignOnPrev = true;
                 }
                 //
+                // wait until we can work
+                while (_buffer.EditInProgress)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
                 var editSession = _buffer.CreateEdit();
                 // This will calculate the desired indentation of the current line, based on the previous one
                 // and may de-Indent the previous line if needed
@@ -225,6 +231,7 @@ namespace XSharp.Project
 
         private void FormatDocument()
         {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument()");
             // Read Settings
             GetOptions();
             formatCaseForBuffer();
@@ -254,10 +261,8 @@ namespace XSharp.Project
                 //
                 foreach (var tag in sortedTags)
                 {
-                    //
                     if (tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
                     {
-                        //
                         regionStarts.Push(tag.Span.Span);
                     }
                     else if (tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
@@ -265,7 +270,6 @@ namespace XSharp.Project
                         if (regionStarts.Count > 0)
                         {
                             var start = regionStarts.Pop();
-                            //
                             regions.Add(new Tuple<Span, Span>(start, tag.Span.Span));
                         }
                     }
@@ -273,6 +277,11 @@ namespace XSharp.Project
                 // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start 
                 regions.Sort((a, b) => a.Item1.Start.CompareTo(b.Item1.Start));
                 //Now, we have a list of Regions Start/Stop
+                // wait until we can work
+                while (_buffer.EditInProgress)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
                 var editSession = _buffer.CreateEdit();
                 try
                 {
@@ -332,7 +341,7 @@ namespace XSharp.Project
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                Trace.WriteLine("FormatDocument : Done in " + elapsedTime);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
         }
@@ -677,6 +686,7 @@ namespace XSharp.Project
         private static bool _alignMethod;
         private static int _keywordCase;
         private static bool _identifierCase;
+        private static bool _noGotoDefinition;
         private static vsIndentStyle _indentStyle;
         private static bool _optionsValid = false;
         internal static int KeywordCase => _keywordCase;
@@ -703,6 +713,7 @@ namespace XSharp.Project
                 _alignMethod = optionsPage.AlignMethod;
                 _keywordCase = optionsPage.KeywordCase;
                 _identifierCase = optionsPage.IdentifierCase;
+                _noGotoDefinition = optionsPage.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
                 var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
@@ -721,7 +732,6 @@ namespace XSharp.Project
         private void Options_OptionChanged(object sender, EditorOptionChangedEventArgs e)
         {
             GetOptions();
-
         }
 
         private int? getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
@@ -798,7 +808,8 @@ namespace XSharp.Project
                             }
                             catch (Exception ex)
                             {
-                                Trace.WriteLine("Indentation of line : " + ex.Message);
+                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of line failed" );
+                                XSharpProjectPackage.Instance.DisplayException(ex);
                             }
                         }
                         else
@@ -848,7 +859,8 @@ namespace XSharp.Project
                                 }
                                 catch (Exception ex)
                                 {
-                                    Trace.WriteLine("Error indenting of line : " + ex.Message);
+                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error indenting of line ") ;
+                                    XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
                         }
@@ -863,7 +875,8 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("SmartIndent.GetDesiredIndentation Exception : " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
             return _lastIndentValue;
         }

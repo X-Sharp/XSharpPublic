@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_lock := OBJECT{}
 			SELF:_lastWritten := System.DateTime.MinValue
 			
-			
+		PROPERTY EntityList as 	List<XElement> GET _entityList
 		METHOD FirstMember() AS XTypeMember
 			IF (! SELF:HasCode)
 				RETURN NULL
@@ -149,7 +149,7 @@ BEGIN NAMESPACE XSharpModel
 		METHOD SetTypes(types AS IDictionary<STRING, XType>, usings AS IList<STRING>, ;
 			staticusings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
 			IF SELF:HasCode
-				System.Diagnostics.Trace.WriteLine(String.Concat("-->> XFile.SetTypes() ", System.IO.Path.GetFileName(SELF:SourcePath)))
+				WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
 				BEGIN LOCK SELF
 					FOREACH VAR type IN _typeList
 						SELF:Project:RemoveType(type:Value)
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharpModel
 					SELF:_entityList:Clear()
 					SELF:_entityList:AddRange(aEntities)
 				END LOCK
-				System.Diagnostics.Trace.WriteLine(String.Concat("<<-- XFile.SetTypes() ", System.IO.Path.GetFileName(SELF:SourcePath), " ", SELF:_typeList:Count:ToString()))
+				WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, self:_entityList:Count))
 			ENDIF
 			
 		METHOD BuildTypes(oInfo AS ParseResult) AS VOID
@@ -212,7 +212,7 @@ BEGIN NAMESPACE XSharpModel
 			//
 			IF SELF:HasCode
 			
-				System.Diagnostics.Trace.WriteLine("-->> XFile.WaitParsing()")
+				WriteOutputMessage("-->> WaitParsing()")
 				BEGIN LOCK SELF:_lock
 				
 					IF ! SELF:Parsed
@@ -222,12 +222,12 @@ BEGIN NAMESPACE XSharpModel
 								VAR info := walker:Parse(lines, FALSE)
 								BuildTypes(info)						
 							CATCH exception AS System.Exception
-								Support.Debug(String.Concat("XFile.WaitParsing", exception:Message), Array.Empty<OBJECT>())
+								XSolution.WriteException(exception)
 							END TRY
 						END USING
 					ENDIF
 				END LOCK
-				System.Diagnostics.Trace.WriteLine("<<-- XFile.WaitParsing()")
+				WriteOutputMessage("<<-- WaitParsing()")
 			ENDIF
 			
 			
@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharpModel
 				
 					RETURN NULL
 				ENDIF
-				System.Diagnostics.Trace.WriteLine("-->> XFile.AllUsingStatics")
+				WriteOutputMessage("-->> AllUsingStatics")
 				VAR statics := List<STRING>{}
 				BEGIN LOCK SELF:_lock
 				
@@ -256,7 +256,7 @@ BEGIN NAMESPACE XSharpModel
 						NEXT
 					ENDIF
 				END LOCK
-				System.Diagnostics.Trace.WriteLine("<<-- XFile.AllUsingStatics")
+				WriteOutputMessage("<<-- AllUsingStatics")
 				RETURN statics
 			END GET
 		END PROPERTY
@@ -292,13 +292,13 @@ BEGIN NAMESPACE XSharpModel
 		
 		PROPERTY Parsed AS LOGIC
 			GET
-				System.Diagnostics.Trace.WriteLine("-->> XFile.Parsed")
+				WriteOutputMessage("-->> Parsed")
 				LOCAL flag AS LOGIC
 				BEGIN LOCK SELF:_lock
 				
 					flag := SELF:_parsed
 				END LOCK
-				System.Diagnostics.Trace.WriteLine("<<-- XFile.Parsed")
+				WriteOutputMessage("<<-- Parsed")
 				RETURN flag
 			END GET
 		END PROPERTY
@@ -354,6 +354,9 @@ BEGIN NAMESPACE XSharpModel
 		
 		PROPERTY XFileType AS XFileType GET SELF:_type
 		
+		METHOD WriteOutputMessage(message AS STRING) AS VOID
+			XSolution.WriteOutputMessage("XModel.File "+message)
+
 	END CLASS
 	
 END NAMESPACE 

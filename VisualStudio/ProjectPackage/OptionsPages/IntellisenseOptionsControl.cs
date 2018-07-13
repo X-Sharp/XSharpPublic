@@ -17,7 +17,7 @@ namespace XSharp.Project.OptionsPages
             InitializeComponent();
             if (String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSHARPDEV")))
             {
-                this.groupBox1.Visible = false;
+                this.btnShowMeTheMagic.Visible = false;
             }
 
         }
@@ -52,19 +52,6 @@ namespace XSharp.Project.OptionsPages
             chkAlignMethod.Checked = optionsPage.AlignMethod;
             chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
             chkSortNavBar.Checked = optionsPage.SortNavigationBars;
-            chkDisableParameters.Checked = optionsPage.DisableParameterInfo;
-            chkDisableEditorDropdowns.Checked = optionsPage.DisableEditorDropdowns;
-            chkBraceMatching.Checked = optionsPage.DisableBraceMatching;
-            chkDisableClassViewObjectView.Checked = optionsPage.DisableClassViewObjectView;
-            chkDisableEntityParsing.Checked = optionsPage.DisableEntityParsing;
-            chkDisableHighlightWord.Checked = optionsPage.DisableHighLightWord;
-            chkDisableLigtBulb.Checked = optionsPage.DisableLightBulb;
-            chkDisablePeekDefinition.Checked = optionsPage.DisablePeekDefinition;
-            chkDisableQuickInfo.Checked = optionsPage.DisableQuickInfo;
-            chkDisableRegions.Checked = optionsPage.DisableRegions;
-            chkDisableSyntaxColorization.Checked = optionsPage.DisableSyntaxColorization;
-            chkDisableCaseSynchronization.Checked = optionsPage.DisableCaseSynchronization;
-            chkDisableCodeCompletion.Checked = optionsPage.DisableCodeCompletion;
             _loading = false;
 
         }
@@ -139,22 +126,55 @@ namespace XSharp.Project.OptionsPages
         {
             if (! _loading )
             {
-                optionsPage.DisableParameterInfo = chkDisableParameters.Checked;
-                optionsPage.DisableEditorDropdowns = chkDisableEditorDropdowns.Checked;
-                optionsPage.DisableBraceMatching = chkBraceMatching.Checked;
-                optionsPage.DisableClassViewObjectView = chkDisableClassViewObjectView.Checked;
-                optionsPage.DisableEntityParsing = chkDisableEntityParsing.Checked;
-                optionsPage.DisableHighLightWord = chkDisableHighlightWord.Checked;
-                optionsPage.DisableLightBulb = chkDisableLigtBulb.Checked;
-                optionsPage.DisablePeekDefinition = chkDisablePeekDefinition.Checked;
-                optionsPage.DisableQuickInfo = chkDisableQuickInfo.Checked;
-                optionsPage.DisableRegions = chkDisableRegions.Checked;
-                optionsPage.DisableSyntaxColorization = chkDisableSyntaxColorization.Checked;
-                optionsPage.DisableCaseSynchronization = chkDisableCaseSynchronization.Checked;
-                optionsPage.DisableCodeCompletion = chkDisableCodeCompletion.Checked;
-            }
+              }
 
         }
 
+        private void btnShowMeTheMagic_Click(object sender, EventArgs e)
+        {
+            XSharpSpecialOptions form = new XSharpSpecialOptions();
+
+            form.chkDisableParameters.Checked = optionsPage.DisableParameterInfo;
+            form.chkDisableEditorDropdowns.Checked = optionsPage.DisableEditorDropdowns;
+            form.chkBraceMatching.Checked = optionsPage.DisableBraceMatching;
+            form.chkDisableClassViewObjectView.Checked = optionsPage.DisableClassViewObjectView;
+            form.chkDisableEntityParsing.Checked = optionsPage.DisableEntityParsing;
+            form.chkDisableHighlightWord.Checked = optionsPage.DisableHighLightWord;
+            form.chkDisableLigtBulb.Checked = optionsPage.DisableLightBulb;
+            form.chkDisablePeekDefinition.Checked = optionsPage.DisablePeekDefinition;
+            form.chkDisableQuickInfo.Checked = optionsPage.DisableQuickInfo;
+            form.chkDisableRegions.Checked = optionsPage.DisableRegions;
+            form.chkDisableSyntaxColorization.Checked = optionsPage.DisableSyntaxColorization;
+            form.chkDisableCaseSynchronization.Checked = optionsPage.DisableCaseSynchronization;
+            form.chkDisableCodeCompletion.Checked = optionsPage.DisableCodeCompletion;
+            form.chkDisableGotoDefinition.Checked = optionsPage.DisableGotoDefinition;
+            form.chkDisableAssemblyReferences.Checked = optionsPage.DisableAssemblyReferences;
+            form.chkDisableForeignProjectReferences.Checked = optionsPage.DisableForeignProjectReferences;
+            form.chkDisableXSharpProjectReferences.Checked = optionsPage.DisableXSharpProjectReferences;
+            form.chkEnableOutputPane.Checked = optionsPage.EnableOutputPane ;
+            form.ShowDialog();
+            if (form.DialogResult == DialogResult.OK)
+            {
+                optionsPage.DisableParameterInfo = form.chkDisableParameters.Checked;
+                optionsPage.DisableEditorDropdowns = form.chkDisableEditorDropdowns.Checked;
+                optionsPage.DisableBraceMatching = form.chkBraceMatching.Checked;
+                optionsPage.DisableClassViewObjectView = form.chkDisableClassViewObjectView.Checked;
+                optionsPage.DisableEntityParsing = form.chkDisableEntityParsing.Checked;
+                optionsPage.DisableHighLightWord = form.chkDisableHighlightWord.Checked;
+                optionsPage.DisableLightBulb = form.chkDisableLigtBulb.Checked;
+                optionsPage.DisablePeekDefinition = form.chkDisablePeekDefinition.Checked;
+                optionsPage.DisableQuickInfo = form.chkDisableQuickInfo.Checked;
+                optionsPage.DisableRegions = form.chkDisableRegions.Checked;
+                optionsPage.DisableSyntaxColorization = form.chkDisableSyntaxColorization.Checked;
+                optionsPage.DisableCaseSynchronization = form.chkDisableCaseSynchronization.Checked;
+                optionsPage.DisableCodeCompletion = form.chkDisableCodeCompletion.Checked;
+                optionsPage.DisableGotoDefinition = form.chkDisableGotoDefinition.Checked ;
+                optionsPage.DisableAssemblyReferences = form.chkDisableAssemblyReferences.Checked;
+                optionsPage.DisableForeignProjectReferences = form.chkDisableForeignProjectReferences.Checked  ;
+                optionsPage.DisableXSharpProjectReferences = form.chkDisableXSharpProjectReferences.Checked ;
+                optionsPage.EnableOutputPane = form.chkEnableOutputPane.Checked;
+            }
+
+        }
     }
 }

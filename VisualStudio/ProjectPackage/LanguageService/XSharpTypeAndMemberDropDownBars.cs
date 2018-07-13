@@ -261,16 +261,23 @@ namespace XSharp.LanguageService
                 }
                 foreach (XElement  member in members)
                 {
+                    bool otherFile;
                     if (includeFields || (member.Kind != Kind.Field  && member.Kind != Kind.VODefine))
                     {
                         spM = this.TextRangeToTextSpan(member.Range);
-
+                        otherFile = false;
+                        ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                         if (hasPartial)
-                        { 
-                            ft = member.File == file ? DROPDOWNFONTATTR.FONTATTR_PLAIN : DROPDOWNFONTATTR.FONTATTR_GRAY;
+                        {
+                            otherFile = member.File != file;
                         }
 
                         string prototype = member.ComboPrototype;
+                        if (otherFile)
+                        {
+                            ft  = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                            prototype += " (" + System.IO.Path.GetFileName(member.File.SourcePath) + ")";
+                        }
                         elt = new XDropDownMember(prototype, spM, member.Glyph, ft);
                         nSelect = dropDownMembers.Add(elt);
                         elt.Element = member;

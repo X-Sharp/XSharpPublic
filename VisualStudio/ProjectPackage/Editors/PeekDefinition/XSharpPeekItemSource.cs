@@ -64,7 +64,8 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("XSharpPeekItemSource.AugmentPeekSession Exception : " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpPeekItemSource.AugmentPeekSession failed : " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
             {

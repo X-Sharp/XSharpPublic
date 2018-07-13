@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharpModel
 				
 					parentName := thisName:Substring(0, (thisName:LastIndexOf(".") + 1)) + parentName
 				ENDIF
-				IF SELF:File != NULL
+				IF SELF:File != NULL .and. parentName != "System.Object"
 				
 					tmp := SELF:File:Project:Lookup(parentName, TRUE)
 					IF tmp != NULL
@@ -153,6 +153,7 @@ BEGIN NAMESPACE XSharpModel
 			nLineStart := oElement:nStartLine  // parser has 1 based lines and columns
 			nLineEnd   := oElement:nStartLine
 			nColStart  := oElement:nCol
+			nColEnd	   := 1 
 			nPosStart  := oElement:nOffSet
 			lHasEnd    := FALSE
 			IF oElement:cName == GlobalName
@@ -187,6 +188,9 @@ BEGIN NAMESPACE XSharpModel
 				nColEnd    := nColStart
 				nPosEnd    := oInfo:SourceLength-2
 			ENDIF
+			IF nLineStart == nLineEnd .and. nColEnd < nColStart
+				nColEnd := nColStart + 1
+			endif
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}
 			interval := TextInterval{nPosStart, nPosEnd}
 			RETURN

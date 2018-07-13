@@ -13,17 +13,37 @@ begin namespace XSharpModel
 		const private OrphanedFiles := "(OrphanedFiles)" as string
 		static initonly private xProjects := ConcurrentDictionary<string, XProject>{StringComparer.OrdinalIgnoreCase} as ConcurrentDictionary<string, XProject>
 		
+		public static OutputWindow as IOutPutWindow
 		// Methods
+		STATIC CONSTRUCTOR 
+			OutputWindow := ModelOutputWindow{}
+
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
+			OutputWindow:DisplayOutPutMessage(message)
+		STATIC METHOD WriteException(ex AS Exception) AS VOID
+			local space := "" as STRING
+			DO WHILE ex != null
+				WriteOutputMessage(String.Format("{0}***** exception {1}", space, ex:GetType()))
+				WriteOutputMessage(ex:Message)
+				WriteOutputMessage(ex:StackTrace)
+				space += " "
+				ex := ex:InnerException
+			ENDDO
+			RETURN
+
+
 		static method Add(project as XProject) as logic
 			return Add(project:Name, project)
 		
-		static method Add(projectName as string, project as XProject) as logic
+		STATIC METHOD ADD(projectName AS STRING, project AS XProject) AS LOGIC
+			WriteOutputMessage("XModel.Solution.Add() "+projectName)
 			if xProjects:ContainsKey(projectName)
 				return false
 			endif
 			return xProjects:TryAdd(projectName, project)
 		
-		static method CloseAll() as void
+		STATIC METHOD CloseAll() AS VOID
+			WriteOutputMessage("XModel.Solution.CloseAll()")
 			xProjects:Clear()
 			SystemTypeController.Clear()
 			if _orphanedFilesProject != null .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
@@ -64,7 +84,8 @@ begin namespace XSharpModel
 			endif
 			return null
 		
-		static method Remove(projectName as string) as logic
+		STATIC METHOD REMOVE(projectName AS STRING) AS LOGIC
+			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
 			if xProjects:ContainsKey(projectName)
 				var project := xProjects:Item[projectName]
 				project:UnLoad()
@@ -104,6 +125,15 @@ begin namespace XSharpModel
 		
 		
 	end class
-	
+
+	CLASS ModelOutputWindow IMPLEMENTS IOutputWindow
+		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
+			System.Diagnostics.Debug.WriteLine(message)
+			RETURN
+	END CLASS	
+
+	INTERFACE IOutputWindow
+		METHOD DisplayOutPutMessage(message as STRING) AS VOID
+	end interface
 end namespace 
 

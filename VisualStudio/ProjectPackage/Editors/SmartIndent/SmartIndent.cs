@@ -65,7 +65,7 @@ namespace XSharp.Project
             }
         }
 
-        #region Keywords Definitions
+#region Keywords Definitions
         private void getKeywords()
         {
             // Build list for Indent tokens
@@ -151,7 +151,7 @@ namespace XSharp.Project
                 new String[]{ "OTHERWISE", "DO,SWITCH,BEGIN" }
             };
         }
-        #endregion
+#endregion
 
         private void Options_OptionChanged(object sender, EditorOptionChangedEventArgs e)
         {
@@ -284,7 +284,7 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("SmartIndent.GetDesiredIndentation Exception : " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
             return _lastIndentValue;
         }

@@ -189,7 +189,8 @@ namespace XSharp.Project
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent, IVsShellPropertyEvents, IVsDebuggerEvents
+    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent, 
+        IVsShellPropertyEvents, IVsDebuggerEvents, XSharpModel.IOutputWindow
     {
         private uint m_componentID;
         private static XSharpProjectPackage instance;
@@ -241,6 +242,7 @@ namespace XSharp.Project
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             base.Initialize();
             XSharpProjectPackage.instance = this;
+            XSharpModel.XSolution.OutputWindow = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             this.settings = new XPackageSettings(this);
             validateVulcanEditors();
@@ -528,17 +530,33 @@ namespace XSharp.Project
         internal bool DebuggerIsRunning => modeArray[0] != DBGMODE.DBGMODE_Design;
         #endregion
 
+        public void DisplayException(Exception ex)
+        {
+            if (GetIntellisenseOptionsPage().EnableOutputPane)
+            {
+                string space = "";
+                while (ex != null)
+                {
+                    XSharpOutputPane.DisplayOutPutMessage(space+"**** Exception *** " + ex.GetType().FullName);
+                    XSharpOutputPane.DisplayOutPutMessage(space + ex.Message);
+                    XSharpOutputPane.DisplayOutPutMessage(space + ex.StackTrace);
+                    ex = ex.InnerException;
+                    space += " ";
+                }
+
+            }
+
+        }
+
+        public void DisplayOutPutMessage(string message)
+        {
+            if (GetIntellisenseOptionsPage().EnableOutputPane)
+            {
+                XSharpOutputPane.DisplayOutPutMessage(message);
+            }
+        }
 
     }
-    public class Support
-    {
-        public static void Debug(string msg, params object[] o)
-        {
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-                System.Diagnostics.Debug.WriteLine(String.Format("XProject: " + msg, o));
-#endif
-        }
-    }
+
 
 }

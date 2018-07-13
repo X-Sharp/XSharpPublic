@@ -301,7 +301,8 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.WriteLine(e.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("AddDependant failed");
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 

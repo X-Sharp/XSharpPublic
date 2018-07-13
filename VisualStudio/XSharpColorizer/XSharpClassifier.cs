@@ -127,7 +127,11 @@ namespace XSharpColorizer
             ClassifyBuffer(_snapshot);
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
-            _bwBuildModel.RunWorkerAsync();
+            try
+            {
+                _bwBuildModel.RunWorkerAsync();
+            }
+            catch  { }
 
         }
         #region Lexer Methods
@@ -136,8 +140,13 @@ namespace XSharpColorizer
         {
             if (!_bwClassify.IsBusy && !_bwBuildModel.IsBusy)
             {
-                _bwClassify.RunWorkerAsync();
+                try
+                {
+                    _bwClassify.RunWorkerAsync();
+                }
+                catch  { }
             }
+
         }
 
         private void ClassifyBuffer(ITextSnapshot snapshot)
@@ -206,7 +215,14 @@ namespace XSharpColorizer
                     if (newSnapshot.Version != snapshot.Version)
                     {
                         // buffer was changed, so restart
-                        _bwClassify.RunWorkerAsync();
+                        try
+                        {
+                            _bwClassify.RunWorkerAsync();
+                        }
+                        catch 
+                        {
+
+                        }
                     }
                     else
                     {

@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -99,7 +100,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public int Open(bool newFile, bool openWith, WindowFrameShowAction windowFrameAction)
         {
-            Guid logicalView = Guid.Empty;
+            Guid logicalView = VSConstants.LOGVIEWID_Primary; 
             IVsWindowFrame windowFrame = null;
             return this.Open(newFile, openWith, logicalView, out windowFrame, windowFrameAction);
         }
@@ -139,7 +140,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception :" + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
             finally
@@ -169,7 +170,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int Open(bool newFile, bool openWith, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
         {
             windowFrame = null;
-            Guid editorType = Guid.Empty;
+            Guid editorType = VSConstants.LOGVIEWID_Primary;
             return this.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }
 
@@ -273,7 +274,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception e:" + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnValue = e.ErrorCode;
 				CloseWindowFrame(ref windowFrame);
             }

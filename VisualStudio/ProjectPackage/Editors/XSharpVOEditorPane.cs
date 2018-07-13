@@ -1001,7 +1001,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsFileChangeEvents.FilesChanged(uint cChanges, string[] rgpszFile, uint[] rggrfChange)
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t**** Inside FilesChanged ****"));
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside FilesChanged ****");
 
             //check the different parameters
             if (0 == cChanges || null == rgpszFile || null == rggrfChange)
@@ -1071,7 +1071,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsDocDataFileChangeControl.IgnoreFileChanges(int fIgnore)
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t **** Inside IgnoreFileChanges ****"));
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside IgnoreFileChanges ****");
 
             if (fIgnore != 0)
             {
@@ -1106,7 +1106,7 @@ namespace XSharp.Project
         /// <returns>Result of teh operation</returns>
         private int SetFileChangeNotification(string strFileName, bool fStart)
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t **** Inside SetFileChangeNotification ****"));
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside SetFileChangeNotification ****");
 
             int result = VSConstants.E_FAIL;
 
@@ -1153,7 +1153,7 @@ namespace XSharp.Project
 
         private int SuspendFileChangeNotification(string strFileName, int fSuspend)
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t **** Inside SuspendFileChangeNotification ****"));
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside SuspendFileChangeNotification ****");
 
             if (null == vsFileChangeEx)
                 vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx));

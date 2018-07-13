@@ -9,7 +9,6 @@ using System.Collections.Immutable
 using System.Linq
 using System.Text
 using System.Threading.Tasks
-using EnvDTE
 using LanguageService.CodeAnalysis.Text
 using System.Diagnostics
 using System.Collections.Immutable
@@ -30,7 +29,7 @@ begin namespace XSharpModel
 			super(name, kind, modifiers, visibility, span, position)
 
 			self:_members := List<XTypeMember>{}
-			self:_parentName := "System.Object"
+			SELF:_parentName := "System.Object"
 			self:_nameSpace := ""
 			if modifiers:HasFlag(Modifiers.Static)
 				self:_isStatic := true
@@ -88,10 +87,6 @@ begin namespace XSharpModel
 					xMember := XTypeMember.Create(oElement, oInfo, oFile, oXType)
 					oXType:AddMember(xMember)
 				ENDIF
-				IF oXType.Kind == Kind.Enum
-					
-					System.Diagnostics.Debug.WriteLine("")
-				endif
 			endif
 
 			return oXType

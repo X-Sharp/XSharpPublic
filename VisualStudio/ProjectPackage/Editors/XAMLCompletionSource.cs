@@ -24,6 +24,7 @@ using System.Collections.Immutable;
 using XSharpColorizer;
 using XSharp.Project.OptionsPages;
 using System.Runtime.CompilerServices;
+using XSharp.Project;
 
 namespace XSharpLanguage
 {
@@ -68,7 +69,7 @@ namespace XSharpLanguage
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            Trace.WriteLine("-->> XAML AugmentCompletionSessions");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> XAML AugmentCompletionSessions");
             try
             {
                 // Where does the StartSession has been triggered ?
@@ -101,12 +102,13 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("XAML AugmentCompletionSessions: " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XAML AugmentCompletionSessions failed " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
             {
             }
-            Trace.WriteLine("<<-- XAML AugmentCompletionSessions");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("<<-- XAML AugmentCompletionSessions");
         }
 
         public void Dispose()

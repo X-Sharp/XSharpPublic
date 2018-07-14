@@ -2243,7 +2243,7 @@ namespace XSharpLanguage
 
 
             ITokenStream tokenStream;
-            var reporter = new ErrorReporter();
+            var reporter = new ErrorIgnorer();
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var tokens = tokenStream as BufferedTokenStream;
             // locate the last token before the trigger point
@@ -3765,7 +3765,7 @@ namespace XSharpLanguage
             return _xTypes;
         }
     }
-    public class ErrorReporter : IErrorListener
+    public class ErrorIgnorer : IErrorListener
     {
         #region IErrorListener
         public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)

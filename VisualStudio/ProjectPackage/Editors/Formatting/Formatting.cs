@@ -78,7 +78,7 @@ namespace XSharp.Project
                 new String[]{ "ENDCASE", "DO" },
                 new String[]{ "NEXT", "FOR,FOREACH" },
                 new String[]{ "UNTIL", "REPEAT" },
-                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY,SWITCH" },
+                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY,EVENT,ADD,REMOVE,SWITCH,CLASS,STRUCTURE,INTERFACE,ENUM" },
                 new String[]{ "ENDDO", "DO,WHILE" }
             };
         }
@@ -99,7 +99,7 @@ namespace XSharp.Project
         {
             // 
             return new String[]{
-                "GET", "SET", "PROPERTY"
+                "GET", "SET", "PROPERTY", "ADD", "REMOVE", "EVENT"
             };
         }
 
@@ -252,7 +252,6 @@ namespace XSharp.Project
             // Read Settings
             getOptions();
             formatCaseForWholeBuffer();
-
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
             {
@@ -371,7 +370,13 @@ namespace XSharp.Project
             }
         }
 
-
+        /// <summary>
+        /// Calculate the indentation in characters
+        /// </summary>
+        /// <param name="snapLine"></param>
+        /// <param name="regions"></param>
+        /// <param name="inComment"></param>
+        /// <returns></returns>
         private int getDesiredIndentationInDocument(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions, out bool inComment)
         {
             int indentValue = 0;
@@ -683,7 +688,7 @@ namespace XSharp.Project
         private static bool _optionsValid = false;
 
         // SmartIndent
-        private static int _lastIndentValue;
+        private static int _lastIndentValue;    // in number of characters
         private static int _tabSize;
         private static int _indentSize;
         private static bool _alignDoCase;
@@ -729,7 +734,13 @@ namespace XSharp.Project
                 _optionsValid = true;
             }
         }
-
+        /// <summary>
+        /// the indentation is measured in # of characters
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="editSession"></param>
+        /// <param name="alignOnPrev"></param>
+        /// <returns></returns>
         private int getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
             try
@@ -749,8 +760,8 @@ namespace XSharp.Project
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
                     bool doSkipped;
                     string keyword = getFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
-                    //
-                    //if (indentValue > -1)
+                    if (indentValue < 0)
+                        indentValue = 0;
                     _lastIndentValue = indentValue;
                     if (alignOnPrev)
                         return _lastIndentValue;
@@ -762,20 +773,19 @@ namespace XSharp.Project
                         {
                             if (!_alignMethod)
                             {
-                                indentValue += _tabSize;
+                                indentValue += _indentSize;
                             }
                         }
                         else if (_specialCodeBlockKeywords.Contains<String>(keyword))
                         {
                             if (!_alignMethod)
                             {
-                                indentValue += _tabSize;
+                                indentValue += _indentSize;
                             }
                         }
                         else if (_indentKeywords.Contains<String>(keyword))
                         {
-                            //
-                            indentValue += _tabSize;
+                            indentValue += _indentSize;
                         }
                         else if ((outdentToken = searchSpecialOutdentKeyword(keyword)) != null)
                         {
@@ -813,7 +823,7 @@ namespace XSharp.Project
                                 {
                                     if (!_alignDoCase)
                                     {
-                                        indentValue += _tabSize;
+                                        indentValue += _indentSize;
                                     }
                                 }
                                 else
@@ -827,21 +837,19 @@ namespace XSharp.Project
                                         // The can be aligned to SWITCH/DO CASE or indented
                                         if (!_alignDoCase)
                                         {
-                                            specialIndentValue += _tabSize;
+                                            specialIndentValue += _indentSize;
                                         }
                                     }
                                 }
 
                             }
-                            if (specialIndentValue > -1)
+                            if (specialIndentValue != -1)
                             {
-                                // and Indent the new line
-                                indentValue = (int)specialIndentValue + _tabSize;
-                                // And apply
-                                // De-Indent previous line !!!
                                 try
                                 {
+                                    // De-Indent previous line !!!
                                     CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, specialIndentValue);
+                                    indentValue = specialIndentValue + _indentSize;
                                 }
                                 catch (Exception ex)
                                 {
@@ -851,11 +859,11 @@ namespace XSharp.Project
                             }
                         }
                         if (indentValue < 0)
+                        {
                             indentValue = 0;
-                        //
+                        }
                         _lastIndentValue = indentValue;
                     }
-                    //
                     return _lastIndentValue;
                 }
             }
@@ -894,8 +902,7 @@ namespace XSharp.Project
                         int index = 0;
                         if (token.Type == XSharpLexer.WS)
                         {
-                            var text = token.Text.Replace("\t", new String(' ', _tabSize));
-                            indentValue = text.Length;
+                            indentValue = getIndentTokenLength(token);
                             index++;
                             token = tokens[index];
                         }
@@ -957,7 +964,55 @@ namespace XSharp.Project
             }
             return tokens;
         }
-
+        /// <summary>
+        /// Returns the indent width in characters
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private int getIndentTokenLength(IToken token)
+        {
+            int len = 0;
+            if (token.Type == XSharpLexer.WS)
+            {
+                var text = token.Text;
+                bool space = false; // was last token a space
+                foreach (var ch in text)
+                {
+                    switch (ch)
+                    {
+                        case ' ':
+                            len += 1;
+                            space = true;
+                            break;
+                        case '\t':
+                            if (space)
+                            {
+                                // if already at tab position then increment with whole tab
+                                // otherwise round up to next tab
+                                var mod = len % _tabSize;
+                                len = len - mod + _tabSize;
+                                space = false;
+                            }
+                            else
+                            {
+                                len += _tabSize;
+                            }
+                            break;
+                        default:
+                            // the only other token that is allowed inside a WS is an old style pragma like ~"ONLYEARLY+"
+                            // these do not influence the tab position.
+                            break;
+                    }
+                }
+                int rest = len % _indentSize;
+                len = len / _indentSize;
+                if (rest != 0)
+                {
+                    len+= 1;
+                }
+            }
+            return len* _indentSize;
+        }
         /// <summary>
         /// Get the first keyword in Line. The keyword is in UPPERCASE The modifiers (Private, Protected, ... ) are ignored
         /// If the first Keyword is a Comment, "//" is returned
@@ -979,7 +1034,11 @@ namespace XSharp.Project
                 if (tokens[0].Type == XSharpLexer.WS)
                 {
                     index = 1;
-                    minIndent = tokens[0].Text.Replace("\t", new string(' ', _tabSize)).Length;
+                    minIndent = getIndentTokenLength(tokens[0]);
+                }
+                else
+                {
+                    minIndent = 0;
                 }
                 while (tokens.Count > index)
                 {

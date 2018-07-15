@@ -190,7 +190,7 @@ namespace XSharp.Project
 
         private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
-            //XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.formatLineCase()");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber+1})");
             // Note that this will only work if the Tags are already updated.
             // That means: only when you type slowly.
             // We need to fix this later by doing:
@@ -905,41 +905,57 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="editSession"></param>
         /// <param name="line"></param>
-        static public void FormatLineIndent( ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
+        static public void FormatLineIndent(ITextView TextView, ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
         {
-            if (desiredIndentation >= 0)
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber+1})");
+            int tabSize = TextView.Options.GetTabSize();
+            int indentSize = TextView.Options.GetIndentSize();
+            bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();
+            int lineLength = line.Length;
+            int originalIndentLength = lineLength - line.GetText().TrimStart().Length;
+            if (desiredIndentation < 0)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilterHelper.FormatLineIndent()");
-                int tabSize = TextView.Options.GetTabSize();
-                bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();
-                String lineText = line.GetText();
-                int lineLength = line.Length;
-                String newText = lineText.TrimStart();
-                int newLength = newText.Length;
-                if (lineLength >= newLength)
+                ; //do nothing
+            }
+            else if (desiredIndentation == 0)
+            {
+                // remove indentation
+                if (originalIndentLength != 0)
                 {
-                    //
-                    String indentSpaces = "";
-                    if (useSpaces)
+                    Span indentSpan = new Span(line.Start.Position, originalIndentLength);
+                    editSession.Replace(indentSpan, "");
+                }
+            }
+            else
+            {
+                string newIndent;
+                if (useSpaces)
+                {
+                    newIndent = new String(' ', desiredIndentation);
+                }
+                else
+                {
+                    // fill indent room with tabs and optionally also with one or more spaces 
+                    // if the indentsize is not the same as the tabsize
+                    int numTabs = desiredIndentation / tabSize;
+                    int numSpaces = desiredIndentation % tabSize;
+                    newIndent = new String('\t', numTabs);
+                    if (numSpaces != 0)
                     {
-                        indentSpaces = new String(' ', (int)desiredIndentation);
+                        newIndent += new String(' ', numSpaces);
                     }
-                    else
-                    {
-                        indentSpaces = new String('\t', (int)desiredIndentation / tabSize) + new String(' ', (int)desiredIndentation % tabSize);
-                    }
-                    //
-                    if (lineLength - newLength == 0)
-                        editSession.Insert(line.Start.Position, indentSpaces);
-                    else
-                    {
-                        Span indentSpan = new Span(line.Start.Position, lineLength - newLength);
-                        editSession.Replace(indentSpan, indentSpaces);
-                    }
+                }
+                if (originalIndentLength == 0)
+                {
+                    editSession.Insert(line.Start.Position, newIndent);
+                }
+                else
+                {
+                    Span indentSpan = new Span(line.Start.Position, originalIndentLength);
+                    editSession.Replace(indentSpan, newIndent);
                 }
             }
         }
-
     }
 
     

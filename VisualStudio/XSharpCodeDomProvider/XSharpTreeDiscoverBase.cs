@@ -182,7 +182,9 @@ namespace XSharp.CodeDom
             {
                 System.Type type = findType(sName);
                 if (type != null)
+                {
                     return new XCodeTypeReference(type);
+                }
             }
             if (context is XSharpParser.QualifiedNameContext)
             {
@@ -703,7 +705,14 @@ namespace XSharp.CodeDom
                 return new XCodeTypeReference(type);
             }
             else
-                return new XCodeTypeReference(name);
+            {
+                var xtype = _projectNode.ResolveXType(name, _usings.ToImmutableArray());
+                if (xtype != null)
+                    return new XCodeTypeReference(xtype.FullName);
+                else
+                    return new XCodeTypeReference(name);
+            }
+                
 
         }
         protected System.Type findType(string typeName)
@@ -714,7 +723,9 @@ namespace XSharp.CodeDom
             }
             var type = _projectNode.ResolveType(typeName, _usings.ToImmutableArray());
             if (type != null)
+            {
                 _types.Add(typeName, type);
+            }
             return type;
 
         }

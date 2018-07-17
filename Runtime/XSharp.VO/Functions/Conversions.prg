@@ -1,73 +1,73 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
-using XSharp
-using System.Text
-using System.Globalization
-using System.Collections.Generic
+USING XSharp
+USING System.Text
+USING System.Globalization
+USING System.Collections.Generic
 
 #define MAXDIGITS               30
 #define MAXDECIMALS             15	
 
-internal static class ConversionHelpers
-	static internal usCulture as CultureInfo
-	static private formatStrings as Dictionary<Int, String>
-	static constructor
+INTERNAL STATIC CLASS ConversionHelpers
+	STATIC INTERNAL usCulture AS CultureInfo
+	STATIC PRIVATE formatStrings AS Dictionary<INT, STRING>
+	STATIC CONSTRUCTOR
 		usCulture := CultureInfo{"en-US"} 
-		formatStrings := Dictionary<Int, String>{}
+		formatStrings := Dictionary<INT, STRING>{}
 
-	static method GetFormatString(nLen as int, nDec as int) as string
-		local nKey as int
-		local cFormat as STRING
+	STATIC METHOD GetFormatString(nLen AS INT, nDec AS INT) AS STRING
+		LOCAL nKey AS INT
+		LOCAL cFormat AS STRING
 		nKey := nLen * 100 + nDec
-		if formatStrings:ContainsKey(nKey)
-			return formatStrings[nKey]
-		endif
-		if nDec != 0
+		IF formatStrings:ContainsKey(nKey)
+			RETURN formatStrings[nKey]
+		ENDIF
+		IF nDec != 0
 			cFormat := "0."
 			cFormat := cFormat:PadRight(nDec+2, '0')	// 2 extra for the 0 + Dot
-		else
+		ELSE
 			cFormat := "0"
 		ENDIF
 		cFormat := cFormat:PadLeft(nLen, '#')
 		cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
 		formatStrings:Add(nKey, cFormat)
-		return cFormat
+		RETURN cFormat
 
-	static method FormatNumber(n as real8, nLen as int, nDec as int) as string
-		local cFormat as string
-		local result as string
+	STATIC METHOD FormatNumber(n AS REAL8, nLen AS INT, nDec AS INT) AS STRING
+		LOCAL cFormat AS STRING
+		LOCAL result AS STRING
 		cFormat := GetFormatString(nLen, nDec)
 		result := String.Format(usCulture, cFormat, n)
 		IF result:Length > nLen
 			result := Replicate("*", (DWORD) nLen)
-		endif
-		return result
+		ENDIF
+		RETURN result
 
-	static method FormatNumber(n as Int64, nLen as int, nDec as int) as string
-		local cFormat as string
-		local result as string
+	STATIC METHOD FormatNumber(n AS INT64, nLen AS INT, nDec AS INT) AS STRING
+		LOCAL cFormat AS STRING
+		LOCAL result AS STRING
 		cFormat := GetFormatString(nLen, 0)
 		result := String.Format(usCulture, cFormat, n)
 		IF result:Length > nLen
 			result := Replicate("*", (DWORD) nLen)
-		endif
-		return result
+		ENDIF
+		RETURN result
 
 
 	STATIC METHOD AdjustDecimalSeparator(cString AS STRING) AS STRING
-		if cString:IndexOf(".") >= 0 
-			var wSep   := SetDecimalSep()
-			if wSep != 46
+		IF cString:IndexOf(".") >= 0 
+			VAR wSep   := SetDecimalSep()
+			IF wSep != 46
 				cString := cString:Replace('.', (char) wSep)
-			endif
-		endif
-		return cString
+			ENDIF
+		ENDIF
+		RETURN cString
 
-end class
+END CLASS
 
 	/// <summary>
 	/// Convert a value to a hexadecimal string.
@@ -75,16 +75,16 @@ end class
 	/// <param name="uValue">A string or Numeric value.</param>
 	/// <returns>A string with the hex representation of the value
 	/// </returns>
-function AsHexString(uValue as usual) as string
-	local result as string
-	if IsString(uValue)
-		result := "0x"+c2Hex( (string) uValue)
-	elseif IsNumeric(uValue)
-		result := String.Format("{0:X8}", (int64) uValue)
-	else
+FUNCTION AsHexString(uValue AS USUAL) AS STRING
+	LOCAL result AS STRING
+	IF IsString(uValue)
+		result := "0x"+c2Hex( (STRING) uValue)
+	ELSEIF IsNumeric(uValue)
+		result := String.Format("{0:X8}", (INT64) uValue)
+	ELSE
 		result := ""
-	endif
-	return result
+	ENDIF
+	RETURN result
 	
 	/// <summary>
 	/// Convert a value to a right-padded string.
@@ -93,13 +93,13 @@ function AsHexString(uValue as usual) as string
 	/// <param name="dwLen">The length of the padded string.</param>
 	/// <returns>A right-padded string of length dwLen containing the converted value.
 	/// </returns>
-function AsPadr(u as usual,dwLen as dword) as string
-	return PadR(AsString(u), dwLen)
+FUNCTION AsPadr(u AS USUAL,dwLen AS DWORD) AS STRING
+	RETURN PadR(AsString(u), dwLen)
 	
 
 /// <exclude />
-function _AsString(u as Usual) as string
-	return	 AsString(u)
+FUNCTION _AsString(u AS USUAL) AS STRING
+	RETURN	 AsString(u)
 
 	
 /// <summary>
@@ -108,41 +108,41 @@ function _AsString(u as Usual) as string
 /// <param name="u">The value to be converted.</param>
 /// <returns>A string containing the converted value.  Please note that this is NOT the same as the .Net ToString(). AsString() tries to emulate the VO Behaviour as correctly as possible.
 /// </returns>
-function AsString(u as usual) as string
-	local result as string
-	do case
-		case u:IsString
-			result := (string) u
-		case u:IsNumeric
-			result := Ntrim(u)
-		case u:IsSymbol
-			result := Symbol2String( (symbol) u)
-		case u:IsDate
-			result := DTOC( (date) u)
-		case u:IsArray
+FUNCTION AsString(u AS USUAL) AS STRING
+	LOCAL result AS STRING
+	DO CASE
+		CASE u:IsString
+			result := (STRING) u
+		CASE u:IsNumeric
+			result := NTrim(u)
+		CASE u:IsSymbol
+			result := Symbol2String( (SYMBOL) u)
+		CASE u:IsDate
+			result := DToC( (DATE) u)
+		CASE u:IsArray
 			VAR aValue := (ARRAY) u
 			//  {[0000000003]0x025400FC}
 			IF aValue == NULL_ARRAY
 				result := "{[0000000000]0x00000000}"
 			ELSE
-				var cHashCode := String.Format("{0:X8}", aValue:GetHashCode())
+				VAR cHashCode := String.Format("{0:X8}", aValue:GetHashCode())
 				result := "{["+STRING.Format("{0:D8}",aValue:Length)+"]0x"+cHashCode+"}"
 			ENDIF
 
-		case u:IsObject
-			local oValue := u as OBJECT
+		CASE u:IsObject
+			LOCAL oValue := u AS OBJECT
 			IF oValue == NULL_OBJECT
 				result := "{(0x0000)0x00000000} CLASS "
 			ELSE
-				var oType := oValue:GetType()
-				var nSize := oType:GetFields():Length *4
-				var cHashCode := String.Format("{0:X8}", oValue:GetHashCode())
+				VAR oType := oValue:GetType()
+				VAR nSize := oType:GetFields():Length *4
+				VAR cHashCode := String.Format("{0:X8}", oValue:GetHashCode())
 				result := "{(0x"+String.Format("{0:X4}", nSize)+")0x"+cHashCode+"} CLASS " + oType:Name:ToUpperInvariant()
 			ENDIF
-		otherwise
+		OTHERWISE
 			result := u:ToString()
-	endcase
-	return result
+	ENDCASE
+	RETURN result
 	
 	
 	/// <summary>
@@ -152,8 +152,8 @@ function AsString(u as usual) as string
 	/// <returns>
 	/// The Symbol representing the given string or Psz.
 	/// </returns>
-function AsSymbol(u as usual) as symbol
-	return symbol{(string)u, TRUE}   
+FUNCTION AsSymbol(u AS USUAL) AS SYMBOL
+	RETURN SYMBOL{(STRING)u, TRUE}   
 	
 	
 	/// <summary>
@@ -162,32 +162,32 @@ function AsSymbol(u as usual) as symbol
 	/// <param name="uValue"></param>
 	/// <returns>
 	/// </returns>
-function Descend(uValue as usual) as usual
-	if uValue:isString
-		return _descendingString( (String) uValue)
-	elseif uValue:IsLogic	
-		return ! (LOGIC) uValue
-	elseif uValue:IsLong
-		return 0 - (int) uValue
-	elseif uValue:IsInt64
-		return 0 - (int64) uValue
-	elseif uValue:IsFloat
-		return 0 - (Float) uValue
-	elseif uValue:IsDate
-		return (date) (6364425 - (dword)(date) uValue )
-	endif
-	return uValue
+FUNCTION Descend(uValue AS USUAL) AS USUAL
+	IF uValue:isString
+		RETURN _descendingString( (STRING) uValue)
+	ELSEIF uValue:IsLogic	
+		RETURN ! (LOGIC) uValue
+	ELSEIF uValue:IsLong
+		RETURN 0 - (INT) uValue
+	ELSEIF uValue:IsInt64
+		RETURN 0 - (INT64) uValue
+	ELSEIF uValue:IsFloat
+		RETURN 0 - (FLOAT) uValue
+	ELSEIF uValue:IsDate
+		RETURN (DATE) (6364425 - (DWORD)(DATE) uValue )
+	ENDIF
+	RETURN uValue
 
-internal function _descendingString(s as string) as STRING
-	var sb  := StringBuilder{s}
-	var nlen := s:Length-1
-	local i as int
-	for i := 0 to nlen
-		if sb[i] < 256
+INTERNAL FUNCTION _descendingString(s AS STRING) AS STRING
+	VAR sb  := StringBuilder{s}
+	VAR nlen := s:Length-1
+	LOCAL i AS INT
+	FOR i := 0 TO nlen
+		IF sb[i] < 256
 			sb[i] := (char) (255 - sb[i])
-		endif
-	next
-	return sb:ToString()
+		ENDIF
+	NEXT
+	RETURN sb:ToString()
 
 	
 /// <summary>
@@ -196,9 +196,9 @@ internal function _descendingString(s as string) as STRING
 /// <param name="uValue"></param>
 /// <returns>
 /// </returns>
-function DescendA(uValue REF usual) as usual
+FUNCTION DescendA(uValue REF USUAL) AS USUAL
 	uValue := Descend(uValue)
-	return uValue
+	RETURN uValue
 	
 	
 	
@@ -212,13 +212,13 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 	LOCAL ret AS STRING
 	SWITCH n:_UsualType
 	CASE usualType.Int64
-	case usualType.Long
-      ret := ConversionHelpers.FormatNumber( (int64) n, (int) RuntimeState.Digits, 0):Trim()	
-	Case UsualType.Date
+	CASE usualType.Long
+      ret := ConversionHelpers.FormatNumber( (INT64) n, (INT) RuntimeState.Digits, 0):Trim()	
+	CASE UsualType.Date
       ret := AsString( n )
     CASE UsualType.Float
-	Case UsualType.Decimal
-      ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (float) n )):Trim()
+	CASE UsualType.Decimal
+      ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) n )):Trim()
     OTHERWISE
       THROW Error.DataTypeError( __ENTITY__, nameof(n), 1, n)
    END SWITCH
@@ -233,8 +233,8 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function Pad( uValue as usual, nLength as int, cPad := " " as string ) as string
-	return PadR( uValue, nLength, cPad )
+FUNCTION Pad( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
+	RETURN PadR( uValue, nLength, cPad )
 	
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the right.
@@ -244,8 +244,8 @@ function Pad( uValue as usual, nLength as int, cPad := " " as string ) as string
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function Pad( uValue as usual, nLength as dword, cPad := " " as string ) as string
-	return PadR( uValue, (int) nLength, cPad )
+FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
+	RETURN PadR( uValue, (INT) nLength, cPad )
 	
 
 /// <summary>
@@ -258,27 +258,27 @@ function Pad( uValue as usual, nLength as dword, cPad := " " as string ) as stri
 /// </returns>
 FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
-	if cPad == null .or. cPad :Length == 0
+	IF cPad == NULL .or. cPad :Length == 0
 		cPad := " "
-	endif
+	ENDIF
 	
-	local ret     as string
-	local retlen  as int
+	LOCAL ret     AS STRING
+	LOCAL retlen  AS INT
 	
-	if uValue:isNumeric
-		ret := Ntrim( uValue)
-	else
+	IF uValue:isNumeric
+		ret := NTrim( uValue)
+	ELSE
 		ret := uValue:ToString()
-	endif
+	ENDIF
 	retlen := ret:Length
 	
-	if retlen > nLength
+	IF retlen > nLength
 		ret := ret:Remove( nLength )
-	else
+	ELSE
 		ret := ret:PadLeft( ( nLength - retlen ) / 2, cPad[0] ):PadRight( nLength, cPad[0] )
-	endif
+	ENDIF
 	
-	return ret
+	RETURN ret
 
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on both the right and left.
@@ -288,8 +288,8 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadC( uValue as usual, nLength as dword, cPad := " " as string ) as string
-	return PadC( uValue, (int) nLength, cPad )
+FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
+	RETURN PadC( uValue, (INT) nLength, cPad )
 	
 	
 /// <summary>
@@ -300,18 +300,18 @@ function PadC( uValue as usual, nLength as dword, cPad := " " as string ) as str
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadL( uValue as usual, nLength as int, cPad := " " as string ) as string
+FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
-	if cPad == null .or. cPad :Length == 0
+	IF cPad == NULL .or. cPad :Length == 0
 		cPad := " "
-	endif
-	local ret as string
-	if uValue:IsNumeric
-		ret := Ntrim( uValue)
-	else
+	ENDIF
+	LOCAL ret AS STRING
+	IF uValue:IsNumeric
+		ret := NTrim( uValue)
+	ELSE
 		ret := uValue:ToString()
-	endif
-	return iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
+	ENDIF
+	RETURN iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
 	
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the left.
@@ -321,8 +321,8 @@ function PadL( uValue as usual, nLength as int, cPad := " " as string ) as strin
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadL( uValue as usual, nLength as dword, cPad := " " as string ) as string
-	return PadL( uValue, (int) nLength, cPad )
+FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
+	RETURN PadL( uValue, (INT) nLength, cPad )
 	
 
 /// <summary>
@@ -333,8 +333,8 @@ function PadL( uValue as usual, nLength as dword, cPad := " " as string ) as str
 /// <param name="cFillStr"></param>
 /// <returns>
 /// </returns>
-function PadR( uValue as usual, nLength as dword, cPad := " " as string ) as string
-	return PadR( uValue, (int) nLength, cPad )
+FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
+	RETURN PadR( uValue, (INT) nLength, cPad )
 
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the right.
@@ -344,18 +344,18 @@ function PadR( uValue as usual, nLength as dword, cPad := " " as string ) as str
 /// <param name="cPad"></param>
 /// <returns>
 /// </returns>
-function PadR( uValue as usual, nLength as int, cPad := " " as string ) as string
+FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
-	if cPad == null .or. cPad:Length == 0
+	IF cPad == NULL .or. cPad:Length == 0
 		cPad := " "
-	endif
-	local ret as string
-	if uValue:IsNumeric
-		ret := Ntrim( uValue)
-	else
+	ENDIF
+	LOCAL ret AS STRING
+	IF uValue:IsNumeric
+		ret := NTrim( uValue)
+	ELSE
 		ret := uValue:ToString()
-	endif
-	return iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
+	ENDIF
+	RETURN iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
 	
 	 
 	
@@ -366,13 +366,13 @@ function PadR( uValue as usual, nLength as int, cPad := " " as string ) as strin
 /// <param name="nLength"></param>
 /// <param name="nDec"></param>
 /// <returns>The string with always a decimal separator that matches the current SetDecimalSep() setting.</returns>
-function Str(n ,nLen ,nDec ) as string CLIPPER
-	if PCount() < 1 .or. pCount() > 3
-		return ""
-	endif
-	local result as string
+FUNCTION Str(n ,nLen ,nDec ) AS STRING CLIPPER
+	IF PCount() < 1 .or. pCount() > 3
+		RETURN ""
+	ENDIF
+	LOCAL result AS STRING
 	result := _str3(n, nLen, nDec)
-	return ConversionHelpers.AdjustDecimalSeparator(result)
+	RETURN ConversionHelpers.AdjustDecimalSeparator(result)
 
 
 /// <summary>
@@ -383,39 +383,39 @@ function Str(n ,nLen ,nDec ) as string CLIPPER
 /// <param name="nDec"></param>
 /// <returns>The string with always a DOT as decimal separator.</returns>
 
-function _Str(n ,nLen ,nDec ) as string CLIPPER
+FUNCTION _Str(n ,nLen ,nDec ) AS STRING CLIPPER
 	IF PCount() > 0 .and. ! n:IsNumeric 
        THROW Error.DataTypeError( __ENTITY__, nameof(n),1, n, nLen, nDec)
     ENDIF
-	switch PCount()
-	case 1
-		return _Str1( n)
-	case 2
-		if ! nLen:IsNumeric
+	SWITCH PCount()
+	CASE 1
+		RETURN _Str1( n)
+	CASE 2
+		IF ! nLen:IsNumeric
 			THROW Error.DataTypeError( __ENTITY__, nameof(nLen),2,n, nLen, nDec)
-		endif
-		if n:IsFloat
-			return _Str2(n, nLen)
-		else
-			return ConversionHelpers.FormatNumber((int64) n, nLen,0)
-		endif
-	case 3
-		if ! nDec:IsNumeric
+		ENDIF
+		IF n:IsFloat
+			RETURN _Str2(n, nLen)
+		ELSE
+			RETURN ConversionHelpers.FormatNumber((INT64) n, nLen,0)
+		ENDIF
+	CASE 3
+		IF ! nDec:IsNumeric
 			THROW Error.DataTypeError( __ENTITY__, nameof(nDec),3,n, nLen, nDec)
-		endif
-		if n:IsFloat
-			return _Str3(n, nLen, nDec)
-		else
-			return ConversionHelpers.FormatNumber((int64) n, nLen,nDec)
-		endif
+		ENDIF
+		IF n:IsFloat
+			RETURN _Str3(n, nLen, nDec)
+		ELSE
+			RETURN ConversionHelpers.FormatNumber((INT64) n, nLen,nDec)
+		ENDIF
 	OTHERWISE
-		return ""
-	end switch
+		RETURN ""
+	END SWITCH
 	
 
-internal function _PadZero(cValue as STRING) AS STRING
-	local iLen := 	cValue:Length as int
-	Return cValue:TrimStart():PadLeft((int) iLen, '0')
+INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
+	LOCAL iLen := 	cValue:Length AS INT
+	RETURN cValue:TrimStart():PadLeft((INT) iLen, '0')
 
 	
 	/// <summary>
@@ -426,12 +426,12 @@ internal function _PadZero(cValue as STRING) AS STRING
 	/// <param name="iDec"></param>
 	/// <returns>
 	/// </returns>
-function StrZero(n as usual,iLen as int,iDec as int) as string
+FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 	IF ! ( n:IsNumeric )
       THROW Error.DataTypeError( __ENTITY__, nameof(n),1,n, iLen, iDec)
     ENDIF
-	local cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) as string
-	return _PadZero(cValue)
+	LOCAL cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) AS STRING
+	RETURN _PadZero(cValue)
 	
 /// <summary>
 /// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
@@ -440,12 +440,12 @@ function StrZero(n as usual,iLen as int,iDec as int) as string
 /// <param name="iLen"></param>
 /// <returns>
 /// </returns>
-function StrZero(n as usual,iLen as int) as string
+FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 	IF ! ( n:IsNumeric )
       THROW Error.DataTypeError( __ENTITY__, nameof(n),1,n, iLen)
-	endif
-	local cValue := Str2(n, (DWORD) iLen) as string
-	return _padZero(cValue)
+	ENDIF
+	LOCAL cValue := Str2(n, (DWORD) iLen) AS STRING
+	RETURN _padZero(cValue)
 	
 
 /// <summary>
@@ -454,12 +454,12 @@ function StrZero(n as usual,iLen as int) as string
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function StrZero(n as usual) as string
+FUNCTION StrZero(n AS USUAL) AS STRING
 	IF ! ( n:IsNumeric )
       THROW Error.DataTypeError( __ENTITY__, nameof(n),1,n)
     ENDIF
-	local cValue := Str1(n) as string
-	return _PadZero(cValue)
+	LOCAL cValue := Str1(n) AS STRING
+	RETURN _PadZero(cValue)
 	
 	/// <summary>
 	/// Convert a number to a word.
@@ -467,8 +467,8 @@ function StrZero(n as usual) as string
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function ToWord(n as usual) as dword
-	return (dword) n
+FUNCTION ToWord(n AS USUAL) AS DWORD
+	RETURN (DWORD) n
 	
 	
 /// <summary>
@@ -479,8 +479,8 @@ function ToWord(n as usual) as dword
 /// <param name="dwDec"></param> 
 /// <returns>
 /// </returns>
-function StrInt(l as long,dwLen as dword,dwDec as dword) as String
-	return Str3( l, dwLen, dwDec) 
+FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	RETURN Str3( l, dwLen, dwDec) 
 
 	/// <summary>
 	/// Convert a long integer expression to a Psz.
@@ -490,8 +490,8 @@ function StrInt(l as long,dwLen as dword,dwDec as dword) as String
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-function StrLong(l as long,dwLen as dword,dwDec as dword) as String
-	return StrInt(l, dwLen, dwDec)
+FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	RETURN StrInt(l, dwLen, dwDec)
 	
 	/// <summary>
 	/// Convert a Float expression to a Psz.
@@ -501,8 +501,8 @@ function StrLong(l as long,dwLen as dword,dwDec as dword) as String
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-function StrFloat(flSource as float,dwLen as dword,dwDec as dword) as String
-	return Str3( flSource, dwLen, dwDec ) 
+FUNCTION StrFloat(flSource AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	RETURN Str3( flSource, dwLen, dwDec ) 
 	
 	
 
@@ -515,28 +515,28 @@ function StrFloat(flSource as float,dwLen as dword,dwDec as dword) as String
 /// <returns>
 /// </returns>
 FUNCTION Str1(f AS USUAL) AS STRING
-	if f:IsFloat
-		return ConversionHelpers.AdjustDecimalSeparator(_Str1( (float) f))
+	IF f:IsFloat
+		RETURN ConversionHelpers.AdjustDecimalSeparator(_Str1( (FLOAT) f))
 	ELSE
-		return ConversionHelpers.FormatNumber( (long) f, (int) RuntimeState.Digits, 0):Trim()
+		RETURN ConversionHelpers.FormatNumber( (LONG) f, (INT) RuntimeState.Digits, 0):Trim()
 	ENDIF
 		
-INTERNAL function _Str1(f as float) as string
-	var nDecimals := f:decimals
+INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
+	VAR nDecimals := f:decimals
 	VAR nDigits   := f:Digits
-	var ltrim	  := FALSE
-	if nDecimals < 0
-		nDecimals := (short) RuntimeState.Decimals
+	VAR ltrim	  := FALSE
+	IF nDecimals < 0
+		nDecimals := (SHORT) RuntimeState.Decimals
 	ENDIF
-	if nDigits <= 0
-		nDigits := (short) RuntimeState.Digits
-		ltrim   := true
-	endif
+	IF nDigits <= 0
+		nDigits := (SHORT) RuntimeState.Digits
+		ltrim   := TRUE
+	ENDIF
 	VAR result := ConversionHelpers.FormatNumber(f, nDigits, nDecimals )
 	IF (ltrim)
 		result := result:TrimStart()
 	ENDIF
-	return result
+	RETURN result
  
 
 /// <summary>
@@ -546,21 +546,21 @@ INTERNAL function _Str1(f as float) as string
 /// <param name="dwLen"></param>
 /// <returns>
 /// </returns>
-FUNCTION Str2(f AS Float,dwLen AS DWORD) AS STRING
-	return ConversionHelpers.AdjustDecimalSeparator(_Str2(f, dwLen))
+FUNCTION Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
+	RETURN ConversionHelpers.AdjustDecimalSeparator(_Str2(f, dwLen))
 
 
-INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
+INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
   IF dwLen == 0
       dwLen := (DWORD) RuntimeState.Digits
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
-   var nDecimals := f:decimals
-	if nDecimals < 0
-		nDecimals := (short) RuntimeState.Decimals
-	endif
-   RETURN ConversionHelpers.FormatNumber(f, (int) dwLen, nDecimals)
+   VAR nDecimals := f:decimals
+	IF nDecimals < 0
+		nDecimals := (SHORT) RuntimeState.Decimals
+	ENDIF
+   RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, nDecimals)
  
 
 /// <summary>
@@ -571,10 +571,10 @@ INTERNAL FUNCTION _Str2(f AS Float,dwLen AS DWORD) AS STRING
 /// <param name="dwDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION Str3(f AS Float,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	return ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
+FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
 
-function _Str3(f as float,dwLen as dword,dwDec as dword) as string
+FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
    IF dwLen == 0 .or. dwLen == UInt32.MaxValue
       dwLen := (DWORD) RuntimeState.Digits
@@ -590,8 +590,8 @@ function _Str3(f as float,dwLen as dword,dwDec as dword) as string
 
    IF dwDec > 0 && dwLen != UInt32.MaxValue && ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ '*', (INT) dwLen }
-   endif
-   return ConversionHelpers.FormatNumber(f, (int) dwLen, (int) dwDec)
+   ENDIF
+   RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
 
 
 /// <summary>
@@ -600,22 +600,22 @@ function _Str3(f as float,dwLen as dword,dwDec as dword) as string
 /// <param name="dwRadix"></param>
 /// <returns>
 /// </returns>
-FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS Float
-	var wSep   := SetDecimalSep()
-	local result as float
-	if wSep != 46 // .
+FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS FLOAT
+	VAR wSep   := SetDecimalSep()
+	LOCAL result AS FLOAT
+	IF wSep != 46 // .
 		c := c:Replace((char) wSep, '.')
-	endif
-	try
-		local r8 as System.Double
-		if System.Double.TryParse(c, out r8)
+	ENDIF
+	TRY
+		LOCAL r8 AS System.Double
+		IF System.Double.TryParse(c, OUT r8)
 			result := r8
-		else
+		ELSE
 			result := 0
-		endif
-	catch
+		ENDIF
+	CATCH
 		result := 0
-	end try
+	END TRY
 RETURN result
 
 
@@ -628,7 +628,7 @@ RETURN result
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Val(cNumber as string) as Usual
+FUNCTION Val(cNumber AS STRING) AS USUAL
 	cNumber := cNumber:Trim():ToUpper()
 	IF String.IsNullOrEmpty(cNumber)
 		RETURN 0
@@ -638,22 +638,22 @@ function Val(cNumber as string) as Usual
 	VAR done := FALSE
 	VAR hex  := FALSE
 	VAR hasdec := FALSE
-	var hasexp := false
-	var cDec := (CHAR) SetDecimalSep()
-	if cDec != '.'
+	VAR hasexp := FALSE
+	VAR cDec := (CHAR) SetDecimalSep()
+	IF cDec != '.'
 		cNumber := cNumber:Replace(cDec, '.')
 	ENDIF
-	FOREACH var c IN cNumber
+	FOREACH VAR c IN cNumber
 		SWITCH c
 		CASE '0' 
-		case '1'
-		case '2'
-		case '3'
-		case '4'
-		case '5'
-		case '6'
-		case '7'
-		case '8'
+		CASE '1'
+		CASE '2'
+		CASE '3'
+		CASE '4'
+		CASE '5'
+		CASE '6'
+		CASE '7'
+		CASE '8'
 		CASE '9'
 		CASE '-'
 		CASE '+'
@@ -661,10 +661,10 @@ function Val(cNumber as string) as Usual
 		CASE '.'
 		CASE ','
 			IF hasdec
-				done := true
-			else
+				done := TRUE
+			ELSE
 				hasdec := TRUE
-			endif
+			ENDIF
 		CASE 'A' 
 		CASE 'B' 
 		CASE 'C' 
@@ -672,37 +672,39 @@ function Val(cNumber as string) as Usual
 		CASE 'F' 
 			IF !hex
 				done := TRUE
-			endif
+			ENDIF
 		CASE 'E' 
 			// exponentional notation only allowed if decimal separator was there
-			if hasdec
-				hasexp := true
+			IF hasdec
+				hasexp := TRUE
 			ELSE
-				done := true
-			endif
+				IF !hex
+					done := TRUE
+				ENDIF
+			ENDIF
 		CASE 'L'	// LONG result
 		CASE 'U'	// DWORD result
 			done := TRUE
 		CASE 'X' 
 			IF pos == 1
-				hex := true
-			else
-				done := true
-			endif	
+				hex := TRUE
+			ELSE
+				done := TRUE
+			ENDIF	
 		OTHERWISE
 			done := TRUE
-		end switch
+		END SWITCH
 		IF done
 			EXIT
-		endif
+		ENDIF
 		pos += 1
 	NEXT
 	IF pos < cNumber:Length
 		cNumber := cNumber:SubString(0, pos)
-	endif
+	ENDIF
 	IF cNumber:IndexOfAny(<Char> {'.'}) > -1
-		local r8Result := 0 as Real8
-		if cDec != '.'
+		LOCAL r8Result := 0 AS REAL8
+		IF cDec != '.'
 			cNumber := cNumber:Replace(cDec, '.')
 		ENDIF
 		VAR style := NumberStyles.Number
@@ -711,7 +713,7 @@ function Val(cNumber as string) as Usual
 		ENDIF
 		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
 			RETURN r8Result
-		endif
+		ENDIF
 	ELSE
 		LOCAL iResult := 0 AS INT64
 		LOCAL style AS NumberStyles
@@ -725,10 +727,10 @@ function Val(cNumber as string) as Usual
 			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
 				RETURN (INT) iResult
 			ENDIF
-			return iResult
-		endif
+			RETURN iResult
+		ENDIF
 	ENDIF
-	return 0
+	RETURN 0
 	
 		
 

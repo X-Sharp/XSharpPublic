@@ -826,6 +826,11 @@ begin namespace XSharpModel
 								lInEnum := cUpperWord == "ENUM"
 								oInfo := EntityObject{GetEntityType(cUpperWord)}
 								IF oInfo:eType:IsType()
+									IF !oInfo:eType:SupportNestedType() 
+										do while aTypeStack:Count > 0
+											aTypeStack:Pop()
+										ENDDO
+									endif
 									aTypeStack:Push(oInfo)
                                     IF ( iClassOrStruct > 0 )
                                         // We are already in Class Or Struct
@@ -1419,7 +1424,8 @@ begin namespace XSharpModel
 				case EntityType._Constructor
 				case EntityType._Destructor
 				case EntityType._Operator
-				case EntityType._Event
+				CASE EntityType._Event
+				case EntityType._EnumMember
 					return true
 			end switch
 			return false

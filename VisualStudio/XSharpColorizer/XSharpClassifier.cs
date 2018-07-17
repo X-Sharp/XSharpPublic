@@ -127,7 +127,11 @@ namespace XSharpColorizer
             ClassifyBuffer(_snapshot);
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
-            _bwBuildModel.RunWorkerAsync();
+            try
+            {
+                _bwBuildModel.RunWorkerAsync();
+            }
+            catch  { }
 
         }
         #region Lexer Methods
@@ -136,8 +140,13 @@ namespace XSharpColorizer
         {
             if (!_bwClassify.IsBusy && !_bwBuildModel.IsBusy)
             {
-                _bwClassify.RunWorkerAsync();
+                try
+                {
+                    _bwClassify.RunWorkerAsync();
+                }
+                catch  { }
             }
+
         }
 
         private void ClassifyBuffer(ITextSnapshot snapshot)
@@ -206,7 +215,14 @@ namespace XSharpColorizer
                     if (newSnapshot.Version != snapshot.Version)
                     {
                         // buffer was changed, so restart
-                        _bwClassify.RunWorkerAsync();
+                        try
+                        {
+                            _bwClassify.RunWorkerAsync();
+                        }
+                        catch 
+                        {
+
+                        }
                     }
                     else
                     {
@@ -337,9 +353,18 @@ namespace XSharpColorizer
                         int nStart, nEnd;
                         nStart = oElement.nOffSet;
                         nEnd = oElement.nOffSet;
-                        if (oElement.oNext != null)
+                        var oNext = oElement.oNext;
+                        if (oElement.eType == EntityType._VOStruct
+                            || oElement.eType == EntityType._Union)
                         {
-                            var nLine = oElement.oNext.nStartLine;
+                            while (oNext != null && oNext.eType == EntityType._Field)
+                            {
+                                oNext = oNext.oNext;
+                            }
+                        }
+                        if (oNext != null)
+                        {
+                            var nLine = oNext.nStartLine;
                             // our lines are 1 based and we want the line before, so -2
                             nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
                         }

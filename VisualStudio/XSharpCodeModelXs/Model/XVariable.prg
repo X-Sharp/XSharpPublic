@@ -77,7 +77,16 @@ begin namespace XSharpModel
 				_isTyped := String.IsNullOrEmpty(_typeName)
 			end set
 		end property
-		
+		property ShortTypeName as string
+			GET
+				VAR cType := SELF:TypeName
+				VAR nPos := cType:LastIndexOf(".")
+				IF (nPos >= 0)
+					cType := cType:SubString(nPos+1)
+				ENDIF
+				return cType
+			end get
+		end property		
 		
 	end class
 	

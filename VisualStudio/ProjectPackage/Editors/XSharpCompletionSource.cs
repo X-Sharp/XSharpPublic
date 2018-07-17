@@ -27,6 +27,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.Text.Tagging;
 using static XSharp.Parser.VsParser;
 using LanguageService.CodeAnalysis.Text;
+using XSharp.Project;
 
 namespace XSharpLanguage
 {
@@ -94,7 +95,7 @@ namespace XSharpLanguage
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            Trace.WriteLine("-->> AugmentCompletionSessions");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> AugmentCompletionSessions");
             try
             {
                 if (_optionsPage.DisableCodeCompletion)
@@ -438,7 +439,7 @@ namespace XSharpLanguage
                                     }
                                 }
                                 // Now Add Functions and Procedures
-                                BuildCompletionList(compList, _file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
+                                BuildCompletionList(compList, _file.Project.Lookup(XType.GlobalName, true), Modifiers.Public, false, filterText);
                                 // and Add NameSpaces
                                 AddNamespaces(compList, _file.Project, filterText);
                                 // and Types
@@ -508,13 +509,14 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("AugmentCompletionSessions: " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("AugmentCompletionSessions failed: " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
             finally
             {
                 XSharpModel.ModelWalker.Resume();
             }
-            Trace.WriteLine("<<-- AugmentCompletionSessions");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("<<-- AugmentCompletionSessions");
         }
 
         private void AddUsingStaticMembers(CompletionList compList, XFile file, string filterText)
@@ -676,85 +678,6 @@ namespace XSharpLanguage
                 }
             }
         }
-        /*
-        private void AddStrangerTypeNames(CompletionList compList, EnvDTE.Project project, string startWith)
-        {
-            //
-            int startLen = 0;
-            int dotPos = startWith.LastIndexOf('.');
-            if (dotPos != -1)
-                startLen = dotPos + 1;
-            //
-            // First, get the project (s?)
-            foreach (EnvDTE.ProjectItem prj in project.ProjectItems)
-            {
-                EnvDTE.FileCodeModel filecodemodel = null; // prj.FileCodeModel;
-                if (filecodemodel == null)
-                    continue;
-                // Ok, now enumerate all Elements
-                foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
-                {
-                    // Types are in NameSpace
-                    if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
-                    {
-                        // Now, enumerate the Children of the Namespace : Class, Enum, ...
-                        foreach (EnvDTE.CodeElement child in codeElement.Children)
-                        {
-                            //
-                            String realTypeName = child.FullName;
-                            if (nameStartsWith(realTypeName, startWith))
-                            {
-                                // We are looking for Class
-                                if ((child.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-                                (child.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-                                (child.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-                                {
-                                    ImageSource icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupClass, StandardGlyphItem.GlyphItemPublic);
-                                    String childType = "";
-                                    if (child.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                                    {
-                                        childType = "CLASS ";
-                                        EnvDTE.CodeClass objChild = (EnvDTE.CodeClass)child;
-                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
-                                            continue;
-                                    }
-                                    else if (child.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-                                    {
-                                        childType = "ENUM ";
-                                        EnvDTE.CodeEnum objChild = (EnvDTE.CodeEnum)child;
-                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
-                                            continue;
-                                        icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupEnum, StandardGlyphItem.GlyphItemPublic);
-                                    }
-                                    else if (child.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-                                    {
-                                        childType = "STRUCTURE ";
-                                        EnvDTE.CodeStruct objChild = (EnvDTE.CodeStruct)child;
-                                        if (objChild.Access != EnvDTE.vsCMAccess.vsCMAccessPublic)
-                                            continue;
-                                        icon = _provider.GlyphService.GetGlyph(StandardGlyphGroup.GlyphGroupStruct, StandardGlyphItem.GlyphItemPublic);
-                                    }
-
-                                    // remove the start
-                                    if (startLen > 0)
-                                        realTypeName = realTypeName.Substring(startLen);
-                                    // Do we have another part 
-                                    dotPos = realTypeName.IndexOf('.');
-                                    // Then remove it
-                                    if (dotPos > 0)
-                                        realTypeName = realTypeName.Substring(0, dotPos);
-
-                                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, childType + realTypeName, icon, null, Kind.Class)))
-                                        break;
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
 
         private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)
         {
@@ -851,44 +774,6 @@ namespace XSharpLanguage
                     break;
             }
         }
-
-        //private void AddStrangerNamespaces(CompletionList compList, EnvDTE.Project project, String startWith, ImageSource icon)
-        //{
-        //    // Calculate the length we must remove
-        //    int startLen = 0;
-        //    int dotPos = startWith.LastIndexOf('.');
-        //    if (dotPos != -1)
-        //        startLen = dotPos + 1;
-        //    // get all the items in each project
-        //    foreach (EnvDTE.ProjectItem item in project.ProjectItems)
-        //    {
-        //        EnvDTE.FileCodeModel filecodemodel = null; //  item.FileCodeModel as EnvDTE.FileCodeModel;
-        //        if (filecodemodel == null)
-        //            continue;
-        //        foreach (EnvDTE.CodeElement codeElement in filecodemodel.CodeElements)
-        //        {
-        //            //
-        //            if (codeElement.Kind == EnvDTE.vsCMElement.vsCMElementNamespace)
-        //            {
-        //                String realNamespace = codeElement.FullName;
-        //                if (nameStartsWith(realNamespace, startWith))
-        //                {
-        //                    // remove the start
-        //                    if (startLen > 0)
-        //                        realNamespace = realNamespace.Substring(startLen);
-        //                    // Do we have another part 
-        //                    dotPos = realNamespace.IndexOf('.');
-        //                    // Then remove it
-        //                    if (dotPos > 0)
-        //                        realNamespace = realNamespace.Substring(0, dotPos);
-        //                    if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + codeElement.FullName, icon, null, Kind.Namespace)))
-        //                        break;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
 
         private void BuildCompletionList(CompletionList compList, XTypeMember currentMember, String startWith, int currentLine)
         {
@@ -1001,11 +886,6 @@ namespace XSharpLanguage
             {
                 // Now add Members for System types
                 FillMembers(compList, cType.SType, minVisibility, staticOnly, startWith);
-            }
-            else if (cType.CodeElement != null)
-            {
-                // Now add Members for System types
-                FillMembers(compList, cType.CodeElement, minVisibility, staticOnly, startWith);
             }
         }
 
@@ -1123,8 +1003,8 @@ namespace XSharpLanguage
                 }
                 catch (Exception e)
                 {
-
-                    Support.Debug("FillMembers error: " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FillMembers failed: " );
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
             // fill members of parent class
@@ -1165,84 +1045,7 @@ namespace XSharpLanguage
             }
         }
 
-        /// <summary>
-        /// Add Members from External "unknown" project Types
-        /// </summary>
-        /// <param name="compList"></param>
-        /// <param name="sType"></param>
-        /// <param name="minVisibility"></param>
-        private void FillMembers(CompletionList compList, EnvDTE.CodeElement fType, Modifiers minVisibility, bool staticOnly, String startWith)
-        {
-            if ((fType.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-                (fType.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-                (fType.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-            {
-
-                //
-                EnvDTE.CodeElements members = null;
-                EnvDTE.CodeElements bases = null; ;
-                if (fType.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                {
-                    EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)fType;
-                    members = envClass.Members;
-                    bases = envClass.Bases;
-                }
-                else if (fType.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-                {
-                    EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)fType;
-                    members = envEnum.Members;
-                    bases = envEnum.Bases;
-                }
-                else if (fType.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-                {
-                    EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)fType;
-                    members = envStruct.Members;
-                    bases = envStruct.Bases;
-                }
-                foreach (EnvDTE.CodeElement member in members)
-                {
-                    if (nameStartsWith(member.Name, startWith))
-                    {
-                        //
-                        MemberAnalysis analysis = new MemberAnalysis(member);
-                        if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
-                        {
-                            if (analysis.Kind == Kind.Constructor)
-                                continue;
-                            if (analysis.IsStatic != staticOnly)
-                            {
-                                continue;
-                            }
-                            if (IsHiddenName(analysis.Name))
-                                continue;
-                            String toAdd = "";
-                            if ((analysis.Kind == Kind.Method))
-                            {
-                                toAdd = "(";
-                            }
-                            //
-                            ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                            if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind)))
-                                break;
-                        }
-                    }
-                }
-                if (bases != null)
-                {
-                    foreach (EnvDTE.CodeElement parent in bases)
-                    {
-                        if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                        {
-                            //
-                            if (minVisibility == Modifiers.Private)
-                                minVisibility = Modifiers.Protected;
-                            FillMembers(compList, parent, minVisibility, staticOnly, startWith);
-                        }
-                    }
-                }
-            }
-        }
-
+ 
 
         public void Dispose()
         {
@@ -1555,7 +1358,8 @@ namespace XSharpLanguage
                 }
                 catch (Exception e)
                 {
-                    Support.Debug("Error reading Clipper params:" + e.Message);
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error reading Clipper params " );
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
 
             }
@@ -2439,7 +2243,7 @@ namespace XSharpLanguage
 
 
             ITokenStream tokenStream;
-            var reporter = new ErrorReporter();
+            var reporter = new ErrorIgnorer();
             bool ok = XSharp.Parser.VsParser.Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var tokens = tokenStream as BufferedTokenStream;
             // locate the last token before the trigger point
@@ -2502,6 +2306,10 @@ namespace XSharpLanguage
                 //return tokenList;
             }
             nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+            if (stopToken == null)
+            {
+                stopToken = nextToken;
+            }
             // Now, let's build the Token chain, so we can guess what to add in the CompletionList
             IToken triggerToken = null;
             token = "";
@@ -2744,9 +2552,7 @@ namespace XSharpLanguage
             {
                 return xType.Value.Members.LastOrDefault();
             }
-#if DEBUG
-            Support.Debug(String.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
-#endif
+            XSharpProjectPackage.Instance.DisplayOutPutMessage(String.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
             return null;
 
         }
@@ -2762,17 +2568,40 @@ namespace XSharpLanguage
             {
                 return member as XTypeMember;
             }
+            if (member is XType)
+            {
+                var xtype = member as XType;
+                if (xtype.Members.Count > 0)
+                {
+                    return xtype.Members.LastOrDefault();
+                }
+            }
+            // try a few rows before 
+            member = file.FindMemberAtRow(Math.Max(nLine-10,1));
+            if (member is XTypeMember)
+            {
+                return member as XTypeMember;
+            }
+            if (member is XType)
+            {
+                var xtype = member as XType;
+                if (xtype.Members.Count > 0)
+                {
+                    return xtype.Members.LastOrDefault();
+                }
+            }
+
             // if we can't find a member then look for the global type in the file
             // and return its last member
-            var xType = file.TypeList.FirstOrDefault();
-            if (xType.Value != null)
-            {
-                return xType.Value.Members.LastOrDefault();
-            }
+            var ent = file.EntityList.LastOrDefault();
+            if (ent is XTypeMember)
+                return ent as XTypeMember;
+            if (ent is XType)
+                return ((XType)ent).Members.LastOrDefault();
 
 
 #if DEBUG
-            Support.Debug(String.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
+            XSharpProjectPackage.Instance.DisplayOutPutMessage(String.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
 #endif
             return null;
         }
@@ -2800,6 +2629,7 @@ namespace XSharpLanguage
             foundElement = null;
             CompletionType cType = null;
             int currentPos = 0;
+            var startOfExpression = true;
             String currentToken = "";
             //
             if (currentMember == null)
@@ -2869,6 +2699,8 @@ namespace XSharpLanguage
             while (currentPos < tokenList.Count)
             {
                 currentToken = tokenList[currentPos];
+                var lastToken = currentToken;
+
                 //
                 int dotPos = currentToken.LastIndexOf(".");
                 if (dotPos > -1)
@@ -2894,6 +2726,7 @@ namespace XSharpLanguage
                     if (!cType.IsEmpty())
                     {
                         currentToken = currentToken.Substring(dotPos + 1);
+                        startOfExpression = false;
                         if (String.IsNullOrEmpty(currentToken))
                         {
                             currentPos += 2;
@@ -2990,7 +2823,7 @@ namespace XSharpLanguage
                         currentToken = currentToken.Substring(0, currentToken.Length - 2);
                     }
                     // First token, so it could be a parameter or a local var
-                    if (currentPos == 0)
+                    if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine);
@@ -3003,6 +2836,10 @@ namespace XSharpLanguage
                             cType = SearchPropertyOrFieldIn(cType, currentToken, visibility, out foundElement);
                         }
                     }
+                    if (foundElement == null)
+                    {
+                        cType = SearchType(file, currentToken, out foundElement, currentNS);
+                    }
                 }
                 //
                 if (cType.IsEmpty())
@@ -3011,10 +2848,27 @@ namespace XSharpLanguage
                     cType = null;
                 }
                 // Next Token
-                currentPos += 2;
+                currentPos += 1;
                 if (currentPos >= tokenList.Count)
                 {
                     break;
+                }
+                currentToken = tokenList[currentPos];
+                if (currentToken == "." || currentToken == ":")
+                {
+                    currentPos += 1;
+                    if (currentPos >= tokenList.Count)
+                    {
+                        break;
+                    }
+                }
+                if (lastToken.EndsWith("(") || lastToken.EndsWith(")") || lastToken.EndsWith("{") || lastToken.EndsWith("}"))
+                {
+                    startOfExpression = true;
+                }
+                else
+                {
+                    startOfExpression = false;
                 }
                 //
                 visibility = Modifiers.Public;
@@ -3040,16 +2894,46 @@ namespace XSharpLanguage
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                Trace.WriteLine("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
 #endif
             return cType;
         }
 
+        static public CompletionType SearchType(XFile xFile, string currentToken, out CompletionElement foundElement, string currentNs)
+        {
+            foundElement = null;
+            CompletionType cType = null;
+            WriteOutputMessage($"SearchType in file {xFile.SourcePath} {currentToken}");
+            // check for a system type
+            var usings = xFile.Usings.ToList();
+            usings.Add(currentNs);
+            var stype = xFile.Project.FindSystemType(currentToken, usings);
+            if (stype != null)
+            {
+                cType = new CompletionType(stype);
+                foundElement = new CompletionElement(stype);
+            }
+            if (cType == null)
+            {
+                var type = xFile.Project.Lookup(currentToken, true);
+                if (type == null && !string.IsNullOrEmpty(currentNs))
+                {
+                    type = xFile.Project.Lookup(currentNs + "." + currentToken, true);
+                }
+                if (type != null)
+                {
+                    cType = new CompletionType(type);
+                    foundElement = new CompletionElement(type);
+                }
+            }
+            return cType;
+        }
 
 
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,
             Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine)
         {
+            WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
             XElement element;
             CompletionElement foundElement = null;
             if (cType.IsEmpty())
@@ -3077,6 +2961,14 @@ namespace XSharpLanguage
                     if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
                     {
                         element = member.File.GlobalType.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                    }
+                    if (element == null)
+                    {
+                        var type = member.File.Project.Lookup(XSharpModel.XType.GlobalName, true);
+                        if (type != null)
+                        {
+                            element = type.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                        }
                     }
                     if (element == null)
                     {
@@ -3112,6 +3004,7 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         private static void SearchConstructorIn(CompletionType cType, Modifiers minVisibility, out CompletionElement foundElement)
         {
+            WriteOutputMessage($"--> SearchConstructorIn {cType.FullName}");
             foundElement = null;
             if (cType.XType != null)
             {
@@ -3208,72 +3101,6 @@ namespace XSharpLanguage
                     return;
                 }
             }
-            else if (cType.CodeElement != null)
-            {
-                //
-                if ((cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-                {
-
-                    //
-                    EnvDTE.CodeElements members = null;
-                    EnvDTE.CodeElements bases = null; ;
-                    if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                    {
-                        EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)cType.CodeElement;
-                        members = envClass.Members;
-                        bases = envClass.Bases;
-                    }
-                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-                    {
-                        EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)cType.CodeElement;
-                        members = envEnum.Members;
-                        bases = envEnum.Bases;
-                    }
-                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-                    {
-                        EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)cType.CodeElement;
-                        members = envStruct.Members;
-                        bases = envStruct.Bases;
-                    }
-                    foreach (EnvDTE.CodeElement member in members)
-                    {
-                        if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
-                        {
-                            EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)member;
-                            if (method.FunctionKind == EnvDTE.vsCMFunction.vsCMFunctionConstructor)
-                            {
-                                //
-                                foundElement = new CompletionElement(member);
-                                EnvDTE.CodeTypeRef typeRef = method.Type;
-                                break;
-                            }
-                        }
-                    }
-                    /*
-                     * No More search for Constructors in parent
-                    // We will have to look in the Parents ?
-                    if ((foundElement == null) && (bases != null))
-                    {
-                        foreach (EnvDTE.CodeElement parent in bases)
-                        {
-                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                            {
-                                //
-                                if (minVisibility == Modifiers.Private)
-                                    minVisibility = Modifiers.Protected;
-                                // Parent is a CodeElement
-                                SearchConstructorIn(new CompletionType(parent), minVisibility, out foundElement);
-                                return;
-                            }
-                        }
-                    }
-                    */
-                    //
-                    return;
-                }
-            }
             return;
         }
 
@@ -3300,6 +3127,7 @@ namespace XSharpLanguage
 
         private static CompletionType SearchExternalGlobalFieldIn(XFile xFile, string currentToken, out CompletionElement foundElement)
         {
+            WriteOutputMessage($"<-- SearchExternalGlobalFieldIn {xFile.SourcePath}, {currentToken} ");
             foundElement = null;
             if (xFile == null)
             {
@@ -3334,6 +3162,8 @@ namespace XSharpLanguage
         /// </returns>
         private static CompletionType SearchPropertyTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
+            WriteOutputMessage($" SearchPropertyTypeIn {cType.FullName} , {currentToken}");
+
             foundElement = null;
             if (cType.XType != null)
             {
@@ -3434,6 +3264,7 @@ namespace XSharpLanguage
             }
             // Sorry, not found
             return new CompletionType();
+
         }
 
         /// <summary>
@@ -3448,6 +3279,7 @@ namespace XSharpLanguage
         /// </returns>
         private static CompletionType SearchFieldTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out CompletionElement foundElement)
         {
+            WriteOutputMessage($" SearchFieldTypeIn {cType.FullName} , {currentToken}");
             foundElement = null;
             if (cType.XType != null)
             {
@@ -3551,6 +3383,7 @@ namespace XSharpLanguage
         /// </returns>
         internal static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, bool staticOnly, out CompletionElement foundElement)
         {
+            WriteOutputMessage($" SearchMethodTypeIn {cType.FullName} , {currentToken}");
             foundElement = null;
             if (cType.XType != null)
             {
@@ -3671,77 +3504,6 @@ namespace XSharpLanguage
                     return new CompletionType(declType);
                 }
             }
-            else if (cType.CodeElement != null)
-            {
-                CompletionType declType = new CompletionType();
-                //
-                if ((cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-                    (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-                {
-
-                    //
-                    EnvDTE.CodeElements members = null;
-                    EnvDTE.CodeElements bases = null; ;
-                    if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                    {
-                        EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)cType.CodeElement;
-                        members = envClass.Members;
-                        bases = envClass.Bases;
-                    }
-                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-                    {
-                        EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)cType.CodeElement;
-                        members = envEnum.Members;
-                        bases = envEnum.Bases;
-                    }
-                    else if (cType.CodeElement.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-                    {
-                        EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)cType.CodeElement;
-                        members = envStruct.Members;
-                        bases = envStruct.Bases;
-                    }
-                    foreach (EnvDTE.CodeElement member in members)
-                    {
-                        if (member.Kind == EnvDTE.vsCMElement.vsCMElementFunction)
-                        {
-                            if (StringEquals(member.Name, currentToken))
-                            {
-                                //
-                                foundElement = new CompletionElement(member);
-                                EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)member;
-                                EnvDTE.CodeTypeRef typeRef = method.Type;
-                                declType = new CompletionType((EnvDTE.CodeElement)typeRef.CodeType);
-                                break;
-                            }
-                        }
-                    }
-                    //
-                    if ((foundElement != null) && staticOnly)
-                    {
-                        EnvDTE.CodeFunction method = (EnvDTE.CodeFunction)foundElement.CodeElement;
-                        if (!method.IsShared)
-                            foundElement = null;
-                    }
-                    // We will have to look in the Parents ?
-                    if ((foundElement == null) && (bases != null))
-                    {
-                        foreach (EnvDTE.CodeElement parent in bases)
-                        {
-                            if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-                            {
-                                //
-                                if (minVisibility == Modifiers.Private)
-                                    minVisibility = Modifiers.Protected;
-                                // Parent is a CodeElement
-                                return SearchMethodTypeIn(new CompletionType(parent), currentToken, minVisibility, staticOnly, out foundElement);
-                            }
-                        }
-                    }
-                    //
-                    return declType;
-                }
-            }
             // Sorry, not found
             return new CompletionType();
         }
@@ -3749,6 +3511,7 @@ namespace XSharpLanguage
 
         private static CompletionType SearchMethodStaticIn(XFile xFile, string currentToken, out CompletionElement foundElement)
         {
+            WriteOutputMessage($" SearchMethodStaticIn {xFile.SourcePath}, {currentToken} ");
             foundElement = null;
             if (xFile == null)
             {
@@ -3772,6 +3535,7 @@ namespace XSharpLanguage
 
         private static CompletionType SearchGlobalFieldIn(XFile xFile, string currentToken, out CompletionElement foundElement)
         {
+            WriteOutputMessage($" SearchGlobalFieldIn {xFile.SourcePath}, {currentToken} ");
             foundElement = null;
             if (xFile == null)
             {
@@ -3826,6 +3590,8 @@ namespace XSharpLanguage
 
         private static CompletionType SearchFunctionIn(XFile xFile, string currentToken, out CompletionElement foundElement)
         {
+            WriteOutputMessage($" SearchFunctionIn {xFile.SourcePath}, {currentToken} ");
+
             foundElement = null;
             if (xFile == null)
             {
@@ -3915,6 +3681,10 @@ namespace XSharpLanguage
             }
             return prev;
         }
+        static void WriteOutputMessage(string message)
+        {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.Codecompletion :"+message);
+        }
 
     }
 
@@ -3925,14 +3695,8 @@ namespace XSharpLanguage
     /// </summary>
     public class CompletionElement
     {
-        XElement foundElement = null;
-        MemberInfo sysFoundElement = null;
-        EnvDTE.CodeElement envElement = null;
+        object foundElement = null;
 
-        public CompletionElement()
-        {
-
-        }
         public CompletionElement(XElement XSharpElement)
         {
             this.foundElement = XSharpElement;
@@ -3940,71 +3704,37 @@ namespace XSharpLanguage
 
         public CompletionElement(MemberInfo SystemElement)
         {
-            this.sysFoundElement = SystemElement;
+            this.foundElement = SystemElement;
         }
 
-        public CompletionElement(EnvDTE.CodeElement CodeElement)
-        {
-            this.envElement = CodeElement;
-        }
 
-        public bool IsInitialized
-        {
-            get
-            {
-                return ((this.sysFoundElement != null) || (this.foundElement != null) || (this.envElement != null));
-            }
-        }
+        public bool IsInitialized => this.foundElement != null;
 
-        public MemberInfo SystemElement
+        public MemberInfo SystemElement => foundElement as MemberInfo;
+
+        public XElement XSharpElement => foundElement as XElement;
+
+        public string Name
         {
             get
             {
-                return sysFoundElement;
-            }
-
-        }
-
-        public XElement XSharpElement
-        {
-            get
-            {
-                return foundElement;
-            }
-
-        }
-
-        public String Name
-        {
-            get
-            {
-                String name = "";
-                if (IsInitialized)
+                string name ;
+                if (this.foundElement is MemberInfo)
                 {
-                    if (this.foundElement != null)
-                    {
-                        name = this.foundElement.Name;
-                    }
-                    else if (this.sysFoundElement != null)
-                    {
-                        name = this.sysFoundElement.Name;
-                    }
-                    else
-                    {
-                        name = this.envElement.Name;
-                    }
+                    name = ((MemberInfo)this.foundElement).Name;
+                }
+                else if (foundElement is XElement)
+                {
+                    name = ((XElement) this.foundElement).Name;
+                }
+                else
+                {
+                    name = "";
                 }
                 return name;
             }
         }
 
-        public EnvDTE.CodeElement CodeElement
-        {
-            get
-            {
-                return envElement;
-            }
-        }
     }
 
     // Build a list of all Keywords
@@ -4035,7 +3765,7 @@ namespace XSharpLanguage
             return _xTypes;
         }
     }
-    public class ErrorReporter : IErrorListener
+    public class ErrorIgnorer : IErrorListener
     {
         #region IErrorListener
         public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)

@@ -118,7 +118,7 @@ namespace XSharp.LanguageService
                 for (int i = 0; i < dropDownMembers.Count; i++)
                 {
                     var member = (XDropDownMember) dropDownMembers[i];
-                    if (member.Element.Prototype == selectedElement.Prototype)
+                    if (member.Element.ComboPrototype == selectedElement.ComboPrototype)
                     {
                         selectedMember = i;
                         break;
@@ -228,7 +228,7 @@ namespace XSharp.LanguageService
                 if (currentType != typeGlobal && currentType.IsPartial)
                 {
                     // retrieve members from other files ?
-                    var fullType = file.Project.LookupFullName(currentType.FullName, true);
+                    var fullType = file.Project.Lookup(currentType.FullName, true);
                     hasPartial = true;
                     members = fullType.Members;
                 }
@@ -261,16 +261,23 @@ namespace XSharp.LanguageService
                 }
                 foreach (XElement  member in members)
                 {
+                    bool otherFile;
                     if (includeFields || (member.Kind != Kind.Field  && member.Kind != Kind.VODefine))
                     {
                         spM = this.TextRangeToTextSpan(member.Range);
-
+                        otherFile = false;
+                        ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                         if (hasPartial)
-                        { 
-                            ft = member.File == file ? DROPDOWNFONTATTR.FONTATTR_PLAIN : DROPDOWNFONTATTR.FONTATTR_GRAY;
+                        {
+                            otherFile = member.File != file;
                         }
 
-                        string prototype = member.Prototype;
+                        string prototype = member.ComboPrototype;
+                        if (otherFile)
+                        {
+                            ft  = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                            prototype += " (" + System.IO.Path.GetFileName(member.File.SourcePath) + ")";
+                        }
                         elt = new XDropDownMember(prototype, spM, member.Glyph, ft);
                         nSelect = dropDownMembers.Add(elt);
                         elt.Element = member;

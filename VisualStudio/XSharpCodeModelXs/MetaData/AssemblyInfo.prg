@@ -31,6 +31,9 @@ CLASS AssemblyInfo
 		PRIVATE STATIC WorkFolder AS STRING
 		PRIVATE STATIC FailedAssemblies as Dictionary<string, int>
 
+		PUBLIC STATIC PROPERTY DisableAssemblyReferences AS LOGIC AUTO
+		PUBLIC STATIC PROPERTY DisableForeignProjectReferences AS LOGIC AUTO
+		PUBLIC STATIC PROPERTY DisableXSharpProjectReferences AS LOGIC AUTO
 		STATIC CONSTRUCTOR
 			// Clear temp files from previous run 
 			FailedAssemblies := Dictionary<string, int>{StringComparer.OrdinalIgnoreCase}
@@ -46,9 +49,12 @@ CLASS AssemblyInfo
 					File.SetAttributes(oFile:FullName, FileAttributes.Normal  )
 					File.Delete(oFile:FullName)
 				CATCH e AS Exception
-					Support.Debug("Error deleting file: "+e:Message)
+					XSolution.WriteException(e)
 				END TRY
 			NEXT
+			DisableXSharpProjectReferences := FALSE
+			DisableAssemblyReferences := FALSE
+			DisableForeignProjectReferences := FALSE
 			RETURN
 			
 			
@@ -91,6 +97,7 @@ CLASS AssemblyInfo
 			VAR folderPath := System.IO.Path.GetDirectoryName(SELF:FileName)
 			VAR name := AssemblyName{args:Name}:Name + ".dll"
 			VAR assemblyPath := System.IO.Path.Combine(folderPath, name)
+			WriteOutputMessage("--> CurrentDomain_AssemblyResolve : "+assemblyPath) 
 			IF System.IO.File.Exists(assemblyPath)
 				VAR assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 				IF assembly != NULL
@@ -111,6 +118,7 @@ CLASS AssemblyInfo
 					folders:Add(folderPath)
 				ENDIF
 			NEXT
+			WriteOutputMessage("<-- CurrentDomain_AssemblyResolve : "+assemblyPath)
 			RETURN NULL
 			
 		METHOD GetType(name AS STRING) AS System.Type
@@ -151,6 +159,7 @@ CLASS AssemblyInfo
 			RETURN FALSE
 			
 		INTERNAL METHOD LoadAssembly() AS VOID
+			WriteOutputMessage("--> LoadAssembly : "+SELF:FileName)
 			IF String.IsNullOrEmpty(SELF:FileName) .AND. SELF:_reference != NULL
 				SELF:FileName := SELF:_reference:Path
 			ENDIF
@@ -162,110 +171,130 @@ CLASS AssemblyInfo
 				ENDIF
 				SELF:_clearInfo()
 			ENDIF
+			WriteOutputMessage("<-- LoadAssembly : "+SELF:FileName)
 			
 		STATIC METHOD FindPdbName(fileName AS STRING) AS STRING
-			IF System.IO.File.Exists(fileName)
-				VAR pdb			:= System.IO.Path.ChangeExtension(fileName,".pdb")
-				IF System.IO.File.Exists(pdb)
-					RETURN pdb
+			WriteOutputMessage("--> FindPDBName : "+fileName)
+			TRY
+				IF System.IO.File.Exists(fileName)
+					VAR pdb			:= System.IO.Path.ChangeExtension(fileName,".pdb")
+					IF System.IO.File.Exists(pdb)
+						return pdb
+					ENDIF
+					// ok when it is not in the DLL folder but referenced in the DLL then extract this information
+					VAR text        := System.IO.File.ReadAllText(fileName)
+					VAR pdbIndex	:= text:IndexOf(".pdb", StringComparison.InvariantCultureIgnoreCase)
+					IF pdbIndex > 0
+						VAR lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
+						RETURN text:Substring(lastTerminatorIndex + 1, pdbIndex - lastTerminatorIndex + 3)
+					ENDIF
 				ENDIF
-				// ok when it is not in the DLL folder but referenced in the DLL then extract this information
-				VAR text        := System.IO.File.ReadAllText(fileName)
-				VAR pdbIndex	:= text:IndexOf(".pdb", StringComparison.InvariantCultureIgnoreCase)
-				IF pdbIndex > 0
-					VAR lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
-					RETURN text:Substring(lastTerminatorIndex + 1, pdbIndex - lastTerminatorIndex + 3)
-				ENDIF
-			ENDIF
+			FINALLY
+				WriteOutputMessage("<-- FindPDBName : "+fileName)
+			END TRY
 			RETURN string.Empty
 			
 			
 		STATIC METHOD LoadAssemblyFromFile(fileName AS STRING) AS Assembly
 			LOCAL result  AS Assembly
-			local iAttempts as INT
-			IF FailedAssemblies:ContainsKey(fileName)
-				iAttempts := FailedAssemblies[fileName]
-				IF iAttempts > 3
-					Support.Debug("Cannot load assembly, giving up after a few retries:")
-					Support.Debug(fileName+" "+ iAttempts:ToString())
-					RETURN NULL
-				endif
-			endif
-			IF System.IO.File.Exists(fileName)
-				LOCAL cPDB		AS STRING
-				LOCAL cPdbCopy	AS STRING
-				local PdbRenamed   := FALSE as LOGIC
-				TRY
-					VAR temp		:=  System.IO.Path.Combine(WorkFolder, System.IO.Path.GetFileName(fileName))
-					System.IO.File.Copy(fileName, temp,true)
-					VAR rawAssembly := System.IO.File.ReadAllBytes(temp)
-					cPdb		:= FindPdbName(temp)
-					System.IO.File.Delete(temp)
-					cPdbCopy := System.IO.Path.ChangeExtension(temp, ".p$$")
-					IF !String.IsNullOrEmpty(cPdb) .and. System.IO.File.Exists(cPdb)
-						PdbRenamed := TRUE
-						IF System.IO.File.Exists(cPdbCopy)
-							System.IO.File.Delete(cPdbCopy)
-						ENDIF
-						System.IO.File.Move(cPdb, cPdbCopy)
-					ENDIF
-					result := Assembly.Load(rawAssembly)
-					IF FailedAssemblies:ContainsKey(fileName)
-						FailedAssemblies:Remove(fileName)
-					ENDIF
-					RETURN result
-				CATCH exception AS System.IO.FileLoadException
-					// files with unmanaged code produce the exception:
-					// Attempt to load an unverifiable executable with fixups (IAT with more than 2 sections or a TLS section.) (Exception from HRESULT: 0x80131019)
-					Support.Debug("FileLoad Exeption:")
-					Support.Debug(exception:Message)
-				CATCH exception AS System.Exception
-					// Other exception
-					Support.Debug("Generic exception:")
-					Support.Debug(exception:Message)
-				FINALLY
-					IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
-						System.IO.File.Move(cPdbCopy, cPdb)
-					ENDIF
-				END TRY
-				TRY
-					// Generate a random name and coopy the DLL to prevent locking the original file
-					VAR temp := filename
-					DO WHILE File.Exists(temp)
-						temp := System.IO.Path.Combine(WorkFolder, System.IO.Path.GetRandomFileName())
-					ENDDO
-					// Need to rename the PDB again. Was undone in the Finally above
-					IF PdbRenamed .AND. System.IO.File.Exists(cPdb)
-						System.IO.File.Move(cPdb, cPdbCopy)
-					ENDIF
-					System.IO.File.Copy(filename, temp,TRUE)
-					File.SetAttributes(temp, FileAttributes.Normal | FileAttributes.Temporary )
-					result := Assembly.LoadFrom(temp)
-					IF FailedAssemblies:ContainsKey(fileName)
-						FailedAssemblies:Remove(fileName)
-					ENDIF
-					RETURN result
-				CATCH e AS Exception
-					System.Diagnostics.Debug.WriteLine(e:Message)
-				FINALLY
-					IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
-						System.IO.File.Move(cPdbCopy, cPdb)
-					ENDIF
-				END TRY
+			LOCAL iAttempts AS INT
+			TRY
+				WriteOutputMessage("--> LoadAssemblyFromFile : "+fileName)
 				IF FailedAssemblies:ContainsKey(fileName)
-					FailedAssemblies[fileName] := FailedAssemblies[fileName] +1
+					iAttempts := FailedAssemblies[fileName]
+					IF iAttempts > 3
+						WriteOutputMessage("    ... Cannot load assembly, giving up after a few retries:")
+						WriteOutputMessage("    ...."  +fileName+" "+ iAttempts:ToString())
+						RETURN NULL
+					endif
+				endif
+				IF System.IO.File.Exists(fileName)
+					LOCAL cPDB		AS STRING
+					LOCAL cPdbCopy	AS STRING
+					local PdbRenamed   := FALSE as LOGIC
+					TRY
+						VAR temp		:=  System.IO.Path.Combine(WorkFolder, System.IO.Path.GetFileName(fileName))
+						System.IO.File.Copy(fileName, temp,true)
+						VAR rawAssembly := System.IO.File.ReadAllBytes(temp)
+						cPdb		:= FindPdbName(temp)
+						System.IO.File.Delete(temp)
+						cPdbCopy := System.IO.Path.ChangeExtension(temp, ".p$$")
+						IF !String.IsNullOrEmpty(cPdb) .and. System.IO.File.Exists(cPdb)
+							PdbRenamed := TRUE
+							IF System.IO.File.Exists(cPdbCopy)
+								System.IO.File.Delete(cPdbCopy)
+							ENDIF
+							System.IO.File.Move(cPdb, cPdbCopy)
+						ENDIF
+						result := Assembly.Load(rawAssembly)
+						IF FailedAssemblies:ContainsKey(fileName)
+							FailedAssemblies:Remove(fileName)
+						ENDIF
+						RETURN result
+					CATCH exception AS System.IO.FileLoadException
+						// files with unmanaged code produce the exception:
+						// Attempt to load an unverifiable executable with fixups (IAT with more than 2 sections or a TLS section.) (Exception from HRESULT: 0x80131019)
+						XSolution.WriteException(exception)
+					CATCH exception AS System.Exception
+						// Other exception
+						XSolution.WriteException(exception)
+					FINALLY
+						IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
+							System.IO.File.Move(cPdbCopy, cPdb)
+						ENDIF
+					END TRY
+					TRY
+						// Generate a random name and copy the DLL to prevent locking the original file
+						VAR temp := filename
+						DO WHILE File.Exists(temp)
+							temp := System.IO.Path.Combine(WorkFolder, System.IO.Path.GetRandomFileName())
+						ENDDO
+						// Need to rename the PDB again. Was undone in the Finally above
+						IF PdbRenamed .AND. System.IO.File.Exists(cPdb)
+							System.IO.File.Move(cPdb, cPdbCopy)
+						ENDIF
+						System.IO.File.Copy(filename, temp,TRUE)
+						File.SetAttributes(temp, FileAttributes.Normal | FileAttributes.Temporary )
+						result := Assembly.LoadFrom(temp)
+						IF FailedAssemblies:ContainsKey(fileName)
+							FailedAssemblies:Remove(fileName)
+						ENDIF
+						RETURN result
+					CATCH e AS Exception
+						XSolution.WriteException(e)
+					FINALLY
+						IF PdbRenamed .AND. System.IO.File.Exists(cPdbCopy)
+							TRY
+								System.IO.File.Move(cPdbCopy, cPdb)
+							CATCH e AS Exception
+								XSolution.WriteException(e)
+							END TRY
+						ENDIF
+					END TRY
+					IF FailedAssemblies:ContainsKey(fileName)
+						FailedAssemblies[fileName] := FailedAssemblies[fileName] +1
+					ELSE
+						FailedAssemblies:Add(fileName, 1)
+					ENDIF
 				ELSE
-					FailedAssemblies:Add(fileName, 1)
+					// FileName does not exist. No need to change the failedAssemblies list
 				ENDIF
-			ELSE
-				// FileName does not exist. No need to change the failedAssemblies list
-			ENDIF
+			FINALLY
+				WriteOutputMessage("<-- LoadAssemblyFromFile : "+fileName)
+			END TRY
 			RETURN NULL
 			
 		METHOD RemoveProject(project AS XProject) AS VOID
 			//
 			IF SELF:_projects:Contains(project)
 				SELF:_projects := SELF:_projects:Remove(project)
+			ENDIF
+		
+		METHOD Refresh() AS VOID
+			VAR currentDT  := System.IO.File.GetLastWriteTime(SELF:FileName)
+			IF currentDT != SELF:Modified
+				WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
+				SELF:UpdateAssembly()
 			ENDIF
 			
 		INTERNAL METHOD UpdateAssembly() AS VOID
@@ -276,170 +305,166 @@ CLASS AssemblyInfo
 			LOCAL message AS STRING
 			LOCAL types := NULL AS System.Type[]
 			LOCAL index AS LONG
-			//
-			aTypes		 := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
-			_aExtensions := List<MethodInfo>{}
-			fullName := ""
-			simpleName := ""
-			SELF:_nameSpaces:Clear()
-			_nameSpaceTexts := ImmutableList<STRING>.Empty
-			SELF:_zeroNamespace:Clear()
-			SELF:_globalClassName := ""
-			SELF:_HasExtensions := FALSE
-			SELF:LoadAssembly()
-			
-			VAR currentDomain := System.AppDomain.CurrentDomain
-			currentDomain:AssemblyResolve += System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
 			TRY
-				IF SELF:_assembly != NULL
-					VAR customAttributes := SELF:_assembly:GetCustomAttributes(FALSE)
-					LOCAL found := 0 AS INT
-					FOREACH VAR custattr IN customAttributes
-						//
-						VAR type := custattr:GetType()
-						SWITCH custattr:ToString()
-							CASE "Vulcan.Internal.VulcanClassLibraryAttribute"
-								SELF:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, NULL):ToString()
-								VAR defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, NULL):ToString()
-								IF ! String.IsNullOrEmpty(defaultNs)
-									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
-								ENDIF
-								found += 1
-							CASE "XSharp.Internal.ClassLibraryAttribute"
-								SELF:_globalClassName := type:GetProperty("GlobalClassName"):GetValue(custattr, NULL):ToString()
-								VAR defaultNs := type:GetProperty("DefaultNamespace"):GetValue(custattr, NULL):ToString()
-								IF ! String.IsNullOrEmpty(defaultNs)
-									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
-								ENDIF
-								found += 1
-							CASE "System.Runtime.CompilerServices.ExtensionAttribute"
-								SELF:_HasExtensions  := TRUE
-								found += 2
-							CASE "Vulcan.VulcanImplicitNamespaceAttribute"
-							CASE "XSharp.ImplicitNamespaceAttribute"
-								VAR ns := type:GetProperty("Namespace"):GetValue(custattr, NULL):ToString()
-								IF ! String.IsNullOrEmpty(ns)
-									SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(ns)
-								ENDIF
-								found += 4
-						END SWITCH
-						// All attributes found then get out of here
-						IF found == 7
-							EXIT
-						ENDIF
-					NEXT
-					
-				ENDIF
-			CATCH e AS Exception
-				// failed to load custom attributes					
-				Support.Debug(e:Message)
-			END TRY
-			TRY
-				IF SELF:_assembly != NULL
-					types := SELF:_assembly:GetTypes()
-				ENDIF
-			CATCH exception AS ReflectionTypeLoadException
-				//
-				Support.Debug("Cannot load types from "+ SELF:_assembly:GetName():Name)
-				Support.Debug("Exception details:")
-				message := NULL
-				FOREACH VAR exception2 IN exception:LoaderExceptions
-					IF exception2:Message != message
-						Support.Debug(exception2:Message)
-						message := exception2:Message
-					ENDIF
-				NEXT
-				//	Support.Debug("Types loaded:")
-				//	VAR t IN exception:Types
-				//	IF t != NULL
-				//	Support.Debug(t:FullName)
-				//	ENDIF
-				//	NEXT
-				SELF:_assembly := NULL
-			CATCH ex AS System.Exception
-				//
-				Support.Debug("Generic exception:")
-				Support.Debug(ex:Message)
-			END TRY
-			currentDomain:AssemblyResolve -= System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
-			
-			IF types != NULL .and. types:Length != 0 .AND. (aTypes:Count == 0  .or. ! _LoadedTypes)
+				WriteOutputMessage("-->AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
+				aTypes		 := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
+				_aExtensions := List<MethodInfo>{}
+				fullName := ""
+				simpleName := ""
+				SELF:_nameSpaces:Clear()
+				_nameSpaceTexts := ImmutableList<STRING>.Empty
+				SELF:_zeroNamespace:Clear()
+				SELF:_globalClassName := ""
+				SELF:_HasExtensions := FALSE
+				SELF:LoadAssembly()
+				VAR currentDomain := System.AppDomain.CurrentDomain
+				currentDomain:AssemblyResolve += System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
 				TRY
-					FOREACH VAR type IN types
-						fullName := type:FullName
-						IF ! fullName:StartsWith("$") .AND. ! fullName:StartsWith("<")
-							IF SELF:_HasExtensions .AND. AssemblyInfo.HasExtensionAttribute(type)
-								VAR methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
-								FOREACH info AS MethodInfo IN methods
-									IF AssemblyInfo.HasExtensionAttribute(info)
-										_aExtensions:Add(info)
-									ENDIF
-								NEXT
-							ENDIF
+					IF SELF:_assembly != NULL
+						VAR customAttributes := SELF:_assembly:GetCustomAttributes(FALSE)
+						LOCAL found := 0 AS INT
+						FOREACH VAR custattr IN customAttributes
 							//
-							// Nested Type ?
-							IF fullName:Contains("+")
-								fullName := fullName:Replace('+', '.')
-							ENDIF
-							// Generic ?
-							IF fullName:Contains("`")
-								fullName := fullName:Substring(0, fullName:IndexOf("`") + 2)
-							ENDIF
-							// Add to the FullyQualified name
-							IF ! aTypes:ContainsKey(fullName)
-								aTypes:Add(fullName, type)
-							ENDIF
-							// Now, with Standard name
-							simpleName := type:Name:Replace('+', '.')
-							// Not Empty namespace, not a generic, not nested, not starting with underscore
-							IF String.IsNullOrEmpty(type:Namespace) .AND. simpleName:IndexOf('`') == -1 .AND. ;
-simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
-								SELF:_zeroNamespace:AddType(simpleName, SELF:GetTypeTypesFromType(type))
-							ENDIF
-							// Public Type, not Nested and no Underscore
-							IF type:IsPublic .and. simpleName.IndexOf('+') == -1  .and. simpleName.IndexOf('_') == -1
-								// Get the Namespace
-								nspace := type:Namespace
-								// and the normal name
-								simpleName := type:Name
-								simpleName := simpleName:Replace('+', '.')
-								// Generic ?
-								index := simpleName:IndexOf('`')
-								IF index != -1
-									simpleName := simpleName:Substring(0, index)
-								ENDIF
-								IF nspace?:Length > 0
-									LOCAL container AS AssemblyInfo.NameSpaceContainer
-									IF ! SELF:_nameSpaces:ContainsKey(nspace)
-										container := AssemblyInfo.NameSpaceContainer{nspace}
-										container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
-										SELF:_nameSpaces:Add(nspace, container)
-										SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
-									ELSE
-										container := (AssemblyInfo.NameSpaceContainer)SELF:_nameSpaces[nspace]
-										container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+							VAR type := custattr:GetType()
+							SWITCH custattr:ToString()
+								CASE "Vulcan.Internal.VulcanClassLibraryAttribute"
+									SELF:_globalClassName := type:GetProperty("globalClassName"):GetValue(custattr, NULL):ToString()
+									VAR defaultNs := type:GetProperty("defaultNamespace"):GetValue(custattr, NULL):ToString()
+									IF ! String.IsNullOrEmpty(defaultNs)
+										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
+										WriteOutputMessage("   ...implicit Namespace found: "+defaultNs)
 									ENDIF
-									DO WHILE nspace:Contains(".")
-										nspace := nspace:Substring(0, nspace:LastIndexOf('.'))
-										IF ! SELF:_nameSpaceTexts:Contains(nspace)
-											SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
-										ENDIF
-									ENDDO
-								ENDIF
+									found += 1
+								CASE "XSharp.Internal.ClassLibraryAttribute"
+									SELF:_globalClassName := type:GetProperty("GlobalClassName"):GetValue(custattr, NULL):ToString()
+									WriteOutputMessage("   ...Globals Classname found: "+_globalClassName )
+
+									VAR defaultNs := type:GetProperty("DefaultNamespace"):GetValue(custattr, NULL):ToString()
+									IF ! String.IsNullOrEmpty(defaultNs)
+										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
+										WriteOutputMessage("   ...implicit Namespace found: "+defaultNs)
+									ENDIF
+									found += 1
+								CASE "System.Runtime.CompilerServices.ExtensionAttribute"
+									SELF:_HasExtensions  := TRUE
+									found += 2
+								CASE "Vulcan.VulcanImplicitNamespaceAttribute"
+								CASE "XSharp.ImplicitNamespaceAttribute"
+									VAR ns := type:GetProperty("Namespace"):GetValue(custattr, NULL):ToString()
+									IF ! String.IsNullOrEmpty(ns)
+										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(ns)
+										WriteOutputMessage("   ...implicit Namespace found: "+ns)
+									ENDIF
+									found += 4
+							END SWITCH
+							// All attributes found then get out of here
+							IF found == 7
+								EXIT
 							ENDIF
+						NEXT
+					
+					ENDIF
+				CATCH e AS Exception
+					XSolution.WriteException(e)
+				END TRY
+				TRY
+					IF SELF:_assembly != NULL
+						types := SELF:_assembly:GetTypes()
+					ENDIF
+				CATCH exception AS ReflectionTypeLoadException
+					//
+					WriteOutputMessage("Cannot load types from "+ SELF:_assembly:GetName():Name)
+					XSolution.WriteException(exception)
+					message := NULL
+					FOREACH VAR exception2 IN exception:LoaderExceptions
+						IF exception2:Message != message
+							XSolution.WriteException(exception2)
+							message := exception2:Message
 						ENDIF
 					NEXT
-					SELF:_LoadedTypes := TRUE
-					SELF:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
 					SELF:_assembly := NULL
-				CATCH e AS System.Exception
-					//
-					Support.Debug("Generic exception:")
-					Support.Debug(e:Message)
-					SELF:_clearInfo()
+				CATCH ex AS System.Exception
+					XSolution.WriteException(ex)
 				END TRY
-			ENDIF
+				currentDomain:AssemblyResolve -= System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
 			
+				IF types != NULL .and. types:Length != 0 .AND. (aTypes:Count == 0  .or. ! _LoadedTypes)
+					TRY
+						FOREACH VAR type IN types
+							fullName := type:FullName
+							IF ! fullName:StartsWith("$") .AND. ! fullName:StartsWith("<")
+								IF SELF:_HasExtensions .AND. AssemblyInfo.HasExtensionAttribute(type)
+									VAR methods := type:GetMethods(BindingFlags.Public | BindingFlags.Static)
+									FOREACH info AS MethodInfo IN methods
+										IF AssemblyInfo.HasExtensionAttribute(info)
+											_aExtensions:Add(info)
+										ENDIF
+									NEXT
+								ENDIF
+								//
+								// Nested Type ?
+								IF fullName:Contains("+")
+									fullName := fullName:Replace('+', '.')
+								ENDIF
+								// Generic ?
+								IF fullName:Contains("`")
+									fullName := fullName:Substring(0, fullName:IndexOf("`") + 2)
+								ENDIF
+								// Add to the FullyQualified name
+								IF ! aTypes:ContainsKey(fullName)
+									aTypes:Add(fullName, type)
+								ENDIF
+								// Now, with Standard name
+								simpleName := type:Name:Replace('+', '.')
+								// Not Empty namespace, not a generic, not nested, not starting with underscore
+								IF String.IsNullOrEmpty(type:Namespace) .AND. simpleName:IndexOf('`') == -1 .AND. ;
+										simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
+									SELF:_zeroNamespace:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+								ENDIF
+								// Public Type, not Nested and no Underscore
+								IF type:IsPublic .and. simpleName.IndexOf('+') == -1  .and. simpleName.IndexOf('_') == -1
+									// Get the Namespace
+									nspace := type:Namespace
+									// and the normal name
+									simpleName := type:Name
+									simpleName := simpleName:Replace('+', '.')
+									// Generic ?
+									index := simpleName:IndexOf('`')
+									IF index != -1
+										simpleName := simpleName:Substring(0, index)
+									ENDIF
+									IF nspace?:Length > 0
+										LOCAL container AS AssemblyInfo.NameSpaceContainer
+										IF ! SELF:_nameSpaces:ContainsKey(nspace)
+											container := AssemblyInfo.NameSpaceContainer{nspace}
+											container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+											SELF:_nameSpaces:Add(nspace, container)
+											SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
+										ELSE
+											container := (AssemblyInfo.NameSpaceContainer)SELF:_nameSpaces[nspace]
+											container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
+										ENDIF
+										DO WHILE nspace:Contains(".")
+											nspace := nspace:Substring(0, nspace:LastIndexOf('.'))
+											IF ! SELF:_nameSpaceTexts:Contains(nspace)
+												SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
+											ENDIF
+										ENDDO
+									ENDIF
+								ENDIF
+							ENDIF
+						NEXT
+						SELF:_LoadedTypes := TRUE
+						SELF:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
+						SELF:_assembly := NULL
+					CATCH e AS System.Exception
+						XSolution.WriteException(e)
+						SELF:_clearInfo()
+					END TRY
+				ENDIF
+			FINALLY
+				WriteOutputMessage("<-- AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
+			END TRY
 			// Properties
 		PROPERTY DisplayName AS STRING
 			GET
@@ -484,6 +509,9 @@ simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
 		END PROPERTY
 		PROPERTY Types AS IDictionary<STRING, System.Type> GET SELF:_aTypes
 		
+
+		STATIC METHOD WriteOutputMessage(message as string) AS VOID
+			XSolution.WriteOutputMessage("XModel.AssemblyInfo " +message )
 		
 		// Nested Types
 		INTERNAL CLASS NameSpaceContainer
@@ -506,9 +534,7 @@ simpleName:IndexOf('<') == -1 .AND. ! simpleName:StartsWith("_")
 			METHOD Clear() AS VOID
 				//
 				SELF:_Types:Clear()
-				
-				
-				END CLASS
+			END CLASS
 				
 		INTERNAL ENUM TypeTypes AS LONG
 			MEMBER @@All:=0xff

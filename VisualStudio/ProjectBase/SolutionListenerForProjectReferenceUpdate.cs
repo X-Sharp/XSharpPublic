@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -125,7 +126,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception :" + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 return e.ErrorCode;
             }
 

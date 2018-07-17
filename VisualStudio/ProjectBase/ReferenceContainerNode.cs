@@ -23,6 +23,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -531,23 +532,23 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(ArgumentNullException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(FileNotFoundException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(BadImageFormatException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(FileLoadException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(System.Security.SecurityException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
 
             return node;
@@ -564,23 +565,23 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(ArgumentNullException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(FileNotFoundException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(BadImageFormatException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(FileLoadException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch(System.Security.SecurityException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
 
             return node;

@@ -35,6 +35,7 @@ CLASS SolutionConverter
 	METHOD Start() AS LOGIC
 		LOCAL oReader AS System.IO.TextReader
 		LOCAL oWriter AS System.IO.TextWriter
+		LOCAL lChanged := FALSE AS LOGIC
 		oProgress:WriteLine("Processing..."+cSource)
 		oReader := System.IO.StreamReader{cSource}
 		oWriter := System.IO.StreamWriter{cTarget}
@@ -101,7 +102,7 @@ CLASS SolutionConverter
 				ENDIF
 			ELSE
 				FOREACH VAR item IN aGuids
-                    local lChanged := FALSE as LOGIC
+                    lChanged := FALSE 
                     cLine := Replace(cLine , Item:Key, Item:Value, ref lChanged)
 				NEXT				
 			ENDIF
@@ -109,10 +110,18 @@ CLASS SolutionConverter
 		ENDDO    
 		oReader:Close()
 		oWriter:Close()
+		// Now read the file again and replace all 'forward' references
+		VAR sContents := System.IO.File.ReadAllText(cTarget)
+		FOREACH VAR sItem IN aGuids
+            sContents := Replace(sContents, sItem:Key, sItem:Value, ref lChanged)
+		NEXT                    
+		if lChanged
+			System.IO.File.WriteAllText(cTarget, sContents)
+		endif
+
 		// Now update project references in all xsprj files
 		FOREACH VAR sFile IN aFiles
-			LOCAL sContents AS STRING
-			LOCAL lChanged := FALSE AS LOGIC
+			lChanged := FALSE 
 			if System.IO.File.Exists(sFile)
 				sContents := System.IO.File.ReadAllText(sFile)
 				FOREACH VAR sItem IN aGuids
@@ -125,8 +134,7 @@ CLASS SolutionConverter
 		NEXT
         if self:lAdjustReferences
 		    FOREACH VAR sFile IN aOthers
-			    LOCAL sContents AS STRING
-			    LOCAL lChanged := FALSE AS LOGIC
+			    lChanged := FALSE 
 			    if System.IO.File.Exists(sFile)
 				    sContents := System.IO.File.ReadAllText(sFile)
 				    FOREACH VAR sItem IN aGuids

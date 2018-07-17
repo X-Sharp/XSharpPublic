@@ -17,6 +17,7 @@ using System.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -923,7 +924,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(UriFormatException e)
             {
-                Trace.WriteLine("Exception " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
 
             return false;

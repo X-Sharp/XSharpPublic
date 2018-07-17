@@ -22,6 +22,7 @@ using XSharpLanguage;
 using System.Linq;
 using System.Diagnostics;
 using System;
+using LanguageService.CodeAnalysis.XSharp;
 
 namespace XSharp.Project
 {
@@ -36,6 +37,7 @@ namespace XSharp.Project
         private static String[][] _specialKeywords;
         private static String[][] _specialOutdentKeywords;
 
+        private XSharpParseOptions _parseoptions = null;
         private static void getKeywords()
         {
             if (_indentKeywords == null)
@@ -60,7 +62,7 @@ namespace XSharp.Project
             // "DO" is removed by getFirstKeywordInLine(), so it is useless here...
             return new String[]{
                 "DO","FOR","FOREACH","WHILE","IF",
-                "BEGIN","TRY","REPEAT",
+                "BEGIN","TRY","REPEAT","SWITCH",
                 "INTERFACE","ENUM","CLASS","STRUCTURE","VOSTRUCT"};
         }
 
@@ -76,7 +78,7 @@ namespace XSharp.Project
                 new String[]{ "ENDCASE", "DO" },
                 new String[]{ "NEXT", "FOR,FOREACH" },
                 new String[]{ "UNTIL", "REPEAT" },
-                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY" },
+                new String[]{ "END", "BEGIN,DO,IF,TRY,WHILE,GET,SET,PROPERTY,EVENT,ADD,REMOVE,SWITCH,CLASS,STRUCTURE,INTERFACE,ENUM" },
                 new String[]{ "ENDDO", "DO,WHILE" }
             };
         }
@@ -97,7 +99,7 @@ namespace XSharp.Project
         {
             // 
             return new String[]{
-                "GET", "SET", "PROPERTY"
+                "GET", "SET", "PROPERTY", "ADD", "REMOVE", "EVENT"
             };
         }
 
@@ -187,27 +189,30 @@ namespace XSharp.Project
 
 #if SMARTINDENT
 
-        private void FormatLine(bool previous)
+        private void FormatLine()
         {
             //
             getOptions();
-            _buffer = this.TextView.TextBuffer;
-            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             // On what line are we ?
             bool alignOnPrev = false;
             int lineNumber = line.LineNumber;
-            int? indentation = null;
-            if ((lineNumber > 0) && previous)
+            int indentation = -1;
+            // we calculate the indent based on the previous line so we must be on the second line
+            if (lineNumber > 0) 
             {
-                //
                 if (caret.Position < line.End.Position)
                 {
                     alignOnPrev = true;
                 }
-                //
+ 
+                // wait until we can work
+                while (_buffer.EditInProgress)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
                 var editSession = _buffer.CreateEdit();
                 // This will calculate the desired indentation of the current line, based on the previous one
                 // and may de-Indent the previous line if needed
@@ -215,37 +220,40 @@ namespace XSharp.Project
                 //
                 try
                 {
-                    // but we may need to re-Format the previous line for Casing and Indentifiers
+                    // but we may need to re-Format the previous line for Casing and Identifiers
                     // so, do it before indenting the current line.
                     lineNumber = lineNumber - 1;
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    CommandFilterHelper.FormatLineCase(this._aggregator, this.TextView, editSession, prevLine);
-                    //
-                    CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, line, indentation);
+                    this.formatLineCase(editSession, prevLine);
+                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, line, indentation);
                 }
                 finally
                 {
-                    editSession.Apply();
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
                 }
             }
         }
 
-
         private void FormatDocument()
         {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument()");
+            if (!_buffer.CheckEditAccess())
+            {
+                // can't edit !
+                return;
+            }
             // Read Settings
             getOptions();
-            _buffer = this.TextView.TextBuffer;
-            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
-
+            formatCaseForWholeBuffer();
             // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
-            if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-            {
-                xsClassifier = _buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-            }
-            //
-            if (xsClassifier != null)
+            if (_classifier != null)
             {
 #if TRACE
                 //
@@ -253,34 +261,31 @@ namespace XSharp.Project
                 stopWatch.Start();
 #endif
                 //
-                ITextSnapshot snapshot = xsClassifier.Snapshot;
+                ITextSnapshot snapshot = _classifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var classifications = xsClassifier.GetRegionTags();
+                var classifications = _classifier.GetRegionTags();
                 // We cannot use SortedList, because we may have several Classification that start at the same position
-                List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan> sortedTags = new List<Microsoft.VisualStudio.Text.Classification.ClassificationSpan>();
+                List<ClassificationSpan> sortedTags = new List<ClassificationSpan>();
                 foreach (var tag in classifications)
                 {
                     sortedTags.Add(tag);
                 }
                 sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
                 // Now that Tags are sorted, we can use a stack to arrange them by pairs
-                Stack<Span> regionStarts = new Stack<Microsoft.VisualStudio.Text.Span>();
-                List<Tuple<Span, Span>> regions = new List<Tuple<Microsoft.VisualStudio.Text.Span, Microsoft.VisualStudio.Text.Span>>();
+                Stack<Span> regionStarts = new Stack<Span>();
+                List<Tuple<Span, Span>> regions = new List<Tuple<Span, Span>>();
                 //
                 foreach (var tag in sortedTags)
                 {
-                    //
-                    if (tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStartFormat))
+                    if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
                     {
-                        //
                         regionStarts.Push(tag.Span.Span);
                     }
-                    else if (tag.ClassificationType.IsOfType(XSharpColorizer.ColorizerConstants.XSharpRegionStopFormat))
+                    else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
                     {
                         if (regionStarts.Count > 0)
                         {
                             var start = regionStarts.Pop();
-                            //
                             regions.Add(new Tuple<Span, Span>(start, tag.Span.Span));
                         }
                     }
@@ -288,6 +293,11 @@ namespace XSharp.Project
                 // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start 
                 regions.Sort((a, b) => a.Item1.Start.CompareTo(b.Item1.Start));
                 //Now, we have a list of Regions Start/Stop
+                // wait until we can work
+                while (_buffer.EditInProgress)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
                 var editSession = _buffer.CreateEdit();
                 try
                 {
@@ -302,7 +312,7 @@ namespace XSharp.Project
                         if (snapLine.Length > 0)
                         {
                             SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
-                            String lineText = sSpan.GetText();
+                            string lineText = sSpan.GetText();
                             lineText = lineText.Trim();
                             if (lineText.Length > 0)
                             {
@@ -329,14 +339,20 @@ namespace XSharp.Project
                                 }
                             }
                         }
-                        //
-                        CommandFilterHelper.FormatLine(this._aggregator, this.TextView, editSession, snapLine, indentSize);
+                        formatLineCase(editSession, snapLine);
+                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
                     }
-                    //
                 }
                 finally
                 {
-                    editSession.Apply();
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
                 }
                 //
 #if TRACE
@@ -349,12 +365,18 @@ namespace XSharp.Project
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
                 //
-                Trace.WriteLine("FormatDocument : Done in " + elapsedTime);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
         }
 
-
+        /// <summary>
+        /// Calculate the indentation in characters
+        /// </summary>
+        /// <param name="snapLine"></param>
+        /// <param name="regions"></param>
+        /// <param name="inComment"></param>
+        /// <returns></returns>
         private int getDesiredIndentationInDocument(ITextSnapshotLine snapLine, List<Tuple<Span, Span>> regions, out bool inComment)
         {
             int indentValue = 0;
@@ -570,116 +592,91 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        private List<IMappingTagSpan<IClassificationTag>> getTagsInLine(ITextSnapshotLine line)
+        private IList<IToken> getTokensInLine(ITextSnapshotLine line)
         {
-            //
-            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
-            var tags = _tagAggregator.GetTags(lineSpan);
-            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
-            foreach (var tag in tags)
-            {
-                tagList.Add(tag);
-            }
-            return tagList;
+            var text = line.GetText();
+            return getTokens(text);
         }
 
-        private List<IMappingTagSpan<IClassificationTag>> getTagsInLine(ITextSnapshot snapshot, int start, int length)
+        private IList<IToken> getTokensInLine(ITextSnapshot snapshot, int start, int length)
         {
-            //
             SnapshotSpan lineSpan = new SnapshotSpan(snapshot, start, length);
-            var tags = _tagAggregator.GetTags(lineSpan);
-            List<IMappingTagSpan<IClassificationTag>> tagList = new List<IMappingTagSpan<IClassificationTag>>();
-            foreach (var tag in tags)
-            {
-                tagList.Add(tag);
-            }
-            return tagList;
+            var text = lineSpan.GetText();
+            return getTokens(text);
         }
 
 
         private String getFirstKeywordInLine(ITextSnapshotLine line, int start, int length)
         {
             String keyword = "";
-            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line.Snapshot, start, length);
+            var tokens = getTokensInLine(line.Snapshot, start, length);
             bool inAttribute = false;
             //
-            if (tagList.Count > 0)
+            if (tokens.Count > 0)
             {
-                int tagIndex = 0;
-                while (tagIndex < tagList.Count)
+                int index = 0;
+                while (index < tokens.Count)
                 {
-                    IClassificationTag currentTag = tagList[tagIndex].Tag;
-                    IMappingSpan currentSpan = tagList[tagIndex].Span;
-                    //
-                    if (currentTag.ClassificationType.IsOfType("keyword") ||
-                        currentTag.ClassificationType.IsOfType("preprocessor keyword"))
+                    var token = tokens[index];
+                    // skip whitespace tokens
+                    if (token.Type == XSharpLexer.WS)
                     {
-                        var spans = currentSpan.GetSpans(_buffer);
-                        if (spans.Count > 0)
+                        index++;
+                        continue;
+                    }
+                    keyword = "";
+                    if (XSharpLexer.IsKeyword(token.Type) || (token.Type >= XSharpLexer.PP_FIRST && token.Type <= XSharpLexer.PP_LAST ))
+                    {
+                        keyword = token.Text.ToUpper();
+                        // it could be modifier...
+                        if (keywordIsModifier(token.Type))
                         {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            keyword = keyword.ToUpper();
-                            // it could be modifier...
-                            if (keywordIsModifier(keyword))
-                            {
-                                tagIndex++;
-                                keyword = "";
-                                continue;
-                            }
+                            index++;
+                            continue;
+                        }
+                        else
+                        {
+                            // keyword found
+                            break;
                         }
                     }
-                    else if (currentTag.ClassificationType.IsOfType("comment"))
+                    else if (XSharpLexer.IsComment(token.Type))
                     {
-                        //
-                        keyword = "//";
-                        var spans = currentSpan.GetSpans(_buffer);
-                        if (spans.Count > 0)
+                        keyword = token.Text;
+                        if (keyword.Length >= 2)
                         {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            if (keyword.Length >= 2)
-                            {
-                                keyword = keyword.Substring(0, 2);
-                            }
+                            keyword = keyword.Substring(0, 2);
                         }
+                        break;
                     }
-                    else if (currentTag.ClassificationType.IsOfType("punctuation"))
+                    else if (XSharpLexer.IsOperator(token.Type))
                     {
-                        var spans = currentSpan.GetSpans(_buffer);
-                        if (spans.Count > 0)
+                        keyword = token.Text;
+                        if (token.Type == XSharpLexer.LBRKT)
                         {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            if (keyword == "[")
-                            {
-                                inAttribute = true;
-                                tagIndex++;
-                                keyword = "";
-                                continue;
-                            }
-                            else if (keyword == "]")
-                            {
-                                inAttribute = false;
-                                tagIndex++;
-                                keyword = "";
-                                continue;
-                            }
+                            inAttribute = true;
+                            index++;
+                            continue;
+                        }
+                        else if (token.Type == XSharpLexer.RBRKT)
+                        {
+                            inAttribute = false;
+                            index++;
+                            continue;
                         }
                     }
                     else
                     {
                         if (inAttribute)
                         {
-                            // Skip All Content
-                            tagIndex++;
+                            // Skip All Content in 
+                            index++;
                             continue;
                         }
 
                     }
-                    // out please
                     break;
-                };
+                }
             }
             return keyword;
         }
@@ -687,18 +684,25 @@ namespace XSharp.Project
 
 
         #region SmartIndent
+        // This get reset when a modal dialog is opened in VS
+        private static bool _optionsValid = false;
+
         // SmartIndent
-        private static int _lastIndentValue;
+        private static int _lastIndentValue;    // in number of characters
         private static int _tabSize;
         private static int _indentSize;
         private static bool _alignDoCase;
         private static bool _alignMethod;
+        private static int _keywordCase;
+        private static bool _identifierCase;
+        private static bool _noGotoDefinition;
         private static vsIndentStyle _indentStyle;
-        private static bool _optionsValid = false;
+        internal static int KeywordCase => _keywordCase;
+        internal static bool IdentifierCase => _identifierCase;
         //private IEditorOptions _options;
         //
         private ITextBuffer _buffer;
-        private ITagAggregator<IClassificationTag> _tagAggregator;
+        private ITagAggregator<IClassificationTag> _tagAggregator = null;
 
         internal static void InvalidateOptions()
         {
@@ -715,6 +719,9 @@ namespace XSharp.Project
                 //
                 _alignDoCase = optionsPage.AlignDoCase;
                 _alignMethod = optionsPage.AlignMethod;
+                _keywordCase = optionsPage.KeywordCase;
+                _identifierCase = optionsPage.IdentifierCase;
+                _noGotoDefinition = optionsPage.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
                 var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
@@ -726,23 +733,21 @@ namespace XSharp.Project
                 }
                 _optionsValid = true;
             }
-            //
         }
-
-
-        private void Options_OptionChanged(object sender, EditorOptionChangedEventArgs e)
-        {
-            getOptions();
-
-        }
-
-        private int? getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
+        /// <summary>
+        /// the indentation is measured in # of characters
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="editSession"></param>
+        /// <param name="alignOnPrev"></param>
+        /// <returns></returns>
+        private int getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
             try
             {
                 //
                 if (_indentStyle != vsIndentStyle.vsIndentStyleSmart)
-                    return null;
+                    return -1;
                 // How many spaces do we need ?
                 int indentValue = 0;
                 string outdentToken;
@@ -755,8 +760,8 @@ namespace XSharp.Project
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
                     bool doSkipped;
                     string keyword = getFirstKeywordInLine(prevLine, out doSkipped, out indentValue);
-                    //
-                    //if (indentValue > -1)
+                    if (indentValue < 0)
+                        indentValue = 0;
                     _lastIndentValue = indentValue;
                     if (alignOnPrev)
                         return _lastIndentValue;
@@ -768,55 +773,45 @@ namespace XSharp.Project
                         {
                             if (!_alignMethod)
                             {
-                                indentValue += _tabSize;
+                                indentValue += _indentSize;
                             }
                         }
                         else if (_specialCodeBlockKeywords.Contains<String>(keyword))
                         {
                             if (!_alignMethod)
                             {
-                                indentValue += _tabSize;
+                                indentValue += _indentSize;
                             }
                         }
                         else if (_indentKeywords.Contains<String>(keyword))
                         {
-                            //
-                            indentValue += _tabSize;
+                            indentValue += _indentSize;
                         }
                         else if ((outdentToken = searchSpecialOutdentKeyword(keyword)) != null)
                         {
-                            //if (this.hasRegions())
-                            //{
-                            //    // We are aligning on the Open Token
-                            //    indentValue = alignToOpenToken(prevLine);
-                            //    if (indentValue < 0)
-                            //        indentValue = 0;
-                            //}
-                            //else
+                            // Ok, let's try to make it smooth...
+                            int specialOutdentValue = -1;
+                            // The startToken is a list of possible tokens
+                            specialOutdentValue = alignToSpecificTokens(line, outdentToken);
+                            if (specialOutdentValue >= 0)
                             {
-                                // Ok, let's try to make it smooth...
-                                int? specialOutdentValue = null;
-                                // The startToken is a list of possible tokens
-                                specialOutdentValue = alignToSpecificTokens(line, outdentToken);
-                                if (specialOutdentValue != null)
-                                {
-                                    indentValue = (int)specialOutdentValue;
-                                }
+                                indentValue = (int)specialOutdentValue;
                             }
                             // De-Indent previous line !!!
                             try
                             {
-                                XSharp.Project.CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, prevLine, indentValue);
+                                CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, indentValue);
                             }
                             catch (Exception ex)
                             {
-                                Trace.WriteLine("Indentation of line : " + ex.Message);
+                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed" );
+                                XSharpProjectPackage.Instance.DisplayException(ex);
                             }
                         }
                         else
                         {
                             string startToken = searchMiddleKeyword(keyword);
-                            int? specialIndentValue = null;
+                            int specialIndentValue = -1;
                             if (startToken != null)
                             {
                                 // Retrieve the Indentation for the previous line
@@ -824,11 +819,11 @@ namespace XSharp.Project
                             }
                             else
                             {
-                                if (doSkipped && String.Equals(keyword, "CASE", StringComparison.InvariantCulture))
+                                if (doSkipped && keyword == "CASE" ) 
                                 {
                                     if (!_alignDoCase)
                                     {
-                                        indentValue += _tabSize;
+                                        indentValue += _indentSize;
                                     }
                                 }
                                 else
@@ -842,50 +837,49 @@ namespace XSharp.Project
                                         // The can be aligned to SWITCH/DO CASE or indented
                                         if (!_alignDoCase)
                                         {
-                                            specialIndentValue += _tabSize;
+                                            specialIndentValue += _indentSize;
                                         }
                                     }
                                 }
 
                             }
-                            if (specialIndentValue != null)
+                            if (specialIndentValue != -1)
                             {
-                                // and Indent the new line
-                                indentValue = (int)specialIndentValue + _tabSize;
-                                // And apply
-                                // De-Indent previous line !!!
                                 try
                                 {
-                                    XSharp.Project.CommandFilterHelper.FormatLineIndent(this._aggregator, this.TextView, editSession, prevLine, specialIndentValue);
+                                    // De-Indent previous line !!!
+                                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, specialIndentValue);
+                                    indentValue = specialIndentValue + _indentSize;
                                 }
                                 catch (Exception ex)
                                 {
-                                    Trace.WriteLine("Error indenting of line : " + ex.Message);
+                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Error indenting of current line ") ;
+                                    XSharpProjectPackage.Instance.DisplayException(ex);
                                 }
                             }
                         }
                         if (indentValue < 0)
+                        {
                             indentValue = 0;
-                        //
+                        }
                         _lastIndentValue = indentValue;
                     }
-                    //
                     return _lastIndentValue;
                 }
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("SmartIndent.GetDesiredIndentation Exception : " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("SmartIndent.GetDesiredIndentation failed: " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
             return _lastIndentValue;
         }
 
-        private int? alignToSpecificTokens(ITextSnapshotLine currentLine, String tokenList)
+        private int alignToSpecificTokens(ITextSnapshotLine currentLine, String tokenList)
         {
             int indentValue = 0;
             bool found = false;
             Stack<String> context = new Stack<String>();
-            //
             try
             {
                 String[] possibleTokens = tokenList.Split(',');
@@ -898,52 +892,44 @@ namespace XSharp.Project
                     // We need to analyze the Previous line
                     lineNumber = lineNumber - 1;
                     ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
-                    List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line);
+                    var tokens = getTokensInLine(line);
                     String currentKeyword = "";
                     //
-                    if (tagList.Count > 0)
+                    if (tokens.Count > 0)
                     {
-                        IMappingSpan currentSpan = tagList[0].Span;
-                        String startOfLine = line.GetText();
-                        startOfLine = startOfLine.Replace("\t", new String(' ', _tabSize));
-                        // So, at least, to align to previous line, we will need...
-                        indentValue = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
-                        //
-                        IClassificationTag currentTag = tagList[0].Tag;
-                        currentSpan = tagList[0].Span;
-                        //
-                        if (currentTag.ClassificationType.IsOfType("keyword"))
+                        var token = tokens[0];
+                        indentValue = 0;
+                        int index = 0;
+                        if (token.Type == XSharpLexer.WS)
                         {
-                            var spans = currentSpan.GetSpans(_buffer);
-                            if (spans.Count > 0)
+                            indentValue = getIndentTokenLength(token);
+                            index++;
+                            token = tokens[index];
+                        }
+                        //
+                        currentKeyword = token.Text.ToUpper();
+                        currentKeyword = currentKeyword.ToUpper();
+                        if (possibleTokens.Contains<String>(currentKeyword))
+                        {
+                            if (context.Count == 0)
                             {
-                                SnapshotSpan kwSpan = spans[0];
-                                currentKeyword = kwSpan.GetText();
-                                currentKeyword = currentKeyword.ToUpper();
-                                if (possibleTokens.Contains<String>(currentKeyword))
-                                {
-                                    if (context.Count == 0)
-                                    {
-                                        found = true;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        tokenList = context.Pop();
-                                        possibleTokens = tokenList.Split(',');
-                                    }
-                                }
-                                // Here we should also check for nested construct or we might get false positive...
-                                string outdentToken;
-                                if ((outdentToken = searchSpecialOutdentKeyword(currentKeyword)) != null)
-                                {
-                                    context.Push(tokenList);
-                                    tokenList = outdentToken;
-                                    possibleTokens = tokenList.Split(',');
-                                }
+                                found = true;
+                                break;
+                            }
+                            else
+                            {
+                                tokenList = context.Pop();
+                                possibleTokens = tokenList.Split(',');
                             }
                         }
-                        // 
+                        // Here we should also check for nested construct or we might get false positive...
+                        string outdentToken;
+                        if ((outdentToken = searchSpecialOutdentKeyword(currentKeyword)) != null)
+                        {
+                            context.Push(tokenList);
+                            tokenList = outdentToken;
+                            possibleTokens = tokenList.Split(',');
+                        }
                         indentValue = 0;
                     }
                 }
@@ -956,119 +942,79 @@ namespace XSharp.Project
             if (found)
                 return indentValue;
             else
-                return null;
+                return -1;
 
         }
 
-        private String getKeywordAt(List<IMappingTagSpan<IClassificationTag>> tagList, int tagIndex)
+        private IList<IToken> getTokens(string text)
         {
-            string keyword = null;
-            if (tagIndex < tagList.Count)
-            {
-                IClassificationTag currentTag = tagList[tagIndex].Tag;
-                IMappingSpan currentSpan = tagList[tagIndex].Span;
-                //
-                if (currentTag.ClassificationType.IsOfType("keyword"))
-                {
-                    var spans = currentSpan.GetSpans(_buffer);
-                    if (spans.Count > 0)
-                    {
-                        SnapshotSpan kwSpan = spans[0];
-                        keyword = kwSpan.GetText();
-                        keyword = keyword.ToUpper();
-                    }
-                }
-            }
-            return keyword;
-        }
-
-
-        private bool hasRegions()
-        {
-            bool result = false;
-            //
-            // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
-            if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-            {
-                xsClassifier = _buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-            }
-            if (xsClassifier != null)
-            {
-                var classifications = xsClassifier.GetRegionTags();
-                result = (classifications.Count > 0);
-            }
-            return result;
-        }
-
-        private int alignToOpenToken(ITextSnapshotLine currentLine)
-        {
-            int indentValue = 0;
+            IList<IToken> tokens;
             try
             {
-                int lineNumber = currentLine.LineNumber;
-                // Try to retrieve an already parsed list of Tags
-                XSharpClassifier xsClassifier = null;
-                if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-                {
-                    xsClassifier = _buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-                }
-
-                if (xsClassifier != null)
-                {
-                    //
-                    ITextSnapshot snapshot = xsClassifier.Snapshot;
-                    SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                    var classifications = xsClassifier.GetRegionTags();
-                    // We cannot use SortedList, because we may have several Classification that start at the same position
-                    var sortedTags = new List<ClassificationSpan>();
-                    foreach (var tag in classifications)
-                    {
-                        sortedTags.Add(tag);
-                    }
-                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
-                    //
-                    var startStack = new Stack<ClassificationSpan>();
-                    foreach (var tag in sortedTags)
-                    {
-                        // Is it a Region ?
-                        if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
-                        {
-                            startStack.Push(tag);
-                        }
-                        else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
-                        {
-                            //
-                            var startTag = startStack.Pop();
-                            var startLine = startTag.Span.Start.GetContainingLine();
-                            // Looking for an End
-
-                            var endLine = tag.Span.End.GetContainingLine();
-                            if (endLine.LineNumber == lineNumber)
-                            {
-                                // Where is the start ?
-                                SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, startLine.End);
-                                String lineText = sSpan.GetText();
-                                lineText = lineText.Replace("\t", new String(' ', _tabSize));
-                                // 
-                                indentValue = (lineText.Length - lineText.TrimStart().Length);
-                                break;
-                            }
-                        }
-                    }
-                }
+                var reporter = new ErrorIgnorer();
+                ITokenStream tokenStream;
+                bool ok = XSharp.Parser.VsParser.Lex(text, _file.SourcePath, _parseoptions, reporter, out tokenStream);
+                var stream = tokenStream as BufferedTokenStream;
+                tokens = stream.GetTokens();
             }
-            finally
+            catch (Exception e)
             {
-
+                XSharpProjectPackage.Instance.DisplayException(e);
+                tokens = new List<IToken>();
             }
-            //
-            return indentValue;
+            return tokens;
         }
-
-
         /// <summary>
-        /// Get the first keyword in Line. The modifiers (Private, Protected, ... ) are ignored
+        /// Returns the indent width in characters
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private int getIndentTokenLength(IToken token)
+        {
+            int len = 0;
+            if (token.Type == XSharpLexer.WS)
+            {
+                var text = token.Text;
+                bool space = false; // was last token a space
+                foreach (var ch in text)
+                {
+                    switch (ch)
+                    {
+                        case ' ':
+                            len += 1;
+                            space = true;
+                            break;
+                        case '\t':
+                            if (space)
+                            {
+                                // if already at tab position then increment with whole tab
+                                // otherwise round up to next tab
+                                var mod = len % _tabSize;
+                                len = len - mod + _tabSize;
+                                space = false;
+                            }
+                            else
+                            {
+                                len += _tabSize;
+                            }
+                            break;
+                        default:
+                            // the only other token that is allowed inside a WS is an old style pragma like ~"ONLYEARLY+"
+                            // these do not influence the tab position.
+                            break;
+                    }
+                }
+                int rest = len % _indentSize;
+                len = len / _indentSize;
+                if (rest != 0)
+                {
+                    len+= 1;
+                }
+            }
+            return len* _indentSize;
+        }
+        /// <summary>
+        /// Get the first keyword in Line. The keyword is in UPPERCASE The modifiers (Private, Protected, ... ) are ignored
         /// If the first Keyword is a Comment, "//" is returned
         /// </summary>
         /// <param name="line">The line to analyze</param>
@@ -1079,93 +1025,79 @@ namespace XSharp.Project
         {
             minIndent = -1;
             doSkipped = false;
-            List<IMappingTagSpan<IClassificationTag>> tagList = getTagsInLine(line);
-            string keyword = "";
-            //
             string startOfLine = line.GetText();
-            startOfLine = startOfLine.Replace("\t", new string(' ', _tabSize));
-            // So, at least, to align to previous line, we will need...
-            minIndent = (startOfLine.Length - startOfLine.TrimStart(' ').Length);
-            //
-            if (tagList.Count > 0)
+            string keyword = "";
+            int index = 0;
+            var tokens = getTokens(startOfLine);
+            if (tokens.Count > 0)
             {
-                IMappingSpan currentSpan = tagList[0].Span;
-                //
-                int tagIndex = 0;
-                while (tagIndex < tagList.Count)
+                if (tokens[0].Type == XSharpLexer.WS)
                 {
-                    IClassificationTag currentTag = tagList[tagIndex].Tag;
-                    currentSpan = tagList[tagIndex].Span;
-                    //
-                    if (currentTag.ClassificationType.IsOfType("keyword"))
+                    index = 1;
+                    minIndent = getIndentTokenLength(tokens[0]);
+                }
+                else
+                {
+                    minIndent = 0;
+                }
+                while (tokens.Count > index)
+                {
+                    var token = tokens[index];
+                    if (token.Type == XSharpLexer.WS)
                     {
-                        var spans = currentSpan.GetSpans(_buffer);
-                        if (spans.Count > 0)
+                        index++;
+                        continue;
+                    }
+                        
+                    if (XSharpLexer.IsKeyword(token.Type))
+                    {
+                        keyword = token.Text.ToUpper();
+                        // it could be modifier...
+                        if (keywordIsModifier(token.Type))
                         {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            keyword = keyword.ToUpper();
-                            // it could be modifier...
-                            if (keywordIsModifier(keyword))
-                            {
-                                tagIndex++;
-                                keyword = "";
-                                continue;
-                            }
-                            if (keyword == "DO")
-                            {
-                                tagIndex++;
-                                keyword = "";
-                                doSkipped = true;
-                                continue;
-                            }
+                            index++ ; 
+                            keyword = "";
+                            continue;
+                        }
+                        if (token.Type == XSharpLexer.DO)
+                        {
+                            index++;
+                            keyword = "";
+                            doSkipped = true;
+                            continue;
                         }
                     }
-                    else if (currentTag.ClassificationType.IsOfType("comment"))
+                    else if (XSharpLexer.IsComment(token.Type))
                     {
-                        //
-                        keyword = "//";
-                        var spans = currentSpan.GetSpans(_buffer);
-                        if (spans.Count > 0)
-                        {
-                            SnapshotSpan kwSpan = spans[0];
-                            keyword = kwSpan.GetText();
-                            if (keyword.Length >= 2)
-                            {
-                                keyword = keyword.Substring(0, 2);
-                            }
-                        }
+                        keyword = token.Text.Substring(0,2);
                     }
-                    // out please
                     break;
-                };
+                }
             }
             return keyword;
         }
-        static bool keywordIsModifier(string keyword)
+        static bool keywordIsModifier(int type)
         {
-            switch (keyword)
+            switch (type)
             {
-                case "PROTECTED":
-                case "INTERNAL":
-                case "HIDDEN":
-                case "PRIVATE":
-                case "EXPORT":
-                case "PUBLIC":
-                case "STATIC":
-                case "SEALED":
-                case "ABSTRACT":
-                case "VIRTUAL":
-                case "PARTIAL":
-                case "UNSAFE":
-                case "NEW":
+                case XSharpLexer.PROTECTED:
+                case XSharpLexer.INTERNAL:
+                case XSharpLexer.HIDDEN:
+                case XSharpLexer.PRIVATE:
+                case XSharpLexer.EXPORT:
+                case XSharpLexer.PUBLIC:
+                case XSharpLexer.STATIC:
+                case XSharpLexer.SEALED:
+                case XSharpLexer.ABSTRACT:
+                case XSharpLexer.VIRTUAL:
+                case XSharpLexer.PARTIAL:
+                case XSharpLexer.UNSAFE:
+                case XSharpLexer.NEW:
                     return true;
                 default:
                     return false;
             }
         }
-
-
         #endregion
 
     }

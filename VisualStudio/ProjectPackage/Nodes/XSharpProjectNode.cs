@@ -116,7 +116,7 @@ namespace XSharp.Project
 
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            //System.Diagnostics.Trace.WriteLine("FileChangedOnDisk " + System.IO.Path.GetFileName(e.FileName));
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
             {
                 XFile file = this.ProjectModel.FindFullPath(e.FileName);
@@ -965,6 +965,8 @@ namespace XSharp.Project
 
             // This will call the Calback in PojectPackage
             IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
+            // Be sure we have External/system types for Intellisense
+            UpdateAssemblyReferencesModel();
             if (null != libraryManager)
             {
                 libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
@@ -976,8 +978,6 @@ namespace XSharp.Project
 
             CreateErrorListManager();
 
-            // Be sure we have External/system types for Intellisense
-            UpdateAssemblyReferencesModel();
 
             // Add EventHandler to handle adding / removing a Reference
             VSProject.Events.ReferencesEvents.ReferenceAdded += ReferencesEvents_ReferenceAdded;
@@ -1131,8 +1131,6 @@ namespace XSharp.Project
                     projectModel = new XSharpModel.XProject(this);
                     // Set the backlink, so the walker can access the StatusBar
                     projectModel.ProjectNode = this;
-                    //
-                    UpdateAssemblyReferencesModel();
                     //
                     XSharpModel.XSolution.Add(projectModel);
                 }
@@ -1547,7 +1545,7 @@ namespace XSharp.Project
         {
             var model = this.ProjectModel;
             //
-            XType result = model.LookupFullName(name, true);
+            XType result = model.Lookup(name, true);
             if (result != null)
                 return result;
             // try to find with explicit usings
@@ -1556,7 +1554,7 @@ namespace XSharp.Project
                 foreach (var usingName in usings)
                 {
                     var fullname = usingName + "." + name;
-                    result = model.LookupFullName(fullname, true);
+                    result = model.Lookup(fullname, true);
                     if (result != null)
                         return result;
                 }

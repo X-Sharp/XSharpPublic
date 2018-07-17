@@ -1890,15 +1890,25 @@ CLASS EntityDescriptor
 			cLine := cLine:Replace("%" , tag) // so that %something% is treated as one word
 
 			LOCAL aWords AS List<WordObject>
+			LOCAL cPrevWord := "" AS STRING
+			LOCAL cNextWord := "" AS STRING
+			LOCAL lInFilename := FALSE AS LOGIC
 			aWords := AnalyzeLine(cLine)
 			cLine := ""
-			FOREACH oWord AS WordObject IN aWords
-				
-				LOCAL cPrevWord := "" AS STRING
 
+			FOR LOCAL nWord := 0 AS INT UPTO aWords:Count - 1
+				
+				LOCAL oWord AS WordObject 
 				LOCAL cWord, cUpper AS STRING
+				
+				oWord := aWords[nWord]
 				cWord := oWord:cWord
 				cUpper := cWord:ToUpper()
+				cNextWord := iif(nWord < aWords:Count - 1 , aWords[nWord+1]:cWord , "")
+				
+				IF cWord == ":" .and. cNextWord == "\"
+					lInFilename := TRUE
+				END IF
 
 				IF oLine:oEntity != NULL .and. cUpper == "RESOURCE"
 					cPrevWord := cWord
@@ -1924,17 +1934,25 @@ CLASS EntityDescriptor
 						cWord := VOFolder.Get() + "\Samples"
 					CASE cUpper == "__CAVODIR__" .or. cUpper == tag_cavodir
 						cWord := VOFolder.Get()
+//					CASE lFirstLine .and. (cPrevWord == "\" .or. cPrevWord == "." .or. cPrevWord == ":")
+					CASE lFirstLine .and. lInFilename
+						// do not allow below to replace defines in part of filenames that are not surrounded by quotes
+						NOP
 					CASE SELF:_oModule:Application:HasDefine(cUpper)
 						cLine += SELF:TranslateDefineInResource(cUpper)
+						cPrevWord := cWord
 						LOOP
 /*					CASE SELF:_oModule:HasDefine(cUpper)
 						cLine += SELF:_oModule:GetDefineValue(cUpper):Replace(e"\"" , ""):Replace("'" , "")
+						cPrevWord := cWord
 						LOOP
 					CASE SELF:_oModule:Application:HasDefine(cUpper)
 						cLine += SELF:_oModule:Application:GetDefineValue(cUpper):Replace(e"\"" , ""):Replace("'" , "")
+						cPrevWord := cWord
 						LOOP*/
 					CASE xPorter.SDKDefines:ContainsKey(cUpper)
 						cLine += xPorter.SDKDefines[cUpper]:Replace(e"\"" , ""):Replace("'" , "")
+						cPrevWord := cWord
 						LOOP
 					END CASE
 
@@ -1955,14 +1973,10 @@ when file paths are included in quotes we need to double the slashes, because th
 strings and if there are escape sequences inside (like \t), the resource compiler will not find the file
 Probably we need to do that also to every other string in every line in the resource?
 */
-				IF lFirstLine .and. cWord == "\" .and. oWord:eStatus == WordStatus.Literal .and. cPrevWord != "\"
+				IF lFirstLine .and. cWord == "\" .and. oWord:eStatus == WordStatus.Literal .and. cPrevWord != "\" .and. cNextWord != "\"
 					cLine += "\"
 				END IF
 
-/*				IF oLine:oEntity != NULL
-					cLine := cLine:Trim()
-				END IF*/
-				
 				cPrevWord := cWord
 
 			NEXT

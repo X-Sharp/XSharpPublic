@@ -65,54 +65,59 @@ begin namespace XSharpModel
 			return null
 		
 		method FindType(typeName as string, usings as IList<string>, assemblies as IList<AssemblyInfo>) as System.Type
-			//
-			if typeName:EndsWith(">")
-				if typeName:Length <= (typeName:Replace(">", ""):Length + 1)
-					var elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
-					var num := (elements:Length - 1)
-					typeName := elements[ 1] + "`" + num:ToString()
-				else
-					var pos		   := typeName:IndexOf("<")
-					var baseName   := typeName:Substring(0, pos)
-					var typeParams := typeName:Substring(pos + 1)
-					typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
-					pos			   := typeParams:IndexOf("<")
-					while pos >= 0
-						var pos2  := typeParams:LastIndexOf(">")
-						typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
-						pos := typeParams:IndexOf("<")
-					enddo
-					var elements := typeParams:Split(",":ToCharArray())
-					typeName := baseName + "`" + elements:Length:ToString()
+			LOCAL result := NULL as System.Type
+			TRY
+				WriteOutputMessage("--> FindType() "+typename)
+				if typeName:EndsWith(">")
+					if typeName:Length <= (typeName:Replace(">", ""):Length + 1)
+						var elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
+						var num := (elements:Length - 1)
+						typeName := elements[ 1] + "`" + num:ToString()
+					else
+						var pos		   := typeName:IndexOf("<")
+						var baseName   := typeName:Substring(0, pos)
+						var typeParams := typeName:Substring(pos + 1)
+						typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
+						pos			   := typeParams:IndexOf("<")
+						while pos >= 0
+							var pos2  := typeParams:LastIndexOf(">")
+							typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
+							pos := typeParams:IndexOf("<")
+						enddo
+						var elements := typeParams:Split(",":ToCharArray())
+						typeName := baseName + "`" + elements:Length:ToString()
+					endif
 				endif
-			endif
-			var result := Lookup(typeName, assemblies)
-			if result != null
-				return result
-			endif
-			if usings != null
-				foreach name as string in usings:Expanded()
-					result := Lookup(name + "." + typeName, assemblies)
-					if result != null
-						return result
-					endif
-				next
-			endif
-			if assemblies != null
-				foreach var asm in assemblies
-					if asm:ImplicitNamespaces != null
-						foreach strNs as string in asm:ImplicitNamespaces
-							var fullname := strNs + "." + typeName
-							result := Lookup(fullName, assemblies)
-							if result != null
-								return result
-							endif
-						next
-					endif
-				next
-			endif
-            // Also Check into the Functions Class for Globals/Defines/...
-			result := Lookup("Functions." + typeName, assemblies)
+				result := Lookup(typeName, assemblies)
+				if result != null
+					return result
+				endif
+				if usings != null
+					foreach name as string in usings:Expanded()
+						result := Lookup(name + "." + typeName, assemblies)
+						if result != null
+							return result
+						endif
+					next
+				endif
+				if assemblies != null
+					foreach var asm in assemblies
+						if asm:ImplicitNamespaces != null
+							foreach strNs as string in asm:ImplicitNamespaces
+								var fullname := strNs + "." + typeName
+								result := Lookup(fullName, assemblies)
+								if result != null
+									return result
+								endif
+							next
+						endif
+					next
+				endif
+				// Also Check into the Functions Class for Globals/Defines/...
+				result := Lookup("Functions." + typeName, assemblies)
+			FINALLY
+				WriteOutputMessage("<-- FindType() "+typename+" " + iif(result != null, result:FullName, "* not found *"))
+			END TRY
 			return result
 		
 		method GetNamespaces(assemblies as IList<AssemblyInfo>) as ImmutableList<string>
@@ -129,9 +134,11 @@ begin namespace XSharpModel
 			local lastWriteTime as System.DateTime
 			local key as string
 			//
+			WriteOutputMessage("<<-- LoadAssembly(string) "+cFileName)
 			lastWriteTime := File.GetLastWriteTime(cFileName)
 			if assemblies:ContainsKey(cFileName)
 				info := assemblies:Item[cFileName]
+				WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
 			else
 				info := AssemblyInfo{cFileName, System.DateTime.MinValue}
 				assemblies:TryAdd(cFileName, info)
@@ -141,33 +148,34 @@ begin namespace XSharpModel
 			endif
 			if Path.GetFileName(cFileName):ToLower() == "system.dll"
 				key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")
-				if ! assemblies:ContainsKey(key) .AND. File.Exists(key)
+				IF ! assemblies:ContainsKey(key) .AND. File.Exists(key)
+					WriteOutputMessage("LoadAssembly() load mscorlib from same location as system.DLL")
 					LoadAssembly(key)
 				endif
-			endif
+			ENDIF
+			WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			return info
 		
 		static method LoadAssembly(reference as VsLangProj.Reference) as AssemblyInfo
 			local path as string
 			path := reference:Path
+			WriteOutputMessage("<<-- LoadAssembly(VsLangProj.Reference)")
 			if String.IsNullOrEmpty(path)
 				return AssemblyInfo{reference}
 			endif
-			return LoadAssembly(path)
+			var asm := LoadAssembly(path)
+			WriteOutputMessage(">>-- LoadAssembly(VsLangProj.Reference)")
+			return asm
 		
 		static method Lookup(typeName as string, theirassemblies as IList<AssemblyInfo>) as System.Type
 			local sType as System.Type
 			sType := null
-			foreach var assembly in theirassemblies
-				if assembly:Types:Count == 0
-					assembly:UpdateAssembly()
-				endif
+			FOREACH VAR assembly IN theirassemblies
+				assembly:Refresh()
 				if assembly:Types:TryGetValue(typeName, out sType) .and. sType != NULL
 					exit
 				endif
-				if assembly != null
-					sType := assembly:GetType(typeName)
-				endif
+				sType := assembly:GetType(typeName)
 				if sType != null
 					exit
 				endif
@@ -202,7 +210,8 @@ begin namespace XSharpModel
 				mscorlib := null
 			endif
 			GC.Collect()
-		
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS void
+			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 	end class
 	
 end namespace 

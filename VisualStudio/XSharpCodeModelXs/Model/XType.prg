@@ -9,7 +9,6 @@ using System.Collections.Immutable
 using System.Linq
 using System.Text
 using System.Threading.Tasks
-using EnvDTE
 using LanguageService.CodeAnalysis.Text
 using System.Diagnostics
 using System.Collections.Immutable
@@ -30,7 +29,7 @@ begin namespace XSharpModel
 			super(name, kind, modifiers, visibility, span, position)
 
 			self:_members := List<XTypeMember>{}
-			self:_parentName := "System.Object"
+			SELF:_parentName := "System.Object"
 			self:_nameSpace := ""
 			if modifiers:HasFlag(Modifiers.Static)
 				self:_isStatic := true
@@ -49,7 +48,8 @@ begin namespace XSharpModel
             self:ParentName := oOther:ParentName
             self:IsPartial := oOther:IsPartial
             self:IsStatic := oOther:IsStatic
-            self:File := oOther:File
+            SELF:File := oOther:File
+			self:NameSpace := oOther:NameSpace
 			self:AddMembers(oOther:Members)
 			return
 
@@ -65,8 +65,9 @@ begin namespace XSharpModel
 			local oXType as XType
 			mods &= ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 			
-			CalculateRange(oElement, oInfo, out span, out intv)
+			CalculateRange(oElement, oInfo, OUT span, OUT intv)
 			oXType := XType{cName, kind, mods, vis, span, intv}
+			oXType:NameSpace := oElement:cClassNamespace
 			oXType:File := oFile
 			oXType:ParentName := oElement:cInherit
 			if String.IsNullOrEmpty(oXType:ParentName) .and. ! oXType:IsPartial
@@ -85,7 +86,7 @@ begin namespace XSharpModel
 					local xMember as XTypeMember
 					xMember := XTypeMember.Create(oElement, oInfo, oFile, oXType)
 					oXType:AddMember(xMember)
-				endif
+				ENDIF
 			endif
 
 			return oXType
@@ -164,8 +165,7 @@ begin namespace XSharpModel
 			return clone
 		
 		
-		property NameSpace as string get _namespace set _namespace := value
-		
+		PROPERTY NameSpace AS STRING GET _namespace SET _namespace := value
 		
         /// <summary>
         /// If this XType is a Partial type, return a Copy of it, merged with all other informations
@@ -175,7 +175,7 @@ begin namespace XSharpModel
 		property Clone as XType
 			get
 				if self:IsPartial
-					return super:File:Project:LookupFullName(self:FullName, true)
+					return super:File:Project:Lookup(self:FullName, true)
 				endif
 				return self
 			end get

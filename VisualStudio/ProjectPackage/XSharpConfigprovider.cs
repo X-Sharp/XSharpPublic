@@ -144,7 +144,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
 
                 return Marshal.GetHRForException(e);
             }

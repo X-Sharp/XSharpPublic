@@ -55,7 +55,8 @@ begin namespace XSharpModel
 				try
 					self:_file:BuildTypes(oInfo)
 				catch exception as System.Exception
-					Support.Debug("SourceWalker.BuildModel failed: "+  exception:Message)
+					WriteOutputMessage("BuildModel failed: ")
+					XSolution.WriteException(exception)
 				end try
 			endif
 		
@@ -74,14 +75,14 @@ begin namespace XSharpModel
 
 		method Lex(cSource as string) as ITokenStream
 			local lOk := false as logic
-			System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Lex()")
+			WriteOutputMessage("-->> Lex() "+_file:FullPath)
 			self:_errors := List<XError>{}
 			local stream := null as ITokenStream
 			XSharp.Parser.VsParser.Lex(cSource, self:_file:SourcePath, self:_file:Project:ProjectNode:ParseOptions, self, out stream)
 			begin lock self
 				self:_tokenStream := stream
 			end lock
-			System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Lex()")
+			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
 			return stream
 		
 		private method createLines(cSource as string) as List<String>
@@ -99,14 +100,14 @@ begin namespace XSharpModel
 			//return self:Parse(lines, lIncludeLocals)
 
 		method Parse(lines as IList<String> , lIncludeLocals as LOGIC) as ParseResult
-			System.Diagnostics.Trace.WriteLine("-->> SourceWalker.Parse()")
+			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count+" locals "+lIncludeLocals+" )")
 			
 			var oParser := XSharpModel.Parser{}
 			var info := oParser:Parse(lines, lIncludeLocals)
 			begin lock self
 				self:_info := info				
 			end lock
-			System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.Parse()")
+			WriteOutputMessage("<<-- Parse() "+_file:FullPath)
 			return self:_info
 
 		
@@ -127,7 +128,7 @@ begin namespace XSharpModel
 				//
 				if (self:_prjNode != null)
 					//
-					System.Diagnostics.Trace.WriteLine("-->> SourceWalker.ShowErrorsAsync()")
+					WriteOutputMessage("-->> ShowErrorsAsync() "+_file:FullPath)
 					list := System.Collections.Immutable.ImmutableList.ToImmutableList<XError>(self:_errors)
 					obj2 := self:_gate
 					begin lock obj2
@@ -146,8 +147,10 @@ begin namespace XSharpModel
 						endif
 						self:_prjNode:ShowIntellisenseErrors()
 					end lock
-					System.Diagnostics.Trace.WriteLine("<<-- SourceWalker.ShowErrorsAsync()")
+					WriteOutputMessage("<<-- ShowErrorsAsync() "+_file:FullPath)
 				endif
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS void
+			XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
 			
 		#endregion
 		

@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -259,7 +260,7 @@ namespace Microsoft.VisualStudio.Project
                     VsShellUtilities.ShowMessageBox(this.Site, title, e.Message, icon, buttons, defaultButton);
                 }
 
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 throw;
             }
             finally

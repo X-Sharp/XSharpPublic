@@ -16,6 +16,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -92,7 +93,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(InvalidCastException e)
             {
-                Trace.WriteLine("Exception" + e.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception" + e.Message);
             }
             finally
             {

@@ -67,24 +67,24 @@ namespace XSharp.Project
           }
           catch (ArgumentNullException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (FileNotFoundException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
           }
           catch (BadImageFormatException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (FileLoadException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (System.Security.SecurityException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           ReferenceNode existing = null;
           if (isDuplicateNode(node, ref existing))
           {
@@ -218,24 +218,24 @@ namespace XSharp.Project
           }
           catch (ArgumentNullException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (FileNotFoundException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (BadImageFormatException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (FileLoadException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
           catch (System.Security.SecurityException e)
           {
-              Trace.WriteLine("Exception : " + e.Message);
-          }
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
 
           return node;
       }

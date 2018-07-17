@@ -1116,9 +1116,8 @@ namespace Microsoft.VisualStudio.Project
 			}
 			catch (Exception e)
 			{
-				Trace.WriteLine("Exception : " + e.Message);
-
-				return Marshal.GetHRForException(e);
+                XSharpProjectPackage.Instance.DisplayException(e);
+                return Marshal.GetHRForException(e);
 			}
 
 			return VSConstants.S_OK;
@@ -1403,8 +1402,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
-                ErrorHandler.ThrowOnFailure(output.OutputStringThreadSafe("Unhandled Exception:" + e.Message + "\n"));
+                XSharpProjectPackage.Instance.DisplayException(e);
 				this.BuildCoda(new BuildResult(MSBuildResult.Failed, null), output, shouldRepaintReferences);
                 throw;
             }

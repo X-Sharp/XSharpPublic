@@ -72,7 +72,9 @@ begin namespace XSharpModel
 		member @@VOStruct
 		member @@VOGlobal
 		member @@Unknown
-	end enum
+	END ENUM
+
+	[Flags];
 	enum Modifiers as long
 		member @@None:=0
 		member @@Private:= 0x01

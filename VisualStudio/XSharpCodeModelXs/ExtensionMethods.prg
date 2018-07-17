@@ -90,7 +90,8 @@ begin namespace XSharpModel
 			switch elementKind
 				case Kind.Field 
 				case Kind.VOGlobal 
-				case Kind.VODefine 
+				CASE Kind.VODefine 
+				case Kind.EnumMember
 					return true
 			end switch
 			return false
@@ -198,14 +199,14 @@ begin namespace XSharpModel
 		// FLags enum 
 		local result as Modifiers
 		switch acc
-		case AccessLevel.@@Hidden
-			result := Modifiers.@@Hidden
-		case AccessLevel.@@Protected
-			result := Modifiers.@@Protected
-		case AccessLevel.@@Public
-			result := Modifiers.@@Public
-		case AccessLevel.@@Internal
-			result := Modifiers.@@Internal
+		case AccessLevel.Hidden
+			result := Modifiers.Hidden
+		case AccessLevel.Protected
+			result := Modifiers.Protected
+		case AccessLevel.Public
+			result := Modifiers.Public
+		case AccessLevel.Internal
+			result := Modifiers.Internal
 		end switch
 		if result == Modifiers.None
 			result := Modifiers.Public

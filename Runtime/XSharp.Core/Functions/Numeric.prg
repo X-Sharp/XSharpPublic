@@ -51,6 +51,34 @@ FUNCTION AbsShort(si AS SHORT) AS LONG
 
 
 /// <summary>
+/// Return the remainder of one number divided by another number
+/// </summary>
+/// <param name="dividend">The dividend of the division operation</param>
+/// <param name="divisor">The divisor of the division operation</param>
+/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS real8
+	RETURN dividend % divisor
+
+/// <summary>
+/// Return the remainder of one number divided by another number
+/// </summary>
+/// <param name="dividend">The dividend of the division operation</param>
+/// <param name="divisor">The divisor of the division operation</param>
+/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+FUNCTION Mod(dividend AS Int64, divisor AS Int64) AS Int64
+	RETURN dividend % divisor
+
+
+/// <summary>
+/// Return the remainder of one number divided by another number
+/// </summary>
+/// <param name="dividend">The dividend of the division operation</param>
+/// <param name="divisor">The divisor of the division operation</param>
+/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+FUNCTION Mod(dividend AS LONG, divisor AS LONG) AS LONG
+	RETURN dividend % divisor
+
+/// <summary>
 /// Exchange the right and left halves of a byte.
 /// </summary>
 /// <param name="b">The byte whose nibbles should be swaped.</param>

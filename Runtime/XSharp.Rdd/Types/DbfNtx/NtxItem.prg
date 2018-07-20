@@ -11,15 +11,17 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD
 
-	/// <summary>
-    /// The NtxItem class.
+    /// <summary>
+    /// The NtxItem class. (Should it be called NtxNode ?)
     /// </summary>
-	CLASS NtxItem
+    CLASS NtxItem
         PROTECTED _Page AS NtxPage
         PROTECTED _Offset AS WORD
- 
-    CONSTRUCTOR( page AS NtxPage, offset AS WORD)
-         RETURN
+        
+        CONSTRUCTOR( page AS NtxPage, offset AS WORD)
+            RETURN
+            
 
-	END CLASS
+            
+    END CLASS
 END NAMESPACE // global::XSharp.RDD.Types.DbfNtx

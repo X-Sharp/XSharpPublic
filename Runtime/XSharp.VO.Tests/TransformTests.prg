@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -327,7 +327,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	[Fact, Trait("Category", "Empty")];
 	METHOD EmptyFuncTests() AS VOID
 		Assert.True(Empty(0))
-		Assert.True(Empty(false))
+		Assert.True(Empty(FALSE))
 		Assert.True(Empty(""))
 		Assert.True(Empty(Chr(10) + Chr(9) + Chr(13)))
 		Assert.True(Empty(NULL_SYMBOL))
@@ -347,7 +347,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		
 
 		Assert.False(Empty(1))
-		Assert.False(Empty(true))
+		Assert.False(Empty(TRUE))
 		Assert.False(Empty("a"))
 		Assert.False(Empty(Chr(1)))
 		Assert.False(Empty(#abc))
@@ -368,6 +368,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.False(IsClassOf(#None, #None))
 		Assert.False(IsClassOf(#None, #TestClassChild))
 		Assert.False(IsClassOf(#TestClassChild, #None))
+
+	[Fact, Trait("Category", "IsInstanceOf")];
+	METHOD IsInstanceOf_Tests() AS VOID
+		Assert.True(IsInstanceOf(123 , "System.Int32"))
+		Assert.True(IsInstanceOf(TRUE , "System.Boolean"))
+		Assert.False(IsInstanceOf(123 , "Nothing"))
 
 	[Fact, Trait("Category", "AClone")];
 	METHOD AClone_Tests() AS VOID

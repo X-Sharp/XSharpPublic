@@ -50,9 +50,19 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN aMethods:ToArray()
 		
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
+	RETURN FindClass(cName, TRUE)
+	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
-		FOREACH asm AS Assembly IN FindOurAssemblies()
+		LOCAL aAssemblies AS IEnumerable<Assembly>
+
+		IF lOurAssembliesOnly
+			aAssemblies := FindOurAssemblies()
+		ELSE
+			aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
+		END IF
+		
+		FOREACH asm AS Assembly IN aAssemblies
 			ret := asm:GetType( cName, FALSE, TRUE )
 			IF ret != NULL
 				EXIT 
@@ -601,7 +611,10 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,cName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
 		RETURN FALSE
 	ENDIF
-	LOCAL oType := OOPHelpers.FindClass(cName) AS System.Type
+	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
+	IF oType == NULL
+		RETURN FALSE
+	END IF
 	RETURN oType:IsAssignableFrom(oObject:GetType())
 	
 	

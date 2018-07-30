@@ -3420,6 +3420,9 @@
     <value>Subsystem: </value>
     <comment>needs colon and trailing space</comment>
   </data>
+  <data name="USUALOVERFLOWERR" xml:space="preserve">
+    <value>Numeric overflow when converting USUAL of type '{0}' to '{1}'</value>
+  </data>
   <data name="USUALBINARYOPERR" xml:space="preserve">
     <value>{0} operator not available for USUAL types '{1}' and '{2}'</value>
   </data>

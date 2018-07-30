@@ -223,7 +223,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF newBlock
                 IF ( SELF:_Shared )
-                    locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, 123 )
+                    locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data
                 FSeek3( SELF:_hFile, 0, FS_END )

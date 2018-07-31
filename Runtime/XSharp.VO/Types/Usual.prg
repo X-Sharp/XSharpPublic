@@ -3,12 +3,12 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System
+USING System
 USING System.Runtime.InteropServices
-using System.Runtime.CompilerServices
-using System.Diagnostics
-using XSharp.Internal
-begin namespace XSharp
+USING System.Runtime.CompilerServices
+USING System.Diagnostics
+USING XSharp.Internal
+BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
 	/// </summary>
@@ -21,392 +21,392 @@ begin namespace XSharp
 		IEquatable<__Usual>
         #region static fields
 			/// <exclude />
-            public static _NIL as __Usual
+            PUBLIC STATIC _NIL AS __Usual
         #endregion
         
         #region private fields
-            private initonly _flags    	as UsualFlags	// type, byref, width, decimals
-            private initonly _valueData	as _UsualData		// for non GC data
-            private initonly _refData  	as object			// for GC data
+            PRIVATE INITONLY _flags    	AS UsualFlags	// type, byref, width, decimals
+            PRIVATE INITONLY _valueData	AS _UsualData		// for non GC data
+            PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
         #endregion
         
         #region constructors
 			/// <exclude />
-            static constructor
+            STATIC CONSTRUCTOR
             _NIL := __Usual{UsualType.Void}
-            return
+            RETURN
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(type as UsualType )
+            PRIVATE CONSTRUCTOR(type AS UsualType )
 				SELF:_valueData := _UsualData{}
 				SELF:_flags     := UsualFlags{type}
-				self:_refData   := NULL
+				SELF:_refData   := NULL
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(u as __Usual)
-            self:_flags     := u:_flags
-            self:_valueData	:= u:_valueData
-            self:_refData 	:= u:_refData 
+            PRIVATE CONSTRUCTOR(u AS __Usual)
+            SELF:_flags     := u:_flags
+            SELF:_valueData	:= u:_valueData
+            SELF:_refData 	:= u:_refData 
             
-            return
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             PRIVATE CONSTRUCTOR(f AS FLOAT)
 			SELF(UsualType.Float)
             SELF:_valueData:r8		:= f:Value
-            self:_flags:Width		:= (Sbyte) f:Digits
-            self:_flags:Decimals	:= (Sbyte) f:Decimals
-            return
+            SELF:_flags:Width		:= (Sbyte) f:Digits
+            SELF:_flags:Decimals	:= (Sbyte) f:Decimals
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             PRIVATE CONSTRUCTOR(r8 AS REAL8)
 			SELF(UsualType.Float)
-            self:_valueData:r8		:= r8
-            self:_flags:Width		:= -1
-            self:_flags:Decimals	:= -1
-            return
+            SELF:_valueData:r8		:= r8
+            SELF:_flags:Width		:= -1
+            SELF:_flags:Decimals	:= -1
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as logic)
+            PRIVATE CONSTRUCTOR(value AS LOGIC)
 			SELF(UsualType.LOGIC)
 			SELF:_valueData:l		:= VALUE
-            return
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             PRIVATE CONSTRUCTOR(VALUE AS ARRAY)
 			SELF(UsualType.ARRAY)
-            self:_refData			:= value
-            return
+            SELF:_refData			:= value
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as Date)
+            PRIVATE CONSTRUCTOR(value AS DATE)
 			SELF(UsualType.DATE)
             SELF:_valueData:d		:= VALUE
-            return
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as System.DateTime)
+            PRIVATE CONSTRUCTOR(value AS System.DateTime)
 			SELF(UsualType.DateTime)
             SELF:_valueData:dt		:= VALUE
-            return
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as long)
+            PRIVATE CONSTRUCTOR(value AS LONG)
 			SELF(UsualType.Long)
             _valueData:i			:= VALUE
-            return
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
             PRIVATE CONSTRUCTOR(VALUE AS INT64)
 			SELF(UsualType.Int64)
-            self:_valueData:i64		:= value
-            return
+            SELF:_valueData:i64		:= value
+            RETURN
             
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-            private constructor(value as uint64)
-            if value < Int64.MaxValue
+            PRIVATE CONSTRUCTOR(value AS uint64)
+            IF value < Int64.MaxValue
 				SELF(UsualType.Int64)
-                self:_valueData:i64:= (int64) value
-            else
+                SELF:_valueData:i64:= (INT64) value
+            ELSE
 				SELF(UsualType.Float)
-                self:_valueData:r8 := value
-            endif
-            return
+                SELF:_valueData:r8 := value
+            ENDIF
+            RETURN
             
-            private constructor(d as System.Decimal)
+            PRIVATE CONSTRUCTOR(d AS System.Decimal)
          		SELF(UsualType.Decimal)
-	            self:_refdata	:= d
+	            SELF:_refdata	:= d
             
             
-            private constructor(value as System.IntPtr)
+            PRIVATE CONSTRUCTOR(value AS System.IntPtr)
             SELF(UsualType.PTR)
-            self:_valueData:p		:= value
-            return
+            SELF:_valueData:p		:= value
+            RETURN
 
 
-            private constructor(value as PSZ)
+            PRIVATE CONSTRUCTOR(value AS PSZ)
 				SELF(UsualType.String)
-				self:_refData			:= Psz2String(value)
-            return           
+				SELF:_refData			:= Psz2String(value)
+            RETURN           
    			/// <summary>This constructor is used in code generated by the compiler when needed.</summary>
-            public constructor(o as object)
+            PUBLIC CONSTRUCTOR(o AS OBJECT)
             LOCAL u				AS __Usual
 			SELF(UsualType.Void)
-            if o != null
-                if o:GetType() == typeof(__Usual)
+            IF o != NULL
+                IF o:GetType() == typeof(__Usual)
                     // boxed __Usual
                     u		:= (__Usual)o 
-                    self:_flags		:= u:_flags
-                    self:_refData	:= u:_refData 
-                    self:_valueData	:= u:_valueData
-                else
+                    SELF:_flags		:= u:_flags
+                    SELF:_refData	:= u:_refData 
+                    SELF:_valueData	:= u:_valueData
+                ELSE
                     //  decode type from typecode
-                    var vartype := o:GetType()
-                    var typeCode := System.Type.GetTypeCode(vartype)
-                    switch typeCode
-                        case  System.TypeCode.DBNull
-                            self:_flags				:= UsualFlags{UsualType.Void}
-                            self:_refData	:= null
+                    VAR vartype := o:GetType()
+                    VAR typeCode := System.Type.GetTypeCode(vartype)
+                    SWITCH typeCode
+                        CASE  System.TypeCode.DBNull
+                            SELF:_flags				:= UsualFlags{UsualType.Void}
+                            SELF:_refData	:= NULL
                         
-                        case System.TypeCode.Boolean
-                            self:_flags				:= UsualFlags{UsualType.Logic}
-                            self:_valueData:l := (logic)o 
+                        CASE System.TypeCode.Boolean
+                            SELF:_flags				:= UsualFlags{UsualType.Logic}
+                            SELF:_valueData:l := (LOGIC)o 
                         
-                        case System.TypeCode.Char
-                            self:_flags				:= UsualFlags{UsualType.Long}
-                            self:_valueData:i	:= (char)o 
+                        CASE System.TypeCode.Char
+                            SELF:_flags				:= UsualFlags{UsualType.Long}
+                            SELF:_valueData:i	:= (char)o 
                         
-                        case System.TypeCode.SByte
-                            self:_flags				:= UsualFlags{UsualType.Long}
-                            self:_valueData:i	:= (SByte)o 
+                        CASE System.TypeCode.SByte
+                            SELF:_flags				:= UsualFlags{UsualType.Long}
+                            SELF:_valueData:i	:= (SByte)o 
                         
-                        case System.TypeCode.Byte
-                            self:_flags				:= UsualFlags{UsualType.Long}
-                            self:_valueData:i	:= (byte)o 
+                        CASE System.TypeCode.Byte
+                            SELF:_flags				:= UsualFlags{UsualType.Long}
+                            SELF:_valueData:i	:= (BYTE)o 
                         
-                        case System.TypeCode.Int16 
-                            self:_flags				:= UsualFlags{UsualType.Long}
-                            self:_valueData:i	:= (short)o 
+                        CASE System.TypeCode.Int16 
+                            SELF:_flags				:= UsualFlags{UsualType.Long}
+                            SELF:_valueData:i	:= (SHORT)o 
                         
-                        case System.TypeCode.UInt16
-                            self:_flags				:= UsualFlags{UsualType.Long}
-                            self:_valueData:i	:= (word)o 
+                        CASE System.TypeCode.UInt16
+                            SELF:_flags				:= UsualFlags{UsualType.Long}
+                            SELF:_valueData:i	:= (WORD)o 
                         
-                        case System.TypeCode.Int32
-                            self:_flags				:= UsualFlags{UsualType.Long}
-                            self:_valueData:i	:= (long)o 
+                        CASE System.TypeCode.Int32
+                            SELF:_flags				:= UsualFlags{UsualType.Long}
+                            SELF:_valueData:i	:= (LONG)o 
                         
-                        case System.TypeCode.UInt32
-                            if (dword)o  <= Int32.MaxValue
-                                self:_flags				:= UsualFlags{UsualType.Long}
-                                self:_valueData:i := (long)(dword)o  
-                            else
-                                self:_flags				:= UsualFlags{UsualType.Float}
-                                self:_valueData:r8:= (real8) (UInt32) o 
-                                self:_flags:width	:= -1
-                                self:_flags:decimals := -1
-                            endif
-                        case System.TypeCode.Int64 
-                            self:_flags				:= UsualFlags{UsualType.Int64}
-                            self:_valueData:i64	:= (int64)o 
+                        CASE System.TypeCode.UInt32
+                            IF (DWORD)o  <= Int32.MaxValue
+                                SELF:_flags				:= UsualFlags{UsualType.Long}
+                                SELF:_valueData:i := (LONG)(DWORD)o  
+                            ELSE
+                                SELF:_flags				:= UsualFlags{UsualType.Float}
+                                SELF:_valueData:r8:= (REAL8) (UInt32) o 
+                                SELF:_flags:width	:= -1
+                                SELF:_flags:decimals := -1
+                            ENDIF
+                        CASE System.TypeCode.Int64 
+                            SELF:_flags				:= UsualFlags{UsualType.Int64}
+                            SELF:_valueData:i64	:= (INT64)o 
                         
-                        case System.TypeCode.UInt64 
-                            if (uint64) o  <= Int64.MaxValue
-                                self:_flags				:= UsualFlags{UsualType.Int64}
-                                self:_valueData:i64		:= (int64)(uint64)o  
-                            else
-                                self:_flags				:= UsualFlags{UsualType.Float}
-                                self:_valueData:r8 := (real8)(uint64)o  
-                                self:_flags:width	:= -1
-                                self:_flags:decimals := -1
-                            endif
-                        case System.TypeCode.Single  
-                            self:_flags				:= UsualFlags{UsualType.Float}
-                            self:_valueData:r8	:= (real8)o 
-                            self:_flags:width	:= -1
-                            self:_flags:decimals := -1
+                        CASE System.TypeCode.UInt64 
+                            IF (uint64) o  <= Int64.MaxValue
+                                SELF:_flags				:= UsualFlags{UsualType.Int64}
+                                SELF:_valueData:i64		:= (INT64)(uint64)o  
+                            ELSE
+                                SELF:_flags				:= UsualFlags{UsualType.Float}
+                                SELF:_valueData:r8 := (REAL8)(uint64)o  
+                                SELF:_flags:width	:= -1
+                                SELF:_flags:decimals := -1
+                            ENDIF
+                        CASE System.TypeCode.Single  
+                            SELF:_flags				:= UsualFlags{UsualType.Float}
+                            SELF:_valueData:r8	:= (REAL8)o 
+                            SELF:_flags:width	:= -1
+                            SELF:_flags:decimals := -1
                         
-                        case System.TypeCode.Double 
-                            self:_flags				:= UsualFlags{UsualType.Float}
-                            self:_valueData:r8 := (real8)o 
-                            self:_flags:width := -1
-                            self:_flags:decimals := -1
+                        CASE System.TypeCode.Double 
+                            SELF:_flags				:= UsualFlags{UsualType.Float}
+                            SELF:_valueData:r8 := (REAL8)o 
+                            SELF:_flags:width := -1
+                            SELF:_flags:decimals := -1
                         
-                        case System.TypeCode.Decimal 
-                            self:_flags				:= UsualFlags{UsualType.Decimal}
-                            self:_refData  := o
+                        CASE System.TypeCode.Decimal 
+                            SELF:_flags				:= UsualFlags{UsualType.Decimal}
+                            SELF:_refData  := o
                         
-                        case System.TypeCode.DateTime 
-                            self:_flags				:= UsualFlags{UsualType.DateTime}
-                            self:_valueData:dt := (System.DateTime) o 
+                        CASE System.TypeCode.DateTime 
+                            SELF:_flags				:= UsualFlags{UsualType.DateTime}
+                            SELF:_valueData:dt := (System.DateTime) o 
                         
-                        case System.TypeCode.String 
-                            self:_flags				:= UsualFlags{UsualType.String}
-                            self:_refData  := (string)o 
+                        CASE System.TypeCode.String 
+                            SELF:_flags				:= UsualFlags{UsualType.String}
+                            SELF:_refData  := (STRING)o 
                         
-                        otherwise
+                        OTHERWISE
                             IF vartype == typeof(ARRAY)
-                                self:_flags				:= UsualFlags{UsualType.Array}
-                                self:_refData  := o
+                                SELF:_flags				:= UsualFlags{UsualType.Array}
+                                SELF:_refData  := o
 							// CodeBlock ?
 							// _CodeBlock ?
                             ELSEIF vartype == typeof(DATE)
-                                self:_flags				:= UsualFlags{UsualType.Date}
+                                SELF:_flags				:= UsualFlags{UsualType.Date}
                                 SELF:_valueData:d		:=  (DATE) o
                             ELSEIF vartype == typeof(SYMBOL)
-                                self:_flags				:= UsualFlags{UsualType.Symbol}
+                                SELF:_flags				:= UsualFlags{UsualType.Symbol}
                                 SELF:_valueData:s		:=   (SYMBOL) o
                             ELSEIF vartype == typeof(System.Reflection.Pointer)
-                                self:_flags				:= UsualFlags{UsualType.Ptr}
-                                self:_valueData:p		:= Intptr{System.Reflection.Pointer.UnBox(o)}
-							elseif o is IDate
-								self:_flags				:= UsualFlags{UsualType.Date}
-								self:_valueData:d		:= Date{(IDate) o }
-							elseif o is IFloat
-								self:_flags				:= UsualFlags{UsualType.Float}
-								local f := (IFLoat) o as IFloat
-								self:_valueData:r8		:= f:Value
-								self:_flags:Width		:= (Sbyte) f:Digits
+                                SELF:_flags				:= UsualFlags{UsualType.Ptr}
+                                SELF:_valueData:p		:= Intptr{System.Reflection.Pointer.UnBox(o)}
+							ELSEIF o IS IDate
+								SELF:_flags				:= UsualFlags{UsualType.Date}
+								SELF:_valueData:d		:= DATE{(IDate) o }
+							ELSEIF o IS IFloat
+								SELF:_flags				:= UsualFlags{UsualType.Float}
+								LOCAL f := (IFLoat) o AS IFloat
+								SELF:_valueData:r8		:= f:Value
+								SELF:_flags:Width		:= (Sbyte) f:Digits
 								SELF:_flags:Decimals	:= (Sbyte) f:Decimals
-							elseif o is ICodeBlock
-                                self:_flags				:= UsualFlags{UsualType.Codeblock}
-                                self:_refData := o
+							ELSEIF o IS ICodeBlock
+                                SELF:_flags				:= UsualFlags{UsualType.Codeblock}
+                                SELF:_refData := o
                             ELSE
-                                self:_flags				:= UsualFlags{UsualType.Object}
-                                self:_refData := o
-                            endif
-                    end switch
+                                SELF:_flags				:= UsualFlags{UsualType.Object}
+                                SELF:_refData := o
+                            ENDIF
+                    END SWITCH
                 ENDIF
-            endif
-            return
+            ENDIF
+            RETURN
             
 		[MethodImpl(MethodImplOptions.AggressiveInlining)];        
-        private constructor(s as string)
+        PRIVATE CONSTRUCTOR(s AS STRING)
 				SELF(UsualType.String)
-	            self:_refData 			:= s
-            return
+	            SELF:_refData 			:= s
+            RETURN
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-        private constructor(s as symbol)
+        PRIVATE CONSTRUCTOR(s AS SYMBOL)
             SELF(UsualType.Symbol)
-            self:_valueData:s       := s
-            return
+            SELF:_valueData:s       := s
+            RETURN
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-        private constructor(o as object, lIsNull as logic)
+        PRIVATE CONSTRUCTOR(o AS OBJECT, lIsNull AS LOGIC)
             SELF(UsualType.Object)
 
-            return
+            RETURN
 
         #endregion
         
         #region properties
-			private property _isByRef		as LOGIC	get _flags:isByRef
-            internal property _usualType		as UsualType get _flags:usualType 
+			PRIVATE PROPERTY _isByRef		AS LOGIC	GET _flags:isByRef
+            INTERNAL PROPERTY _usualType		AS UsualType GET _flags:usualType 
 			
 			/// No checks for typeflag. These private properties should always be accessed after checking the correct type
-			private property _arrayValue    as array			get (array) _refData 
-			private property _codeblockValue as codeblock		get (Codeblock) _refData 
-            private property _dateValue		as Date				get _valueData:d 
-            private property _dateTimeValue as DateTime			get _valueData:dt
-            private property _decimalValue	as System.Decimal	get (System.Decimal) _refData 
-            private property _floatValue    as Float			get Float{ _valueData:r8, _width, _decimals}
-            private property _i64Value		as int64			get _valueData:i64 
-            private property _intValue		as int				get _valueData:i  
-            private property _logicValue	as logic			get _valueData:l 
+			PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData 
+			PRIVATE PROPERTY _codeblockValue AS CODEBLOCK		GET (CODEBLOCK) _refData 
+            PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d 
+            PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
+            PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData 
+            PRIVATE PROPERTY _floatValue    AS FLOAT			GET FLOAT{ _valueData:r8, _width, _decimals}
+            PRIVATE PROPERTY _i64Value		AS INT64			GET _valueData:i64 
+            PRIVATE PROPERTY _intValue		AS INT				GET _valueData:i  
+            PRIVATE PROPERTY _logicValue	AS LOGIC			GET _valueData:l 
             PRIVATE PROPERTY _ptrValue		AS IntPtr			GET _valueData:p 
-            private property _r8Value		as real8			get _valueData:r8 
-            private property _stringValue   as string			get (string) _refData 
-            private property _symValue		as Symbol			get _valueData:s 
+            PRIVATE PROPERTY _r8Value		AS REAL8			GET _valueData:r8 
+            PRIVATE PROPERTY _stringValue   AS STRING			GET (STRING) _refData 
+            PRIVATE PROPERTY _symValue		AS SYMBOL			GET _valueData:s 
 
             // properties for floats
-            private property _width			as SBYTE get _flags:width 
-            private property _decimals		as SBYTE get _flags:decimals 
+            PRIVATE PROPERTY _width			AS SBYTE GET _flags:width 
+            PRIVATE PROPERTY _decimals		AS SBYTE GET _flags:decimals 
 			// Is .. ?
-			internal property IsArray		as logic get _usualtype == UsualType.Array
-			internal property IsCodeblock	as logic get _usualtype == UsualType.CodeBlock
-			internal property IsDate		as logic get _usualtype == UsualType.Date
-			internal property IsDateTime	as logic get _usualtype == UsualType.DateTime
-			internal property IsDecimal		as logic get _usualtype == UsualType.Decimal
-			internal property IsFloat		as logic get _usualtype == UsualType.Float
-			internal property IsInt64		as logic get _usualtype == UsualType.Int64
-			internal property IsLogic		as logic get _usualtype == UsualType.Logic
-			internal property IsLong		as logic get _usualtype == UsualType.Long
-			internal property IsInteger		as logic get _usualtype == UsualType.Long .or. _usualtype == UsualType.Int64
-			internal property Type			as UsualType get _flags:usualType 
-			internal property IsNumeric as logic
-				get
-					switch _usualType
-					case UsualType.Long
-					case UsualType.Int64
-					case UsualType.Float
-					case UsualType.Decimal
-						return true
-					otherwise
-						return false
-					end switch
-				end get
-			end property
-			internal property IsObject		as logic get _usualtype == UsualType.Object
-			internal property IsPtr			as logic get _usualtype == UsualType.Ptr
-			internal property IsSymbol		as logic get _usualtype == UsualType.Symbol
-			internal property IsString		as logic get _usualtype == UsualType.String
-			internal property IsByRef		as logic get _isByRef
-            private property IsReferenceType as logic
-                get
-                    switch _usualType
-                        case UsualType.Array
-                        case UsualType.Object
-                        case UsualType.Decimal
-                        case UsualType.String
-                            return true
-                        otherwise
-                            return false
-                    end switch
-                end get
-            end property
-  			internal property IsEmpty as logic
-				get
-				switch _usualType
-				case UsualType.Array		; return _arrayValue == null .or. _arrayValue:Length == 0
-				CASE UsualType.CodeBlock	; return _codeblockValue == null 
-				case UsualType.Date			; return _dateValue:IsEmpty
-				case UsualType.DateTime		; return _dateTimeValue == DateTime.MinValue
-				case UsualType.Decimal		; return _decimalValue == 0
-				case UsualType.Float		; return _floatValue == 0.0
-				case UsualType.Int64		; return _i64Value == 0
-				case UsualType.Logic		; return _logicValue == false
-				CASE UsualType.Long			; return _intValue == 0
-				case UsualType.Object		; return _refData == null 
-				case UsualType.Ptr			; return _ptrValue == IntPtr.Zero
-				case UsualType.String		; return EmptyString(_stringValue)
-				case UsualType.Symbol		; return _symValue == 0
-				case UsualType.Void			; return true
-				otherwise
+			INTERNAL PROPERTY IsArray		AS LOGIC GET _usualtype == UsualType.Array
+			INTERNAL PROPERTY IsCodeblock	AS LOGIC GET _usualtype == UsualType.CodeBlock
+			INTERNAL PROPERTY IsDate		AS LOGIC GET _usualtype == UsualType.Date
+			INTERNAL PROPERTY IsDateTime	AS LOGIC GET _usualtype == UsualType.DateTime
+			INTERNAL PROPERTY IsDecimal		AS LOGIC GET _usualtype == UsualType.Decimal
+			INTERNAL PROPERTY IsFloat		AS LOGIC GET _usualtype == UsualType.Float
+			INTERNAL PROPERTY IsInt64		AS LOGIC GET _usualtype == UsualType.Int64
+			INTERNAL PROPERTY IsLogic		AS LOGIC GET _usualtype == UsualType.Logic
+			INTERNAL PROPERTY IsLong		AS LOGIC GET _usualtype == UsualType.Long
+			INTERNAL PROPERTY IsInteger		AS LOGIC GET _usualtype == UsualType.Long .or. _usualtype == UsualType.Int64
+			INTERNAL PROPERTY Type			AS UsualType GET _flags:usualType 
+			INTERNAL PROPERTY IsNumeric AS LOGIC
+				GET
+					SWITCH _usualType
+					CASE UsualType.Long
+					CASE UsualType.Int64
+					CASE UsualType.Float
+					CASE UsualType.Decimal
+						RETURN TRUE
+					OTHERWISE
+						RETURN FALSE
+					END SWITCH
+				END GET
+			END PROPERTY
+			INTERNAL PROPERTY IsObject		AS LOGIC GET _usualtype == UsualType.Object
+			INTERNAL PROPERTY IsPtr			AS LOGIC GET _usualtype == UsualType.Ptr
+			INTERNAL PROPERTY IsSymbol		AS LOGIC GET _usualtype == UsualType.Symbol
+			INTERNAL PROPERTY IsString		AS LOGIC GET _usualtype == UsualType.String
+			INTERNAL PROPERTY IsByRef		AS LOGIC GET _isByRef
+            PRIVATE PROPERTY IsReferenceType AS LOGIC
+                GET
+                    SWITCH _usualType
+                        CASE UsualType.Array
+                        CASE UsualType.Object
+                        CASE UsualType.Decimal
+                        CASE UsualType.String
+                            RETURN TRUE
+                        OTHERWISE
+                            RETURN FALSE
+                    END SWITCH
+                END GET
+            END PROPERTY
+  			INTERNAL PROPERTY IsEmpty AS LOGIC
+				GET
+				SWITCH _usualType
+				CASE UsualType.Array		; RETURN _arrayValue == NULL .or. _arrayValue:Length == 0
+				CASE UsualType.CodeBlock	; RETURN _codeblockValue == NULL 
+				CASE UsualType.Date			; RETURN _dateValue:IsEmpty
+				CASE UsualType.DateTime		; RETURN _dateTimeValue == DateTime.MinValue
+				CASE UsualType.Decimal		; RETURN _decimalValue == 0
+				CASE UsualType.Float		; RETURN _floatValue == 0.0
+				CASE UsualType.Int64		; RETURN _i64Value == 0
+				CASE UsualType.Logic		; RETURN _logicValue == FALSE
+				CASE UsualType.Long			; RETURN _intValue == 0
+				CASE UsualType.Object		; RETURN _refData == NULL 
+				CASE UsualType.Ptr			; RETURN _ptrValue == IntPtr.Zero
+				CASE UsualType.String		; RETURN EmptyString(_stringValue)
+				CASE UsualType.Symbol		; RETURN _symValue == 0
+				CASE UsualType.Void			; RETURN TRUE
+				OTHERWISE
 					Debug.Fail( "Unhandled data type in Usual:Empty()" )
-				end switch
-				return false
-				end get
-			end property
+				END SWITCH
+				RETURN FALSE
+				END GET
+			END PROPERTY
           
-            internal property IsNil as logic
-                get
-                    return self:_usualType == UsualType.Void .or. ;
-						(self:IsReferenceType .and. self:_refData  == null) .or. ;
-						(self:_usualType == UsualType.Ptr .and. self:_ptrValue == IntPtr.Zero)
+            INTERNAL PROPERTY IsNil AS LOGIC
+                GET
+                    RETURN SELF:_usualType == UsualType.Void .or. ;
+						(SELF:IsReferenceType .and. SELF:_refData  == NULL) .or. ;
+						(SELF:_usualType == UsualType.Ptr .and. SELF:_ptrValue == IntPtr.Zero)
                     
-                end get
-            end property
+                END GET
+            END PROPERTY
 
-            internal property SystemType as System.Type
-                get
-					switch _usualType
-					case UsualType.Array		; return typeof(Array)
-					case UsualType.Codeblock	; return typeof(Codeblock)
-					case UsualType.Date			; return typeof(Date)
-					case UsualType.DateTime		; return typeof(System.DateTime)
-					case UsualType.Decimal		; return typeof(System.Decimal)
-					case UsualType.Float		; return typeof(Float)
-					case UsualType.Int64		; return typeof(INT64)
-					case UsualType.Logic		; return typeof(LOGIC)
-					case UsualType.Long			; return typeof(INT)
-					case UsualType.Object		; return typeof(OBJECT)
-					case UsualType.Ptr			; return typeof(IntPtr)
-					case UsualType.String		; return typeof(STRING)
-					case UsualType.Symbol		; return typeof(SYMBOL)
-					case UsualType.Void			; return typeof(USUAL)
-					otherwise
+            INTERNAL PROPERTY SystemType AS System.Type
+                GET
+					SWITCH _usualType
+					CASE UsualType.Array		; RETURN typeof(ARRAY)
+					CASE UsualType.Codeblock	; RETURN typeof(CODEBLOCK)
+					CASE UsualType.Date			; RETURN typeof(DATE)
+					CASE UsualType.DateTime		; RETURN typeof(System.DateTime)
+					CASE UsualType.Decimal		; RETURN typeof(System.Decimal)
+					CASE UsualType.Float		; RETURN typeof(FLOAT)
+					CASE UsualType.Int64		; RETURN typeof(INT64)
+					CASE UsualType.Logic		; RETURN typeof(LOGIC)
+					CASE UsualType.Long			; RETURN typeof(INT)
+					CASE UsualType.Object		; RETURN typeof(OBJECT)
+					CASE UsualType.Ptr			; RETURN typeof(IntPtr)
+					CASE UsualType.String		; RETURN typeof(STRING)
+					CASE UsualType.Symbol		; RETURN typeof(SYMBOL)
+					CASE UsualType.Void			; RETURN typeof(USUAL)
+					OTHERWISE
 						Debug.Fail( "Unhandled data type in Usual:SystemType" )
-					end switch 					                    
-					return null
-                end get
+					END SWITCH 					                    
+					RETURN NULL
+                END GET
 				
-            end property
+            END PROPERTY
 
         #endregion
         #region Properties for the Debugger
 			/// <exclude />
-            PROPERTY Value AS OBJECT 
+            PROPERTY VALUE AS OBJECT 
                 GET
                     SWITCH _UsualType
                         CASE UsualType.Array		; RETURN _arrayValue
@@ -432,89 +432,89 @@ begin namespace XSharp
         
         #region implementation IComparable<T>
 		PUBLIC METHOD CompareTo(rhs AS __Usual) AS LONG
-            if self:_UsualType == rhs:_UsualType
+            IF SELF:_UsualType == rhs:_UsualType
                 // Compare ValueTypes
-                switch _UsualType
-                    case UsualType.Date		; return self:_dateValue:CompareTo(rhs:_dateValue)
-                    case UsualType.DateTime	; return self:_dateTimeValue:CompareTo(rhs:_dateTimeValue)
-                    case UsualType.Decimal	; return self:_decimalValue:CompareTo(rhs:_decimalValue)
-                    case UsualType.Int64		; return self:_i64Value:CompareTo(rhs:_i64Value)
-                    case UsualType.Logic		; return self:_logicValue:CompareTo(rhs:_logicValue)
-                    case UsualType.Long		; return self:_intValue:CompareTo(rhs:_intValue)
-                    case UsualType.Ptr		; return self:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
+                SWITCH _UsualType
+                    CASE UsualType.Date		; RETURN SELF:_dateValue:CompareTo(rhs:_dateValue)
+                    CASE UsualType.DateTime	; RETURN SELF:_dateTimeValue:CompareTo(rhs:_dateTimeValue)
+                    CASE UsualType.Decimal	; RETURN SELF:_decimalValue:CompareTo(rhs:_decimalValue)
+                    CASE UsualType.Int64		; RETURN SELF:_i64Value:CompareTo(rhs:_i64Value)
+                    CASE UsualType.Logic		; RETURN SELF:_logicValue:CompareTo(rhs:_logicValue)
+                    CASE UsualType.Long		; RETURN SELF:_intValue:CompareTo(rhs:_intValue)
+                    CASE UsualType.Ptr		; RETURN SELF:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
                     // Uses String Comparison rules
                     // Vulcan does a case insensitive comparison ?
-                    case UsualType.String		; return String.Compare( _stringValue,  rhs:_stringValue)
-                    case UsualType.Symbol		; return String.Compare( (string) self:_symValue, (string) rhs:_symValue)
-                    otherwise					; return 0
-                end switch
-            else
+                    CASE UsualType.String		; RETURN String.Compare( _stringValue,  rhs:_stringValue)
+                    CASE UsualType.Symbol		; RETURN String.Compare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
+                    OTHERWISE					; RETURN 0
+                END SWITCH
+            ELSE
                 // Type of LHS different from type of RHS
-                switch self:_UsualType
-                    case UsualType.Void
-                        return -1
-                    case UsualType.Date
+                SWITCH SELF:_UsualType
+                    CASE UsualType.Void
+                        RETURN -1
+                    CASE UsualType.Date
                         // Upscale when needed to avoid overflow errors
-                        switch rhs:_UsualType
-                            case UsualType.DateTime	; return _dateValue:CompareTo((Date) rhs:_dateTimeValue)
-                            case UsualType.Decimal	; return ((System.Decimal) (int) _dateValue):CompareTo(rhs:_decimalValue)
-                            case UsualType.Float		; return ((real8) (int) _dateValue):CompareTo(rhs:_r8Value)
-                            case UsualType.Int64		; return ( (int64) (int) _dateValue):CompareTo(rhs:_i64Value)
-                            case UsualType.Long		; return ((int) _dateValue):CompareTo(rhs:_intValue)
-                            otherwise
-                                nop	// uses comparison by type
-                        end switch
+                        SWITCH rhs:_UsualType
+                            CASE UsualType.DateTime	; RETURN _dateValue:CompareTo((DATE) rhs:_dateTimeValue)
+                            CASE UsualType.Decimal	; RETURN ((System.Decimal) (INT) _dateValue):CompareTo(rhs:_decimalValue)
+                            CASE UsualType.Float		; RETURN ((REAL8) (INT) _dateValue):CompareTo(rhs:_r8Value)
+                            CASE UsualType.Int64		; RETURN ( (INT64) (INT) _dateValue):CompareTo(rhs:_i64Value)
+                            CASE UsualType.Long		; RETURN ((INT) _dateValue):CompareTo(rhs:_intValue)
+                            OTHERWISE
+                                NOP	// uses comparison by type
+                        END SWITCH
                     
-                    case UsualType.Float
-                        switch rhs:_usualType
-                            case UsualType.Date		; return _r8Value:CompareTo( (real8) (int) rhs:_dateValue)
-                            case UsualType.Decimal	; return _r8Value:CompareTo( (real8) rhs:_decimalValue)
-                            case UsualType.Long		; return _r8Value:CompareTo( (real8) rhs:_intValue)
-                            case UsualType.Int64		; return _r8Value:CompareTo( (real8) rhs:_i64Value)
-                            otherwise
-                                nop	// uses comparison by type
-                        end switch
+                    CASE UsualType.Float
+                        SWITCH rhs:_usualType
+                            CASE UsualType.Date		; RETURN _r8Value:CompareTo( (REAL8) (INT) rhs:_dateValue)
+                            CASE UsualType.Decimal	; RETURN _r8Value:CompareTo( (REAL8) rhs:_decimalValue)
+                            CASE UsualType.Long		; RETURN _r8Value:CompareTo( (REAL8) rhs:_intValue)
+                            CASE UsualType.Int64		; RETURN _r8Value:CompareTo( (REAL8) rhs:_i64Value)
+                            OTHERWISE
+                                NOP	// uses comparison by type
+                        END SWITCH
                     
-                    case UsualType.Long
+                    CASE UsualType.Long
                         // Upscale when needed to avoid overflow errors
-                        switch rhs:_usualType
-                            case UsualType.Date		; return _intValue:CompareTo((int) rhs:_dateValue)
-                            case UsualType.Int64		; return ((int64)_intValue):CompareTo(rhs:_i64Value)
-                            case UsualType.Float		; return ((real8)_intValue):CompareTo(rhs:_r8Value)
-                            case UsualType.Decimal	; return ((System.Decimal)_intValue):CompareTo(rhs:_decimalValue)
-                            otherwise
-                                nop	// uses comparison by type
-                        end switch
+                        SWITCH rhs:_usualType
+                            CASE UsualType.Date		; RETURN _intValue:CompareTo((INT) rhs:_dateValue)
+                            CASE UsualType.Int64		; RETURN ((INT64)_intValue):CompareTo(rhs:_i64Value)
+                            CASE UsualType.Float		; RETURN ((REAL8)_intValue):CompareTo(rhs:_r8Value)
+                            CASE UsualType.Decimal	; RETURN ((System.Decimal)_intValue):CompareTo(rhs:_decimalValue)
+                            OTHERWISE
+                                NOP	// uses comparison by type
+                        END SWITCH
                     
-                    case UsualType.Int64
-                        switch rhs:_usualType
-                            case UsualType.Date		; return _i64Value:CompareTo((int) rhs:_dateValue)
-                            case UsualType.Long		; return _i64Value:CompareTo( rhs:_intValue)
-                            case UsualType.Float		; return _i64Value:CompareTo( rhs:_r8Value)
-                            case UsualType.Decimal	; return _i64Value:CompareTo( rhs:_decimalValue)
-                            otherwise
-                                nop	// uses comparison by type
-                        end switch
+                    CASE UsualType.Int64
+                        SWITCH rhs:_usualType
+                            CASE UsualType.Date		; RETURN _i64Value:CompareTo((INT) rhs:_dateValue)
+                            CASE UsualType.Long		; RETURN _i64Value:CompareTo( rhs:_intValue)
+                            CASE UsualType.Float		; RETURN _i64Value:CompareTo( rhs:_r8Value)
+                            CASE UsualType.Decimal	; RETURN _i64Value:CompareTo( rhs:_decimalValue)
+                            OTHERWISE
+                                NOP	// uses comparison by type
+                        END SWITCH
                     
-                    case UsualType.Decimal
-                        switch rhs:_usualType
-                            case UsualType.Date		; return _decimalValue:CompareTo((int) rhs:_dateValue)
-                            case UsualType.Long		; return _decimalValue:CompareTo(rhs:_intValue)
-                            case UsualType.Float		; return _decimalValue:CompareTo(rhs:_r8Value)
-                            case UsualType.Int64		; return _decimalValue:CompareTo(rhs:_i64Value)
-                            otherwise
-                                nop	// uses comparison by type
-                        end switch
-                end switch 
-            endif
-            if rhs:_usualType == UsualType.Void
-                return 1
-            elseif self:_usualType > rhs:_usualType
-                return 1
-            elseif self:_usualType < rhs:_usualType
-                return -1
-            endif
-            return 0
+                    CASE UsualType.Decimal
+                        SWITCH rhs:_usualType
+                            CASE UsualType.Date		; RETURN _decimalValue:CompareTo((INT) rhs:_dateValue)
+                            CASE UsualType.Long		; RETURN _decimalValue:CompareTo(rhs:_intValue)
+                            CASE UsualType.Float		; RETURN _decimalValue:CompareTo(rhs:_r8Value)
+                            CASE UsualType.Int64		; RETURN _decimalValue:CompareTo(rhs:_i64Value)
+                            OTHERWISE
+                                NOP	// uses comparison by type
+                        END SWITCH
+                END SWITCH 
+            ENDIF
+            IF rhs:_usualType == UsualType.Void
+                RETURN 1
+            ELSEIF SELF:_usualType > rhs:_usualType
+                RETURN 1
+            ELSEIF SELF:_usualType < rhs:_usualType
+                RETURN -1
+            ENDIF
+            RETURN 0
 
 		#endregion
 
@@ -526,941 +526,941 @@ begin namespace XSharp
         
         #region Comparison Operators 
 		/// <summary>This operator is used in code generated by the compiler when needed.</summary>
-        static operator >(lhs as __Usual, rhs as __Usual) as logic
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_intValue > rhs:_intValue
-                        case UsualType.Int64		; return lhs:_intValue > rhs:_i64Value
-                        case UsualType.Float		; return lhs:_intValue > rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_intValue > rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+        STATIC OPERATOR >(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_intValue > rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_intValue > rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_intValue > rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue > rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value > rhs:_intValue
-                        case UsualType.Int64		; return lhs:_i64Value > rhs:_i64Value
-                        case UsualType.Float		; return lhs:_i64Value > rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_i64Value > rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value > rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value > rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_i64Value > rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value > rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_r8Value > rhs:_intValue
-                        case UsualType.Int64		; return lhs:_r8Value > rhs:_i64Value
-                        case UsualType.Float		; return lhs:_r8Value > rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_r8Value > (real8) rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_r8Value > rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_r8Value > rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_r8Value > rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_r8Value > (REAL8) rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue > rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue > rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue > (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue >  rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue > rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue > rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue > (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue >  rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.String
-                    if rhs:_usualType == UsualType.String
-                        return lhs:_stringValue> rhs:_stringValue
-                    else
-                        nop // error below
-                    endif
+                CASE UsualType.String
+                    IF rhs:_usualType == UsualType.String
+                        RETURN lhs:_stringValue> rhs:_stringValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
                 
-                case UsualType.Symbol
-                    if rhs:_usualType == UsualType.Symbol
-                        return lhs:_symValue > rhs:_symValue
-                    else
-                        nop // error below
-                    endif
-                case UsualType.Date
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue > rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateValue > (Date) rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                case UsualType.DateTime
-                    switch (rhs:_usualType)
-                        case UsualType.DateTime	; return lhs:_dateTimeValue > rhs:_dateTimeValue
-                        case UsualType.Date		; return lhs:_dateTimeValue > (DateTime) rhs:_dateValue
-                        otherwise
-                            nop // error below
-                    end switch
-                otherwise
-                    nop // error below
-            end switch
-            throw BinaryError(">", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
+                CASE UsualType.Symbol
+                    IF rhs:_usualType == UsualType.Symbol
+                        RETURN lhs:_symValue > rhs:_symValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
+                CASE UsualType.Date
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue > rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateValue > (DATE) rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                CASE UsualType.DateTime
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.DateTime	; RETURN lhs:_dateTimeValue > rhs:_dateTimeValue
+                        CASE UsualType.Date		; RETURN lhs:_dateTimeValue > (DateTime) rhs:_dateValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    NOP // error below
+            END SWITCH
+            THROW BinaryError(">", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
             
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator >=(lhs as __Usual, rhs as __Usual) as logic
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType	
-                        case UsualType.Long		; return lhs:_intValue >= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_intValue >= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_intValue >= rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_intValue >= rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value >= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_i64Value >= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_i64Value >= rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_i64Value >= rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_r8Value >= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_r8Value >= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_r8Value >= rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_r8Value >= (real8) rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+            STATIC OPERATOR >=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType	
+                        CASE UsualType.Long		; RETURN lhs:_intValue >= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_intValue >= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_intValue >= rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue >= rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value >= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value >= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_i64Value >= rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value >= rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_r8Value >= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_r8Value >= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_r8Value >= rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_r8Value >= (REAL8) rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue >= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue >= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue >= (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue >=  rhs:_decimalValue
-                        otherwise
-                            throw BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue >= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue >= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue >= (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue >=  rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.String
-                    if rhs:_usualType == UsualType.String
-                        return lhs:_stringValue>= rhs:_stringValue
-                    else
-                        nop // error below
-                    endif
+                CASE UsualType.String
+                    IF rhs:_usualType == UsualType.String
+                        RETURN lhs:_stringValue>= rhs:_stringValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
                 
-                case UsualType.Symbol
-                    if rhs:_usualType == UsualType.Symbol
-                        return lhs:_symValue >= rhs:_symValue
-                    else
-                        nop // error below
-                    endif
-                case UsualType.Date
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		>= rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateTimeValue >= rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                case UsualType.DateTime
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		>=  rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateTimeValue >=  rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                otherwise
-                    throw BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
+                CASE UsualType.Symbol
+                    IF rhs:_usualType == UsualType.Symbol
+                        RETURN lhs:_symValue >= rhs:_symValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
+                CASE UsualType.Date
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue		>= rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateTimeValue >= rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                CASE UsualType.DateTime
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue		>=  rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateTimeValue >=  rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    THROW BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-			static operator <(lhs as __Usual, rhs as __Usual) as logic
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_intValue < rhs:_intValue
-                        case UsualType.Int64		; return lhs:_intValue < rhs:_i64Value
-                        case UsualType.Float		; return lhs:_intValue < rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_intValue < rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value < rhs:_intValue
-                        case UsualType.Int64		; return lhs:_i64Value < rhs:_i64Value
-                        case UsualType.Float		; return lhs:_i64Value < rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_i64Value < rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_r8Value < rhs:_intValue
-                        case UsualType.Int64		; return lhs:_r8Value < rhs:_i64Value
-                        case UsualType.Float		; return lhs:_r8Value < rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_r8Value < (real8) rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+			STATIC OPERATOR <(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_intValue < rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_intValue < rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_intValue < rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue < rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value < rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value < rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_i64Value < rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value < rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_r8Value < rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_r8Value < rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_r8Value < rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_r8Value < (REAL8) rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue < rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue < rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue < (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue <  rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue < rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue < rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue < (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue <  rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.String
-                    if rhs:_usualType == UsualType.String
-                        return lhs:_stringValue< rhs:_stringValue
-                    else
-                        nop // error below
-                    endif
+                CASE UsualType.String
+                    IF rhs:_usualType == UsualType.String
+                        RETURN lhs:_stringValue< rhs:_stringValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
                 
-                case UsualType.Symbol
-                    if rhs:_usualType == UsualType.Symbol
-                        return lhs:_symValue < rhs:_symValue
-                    else
-                        nop // error below
-                    endif
-                case UsualType.Date
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue	< rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateValue < (Date) rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                case UsualType.DateTime
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		<  rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateTimeValue <  rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                otherwise
-                    throw BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
+                CASE UsualType.Symbol
+                    IF rhs:_usualType == UsualType.Symbol
+                        RETURN lhs:_symValue < rhs:_symValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
+                CASE UsualType.Date
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue	< rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateValue < (DATE) rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                CASE UsualType.DateTime
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue		<  rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateTimeValue <  rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    THROW BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator <=(lhs as __Usual, rhs as __Usual) as logic
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_intValue <= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_intValue <= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_intValue <= rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_intValue <= rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value <= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_i64Value <= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_i64Value <= rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_i64Value <= rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_r8Value <= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_r8Value <= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_r8Value <= rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_r8Value <= (real8) rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+            STATIC OPERATOR <=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_intValue <= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_intValue <= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_intValue <= rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue <= rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value <= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value <= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_i64Value <= rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value <= rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_r8Value <= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_r8Value <= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_r8Value <= rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_r8Value <= (REAL8) rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue <= rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue <= rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue <= (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue <=  rhs:_decimalValue
-                        otherwise
-                            throw BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue <= rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue <= rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue <= (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue <=  rhs:_decimalValue
+                        OTHERWISE
+                            THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.String
-                    if rhs:_usualType == UsualType.String
-                        return  lhs:_stringValue<= rhs:_stringValue
-                    else
-                        nop // error below
-                    endif
+                CASE UsualType.String
+                    IF rhs:_usualType == UsualType.String
+                        RETURN  lhs:_stringValue<= rhs:_stringValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
                 
-                case UsualType.Symbol
-                    if rhs:_usualType == UsualType.Symbol
-                        return lhs:_symValue <= rhs:_symValue
-                    else
-                        nop // error below
-                    endif
-                case UsualType.Date
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue	<= rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateValue <= (Date) rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                case UsualType.DateTime
-                    switch (rhs:_usualType)
-                        case UsualType.Date		; return lhs:_dateValue		<=  rhs:_dateValue
-                        case UsualType.DateTime	; return lhs:_dateTimeValue <=  rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
-                otherwise
-                    throw BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, lhs, rhs)
+                CASE UsualType.Symbol
+                    IF rhs:_usualType == UsualType.Symbol
+                        RETURN lhs:_symValue <= rhs:_symValue
+                    ELSE
+                        NOP // error below
+                    ENDIF
+                CASE UsualType.Date
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue	<= rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateValue <= (DATE) rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                CASE UsualType.DateTime
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Date		; RETURN lhs:_dateValue		<=  rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN lhs:_dateTimeValue <=  rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    THROW BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("<=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, lhs, rhs)
         #endregion
 
 		#region IEquatable<T>
 		/// <inheritdoc />
-		public method Equals(u as __Usual) as logic
-				if u:IsNil
-					return self:IsNil
-				endif
-				return UsualEquals(u, "Usual.Equals()")
+		PUBLIC METHOD Equals(u AS __Usual) AS LOGIC
+				IF u:IsNil
+					RETURN SELF:IsNil
+				ENDIF
+				RETURN UsualEquals(u, "Usual.Equals()")
 
 		#endregion        
         #region Operators for Equality
 			/// <inheritdoc />
-            public method Equals(obj as object) as logic
-				if obj == null
-					return self:IsNil
-				endif
-				return UsualEquals((USUAL) obj, "Usual.Equals()")
+            PUBLIC METHOD Equals(obj AS OBJECT) AS LOGIC
+				IF obj == NULL
+					RETURN SELF:IsNil
+				ENDIF
+				RETURN UsualEquals((USUAL) obj, "Usual.Equals()")
 
             
 			/// <inheritdoc />
-            public method GetHashCode() as int
-				local oValue as object
-				oValue := self:Value
-				if oValue == NULL
-					return 0
-				endif
-				return oValue:GetHashCode()
+            PUBLIC METHOD GetHashCode() AS INT
+				LOCAL oValue AS OBJECT
+				oValue := SELF:Value
+				IF oValue == NULL
+					RETURN 0
+				ENDIF
+				RETURN oValue:GetHashCode()
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator ==(lhs as __Usual, rhs as __Usual) as logic
-				return lhs:UsualEquals(rhs, "==")
+            STATIC OPERATOR ==(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+				RETURN lhs:UsualEquals(rhs, "==")
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator !=(lhs as __Usual, rhs as __Usual) as logic
-            if lhs:_usualType == UsualType.STRING .and. rhs:_usualType == UsualType.STRING
-                return ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
-            else
-                return ! lhs:UsualEquals(rhs, "!=")
-            endif
+            STATIC OPERATOR !=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+            IF lhs:_usualType == UsualType.STRING .and. rhs:_usualType == UsualType.STRING
+                RETURN ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
+            ELSE
+                RETURN ! lhs:UsualEquals(rhs, "!=")
+            ENDIF
            
 		    
-            internal method UsualEquals( rhs as __Usual, op as string) as logic
-			if rhs:IsNil
-				return self:IsNil
-			endif
-            switch self:_usualType
-                case UsualType.Object
-                    if rhs:_usualType == UsualType.Object
-                        return self:_refData == rhs:_refData
-                    else
-                        nop // error below
-                    endif
+            INTERNAL METHOD UsualEquals( rhs AS __Usual, op AS STRING) AS LOGIC
+			IF rhs:IsNil
+				RETURN SELF:IsNil
+			ENDIF
+            SWITCH SELF:_usualType
+                CASE UsualType.Object
+                    IF rhs:_usualType == UsualType.Object
+                        RETURN SELF:_refData == rhs:_refData
+                    ELSE
+                        NOP // error below
+                    ENDIF
                 
-                case UsualType.Void
-                    return rhs:_usualType == UsualType.Void
+                CASE UsualType.Void
+                    RETURN rhs:_usualType == UsualType.Void
                 
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return self:_intValue == rhs:_intValue
-                        case UsualType.Int64		; return (int64) self:_intValue == rhs:_i64Value	// cast lhs to int64 to avoid overflow 
-                        case UsualType.Float		; return (real8) self:_intValue == rhs:_r8Value // cast lhs to real8 to avoid overflow 
-                        case UsualType.Decimal	; return (System.Decimal) self:_intValue == rhs:_decimalValue	// cast lhs to decimal to avoid overflow 
-                        case UsualType.Logic		; return rhs:_logicValue == (self:_intValue <> 0)
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN SELF:_intValue == rhs:_intValue
+                        CASE UsualType.Int64		; RETURN (INT64) SELF:_intValue == rhs:_i64Value	// cast lhs to int64 to avoid overflow 
+                        CASE UsualType.Float		; RETURN (REAL8) SELF:_intValue == rhs:_r8Value // cast lhs to real8 to avoid overflow 
+                        CASE UsualType.Decimal	; RETURN (System.Decimal) SELF:_intValue == rhs:_decimalValue	// cast lhs to decimal to avoid overflow 
+                        CASE UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_intValue <> 0)
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return _i64Value == (int64) rhs:_intValue
-                        case UsualType.Int64		; return _i64Value == rhs:_i64Value
-                        case UsualType.Float		; return  (real8) _i64Value == rhs:_r8Value
-                        case UsualType.Decimal	; return _i64Value == rhs:_decimalValue
-                        case UsualType.Logic		; return rhs:_logicValue == (self:_i64Value <> 0)
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN _i64Value == (INT64) rhs:_intValue
+                        CASE UsualType.Int64		; RETURN _i64Value == rhs:_i64Value
+                        CASE UsualType.Float		; RETURN  (REAL8) _i64Value == rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN _i64Value == rhs:_decimalValue
+                        CASE UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_i64Value <> 0)
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return self:_r8Value == (real8) rhs:_intValue
-                        case UsualType.Int64		; return self:_r8Value == (real8) rhs:_i64Value
-                        case UsualType.Float		; return self:_r8Value ==  rhs:_r8Value
-                        case UsualType.Decimal	; return self:_r8Value ==  (real8) rhs:_decimalValue
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN SELF:_r8Value == (REAL8) rhs:_intValue
+                        CASE UsualType.Int64		; RETURN SELF:_r8Value == (REAL8) rhs:_i64Value
+                        CASE UsualType.Float		; RETURN SELF:_r8Value ==  rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN SELF:_r8Value ==  (REAL8) rhs:_decimalValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return self:_decimalValue == rhs:_intValue
-                        case UsualType.Int64		; return self:_decimalValue == rhs:_i64Value
-                        case UsualType.Float		; return self:_decimalValue == (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return self:_decimalValue == rhs:_decimalValue
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN SELF:_decimalValue == rhs:_intValue
+                        CASE UsualType.Int64		; RETURN SELF:_decimalValue == rhs:_i64Value
+                        CASE UsualType.Float		; RETURN SELF:_decimalValue == (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN SELF:_decimalValue == rhs:_decimalValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.LOGIC
-                    switch rhs:_usualType
-                        case UsualType.LOGIC		; return self:_logicValue == rhs:_logicValue
-                        case UsualType.Long		; return self:_logicValue == (rhs:_intValue <> 0)
-                        case UsualType.Int64		; return self:_logicValue == (rhs:_i64Value <> 0)
-                        case UsualType.Decimal	; return self:_logicValue == (rhs:_decimalValue <> 0)
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.LOGIC
+                    SWITCH rhs:_usualType
+                        CASE UsualType.LOGIC		; RETURN SELF:_logicValue == rhs:_logicValue
+                        CASE UsualType.Long		; RETURN SELF:_logicValue == (rhs:_intValue <> 0)
+                        CASE UsualType.Int64		; RETURN SELF:_logicValue == (rhs:_i64Value <> 0)
+                        CASE UsualType.Decimal	; RETURN SELF:_logicValue == (rhs:_decimalValue <> 0)
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.DATE
-                    switch rhs:_usualType
-                        case UsualType.DATE		; return self:_dateValue == rhs:_dateValue
-                        case UsualType.DateTime	; return self:_dateValue == (Date) rhs:_dateTimeValue
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.DATE
+                    SWITCH rhs:_usualType
+                        CASE UsualType.DATE		; RETURN SELF:_dateValue == rhs:_dateValue
+                        CASE UsualType.DateTime	; RETURN SELF:_dateValue == (DATE) rhs:_dateTimeValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.DateTime
-                    switch rhs:_usualType
-                        case UsualType.DateTime	; return self:_dateTimeValue == rhs:_dateTimeValue
-                        case UsualType.DATE		; return self:_dateTimeValue == (DateTime) rhs:_dateValue
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.DateTime
+                    SWITCH rhs:_usualType
+                        CASE UsualType.DateTime	; RETURN SELF:_dateTimeValue == rhs:_dateTimeValue
+                        CASE UsualType.DATE		; RETURN SELF:_dateTimeValue == (DateTime) rhs:_dateValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.STRING
-                    switch rhs:_usualType
-                        case UsualType.STRING		; return self:_stringValue == rhs:_stringValue
-                        case UsualType.Symbol		; return self:_stringValue == rhs:_symValue
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.STRING
+                    SWITCH rhs:_usualType
+                        CASE UsualType.STRING		; RETURN SELF:_stringValue == rhs:_stringValue
+                        CASE UsualType.Symbol		; RETURN SELF:_stringValue == rhs:_symValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.ARRAY
-                    switch rhs:_usualType
-                        case UsualType.ARRAY		; return self:_refData == rhs:_refData
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.ARRAY
+                    SWITCH rhs:_usualType
+                        CASE UsualType.ARRAY		; RETURN SELF:_refData == rhs:_refData
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.CodeBlock
-                    switch rhs:_usualType
-                        case UsualType.CodeBlock	; return self:_refData == rhs:_refData
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.CodeBlock
+                    SWITCH rhs:_usualType
+                        CASE UsualType.CodeBlock	; RETURN SELF:_refData == rhs:_refData
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Ptr
-                    switch rhs:_usualType
-                        case UsualType.Ptr		; return self:_ptrValue == rhs:_ptrValue
-                        otherwise
-                            nop // error below
-                    end switch
+                CASE UsualType.Ptr
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Ptr		; RETURN SELF:_ptrValue == rhs:_ptrValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Symbol
-                    switch rhs:_usualType
-                        case UsualType.Symbol		; return self:_symValue == rhs:_symValue
-                        case UsualType.String		; return self:_symValue == rhs:_stringValue
-                        otherwise
-                            nop // error below
-                    end switch
-                otherwise
-                    throw BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, self, rhs)
+                CASE UsualType.Symbol
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Symbol		; RETURN SELF:_symValue == rhs:_symValue
+                        CASE UsualType.String		; RETURN SELF:_symValue == rhs:_stringValue
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    THROW BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, SELF, rhs)
                 
-            end switch
-            throw BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), false, self, rhs)
+            END SWITCH
+            THROW BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), FALSE, SELF, rhs)
             
         #endregion
         
         #region Unary Operators
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator !(u as __Usual) as logic
-            if u:_usualType == UsualType.LOGIC
-                return !u:_logicValue
-            endif
-            throw UnaryError("!", u)
+            STATIC OPERATOR !(u AS __Usual) AS LOGIC
+            IF u:_usualType == UsualType.LOGIC
+                RETURN !u:_logicValue
+            ENDIF
+            THROW UnaryError("!", u)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator ~(u as __Usual) as __Usual
-            if u:_usualType == UsualType.Long
-                return ~u:_intValue
-            endif
-            if u:_usualType == UsualType.Int64
-                return ~u:_i64Value
-            endif
-            throw UnaryError("~", u)
+            STATIC OPERATOR ~(u AS __Usual) AS __Usual
+            IF u:_usualType == UsualType.Long
+                RETURN ~u:_intValue
+            ENDIF
+            IF u:_usualType == UsualType.Int64
+                RETURN ~u:_i64Value
+            ENDIF
+            THROW UnaryError("~", u)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator -(u as __Usual) as __Usual
-            switch u:_usualType
-                case UsualType.LONG		; return -u:_intValue
-                case UsualType.Int64		; return -u:_i64Value
-                case UsualType.Float		; return -u:_floatValue
-                case UsualType.Decimal	; return -u:_decimalValue
-                otherwise
-                    throw UnaryError("-", u)
-            end switch
+            STATIC OPERATOR -(u AS __Usual) AS __Usual
+            SWITCH u:_usualType
+                CASE UsualType.LONG		; RETURN -u:_intValue
+                CASE UsualType.Int64		; RETURN -u:_i64Value
+                CASE UsualType.Float		; RETURN -u:_floatValue
+                CASE UsualType.Decimal	; RETURN -u:_decimalValue
+                OTHERWISE
+                    THROW UnaryError("-", u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator +(u as __Usual) as __Usual
-            switch u:_usualType
-                case UsualType.LONG		; return u:_intValue
-                case UsualType.Int64		; return u:_i64Value
-                case UsualType.Float		; return u:_floatValue
-                case UsualType.Decimal	; return u:_decimalValue 
-                otherwise
-                    throw UnaryError("+", u)
-            end switch
+            STATIC OPERATOR +(u AS __Usual) AS __Usual
+            SWITCH u:_usualType
+                CASE UsualType.LONG		; RETURN u:_intValue
+                CASE UsualType.Int64		; RETURN u:_i64Value
+                CASE UsualType.Float		; RETURN u:_floatValue
+                CASE UsualType.Decimal	; RETURN u:_decimalValue 
+                OTHERWISE
+                    THROW UnaryError("+", u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-			static operator --(u as __Usual) as __Usual
-            switch u:_usualType
-                case UsualType.LONG		; return u:_intValue - 1
-                case UsualType.Int64		; return u:_i64Value - 1
-                case UsualType.Float		; return u:_floatValue -1
-                case UsualType.Decimal	; return u:_decimalValue - 1 
-                otherwise					
-                    throw UnaryError("--", u)
-            end switch
+			STATIC OPERATOR --(u AS __Usual) AS __Usual
+            SWITCH u:_usualType
+                CASE UsualType.LONG		; RETURN u:_intValue - 1
+                CASE UsualType.Int64		; RETURN u:_i64Value - 1
+                CASE UsualType.Float		; RETURN u:_floatValue -1
+                CASE UsualType.Decimal	; RETURN u:_decimalValue - 1 
+                OTHERWISE					
+                    THROW UnaryError("--", u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator ++(u as __Usual) as __Usual
-            switch u:_usualType
-                case UsualType.LONG		; return u:_intValue + 1	
-                case UsualType.Int64		; return u:_i64Value + 1
-                case UsualType.Float		; return u:_floatValue +1
-                case UsualType.Decimal	; return u:_decimalValue + 1 
-                otherwise
-                    throw UnaryError("++", u)
-            end switch
+            STATIC OPERATOR ++(u AS __Usual) AS __Usual
+            SWITCH u:_usualType
+                CASE UsualType.LONG		; RETURN u:_intValue + 1	
+                CASE UsualType.Int64		; RETURN u:_i64Value + 1
+                CASE UsualType.Float		; RETURN u:_floatValue +1
+                CASE UsualType.Decimal	; RETURN u:_decimalValue + 1 
+                OTHERWISE
+                    THROW UnaryError("++", u)
+            END SWITCH
             
         #endregion
         #region Numeric Operators for Add, Delete etc (also for strings)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator +(lhs as __Usual, rhs as __Usual) as __Usual
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType	
-                        case UsualType.Long		; return lhs:_intValue + rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_intValue + rhs:_i64Value
-                        case UsualType.Float		; return lhs:_intValue + rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_intValue + rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+            STATIC OPERATOR +(lhs AS __Usual, rhs AS __Usual) AS __Usual
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType	
+                        CASE UsualType.Long		; RETURN lhs:_intValue + rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_intValue + rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_intValue + rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue + rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value + rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_i64Value + rhs:_i64Value
-                        case UsualType.Float		; return lhs:_i64Value + rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_i64Value + rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value + rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value + rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_i64Value + rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value + rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return Float{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
-                        case UsualType.Int64		; return Float{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        case UsualType.Float		; return Float{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
-                        case UsualType.Decimal	; return Float{lhs:_r8Value + (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue + rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_decimalValue + rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue + (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue + rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue + rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue + rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue + (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue + rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.String
-                    switch rhs:_usualType
-                        case UsualType.String		; return lhs:_stringValue+ rhs:_stringValue
-                        otherwise
-                            throw BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), false, lhs, rhs)
-                    end switch
-                case UsualType.Date
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_dateValue + rhs:_intValue 
-                        case UsualType.Int64	; return lhs:_dateValue + rhs:_i64Value
+                CASE UsualType.String
+                    SWITCH rhs:_usualType
+                        CASE UsualType.String		; RETURN lhs:_stringValue+ rhs:_stringValue
+                        OTHERWISE
+                            THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Date
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_dateValue + rhs:_intValue 
+                        CASE UsualType.Int64	; RETURN lhs:_dateValue + rhs:_i64Value
                         CASE UsualType.Float	; RETURN lhs:_dateValue + rhs:_r8Value
 						// Note We can't add dates, but we can subtract dates
-                        otherwise
-                            throw BinaryError("+", __CavoStr(VOErrors.DATE_ADD), false, lhs, rhs)
-                    end switch
-                case UsualType.DateTime
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_dateTimeValue:Add( TimeSpan.FromDays(rhs:_intValue ))
-                        case UsualType.Int64	; return lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_i64Value))
+                        OTHERWISE
+                            THROW BinaryError("+", __CavoStr(VOErrors.DATE_ADD), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.DateTime
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_dateTimeValue:Add( TimeSpan.FromDays(rhs:_intValue ))
+                        CASE UsualType.Int64	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_i64Value))
                         CASE UsualType.Float	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_r8Value))
 						// Note We can't add dates, but we can subtract dates
-                        otherwise
-                            throw BinaryError("+", __CavoStr(VOErrors.DATE_ADD), false, lhs, rhs)
-                    end switch
+                        OTHERWISE
+                            THROW BinaryError("+", __CavoStr(VOErrors.DATE_ADD), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                otherwise
-                    throw BinaryError("+", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+                OTHERWISE
+                    THROW BinaryError("+", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator -(lhs as __Usual, rhs as __Usual) as __Usual
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_intValue - rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_intValue - rhs:_i64Value
-                        case UsualType.Float		; return lhs:_intValue - rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_intValue - rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value - rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_i64Value - rhs:_i64Value
-                        case UsualType.Float		; return lhs:_i64Value - rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_i64Value - rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return Float{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
-                        case UsualType.Int64		; return Float{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
-                        case UsualType.Float		; return Float{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
-                        case UsualType.Decimal	; return Float{lhs:_r8Value - (real8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
-                        otherwise					; nop // error below
-                    end switch
+            STATIC OPERATOR -(lhs AS __Usual, rhs AS __Usual) AS __Usual
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_intValue - rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_intValue - rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_intValue - rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue - rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value - rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value - rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_i64Value - rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value - rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
+                        CASE UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue - rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_decimalValue - rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue - (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue - rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue - rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue - rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue - (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue - rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.String
-                    switch rhs:_usualType
-                        case UsualType.String		; return CompilerServices.__StringSubtract(lhs, rhs)
-                        otherwise					; throw BinaryError("-", __CavoStr(VOErrors.ARGNOTSTRING), false, lhs, rhs)
-                    end switch
-                case UsualType.Date
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_dateValue - rhs:_intValue 
-                        case UsualType.Int64		; return lhs:_dateValue - rhs:_i64Value
-                        case UsualType.Float		; return lhs:_dateValue - rhs:_r8Value
-                        case UsualType.Date			; return lhs:_dateValue - rhs:_dateValue
-                        case UsualType.DateTime		; return lhs:_dateValue - (Date) rhs:_dateTimeValue
-                        otherwise					; throw BinaryError("+", __CavoStr(VOErrors.DATE_SUBTRACT), false, lhs, rhs)
-                    end switch
+                CASE UsualType.String
+                    SWITCH rhs:_usualType
+                        CASE UsualType.String		; RETURN CompilerServices.__StringSubtract(lhs, rhs)
+                        OTHERWISE					; THROW BinaryError("-", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE UsualType.Date
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_dateValue - rhs:_intValue 
+                        CASE UsualType.Int64		; RETURN lhs:_dateValue - rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_dateValue - rhs:_r8Value
+                        CASE UsualType.Date			; RETURN lhs:_dateValue - rhs:_dateValue
+                        CASE UsualType.DateTime		; RETURN lhs:_dateValue - (DATE) rhs:_dateTimeValue
+                        OTHERWISE					; THROW BinaryError("+", __CavoStr(VOErrors.DATE_SUBTRACT), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                case UsualType.DateTime
-                    switch rhs:_usualType
-                        case UsualType.Long			; return lhs:_dateTimeValue:Subtract(TimeSpan{rhs:_intValue,0,0,0})
-                        case UsualType.Int64		; return lhs:_dateTimeValue:Subtract( TimeSpan{(int)rhs:_i64Value,0,0,0})
-                        case UsualType.Float		; return lhs:_dateTimeValue:Subtract( TimeSpan{(int)rhs:_r8Value,0,0,0})
-                        case UsualType.Date			; return lhs:_dateTimeValue:Subtract((DateTime) rhs:_dateValue):Days
-                        case UsualType.DateTime		; return lhs:_dateTimeValue:Subtract( rhs:_dateTimeValue):Days
-                        otherwise					; throw BinaryError("+", __CavoStr(VOErrors.DATE_SUBTRACT), false, lhs, rhs)
-                    end switch
+                CASE UsualType.DateTime
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long			; RETURN lhs:_dateTimeValue:Subtract(TimeSpan{rhs:_intValue,0,0,0})
+                        CASE UsualType.Int64		; RETURN lhs:_dateTimeValue:Subtract( TimeSpan{(INT)rhs:_i64Value,0,0,0})
+                        CASE UsualType.Float		; RETURN lhs:_dateTimeValue:Subtract( TimeSpan{(INT)rhs:_r8Value,0,0,0})
+                        CASE UsualType.Date			; RETURN lhs:_dateTimeValue:Subtract((DateTime) rhs:_dateValue):Days
+                        CASE UsualType.DateTime		; RETURN lhs:_dateTimeValue:Subtract( rhs:_dateTimeValue):Days
+                        OTHERWISE					; THROW BinaryError("+", __CavoStr(VOErrors.DATE_SUBTRACT), FALSE, lhs, rhs)
+                    END SWITCH
                 
-                otherwise
-                    throw BinaryError("-", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("-", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+                OTHERWISE
+                    THROW BinaryError("-", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("-", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator /(lhs as __Usual, rhs as __Usual) as __Usual
+            STATIC OPERATOR /(lhs AS __Usual, rhs AS __Usual) AS __Usual
             
-            switch lhs:_usualType
+            SWITCH lhs:_usualType
                 
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long
-                            local result as int
-                            local remainder as int
-                            result := Math.DivRem(lhs:_intValue, rhs:_intValue, out remainder)
-                            if remainder == 0
-                                return result
-                            else
-                                return lhs:_intValue / rhs:_intValue
-                            endif
-                        case UsualType.Int64
-                            local result as int64
-                            local remainder as int64
-                            result := Math.DivRem((int64) lhs:_intValue, rhs:_i64Value, out remainder)
-                            if remainder == 0
-                                return result
-                            else
-                                return lhs:_intValue / rhs:_i64Value
-                            endif
-                        case UsualType.Float
-                            return Float{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long
+                            LOCAL result AS INT
+                            LOCAL remainder AS INT
+                            result := Math.DivRem(lhs:_intValue, rhs:_intValue, OUT remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_intValue / rhs:_intValue
+                            ENDIF
+                        CASE UsualType.Int64
+                            LOCAL result AS INT64
+                            LOCAL remainder AS INT64
+                            result := Math.DivRem((INT64) lhs:_intValue, rhs:_i64Value, OUT remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_intValue / rhs:_i64Value
+                            ENDIF
+                        CASE UsualType.Float
+                            RETURN FLOAT{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
                         
-                        case UsualType.Decimal
-                            local result as int64
-                            local remainder as int64
-                            result := Math.DivRem((int64) lhs:_intValue, (int64) rhs:_decimalValue, out remainder)
-                            if remainder == 0
-                                return result
-                            else
-                                return lhs:_intValue / rhs:_decimalValue
-                            endif
-                        otherwise
-                            nop // error below
-                    end switch
+                        CASE UsualType.Decimal
+                            LOCAL result AS INT64
+                            LOCAL remainder AS INT64
+                            result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_decimalValue, OUT remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_intValue / rhs:_decimalValue
+                            ENDIF
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long
-                            local result as int64
-                            local remainder as int64
-                            result := Math.DivRem(lhs:_i64Value, rhs:_intValue, out remainder)
-                            if remainder == 0
-                                return result
-                            else
-                                return lhs:_i64Value / rhs:_intValue
-                            endif
-                        case UsualType.Int64
-                            local result as int64
-                            local remainder as int64
-                            result := Math.DivRem( lhs:_i64Value, rhs:_i64Value, out remainder)
-                            if remainder == 0
-                                return result
-                            else
-                                return lhs:_i64Value / rhs:_i64Value
-                            endif
-                        case UsualType.Float
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long
+                            LOCAL result AS INT64
+                            LOCAL remainder AS INT64
+                            result := Math.DivRem(lhs:_i64Value, rhs:_intValue, OUT remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_i64Value / rhs:_intValue
+                            ENDIF
+                        CASE UsualType.Int64
+                            LOCAL result AS INT64
+                            LOCAL remainder AS INT64
+                            result := Math.DivRem( lhs:_i64Value, rhs:_i64Value, OUT remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_i64Value / rhs:_i64Value
+                            ENDIF
+                        CASE UsualType.Float
                             RETURN FLOAT{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
-                        case UsualType.Decimal
-                            local result as int64
-                            local remainder as int64
-                            result := Math.DivRem(lhs:_i64Value, (int64) rhs:_decimalValue, out remainder)
-                            if remainder == 0
-                                return result
-                            else
-                                return lhs:_i64Value / rhs:_decimalValue
-                            endif
-                        otherwise
-                            nop // error below
-                    end switch
+                        CASE UsualType.Decimal
+                            LOCAL result AS INT64
+                            LOCAL remainder AS INT64
+                            result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_decimalValue, OUT remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_i64Value / rhs:_decimalValue
+                            ENDIF
+                        OTHERWISE
+                            NOP // error below
+                    END SWITCH
                 
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return Float{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
-                        case UsualType.Int64		; return Float{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        case UsualType.Float		; return Float{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        case UsualType.Decimal	; return Float{lhs:_r8Value / (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN FLOAT{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Int64		; RETURN FLOAT{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue / rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue / rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue / (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue / rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue / rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue / rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue / (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue / rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                otherwise
-                    throw BinaryError("/", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("/", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+                OTHERWISE
+                    THROW BinaryError("/", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("/", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator %(lhs as __Usual, rhs as __Usual) as __Usual
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_intValue % rhs:_intValue
-                        case UsualType.Int64		; return lhs:_intValue % rhs:_i64Value
-                        case UsualType.Float		; return Float{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        case UsualType.Decimal	; return lhs:_intValue % rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+            STATIC OPERATOR %(lhs AS __Usual, rhs AS __Usual) AS __Usual
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_intValue % rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_intValue % rhs:_i64Value
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue % rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value % rhs:_intValue
-                        case UsualType.Int64		; return lhs:_i64Value % rhs:_i64Value
-                        case UsualType.Float		; return Float{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        case UsualType.Decimal	; return lhs:_i64Value % rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value % rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value % rhs:_i64Value
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value % rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Float
-                    switch rhs:_usualType
-                        case UsualType.Long		; return Float{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
-                        case UsualType.Int64		; return Float{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        case UsualType.Float		; return Float{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        case UsualType.Decimal	; return Float{lhs:_r8Value % (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN FLOAT{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue % rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue % rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue % (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue %  rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue % rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue % rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue % (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue %  rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
                 
-                otherwise
-                    throw BinaryError("%", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("%", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+                OTHERWISE
+                    THROW BinaryError("%", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("%", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator *(lhs as __Usual, rhs as __Usual) as __Usual
-            switch lhs:_usualType
-                case UsualType.Long
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_intValue * rhs:_intValue
-                        case UsualType.Int64		; return lhs:_intValue * rhs:_i64Value
-                        case UsualType.Float		; return Float{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        case UsualType.Decimal	; return lhs:_intValue * rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+            STATIC OPERATOR *(lhs AS __Usual, rhs AS __Usual) AS __Usual
+            SWITCH lhs:_usualType
+                CASE UsualType.Long
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_intValue * rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_intValue * rhs:_i64Value
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN lhs:_intValue * rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Int64
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_i64Value * rhs:_intValue
-                        case UsualType.Int64		; return lhs:_i64Value * rhs:_i64Value
-                        case UsualType.Float		; return Float{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        case UsualType.Decimal	; return lhs:_i64Value * rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Int64
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_i64Value * rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_i64Value * rhs:_i64Value
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN lhs:_i64Value * rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Float
-                    switch rhs:_usualType		
-                        case UsualType.Long		; return Float{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
-                        case UsualType.Int64		; return Float{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        case UsualType.Float		; return Float{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        case UsualType.Decimal	; return Float{lhs:_r8Value * (real8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Float
+                    SWITCH rhs:_usualType		
+                        CASE UsualType.Long		; RETURN FLOAT{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Int64		; RETURN FLOAT{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE UsualType.Float		; RETURN FLOAT{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                case UsualType.Decimal
-                    switch rhs:_usualType
-                        case UsualType.Long		; return lhs:_decimalValue * rhs:_intValue
-                        case UsualType.Int64		; return lhs:_decimalValue * rhs:_i64Value
-                        case UsualType.Float		; return lhs:_decimalValue * (System.Decimal) rhs:_r8Value
-                        case UsualType.Decimal	; return lhs:_decimalValue *  rhs:_decimalValue
-                        otherwise					; nop // error below
-                    end switch
+                CASE UsualType.Decimal
+                    SWITCH rhs:_usualType
+                        CASE UsualType.Long		; RETURN lhs:_decimalValue * rhs:_intValue
+                        CASE UsualType.Int64		; RETURN lhs:_decimalValue * rhs:_i64Value
+                        CASE UsualType.Float		; RETURN lhs:_decimalValue * (System.Decimal) rhs:_r8Value
+                        CASE UsualType.Decimal	; RETURN lhs:_decimalValue *  rhs:_decimalValue
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
                 
-                otherwise
-                    throw BinaryError("*", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-            end switch
-            throw BinaryError("*", __CavoStr(VOErrors.ARGNOTNUMERIC), false, lhs, rhs)
+                OTHERWISE
+                    THROW BinaryError("*", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("*", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator >>(lhs as __Usual, rhs as int) as __Usual
+            STATIC OPERATOR >>(lhs AS __Usual, rhs AS INT) AS __Usual
             // Right shift
-            switch lhs:_usualType
-                case UsualType.Long	; return lhs:_intValue >> rhs
-                case UsualType.Int64	; return lhs:_i64Value >> rhs
-                otherwise				
-                    throw BinaryError(">>", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
-            end switch
+            SWITCH lhs:_usualType
+                CASE UsualType.Long	; RETURN lhs:_intValue >> rhs
+                CASE UsualType.Int64	; RETURN lhs:_i64Value >> rhs
+                OTHERWISE				
+                    THROW BinaryError(">>", __CavoStr(VOErrors.ARGNOTINTEGER), TRUE, lhs, rhs)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator <<(lhs as __Usual, rhs as long) as __Usual
+            STATIC OPERATOR <<(lhs AS __Usual, rhs AS LONG) AS __Usual
             // Left shift
-            switch (lhs:_usualType)
-                case UsualType.Long	; return lhs:_intValue << rhs
-                case UsualType.Int64	; return lhs:_i64Value << rhs
-                otherwise
-                    throw BinaryError("<<", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
-            end switch
+            SWITCH (lhs:_usualType)
+                CASE UsualType.Long	; RETURN lhs:_intValue << rhs
+                CASE UsualType.Int64	; RETURN lhs:_i64Value << rhs
+                OTHERWISE
+                    THROW BinaryError("<<", __CavoStr(VOErrors.ARGNOTINTEGER), TRUE, lhs, rhs)
+            END SWITCH
             
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator &(lhs as __Usual, rhs as __Usual) as __Usual
+            STATIC OPERATOR &(lhs AS __Usual, rhs AS __Usual) AS __Usual
             // Bitwise And
-            switch (lhs:_usualType)
-                case UsualType.Long
-                    switch (rhs:_usualType)
-                        case UsualType.Long		; return lhs:_intValue & rhs:_intValue
-                        case UsualType.Int64		; return (int64) lhs:_intValue & rhs:_i64Value
-                        otherwise					; nop // error below
-                    end switch
-                case UsualType.Int64
-                    switch (rhs:_usualType)
-                        case UsualType.Long		; return lhs:_i64Value & (int64) rhs:_intValue
-                        case UsualType.Int64	; return  lhs:_i64Value & rhs:_i64Value
-                        otherwise					; nop // error below
-                    end switch
-                otherwise
-                    throw BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
-            end switch
-            throw BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), false, lhs, rhs)
+            SWITCH (lhs:_usualType)
+                CASE UsualType.Long
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Long		; RETURN lhs:_intValue & rhs:_intValue
+                        CASE UsualType.Int64		; RETURN (INT64) lhs:_intValue & rhs:_i64Value
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
+                CASE UsualType.Int64
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Long		; RETURN lhs:_i64Value & (INT64) rhs:_intValue
+                        CASE UsualType.Int64	; RETURN  lhs:_i64Value & rhs:_i64Value
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    THROW BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), FALSE, lhs, rhs)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator |(lhs as __Usual, rhs as __Usual) as __Usual
+            STATIC OPERATOR |(lhs AS __Usual, rhs AS __Usual) AS __Usual
             // Bitwise or
-            switch (lhs:_usualType)
-                case UsualType.Long
-                    switch (rhs:_usualType)
-                        case UsualType.Long		; return lhs:_intValue | rhs:_intValue
-                        case UsualType.Int64		; return (int64) lhs:_intValue | rhs:_i64Value
-                        otherwise					; nop // error below
-                    end switch
-                case UsualType.Int64
-                    switch (rhs:_usualType)
-                        case UsualType.Long		; return lhs:_i64Value | (int64) rhs:_intValue
-                        case UsualType.Int64		; return  lhs:_i64Value | rhs:_i64Value
-                        otherwise					; nop // error below
-                    end switch
-                otherwise
-                    throw BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), true, lhs, rhs)
-            end switch
-            throw BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), false, lhs, rhs)
+            SWITCH (lhs:_usualType)
+                CASE UsualType.Long
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Long		; RETURN lhs:_intValue | rhs:_intValue
+                        CASE UsualType.Int64		; RETURN (INT64) lhs:_intValue | rhs:_i64Value
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
+                CASE UsualType.Int64
+                    SWITCH (rhs:_usualType)
+                        CASE UsualType.Long		; RETURN lhs:_i64Value | (INT64) rhs:_intValue
+                        CASE UsualType.Int64		; RETURN  lhs:_i64Value | rhs:_i64Value
+                        OTHERWISE					; NOP // error below
+                    END SWITCH
+                OTHERWISE
+                    THROW BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), TRUE, lhs, rhs)
+            END SWITCH
+            THROW BinaryError("|", __CavoStr(VOErrors.ARGNOTINTEGER), FALSE, lhs, rhs)
         #endregion
         
         #region Implicit From Usual to Other Type
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as Array
-				switch u:_usualType
-				case UsualType.Array	; return (Array) u:_refData
-				case UsualType.Void	; return null
-				case UsualType.Object	
-					if u:_refData== null
-						return null
-					elseif u:_refData is Array
-						return (Array) u:_refData
-					endif
-				end switch
-				throw ConversionError(ARRAY, typeof(Array), u)
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS ARRAY
+				SWITCH u:_usualType
+				CASE UsualType.Array	; RETURN (ARRAY) u:_refData
+				CASE UsualType.Void	; RETURN NULL
+				CASE UsualType.Object	
+					IF u:_refData== NULL
+						RETURN NULL
+					ELSEIF u:_refData IS ARRAY
+						RETURN (ARRAY) u:_refData
+					ENDIF
+				END SWITCH
+				THROW ConversionError(ARRAY, typeof(ARRAY), u)
             
-            STATIC OPERATOR IMPLICIT(u AS __Usual) AS CodeBlock
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS CODEBLOCK
 				SWITCH u:_usualType
 				CASE UsualType.CodeBlock
-					return u:_codeblockValue
+					RETURN u:_codeblockValue
 				CASE UsualType.Object
 					IF u:_refData == NULL
 						RETURN NULL
@@ -1468,333 +1468,336 @@ begin namespace XSharp
 				CASE UsualType.Void
 					RETURN NULL
 				END SWITCH
-				throw ConversionError(CODEBLOCK, typeof(CodeBlock), u)
+				THROW ConversionError(CODEBLOCK, typeof(CODEBLOCK), u)
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as logic
-            switch u:_usualType
-                case UsualType.Logic		; return u:_logicValue
-                case UsualType.Long		; return u:_intValue != 0
-                case UsualType.Int64		; return u:_i64Value != 0
-                case UsualType.Decimal	; return u:_decimalValue != 0
-                case UsualType.Void		; return false
-                otherwise
-                    throw ConversionError(LOGIC, typeof(logic), u)
-            end switch
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS LOGIC
+            SWITCH u:_usualType
+                CASE UsualType.Logic		; RETURN u:_logicValue
+                CASE UsualType.Long		; RETURN u:_intValue != 0
+                CASE UsualType.Int64		; RETURN u:_i64Value != 0
+                CASE UsualType.Decimal	; RETURN u:_decimalValue != 0
+                CASE UsualType.Void		; RETURN FALSE
+                OTHERWISE
+                    THROW ConversionError(LOGIC, typeof(LOGIC), u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as Date
-            switch u:_usualType
-                case UsualType.Date		; return u:_dateValue
-                case UsualType.DateTime	; return (Date) u:_dateTimeValue
-                case UsualType.Void		; return Date{0}
-                otherwise
-                    throw ConversionError(DATE, typeof(Date), u)
-            end switch
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS DATE
+            SWITCH u:_usualType
+                CASE UsualType.Date		; RETURN u:_dateValue
+                CASE UsualType.DateTime	; RETURN (DATE) u:_dateTimeValue
+                CASE UsualType.Void		; RETURN DATE{0}
+                OTHERWISE
+                    THROW ConversionError(DATE, typeof(DATE), u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as DateTime
-            switch u:_usualType
-                case UsualType.Date		; return (DateTime) u:_dateValue
-                case UsualType.DateTime	; return u:_dateTimeValue
-                case UsualType.Void		; return DateTime.MinValue
-                otherwise
-                    throw ConversionError(DATE, typeof(Date), u)
-            end switch
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS DateTime
+            SWITCH u:_usualType
+                CASE UsualType.Date		; RETURN (DateTime) u:_dateValue
+                CASE UsualType.DateTime	; RETURN u:_dateTimeValue
+                CASE UsualType.Void		; RETURN DateTime.MinValue
+                OTHERWISE
+                    THROW ConversionError(DATE, typeof(DATE), u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as System.IntPtr
-            switch u:_usualType
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS System.IntPtr
+            SWITCH u:_usualType
                 CASE UsualType.Ptr		; RETURN u:_ptrValue
-                case UsualType.LONG		; return (IntPtr) u:_intValue
-                case UsualType.Int64		; return (IntPtr) u:_i64Value
-                case UsualType.Decimal	; return (IntPtr) u:_decimalValue 
-                case UsualType.Void		; return IntPtr.Zero
-                otherwise
-                    throw ConversionError(PTR, typeof(IntPtr), u)
-            end switch
+                CASE UsualType.LONG		; RETURN (IntPtr) u:_intValue
+                CASE UsualType.Int64		; RETURN (IntPtr) u:_i64Value
+                CASE UsualType.Decimal	; RETURN (IntPtr) u:_decimalValue 
+                CASE UsualType.Void		; RETURN IntPtr.Zero
+                OTHERWISE
+                    THROW ConversionError(PTR, typeof(IntPtr), u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as string
-            switch u:_usualType
-                case UsualType.String	; return u:_stringValue
-                case UsualType.Void	; return ""
-                case UsualType.SYMBOL	; return (string) u:_symValue
-                otherwise
-                    throw ConversionError(STRING, typeof(string), u)
-            end switch
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
+            SWITCH u:_usualType
+                CASE UsualType.String	; RETURN u:_stringValue
+                CASE UsualType.Void	; RETURN ""
+                CASE UsualType.SYMBOL	; RETURN (STRING) u:_symValue
+                OTHERWISE
+                    THROW ConversionError(STRING, typeof(STRING), u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as Symbol
-            switch u:_usualType
-                case UsualType.String	; return (Symbol) u:_stringValue
-                case UsualType.Void	; return Symbol{""}
-                case UsualType.SYMBOL	; return u:_symValue
-                otherwise
-                    throw ConversionError(SYMBOL, typeof(Symbol), u)
-            end switch
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS SYMBOL
+            SWITCH u:_usualType
+                CASE UsualType.String	; RETURN (SYMBOL) u:_stringValue
+                CASE UsualType.Void	; RETURN SYMBOL{""}
+                CASE UsualType.SYMBOL	; RETURN u:_symValue
+                OTHERWISE
+                    THROW ConversionError(SYMBOL, typeof(SYMBOL), u)
+            END SWITCH
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as Psz
-            switch u:_usualType
-                case UsualType.Ptr	; return (Psz) u:_ptrValue
-                case UsualType.String	; return Psz{u:_stringValue}
-                case UsualType.Void	; return Null_Psz
-                otherwise
-                    throw ConversionError(PSZ, typeof(Psz), u)
-            end switch
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS PSZ
+            SWITCH u:_usualType
+                CASE UsualType.Ptr	; RETURN (PSZ) u:_ptrValue
+                CASE UsualType.String	; RETURN PSZ{u:_stringValue}
+                CASE UsualType.Void	; RETURN Null_Psz
+                OTHERWISE
+                    THROW ConversionError(PSZ, typeof(PSZ), u)
+            END SWITCH
             
         #endregion
         #region Implicit Numeric Operators
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as byte
-            try
-                switch u:_usualType
-                    case UsualType.Long		; return checked((byte) u:_intValue)
-                    case UsualType.Int64		; return checked((byte) u:_i64Value)
-                    case UsualType.Float		
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToByte(u:_r8Value)
-						else
-							return checked((byte) u:_r8Value)
-						endif
-                    case UsualType.Logic		; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Decimal	
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToByte(u:_decimalValue )
-						else
-							return checked((byte) u:_decimalValue )
-						endif
-                    case UsualType.Void		; return  0
-                    otherwise
-                        throw ConversionError(BYTE, typeof(byte), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "BYTE", typeof(byte), u)
-            end try
-            return 0
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS BYTE
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long		; RETURN checked((BYTE) u:_intValue)
+                    CASE UsualType.Int64		; RETURN checked((BYTE) u:_i64Value)
+                    CASE UsualType.Float		
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToByte(u:_r8Value)
+						ELSE
+							RETURN checked((BYTE) u:_r8Value)
+						ENDIF
+                    CASE UsualType.Logic		; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Decimal	
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToByte(u:_decimalValue )
+						ELSE
+							RETURN checked((BYTE) u:_decimalValue )
+						ENDIF
+                    CASE UsualType.Void		; RETURN  0
+                    OTHERWISE
+                        THROW ConversionError(BYTE, typeof(BYTE), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "BYTE", typeof(BYTE), u)
+            END TRY
+            RETURN 0
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as short
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked((short) u:_intValue)
-                    case UsualType.Int64	; return checked((short) u:_i64Value)
-                    case UsualType.Float	
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToInt16(u:_r8value)
-						else
-							return checked((short) u:_r8Value)
-						endif
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS SHORT
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked((SHORT) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked((SHORT) u:_i64Value)
+                    CASE UsualType.Float	
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToInt16(u:_r8value)
+						ELSE
+							RETURN checked((SHORT) u:_r8Value)
+						ENDIF
 
-                    case UsualType.Decimal
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToInt16(u:_decimalValue )
-						else
-							return checked((short) u:_decimalValue )
-						endif
+                    CASE UsualType.Decimal
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToInt16(u:_decimalValue )
+						ELSE
+							RETURN checked((SHORT) u:_decimalValue )
+						ENDIF
 
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(SHORT, typeof(short), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "SHORT", typeof(short), u)
-            end try
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(SHORT, typeof(SHORT), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "SHORT", typeof(SHORT), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as long
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return u:_intValue
-                    case UsualType.Int64	; return checked((long) u:_i64Value)
-                    case UsualType.Float	
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToInt32(u:_r8Value)
-						else
-							return  checked((long) u:_r8Value)
-						endif
-                    case UsualType.Decimal
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToInt32(u:_decimalValue )
-						else
-							return checked((long) u:_decimalValue )
-						endif
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(LONG, typeof(long), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "LONG", typeof(long), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS LONG
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN u:_intValue
+                    CASE UsualType.Int64	; RETURN checked((LONG) u:_i64Value)
+                    CASE UsualType.Float	
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToInt32(u:_r8Value)
+						ELSE
+							RETURN  checked((LONG) u:_r8Value)
+						ENDIF
+                    CASE UsualType.Decimal
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToInt32(u:_decimalValue )
+						ELSE
+							RETURN checked((LONG) u:_decimalValue )
+						ENDIF
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(LONG, typeof(LONG), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "LONG", typeof(LONG), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as int64
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return u:_intValue
-                    case UsualType.Int64	; return checked((int64) u:_i64Value)
-                    case UsualType.Float	
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToInt64(u:_r8Value)
-						else
-							return  checked((int64) u:_r8Value)
-						endif
-                    case UsualType.Decimal
-						if RuntimeState.CompilerOptionVO11
-							return Convert.ToInt64(u:_decimalValue )
-						else
-							return checked((int64) u:_decimalValue )
-						endif
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS INT64
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN u:_intValue
+                    CASE UsualType.Int64	; RETURN checked((INT64) u:_i64Value)
+                    CASE UsualType.Float	
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToInt64(u:_r8Value)
+						ELSE
+							RETURN  checked((INT64) u:_r8Value)
+						ENDIF
+                    CASE UsualType.Decimal
+						IF RuntimeState.CompilerOptionVO11
+							RETURN Convert.ToInt64(u:_decimalValue )
+						ELSE
+							RETURN checked((INT64) u:_decimalValue )
+						ENDIF
 
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(INT64, typeof(int64), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "INT64", typeof(int64), u)
-            end try
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(INT64, typeof(INT64), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "INT64", typeof(INT64), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as System.Decimal
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked(u:_intValue)
-                    case UsualType.Int64	; return checked(u:_i64Value)
-                    case UsualType.Float	; return checked((System.Decimal) u:_r8Value)
-                    case UsualType.Decimal; return checked(u:_decimalValue)
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(UsualType.DECIMAL, typeof(int64), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "DECIMAL", typeof(int64), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS System.Decimal
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked(u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked(u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked((System.Decimal) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked(u:_decimalValue)
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(UsualType.DECIMAL, typeof(INT64), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "DECIMAL", typeof(INT64), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as SByte
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked( (SByte) u:_intValue)
-                    case UsualType.Int64	; return checked( (SByte) u:_i64Value)
-                    case UsualType.Float	; return checked( (SByte) u:_r8Value)
-                    case UsualType.Decimal; return checked((SByte) u:_decimalValue )
-                    case UsualType.Logic	; return (SByte) iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(BYTE, typeof(SByte), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "SBYTE", typeof(SByte), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS SByte
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked( (SByte) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked( (SByte) u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked( (SByte) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked((SByte) u:_decimalValue )
+                    CASE UsualType.Logic	; RETURN (SByte) iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(BYTE, typeof(SByte), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "SBYTE", typeof(SByte), u)
+            END TRY
             
             // Unsigned
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as word
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked((word) u:_intValue)
-                    case UsualType.Int64	; return checked((word) u:_i64Value)
-                    case UsualType.Float	; return checked((word) u:_r8Value)
-                    case UsualType.Decimal; return checked((word) u:_decimalValue )
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(WORD, typeof(word), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "WORD", typeof(word), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS WORD
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked((WORD) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked((WORD) u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked((WORD) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked((WORD) u:_decimalValue )
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(WORD, typeof(WORD), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "WORD", typeof(WORD), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as dword
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked((dword) u:_intValue)
-                    case UsualType.Int64	; return checked((dword) u:_i64Value)
-                    case UsualType.Float	; return checked((dword) u:_r8Value)
-                    case UsualType.Decimal; return checked((dword) u:_decimalValue )
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(DWORD, typeof(dword), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "DWORD", typeof(dword), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS DWORD
+            TRY
+                SWITCH u:_usualType
+                	// code in _Str3() relies on the feature that -1 gets converted to MAXDWORD
+                	// need to review if other checked statements need to be changed to unchecked as well
+//                  CASE UsualType.Long	; RETURN checked((DWORD) u:_intValue)
+                    CASE UsualType.Long	; RETURN unchecked((DWORD) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked((DWORD) u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked((DWORD) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked((DWORD) u:_decimalValue )
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(DWORD, typeof(DWORD), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "DWORD", typeof(DWORD), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as uint64
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked((uint64) u:_intValue)
-                    case UsualType.Int64	; return checked((uint64) u:_i64Value)
-                    case UsualType.Float	; return checked((uint64) u:_r8Value)
-                    case UsualType.Decimal; return checked((uint64) u:_decimalValue )
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(UINT64, typeof(uint64), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "UINT64", typeof(uint64), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS uint64
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked((uint64) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked((uint64) u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked((uint64) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked((uint64) u:_decimalValue )
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(UINT64, typeof(uint64), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "UINT64", typeof(uint64), u)
+            END TRY
            
             // Single, Double and FLoat
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as real4
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked((real4) u:_intValue)
-                    case UsualType.Int64	; return checked((real4) u:_i64Value)
-                    case UsualType.Float	; return checked((real4) u:_r8Value)
-                    case UsualType.Decimal; return checked((real4) u:_decimalValue )
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(REAL4, typeof(real4), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "REAL4", typeof(real4), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL4
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked((REAL4) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked((REAL4) u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked((REAL4) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked((REAL4) u:_decimalValue )
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(REAL4, typeof(REAL4), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "REAL4", typeof(REAL4), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as real8
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked((real8) u:_intValue)
-                    case UsualType.Int64	; return checked((real8) u:_i64Value)
-                    case UsualType.Float	; return checked((real8) u:_r8Value)
-                    case UsualType.Decimal; return checked((real8) u:_decimalValue )
-                    case UsualType.Logic	; return iif(u:_logicValue, 1, 0)
-                    case UsualType.Void	; return 0
-                    otherwise
-                        throw ConversionError(REAL8, typeof(real8), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "REAL8", typeof(real8), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL8
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked((REAL8) u:_intValue)
+                    CASE UsualType.Int64	; RETURN checked((REAL8) u:_i64Value)
+                    CASE UsualType.Float	; RETURN checked((REAL8) u:_r8Value)
+                    CASE UsualType.Decimal; RETURN checked((REAL8) u:_decimalValue )
+                    CASE UsualType.Logic	; RETURN iif(u:_logicValue, 1, 0)
+                    CASE UsualType.Void	; RETURN 0
+                    OTHERWISE
+                        THROW ConversionError(REAL8, typeof(REAL8), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "REAL8", typeof(REAL8), u)
+            END TRY
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(u as __Usual) as Float
-            try
-                switch u:_usualType
-                    case UsualType.Long	; return checked(Float{(real8) u:_intValue})
-                    case UsualType.Int64	; return checked(Float{(real8) u:_i64Value})
-                    case UsualType.Float	; return u:_floatValue
-                    case UsualType.Decimal; return checked(Float{(real8) u:_decimalValue})
-                    case UsualType.Logic	; return Float{iif(u:_logicValue, 1, 0)}
-                    case UsualType.Void	; return Float{0}
-                    otherwise
-                        throw ConversionError(FLOAT, typeof(Float), u)
-                end switch
-            catch ex as OverflowException
-                throw OverflowError(ex, "FLOAT", typeof(Float), u)
-            end try
+            STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
+            TRY
+                SWITCH u:_usualType
+                    CASE UsualType.Long	; RETURN checked(FLOAT{(REAL8) u:_intValue})
+                    CASE UsualType.Int64	; RETURN checked(FLOAT{(REAL8) u:_i64Value})
+                    CASE UsualType.Float	; RETURN u:_floatValue
+                    CASE UsualType.Decimal; RETURN checked(FLOAT{(REAL8) u:_decimalValue})
+                    CASE UsualType.Logic	; RETURN FLOAT{iif(u:_logicValue, 1, 0)}
+                    CASE UsualType.Void	; RETURN FLOAT{0}
+                    OTHERWISE
+                        THROW ConversionError(FLOAT, typeof(FLOAT), u)
+                END SWITCH
+            CATCH ex AS OverflowException
+                THROW OverflowError(ex, "FLOAT", typeof(FLOAT), u)
+            END TRY
             
         #endregion
         #region Implicit from Other Type to Usual
@@ -1802,458 +1805,458 @@ begin namespace XSharp
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			/// Note this generates error XS0553. 
 			/// However our compiler needs this one. Therefore disable XS0553
-            static operator implicit(value as object) as __Usual
-				local result as __Usual
-				if value != null .and. value:GetType() == typeof(__Usual)
+            STATIC OPERATOR IMPLICIT(value AS OBJECT) AS __Usual
+				LOCAL result AS __Usual
+				IF value != NULL .and. value:GetType() == typeof(__Usual)
 					result := (__Usual) value
-				elseif value == null
-					result := __Usual{NULL, true}
-				else
+				ELSEIF value == NULL
+					result := __Usual{NULL, TRUE}
+				ELSE
 					result := __Usual{value}
-				endif
-				return result
+				ENDIF
+				RETURN result
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as logic) as __Usual
-	            return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS LOGIC) AS __Usual
+	            RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as byte) as __Usual
-				return __Usual{(int)value}
+            STATIC OPERATOR IMPLICIT(value AS BYTE) AS __Usual
+				RETURN __Usual{(INT)value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as Array) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS ARRAY) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as Date) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS DATE) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as System.DateTime) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS System.DateTime) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as Float) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS FLOAT) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as real8) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS REAL8) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as short) as __Usual
-				return __Usual{(int)value}
+            STATIC OPERATOR IMPLICIT(value AS SHORT) AS __Usual
+				RETURN __Usual{(INT)value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as long) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS LONG) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as int64) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS INT64) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as uint64) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS uint64) AS __Usual
+				RETURN __Usual{value}
 
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as Psz) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS PSZ) AS __Usual
+				RETURN __Usual{value}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as symbol) as __Usual
-				return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS SYMBOL) AS __Usual
+				RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as System.Decimal) as __Usual
-            return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS System.Decimal) AS __Usual
+            RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as System.IntPtr) as __Usual
-            return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS System.IntPtr) AS __Usual
+            RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as SByte) as __Usual
-            return __Usual{(int)value}
+            STATIC OPERATOR IMPLICIT(value AS SByte) AS __Usual
+            RETURN __Usual{(INT)value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as real4) as __Usual
-            return __Usual{(real8)value }
+            STATIC OPERATOR IMPLICIT(value AS REAL4) AS __Usual
+            RETURN __Usual{(REAL8)value }
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as string) as __Usual
-            return __Usual{value}
+            STATIC OPERATOR IMPLICIT(value AS STRING) AS __Usual
+            RETURN __Usual{value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as word) as __Usual
-            return __Usual{(int)value}
+            STATIC OPERATOR IMPLICIT(value AS WORD) AS __Usual
+            RETURN __Usual{(INT)value}
             
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
-            static operator implicit(value as dword) as __Usual
-            return iif((value <= 0x7fffffff),__Usual{(long)value },__Usual{(Float)value })
+            STATIC OPERATOR IMPLICIT(value AS DWORD) AS __Usual
+            RETURN iif((value <= 0x7fffffff),__Usual{(LONG)value },__Usual{(FLOAT)value })
         #endregion
         
         #region implementation IConvertable
 			/// <inheritdoc />
-            public method IConvertible.ToBoolean(provider as System.IFormatProvider) as logic
-            return self
+            PUBLIC METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
+            RETURN SELF
             
 			/// <inheritdoc />
-            public method IConvertible.ToByte(provider as System.IFormatProvider) as byte
-            return self
+            PUBLIC METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE
+            RETURN SELF
             
 			/// <inheritdoc />
-            public method IConvertible.ToChar(provider as System.IFormatProvider) as char
-            var o := __Usual.ToObject(self)
-            if o is IConvertible
-                return ((IConvertible)o):ToChar(provider)
-            endif
-            throw InvalidCastException{}
+            PUBLIC METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS char
+            VAR o := __Usual.ToObject(SELF)
+            IF o IS IConvertible
+                RETURN ((IConvertible)o):ToChar(provider)
+            ENDIF
+            THROW InvalidCastException{}
             
             /// <inheritdoc />
-            public method IConvertible.ToDateTime(provider as System.IFormatProvider) as System.DateTime
-            return (Date) self
+            PUBLIC METHOD IConvertible.ToDateTime(provider AS System.IFormatProvider) AS System.DateTime
+            RETURN (DATE) SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToDecimal(provider as System.IFormatProvider) as Decimal
-            return self
+            PUBLIC METHOD IConvertible.ToDecimal(provider AS System.IFormatProvider) AS Decimal
+            RETURN SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToDouble(provider as System.IFormatProvider) as real8
-            return self
+            PUBLIC METHOD IConvertible.ToDouble(provider AS System.IFormatProvider) AS REAL8
+            RETURN SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToInt16(provider as System.IFormatProvider) as short
-            return self
+            PUBLIC METHOD IConvertible.ToInt16(provider AS System.IFormatProvider) AS SHORT
+            RETURN SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToInt32(provider as System.IFormatProvider) as long
-            return self
+            PUBLIC METHOD IConvertible.ToInt32(provider AS System.IFormatProvider) AS LONG
+            RETURN SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToInt64(provider as System.IFormatProvider) as int64
+            PUBLIC METHOD IConvertible.ToInt64(provider AS System.IFormatProvider) AS INT64
 				RETURN SELF
 
 			/// <exclude />            
-            static method ToObject(u as __Usual) as object
-            switch u:_usualType
-                case UsualType.ARRAY		; return u:_arrayValue
-                case UsualType.CodeBlock	; return u:_codeblockValue
-                case UsualType.Date			; return u:_dateValue
-                case UsualType.DateTime		; return u:_dateTimeValue
-                case UsualType.Decimal		; return u:_decimalValue
-                case UsualType.FLOAT		; return u:_floatValue
-                case UsualType.Int64		; return u:_i64Value
-                case UsualType.Long			; return u:_intValue
-                case UsualType.LOGIC		; return u:_logicValue
-                case UsualType.OBJECT		; return u:_refData
-                case UsualType.PTR			; return u:_ptrValue
-                case UsualType.STRING		; return u:_refData
-                case UsualType.SYMBOL		; return u:_symValue
-                case UsualType.Void		; return null
-                otherwise					; return null
-            end switch
+            STATIC METHOD ToObject(u AS __Usual) AS OBJECT
+            SWITCH u:_usualType
+                CASE UsualType.ARRAY		; RETURN u:_arrayValue
+                CASE UsualType.CodeBlock	; RETURN u:_codeblockValue
+                CASE UsualType.Date			; RETURN u:_dateValue
+                CASE UsualType.DateTime		; RETURN u:_dateTimeValue
+                CASE UsualType.Decimal		; RETURN u:_decimalValue
+                CASE UsualType.FLOAT		; RETURN u:_floatValue
+                CASE UsualType.Int64		; RETURN u:_i64Value
+                CASE UsualType.Long			; RETURN u:_intValue
+                CASE UsualType.LOGIC		; RETURN u:_logicValue
+                CASE UsualType.OBJECT		; RETURN u:_refData
+                CASE UsualType.PTR			; RETURN u:_ptrValue
+                CASE UsualType.STRING		; RETURN u:_refData
+                CASE UsualType.SYMBOL		; RETURN u:_symValue
+                CASE UsualType.Void		; RETURN NULL
+                OTHERWISE					; RETURN NULL
+            END SWITCH
             
             /// <inheritdoc />
-            public method IConvertible.ToSByte(provider as System.IFormatProvider) as SByte
-            return self
+            PUBLIC METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
+            RETURN SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToSingle(provider as System.IFormatProvider) as real4
-            return self
+            PUBLIC METHOD IConvertible.ToSingle(provider AS System.IFormatProvider) AS REAL4
+            RETURN SELF
            
 			/// <exclude />
-			public method AsString() as string strict
-				return self:ToString()
+			PUBLIC METHOD AsString() AS STRING STRICT
+				RETURN SELF:ToString()
 			
 			/// <exclude />
-			public method Clone() as __Usual
+			PUBLIC METHOD Clone() AS __Usual
 				// clone types that need cloning
-				local result as __Usual
-				switch self:_usualType
-				case UsualType.Object
-					result := __Usual{self:value}
-				case UsualType.String
-					result := __Usual { String.Copy(self:_stringValue)}
-				case UsualType.Array
-					result := __Usual { Aclone(self:_arrayValue) }
-				otherwise
-					result := self
-				end switch
-				return result
+				LOCAL result AS __Usual
+				SWITCH SELF:_usualType
+				CASE UsualType.Object
+					result := __Usual{SELF:value}
+				CASE UsualType.String
+					result := __Usual { String.Copy(SELF:_stringValue)}
+				CASE UsualType.Array
+					result := __Usual { AClone(SELF:_arrayValue) }
+				OTHERWISE
+					result := SELF
+				END SWITCH
+				RETURN result
 				 
-            public method ToString() as string
-            local strResult as string
+            PUBLIC METHOD ToString() AS STRING
+            LOCAL strResult AS STRING
             
-            switch (self:_usualType)
-                case UsualType.Array		; strResult := iif (self:_refData == null, "NULL_ARRAY", self:_arrayValue:ToString())
-                case UsualType.CODEBLOCK  ; strResult := iif (self:_refData == null, "NULL_CODEBLOCK", self:_codeblockValue:ToString())
-                case UsualType.OBJECT		; strResult := iif (self:_refData == null, "NULL_OBJECT", self:_refData:ToString())
-                case UsualType.Date		; strResult := self:_dateValue:ToString()
-                case UsualType.DateTime	; strResult := self:_dateTimeValue:ToString()
-                case UsualType.Decimal	; strResult := iif (self:_refData == null, "0", self:_decimalValue:ToString())
-                case UsualType.Float		; strResult := self:_r8Value:ToString()
-                case UsualType.Long		; strResult := self:_intValue:ToString()
-                case UsualType.Int64		; strResult := self:_i64Value:ToString()
-                case UsualType.LOGIC		; strResult := iif(!self:_logicValue , ".F." , ".T.")
-                case UsualType.PTR		; strResult := self:_ptrValue:ToString()
-                case UsualType.STRING		; strResult := iif (self:_refData == null, "NULL_STRING", self:_stringValue:ToString())
-                case UsualType.Symbol		; strResult := self:_symValue:ToString()
-                case UsualType.Void		; strResult := "NIL"
-                otherwise					; strResult := ""
-            end switch
-            return strResult
+            SWITCH (SELF:_usualType)
+                CASE UsualType.Array		; strResult := iif (SELF:_refData == NULL, "NULL_ARRAY", SELF:_arrayValue:ToString())
+                CASE UsualType.CODEBLOCK  ; strResult := iif (SELF:_refData == NULL, "NULL_CODEBLOCK", SELF:_codeblockValue:ToString())
+                CASE UsualType.OBJECT		; strResult := iif (SELF:_refData == NULL, "NULL_OBJECT", SELF:_refData:ToString())
+                CASE UsualType.Date		; strResult := SELF:_dateValue:ToString()
+                CASE UsualType.DateTime	; strResult := SELF:_dateTimeValue:ToString()
+                CASE UsualType.Decimal	; strResult := iif (SELF:_refData == NULL, "0", SELF:_decimalValue:ToString())
+                CASE UsualType.Float		; strResult := SELF:_r8Value:ToString()
+                CASE UsualType.Long		; strResult := SELF:_intValue:ToString()
+                CASE UsualType.Int64		; strResult := SELF:_i64Value:ToString()
+                CASE UsualType.LOGIC		; strResult := iif(!SELF:_logicValue , ".F." , ".T.")
+                CASE UsualType.PTR		; strResult := SELF:_ptrValue:ToString()
+                CASE UsualType.STRING		; strResult := iif (SELF:_refData == NULL, "NULL_STRING", SELF:_stringValue:ToString())
+                CASE UsualType.Symbol		; strResult := SELF:_symValue:ToString()
+                CASE UsualType.Void		; strResult := "NIL"
+                OTHERWISE					; strResult := ""
+            END SWITCH
+            RETURN strResult
             
             
-            public method ToString(provider as System.IFormatProvider) as string
-            return self:ToString()
+            PUBLIC METHOD ToString(provider AS System.IFormatProvider) AS STRING
+            RETURN SELF:ToString()
             
-            public method IConvertible.ToType(conversionType as System.Type, provider as System.IFormatProvider) as object
-            if conversionType:IsPointer
-                switch self:_usualType	
-                    case UsualType.PTR	; return _ptrValue
-                    case UsualType.Long	; return (IntPtr) _intValue
-                    case UsualType.Int64	; return (IntPtr) _i64Value
-                    otherwise	
-                        throw InvalidCastException{}
-                end switch
-            else
-                var o := __Usual:ToObject(self)
-                if conversionType:IsAssignableFrom(o:GetType())
-                    return o
-                elseif o is IConvertible
-                    return ((IConvertible) o):Totype(conversionType, provider)
-                else
-                    throw InvalidCastException{}
-                endif
-            endif
-            
-            /// <inheritdoc />
-            public method IConvertible.ToUInt16(provider as System.IFormatProvider) as word
-            return self
+            PUBLIC METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
+            IF conversionType:IsPointer
+                SWITCH SELF:_usualType	
+                    CASE UsualType.PTR	; RETURN _ptrValue
+                    CASE UsualType.Long	; RETURN (IntPtr) _intValue
+                    CASE UsualType.Int64	; RETURN (IntPtr) _i64Value
+                    OTHERWISE	
+                        THROW InvalidCastException{}
+                END SWITCH
+            ELSE
+                VAR o := __Usual:ToObject(SELF)
+                IF conversionType:IsAssignableFrom(o:GetType())
+                    RETURN o
+                ELSEIF o IS IConvertible
+                    RETURN ((IConvertible) o):Totype(conversionType, provider)
+                ELSE
+                    THROW InvalidCastException{}
+                ENDIF
+            ENDIF
             
             /// <inheritdoc />
-            public method IConvertible.ToUInt32(provider as System.IFormatProvider) as dword
-            return self
+            PUBLIC METHOD IConvertible.ToUInt16(provider AS System.IFormatProvider) AS WORD
+            RETURN SELF
             
             /// <inheritdoc />
-            public method IConvertible.ToUInt64(provider as System.IFormatProvider) as uint64
-            return self
+            PUBLIC METHOD IConvertible.ToUInt32(provider AS System.IFormatProvider) AS DWORD
+            RETURN SELF
+            
+            /// <inheritdoc />
+            PUBLIC METHOD IConvertible.ToUInt64(provider AS System.IFormatProvider) AS uint64
+            RETURN SELF
             
            /// <exclude />
-		    public method GetTypeCode() as System.TypeCode
-            switch _usualType
-                case UsualType.ARRAY	; return TypeCode.Object
-                case UsualType.CodeBlock; return TypeCode.Object			
-                case UsualType.Date	; return TypeCode.Object
-                case UsualType.DateTime; return TypeCode.DateTime
-                case UsualType.Decimal; return TypeCode.Decimal
-                case UsualType.FLOAT	; return TypeCode.Object
-                case UsualType.Int64	; return TypeCode.Int64
-                case UsualType.Long	; return TypeCode.Int32
-                case UsualType.LOGIC	; return TypeCode.Boolean
-                case UsualType.OBJECT	; return TypeCode.Object
-                case UsualType.PTR	; return TypeCode.Object
-                case UsualType.STRING ; return TypeCode.String
-                case UsualType.SYMBOL ; return TypeCode.Object
-                case UsualType.Void
-                otherwise				; return TypeCode.Object
-            end switch
+		    PUBLIC METHOD GetTypeCode() AS System.TypeCode
+            SWITCH _usualType
+                CASE UsualType.ARRAY	; RETURN TypeCode.Object
+                CASE UsualType.CodeBlock; RETURN TypeCode.Object			
+                CASE UsualType.Date	; RETURN TypeCode.Object
+                CASE UsualType.DateTime; RETURN TypeCode.DateTime
+                CASE UsualType.Decimal; RETURN TypeCode.Decimal
+                CASE UsualType.FLOAT	; RETURN TypeCode.Object
+                CASE UsualType.Int64	; RETURN TypeCode.Int64
+                CASE UsualType.Long	; RETURN TypeCode.Int32
+                CASE UsualType.LOGIC	; RETURN TypeCode.Boolean
+                CASE UsualType.OBJECT	; RETURN TypeCode.Object
+                CASE UsualType.PTR	; RETURN TypeCode.Object
+                CASE UsualType.STRING ; RETURN TypeCode.String
+                CASE UsualType.SYMBOL ; RETURN TypeCode.Object
+                CASE UsualType.Void
+                OTHERWISE				; RETURN TypeCode.Object
+            END SWITCH
         #endregion
         
         #region Error Method
            INTERNAL PROPERTY ValType AS STRING
-		   get
-            switch self:_usualType
-                case UsualType.Array		; return "A"
-                case UsualType.CodeBlock	; return "B"
-                case UsualType.Date			; return "D"
-                case UsualType.DateTime		; return "D"
-                case UsualType.DECIMAL		; return "N"
-                case UsualType.FLOAT		; return "N"
-                case UsualType.Int64		; return "N"
-                case UsualType.Long			; return "N"
-                case UsualType.Logic		; return "L"
-                case UsualType.PTR			; return "-"
-                case UsualType.String		; return "C"
-				case UsualType.Object		; return "O"
-                case UsualType.Symbol		; return "#"
-                case UsualType.Void			; return "U"
-                otherwise
+		   GET
+            SWITCH SELF:_usualType
+                CASE UsualType.Array		; RETURN "A"
+                CASE UsualType.CodeBlock	; RETURN "B"
+                CASE UsualType.Date			; RETURN "D"
+                CASE UsualType.DateTime		; RETURN "D"
+                CASE UsualType.DECIMAL		; RETURN "N"
+                CASE UsualType.FLOAT		; RETURN "N"
+                CASE UsualType.Int64		; RETURN "N"
+                CASE UsualType.Long			; RETURN "N"
+                CASE UsualType.Logic		; RETURN "L"
+                CASE UsualType.PTR			; RETURN "-"
+                CASE UsualType.String		; RETURN "C"
+				CASE UsualType.Object		; RETURN "O"
+                CASE UsualType.Symbol		; RETURN "#"
+                CASE UsualType.Void			; RETURN "U"
+                OTHERWISE
 					Debug.Fail( "Unhandled data type in Usual:Valtype" )
-            end switch
-			return "?"                        
-			end get
-			end property
-            static internal method ConversionError(toTypeString as string, toType as System.Type, u as __Usual) as Error
-				var	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)  
+            END SWITCH
+			RETURN "?"                        
+			END GET
+			END PROPERTY
+            STATIC INTERNAL METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
+				VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)  
 				VAR err			:= Error{GenCode.EG_DataType,"USUAL", cMessage}
 				err:ArgTypeReq	:= toType
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+toTypeString
 				err:Args        := <OBJECT>{u}
-				return err
+				RETURN err
 
-            static internal method ConversionError(typeNum as DWORD, toType as System.Type, u as __Usual) as Error
-				var	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), typeString(DWORD(typeNum)))  
+            STATIC INTERNAL METHOD ConversionError(typeNum AS DWORD, toType AS System.Type, u AS __Usual) AS Error
+				VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), TypeString(DWORD(typeNum)))  
 				VAR err			:= Error{GenCode.EG_DataType,"USUAL", cMessage}
 				err:ArgTypeReq	:= toType
 				err:ArgNum		:= 1
 				err:FuncSym		:= "USUAL => "+TypeString((DWORD) typeNum)
 				err:ArgType		:= typeNum
 				err:Args        := <OBJECT>{u}
-				return err
+				RETURN err
             
-            static internal method OverflowError(ex as OverflowException, toTypeString as string, toType as System.Type, u as __Usual) as Error
-				var message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)  
-				var err			 := Error{GenCode.EG_NUMOVERFLOW, "USUAL", message}
+            STATIC INTERNAL METHOD OverflowError(ex AS OverflowException, toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
+				VAR message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)  
+				VAR err			 := Error{GenCode.EG_NUMOVERFLOW, "USUAL", message}
 				err:ArgTypeReq	 := toType
 				err:ArgNum		 := 1
 				err:FuncSym		 := "USUAL => "+toTypeString
 				err:Args		 := <OBJECT>{u}
-				return err
+				RETURN err
             
-            static internal method BinaryError( cOperator as string, message as string, left as logic, lhs as __Usual, rhs as __Usual) as Error
-				var err			 := Error{ArgumentException{}}
+            STATIC INTERNAL METHOD BinaryError( cOperator AS STRING, message AS STRING, left AS LOGIC, lhs AS __Usual, rhs AS __Usual) AS Error
+				VAR err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
 				err:ArgNum		 := iif (left, 1, 2)
 				err:FuncSym		 := cOperator
 				err:Description  := message
 				err:Arg			 := IIF(left, "left operand" , "right operand")
 				err:Args         := <OBJECT> {lhs, rhs}
-				return err
+				RETURN err
             
-            static internal method UnaryError( cOperator as string, u as __Usual) as Error
-				var err			 := Error{ArgumentException{}}
+            STATIC INTERNAL METHOD UnaryError( cOperator AS STRING, u AS __Usual) AS Error
+				VAR err			 := Error{ArgumentException{}}
 				err:GenCode		 := GenCode.EG_ARG
 				err:ArgNum		 := 1
 				err:FuncSym		 := cOperator
 				err:Description  := __CavoStr(VOErrors.INVALIDARGTYPE)
 				err:Arg			 := "USUAL"
 				err:Args         := <OBJECT> {u}
-				return err
+				RETURN err
             
             
         #endregion
 
 		#region Special methods used by the compiler
         /// <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
-		static method __InexactEquals( lhs as __Usual, rhs as __Usual ) as logic
-			if lhs:IsString .and. rhs:IsString
-				return __StringEquals( lhs:_stringValue, rhs:_stringValue)
-			else
-				return lhs:UsualEquals(rhs, "=")
-			endif
+		STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
+			IF lhs:IsString .and. rhs:IsString
+				RETURN __StringEquals( lhs:_stringValue, rhs:_stringValue)
+			ELSE
+				RETURN lhs:UsualEquals(rhs, "=")
+			ENDIF
 
         /// <summary>This method is used by the compiler for code that does an inexact comparison between a usual and a string.</summary>
-		static method __InexactEquals( lhs as __Usual, rhs as string ) as logic
-			if lhs:IsString 
-				return __StringEquals( lhs:_stringValue, rhs)
-			else
-				throw BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-			endif
+		STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
+			IF lhs:IsString 
+				RETURN __StringEquals( lhs:_stringValue, rhs)
+			ELSE
+				THROW BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+			ENDIF
 
         /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
-		static method __InexactNotEquals( lhs as __Usual, rhs as __Usual ) as logic
+		STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
 			// emulate VO behavior for "" and NIL
 			// "" = NIL but also "" != NIL, NIL = "" and NIL != ""
 			IF lhs:IsString 
-				if rhs:IsString
-					return __StringNotEquals( lhs:_stringValue, rhs:_stringValue)
-				elseif rhs:IsNil .and. lhs:_stringValue != null .and. lhs:_stringValue:Length == 0
+				IF rhs:IsString
+					RETURN __StringNotEquals( lhs:_stringValue, rhs:_stringValue)
+				ELSEIF rhs:IsNil .and. lhs:_stringValue != NULL .and. lhs:_stringValue:Length == 0
 					RETURN FALSE
 				ENDIF
-			endif
-			if rhs:IsString .and. lhs:IsNil .and. rhs:_stringValue != null .and. rhs:_stringValue:Length == 0
-				return false
-			else
-				return ! lhs:UsualEquals(rhs, "<>")
-			endif
+			ENDIF
+			IF rhs:IsString .and. lhs:IsNil .and. rhs:_stringValue != NULL .and. rhs:_stringValue:Length == 0
+				RETURN FALSE
+			ELSE
+				RETURN ! lhs:UsualEquals(rhs, "<>")
+			ENDIF
         /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
-		static method __InexactNotEquals( lhs as __Usual, rhs as string ) as logic
-			if lhs:IsString 
-				return __StringNotEquals( lhs:_stringValue, rhs)
-			else
-				throw BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), true, lhs, rhs)
-			endif
+		STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
+			IF lhs:IsString 
+				RETURN __StringNotEquals( lhs:_stringValue, rhs)
+			ELSE
+				THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
+			ENDIF
 
 		#endregion
-        internal class UsualDebugView
-            private _uvalue as __Usual
-            public constructor (u as __Usual)
+        INTERNAL CLASS UsualDebugView
+            PRIVATE _uvalue AS __Usual
+            PUBLIC CONSTRUCTOR (u AS __Usual)
             _uvalue := u
             
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            public property Value as object get _uvalue:VALUE
-            public property Type  as UsualType get _uvalue:_usualType
+            PUBLIC PROPERTY VALUE AS OBJECT GET _uvalue:VALUE
+            PUBLIC PROPERTY Type  AS UsualType GET _uvalue:_usualType
             
-        end class
+        END CLASS
         */
-    end structure			
+    END STRUCTURE			
     
     
     [StructLayout(LayoutKind.Explicit)];
-    internal structure _UsualData
+    INTERNAL STRUCTURE _UsualData
         // Fields
-        [FieldOffset(0)] internal d as __VoDate
-        [FieldOffset(0)] internal r8 as real8
-        [FieldOffset(0)] internal i as long
-        [FieldOffset(0)] internal i64 as int64
-        [FieldOffset(0)] internal l as logic
-        [FieldOffset(0)] internal p as System.IntPtr
-        [FieldOffset(0)] internal s as symbol
-        [FieldOffset(0)] internal dt as System.DateTime
-    end structure
+        [FieldOffset(0)] INTERNAL d AS __VoDate
+        [FieldOffset(0)] INTERNAL r8 AS REAL8
+        [FieldOffset(0)] INTERNAL i AS LONG
+        [FieldOffset(0)] INTERNAL i64 AS INT64
+        [FieldOffset(0)] INTERNAL l AS LOGIC
+        [FieldOffset(0)] INTERNAL p AS System.IntPtr
+        [FieldOffset(0)] INTERNAL s AS SYMBOL
+        [FieldOffset(0)] INTERNAL dt AS System.DateTime
+    END STRUCTURE
     
-    internal enum UsualType as byte
+    INTERNAL ENUM UsualType AS BYTE
         // These numbers must match with the types defined in the compiler
         // They also match with the USUAL types in VO (BaseType.h)
-        member @@Void		:=0
-        member @@Long		:=1
-        member @@Date		:=2
-        member @@Float		:=3
+        MEMBER @@Void		:=0
+        MEMBER @@Long		:=1
+        MEMBER @@Date		:=2
+        MEMBER @@Float		:=3
         // Note # 4 (FIXED) was defined but never used in VO
-        member @@Array		:=5
-        member @@Object		:=6
-        member @@String		:=7
-        member @@Logic		:=8
-        member @@CodeBlock	:=9
-        member @@Symbol		:=10
+        MEMBER @@Array		:=5
+        MEMBER @@Object		:=6
+        MEMBER @@String		:=7
+        MEMBER @@Logic		:=8
+        MEMBER @@CodeBlock	:=9
+        MEMBER @@Symbol		:=10
         // see below for missing values
         // The follow numbers are defined but never stored inside a USUAL in VO and Vulcan
-        member @@Byte		:=11
-        member @@ShortInt	:=12
-        member @@Word		:=13
-        member @@DWord		:=14
-        member @@Real4		:=15
-        member @@Real8		:=16
-        member @@Psz		:=17
-        member @@Ptr		:=18
-        member @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
-        member @@Int64		:=22
-        member @@Uint64     :=23
-        member @@Char		:=24    // not stored in a usual
-        member @@Dynamic    :=25 
-        member @@DateTime	:=26
-        member @@Decimal	:=27
-        member @@Memo		:=32	// Used in RDD system in VO
-        member @@Invalid    :=99
-    end enum
+        MEMBER @@Byte		:=11
+        MEMBER @@ShortInt	:=12
+        MEMBER @@Word		:=13
+        MEMBER @@DWord		:=14
+        MEMBER @@Real4		:=15
+        MEMBER @@Real8		:=16
+        MEMBER @@Psz		:=17
+        MEMBER @@Ptr		:=18
+        MEMBER @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
+        MEMBER @@Int64		:=22
+        MEMBER @@Uint64     :=23
+        MEMBER @@Char		:=24    // not stored in a usual
+        MEMBER @@Dynamic    :=25 
+        MEMBER @@DateTime	:=26
+        MEMBER @@Decimal	:=27
+        MEMBER @@Memo		:=32	// Used in RDD system in VO
+        MEMBER @@Invalid    :=99
+    END ENUM
     
     [StructLayout(LayoutKind.Explicit, Pack := 1)];
-    internal structure UsualFlags
-        [FieldOffset(0)] export usualType as UsualType
-        [FieldOffset(1)] export width as Sbyte
-        [FieldOffset(2)] export decimals as Sbyte
-        [FieldOffset(3)] export isByRef as logic
+    INTERNAL STRUCTURE UsualFlags
+        [FieldOffset(0)] EXPORT usualType AS UsualType
+        [FieldOffset(1)] EXPORT width AS Sbyte
+        [FieldOffset(2)] EXPORT decimals AS Sbyte
+        [FieldOffset(3)] EXPORT isByRef AS LOGIC
         
-        constructor(type as UsualType)
+        CONSTRUCTOR(type AS UsualType)
 			usualType := type
 			width	  := 0
 			decimals  := 0
-			isByRef   := false
+			isByRef   := FALSE
     END STRUCTURE
 
 /// <summary>
@@ -2262,8 +2265,8 @@ begin namespace XSharp
 /// <param name="x"></param>
 /// <returns>
 /// </returns>
-function UsualType(u as __Usual) as dword
-	return (dword) u:Type
+FUNCTION UsualType(u AS __Usual) AS DWORD
+	RETURN (DWORD) u:Type
     
 /// <summary>
 /// Access contents of an address, whether it is passed by reference or not.
@@ -2271,8 +2274,8 @@ function UsualType(u as __Usual) as dword
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function UsualVal(u as __Usual) as __Usual
-	return u
+FUNCTION UsualVal(u AS __Usual) AS __Usual
+	RETURN u
 
 /// <summary>
 /// Determine the data type of an expression.
@@ -2280,8 +2283,8 @@ function UsualVal(u as __Usual) as __Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function ValType(u as __Usual) as string
-	return u:ValType
+FUNCTION ValType(u AS __Usual) AS STRING
+	RETURN u:ValType
 
     
-end namespace
+END NAMESPACE

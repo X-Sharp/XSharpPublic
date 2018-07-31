@@ -287,5 +287,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			SetExact(lExact)
 
+		[Fact, Trait("Category", "Usual conversion tests")];
+		METHOD UsualConversionTests() AS VOID
+			LOCAL u AS USUAL
+			LOCAL d AS DWORD
+			u := -1
+			d := UsualConversionTests_helper(u)
+			Assert.Equal(UInt32.MaxValue - 1 , d)
+		
+		METHOD UsualConversionTests_helper(d AS DWORD) AS DWORD
+			d --
+		RETURN d
+		
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

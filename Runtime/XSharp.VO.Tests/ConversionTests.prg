@@ -60,10 +60,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u := Val("1.2345E2")
 			Assert.Equal(123.45, (FLOAT) u)
 
-			Assert.Equal(238, Val("0XEE"))
-			Assert.Equal(238, Val("0xEE"))
-			Assert.Equal(256, Val("0x100"))
-			Assert.Equal(430, Val("0x1AE"))
+			Assert.True(Val("0XEE") == 238)
+			Assert.True(Val("0xEE") == 238)
+			Assert.True(Val("0x100") == 256)
+			Assert.True(Val("0x1AE") == 430)
 
 
 	END CLASS

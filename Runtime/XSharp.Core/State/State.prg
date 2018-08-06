@@ -120,7 +120,7 @@ CLASS XSharp.RuntimeState
 				RETURN (T) oSettings[nSetting]
 			ENDIF
 		END LOCK
-		RETURN Default(T)
+		RETURN DEFAULT(T)
 
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS INT, oValue AS T) AS T
 		LOCAL result AS T
@@ -128,13 +128,13 @@ CLASS XSharp.RuntimeState
 			IF oSettings.ContainsKey(nSetting)
 				result := (T) oSettings[nSetting]
 			ELSE
-				result := Default(T)
+				result := DEFAULT(T)
 			ENDIF
 			oSettings[nSetting] := oValue
 		END LOCK
 		RETURN	result		
 
-	#region properties from the Vulcan RuntimeState that are emulated
+	#region properties FROM the Vulcan RuntimeState that are emulated
 
 	/// <summary>The current compiler setting for the VO11 compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
@@ -362,9 +362,9 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
 		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d
-		do while (dateformat.IndexOf("mm") != -1)
+		DO WHILE (dateformat.IndexOf("mm") != -1)
 			dateformat		:= dateformat:Replace("mm", "m")
-		enddo
+		ENDDO
 		// make sure we have a double mm to get double digit dates
 
 		DO WHILE dateformat.IndexOf("dd") != -1
@@ -434,7 +434,7 @@ CLASS XSharp.RuntimeState
 		SetValue<DWORD>(Set.DateCountry, country)
 		
 		LOCAL format, year AS STRING
-		year := iif(Century , "YYYY" , "YY")
+		year := IIF(Century , "YYYY" , "YY")
 		SWITCH country
 			CASE 1 // American
 				format := "MM/DD/" + year

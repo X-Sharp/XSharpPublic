@@ -4,12 +4,12 @@
 // See License.txt in the project root for license information.
 //
 /// <summary>Helper class for the BREAK statement</summary>
-class XSharp.Internal.WrappedException inherit Exception
-	private initonly _value as object
+CLASS XSharp.Internal.WrappedException INHERIT Exception
+	PRIVATE INITONLY _value AS OBJECT
 	/// <summary>The property that is passed by the BREAK statement</summary>
-	property value as object get _value
+	PROPERTY VALUE AS OBJECT GET _value
 	
-	constructor(value as object)
-		_value := value
+	CONSTRUCTOR(VALUE AS OBJECT)
+		_value := VALUE
 	
-end class
+END CLASS

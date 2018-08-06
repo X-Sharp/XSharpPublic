@@ -10,14 +10,14 @@
 /// </summary>
 /// <param name="nGenCode">The error code exported by an error object. One of the GenCodes enum values</param>
 /// <returns>The message string associated with the error code.  Error messages are nation-dependent.</returns>
-function ErrString(nGenCode as dword) as string
-	local cResource as string
-	if nGenCode > XSharp.GenCode.EG_MAX
+FUNCTION ErrString(nGenCode AS DWORD) AS STRING
+	LOCAL cResource AS STRING
+	IF nGenCode > XSharp.GenCode.EG_MAX
 		cResource := "RT_MSG_ERR_UNKNOWN"
-	else
+	ELSE
 		cResource := "RT_MSG_ERR_" + nGenCode:ToString()
-	endif
-	return Messages.GetString(cResource)
+	ENDIF
+	RETURN Messages.GetString(cResource)
 	
 	
 	
@@ -26,16 +26,16 @@ function ErrString(nGenCode as dword) as string
 	/// </summary>
 	/// <param name="nDosErr">The DOS error number that you want a description for.</param>
 	/// <returns>The message string associated with the error number.</returns>
-function DosErrString(nDosErr as dword) as string
+FUNCTION DosErrString(nDosErr AS DWORD) AS STRING
 	LOCAL cResource AS STRING
-	local cResult as string
+	LOCAL cResult AS STRING
 	cResource := "RT_MSG_DOSERR_" + nDosErr:ToString() 
 	// when not found return string from RT_MSG_DOSERR_UNKNOWN
 	cResult := Messages.GetString(cResource)
 	IF String.IsNullOrEmpty(cResult)
 		cResult := Messages.GetString("RT_MSG_DOSERR_UNKNOWN")
 	ENDIF
-	return cResult
+	RETURN cResult
 
 
 
@@ -47,8 +47,8 @@ function DosErrString(nDosErr as dword) as string
 /// </returns>
 FUNCTION TypeString( nType AS DWORD ) AS STRING
    LOCAL ret AS STRING
-   switch nType
-   case 0
+   SWITCH nType
+   CASE 0
       ret := "NIL"
    CASE  LONG
       ret := "LONGINT"

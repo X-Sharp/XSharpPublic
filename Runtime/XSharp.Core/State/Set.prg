@@ -429,7 +429,7 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 
 /// </exclude>
 FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
-	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", typeof(Functions):Assembly }
+	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", TYPEOF(Functions):Assembly }
 	VAR obj := rm:GetObject(cBase) 
 	IF obj != NULL
 		VAR bytes := obj ASTYPE BYTE[]
@@ -672,7 +672,7 @@ FUNCTION SetInternational(cMode AS STRING) AS STRING
 	CASE "ORDINAL"
 		RuntimeState.GetInstance()._SetInternationalWindows()
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, nameof(cMode), "Unsupported international mode: "+ cMode)
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cMode), "Unsupported international mode: "+ cMode)
 	END SWITCH
 	RETURN cOld
 
@@ -706,6 +706,6 @@ FUNCTION SetCollation(cCollation AS STRING)  AS STRING
 	CASE "ORDINAL"
 		RuntimeState.CollationMode := CollationMode.Ordinal
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, nameof(cCollation), "Unsupported collation mode: "+cCollation)
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cCollation), "Unsupported collation mode: "+cCollation)
 	END SWITCH
 	RETURN cOld

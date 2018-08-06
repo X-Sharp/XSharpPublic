@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>
 		/// <returns>Integer value</returns>
-		PROPERTY Value    AS REAL8 GET
+		PROPERTY VALUE    AS REAL8 GET
 		/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
 		/// <returns>Integer value</returns>
 		PROPERTY Digits	  AS INT  GET 
@@ -71,6 +71,6 @@ BEGIN NAMESPACE XSharp
 		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.ICodeBlock"/>
-		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module as System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
+		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
 	END INTERFACE
 END NAMESPACE

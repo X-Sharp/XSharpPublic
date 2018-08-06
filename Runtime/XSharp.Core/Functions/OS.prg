@@ -3,19 +3,19 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
-using System.IO
+USING XSharp
+USING System.IO
 /// <summary>
 /// Return the last DOS error code  (Exit code) and set a new code.
 /// </summary>
 /// <param name="nSet">New value for the DOS eror code </param>
 /// <returns>
 /// </returns>
-function DosError(nSet as dword) as dword
-	local nOld as int
+FUNCTION DosError(nSet AS DWORD) AS DWORD
+	LOCAL nOld AS INT
 	nOld := System.Environment.ExitCode
-	System.Environment.ExitCode := unchecked((int) nSet)
-	return UNCHECKED((DWORD) nOld)
+	System.Environment.ExitCode := UNCHECKED((INT) nSet)
+	RETURN UNCHECKED((DWORD) nOld)
 
 /// <summary>
 /// Return the last DOS error code  (Exit code). use GetDosError() to fetch the error from the Last Win32 call.
@@ -23,10 +23,10 @@ function DosError(nSet as dword) as dword
 /// <param name="nSet"></param>
 /// <returns>
 /// </returns>
-function DosError() as dword
-	local nOld as int
+FUNCTION DosError() AS DWORD
+	LOCAL nOld AS INT
 	nOld := System.Environment.ExitCode
-	return UNCHECKED((DWORD) nOld)
+	RETURN UNCHECKED((DWORD) nOld)
 
 
 
@@ -35,8 +35,8 @@ function DosError() as dword
 /// </summary>
 /// <returns>
 /// </returns>
-function GetDosError() as dword
-	return unchecked((dword) System.Runtime.InteropServices.Marshal.GetLastWin32Error())
+FUNCTION GetDosError() AS DWORD
+	RETURN UNCHECKED((DWORD) System.Runtime.InteropServices.Marshal.GetLastWin32Error())
 	
 /// <summary>
 /// Retrieve the contents of a DOS environment variable.
@@ -44,8 +44,8 @@ function GetDosError() as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function GetEnv(cVar as string) as string
-	return System.Environment.GetEnvironmentVariable(cVar)
+FUNCTION GetEnv(cVar AS STRING) AS STRING
+	RETURN System.Environment.GetEnvironmentVariable(cVar)
 
 
 	/// <summary>
@@ -55,8 +55,8 @@ function GetEnv(cVar as string) as string
 /// <param name="cValue"></param>
 /// <returns>
 /// </returns>
-function SetEnv(cVar as string,cValue as string) as logic
-	return SetEnv(cVar, cValue, false)
+FUNCTION SetEnv(cVar AS STRING,cValue AS STRING) AS LOGIC
+	RETURN SetEnv(cVar, cValue, false)
 /// <summary>
 /// Update or replace the contents of a DOS environment variable.
 /// </summary>
@@ -65,20 +65,20 @@ function SetEnv(cVar as string,cValue as string) as logic
 /// <param name="lAppend"></param>
 /// <returns>
 /// </returns>
-function SetEnv(cVar as string,cValue as string,lAppend as logic) as logic
-	local result as logic
-	try
-		if lAppend
-			local cOldValue as string
+FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
+	LOCAL result AS LOGIC
+	TRY
+		IF lAppend
+			LOCAL cOldValue AS STRING
 			cOldValue := System.Environment.GetEnvironmentVariable(cVar)
 			IF ! String.IsNullOrEmpty( cOldValue )
 				cOldValue += ";"
-			endif
+			ENDIF
 			cValue := cOldValue + cValue
-		endif
+		ENDIF
 		System.Environment.SetEnvironmentVariable(cVar, cValue)
 		result := System.Environment.GetEnvironmentVariable(cVar) == cValue
-	catch
+	CATCH
 		result := false
 	END TRY
 	RETURN result   
@@ -89,8 +89,8 @@ function SetEnv(cVar as string,cValue as string,lAppend as logic) as logic
 /// Identify the current workstation.
 /// </summary>
 /// <returns>The workstation ID as a string.</returns>
-function NetName() as string
-	return System.Environment.MachineName
+FUNCTION NetName() AS STRING
+	RETURN System.Environment.MachineName
 
 
 /// <summary>
@@ -99,29 +99,29 @@ function NetName() as string
 /// <param name="cDisk"></param>
 /// <returns>
 /// </returns>
-function CurDir (cDisk as string) as STRING
-	return CurDir()
+FUNCTION CurDir (cDisk AS STRING) AS STRING
+	RETURN CurDir()
 
 /// <summary>
 /// Return the current Windows directory.
 /// </summary>
 /// <returns>
 /// </returns>
-function CurDir() as string
-	local cDir as string
-	local index as int
+FUNCTION CurDir() AS STRING
+	LOCAL cDir AS STRING
+	LOCAL index AS INT
 	cDir := System.Environment.CurrentDirectory
 	index := cDir:Indexof(Path.VolumeSeparatorChar)
-	if index > 0
+	IF index > 0
 		cDir := cDir:Substring(index+1)
-	endif
-	if cDir[0] == Path.DirectorySeparatorChar
+	ENDIF
+	IF cDir[0] == Path.DirectorySeparatorChar
 		cDir := cDir:Substring(1)
-	endif
-	if cDir[cDir:Length-1]  == Path.DirectorySeparatorChar
+	ENDIF
+	IF cDir[cDir:Length-1]  == Path.DirectorySeparatorChar
 		cDir := cDir:Substring(0, cDir:Length-1)
-	endif
-	return cDir
+	ENDIF
+	RETURN cDir
 
 /// <summary>
 /// Return the current Windows drive.
@@ -129,16 +129,16 @@ function CurDir() as string
 /// <returns>
 /// Return the letter of the current drive without colon
 /// </returns>
-function CurDrive() as string
-	local currentDirectory := System.IO.Directory.GetCurrentDirectory() as string
-	local drive := "" as string
-	local position as int
+FUNCTION CurDrive() AS STRING
+	LOCAL currentDirectory := System.IO.Directory.GetCurrentDirectory() AS STRING
+	LOCAL drive := "" AS STRING
+	LOCAL position AS INT
 	
 	position := currentDirectory:IndexOf(System.IO.Path.VolumeSeparatorChar)
-	if position > 0
+	IF position > 0
 		drive := currentDirectory:Substring(0,position)
-	endif
-	return drive
+	ENDIF
+	RETURN drive
 	
 
 /// <summary>
@@ -146,16 +146,16 @@ function CurDrive() as string
 /// </summary>
 /// <returns>
 /// </returns>
-function WorkDir() as string
-	local cPath as string
-	local asm   as System.Reflection.Assembly
+FUNCTION WorkDir() AS STRING
+	LOCAL cPath AS STRING
+	LOCAL asm   AS System.Reflection.Assembly
 	asm := System.Reflection.Assembly.GetCallingAssembly()
 	cPath := asm:ManifestModule:FullyQualifiedName
 	cPath := Path.GetDirectoryName(cPath)
-	if cPath[cPath:Length-1] !=  Path.DirectorySeparatorChar
+	IF cPath[cPath:Length-1] !=  Path.DirectorySeparatorChar
 		cPath += Path.DirectorySeparatorChar:ToString()
-	endif
-	return cPath
+	ENDIF
+	RETURN cPath
 
 /// <summary>
 /// Return the space available on the current disk drive.
@@ -163,12 +163,12 @@ function WorkDir() as string
 /// <param name="cDisk"></param>
 /// <returns>
 /// </returns>
-function DiskFree() as Int64
-	return DiskFree(CurDrive())
+FUNCTION DiskFree() AS INT64
+	RETURN DiskFree(CurDrive())
 
 
-internal function DiskNo2DiskName(nDisk as INT) as string
-	return ('A'+ (nDisk-1)):ToString()
+INTERNAL FUNCTION DiskNo2DiskName(nDisk AS INT) AS STRING
+	RETURN ('A'+ (nDisk-1)):ToString()
 
 /// <summary>
 /// Return the space available on a specified disk.
@@ -177,8 +177,8 @@ internal function DiskNo2DiskName(nDisk as INT) as string
 /// <returns>
 /// The free space on the specified disk drive.
 /// </returns>	   
-function DiskFree(cDrive as STRING) as INT64
-	return DriveInfo{cDrive}:TotalFreeSpace
+FUNCTION DiskFree(cDrive AS STRING) AS INT64
+	RETURN DriveInfo{cDrive}:TotalFreeSpace
 
 
 /// <summary>
@@ -188,10 +188,10 @@ function DiskFree(cDrive as STRING) as INT64
 /// <returns>
 /// The free space on the specified disk drive.
 /// </returns>	   
-function DiskFree(nDrive as INT) as int64
-	local cDrive as string
+FUNCTION DiskFree(nDrive AS INT) AS INT64
+	LOCAL cDrive AS STRING
 	cDrive := DiskNo2DiskName(nDrive)
-	return DiskFree(cDrive)
+	RETURN DiskFree(cDrive)
 
 
 /// <summary>
@@ -200,8 +200,8 @@ function DiskFree(nDrive as INT) as int64
 /// <returns>
 /// The capacity of the current disk.
 /// </returns>
-function DiskSpace() as int64
-	return DiskSpace(CurDrive())
+FUNCTION DiskSpace() AS INT64
+	RETURN DiskSpace(CurDrive())
 
 
 /// <summary>
@@ -210,10 +210,10 @@ function DiskSpace() as int64
 /// <param name="nDisk"></param>
 /// <returns>
 /// </returns>
-function DiskSpace(nDisk as INT) as int64
-	local cDisk as string
+FUNCTION DiskSpace(nDisk AS INT) AS INT64
+	LOCAL cDisk AS STRING
 	cDisk := DiskNo2DiskName(nDisk)
-	return DiskSpace(cDisk)
+	RETURN DiskSpace(cDisk)
 
 /// <summary>
 /// Return the capacity of the specified disk.
@@ -221,8 +221,8 @@ function DiskSpace(nDisk as INT) as int64
 /// <param name="cDisk"></param>
 /// <returns>
 /// </returns>
-function DiskSpace(cDisk as STRING) as int64
-	return DriveInfo{cDisk}:TotalSize
+FUNCTION DiskSpace(cDisk AS STRING) AS INT64
+	RETURN DriveInfo{cDisk}:TotalSize
 
 /// <summary>
 /// Detect a concurrency conflict.
@@ -251,19 +251,19 @@ FUNCTION NetErr( lValue AS LOGIC ) AS LOGIC
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function LockTries() as DWORD
-	return RuntimeState.LockTries
+FUNCTION LockTries() AS DWORD
+	RETURN RuntimeState.LockTries
 
 /// <summary>
 /// </summary>
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function LockTries(nValue as DWORD) as DWORD
-	local nResult as DWORD
+FUNCTION LockTries(nValue AS DWORD) AS DWORD
+	LOCAL nResult AS DWORD
 	nResult := RuntimeState.LockTries
 	RuntimeState.LockTries := nValue
-	return nValue
+	RETURN nValue
 
 
 
@@ -273,19 +273,19 @@ function LockTries(nValue as DWORD) as DWORD
 /// <param name="pszDir"></param>
 /// <returns>
 /// </returns>
-function DirChange(cDir as STRING) as int
-	local result as int
-	try
-		if !Directory.Exists(cDir)
+FUNCTION DirChange(cDir AS STRING) AS INT
+	LOCAL result AS INT
+	TRY
+		IF !Directory.Exists(cDir)
 			Directory.SetCurrentDirectory(cDir)
 			result := 0
-		else
+		ELSE
 			result := -1
-		endif
-	catch 
+		ENDIF
+	CATCH 
 		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
-	end try
-	return result
+	END TRY
+	RETURN result
 	
 /// <summary>
 /// Create a directory.
@@ -293,19 +293,19 @@ function DirChange(cDir as STRING) as int
 /// <param name="pszDir"></param>
 /// <returns>
 /// </returns>
-function DirMake(cDir as STRING) as int
-	local result as int
-	try
-		if !Directory.Exists(cDir)
+FUNCTION DirMake(cDir AS STRING) AS INT
+	LOCAL result AS INT
+	TRY
+		IF !Directory.Exists(cDir)
 			Directory.CreateDirectory(cDir)
 			result := 0
-		else
+		ELSE
 			result := -1
-		endif
-	catch 
+		ENDIF
+	CATCH 
 		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
-	end try
-	return result
+	END TRY
+	RETURN result
 	
 /// <summary>
 /// Remove a directory.
@@ -313,19 +313,19 @@ function DirMake(cDir as STRING) as int
 /// <param name="pszDir"></param>
 /// <returns>
 /// </returns>
-function DirRemove(cDir as string) as int
-	local result as int
-	try
-		if Directory.Exists(cDir)
+FUNCTION DirRemove(cDir AS STRING) AS INT
+	LOCAL result AS INT
+	TRY
+		IF Directory.Exists(cDir)
 			Directory.Delete(cDir,false)
 			result := 0
-		else
+		ELSE
 			result := -1
-		endif
-	catch 
+		ENDIF
+	CATCH 
 		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
-	end try
-	return result
+	END TRY
+	RETURN result
 
 
 /// <summary>
@@ -335,30 +335,30 @@ function DirRemove(cDir as string) as int
 /// <returns>
 /// </returns>
 
-function DiskChange(c as string) as logic
-	if String.IsNullOrEmpty(c)
-		return false
-	endif
+FUNCTION DiskChange(c AS STRING) AS LOGIC
+	IF String.IsNullOrEmpty(c)
+		RETURN false
+	ENDIF
 	c := c:Substring(0,1)+Path.VolumeSeparatorChar:ToString()+Path.DirectorySeparatorChar:ToString()
-	return DirChange(c) == 0
+	RETURN DirChange(c) == 0
 
 
 /// <summary>Return the operating system name.</summary>
 /// <returns>
 /// </returns>
-function OS() as string
-	return OS(FALSE)
+FUNCTION OS() AS STRING
+	RETURN OS(FALSE)
 
 /// <summary>Return the operating system name.</summary>
 /// <param name="lExtended"></param>
 /// <returns>
 /// </returns>
-function OS(lExtended as LOGIC) as string
-    local cOs as string
-    var o := Environment.OSVersion
+FUNCTION OS(lExtended AS LOGIC) AS STRING
+    LOCAL cOs AS STRING
+    VAR o := Environment.OSVersion
 	cOs := o:ToString()
-	if !lExtended
-		switch o:Platform
+	IF !lExtended
+		SWITCH o:Platform
 		CASE PlatformID.Win32NT
 			cOs := "Windows NT"
 		CASE PlatformID.Win32S
@@ -380,9 +380,9 @@ function OS(lExtended as LOGIC) as string
 			cOs := "Windows CE"
 		OTHERWISE
 			cOs := o:ToString()
-		end switch
-	endif
-    return cOs
+		END SWITCH
+	ENDIF
+    RETURN cOs
  
 
 
@@ -395,10 +395,10 @@ FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL
     IF nPos = 0
         cPath := cFile
     ELSE
-        cPath := cFile:SubString(0, (int) nPos)
+        cPath := cFile:SubString(0, (INT) nPos)
     ENDIF
 
-    return cPath
+    RETURN cPath
 
 FUNCTION _ExecName() AS STRING
     RETURN System.Reflection.Assembly.GetExecutingAssembly():Location
@@ -420,7 +420,7 @@ FUNCTION ExecName( lFull AS LOGIC ) AS STRING
     RETURN cPath
 
 FUNCTION ModuleName( lFull AS LOGIC ) AS STRING 
-    return ExecName( lFull )
+    RETURN ExecName( lFull )
 
 
 FUNCTION GetMimeType(sFileName AS STRING) AS STRING

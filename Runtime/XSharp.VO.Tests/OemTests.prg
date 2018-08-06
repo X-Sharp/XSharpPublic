@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 // Array tests are not working correctly yet with the current build
@@ -17,8 +17,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	 
  		[Trait("Category", "Oem")];
 		[Fact]; 
-		METHOD ToAnsi() as void
-			local c1, c2 as String
+		METHOD ToAnsi() AS VOID
+			LOCAL c1, c2 AS STRING
 			c1 := "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
 			c2 := Oem2Ansi(c1)
 			// should be the same, no special characters
@@ -33,6 +33,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c2 := Ansi2Oem(c2)
 			Assert.Equal(c1, c2)
 
-		return
+		RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

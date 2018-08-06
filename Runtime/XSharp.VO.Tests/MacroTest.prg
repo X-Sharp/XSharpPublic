@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 // WinBool test
@@ -16,21 +16,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS MacroTests
 	 
 		[Fact, Trait("Category", "Macro")]; 
-		method Tests as void
+		METHOD Tests AS VOID
 			LOCAL cMacro AS STRING
 			LOCAL bMacro AS USUAL
-			local uValue as USUAL
+			LOCAL uValue AS USUAL
 			cMacro := "1+1"
 			uValue := &(cMacro)
-			Assert.Equal (2, (int) uValue)
+			Assert.Equal (2, (INT) uValue)
 			cMacro := "{||1+2}"
 			bMacro := MCompile(cMacro)
 			uValue := Eval(bMacro)
-			Assert.Equal (3, (int) uValue)
+			Assert.Equal (3, (INT) uValue)
 			cMacro := "{||SQrt(25)}"
 			bMacro := MCompile(cMacro)
 			uValue := Eval(bMacro)
-			Assert.Equal (5, (int) uValue)
+			Assert.Equal (5, (INT) uValue)
 		RETURN
 
 	END CLASS

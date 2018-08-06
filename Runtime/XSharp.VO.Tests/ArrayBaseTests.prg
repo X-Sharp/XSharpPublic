@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 // Array tests are not working correctly yet with the current build
@@ -26,12 +26,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		END CLASS
 
-		METHOD BuildArray() as ARRAY OF Developer
+		METHOD BuildArray() AS ARRAY OF Developer
 			LOCAL aDevs AS ARRAY OF Developer
 			aDevs := {}
 			AADD(aDevs, Developer{"Chris","Pyrgas"})
 			AADD(aDevs, Developer{"Nikos","Kokkalis"})
-			return aDevs
+			RETURN aDevs
  		[Trait("Category", "ArrayBase")];
 		[Fact]; 
 		METHOD TestIndices AS VOID
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
  		[Trait("Category", "ArrayBase")];
 		[Fact]; 
-		METHOD TestSort as void
+		METHOD TestSort AS VOID
 			VAR aDevs := BuildArray()
 			ASort(aDevs, {x, y => x:LastName <= y:LastName})
 			Assert.Equal("Kokkalis", aDevs[1]:LastName)
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Trait("Category", "ArrayBase")];
 		[Fact]; 
-		METHOD TestEval as void
+		METHOD TestEval AS VOID
 			VAR aDevs := BuildArray()
 			LOCAL result AS STRING
 			result := ""
@@ -71,13 +71,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Trait("Category", "ArrayBase")];
 		[Fact]; 
-		METHOD TestScan as void
+		METHOD TestScan AS VOID
 			VAR aDevs := BuildArray()
-			Assert.Equal(1, (int) AScan(aDevs, { x => X:FirstName == "Chris" .and. x:LastName == "Pyrgas"}))
-			Assert.Equal(2, (int) AScan(aDevs, { x => X:FirstName == "Nikos" .and. x:LastName == "Kokkalis"}))
-			Assert.Equal(0, (int) AScan(aDevs, { x => X:FirstName == "Fabrice" .and. x:LastName == "Foray"}))
+			Assert.Equal(1, (INT) AScan(aDevs, { x => X:FirstName == "Chris" .and. x:LastName == "Pyrgas"}))
+			Assert.Equal(2, (INT) AScan(aDevs, { x => X:FirstName == "Nikos" .and. x:LastName == "Kokkalis"}))
+			Assert.Equal(0, (INT) AScan(aDevs, { x => X:FirstName == "Fabrice" .and. x:LastName == "Foray"}))
 			VAR chris := aDevs[1]
-			Assert.Equal(1, (int) Ascan(adevs, chris))
+			Assert.Equal(1, (INT) Ascan(adevs, chris))
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

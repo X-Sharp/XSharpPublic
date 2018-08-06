@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Globalization
+USING System.Globalization
 // StringComparer class that takes care of Windows and Clipper string comparisons
 STATIC CLASS XSharp.StringCompareHelpers
 	PRIVATE STATIC collationTable AS BYTE[]
@@ -64,7 +64,7 @@ STATIC CLASS XSharp.StringCompareHelpers
 					VAR nR := bRHS[nPos]
 					// no need to lookup the same character. The weight table will
 					// have the same value for both
-					if nL != nR
+					IF nL != nR
 						nL := collationTable[nL]
 						nR := collationTable[nR]
 						IF nL < nR
@@ -78,7 +78,7 @@ STATIC CLASS XSharp.StringCompareHelpers
 							// I am not sure if this ever happens. If would creating an index unreliable
 							// most likely the ü will be sorted between u and v. 
 						ENDIF
-					endif
+					ENDIF
 				NEXT
 			END UNCHECKED
 		END LOCK
@@ -86,7 +86,7 @@ STATIC CLASS XSharp.StringCompareHelpers
 		// otherwise the shorter string is smaller than the longer string
 		nLen := strLHS:Length
 		rLen := strRHS:Length
-		return iif(nLen ==rLen, 0, iif(nLen < rLen, -1, 1))
+		RETURN IIF(nLen ==rLen, 0, IIF(nLen < rLen, -1, 1))
 END CLASS
 
 

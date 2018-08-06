@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-begin namespace XSharp.Internal
+BEGIN NAMESPACE XSharp.Internal
 	
 	
 	
@@ -11,32 +11,32 @@ begin namespace XSharp.Internal
 	/// This class is used to mark IntPtr _DLL arguments with the actual type
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Parameter)];
-		sealed class ActualTypeAttribute inherit Attribute
-		private initonly _value as System.Type
+		SEALED CLASS ActualTypeAttribute INHERIT Attribute
+		PRIVATE INITONLY _value AS System.Type
 		
-		property Value as System.Type get _value
+		PROPERTY VALUE AS System.Type GET _value
 		
-		constructor(value as System.Type)
-			_value := value
+		CONSTRUCTOR(VALUE AS System.Type)
+			_value := VALUE
 		
-	end class
+	END CLASS
 	
 	/// <summary>
 	/// This class exposes the namespace and globalclass in an assembly
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class ClassLibraryAttribute inherit Attribute
-		private initonly _globalClassName as string
-		private initonly _defaultNameSpace as string
+		SEALED CLASS ClassLibraryAttribute INHERIT Attribute
+		PRIVATE INITONLY _globalClassName AS STRING
+		PRIVATE INITONLY _defaultNameSpace AS STRING
 		
-		property GlobalClassName as string get _globalClassName
-		property DefaultNameSpace as string get _defaultNameSpace
+		PROPERTY GlobalClassName AS STRING GET _globalClassName
+		PROPERTY DefaultNameSpace AS STRING GET _defaultNameSpace
 		
-		constructor(globalClassName as string, defaultNameSpace as string)
+		CONSTRUCTOR(globalClassName AS STRING, defaultNameSpace AS STRING)
 			_globalClassName := globalClassName
 			_defaultNameSpace := defaultNameSpace
 		
-	end class
+	END CLASS
 	
 	
 	/// <summary>
@@ -45,30 +45,30 @@ begin namespace XSharp.Internal
 	/// </summary>
 	
 	[AttributeUsage(AttributeTargets.Method)];
-		sealed class ClipperCallingConventionAttribute inherit Attribute
-		private initonly _parameterNames as string[]
+		SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
+		PRIVATE INITONLY _parameterNames AS STRING[]
 		
-		property ParameterNames as string[] get _parameterNames
+		PROPERTY ParameterNames AS STRING[] GET _parameterNames
 		
-		constructor(parameterNames as string[])
+		CONSTRUCTOR(parameterNames AS STRING[])
 			_parameterNames := parameterNames
 		
-	end class
+	END CLASS
 	
 	
 	/// <summary>
 	/// this class records the compiler version used to build an assembly
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class CompilerVersionAttribute inherit Attribute
-		private initonly _version as string
+		SEALED CLASS CompilerVersionAttribute INHERIT Attribute
+		PRIVATE INITONLY _version AS STRING
 		
-		property Version as string get _version
+		PROPERTY Version AS STRING GET _version
 		
-		constructor(version as string)
+		CONSTRUCTOR(version AS STRING)
 			_version := version
 		
-	end class
+	END CLASS
 	
 	
 	/// <summary>
@@ -82,18 +82,18 @@ begin namespace XSharp.Internal
 	/// 4 = PSZ, null = empty, or a string
 	/// 5 = IntPtr (can be 0 for NullPtr)
 	/// </summary>
-	sealed class DefaultParameterValueAttribute inherit Attribute
-		private initonly _value as object
-		private initonly _flag  as int
+	SEALED CLASS DefaultParameterValueAttribute INHERIT Attribute
+		PRIVATE INITONLY _value AS OBJECT
+		PRIVATE INITONLY _flag  AS INT
 		
-		property Value as object get _value
-		property Flag  as int    get _flag
+		PROPERTY VALUE AS OBJECT GET _value
+		PROPERTY Flag  AS INT    GET _flag
 		
-		constructor(value as object, flag as int)
-			_value := value
+		CONSTRUCTOR(VALUE AS OBJECT, flag AS INT)
+			_value := VALUE
 			_flag  := flag
 		
-	end class
+	END CLASS
 	
 	/// <summary>
 	/// this class is used to describe VOSTRUCT and UNION structures which have a different semantics
@@ -101,36 +101,36 @@ begin namespace XSharp.Internal
 	/// Please note that the size assumes x86 (32 bits) OS.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Struct)];
-		sealed class VoStructAttribute inherit Attribute
-		private _size				as int
-		private _largestMemberSize  as int
+		SEALED CLASS VoStructAttribute INHERIT Attribute
+		PRIVATE _size				AS INT
+		PRIVATE _largestMemberSize  AS INT
 		
-		property Size				as int get _size
-		property LargestMemberSize	as int get _largestMemberSize
+		PROPERTY Size				AS INT GET _size
+		PROPERTY LargestMemberSize	AS INT GET _largestMemberSize
 		
-		constructor(size as int, largestMemberSize as int)
+		CONSTRUCTOR(size AS INT, largestMemberSize AS INT)
 			_size := size
 			_largestMemberSize := largestMemberSize
 		
-	end class
+	END CLASS
 	
-end namespace
+END NAMESPACE
 
 
-begin namespace XSharp
+BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// this class records the compiler version used to build an assembly
 	/// Not internal because it is supposed to be used by 3rd party vendors as well
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class ImplicitNamespaceAttribute inherit Attribute
-		private initonly _namespace as string
+		SEALED CLASS ImplicitNamespaceAttribute INHERIT Attribute
+		PRIVATE INITONLY _namespace AS STRING
 		
-		property Namespace as string get _namespace
+		PROPERTY Namespace AS STRING GET _namespace
 		
-		constructor(namespace as string)
+		CONSTRUCTOR(namespace AS STRING)
 			_namespace := namespace
 		
-	end class
+	END CLASS
 	
-end namespace
+END NAMESPACE

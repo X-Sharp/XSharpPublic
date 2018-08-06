@@ -3,10 +3,10 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
+USING XSharp
 BEGIN NAMESPACE XSharp
 	/// <summary>Values that match the Visual Objects SET_* defines </summary>
-	ENUM Set                                
+	ENUM SET
 		MEMBER EXACT       := 1			// LOGIC
 		MEMBER FIXED	   := 2			// LOGIC
 		MEMBER DECIMALS    := 3			// INT
@@ -44,8 +44,8 @@ BEGIN NAMESPACE XSharp
 		MEMBER WRAP        := 35		// LOGIC
 		MEMBER MESSAGE     := 36		// INT
 		MEMBER MCENTER     := 37		// LOGIC
-		member SCROLLBREAK := 38		// LOGIC
-		member ERRRORLOG   := 39		// LOGIC
+		MEMBER SCROLLBREAK := 38		// LOGIC
+		MEMBER ERRRORLOG   := 39		// LOGIC
 
 		MEMBER NETERR      	:= 40	// LOGIC
 		MEMBER DIGITS      	:= 41	// INT   
@@ -70,19 +70,19 @@ BEGIN NAMESPACE XSharp
 		// 65 - 97 unused
 
 		// X# helper state
-		member EpochCent   := 70		// Numeric
-		member EpochYear   := 71		// Numeric
-		member DateFormatNet := 72		// String
-		member DateFormatEmpty := 73    // String
-		member OPTIONVO11	:= 74	// Logic
-		member OPTIONOVF	:= 75	// Logic
-		member NOMETHOD		:= 76	// STRING
-		member APPMODULE	:= 77	// System.Reflection.Module
+		MEMBER EpochCent   := 70		// Numeric
+		MEMBER EpochYear   := 71		// Numeric
+		MEMBER DateFormatNet := 72		// String
+		MEMBER DateFormatEmpty := 73    // String
+		MEMBER OPTIONVO11	:= 74	// Logic
+		MEMBER OPTIONOVF	:= 75	// Logic
+		MEMBER NOMETHOD		:= 76	// STRING
+		MEMBER APPMODULE	:= 77	// System.Reflection.Module
 		MEMBER PATHARRAY    := 78	// String[]
 		MEMBER NatDLL		:= 79   // string
 		MEMBER CollationTable := 80  // byte[]
 		MEMBER ErrorLevel   := 81  // DWORD
-		member ErrorBlock   := 82  // CodeBlock
+		MEMBER ErrorBlock   := 82  // CodeBlock
 
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC

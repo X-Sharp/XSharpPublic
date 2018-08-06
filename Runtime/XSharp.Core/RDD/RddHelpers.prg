@@ -3,45 +3,45 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
+USING XSharp
 
-begin namespace XSharp.RDD
-	static class RDDHelpers
+BEGIN NAMESPACE XSharp.RDD
+	STATIC CLASS RDDHelpers
 		
-		static method WAS as WorkAreas
-			return WorkAreas.GetInstance()
+		STATIC METHOD WAS AS WorkAreas
+			RETURN WorkAreas.GetInstance()
 		
-		static method CWA(cFunction as string) as IRDD 
-			local oResult as IRDD
+		STATIC METHOD CWA(cFunction AS STRING) AS IRDD 
+			LOCAL oResult AS IRDD
 			oResult := CWA()
-			if oResult != null_object
-				return oResult
-			endif
-			throw NoTableError(cFunction)
+			IF oResult != null_object
+				RETURN oResult
+			ENDIF
+			THROW NoTableError(cFunction)
 		
-		static method CWA as IRDD 
-			return WorkAreas.GetInstance().CurrentWorkArea
+		STATIC METHOD CWA AS IRDD 
+			RETURN WorkAreas.GetInstance().CurrentWorkArea
 		
-		static method CWANum as long
-			return WorkAreas.GetInstance().CurrentWorkAreaNO
+		STATIC METHOD CWANum AS LONG
+			RETURN WorkAreas.GetInstance().CurrentWorkAreaNO
 		
-		static method CWANum(cFunction as string)  as long
-			var oWA := WorkAreas.GetInstance().CurrentWorkArea
-			if oWA != null
-				return oWA:Area
-			endif
-			throw NoTableError(cFunction)
+		STATIC METHOD CWANum(cFunction AS STRING)  AS LONG
+			VAR oWA := WorkAreas.GetInstance().CurrentWorkArea
+			IF oWA != null
+				RETURN oWA:Area
+			ENDIF
+			THROW NoTableError(cFunction)
 		
 		
 		
-		static method NoTableError(cFunction as string) as RddError
-			local oError as RddError
+		STATIC METHOD NoTableError(cFunction AS STRING) AS RddError
+			LOCAL oError AS RddError
 			oError := RddError{}
 			oError:SubSystem := "XSharp.RDD"
 			oError:Gencode  := EG_NOTABLE
 			oError:SubCode  := 1050
 			oError:Severity := ES_ERROR
 			oError:FuncSym := cFunction
-			return oError
-	end class
-end namespace
+			RETURN oError
+	END CLASS
+END NAMESPACE

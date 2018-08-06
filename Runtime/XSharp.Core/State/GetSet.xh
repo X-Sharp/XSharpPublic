@@ -4,9 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
-#command GETSTATE <type> <set>	      =>				 ;
-		RETURN XSharp.RuntimeState.GetValue\< <type> \>( <set> )
+#command GETSTATE <type> <SET>	      =>				 ;
+		RETURN XSharp.RuntimeState.GetValue\< <type> \>( <SET> )
 
-#command SETSTATE <type> <set>	<value> =>				 ;
-		RETURN XSharp.RuntimeState.SetValue\< <type> \>( <set> , <value> )			 ;;
+#command SETSTATE <type> <SET>	<VALUE> =>				 ;
+		RETURN XSharp.RuntimeState.SetValue\< <type> \>( <SET> , <VALUE> )			 ;;
 

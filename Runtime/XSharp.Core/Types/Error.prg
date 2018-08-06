@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp
 			SELF:Description := ex:Message
 			SELF:GenCode     := EG_EXCEPTION
 
-		CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[])
+		CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
 			SUPER(ex.Message,ex)
 			SELF:setDefaultValues()
 			SELF:GenCode     := EG_EXCEPTION
@@ -133,11 +133,11 @@ BEGIN NAMESPACE XSharp
 			// must override in subclass
 			RETURN		
 			
-			#region Static methods to construct an error			
+			#region STATIC methods TO construct an error			
 			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING) AS Error
 				RETURN ArgumentError(cFuncName, name, description, 0)
 
-			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs params OBJECT[]) AS Error
+			STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs PARAMS OBJECT[]) AS Error
 				VAR err			:= Error{Gencode.EG_ARG, name, ErrString( EG_ARG )}
 				err:FuncSym     := cFuncName
 				err:Description := err:Message
@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharp
 				e:Description := ErrString( dwGenCode )
 				RETURN e
 				
-			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs Params OBJECT[] ) AS Error
+			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
 				LOCAL e AS Error
 				e			  := Error{dwGenCode, dwSubCode}
 				e:SubSystem   := "DBCMD"
@@ -185,7 +185,7 @@ BEGIN NAMESPACE XSharp
 				e:Args        := aArgs
 				RETURN e
 				
-			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[] ) AS Error
+			STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
 				LOCAL e AS Error
 				e := Error{dwGenCode, dwSubCode, cFuncName, cArgName, iArgNum}
 				e:SubSystem   := "DBCMD"
@@ -193,14 +193,14 @@ BEGIN NAMESPACE XSharp
 				e:Args        := aArgs
 				RETURN e	
 				
-		   STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs params OBJECT[] ) AS Error
+		   STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
 			  LOCAL e AS Error
 			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
 			  e:GenCode     := EG_DATATYPE
 			  e:Description := __CavoStr( VOErrors.DATATYPEERROR )
 			  RETURN e
 
-		  STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs params OBJECT[]) AS Error
+		  STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs PARAMS OBJECT[]) AS Error
 			  LOCAL e AS Error
 			  e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
 			  e:GenCode     := EG_ARG

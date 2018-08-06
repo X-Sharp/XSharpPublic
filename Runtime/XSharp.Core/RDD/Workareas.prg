@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Collections.Generic
+USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>Class that contains the list of open workareas. Each thread will have its own list.</summary>
@@ -17,11 +17,11 @@ CLASS WorkAreas
 	#region Fields
 	PRIVATE Aliases  AS Dictionary<STRING, LONG>	// 1 based area numbers !
 	PRIVATE RDDs	 AS IRDD[]    
-	PRIVATE iCurrentWorkarea as LONG
+	PRIVATE iCurrentWorkarea AS LONG
 	PUBLIC LastException AS Exception 
 
 	///<summary>Get singleton Workareas object for current thread</summary>
-	STATIC METHOD GetInstance() as WorkAreas
+	STATIC METHOD GetInstance() AS WorkAreas
 		VAR oState	:= XSharp.RuntimeState.GetInstance() 
 		VAR oInstance := oState:WorkAreas 
 		RETURN oInstance
@@ -90,9 +90,9 @@ CLASS WorkAreas
 					VAR oRdd := RDDs[ nArea]
 					TRY
 						lResult := oRdd:Close()
-						if lResult
+						IF lResult
 							Aliases:Remove(oRdd:Alias)
-						endif
+						ENDIF
 					CATCH e AS Exception
 						lResult			:= FALSE  
 						LastException	:= e
@@ -137,7 +137,7 @@ CLASS WorkAreas
 	PUBLIC METHOD GetAlias( nArea AS LONG) AS STRING
 		IF AdjustArea(REF nArea) 
 			BEGIN LOCK RDDs
-				if RDDs[nArea] != NULL
+				IF RDDs[nArea] != NULL
 					RETURN RDDs[nArea]:Alias
 				ENDIF
 			END LOCK
@@ -169,7 +169,7 @@ CLASS WorkAreas
 		RETURN FALSE   
 
 	///<summary>Get 1 based Current workarea Number</summary>
-	PUBLIC PROPERTY CurrentWorkAreaNO as LONG GET iCurrentWorkArea
+	PUBLIC PROPERTY CurrentWorkAreaNO AS LONG GET iCurrentWorkArea
 
 	///<summary>Get Current workarea Object</summary>
 	PUBLIC PROPERTY CurrentWorkArea AS IRDD

@@ -4,138 +4,138 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Collections.Generic
-using System.IO
-using System.Linq
+USING System.Collections.Generic
+USING System.IO
+USING System.Linq
 
-internal static class XSharp.FileSearch
-	static private foundEntries	:= List<object>{} as List<object>
-	static private enumerator   := null as IEnumerator<object>
-	static private currentItem	:= null as object
-	static private isAtEnd		:= true as logic
-	const timeFormat := "HH:MM:ss" as string
+INTERNAL STATIC CLASS XSharp.FileSearch
+	STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>
+	STATIC PRIVATE enumerator   := null AS IEnumerator<OBJECT>
+	STATIC PRIVATE currentItem	:= null AS OBJECT
+	STATIC PRIVATE isAtEnd		:= true AS LOGIC
+	CONST timeFormat := "HH:MM:ss" AS STRING
 	
-	public static method FFCount( filespec as string , attributes as dword ) as dword
+	PUBLIC STATIC METHOD FFCount( filespec AS STRING , attributes AS DWORD ) AS DWORD
 		FFirst(filespec,attributes)
-		return (dword)foundEntries:Count
+		RETURN (DWORD)foundEntries:Count
 		
-	public static method FFirst( filespec as string , attributes as dword ) as logic
+	PUBLIC STATIC METHOD FFirst( filespec AS STRING , attributes AS DWORD ) AS LOGIC
 		// Split filespec in path and mask
 		// when path is empty then path is current directory
 		// make sure that we only search in the given path
-		local cPath as string
-		local cMask as string
+		LOCAL cPath AS STRING
+		LOCAL cMask AS STRING
 		cPath := Path.GetDirectoryName(filespec)
 		cMask := Path.GetFilename(filespec)
-		if String.IsNullOrEmpty(cPath)
+		IF String.IsNullOrEmpty(cPath)
 			cPath := System.Environment.CurrentDirectory
-		endif
+		ENDIF
 		foundEntries:Clear()
-		if attributes == FA_VOLUME
-				local allDrives := DriveInfo.GetDrives() as DriveInfo[]
-				foreach drive as DriveInfo in allDrives
+		IF attributes == FA_VOLUME
+				LOCAL allDrives := DriveInfo.GetDrives() AS DriveInfo[]
+				FOREACH drive AS DriveInfo IN allDrives
 					foundEntries:Add(drive)
-			next
-		else
-			local oDirInfo as DirectoryInfo
+			NEXT
+		ELSE
+			LOCAL oDirInfo AS DirectoryInfo
 			oDirInfo := DirectoryInfo{cPath}
-			if (attributes & FA_DIRECTORY) == FA_DIRECTORY
-					local directories := oDirInfo:GetDirectories(cMask) as FileSystemInfo[]
-					attributes -= (int) FA_DIRECTORY
-					attributes += (int) FA_NORMAL
-					var selectedDirs := from DirectoryInfo in directories ;
-					where (DirectoryInfo:Attributes & (FileAttributes) attributes ) != 0 select DirectoryInfo
-					foreach directory as DirectoryInfo in selectedDirs
+			IF (attributes & FA_DIRECTORY) == FA_DIRECTORY
+					LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
+					attributes -= (INT) FA_DIRECTORY
+					attributes += (INT) FA_NORMAL
+					VAR selectedDirs := FROM DirectoryInfo IN directories ;
+					WHERE (DirectoryInfo:Attributes & (FileAttributes) attributes ) != 0 SELECT DirectoryInfo
+					FOREACH directory AS DirectoryInfo IN selectedDirs
 						foundEntries:Add(directory)
-				next 
-			else
-				attributes += (int) FA_NORMAL
-				local files := oDirInfo:GetFiles(filespec) as FileInfo[]
-				var selectedFiles := from FileInfo in files ;
-				where ( FileInfo:Attributes & (FileAttributes) attributes) != 0 select FileInfo
-				foreach file as FileInfo in files
+				NEXT 
+			ELSE
+				attributes += (INT) FA_NORMAL
+				LOCAL files := oDirInfo:GetFiles(filespec) AS FileInfo[]
+				VAR selectedFiles := FROM FileInfo IN files ;
+				WHERE ( FileInfo:Attributes & (FileAttributes) attributes) != 0 SELECT FileInfo
+				FOREACH file AS FileInfo IN files
 					foundEntries:Add(file)
-				next					
-			endif
-		endif
+				NEXT					
+			ENDIF
+		ENDIF
 		enumerator := foundEntries:GetEnumerator()
 		enumerator:Reset()
 		isAtEnd := !enumerator:MoveNext()
-		if  !isAtEnd
+		IF  !isAtEnd
 			currentItem := enumerator:Current
-		endif
-		return (foundEntries:Count > 0)
+		ENDIF
+		RETURN (foundEntries:Count > 0)
 		
-	public static method FNext() as logic
-		if !isAtEnd
+	PUBLIC STATIC METHOD FNext() AS LOGIC
+		IF !isAtEnd
 			isAtEnd := enumerator:MoveNext()
-			if !isAtEnd
+			IF !isAtEnd
 				currentItem := enumerator:Current
-			endif
-		endif
-		return isAtEnd
+			ENDIF
+		ENDIF
+		RETURN isAtEnd
 		
-	public static method FName() as string
-		local name := "" as string
-		if !isAtEnd
-			if (currentItem is DriveInfo)
+	PUBLIC STATIC METHOD FName() AS STRING
+		LOCAL name := "" AS STRING
+		IF !isAtEnd
+			IF (currentItem IS DriveInfo)
 				name := ((DriveInfo)currentItem):Name
-			elseif (currentItem is FileInfo)
+			ELSEIF (currentItem IS FileInfo)
 				name := ((FileInfo)currentItem):Name
-			elseif (currentItem is DirectoryInfo)
+			ELSEIF (currentItem IS DirectoryInfo)
 				name := ((DirectoryInfo) currentItem):Name
-			endif
-		endif
-		return name
+			ENDIF
+		ENDIF
+		RETURN name
 		
-	public static method FSize() as dword
-		local size := 0 as int
-		if !isAtEnd
-			if currentItem is DriveInfo
-				size := (int)((DriveInfo) currentItem):TotalSize
-			elseif (currentItem is FileInfo)
-				size := (int)((FileInfo)currentItem):Length
-			elseif currentItem is DirectoryInfo
-				size := (int)((DirectoryInfo) currentItem):GetFileSystemInfos().LongLength
-			endif						
-		endif
-		return (dword) size
+	PUBLIC STATIC METHOD FSize() AS DWORD
+		LOCAL size := 0 AS INT
+		IF !isAtEnd
+			IF currentItem IS DriveInfo
+				size := (INT)((DriveInfo) currentItem):TotalSize
+			ELSEIF (currentItem IS FileInfo)
+				size := (INT)((FileInfo)currentItem):Length
+			ELSEIF currentItem IS DirectoryInfo
+				size := (INT)((DirectoryInfo) currentItem):GetFileSystemInfos().LongLength
+			ENDIF						
+		ENDIF
+		RETURN (DWORD) size
 		
-	public static method FTime() as string
-		local time := "00:00:00" as string
-		if !isAtEnd
-			if (currentItem is FileInfo)
+	PUBLIC STATIC METHOD FTime() AS STRING
+		LOCAL time := "00:00:00" AS STRING
+		IF !isAtEnd
+			IF (currentItem IS FileInfo)
 				time := ((FileInfo)currentItem):LastWriteTime.ToString(timeFormat)
-			elseif currentItem is DirectoryInfo
+			ELSEIF currentItem IS DirectoryInfo
 				time := ((DirectoryInfo) currentItem):LastWriteTime.ToString(timeFormat)
-			endif						
-		endif
-		return  time
+			ENDIF						
+		ENDIF
+		RETURN  time
 		
-	public static method FDate() as DateTime
-		local time := DateTime.MinValue as DateTime
-		if !isAtEnd
-			if (currentItem is FileInfo)
+	PUBLIC STATIC METHOD FDate() AS DateTime
+		LOCAL time := DateTime.MinValue AS DateTime
+		IF !isAtEnd
+			IF (currentItem IS FileInfo)
 				time := ((FileInfo)currentItem):LastWriteTime
-			elseif currentItem is DirectoryInfo
+			ELSEIF currentItem IS DirectoryInfo
 				time := ((DirectoryInfo) currentItem):LastWriteTime
-			endif						
-		endif
-		return  time
+			ENDIF						
+		ENDIF
+		RETURN  time
 		
 		
-	public static method FAttrib() as dword
-		local attributes := 0x00000008 as int
-		if !isAtEnd
-			if (currentItem is FileInfo)
-				attributes := (int)((FileInfo)currentItem):Attributes
-			elseif currentItem is DirectoryInfo
-				attributes := (int)((DirectoryInfo) currentItem):Attributes
-			endif						
-		endif
-		return  (dword)attributes
+	PUBLIC STATIC METHOD FAttrib() AS DWORD
+		LOCAL attributes := 0x00000008 AS INT
+		IF !isAtEnd
+			IF (currentItem IS FileInfo)
+				attributes := (INT)((FileInfo)currentItem):Attributes
+			ELSEIF currentItem IS DirectoryInfo
+				attributes := (INT)((DirectoryInfo) currentItem):Attributes
+			ENDIF						
+		ENDIF
+		RETURN  (DWORD)attributes
 		
-		end class
+		END CLASS
 	/// <summary>
 	/// Return the number of files that match a given file specification and attribute.
 	/// </summary>
@@ -143,8 +143,8 @@ internal static class XSharp.FileSearch
 	/// <param name="nAttr"></param>
 	/// <returns>
 /// </returns>
-function FFCount(pszFile as string,nAttr as dword) as dword
-	return XSharp.FileSearch.FFCount(pszFile,nAttr) 
+FUNCTION FFCount(pszFile AS STRING,nAttr AS DWORD) AS DWORD
+	RETURN XSharp.FileSearch.FFCount(pszFile,nAttr) 
 	
 	/// <summary>
 	/// Find the first file that matches a given file specification or attribute.
@@ -153,15 +153,15 @@ function FFCount(pszFile as string,nAttr as dword) as dword
 	/// <param name="nAttr"></param>
 	/// <returns>
 	/// </returns>
-function FFirst(pszFile as string,nAttr as dword) as logic
-	return XSharp.FileSearch.FFirst(pszFile,nAttr)
+FUNCTION FFirst(pszFile AS STRING,nAttr AS DWORD) AS LOGIC
+	RETURN XSharp.FileSearch.FFirst(pszFile,nAttr)
 	/// <summary>
 	/// Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FAttrib() as dword
-	return XSharp.FileSearch.FAttrib() 
+FUNCTION FAttrib() AS DWORD
+	RETURN XSharp.FileSearch.FAttrib() 
 	
 	
 	/// <summary>
@@ -169,16 +169,16 @@ function FAttrib() as dword
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FDate() as DateTime
-	return XSharp.FileSearch.FDate()
+FUNCTION FDate() AS DateTime
+	RETURN XSharp.FileSearch.FDate()
 	
 	/// <summary>
 	/// Return the name of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FName() as string
-	return XSharp.FileSearch.FName()  
+FUNCTION FName() AS STRING
+	RETURN XSharp.FileSearch.FName()  
 	
 	
 	
@@ -188,8 +188,8 @@ function FName() as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FNext() as logic
-	return XSharp.FileSearch.FNext()     
+FUNCTION FNext() AS LOGIC
+	RETURN XSharp.FileSearch.FNext()     
 	
 	
 	/// <summary>
@@ -197,15 +197,15 @@ function FNext() as logic
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FSize() as dword
-	return XSharp.FileSearch.FSize() 
+FUNCTION FSize() AS DWORD
+	RETURN XSharp.FileSearch.FSize() 
 	/// <summary>
 	/// Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FTime() as string
-	return XSharp.FileSearch.FTime() 
+FUNCTION FTime() AS STRING
+	RETURN XSharp.FileSearch.FTime() 
 	
 	
 	
@@ -217,124 +217,124 @@ function FTime() as string
 	/// <returns>
 	/// True if the file exists, otherwise false
 	/// </returns>
-function File(cFile as string) as logic
-	local lFound as logic
-	local lHasWildCards as logic
-	local aPaths as string[]
-	local cTemp as string
-	local lFirst as LOGIC
+FUNCTION File(cFile AS STRING) AS LOGIC
+	LOCAL lFound AS LOGIC
+	LOCAL lHasWildCards AS LOGIC
+	LOCAL aPaths AS STRING[]
+	LOCAL cTemp AS STRING
+	LOCAL lFirst AS LOGIC
 	IF String.IsNullOrEmpty(cFile)
-		return FALSE
-	endif
-	lHasWildCards := cFile:IndexOfAny( <Char>{ '*', '?' } ) > 0
+		RETURN FALSE
+	ENDIF
+	lHasWildCards := cFile:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
 	XSharp.IO.File.LastFound := ""
-	if ! lHasWildCards
+	IF ! lHasWildCards
 		lFound := System.IO.File.Exists(cFile)
-		if lFound
+		IF lFound
 			XSharp.IO.File.LastFound := Path.GetFullPath( cFile )
-			return TRUE
-		endif
+			RETURN TRUE
+		ENDIF
 		aPaths := __GetSearchPaths()
 		lFirst := TRUE
-		foreach cPath as string in aPaths
+		FOREACH cPath AS STRING IN aPaths
 			cTemp := System.IO.Path.Combine(cPath, cFile)
-			if lFirst
+			IF lFirst
 				// store the first path that we looked in even when the file is not found
 				// to be compatible with VO
 				XSharp.IO.File.LastFound := cTemp
 				lFirst := FALSE
-			endif
+			ENDIF
 			lFound := System.IO.File.Exists(cTemp)
-			if lFound
+			IF lFound
 				XSharp.IO.File.LastFound := cTemp
-				return TRUE
-			endif
-		next
-	else
+				RETURN TRUE
+			ENDIF
+		NEXT
+	ELSE
 		// wildcard, so use Directory.GetFiles()
 		LOCAL files     AS STRING[]
 
-		if Path.IsPathRooted(cFile)
+		IF Path.IsPathRooted(cFile)
 			files := Directory.GetFiles( Path.GetDirectoryName( cFile ), Path.GetFileName( cFile ) )
-			if files:Length > 0
+			IF files:Length > 0
 				XSharp.IO.File.LastFound := files[1]
-				return TRUE
-			else
+				RETURN TRUE
+			ELSE
 				// store the first path that we looked in even when the file is not found
 				// to be compatible with VO
 				XSharp.IO.File.LastFound := cFile
-				return FALSE
-			endif
-		else
+				RETURN FALSE
+			ENDIF
+		ELSE
 			// Look in current directory first and if that fails through the whole normal search list
-			if __FileHelper(Environment.CurrentDirectory, cFile, false )
-				return true
-			endif
+			IF __FileHelper(Environment.CurrentDirectory, cFile, false )
+				RETURN true
+			ENDIF
 			aPaths := __GetSearchPaths()
 			lFirst := TRUE
-			foreach cPath as string in aPaths
-				if __FileHelper(cPath, cFile, lFirst )
-					return true
-				endif
+			FOREACH cPath AS STRING IN aPaths
+				IF __FileHelper(cPath, cFile, lFirst )
+					RETURN true
+				ENDIF
 				lFirst := FALSE
-			next
-		endif
-	endif
-	return FALSE
+			NEXT
+		ENDIF
+	ENDIF
+	RETURN FALSE
 	/// <summary>
 	/// Return the name and path of the file that was used by FXOpen() or File().
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function FPathName() as string
+FUNCTION FPathName() AS STRING
 
-	return XSharp.IO.File.LastFound
+	RETURN XSharp.IO.File.LastFound
 
 
-internal function __FileHelper(cPath as string, cFileSpec as string, lSavePath as LOGIC) as logic
-local cTemp as string
-local cFile as string
-local files as string[]
-if ! System.IO.Directory.Exists(cPath)
-	return false
-endif
+INTERNAL FUNCTION __FileHelper(cPath AS STRING, cFileSpec AS STRING, lSavePath AS LOGIC) AS LOGIC
+LOCAL cTemp AS STRING
+LOCAL cFile AS STRING
+LOCAL files AS STRING[]
+IF ! System.IO.Directory.Exists(cPath)
+	RETURN false
+ENDIF
 cTemp := System.IO.Path.Combine(cPath, cFileSpec)
 cPath := System.IO.Path.GetDirectoryName(cTemp)
 cFile := System.IO.Path.GetFileName(cTemp)
-if ! System.IO.Directory.Exists(cPath)
-	return false
-endif
+IF ! System.IO.Directory.Exists(cPath)
+	RETURN false
+ENDIF
 files := System.IO.Directory.GetFiles(cPath, cFile)
-if files:Length > 0 
+IF files:Length > 0 
 	XSharp.IO.File.LastFound := files[0]
-elseif lSavePath
+ELSEIF lSavePath
 	XSharp.IO.File.LastFound := cTemp
-endif
-return files:Length > 0
+ENDIF
+RETURN files:Length > 0
 
 
-internal function __GetSearchPaths() as string[]
+INTERNAL FUNCTION __GetSearchPaths() AS STRING[]
 	// Not found, now use the path settings from SetDefault and SetPath()
 	// if SetPath() is empty then we look through the Environment variable Path
-	local aDefault as string[]
+	LOCAL aDefault AS STRING[]
 	aDefault := __SetPathArray()
-	if aDefault != null
-		return aDefault
-	endif
+	IF aDefault != null
+		RETURN aDefault
+	ENDIF
 
-	var aPaths := List<string>{}
-	var cPath  := SetDefault()
-	if !String.IsNullOrEmpty(cPath)
+	VAR aPaths := List<STRING>{}
+	VAR cPath  := SetDefault()
+	IF !String.IsNullOrEmpty(cPath)
 		aPaths:Add(cPath)
-	endif
+	ENDIF
 	cPath := SetPath()
-	if String.IsNullOrEmpty(cPath)
+	IF String.IsNullOrEmpty(cPath)
 		cPath := GetEnv("PATH")
-	endif
-	if !String.IsNullOrEmpty(cPath)
-		var aElements := cPath:Split(<char>{ ';' }, StringSplitOptions.RemoveEmptyEntries )
+	ENDIF
+	IF !String.IsNullOrEmpty(cPath)
+		VAR aElements := cPath:Split(<CHAR>{ ';' }, StringSplitOptions.RemoveEmptyEntries )
 		aPaths:AddRange(aElements)
-	endif
+	ENDIF
 	aDefault := aPaths:ToArray()
 	__SetPathArray(aDefault)
-	return aDefault
+	RETURN aDefault

@@ -3,11 +3,11 @@ USING System.Globalization
 USING System.Resources
 
 
-function SetLiteral(dwRes as DWORD) as string
+FUNCTION SetLiteral(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 
-function GetStringDXAX(dwRes as dword) as string
-	return __CavoStr( dwRes )
+FUNCTION GetStringDXAX(dwRes AS DWORD) AS STRING
+	RETURN __CavoStr( dwRes )
 
 FUNCTION VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
 	RETURN VO_Sprintf( __CavoStr( format ), args )
@@ -45,7 +45,7 @@ FUNCTION VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
 			LOCAL elements AS STRING[]
 			elements := format:Split(<STRING>{"%s"},StringSplitOptions.None)
 			format   := ""
-			FOR VAR nVar := 0 to elements:Length -2
+			FOR VAR nVar := 0 TO elements:Length -2
 				format += elements[nVar]
 				format += "{" + nVar:ToString()+"}"
 			NEXT

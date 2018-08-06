@@ -100,23 +100,23 @@ CLASS DbOpenInfo
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
 	/// <summary>Return the numeric FileMode based on the Shared and Readonly flags </summary>
-	public property FileMode as DWORD 
-	get
-		local nMode as DWORD
+	PUBLIC PROPERTY FileMode AS DWORD 
+	GET
+		LOCAL nMode AS DWORD
 		nMode := FO_COMPAT
-		if (Shared)
+		IF (Shared)
 			nMode |= FO_SHARED
-		else
+		ELSE
 			nMode |= FO_EXCLUSIVE
-		endif
-		if (ReadOnly)
+		ENDIF
+		IF (ReadOnly)
 			nMode |= FO_READ
-		else
+		ELSE
 			nMode |= FO_READWRITE
-		endif
-		return nMode
-	end get
-	end property
+		ENDIF
+		RETURN nMode
+	END GET
+	END PROPERTY
 END CLASS  
 
 /// <summary>Helper class to store information needed to create a conditional order.</summary> 
@@ -266,7 +266,7 @@ STRUCTURE DbSeekInfo
 	/// <summary>A flag that is TRUE if a soft seek is to be performed. </summary>
 	PUBLIC SoftSeek AS LOGIC
 	/// <summary>An object containing the key value to find.</summary>
-	PUBLIC Value	AS OBJECT
+	PUBLIC VALUE	AS OBJECT
 END STRUCTURE
 
 /// <summary>Helper class to store information needed to perform a physical sort. </summary> 

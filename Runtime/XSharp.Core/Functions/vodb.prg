@@ -3,8 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
-using XSharp.RDD
+USING XSharp
+USING XSharp.RDD
 USING XSharp.RDD.Enums
 #ifdef NOTDEFINED
 /// <summary>

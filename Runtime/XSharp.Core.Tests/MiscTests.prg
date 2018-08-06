@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 BEGIN NAMESPACE XSharp.Core.Tests
@@ -52,17 +52,17 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			//Assert.Equal("DriveInfo",ClassName(fi))
 		//RETURN
 		[Fact, Trait("Category", "Misc")]; 
-		METHOD CurDriveTest() as void
+		METHOD CurDriveTest() AS VOID
 			Assert.Equal("C",CurDrive():ToUpper())
 		[Fact, Trait("Category", "Misc")]; 
-		METHOD GetFAttrTest() as void
+		METHOD GetFAttrTest() AS VOID
 			Assert.Equal((DWORD) FA_VOLUME, GetFAttr("V"))
 			Assert.Equal((DWORD) FA_COMPRESSED, GetFAttr("C"))
 			Assert.Equal((DWORD) FC_ARCHIVED, GetFAttr("A"))
 			Assert.Equal((DWORD) FC_HIDDEN, GetFAttr("H"))
 			Assert.Equal((DWORD) FC_SYSTEM, GetFAttr("S"))
 			Assert.Equal((DWORD) FC_READONLY, GetFAttr("R"))
-			Assert.Equal((dword) FC_HIDDEN|FC_SYSTEM, GetFAttr("HS"))
+			Assert.Equal((DWORD) FC_HIDDEN|FC_SYSTEM, GetFAttr("HS"))
 			Assert.Equal((DWORD) FC_HIDDEN|FC_SYSTEM, GetFAttr(FC_HIDDEN+FC_SYSTEM))
 			Assert.Equal((DWORD) FA_VOLUME, String2FAttr("V"))
 			Assert.Equal((DWORD) FA_COMPRESSED, String2FAttr("C"))
@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		RETURN
 		[Fact, Trait("Category", "Misc")]; 
-		METHOD GetFMaskTest() as void
+		METHOD GetFMaskTest() AS VOID
 			Assert.Equal("C:*.*", GetFMask("C:"))
 			Assert.Equal("C:\*.*", GetFMask("C:\"))
 			Assert.Equal("C:\*.DBF", GetFMask("C:\*.DBF"))

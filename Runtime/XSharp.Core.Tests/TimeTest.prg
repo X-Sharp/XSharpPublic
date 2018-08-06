@@ -7,14 +7,14 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 BEGIN NAMESPACE XSharp.Core.Tests
-	class TimeTests
+	CLASS TimeTests
 
 	[Fact, Trait("Category", "Time")];
-	METHOD AmPmTest() as void
-		var time := "16:55:23"
+	METHOD AmPmTest() AS VOID
+		VAR time := "16:55:23"
 		SetAmPm(true)
 		SetAMExt(" AM")
 		SetPMExt(" PM")
@@ -25,15 +25,15 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 		[Fact, Trait("Category", "Time")];
-		METHOD ElapTimeTest() as void
+		METHOD ElapTimeTest() AS VOID
 			Assert.Equal("11:23:34",elaptime("12:00:00","23:23:34"))
 			Assert.Equal("12:36:26",elaptime("23:23:34","12:00:00"))	
 			Assert.Equal("06:36:26",elaptime("29:23:34","12:00:00"))
 		RETURN
 
 		[Fact, Trait("Category", "Time")];
-		METHOD SecondsTest() as void
-			local r81, r82 as real8
+		METHOD SecondsTest() AS VOID
+			LOCAL r81, r82 AS REAL8
 			r81 := Seconds()
 			System.Threading.Thread.Sleep(1000)
 			r82 := Seconds()
@@ -43,8 +43,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.True(r82 == r81 + 1.0)
 
 		[Fact, Trait("Category", "Time")];
-		METHOD ConTimeTest() as void
-			local cTime as string
+		METHOD ConTimeTest() AS VOID
+			LOCAL cTime AS STRING
 			cTime := ConTime(12,0,0)
 			Assert.Equal("12:00:00", cTime)
 			cTime := ConTime(24,0,0)
@@ -55,9 +55,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal("", cTime)
 
 		[Fact, Trait("Category", "Time")];
-		METHOD TimeTest() as void
-			local cTime1 as string
-			local cTime2 as string
+		METHOD TimeTest() AS VOID
+			LOCAL cTime1 AS STRING
+			LOCAL cTime2 AS STRING
 			SetAmPm(FALSE)
 			cTime1 := Time()
 			cTime2 := Time24()
@@ -67,13 +67,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			SetPmExt("")
 			cTime1 := Time()
 			// can't control the time of the day the test is run
-			if cTime2 > "13:00:00"
+			IF cTime2 > "13:00:00"
 				Assert.NotEqual(cTime1, cTIme2)
-			else
+			ELSE
 				Assert.Equal(cTime1, cTIme2)
-			endif
+			ENDIF
 
 		RETURN
 
-	end CLASS
-end NAMESPACE
+	END CLASS
+END NAMESPACE

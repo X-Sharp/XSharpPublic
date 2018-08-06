@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 BEGIN NAMESPACE XSharp.Core.Tests
@@ -15,14 +15,14 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	CLASS NumericTests
 
 		[Fact, Trait("Category", "Numeric")];
-		METHOD CHRTest() as void
+		METHOD CHRTest() AS VOID
 			Assert.Equal(" ",CHR((DWORD)32))
 		RETURN
 
 
 		[Fact, Trait("Category", "Numeric")];
-		METHOD DW2BINTest() as void
-			Assert.Equal("    ",DW2Bin((dword) 32*256*256*256+32*256*256+32*256+32))
+		METHOD DW2BINTest() AS VOID
+			Assert.Equal("    ",DW2Bin((DWORD) 32*256*256*256+32*256*256+32*256+32))
 		RETURN
 
 	END CLASS

@@ -11,7 +11,7 @@
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #ifdef DEBUG
-	[assembly: AssemblyConfiguration("Debug")]
+	[ASSEMBLY: AssemblyConfiguration("Debug")]
 	#else
 	[ASSEMBLY: AssemblyConfiguration("Release")]
 #endif	

@@ -46,7 +46,7 @@ FUNCTION Between(val AS USUAL,min AS USUAL,max AS USUAL) AS LOGIC
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION InList(u AS USUAL, args params USUAL[]) AS LOGIC
+FUNCTION InList(u AS USUAL, args PARAMS USUAL[]) AS LOGIC
 	RETURN _InListWorker(u, args, FALSE)
 /// <summary>
 /// Indicate whether the first expression in a series is repeated in the exact same form later in the series.
@@ -54,7 +54,7 @@ FUNCTION InList(u AS USUAL, args params USUAL[]) AS LOGIC
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION InListExact(u AS USUAL, args params USUAL[]) AS LOGIC
+FUNCTION InListExact(u AS USUAL, args PARAMS USUAL[]) AS LOGIC
 	RETURN _InListWorker(u, args, TRUE)
 
 
@@ -112,13 +112,13 @@ FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 		RETURN (USUAL) Math.Max( (LONG) u1, (LONG) u2)
 
 	ELSEIF u1:IsDate .and. u2:IsDate
-		RETURN iif ((DATE) u1 > (DATE) u2, u1, u2)
+		RETURN IIF ((DATE) u1 > (DATE) u2, u1, u2)
 
 	ELSEIF u1:IsString .and. u2:IsString
-		RETURN iif ((STRING) u1 > (STRING) u2, u1, u2)
+		RETURN IIF ((STRING) u1 > (STRING) u2, u1, u2)
 
 	ELSE
-        THROW Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __ENTITY__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
 	RETURN u1
 
@@ -147,12 +147,12 @@ FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
 		RETURN (USUAL) Math.Min( (LONG) u1, (LONG) u2)
 	
 	ELSEIF u1:IsDate .and. u2:IsDate
-		RETURN iif ((DATE) u1 <(DATE) u2, u1, u2)
+		RETURN IIF ((DATE) u1 <(DATE) u2, u1, u2)
 	
 	ELSEIF u1:IsString .and. u2:IsString
-		RETURN iif ((STRING) u1 <(STRING) u2, u1, u2)
+		RETURN IIF ((STRING) u1 <(STRING) u2, u1, u2)
 	ELSE
-        THROW Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __ENTITY__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
 	RETURN u1
 

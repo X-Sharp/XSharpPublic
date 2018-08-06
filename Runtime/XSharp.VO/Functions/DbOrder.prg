@@ -27,7 +27,7 @@ FUNCTION DbSeek(xValue, lSoft, lLast)
 	LOCAL dbsci     IS _DBSCOPEINFO
 	LOCAL lRet      AS LOGIC
 	
-	Default(@lSoft, SetSoftSeek())
+	DEFAULT(@lSoft, SetSoftSeek())
 	
 	MemClear(@dbsci, _SIZEOF(_DBSCOPEINFO))
 	
@@ -37,7 +37,7 @@ FUNCTION DbSeek(xValue, lSoft, lLast)
 	
 	VODBSetScope(@dbsci)
 	
-	Default(@xValue, "")
+	DEFAULT(@xValue, "")
 	
 	IF !VODBSeek(xValue, lSoft)
 		RETURN DoError(#DbSeek)
@@ -107,7 +107,7 @@ FUNCTION DbSetOrder (uOrder, cBagName)
 	
 	LOCAL pszOrder          AS PSZ
 	
-	Default(@cBagName, "")
+	DEFAULT(@cBagName, "")
 	
 	RETURN VODBOrdSetFocus(cBagName, uOrder, @pszOrder)
 	
@@ -171,7 +171,7 @@ FUNCTION INDEXORD       ()
 	
 	uRetVal := DbOrderInfo(DBOI_NUMBER, "", NIL)
 	
-	Default(@uRetVal, 0)
+	DEFAULT(@uRetVal, 0)
 	
 	RETURN uRetVal
 	
@@ -664,7 +664,7 @@ FUNCTION ORDNUMBER      (uOrder, cOrdBag)
 FUNCTION ORDSETFOCUS    (uOrder, cOrdBag)
 	LOCAL pszOrder    AS   PSZ
 	
-	Default(@cOrdBag, "")
+	DEFAULT(@cOrdBag, "")
 	VODBOrdSetFocus(cOrdBag, uOrder, @pszOrder)
 	RETURN Psz2String(pszOrder)
 	

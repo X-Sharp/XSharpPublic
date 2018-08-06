@@ -79,7 +79,7 @@ PUBLIC CLASS XSharp._CodeBlock INHERIT XSharp.CodeBlock
 	/// <param name="cMacro">Macro string that was used to create the codeblock.</param>
 	/// <param name="lIsBlock">Did the macro string start with "{|".</param>
 	PUBLIC CONSTRUCTOR(innerBlock AS ICodeBlock, cMacro AS STRING, lIsBlock AS LOGIC)
-		SUPER(iif (lIsBlock, innerBlock:Pcount(), -1))
+		SUPER(IIF (lIsBlock, innerBlock:Pcount(), -1))
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro
 		_lIsBlock   := lIsBlock

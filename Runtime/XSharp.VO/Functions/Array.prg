@@ -228,8 +228,8 @@ INTERNAL STATIC CLASS ArrayHelpers
 		IF cb == NULL
 			THROW Error.NullArgumentError( cFuncName, NAMEOF(cb),2)
 		ENDIF
-		Default( REF iStart, 1)
-		Default( REF iCount, ALen(aArray))
+		DEFAULT( REF iStart, 1)
+		DEFAULT( REF iCount, ALen(aArray))
 		IF ! IsNumeric(iStart)
 			THROW Error.ArgumentError( cFuncName, NAMEOF(iStart), 3 , <OBJECT>{iStart})
 		ENDIF
@@ -850,13 +850,13 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	IF IsArray( uSource )
        aSource := uSource
     ELSE
-      THROW Error.ArgumentError( __ENTITY__, nameof(uSource), 1, <OBJECT>{ uSource } )
+      THROW Error.ArgumentError( __ENTITY__, NAMEOF(uSource), 1, <OBJECT>{ uSource } )
     ENDIF
    
      IF IsArray( uTarget )
         aTarget := uTarget
      ELSE
-        THROW Error.ArgumentError( __ENTITY__, nameof(uTarget), 2, <OBJECT>{ uTarget } )
+        THROW Error.ArgumentError( __ENTITY__, NAMEOF(uTarget), 2, <OBJECT>{ uTarget } )
      ENDIF
 	 start := 1
 	 sourceLen  := ALen(aSource)
@@ -864,7 +864,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 		IF IsNumeric(nStart)
 			start := nStart
 		ELSE
-			THROW Error.ArgumentError( __ENTITY__, nameof(nStart), 3, <OBJECT>{ nStart } )
+			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 3, <OBJECT>{ nStart } )
 		ENDIF
 		IF start < 0
 			start := sourceLen
@@ -876,7 +876,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 		IF IsNumeric(nCount)
 			count := nCount
 		ELSE
-			THROW Error.ArgumentError( __ENTITY__, nameof(nCount), 4, <OBJECT>{ nCount } )
+			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 4, <OBJECT>{ nCount } )
 		ENDIF
 		IF count > 0
 			sourceLen := Math.Min(sourceLen, start+count-1)
@@ -892,7 +892,7 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 			offSet := Math.Min( offSet, targetLen )
             offSet := Math.Max( 1, offSet )
 		ELSE
-			THROW Error.ArgumentError( __ENTITY__, nameof(nStartDest), 5, <OBJECT>{ nStartDest } )
+			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStartDest), 5, <OBJECT>{ nStartDest } )
 		ENDIF
 	 ENDIF
 	 XSharp.__Array.Copy(aSource, aTarget, start, sourceLen, offSet, targetLen)
@@ -1001,7 +1001,7 @@ FUNCTION ArrayNew(aDims PARAMS DWORD[]) AS ARRAY
 /// <param name="nDim"></param>
 /// <returns>
 /// </returns>
-FUNCTION ArrayNew<T>(nSize AS DWORD) AS __ArrayBase<T> where T IS NEW()
+FUNCTION ArrayNew<T>(nSize AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	RETURN __ArrayBase<T>{nSize}
 	
 	
@@ -1011,7 +1011,7 @@ FUNCTION ArrayNew<T>(nSize AS DWORD) AS __ArrayBase<T> where T IS NEW()
 /// <param name="nDim"></param>
 /// <returns>
 /// </returns>
-FUNCTION ArrayNew<T>(nSize AS INT) AS __ArrayBase<T> where T IS NEW()
+FUNCTION ArrayNew<T>(nSize AS INT) AS __ArrayBase<T> WHERE T IS NEW()
 	RETURN __ArrayBase<T>{(DWORD) nSize}
 	
 
@@ -1042,7 +1042,7 @@ FUNCTION AReplicate(x AS USUAL,nCount AS DWORD) AS ARRAY
 /// </returns>
 FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
 	LOCAL nLen AS DWORD
-	Default( REF startIndex, 1 )
+	DEFAULT( REF startIndex, 1 )
 	
 	nLen := ALen(aArray) 
 	IF nLen == 0 // Let it execute if nLen == 1, maybe the codeblock is important to be executed in this case for some (user) reason
@@ -1050,7 +1050,7 @@ FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUA
 	END IF
 
 	EnforceNumeric( startIndex )
-	Default( REF nCount, nLen - startIndex + 1 )
+	DEFAULT( REF nCount, nLen - startIndex + 1 )
 	EnforceNumeric( nCount )
 	
 	// Note: ASort() in VO accepts arguments out of bounds and translates them this way:
@@ -1165,7 +1165,7 @@ FUNCTION ASort<T>(aArray AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __A
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>) AS __ArrayBase<T> where T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>) AS __ArrayBase<T> WHERE T IS NEW()
 	RETURN AEval(aArray, cb, 1, ALen(aArray) )
 
 
@@ -1177,7 +1177,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>) AS __ArrayBase<T> w
 /// <param name="iStart"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD) AS __ArrayBase<T> where T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	RETURN AEval(aArray, cb, iStart, ALen(aArray) - iStart +1)
 	
 
@@ -1190,7 +1190,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD) AS 
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> where T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	LOCAL nX AS DWORD
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
@@ -1307,7 +1307,7 @@ FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ,iCount AS INT)
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>) AS __ArrayBase<T> where T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>) AS __ArrayBase<T> WHERE T IS NEW()
 	RETURN AEvalA(aArray, cb, 1, ALen(aArray))
 
 
@@ -1319,7 +1319,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>) AS __ArrayBase<T
 /// <param name="iStart"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD) AS __ArrayBase<T> where T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	RETURN AEvalA(aArray, cb, iStart, ALen(aArray) - iStart +1)
 
 	
@@ -1333,7 +1333,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD) 
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> where T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	LOCAL nX AS DWORD
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1

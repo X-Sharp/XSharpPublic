@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
-	[DebuggerTypeProxy(typeof(ArrayDebugView))];
+	[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
 	PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL>
 		
 		/// <inheritdoc />
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp
 		CONSTRUCTOR( elements AS USUAL[] )
 			SELF()
 			IF elements == NULL
-				THROW ArgumentNullException{nameof(elements)}
+				THROW ArgumentNullException{NAMEOF(elements)}
 			ENDIF
 			_internalList:Capacity := elements:Length
 			_internalList:AddRange(elements) 
@@ -40,18 +40,18 @@ BEGIN NAMESPACE XSharp
 		CONSTRUCTOR( elements AS OBJECT[] )
 			SELF()
 			IF elements == NULL
-				THROW ArgumentNullException{nameof(elements)}
+				THROW ArgumentNullException{NAMEOF(elements)}
 			ENDIF
 			FOREACH element AS OBJECT IN elements
 				IF element == NULL
-					_internalList:add(Default(USUAL))
+					_internalList:add(DEFAULT(USUAL))
 				ELSE
 					_internalList:Add( USUAL{ element})
 				ENDIF
 			NEXT
 			RETURN
 		
-		INTERNAL STATIC METHOD ArrayCreate(dimensions params INT[] ) AS ARRAY
+		INTERNAL STATIC METHOD ArrayCreate(dimensions PARAMS INT[] ) AS ARRAY
 			LOCAL count := dimensions:Length AS INT
 			IF count <= 0
 				THROW ArgumentException{"No dimensions provided."}
@@ -71,7 +71,7 @@ BEGIN NAMESPACE XSharp
 			RETURN arrayNew
 
 		
-		STATIC METHOD __ArrayNew( dimensions params INT[] ) AS __Array
+		STATIC METHOD __ArrayNew( dimensions PARAMS INT[] ) AS __Array
 			LOCAL newArray AS ARRAY 
 			IF dimensions:Length != 0 
 				newArray := __ArrayNewHelper(dimensions,1)
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp
 				VAR u := _internalList[i]
 				IF u:isArray
 					VAR aElement := (ARRAY) u
-					if aElement != NULL_ARRAY
+					IF aElement != NULL_ARRAY
 						aResult:_internalList[i] := aElement:Clone()
 					ELSE
 						aResult:_internalList[i] := aElement
@@ -152,7 +152,7 @@ BEGIN NAMESPACE XSharp
 		///
 		/// <summary>Access the array element using ZERO based array indexes</summary>
 		///
-		PUBLIC METHOD __GetElement(index params INT[]) AS USUAL
+		PUBLIC METHOD __GetElement(index PARAMS INT[]) AS USUAL
 			LOCAL indexLength := index:Length AS INT
 			LOCAL currentArray := SELF AS ARRAY
 			LOCAL i AS INT
@@ -197,7 +197,7 @@ BEGIN NAMESPACE XSharp
 		///
 		/// <summary>Assign the array element using ZERO based array indexes</summary>
 		///
-		PUBLIC METHOD __SetElement(u AS USUAL, index params INT[] ) AS USUAL
+		PUBLIC METHOD __SetElement(u AS USUAL, index PARAMS INT[] ) AS USUAL
 			// indices are 0 based
 			IF SELF:CheckLock()
 				LOCAL length := index:Length AS INT

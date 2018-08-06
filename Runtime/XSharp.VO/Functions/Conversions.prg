@@ -62,7 +62,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		IF cString:IndexOf(".") >= 0 
 			VAR wSep   := SetDecimalSep()
 			IF wSep != 46
-				cString := cString:Replace('.', (char) wSep)
+				cString := cString:Replace('.', (CHAR) wSep)
 			ENDIF
 		ENDIF
 		RETURN cString
@@ -184,7 +184,7 @@ INTERNAL FUNCTION _descendingString(s AS STRING) AS STRING
 	LOCAL i AS INT
 	FOR i := 0 TO nlen
 		IF sb[i] < 256
-			sb[i] := (char) (255 - sb[i])
+			sb[i] := (CHAR) (255 - sb[i])
 		ENDIF
 	NEXT
 	RETURN sb:ToString()
@@ -220,7 +220,7 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 	CASE UsualType.Decimal
       ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) n )):Trim()
     OTHERWISE
-      THROW Error.DataTypeError( __ENTITY__, nameof(n), 1, n)
+      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n), 1, n)
    END SWITCH
    RETURN ret
 
@@ -311,7 +311,7 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 	ELSE
 		ret := uValue:ToString()
 	ENDIF
-	RETURN iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
+	RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
 	
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the left.
@@ -355,7 +355,7 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 	ELSE
 		ret := uValue:ToString()
 	ENDIF
-	RETURN iif( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
+	RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
 	
 	 
 	
@@ -385,14 +385,14 @@ FUNCTION Str(n ,nLen ,nDec ) AS STRING CLIPPER
 
 FUNCTION _Str(n ,nLen ,nDec ) AS STRING CLIPPER
 	IF PCount() > 0 .and. ! n:IsNumeric 
-       THROW Error.DataTypeError( __ENTITY__, nameof(n),1, n, nLen, nDec)
+       THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1, n, nLen, nDec)
     ENDIF
 	SWITCH PCount()
 	CASE 1
 		RETURN _Str1( n)
 	CASE 2
 		IF ! nLen:IsNumeric
-			THROW Error.DataTypeError( __ENTITY__, nameof(nLen),2,n, nLen, nDec)
+			THROW Error.DataTypeError( __ENTITY__, NAMEOF(nLen),2,n, nLen, nDec)
 		ENDIF
 		IF n:IsFloat
 			RETURN _Str2(n, nLen)
@@ -401,7 +401,7 @@ FUNCTION _Str(n ,nLen ,nDec ) AS STRING CLIPPER
 		ENDIF
 	CASE 3
 		IF ! nDec:IsNumeric
-			THROW Error.DataTypeError( __ENTITY__, nameof(nDec),3,n, nLen, nDec)
+			THROW Error.DataTypeError( __ENTITY__, NAMEOF(nDec),3,n, nLen, nDec)
 		ENDIF
 		IF n:IsFloat
 			RETURN _Str3(n, nLen, nDec)
@@ -428,7 +428,7 @@ INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
 	/// </returns>
 FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, nameof(n),1,n, iLen, iDec)
+      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n, iLen, iDec)
     ENDIF
 	LOCAL cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) AS STRING
 	RETURN _PadZero(cValue)
@@ -442,7 +442,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 /// </returns>
 FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, nameof(n),1,n, iLen)
+      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n, iLen)
 	ENDIF
 	LOCAL cValue := Str2(n, (DWORD) iLen) AS STRING
 	RETURN _padZero(cValue)
@@ -456,7 +456,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 /// </returns>
 FUNCTION StrZero(n AS USUAL) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, nameof(n),1,n)
+      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n)
     ENDIF
 	LOCAL cValue := Str1(n) AS STRING
 	RETURN _PadZero(cValue)
@@ -604,7 +604,7 @@ FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS FLOAT
 	VAR wSep   := SetDecimalSep()
 	LOCAL result AS FLOAT
 	IF wSep != 46 // .
-		c := c:Replace((char) wSep, '.')
+		c := c:Replace((CHAR) wSep, '.')
 	ENDIF
 	TRY
 		LOCAL r8 AS System.Double
@@ -702,7 +702,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 	IF pos < cNumber:Length
 		cNumber := cNumber:SubString(0, pos)
 	ENDIF
-	IF cNumber:IndexOfAny(<Char> {'.'}) > -1
+	IF cNumber:IndexOfAny(<CHAR> {'.'}) > -1
 		LOCAL r8Result := 0 AS REAL8
 		IF cDec != '.'
 			cNumber := cNumber:Replace(cDec, '.')

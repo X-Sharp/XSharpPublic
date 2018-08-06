@@ -4,8 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Runtime.InteropServices
-using System.Text
+USING System.Runtime.InteropServices
+USING System.Text
 
 #region functions
 
@@ -17,13 +17,13 @@ using System.Text
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function Oem2AnsiBuff(pszDest as psz,pszSource as psz,dwCount as dword) as psz
-	var aSource := byte[]{dwCount}
-	var aDest   := byte[]{dwCount}
-	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
+FUNCTION Oem2AnsiBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
+	VAR aSource := BYTE[]{dwCount}
+	VAR aDest   := BYTE[]{dwCount}
+	Marshal.Copy(pszDest:Address,aSource,0, (INT) dwCount)
 	XSharp.Core.Functions.Oem2AnsiBuff(aDest, aSource, dwCount)
-	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
-	return pszDest
+	Marshal.Copy(aDest,pszDest:Address,0, (INT) dwCount)
+	RETURN pszDest
 
 /// <summary>
 /// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
@@ -33,13 +33,13 @@ function Oem2AnsiBuff(pszDest as psz,pszSource as psz,dwCount as dword) as psz
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
-	var aSource := byte[]{dwCount}
-	var aDest   := byte[]{dwCount}
-	Marshal.Copy(pszDest:Address,aSource,0, (int) dwCount)
+FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
+	VAR aSource := BYTE[]{dwCount}
+	VAR aDest   := BYTE[]{dwCount}
+	Marshal.Copy(pszDest:Address,aSource,0, (INT) dwCount)
 	XSharp.Core.Functions.Ansi2OemBuff(aDest, aSource, dwCount)
-	Marshal.Copy(aDest,pszDest:Address,0, (int) dwCount)
-	return pszDest
+	Marshal.Copy(aDest,pszDest:Address,0, (INT) dwCount)
+	RETURN pszDest
 	
 	
 
@@ -50,11 +50,11 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	function Bin2Logic(pszC as Psz) as logic
-		if pszC != null_psz
-			return pszC:Item[0] != 0
-		endif	
-		return false
+	FUNCTION Bin2Logic(pszC AS PSZ) AS LOGIC
+		IF pszC != null_psz
+			RETURN pszC:Item[0] != 0
+		ENDIF	
+		RETURN false
 	
 
 	/// <summary>
@@ -62,7 +62,7 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="PSZValue"></param>
 	/// <returns>
 	/// </returns>
-	function EmptyPSZ(PSZValue as Psz) as logic
+	FUNCTION EmptyPSZ(PSZValue AS PSZ) AS LOGIC
 		   RETURN PSZValue:IsEmpty
 	
    
@@ -73,9 +73,9 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function Psz2String(pszSource as psz) as string
+	FUNCTION Psz2String(pszSource AS PSZ) AS STRING
 		// The compiler converts to a call to the implicit converter
-		return pszSource:ToString()
+		RETURN pszSource:ToString()
 
 	/// <summary>
 	/// Convert a null-terminated string to a Usual with a string value
@@ -83,9 +83,9 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	function Psz2Usual(pszSource as psz) as Usual
+	FUNCTION Psz2Usual(pszSource AS PSZ) AS USUAL
 		// The compiler converts to a call to the implicit converter
-		return pszSource
+		RETURN pszSource
 	
 	/// <summary>
 	/// Copy a buffer pointed to by a Psz to a newly allocated block of memory and return a new pointer to that memory.
@@ -93,8 +93,8 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
-	function PszAlloc(ptrSource as Psz) as Psz
-		RETURN Psz{ ptrSource:Address }
+	FUNCTION PszAlloc(ptrSource AS PSZ) AS PSZ
+		RETURN PSZ{ ptrSource:Address }
 	
 	/// <summary>
 	/// Return the length of a Psz.
@@ -102,8 +102,8 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="pszX"></param>
 	/// <returns>
 	/// </returns>
-	function PszLen(pszX as Psz) as dword
-		return pszX:Length
+	FUNCTION PszLen(pszX AS PSZ) AS DWORD
+		RETURN pszX:Length
 	
 
 
@@ -113,8 +113,8 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	function StringAlloc(cSource as string) as Psz
-		return Psz{cSource}
+	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
+		RETURN PSZ{cSource}
 	
 
 
@@ -123,15 +123,15 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	function TimePsz() as Psz
-		return String2Psz(Time())
+	FUNCTION TimePsz() AS PSZ
+		RETURN String2Psz(Time())
 	
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	function TimePsz24() as Psz
-		return String2Psz(Time24())
+	FUNCTION TimePsz24() AS PSZ
+		RETURN String2Psz(Time24())
 	
 #endregion
 
@@ -143,38 +143,38 @@ function Ansi2OemBuff(pszDest as Psz,pszSource as Psz,dwCount as dword) as Psz
 /// <returns>
 /// </returns>
 FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
-	LOCAL bp AS BYTE ptr
+	LOCAL bp AS BYTE PTR
 	bp := pszSource
 	DO WHILE bp[1] != 0
 		IF bp[1] >= 97 .and. bp[1] <= 122
 			bp[1] -= 32
 		ENDIF
 		bp++
-	enddo
-	return pszSource	
+	ENDDO
+	RETURN pszSource	
 
-function String2Mem(s as string) as IntPtr
-	local result := 0 as IntPtr
-	if s != null
-		var encoding := System.Text.Encoding.Default
-		var bytes    := encoding:GetBytes(s)
-		var len      := bytes:Length
-		result	     := MemAlloc((dword) (len+1))
+FUNCTION String2Mem(s AS STRING) AS IntPtr
+	LOCAL result := 0 AS IntPtr
+	IF s != null
+		VAR encoding := System.Text.Encoding.Default
+		VAR bytes    := encoding:GetBytes(s)
+		VAR len      := bytes:Length
+		result	     := MemAlloc((DWORD) (len+1))
 		Marshal.Copy(bytes,0,result, len)	
-	endif
-	return result 
+	ENDIF
+	RETURN result 
 
-unsafe function Mem2String(pString as IntPtr, nLen as dword) as string
-	if pString == IntPtr.Zero .or. nLen == 0
-		return String.Empty
-	endif
-	var encoding := System.Text.Encoding.Default
-	var numchars := encoding:GetCharCount( (byte ptr) pString, (int) nLen) 
-	var buffer   := (char ptr) MemAlloc( (dword) (numchars * sizeof(char)) )
-	numchars     := encoding:GetChars((byte ptr) pString, (int) nLen, buffer, numchars)
-	var result   := string {buffer, 0, numchars}
+UNSAFE FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
+	IF pString == IntPtr.Zero .or. nLen == 0
+		RETURN String.Empty
+	ENDIF
+	VAR encoding := System.Text.Encoding.Default
+	VAR numchars := encoding:GetCharCount( (BYTE PTR) pString, (INT) nLen) 
+	VAR buffer   := (CHAR PTR) MemAlloc( (DWORD) (numchars * SIZEOF(CHAR)) )
+	numchars     := encoding:GetChars((BYTE PTR) pString, (INT) nLen, buffer, numchars)
+	VAR result   := STRING {buffer, 0, numchars}
 	MemFree(buffer)
-return result
+RETURN result
 
 
 
@@ -193,7 +193,7 @@ FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
       NEXT   
    ENDIF   
    
-   RETURN Psz{ ret }
+   RETURN PSZ{ ret }
    
 FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
    LOCAL sb AS StringBuilder
@@ -203,13 +203,13 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
        sb  := StringBuilder{ (INT) len }
        
        FOR x := 0 UPTO len - 1
-          sb:Append( (Char) p:Item[(int)x] )
+          sb:Append( (CHAR) p:Item[(INT)x] )
        NEXT
    
        RETURN sb:ToString()
     ELSE
        RETURN ""
-    endif   
+    ENDIF   
 
 
 

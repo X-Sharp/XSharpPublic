@@ -28,12 +28,9 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
 		Appdomain.CurrentDomain:AssemblyLoad += AssemblyLoadEventHandler
 		RETURN
 	STATIC METHOD AssemblyLoadEventHandler(sender as OBJECT, args as AssemblyLoadEventArgs) AS VOID
-		IF options == null
-            options := ScriptOptions:Default:WithReferences( ;
-			System.AppDomain:CurrentDomain:GetAssemblies().Where({a => !string.IsNullOrEmpty(a:Location)}) ;
-			)
-		ENDIF
-		options := options:AddReferences(args:LoadedAssembly)
+        IF options != NULL
+		    options := options:AddReferences(args:LoadedAssembly)
+        ENDIF
 		RETURN
     METHOD Compile (cMacro AS STRING, lAllowSingleQuotes AS LOGIC, Module AS System.Reflection.Module, lIsBlock REF LOGIC) AS ICodeBlock
         IF string.IsNullOrEmpty(cMacro)

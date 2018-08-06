@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD FileTest() AS VOID
 			LOCAL hFile AS PTR
 			LOCAL cLine AS USUAL
-			local cFile as string
+			LOCAL cFile AS STRING
 			LOCAL cText	AS STRING
 			cFile := "test.txt"
 			hFile := FCreate(cFile)

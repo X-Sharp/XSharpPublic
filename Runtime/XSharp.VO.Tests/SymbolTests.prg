@@ -3,33 +3,33 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using XUnit
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING XUnit
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS SymbolTests
 	
 		[Fact, Trait("Category", "Symbol")];
-		METHOD CreateSymbolTest() as void
+		METHOD CreateSymbolTest() AS VOID
 			VAR sym := #TestSymbol
 			Assert.Equal("TESTSYMBOL",sym:ToString())
 		RETURN
 		[Fact, Trait("Category", "Symbol")];
-		METHOD CompareSymbolTest() as void
-			var sym1 := #TestSymbol
-			var sym2 := #TestSymbol
+		METHOD CompareSymbolTest() AS VOID
+			VAR sym1 := #TestSymbol
+			VAR sym2 := #TestSymbol
 			Assert.Equal(true,sym1==sym2)
 			Assert.Equal(true,sym1=="TESTSYMBOL")
 			Assert.Equal(false,sym1==#TestSymbol1)
 		RETURN
 
 		[Fact, Trait("Category", "Symbol")];
-		METHOD GreaterSymbolTest() as void
-			var sym1 := #TestSymbol1
+		METHOD GreaterSymbolTest() AS VOID
+			VAR sym1 := #TestSymbol1
 			VAR sym2 := #TestSymbol2
 			Assert.Equal(#Windows,SetCollation())
 			SetCollation(#Ordinal)
@@ -49,9 +49,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Symbol")];
-		METHOD ImplicitConverter() as void
-			local s as string
-			local sym as Symbol
+		METHOD ImplicitConverter() AS VOID
+			LOCAL s AS STRING
+			LOCAL sym AS SYMBOL
 			sym := #Test
 			s := sym
 			Assert.Equal(s, sym:ToString())
@@ -59,22 +59,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(s, sym:ToString())
 
 		[Fact, Trait("Category", "Symbol")];
-		METHOD ExplicitConverter() as void
-			local d as DWORD
-			local sym1 as Symbol
-			local sym2 as Symbol
+		METHOD ExplicitConverter() AS VOID
+			LOCAL d AS DWORD
+			LOCAL sym1 AS SYMBOL
+			LOCAL sym2 AS SYMBOL
 			sym1 := #test
 			d:= (DWORD) sym1
-			sym2 := (Symbol) d
+			sym2 := (SYMBOL) d
 			Assert.Equal(sym1, sym2)
-			sym2 := (Symbol) 0x42U
+			sym2 := (SYMBOL) 0x42U
 			Assert.NotEqual(sym1, sym2)
 			
 		[Fact, Trait("Category", "Symbol")];
-		METHOD AtomTester() as void
-			local sym1 as symbol
-			local sym2 as symbol
-			local dwStart as dword
+		METHOD AtomTester() AS VOID
+			LOCAL sym1 AS SYMBOL
+			LOCAL sym2 AS SYMBOL
+			LOCAL dwStart AS DWORD
 			dwStart := MaxAtom()
 			sym1 := SysAddAtom("Robert")
 			sym2 := String2Symbol("Robert")

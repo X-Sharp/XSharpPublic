@@ -7,8 +7,8 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
-using System.Globalization
+USING XUnit
+USING System.Globalization
 
 
 BEGIN NAMESPACE XSharp.VO.Tests
@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS DateTests
 
 		[Fact, Trait("Category", "Date")];
-		method CTODTest() as void 
+		METHOD CTODTest() AS VOID 
 			SetEpoch(1900)
 			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal(2016.01.01 ,ctod("01/01/2016"))
@@ -32,14 +32,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
  		
 
 		[Fact, Trait("Category", "Date")];
-		METHOD STODTest() as void
+		METHOD STODTest() AS VOID
 			Assert.Equal(DATE{2016,05,06},STOD("20160506"))
 			Assert.Equal(NULL_DATE, STOD("20181313"))
 			Assert.Equal(NULL_DATE, STOD("AAAAAAAA"))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		method CDOWTest() as void
+		METHOD CDOWTest() AS VOID
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
 			Assert.Equal("Tuesday",CDOW(Condate(2016,5,24)))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CMonthTest() as void
+		METHOD CMonthTest() AS VOID
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
 			Assert.Equal("May",CMonth(Condate(2016,5,24)))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
@@ -61,9 +61,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD DayTest() as void
+		METHOD DayTest() AS VOID
 			Assert.Equal((DWORD)24,Day(Condate(2016,5,24)))
-			Assert.Equal((dword)0,Day(NULL_DATE))
+			Assert.Equal((DWORD)0,Day(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		method DTOCTest() as void
+		METHOD DTOCTest() AS VOID
 			SetDateFormat("DD/MM/YYYY")
 			Assert.Equal("24/05/2016",DTOC(CTOD("24/05/2016")))
 			SetDateFormat("DD/MM/YY")
@@ -91,51 +91,51 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD DTOSTest() as void
+		METHOD DTOSTest() AS VOID
 			Assert.Equal("20160524",DTOS(Condate(2016,5,24)))
 			Assert.Equal("        ", DTOS(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD MonthTest() as void
+		METHOD MonthTest() AS VOID
 			Assert.Equal((DWORD)5,MONTH(Condate(2016,5,24)))
-			Assert.Equal((dword)0,MONTH(NULL_DATE))
+			Assert.Equal((DWORD)0,MONTH(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD YearTest() as void
+		METHOD YearTest() AS VOID
 			Assert.Equal((DWORD)2016,YEAR(Condate(2016,5,24)))
-			Assert.Equal((dword)0,YEAR(NULL_DATE))
+			Assert.Equal((DWORD)0,YEAR(NULL_DATE))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CastTest() as void
-			LOCAL i as LONG
-			LOCAL dw as DWORD
+		METHOD CastTest() AS VOID
+			LOCAL i AS LONG
+			LOCAL dw AS DWORD
 			VAR d := 2017.1.1
 			i := (LONG) d
 			dw := (DWORD) d
-			Assert.Equal(d, (Date) i)
-			Assert.Equal(d, (Date) dw)
+			Assert.Equal(d, (DATE) i)
+			Assert.Equal(d, (DATE) dw)
 
 		RETURN
 		[Fact, Trait("Category", "Date")];
-		METHOD CompareTest() as VOID
-		VAR d1 := Date{2017,09,25}
-		VAR d2 := Date{2017,09,26}	// different day
+		METHOD CompareTest() AS VOID
+		VAR d1 := DATE{2017,09,25}
+		VAR d2 := DATE{2017,09,26}	// different day
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
 		Assert.True(d1+1 == d2)
 		Assert.False(d1 > d2)
 		Assert.False(d1 >= d2)
 
-		d2 := Date{2017,10,25}	// different month
+		d2 := DATE{2017,10,25}	// different month
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
 		Assert.False(d1 > d2)
 		Assert.False(d1 >= d2)
 
-		d2 := Date{2018,09,24}	// different year
+		d2 := DATE{2018,09,24}	// different year
 		Assert.True(d1 < d2)
 		Assert.True(d1 <= d2)
 		Assert.False(d1 > d2)
@@ -146,14 +146,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.False(d2 < d1)
 		Assert.False(d2 <= d1)
 		
-		Var d3 := d1
+		VAR d3 := d1
 		Assert.False(d3 > d1)
 		Assert.True(d3 >= d1)
 		Assert.False(d3 < d1)
 		Assert.True(d3 <= d1)
 
 		[Fact, Trait("Category", "Numeric")];
-		method NToCDoWTest() as void
+		METHOD NToCDoWTest() AS VOID
 			SetDateFormat("DD/MM/YYYY")
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
 			Assert.Equal("Friday",NToCDoW(DOW(CTOD("27/05/2016"))))
@@ -165,22 +165,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		[Fact, Trait("Category", "Numeric")];
-		METHOD NToCMonthTest() as void
+		METHOD NToCMonthTest() AS VOID
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"en-US"}
-			Assert.Equal("June",NToCMonth((dword)6))
+			Assert.Equal("June",NToCMonth((DWORD)6))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"de-DE"}
-			Assert.Equal("Juni",NToCMonth((dword)6))
+			Assert.Equal("Juni",NToCMonth((DWORD)6))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
-			Assert.Equal("juni",NToCMonth((dword)6))
+			Assert.Equal("juni",NToCMonth((DWORD)6))
 		
-		return		
+		RETURN		
 		
 		[Fact, Trait("Category", "Date")];
-		METHOD CoNDateTest() as void
-			local d1918 as Date
-			local d2018 as date
-			local dtest as date
-			local nEpoch := SetEpoch()
+		METHOD CoNDateTest() AS VOID
+			LOCAL d1918 AS DATE
+			LOCAL d2018 AS DATE
+			LOCAL dtest AS DATE
+			LOCAL nEpoch := SetEpoch()
 			SetEpoch(1900)
 			d2018 := ConDate(2018,03,15)
 			d1918 := ConDate(1918,03,15)
@@ -200,12 +200,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetEpoch(1919)
 			Assert.Equal(d2018, dtest)
 			SetEpoch(nEpoch)
-		return		
+		RETURN		
 		[Fact, Trait("Category", "Date")];
-		method Date2BinTest() as void
-			local dwDate as STRING
-			local dDate1 as date
-			local dDate2 as date
+		METHOD Date2BinTest() AS VOID
+			LOCAL dwDate AS STRING
+			LOCAL dDate1 AS DATE
+			LOCAL dDate2 AS DATE
 
 			dDate1 := Today()
 			dwDate := Date2Bin(dDate1)
@@ -214,28 +214,28 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		[Fact, Trait("Category", "Date")];
-		METHOD TStringTest() as void
+		METHOD TStringTest() AS VOID
 		//local r8 as real8
 		//r8 := 12.0 * 60.0*60.0 
 		//Assert.Equal("12:00:00", Tstring( r8))
 		RETURN
 
 		[Fact, Trait("Category", "Date")];
-		method SToDTests() as void
+		METHOD SToDTests() AS VOID
 			SetEpoch(1910)
 			Assert.Equal(2005.01.31 , SToD("00050131"))
 			Assert.Equal(1915.01.31 , SToD("00150131"))
 
 		[Fact, Trait("Category", "Date")];
-		method InvalidLiteralDateTests() as void
+		METHOD InvalidLiteralDateTests() AS VOID
 			Assert.Equal(NULL_DATE , 50.50.50)
 			Assert.Equal(NULL_DATE , 0000.00.00)
 			Assert.Equal(NULL_DATE , 00.00.00)
 			Assert.Equal(NULL_DATE , 0.0.0)
 
 		[Fact, Trait("Category", "Date")];
-		method SetDateCountryTests() as void
-			local dDate as date
+		METHOD SetDateCountryTests() AS VOID
+			LOCAL dDate AS DATE
 
 			dDate := 2000.01.31
 			

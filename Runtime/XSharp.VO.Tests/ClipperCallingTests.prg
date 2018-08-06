@@ -7,16 +7,16 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 // WinBool test
 BEGIN NAMESPACE XSharp.VO.Tests
 
-	class ClipperCallingTests
+	CLASS ClipperCallingTests
 
 		[Fact, Trait("Category", "Clipper")];
-		method Clippertest as void
+		METHOD Clippertest AS VOID
 			Assert.Equal(0, Mtest() )
 			Assert.Equal(1, Mtest(1) )
 			Assert.Equal(2, Mtest(1,2) )
@@ -56,8 +56,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RETURN pcount()
 
 		
-	end Class
-end namespace
+	END CLASS
+END NAMESPACE
 
 
      

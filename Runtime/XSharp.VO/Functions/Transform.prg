@@ -443,7 +443,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 	
 	STATIC METHOD GetLogicLiteral(lValue AS LOGIC, lYesNo AS LOGIC) AS STRING
 		// Get Literal from the string tables
-		LOCAL cReturn as STRING
+		LOCAL cReturn AS STRING
 		IF lYesNo
 			IF lValue
 				cReturn := SetLiteral(VOErrors.RT_MSG_SHORT_YES)
@@ -488,7 +488,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 		
 		RETURN cReturn
 
-	STATIC METHOD TransformN( nValue AS Float, cPicture AS STRING, lIsInt as LOGIC ) AS STRING
+	STATIC METHOD TransformN( nValue AS FLOAT, cPicture AS STRING, lIsInt AS LOGIC ) AS STRING
 		//
 		// Note: A,N,X,L and Y template chars are treated as normal letters in VO for numeric pictures
 		//
@@ -587,9 +587,9 @@ INTERNAL STATIC CLASS TransFormHelpers
 		ELSE
 
 			IF lIsInt
-				cReturn := ConversionHelpers.FormatNumber((Int64) nValue, nLength, nDecimal)
+				cReturn := ConversionHelpers.FormatNumber((INT64) nValue, nLength, nDecimal)
 			ELSE
-				cReturn := ConversionHelpers.FormatNumber((Real8) nValue, nLength, nDecimal)
+				cReturn := ConversionHelpers.FormatNumber((REAL8) nValue, nLength, nDecimal)
 			ENDIF
 			
 			IF nPicFunc:HasFLag(TransformPictures.ZeroBlank ) 
@@ -626,9 +626,9 @@ INTERNAL STATIC CLASS TransFormHelpers
 						IF cChar == '.'
 							IF lForceEuropean 
 								sb:Insert(0 , ',')
-							else
+							ELSE
 								sb:Insert(0, cDec)
-							endif
+							ENDIF
 						ELSE
 							sb:Insert(0 , cReturn[nMap])
 						END IF

@@ -9,9 +9,9 @@
 /// <param name="uError"></param>
 /// <returns>
 /// </returns>
-function _Break(uError as Usual) as Usual
+FUNCTION _Break(uError AS USUAL) AS USUAL
 	BREAK uError
-return 	NIL   
+RETURN 	NIL   
 
 
 
@@ -21,23 +21,23 @@ return 	NIL
 /// <param name="cobError"></param>
 /// <returns>
 /// </returns>
-function ErrorBlock(cobError as CodeBlock) as usual
+FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
 	LOCAL cbOld AS CODEBLOCK
 	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
 	XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cobError)
-	return cbOld
+	RETURN cbOld
 
-function ErrorBlock() as usual STRICT
+FUNCTION ErrorBlock() AS USUAL STRICT
 	LOCAL cbOld AS CODEBLOCK
 	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
 	IF cbOld == NULL_CODEBLOCK
 		cbOld := {|e| DefError(  e ) }
 		XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cbOld)
 	ENDIF
-	return cbOld
+	RETURN cbOld
 
  
- INTERNAL FUNCTION DefError(oError AS Error) as USUAL
+ INTERNAL FUNCTION DefError(oError AS Error) AS USUAL
 	// Add check from VO Default Error handler to avoid throwing errors for
 	// some RDD related operations
 	IF oError:CanDefault

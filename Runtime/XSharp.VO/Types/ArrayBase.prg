@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
-	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS IEnumerable<T> where T IS NEW()
+	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS IEnumerable<T> WHERE T IS NEW()
 		INTERNAL _internalList AS List<T> 
 		PRIVATE _islocked AS LOGIC 
 		#region constructors
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp
 			/// <summary>Create an array with a certain number of elements. Each element will be filled with a default value.</summary>
 		CONSTRUCTOR(capacity AS DWORD)
 			_internalList := List<T>{ (INT) capacity}
-			_internalList:AddRange(Enumerable.Repeat(Default(T),(INT) capacity))
+			_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
 			RETURN 
 			
 			/// <summary>Create an array and fill it with elements from an existing collection.</summary>
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			FOREACH element AS OBJECT IN elements
 				IF element == NULL
-					_internalList:add(Default(T))
+					_internalList:add(DEFAULT(T))
 				ELSEIF element IS T
 					_internalList:Add( (T) element)
 				ELSE
@@ -101,7 +101,7 @@ BEGIN NAMESPACE XSharp
 			#endregion
 			
 			
-		#region Indexers and to Get / Set Elements. 
+		#region Indexers and TO GET / SET Elements. 
 		///
 		/// <summary>Access the array element using ZERO based array index</summary>
 		///
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp
 			RETURN
 			
 		INTERNAL METHOD Insert(position AS INT) AS __ArrayBase<T>
-			SELF:Insert( position, Default(T))
+			SELF:Insert( position, DEFAULT(T))
 			RETURN SELF
 			
 			
@@ -214,7 +214,7 @@ BEGIN NAMESPACE XSharp
 				IF newSize == 0 
 					_internalList:Clear()
 				ELSE
-					LOCAL count := _internalList:Count as INT
+					LOCAL count := _internalList:Count AS INT
 					IF newSize <= count 
 						_internalList:RemoveRange(newSize, count - newSize)
 					ELSE

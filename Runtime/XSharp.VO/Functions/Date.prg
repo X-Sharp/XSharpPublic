@@ -5,7 +5,7 @@
 //
 
 USING XSharp
-using System.Globalization
+USING System.Globalization
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
@@ -83,7 +83,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 	nDayPos := nMonthPos := nYearPos := 0
 	cSep := "./-"
 	nPos := 0
-	FOREACH c AS char IN cDateFormat
+	FOREACH c AS CHAR IN cDateFormat
 		SWITCH c
 		CASE 'D'
 			IF nDayPos == 0
@@ -220,8 +220,8 @@ FUNCTION DToS(dDate AS DATE) AS STRING
 FUNCTION JCDOW(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
-	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") as CultureInfo
-	return culture:DateTimeFormat:GetDayName(dt:DayOfWeek)
+	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") AS CultureInfo
+	RETURN culture:DateTimeFormat:GetDayName(dt:DayOfWeek)
 
 /// <summary>
 /// </summary>
@@ -232,8 +232,8 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
 	LOCAL month := cal:GetMonth(dt) AS INT
-	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") as CultureInfo
-	return culture:DateTimeFormat:GetMonthName(month)
+	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") AS CultureInfo
+	RETURN culture:DateTimeFormat:GetMonthName(month)
 
 
 /// <summary>
@@ -242,7 +242,7 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION JCYEAR(d AS DATE) AS STRING
-	return Year(d):ToString()
+	RETURN Year(d):ToString()
 
 /// <summary>
 /// Extract the number of the month from a DATE.

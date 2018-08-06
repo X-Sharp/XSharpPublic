@@ -271,7 +271,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF propInfo != NULL_OBJECT .and. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
-		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar} )
+		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar} )
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
@@ -290,13 +290,13 @@ INTERNAL STATIC CLASS OOPHelpers
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
-		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar})
+		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar})
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
 		result := NIL
 		IF t == NULL
-			THROW Error.NullArgumentError( __ENTITY__, nameof(oObject), 1 )
+			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
 		ENDIF
 		LOCAL mi AS MethodInfo
 		mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
@@ -388,7 +388,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-				THROW Error.VOError( EG_NOMETHOD, "Send", nameof(cMethod), 2, <OBJECT>{cMethod} )
+				THROW Error.VOError( EG_NOMETHOD, "Send", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
 			ENDIF
 		ENDIF
 		RETURN result
@@ -888,10 +888,10 @@ FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
 /// <returns>Return value of the method call. </returns>
 FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL 
 	IF !o:IsObject
-	     THROW Error.VOError( EG_DATATYPE, "Send", nameof(o), 1, <OBJECT>{ o}  )
+	     THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(o), 1, <OBJECT>{ o}  )
 	ENDIF
 	IF ! uMethod:IsString  && ! uMethod:IsSymbol
-		THROW Error.VOError( EG_DATATYPE, "Send", nameof(uMethod) , 2, <OBJECT>{ uMethod } )
+		THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
 	ENDIF
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
@@ -1003,10 +1003,10 @@ FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 				RETURN (DWORD) met:GetParameters():Length
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", nameof(cMethod), 2, <OBJECT>{cMethod} )
+			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", nameof(cClass), 1, <OBJECT>{cClass} )
+		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", NAMEOF(cClass), 1, <OBJECT>{cClass} )
 	ENDIF
 	RETURN 0   
 	
@@ -1034,10 +1034,10 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 				RETURN (DWORD) oMI:GetParameters():Length
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
+			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
+		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 	RETURN 0   
 	
@@ -1068,10 +1068,10 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 				RETURN result
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", nameof(symFunction), 1, <OBJECT>{symFunction} )
+			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
+		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 
 	RETURN  NIL   

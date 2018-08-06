@@ -24,7 +24,7 @@ FUNCTION _accept( prompt AS STRING ) AS STRING
 	 retval := ""
    END TRY
    
-   RETURN iif( retval == NULL, "", retval )
+   RETURN IIF( retval == NULL, "", retval )
 
 FUNCTION cls() AS VOID STRICT
    Console.Clear()
@@ -42,7 +42,7 @@ FUNCTION QOut( o AS USUAL ) AS VOID
    QQOut( o )
    RETURN
       
-FUNCTION QOut( o params USUAL[] ) AS VOID
+FUNCTION QOut( o PARAMS USUAL[] ) AS VOID
    Console.WriteLine()
    QQOut( o )
    RETURN
@@ -52,7 +52,7 @@ FUNCTION QQOut( o AS USUAL ) AS VOID
    Console.Write( AsString( o ) )
    RETURN
    
-FUNCTION QQOut( o params  USUAL[] ) AS VOID
+FUNCTION QQOut( o PARAMS  USUAL[] ) AS VOID
    LOCAL count := o:Length AS INT
    LOCAL x                 AS INT
    
@@ -85,7 +85,7 @@ FUNCTION _wait( prompt AS STRING ) AS STRING
       info   := Console.ReadKey()
       retval := info:KeyChar:ToString()
    CATCH AS System.InvalidOperationException
-      MessageBox.Show( prompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(Int) MB_TOPMOST )
+      MessageBox.Show( prompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(INT) MB_TOPMOST )
       retval := ""
    END TRY
    

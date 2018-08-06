@@ -9,7 +9,7 @@ USING System.IO
 
 INTERNAL STATIC CLASS MacroHelpers
 	STATIC PRIVATE oMacroCompiler		AS IMacroCompiler
-	STATIC PRIVATE oMacroCompilerType	as System.Type
+	STATIC PRIVATE oMacroCompilerType	AS System.Type
 	STATIC PROPERTY Compiler AS IMacroCompiler
 		GET
 			LOCAL oMCType AS System.Type
@@ -52,30 +52,30 @@ INTERNAL STATIC CLASS MacroHelpers
 				END TRY
 			ENDIF
 		ENDIF
-		if oMacroAsm == NULL_OBJECT
+		IF oMacroAsm == NULL_OBJECT
 			// locate the macro compiler in the GAC or in the path
-			LOCAL cPath AS string
+			LOCAL cPath AS STRING
 			cPath := System.Environment.GetEnvironmentVariable("PATH")
 			LOCAL aPaths AS STRING[]
 			aPaths := cPath:Split(';',StringSplitOptions.RemoveEmptyEntries)
 			FOREACH VAR path IN aPaths
-				local cFileName AS STRING
+				LOCAL cFileName AS STRING
 				cFileName := System.IO.Path.Combine(path, "XSharp.MacroCompiler.dll")
 				IF System.IO.File.Exists(cFileName)
 					TRY
 						oMacroAsm := Assembly.LoadFrom(cFileName)
-						exit
+						EXIT
 					CATCH  AS Exception
 						THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler from the file "+cFileName}
 					END TRY
-				endif
+				ENDIF
 			NEXT
-		endif
+		ENDIF
 		IF oMacroAsm == NULL_OBJECT
 			// try to load from the GAC
 			LOCAL oAsm AS Assembly
-			local oName as AssemblyName
-			local cName as String
+			LOCAL oName AS AssemblyName
+			LOCAL cName AS STRING
 			oAsm := TYPEOF(XSharp.VO.Functions):Assembly
 			oName := oAsm:GetName()
 			cName := oName:FullName
@@ -84,8 +84,8 @@ INTERNAL STATIC CLASS MacroHelpers
 				oMacroAsm := Assembly.Load(cName)
 			CATCH AS Exception
 				THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler with strong name "+cName}
-			end try
-		endif
+			END TRY
+		ENDIF
 		IF oMacroAsm != NULL_OBJECT
 			LOCAL oType AS System.Type
 			oType := oMacroAsm:GetType("XSharp.MacroCompiler",FALSE,TRUE)

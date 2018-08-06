@@ -28,10 +28,10 @@ FUNCTION MemoTran(cSource ,cReplaceHardCR ,cReplaceSoftCR ) AS STRING CLIPPER
    ELSEIF ! cReplaceSoftCR:IsString
       THROW Error.ArgumentError( __ENTITY__, "cReplaceSoftCR", 3, <OBJECT>{ cReplaceSoftCR } )
    ENDIF
-   local cSrc := cSource as STRING
+   LOCAL cSrc := cSource AS STRING
     cSrc := cSrc:Replace( e"\r\n" , cReplaceHardCR )
 	cSrc := cSrc:Replace( e"\0x8D\n" , cReplaceSoftCR)
-	return cSrc
+	RETURN cSrc
 	
 	/// <summary>
 	/// Count the number of lines in a string.
@@ -50,21 +50,21 @@ FUNCTION MLCount(cMemo ,nWidth ,nTabsize ,lWrap ) AS DWORD CLIPPER
 	IF nWidth == NIL
 		nWidth := MemoHelpers.STD_MEMO_WIDTH
 	ELSEIF !nWidth:IsNumeric
-		BREAK Error.DataTypeError( "MLCount", nameof(nWidth), 2, <OBJECT>{ nWidth } )
+		BREAK Error.DataTypeError( "MLCount", NAMEOF(nWidth), 2, <OBJECT>{ nWidth } )
 	ENDIF
 	
 	IF nTabSize == NIL
 		nTabSize := MemoHelpers.STD_TAB_WIDTH
 	ELSEIF !nTabSize:IsNumeric
-		BREAK Error.DataTypeError( "MLCount", nameof(nTabSize), 3, <OBJECT>{ nTabSize } )
+		BREAK Error.DataTypeError( "MLCount", NAMEOF(nTabSize), 3, <OBJECT>{ nTabSize } )
 	ENDIF
 	
 	IF lWrap == NIL
 		lWrap := TRUE
 	ELSEIF !lWrap:IsLogic
-		BREAK Error.DataTypeError( "MLCount", nameof(lWrap), 4, <OBJECT>{ lWrap } )
+		BREAK Error.DataTypeError( "MLCount", NAMEOF(lWrap), 4, <OBJECT>{ lWrap } )
 	ENDIF
-	return MemoHelpers.MLCount(cMemo, nWidth, nTabsize, lWrap)
+	RETURN MemoHelpers.MLCount(cMemo, nWidth, nTabsize, lWrap)
 	
 	
 	
@@ -88,31 +88,31 @@ FUNCTION MLcToPos( cMemo, nLineLen, nLineNum, nColumn, nTabSize, lWrap ) AS DWOR
 	IF nLineLen == NIL
 		nLineLen := MemoHelpers.STD_MEMO_WIDTH
 	ELSEIF !nLineLen:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", nameof(nLineLen), 2, <OBJECT>{ nLineLen } )
+		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nLineLen), 2, <OBJECT>{ nLineLen } )
 	ENDIF
 	
 	IF nLineNum == NIL
 		nLineNum := 1
 	ELSEIF !nLineNum:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", nameof(nLineNum), 3, <OBJECT>{ nLineNum } )
+		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nLineNum), 3, <OBJECT>{ nLineNum } )
 	ENDIF
 	
 	IF nColumn == NIL
 		nColumn := 0
 	ELSEIF !nColumn:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", nameof(nColumn), 4, <OBJECT>{ nColumn } )
+		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nColumn), 4, <OBJECT>{ nColumn } )
 	ENDIF
 	
 	IF nTabSize == NIL
 		nTabSize := MemoHelpers.STD_TAB_WIDTH
 	ELSEIF !nTabSize:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", nameof(nTabSize), 5, <OBJECT>{ nTabSize } )
+		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nTabSize), 5, <OBJECT>{ nTabSize } )
 	ENDIF
 	
 	IF lWrap == NIL
 		lWrap := TRUE
 	ELSEIF !lWrap:IsLogic
-		BREAK Error.DataTypeError( "MLcToPos", nameof(lWrap), 6, <OBJECT>{ lWrap } )
+		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(lWrap), 6, <OBJECT>{ lWrap } )
 	ENDIF
 	RETURN MemoHelpers.MLcToPos(cMemo, nLineLen, nLineNum, nColumn, nTabSize, lWrap)   
 	
@@ -137,25 +137,25 @@ FUNCTION MLPos(cMemo ,nLineLen ,nLineNum ,nTabSize ,lWrap ) AS DWORD CLIPPER
 	IF nLineLen == NIL
 		nLineLen := MemoHelpers.STD_MEMO_WIDTH
 	ELSEIF !nLineLen:IsNumeric
-		THROW Error.DataTypeError( "MLPos", nameof(nLineLen), 2, <OBJECT>{ nLineLen } )
+		THROW Error.DataTypeError( "MLPos", NAMEOF(nLineLen), 2, <OBJECT>{ nLineLen } )
 	ENDIF
 	
 	IF nLineNum == NIL
 		nLineNum := 1
 	ELSEIF !nLineNum:IsNumeric
-		THROW Error.DataTypeError( "MLPos", nameof(nLineNum), 3, <OBJECT>{ nLineNum } )
+		THROW Error.DataTypeError( "MLPos", NAMEOF(nLineNum), 3, <OBJECT>{ nLineNum } )
 	ENDIF
 	
 	IF nTabSize == NIL
 		nTabSize := MemoHelpers.STD_TAB_WIDTH
 	ELSEIF !nTabSize:IsNumeric
-		THROW Error.DataTypeError( "MLPos", nameof(nTabSize), 4, <OBJECT>{ nTabSize } )
+		THROW Error.DataTypeError( "MLPos", NAMEOF(nTabSize), 4, <OBJECT>{ nTabSize } )
 	ENDIF
 	
 	IF lWrap == NIL
 		lWrap := TRUE
 	ELSEIF !lWrap:IsLogic
-		THROW Error.DataTypeError( "MLPos", nameof(lWrap), 5, <OBJECT>{ lWrap } )
+		THROW Error.DataTypeError( "MLPos", NAMEOF(lWrap), 5, <OBJECT>{ lWrap } )
 	ENDIF
 	LOCAL nIndex AS INT
 	nIndex := 0

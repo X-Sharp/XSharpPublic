@@ -4,8 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Reflection
-using System.Diagnostics
+USING System.Reflection
+USING System.Diagnostics
 
 
 
@@ -34,8 +34,8 @@ FUNCTION	DebOut()	AS	VOID CLIPPER
 /// </summary>
 /// <returns>
 /// </returns>
-function CanBreak() as logic
-	return XSharp.Internal.CompilerServices.CanBreak()
+FUNCTION CanBreak() AS LOGIC
+	RETURN XSharp.Internal.CompilerServices.CanBreak()
 
 
 /// <summary>
@@ -43,7 +43,7 @@ function CanBreak() as logic
 /// </summary>
 /// <returns>
 /// </returns>
-function Version() as string
-	return "XSharp "+__VERSION__
+FUNCTION Version() AS STRING
+	RETURN "XSharp "+__VERSION__
 
 

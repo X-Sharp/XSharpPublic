@@ -8,7 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 
@@ -19,13 +19,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		[Trait("Category", "Error")];
 		[Fact];
 		METHOD Test() AS VOID 
-			local dw as dword
+			LOCAL dw AS DWORD
 			Assert.NotEmpty(ErrString(Gencode.EG_ARG))
 			Assert.NotEmpty(ErrString(EG_ARG))
 			dw := EG_ARG
 			Assert.NotEmpty(ErrString(dw))
 			
-		return
+		RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

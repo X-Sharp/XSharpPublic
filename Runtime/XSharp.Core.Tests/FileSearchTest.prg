@@ -6,7 +6,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-using XUnit
+USING XUnit
 
 
 BEGIN NAMESPACE XSharp.Core.Tests
@@ -14,13 +14,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	CLASS FileSearchTests 
 
 		[Fact, Trait("Category", "File Search")]; 
-		method FileTest() as void
-			local lOk as logic
-			local cName as string
-			local dDate as DateTime
-			local nAttrib, nSize as dword
-			local cTime as string
-			ASsert.Equal(1L, (int) FFCount("XSharp.Core.dll", 0))
+		METHOD FileTest() AS VOID
+			LOCAL lOk AS LOGIC
+			LOCAL cName AS STRING
+			LOCAL dDate AS DateTime
+			LOCAL nAttrib, nSize AS DWORD
+			LOCAL cTime AS STRING
+			ASsert.Equal(1L, (INT) FFCount("XSharp.Core.dll", 0))
 			lOk := FFirst("XSharp.Core.dll", 0)
 			Assert.Equal(lOk, TRUE)
 			cName := FName()
@@ -41,9 +41,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		RETURN
 		[Fact, Trait("Category", "File Search")]; 
-		method File2Test() as void
-			local cName as string
-			local cName2 as STRING
+		METHOD File2Test() AS VOID
+			LOCAL cName AS STRING
+			LOCAL cName2 AS STRING
 			FErase("FOO.TXT")
 			Assert.Equal(false, File("FOO.TXT"))
 			FClose(Fcreate("FOO.TXT"))

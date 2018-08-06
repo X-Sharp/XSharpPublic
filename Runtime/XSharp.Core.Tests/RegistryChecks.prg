@@ -7,11 +7,11 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
-define SUBKEY := "XSharpCoreTest"
-define TESTINT := "TESTINT"
-define TESTSTRING := "TESTSTRING"
+DEFINE SUBKEY := "XSharpCoreTest"
+DEFINE TESTINT := "TESTINT"
+DEFINE TESTSTRING := "TESTSTRING"
 
 BEGIN NAMESPACE XSharp.Core.Tests
 
@@ -19,10 +19,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Trait("Category", "Registry")];
 		[Fact];
-		METHOD RegistryTest() as void 
-			local nResult as dword
-			local cResult as string
-			local lOk as logic
+		METHOD RegistryTest() AS VOID 
+			LOCAL nResult AS DWORD
+			LOCAL cResult AS STRING
+			LOCAL lOk AS LOGIC
 			lOk := SetRtRegInt(SUBKEY, TESTINT, 42)
 			Assert.Equal(TRUE, lOk)
 			lOk := DeleteRTRegKey(SUBKEY)
@@ -32,11 +32,11 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			lOk := SetRtRegString(SUBKEY, TESTSTRING, "424242")
 			Assert.Equal(TRUE, lOk)
 			nResult := QueryRtRegInt(SUBKEY, TESTINT)
-			Assert.Equal(42, (long) nResult)
+			Assert.Equal(42, (LONG) nResult)
 			cResult := QueryRtRegString(SUBKEY, TESTSTRING)
 			Assert.Equal("424242", cResult)
 			nResult := QueryRtRegInt(SUBKEY, TESTSTRING)
-			Assert.Equal(424242, (long) nResult)
+			Assert.Equal(424242, (LONG) nResult)
 
 		END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

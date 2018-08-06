@@ -8,21 +8,21 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 BEGIN NAMESPACE XSharp.Core.Tests
 	CLASS StringTests
 	[Fact, Trait("Category", "String")];
-	METHOD AdjustFNameTest() as void
+	METHOD AdjustFNameTest() AS VOID
 		Assert.Equal("    xyz   ddss.dbf",AdjustFName("    xyz   ddss    .dbf"))
 		Assert.Equal(null,AdjustFName(null))
 		Assert.Equal(" abc ced",AdjustFName(" abc ced   "))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AllTrimTest() as void
+	METHOD AllTrimTest() AS VOID
 
-		local s := e" Hello World  " as string
+		LOCAL s := e" Hello World  " AS STRING
 
 		Assert.Equal("Hello World",AllTrim(s))
 		Assert.Equal(null,AllTrim(null))
@@ -33,116 +33,116 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AscTest() as void
-		local value := " 123" as string
+	METHOD AscTest() AS VOID
+		LOCAL VALUE := " 123" AS STRING
 		Assert.Equal((DWORD)32,Asc(VALUE))
-		local nOld as LONG
+		LOCAL nOld AS LONG
 		nOld := RuntimeState.DosCodePage 
 		RuntimeState.DosCodePage := 737 // Greek
 		Assert.Equal((DWORD)150,Asc("Ψ"))  
 		RuntimeState.DosCodePage := 437 // US
 		Assert.Equal((DWORD)63,Asc("Ψ"))  // ? because not defined for the codepage
 		RuntimeState.DosCodePage := nOld
-		Assert.Equal((dword)32,Asc(" "))
-		Assert.Equal((dword)63,Asc(((char) 512):ToString())) // ?
-		Assert.Equal((dword)0,Asc(null))
+		Assert.Equal((DWORD)32,Asc(" "))
+		Assert.Equal((DWORD)63,Asc(((CHAR) 512):ToString())) // ?
+		Assert.Equal((DWORD)0,Asc(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AscWTest() as void
-		local value := " 123" as string
-		Assert.Equal((dword)32,AscW(value))
+	METHOD AscWTest() AS VOID
+		LOCAL VALUE := " 123" AS STRING
+		Assert.Equal((DWORD)32,AscW(VALUE))
 		Assert.Equal((DWORD)955,AscW("λ"))
 		Assert.Equal((DWORD)936,AscW("Ψ"))  
-		Assert.Equal((dword)32,AscW(" "))
-		Assert.Equal((dword)512,AscW(((char) 512):ToString()))
-		Assert.Equal((dword)0,AscW(null))
+		Assert.Equal((DWORD)32,AscW(" "))
+		Assert.Equal((DWORD)512,AscW(((CHAR) 512):ToString()))
+		Assert.Equal((DWORD)0,AscW(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AscATest() as void
-		local value := " 123" as string
-		Assert.Equal((dword)32,AscA(value))
-		Assert.Equal((dword)32,AscA(" "))
-		local nOld as LONG
+	METHOD AscATest() AS VOID
+		LOCAL VALUE := " 123" AS STRING
+		Assert.Equal((DWORD)32,AscA(VALUE))
+		Assert.Equal((DWORD)32,AscA(" "))
+		LOCAL nOld AS LONG
 		nOld := RuntimeState.WinCodePage 
 		RuntimeState.WinCodePage := 1253 // Greek
 		Assert.Equal((DWORD)235,AscA("λ"))
 		RuntimeState.WinCodePage  := 1252 // Western Europea
-		Assert.Equal((dword)63,Asc("λ"))	// ? because not defined for the codepage
+		Assert.Equal((DWORD)63,Asc("λ"))	// ? because not defined for the codepage
 		RuntimeState.WinCodePage  := nOld
-		Assert.Equal((dword)0,AscA(null))
+		Assert.Equal((DWORD)0,AscA(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AtTest() as void
-		var time := "16:55:23"
-		Assert.Equal((dword)4,At("55",time))
-		Assert.Equal((dword)0,At("55",null))
-		Assert.Equal((dword)0,At(null,time))
+	METHOD AtTest() AS VOID
+		VAR time := "16:55:23"
+		Assert.Equal((DWORD)4,At("55",time))
+		Assert.Equal((DWORD)0,At("55",null))
+		Assert.Equal((DWORD)0,At(null,time))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD At2Test() as void
-		var time := "16:55:23"
-		Assert.Equal((dword)4,At2("55",time))
-		Assert.Equal((dword)0,At2("55",null))
-		Assert.Equal((dword)0,At2(null,time))
+	METHOD At2Test() AS VOID
+		VAR time := "16:55:23"
+		Assert.Equal((DWORD)4,At2("55",time))
+		Assert.Equal((DWORD)0,At2("55",null))
+		Assert.Equal((DWORD)0,At2(null,time))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AtCTest() as void
-		Assert.Equal((dword)7,AtC("World","Hello World"))
-		Assert.Equal((dword)7,AtC("world","Hello World"))
-		Assert.Equal((dword)0,At("world","Hello World"))
+	METHOD AtCTest() AS VOID
+		Assert.Equal((DWORD)7,AtC("World","Hello World"))
+		Assert.Equal((DWORD)7,AtC("world","Hello World"))
+		Assert.Equal((DWORD)0,At("world","Hello World"))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AtC2Test() as void
-		Assert.Equal((dword)7,AtC2("World","Hello World"))
-		Assert.Equal((dword)7,AtC2("world","Hello World"))
-		Assert.Equal((dword)0,At2("world","Hello World"))
+	METHOD AtC2Test() AS VOID
+		Assert.Equal((DWORD)7,AtC2("World","Hello World"))
+		Assert.Equal((DWORD)7,AtC2("world","Hello World"))
+		Assert.Equal((DWORD)0,At2("world","Hello World"))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD At3Test() as void
-		var time := "16:25:23"
-		Assert.Equal((dword)7,At3("2",time,5))
-		Assert.Equal((dword)0,At3("2",time,12))
+	METHOD At3Test() AS VOID
+		VAR time := "16:25:23"
+		Assert.Equal((DWORD)7,At3("2",time,5))
+		Assert.Equal((DWORD)0,At3("2",time,12))
 
 	RETURN
 
 
 	[Fact, Trait("Category", "String")];
-	METHOD CharEvenTest() as void
+	METHOD CharEvenTest() AS VOID
 		Assert.Equal("1234",CharEven("A1B2C3D4"))
 		Assert.Equal("1234",CharEven("A1B2C3D4E"))
 		Assert.Equal(null,CharEven(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD CharOddTest() as void
+	METHOD CharOddTest() AS VOID
 		Assert.Equal("ABCD",CharOdd("A1B2C3D4"))
 		Assert.Equal("ABCDE",CharOdd("A1B2C3D4E"))
 		Assert.Equal(null,CharOdd(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD CharPosTest() as void
+	METHOD CharPosTest() AS VOID
 		Assert.Equal("o",CharPos("Hello World",5))
 		Assert.Equal(String.Empty,CharPos("A1B2C3D4E",33))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	method HardCRTest() as void
-		local s as string
-		s := "aaa" + ((char) 141):ToString() +chr(10)+ "bbb"
+	METHOD HardCRTest() AS VOID
+		LOCAL s AS STRING
+		s := "aaa" + ((CHAR) 141):ToString() +chr(10)+ "bbb"
 		Assert.Equal(1U, MlCount1(s))
 		Assert.Equal(2U, MlCount1(HardCR(s)))
 	
 
 	[Fact, Trait("Category", "String")];
-	METHOD InStrTest() as void
+	METHOD InStrTest() AS VOID
 		Assert.Equal(true,Instr("o W","Hello World"))
 		Assert.Equal(false,Instr("o w","Hello World"))
 		Assert.Equal(false,Instr(null,null))
@@ -152,7 +152,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 
 	[Fact, Trait("Category", "String")];
-	METHOD StringIsTest() as void
+	METHOD StringIsTest() AS VOID
 	//
 
 	Assert.Equal(true,IsAlpha("A"))
@@ -178,10 +178,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 
 	[Fact, Trait("Category", "String")];
-	METHOD LeftTest() as void
+	METHOD LeftTest() AS VOID
 
-		local s := "Hello World" as string
-		local unassigned		 as string		                  
+		LOCAL s := "Hello World" AS STRING
+		LOCAL unassigned		 AS STRING		                  
 							  
 		Assert.Equal("",left(s,0))
 		Assert.Equal("H",left(s,1))
@@ -194,17 +194,17 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD LowerTest() as void
+	METHOD LowerTest() AS VOID
 		Assert.Equal("hello world",Lower("Hello World"))
 		Assert.Equal(null,Lower(null))
-		var s := "Hello World"
+		VAR s := "Hello World"
 		lowerA(s)
 		Assert.Equal("hello world",s)
 	RETURN
 
 
 	[Fact, Trait("Category", "String")];
-	METHOD LenTest() as void
+	METHOD LenTest() AS VOID
 		Assert.Equal(0U, SLen(""))
 		Assert.Equal(0U, SLen(null))
 		Assert.Equal(1U, SLen("x"))
@@ -212,26 +212,26 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD LTrimTest() as void
+	METHOD LTrimTest() AS VOID
 		Assert.Equal("Hello World",LTrim("    Hello World"))
 		Assert.Equal(null,Lower(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD OccursTest() as void
-		Assert.Equal((dword)2,Occurs("or","the world according to me"))
-		Assert.Equal((dword)0,Occurs(null,null))
-		Assert.Equal((dword)0,Occurs("x",null))
-		Assert.Equal((dword)0,Occurs(null,"xx"))
+	METHOD OccursTest() AS VOID
+		Assert.Equal((DWORD)2,Occurs("or","the world according to me"))
+		Assert.Equal((DWORD)0,Occurs(null,null))
+		Assert.Equal((DWORD)0,Occurs("x",null))
+		Assert.Equal((DWORD)0,Occurs(null,"xx"))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD Occurs3Test() as void
-		Assert.Equal((dword)1,Occurs3("or","the world according to me",7))
+	METHOD Occurs3Test() AS VOID
+		Assert.Equal((DWORD)1,Occurs3("or","the world according to me",7))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD ProperTest() as void
+	METHOD ProperTest() AS VOID
 		Assert.Equal("Hello World",Proper("hello world"))
 		Assert.Equal(null,Proper(null))
 		Assert.Equal(Proper("1st characters are in uppercase"), "1st Characters Are In Uppercase")
@@ -239,16 +239,16 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD RAtTest() as void
-		Assert.Equal((dword)14,RAt("or","the world according to me"))
-		Assert.Equal((dword)0,Rat(null,null))
-		Assert.Equal((dword)0,Rat("or",null))
-		Assert.Equal((dword)0,Rat(null,"the world"))
+	METHOD RAtTest() AS VOID
+		Assert.Equal((DWORD)14,RAt("or","the world according to me"))
+		Assert.Equal((DWORD)0,Rat(null,null))
+		Assert.Equal((DWORD)0,Rat("or",null))
+		Assert.Equal((DWORD)0,Rat(null,"the world"))
 	RETURN
 
 
 	[Fact, Trait("Category", "String")];
-	METHOD RAtLineTest() as void
+	METHOD RAtLineTest() AS VOID
 	  LOCAL cSource AS STRING
 
 	  cSource := e"This is the first line\r\nThis is the second line\r\nThis is the third line"
@@ -261,59 +261,59 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD RAt2Test() as void
-		Assert.Equal((dword)14,RAt2("or","the world according to me"))
-		Assert.Equal((dword)0,Rat2(null,null))
-		Assert.Equal((dword)0,Rat2("or",null))
-		Assert.Equal((dword)0,Rat2(null,"the world"))
+	METHOD RAt2Test() AS VOID
+		Assert.Equal((DWORD)14,RAt2("or","the world according to me"))
+		Assert.Equal((DWORD)0,Rat2(null,null))
+		Assert.Equal((DWORD)0,Rat2("or",null))
+		Assert.Equal((DWORD)0,Rat2(null,"the world"))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD RAt3Test() as void
-		Assert.Equal((dword)14,RAt3("or","the world according to me",9))
+	METHOD RAt3Test() AS VOID
+		Assert.Equal((DWORD)14,RAt3("or","the world according to me",9))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD ReplicateTest() as void
+	METHOD ReplicateTest() AS VOID
 		Assert.Equal("dudadudaduda",Replicate("duda",3))
 		Assert.Equal("dudadudaduda",Repl("duda",3))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD RTrimTest() as void
+	METHOD RTrimTest() AS VOID
 		Assert.Equal("    Hello World",RTrim("    Hello World     "))
 		Assert.Equal(null,RTrim(null))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD RightTest() as void
+	METHOD RightTest() AS VOID
 		Assert.Equal("World",Right("Hello World",5))
 		Assert.Equal(null,Right(null,0))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD SCloneTest() as void
-		local s:="Hello World" as string
+	METHOD SCloneTest() AS VOID
+		LOCAL s:="Hello World" AS STRING
 		Assert.Equal(s,SClone(s))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD SLenTest() as void
-		local s:="Hello World" as string
-		var l := SLen(s)
-		Assert.Equal((dword)11,SLen(s))
+	METHOD SLenTest() AS VOID
+		LOCAL s:="Hello World" AS STRING
+		VAR l := SLen(s)
+		Assert.Equal((DWORD)11,SLen(s))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD SLenExceptionTest() as void
-		local s as string
+	METHOD SLenExceptionTest() AS VOID
+		LOCAL s AS STRING
 		s:=string.Empty
 		//XUnit.Assert.Throws<InvalidOperationException>( () => SLen(s))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD StuffTest() as void
-		local s:="Hello World" as string
+	METHOD StuffTest() AS VOID
+		LOCAL s:="Hello World" AS STRING
 		Assert.Equal("Hello Kiel",Stuff(s,7,5,"Kiel"))
 		Assert.Equal("Kiel",Stuff(null,7,5,"Kiel"))
 		Assert.Equal("Hello ",Stuff(s,7,5,""))
@@ -321,33 +321,33 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD SubStr2Test() as void
-		local s:="Hello World" as string
+	METHOD SubStr2Test() AS VOID
+		LOCAL s:="Hello World" AS STRING
 		Assert.Equal("World",SubStr2(s,7))
 		Assert.Equal("",SubStr2(s,20))
 		Assert.Equal(null,SubStr2(null,5))
 	RETURN
 	[Fact, Trait("Category", "String")];
-	METHOD SubStr3Test() as void
-		local s:="Hello World" as string
+	METHOD SubStr3Test() AS VOID
+		LOCAL s:="Hello World" AS STRING
 		Assert.Equal("World",SubStr3(s,7,5))
 		Assert.Equal("",SubStr3(s,20,5))
 		Assert.Equal(null,SubStr3(null,5,2))
 	RETURN
 	[Fact, Trait("Category", "String")];
-	METHOD TrimTest() as void
-		local s:="Hello World   " as string
+	METHOD TrimTest() AS VOID
+		LOCAL s:="Hello World   " AS STRING
 		Assert.Equal("Hello World",Trim(s))
 		Assert.Equal(null,Trim(null))
 	RETURN
 	[Fact, Trait("Category", "String")];
-	METHOD UpperTest() as void
-		local s:="Hello World" as string
+	METHOD UpperTest() AS VOID
+		LOCAL s:="Hello World" AS STRING
 		Assert.Equal("HELLO WORLD",Upper(s))
 		Assert.Equal(null,Upper(null))
 		upperA(s)
 		Assert.Equal("HELLO WORLD",s)
-	return
+	RETURN
 
    [Fact, Trait("Category", "String")];
    METHOD SoundExTest() AS VOID
@@ -355,7 +355,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal("S530", SoundEx("Smith")  )
 	  Assert.Equal("S530", SoundEx("Smythe") )
 
-	  return
+	  RETURN
    
    [Fact, Trait("Category", "String")];
    METHOD CharMixTest() AS VOID
@@ -365,10 +365,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal("", CHarMix("13579",""))
 	  Assert.Equal("1232527292", CHarMix("13579","2"))
 
-	  return
+	  RETURN
    [Fact, Trait("Category", "Memo")];
-   method AtLineTest() as void
-	  local test as string
+   METHOD AtLineTest() AS VOID
+	  LOCAL test AS STRING
 	  test := e"first line\r\nsecond line\r\nthird line"
 	  Assert.Equal(1U, AtLine("first", test))
 	  Assert.Equal(2U, AtLine("second", test))
@@ -379,11 +379,11 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal(3U, AtCLine("Third", test))
 	  Assert.Equal(0U, AtCLine("Fourth", test))
 	 
-	  return
+	  RETURN
 
    [Fact, Trait("Category", "Memo")];
-   method MemLinesTest() as void
-	  local test as string
+   METHOD MemLinesTest() AS VOID
+	  LOCAL test AS STRING
 	  test := e"first line\r\nsecond line\r\nthird line"
 	  Assert.Equal(3U, MemLines(test))     
 	  Assert.Equal(3U, MlCount1(test))     
@@ -393,18 +393,18 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal(1U, MlCount1(" "))
 	  Assert.Equal(0U, MemLines(null))  
 	  Assert.Equal(0U, MlCount1(NULL))  
-	  return
+	  RETURN
 
 
 
    [Fact, Trait("Category", "Memo")];
-	method MemoTest() as void
-		local sToWrite := "test" as string
+	METHOD MemoTest() AS VOID
+		LOCAL sToWrite := "test" AS STRING
 		MemoWrit("test.txt", sToWrite)
-		var sText := System.IO.File.ReadAllText("test.txt")
+		VAR sText := System.IO.File.ReadAllText("test.txt")
 		Assert.Equal(sToWrite, sText)
 		sText := MemORead("test.txt")
 		Assert.Equal(sToWrite, sText)
-		end class
+		END CLASS
 
 END NAMESPACE

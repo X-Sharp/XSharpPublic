@@ -7,8 +7,8 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
-using System.Diagnostics
+USING XUnit
+USING System.Diagnostics
 
 
 BEGIN NAMESPACE XSharp.Core.Tests

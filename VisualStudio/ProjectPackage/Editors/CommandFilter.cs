@@ -212,6 +212,38 @@ namespace XSharp.Project
                         replaceText(line, token, editSession, transform);
                     }
                 }
+                else if (XSharpLexer.IsConstant(token.Type) || XSharpLexer.IsOperator(token.Type))
+                {
+                    var keyword = token.Text;
+                    var transform = keyword;
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.TRUE_CONST:
+                        case XSharpLexer.FALSE_CONST:
+                        case XSharpLexer.MACRO:
+                        case XSharpLexer.LOGIC_AND:
+                        case XSharpLexer.LOGIC_OR:
+                        case XSharpLexer.LOGIC_NOT:
+                        case XSharpLexer.LOGIC_XOR:
+                        case XSharpLexer.VO_AND:
+                        case XSharpLexer.VO_OR:
+                        case XSharpLexer.VO_NOT:
+                        case XSharpLexer.VO_XOR:
+                            transform = FormatKeyword(keyword);
+                            break;
+                        default:
+                            if (token.Type >= XSharpLexer.FIRST_NULL && token.Type <= XSharpLexer.LAST_NULL)
+                            {
+                                transform = FormatKeyword(keyword);
+                            }
+                            break;
+
+                    }
+                    if (String.Compare(transform, keyword) != 0 && keyword[0] != '#')
+                    {
+                        replaceText(line, token, editSession, transform);
+                    }
+                }
                 else if (token.Type == XSharpLexer.ID && IdentifierCase)
                 {
                     var identifier = token.Text;

@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharpModel
                 LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
                 VAR genericString := "<"
                 VAR GenericTypeArguments := sysType:GetGenericArguments()
-                local first := TRUE as logic
+                LOCAL first := TRUE AS LOGIC
                 FOREACH VAR genArg IN GenericTypeArguments
                     IF first
                         genericString += genArg:FullName

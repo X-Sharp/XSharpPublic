@@ -3,53 +3,53 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis
-using LanguageService.CodeAnalysis.XSharp
-using Microsoft.VisualStudio.Shell
-using Microsoft.VisualStudio.Shell.TableManager
-using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using System.Threading.Tasks
-begin namespace XSharpModel
-	interface IXSharpProject
-		method AddFileNode(fileName as string) as void
-		method AddIntellisenseError(file as string, line as long, column as long, Length as long, errCode as string, message as string, sev as DiagnosticSeverity) as void
-		method ClearIntellisenseErrors(file as string) as void
-		method DeleteFileNode(fileName as string) as void
-		method DocumentGetText(file as string, IsOpen ref logic) as string
-		method DocumentInsertLine(fileName as string, line as long, text as string) as logic
-		method DocumentSetText(fileName as string, text as string) as logic
-		method FindProject(sProject as string) as EnvDTE.Project
-		method GetIntellisenseErrorPos(fileName as string) as System.Collections.Generic.List<IXErrorPosition>
-		method HasFileNode(fileName as string) as logic
-		method IsDocumentOpen(file as string) as logic
-		method OpenElement(file as string, line as long, column as long) as void
-		method SetStatusBarAnimation(onOff as logic, id as short) as void
-		method SetStatusBarText(message as string) as void
-		method ShowIntellisenseErrors() as void
+USING LanguageService.CodeAnalysis
+USING LanguageService.CodeAnalysis.XSharp
+USING Microsoft.VisualStudio.Shell
+USING Microsoft.VisualStudio.Shell.TableManager
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING System.Threading.Tasks
+BEGIN NAMESPACE XSharpModel
+	INTERFACE IXSharpProject
+		METHOD AddFileNode(fileName AS STRING) AS VOID
+		METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
+		METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
+		METHOD DeleteFileNode(fileName AS STRING) AS VOID
+		METHOD DocumentGetText(file AS STRING, IsOpen REF LOGIC) AS STRING
+		METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
+		METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
+		METHOD FindProject(sProject AS STRING) AS EnvDTE.Project
+		METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
+		METHOD HasFileNode(fileName AS STRING) AS LOGIC
+		METHOD IsDocumentOpen(file AS STRING) AS LOGIC
+		METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
+		METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+		METHOD SetStatusBarText(message AS STRING) AS VOID
+		METHOD ShowIntellisenseErrors() AS VOID
 		
 		// Properties
-		property IntermediateOutputPath as string get 
-		property IsVsBuilding as logic get 
-		property OutputFile as string get 
-		property ParseOptions as XSharpParseOptions get 
-		property PrefixClassesWithDefaultNamespace as logic get 
-		property RootNameSpace as string get 
-		property Url as string get 
-		property DisableLexing  as logic get
-		property DisableParsing  as logic get
-		property DisableRegions as logic get
-		property KeywordsUppercase as logic get
+		PROPERTY IntermediateOutputPath AS STRING GET 
+		PROPERTY IsVsBuilding AS LOGIC GET 
+		PROPERTY OutputFile AS STRING GET 
+		PROPERTY ParseOptions AS XSharpParseOptions GET 
+		PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET 
+		PROPERTY RootNameSpace AS STRING GET 
+		PROPERTY Url AS STRING GET 
+		PROPERTY DisableLexing  AS LOGIC GET
+		PROPERTY DisableParsing  AS LOGIC GET
+		PROPERTY DisableRegions AS LOGIC GET
+		PROPERTY KeywordsUppercase AS LOGIC GET
 		
-	end interface
+	END INTERFACE
 	
-	interface IXErrorPosition
-		property Column as long get set
-		property Length as long get set
-		property Line as long get set
-	end interface
+	INTERFACE IXErrorPosition
+		PROPERTY Column AS LONG GET SET
+		PROPERTY Length AS LONG GET SET
+		PROPERTY Line AS LONG GET SET
+	END INTERFACE
 	
-end namespace 
+END NAMESPACE 
 

@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			IF nLineStart == nLineEnd .and. nColEnd < nColStart
 				nColEnd := nColStart + 1
-			endif
+			ENDIF
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}
 			interval := TextInterval{nPosStart, nPosEnd}
 			RETURN

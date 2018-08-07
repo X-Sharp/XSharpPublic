@@ -1,7 +1,7 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Text
-using XSharp.VODesigners
+USING XSharp.VODesigners
 USING Xide
 
 // inherits from vulcan's EditorStream
@@ -9,7 +9,7 @@ USING Xide
 // through an open editor buffer in VS
 CLASS XSharp_EditorStream INHERIT EditorStream
 	PROTECT oXSharpEditor AS XSharpBuffer
-	PROTECT _fileName     as string
+	PROTECT _fileName     AS STRING
 	CONSTRUCTOR()
 		SUPER()
 	RETURN
@@ -18,14 +18,14 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		RETURN SELF:oXSharpEditor
 
 	// called by the editor's GetSaveFileStreams()
-	VIRTUAL METHOD Load(aLines as List<String>) AS VOID
+	VIRTUAL METHOD Load(aLines AS List<STRING>) AS VOID
 		SELF:oXSharpEditor := XSharpBuffer.Create(aLines)
 
 	VIRTUAL METHOD Load(cFileName AS STRING) AS VOID
 		LOCAL aLines := NULL AS List<STRING>
-		local oFile as XSharpModel.XFile
-		local oProject as XSharpModel.XProject
-		local cSource as STRING
+		LOCAL oFile AS XSharpModel.XFile
+		LOCAL oProject AS XSharpModel.XProject
+		LOCAL cSource AS STRING
 		_fileName := cFileName
 		TRY
 			LOCAL lOpenInVS := FALSE AS LOGIC
@@ -33,8 +33,8 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 			oFile := XSharpModel.XSolution.FindFile(cFileName)
 			IF oFile != NULL_OBJECT
 				oProject := oFile:Project
-				cSource := oProject:ProjectNode:DocumentGetText(cFileName, ref lOpenInVS)
-				if lOpenInVs
+				cSource := oProject:ProjectNode:DocumentGetText(cFileName, REF lOpenInVS)
+				IF lOpenInVs
 					SELF:eType := EditorStreamType.Module
 					BEGIN USING VAR oReader := StringReader{cSource}
 						aLines := List<STRING>{}
@@ -61,11 +61,11 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		SELF:oXSharpEditor := XSharpBuffer.Create(aLines)
 	RETURN
 	
-	METHOD InsertLines(newLines as List<String>, nFirstLine as INT) AS VOID
-		LOCAL i as LONG
-		for i := 1 to newLines:Count
+	METHOD InsertLines(newLines AS List<STRING>, nFirstLine AS INT) AS VOID
+		LOCAL i AS LONG
+		FOR i := 1 TO newLines:Count
 			SELF:oXSharpEditor:InsertLine(nFirstLine+i-1, newLines[i])
-		next
+		NEXT
 		
 
 	METHOD Save() AS LOGIC
@@ -77,7 +77,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				VAR oProject := oFile:Project
 				IF oProject != NULL_OBJECT
 					VAR sb := StringBuilder{aLines:Count * 80}
-					FOREACH VAR line in aLines
+					FOREACH VAR line IN aLines
 						sb:AppendLine(AddPartial(line))
 					NEXT
 					lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, sb:ToString())
@@ -93,10 +93,10 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				NEXT
 				lSuccess := TRUE
 				oWriter:Flush()
-			CATCH e as Exception
-                if System.Diagnostics.Debugger:IsAttached
+			CATCH e AS Exception
+                IF System.Diagnostics.Debugger:IsAttached
 					System.Diagnostics.Debug.WriteLine(e:Message)
-				endif
+				ENDIF
 			FINALLY
 				SELF:oStream:Close()
 			END TRY
@@ -104,14 +104,14 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 	RETURN lSuccess
 
 	METHOD AddPartial(line AS STRING) AS STRING
-		if (line:IndexOf("class",StringComparison.OrdinalIgnoreCase) >= 0)
-			var line2 := line:TrimStart():ToUpper()
+		IF (line:IndexOf("class",StringComparison.OrdinalIgnoreCase) >= 0)
+			VAR line2 := line:TrimStart():ToUpper()
 			IF line2:StartsWith("CLASS ")
-				var prefixlength := line:Length-line2:Length 
+				VAR prefixlength := line:Length-line2:Length 
 				VAR spaces		 := line:Substring(0, prefixlength)
 				line := spaces+ "PARTIAL "+line:Substring(prefixlength)
 			ENDIF
-		endif
-		return line
+		ENDIF
+		RETURN line
 END CLASS
 

@@ -2,28 +2,28 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-Using XSharpModel
+USING XSharpModel
 BEGIN NAMESPACE XsCodeModelTest
 
 
-function Start() as void
-local cFileName as string
+FUNCTION Start() AS VOID
+LOCAL cFileName AS STRING
 	cFileName := "C:\Test\test.prg"
 	cFileName := "C:\VIDE\Projects\XIDE\VIDE\PIDE.prg"
 	cFileName := "c:\temp\InventoryRepILst.prg"
 	ParseAndDisplay(System.IO.File.ReadAllLines(cFileName))
 	Console.ReadLine()
-return	
+RETURN	
 
 
-		function ParseAndDisplay(aLineCollection as IList<String>) as void
-		local oInfo as ParseResult
-		local d as DateTime
+		FUNCTION ParseAndDisplay(aLineCollection AS IList<STRING>) AS VOID
+		LOCAL oInfo AS ParseResult
+		LOCAL d AS DateTime
 		
 		? "Starting parsing..."
 		d := DateTime.Now
 		//LineObject.LinesWithSpecialStuff:Clear()
-		var parser := Parser{}
+		VAR parser := Parser{}
 		oInfo   := parser:Parse(aLineCollection, true)
 		? "Parsing completed!"
 		?
@@ -38,26 +38,26 @@ return
 		Console.ReadLine()
 		?
 		? "Types:"
-		foreach oEntity as EntityObject in oInfo:Types
+		FOREACH oEntity AS EntityObject IN oInfo:Types
 			? "Line:" , oEntity:nStartLine ,"Type:" , oEntity:eType , "Name:" , oEntity:cName ,  "Children", oEntity:aChildren:Count
 			? "Children:"
-			foreach oChild as EntityObject in oEntity:aChildren
+			FOREACH oChild AS EntityObject IN oEntity:aChildren
 				? "  line:" , oChild:nStartLine , "Type:" , oChild:eType, "Name:" , oChild:cName ,  "Return Type =", oChild:cRetType
-				if oChild:aChildren:Count > 0
+				IF oChild:aChildren:Count > 0
 					?? "  Locals: ", oChild:aChildren:Count
-				endif
-				foreach oLocal as EntityObject in oChild:aChildren
+				ENDIF
+				FOREACH oLocal AS EntityObject IN oChild:aChildren
 					? "      Line:" , oLocal:nStartLine , "Type:" , oLocal:eType , "Name:" , oLocal:cName ,  "Return Type =", oLocal:cRetType
-				next
-				if oChild:aParams != null
+				NEXT
+				IF oChild:aParams != null
 					? "  Parameters: ", oChild:aParams:Count
-					foreach oParam as EntityParamsObject in oChild:aParams
+					FOREACH oParam AS EntityParamsObject IN oChild:aParams
 						? "      Parameter:" , oParam:cName, oParam:cType, oParam:nParamType
-					next
-				endif
-			next
+					NEXT
+				ENDIF
+			NEXT
 			Console.ReadLine()
-		next
+		NEXT
 		//Console.ReadLine()
 
 		//? "Entities:"
@@ -74,13 +74,13 @@ return
 		/*
 		?
 		? "Directives, Block commands etc:"
-		foreach oLine as LineObject in Parser:LineObjects
-			if oLine:eType == LineType.EndClass .or. oLine:eType == LineType.Return .or. oLine:eType == LineType.Define
+		FOREACH oLine AS LineObject IN Parser:LineObjects
+			IF oLine:eType == LineType.EndClass .or. oLine:eType == LineType.Return .or. oLine:eType == LineType.Define
 				//loop
-			end if
+			END IF
 			? "Line:" , oLine:Line , "OffSet:", oLine:OffSet,  "Type:" , oLine:eType , ":" , oLine:cArgument
-		next
+		NEXT
 		*/
 		
-		return	
+		RETURN	
 END NAMESPACE

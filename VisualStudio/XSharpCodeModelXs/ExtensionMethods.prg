@@ -4,125 +4,125 @@
 // See License.txt in the project root for license information.
 //
 
-using System
-using System.Linq
-using System.Collections.Generic
-using System.Collections.Immutable
-using LanguageService.CodeAnalysis.Text
-begin namespace XSharpModel
+USING System
+USING System.Linq
+USING System.Collections.Generic
+USING System.Collections.Immutable
+USING LanguageService.CodeAnalysis.Text
+BEGIN NAMESPACE XSharpModel
 	
-	static class ExtensionMethods
+	STATIC CLASS ExtensionMethods
 		
-		static method IsEmpty( self cType as CompletionType) as logic
-			return cType == null .OR. ! cType:IsInitialized
+		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
+			RETURN cType == null .OR. ! cType:IsInitialized
 		
-		static method AddUnique<TKey, TValue>( self dict as Dictionary<TKey, TValue>, key as TKey, value as TValue) as TValue 
-			if dict != null .AND. key != null
-				if ! dict:ContainsKey(key)
-					dict:Add(key, value)
-					return value
-				endif
-				return dict:Item[key]
-			endif
-			return default (TValue)
+		STATIC METHOD AddUnique<TKey, TValue>( SELF dict AS Dictionary<TKey, TValue>, key AS TKey, VALUE AS TValue) AS TValue 
+			IF dict != null .AND. key != null
+				IF ! dict:ContainsKey(key)
+					dict:Add(key, VALUE)
+					RETURN VALUE
+				ENDIF
+				RETURN dict:Item[key]
+			ENDIF
+			RETURN DEFAULT (TValue)
 		
 		
-		static method DisplayName( self elementKind as Kind) as string
-			switch elementKind
-				case Kind.VOGlobal
-					return "GLOBAL"
-				case Kind.VODefine
-					return "DEFINE"
-				case Kind.EnumMember
-					return "MEMBER"
-			end switch
-			return elementKind:ToString():ToUpper()
+		STATIC METHOD DisplayName( SELF elementKind AS Kind) AS STRING
+			SWITCH elementKind
+				CASE Kind.VOGlobal
+					RETURN "GLOBAL"
+				CASE Kind.VODefine
+					RETURN "DEFINE"
+				CASE Kind.EnumMember
+					RETURN "MEMBER"
+			END SWITCH
+			RETURN elementKind:ToString():ToUpper()
 		
-		static method HasParameters( self elementKind as Kind) as logic
-			switch elementKind
-				case Kind.Constructor 
-				case Kind.Method 
-				case Kind.Assign 
-				case Kind.Access
-				case Kind.Function 
-				case Kind.Procedure 
-				case Kind.Event 
-				case Kind.Operator 
-				case Kind.Delegate 
-				case Kind.VODLL 
+		STATIC METHOD HasParameters( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Constructor 
+				CASE Kind.Method 
+				CASE Kind.Assign 
+				CASE Kind.Access
+				CASE Kind.Function 
+				CASE Kind.Procedure 
+				CASE Kind.Event 
+				CASE Kind.Operator 
+				CASE Kind.Delegate 
+				CASE Kind.VODLL 
 					//
-					return true
-			end switch
-			return false
+					RETURN true
+			END SWITCH
+			RETURN false
 		
-		static method HasReturnType( self elementKind as Kind) as logic
-			switch elementKind
-				case Kind.Method 
-				case Kind.Access 
-				case Kind.Property 
-				case Kind.Function 
-				case Kind.Field 
-				case Kind.Local 
-				case Kind.Parameter 
-				case Kind.Operator 
-				case Kind.Delegate 
-				case Kind.VOGlobal 
-				case Kind.VODefine 
-					return true
-			end switch
-			return false
-		
-		static method IsClassMember( self elementKind as Kind) as logic
-			switch elementKind
-				case Kind.Constructor 
-				case Kind.Destructor 
-				case Kind.Method 
-				case Kind.Access 
-				case Kind.Assign 
-				case Kind.Property 
-				case Kind.Event 
-				case Kind.Operator 
-					return true
-			end switch
-			return false
-		
-		static method IsField( self elementKind as Kind) as logic
-			switch elementKind
-				case Kind.Field 
-				case Kind.VOGlobal 
+		STATIC METHOD HasReturnType( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Method 
+				CASE Kind.Access 
+				CASE Kind.Property 
+				CASE Kind.Function 
+				CASE Kind.Field 
+				CASE Kind.Local 
+				CASE Kind.Parameter 
+				CASE Kind.Operator 
+				CASE Kind.Delegate 
+				CASE Kind.VOGlobal 
 				CASE Kind.VODefine 
-				case Kind.EnumMember
-					return true
-			end switch
-			return false
+					RETURN true
+			END SWITCH
+			RETURN false
 		
-		static method IsType( self elementKind as Kind) as logic
-			switch elementKind
-				case Kind.Class 
-				case Kind.Structure 
-				case Kind.Interface 
-				case Kind.Delegate 
-				case Kind.Enum 
-				case Kind.VOStruct 
-				case Kind.Union 
-					return true
-			end switch
-			return false
-		static method HasBody( self elementKind as Kind) as logic
-			switch elementKind
-				case Kind.Function
-				case Kind.Procedure
-				case Kind.Method
-				case Kind.Access
-				case Kind.Assign
-				case Kind.Property
-				case Kind.Event
-				case Kind.Operator
-				case Kind.Constructor
-				case Kind.Destructor
-					return true
-			end switch
-			return false
+		STATIC METHOD IsClassMember( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Constructor 
+				CASE Kind.Destructor 
+				CASE Kind.Method 
+				CASE Kind.Access 
+				CASE Kind.Assign 
+				CASE Kind.Property 
+				CASE Kind.Event 
+				CASE Kind.Operator 
+					RETURN true
+			END SWITCH
+			RETURN false
+		
+		STATIC METHOD IsField( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Field 
+				CASE Kind.VOGlobal 
+				CASE Kind.VODefine 
+				CASE Kind.EnumMember
+					RETURN true
+			END SWITCH
+			RETURN false
+		
+		STATIC METHOD IsType( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Class 
+				CASE Kind.Structure 
+				CASE Kind.Interface 
+				CASE Kind.Delegate 
+				CASE Kind.Enum 
+				CASE Kind.VOStruct 
+				CASE Kind.Union 
+					RETURN true
+			END SWITCH
+			RETURN false
+		STATIC METHOD HasBody( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Function
+				CASE Kind.Procedure
+				CASE Kind.Method
+				CASE Kind.Access
+				CASE Kind.Assign
+				CASE Kind.Property
+				CASE Kind.Event
+				CASE Kind.Operator
+				CASE Kind.Constructor
+				CASE Kind.Destructor
+					RETURN true
+			END SWITCH
+			RETURN false
 		
 	// textspan extensions
 		//static method GetText( self snapshot as ITextSnapshot, span as TextSpan) as string
@@ -135,88 +135,88 @@ begin namespace XSharpModel
 			//return TagSpan<IClassificationTag>{SnapshotSpan{snapshot, span:Start, span:Length}, ClassificationTag{classificationType}}
 	//
 	//list exstensions
-			static method AddUnique( self list as List<string>, item as string) as void
-			if !list:Contains(item, System.StringComparer.OrdinalIgnoreCase)
+			STATIC METHOD AddUnique( SELF list AS List<STRING>, item AS STRING) AS VOID
+			IF !list:Contains(item, System.StringComparer.OrdinalIgnoreCase)
 				list:Add(item)
-			endif
+			ENDIF
 		
-		static method Expanded( self source as IEnumerable<string>) as IReadOnlyList<string>
-			local list as List<string>
-			local item as string
-			list := List<string>{}
+		STATIC METHOD Expanded( SELF source AS IEnumerable<STRING>) AS IReadOnlyList<STRING>
+			LOCAL list AS List<STRING>
+			LOCAL item AS STRING
+			list := List<STRING>{}
 			list:AddRange(source)
-			foreach str as string in source
+			FOREACH str AS STRING IN source
 				item := str
-				while (item:Contains("."))
+				WHILE (item:Contains("."))
 					item := item:Substring(0, item:LastIndexOf("."))
-					if (! list:Contains(item))
+					IF (! list:Contains(item))
 						list:Add(item)
-					endif
-				enddo
-			next
-			return List:ToImmutableList() 
+					ENDIF
+				ENDDO
+			NEXT
+			RETURN List:ToImmutableList() 
 		
 		// parser enums
-		static method ToModifiers(self mod as EntityModifiers) as Modifiers
+		STATIC METHOD ToModifiers(SELF mod AS EntityModifiers) AS Modifiers
 		// FLags enum 
-		local result as Modifiers
-		if mod:HasFlag(EntityModifiers._Protected)
+		LOCAL result AS Modifiers
+		IF mod:HasFlag(EntityModifiers._Protected)
 			result |= Modifiers.Protected
-		endif
-		if mod:HasFlag(EntityModifiers._Private)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Private)
 			result |= Modifiers.Private
-		endif
-		if mod:HasFlag(EntityModifiers._Protected)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Protected)
 			result |= Modifiers.Protected
-		endif
-		if mod:HasFlag(EntityModifiers._Internal)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Internal)
 			result |= Modifiers.Internal
-		endif
-		if mod:HasFlag(EntityModifiers._Virtual)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Virtual)
 			result |= Modifiers.Virtual
-		endif
-		if mod:HasFlag(EntityModifiers._Abstract)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Abstract)
 			result |= Modifiers.Abstract
-		endif
-		if mod:HasFlag(EntityModifiers._Sealed)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Sealed)
 			result |= Modifiers.Sealed
-		endif
-		if mod:HasFlag(EntityModifiers._Static)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Static)
 			result |= Modifiers.Static
-		endif
-		if mod:HasFlag(EntityModifiers._Partial)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._Partial)
 			result |= Modifiers.Partial
-		endif
-		if mod:HasFlag(EntityModifiers._New)
+		ENDIF
+		IF mod:HasFlag(EntityModifiers._New)
 			result |= Modifiers.New
-		endif
-		if result == Modifiers.None
+		ENDIF
+		IF result == Modifiers.None
 			result := Modifiers.Public
-		endif
-		return result
+		ENDIF
+		RETURN result
 
-		static method ToModifiers(self acc as AccessLevel) as Modifiers
+		STATIC METHOD ToModifiers(SELF acc AS AccessLevel) AS Modifiers
 		// FLags enum 
-		local result as Modifiers
-		switch acc
-		case AccessLevel.Hidden
+		LOCAL result AS Modifiers
+		SWITCH acc
+		CASE AccessLevel.Hidden
 			result := Modifiers.Hidden
-		case AccessLevel.Protected
+		CASE AccessLevel.Protected
 			result := Modifiers.Protected
-		case AccessLevel.Public
+		CASE AccessLevel.Public
 			result := Modifiers.Public
-		case AccessLevel.Internal
+		CASE AccessLevel.Internal
 			result := Modifiers.Internal
-		end switch
-		if result == Modifiers.None
+		END SWITCH
+		IF result == Modifiers.None
 			result := Modifiers.Public
-		endif
+		ENDIF
 
-		return result
+		RETURN result
 
 
-	end class
+	END CLASS
 	
-end namespace 
+END NAMESPACE 
 
 

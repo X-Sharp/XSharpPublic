@@ -4,118 +4,118 @@
 // See License.txt in the project root for license information.
 //
 
-using System
-begin namespace XSharpModel
-	internal enum ImageListKind as Int32
-		member @@Class:=0
-		member @@Const:=1
-		member @@Delegate:=2
-		member @@Enum:=3
-		member @@EnumValue:=4
-		member @@Event:=5
-		member @@Unknown1:=6
-		member @@Field:=7
-		member @@Interface:=8
-		member @@Block:=9
-		member @@Variant:=10
-		member @@VariantOption:=11
-		member @@Method:=12
-		member @@StaticMethod:=13
-		member @@Unknown6:=14
-		member @@Namespace:=15
-		member @@Operator:=16
-		member @@Property:=17
-		member @@Structure:=18
-		member @@Unknown9:=19
-		member @@Macro:=20
-		member @@Unknown11:=21
-		member @@Unknown12:=22
-		member @@Local:=23
-		member @@ClassMethod:=24
-	end enum
+USING System
+BEGIN NAMESPACE XSharpModel
+	INTERNAL ENUM ImageListKind AS Int32
+		MEMBER @@Class:=0
+		MEMBER @@Const:=1
+		MEMBER @@Delegate:=2
+		MEMBER @@Enum:=3
+		MEMBER @@EnumValue:=4
+		MEMBER @@Event:=5
+		MEMBER @@Unknown1:=6
+		MEMBER @@Field:=7
+		MEMBER @@Interface:=8
+		MEMBER @@Block:=9
+		MEMBER @@Variant:=10
+		MEMBER @@VariantOption:=11
+		MEMBER @@Method:=12
+		MEMBER @@StaticMethod:=13
+		MEMBER @@Unknown6:=14
+		MEMBER @@Namespace:=15
+		MEMBER @@Operator:=16
+		MEMBER @@Property:=17
+		MEMBER @@Structure:=18
+		MEMBER @@Unknown9:=19
+		MEMBER @@Macro:=20
+		MEMBER @@Unknown11:=21
+		MEMBER @@Unknown12:=22
+		MEMBER @@Local:=23
+		MEMBER @@ClassMethod:=24
+	END ENUM
 	
-	internal enum ImageListOverlay as Int32
-		member @@Internal:=1
-		member @@ProtectedInternal:=2
-		member @@Protected:=3
-		member @@Private:=4
-		member @@ImageListOverlayArrow:=5
-		member @@Public:=0
-	end enum
+	INTERNAL ENUM ImageListOverlay AS Int32
+		MEMBER @@Internal:=1
+		MEMBER @@ProtectedInternal:=2
+		MEMBER @@Protected:=3
+		MEMBER @@Private:=4
+		MEMBER @@ImageListOverlayArrow:=5
+		MEMBER @@Public:=0
+	END ENUM
 	
-	enum Kind as Int32 
-		member @@Namespace
-		member @@Class
-		member @@Structure
-		member @@Constructor
-		member @@Destructor
-		member @@Method
-		member @@Access
-		member @@Assign
-		member @@Property
-		member @@Function
-		member @@Procedure
-		member @@Field
-		member @@Local
-		member @@Parameter
-		member @@Event
-		member @@Operator
-		member @@Interface
-		member @@Delegate
-		member @@Enum
-		member @@EnumMember
-		member @@Keyword
-		member @@Union
-		member @@Using
-		member @@VODefine
-		member @@VODLL
-		member @@VOStruct
-		member @@VOGlobal
-		member @@Unknown
+	ENUM Kind AS Int32 
+		MEMBER @@Namespace
+		MEMBER @@Class
+		MEMBER @@Structure
+		MEMBER @@Constructor
+		MEMBER @@Destructor
+		MEMBER @@Method
+		MEMBER @@Access
+		MEMBER @@Assign
+		MEMBER @@Property
+		MEMBER @@Function
+		MEMBER @@Procedure
+		MEMBER @@Field
+		MEMBER @@Local
+		MEMBER @@Parameter
+		MEMBER @@Event
+		MEMBER @@Operator
+		MEMBER @@Interface
+		MEMBER @@Delegate
+		MEMBER @@Enum
+		MEMBER @@EnumMember
+		MEMBER @@Keyword
+		MEMBER @@Union
+		MEMBER @@Using
+		MEMBER @@VODefine
+		MEMBER @@VODLL
+		MEMBER @@VOStruct
+		MEMBER @@VOGlobal
+		MEMBER @@Unknown
 	END ENUM
 
 	[Flags];
-	enum Modifiers as long
-		member @@None:=0
-		member @@Private:= 0x01
-		member @@Hidden:=  0x01
-		member @@ProtectedInternal:=0x02
-		member @@Internal:=0x04
-		member @@Protected:=0x08
-		member @@Public:=0x10
-		member @@Export:=0x10
-		member @@VisibilityMask := 0xFF
-		member @@Abstract:=0x100
-		member @@New:=0x200
-		member @@Partial:=0x400
-		member @@Sealed:=0x800
-		member @@Static:=0x1000
-		member @@Unsafe:=0x2000
-		member @@Virtual:=0x4000
-	end enum
-	enum XFileType as long
-		member Unknown:=-1
-		member SourceCode:=0
-		member PreprocessorOutput:=1
-		member Header:=2
-		member VOForm:=3
-		member VOMenu:=4
-		member VODBServer:=5
-		member VOIndex:=6
-		member VOOrder:=7
-		member VOFieldSpec:=8
-		member NativeResource:=9
-		member ManagedResource:=10
-		member XAML:=11
-		member Settings:=12
-		member License:=13
-	end enum
+	ENUM Modifiers AS LONG
+		MEMBER @@None:=0
+		MEMBER @@Private:= 0x01
+		MEMBER @@Hidden:=  0x01
+		MEMBER @@ProtectedInternal:=0x02
+		MEMBER @@Internal:=0x04
+		MEMBER @@Protected:=0x08
+		MEMBER @@Public:=0x10
+		MEMBER @@Export:=0x10
+		MEMBER @@VisibilityMask := 0xFF
+		MEMBER @@Abstract:=0x100
+		MEMBER @@New:=0x200
+		MEMBER @@Partial:=0x400
+		MEMBER @@Sealed:=0x800
+		MEMBER @@Static:=0x1000
+		MEMBER @@Unsafe:=0x2000
+		MEMBER @@Virtual:=0x4000
+	END ENUM
+	ENUM XFileType AS LONG
+		MEMBER Unknown:=-1
+		MEMBER SourceCode:=0
+		MEMBER PreprocessorOutput:=1
+		MEMBER Header:=2
+		MEMBER VOForm:=3
+		MEMBER VOMenu:=4
+		MEMBER VODBServer:=5
+		MEMBER VOIndex:=6
+		MEMBER VOOrder:=7
+		MEMBER VOFieldSpec:=8
+		MEMBER NativeResource:=9
+		MEMBER ManagedResource:=10
+		MEMBER XAML:=11
+		MEMBER Settings:=12
+		MEMBER License:=13
+	END ENUM
 	
 	ENUM ParamType AS BYTE
 		MEMBER @@AS		:= 0
 		MEMBER @@Ref    := 1
 		MEMBER @@Out	:= 2
-		Member @@Params := 3
-	end enum
-end namespace 
+		MEMBER @@Params := 3
+	END ENUM
+END NAMESPACE 
 

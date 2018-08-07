@@ -1281,10 +1281,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.VO_AND:
                     r = SyntaxKind.BitwiseAndExpression;
                     break;
+                case XSharpParser.OR:
                 case XSharpParser.LOGIC_OR:
                     r = SyntaxKind.LogicalOrExpression;
                     break;
-                case XSharpParser.OR:
                 case XSharpParser.VO_OR:
                     r = SyntaxKind.BitwiseOrExpression;
                     break;

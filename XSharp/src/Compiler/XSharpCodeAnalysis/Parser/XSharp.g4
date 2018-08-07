@@ -683,11 +683,11 @@ primary				: Key=SELF													#selfExpression
                     | Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// nativetype(_CAST, expr )
                     | XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// xbaseType(_CAST, expr )
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-					| Name=usualTypeName										#usualTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
-                    | Type=typeName											    #typeExpression			// Standard DotNet Types
-                    | Expr=iif													#iifExpression			// iif( expr, expr, expr )
+			  | Name=usualTypeName								#usualTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
+                    | Type=typeName									#typeExpression			// Standard DotNet Types
+                    | Expr=iif									#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
-                      (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
+                      (COMMA Exprs+=expression)* RPAREN					#intrinsicExpression	// _Or(expr, expr, expr)
                     | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME

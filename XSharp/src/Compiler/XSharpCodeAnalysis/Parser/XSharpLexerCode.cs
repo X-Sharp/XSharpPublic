@@ -975,6 +975,45 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
+                default:
+                    switch (lastToken)
+                    {
+                        case METHOD:
+                        case PROCEDURE:
+                        case PROC:
+                        case FUNCTION:
+                        case FUNC:
+                        case ACCESS:
+                        case ASSIGN:
+                        case CLASS:
+                        case INTERFACE:
+                        case STRUCTURE:
+                        case VOSTRUCT:
+                        case UNION:
+                        case DELEGATE:
+                        case PROPERTY:
+                        case EVENT:
+                        case DEFINE:
+                        case USING:
+                        case ENUM:
+                        case MEMBER:
+                        case DIM:
+                        case SELF:      // Self parameter Extension methods
+                        case LOCAL:
+                        case VAR:
+                        case IMPLIED:
+                            if (keyword != STATIC)
+                                return ID;
+                            break;
+                        // Linq
+                        case FROM:
+                        case LET:
+                        case JOIN:
+                        case INTO:
+                            return ID;
+
+                    }
+                    break;
             }
             return keyword;
         }

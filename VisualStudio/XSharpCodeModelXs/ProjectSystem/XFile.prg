@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_lock := OBJECT{}
 			SELF:_lastWritten := System.DateTime.MinValue
 			
-		PROPERTY EntityList as 	List<XElement> GET _entityList
+		PROPERTY EntityList AS 	List<XElement> GET _entityList
 		METHOD FirstMember() AS XTypeMember
 			IF (! SELF:HasCode)
 				RETURN NULL
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharpModel
 					SELF:_entityList:Clear()
 					SELF:_entityList:AddRange(aEntities)
 				END LOCK
-				WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, self:_entityList:Count))
+				WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
 			ENDIF
 			
 		METHOD BuildTypes(oInfo AS ParseResult) AS VOID
@@ -183,17 +183,17 @@ BEGIN NAMESPACE XSharpModel
 			aUsingStatics	:= List<STRING>{}
 			FOREACH oElement AS EntityObject IN oInfo:Types
 				oType   := XType.create(SELF, oElement,oInfo)
-				if !aTypes:ContainsKey(oType:FullName)
+				IF !aTypes:ContainsKey(oType:FullName)
 					aTypes:Add( oType:FullName, oType)
-				else
+				ELSE
 					// this should only happen if there are two PARTIAL CLASS parts in the same file
 					// now merge the second in the first
 					LOCAL oType2 := aTypes[oType:FullName] AS XType
-					if oType2:File == oType:File
+					IF oType2:File == oType:File
 						oType2 := oType2:Merge(oType)
 						aTypes[oType:FullName] := oType2
-					endif
-				endif
+					ENDIF
+				ENDIF
 				SELF:Project:RemoveMergedType(oType:FullName)
 			NEXT
 			FOREACH oLine AS LineObject IN oInfo:SpecialLines

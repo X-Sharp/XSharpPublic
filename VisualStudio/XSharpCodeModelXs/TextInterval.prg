@@ -3,60 +3,60 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using LanguageService.SyntaxTree
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using System.Threading.Tasks
-using System.Diagnostics
-using System
-using System.Runtime.InteropServices
-begin namespace XSharpModel
+USING LanguageService.SyntaxTree
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING System.Threading.Tasks
+USING System.Diagnostics
+USING System
+USING System.Runtime.InteropServices
+BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{Start}-{Stop}")];
-	structure TextInterval
+	STRUCTURE TextInterval
 		// Fields
-		private initonly _StartIndex as long
-		private initonly _StopIndex as long
+		PRIVATE INITONLY _StartIndex AS LONG
+		PRIVATE INITONLY _StopIndex AS LONG
 		
 		// Constructors
 		
-		constructor(start as long, stop as long)
+		CONSTRUCTOR(start AS LONG, stop AS LONG)
 			//
-			self:_StartIndex := start
-			self:_StopIndex := stop
+			SELF:_StartIndex := start
+			SELF:_StopIndex := stop
 		
 		
-		static property Empty as TextInterval get TextInterval{}
+		STATIC PROPERTY Empty AS TextInterval GET TextInterval{}
 
 
-		method IsEmpty() as logic
-			return ((self:_StartIndex == 0) .AND. (self:_StopIndex == 0))
+		METHOD IsEmpty() AS LOGIC
+			RETURN ((SELF:_StartIndex == 0) .AND. (SELF:_StopIndex == 0))
 		
         /// <summary>
         /// 0 based StartIndex
         /// </summary>
-		property Start as long get self:_StartIndex
+		PROPERTY Start AS LONG GET SELF:_StartIndex
 
         /// <summary>
         /// 0 based StopIndex
         /// </summary>
-		property Stop as long get self:_StopIndex
+		PROPERTY Stop AS LONG GET SELF:_StopIndex
 		
-		property Width as long get self:_StopIndex - self:_StartIndex + 1
+		PROPERTY Width AS LONG GET SELF:_StopIndex - SELF:_StartIndex + 1
 
-		method ContainsInclusive(position as long) as logic
-			if position >= self:_StartIndex  .AND. position <= self:_StopIndex
-				return true
-			endif
-			return false
+		METHOD ContainsInclusive(position AS LONG) AS LOGIC
+			IF position >= SELF:_StartIndex  .AND. position <= SELF:_StopIndex
+				RETURN true
+			ENDIF
+			RETURN false
 		
-		method ContainsExclusive(position as long) as logic
-			if position > self:_StartIndex .AND. position < self:_StopIndex
-				return true
-			endif
-			return  false
+		METHOD ContainsExclusive(position AS LONG) AS LOGIC
+			IF position > SELF:_StartIndex .AND. position < SELF:_StopIndex
+				RETURN true
+			ENDIF
+			RETURN  false
 		
-	end structure
+	END STRUCTURE
 	
-end namespace 
+END NAMESPACE 
 

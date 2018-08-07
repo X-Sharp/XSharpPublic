@@ -2,19 +2,19 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-using XSharp.VODesigners
+USING XSharp.VODesigners
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
-	PROTECT oXProject as XSharpModel.XProject
-	PROTECT aStylesUsed as List<String>		// List of styles used in this window
+	PROTECT oXProject AS XSharpModel.XProject
+	PROTECT aStylesUsed AS List<STRING>		// List of styles used in this window
 	CONSTRUCTOR(_oSurface AS Control , _oOptions AS WindowDesignerOptions , _oGrid AS DesignerGrid , _oToolBox AS ToolBox)
 		SUPER(_oSurface , _oOptions , _oGrid , _oToolBox)
-		aStylesUsed := List<String>{}
+		aStylesUsed := List<STRING>{}
 	RETURN
 
-	METHOD AddStyles(aStyles as STRING[]) AS VOID
-		FOREACH cStyle as STRING IN aStyles
+	METHOD AddStyles(aStyles AS STRING[]) AS VOID
+		FOREACH cStyle AS STRING IN aStyles
 			IF !aStylesUsed:Contains(cStyle)
 				aStylesUsed:Add(cStyle)
 			ENDIF
@@ -49,12 +49,12 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		ENDIF
 	RETURN oItem
 
-	METHOD Open(cFileName as STRING) as LOGIC
+	METHOD Open(cFileName AS STRING) AS LOGIC
 		VAR oFile := XSharpModel.XSolution.FindFile(cFileName)
-		if (oFile != NULL_OBJECT)
+		IF (oFile != NULL_OBJECT)
 			oXProject := oFile:Project
-		endif
-		if oXProject == NULL
+		ENDIF
+		IF oXProject == NULL
 			XFuncs.ErrorBox("Cannot find project for file "+cFileName)
 			RETURN FALSE
 		ENDIF
@@ -115,9 +115,9 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	
 			lError := FALSE
 			IF !lVnfrmOnly
-				if ! File.Exists(cRCFileName)
+				IF ! File.Exists(cRCFileName)
 					cRCFileName := System.IO.Path.ChangeExtension(cVNFrmFileName, ".rc")
-				endif
+				ENDIF
 				XFuncs.EnsureFileNodeExists(oXProject, cRCFileName)
 				IF !File.Exists(cPrgFileName)
 					XFuncs.ErrorBox("File was not found : " + cPrgFileName)
@@ -228,11 +228,11 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		NEXT
 		// Write the styles that are used in Alphabetical order
 		aStylesUsed:Sort()
-		FOREACH cStyle as STRING in SELF:aStylesUsed
+		FOREACH cStyle AS STRING IN SELF:aStylesUsed
 			oGenerator:AddDefine(cStyle, "0x"+VODefines.GetDefineValue(cStyle):ToString("X8"))
 		NEXT
 		oGenerator:AddLine("")
-		FOREACH cResource as STRING IN oCode:aResource
+		FOREACH cResource AS STRING IN oCode:aResource
 			oGenerator:AddLine(cResource)
 		NEXT
 		oStream:Save()
@@ -269,7 +269,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		
 		oProp := SELF:oWindowDesign:GetPropertyByMember("NoAcc")
 		lAccessAssign := oProp != NULL .and. oProp:TextValue:Trim() == "" .and. oProp:cPage != "_Hidden"
-		FOREACH cName as STRING in oCode:aAccessAssign
+		FOREACH cName AS STRING IN oCode:aAccessAssign
 
 			IF lAccessAssign
 				aEntity:Clear()
@@ -342,9 +342,9 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			RETURN
 		END IF
 		// Find Method for this class
-	    var rootNs := oFile:Project:ProjectNode:RootNameSpace
+	    VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
 		oType := oProject:Lookup(cClass,true)
-		if oType == NULL_OBJECT
+		IF oType == NULL_OBJECT
 			oType := oProject:Lookup(rootNs+"."+cClass,true)
 		ENDIF
 		IF cName:ToUpper() == "CLASSDECLARATION"
@@ -354,20 +354,20 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	        ENDIF
 		    
         ELSEIF oType != NULL_OBJECT
-			FOREACH VAR oMember in oType:Members
-				if string.Compare(oMember:Name, cName, TRUE) == 0
+			FOREACH VAR oMember IN oType:Members
+				IF string.Compare(oMember:Name, cName, TRUE) == 0
 					oMember:OpenEditor()
 					RETURN
-				endif
+				ENDIF
 			NEXT
         ENDIF		
 		lOpen := FALSE
-		var source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, ref lOpen)
+		VAR source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 
 		IF .not. lOpen
 			oProject:ProjectNode:OpenElement(oFile:FullPath, 1,1)
 		END IF
-		source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, ref lOpen)
+		source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 		IF .not. lOpen
 			RETURN
 		END IF
@@ -376,7 +376,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oEditor:Load(oFile:FullPath)
 		VAR nLine := oType:Range:EndLine -1
 		aLines:Reverse()
-		FOREACH VAR cLine in aLines
+		FOREACH VAR cLine IN aLines
 			VAR cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitMethod)
 			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
 		NEXT

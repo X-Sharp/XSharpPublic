@@ -4,249 +4,249 @@
 // See License.txt in the project root for license information.
 //
 
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser
-using LanguageService.SyntaxTree
-using LanguageService.SyntaxTree.Misc
-using LanguageService.SyntaxTree.Tree
-using System
-using System.Collections.Generic
-using System.Diagnostics
-using System.Linq
-using System.Text
-using System.Threading
-using System.Threading.Tasks
-using System.Collections.Concurrent
+USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
+USING LanguageService.SyntaxTree
+USING LanguageService.SyntaxTree.Misc
+USING LanguageService.SyntaxTree.Tree
+USING System
+USING System.Collections.Generic
+USING System.Diagnostics
+USING System.Linq
+USING System.Text
+USING System.Threading
+USING System.Threading.Tasks
+USING System.Collections.Concurrent
 
-begin namespace XSharpModel
-	class ModelWalker
+BEGIN NAMESPACE XSharpModel
+	CLASS ModelWalker
 		// Fields
-		private _projects := ConcurrentQueue<XProject>{} as ConcurrentQueue<XProject>
-		private _projectsForTypeResolution := ConcurrentQueue<XProject>{} as ConcurrentQueue<XProject>
-		static private _walker as ModelWalker
-		private _WalkerThread as System.Threading.Thread
-		static private suspendLevel  as long
+		PRIVATE _projects := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
+		PRIVATE _projectsForTypeResolution := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
+		STATIC PRIVATE _walker AS ModelWalker
+		PRIVATE _WalkerThread AS System.Threading.Thread
+		STATIC PRIVATE suspendLevel  AS LONG
 		
 		// Methods
 		
-		static constructor
+		STATIC CONSTRUCTOR
 			suspendLevel := 0
 		
-		private  constructor()
-			super()
+		PRIVATE  CONSTRUCTOR()
+			SUPER()
 		
 		
-		internal method AddProject(xProject as XProject) as void
+		INTERNAL METHOD AddProject(xProject AS XProject) AS VOID
 			//
 			WriteOutputMessage("-->> AddProject() "+xProject:Name)
-			begin lock self
+			BEGIN LOCK SELF
 				//
-				var lAdd2Queue := true
-				foreach project as XProject in self:_projects
+				VAR lAdd2Queue := true
+				FOREACH project AS XProject IN SELF:_projects
 					//
-					if (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
+					IF (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
 						//
 						lAdd2Queue := false
-						exit
+						EXIT
 						
-					endif
-				next
-				if (lAdd2Queue)
+					ENDIF
+				NEXT
+				IF (lAdd2Queue)
 					//
-					self:_projects:Enqueue(xProject)
-				endif
-				if (! self:IsWalkerRunning .AND. ! xProject:ProjectNode:IsVsBuilding)
+					SELF:_projects:Enqueue(xProject)
+				ENDIF
+				IF (! SELF:IsWalkerRunning .AND. ! xProject:ProjectNode:IsVsBuilding)
 					//
-					self:Walk()
-				endif
-			end lock
+					SELF:Walk()
+				ENDIF
+			END LOCK
 			WriteOutputMessage("<<-- AddProject()")
 		
-		internal method FileWalk(file as XFile) as void
-			var lastWriteTime := System.IO.File.GetLastWriteTime(file:SourcePath)
-			if lastWriteTime > file:LastWritten
+		INTERNAL METHOD FileWalk(file AS XFile) AS VOID
+			VAR lastWriteTime := System.IO.File.GetLastWriteTime(file:SourcePath)
+			IF lastWriteTime > file:LastWritten
 				//
-				begin using var walker := SourceWalker{file}
-					try
+				BEGIN USING VAR walker := SourceWalker{file}
+					TRY
 						//
-						var lines := System.IO.File.ReadAllLines(file:SourcePath)
-						var xTree := walker:Parse(lines, false)
+						VAR lines := System.IO.File.ReadAllLines(file:SourcePath)
+						VAR xTree := walker:Parse(lines, false)
 						walker:BuildModel(xTree)
 						file:LastWritten := lastWriteTime
-						if file:Project != null
+						IF file:Project != null
 							//
-							if file:Project:FileWalkComplete != null
+							IF file:Project:FileWalkComplete != null
 								//
 								file:Project:FileWalkComplete?:Invoke(file)
-							endif
-						endif
-						return
+							ENDIF
+						ENDIF
+						RETURN
 						
-					catch e as Exception
+					CATCH e AS Exception
 						XSolution.WriteException(e)	
-					finally
-						if walker != null
+					FINALLY
+						IF walker != null
 							//
 							walker:Dispose()
-						endif
-					end try
-				end using
-			endif
+						ENDIF
+					END TRY
+				END USING
+			ENDIF
 		
-		static method GetWalker() as ModelWalker
+		STATIC METHOD GetWalker() AS ModelWalker
 			//
-			if (ModelWalker._walker == null)
+			IF (ModelWalker._walker == null)
 				//
 				ModelWalker._walker := ModelWalker{}
-			endif
-			return ModelWalker._walker
+			ENDIF
+			RETURN ModelWalker._walker
 		
-		static method Resume() as void
+		STATIC METHOD Resume() AS VOID
 			//
 			ModelWalker.suspendLevel--
 		
-		internal method StopThread() as void
-			try
-				if (self:_WalkerThread == null)
-					return
-				endif
-				if (self:_WalkerThread:IsAlive)
-					self:_WalkerThread:Abort()
-				endif
+		INTERNAL METHOD StopThread() AS VOID
+			TRY
+				IF (SELF:_WalkerThread == null)
+					RETURN
+				ENDIF
+				IF (SELF:_WalkerThread:IsAlive)
+					SELF:_WalkerThread:Abort()
+				ENDIF
 			CATCH exception AS System.Exception
 				WriteOutputMessage("Cannot stop Background walker Thread : ")
 				XSolution.WriteException(exception)
-			end try
-			self:_WalkerThread := null
+			END TRY
+			SELF:_WalkerThread := null
 		
-		static method Suspend() as void
+		STATIC METHOD Suspend() AS VOID
 			//
 			ModelWalker.suspendLevel++
 		
-		method Walk() as void
-			local start as System.Threading.ThreadStart
-			if (ModelWalker.suspendLevel <= 0)
-				try
-					self:StopThread()
-					start := System.Threading.ThreadStart{ self, @Walker() }
-					self:_WalkerThread := System.Threading.Thread{start}
-					self:_WalkerThread:IsBackground := true
-					self:_WalkerThread:Priority := System.Threading.ThreadPriority.Highest
-					self:_WalkerThread:Name := "ModelWalker"
-					self:_WalkerThread:Start()
-				catch exception as System.Exception
+		METHOD Walk() AS VOID
+			LOCAL start AS System.Threading.ThreadStart
+			IF (ModelWalker.suspendLevel <= 0)
+				TRY
+					SELF:StopThread()
+					start := System.Threading.ThreadStart{ SELF, @Walker() }
+					SELF:_WalkerThread := System.Threading.Thread{start}
+					SELF:_WalkerThread:IsBackground := true
+					SELF:_WalkerThread:Priority := System.Threading.ThreadPriority.Highest
+					SELF:_WalkerThread:Name := "ModelWalker"
+					SELF:_WalkerThread:Start()
+				CATCH exception AS System.Exception
 					WriteOutputMessage("Cannot start Background walker Thread : ")
 					XSolution.WriteException(exception)
 					
-				end try
-			endif
+				END TRY
+			ENDIF
 
-		internal iProcessed as long
-		internal aFiles as XFile[]
-		private method Walker() as void
-			local project as XProject
-			local parallelOptions as System.Threading.Tasks.ParallelOptions
+		INTERNAL iProcessed AS LONG
+		INTERNAL aFiles AS XFile[]
+		PRIVATE METHOD Walker() AS VOID
+			LOCAL project AS XProject
+			LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
 			project := null
-			if ((self:_projects:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(self:_projects):ProjectNode:IsVsBuilding)
-				do while (true)
-					if (ModelWalker.suspendLevel > 0)
-						if (project != null)
-							self:_projects:Enqueue(project)
-						endif
-						exit
-					endif
-					begin lock self
-						if ((self:_projects:Count == 0) .OR. ! self:_projects:TryDequeue( out project))
-							exit
-						endif
+			IF ((SELF:_projects:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projects):ProjectNode:IsVsBuilding)
+				DO WHILE (true)
+					IF (ModelWalker.suspendLevel > 0)
+						IF (project != null)
+							SELF:_projects:Enqueue(project)
+						ENDIF
+						EXIT
+					ENDIF
+					BEGIN LOCK SELF
+						IF ((SELF:_projects:Count == 0) .OR. ! SELF:_projects:TryDequeue( OUT project))
+							EXIT
+						ENDIF
 						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
-					end lock
+					END LOCK
 					WriteOutputMessage("-->> Walker("+project.Name+")")
 					aFiles := project:SourceFiles:ToArray()
 					iProcessed := 0
 					parallelOptions := ParallelOptions{}
-					if (System.Environment.ProcessorCount > 1)
+					IF (System.Environment.ProcessorCount > 1)
 						parallelOptions:MaxDegreeOfParallelism := ((System.Environment.ProcessorCount * 3) / 4)
-					endif
+					ENDIF
 					project:ProjectNode:SetStatusBarAnimation(true, 0)
 					Parallel.ForEach(aFiles, walkOneFile)
-					begin lock self
+					BEGIN LOCK SELF
 						_projectsForTypeResolution:Enqueue(project)
-					end lock
+					END LOCK
 					project:ProjectNode:SetStatusBarText("")
 					project:ProjectNode:SetStatusBarAnimation(false, 0)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
-				enddo
+				ENDDO
 
 
-			endif
-			if ((self:_projectsForTypeResolution:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(self:_projectsForTypeResolution):ProjectNode:IsVsBuilding)
-				do while (true)
-					if (ModelWalker.suspendLevel > 0)
-						if (project != null)
-							self:_projectsForTypeResolution:Enqueue(project)
-						endif
-						exit
-					endif
+			ENDIF
+			IF ((SELF:_projectsForTypeResolution:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projectsForTypeResolution):ProjectNode:IsVsBuilding)
+				DO WHILE (true)
+					IF (ModelWalker.suspendLevel > 0)
+						IF (project != null)
+							SELF:_projectsForTypeResolution:Enqueue(project)
+						ENDIF
+						EXIT
+					ENDIF
 					
-					begin lock self
-						if ((self:_projectsForTypeResolution:Count == 0) .OR. ! self:_projectsForTypeResolution:TryDequeue( out project))
-							exit
-						endif
-					end lock
+					BEGIN LOCK SELF
+						IF ((SELF:_projectsForTypeResolution:Count == 0) .OR. ! SELF:_projectsForTypeResolution:TryDequeue( OUT project))
+							EXIT
+						ENDIF
+					END LOCK
 					WriteOutputMessage("-->> Walker() Resolve types "+project:Name)
 					project:ResolveReferences()
 					WriteOutputMessage("<<-- Walker() Resolve types "+project:Name)
-				enddo
+				ENDDO
 
-			endif
+			ENDIF
 		
-		private method walkOneFile(file as XFile) as void
-			var project := file:Project
-			if (project:Loaded)
+		PRIVATE METHOD walkOneFile(file AS XFile) AS VOID
+			VAR project := file:Project
+			IF (project:Loaded)
 				iProcessed++
-				do while (project:ProjectNode:IsVsBuilding)
+				DO WHILE (project:ProjectNode:IsVsBuilding)
 					System.Threading.Thread.Sleep(1000)
-				enddo
+				ENDDO
 				project:ProjectNode:SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project:Name, file:Name, iProcessed, aFiles:Length))
-				self:FileWalk(file)
-			endif
-			do while ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
+				SELF:FileWalk(file)
+			ENDIF
+			DO WHILE ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
 				System.Threading.Thread.Sleep(100)
-			enddo
-			return
+			ENDDO
+			RETURN
 
 		// Properties
-		property HasWork as logic
-			get
-				return (self:_projects:Count > 0)
-			end get
-		end property
+		PROPERTY HasWork AS LOGIC
+			GET
+				RETURN (SELF:_projects:Count > 0)
+			END GET
+		END PROPERTY
 		
-		static property IsSuspended as logic
-			get
-				return ModelWalker.suspendLevel > 0
-			end get
-		end property
+		STATIC PROPERTY IsSuspended AS LOGIC
+			GET
+				RETURN ModelWalker.suspendLevel > 0
+			END GET
+		END PROPERTY
 		
-		property IsWalkerRunning as logic
-			get
-				try
-					if self:_WalkerThread != null
-						return self:_WalkerThread:IsAlive
-					endif
-				catch exception as System.Exception
+		PROPERTY IsWalkerRunning AS LOGIC
+			GET
+				TRY
+					IF SELF:_WalkerThread != null
+						RETURN SELF:_WalkerThread:IsAlive
+					ENDIF
+				CATCH exception AS System.Exception
 					//
 					WriteOutputMessage("Cannot check Background walker Thread : ")
 					XSolution.WriteException(exception)
-				end try
-				return false
-			end get
-		end property
+				END TRY
+				RETURN false
+			END GET
+		END PROPERTY
 		
-		STATIC METHOD WriteOutputMessage(message AS STRING) AS void
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Walker "+message)
 		
-	end class
+	END CLASS
 	
-end namespace 
+END NAMESPACE 
 

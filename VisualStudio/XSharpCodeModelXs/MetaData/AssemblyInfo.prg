@@ -29,14 +29,14 @@ CLASS AssemblyInfo
 		PRIVATE _zeroNamespace AS AssemblyInfo.NameSpaceContainer
 		
 		PRIVATE STATIC WorkFolder AS STRING
-		PRIVATE STATIC FailedAssemblies as Dictionary<string, int>
+		PRIVATE STATIC FailedAssemblies AS Dictionary<STRING, INT>
 
 		PUBLIC STATIC PROPERTY DisableAssemblyReferences AS LOGIC AUTO
 		PUBLIC STATIC PROPERTY DisableForeignProjectReferences AS LOGIC AUTO
 		PUBLIC STATIC PROPERTY DisableXSharpProjectReferences AS LOGIC AUTO
 		STATIC CONSTRUCTOR
 			// Clear temp files from previous run 
-			FailedAssemblies := Dictionary<string, int>{StringComparer.OrdinalIgnoreCase}
+			FailedAssemblies := Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
 			VAR cFolder := Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 			cFolder := System.IO.Path.Combine(cFolder, "XSharp\Temp")
 			IF ! System.IO.Directory.Exists(cFolder)
@@ -179,7 +179,7 @@ CLASS AssemblyInfo
 				IF System.IO.File.Exists(fileName)
 					VAR pdb			:= System.IO.Path.ChangeExtension(fileName,".pdb")
 					IF System.IO.File.Exists(pdb)
-						return pdb
+						RETURN pdb
 					ENDIF
 					// ok when it is not in the DLL folder but referenced in the DLL then extract this information
 					VAR text        := System.IO.File.ReadAllText(fileName)
@@ -206,12 +206,12 @@ CLASS AssemblyInfo
 						WriteOutputMessage("    ... Cannot load assembly, giving up after a few retries:")
 						WriteOutputMessage("    ...."  +fileName+" "+ iAttempts:ToString())
 						RETURN NULL
-					endif
-				endif
+					ENDIF
+				ENDIF
 				IF System.IO.File.Exists(fileName)
 					LOCAL cPDB		AS STRING
 					LOCAL cPdbCopy	AS STRING
-					local PdbRenamed   := FALSE as LOGIC
+					LOCAL PdbRenamed   := FALSE AS LOGIC
 					TRY
 						VAR temp		:=  System.IO.Path.Combine(WorkFolder, System.IO.Path.GetFileName(fileName))
 						System.IO.File.Copy(fileName, temp,true)
@@ -510,7 +510,7 @@ CLASS AssemblyInfo
 		PROPERTY Types AS IDictionary<STRING, System.Type> GET SELF:_aTypes
 		
 
-		STATIC METHOD WriteOutputMessage(message as string) AS VOID
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.AssemblyInfo " +message )
 		
 		// Nested Types

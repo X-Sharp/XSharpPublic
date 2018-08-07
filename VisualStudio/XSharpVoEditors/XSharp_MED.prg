@@ -2,21 +2,21 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-using XSharp.VODesigners
+USING XSharp.VODesigners
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
-	PROTECT oXProject as XSharpModel.XProject
+	PROTECT oXProject AS XSharpModel.XProject
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
 		SUPER(_oSurface , _oGrid) 
 	RETURN
 
-	METHOD Open(cFileName as STRING) as LOGIC
+	METHOD Open(cFileName AS STRING) AS LOGIC
 		VAR oFile := XSharpModel.XSolution.FindFile(cFileName)
-		if (oFile != NULL_OBJECT)
+		IF (oFile != NULL_OBJECT)
 			oXProject := oFile:Project
-		endif
-		if oXProject == NULL
+		ENDIF
+		IF oXProject == NULL
 			XFuncs.ErrorBox("Cannot find project for file "+cFileName)
 			RETURN FALSE
 		ENDIF
@@ -50,7 +50,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			nAt := cBaseName:ToLower():IndexOf(".vnmnu")
 			IF (nAt == -1)
 				nAt := cBaseName:ToLower():IndexOf(".xsmnu")
-			endif
+			ENDIF
 			IF nAt != -1
 				cBaseName := cBaseName:Substring(0 , nAt)
 			ENDIF
@@ -133,12 +133,12 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		// remove IDM_MenuName
 		oCode:aDefines:RemoveAt(0)
 		oCode:aDefineValues:RemoveAt(0)
-		if self:HasAccelerators .and. oCode:aDefines[0]:Startswith("IDA_")
+		IF SELF:HasAccelerators .and. oCode:aDefines[0]:Startswith("IDA_")
 			// remove IDA_MenuName
 			oCode:aDefines:RemoveAt(0)
 			oCode:aDefineValues:RemoveAt(0)
-		endif	
-		return oCode
+		ENDIF	
+		RETURN oCode
 
 
 	METHOD Save(cFileName AS STRING , lMnuOnly AS LOGIC) AS LOGIC
@@ -178,7 +178,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 	RETURN lSuccess
 
 
-	METHOD _WriteDefines(oGenerator as CodeGenerator, oCode AS CodeContents ) as VOID		
+	METHOD _WriteDefines(oGenerator AS CodeGenerator, oCode AS CodeContents ) AS VOID		
 		// in x#, always add the #defines in the .rc header, no need to put them in a .vh anymore
 		FOR VAR nDef := 0 UPTO oCode:aDefines:Count - 1
 			oGenerator:AddLine("#define " +oCode:aDefines[nDef] +" "+ oCode:aDefineValues[nDef])
@@ -191,7 +191,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		oGenerator:Clear()
 		XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
 		SELF:_WriteDefines(oGenerator, oCode)
-		FOREACH cResource as STRING in oCode:aResource
+		FOREACH cResource AS STRING IN oCode:aResource
 			oGenerator:AddLine(cResource)
 		NEXT
 		oGenerator:AddLine("")
@@ -202,13 +202,13 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			oGenerator:Clear()
 			XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
 			SELF:_WriteDefines(oGenerator, oCode)
-			FOREACH cResource as STRING IN oCode:aAccelResource
+			FOREACH cResource AS STRING IN oCode:aAccelResource
 				oGenerator:AddLine(cResource)
 			NEXT
 			oAccelStream:Save()
 		ELSE
 			oStream:Editor:AddLine("")
-			FOREACH cResource as STRING IN oCode:aAccelResource
+			FOREACH cResource AS STRING IN oCode:aAccelResource
 				oStream:Editor:AddLine(cResource)
 			NEXT
 		END IF

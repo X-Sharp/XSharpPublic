@@ -3,181 +3,181 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Collections.Generic
-using System.Diagnostics
-using XSharpModel
-begin namespace XSharpModel
+USING System.Collections.Generic
+USING System.Diagnostics
+USING XSharpModel
+BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{Prototype,nq}")];
-	class XTypeMember inherit XElement
+	CLASS XTypeMember INHERIT XElement
 		// Fields
-		private _parameters as List<XVariable>
-		private _typeName as string
+		PRIVATE _parameters AS List<XVariable>
+		PRIVATE _typeName AS STRING
 		
 		#region constructors
 			
-			private  constructor(name as string, kind as Kind, modifiers as Modifiers, visibility as Modifiers, span as TextRange, position as TextInterval, typeName as string, isStatic as logic)
-				super(name, kind, modifiers, visibility, span, position)
-				self:Parent := null
-				self:_parameters := List<XVariable>{}
-				self:_typeName := ""
-				self:_typeName := typeName
-				self:_isStatic := isStatic
+			PRIVATE  CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
+				SUPER(name, kind, modifiers, visibility, span, position)
+				SELF:Parent := null
+				SELF:_parameters := List<XVariable>{}
+				SELF:_typeName := ""
+				SELF:_typeName := typeName
+				SELF:_isStatic := isStatic
 
-			static method create(oElement as EntityObject, oInfo as ParseResult, oFile as XFile, oType as XType) as XTypeMember
-				local cName := oElement:cName as string
-				local kind  := Etype2Kind(oElement:eType) as Kind
-				local cType := oElement:cRetType as string
-				local mods  := oElement:eModifiers:ToModifiers() as Modifiers
-				local vis   := oElement:eAccessLevel:ToModifiers() as Modifiers
-				local span   as textRange
-				local intv   as TextInterval
-				local isStat := oElement:lStatic as logic
+			STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType) AS XTypeMember
+				LOCAL cName := oElement:cName AS STRING
+				LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
+				LOCAL cType := oElement:cRetType AS STRING
+				LOCAL mods  := oElement:eModifiers:ToModifiers() AS Modifiers
+				LOCAL vis   := oElement:eAccessLevel:ToModifiers() AS Modifiers
+				LOCAL span   AS textRange
+				LOCAL intv   AS TextInterval
+				LOCAL isStat := oElement:lStatic AS LOGIC
 				mods &=  ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
 				CalculateRange(oElement, oInfo, OUT span, OUT intv)
-				local result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} as XTypeMember
+				LOCAL result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} AS XTypeMember
 				result:File := oFile
-				if oElement:aParams != null
-					foreach oParam as EntityParamsObject in oElement:aParams
-						local oVar as XVariable
+				IF oElement:aParams != null
+					FOREACH oParam AS EntityParamsObject IN oElement:aParams
+						LOCAL oVar AS XVariable
 						span := TextRange{oElement:nStartLine, oParam:nCol, oElement:nStartLine, oParam:nCol+oParam:cName:Length}
 						intv := TextInterval{oElement:nOffSet+oParam:nCol, oElement:nOffSet+oParam:nCol+oParam:cName:Length}
 						oVar := XVariable{result, oParam:cName, Kind.Local,  span, intv, oParam:cType, TRUE}
 						oVar:ParamType := oParam:nParamType
 						result:AddParameter(oVar)
-					next
-				endif
-				return result
+					NEXT
+				ENDIF
+				RETURN result
 			
 			
 		#endregion
 
 
 
-		method AddParameter(oVar as XVariable) as VOID
-			oVar:Parent := self
-			oVar:File := self:File
+		METHOD AddParameter(oVar AS XVariable) AS VOID
+			oVar:Parent := SELF
+			oVar:File := SELF:File
 			_parameters:Add(oVar)
-			return
+			RETURN
 
-		method Namesake() as List<XTypeMember>
-			var _namesake := List<XTypeMember>{}
-			if (self:Parent != null)
-				foreach  oMember as XTypeMember in ((XType) self:Parent):Members
-					if String.Compare(oMember:FullName, self:FullName, true) == 0 .AND. String.Compare(oMember:Prototype, self:Prototype, true) > 0
+		METHOD Namesake() AS List<XTypeMember>
+			VAR _namesake := List<XTypeMember>{}
+			IF (SELF:Parent != null)
+				FOREACH  oMember AS XTypeMember IN ((XType) SELF:Parent):Members
+					IF String.Compare(oMember:FullName, SELF:FullName, true) == 0 .AND. String.Compare(oMember:Prototype, SELF:Prototype, true) > 0
 						//// 
 						_namesake:Add(oMember)
-					endif
-				next
-			endif
-			return _namesake
+					ENDIF
+				NEXT
+			ENDIF
+			RETURN _namesake
 		//
 		#region Properties
-		property Description as string
-			get
-				var modVis := ""
-				if (super:Modifiers != Modifiers.None)
-					modVis := modVis + super:ModifiersKeyword
-				endif
-				var desc := modVis + VisibilityKeyword
-				if (super:Kind != Kind.Field)
-					desc := desc + super:KindKeyword
-					if (super:Kind == Kind.VODefine)
-						return desc + super:Name 
-					endif
-				endif
-				return desc + self:Prototype
-			end get
-		end property
+		PROPERTY Description AS STRING
+			GET
+				VAR modVis := ""
+				IF (SUPER:Modifiers != Modifiers.None)
+					modVis := modVis + SUPER:ModifiersKeyword
+				ENDIF
+				VAR desc := modVis + VisibilityKeyword
+				IF (SUPER:Kind != Kind.Field)
+					desc := desc + SUPER:KindKeyword
+					IF (SUPER:Kind == Kind.VODefine)
+						RETURN desc + SUPER:Name 
+					ENDIF
+				ENDIF
+				RETURN desc + SELF:Prototype
+			END GET
+		END PROPERTY
 		
-		property FullName as string
-			get
+		PROPERTY FullName AS STRING
+			GET
 				//
-				if (self:Parent != null)
+				IF (SELF:Parent != null)
 					//
-					return self:Parent:FullName +"." + super:Name
-				endif
-				return super:Name
-			end get
-		end property
+					RETURN SELF:Parent:FullName +"." + SUPER:Name
+				ENDIF
+				RETURN SUPER:Name
+			END GET
+		END PROPERTY
 		
-		property HasParameters as logic get self:Kind:HasParameters() .AND. self:_parameters:Count > 0
-		property ParameterCount  as int get self:_parameters:Count
+		PROPERTY HasParameters AS LOGIC GET SELF:Kind:HasParameters() .AND. SELF:_parameters:Count > 0
+		PROPERTY ParameterCount  AS INT GET SELF:_parameters:Count
 		
-		property IsArray as logic auto 
+		PROPERTY IsArray AS LOGIC AUTO 
 		
 		
-		new property Parent as XType get (XType) super:parent  set super:parent := value
+		NEW PROPERTY Parent AS XType GET (XType) SUPER:parent  SET SUPER:parent := VALUE
 
-		property ParameterList as string
-			get
-				var parameters := ""
-				foreach variable as XVariable in self:Parameters
-					if (parameters:Length > 0)
+		PROPERTY ParameterList AS STRING
+			GET
+				VAR parameters := ""
+				FOREACH variable AS XVariable IN SELF:Parameters
+					IF (parameters:Length > 0)
 						parameters := parameters + ", "
 					ENDIF
 					parameters += variable:Name 
 					IF variable:IsTyped
 						parameters += variable:ParamTypeDesc + variable:TypeName
-					endif
-				next
-				return parameters
-			end get
-		end property
+					ENDIF
+				NEXT
+				RETURN parameters
+			END GET
+		END PROPERTY
 
-		property ComboParameterList as string
-			get
-				var parameters := ""
-				foreach variable as XVariable in self:Parameters
-					if (parameters:Length > 0)
+		PROPERTY ComboParameterList AS STRING
+			GET
+				VAR parameters := ""
+				FOREACH variable AS XVariable IN SELF:Parameters
+					IF (parameters:Length > 0)
 						parameters := parameters + ", "
 					ENDIF
-					var cType := variable:ShortTypeName
+					VAR cType := variable:ShortTypeName
 					IF variable:IsTyped .and. variable:ParamType != ParamType.As
 						parameters += variable:ParamTypeDesc + cType
 					ELSE
 						parameters += cType
-					endif
-				next
-				return parameters
-			end get
-		end property
+					ENDIF
+				NEXT
+				RETURN parameters
+			END GET
+		END PROPERTY
 		
-		property Parameters as IEnumerable<XVariable> 
-		get  
-			return self:_parameters
-		end get
-		end property
+		PROPERTY Parameters AS IEnumerable<XVariable> 
+		GET  
+			RETURN SELF:_parameters
+		END GET
+		END PROPERTY
 		
-		property Prototype as string
-			get
-				var vars := ""
-				if self:Kind:HasParameters()
-					vars := "(" + self:ParameterList + ")"
-				endif
-				var desc := super:Name + vars
-				if self:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(self:TypeName)
-					desc := desc + AsKeyWord + self:TypeName
-				endif
-				return desc
-			end get
-		end property
+		PROPERTY Prototype AS STRING
+			GET
+				VAR vars := ""
+				IF SELF:Kind:HasParameters()
+					vars := "(" + SELF:ParameterList + ")"
+				ENDIF
+				VAR desc := SUPER:Name + vars
+				IF SELF:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(SELF:TypeName)
+					desc := desc + AsKeyWord + SELF:TypeName
+				ENDIF
+				RETURN desc
+			END GET
+		END PROPERTY
 		
-		property ComboPrototype as string
-			get
-				var vars := ""
-				if self:Kind:HasParameters()
-					vars := "(" + self:ComboParameterList + ")"
-				endif
-				var desc := super:Name + vars
-				if self:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(self:TypeName)
-					desc := desc + AsKeyWord + self:TypeName
-				endif
-				return desc
-			end get
-		end property		
-		property TypeName as string get self:_typeName
+		PROPERTY ComboPrototype AS STRING
+			GET
+				VAR vars := ""
+				IF SELF:Kind:HasParameters()
+					vars := "(" + SELF:ComboParameterList + ")"
+				ENDIF
+				VAR desc := SUPER:Name + vars
+				IF SELF:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(SELF:TypeName)
+					desc := desc + AsKeyWord + SELF:TypeName
+				ENDIF
+				RETURN desc
+			END GET
+		END PROPERTY		
+		PROPERTY TypeName AS STRING GET SELF:_typeName
 		#endregion
-	end class
+	END CLASS
 	
-end namespace 
+END NAMESPACE 
 

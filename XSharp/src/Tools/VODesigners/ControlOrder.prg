@@ -1,6 +1,7 @@
-#using System.Windows.Forms
+﻿#using System.Windows.Forms
 #using System.Drawing
 #using System.Collections
+#using System.Collections.Generic
 
 CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 
@@ -13,8 +14,8 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 
 // User code starts here (DO NOT remove this line)  ##USER##
 	PROTECT oEditor AS VOWindowEditor
-	EXPORT aNewOrder AS ArrayList
-	
+	EXPORT aNewOrder AS List<DesignWindowItem>
+
 	PROTECT oDragItem AS ListViewItem
 	PROTECT oDragPoint AS Point
 
@@ -23,24 +24,25 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 	PROTECT nMouseIndex AS INT
 
 	CONSTRUCTOR(_oEditor AS VOWindowEditor , aDesign AS ArrayList)
-		
+
 		SUPER()
 
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL oItem AS ListViewItem
 		LOCAL n AS INT
-		
+
 		SELF:InitializeForm()
-		
+
 		SELF:oEditor := _oEditor
-		
+
 		SELF:oControlsList:Columns:Add("Name" , 120)
 		SELF:oControlsList:Columns:Add("Type" , 120)
 		SELF:oControlsList:Columns:Add("Caption" , 120)
-		
-		SELF:oUpButton:Text := "Up"
-		SELF:oDownButton:Text := "Dn"
-		
+        SELF:oUpButton:Font := Font{"Arial",8}
+        SELF:oDownButton:Font := Font{"Arial",8}
+		SELF:oUpButton:Text := "▲"
+		SELF:oDownButton:Text := "▼"
+
 		FOR n := 0 UPTO aDesign:Count - 1
 			oDesign := (DesignWindowItem)aDesign[n]
 			IF oDesign:Deleted == 1
@@ -55,7 +57,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 			ENDIF
 			SELF:oControlsList:Items:Add(oItem)
 		NEXT
-		
+
 		IF SELF:oControlsList:Items:Count != 0
 			SELF:oControlsList:Items[0]:Selected :=  TRUE
 		ENDIF
@@ -63,13 +65,13 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oTimer := Timer{}
 		SELF:oTimer:Interval := 100
 		SELF:oTimer:Tick += EventHandler{ SELF , @TimerTicked() }
-		
+
 	RETURN
-	
+
 	PROTECTED METHOD InitializeForm() AS VOID
-	
+
 //	 IDE generated code (please DO NOT modify)
-	
+
 		SELF:Name := "VOControlCreationOrderDlg"
 		SELF:SuspendLayout()
 		SELF:Location := System.Drawing.Point{100,100}
@@ -83,7 +85,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:ShowInTaskbar := FALSE
 		SELF:StartPosition := System.Windows.Forms.FormStartPosition.CenterParent
 		SELF:Text := "Control Creation Order"
-	
+
 		SELF:oDownButton := System.Windows.Forms.Button{}
 		SELF:oDownButton:Name := "DownButton"
 		SELF:oDownButton:Location := System.Drawing.Point{ 420 , 359 }
@@ -92,7 +94,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oDownButton:TabIndex := 2
 		SELF:oDownButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom + System.Windows.Forms.AnchorStyles.Right
 		SELF:Controls:Add(SELF:oDownButton)
-		
+
 		SELF:oUpButton := System.Windows.Forms.Button{}
 		SELF:oUpButton:Name := "UpButton"
 		SELF:oUpButton:Location := System.Drawing.Point{ 420 , 29 }
@@ -101,7 +103,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oUpButton:TabIndex := 1
 		SELF:oUpButton:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Right
 		SELF:Controls:Add(SELF:oUpButton)
-		
+
 		SELF:oMouseButton := System.Windows.Forms.Button{}
 		SELF:oMouseButton:Name := "MouseButton"
 		SELF:oMouseButton:Location := System.Drawing.Point{ 172 , 390 }
@@ -111,7 +113,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oMouseButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom + System.Windows.Forms.AnchorStyles.Right
 		SELF:oMouseButton:Click += System.EventHandler{ SELF , @UseMouseButtonClick() }
 		SELF:Controls:Add(SELF:oMouseButton)
-		
+
 		SELF:oOkButton := System.Windows.Forms.Button{}
 		SELF:oOkButton:Name := "OKButton"
 		SELF:oOkButton:Location := System.Drawing.Point{ 255 , 390 }
@@ -121,7 +123,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oOkButton:TabIndex := 4
 		SELF:oOkButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom + System.Windows.Forms.AnchorStyles.Right
 		SELF:Controls:Add(SELF:oOkButton)
-		
+
 		SELF:oCancelButton := System.Windows.Forms.Button{}
 		SELF:oCancelButton:Name := "CancelButton"
 		SELF:oCancelButton:Location := System.Drawing.Point{ 338 , 390 }
@@ -130,7 +132,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oCancelButton:TabIndex := 5
 		SELF:oCancelButton:Anchor := System.Windows.Forms.AnchorStyles.Bottom + System.Windows.Forms.AnchorStyles.Right
 		SELF:Controls:Add(SELF:oCancelButton)
-		
+
 		SELF:oControlsList := System.Windows.Forms.ListView{}
 		SELF:oControlsList:Name := "ControlsList"
 		SELF:oControlsList:Location := System.Drawing.Point{ 12 , 9 }
@@ -148,13 +150,13 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		SELF:oControlsList:DragDrop += System.Windows.Forms.DragEventHandler{ SELF , @ControlsListDragDrop() }
 		SELF:oControlsList:DragOver += System.Windows.Forms.DragEventHandler{ SELF , @ControlsListDragOver() }
 		SELF:Controls:Add(SELF:oControlsList)
-		
+
 		SELF:ResumeLayout()
-	
+
 		SELF:AcceptButton := SELF:oOkButton
-	
+
 		SELF:CancelButton := SELF:oCancelButton
-	
+
 	RETURN
 
 	METHOD ControlsListMouseDown(sender AS System.Object , e AS System.Windows.Forms.MouseEventArgs) AS System.Void
@@ -180,12 +182,12 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 	METHOD ControlsListDragOver(sender AS System.Object , e AS System.Windows.Forms.DragEventArgs) AS System.Void
 		LOCAL oItem AS ListViewItem
 		LOCAL oPoint AS Point
-		
-		IF .not. e:Data:GetDataPresent(TypeOf(ListViewItem)) .or. SELF:oDragItem == NULL
+
+		IF .not. e:Data:GetDataPresent(TYPEOF(ListViewItem)) .or. SELF:oDragItem == NULL
 			e:Effect := DragDropEffects.None
 			RETURN
 		ENDIF
-		
+
 		oPoint := Point{e:X , e:Y}
 		oPoint := SELF:oControlsList:PointToClient(oPoint)
 		IF SELF:oControlsList:GetItemAt(oPoint:X , oPoint:Y) != NULL
@@ -201,12 +203,12 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		LOCAL oItem AS ListViewItem
 		LOCAL oPoint AS Point
 		LOCAL nIndex AS INT
-		
-		IF .not. e:Data:GetDataPresent(TypeOf(ListViewItem)) .or. SELF:oDragItem == NULL
+
+		IF .not. e:Data:GetDataPresent(TYPEOF(ListViewItem)) .or. SELF:oDragItem == NULL
 			e:Effect := DragDropEffects.None
 			RETURN
 		ENDIF
-		
+
 		oPoint := Point{e:X , e:Y}
 		oPoint := SELF:oControlsList:PointToClient(oPoint)
 		IF SELF:oControlsList:GetItemAt(oPoint:X , oPoint:Y) != NULL
@@ -225,7 +227,7 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 			END IF
 		END IF
 	RETURN
-	
+
 	PROTECTED METHOD UseMouseButtonClick(o AS OBJECT , e AS EventArgs) AS VOID
 		SELF:oEditor:SelectMainItem()
 		SELF:lUsingMouse := TRUE
@@ -282,17 +284,17 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		END IF
 	RETURN
 	PROTECTED METHOD GetItem(oDesign AS DesignItem) AS ListViewItem
-		FOREACH oItem AS ListViewItem in SELF:oControlsList:Items
+		FOREACH oItem AS ListViewItem IN SELF:oControlsList:Items
 			IF oItem:Tag == oDesign
 				RETURN oItem
 			END IF
 		NEXT
 	RETURN NULL
-	
+
 	PROTECTED METHOD ControlsListSelectedIndexChanged(o AS OBJECT , e AS System.EventArgs) AS VOID
 		LOCAL oDesign AS DesignItem
 		LOCAL nIndex AS INT
-		
+
 		IF SELF:oControlsList:SelectedIndices:Count == 0
 			SELF:oUpButton:Enabled := FALSE
 			SELF:oDownButton:Enabled := FALSE
@@ -304,18 +306,18 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		oDesign := (DesignWindowItem)SELF:oControlsList:Items[nIndex]:Tag
 		SELF:oEditor:DoAction(DesignerActionType.Select , oDesign:cGuid)
 	RETURN
-	
+
 	PROTECTED METHOD DownButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
 		SELF:UpDown(FALSE)
 	RETURN
 	PROTECTED METHOD UpButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
 		SELF:UpDown(TRUE)
 	RETURN
-	
+
 	PROTECTED METHOD UpDown(lUp AS LOGIC) AS VOID
 		LOCAL oItem AS ListViewItem
 		LOCAL nIndex AS INT
-		
+
 		IF SELF:oControlsList:SelectedIndices:Count == 0
 			RETURN
 		ENDIF
@@ -335,11 +337,11 @@ CLASS VOControlCreationOrderDlg INHERIT System.Windows.Forms.Form
 		ENDIF
 		SELF:oControlsList:Items:Insert(nIndex , oItem)
 	RETURN
-	
+
 	PROTECTED METHOD OKButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
-		SELF:aNewOrder := ArrayList{SELF:oControlsList:Items:Count}
-		FOREACH oDesign AS DesignWindowItem IN SELF:oControlsList:Items
-			SELF:aNewOrder:Add(oDesign)
+		SELF:aNewOrder := List<DesignWindowItem>{}
+		FOREACH oItem AS ListViewItem IN SELF:oControlsList:Items
+			SELF:aNewOrder:Add(oItem:Tag ASTYPE DesignWindowItem)
 		NEXT
 		SELF:DialogResult := DialogResult.OK
 	RETURN

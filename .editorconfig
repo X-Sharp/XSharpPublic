@@ -1,0 +1,43 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true 
+
+
+# default settings for all file types.
+# load the EditorConfig extension for VS 2015 to use this automatically
+# no need to load anything in VS2017. The IDE takes care of this automatically.
+[*]
+# Use Windows End of Line Setting
+end_of_line = crlf
+# Don't use tabs for indentation.
+indent_style = space
+# (Please don't specify an indent_size here; that has too many unintended consequences.)
+
+
+# Code files
+[*.{cs,csx,vb,vbx,prg,prgx,vh.xh,xs,rc}]
+# use utf8 with byte order mark
+charset = utf-8-bom
+insert_final_newline = true
+trim_trailing_whitespace =  true
+indent_size = 4
+
+# binary files opened in XML mode
+[*.{xsmnu,xsfrm,xsdbs,xsfs}]
+indent_size = 2
+
+[*.{xml,xaml}]
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+# Xml project files
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,xsproj}]
+indent_size = 2
+
+# Xml config files
+[*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

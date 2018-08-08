@@ -3034,12 +3034,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (varList.Count > 0)
             {
+                var decl = _syntaxFactory.VariableDeclaration(
+                        type: varType,
+                        variables: varList);
+                if (context.Modifiers == null)
+                {
+                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC)  expected"));
+                }
+
                 context.Put(_syntaxFactory.FieldDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                    declaration: _syntaxFactory.VariableDeclaration(
-                        type: varType,
-                        variables: varList),
+                    declaration: decl,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
             _pool.Free(varList);

@@ -633,11 +633,12 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 
 // Old Style xBase declarations
 
-xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
-                      |PUBLIC												// PUBLIC  Foo, Bar
-                      |MEMVAR												// MEMVAR  Foo, Bar
-                      |PARAMETERS											// PARAMETERS Foo, Bar
-                     )   Vars+=identifierName (COMMA Vars+=identifierName)* end=eos
+xbasedecl        : T=(PRIVATE                               // PRIVATE Foo, Bar
+                      |PUBLIC                               // PUBLIC  Foo, Bar
+                      |MEMVAR                               // MEMVAR  Foo, Bar
+                      |PARAMETERS                           // PARAMETERS Foo, Bar
+                     ) Vars+=identifierName (COMMA Vars+=identifierName)*
+                     end=eos
                  ;
 
 // The operators in VO have the following precedence level:
@@ -655,91 +656,91 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression			: Expr=expression Op=(DOT | COLON) Name=simpleName				#accessMember			// member access The ? is new
-                    | Expr=expression LPAREN                       RPAREN									#methodCall			// method call, no params
-                    | Expr=expression LPAREN ArgList=argumentList  RPAREN									#methodCall			// method call, params
-                    | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT									#arrayAccess		// Array element access
-                    | Left=expression Op=QMARK Right=boundExpression				#condAccessExpr			// expr ? expr
-                    | LPAREN Type=datatype RPAREN Expr=expression					#typeCast			    // (typename) expr
-                    | Expr=expression Op=(INC | DEC)								#postfixExpression		// expr ++/--
-                    | Op=AWAIT Expr=expression										#awaitExpression		// AWAIT expr
-                    | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression	#prefixExpression		// +/-/~/&/++/-- expr
-                    | Expr=expression Op=IS Type=datatype							#typeCheckExpression	// expr IS typeORid
-                    | Expr=expression Op=ASTYPE Type=datatype						#typeCheckExpression	// expr AS TYPE typeORid
-                    | Left=expression Op=EXP Right=expression						#binaryExpression		// expr ^ expr
-                    | Left=expression Op=(MULT | DIV | MOD) Right=expression		#binaryExpression		// expr * expr
-                    | Left=expression Op=(PLUS | MINUS) Right=expression			#binaryExpression		// expr +/- expr
-                    | Left=expression Op=LSHIFT Right=expression					#binaryExpression		// expr << expr (shift)
-                    | Left=expression Op=GT	Gt=GT Right=expression					#binaryExpression		// expr >> expr (shift)
+expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access The ? is new
+                    | Expr=expression LPAREN                       RPAREN       #methodCall             // method call, no params
+                    | Expr=expression LPAREN ArgList=argumentList  RPAREN       #methodCall             // method call, params
+                    | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
+                    | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
+                    | LPAREN Type=datatype RPAREN Expr=expression               #typeCast               // (typename) expr
+                    | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
+                    | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
+                    | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
+                    | Expr=expression Op=IS Type=datatype                       #typeCheckExpression    // expr IS typeORid
+                    | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
+                    | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
+                    | Left=expression Op=(MULT | DIV | MOD) Right=expression    #binaryExpression       // expr * expr
+                    | Left=expression Op=(PLUS | MINUS) Right=expression        #binaryExpression       // expr +/- expr
+                    | Left=expression Op=LSHIFT Right=expression                #binaryExpression       // expr << expr (shift)
+                    | Left=expression Op=GT Gt=GT Right=expression              #binaryExpression       // expr >> expr (shift)
                     | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ | 
-										  SUBSTR | NEQ | NEQ2) Right=expression		#binaryExpression		// expr >= expr (relational)
-                    | Left=expression Op=AMP Right=expression						#binaryExpression		// expr & expr (bitwise and)
-                    | Left=expression Op=TILDE Right=expression						#binaryExpression		// expr ~ expr (bitwise xor)
-                    | Left=expression Op=PIPE Right=expression						#binaryExpression		// expr | expr (bitwise or)
-                    | Op=(LOGIC_NOT|NOT) Expr=expression							#prefixExpression		// .not. expr (logical not)  also  !
-                    | Left=expression Op=(LOGIC_AND | AND) Right=expression			#binaryExpression		// expr .and. expr (logical and) also &&
-                    | Left=expression Op=LOGIC_XOR Right=expression					#binaryExpression		// expr .xor. expr (logical xor)
-                    | Left=expression Op=(LOGIC_OR | OR) Right=expression			#binaryExpression		// expr .or. expr (logical or)  also ||
-                    | Left=expression Op=DEFAULT Right=expression					#binaryExpression		// expr DEFAULT expr
+                                          SUBSTR | NEQ | NEQ2) Right=expression #binaryExpression       // expr >= expr (relational)
+                    | Left=expression Op=AMP Right=expression                   #binaryExpression       // expr & expr (bitwise and)
+                    | Left=expression Op=TILDE Right=expression                 #binaryExpression       // expr ~ expr (bitwise xor)
+                    | Left=expression Op=PIPE Right=expression                  #binaryExpression       // expr | expr (bitwise or)
+                    | Op=(LOGIC_NOT|NOT) Expr=expression                        #prefixExpression       // .not. expr (logical not)  also  !
+                    | Left=expression Op=(LOGIC_AND | AND) Right=expression     #binaryExpression       // expr .and. expr (logical and) also &&
+                    | Left=expression Op=LOGIC_XOR Right=expression             #binaryExpression       // expr .xor. expr (logical xor)
+                    | Left=expression Op=(LOGIC_OR | OR) Right=expression       #binaryExpression       // expr .or. expr (logical or)  also ||
+                    | Left=expression Op=DEFAULT Right=expression               #binaryExpression       // expr DEFAULT expr
                     | <assoc=right> Left=expression
                       Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
                             | ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
                             | ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
                             | ASSIGN_RSHIFT | ASSIGN_XOR )
-                      Right=expression												#assignmentExpression	// expr := expr, also expr += expr etc.
-                    | Expr=primary													#primaryExpression
+                      Right=expression                                          #assignmentExpression	// expr := expr, also expr += expr etc.
+                    | Expr=primary                                              #primaryExpression
 
                     ;
 
                     // Primary expressions
-					// Note: No need to check for extra ) } or ] tokens. The expression rule does that already
-primary				: Key=SELF													#selfExpression
-                    | Key=SUPER													#superExpression
-                    | Literal=literalValue										#literalExpression		// literals
-                    | LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
-                    | AnonType=anonType											#anonTypeExpression		// { .id := expr [, .id := expr] }
-                    | CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-                    | AnoExpr=anonymousMethodExpression 						#codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
-                    | Query=linqQuery											#queryExpression        // LINQ
+                    // Note: No need to check for extra ) } or ] tokens. The expression rule does that already
+primary             : Key=SELF                                        #selfExpression
+                    | Key=SUPER                                       #superExpression
+                    | Literal=literalValue                            #literalExpression		// literals
+                    | LiteralArray=literalArray                       #literalArrayExpression	// { expr [, expr] }
+                    | AnonType=anonType                               #anonTypeExpression		// { .id := expr [, .id := expr] }
+                    | CbExpr=codeblock                                #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
+                    | AnoExpr=anonymousMethodExpression               #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
+                    | Query=linqQuery                                 #queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
-                      ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
-                    | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
+                      ADDROF Func=name LPAREN RPAREN RCURLY           #delegateCtorCall		// delegate{ obj , @func() }
+                    | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | Type=datatype LCURLY ArgList=argumentList  RCURLY	
                                                    Init=objectOrCollectioninitializer? #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
-                    | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
-                    | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
-                    | SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
-                    | DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// default( typeORid )
-                    | Name=simpleName											#nameExpression			// generic name
-                    | Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
-                    | XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
-                    | Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// nativetype(_CAST, expr )
-                    | XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// xbaseType(_CAST, expr )
-                    | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-			  | Name=usualTypeName								#usualTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
-                    | Type=typeName									#typeExpression			// Standard DotNet Types
-                    | Expr=iif									#iifExpression			// iif( expr, expr, expr )
+                    | ch=CHECKED LPAREN ( Expr=expression ) RPAREN              #checkedExpression		// checked( expression )
+                    | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN            #checkedExpression		// unchecked( expression )
+                    | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
+                    | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		// sizeof( typeORid )
+                    | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
+                    | Name=simpleName                                           #nameExpression			// generic name
+                    | Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
+                    | XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
+                    | Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// nativetype(_CAST, expr )
+                    | XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// xbaseType(_CAST, expr )
+                    | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN     #voCastPtrExpression	// PTR( typeName, expr )
+                    | Name=usualTypeName                                        #usualTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
+                    | Type=typeName                                             #typeExpression			// Standard DotNet Types
+                    | Expr=iif                                                  #iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
-                      (COMMA Exprs+=expression)* RPAREN					#intrinsicExpression	// _Or(expr, expr, expr)
+                      (COMMA Exprs+=expression)* RPAREN                         #intrinsicExpression	// _Or(expr, expr, expr)
                     | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr
-                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression		#aliasedExpr            // (expr) -> expr
-                    | AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
-                    | AMP Id=identifierName										#macro					// &id
-                    | LPAREN Expr=expression RPAREN								#parenExpression		// ( expr )
-					| Key=ARGLIST												#argListExpression		// __ARGLIST
+                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr            // (expr) -> expr
+                    | AMP LPAREN Expr=expression RPAREN                         #macro					// &( expr )
+                    | AMP Id=identifierName                                     #macro					// &id
+                    | LPAREN Expr=expression RPAREN                             #parenExpression		// ( expr )
+                    | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 
-boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName				#boundAccessMember	// member access The ? is new
-                    | Expr=boundExpression LPAREN					   RPAREN			#boundMethodCall	// method call, no params
-                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN			#boundMethodCall	// method call, with params
-                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT	#boundArrayAccess	// Array element access
-                    | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression	#boundCondAccessExpr	// expr ? expr
-                    | Op=(DOT | COLON) Name=simpleName									#bindMemberAccess
-                    | LBRKT ArgList=bracketedArgumentList RBRKT							#bindArrayAccess
+boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName               #boundAccessMember	// member access The ? is new
+                    | Expr=boundExpression LPAREN                       RPAREN          #boundMethodCall	// method call, no params
+                    | Expr=boundExpression LPAREN ArgList=argumentList RPAREN           #boundMethodCall	// method call, with params
+                    | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT    #boundArrayAccess	// Array element access
+                    | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression #boundCondAccessExpr	// expr ? expr
+                    | Op=(DOT | COLON) Name=simpleName                                  #bindMemberAccess
+                    | LBRKT ArgList=bracketedArgumentList RBRKT                         #bindArrayAccess
                     ;
 
 // Initializers
@@ -844,46 +845,46 @@ anonMember			: Name=identifierName ASSIGN_OP Expr=expression
 
 // Codeblocks & Lambda Expressions
 
-codeblock			: LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE)	// Old codeblock Syntax
-                       Code=codeblockCode RCURLY
-					| LCURLY (Or=OR | P1=PIPE? LambdaParamList=lambdaParameterList? P2=PIPE?) lambda=UDCSEP		// Alternative Lambda Syntax with pips that will trigger an error
-                       Code=codeblockCode RCURLY
+codeblock       : LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE)	// Old codeblock Syntax
+                    Code=codeblockCode RCURLY
+                | LCURLY (Or=OR | P1=PIPE? LambdaParamList=lambdaParameterList? P2=PIPE?) lambda=UDCSEP		// Alternative Lambda Syntax with pips that will trigger an error
+                   Code=codeblockCode RCURLY
                     ;
 
-codeblockCode		  : Expr=expression? 
-					  | eos StmtBlk=statementBlock
-					  | ExprList=codeblockExprList 
-					  ;
+codeblockCode     : Expr=expression? 
+                  | eos StmtBlk=statementBlock
+                  | ExprList=codeblockExprList 
+                  ;
 
-lambdaParameterList	: ImplicitParams=codeblockParamList 
-					| ExplicitParams=explicitAnonymousFunctionParamList
-					;
-
-codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
+lambdaParameterList : ImplicitParams=codeblockParamList 
+                    | ExplicitParams=explicitAnonymousFunctionParamList
                     ;
 
-codeblockExprList	: (Exprs+=expression? COMMA)+ ReturnExpr=expression
+codeblockParamList  : Ids+=identifier (COMMA Ids+=identifier)*
+                    ;
+
+codeblockExprList   : (Exprs+=expression? COMMA)+ ReturnExpr=expression
                     ;
 
 // Anonymous methods 
-anonymousMethodExpression				: (Async=ASYNC)? Delegate=DELEGATE (LPAREN ParamList=explicitAnonymousFunctionParamList? RPAREN)? 
-										  LCURLY Code=codeblockCode RCURLY 
-										;
+anonymousMethodExpression : (Async=ASYNC)? Delegate=DELEGATE (LPAREN ParamList=explicitAnonymousFunctionParamList? RPAREN)? 
+                            LCURLY Code=codeblockCode RCURLY 
+                          ;
 
-explicitAnonymousFunctionParamList		: Params+=explicitAnonymousFunctionParameter (COMMA Params+=explicitAnonymousFunctionParameter)*
-										;
+explicitAnonymousFunctionParamList  : Params+=explicitAnonymousFunctionParameter (COMMA Params+=explicitAnonymousFunctionParameter)*
+                                    ;
 
 explicitAnonymousFunctionParameter      : Id=identifier Mod=anonymousfunctionParameterModifier Type=datatype
-										;
+                                        ;
 
-anonymousfunctionParameterModifier		: Tokens+= (AS | REF | OUT)
-										;
+anonymousfunctionParameterModifier      : Tokens+= (AS | REF | OUT)
+                                        ;
 
 
 
 // LINQ Support
 
-linqQuery			: From=fromClause Body=queryBody
+linqQuery           : From=fromClause Body=queryBody
                     ;
 
 fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
@@ -892,15 +893,16 @@ fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
 queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (Continuation=queryContinuation)?
                     ;
 
-queryBodyClause     : From=fromClause                                                                                           #fromBodyClause
-                    | LET Id=identifier ASSIGN_OP Expr=expression                                                               #letClause
-                    | WHERE Expr=expression                                                                                     #whereClause        // expression must be Boolean
-                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression
-                      Into=joinIntoClause?																						#joinClause
-                    | ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                                                        #orderbyClause
+queryBodyClause     : From=fromClause                                                                    #fromBodyClause
+                    | LET Id=identifier ASSIGN_OP Expr=expression                                        #letClause
+                    | WHERE Expr=expression                                                              #whereClause        // expression must be Boolean
+                    | JOIN Id=identifier (AS Type=typeName)?
+                      IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression
+                      Into=joinIntoClause?                                                              #joinClause
+                    | ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                                #orderbyClause
                     ;
 
-joinIntoClause		: INTO Id=identifier
+joinIntoClause      : INTO Id=identifier
                     ;
 
 ordering            : Expr=expression Direction=(ASCENDING|DESCENDING)?
@@ -916,19 +918,19 @@ queryContinuation   : INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier			: Token=(ID  | KWID)
+identifier          : Token=(ID  | KWID)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
                     ;
 
-identifierString	: Token=(ID | KWID | STRING_CONST)
+identifierString    : Token=(ID | KWID | STRING_CONST)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
-					;
+                    ;
 
 
 // xBaseTypes are NOT available in the Core dialect and therefore separated here.
-xbaseType			: Token=	// Aphabetical order
+xbaseType           : Token=	// Aphabetical order
                     ( ARRAY
                     | CODEBLOCK
                     | DATE
@@ -940,9 +942,9 @@ xbaseType			: Token=	// Aphabetical order
 
 nativeType			: Token=		// Aphabetical order
                     ( BYTE
-					| CHAR
-					| DATETIME
-					| DECIMAL
+                    | CHAR
+                    | DATETIME
+                    | DECIMAL
                     | DWORD
                     | DYNAMIC
                     | INT
@@ -956,19 +958,19 @@ nativeType			: Token=		// Aphabetical order
                     | SHORTINT
                     | STRING
                     | UINT64
-					| VOID                  
-					| WORD
+                    | VOID                  
+                    | WORD
                      )
                     ;
 
-literalValue		: Token=
+literalValue        : Token=
                     ( TRUE_CONST
                     | FALSE_CONST
-					| CHAR_CONST
+                    | CHAR_CONST
                     | STRING_CONST
                     | ESCAPED_STRING_CONST
                     | INTERPOLATED_STRING_CONST
-					| INCOMPLETE_STRING_CONST
+                    | INCOMPLETE_STRING_CONST
                     | SYMBOL_CONST
                     | HEX_CONST
                     | BIN_CONST
@@ -1002,8 +1004,8 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
 
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
-   					)
+                            | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
+                            )
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM 

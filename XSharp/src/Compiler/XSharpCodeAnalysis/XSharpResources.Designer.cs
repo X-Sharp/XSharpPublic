@@ -10,6 +10,7 @@
 
 namespace LanguageService.CodeAnalysis {
     using System;
+    using System.Reflection;
 
 
     /// <summary>

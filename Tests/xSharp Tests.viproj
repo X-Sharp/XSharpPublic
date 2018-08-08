@@ -62637,7 +62637,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C616 - Wrong OBJECT/TYPE param overload used
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C617 - || and && translate to binary or and and operators, instad of the logical ones *************
 Application = C617 - || and && translate to binary or and and operators, instad of the logical ones
 IDEVersion = 1.06
@@ -62735,9 +62735,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C617 - || and && translate to binary or and and operators, instad of the logical ones
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C618 *************
-Application = C618
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C618 Function calls should take preference over method calls *************
+Application = C618 Function calls should take preference over method calls
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -62768,17 +62768,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C618 FileGroups]
-[C618 Files]
+[C618 Function calls should take preference over method calls FileGroups]
+[C618 Function calls should take preference over method calls Files]
 File = %AppPath%\Prg\C618.prg
 FileGUID = BF41870B-6500-4369-BFF1-CE1A633D7A3E
 FileType = Code
-[C618 References]
+[C618 Function calls should take preference over method calls References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C618 Resources]
-[C618 Native Resources]
-[C618 License files]
-[C618 General Options]
+[C618 Function calls should take preference over method calls Resources]
+[C618 Function calls should take preference over method calls Native Resources]
+[C618 Function calls should take preference over method calls License files]
+[C618 Function calls should take preference over method calls General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -62804,7 +62804,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C618 Configurations]
+[C618 Function calls should take preference over method calls Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -62831,7 +62831,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C618
+ENDApplication = C618 Function calls should take preference over method calls
 [EndApplications]
 
 [Configurations]

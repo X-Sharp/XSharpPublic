@@ -48,23 +48,23 @@ FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 		aAttribs  := aFAttr
 		lHasArg := TRUE
 	ENDIF
-	IF ALen(aFiles) > 0 .and. lHasArg
+	IF ALen(aFiles) > 0 .AND. lHasArg
 		LOCAL x AS DWORD
 		FOR x := 1 TO ALen(aFiles)
 			VAR aFile := aFiles[x]
-			IF aNames != NULL_ARRAY .and. x <= ALen(aNames)
+			IF aNames != NULL_ARRAY .AND. x <= ALen(aNames)
 				aNames[x] := aFile[ F_NAME]
 			ENDIF
-			IF aSizes != NULL_ARRAY .and. x <= ALen(aSizes)
+			IF aSizes != NULL_ARRAY .AND. x <= ALen(aSizes)
 				aSizes[x] := aFile[ F_SIZE]
 			ENDIF
-			IF aDates != NULL_ARRAY .and. x <= ALen(aDates)
+			IF aDates != NULL_ARRAY .AND. x <= ALen(aDates)
 				aDates[x] := aFile[ F_DATE]
 			ENDIF
-			IF aTimes != NULL_ARRAY .and. x <= ALen(aTimes)
+			IF aTimes != NULL_ARRAY .AND. x <= ALen(aTimes)
 				aTimes[x] := aFile[ F_TIME]
 			ENDIF
-			IF aAttribs != NULL_ARRAY .and. x <= ALen(aAttribs)
+			IF aAttribs != NULL_ARRAY .AND. x <= ALen(aAttribs)
 				aAttribs[x] := aFile[ F_ATTR]
 			ENDIF
 		NEXT
@@ -125,7 +125,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	
 	cFileMask := Path.GetFileName( cFileSpec )
 	
-	IF _and( nAttr,FA_DIRECTORY ) == FA_DIRECTORY
+	IF _AND( nAttr,FA_DIRECTORY ) == FA_DIRECTORY
 		_DirectoryAddDirectoryInfo( aReturn, cFileSpec, nAttr , NULL)
 	ENDIF
 	
@@ -145,7 +145,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	END TRY
 	
 	// Directory info
-	IF _and( nAttr, FA_DIRECTORY) == FA_DIRECTORY && ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
+	IF _AND( nAttr, FA_DIRECTORY) == FA_DIRECTORY && ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
 	
 		IF Path.GetDirectoryName( cFileSpec ) != Path.GetPathRoot( cFileSpec ) && ( Path.GetFileName( cFileSpec ) == "*.*" || Path.GetFileName( cFileSpec ) == "*" )
 			_DirectoryAddDirectoryInfo( aReturn, Path.GetDirectoryName( cFileSpec ), nAttr, "." )
@@ -177,11 +177,11 @@ INTERNAL FUNCTION _DirectoryAddFileInfo(aReturn AS ARRAY, oFile AS FileInfo, nAt
 		cAttribute += "R"
 	ENDIF
 	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.Hidden) 
-		lOk := lOk .and. _and(nAttr,FC_HIDDEN) == FC_HIDDEN
+		lOk := lOk .AND. _AND(nAttr,FC_HIDDEN) == FC_HIDDEN
 		cAttribute += "H"
 	ENDIF
 	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.System) 
-		lOk := lOk .and. _and(nAttr,FC_SYSTEM) == FC_SYSTEM
+		lOk := lOk .AND. _AND(nAttr,FC_SYSTEM) == FC_SYSTEM
 		cAttribute += "S"
 	ENDIF
 	IF oFile:Attributes:HasFlag(System.IO.FileAttributes.Archive) 
@@ -209,12 +209,12 @@ INTERNAL FUNCTION _DirectoryAddDirectoryInfo( aReturn AS ARRAY, cDirectory AS ST
 		
 			IF oDir:Attributes:HasFlag( System.IO.FileAttributes.Hidden ) 
 				cAttribute += "H"
-				lAdd := lAdd .and. _and( nAttr,FC_HIDDEN ) == FC_HIDDEN
+				lAdd := lAdd .AND. _AND( nAttr,FC_HIDDEN ) == FC_HIDDEN
 			ENDIF
 		
 			IF oDir:Attributes:HasFlag( System.IO.FileAttributes.System ) 
 				cAttribute += "S"
-				lAdd := lAdd .and. _and( nAttr,FC_SYSTEM ) == FC_SYSTEM
+				lAdd := lAdd .AND. _AND( nAttr,FC_SYSTEM ) == FC_SYSTEM
 			ENDIF
 		
 			IF lAdd

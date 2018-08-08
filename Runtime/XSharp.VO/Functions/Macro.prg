@@ -128,7 +128,7 @@ FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._CODEBLOCK 
 	LOCAL uRes   AS USUAL
 	oMacro := MCompile(cExpression, lAllowSingleQuotes)
-	IF oMacro != NULL_OBJECT .and. ! oMacro:IsBlock
+	IF oMacro != NULL_OBJECT .AND. ! oMacro:IsBlock
 		uRes := oMacro:EvalBlock()
 	ELSE
 		// strange but evaluate on a codeblock returns the block in stead of evaluating it

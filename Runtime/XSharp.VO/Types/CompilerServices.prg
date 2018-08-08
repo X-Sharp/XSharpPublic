@@ -9,12 +9,12 @@ USING System.Runtime.InteropServices
 STATIC CLASS XSharp.Internal.CompilerServices
 	
 	STATIC METHOD __StringSubtract (lhs AS STRING, rhs AS STRING) AS STRING
-		IF lhs != null .and. rhs != null
+		IF lhs != NULL .AND. rhs != NULL
 			VAR len := lhs:Length + rhs:Length
 			RETURN (lhs:TrimEnd() + rhs:TrimEnd()):PadRight(len)
-		ELSEIF lhs != null
+		ELSEIF lhs != NULL
 			RETURN lhs
-		ELSEIF rhs != null
+		ELSEIF rhs != NULL
 			RETURN rhs
 		ENDIF
 		RETURN String.Empty
@@ -22,7 +22,7 @@ STATIC CLASS XSharp.Internal.CompilerServices
 	
 	STATIC METHOD String2Psz(s AS STRING, pszList AS List<IntPtr>) AS IntPtr
 		LOCAL pResult AS IntPtr
-		IF s == null || s:Length == 0
+		IF s == NULL || s:Length == 0
 			pResult := Marshal.AllocHGlobal(1)
 		ELSE
 			VAR encoding := System.Text.Encoding.Default

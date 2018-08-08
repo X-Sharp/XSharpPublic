@@ -14,7 +14,7 @@
 /// </returns>
 FUNCTION FieldBlock(cVAr AS STRING) AS OBJECT
 	RETURN 
-RETURN null_object   
+RETURN NULL_OBJECT   
 	
 	
 /// <summary>
@@ -26,7 +26,7 @@ RETURN null_object
 /// </returns>
 FUNCTION FieldWBlock(cVar AS STRING,nArea AS DWORD) AS OBJECT
 	
-	RETURN null_object   
+	RETURN NULL_OBJECT   
 
 
 /// <summary>
@@ -37,7 +37,7 @@ FUNCTION FieldWBlock(cVar AS STRING,nArea AS DWORD) AS OBJECT
 /// </returns>
 FUNCTION FieldBlockSym(symVar AS SYMBOL) AS OBJECT
 	/// THROW NotImplementedException{}
-	RETURN null_object   
+	RETURN NULL_OBJECT   
 
 /// <summary>
 /// Get the contents of a field that is identified by a work area alias and the field name.
@@ -130,7 +130,7 @@ FUNCTION FieldPutSelect(uSelect AS USUAL,symField AS SYMBOL,u AS USUAL) AS USUAL
 /// </returns>
 FUNCTION FieldWBlockSym(symVar AS SYMBOL,nArea AS DWORD) AS OBJECT
 	/// THROW NotImplementedException{}
-	RETURN null_object   
+	RETURN NULL_OBJECT   
 
 
 
@@ -141,7 +141,7 @@ FUNCTION FieldWBlockSym(symVar AS SYMBOL,nArea AS DWORD) AS OBJECT
 /// </returns>
 FUNCTION Used() AS LOGIC
 	/// THROW NotImplementedException{}
-	RETURN false   
+	RETURN FALSE   
 
 
 
@@ -182,7 +182,7 @@ FUNCTION DBAPPEND       (lReleaseLocks)
 	LOCAL lRetCode  AS LOGIC
 	
 	IF IsNil(lReleaseLocks)
-		lReleaseLocks := .t.
+		lReleaseLocks := .T.
 	ENDIF
 	
 	lRetCode := VODBAppend(lReleaseLocks)
@@ -190,7 +190,7 @@ FUNCTION DBAPPEND       (lReleaseLocks)
 	IF !lRetCode
 		//    UH 06/26/1998
 		//    lRetCode := DoError(#DBAPPEND)
-		NetErr(.t.)
+		NetErr(.T.)
 	ENDIF
 	
 	RETURN lRetCode
@@ -341,7 +341,7 @@ FUNCTION DBCREATE (   cName,      ;
 	ENDIF
 	
 	IF !IsArray( aStru )
-		RETURN .f.
+		RETURN .F.
 	ENDIF
 	
 	
@@ -355,14 +355,14 @@ FUNCTION DBCREATE (   cName,      ;
 	//
 	
 	IF lNew = NIL
-		lNew    := .t.
-		lKeep   := .f.
+		lNew    := .T.
+		lKeep   := .F.
 	ELSE
-		lKeep   := .t.
+		lKeep   := .T.
 	ENDIF
 	
 	IF lJustOpen == NIL
-		lJustOpen := .f.
+		lJustOpen := .F.
 	ENDIF
 	
 	aRdds   := __RddList(xDriver, aHidden)
@@ -378,7 +378,7 @@ FUNCTION DBCREATE (   cName,      ;
 	
 	lRetCode := VODBCreate(cName, aStru, rddList, lNew, cAlias, cDelim, lKeep, lJustOpen)
 	
-	IF rddList != null_ptr
+	IF rddList != NULL_PTR
 		MemFree(RDDLIST)
 	ENDIF
 	
@@ -433,7 +433,7 @@ FUNCTION DbDeleteOrder(uOrder, cOrdBag)
 	LOCAL cOrder AS USUAL
 	LOCAL lRet   AS LOGIC
 	
-	lRet := true
+	lRet := TRUE
 	
 	IF IsNumeric(uOrder)
 		cOrder := NIL
@@ -462,7 +462,7 @@ FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest)
 	LOCAL lRetCode  AS LOGIC
 	
 	IF IsNil(lRest)
-		lRest := .f.
+		lRest := .F.
 	ENDIF
 	
 	lRetCode := VODBEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest)
@@ -604,13 +604,13 @@ FUNCTION DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest )
 	LOCAL lRetCode  AS LOGIC
 	
 	IF IsNil(lRest)
-		lRest := .f.
+		lRest := .F.
 	ENDIF
 	
 	IF IsNil(uCobWhile)
-		uCobWhile := {|| .t. }
+		uCobWhile := {|| .T. }
 	ELSE
-		lRest := .t.
+		lRest := .T.
 	ENDIF
 	
 	IF IsNil(nNext)
@@ -647,7 +647,7 @@ FUNCTION DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal)
 	ENDIF
 	
 	IF nOrdinal == DBOI_KEYVAL
-		lKeyVal  := .t.
+		lKeyVal  := .T.
 		nOrdinal := DBOI_EXPRESSION
 	ENDIF
 	
@@ -1012,13 +1012,13 @@ FUNCTION DBUSEAREA (lNew,      ;   // Select the next free Area
 	LOCAL           aRdds           AS ARRAY
 	
 	
-	DEFAULT(@lNew, .f.)
+	DEFAULT(@lNew, .F.)
 	
 	DEFAULT(@cAlias, "")
 	
 	DEFAULT( @lShare, !SetExclusive())
 	
-	DEFAULT(@lReadOnly, .f.)
+	DEFAULT(@lReadOnly, .F.)
 	
 	DEFAULT(@cDelim, "")
 	
@@ -1028,12 +1028,12 @@ FUNCTION DBUSEAREA (lNew,      ;   // Select the next free Area
 	
 	rddList := __AllocRddList(aRdds)
 	
-	DO WHILE .t.
+	DO WHILE .T.
 		
 		IF !Empty(aStru)
 			
 			lRetCode := DBCREATE   ( cName, aStru, aRdds, lNew,;
-			cAlias, cDelim, .t.)
+			cAlias, cDelim, .T.)
 		ELSE
 			
 			lRetCode := VODBUseArea(lNew, rddList, cName, cAlias,;
@@ -1052,7 +1052,7 @@ FUNCTION DBUSEAREA (lNew,      ;   // Select the next free Area
 		
 	ENDDO
 	
-	IF rddList != null_ptr
+	IF rddList != NULL_PTR
 		MemFree(RDDLIST)
 	ENDIF
 	
@@ -1259,7 +1259,7 @@ FUNCTION RddSetDefault  (cDriver)
 	IF !IsString(cDriver)
 		cDriver := NIL
 	ELSE
-		IF (cDriver == null_string)  .OR. ( Empty(Trim(cDriver)) )
+		IF (cDriver == NULL_STRING)  .OR. ( Empty(Trim(cDriver)) )
 			cDriver := NIL
 		ENDIF
 	ENDIF
@@ -1509,18 +1509,18 @@ FUNCTION __RddList      (xDriver, aHidden)
 		
 		DO CASE
 			CASE xDriver = "DBFNTX"
-		lDbf := .t.
+		lDbf := .T.
 			CASE xDriver = "_DBFCDX"
-		lDbf := .t.
+		lDbf := .T.
 			CASE xDriver = "DBFCDX"
-				lBlob := .t.
-				lDbf  := .t.
+				lBlob := .T.
+				lDbf  := .T.
 		xDriver := "_DBFCDX"
 			CASE xDriver = "DBFMDX"
-		lDbf := .t.
+		lDbf := .T.
 			OTHERWISE
-				lDbf := .f.
-		lBlob := .f.
+				lDbf := .F.
+		lBlob := .F.
 		ENDCASE
 		
 		IF lDbf
@@ -1560,7 +1560,7 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 	
 	nSelect := 0
 	
-	DEFAULT(@lNew, .f.)
+	DEFAULT(@lNew, .F.)
 	
 	IF ( Used() .AND. !lNew )
 		DBCLOSEAREA()
@@ -1579,7 +1579,7 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 			{"FIELD_LEN", "N", 3, 0},       ;
 			{"FIELD_DEC", "N", 3, 0} },     ;
 			cDriver,                        ;
-			.f.,                            ;
+			.F.,                            ;
 			cAlias)
 			
 			
@@ -1602,7 +1602,7 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 				AAdd(aField, field_dec)
 				
 				AAdd( aStruct, aField )
-				DBSKIP(1, .f.)
+				DBSKIP(1, .F.)
 			ENDDO
 			
 			VODBCloseArea()
@@ -1646,10 +1646,10 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
 	LOCAL aStruct           AS ARRAY
 	LOCAL siCount           AS DWORD
 	LOCAL si                AS DWORD
-	LOCAL lNamesOk  := .f.  AS LOGIC
-	LOCAL lTypesOk  := .f.  AS LOGIC
-	LOCAL lLensOk   := .f.  AS LOGIC
-	LOCAL lDecsOk   := .f.  AS LOGIC
+	LOCAL lNamesOk  := .F.  AS LOGIC
+	LOCAL lTypesOk  := .F.  AS LOGIC
+	LOCAL lLensOk   := .F.  AS LOGIC
+	LOCAL lDecsOk   := .F.  AS LOGIC
 	
 	IF (Empty(aStruct := DbStruct() ))
 		RETURN (0)
@@ -1659,25 +1659,25 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
 	
 	IF UsualType(aNames) == ARRAY
 		siCount := Min(siCount, Len(aNames) )
-		lNamesOk := .t.
+		lNamesOk := .T.
 	ENDIF
 	
 	
 	IF UsualType(aTypes) == ARRAY
 		siCount := Min( siCount, Len(aTypes) )
-		lTypesOk := .t.
+		lTypesOk := .T.
 	ENDIF
 	
 	
 	IF UsualType(aLens) == ARRAY
 		siCount := Min( siCount, Len(aLens) )
-		lLensOk := .t.
+		lLensOk := .T.
 	ENDIF
 	
 	
 	IF UsualType(aDecs) == ARRAY
 		siCount := Min( siCount, Len(aDecs) )
-		lDecsOk := .t.
+		lDecsOk := .T.
 	ENDIF
 	
 	
@@ -1710,7 +1710,7 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
 
 FUNCTION DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC PASCAL
 	
-	RETURN DBCREATE(cFile, __DBFLEDIT(DbStruct(), aFields, null_array) )
+	RETURN DBCREATE(cFile, __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) )
 
 
 
@@ -1767,7 +1767,7 @@ FUNCTION DbCOpyXStruct(cFile) AS LOGIC PASCAL
 		RECOVER USING oError
 		oError:FuncSym := #DBCOPYXSTRUCT
 		Eval( uErrBlock, oError)
-		lRetCode := .f.
+		lRetCode := .F.
 	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
@@ -1802,7 +1802,7 @@ FUNCTION DbStruct() AS ARRAY PASCAL
 		ptrErrInfo.dwSubCode      := EDB_NOTABLE
 		ptrErrInfo.pszSubSystem   := String2Psz("DBCMD")
 		ptrErrInfo.dwSeverity     := ES_ERROR
-		ptrErrInfo.lCanDefault    := .t.
+		ptrErrInfo.lCanDefault    := .T.
 		ptrErrInfo.symFuncSym     := #DBSTRUCT
 		
 		DefErrorGen(ptrErrInfo)
@@ -1846,9 +1846,9 @@ STATIC FUNCTION ParamError  (dwArgNum  AS DWORD  ,    ;
 	ptrErrInfo.pszSubSystem   := String2Psz("DBCMD")
 	ptrErrInfo.dwGenCode      := EG_ARG
 	ptrErrInfo.dwSeverity     := ES_ERROR
-	ptrErrInfo.lCanDefault    := .f.
-	ptrErrInfo.lCanRetry      := .t.
-	ptrErrInfo.lCanSubstitute := .f.
+	ptrErrInfo.lCanDefault    := .F.
+	ptrErrInfo.lCanRetry      := .T.
+	ptrErrInfo.lCanSubstitute := .F.
 	ptrErrInfo.dwArgType      := dwArgType
 	ptrErrInfo.dwArgNum       := dwArgNum
 	
@@ -1866,7 +1866,7 @@ STATIC FUNCTION DBCMDError  ()                              AS USUAL PASCAL
 	ptrErrInfo.dwSubCode      := EDB_NOTABLE
 	ptrErrInfo.pszSubSystem   := String2Psz("DBCMD")
 	ptrErrInfo.dwSeverity     := ES_ERROR
-	ptrErrInfo.lCanDefault    := .t.
+	ptrErrInfo.lCanDefault    := .T.
 	
 	oError := DefErrorGen(ptrErrInfo)
 	
@@ -1885,7 +1885,7 @@ STATIC FUNCTION DBCMDError  ()                              AS USUAL PASCAL
 /// </returns>
 FUNCTION IndexHPLock(lSet AS USUAL) AS LOGIC
 	/// THROW NotImplementedException{}
-	RETURN false   
+	RETURN FALSE   
 
 /// <summary>
 /// Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
@@ -1895,7 +1895,7 @@ FUNCTION IndexHPLock(lSet AS USUAL) AS LOGIC
 /// </returns>
 FUNCTION NewIndexLock(lSet AS USUAL) AS LOGIC
 	/// THROW NotImplementedException{}
-	RETURN false   
+	RETURN FALSE   
 
 
 
@@ -1906,5 +1906,5 @@ FUNCTION NewIndexLock(lSet AS USUAL) AS LOGIC
 /// </returns>
 FUNCTION NewLocks() AS LOGIC
 	/// THROW NotImplementedException{}
-	RETURN false   
+	RETURN FALSE   
 #endif

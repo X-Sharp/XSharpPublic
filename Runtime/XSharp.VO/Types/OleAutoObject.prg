@@ -405,7 +405,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 			END TRY
 		ELSE
 			pi := mi:GetParameters()
-			IF pi:Length == 1 .and. mi:IsDefined( TYPEOF( XSharp.Internal.ClipperCallingConventionAttribute ), FALSE )
+			IF pi:Length == 1 .AND. mi:IsDefined( TYPEOF( XSharp.Internal.ClipperCallingConventionAttribute ), FALSE )
 				retval := mi:Invoke(oComObject, <OBJECT>{args})
 			ELSEIF pi:Length == 0
 				retval := mi:Invoke(oComObject, NULL )

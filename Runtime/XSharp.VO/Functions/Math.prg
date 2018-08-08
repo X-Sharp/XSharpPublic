@@ -79,9 +79,9 @@ FUNCTION Ceil(n AS USUAL) AS USUAL
 		LOCAL d AS decimal
 		d := (decimal) n
 		d := Math.Ceiling(d)
-		IF d <= int32.MaxValue .and. d >= int32.MinValue
+		IF d <= int32.MaxValue .AND. d >= int32.MinValue
 			result := COnvert.ToInt32(d)
-		ELSEIF d <= int64.MaxValue .and. d >= int64.MinValue
+		ELSEIF d <= int64.MaxValue .AND. d >= int64.MinValue
 			result := COnvert.ToInt64(d)
 		ELSE
 			result := d
@@ -91,9 +91,9 @@ FUNCTION Ceil(n AS USUAL) AS USUAL
 		LOCAL r8 AS REAL8
 		r8 := (FLOAT) n
 		r8 := Math.Ceiling(r8)
-		IF r8 <= int32.MaxValue .and. r8 >= int32.MinValue
+		IF r8 <= int32.MaxValue .AND. r8 >= int32.MinValue
 			result := COnvert.ToInt32(r8)
-		ELSEIF r8 <= int64.MaxValue .and. r8 >= int64.MinValue
+		ELSEIF r8 <= int64.MaxValue .AND. r8 >= int64.MinValue
 			result := COnvert.ToInt64(r8)
 		ELSE
 			result := r8
@@ -153,9 +153,9 @@ FUNCTION Floor(n AS USUAL) AS USUAL
 		LOCAL d AS decimal
 		d := (decimal) n
 		d := Math.Floor(d)
-		IF d <= int32.MaxValue .and. d >= int32.MinValue
+		IF d <= int32.MaxValue .AND. d >= int32.MinValue
 			result := COnvert.ToInt32(d)
-		ELSEIF d <= int64.MaxValue .and. d >= int64.MinValue
+		ELSEIF d <= int64.MaxValue .AND. d >= int64.MinValue
 			result := COnvert.ToInt64(d)
 		ELSE
 			result := d
@@ -165,9 +165,9 @@ FUNCTION Floor(n AS USUAL) AS USUAL
 		LOCAL r8 AS REAL8
 		r8 := (FLOAT) n
 		r8 := Math.Floor(r8)
-		IF r8 <= int32.MaxValue .and. r8 >= int32.MinValue
+		IF r8 <= int32.MaxValue .AND. r8 >= int32.MinValue
 			result := COnvert.ToInt32(r8)
-		ELSEIF r8 <= int64.MaxValue .and. r8 >= int64.MinValue
+		ELSEIF r8 <= int64.MaxValue .AND. r8 >= int64.MinValue
 			result := COnvert.ToInt64(r8)
 		ELSE
 			result := r8
@@ -188,7 +188,7 @@ FUNCTION Integer(n AS USUAL) AS USUAL
 	LOCAL result AS USUAL
 	IF n:IsInteger
 		result := n
-	ELSEIF n:IsFloat .or. n:IsDecimal
+	ELSEIF n:IsFloat .OR. n:IsDecimal
 		IF n > 0.0
 			result := Floor(n)
 		ELSE
@@ -244,14 +244,14 @@ INTERNAL GLOBAL _randomGenerator AS Random
 /// <returns>
 /// </returns>
 FUNCTION Rand(nSeed AS USUAL) AS FLOAT
-	IF !nSeed:IsNumeric .or. nSeed <= 0
+	IF !nSeed:IsNumeric .OR. nSeed <= 0
 		nSeed := (INT) DateTime.Now:Ticks
 	ENDIF
 	_randomGenerator := Random{ nSeed }
 	RETURN _randomGenerator:NextDouble()
 	
 FUNCTION Rand() AS FLOAT
-	IF _randomGenerator == null
+	IF _randomGenerator == NULL
 		_randomGenerator := Random{ 100001 }
 	ENDIF
 	RETURN _randomGenerator:NextDouble() 
@@ -310,7 +310,7 @@ FUNCTION Round(n AS USUAL,iDec AS INT) AS USUAL
 		iDec := 0   
 	ENDIF
 	
-	IF isLong .or. IsInt64
+	IF isLong .OR. IsInt64
 		iDec := 0
 	ENDIF
 	

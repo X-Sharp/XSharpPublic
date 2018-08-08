@@ -34,7 +34,7 @@ FUNCTION __allocNames    (aStru AS ARRAY)                AS _FIELDNAMES  PASCAL
 		cName := Upper(aStru[i])
 		nSize := SLen(cName) + 1
 		pszName := MemAlloc(nSize)
-		IF pszName != null_psz
+		IF pszName != NULL_PSZ
 			MemCopy(pszName, PTR(_CAST, cName), nSize)
 		ENDIF
 		fldNames.lpbName[i] := pszName
@@ -91,9 +91,9 @@ FUNCTION __DBFLEDIT      (aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS
 	
 	//	UH 11/30/1998
 	IF Empty(aMatch)
-		lMatch := .f.
+		lMatch := .F.
 	ELSE
-		lMatch := .t.
+		lMatch := .T.
 	ENDIF
 	
 	aNew:= {}
@@ -190,11 +190,11 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 			BREAK DBCMDError()
 		ENDIF
 		
-		IF Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, null_array) )
+		IF Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) )
 			BREAK ParamError(ARRAY, 2)
 		ENDIF
 		
-		DBUSEAREA(true, cDriver, cFile, __UniqueAlias(cFile), true, true,/*aStru*/,/*cDelim*/, aHidden)
+		DBUSEAREA(TRUE, cDriver, cFile, __UniqueAlias(cFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, aHidden)
 		siFrom := VODBGetSelect()
 		
 		aFields := {}
@@ -207,7 +207,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		NEXT
 		
 		IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
-			SetAnsi(.t.)
+			SetAnsi(.T.)
 		ENDIF
 		
 		IF !Empty(aStruct := __DBFLEDIT(aStruct, aFields, aMatch))
@@ -255,7 +255,7 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 		
 		siTo := VODBGetSelect()
 		
-		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, null_array) ))
+		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) ))
 			BREAK ParamError(ARRAY, 3)
 		ENDIF
 		
@@ -270,13 +270,13 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "DELIM", .t., __UniqueAlias(cFile), cDelim, .t.)
+		DBCREATE(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim, .T.)
 		
 		siFrom := VODBGetSelect()
 		
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
-			SetAnsi(.t.)
+			SetAnsi(.T.)
 		ENDIF
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
@@ -320,7 +320,7 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	TRY		
 		siTo := VODBGetSelect()
 		
-		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, null_array) ))
+		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) ))
 			THROW ParamError(ARRAY, 2)
 		ENDIF
 		
@@ -334,12 +334,12 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "SDF", .t., __UniqueAlias(cFile), ,.t.)
+		DBCREATE(cFile, aStruct, "SDF", .T., __UniqueAlias(cFile), ,.T.)
 		
 		siFrom := VODBGetSelect()
 		
 		IF ( !lAnsi .AND. lDbfAnsi )
-			SetAnsi(.t.)
+			SetAnsi(.T.)
 		ENDIF
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
@@ -375,7 +375,7 @@ FUNCTION DbCOpy(cFile, aFields, uCobFor,;
 	lAnsi    := SetAnsi()
 	
 	siFrom   := VODBGetSelect()
-	lRetCode := .f.
+	lRetCode := .F.
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
@@ -401,17 +401,17 @@ FUNCTION DbCOpy(cFile, aFields, uCobFor,;
 			
 			lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cFile, DbInfo(DBI_FULLPATH) )
 		ELSE
-			IF ( Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, null_array)) )
+			IF ( Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY)) )
 				BREAK ParamError(ARRAY, 2)
 			ENDIF
 			
 			DBCREATE( cFile, aStruct, cDriver,, __UniqueAlias(cFile),,,aHidden)
 			
 			IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
-				SetAnsi(.t.)
+				SetAnsi(.T.)
 			ENDIF
 			
-			DBUSEAREA(.t., cDriver, cFile, __UniqueAlias(cFile),,,,,aHidden)
+			DBUSEAREA(.T., cDriver, cFile, __UniqueAlias(cFile),,,,,aHidden)
 			
 			VODBSelect(siFrom, @siTo)
 			
@@ -469,7 +469,7 @@ FUNCTION DBFileCopy( hfFrom, cFile, cFullPath )
 		
 		oError:@@Throw()
 		
-		lRetCode := .f.
+		lRetCode := .F.
 		
 	ELSE
 		
@@ -491,7 +491,7 @@ FUNCTION DBFileCopy( hfFrom, cFile, cFullPath )
 		
 		FClose(hfTo)
 		
-		lRetCode := .t.
+		lRetCode := .T.
 		
 		
 		FSeek3(hfFrom, dwPos, FS_SET )
@@ -530,7 +530,7 @@ FUNCTION DBCOPYDELIM     (cFile, cDelim, aFields,   ;
 			BREAK DBCMDError()
 		ENDIF
 		
-		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, null_array))
+		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY))
 			BREAK ParamError(ARRAY, 3)
 		ENDIF
 		
@@ -544,10 +544,10 @@ FUNCTION DBCOPYDELIM     (cFile, cDelim, aFields,   ;
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "DELIM", .t., __UniqueAlias(cFile), cDelim)
+		DBCREATE(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
-			SetAnsi(.t.)
+			SetAnsi(.T.)
 		ENDIF
 		
 		VODBSelect(siFrom, @siTo)
@@ -600,7 +600,7 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
 			BREAK DBCMDError()
 		ENDIF
 		
-		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, null_array))
+		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY))
 			BREAK ParamError(ARRAY, 2)
 		ENDIF
 		
@@ -617,11 +617,11 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "SDF", .t., cAlias)
+		DBCREATE(cFile, aStruct, "SDF", .T., cAlias)
 		
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
-			SetAnsi(.t.)
+			SetAnsi(.T.)
 		ENDIF
 		
 		VODBSelect(siFrom, @siTo)
@@ -662,7 +662,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 	
 	
 	IF IsNil(uCobFor)
-		uCobFor := {|| .t.}
+		uCobFor := {|| .T.}
 	ENDIF
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
@@ -688,16 +688,16 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 			strucErrInfo.dwGenCode      := EG_ARG
 			strucErrInfo.dwSubCode      := EDB_NOFIELDS
 			strucErrInfo.dwSeverity     := ES_ERROR
-			strucErrInfo.lCanDefault    := .f.
-			strucErrInfo.lCanRetry      := .f.
-			strucErrInfo.lCanSubstitute := .f.
+			strucErrInfo.lCanDefault    := .F.
+			strucErrInfo.lCanRetry      := .F.
+			strucErrInfo.lCanSubstitute := .F.
 			
 			oError := DefErrorGen(_VODBErrInfoPtr())
 			
 			BREAK oError
 		ENDIF
 		
-		DBCREATE( cFile, aStruct,"" , .t., "" )
+		DBCREATE( cFile, aStruct,"" , .T., "" )
 		
 		
 		VODBSelect(siFrom1, @siTo)
@@ -788,12 +788,12 @@ FUNCTION DbSort(	cFile, aFields, uCobFor,;
 	//	UH 09/23/1997
 	LOCAL cRdd 			AS STRING
 	
-	fnFieldNames := null_ptr
-	fnSortNames  := null_ptr
+	fnFieldNames := NULL_PTR
+	fnSortNames  := NULL_PTR
 	
 	siFrom := VODBGetSelect()
 	
-	DEFAULT(@lRest, .f.)
+	DEFAULT(@lRest, .F.)
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
@@ -818,7 +818,7 @@ FUNCTION DbSort(	cFile, aFields, uCobFor,;
 		
 		//	UH 09/23/1997
 		//	DBCREATE(cFile, aStruct, "", .T.)
-		DBCREATE(cFile, aStruct, cRdd, .t.)
+		DBCREATE(cFile, aStruct, cRdd, .T.)
 		
 		VODBSelect(siFrom, @siTo)
 		
@@ -843,11 +843,11 @@ FUNCTION DbSort(	cFile, aFields, uCobFor,;
 		
 		RECOVER USING oError
 		
-		IF fnFieldNames != null_ptr
+		IF fnFieldNames != NULL_PTR
 			_freeFieldNames(fnFieldNames)
 		ENDIF
 		
-		IF fnSortNames != null_ptr
+		IF fnSortNames != NULL_PTR
 			_freeFieldNames(fnSortNames)
 		ENDIF
 		
@@ -870,11 +870,11 @@ FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC 
 	
 	
 	IF !IsNil(uCobWhile)
-		lRest := .t.
+		lRest := .T.
 	ENDIF
 	
 	IF IsNil(lRest)
-		lRest := .f.
+		lRest := .F.
 	ENDIF
 	
 	fldNames := _allocFieldNames(aStru)
@@ -917,17 +917,17 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 	
 	
 	IF IsNil(uCobWhile)
-		uCobWhile := {|| .t.}
+		uCobWhile := {|| .T.}
 	ELSE
-		lRest := .t.
+		lRest := .T.
 	ENDIF
 	
 	IF IsNil(uCobFor)
-		uCobFor := {|| .t.}
+		uCobFor := {|| .T.}
 	ENDIF
 	
 	IF IsNil(lRest)
-		lRest := .f.
+		lRest := .F.
 	ENDIF
 	
 	
@@ -939,7 +939,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 		IF IsNil(nNext)
 			nNext := -1
 		ELSE
-			lRest := .t.
+			lRest := .T.
 		ENDIF
 		
 		IF !lRest
@@ -1000,7 +1000,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 		IF IsNil(xDriver)
 			xDriver := RddSetDefault()
 		ENDIF
-		DBCREATE( cFile, aStruct, xDriver, .t.)
+		DBCREATE( cFile, aStruct, xDriver, .T.)
 		
 		VODBSelect(siFrom, @siTo)
 		
@@ -1008,7 +1008,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 		
 		DO WHILE ( (!EOF()) .AND. nNext != 0 .AND. Eval(uCobWhile) )
 			
-			lSomething := .f.
+			lSomething := .F.
 			
 			AFill(aNum, 0)
 			
@@ -1019,7 +1019,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 					IF ( !lSomething )
 						//	CollectForced()
 						lRetCode := VODBTransRec(siTo, fldNames)
-						lSomething := .t.
+						lSomething := .T.
 					ENDIF
 					
 					FOR i := 1 TO n
@@ -1028,7 +1028,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 					
 				ENDIF
 				
-				DBSKIP(1, .f.)
+				DBSKIP(1, .F.)
 				
 			ENDDO
 			
@@ -1055,13 +1055,13 @@ FUNCTION DbTotal(cFile, bKey, aFields,     ;
 		VODBSetSelect(INT(siFrom))
 		
 		RECOVER USING oError
-		IF fldNames != null_ptr
+		IF fldNames != NULL_PTR
 			_freeFieldNames(fldNames)
 		ENDIF
 		
 		oError:FuncSym := #DBTOTAL
 		Eval( uErrBlock, oError)
-		lRetCode := .f.
+		lRetCode := .F.
 	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
@@ -1084,12 +1084,12 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 	
 	
 	IF (lRand == NIL)
-		lRand := .f.
+		lRand := .F.
 	ENDIF
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	lRetCode := .t.
+	lRetCode := .T.
 	
 	BEGIN SEQUENCE
 		
@@ -1142,7 +1142,7 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 		RECOVER USING oError
 		oError:FuncSym := #DBUPDATE
 		Eval( uErrBlock, oError)
-		lRetCode := .f.
+		lRetCode := .F.
 	END SEQUENCE
 	
 	
@@ -1290,7 +1290,7 @@ FUNCTION _allocFieldNames(aStru AS ARRAY)           AS XSharp.RDD._FIELDNAMES  P
 		cName := Upper(aStru[i, 1])
 		nSize := SLen(cName) + 1
 		pszName := MemAlloc(nSize)
-		IF pszName != null_psz
+		IF pszName != NULL_PSZ
 			MemCopy(pszName, PTR(_CAST, cName), nSize)
 		ENDIF
 		fldNames.lpbName[i] := pszName
@@ -1309,7 +1309,7 @@ FUNCTION _freeFieldNames(fldNames  AS XSharp.RDD._FIELDNAMES) AS VOID PASCAL
 	n := fldNames.uiFieldCount
 	
 	FOR i := 1 TO n
-		IF fldNames.lpbName[i] != null_ptr
+		IF fldNames.lpbName[i] != NULL_PTR
 			MemFree(fldNames.lpbName[i])
 		ENDIF
 	NEXT

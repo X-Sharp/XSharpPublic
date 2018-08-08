@@ -19,16 +19,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD ConversionTests AS VOID
 			LOCAL wb AS __WinBool
 			LOCAL l AS LOGIC
-			l := true
+			l := FALSE
 			wb := l
-			l := false
+			l := FALSE
 			l := wb
-			Assert.Equal(l, true)
+			Assert.Equal(l, TRUE)
 			l := !wb
-			Assert.Equal(l, false)
-			Assert.Equal((LOGIC) (wb .and. wb), true)
-			Assert.Equal((LOGIC) (wb .and. !wb), false)
-			Assert.Equal((LOGIC) (wb .or. wb), true)
+			Assert.Equal(l, FALSE)
+			Assert.Equal((LOGIC) (wb .AND. wb), TRUE)
+			Assert.Equal((LOGIC) (wb .AND. !wb), FALSE)
+			Assert.Equal((LOGIC) (wb .OR. wb), TRUE)
 		RETURN
 
 	END CLASS

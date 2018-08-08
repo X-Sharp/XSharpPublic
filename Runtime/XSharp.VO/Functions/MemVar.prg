@@ -26,7 +26,7 @@ RETURN	 NIL
 /// </returns>
 FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
 	THROW NotImplementedException{}
-RETURN	 null_object   
+RETURN	 NULL_OBJECT   
 
 /// <summary>
 /// Return the contents of a memory variable.

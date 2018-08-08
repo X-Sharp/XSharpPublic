@@ -45,7 +45,7 @@ FUNCTION CollectForced() AS VOID
 
 [Obsolete( "'AxitCalled()' is not supported and always returns FALSE" )] ;
 	FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
-RETURN false  
+RETURN FALSE  
 
 /// <summary>
 /// Check whether the application is in a garbage collection phase.
@@ -54,7 +54,7 @@ RETURN false
 /// </returns>
 FUNCTION InCollect() AS LOGIC
 	/// THROW NotImplementedException{}
-	RETURN false   
+	RETURN FALSE   
 
 
 
@@ -77,4 +77,4 @@ FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
 /// </returns>
 FUNCTION UnRegisterAxit(oSource AS OBJECT) AS LOGIC
 	/// THROW NotImplementedException{}
-	RETURN false   
+	RETURN FALSE   

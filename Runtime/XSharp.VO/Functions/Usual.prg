@@ -48,7 +48,7 @@ FUNCTION EmptyUsual(dwType AS DWORD) AS __Usual
 	CASE USUAL
 		result := NIL
 	CASE CODEBLOCK
-		result := __Usual{null_codeblock}
+		result := __Usual{NULL_CODEBLOCK}
 	OTHERWISE
 		THROW Error.ArgumentError(__ENTITY__, NAMEOF(dwType) , "Unknown type parameter")
 	END SWITCH

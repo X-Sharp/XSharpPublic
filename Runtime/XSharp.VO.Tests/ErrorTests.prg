@@ -19,14 +19,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Tests AS VOID
 			LOCAL u AS USUAL
 			BEGIN SEQUENCE
-				Assert.Equal (true, canBreak())
+				Assert.Equal (TRUE, canBreak())
 				IF canBreak()
 					BREAK 10
 				ENDIF
 			RECOVER USING u
 				Assert.Equal(10, (INT) u)
 			END SEQUENCE
-			Assert.Equal (false, canBreak())
+			Assert.Equal (FALSE, canBreak())
 		RETURN
 
 	END CLASS

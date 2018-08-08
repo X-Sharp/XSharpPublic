@@ -926,7 +926,7 @@ FUNCTION AFill(a AS ARRAY,fill := NIL AS USUAL, start := NIL AS USUAL, count := 
 			lStartWasNil := TRUE
 		ENDIF
 
-		IF start > nLen .or. start <= 0
+		IF start > nLen .OR. start <= 0
 			THROW Error.BoundError( "AFill", "start", 3, <OBJECT>{ start } )
 		ENDIF
 		IF count == NIL
@@ -1060,7 +1060,7 @@ FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUA
 		RETURN aArray
 	END IF
 	
-	IF nCount <= 0 .or. startIndex + nCount - 1 > nLen
+	IF nCount <= 0 .OR. startIndex + nCount - 1 > nLen
 		nCount := nLen - startIndex + 1
 	ENDIF
 	

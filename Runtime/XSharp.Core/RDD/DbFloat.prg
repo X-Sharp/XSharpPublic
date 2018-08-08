@@ -8,7 +8,7 @@
 /// <seealso cref="T:XSharp.IFloat"/>
 STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat
 	/// <inheritdoc />
-	PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
+	PROPERTY Value	AS REAL8 AUTO GET PRIVATE SET
 	/// <inheritdoc />
 	PROPERTY Digits		AS INT AUTO GET PRIVATE SET
 	/// <inheritdoc />
@@ -30,7 +30,7 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	/// <inheritdoc />
 	PROPERTY Day		AS INT AUTO GET PRIVATE SET
 	/// <inheritdoc />
-	PROPERTY @@Value	AS DateTime GET DateTime{Year, Month, Day}
+	PROPERTY Value		AS DateTime GET DateTime{Year, Month, Day}
 	/// <inheritdoc />
 	PROPERTY IsEmpty	AS LOGIC GET Month != 0
 	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)

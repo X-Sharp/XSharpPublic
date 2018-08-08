@@ -13,7 +13,7 @@ INTERNAL STATIC CLASS UnformatHelpers
 		LOCAL iFuncLen  AS INT
 		LOCAL lRInsert	:= FALSE AS LOGIC
 		cPic := cFunc := ""
-		IF cSayPicture:Length > 1 .and. cSayPicture[0]  == '@'
+		IF cSayPicture:Length > 1 .AND. cSayPicture[0]  == '@'
 			iFuncLen := INT(At(" ",cSayPicture))
 			IFuncLen -= 2
 			IF iFuncLen < 0
@@ -428,9 +428,9 @@ INTERNAL STATIC CLASS TransFormHelpers
 		ELSE
 			// No @R so simply convert
 			cChar := cTemplate[0]
-			IF cChar == 'Y' .or. cChar == 'y' .or. (nPicFunc:HasFlag(TransformPictures.YesNo) .and. (cChar == 'L' .or. cChar == 'l'))
+			IF cChar == 'Y' .OR. cChar == 'y' .OR. (nPicFunc:HasFlag(TransformPictures.YesNo) .AND. (cChar == 'L' .OR. cChar == 'l'))
 				cReturn := GetLogicLiteral(lValue, TRUE)
-			ELSEIF cChar == 'L' .or. cChar == 'l'
+			ELSEIF cChar == 'L' .OR. cChar == 'l'
 				cReturn := GetLogicLiteral(lValue, FALSE)
 			ELSE
 				cReturn := cChar:ToString()
@@ -596,12 +596,12 @@ INTERNAL STATIC CLASS TransFormHelpers
 				IF nValue == 0
 					cReturn := Space(cReturn:Length)
 					
-				ELSEIF lIsFloat .and. Math.Abs(nValue:Value) < 1.0
+				ELSEIF lIsFloat .AND. Math.Abs(nValue:Value) < 1.0
 					x := cReturn:IndexOf(cDec)
 					IF x == -1
 						cReturn := Space(cReturn:Length)
 					ELSE
-						IF cReturn:IndexOf("-") != -1 .and. x >= 2
+						IF cReturn:IndexOf("-") != -1 .AND. x >= 2
 							cReturn := Space( x - 2) + "- " + cReturn:Substring(x)
 						ELSE
 							cReturn := Space( x) + cReturn:Substring(x)
@@ -633,7 +633,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 							sb:Insert(0 , cReturn[nMap])
 						END IF
 					ELSE
-						IF cChar == '*' .or. cChar == '$'
+						IF cChar == '*' .OR. cChar == '$'
 							sb:Insert(0, cChar)
 						ELSE
 							sb:Insert(0 , ' ')
@@ -643,7 +643,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 					
 				CASE ','
 					IF nMap >= 0
-						IF nMap == 0 .and. cReturn[nMap] == '-'
+						IF nMap == 0 .AND. cReturn[nMap] == '-'
 							sb:Insert(0 , cReturn[nMap])
 							nMap --
 						ELSE
@@ -692,7 +692,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 			ENDIF
 		ENDIF
 		
-		IF  nPicFunc:HasFlag( TransformPictures.Left )  .and. cReturn[0] == ' '
+		IF  nPicFunc:HasFlag( TransformPictures.Left )  .AND. cReturn[0] == ' '
 			nLen	:= cReturn:Length
 			cReturn := cReturn:TrimStart():PadRight( nLen,' ')
 		ENDIF
@@ -705,7 +705,7 @@ INTERNAL STATIC CLASS TransFormHelpers
 		cTemplate := ""
 		nPicFunc  := TransformPictures.None
 		
-		IF cPicture:Length > 1 .and. cPicture[0] == '@'
+		IF cPicture:Length > 1 .AND. cPicture[0] == '@'
 			VAR nIndex := cPicture:IndexOf(" ")
 			IF nIndex > 0
 				cTemplate := cPicture:Substring(nIndex+1)

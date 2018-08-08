@@ -66,7 +66,7 @@ FUNCTION FloatFormat(f AS FLOAT,nLen AS INT,nDec AS INT) AS FLOAT
 		fTemp := FLOAT{f:value, nDigits, nDec}
 		VAR cTemp := Ntrim(fTemp)
 		nLen := cTemp:Length
-	ELSEIF nDec != 0 .and. nLen != 0 .and. nLen < nDec +2
+	ELSEIF nDec != 0 .AND. nLen != 0 .AND. nLen < nDec +2
 		nLen := nDec + 2
 	ENDIF
 	RETURN FLOAT{f:Value, nLen, nDec}  

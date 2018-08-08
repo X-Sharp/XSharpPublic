@@ -83,6 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetBootstrap", "NugetBoot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BB506D4-7596-4F79-9B25-1FAAE084BBA8}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		src\Common\BuildNumber.h = src\Common\BuildNumber.h
 		src\Common\CommonAssemblyInfo.cs = src\Common\CommonAssemblyInfo.cs
 		src\Common\Constants.cs = src\Common\Constants.cs

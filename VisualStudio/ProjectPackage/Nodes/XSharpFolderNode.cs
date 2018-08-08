@@ -48,7 +48,7 @@ namespace XSharp.Project
         // =========================================================================================
 
         /// <summary>
-        /// Provides the node name for inline editing of caption. 
+        /// Provides the node name for inline editing of caption.
         /// Overridden to disable this functionality for properties node.
         /// </summary>
         /// <returns>Caption of the folder node if the node is a member item, null otherwise.</returns>
@@ -72,7 +72,7 @@ namespace XSharp.Project
         protected override NodeProperties CreatePropertiesObject()
         {
             return new XSharpPropertiesFolderNodeProperties(this);
-            
+
         }
 
         /// <summary>

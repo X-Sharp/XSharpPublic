@@ -475,7 +475,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // - when invoked = TRUE then we do not return local variables, with the exception of delegates
             // - when invoked = FALSE then we do not return methods, with the exception of assigning event handlers
 
-            bool preferStatic = bindMethod && Compilation.Options.IsDialectVO;
+            bool preferStatic = bindMethod;
 
             Debug.Assert(node != null);
 

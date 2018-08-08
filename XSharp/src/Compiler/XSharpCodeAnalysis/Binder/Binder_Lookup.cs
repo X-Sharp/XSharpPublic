@@ -42,8 +42,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(result.IsClear);
             Debug.Assert(options.AreValid());
 
-            // Try to look for functions first
-            if (Compilation.Options.IsDialectVO)
+            // X# looks for functions first
+            //if (Compilation.Options.IsDialectVO)
             {
                 // check for function calls method calls outside the current class
                 bool check = (options.HasFlag(LookupOptions.MustNotBeInstance) && !options.HasFlag(LookupOptions.MustNotBeMethod));
@@ -125,8 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (! funcFound && functionResults.Symbols.Count == result.Symbols.Count)
                     {
-                        // IN VO Dialect we prefer the function over the static method
-                        if (Compilation.Options.IsDialectVO)
+                        // IN X# we prefer a function over a static method
+                        //if (Compilation.Options.IsDialectVO)
                         {
                             var temp = functionResults;
                             functionResults = result;

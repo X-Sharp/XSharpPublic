@@ -911,8 +911,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
+
             switch (keyword)
             {
+                // Some keywords are impossible to use as ID
+                case SELF:
+                case SUPER:
+                case STATIC:
+                case DIM:
+                case CONST:
+                case AS:
+                    return keyword;
                 case EXPLICIT:
                 case IMPLICIT:
                     if (lastToken != OPERATOR)
@@ -978,6 +987,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 default:
                     switch (lastToken)
                     {
+                        // After these keywords we expect an ID
+                        // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
                         case METHOD:
                         case PROCEDURE:
                         case PROC:
@@ -994,23 +1005,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case PROPERTY:
                         case EVENT:
                         case DEFINE:
-                        case USING:
                         case ENUM:
                         case MEMBER:
                         case DIM:
-                        case SELF:      // Self parameter Extension methods
                         case LOCAL:
                         case VAR:
                         case IMPLIED:
-                            if (keyword != STATIC)
-                                return ID;
-                            break;
                         // Linq
                         case FROM:
                         case LET:
                         case JOIN:
                         case INTO:
                             return ID;
+                        case USING:
+                            // BEGIN USING can/will be followed by a Variable Declaration
+                            if (keyword != LOCAL && keyword != VAR)
+                                return ID;
+                            break;
+
 
                     }
                     break;

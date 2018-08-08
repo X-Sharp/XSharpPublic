@@ -18,12 +18,13 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO", "Runtime\XSharp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E600EC1-23D2-48D5-8301-0F4BF1C1D250}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Common\BuildNumber.h = Common\BuildNumber.h
 		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
 		Common\commonAssemblyInfo.prg = Common\commonAssemblyInfo.prg
 		Common\Constants.cs = Common\Constants.cs
 		Common\constants.prg = Common\constants.prg
-		Common\README.md = Common\README.md
+		Runtime\README.md = Runtime\README.md
 		Common\version.xh = Common\version.xh
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh
 	EndProjectSection

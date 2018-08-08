@@ -1572,6 +1572,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_TypeNameMatchesGlobalNamespace = 9062,
         WRN_NullPointerForRefParameter = 9063,
         WRN_AssgReadonlyLocalCause = 9064,
+        WRN_AssignmentOperatorExpected = 9065
         #endregion X#-only messages
     }
 }

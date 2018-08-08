@@ -10,7 +10,7 @@
 
 namespace LanguageService.CodeAnalysis {
     using System;
-    using System.Reflection;
+
 
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
@@ -11371,6 +11371,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_AssgReadonlyLocalCause {
             get {
                 return ResourceManager.GetString("WRN_AssgReadonlyLocalCause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assignment operator &apos;:=&apos; expected..
+        /// </summary>
+        internal static string WRN_AssignmentOperatorExpected {
+            get {
+                return ResourceManager.GetString("WRN_AssignmentOperatorExpected", resourceCulture);
             }
         }
         

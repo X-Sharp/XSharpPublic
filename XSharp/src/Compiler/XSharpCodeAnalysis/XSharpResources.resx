@@ -5256,5 +5256,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_AssgReadonlyLocalCause" xml:space="preserve">
     <value>Cannot assign to '{0}' because it is a '{1}'</value>
   </data>
+  <data name="WRN_AssignmentOperatorExpected" xml:space="preserve">
+    <value>Assignment operator ':=' expected.</value>
+  </data>
   
 </root>

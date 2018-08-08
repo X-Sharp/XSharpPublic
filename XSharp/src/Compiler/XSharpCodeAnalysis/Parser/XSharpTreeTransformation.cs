@@ -5313,9 +5313,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isStatic = (context.Parent as XP.VarLocalDeclContext).Static != null;
             context.SetSequencePoint();
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            variables.Add(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
+            var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
-                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>())));
+                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>()));
+            if (context.Op.Type != XP.ASSIGN_OP)
+                variable = variable.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+            variables.Add(variable);
             var modifiers = _pool.Allocate();
             if (isConst)
                 context.AddError(new ParseErrorData(ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
@@ -5363,10 +5366,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVariableDeclarator([NotNull] XP.VariableDeclaratorContext context)
         {
-            context.Put(_syntaxFactory.VariableDeclarator(
+            var decl = _syntaxFactory.VariableDeclarator(
                 context.Id.Get<SyntaxToken>(),
                 null,
-                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expr.Get<ExpressionSyntax>())));
+                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expr.Get<ExpressionSyntax>()));
+            if (context.Op.Type != XP.ASSIGN_OP)
+            {
+                decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+            }
+            context.Put(decl);
         }
 
         public override void ExitFieldStmt([NotNull] XP.FieldStmtContext context)

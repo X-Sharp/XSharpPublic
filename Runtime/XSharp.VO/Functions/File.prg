@@ -139,16 +139,16 @@ FUNCTION SplitPath(pszPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,p
    LOCAL cPath  AS STRING
    cPath := Psz2String(pszPath)
    _SplitPath(cPath, OUT cDrive, OUT cDir, OUT cName, OUT cExt)
-	IF pszDrive != null_psz
+	IF pszDrive != NULL_PSZ
 		MemCopyString(pszDrive, cDrive, (DWORD) Slen(cDrive)+1)
 	ENDIF
-	IF pszDir != null_psz
+	IF pszDir != NULL_PSZ
 		MemCopyString(pszDir, cDir, (DWORD) Slen(cDir)+1)
 	ENDIF
-	IF pszName != null_psz
+	IF pszName != NULL_PSZ
 		MemCopyString(pszName, cName, (DWORD) Slen(cName)+1)
 	ENDIF
-	IF pszExt != null_psz
+	IF pszExt != NULL_PSZ
 		MemCopyString(pszExt, cExt, (DWORD) Slen(cExt)+1)
 	ENDIF
 

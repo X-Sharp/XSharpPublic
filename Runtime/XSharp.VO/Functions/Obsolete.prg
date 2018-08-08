@@ -630,7 +630,7 @@ FUNCTION SBTODB(c AS STRING) AS STRING
 FUNCTION SEvalA(cSource AS USUAL,block AS USUAL,nStart AS USUAL,nCount AS USUAL) AS STRING
 	RETURN cSource
 
-[ObsoleteAttribute( "'SysObject()' is not supported", true )] ;
+[ObsoleteAttribute( "'SysObject()' is not supported", TRUE )] ;
 FUNCTION SysObject() AS USUAL
    RETURN NIL
 

@@ -15,10 +15,10 @@ USING System.Text
 /// <returns>
 /// </returns>
 FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
-	IF ! cSource:IsString .or. String.IsNullOrEmpty(cSource)
+	IF ! cSource:IsString .OR. String.IsNullOrEmpty(cSource)
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
 	ENDIF
-	IF ! block:IsCodeBlock .or. block == NULL_CODEBLOCK
+	IF ! block:IsCodeBlock .OR. block == NULL_CODEBLOCK
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(block), 2, <OBJECT>{ block} )
 	ENDIF
 	IF nStart == NIL

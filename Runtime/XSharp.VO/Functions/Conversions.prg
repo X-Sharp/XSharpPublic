@@ -258,7 +258,7 @@ FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRI
 /// </returns>
 FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
-	IF cPad == NULL .or. cPad :Length == 0
+	IF cPad == NULL .OR. cPad :Length == 0
 		cPad := " "
 	ENDIF
 	
@@ -302,7 +302,7 @@ FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STR
 /// </returns>
 FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
-	IF cPad == NULL .or. cPad :Length == 0
+	IF cPad == NULL .OR. cPad :Length == 0
 		cPad := " "
 	ENDIF
 	LOCAL ret AS STRING
@@ -346,7 +346,7 @@ FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STR
 /// </returns>
 FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	// If they send in an empty string then change to " "
-	IF cPad == NULL .or. cPad:Length == 0
+	IF cPad == NULL .OR. cPad:Length == 0
 		cPad := " "
 	ENDIF
 	LOCAL ret AS STRING
@@ -363,14 +363,20 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 /// Convert a numeric expression to a string.
 /// </summary>
 /// <param name="n"></param>
-/// <param name="nLength"></param>
+/// <param name="uLen"></param>
 /// <param name="nDec"></param>
 /// <returns>The string with always a decimal separator that matches the current SetDecimalSep() setting.</returns>
-FUNCTION Str(n ,nLen ,nDec ) AS STRING CLIPPER
-	IF PCount() < 1 .or. pCount() > 3
+FUNCTION Str(n ,uLen ,nDec ) AS STRING CLIPPER
+	IF PCount() < 1 .OR. pCount() > 3
 		RETURN ""
 	ENDIF
 	LOCAL result AS STRING
+	LOCAL nLen AS DWORD
+	IF IsNumeric(uLen) .AND. uLen < 0
+		nLen := System.UInt32.MaxValue
+	ELSE
+		nLen := (DWORD) uLen
+	ENDIF
 	result := _str3(n, nLen, nDec)
 	RETURN ConversionHelpers.AdjustDecimalSeparator(result)
 
@@ -384,7 +390,7 @@ FUNCTION Str(n ,nLen ,nDec ) AS STRING CLIPPER
 /// <returns>The string with always a DOT as decimal separator.</returns>
 
 FUNCTION _Str(n ,nLen ,nDec ) AS STRING CLIPPER
-	IF PCount() > 0 .and. ! n:IsNumeric 
+	IF PCount() > 0 .AND. ! n:IsNumeric 
        THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1, n, nLen, nDec)
     ENDIF
 	SWITCH PCount()
@@ -576,7 +582,7 @@ FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
-   IF dwLen == 0 .or. dwLen == UInt32.MaxValue
+   IF dwLen == 0 .OR. dwLen == UInt32.MaxValue
       dwLen := (DWORD) RuntimeState.Digits
    ELSE
       dwLen := Math.Min( dwLen, MAXDIGITS )
@@ -724,7 +730,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 			style := NumberStyles.Integer
 		ENDIF
 		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
-			IF iResult < Int32.MaxValue .and. iResult > int32.MinValue
+			IF iResult < Int32.MaxValue .AND. iResult > int32.MinValue
 				RETURN (INT) iResult
 			ENDIF
 			RETURN iResult

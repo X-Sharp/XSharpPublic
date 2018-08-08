@@ -51,10 +51,10 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <returns>
 	/// </returns>
 	FUNCTION Bin2Logic(pszC AS PSZ) AS LOGIC
-		IF pszC != null_psz
+		IF pszC != NULL_PSZ
 			RETURN pszC:Item[0] != 0
 		ENDIF	
-		RETURN false
+		RETURN FALSE
 	
 
 	/// <summary>
@@ -146,7 +146,7 @@ FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 	LOCAL bp AS BYTE PTR
 	bp := pszSource
 	DO WHILE bp[1] != 0
-		IF bp[1] >= 97 .and. bp[1] <= 122
+		IF bp[1] >= 97 .AND. bp[1] <= 122
 			bp[1] -= 32
 		ENDIF
 		bp++
@@ -155,7 +155,7 @@ FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 
 FUNCTION String2Mem(s AS STRING) AS IntPtr
 	LOCAL result := 0 AS IntPtr
-	IF s != null
+	IF s != NULL
 		VAR encoding := System.Text.Encoding.Default
 		VAR bytes    := encoding:GetBytes(s)
 		VAR len      := bytes:Length
@@ -165,7 +165,7 @@ FUNCTION String2Mem(s AS STRING) AS IntPtr
 	RETURN result 
 
 UNSAFE FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
-	IF pString == IntPtr.Zero .or. nLen == 0
+	IF pString == IntPtr.Zero .OR. nLen == 0
 		RETURN String.Empty
 	ENDIF
 	VAR encoding := System.Text.Encoding.Default

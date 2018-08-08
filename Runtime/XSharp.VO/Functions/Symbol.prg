@@ -12,7 +12,7 @@
 /// <returns>
 /// </returns>
 FUNCTION String2Atom(c AS STRING) AS SYMBOL
-	RETURN SYMBOL{c, false}
+	RETURN SYMBOL{c, FALSE}
 	
 	/// <summary>
 	/// Convert a string to an uppercase Symbol.
@@ -21,7 +21,7 @@ FUNCTION String2Atom(c AS STRING) AS SYMBOL
 	/// <returns>
 	/// </returns>
 FUNCTION String2Symbol(c AS STRING) AS SYMBOL
-	RETURN SYMBOL{c, true}
+	RETURN SYMBOL{c, TRUE}
 	
 	
 	/// <summary>

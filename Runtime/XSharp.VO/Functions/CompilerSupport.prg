@@ -38,7 +38,7 @@ FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
 		IF  !RuntimeState.Exact
 			LOCAL lengthRHS AS INT
 			lengthRHS := strRHS:Length
-			IF lengthRHS == 0 .or. lengthRHS <= strLHS:Length  .and. String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
+			IF lengthRHS == 0 .OR. lengthRHS <= strLHS:Length  .AND. String.Compare( strLHS, 0, strRHS, 0, lengthRHS , StringComparison.Ordinal ) == 0
 				RETURN 0
 			ENDIF
 		ENDIF
@@ -73,7 +73,7 @@ FUNCTION  __StringEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
 		IsEqual := TRUE
 	ELSEIF RuntimeState.Exact
 		IsEqual := String.Equals(strLHS , strRHS)
-	ELSEIF strLHS != NULL .and. strRHS != NULL
+	ELSEIF strLHS != NULL .AND. strRHS != NULL
 		lengthRHS := strRHS:Length
 		IF lengthRHS == 0
 			IsEqual := TRUE        // With SetExact(FALSE) then "aaa" = "" returns TRUE
@@ -81,7 +81,7 @@ FUNCTION  __StringEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
 			
 			IsEqual := String.Compare( strLHS, 0, strRHS, 0, lengthRHS, StringComparison.Ordinal ) == 0
 		ENDIF
-	ELSEIF strLHS == NULL .and. strRHS == NULL
+	ELSEIF strLHS == NULL .AND. strRHS == NULL
 		IsEqual := TRUE
 	ENDIF
 	RETURN IsEqual
@@ -102,7 +102,7 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
 		notEquals := FALSE
 	ELSEIF RuntimeState.Exact
 		notEquals := !String.Equals(strLHS , strRHS)
-	ELSEIF strLHS != NULL .and. strRHS != NULL
+	ELSEIF strLHS != NULL .AND. strRHS != NULL
 		// shortcut: chec first char
 		lengthRHS := strRHS:Length
 		IF lengthRHS == 0
@@ -112,7 +112,7 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
 		ELSE
 			notEquals := TRUE
 		ENDIF
-	ELSEIF strLHS == NULL .and. strRHS == NULL
+	ELSEIF strLHS == NULL .AND. strRHS == NULL
 		notEquals := FALSE
 	ELSE
 		notEquals := TRUE

@@ -125,7 +125,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 		DO WHILE t != NULL
 			VAR pi := t:GetProperty( cName , BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
-			IF pi != NULL .and. ( (lGet .and. pi:CanRead) .or. (.not. lGet .and. pi:CanWrite) )
+			IF pi != NULL .AND. ( (lGet .AND. pi:CanRead) .OR. (.NOT. lGet .AND. pi:CanWrite) )
 				RETURN 3U
 			ELSE
 				t := t:BaseType
@@ -203,7 +203,7 @@ INTERNAL STATIC CLASS OOPHelpers
 				VAR name := oInfo:Name:Toupper()
 				DO CASE
 					CASE oInfo:MemberType == MemberTypes.Field
-						IF listVar:IndexOf(name)  == -1 .and. ((FieldInfo)oInfo):IsPublic
+						IF listVar:IndexOf(name)  == -1 .AND. ((FieldInfo)oInfo):IsPublic
 							listVar:Add(name)
 						END IF
 					CASE oInfo:MemberType == MemberTypes.Property
@@ -211,7 +211,7 @@ INTERNAL STATIC CLASS OOPHelpers
 							listVar:Add(name)
 						END IF
 					CASE oInfo:MemberType == MemberTypes.Method
-						IF listMethod:IndexOf(name)  == -1 .and. .not. ((MethodInfo)oInfo):IsSpecialName
+						IF listMethod:IndexOf(name)  == -1 .AND. .NOT. ((MethodInfo)oInfo):IsSpecialName
 							listMethod:Add(name)
 						END IF
 				END CASE
@@ -226,7 +226,7 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC) AS PropertyInfo
 		DO WHILE t != NULL
 			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public  | BindingFlags.DeclaredOnly ) 
-			IF oInfo != NULL .and. ( (lAccess .and. oInfo:CanRead) .or. (.not. lAccess .and. oInfo:CanWrite) )
+			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
 				RETURN oInfo
 			ELSE
 				t := t:BaseType
@@ -239,7 +239,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public  | BindingFlags.DeclaredOnly ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
-				IF lAccess .or. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
+				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
 					RETURN oInfo
 				ENDIF
 			ELSE
@@ -253,7 +253,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			RETURN FALSE
 		ELSEIF oFld:IsPublic
 			RETURN TRUE
-		ELSEIF lSelf .and. (oFld:IsFamily .or. oFld:IsFamilyOrAssembly)
+		ELSEIF lSelf .AND. (oFld:IsFamily .OR. oFld:IsFamilyOrAssembly)
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
@@ -264,11 +264,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		t := oObject:GetType()
 		//Todo: optimization
 		VAR fldInfo := FindField(t, cIVar,TRUE)
-		IF fldInfo != NULL_OBJECT .and. IsFieldVisible(fldInfo, lSelf)
+		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			RETURN fldInfo:GetValue(oObject)
 		ENDIF
 		VAR propInfo := FindProperty(t, cIVar,TRUE)
-		IF propInfo != NULL_OBJECT .and. propInfo:CanRead
+		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
 		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar} )
@@ -278,14 +278,14 @@ INTERNAL STATIC CLASS OOPHelpers
 		t := oObject:GetType()
 		VAR fldInfo := FindField(t, cIVar,FALSE)
 		//Todo: optimization
-		IF fldInfo != NULL_OBJECT .and. IsFieldVisible(fldInfo, lSelf)
+		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			oValue := MyConvert(oValue, fldInfo:FieldType)
 			fldInfo:SetValue(oObject, oValue)
 			RETURN
 		ENDIF
 		LOCAL propInfo AS PropertyInfo
 		propInfo := FindProperty(t, cIVar, lSelf)
-		IF propInfo != NULL_OBJECT .and. propInfo:CanWrite
+		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite
 			oValue := MyConvert(oValue, propInfo:PropertyType)
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
@@ -312,7 +312,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		paramInfo := mi:GetParameters()
 		// Clipper calling convention ?
 		LOCAL lClipper := FALSE AS LOGIC
-		IF paramInfo:Length == 1 .and. mi:IsDefined( TYPEOF( ClipperCallingConventionAttribute ), FALSE )
+		IF paramInfo:Length == 1 .AND. mi:IsDefined( TYPEOF( ClipperCallingConventionAttribute ), FALSE )
 			lClipper := TRUE
 		ENDIF
 		LOCAL oArgs AS OBJECT[]
@@ -328,7 +328,7 @@ INTERNAL STATIC CLASS OOPHelpers
 					IF pi:ParameterType == TYPEOF(USUAL)
 						// We need to box a usual here 
 						oArgs[nPar] := Myconvert(arg, TYPEOF(__USUAL))
-					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .or. arg == NULL
+					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
 						oArgs[nPar] := uArgs[nPar]
 					ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
 						// Parameter array of certain type
@@ -404,7 +404,7 @@ END CLASS
 /// <param name="args">A comma-separated list of arguments to pass to symMethod.</param>
 /// <returns>A reference to aTarget.</returns>
 FUNCTION ASend(aTarget AS ARRAY, cName AS STRING, args PARAMS USUAL[] ) AS ARRAY 
-	IF aTarget != NULL .and. ! String.IsNullOrEmpty( cName )
+	IF aTarget != NULL .AND. ! String.IsNullOrEmpty( cName )
 		FOREACH VAR x IN aTarget
 			__InternalSend( x, cName, args )
 		NEXT
@@ -596,7 +596,7 @@ FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 	LOCAL tSub   := OOPHelpers.FindClass(cClassName) AS Type
 	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
 	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
-	RETURN tSub != NULL .and. tSuper != NULL .and. (tSub == tSuper .or. tSub:IsSubclassOf(tSuper))
+	RETURN tSub != NULL .AND. tSuper != NULL .AND. (tSub == tSuper .OR. tSub:IsSubclassOf(tSuper))
 	
 	
 	

@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp
 		PROPERTY Day		AS INT GET
 		/// <summary>Date as System.DateTime structure</summary>
 		/// <returns>System.DateTime value</returns>
-		PROPERTY @@Value	AS DateTime GET 
+		PROPERTY Value		AS DateTime GET 
 		/// <summary>Is the date empty (NULL_DATE)</summary>
 		/// <returns>Logical value</returns>
 		PROPERTY IsEmpty	AS LOGIC GET
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>
 		/// <returns>Integer value</returns>
-		PROPERTY VALUE    AS REAL8 GET
+		PROPERTY Value    AS REAL8 GET
 		/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
 		/// <returns>Integer value</returns>
 		PROPERTY Digits	  AS INT  GET 

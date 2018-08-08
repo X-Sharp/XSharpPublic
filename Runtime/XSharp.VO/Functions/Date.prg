@@ -75,7 +75,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 	LOCAL nDay, nMonth, nYear AS DWORD
 	LOCAL nDayPos, nMonthPos, nYearPos AS INT
 	dDate := (DATE) 0
-	IF string.IsNullOrEmpty(cDate) .or. String.IsNullOrEmpty(cDateFormat)
+	IF string.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat)
 		RETURN dDate
 	ENDIF
 	LOCAL nPos AS INT
@@ -106,7 +106,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 			ENDIF
 		END SWITCH
 	NEXT
-	IF nDayPos == 0 .or. nMonthPos == 0 .or. nYearPos == 0
+	IF nDayPos == 0 .OR. nMonthPos == 0 .OR. nYearPos == 0
 		RETURN dDate
 	ENDIF
 	TRY
@@ -270,7 +270,7 @@ FUNCTION Month(d AS DATE) AS DWORD
 FUNCTION SToD(cDate AS STRING) AS DATE
 	LOCAL convertedDate AS DATE
 	TRY
-		IF cDate:Length == 8 .and. cDate[0] == '0' .and. cDate[1] == '0'
+		IF cDate:Length == 8 .AND. cDate[0] == '0' .AND. cDate[1] == '0'
 			// VO adjusts date strings like "00yyMMdd" to epoch-based year
 			LOCAL dwY AS DWORD
 			dwY := UInt32.Parse(cDate:Substring(0,4))

@@ -22,9 +22,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD CompareSymbolTest() AS VOID
 			VAR sym1 := #TestSymbol
 			VAR sym2 := #TestSymbol
-			Assert.Equal(true,sym1==sym2)
-			Assert.Equal(true,sym1=="TESTSYMBOL")
-			Assert.Equal(false,sym1==#TestSymbol1)
+			Assert.Equal(TRUE,sym1==sym2)
+			Assert.Equal(TRUE,sym1=="TESTSYMBOL")
+			Assert.Equal(FALSE,sym1==#TestSymbol1)
 		RETURN
 
 		[Fact, Trait("Category", "Symbol")];
@@ -33,19 +33,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			VAR sym2 := #TestSymbol2
 			Assert.Equal(#Windows,SetCollation())
 			SetCollation(#Ordinal)
-			Assert.Equal(true,sym1<=sym2)
-			Assert.Equal(true,sym1<sym2)
-			Assert.Equal(false,sym1 > sym2)
-			Assert.Equal(false,sym1 >= sym2)
-			Assert.Equal(true,sym2 > sym1)
-			Assert.Equal(true,sym2 >= sym1)
-			Assert.Equal(false,sym2 < sym1)
+			Assert.Equal(TRUE,sym1<=sym2)
+			Assert.Equal(TRUE,sym1<sym2)
+			Assert.Equal(FALSE,sym1 > sym2)
+			Assert.Equal(FALSE,sym1 >= sym2)
+			Assert.Equal(TRUE,sym2 > sym1)
+			Assert.Equal(TRUE,sym2 >= sym1)
+			Assert.Equal(FALSE,sym2 < sym1)
 			sym2 := #testSymbol
-			Assert.Equal(false,sym1=sym2)
-			SetExact(false)
+			Assert.Equal(FALSE,sym1=sym2)
+			SetExact(FALSE)
 			// with setequal FALSE then #TestSymbol1 == #testSymbol
-			Assert.Equal(false,sym1<sym2)
-			Assert.Equal(true,sym1<=sym2)
+			Assert.Equal(FALSE,sym1<sym2)
+			Assert.Equal(TRUE,sym1<=sym2)
 		RETURN
 
 		[Fact, Trait("Category", "Symbol")];

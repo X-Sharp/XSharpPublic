@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL p,q AS IntPtr
 			p := MemAlloc(10)
 			q := MemAlloc(20)
-			Assert.NotEqual(null, p)
+			Assert.NotEqual(NULL, p)
 			Assert.NotEqual(p,q)
 			Assert.Equal(MemFree(p),0)
 			Assert.Equal(MemFree(q),0)

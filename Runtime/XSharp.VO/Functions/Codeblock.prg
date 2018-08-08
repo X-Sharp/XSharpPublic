@@ -16,7 +16,7 @@ USING System.Reflection
 /// </returns>
 FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 	LOCAL result AS USUAL
-	IF block == null
+	IF block == NULL
 		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(block), 1)
 	ENDIF
 	IF block IS CODEBLOCK // compile time codeblock
@@ -47,7 +47,7 @@ FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	
-	IF obj == null
+	IF obj == NULL
 		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(obj), 1)
 	ELSEIF obj IS XSharp.CodeBlock
 		result := Eval( (CODEBLOCK) obj, args )
@@ -56,9 +56,9 @@ FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 		types[__ARRAYBASE__]	:= TYPEOF( USUAL[] )
 		VAR oType := obj:GetType()
 		LOCAL mi AS MethodInfo
-		mi := oType:GetMethod( "Eval", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase, null, types, null )
+		mi := oType:GetMethod( "Eval", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase, NULL, types, NULL )
 		
-		IF mi != null
+		IF mi != NULL
 			VAR pars := OBJECT[]{ 1 }
 			pars[__ARRAYBASE__] := args
 			result := mi:Invoke( obj , pars )
@@ -77,17 +77,17 @@ FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 /// <returns>
 /// </returns>
 FUNCTION CParamCount(oCodeBlock AS CODEBLOCK) AS DWORD
-	IF oCodeBlock == null_object
+	IF oCodeBlock == NULL_OBJECT
 		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(oCodeBlock), 1)
 	ENDIF
 	RETURN (DWORD) oCodeBlock:PCount()
 
 
 FUNCTION __CanEval(uValue AS USUAL) AS LOGIC 
-	IF uValue:isCodeBlock .and. uValue != NULL_CODEBLOCK
+	IF uValue:isCodeBlock .AND. uValue != NULL_CODEBLOCK
 		RETURN TRUE
 	ENDIF
-	IF uValue:IsObject .and. IsMethod(uValue, "Eval")
+	IF uValue:IsObject .AND. IsMethod(uValue, "Eval")
 		RETURN TRUE
 	ENDIF
-	RETURN false
+	RETURN FALSE

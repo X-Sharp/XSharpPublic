@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL oObject AS OBJECT
 			/// note that vulcan does not return true for IsClassOf(#Tester, "Object")
 			oObject := CreateInstance(#Tester)
-			Assert.NotEqual(null_object, oObject)
+			Assert.NotEqual(NULL_OBJECT, oObject)
 			IVarPut(oObject,"Name", "X#")
 			Assert.Equal("X#", IVarGet(oObject, "Name"))
 			IVarPut(oObject,"Age",42)

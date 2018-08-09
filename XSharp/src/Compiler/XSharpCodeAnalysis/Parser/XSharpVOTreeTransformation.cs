@@ -2444,11 +2444,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = CreateObject(_symbolType, MakeArgumentList(MakeArgument(GenerateLiteral(symbol.ToUpper()))));
             if (_options.MacroScript)
                 return expr;
-            var lsym = symbol.ToLower();
+            var lsym = "_"+symbol.ToLower();
             if (!_literalSymbols.ContainsKey(lsym))
             {
                 // create field declarator with inline assignment
-                // INTERNAL STATIC INITONLY symbol := __Symbol{"SYMBOL"} AS __Symbol
+                // INTERNAL STATIC INITONLY _symbol := __Symbol{"SYMBOL"} AS __Symbol
                 var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);
                 var vars = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier(lsym), EmptyBracketedArgumentList(), init);
                 var fielddecl = _syntaxFactory.FieldDeclaration(

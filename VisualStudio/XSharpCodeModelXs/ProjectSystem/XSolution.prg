@@ -32,10 +32,10 @@ BEGIN NAMESPACE XSharpModel
 			RETURN
 
 
-		STATIC METHOD ADD(project AS XProject) AS LOGIC
-			RETURN ADD(project:Name, project)
+		STATIC METHOD @@Add(project AS XProject) AS LOGIC
+			RETURN @@Add(project:Name, project)
 		
-		STATIC METHOD ADD(projectName AS STRING, project AS XProject) AS LOGIC
+		STATIC METHOD @@Add(projectName AS STRING, project AS XProject) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Add() "+projectName)
 			IF xProjects:ContainsKey(projectName)
 				RETURN false
@@ -84,7 +84,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN null
 		
-		STATIC METHOD REMOVE(projectName AS STRING) AS LOGIC
+		STATIC METHOD @@Remove(projectName AS STRING) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
 			IF xProjects:ContainsKey(projectName)
 				VAR project := xProjects:Item[projectName]
@@ -95,9 +95,9 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN false
 		
-		STATIC METHOD REMOVE(project AS XProject) AS LOGIC
+		STATIC METHOD @@Remove(project AS XProject) AS LOGIC
 			IF project != null
-				RETURN REMOVE(project:Name)
+				RETURN @@Remove(project:Name)
 			ENDIF
 			RETURN false
 		

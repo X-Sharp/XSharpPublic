@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,12 +14,12 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 	STATIC PRIVATE currentItem	:= null AS OBJECT
 	STATIC PRIVATE isAtEnd		:= true AS LOGIC
 	CONST timeFormat := "HH:MM:ss" AS STRING
-	
+
 	PUBLIC STATIC METHOD FFCount( filespec AS STRING , attributes AS DWORD ) AS DWORD
-		FFirst(filespec,attributes)
+		FindFirst(filespec,attributes)
 		RETURN (DWORD)foundEntries:Count
-		
-	PUBLIC STATIC METHOD FFirst( filespec AS STRING , attributes AS DWORD ) AS LOGIC
+
+	PUBLIC STATIC METHOD FindFirst( filespec AS STRING , attributes AS DWORD ) AS LOGIC
 		// Split filespec in path and mask
 		// when path is empty then path is current directory
 		// make sure that we only search in the given path
@@ -47,7 +47,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 					WHERE (DirectoryInfo:Attributes & (FileAttributes) attributes ) != 0 SELECT DirectoryInfo
 					FOREACH directory AS DirectoryInfo IN selectedDirs
 						foundEntries:Add(directory)
-				NEXT 
+				NEXT
 			ELSE
 				attributes += (INT) FA_NORMAL
 				LOCAL files := oDirInfo:GetFiles(filespec) AS FileInfo[]
@@ -55,7 +55,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 				WHERE ( FileInfo:Attributes & (FileAttributes) attributes) != 0 SELECT FileInfo
 				FOREACH file AS FileInfo IN files
 					foundEntries:Add(file)
-				NEXT					
+				NEXT
 			ENDIF
 		ENDIF
 		enumerator := foundEntries:GetEnumerator()
@@ -65,8 +65,8 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 			currentItem := enumerator:Current
 		ENDIF
 		RETURN (foundEntries:Count > 0)
-		
-	PUBLIC STATIC METHOD FNext() AS LOGIC
+
+	PUBLIC STATIC METHOD FindNext() AS LOGIC
 		IF !isAtEnd
 			isAtEnd := enumerator:MoveNext()
 			IF !isAtEnd
@@ -74,7 +74,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 			ENDIF
 		ENDIF
 		RETURN isAtEnd
-		
+
 	PUBLIC STATIC METHOD FName() AS STRING
 		LOCAL name := "" AS STRING
 		IF !isAtEnd
@@ -87,7 +87,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 			ENDIF
 		ENDIF
 		RETURN name
-		
+
 	PUBLIC STATIC METHOD FSize() AS DWORD
 		LOCAL size := 0 AS INT
 		IF !isAtEnd
@@ -97,10 +97,10 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 				size := (INT)((FileInfo)currentItem):Length
 			ELSEIF currentItem IS DirectoryInfo
 				size := (INT)((DirectoryInfo) currentItem):GetFileSystemInfos().LongLength
-			ENDIF						
+			ENDIF
 		ENDIF
 		RETURN (DWORD) size
-		
+
 	PUBLIC STATIC METHOD FTime() AS STRING
 		LOCAL time := "00:00:00" AS STRING
 		IF !isAtEnd
@@ -108,10 +108,10 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 				time := ((FileInfo)currentItem):LastWriteTime.ToString(timeFormat)
 			ELSEIF currentItem IS DirectoryInfo
 				time := ((DirectoryInfo) currentItem):LastWriteTime.ToString(timeFormat)
-			ENDIF						
+			ENDIF
 		ENDIF
 		RETURN  time
-		
+
 	PUBLIC STATIC METHOD FDate() AS DateTime
 		LOCAL time := DateTime.MinValue AS DateTime
 		IF !isAtEnd
@@ -119,11 +119,11 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 				time := ((FileInfo)currentItem):LastWriteTime
 			ELSEIF currentItem IS DirectoryInfo
 				time := ((DirectoryInfo) currentItem):LastWriteTime
-			ENDIF						
+			ENDIF
 		ENDIF
 		RETURN  time
-		
-		
+
+
 	PUBLIC STATIC METHOD FAttrib() AS DWORD
 		LOCAL attributes := 0x00000008 AS INT
 		IF !isAtEnd
@@ -131,10 +131,10 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 				attributes := (INT)((FileInfo)currentItem):Attributes
 			ELSEIF currentItem IS DirectoryInfo
 				attributes := (INT)((DirectoryInfo) currentItem):Attributes
-			ENDIF						
+			ENDIF
 		ENDIF
 		RETURN  (DWORD)attributes
-		
+
 		END CLASS
 	/// <summary>
 	/// Return the number of files that match a given file specification and attribute.
@@ -144,8 +144,8 @@ INTERNAL STATIC CLASS XSharp.FileSearch
 	/// <returns>
 /// </returns>
 FUNCTION FFCount(pszFile AS STRING,nAttr AS DWORD) AS DWORD
-	RETURN XSharp.FileSearch.FFCount(pszFile,nAttr) 
-	
+	RETURN XSharp.FileSearch.FFCount(pszFile,nAttr)
+
 	/// <summary>
 	/// Find the first file that matches a given file specification or attribute.
 	/// </summary>
@@ -154,16 +154,16 @@ FUNCTION FFCount(pszFile AS STRING,nAttr AS DWORD) AS DWORD
 	/// <returns>
 	/// </returns>
 FUNCTION FFirst(pszFile AS STRING,nAttr AS DWORD) AS LOGIC
-	RETURN XSharp.FileSearch.FFirst(pszFile,nAttr)
+	RETURN XSharp.FileSearch.FindFirst(pszFile,nAttr)
 	/// <summary>
 	/// Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
 FUNCTION FAttrib() AS DWORD
-	RETURN XSharp.FileSearch.FAttrib() 
-	
-	
+	RETURN XSharp.FileSearch.FAttrib()
+
+
 	/// <summary>
 	/// Return the Date stamp of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
@@ -171,45 +171,41 @@ FUNCTION FAttrib() AS DWORD
 	/// </returns>
 FUNCTION FDate() AS DateTime
 	RETURN XSharp.FileSearch.FDate()
-	
+
 	/// <summary>
 	/// Return the name of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
 FUNCTION FName() AS STRING
-	RETURN XSharp.FileSearch.FName()  
-	
-	
-	
-	
+	RETURN XSharp.FileSearch.FName()
+
 	/// <summary>
 	/// Find the next file that matches the file previously found by FFirst().
 	/// </summary>
 	/// <returns>
 	/// </returns>
 FUNCTION FNext() AS LOGIC
-	RETURN XSharp.FileSearch.FNext()     
-	
-	
+	RETURN XSharp.FileSearch.FindNext()
+
 	/// <summary>
 	/// Return the size of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
 FUNCTION FSize() AS DWORD
-	RETURN XSharp.FileSearch.FSize() 
+	RETURN XSharp.FileSearch.FSize()
 	/// <summary>
 	/// Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
 FUNCTION FTime() AS STRING
-	RETURN XSharp.FileSearch.FTime() 
-	
-	
-	
-	
+	RETURN XSharp.FileSearch.FTime()
+
+
+
+
 	/// <summary>
 	/// Determine if any file matches a given file specification.
 	/// </summary>
@@ -305,7 +301,7 @@ IF ! System.IO.Directory.Exists(cPath)
 	RETURN false
 ENDIF
 files := System.IO.Directory.GetFiles(cPath, cFile)
-IF files:Length > 0 
+IF files:Length > 0
 	XSharp.IO.File.LastFound := files[0]
 ELSEIF lSavePath
 	XSharp.IO.File.LastFound := cTemp

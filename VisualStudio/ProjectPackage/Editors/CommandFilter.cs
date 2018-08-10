@@ -300,9 +300,11 @@ namespace XSharp.Project
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
+            getEditorPreferences();
+            int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
-            var ss = new SnapshotSpan(line.Snapshot, line.Start.Position, 1);
+            var ss = new SnapshotSpan(line.Snapshot, lineStart, 1);
             var spans = _classifier.GetClassificationSpans(ss);
             if (spans.Count > 0 )
             {
@@ -312,12 +314,25 @@ namespace XSharp.Project
                     return;
                 }
             }
-            getOptions();
             var tokens = getTokensInLine(line);
-            // Keyword and Identifier Case
             foreach (var token in tokens)
             {
-                formatToken(editSession, line.Start.Position, token);
+                if (currentLine == line.LineNumber)
+                {
+                    // do not update tokens touching or after the caret
+                    // after typing String it was already uppercasing even when I wanted to type StringComparer
+                    // now we wait until the user has typed an extra character. That will trigger another session.
+                    // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
+                    int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
+                    if (lineStart + token.StopIndex < caretPos -1)
+                    {
+                        formatToken(editSession, lineStart, token);
+                    }
+                }
+                else
+                {
+                    formatToken(editSession, lineStart, token);
+                }
             }
         }
 
@@ -351,7 +366,7 @@ namespace XSharp.Project
         }
         private void formatCaseForWholeBuffer()
         {
-            getOptions();
+            getEditorPreferences();
             if (_optionsPage.KeywordCase != 0)
             {
                 XSharpProjectPackage.Instance.DisplayOutPutMessage("--> CommandFilter.formatCaseForBuffer()");

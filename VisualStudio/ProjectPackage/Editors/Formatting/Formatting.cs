@@ -85,7 +85,7 @@ namespace XSharp.Project
 
         private static String[] getStartOfCodeKeywords()
         {
-            // 
+            //
             return new String[]{
                 "FUNCTION","PROCEDURE",
                 "CONSTRUCTOR","DESTRUCTOR",
@@ -97,7 +97,7 @@ namespace XSharp.Project
         // These are special Start of Code, because they have an END
         private static String[] getSpecialStartOfCodeKeywords()
         {
-            // 
+            //
             return new String[]{
                 "GET", "SET", "PROPERTY", "ADD", "REMOVE", "EVENT"
             };
@@ -180,7 +180,7 @@ namespace XSharp.Project
         static CommandFilter()
         {
             getKeywords();
-            getOptions();
+            getEditorPreferences();
         }
 
         #endregion
@@ -192,7 +192,7 @@ namespace XSharp.Project
         private void FormatLine()
         {
             //
-            getOptions();
+            getEditorPreferences();
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
@@ -201,13 +201,13 @@ namespace XSharp.Project
             int lineNumber = line.LineNumber;
             int indentation = -1;
             // we calculate the indent based on the previous line so we must be on the second line
-            if (lineNumber > 0) 
+            if (lineNumber > 0)
             {
                 if (caret.Position < line.End.Position)
                 {
                     alignOnPrev = true;
                 }
- 
+
                 // wait until we can work
                 while (_buffer.EditInProgress)
                 {
@@ -250,7 +250,7 @@ namespace XSharp.Project
                 return;
             }
             // Read Settings
-            getOptions();
+            getEditorPreferences();
             formatCaseForWholeBuffer();
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
@@ -290,7 +290,7 @@ namespace XSharp.Project
                         }
                     }
                 }
-                // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start 
+                // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start
                 regions.Sort((a, b) => a.Item1.Start.CompareTo(b.Item1.Start));
                 //Now, we have a list of Regions Start/Stop
                 // wait until we can work
@@ -400,7 +400,7 @@ namespace XSharp.Project
                 {
                     continue;
                 }
-                // 
+                //
                 int length;
                 length = getLineLength(snapLine.Snapshot, region.Item1.Start);
                 if (length <= 0)
@@ -411,7 +411,7 @@ namespace XSharp.Project
                 if ((snapLine.Start.Position <= region.Item1.Start) && (snapLine.End.Position >= region.Item1.Start))
                 {
                     // We are on the line opening a Region
-                    // What kind of region ? 
+                    // What kind of region ?
                     // Skip comment and using regions
                     switch (openKeyword)
                     {
@@ -669,7 +669,7 @@ namespace XSharp.Project
                     {
                         if (inAttribute)
                         {
-                            // Skip All Content in 
+                            // Skip All Content in
                             index++;
                             continue;
                         }
@@ -709,7 +709,7 @@ namespace XSharp.Project
             _optionsValid = false;
         }
 
-        private static void getOptions()
+        private static void getEditorPreferences()
         {
             if (!_optionsValid)
             {
@@ -819,7 +819,7 @@ namespace XSharp.Project
                             }
                             else
                             {
-                                if (doSkipped && keyword == "CASE" ) 
+                                if (doSkipped && keyword == "CASE" )
                                 {
                                     if (!_alignDoCase)
                                     {
@@ -1048,14 +1048,14 @@ namespace XSharp.Project
                         index++;
                         continue;
                     }
-                        
+
                     if (XSharpLexer.IsKeyword(token.Type))
                     {
                         keyword = token.Text.ToUpper();
                         // it could be modifier...
                         if (keywordIsModifier(token.Type))
                         {
-                            index++ ; 
+                            index++ ;
                             keyword = "";
                             continue;
                         }

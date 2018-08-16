@@ -300,7 +300,7 @@ namespace XSharp.Project
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
-            getEditorPreferences();
+            getEditorPreferences(TextView);
             int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
@@ -366,7 +366,7 @@ namespace XSharp.Project
         }
         private void formatCaseForWholeBuffer()
         {
-            getEditorPreferences();
+            getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
                 XSharpProjectPackage.Instance.DisplayOutPutMessage("--> CommandFilter.formatCaseForBuffer()");

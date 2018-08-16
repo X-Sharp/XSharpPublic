@@ -180,7 +180,6 @@ namespace XSharp.Project
         static CommandFilter()
         {
             getKeywords();
-            getEditorPreferences();
         }
 
         #endregion
@@ -192,7 +191,7 @@ namespace XSharp.Project
         private void FormatLine()
         {
             //
-            getEditorPreferences();
+            getEditorPreferences(TextView);
             //
             SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
@@ -250,7 +249,7 @@ namespace XSharp.Project
                 return;
             }
             // Read Settings
-            getEditorPreferences();
+            getEditorPreferences(TextView);
             formatCaseForWholeBuffer();
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
@@ -709,7 +708,7 @@ namespace XSharp.Project
             _optionsValid = false;
         }
 
-        private static void getEditorPreferences()
+        private static void getEditorPreferences(ITextView textView)
         {
             if (!_optionsValid)
             {
@@ -728,9 +727,9 @@ namespace XSharp.Project
                 if (result == VSConstants.S_OK)
                 {
                     _indentStyle = languagePreferences[0].IndentStyle;
-                    _tabSize = (int)languagePreferences[0].uTabSize;
-                    _indentSize = (int)languagePreferences[0].uIndentSize;
                 }
+                _tabSize = textView.Options.GetTabSize();
+                _indentSize = textView.Options.GetIndentSize();
                 _optionsValid = true;
             }
         }

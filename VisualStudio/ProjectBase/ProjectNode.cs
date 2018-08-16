@@ -590,7 +590,10 @@ namespace Microsoft.VisualStudio.Project
       private bool alreadyHandledOverwritePrompts = false;
 
       private EnvDTE.Globals globals;
- 
+
+        private IVsBuildManagerAccessor buildManagerAccessor;
+
+
         #endregion
 
         #region abstract properties
@@ -1520,7 +1523,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 taskProvider.Dispose();
             }
+
             taskProvider = new TaskProvider(this.site);
+            this.buildManagerAccessor = (IVsBuildManagerAccessor)this.Site.GetService(typeof(SVsBuildManagerAccessor));
 
             return VSConstants.S_OK;
         }
@@ -2495,7 +2500,7 @@ namespace Microsoft.VisualStudio.Project
                 bool engineLogOnlyCritical = BuildPrelude(output);
                 this.SetBuildConfigurationProperties(configCanonicalName);
                 result = this.InvokeMsBuild(target);
-                
+
             }
             XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> ProjectNode.Build()");
             return result;
@@ -3461,7 +3466,6 @@ namespace Microsoft.VisualStudio.Project
             bool designTime = BuildKind.Sync == buildKind;
             //projectInstance = null;
 
-            var accessor = (IVsBuildManagerAccessor)this.Site.GetService(typeof(SVsBuildManagerAccessor));
             if (!TryBeginBuild(designTime))
             {
                 if (null != uiThreadCallback)
@@ -3494,7 +3498,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 if (useProvidedLogger && buildLogger != null)
                 {
-                    ErrorHandler.ThrowOnFailure(accessor.RegisterLogger(submission.SubmissionId, buildLogger));
+                    ErrorHandler.ThrowOnFailure(this.buildManagerAccessor.RegisterLogger(submission.SubmissionId, buildLogger));
                 }
 
                 if (buildKind == BuildKind.Async)
@@ -5971,23 +5975,18 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         private bool TryBeginBuild(bool designTime, bool requiresUIThread = false)
         {
-            IVsBuildManagerAccessor accessor = null;
 
-            if (this.Site != null)
-            {
-                accessor = this.Site.GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
-            }
 
             bool releaseUIThread = false;
 
             try
             {
                 // If the SVsBuildManagerAccessor service is absent, we're not running within Visual Studio.
-                if (accessor != null)
+                if (this.buildManagerAccessor != null)
                 {
                     if (requiresUIThread)
                     {
-                        int result = accessor.ClaimUIThreadForBuild();
+                        int result = buildManagerAccessor.ClaimUIThreadForBuild();
                         if (result < 0)
                         {
                             // Not allowed to claim the UI thread right now. Try again later.
@@ -5999,7 +5998,7 @@ namespace Microsoft.VisualStudio.Project
 
                     if (designTime)
                     {
-                        int result = accessor.BeginDesignTimeBuild();
+                        int result = buildManagerAccessor.BeginDesignTimeBuild();
                         if (result < 0)
                         {
                             // Not allowed to begin a design-time build at this time. Try again later.
@@ -6031,8 +6030,8 @@ namespace Microsoft.VisualStudio.Project
                 // we need to release the UI thread.
                 if (releaseUIThread)
                 {
-                    Debug.Assert(accessor != null, "We think we need to release the UI thread for an accessor we don't have!");
-                    Marshal.ThrowExceptionForHR(accessor.ReleaseUIThreadForBuild());
+                    Debug.Assert(buildManagerAccessor != null, "We think we need to release the UI thread for an accessor we don't have!");
+                    Marshal.ThrowExceptionForHR(buildManagerAccessor.ReleaseUIThreadForBuild());
                 }
             }
         }
@@ -6047,21 +6046,15 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         private void EndBuild(BuildSubmission submission, bool designTime, bool requiresUIThread = false)
         {
-            IVsBuildManagerAccessor accessor = null;
 
-            if (this.Site != null)
-            {
-                accessor = this.Site.GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
-            }
-
-            if (accessor != null)
+            if (this.buildManagerAccessor != null)
             {
                 // It's very important that we try executing all three end-build steps, even if errors occur partway through.
                 try
                 {
                     if (submission != null)
                     {
-                        Marshal.ThrowExceptionForHR(accessor.UnregisterLoggers(submission.SubmissionId));
+                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.UnregisterLoggers(submission.SubmissionId));
                     }
                 }
                 catch (Exception ex)
@@ -6078,7 +6071,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (designTime)
                     {
-                        Marshal.ThrowExceptionForHR(accessor.EndDesignTimeBuild());
+                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.EndDesignTimeBuild());
                     }
                 }
                 catch (Exception ex)
@@ -6096,7 +6089,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (requiresUIThread)
                     {
-                        Marshal.ThrowExceptionForHR(accessor.ReleaseUIThreadForBuild());
+                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.ReleaseUIThreadForBuild());
                     }
                 }
                 catch (Exception ex)
@@ -6744,7 +6737,7 @@ namespace Microsoft.VisualStudio.Project
             globals = new Microsoft.VisualStudio.Project.Automation.OAGlobals(this);
         }
 
- 
+
         public void InitializeGlobals()
         {
             ((Microsoft.VisualStudio.Project.Automation.OAGlobals)globals).Initialize();

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -22,7 +22,7 @@ namespace XSharp.Project
     /// <summary>
     /// This class extends the ConfigProvider
     /// </summary>
-    /// 
+    ///
     internal class XSharpConfigProvider : ConfigProvider
     {
         public XSharpConfigProvider(XSharpProjectNode manager) : base(manager)
@@ -73,7 +73,7 @@ namespace XSharp.Project
                         {
                             result = null;
                         }
-                        
+
                         break;
                     }
                 }
@@ -133,11 +133,11 @@ namespace XSharp.Project
                 property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
                 if (property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedAndNative_guid;
+                    info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedAndNative_guid; // {92EF0900-2251-11D2-B72E-0000F87572EF}
                 }
                 else
                 {
-                    info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;
+                    info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;      // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
                 }
                 info.grfLaunch = grfLaunch;
                 VsShellUtilities.LaunchDebugger(this._project.Site, info);

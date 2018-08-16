@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -536,7 +536,7 @@ namespace Microsoft.VisualStudio.Project
                     var props = new List<MSBuildConstruction.ProjectPropertyElement>();
                     foreach (MSBuildConstruction.ProjectPropertyElement property in group.PropertiesReversed)
                     {
-                        if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && 
+                        if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) &&
                             property.Condition.Length == 0)
                         {
                             props.Add(property);
@@ -1000,128 +1000,127 @@ namespace Microsoft.VisualStudio.Project
 			: base(project, conigName)
 		{
 		}
-		#endregion
+        #endregion
 
-		#region IVsDebuggableProjectCfg methods
+        #region IVsDebuggableProjectCfg methods
 
-		private VsDebugTargetInfo GetDebugTargetInfo(uint grfLaunch)
-		{
-			VsDebugTargetInfo info = new VsDebugTargetInfo();
-			info.cbSize = (uint)Marshal.SizeOf(info);
-			info.dlo = Microsoft.VisualStudio.Shell.Interop.DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
+        private VsDebugTargetInfo GetDebugTargetInfo(uint grfLaunch)
+        {
+            VsDebugTargetInfo info = new VsDebugTargetInfo();
+            info.cbSize = (uint)Marshal.SizeOf(info);
+            info.dlo = Microsoft.VisualStudio.Shell.Interop.DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
 
-			// On first call, reset the cache, following calls will use the cached values
-			string property = GetConfigurationProperty("StartAction", true);
+            // On first call, reset the cache, following calls will use the cached values
+            string property = GetConfigurationProperty("StartAction", true);
 
-			// Set the debug target
-			if (0 == System.String.Compare("Program", property, StringComparison.OrdinalIgnoreCase))
-			{
-				string startProgram = StartProgram;
-				if (!String.IsNullOrEmpty(startProgram))
-					info.bstrExe = startProgram;
-			}
-			else
-			// property is either null or "Project"
-			// we're ignoring "URL" for now
-			{
-				string outputType = this.ProjectMgr.GetProjectProperty(ProjectFileConstants.OutputType, false);
-				if (0 == String.Compare("library", outputType, StringComparison.OrdinalIgnoreCase))
-					throw new ClassLibraryCannotBeStartedDirectlyException();
-				info.bstrExe = this.ProjectMgr.GetOutputAssembly(this.ConfigCanonicalName);
-			}
+            // Set the debug target
+            if (0 == System.String.Compare("Program", property, StringComparison.OrdinalIgnoreCase))
+            {
+                string startProgram = StartProgram;
+                if (!String.IsNullOrEmpty(startProgram))
+                    info.bstrExe = startProgram;
+            }
+            else
+            // property is either null or "Project"
+            // we're ignoring "URL" for now
+            {
+                string outputType = this.ProjectMgr.GetProjectProperty(ProjectFileConstants.OutputType, false);
+                if (0 == String.Compare("library", outputType, StringComparison.OrdinalIgnoreCase))
+                    throw new ClassLibraryCannotBeStartedDirectlyException();
+                info.bstrExe = this.ProjectMgr.GetOutputAssembly(this.ConfigCanonicalName);
+            }
 
 
-			property = GetConfigurationProperty("StartWorkingDirectory", false);
-			if (String.IsNullOrEmpty(property))
-			{
-				// 3273: aligning with C#
-				info.bstrCurDir = Path.GetDirectoryName(this.ProjectMgr.GetOutputAssembly(this.ConfigCanonicalName));
-			}
-			else
-			{
-				info.bstrCurDir = property;
-			}
+            property = GetConfigurationProperty("StartWorkingDirectory", false);
+            if (String.IsNullOrEmpty(property))
+            {
+                // 3273: aligning with C#
+                info.bstrCurDir = Path.GetDirectoryName(this.ProjectMgr.GetOutputAssembly(this.ConfigCanonicalName));
+            }
+            else
+            {
+                info.bstrCurDir = property;
+            }
 
-			property = GetConfigurationProperty("StartArguments", false);
-			if (!String.IsNullOrEmpty(property))
-			{
-				info.bstrArg = property;
-			}
+            property = GetConfigurationProperty("StartArguments", false);
+            if (!String.IsNullOrEmpty(property))
+            {
+                info.bstrArg = property;
+            }
 
-			property = GetConfigurationProperty("RemoteDebugMachine", false);
-			if (property != null && property.Length > 0)
-			{
-				info.bstrRemoteMachine = property;
-			}
+            property = GetConfigurationProperty("RemoteDebugMachine", false);
+            if (property != null && property.Length > 0)
+            {
+                info.bstrRemoteMachine = property;
+            }
 
-			info.fSendStdoutToOutputWindow = 0;
+            info.fSendStdoutToOutputWindow = 0;
 
-			property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
-			if (property != null && String.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
-			{
-				//Set the unmanged debugger
-				//TODO change to vsconstant when it is available in VsConstants. It should be guidCOMPlusNativeEng
-				info.clsidCustom = new Guid("{92EF0900-2251-11D2-B72E-0000F87572EF}");
-			}
-			else
-			{
-				//Set the managed debugger
-				info.clsidCustom = VSConstants.CLSID_ComPlusOnlyDebugEngine;
-			}
-			info.grfLaunch = grfLaunch;
-			bool isConsoleApp = String.Compare("exe",
-				this.ProjectMgr.GetProjectProperty(ProjectFileConstants.OutputType, false),
-				StringComparison.OrdinalIgnoreCase) == 0;
-			bool isRemoteDebug = (info.bstrRemoteMachine != null);
-			bool noDebug = ((uint)(((__VSDBGLAUNCHFLAGS)info.grfLaunch) & __VSDBGLAUNCHFLAGS.DBGLAUNCH_NoDebug)) != 0;
-			// vswhidbey 382587: Do not use cmd.exe to get "Press any key to continue." when remote debugging
-			if (isConsoleApp && noDebug && !isRemoteDebug)
-			{
-				// VSWhidbey 573404: escape the characters ^<>& so that they are passed to the application rather than interpreted by cmd.exe.
-				System.Text.StringBuilder newArg = new System.Text.StringBuilder(info.bstrArg);
-				newArg.Replace("^", "^^")
-					  .Replace("<", "^<")
-					  .Replace(">", "^>")
-					  .Replace("&", "^&");
-				newArg.Insert(0, "\" ");
-				newArg.Insert(0, info.bstrExe);
-				newArg.Insert(0, "/c \"\"");
-				newArg.Append(" & pause\"");
-				string newExe = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+            property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
+            if (property != null && String.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                //Set the unmanaged debugger
+                info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedAndNative_guid; // {92EF0900-2251-11D2-B72E-0000F87572EF}
+            }
+            else
+            {
+                //Set the managed debugger
+                info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid; // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
+            }
+            info.grfLaunch = grfLaunch;
+            bool isConsoleApp = String.Compare("exe",
+                this.ProjectMgr.GetProjectProperty(ProjectFileConstants.OutputType, false),
+                StringComparison.OrdinalIgnoreCase) == 0;
+            bool isRemoteDebug = (info.bstrRemoteMachine != null);
+            bool noDebug = ((uint)(((__VSDBGLAUNCHFLAGS)info.grfLaunch) & __VSDBGLAUNCHFLAGS.DBGLAUNCH_NoDebug)) != 0;
+            // vswhidbey 382587: Do not use cmd.exe to get "Press any key to continue." when remote debugging
+            if (isConsoleApp && noDebug && !isRemoteDebug)
+            {
+                // VSWhidbey 573404: escape the characters ^<>& so that they are passed to the application rather than interpreted by cmd.exe.
+                System.Text.StringBuilder newArg = new System.Text.StringBuilder(info.bstrArg);
+                newArg.Replace("^", "^^")
+                      .Replace("<", "^<")
+                      .Replace(">", "^>")
+                      .Replace("&", "^&");
+                newArg.Insert(0, "\" ");
+                newArg.Insert(0, info.bstrExe);
+                newArg.Insert(0, "/c \"\"");
+                newArg.Append(" & pause\"");
+                string newExe = Path.Combine(Environment.SystemDirectory, "cmd.exe");
 
-				info.bstrArg = newArg.ToString();
-				info.bstrExe = newExe;
-			}
-			return info;
-		}
+                info.bstrArg = newArg.ToString();
+                info.bstrExe = newExe;
+            }
+            return info;
+        }
 
-		/// <summary>
-		/// Called by the vs shell to start debugging (managed or unmanaged).
-		/// Override this method to support other debug engines.
-		/// </summary>
-		/// <param name="grfLaunch">A flag that determines the conditions under which to start the debugger. For valid grfLaunch values, see __VSDBGLAUNCHFLAGS</param>
-		/// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code</returns>
-		public virtual int DebugLaunch(uint grfLaunch)
-		{
-			CCITracing.TraceCall();
+        /// <summary>
+        /// Called by the vs shell to start debugging (managed or unmanaged).
+        /// Override this method to support other debug engines.
+        /// </summary>
+        /// <param name="grfLaunch">A flag that determines the conditions under which to start the debugger. For valid grfLaunch values, see __VSDBGLAUNCHFLAGS</param>
+        /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code</returns>
+        public virtual int DebugLaunch(uint grfLaunch)
+        {
+            CCITracing.TraceCall();
 
-			try
-			{
-				VsDebugTargetInfo info = GetDebugTargetInfo(grfLaunch);
-				VsShellUtilities.LaunchDebugger(this.ProjectMgr.Site, info);
-			}
-			catch (ClassLibraryCannotBeStartedDirectlyException)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
+            try
+            {
+                VsDebugTargetInfo info = GetDebugTargetInfo(grfLaunch);
+                VsShellUtilities.LaunchDebugger(this.ProjectMgr.Site, info);
+            }
+            catch (ClassLibraryCannotBeStartedDirectlyException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
                 XSharpProjectPackage.Instance.DisplayException(e);
                 return Marshal.GetHRForException(e);
-			}
+            }
 
-			return VSConstants.S_OK;
-		}
+            return VSConstants.S_OK;
+        }
 
 		/// <summary>
 		/// Determines whether the debugger can be launched, given the state of the launch flags.

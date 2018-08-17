@@ -777,21 +777,21 @@ FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
 FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
 	LOCAL ret AS USUAL
 	SWITCH uValue:_UsualType
-	CASE UsualType.Float
-	CASE UsualType.Decimal
+	CASE __UsualType.Float
+	CASE __UsualType.Decimal
 		ret := TransformHelpers.TransformN( uValue, cPicture , FALSE)
-	CASE UsualType.Int64
-	CASE UsualType.Long
+	CASE __UsualType.Int64
+	CASE __UsualType.Long
 		ret := TransformHelpers.TransformN( uValue, cPicture , TRUE)
-	CASE UsualType.Date
-	CASE UsualType.DateTime
+	CASE __UsualType.Date
+	CASE __UsualType.DateTime
 		ret := TransformHelpers.TransformD( uValue, cPicture )
-	CASE UsualType.Logic
+	CASE __UsualType.Logic
 		ret := TransformHelpers.TransformL( uValue, cPicture )
-	CASE UsualType.String
-	CASE UsualType.Psz
+	CASE __UsualType.String
+	CASE __UsualType.Psz
 		ret := TransformHelpers.TransformS( uValue, cPicture )
-	CASE UsualType.Void
+	CASE __UsualType.Void
 		ret := ""
 	OTHERWISE
 		IF uValue:IsObject && IsMethod( uValue, #Transform )

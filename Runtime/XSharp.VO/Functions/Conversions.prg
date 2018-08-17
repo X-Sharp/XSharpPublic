@@ -1,6 +1,6 @@
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -10,13 +10,13 @@ USING System.Globalization
 USING System.Collections.Generic
 
 #define MAXDIGITS               30
-#define MAXDECIMALS             15	
+#define MAXDECIMALS             15
 
 INTERNAL STATIC CLASS ConversionHelpers
 	STATIC INTERNAL usCulture AS CultureInfo
 	STATIC PRIVATE formatStrings AS Dictionary<INT, STRING>
 	STATIC CONSTRUCTOR
-		usCulture := CultureInfo{"en-US"} 
+		usCulture := CultureInfo{"en-US"}
 		formatStrings := Dictionary<INT, STRING>{}
 
 	STATIC METHOD GetFormatString(nLen AS INT, nDec AS INT) AS STRING
@@ -59,7 +59,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 
 
 	STATIC METHOD AdjustDecimalSeparator(cString AS STRING) AS STRING
-		IF cString:IndexOf(".") >= 0 
+		IF cString:IndexOf(".") >= 0
 			VAR wSep   := SetDecimalSep()
 			IF wSep != 46
 				cString := cString:Replace('.', (CHAR) wSep)
@@ -85,7 +85,7 @@ FUNCTION AsHexString(uValue AS USUAL) AS STRING
 		result := ""
 	ENDIF
 	RETURN result
-	
+
 	/// <summary>
 	/// Convert a value to a right-padded string.
 	/// </summary>
@@ -95,13 +95,13 @@ FUNCTION AsHexString(uValue AS USUAL) AS STRING
 	/// </returns>
 FUNCTION AsPadr(u AS USUAL,dwLen AS DWORD) AS STRING
 	RETURN PadR(AsString(u), dwLen)
-	
+
 
 /// <exclude />
 FUNCTION _AsString(u AS USUAL) AS STRING
 	RETURN	 AsString(u)
 
-	
+
 /// <summary>
 /// Convert a value to a string.
 /// </summary>
@@ -143,8 +143,8 @@ FUNCTION AsString(u AS USUAL) AS STRING
 			result := u:ToString()
 	ENDCASE
 	RETURN result
-	
-	
+
+
 	/// <summary>
 	/// Convert a string or a Psz to a Symbol.
 	/// </summary>
@@ -153,9 +153,9 @@ FUNCTION AsString(u AS USUAL) AS STRING
 	/// The Symbol representing the given string or Psz.
 	/// </returns>
 FUNCTION AsSymbol(u AS USUAL) AS SYMBOL
-	RETURN SYMBOL{(STRING)u, TRUE}   
-	
-	
+	RETURN SYMBOL{(STRING)u, TRUE}
+
+
 	/// <summary>
 	/// Create a descending order key value.
 	/// </summary>
@@ -165,7 +165,7 @@ FUNCTION AsSymbol(u AS USUAL) AS SYMBOL
 FUNCTION Descend(uValue AS USUAL) AS USUAL
 	IF uValue:isString
 		RETURN _descendingString( (STRING) uValue)
-	ELSEIF uValue:IsLogic	
+	ELSEIF uValue:IsLogic
 		RETURN ! (LOGIC) uValue
 	ELSEIF uValue:IsLong
 		RETURN 0 - (INT) uValue
@@ -189,9 +189,9 @@ INTERNAL FUNCTION _descendingString(s AS STRING) AS STRING
 	NEXT
 	RETURN sb:ToString()
 
-	
+
 /// <summary>
-/// Create a descending order key value. The parameter is also changed 
+/// Create a descending order key value. The parameter is also changed
 /// </summary>
 /// <param name="uValue"></param>
 /// <returns>
@@ -199,9 +199,9 @@ INTERNAL FUNCTION _descendingString(s AS STRING) AS STRING
 FUNCTION DescendA(uValue REF USUAL) AS USUAL
 	uValue := Descend(uValue)
 	RETURN uValue
-	
-	
-	
+
+
+
 /// <summary>
 /// Convert a numeric expression to a left-trimmed string.
 /// </summary>
@@ -211,13 +211,13 @@ FUNCTION DescendA(uValue REF USUAL) AS USUAL
 FUNCTION NTrim(n AS USUAL) AS STRING
 	LOCAL ret AS STRING
 	SWITCH n:_UsualType
-	CASE usualType.Int64
-	CASE usualType.Long
-      ret := ConversionHelpers.FormatNumber( (INT64) n, (INT) RuntimeState.Digits, 0):Trim()	
-	CASE UsualType.Date
+	CASE __usualType.Int64
+	CASE __usualType.Long
+      ret := ConversionHelpers.FormatNumber( (INT64) n, (INT) RuntimeState.Digits, 0):Trim()
+	CASE __UsualType.Date
       ret := AsString( n )
-    CASE UsualType.Float
-	CASE UsualType.Decimal
+    CASE __UsualType.Float
+	CASE __UsualType.Decimal
       ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) n )):Trim()
     OTHERWISE
       THROW Error.DataTypeError( __ENTITY__, NAMEOF(n), 1, n)
@@ -235,7 +235,7 @@ FUNCTION NTrim(n AS USUAL) AS STRING
 /// </returns>
 FUNCTION Pad( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 	RETURN PadR( uValue, nLength, cPad )
-	
+
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the right.
 /// </summary>
@@ -246,7 +246,7 @@ FUNCTION Pad( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
 /// </returns>
 FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadR( uValue, (INT) nLength, cPad )
-	
+
 
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on both the right and left.
@@ -261,23 +261,23 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 	IF cPad == NULL .OR. cPad :Length == 0
 		cPad := " "
 	ENDIF
-	
+
 	LOCAL ret     AS STRING
 	LOCAL retlen  AS INT
-	
+
 	IF uValue:isNumeric
 		ret := NTrim( uValue)
 	ELSE
 		ret := uValue:ToString()
 	ENDIF
 	retlen := ret:Length
-	
+
 	IF retlen > nLength
 		ret := ret:Remove( nLength )
 	ELSE
 		ret := ret:PadLeft( ( nLength - retlen ) / 2, cPad[0] ):PadRight( nLength, cPad[0] )
 	ENDIF
-	
+
 	RETURN ret
 
 /// <summary>
@@ -290,8 +290,8 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 /// </returns>
 FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadC( uValue, (INT) nLength, cPad )
-	
-	
+
+
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the left.
 /// </summary>
@@ -312,7 +312,7 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 		ret := uValue:ToString()
 	ENDIF
 	RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
-	
+
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the left.
 /// </summary>
@@ -323,7 +323,7 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 /// </returns>
 FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
 	RETURN PadL( uValue, (INT) nLength, cPad )
-	
+
 
 /// <summary>
 /// Pad character, numeric, and Date values with fill characters on the right.
@@ -356,9 +356,9 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
 		ret := uValue:ToString()
 	ENDIF
 	RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
-	
-	 
-	
+
+
+
 /// <summary>
 /// Convert a numeric expression to a string.
 /// </summary>
@@ -390,7 +390,7 @@ FUNCTION Str(n ,uLen ,nDec ) AS STRING CLIPPER
 /// <returns>The string with always a DOT as decimal separator.</returns>
 
 FUNCTION _Str(n ,nLen ,nDec ) AS STRING CLIPPER
-	IF PCount() > 0 .AND. ! n:IsNumeric 
+	IF PCount() > 0 .AND. ! n:IsNumeric
        THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1, n, nLen, nDec)
     ENDIF
 	SWITCH PCount()
@@ -417,13 +417,25 @@ FUNCTION _Str(n ,nLen ,nDec ) AS STRING CLIPPER
 	OTHERWISE
 		RETURN ""
 	END SWITCH
-	
+
+// The following three functions are undocumented in Vulcan but sometimes used in user code
+// They are the equivalent of the STR() functions but always return with digit decimal separator
+// We route all three to the _Str() function that takes care of this already
+FUNCTION __Str(n AS USUAL) AS STRING
+	RETURN _Str( n)
+
+FUNCTION __Str(n AS USUAL,nLen AS USUAL) AS STRING
+	RETURN _Str( n, nLen)
+
+FUNCTION __Str(n AS USUAL,nLen AS USUAL, nDec AS USUAL) AS STRING
+	RETURN _Str( n, nLen, nDec)
+
 
 INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
 	LOCAL iLen := 	cValue:Length AS INT
 	RETURN cValue:TrimStart():PadLeft((INT) iLen, '0')
 
-	
+
 	/// <summary>
 	/// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
 	/// </summary>
@@ -438,7 +450,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
     ENDIF
 	LOCAL cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) AS STRING
 	RETURN _PadZero(cValue)
-	
+
 /// <summary>
 /// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
 /// </summary>
@@ -452,7 +464,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 	ENDIF
 	LOCAL cValue := Str2(n, (DWORD) iLen) AS STRING
 	RETURN _padZero(cValue)
-	
+
 
 /// <summary>
 /// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
@@ -466,7 +478,7 @@ FUNCTION StrZero(n AS USUAL) AS STRING
     ENDIF
 	LOCAL cValue := Str1(n) AS STRING
 	RETURN _PadZero(cValue)
-	
+
 	/// <summary>
 	/// Convert a number to a word.
 	/// </summary>
@@ -475,18 +487,18 @@ FUNCTION StrZero(n AS USUAL) AS STRING
 	/// </returns>
 FUNCTION ToWord(n AS USUAL) AS DWORD
 	RETURN (DWORD) n
-	
-	
+
+
 /// <summary>
 /// Convert an integer expression to a Psz.
 /// </summary>
 /// <param name="l"></param>
 /// <param name="dwLen"></param>
-/// <param name="dwDec"></param> 
+/// <param name="dwDec"></param>
 /// <returns>
 /// </returns>
 FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	RETURN Str3( l, dwLen, dwDec) 
+	RETURN Str3( l, dwLen, dwDec)
 
 	/// <summary>
 	/// Convert a long integer expression to a Psz.
@@ -498,7 +510,7 @@ FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	/// </returns>
 FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	RETURN StrInt(l, dwLen, dwDec)
-	
+
 	/// <summary>
 	/// Convert a Float expression to a Psz.
 	/// </summary>
@@ -508,9 +520,9 @@ FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION StrFloat(flSource AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-	RETURN Str3( flSource, dwLen, dwDec ) 
-	
-	
+	RETURN Str3( flSource, dwLen, dwDec )
+
+
 
 
 
@@ -526,7 +538,7 @@ FUNCTION Str1(f AS USUAL) AS STRING
 	ELSE
 		RETURN ConversionHelpers.FormatNumber( (LONG) f, (INT) RuntimeState.Digits, 0):Trim()
 	ENDIF
-		
+
 INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
 	VAR nDecimals := f:decimals
 	VAR nDigits   := f:Digits
@@ -543,7 +555,7 @@ INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
 		result := result:TrimStart()
 	ENDIF
 	RETURN result
- 
+
 
 /// <summary>
 /// Convert a numeric expression to a string of a specified length.
@@ -567,7 +579,7 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
 		nDecimals := (SHORT) RuntimeState.Decimals
 	ENDIF
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, nDecimals)
- 
+
 
 /// <summary>
 /// Convert a numeric expression to a string of specific length and decimal places.
@@ -651,7 +663,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 	ENDIF
 	FOREACH VAR c IN cNumber
 		SWITCH c
-		CASE '0' 
+		CASE '0'
 		CASE '1'
 		CASE '2'
 		CASE '3'
@@ -671,15 +683,15 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 			ELSE
 				hasdec := TRUE
 			ENDIF
-		CASE 'A' 
-		CASE 'B' 
-		CASE 'C' 
-		CASE 'D' 
-		CASE 'F' 
+		CASE 'A'
+		CASE 'B'
+		CASE 'C'
+		CASE 'D'
+		CASE 'F'
 			IF !hex
 				done := TRUE
 			ENDIF
-		CASE 'E' 
+		CASE 'E'
 			// exponentional notation only allowed if decimal separator was there
 			IF hasdec
 				hasexp := TRUE
@@ -691,12 +703,12 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 		CASE 'L'	// LONG result
 		CASE 'U'	// DWORD result
 			done := TRUE
-		CASE 'X' 
+		CASE 'X'
 			IF pos == 1
 				hex := TRUE
 			ELSE
 				done := TRUE
-			ENDIF	
+			ENDIF
 		OTHERWISE
 			done := TRUE
 		END SWITCH
@@ -725,7 +737,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 		LOCAL style AS NumberStyles
 		IF hex
 			cNumber := cNumber:Substring(2)
-			style := NumberStyles.HexNumber 
+			style := NumberStyles.HexNumber
 		ELSE
 			style := NumberStyles.Integer
 		ENDIF
@@ -737,6 +749,6 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 		ENDIF
 	ENDIF
 	RETURN 0
-	
-		
+
+
 

@@ -233,8 +233,8 @@
     <IncludeFavorites>True</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
-    <FeedbackEMailAddress>info%40xsharp..eu</FeedbackEMailAddress>
-    <FeedbackEMailLinkText>info%40xsharp..eu</FeedbackEMailLinkText>
+    <FeedbackEMailAddress>info%40xsharp.eu</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
     <FooterText>
     </FooterText>
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>

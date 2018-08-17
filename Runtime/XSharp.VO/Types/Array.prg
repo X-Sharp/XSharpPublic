@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -129,24 +129,12 @@ BEGIN NAMESPACE XSharp
 
             /// Note: Zero based, compiler handles subtraction
             /// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-        PUBLIC PROPERTY SELF[i AS INT, j AS INT, k AS INT] AS USUAL
+        PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL
             GET
-                RETURN __GetElement(i,j,  k)
+                RETURN __GetElement(index)
             END GET
             SET
-                SELF:__SetElement(VALUE,i,j,k)
-            END SET
-        END PROPERTY
-
-
-        /// Note: Zero based, compiler handles subtraction
-        /// <summary>Get/Set array elements with ZERO based array indexes.</summary>
-        PUBLIC PROPERTY SELF[i AS INT, j AS INT] AS USUAL
-            GET
-                RETURN __GetElement(i,j)
-            END GET
-            SET
-                SELF:__SetElement(VALUE,i,j)
+                SELF:__SetElement(VALUE,index)
             END SET
         END PROPERTY
 

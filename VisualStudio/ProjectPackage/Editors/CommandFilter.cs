@@ -328,6 +328,12 @@ namespace XSharp.Project
                     {
                         formatToken(editSession, lineStart, token);
                     }
+                    else
+                    {
+                        // Come back later.
+                        registerLineForCaseSync(line.LineNumber);
+                        break;
+                    }
                 }
                 else
                 {

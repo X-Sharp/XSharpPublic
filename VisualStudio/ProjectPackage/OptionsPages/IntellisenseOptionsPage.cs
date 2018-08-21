@@ -18,9 +18,9 @@ namespace XSharp.Project.OptionsPages
         public bool KeywordsInAll { get; set; }
 
         public bool UseDotAsUniversalSelector { get; set; }
-        
+
         public bool ShowAfterChar { get; set; }
-        
+
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
         public int KeywordCase { get; set; }
         public bool IdentifierCase => false;
@@ -28,6 +28,7 @@ namespace XSharp.Project.OptionsPages
         public bool AlignMethod { get; set; }
         public bool IncludeFieldsInNavigationBars { get; set; }
         public bool SortNavigationBars { get; set; }
+        public bool ShowMembersOfCurrentTypeOnly { get; set; }
         public bool DisableBraceMatching { get; set; }
         public bool DisableLightBulb { get; set; }
         public bool DisableHighLightWord { get; set; }

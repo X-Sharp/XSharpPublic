@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.Collections.Generic;
@@ -22,6 +22,7 @@ namespace XSharp.LanguageService
         XFile _file = null;
         uint _lastHashCode = 0;
         bool lastIncludeFields = false;
+        bool lastCurrentTypeOnly = false;
 
         public XSharpTypeAndMemberDropDownBars(
             XSharpLanguageService lang,
@@ -36,7 +37,7 @@ namespace XSharp.LanguageService
             {
                 var member = _members[entry] as XDropDownMember;
                 if (member.Element.File != _file)
-                { 
+                {
                     member.Element.OpenEditor();
                     handled = true;
                 }
@@ -60,6 +61,7 @@ namespace XSharp.LanguageService
             var optionsPage = package.GetIntellisenseOptionsPage();
             var sortItems = optionsPage.SortNavigationBars;
             var includeFields = optionsPage.IncludeFieldsInNavigationBars;
+            var currentTypeOnly = optionsPage.ShowMembersOfCurrentTypeOnly;
             if (optionsPage.DisableEditorDropdowns)
             {
                 dropDownTypes.Clear();
@@ -106,10 +108,10 @@ namespace XSharp.LanguageService
             {
                 newType = false;
             }
-            // when we are on the same type and there are no new methods then we can 
-            // select the element in the members combo and we do not have to rebuild the members 
+            // when we are on the same type and there are no new methods then we can
+            // select the element in the members combo and we do not have to rebuild the members
             // list. We must set the selectedType and selectedMember
-            if (! newType && file.ContentHashCode == _lastHashCode && lastIncludeFields == includeFields )
+            if (! newType && file.ContentHashCode == _lastHashCode && lastIncludeFields == includeFields && lastCurrentTypeOnly == currentTypeOnly)
             {
                 // no need to rebuild the list. Just focus to another element
                 // locate item in members collection
@@ -217,24 +219,31 @@ namespace XSharp.LanguageService
             }
 
             if (currentType == null)
-            { 
+            {
                 currentType = typeGlobal;
             }
             bool hasPartial = false;
             if (currentType != null)    // should not happen since all files have a global type
             {
                 nSelMbr = 0;
-                IList<XTypeMember> members;
-                if (currentType != typeGlobal && currentType.IsPartial)
+                var members = new List<XElement>();
+                if (currentTypeOnly)
                 {
-                    // retrieve members from other files ?
-                    var fullType = file.Project.Lookup(currentType.FullName, true);
-                    hasPartial = true;
-                    members = fullType.Members;
+                    if (currentType != typeGlobal && currentType.IsPartial)
+                    {
+                        // retrieve members from other files ?
+                        var fullType = file.Project.Lookup(currentType.FullName, true);
+                        hasPartial = true;
+                        members.AddRange(fullType.Members);
+                    }
+                    else
+                    {
+                        members.AddRange(currentType.Members);
+                    }
                 }
                 else
                 {
-                    members = currentType.Members;
+                    members.AddRange(file.EntityList);
                 }
                 if (sortItems)
                 {
@@ -244,20 +253,24 @@ namespace XSharp.LanguageService
                 // element in the members list, which is convenient.
                 TextSpan spM = this.TextRangeToTextSpan(currentType.Range);
                 ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                if (currentType != typeGlobal)
+                if (currentTypeOnly)
                 {
-                    if (currentType.Kind != Kind.Delegate)
+                    // Add a 'root' element for the type.
+                    if (currentType != typeGlobal)
                     {
-                        elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Glyph, ft);
+                        if (currentType.Kind != Kind.Delegate)
+                        {
+                            elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Glyph, ft);
+                            elt.Element = currentType;
+                            dropDownMembers.Add(elt);
+                        }
+                    }
+                    else
+                    {
+                        elt = new XDropDownMember(currentType.Name, spM, currentType.Glyph, ft);
                         elt.Element = currentType;
                         dropDownMembers.Add(elt);
                     }
-                }
-                else
-                {
-                    elt = new XDropDownMember(currentType.Name, spM, currentType.Glyph, ft);
-                    elt.Element = currentType;
-                    dropDownMembers.Add(elt);
                 }
                 foreach (XElement  member in members)
                 {
@@ -273,6 +286,14 @@ namespace XSharp.LanguageService
                         }
 
                         string prototype = member.ComboPrototype;
+                        if (!currentTypeOnly && member.Parent != null && member.Parent != typeGlobal)
+                        {
+                            if (member.Modifiers.HasFlag(Modifiers.Static))
+                                prototype = member.Parent.Name + "." + prototype;
+                            else
+                                prototype = member.Parent.Name + ":" + prototype;
+                        }
+
                         if (otherFile)
                         {
                             ft  = DROPDOWNFONTATTR.FONTATTR_GRAY;
@@ -297,6 +318,7 @@ namespace XSharp.LanguageService
             selectedType    = nSelType;
             selectedMember  = nSelMbr;
             lastIncludeFields = includeFields;
+            lastCurrentTypeOnly = currentTypeOnly;
             return true;
         }
 

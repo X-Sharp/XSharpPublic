@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -314,14 +314,14 @@ namespace XSharpLanguage
                     switch (tokenType)
                     {
                         case XSharpLexer.USING:
-                            // It can be a namespace 
+                            // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             break;
                         case XSharpLexer.AS:
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
                         case XSharpLexer.INHERIT:
-                            // It can be a namespace 
+                            // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
@@ -330,12 +330,12 @@ namespace XSharpLanguage
                             AddXSharpTypesTypeNames(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
-                            // It can be a namespace 
+                            // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             // TODO: add Interfaces only
                             break;
                         default:
-                            // It can be a namespace 
+                            // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
@@ -405,14 +405,14 @@ namespace XSharpLanguage
                         switch (tokenType)
                         {
                             case XSharpLexer.USING:
-                                // It can be a namespace 
+                                // It can be a namespace
                                 AddNamespaces(compList, _file.Project, filterText);
                                 break;
                             case XSharpLexer.AS:
                             case XSharpLexer.IS:
                             case XSharpLexer.REF:
                             case XSharpLexer.INHERIT:
-                                // It can be a namespace 
+                                // It can be a namespace
                                 AddNamespaces(compList, _file.Project, filterText);
                                 // It can be Type, FullyQualified
                                 // we should also walk all the USINGs, and the current Namespace if any, to search Types
@@ -421,7 +421,7 @@ namespace XSharpLanguage
                                 AddXSharpTypesTypeNames(kwdList, filterText);
                                 break;
                             case XSharpLexer.IMPLEMENTS:
-                                // It can be a namespace 
+                                // It can be a namespace
                                 AddNamespaces(compList, _file.Project, filterText);
                                 // TODO: add Interfaces only
                                 break;
@@ -666,7 +666,7 @@ namespace XSharpLanguage
                         // remove the start
                         if (startLen > 0)
                             realTypeName = realTypeName.Substring(startLen);
-                        // Do we have another part 
+                        // Do we have another part
                         dotPos = realTypeName.IndexOf('.');
                         // Then remove it
                         if (dotPos > 0)
@@ -695,7 +695,7 @@ namespace XSharpLanguage
                 // remove the start
                 if (startLen > 0)
                     realTypeName = realTypeName.Substring(startLen);
-                // Do we have another part 
+                // Do we have another part
                 dotPos = realTypeName.IndexOf('.');
                 // Then remove it
                 if (dotPos > 0)
@@ -724,7 +724,7 @@ namespace XSharpLanguage
                 // remove the start
                 if (startLen > 0)
                     realNamespace = realNamespace.Substring(startLen);
-                // Do we have another part 
+                // Do we have another part
                 dotPos = realNamespace.IndexOf('.');
                 // Then remove it
                 if (dotPos > 0)
@@ -765,7 +765,7 @@ namespace XSharpLanguage
                 // remove the start
                 if (startLen > 0)
                     realNamespace = realNamespace.Substring(startLen);
-                // Do we have another part 
+                // Do we have another part
                 dotPos = realNamespace.IndexOf('.');
                 // Then remove it
                 if (dotPos > 0)
@@ -1045,7 +1045,7 @@ namespace XSharpLanguage
             }
         }
 
- 
+
 
         public void Dispose()
         {
@@ -2022,7 +2022,7 @@ namespace XSharpLanguage
 
             if (ContainsKey(item.DisplayText))
             {
-                // only methods have overloads 
+                // only methods have overloads
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
                 // and if a method in a subclass has the same params we also do not want to show that there are overloads
                 var found = this[item.DisplayText];
@@ -2173,7 +2173,7 @@ namespace XSharpLanguage
         }
 
         /// <summary>
-        /// Retrieve a List of Token, based on a position in buffer. 
+        /// Retrieve a List of Token, based on a position in buffer.
         /// Moving back in the buffer, all tokens are retrieved and stored.
         /// </summary>
         /// <param name="triggerPointPosition">The position in the buffer </param>
@@ -2272,7 +2272,7 @@ namespace XSharpLanguage
             }
             if (current > list.Count - 1 || current < 0)
                 return tokenList;
-            // on the right row now. Find the last token on the row that has its startindex before the triggerposition
+            // on the right row now. Find the first token on the row
             for (int iToken = current; iToken >= 0; iToken--)
             {
                 // Out tokens line numbers are 1 based
@@ -2281,7 +2281,6 @@ namespace XSharpLanguage
                 current = iToken;
             }
             // now look forward and find the first token that is on or after the triggerpoint
-            // current now points to the first token on the line
             IToken nextToken = list[current];
             while (true)
             {
@@ -2302,7 +2301,7 @@ namespace XSharpLanguage
             //
             if (lineNT != lineTP)
             {
-                // should not happen. 
+                // should not happen.
                 //return tokenList;
             }
             nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
@@ -2440,7 +2439,7 @@ namespace XSharpLanguage
                 }
 
             }
-            // 
+            //
             tokenList.Reverse();
             // Now, we may have some post-treatment
             List<String> returnList = new List<string>();
@@ -2576,7 +2575,7 @@ namespace XSharpLanguage
                     return xtype.Members.LastOrDefault();
                 }
             }
-            // try a few rows before 
+            // try a few rows before
             member = file.FindMemberAtRow(Math.Max(nLine-10,1));
             if (member is XTypeMember)
             {
@@ -2786,7 +2785,16 @@ namespace XSharpLanguage
                     {
                         SearchConstructorIn(cType.ParentType, visibility, out foundElement);
                     }
-                    else if (!cType.IsEmpty())
+                    // The first token in the list can be a Function or a Procedure
+                    if (currentPos == 0)
+                    {
+                        var globType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
+                        if (foundElement != null)
+                        {
+                            return globType;
+                        }
+                    }
+                    if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
                         cType = SearchMethodTypeIn(cType, currentToken, visibility, false, out foundElement);
@@ -2805,11 +2813,6 @@ namespace XSharpLanguage
                         // Could it be Static Method with "Using Static"
                         // Now, search for a Method
                         cType = SearchMethodStaticIn(currentMember.File, currentToken, out foundElement);
-                    }
-                    if (cType.IsEmpty())
-                    {
-                        // Could it be a Function or a Procedure
-                        cType = SearchFunctionIn(currentMember.File, currentToken, out foundElement);
                     }
                     if (cType.IsEmpty())
                     {
@@ -3008,7 +3011,7 @@ namespace XSharpLanguage
             foundElement = null;
             if (cType.XType != null)
             {
-                // 
+                //
                 XTypeMember xMethod = cType.XType.Members.Where(x =>
                 {
                     if ((x.Kind == Kind.Constructor))
@@ -3025,7 +3028,7 @@ namespace XSharpLanguage
                 }
                 //
                 /*
-                 * No More search for Constructors in parent 
+                 * No More search for Constructors in parent
                 if (xMethod == null)
                 {
                     // Hummm, we should look inside the Owner
@@ -3387,7 +3390,7 @@ namespace XSharpLanguage
             foundElement = null;
             if (cType.XType != null)
             {
-                // 
+                //
                 XTypeMember xMethod = cType.XType.Members.Where(x =>
                 {
                     if ((x.Kind == Kind.Method))
@@ -3604,7 +3607,7 @@ namespace XSharpLanguage
             //
             CompletionType cType = null;
             //
-            // 
+            //
             XTypeMember xMethod = xFile.Project.FindFunction(currentToken);
             //
             if (xMethod == null)
@@ -3745,7 +3748,7 @@ namespace XSharpLanguage
         static XSharpTypes()
         {
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...
-            // Pass default options so this will be the core dialect and no 
+            // Pass default options so this will be the core dialect and no
             // 4 letter abbreviations will be in the list
             var lexer = XSharpLexer.Create("", "", XSharpParseOptions.Default);
             //
@@ -3814,7 +3817,7 @@ namespace XSharpLanguage
                     locals.Add(XVar);
                 }
             }
-            // add the locals found in the code. 
+            // add the locals found in the code.
             int nLineOffSet = member.Range.StartLine - 1;
             iCurrentLine += 1; // our ranges are 1 based
             foreach (EntityObject local in info.Locals)

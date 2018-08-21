@@ -315,7 +315,7 @@ namespace XSharp.Project.Editors.BraceMatching
         private static int findtokeninList(IList<IToken> tokens, int startpos)
         {
             int min = 0;
-            int max = tokens.Count;
+            int max = tokens.Count-1;
             bool found = false;
             IToken token = null;
             int tokenpos = -1;
@@ -337,14 +337,23 @@ namespace XSharp.Project.Editors.BraceMatching
                 {
                     max = tokenpos;
                 }
-                if (min == max)
+                if (min == max -1)
                 {
                     token = tokens[min];
                     if (token.StartIndex <= startpos && token.StopIndex >= startpos)
                     {
+                        tokenpos = min;
                         found = true;
                         break;
                     }
+                    token = tokens[max];
+                    if (token.StartIndex <= startpos && token.StopIndex >= startpos)
+                    {
+                        tokenpos = max;
+                        found = true;
+                        break;
+                    }
+
                     found = false;
                     break;
                 }

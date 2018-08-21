@@ -43,6 +43,7 @@
             this.rbLower = new System.Windows.Forms.RadioButton();
             this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
+            this.chkShowMembersOfCurrentType = new System.Windows.Forms.CheckBox();
             this.chkSortNavBar = new System.Windows.Forms.CheckBox();
             this.chkIncludeFields = new System.Windows.Forms.CheckBox();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
@@ -219,14 +220,26 @@
             // 
             // grpNavigationBars
             // 
+            this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
             this.grpNavigationBars.Location = new System.Drawing.Point(12, 245);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(373, 64);
+            this.grpNavigationBars.Size = new System.Drawing.Size(373, 81);
             this.grpNavigationBars.TabIndex = 2;
             this.grpNavigationBars.TabStop = false;
             this.grpNavigationBars.Text = "Navigation Bars";
+            // 
+            // chkShowMembersOfCurrentType
+            // 
+            this.chkShowMembersOfCurrentType.AutoSize = true;
+            this.chkShowMembersOfCurrentType.Location = new System.Drawing.Point(13, 58);
+            this.chkShowMembersOfCurrentType.Name = "chkShowMembersOfCurrentType";
+            this.chkShowMembersOfCurrentType.Size = new System.Drawing.Size(335, 17);
+            this.chkShowMembersOfCurrentType.TabIndex = 2;
+            this.chkShowMembersOfCurrentType.Text = "Members combobox shows members of current selected type only";
+            this.chkShowMembersOfCurrentType.UseVisualStyleBackColor = true;
+            this.chkShowMembersOfCurrentType.CheckedChanged += new System.EventHandler(this.chkShowMembersOfCurrentType_CheckedChanged);
             // 
             // chkSortNavBar
             // 
@@ -252,7 +265,7 @@
             // 
             // btnShowMeTheMagic
             // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(271, 315);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(271, 344);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
             this.btnShowMeTheMagic.TabIndex = 3;
@@ -269,7 +282,7 @@
             this.Controls.Add(this.grpCase);
             this.Controls.Add(this.grpCompletionListTabs);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(397, 348);
+            this.Size = new System.Drawing.Size(397, 381);
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
@@ -301,5 +314,6 @@
         private System.Windows.Forms.CheckBox chkShowAfterChar;
         private System.Windows.Forms.CheckBox chkKeywordsInAll;
         private System.Windows.Forms.Button btnShowMeTheMagic;
+        private System.Windows.Forms.CheckBox chkShowMembersOfCurrentType;
     }
 }

@@ -52,6 +52,7 @@ namespace XSharp.Project.OptionsPages
             chkAlignMethod.Checked = optionsPage.AlignMethod;
             chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
             chkSortNavBar.Checked = optionsPage.SortNavigationBars;
+            chkShowMembersOfCurrentType.Checked = optionsPage.ShowMembersOfCurrentTypeOnly;
             _loading = false;
 
         }
@@ -175,6 +176,11 @@ namespace XSharp.Project.OptionsPages
                 optionsPage.EnableOutputPane = form.chkEnableOutputPane.Checked;
             }
 
+        }
+
+        private void chkShowMembersOfCurrentType_CheckedChanged(object sender, EventArgs e)
+        {
+            optionsPage.ShowMembersOfCurrentTypeOnly = chkShowMembersOfCurrentType.Checked;
         }
     }
 }

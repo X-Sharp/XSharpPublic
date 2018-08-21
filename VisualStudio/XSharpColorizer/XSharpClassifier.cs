@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ namespace XSharpColorizer
     /// Classifier that classifies all text as an instance of the "XSharpClassifier" classification type.
     /// There is one classifier per (visible) editor window.
     /// VS delays creating the classifier until the window is shown for the first time
-    /// We can store data in the classifier 
+    /// We can store data in the classifier
     /// </summary>
     public class XSharpClassifier : IClassifier
     {
@@ -160,6 +160,13 @@ namespace XSharpColorizer
             {
                 _snapshot = snapshot;
                 _tokens = tokens;
+                XSharpTokens xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
+                if (_buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+                {
+                    _buffer.Properties.RemoveProperty(typeof(XSharpTokens));
+                }
+                _buffer.Properties.AddProperty(typeof(XSharpTokens), xTokens);
+
             }
             BuildColorClassifications(tokens, snapshot);
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -219,7 +226,7 @@ namespace XSharpColorizer
                         {
                             _bwClassify.RunWorkerAsync();
                         }
-                        catch 
+                        catch
                         {
 
                         }
@@ -248,7 +255,7 @@ namespace XSharpColorizer
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
-            // do we need to create a new tree 
+            // do we need to create a new tree
             // this happens the first time in the buffer only
             var snapshot = _buffer.CurrentSnapshot;
             ITokenStream tokens = null;
@@ -476,7 +483,7 @@ namespace XSharpColorizer
                                 else
                                 {
                                     nStart = blStart.OffSet;
-                                    // our lines are 1 based. 
+                                    // our lines are 1 based.
                                     // we do not want to include the next case line in the block from the previous one
                                     nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
                                     AddRegionSpan(regions, snapshot, nStart, nEnd);
@@ -527,6 +534,8 @@ namespace XSharpColorizer
                 if (nEnd + nLineLength >= snapshot.Length)
                 {
                     nLineLength = snapshot.Length - nEnd - 1;
+                    if (nLineLength < 0)
+                        nLineLength = 0;
                 }
                 tokenSpan = new TextSpan(nEnd, nLineLength);
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop);
@@ -998,7 +1007,7 @@ namespace XSharpColorizer
         /// <returns>A list of ClassificationSpans that represent spans identified to be of this classification.</returns>
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
-            // Todo: 
+            // Todo:
             // We can probably avoid building all tags in BuildColorClassifications.
             // and directly create the necessary tags here from the List<XSharpToken>
             // In that case we need to keep a reference to the tokenstream in stead of the tags

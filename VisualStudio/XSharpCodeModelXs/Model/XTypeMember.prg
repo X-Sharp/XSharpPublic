@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
@@ -12,12 +12,12 @@ BEGIN NAMESPACE XSharpModel
 		// Fields
 		PRIVATE _parameters AS List<XVariable>
 		PRIVATE _typeName AS STRING
-		
+
 		#region constructors
-			
+
 			PRIVATE  CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
 				SUPER(name, kind, modifiers, visibility, span, position)
-				SELF:Parent := null
+				SELF:Parent := NULL
 				SELF:_parameters := List<XVariable>{}
 				SELF:_typeName := ""
 				SELF:_typeName := typeName
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharpModel
 				CalculateRange(oElement, oInfo, OUT span, OUT intv)
 				LOCAL result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} AS XTypeMember
 				result:File := oFile
-				IF oElement:aParams != null
+				IF oElement:aParams != NULL
 					FOREACH oParam AS EntityParamsObject IN oElement:aParams
 						LOCAL oVar AS XVariable
 						span := TextRange{oElement:nStartLine, oParam:nCol, oElement:nStartLine, oParam:nCol+oParam:cName:Length}
@@ -47,8 +47,8 @@ BEGIN NAMESPACE XSharpModel
 					NEXT
 				ENDIF
 				RETURN result
-			
-			
+
+
 		#endregion
 
 
@@ -61,10 +61,10 @@ BEGIN NAMESPACE XSharpModel
 
 		METHOD Namesake() AS List<XTypeMember>
 			VAR _namesake := List<XTypeMember>{}
-			IF (SELF:Parent != null)
+			IF (SELF:Parent != NULL)
 				FOREACH  oMember AS XTypeMember IN ((XType) SELF:Parent):Members
-					IF String.Compare(oMember:FullName, SELF:FullName, true) == 0 .AND. String.Compare(oMember:Prototype, SELF:Prototype, true) > 0
-						//// 
+					IF String.Compare(oMember:FullName, SELF:FullName, TRUE) == 0 .AND. String.Compare(oMember:Prototype, SELF:Prototype, TRUE) > 0
+						////
 						_namesake:Add(oMember)
 					ENDIF
 				NEXT
@@ -82,30 +82,30 @@ BEGIN NAMESPACE XSharpModel
 				IF (SUPER:Kind != Kind.Field)
 					desc := desc + SUPER:KindKeyword
 					IF (SUPER:Kind == Kind.VODefine)
-						RETURN desc + SUPER:Name 
+						RETURN desc + SUPER:Name
 					ENDIF
 				ENDIF
 				RETURN desc + SELF:Prototype
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY FullName AS STRING
 			GET
 				//
-				IF (SELF:Parent != null)
+				IF (SELF:Parent != NULL)
 					//
 					RETURN SELF:Parent:FullName +"." + SUPER:Name
 				ENDIF
 				RETURN SUPER:Name
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY HasParameters AS LOGIC GET SELF:Kind:HasParameters() .AND. SELF:_parameters:Count > 0
 		PROPERTY ParameterCount  AS INT GET SELF:_parameters:Count
-		
-		PROPERTY IsArray AS LOGIC AUTO 
-		
-		
+
+		PROPERTY IsArray AS LOGIC AUTO
+
+
 		NEW PROPERTY Parent AS XType GET (XType) SUPER:parent  SET SUPER:parent := VALUE
 
 		PROPERTY ParameterList AS STRING
@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharpModel
 					IF (parameters:Length > 0)
 						parameters := parameters + ", "
 					ENDIF
-					parameters += variable:Name 
+					parameters += variable:Name
 					IF variable:IsTyped
 						parameters += variable:ParamTypeDesc + variable:TypeName
 					ENDIF
@@ -132,7 +132,7 @@ BEGIN NAMESPACE XSharpModel
 						parameters := parameters + ", "
 					ENDIF
 					VAR cType := variable:ShortTypeName
-					IF variable:IsTyped .and. variable:ParamType != ParamType.As
+					IF variable:IsTyped .AND. variable:ParamType != ParamType.As
 						parameters += variable:ParamTypeDesc + cType
 					ELSE
 						parameters += cType
@@ -141,13 +141,13 @@ BEGIN NAMESPACE XSharpModel
 				RETURN parameters
 			END GET
 		END PROPERTY
-		
-		PROPERTY Parameters AS IEnumerable<XVariable> 
-		GET  
+
+		PROPERTY Parameters AS IEnumerable<XVariable>
+		GET
 			RETURN SELF:_parameters
 		END GET
 		END PROPERTY
-		
+
 		PROPERTY Prototype AS STRING
 			GET
 				VAR vars := ""
@@ -155,13 +155,13 @@ BEGIN NAMESPACE XSharpModel
 					vars := "(" + SELF:ParameterList + ")"
 				ENDIF
 				VAR desc := SUPER:Name + vars
-				IF SELF:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(SELF:TypeName)
+				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY ComboPrototype AS STRING
 			GET
 				VAR vars := ""
@@ -169,15 +169,15 @@ BEGIN NAMESPACE XSharpModel
 					vars := "(" + SELF:ComboParameterList + ")"
 				ENDIF
 				VAR desc := SUPER:Name + vars
-				IF SELF:Kind:HasReturnType() .and. ! String.IsNullOrEmpty(SELF:TypeName)
+				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
 			END GET
-		END PROPERTY		
+		END PROPERTY
 		PROPERTY TypeName AS STRING GET SELF:_typeName
 		#endregion
 	END CLASS
-	
-END NAMESPACE 
+
+END NAMESPACE
 

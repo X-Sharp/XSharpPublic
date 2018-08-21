@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Concurrent
@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _usingStatics	AS List<STRING>
 		PRIVATE filePath AS STRING
 		PRIVATE _project AS XProject
-		
+
 		// Methods
 		CONSTRUCTOR(fullPath AS STRING)
 			SUPER()
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_parsed := ! SELF:HasCode
 			SELF:_lock := OBJECT{}
 			SELF:_lastWritten := System.DateTime.MinValue
-			
+
 		PROPERTY EntityList AS 	List<XElement> GET _entityList
 		METHOD FirstMember() AS XTypeMember
 			IF (! SELF:HasCode)
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
 			/// <Summary>Find member in file based on 0 based line number</Summary>
 			///
 			///
-			
+
 		DELEGATE FindMemberComparer (oElement AS XELement, nValue AS LONG ) AS LONG
 		METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XElement
 			LOCAL oResult := NULL_OBJECT AS XElement
@@ -83,31 +83,31 @@ BEGIN NAMESPACE XSharpModel
 				oResult := oLast	// the last entity we saw before the selected line
 			ENDIF
 			RETURN oResult
-			
+
 		PRIVATE METHOD CompareByLine(oElement AS XELement, nLine AS LONG) AS LONG
 			LOCAL nResult AS LONG
 			LOCAL nStart, nEnd AS LONG
-			nStart := oElement:Range:StartLine 
-			nEnd   := oElement:Range:EndLine 
+			nStart := oElement:Range:StartLine
+			nEnd   := oElement:Range:EndLine
 			IF oElement IS XType
 				VAR oType := oElement ASTYPE XType
 				IF oType:Members:Count > 0
 					nEnd := oType:Members[0]:Range:StartLine-1
 				ENDIF
 			ENDIF
-			IF nStart <= nLine .and. nEnd>= nLine
+			IF nStart <= nLine .AND. nEnd>= nLine
 				nResult := 0
 			ELSEIF nStart > nLine
 				nResult := 1
-			ELSE 
+			ELSE
 				nResult := -1
 			ENDIF
 			RETURN nResult
-			
+
 		METHOD FindMemberAtRow(nLine AS LONG) AS XElement
 			nLine += 1
 			RETURN SELF:FindMember(CompareByLine, nLine)
-			
+
 			///
 			/// <Summary>Find member in file based on 0 based position</Summary>
 			///
@@ -115,27 +115,27 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE METHOD CompareByPosition(oElement AS XELement, nPos AS LONG) AS LONG
 			LOCAL nResult AS LONG
 			LOCAL nStart, nEnd AS LONG
-			nStart := oElement:Interval:Start 
-			nEnd   := oElement:Interval:Stop 
+			nStart := oElement:Interval:Start
+			nEnd   := oElement:Interval:Stop
 			IF oElement IS XType
 				VAR oType := oElement ASTYPE XType
 				IF oType:Members:Count > 0
 					nEnd := oType:Members[0]:Interval:Start-2
 				ENDIF
 			ENDIF
-			IF nStart <= nPos .and. nEnd >= nPos
+			IF nStart <= nPos .AND. nEnd >= nPos
 				nResult := 0
 			ELSEIF nStart > nPos
 				nResult := 1
-			ELSE 
+			ELSE
 				nResult := -1
 			ENDIF
 			RETURN nResult
-			
+
 		METHOD FindMemberAtPosition(nPos AS LONG) AS XElement
 			RETURN SELF:FindMember(CompareByPosition, nPos)
-			
-			
+
+
 		METHOD InitTypeList() AS VOID
 			IF SELF:HasCode
 				SELF:_typeList		:= ConcurrentDictionary<STRING, XType>{System.StringComparer.InvariantCultureIgnoreCase}
@@ -145,7 +145,7 @@ BEGIN NAMESPACE XSharpModel
 				SELF:_usingStatics	:= List<STRING>{}
 				SELF:_entityList    := List<XElement>{}
 			ENDIF
-			
+
 		METHOD SetTypes(types AS IDictionary<STRING, XType>, usings AS IList<STRING>, ;
 			staticusings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
 			IF SELF:HasCode
@@ -171,7 +171,7 @@ BEGIN NAMESPACE XSharpModel
 				END LOCK
 				WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
 			ENDIF
-			
+
 		METHOD BuildTypes(oInfo AS ParseResult) AS VOID
 			LOCAL aTypes	      AS Dictionary<STRING, XType>
 			LOCAL aUsings		  AS List<STRING>
@@ -216,21 +216,21 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			SELF:SetTypes(aTypes, aUsings, aUsingStatics, aEntities:ToImmutableArray())
 			RETURN
-			
-			
+
+
 		METHOD WaitParsing() AS VOID
 			//
 			IF SELF:HasCode
-			
+
 				WriteOutputMessage("-->> WaitParsing()")
 				BEGIN LOCK SELF:_lock
-				
+
 					IF ! SELF:Parsed
 						BEGIN USING VAR walker := SourceWalker{SELF}
 							TRY
-								VAR lines := System.IO.File.ReadAllLines(SELF:SourcePath)								
+								VAR lines := System.IO.File.ReadAllLines(SELF:SourcePath)
 								VAR info := walker:Parse(lines, FALSE)
-								BuildTypes(info)						
+								BuildTypes(info)
 							CATCH exception AS System.Exception
 								XSolution.WriteException(exception)
 							END TRY
@@ -239,28 +239,28 @@ BEGIN NAMESPACE XSharpModel
 				END LOCK
 				WriteOutputMessage("<<-- WaitParsing()")
 			ENDIF
-			
-			
+
+
 			// Properties
 		PROPERTY AllUsingStatics AS IList<STRING>
 			GET
-			
+
 				IF (! SELF:HasCode)
-				
+
 					RETURN NULL
 				ENDIF
 				WriteOutputMessage("-->> AllUsingStatics")
 				VAR statics := List<STRING>{}
 				BEGIN LOCK SELF:_lock
-				
+
 					statics:AddRange(SELF:_usingStatics)
 					IF (((SELF:Project != NULL) .AND. (SELF:Project:ProjectNode != NULL)) .AND. SELF:Project:ProjectNode:ParseOptions:IsDialectVO)
-					
+
 						FOREACH asm AS AssemblyInfo IN SELF:Project:AssemblyReferences
-						
+
 							VAR globalclass := asm:GlobalClassName
 							IF (! String.IsNullOrEmpty(globalclass))
-							
+
 								statics:AddUnique(globalclass)
 							ENDIF
 						NEXT
@@ -270,10 +270,10 @@ BEGIN NAMESPACE XSharpModel
 				RETURN statics
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY ContentHashCode AS DWORD
 			GET
-				IF ! SELF:HasCode .or. SELF:TypeList == NULL
+				IF ! SELF:HasCode .OR. SELF:TypeList == NULL
 					RETURN 0
 				ENDIF
 				BEGIN LOCK SELF:_lock
@@ -281,7 +281,7 @@ BEGIN NAMESPACE XSharpModel
 					FOREACH type AS XType IN SELF:TypeList:Values
 						FOREACH xmem AS XTypeMember IN type:Members
 							BEGIN UNCHECKED
-								hash += (DWORD)xmem:Prototype:GetHashCode() 
+								hash += (DWORD)xmem:Prototype:GetHashCode()
 								hash += (DWORD) xmem:Range:StartLine
 							END UNCHECKED
 						NEXT
@@ -290,7 +290,7 @@ BEGIN NAMESPACE XSharpModel
 				END LOCK
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY FullPath AS STRING GET SELF:filePath SET SELF:filePath := VALUE
 		PROPERTY GlobalType AS XType GET SELF:_globalType
 		PROPERTY HasCode AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml
@@ -299,20 +299,20 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY IsXaml AS LOGIC GET SELF:_type == XFileType.XAML
 		PROPERTY LastWritten AS System.DateTime GET SELF:_lastWritten SET SELF:_lastWritten := VALUE
 		PROPERTY Name AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:filePath)
-		
+
 		PROPERTY Parsed AS LOGIC
 			GET
 				WriteOutputMessage("-->> Parsed")
 				LOCAL flag AS LOGIC
 				BEGIN LOCK SELF:_lock
-				
+
 					flag := SELF:_parsed
 				END LOCK
 				WriteOutputMessage("<<-- Parsed")
 				RETURN flag
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY Project AS XProject
 			GET
 				IF SELF:_project == NULL
@@ -325,7 +325,7 @@ BEGIN NAMESPACE XSharpModel
 				SELF:_project := VALUE
 			END SET
 		END PROPERTY
-		
+
 		PROPERTY SourcePath AS STRING
 			GET
 				IF (SELF:IsXaml)
@@ -334,7 +334,7 @@ BEGIN NAMESPACE XSharpModel
 				RETURN SELF:FullPath
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY TypeList AS IDictionary<STRING, XType>
 			GET
 				IF ! SELF:HasCode
@@ -345,7 +345,7 @@ BEGIN NAMESPACE XSharpModel
 				END LOCK
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY Usings AS IList<STRING>
 			GET
 				IF ! SELF:HasCode
@@ -354,21 +354,21 @@ BEGIN NAMESPACE XSharpModel
 				RETURN _usings:ToArray()
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY XamlCodeBehindFile AS STRING
 			GET
 				VAR projectNode := SELF:Project:ProjectNode
 				RETURN System.IO.Path.ChangeExtension(System.IO.Path.Combine(projectNode:IntermediateOutputPath, System.IO.Path.GetFileName(SELF:FullPath)), ".g.prg")
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY XFileType AS XFileType GET SELF:_type
-		
+
 		METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.File "+message)
 
 	END CLASS
-	
-END NAMESPACE 
+
+END NAMESPACE
 
 

@@ -8,8 +8,8 @@ using System.Text
 BEGIN NAMESPACE  $rootnamespace$
 
 	CLASS $safeitemrootname$ IMPLEMENTS $contractName$
-		METHOD DoWork() as VOID
+		METHOD DoWork() as VOID STRICT
 			RETURN
-		
+
 	END CLASS
 END NAMESPACE

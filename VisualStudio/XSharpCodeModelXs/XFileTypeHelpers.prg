@@ -1,16 +1,16 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 USING System
 BEGIN NAMESPACE XSharpModel
-	
+
 	STATIC CLASS XFileTypeHelpers
 		// Methods
 		STATIC METHOD GetFileType(filename AS STRING) AS XFileType
-			
+
 			VAR ext := System.IO.Path.GetExtension(filename):ToLower()
 			SWITCH ext
 				CASE ".prg"
@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN XFileType.NativeResource
 			END SWITCH
 			RETURN XFileType.Unknown
-		
+
 		STATIC METHOD IsVOBinary( SELF type AS XFileType) AS LOGIC
 			SWITCH (type)
 				CASE XFileType.VOMenu
@@ -54,22 +54,22 @@ BEGIN NAMESPACE XSharpModel
 				CASE XFileType.VOForm
 				CASE XFileType.VOIndex
 				CASE XFileType.VOOrder
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false 
-		
+			RETURN FALSE
+
 		STATIC METHOD OpenInSourceCodeEditor( SELF type AS XFileType) AS LOGIC
 			SWITCH (type)
 				CASE XFileType.SourceCode
 				CASE XFileType.Header
 				CASE XFileType.NativeResource
 				CASE XFileType.Unknown
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
-		
-		
+			RETURN FALSE
+
+
 	END CLASS
 
-END NAMESPACE 
+END NAMESPACE
 

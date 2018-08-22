@@ -244,6 +244,27 @@ namespace XSharp.LanguageService
                 else
                 {
                     members.AddRange(file.EntityList);
+                    foreach (var ent in file.EntityList)
+                    {
+                        if (ent is XType)
+                        {
+                            var xType = ent as XType;
+                            if (xType.IsPartial)
+                            {
+                                // load methods from other files
+                                var fullType = file.Project.Lookup(xType.FullName, true);
+                                hasPartial = true;
+                                foreach (var member in fullType.Members)
+                                {
+                                    if (! members.Contains(member))
+                                    {
+                                        members.Add(member);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
                 }
                 if (sortItems)
                 {

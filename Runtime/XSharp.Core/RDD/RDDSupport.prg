@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -183,7 +183,8 @@ CLASS DbOrderInfo
 	PUBLIC Order		AS OBJECT
 	/// <summary>The index file name.</summary>
 	PUBLIC BagName		AS STRING
-	//PUBLIC Result		AS OBJECT 	// Is this needed ?
+	/// <summary>Return value for some order operations.</summary>
+	PUBLIC Result		AS OBJECT 	
 END CLASS
 
 /// <summary>Helper class to store a list of relational information.</summary> 
@@ -358,18 +359,13 @@ END CLASS
 CLASS DbJoinList
 END CLASS
 
-CLASS OrderStatus
-END CLASS
+
 
 CLASS RddList
 END CLASS
 
 
 CLASS DbFieldNames
-END CLASS
-
-
-CLASS DbWORKAREASTATUS
 END CLASS
 
 

@@ -10,9 +10,9 @@ USING System.Linq
 
 INTERNAL STATIC CLASS XSharp.FileSearch
 	STATIC PRIVATE foundEntries	:= List<OBJECT>{} AS List<OBJECT>
-	STATIC PRIVATE enumerator   := null AS IEnumerator<OBJECT>
-	STATIC PRIVATE currentItem	:= null AS OBJECT
-	STATIC PRIVATE isAtEnd		:= true AS LOGIC
+	STATIC PRIVATE enumerator   := NULL AS IEnumerator<OBJECT>
+	STATIC PRIVATE currentItem	:= NULL AS OBJECT
+	STATIC PRIVATE isAtEnd		:= TRUE AS LOGIC
 	CONST timeFormat := "HH:MM:ss" AS STRING
 
 	PUBLIC STATIC METHOD FFCount( filespec AS STRING , attributes AS DWORD ) AS DWORD
@@ -263,14 +263,14 @@ FUNCTION File(cFile AS STRING) AS LOGIC
 			ENDIF
 		ELSE
 			// Look in current directory first and if that fails through the whole normal search list
-			IF __FileHelper(Environment.CurrentDirectory, cFile, false )
-				RETURN true
+			IF __FileHelper(Environment.CurrentDirectory, cFile, FALSE )
+				RETURN TRUE
 			ENDIF
 			aPaths := __GetSearchPaths()
 			lFirst := TRUE
 			FOREACH cPath AS STRING IN aPaths
 				IF __FileHelper(cPath, cFile, lFirst )
-					RETURN true
+					RETURN TRUE
 				ENDIF
 				lFirst := FALSE
 			NEXT
@@ -292,13 +292,13 @@ LOCAL cTemp AS STRING
 LOCAL cFile AS STRING
 LOCAL files AS STRING[]
 IF ! System.IO.Directory.Exists(cPath)
-	RETURN false
+	RETURN FALSE
 ENDIF
 cTemp := System.IO.Path.Combine(cPath, cFileSpec)
 cPath := System.IO.Path.GetDirectoryName(cTemp)
 cFile := System.IO.Path.GetFileName(cTemp)
 IF ! System.IO.Directory.Exists(cPath)
-	RETURN false
+	RETURN FALSE
 ENDIF
 files := System.IO.Directory.GetFiles(cPath, cFile)
 IF files:Length > 0
@@ -314,7 +314,7 @@ INTERNAL FUNCTION __GetSearchPaths() AS STRING[]
 	// if SetPath() is empty then we look through the Environment variable Path
 	LOCAL aDefault AS STRING[]
 	aDefault := __SetPathArray()
-	IF aDefault != null
+	IF aDefault != NULL
 		RETURN aDefault
 	ENDIF
 

@@ -28,7 +28,7 @@ FUNCTION AmPm(cTime AS STRING) AS STRING
 	nSeconds := nSeconds % 3600
 	nMinutes := nSeconds / 60
 	nSeconds := nSeconds % 60
-	RETURN _TimeString(nHours, nMinutes, nSeconds, true, GetAmExt(), GetPmExt())
+	RETURN _TimeString(nHours, nMinutes, nSeconds, TRUE, GetAmExt(), GetPmExt())
 
 
 /// <summary>
@@ -83,7 +83,7 @@ FUNCTION ConTime(dt AS DateTime) AS STRING
 /// </returns>
 FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
 	LOCAL result AS STRING
-	IF dwDay < 1 .or. dwDay > 7
+	IF dwDay < 1 .OR. dwDay > 7
 		result := ""
 	ELSEIF RuntimeState.International == CollationMode.Clipper
 		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDay -1)
@@ -100,7 +100,7 @@ FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
 /// </returns>
 FUNCTION NToCMonth(dwMonth AS DWORD) AS STRING
 	LOCAL result AS STRING
-	IF dwMonth < 1 .or. dwMonth > 12
+	IF dwMonth < 1 .OR. dwMonth > 12
 		result := ""
 	ELSEIF RuntimeState.International == CollationMode.Clipper
 		result := __CavoStr(VOErrors.RT_MSG_MONTH1 + dwMonth -1)

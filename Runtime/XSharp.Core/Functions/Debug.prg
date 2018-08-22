@@ -57,7 +57,7 @@ FUNCTION ProcFile(activation AS INT) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL file := "" AS STRING
    
-   IF ( activation + 1 < st:FrameCount .and. activation >= 0)
+   IF ( activation + 1 < st:FrameCount .AND. activation >= 0)
 	  // Note: add 1 so this function isn't included in the stack trace
       file :=  st:GetFrame( (INT) activation + 1 ):GetFileName()  
    ENDIF
@@ -93,7 +93,7 @@ FUNCTION ProcLine(activation AS INT) AS DWORD
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL line := 0 AS DWORD
    
-   IF ( activation + 1 < st:FrameCount .and. activation >= 0)
+   IF ( activation + 1 < st:FrameCount .AND. activation >= 0)
 	  // Note: add 1 so this function isn't included in the stack trace
       line := (DWORD) st:GetFrame( (INT) activation + 1 ):GetFileLineNumber()  
    ENDIF
@@ -119,7 +119,7 @@ FUNCTION ProcName(activation AS INT) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL name := "" AS STRING
    
-   IF ( activation + 1 < st:FrameCount .and. activation >= 0)
+   IF ( activation + 1 < st:FrameCount .AND. activation >= 0)
 		VAR mi := st:GetFrame( activation + 1 ):GetMethod()
 		VAR t  := mi:DeclaringType
 		IF t == NULL 

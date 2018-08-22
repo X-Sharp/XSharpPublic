@@ -56,7 +56,7 @@ FUNCTION GetEnv(cVar AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING) AS LOGIC
-	RETURN SetEnv(cVar, cValue, false)
+	RETURN SetEnv(cVar, cValue, FALSE)
 /// <summary>
 /// Update or replace the contents of a DOS environment variable.
 /// </summary>
@@ -79,7 +79,7 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 		System.Environment.SetEnvironmentVariable(cVar, cValue)
 		result := System.Environment.GetEnvironmentVariable(cVar) == cValue
 	CATCH
-		result := false
+		result := FALSE
 	END TRY
 	RETURN result   
 
@@ -317,7 +317,7 @@ FUNCTION DirRemove(cDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
 		IF Directory.Exists(cDir)
-			Directory.Delete(cDir,false)
+			Directory.Delete(cDir,FALSE)
 			result := 0
 		ELSE
 			result := -1
@@ -337,7 +337,7 @@ FUNCTION DirRemove(cDir AS STRING) AS INT
 
 FUNCTION DiskChange(c AS STRING) AS LOGIC
 	IF String.IsNullOrEmpty(c)
-		RETURN false
+		RETURN FALSE
 	ENDIF
 	c := c:Substring(0,1)+Path.VolumeSeparatorChar:ToString()+Path.DirectorySeparatorChar:ToString()
 	RETURN DirChange(c) == 0

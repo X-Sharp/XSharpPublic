@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -28,7 +28,7 @@ PUBLIC CLASS MemoHelpers
 		IF cMemo == NULL
 			RETURN 0
 		ENDIF
-		IF nLineLen > 0 .and. nLineLen <= MemoHelpers.MAX_WIDTH
+		IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
 	
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -58,7 +58,7 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nSrc  := 0 AS INT
 		
 		
-		IF nPos <= cMemo:Length .and. nLineLen > 0 .and. nLineLen <= MemoHelpers.MAX_WIDTH
+		IF nPos <= cMemo:Length .AND. nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
 		
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -67,7 +67,7 @@ PUBLIC CLASS MemoHelpers
 			nTempLen := 1
 			nLineNum := 1
 			
-			DO WHILE nIndex < nPos .and. nTempLen != 0
+			DO WHILE nIndex < nPos .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				IF nIndex <= nPos
@@ -100,7 +100,7 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nPos		:= 0 AS INT
 		
 		
-		IF  nLineNum > 0 .and. nLineLen > 4 .and. nLineLen <= MAX_WIDTH
+		IF  nLineNum > 0 .AND. nLineLen > 4 .AND. nLineLen <= MAX_WIDTH
 		
 			IF nTabSize >= nLineLen
 				nTabSize := nLineLen - 1
@@ -109,7 +109,7 @@ PUBLIC CLASS MemoHelpers
 			nTempLen := 1
 			
 			nLineNum --
-			DO WHILE nLineNum != 0 .and. nTempLen != 0
+			DO WHILE nLineNum != 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				nLineNum --
@@ -119,7 +119,7 @@ PUBLIC CLASS MemoHelpers
 			//  previous line it won't be counted.  We must add as two chars
 			//  to the buffer position in order for it to work out correctly.
 			
-			IF IsCrLf( cMemo, nIndex, nCrLf ) .and. nCrLf == SOFT_CR_LF
+			IF IsCrLf( cMemo, nIndex, nCrLf ) .AND. nCrLf == SOFT_CR_LF
 				nIndex += 2
 			ENDIF
 			
@@ -153,7 +153,7 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nChar AS INT
 		
 		nCrLf := 0
-		IF nPos + 1 < cMemo:Length .and. (INT) cMemo[(INT) nPos + 1] == LINE_FEED
+		IF nPos + 1 < cMemo:Length .AND. (INT) cMemo[(INT) nPos + 1] == LINE_FEED
 			nChar := (INT) cMemo[(INT) nPos]
 			SWITCH nCHar
 			CASE HARD_CR
@@ -178,7 +178,7 @@ PUBLIC CLASS MemoHelpers
 		   nPos		:= nStart
 		   lCont	:= TRUE
    
-		   DO WHILE lCont .and. nPos < nLength .and. nWidth <= nLineLen
+		   DO WHILE lCont .AND. nPos < nLength .AND. nWidth <= nLineLen
 			  nChar := (INT) cMemo[nPos]
 			  DO CASE
 			  CASE nChar == TAB
@@ -229,7 +229,7 @@ PUBLIC CLASS MemoHelpers
 			oBuilder := System.Text.StringBuilder{ (INT) nLineLen }
 		END IF
 		
-		IF nLineNum > 0 .and. nLineLen > 0 .and. nLineLen <= MAX_WIDTH
+		IF nLineNum > 0 .AND. nLineLen > 0 .AND. nLineLen <= MAX_WIDTH
 		
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -237,18 +237,18 @@ PUBLIC CLASS MemoHelpers
 			nIndex :=  dOffset
 			nLineNum --
 			nTempLen := 1
-			DO WHILE nLineNum != 0 .and. nTempLen != 0
+			DO WHILE nLineNum != 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				dOffset += nTempLen
 				nLineNum --
 			ENDDO
 			
-			IF nLineNum == 0 .and. nTempLen != 0
+			IF nLineNum == 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nSrc := 0
 				nDes := 0
-				DO WHILE nSrc < nTempLen .and. nDes < nLineLen
+				DO WHILE nSrc < nTempLen .AND. nDes < nLineLen
 					nChar := cMemo[ (INT) nSrc + nIndex]
 					DO CASE
 						CASE IsCrLf( cMemo, nSrc + nIndex, REF nCrLf )

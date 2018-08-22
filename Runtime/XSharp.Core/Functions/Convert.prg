@@ -12,7 +12,7 @@ USING System.Text
 /// </returns>
 FUNCTION Bin2DW(c AS STRING) AS DWORD
 	LOCAL dwResult := 0 AS DWORD
-	IF c!= null .and. c:Length >= 4
+	IF c!= NULL .AND. c:Length >= 4
 		LOCAL aBytes AS BYTE[]
 		aBytes := BYTE[]{4}
 		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
@@ -31,7 +31,7 @@ FUNCTION Bin2DW(c AS STRING) AS DWORD
 /// </returns>
 FUNCTION Bin2I(c AS STRING) AS SHORT
 	LOCAL siResult := 0 AS SHORT
-	IF c!= null .and. c:Length >= 2
+	IF c!= NULL .AND. c:Length >= 2
 		LOCAL aBytes AS BYTE[]
 		aBytes := BYTE[]{2}
 		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
@@ -48,7 +48,7 @@ FUNCTION Bin2I(c AS STRING) AS SHORT
 /// </returns>
 FUNCTION Bin2L(c AS STRING) AS LONG
 	LOCAL liResult := 0 AS LONG
-	IF c!= null .and. c:Length >= 4
+	IF c!= NULL .AND. c:Length >= 4
 		LOCAL aBytes AS BYTE[]
 		aBytes := BYTE[]{4}
 		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
@@ -67,7 +67,7 @@ FUNCTION Bin2L(c AS STRING) AS LONG
 /// <returns>
 /// </returns>
 FUNCTION Bin2Logic(c AS STRING) AS LOGIC
-	RETURN c != null .and. c[0] != 0
+	RETURN c != NULL .AND. c[0] != 0
 
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
 	RETURN L2Bin( p:ToInt32())
@@ -88,7 +88,7 @@ RETURN (IntPtr) Bin2L(c)
 /// </returns>
 FUNCTION Bin2Real4(c AS STRING) AS REAL4
 	LOCAL r4Result := 0 AS REAL4
-	IF c!= null .and. c:Length >= 4
+	IF c!= NULL .AND. c:Length >= 4
 		LOCAL aBytes AS BYTE[]
 		aBytes := BYTE[]{4}
 		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
@@ -108,7 +108,7 @@ FUNCTION Bin2Real4(c AS STRING) AS REAL4
 /// </returns>
 FUNCTION Bin2REAL8(c AS STRING) AS REAL8
 	LOCAL r8Result := 0 AS REAL8
-	IF c!= null .and. c:Length >= 8
+	IF c!= NULL .AND. c:Length >= 8
 		LOCAL aBytes AS BYTE[]
 		aBytes := BYTE[]{8}
 		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
@@ -131,7 +131,7 @@ FUNCTION Bin2REAL8(c AS STRING) AS REAL8
 /// </returns>
 FUNCTION Bin2W(c AS STRING) AS WORD
 	LOCAL wResult := 0 AS WORD
-	IF c!= null .and. c:Length >= 2
+	IF c!= NULL .AND. c:Length >= 2
 		LOCAL aBytes AS BYTE[]
 		aBytes := BYTE[]{2}
 		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
@@ -149,12 +149,12 @@ FUNCTION Bin2W(c AS STRING) AS WORD
 /// <returns>
 /// </returns>
 FUNCTION CTOL(c AS STRING) AS LOGIC
-	IF c != null 
-		IF c[0] == 'T' .or. c[0] == 't' .or. c[0] == 'Y' .or. c[0] =='y'
-			RETURN true	
+	IF c != NULL 
+		IF c[0] == 'T' .OR. c[0] == 't' .OR. c[0] == 'Y' .OR. c[0] =='y'
+			RETURN TRUE	
 		ENDIF
 	ENDIF
-	RETURN false
+	RETURN FALSE
 
 
 FUNCTION _GetHexChar(c AS CHAR, c1 OUT CHAR, c2 OUT CHAR) AS STRING

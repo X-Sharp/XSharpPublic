@@ -23,7 +23,7 @@ FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS L
 	ENDIF
 	// try HKLM first
 	TRY
-		IF Registry.GetValue(cKey,cKeyName,null) != null
+		IF Registry.GetValue(cKey,cKeyName,NULL) != NULL
 			Registry.SetValue(cKey,cKeyName,nKeyVal)
 		ENDIF
 	END TRY
@@ -35,7 +35,7 @@ FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS L
 	TRY    
 		Registry.SetValue(cKey,cKeyName,nKeyVal)
 	END TRY
-	RETURN ! Registry.GetValue(cKey,cKeyName,null) == null
+	RETURN ! Registry.GetValue(cKey,cKeyName,NULL) == NULL
 	
 	
 	/// <summary>
@@ -54,7 +54,7 @@ FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) 
 	ENDIF
 	// try HKLM first
 	TRY    
-		IF Registry.GetValue(cKey,cKeyName,null) != null
+		IF Registry.GetValue(cKey,cKeyName,NULL) != NULL
 			Registry.SetValue(cKey,cKeyName,cKeyVal)
 		ENDIF
 	END TRY
@@ -66,7 +66,7 @@ FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) 
 	TRY    
 		Registry.SetValue(cKey,cKeyName,cKeyVal)
 	END TRY
-	RETURN ! Registry.GetValue(cKey,cKeyName,null) == null
+	RETURN ! Registry.GetValue(cKey,cKeyName,NULL) == NULL
 	
 	/// <summary>
 	/// Retrieve a numeric value from the Registry.
@@ -84,17 +84,17 @@ FUNCTION QueryRTRegInt(cSubKey AS STRING,cKeyName AS STRING) AS DWORD
 	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
 	ENDIF
-	o := Registry.GetValue(cKey,cKeyName,null)
+	o := Registry.GetValue(cKey,cKeyName,NULL)
 	// If that fails then read from HKLM
-	IF o == null
+	IF o == NULL
 		cKey := VO_LOCALMACHINE
 		IF ! String.IsNullOrEmpty( cSubKey )
 			cKey += "\" + cSubKey
 		ENDIF
 		TRY
-			o := Registry.GetValue(cKey,cKeyName,null)
+			o := Registry.GetValue(cKey,cKeyName,NULL)
 		END TRY
-		IF o == null
+		IF o == NULL
 			o := 0
 		ENDIF
 	ENDIF
@@ -116,16 +116,16 @@ FUNCTION QueryRTRegString(cSubKey AS STRING,cKeyName AS STRING) AS STRING
 		cKey += "\" + cSubKey
 	ENDIF
 	
-	o := Registry.GetValue(cKey,cKeyName,null)
-	IF o == null
+	o := Registry.GetValue(cKey,cKeyName,NULL)
+	IF o == NULL
 		cKey := VO_LOCALMACHINE
 		IF ! String.IsNullOrEmpty( cSubKey )
 			cKey += "\" + cSubKey
 		ENDIF
 		TRY
-			o := Registry.GetValue(cKey,cKeyName,null)
+			o := Registry.GetValue(cKey,cKeyName,NULL)
 		END TRY
-		IF o == null
+		IF o == NULL
 			o := ""
 		ENDIF
 	ENDIF
@@ -141,15 +141,15 @@ FUNCTION QueryRTRegString(cSubKey AS STRING,cKeyName AS STRING) AS STRING
 FUNCTION DeleteRTRegKey(cSubKey AS STRING) AS LOGIC
 LOCAL oKey := NULL AS RegistryKey 
 	TRY
-	oKey := Registry.LocalMachine:OpenSubKey(VO_APPS, true)
-		IF (oKey != null)
+	oKey := Registry.LocalMachine:OpenSubKey(VO_APPS, TRUE)
+		IF (oKey != NULL)
 	oKey:DeleteSubKey(cSubKey)
 ENDIF
 END TRY
 	TRY
-	oKey := Registry.CurrentUser:OpenSubKey(VO_APPS, true)
-		IF (oKey != null)
+	oKey := Registry.CurrentUser:OpenSubKey(VO_APPS, TRUE)
+		IF (oKey != NULL)
 	oKey:DeleteSubKey(cSubKey)
 ENDIF
 END TRY
-RETURN oKey != null_object
+RETURN oKey != NULL_OBJECT

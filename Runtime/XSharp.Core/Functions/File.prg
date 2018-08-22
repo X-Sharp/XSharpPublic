@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -96,32 +96,32 @@ BEGIN NAMESPACE XSharp.IO
 		
 		CONSTRUCTOR(dwMode AS DWORD, dwAttribs AS DWORD)
 			// Wildcard
-			IF (DWORD)_and(dwMode, FXO_WILD) == FXO_WILD
-				lWild := true
+			IF (DWORD)_AND(dwMode, FXO_WILD) == FXO_WILD
+				lWild := TRUE
 				dwMode := dwMode - FXO_WILD
 			ELSE
-				lWild := false
+				lWild := FALSE
 			ENDIF
 			Attributes := dwAttribs
 			
 			// Access
 			fileAccess	:= FileAccess.read
-			IF (DWORD)_and(dwMode,FO_READWRITE) == FO_READWRITE
+			IF (DWORD)_AND(dwMode,FO_READWRITE) == FO_READWRITE
 				fileAccess	:= FileAccess.readWrite
-			ELSEIF (DWORD)_and(dwMode,FO_WRITE) == FO_WRITE
+			ELSEIF (DWORD)_AND(dwMode,FO_WRITE) == FO_WRITE
 				fileAccess	:= FileAccess.write
 			ENDIF
 			// Create
 			fileMode := FileMode.Open
-			IF (DWORD)_and(dwMode,FO_CREATE) == FO_CREATE
+			IF (DWORD)_AND(dwMode,FO_CREATE) == FO_CREATE
 				fileMode	:= FileMode.Create
 				fileAccess	:= FileAccess.readWrite
 			ENDIF
 			
 			FileShare  := FileShare.readWrite
 			LOCAL dwTempMode AS DWORD
-			dwTempMode := (DWORD)_or(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
-			dwTempMode := (DWORD)_and(dwMode,dwTempMode)
+			dwTempMode := (DWORD)_OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
+			dwTempMode := (DWORD)_AND(dwMode,dwTempMode)
 			
 			DO CASE
 				CASE dwTempMode == FO_DENYNONE
@@ -170,7 +170,7 @@ BEGIN NAMESPACE XSharp.IO
 			IF streams:ContainsKey(pStream)
 				RETURN streams[pStream]:Stream
 			ENDIF
-			RETURN null_object 
+			RETURN NULL_OBJECT 
 		
 		STATIC PRIVATE METHOD hasStream(pStream AS Intptr) AS LOGIC
 			RETURN streams:ContainsKey(pStream)
@@ -178,19 +178,19 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC PRIVATE METHOD addStream(pStream AS Intptr, oStream AS FileStream, attributes AS DWORD) AS LOGIC
 			IF ! streams:ContainsKey(pStream)
 				streams:Add(pStream, FileCacheElement {oStream, attributes})
-				RETURN true
+				RETURN TRUE
 			ENDIF
-			RETURN false
+			RETURN FALSE
 		
 		STATIC PRIVATE METHOD removeStream(pStream AS Intptr) AS LOGIC
 			IF streams:ContainsKey(pStream)
 				streams:Remove(pStream)
-				RETURN true
+				RETURN TRUE
 			ENDIF
-			RETURN false
+			RETURN FALSE
 		
 		STATIC PRIVATE METHOD createManagedFileStream(cFIle AS STRING, oMode AS VOFileMode) AS FileStream
-			LOCAL oStream := null AS FileSTream
+			LOCAL oStream := NULL AS FileSTream
 			TRY
 				oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 4096}
 			CATCH e AS Exception
@@ -202,13 +202,13 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC INTERNAL METHOD CreateFile(cFIle AS STRING, oMode AS VOFileMode) AS IntPtr
 			LOCAL hFile := F_ERROR AS IntPtr
 			LOCAL oStream AS FileStream
-			IF System.IO.File.Exists(cFile) .and. oMode:FileMode == FileMode.Create
+			IF System.IO.File.Exists(cFile) .AND. oMode:FileMode == FileMode.Create
 				VAR fi := FileInfo{cFile}
 				fi:Attributes := FileAttributes.Normal
 			ENDIF
 			
 			oStream := createManagedFileStream(cFile, oMode)
-			IF oStream != null
+			IF oStream != NULL
 				hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
 				DO WHILE streams:ContainsKey(hFile)
 					hFile := (IntPtr) random:@@Next(1, Int32.MaxValue)
@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC PRIVATE METHOD getBuffer(pStream AS IntPtr, nSize AS INT) AS BYTE[]		
 			IF hasStream(pStream)
 				LOCAL element := streams[pStream] AS FileCacheElement
-				IF element:Bytes == null .or. element:Bytes:Length < nSize
+				IF element:Bytes == NULL .OR. element:Bytes:Length < nSize
 					element:Bytes := BYTE[]{nSize}
 				ENDIF
 				RETURN element:Bytes
@@ -244,9 +244,9 @@ BEGIN NAMESPACE XSharp.IO
 					fi:Attributes := (FileAttributes) dwAttributes
 				ENDIF
 				oStream:Dispose()
-				RETURN true
+				RETURN TRUE
 			ENDIF
-			RETURN false
+			RETURN FALSE
 		
 		INTERNAL STATIC METHOD read(pHandle AS Intptr, refC OUT STRING, iCount AS INT, lOem2Ansi AS LOGIC) AS INT
 			LOCAL aBuffer := XSharp.IO.File.getBuffer(pHandle, iCount) AS BYTE[]
@@ -257,7 +257,7 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD readBuff(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lOem2Ansi AS LOGIC) AS INT64
 			LOCAL iResult := 0 AS INT64
 			VAR oStream := XSharp.IO.File.findStream(pHandle)
-			IF oStream != null_object
+			IF oStream != NULL_OBJECT
 				TRY
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
 					IF lOem2Ansi
@@ -277,7 +277,7 @@ BEGIN NAMESPACE XSharp.IO
 				// According to the VO docs the default value for the buffer length = 256
 				iCount := 256
 			ENDIF
-			IF oStream != null_object
+			IF oStream != NULL_OBJECT
 				TRY
 					LOCAL pBuffer := XSharp.IO.File.getBuffer(pFile, iCount) AS BYTE[]
 					nPos    := oStream:Position
@@ -295,7 +295,7 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL oStream AS FileStream
 			LOCAL iResult AS INT64
 			oStream := XSharp.IO.File.findStream(pHandle)
-			IF oStream != null_object
+			IF oStream != NULL_OBJECT
 				iResult := -1
 				TRY
 					SWITCH dwOrigin
@@ -317,13 +317,13 @@ BEGIN NAMESPACE XSharp.IO
 		
 		INTERNAL STATIC METHOD write( pHandle AS IntPtr, c AS STRING, nLength AS INT ) AS INT
 			LOCAL aBytes := String2Bytes(c) AS BYTE[]
-			RETURN writeBuff(pHandle, aBytes, nLength, false)			
+			RETURN writeBuff(pHandle, aBytes, nLength, FALSE)			
 		
 		INTERNAL STATIC METHOD writeBuff(pHandle AS IntPtr,pBuffer AS BYTE[],iCount AS INT, lAnsi2Oem AS LOGIC) AS INT
 			LOCAL oStream	AS FileStream
 			LOCAL iWritten := 0 AS INT
 			oStream := XSharp.IO.File.findStream(pHandle)
-			IF oStream != null_object
+			IF oStream != NULL_OBJECT
 				TRY
 					IF lAnsi2Oem
 						pBuffer := Ansi2Oem(pBuffer)
@@ -347,18 +347,18 @@ BEGIN NAMESPACE XSharp.IO
 		
 		INTERNAL STATIC METHOD lock(phandle AS IntPtr,iOffset AS INT64,iLength AS INT64, lLock AS LOGIC) AS LOGIC
 			LOCAL oStream := findStream(pHandle) AS FileStream
-			LOCAL lResult := false AS LOGIC
-			IF oStream != null_object
+			LOCAL lResult := FALSE AS LOGIC
+			IF oStream != NULL_OBJECT
 				TRY
 					IF (lLock)
 						oStream:Lock(iOffset, iLength)
 					ELSE
 						oStream:UnLock(iOffset, iLength)
 					ENDIF
-					lResult := true
+					lResult := TRUE
 				CATCH 
 					// Catch and save error
-					lResult := false
+					lResult := FALSE
 					FError((DWORD)Marshal.GetLastWin32Error())
 				END TRY
 			ENDIF	
@@ -366,39 +366,39 @@ BEGIN NAMESPACE XSharp.IO
 		
 		INTERNAL STATIC METHOD flush(phandle AS IntPtr, lCommit AS LOGIC) AS LOGIC
 			LOCAL oStream := XSharp.IO.File.findStream(pHandle) AS FileStream
-			LOCAL lOk := false AS LOGIC
-			IF oStream != null_object
+			LOCAL lOk := FALSE AS LOGIC
+			IF oStream != NULL_OBJECT
 				TRY
 					IF lCommit
-						oStream:Flush(true)
+						oStream:Flush(TRUE)
 					ELSE
 						oStream:Flush()
 					ENDIF
-					lOk := true
+					lOk := TRUE
 				CATCH 
 					FError((DWORD)Marshal.GetLastWin32Error())
-					lOk := false 
+					lOk := FALSE 
 				END TRY
 			ENDIF	
 			RETURN lOk
 		INTERNAL STATIC METHOD ChSize(pHandle AS IntPtr,nValue AS DWORD) AS LOGIC
 			LOCAL oStream := XSharp.IO.File.findStream(pHandle) AS FileStream
-			LOCAL lOk := false AS LOGIC
-			IF oStream != null_object
+			LOCAL lOk := FALSE AS LOGIC
+			IF oStream != NULL_OBJECT
 				TRY
 					oStream:SetLength(nValue)
-					lOk := true
+					lOk := TRUE
 				CATCH 
 					FError((DWORD)Marshal.GetLastWin32Error())
-					lOk := false
+					lOk := FALSE
 				END TRY
 			ENDIF	
 			RETURN lOk
 		
 		INTERNAL STATIC METHOD Eof(pHandle AS IntPtr) AS LOGIC
 			LOCAL oStream := XSharp.IO.File.findStream(pHandle) AS FileStream
-			LOCAL lResult := true AS LOGIC
-			IF oStream != null_object
+			LOCAL lResult := TRUE AS LOGIC
+			IF oStream != NULL_OBJECT
 				lResult := oStream:Position == oStream:Length
 			ENDIF	 
 			RETURN lResult
@@ -406,7 +406,7 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD Tell(pHandle AS IntPtr) AS INT64
 			LOCAL oStream AS FileStream
 			oStream := XSharp.IO.File.findStream(pHandle)
-			IF oStream != null_object
+			IF oStream != NULL_OBJECT
 				TRY
 					RETURN oStream:Position
 				CATCH
@@ -470,7 +470,7 @@ FUNCTION FClose(pFile AS IntPtr) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION FCommit(pHandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pHandle, true)
+	RETURN XSharp.IO.File.flush(pHandle, TRUE)
 
 /// <summary>
 /// Determine if the file pointer is positioned at the end-of-file.
@@ -491,7 +491,7 @@ FUNCTION FEof(pHandle AS IntPtr) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION FFLock(phandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(pHandle, (INT64) dwOffset, (INT64) dwLength, true)
+	RETURN XSharp.IO.File.lock(pHandle, (INT64) dwOffset, (INT64) dwLength, TRUE)
 
 
 /// <summary>
@@ -501,7 +501,7 @@ FUNCTION FFLock(phandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION FFlush(phandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pHandle, false)
+	RETURN XSharp.IO.File.flush(pHandle, FALSE)
 
 
 /// <summary>
@@ -513,7 +513,7 @@ FUNCTION FFlush(phandle AS IntPtr) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION FFUnLock(phandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(pHandle, (INT64) dwOffset, (INT64) dwLength, false)
+	RETURN XSharp.IO.File.lock(pHandle, (INT64) dwOffset, (INT64) dwLength, FALSE)
 
 
 /// <summary>
@@ -580,7 +580,7 @@ FUNCTION FPutS3(pHandle AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION FRead3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pHandle, pBuffer, (INT) dwCount, false)
+	RETURN (DWORD) XSharp.IO.File.readBuff(pHandle, pBuffer, (INT) dwCount, FALSE)
 
 /// <summary>
 /// Read characters from a file into an allocated buffer.
@@ -627,7 +627,7 @@ FUNCTION FReadLine2(pFile AS IntPtr,nBuffLen AS DWORD) AS STRING
 /// </returns>
 FUNCTION FReadStr(pHandle AS IntPtr,iCount AS DWORD) AS STRING
 	LOCAL cResult AS STRING
-	XSharp.IO.File.read(pHandle, OUT cResult, (INT) iCount, false)
+	XSharp.IO.File.read(pHandle, OUT cResult, (INT) iCount, FALSE)
 	RETURN cResult
 
 
@@ -726,7 +726,7 @@ FUNCTION FWrite( pHandle AS IntPtr, c AS STRING, nLength AS DWORD ) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION FWrite3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pHandle, pBuffer, (INT) dwCount, false)
+	RETURN (DWORD) XSharp.IO.File.writeBuff(pHandle, pBuffer, (INT) dwCount, FALSE)
 
 
 /// <summary>
@@ -792,7 +792,7 @@ FUNCTION FWriteText3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DW
 /// <returns>
 /// </returns>
 FUNCTION AdjustFName(cName AS STRING) AS STRING
-	LOCAL adjusted := null AS STRING
+	LOCAL adjusted := NULL AS STRING
 	IF ( !string.IsNullOrEmpty(cName) ) 
 		adjusted := System.IO.Path.GetFileNameWithoutExtension(cName):TrimEnd()
 		IF ( cName:IndexOf('.') > 0 ) 
@@ -983,22 +983,22 @@ FUNCTION String2FAttr(cAttr AS STRING) AS DWORD
 FUNCTION FAttr2String(dwAttributes AS DWORD) AS STRING
 	LOCAL cAttribute := "" AS STRING
 	
-	IF (DWORD)_and(dwAttributes,FA_DIRECTORY) == FA_DIRECTORY
+	IF (DWORD)_AND(dwAttributes,FA_DIRECTORY) == FA_DIRECTORY
 		cAttribute := cAttribute + "D"
 	ENDIF
-	IF (DWORD)_and(dwAttributes,FA_VOLUME) == FA_VOLUME
+	IF (DWORD)_AND(dwAttributes,FA_VOLUME) == FA_VOLUME
 		cAttribute := cAttribute + "V"
 	ENDIF
-	IF (DWORD)_and(dwAttributes,FC_ARCHIVED) == FC_ARCHIVED
+	IF (DWORD)_AND(dwAttributes,FC_ARCHIVED) == FC_ARCHIVED
 		cAttribute := cAttribute + "A"
 	ENDIF
-	IF (DWORD)_and(dwAttributes,FC_HIDDEN) == FC_HIDDEN
+	IF (DWORD)_AND(dwAttributes,FC_HIDDEN) == FC_HIDDEN
 		cAttribute := cAttribute + "H"
 	ENDIF
-	IF (DWORD)_and(dwAttributes,FC_READONLY) == FC_READONLY
+	IF (DWORD)_AND(dwAttributes,FC_READONLY) == FC_READONLY
 		cAttribute := cAttribute + "R"
 	ENDIF
-	IF (DWORD)_and(dwAttributes,FC_SYSTEM) == FC_SYSTEM
+	IF (DWORD)_AND(dwAttributes,FC_SYSTEM) == FC_SYSTEM
 		cAttribute := cAttribute + "S"
 	ENDIF
 	
@@ -1014,7 +1014,7 @@ FUNCTION Bytes2String(aBytes AS BYTE[], nBuffLen AS INT) AS STRING
 
 FUNCTION String2Bytes(sSource AS STRING) AS BYTE[]
 	LOCAL ret AS BYTE[]
-	IF sSource != null
+	IF sSource != NULL
 		LOCAL encoding := Encoding.Default AS Encoding  
 		ret := encoding:GetBytes( sSource ) 
 	ELSE
@@ -1030,20 +1030,20 @@ FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 	// determine end of line
 	// note that VO looks for CR LF. CR alone or LF alone to not count as end of line
 	LOCAL nLF AS INT
-	LOCAL lFoundCR := false AS LOGIC
-	LOCAL lFoundCRLF := false AS LOGIC
+	LOCAL lFoundCR := FALSE AS LOGIC
+	LOCAL lFoundCRLF := FALSE AS LOGIC
 	nLF := nBuffLen
 	FOR VAR nI := 0 TO nBuffLen-1
 		SWITCH aBytes[nI]
 			CASE 10
 				IF lFoundCR		// immediately LF after CR
 					nLF := nI -1
-					lFoundCRLF := true
+					lFoundCRLF := TRUE
 				ENDIF
 			CASE 13
-				lFoundCR := true
+				lFoundCR := TRUE
 			OTHERWISE
-				lFoundCR := false
+				lFoundCR := FALSE
 		END SWITCH
 		IF lFoundCRLF
 			EXIT

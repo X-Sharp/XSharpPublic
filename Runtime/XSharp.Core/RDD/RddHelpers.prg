@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.RDD
 		STATIC METHOD CWA(cFunction AS STRING) AS IRDD 
 			LOCAL oResult AS IRDD
 			oResult := CWA()
-			IF oResult != null_object
+			IF oResult != NULL_OBJECT
 				RETURN oResult
 			ENDIF
 			THROW NoTableError(cFunction)
@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		STATIC METHOD CWANum(cFunction AS STRING)  AS LONG
 			VAR oWA := WorkAreas.GetInstance().CurrentWorkArea
-			IF oWA != null
+			IF oWA != NULL
 				RETURN oWA:Area
 			ENDIF
 			THROW NoTableError(cFunction)

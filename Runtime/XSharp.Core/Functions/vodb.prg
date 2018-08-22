@@ -1,12 +1,13 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+#ifdef NOTDEFINED
 USING XSharp
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-#ifdef NOTDEFINED
+USING System.Collections.Generic
 /// <summary>
 /// Return the full path of the file
 /// </summary>
@@ -230,6 +231,24 @@ FUNCTION VODBContinue() AS LOGIC
 	ENDIF
 	RETURN FALSE   
 
+FUNCTION VODBCreate( cName AS STRING, aStru AS List<RddFieldInfo>, rddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+   LOCAL i           AS DWORD
+   LOCAL oRdd        AS RegisteredRDD
+   LOCAL ret     AS LOGIC
+   FOR i := 1 TO rddList:atomRddName:Length 
+        oRdd := RegisteredRDD.Find(rddList:atomRddName[i])
+        oRdd:Load()
+   NEXT
+   IF (oRdd != NULL_OBJECT)
+        ret := VODBCreate(cName, aStru, oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
+   ENDIF
+   RETURN ret  
+
+
+FUNCTION VODBCreate( cName AS STRING, aStru AS List<RddFieldInfo>, rddName AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+
+   RETURN FALSE
+
 /// <summary>
 /// Mark the current record for deletion.
 /// </summary>
@@ -381,9 +400,10 @@ FUNCTION VODBFilter() AS STRING
 FUNCTION VODBFlock() AS LOGIC
 	VAR oWA := RDDHelpers.CWA("VODBFlock")
 	IF (oWA != NULL)
-		 LOCAL dbli AS DBLOCKINFO
+		 LOCAL dbli AS DbLockInfo
+         dbli := DbLockInfo{}
          dbli:Result := FALSE
-         dbli:@@Method := DBLOCKINFO.LockMethod.File
+         dbli:@@METHOD := DbLockInfo.LockMethod.File
 		 RETURN oWA:Lock(dbli)
 	ENDIF
 	RETURN FALSE   
@@ -400,13 +420,6 @@ FUNCTION VODBFound() AS LOGIC
 	ENDIF
 	RETURN FALSE   
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION VODBFreeDriver() AS VOID
-	THROW  NotImplementedException{}
-	//RETURN
 
 /// <summary>
 /// Return the work area number.
@@ -523,10 +536,15 @@ FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
 /// <summary>
 /// Return the default index file extension for a work area as defined by the its RDD.
 /// </summary>
-/// <returns>
+/// <returns>Default extension for the current workarea, or an empty string when no table is open in the current workarea.
 /// </returns>
 FUNCTION VODBOrdBagExt() AS STRING
-	THROW  NotImplementedException{}
+	LOCAL oWA := RDDHelpers.CWA("VODBOrdBagExt") AS IRDD
+	IF oWA != NULL
+        VAR info := XSharp.RDD.DbOrderInfo{}
+		RETURN (STRING) oWA:OrderInfo( DBOI_BAGEXT, info)
+	ENDIF                            
+	RETURN String.Empty
 
 /// <summary>
 /// Set the condition and scope for an order.
@@ -544,12 +562,12 @@ FUNCTION VODBOrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
 /// <summary>
 /// Create or replace an order in an index file.
 /// </summary>
-/// <param name="cBagName"></param>
-/// <param name="uOrder"></param>
-/// <param name="cExpr"></param>
-/// <param name="uCobExpr"></param>
-/// <param name="lUnique"></param>
-/// <param name="ptrCondInfo"></param>
+/// <param name="cBagName">Orderbag name (index filename) to create the order in.</param>
+/// <param name="uOrder">Ordername to create.</param>
+/// <param name="cExpr">The order key expression specified as a string</param>
+/// <param name="uCobExpr">The order key expression specified as a codeblock.</param>
+/// <param name="lUnique">TRUE creates a unique order by including only those records with unique key values; FALSE uses all records in the database file. </param>
+/// <param name="ordCondInfo">Object that describes other (optional) settings for the order creation, such as FOR condition, WHILE condition, STEP and EVAL.</param>
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeBlock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
@@ -592,27 +610,19 @@ FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 /// <param name="ptrRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,ptrRet REF OBJECT) AS LOGIC
-//	LOCAL oWA := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
-//	IF oWA != NULL                  
-//		VAR info := DbOrderInfo{}
-//		info:BagName := cBagName
-//		info:Order   := oOrder                  
-//		info:
-//		RETURN oWA:OrderInfo(nOrdinal)
-//	ENDIF                            
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,ptrRet REF OBJECT) AS LOGIC
+	LOCAL oWA := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
+	IF oWA != NULL                  
+		VAR info := XSharp.RDD.DbOrderInfo{}
+		info:BagName := cBagName
+		info:Order   := oOrder
+		ptrRet :=  oWA:OrderInfo(nOrdinal, info)
+        RETURN TRUE
+    ENDIF                            
 	RETURN FALSE
 
 
 /// <summary>
-/// </summary>
-/// <param name="ost"></param>
-/// <returns>
-/// </returns>
-
-FUNCTION VODBOrderStatus(ost AS OrderStatus) AS LOGIC
-	THROW  NotImplementedException{}
-	/// <summary>
 /// Open an index file and add specified orders to the order list in a work area.
 /// </summary>
 /// <param name="cBagName"></param>
@@ -624,7 +634,11 @@ FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 	IF oWA != NULL                  
 		VAR info := XSharp.RDD.DbOrderInfo{}
 		info:BagName := cBagName
-		info:Order   := oOrder
+        IF oOrder == NULL
+            info:AllTags := TRUE
+        ELSE
+		    info:Order   := oOrder
+        ENDIF
 		RETURN oWA:OrderListAdd(info)
 	ENDIF                            
 	RETURN FALSE
@@ -637,15 +651,20 @@ FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
-	THROW  NotImplementedException{}
-//	LOCAL oWA := RDDHelpers.CWA("VODBOrdListClear") AS IRDD
-//	IF oWA != NULL                  
-//		VAR info := DbOrderInfo{}
-//		info:BagName := cBagName
-//		info:Order   := oOrder
-//		RETURN oWA:O
-//	ENDIF                            
-//	RETURN FALSE
+	LOCAL oWA := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
+	IF oWA == NULL
+        RETURN TRUE // not logical but compatible with VO
+    ELSE
+		VAR info := XSharp.RDD.DbOrderInfo{}
+		info:BagName := cBagName
+        IF oOrder == NULL
+            info:AllTags := TRUE
+        ELSE
+		    info:Order   := oOrder
+        ENDIF
+        RETURN oWA:OrderListDelete(info) 
+    ENDIF
+
 
 /// <summary>
 /// Rebuild all orders in the order list of a work area.
@@ -666,13 +685,18 @@ FUNCTION VODBOrdListRebuild() AS LOGIC
 /// <param name="oOrder"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
+FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder REF STRING) AS LOGIC
 	LOCAL oWA := RDDHelpers.CWA("VODBOrdSetFocus") AS IRDD
 	IF oWA != NULL                     
 		VAR info := XSharp.RDD.DbOrderInfo{}
 		info:BagName := cBagName
 		info:Order   := oOrder
-		RETURN oWA:OrderListFocus(info)
+        strPreviousOrder := String.Empty
+        VAR result := oWA:OrderListFocus(info)
+        IF result .AND. info:Result IS STRING
+            strPreviousOrder := (STRING)info:Result
+        ENDIF
+        RETURN result
 	ENDIF                            
 	RETURN FALSE
 
@@ -693,8 +717,17 @@ FUNCTION VODBPack() AS LOGIC
 /// <param name="nRddType"></param>
 /// <returns>
 /// </returns>
+[Obsolete( "'VODBRddCount( nRddType )' is not supported, use VODBRddCount() instead", TRUE )];
 FUNCTION VODBRddCount(nRddType AS DWORD) AS DWORD
-	THROW  NotImplementedException{}
+	RETURN 0
+
+/// <summary>
+/// </summary>
+/// <param name="nRddType"></param>
+/// <returns>
+/// </returns>
+FUNCTION VODBRddCount() AS DWORD
+    RETURN (DWORD) VODBRddList():Length
 
 /// <summary>
 /// </summary>
@@ -705,23 +738,40 @@ FUNCTION VODBRddCount(nRddType AS DWORD) AS DWORD
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
 	THROW  NotImplementedException{}
 
-/// <summary>
-/// Get a list of RDDs in use.
-/// </summary>
-/// <param name="rddList"></param>
-/// <param name="nRddType"></param>
-/// <returns>
-/// </returns>
+[Obsolete( "'VODBRddList( rddList, nRddType )' is not supported, use VODBRddList() instead", TRUE )];
 FUNCTION VODBRddList(rddList AS RddList,nRddType AS DWORD) AS LOGIC
 	THROW  NotImplementedException{}
-                                         
+
+FUNCTION VODBRddList() AS STRING[]
+	LOCAL aList AS List<STRING>
+    
+    aList := List<STRING>{}
+    LOCAL oWAs := Workareas.GetInstance() AS Workareas
+    FOR VAR i := 1 TO WorkAreas.MaxWorkAreas
+        VAR oRDD := oWAs.GetRDD(i)
+        IF oRDD != NULL
+            LOCAL cName AS STRING
+            cName := oRDD:SysName
+            IF !aList:Contains(cName)
+                aList:Add(cname)
+            ENDIF
+        ENDIF
+    NEXT
+    RETURN aList:ToArray()
+    
+
+
 /// <summary>
 /// Return an RDD name.                  
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION VODBRddName() AS STRING
-	THROW  NotImplementedException{}
+	LOCAL oWA := RDDHelpers.CWA("VODBRddName") AS IRDD
+	IF oWA != NULL                     
+		RETURN oWA:SysName
+	ENDIF                            
+	RETURN String.Empty
 
 /// <summary>
 /// Return and optionally change the default RDD for the application.
@@ -803,7 +853,12 @@ FUNCTION VODBRecordPut(aRecord AS BYTE[]) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBRelation(nPos AS DWORD,sRel REF STRING) AS LOGIC
-	THROW  NotImplementedException{}
+	LOCAL oWA := RDDHelpers.CWA("VODBRecordPut") AS IRDD
+	IF oWA != NULL                     
+		sRel :=  oWA:RelText(nPos)
+        RETURN TRUE
+	ENDIF                            
+	RETURN FALSE       
 
 /// <summary>
 /// Lock the current record.
@@ -812,8 +867,15 @@ FUNCTION VODBRelation(nPos AS DWORD,sRel REF STRING) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION VODBRlock(uRecId AS OBJECT) AS LOGIC
-	THROW  NotImplementedException{}
-
+	LOCAL oWA := RDDHelpers.CWA("VODBRlock") AS IRDD
+	IF oWA != NULL
+        LOCAL lockInfo AS DbLockInfo
+        lockInfo := DbLockInfo{}
+        lockInfo:RecId := uRecID
+        lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
+		RETURN oWA:Lock(lockInfo)
+	ENDIF                            
+	RETURN FALSE 
 /// <summary>
 /// Return the work area number of a relation.
 /// </summary>
@@ -971,14 +1033,6 @@ FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS OBJECT,uCobW
 	nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
 	THROW  NotImplementedException{}
 
-/// <summary>
-/// </summary>
-/// <param name="wst"></param>
-/// <returns>
-/// </returns>
-FUNCTION VODBStatus(wst AS DbWORKAREASTATUS) AS LOGIC
-	THROW  NotImplementedException{}
-	
 
 
 /// <summary>
@@ -1052,5 +1106,5 @@ FUNCTION VODBZap() AS LOGIC
 		RETURN oWA:Zap()
 	ENDIF                            
 	RETURN FALSE
-//
+
 #endif

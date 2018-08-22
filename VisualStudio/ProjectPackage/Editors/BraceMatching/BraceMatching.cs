@@ -145,7 +145,12 @@ namespace XSharp.Project.Editors.BraceMatching
                     if (member != null)
                     {
                         offset = member.Interval.Start;
-                        var text = currentChar.Snapshot.GetText(member.Interval.Start, member.Interval.Width);
+                        var length = member.Interval.Width;
+                        if (offset + length > currentChar.Snapshot.Length)
+                        {
+                            length = currentChar.Snapshot.Length - offset;
+                        }
+                        string text = currentChar.Snapshot.GetText(offset, length);
                         var reporter = new ErrorIgnorer();
                         ITokenStream tokenStream;
                         XSharpParseOptions parseoptions;

@@ -250,7 +250,7 @@ namespace XSharp.CodeDom
                     this.OutputMemberAccessModifier(e.Attributes);
                     base.Output.Write("CONSTRUCTOR(");
                     this.OutputParameters(e.Parameters);
-                    base.Output.WriteLine(")");
+                    base.Output.WriteLine(")  STRICT");
                     CodeExpressionCollection baseConstructorArgs = e.BaseConstructorArgs;
                     CodeExpressionCollection chainedConstructorArgs = e.ChainedConstructorArgs;
                     if (baseConstructorArgs.Count > 0)
@@ -550,6 +550,7 @@ namespace XSharp.CodeDom
                     this.OutputParameters(e.Parameters);
                     base.Output.Write(") AS ");
                     this.OutputType(e.ReturnType);
+                    base.Output.Write(" STRICT");
                     base.Output.WriteLine();
                     this.Indent++;
                     if (!this.IsCurrentInterface && ((e.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Abstract))

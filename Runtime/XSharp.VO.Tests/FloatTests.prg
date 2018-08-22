@@ -24,5 +24,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((FLOAT)120,Fact((DWORD)5))
 		RETURN
 
-	END CLASS
+        [Fact, Trait("Category", "Numeric")];
+        METHOD FloatConvertFromObject AS VOID
+            LOCAL o AS OBJECT
+            LOCAL f AS FLOAT
+            o := 1.234d
+            f := Object2Float(o)
+            Assert.Equal ( (REAL8) 1.234, (REAL8) f)
+            o := 1.234m
+            f := Object2Float(o)
+            Assert.Equal ( (REAL8) 1.234, (REAL8) f)
+           o := 1234U
+            f := Object2Float(o)
+            Assert.Equal ( (REAL8) 1234, (REAL8) f)
+            o := 1234L
+            f := Object2Float(o)
+            Assert.Equal ( (REAL8) 1234, (REAL8) f)
+             
+
+    END CLASS
+            
 END NAMESPACE

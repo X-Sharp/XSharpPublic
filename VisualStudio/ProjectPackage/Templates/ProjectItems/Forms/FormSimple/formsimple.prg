@@ -14,7 +14,7 @@ begin namespace $rootnamespace$
 
     public partial class $safeitemrootname$ inherit System.Windows.Forms.Form
 
-        public CONSTRUCTOR()  //$safeitemrootname$
+        public CONSTRUCTOR()   STRICT //$safeitemrootname$
             InitializeComponent()
 			return
 

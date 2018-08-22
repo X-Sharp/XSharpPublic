@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -21,7 +21,7 @@ INTERFACE XSharp.RDD.IOrder
 
 	/// <summary>Retrieve information about the current index.</summary>
 	/// <param name="nOrdinal"></param>
-	METHOD OrderInfo(nOrdinal AS LONG) AS OBJECT
+	METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 
 	/// <summary>Open an index file and add to the list of open indexes for the current workarea.</summary>
 	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -236,7 +236,7 @@ FUNCTION GetAppLocaleID() AS DWORD
 /// <param name="dwLocaleId"></param>
 /// <returns>Previous Locale ID: System.Globalization.CultureInfo.CurrentCulture:LCID
 /// </returns>
-[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread := true)];
+[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread := TRUE)];
 FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
 	VAR ci := CultureInfo{ (INT) dwLocaleID}
 	Thread.CurrentThread:CurrentCulture	  := ci

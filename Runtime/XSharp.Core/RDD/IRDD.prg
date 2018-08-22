@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -159,8 +159,9 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
 
 	/// <summary>Retrieve information about the current index.</summary>
+	/// <param name="info">An object containing information about the order to retrieve the info for.</param>
 	/// <param name="nOrdinal"></param>
-	METHOD OrderInfo(nOrdinal AS LONG) AS OBJECT
+	METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 
 	/// <summary>Open an index file and add to the list of open indexes for the current workarea.</summary>
 	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>
@@ -204,7 +205,7 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Retrieve the logical number of a related work area.</summary>
 	/// <param name="nRelNum">The ONE based relation number for which to obtain the logical number.</param>
-	METHOD RelArea(nRelNum AS LONG)					AS LONG 
+	METHOD RelArea(nRelNum AS DWORD)					AS DWORD 
 
 	/// <summary>Evaluate a code block against the relation in a work area.</summary>
 	/// <param name="info">An object containing information about the relation</param>
@@ -212,7 +213,7 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Retrieve the key expression of a relation.</summary>
 	/// <param name="nRelNum">The ONE based relation number for which to obtain the key expression. </param>
-	METHOD RelText(nRelNum AS LONG)					AS STRING
+	METHOD RelText(nRelNum AS DWORD)					AS STRING
 
 	/// <summary>Set a relation.</summary>
 	/// <param name="info">An object containing information about the relation</param>

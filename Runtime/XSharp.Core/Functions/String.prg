@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -11,7 +11,7 @@ INTERNAL GLOBAL trimChars := <CHAR>{ ' ' } AS CHAR[]
 
 
 FUNCTION AllTrim(c AS STRING) AS STRING
-	IF ( c == null )
+	IF ( c == NULL )
 		RETURN c
 	ENDIF
 	RETURN c:Trim(trimChars)
@@ -61,7 +61,7 @@ INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION Asc(c AS STRING) AS DWORD
-	RETURN _Asc(c, false)
+	RETURN _Asc(c, FALSE)
 
 
 /// <summary>
@@ -87,7 +87,7 @@ FUNCTION AscW(c AS STRING) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION AscA(c AS STRING) AS DWORD
-	RETURN _Asc(c, true)
+	RETURN _Asc(c, TRUE)
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -100,7 +100,7 @@ FUNCTION AscA(c AS STRING) AS DWORD
 /// </returns>
 FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL position := 0 AS DWORD
-	IF ( c != null .and. cSearch != null )
+	IF ( c != NULL .AND. cSearch != NULL )
 		position := (DWORD) c:IndexOf(cSearch, StringComparison.Ordinal) +1
 	ENDIF
 	RETURN position
@@ -131,7 +131,7 @@ FUNCTION At2(cSearch AS STRING,c AS STRING) AS DWORD
 FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 	LOCAL position := 0 AS DWORD
 	// note dwOffset is ZERO based in VO
-	IF ( c != null .and. cSearch != null .and. dwOff <= c:Length )
+	IF ( c != NULL .AND. cSearch != NULL .AND. dwOff <= c:Length )
 		position := (DWORD) c:IndexOf(cSearch,(INT)dwOff) +1
 	ENDIF
 	RETURN position
@@ -145,7 +145,7 @@ FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 /// </returns>
 FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL position := 0 AS DWORD
-	IF ( c != null .and. cSearch != null )
+	IF ( c != NULL .AND. cSearch != NULL )
 		position := (DWORD) c:IndexOf(cSearch, StringComparison.OrdinalIgnoreCase) +1
 	ENDIF
 	RETURN position
@@ -189,7 +189,7 @@ FUNCTION ATCLine2(cSearch AS STRING,c AS STRING) AS DWORD
 /// </returns>
 FUNCTION ATLine(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL nPos AS DWORD
-	IF String.IsNullOrEmpty(c) .or. String.IsNullOrEmpty(cSearch)
+	IF String.IsNullOrEmpty(c) .OR. String.IsNullOrEmpty(cSearch)
 		RETURN 0
 	ENDIF
 	IF c:StartsWith(cSearch) 
@@ -256,10 +256,10 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// A string which is assembled from the even characters in c.
 /// </returns>
 FUNCTION CharEven(c AS STRING) AS STRING
-	LOCAL evenChars:=null AS STRING
+	LOCAL evenChars:=NULL AS STRING
 	IF ( !string.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
-		LOCAL isEven := false AS  LOGIC
+		LOCAL isEven := FALSE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 		
 		FOREACH ch AS CHAR IN c//hars 
@@ -313,10 +313,10 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 /// A string which is assembled from the odd characters in c.
 /// </returns>
 FUNCTION CharOdd(c AS STRING) AS STRING
-	LOCAL oddChars:=null AS STRING
+	LOCAL oddChars:=NULL AS STRING
 	IF ( !string.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
-		LOCAL isOdd  := true AS  LOGIC
+		LOCAL isOdd  := TRUE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 		
 		FOREACH ch AS CHAR IN c//chars 
@@ -432,7 +432,7 @@ FUNCTION CryptA(cSource AS STRING,cKey AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION DecodeBase64(cMailPart AS STRING,hFile AS IntPtr) AS INT
-	IF cMailPart == null .or. cMailPart:Length== 0
+	IF cMailPart == NULL .OR. cMailPart:Length== 0
 		RETURN 0
 	ENDIF
 	VAR aBytes := Convert.FromBase64String( cMailPart )
@@ -530,8 +530,8 @@ FUNCTION Hex2C(c AS STRING) AS STRING
 /// True if the searched string is in the string.
 /// </returns>
 FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
-	LOCAL result := false AS LOGIC
-	IF cSearch != null .and. c != null
+	LOCAL result := FALSE AS LOGIC
+	IF cSearch != NULL .AND. c != NULL
 		result := c:IndexOf( cSearch, StringComparison.Ordinal ) > -1
 	ENDIF
 	RETURN result   
@@ -547,7 +547,7 @@ FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
 /// A string of the left first characters in the given length.
 /// </returns>function Len(c as string) as dword
 FUNCTION Left(c AS STRING, dwLen AS DWORD) AS STRING
-	IF ( c!=null )
+	IF ( c!=NULL )
 		IF dwLen < c:Length
 			c := c:Substring( 0, (INT) dwLen )
 		ELSE
@@ -565,7 +565,7 @@ FUNCTION Left(c AS STRING, dwLen AS DWORD) AS STRING
 /// Returns the input string with all characters converted to lowercase.
 /// </returns>
 FUNCTION Lower(cSource AS STRING) AS STRING
-	IF cSource != null
+	IF cSource != NULL
 		cSource := cSource:ToLower()
 	ENDIF
 	RETURN cSource
@@ -580,7 +580,7 @@ FUNCTION Lower(cSource AS STRING) AS STRING
 /// Returns the input string with all characters converted to lowercase.
 /// </returns>
 FUNCTION LowerA(cSource REF STRING) AS STRING
-	IF cSource != null
+	IF cSource != NULL
 		cSource := cSource:ToLower()
 	ENDIF
 	RETURN cSource
@@ -593,7 +593,7 @@ FUNCTION LowerA(cSource REF STRING) AS STRING
 /// The input strings without eading spaces.
 /// </returns>
 FUNCTION LTrim(c AS STRING) AS STRING
-	IF (c == null)
+	IF (c == NULL)
 		RETURN c
 	ENDIF
 	RETURN c:TrimStart(trimChars)
@@ -634,7 +634,7 @@ FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffset AS DWORD) AS DWORD
 	LOCAL pos AS INT
 	LOCAL count AS DWORD
 	
-	IF String.IsNullOrEmpty(cSrc) .or. String.IsNullOrEmpty(c)
+	IF String.IsNullOrEmpty(cSrc) .OR. String.IsNullOrEmpty(c)
 		RETURN 0
 	ENDIF
 	
@@ -771,21 +771,21 @@ FUNCTION Oem2AnsiA(cSource REF STRING) AS STRING
 FUNCTION Proper(cString AS STRING) AS STRING
 	LOCAL sb AS StringBuilder
 	LOCAL inside AS LOGIC
-	IF cString != null
+	IF cString != NULL
 		sb := StringBuilder{cString:Length}
-		inside := false
+		inside := FALSE
 		FOREACH ch AS CHAR IN cString
 			VAR cToAdd := ch
 			IF inside
 				IF Char.IsLetterOrDigit(ch)
 					cToAdd := char.ToLower(ch)
 				ELSE
-					inside := false
+					inside := FALSE
 				ENDIF
 			ELSE
 				IF Char.IsLetterOrDigit(ch)
 					cToAdd := char.ToUpper(ch)
-					inside := true
+					inside := TRUE
 				ENDIF
 			ENDIF
 			sb:append(cToAdd)
@@ -824,7 +824,7 @@ FUNCTION QPEncString(cIn AS STRING) AS STRING
 /// </returns>
 FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL rightMost := 0 AS DWORD
-	IF cSearch != null .and. c != null
+	IF cSearch != NULL .AND. c != NULL
 		rightMost:= (DWORD) c:LastIndexOf(cSearch, StringComparison.Ordinal) + 1
 	ENDIF
 	RETURN rightMost
@@ -851,7 +851,7 @@ FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
 
 FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
-	IF cSearch != null .and. c != null
+	IF cSearch != NULL .AND. c != NULL
 		IF dwOffSet > (DWORD) c:Length 
 			dwOffSet := 0U
 		ENDIF
@@ -872,7 +872,7 @@ FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 /// </returns>
 FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
 	LOCAL nPos AS DWORD
-	IF cSearch == null .or. c == null
+	IF cSearch == NULL .OR. c == NULL
 		RETURN 0
 	ENDIF
 	nPos := RAt(cSearch,c)
@@ -912,7 +912,7 @@ FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
 /// </returns>
 FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 	LOCAL cReturn := "" AS STRING
-	IF dwCount > 0 .and. c != null
+	IF dwCount > 0 .AND. c != NULL
 		cReturn := System.Text.StringBuilder{}:Insert( 0, c, (INT) dwCount ):ToString()
 	ENDIF
 	RETURN cReturn
@@ -926,7 +926,7 @@ FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 /// Returns the right most part in the given length.
 /// </returns>
 FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
-	IF c != null
+	IF c != NULL
 		IF dwLen > c:Length
 			NOP
 		ELSE
@@ -943,7 +943,7 @@ FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION RTrim(c AS STRING) AS STRING
-	IF ( c == null )
+	IF ( c == NULL )
 		RETURN c
 	ENDIF
 	RETURN c:TrimEnd(trimChars)
@@ -959,8 +959,8 @@ FUNCTION RTrim(c AS STRING) AS STRING
 /// A opy of the input string.
 /// </returns>
 FUNCTION SClone(c AS STRING) AS STRING
-	LOCAL clonedString := null AS STRING
-	IF (c != null)
+	LOCAL clonedString := NULL AS STRING
+	IF (c != NULL)
 		clonedString := String.Copy( c )
 	ENDIF
 	RETURN clonedString
@@ -995,7 +995,7 @@ FUNCTION Space(iSize AS INT) AS STRING
 /// </returns>
 FUNCTION SLen(c AS STRING) AS DWORD
 	LOCAL len := 0 AS DWORD
-	IF c != null
+	IF c != NULL
 		len := (DWORD) c:Length
 	ENDIF
 	RETURN len
@@ -1025,7 +1025,7 @@ FUNCTION SoundEx(c AS STRING) AS STRING
 	sb:Append( c[0] )
 	FOR i := 1 TO iLen
 		cSoundExChar := _SoundExChar( c[i] )
-		IF cSoundExChar != '0' .and. cSoundExChar != cLastChar
+		IF cSoundExChar != '0' .AND. cSoundExChar != cLastChar
 			sb:Append( cSoundExChar )
 		ENDIF
 		cLastChar := cSoundExChar
@@ -1091,7 +1091,7 @@ FUNCTION StrEvaluate(s AS STRING) AS STRING
 
 FUNCTION Stuff(c AS STRING,nStart AS DWORD,nToDelete AS DWORD,cIns AS STRING) AS STRING
 	LOCAL result := cIns AS STRING
-	IF c != null
+	IF c != NULL
 		IF string.IsNullOrEmpty(cIns)
 			cIns := ""
 		ENDIF
@@ -1114,7 +1114,7 @@ FUNCTION Stuff(c AS STRING,nStart AS DWORD,nToDelete AS DWORD,cIns AS STRING) AS
 // Note: worker function that accepts negative arguments
 // because the untyped Substr() allows these
 FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
-	IF c != null
+	IF c != NULL
 		IF nStart == 0
 			nStart := 1
 		ENDIF
@@ -1127,7 +1127,7 @@ FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
 			nLength := c:Length
 		ENDIF
 		
-		IF nStart <= c:Length .and. nStart > 0
+		IF nStart <= c:Length .AND. nStart > 0
 			nLength := Math.Min( c:Length - nStart + 1, nLength )
 			c := c:Substring( nStart - 1, nLength )
 		ELSE
@@ -1145,7 +1145,7 @@ FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
 /// The extracted substring.
 /// </returns>
 FUNCTION SubStr2(c AS STRING,dwStart AS DWORD) AS STRING
-	IF c != null
+	IF c != NULL
 		c := __SubStr( c, (INT) dwStart, ( c:Length - (INT) dwStart  + 1 ) )
 	ENDIF
 	RETURN c
@@ -1160,7 +1160,7 @@ FUNCTION SubStr2(c AS STRING,dwStart AS DWORD) AS STRING
 /// The extracted substring in the given length.
 /// </returns>
 FUNCTION SubStr3(c AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
-	IF c != null
+	IF c != NULL
 		c := __SubStr( c, (INT) dwStart, (INT) dwLen )
 	ENDIF
 	RETURN c
@@ -1174,7 +1174,7 @@ FUNCTION SubStr3(c AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION Trim(c AS STRING) AS STRING
-	IF ( c == null )
+	IF ( c == NULL )
 		RETURN c
 	ENDIF
 	RETURN c:TrimEnd(trimChars)
@@ -1188,7 +1188,7 @@ FUNCTION Trim(c AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION Upper(cSource AS STRING) AS STRING
-	IF cSource != null
+	IF cSource != NULL
 		cSource := cSource:ToUpper()
 	ENDIF
 	RETURN cSource
@@ -1201,7 +1201,7 @@ FUNCTION Upper(cSource AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION UpperA(cSource REF STRING) AS STRING
-	IF cSource != null
+	IF cSource != NULL
 		cSource := cSource:ToUpper()
 	ENDIF
 	RETURN cSource
@@ -1240,7 +1240,7 @@ FUNCTION UUEncLine(c AS STRING) AS STRING
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is alphabetic.</returns>
 FUNCTION IsAlpha(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsLetter( cSource, 0 )
 	ENDIF
@@ -1250,7 +1250,7 @@ FUNCTION IsAlpha(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
 FUNCTION IsAlNum(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsLetterOrDigit( cSource, 0 )
 	ENDIF
@@ -1267,7 +1267,7 @@ FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is a number from 0 to 9; otherwise FALSE.</returns>
 FUNCTION IsDigit(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsDigit(cSource, 0 )
 	ENDIF
@@ -1277,12 +1277,12 @@ FUNCTION IsDigit(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
 FUNCTION IsBDigit(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		SWITCH cSource[0]
 			CASE '0'
 			CASE '1'
-				ret := true
+				ret := TRUE
 		END SWITCH
 	ENDIF
 	RETURN ret
@@ -1291,14 +1291,14 @@ FUNCTION IsBDigit(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is hex otherwise FALSE.</returns>
 FUNCTION IsXDigit(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		LOCAL c AS CHAR
 		c := cSource[0]
-		IF char.IsDigit(c) .or. ;
-			(c >= 'A' .and. c <= 'F') .or. ;
-			(c >= 'a' .and. c <= 'f')
-			ret := true
+		IF char.IsDigit(c) .OR. ;
+			(c >= 'A' .AND. c <= 'F') .OR. ;
+			(c >= 'a' .AND. c <= 'f')
+			ret := TRUE
 		ENDIF
 	ENDIF
 	RETURN ret
@@ -1307,7 +1307,7 @@ FUNCTION IsXDigit(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
 FUNCTION IsSpace(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		ret := char.IsWhiteSpace(cSource,0)
 	ENDIF
@@ -1317,7 +1317,7 @@ FUNCTION IsSpace(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
 FUNCTION IsUpper(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsUpper(cSource, 0 )
 	ENDIF
@@ -1327,7 +1327,7 @@ FUNCTION IsUpper(cSource AS STRING) AS LOGIC
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
 FUNCTION IsLower(cSource AS STRING) AS LOGIC
-	LOCAL ret := false AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
 	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsLower(cSource, 0 )
 	ENDIF

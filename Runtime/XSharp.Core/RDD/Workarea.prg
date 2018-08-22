@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -134,7 +134,7 @@ VIRTUAL METHOD Skip(nToSkip AS INT) AS LOGIC
 		IF !SELF:SkipFilter(lToSkip)
 			RETURN FALSE
 		ENDIF              
-		IF SELF:_BOF .or. SELF:_EOF
+		IF SELF:_BOF .OR. SELF:_EOF
 			EXIT
 		ENDIF
 	ENDDO
@@ -149,8 +149,8 @@ VIRTUAL METHOD Skip(nToSkip AS INT) AS LOGIC
 VIRTUAL METHOD SkipFilter(nToSkip AS INT) AS LOGIC
 	LOCAL Bottom /*, Deleted */ AS LOGIC
 	// When no active filter, record is Ok
-	IF SELF:_FilterInfo == NULL_OBJECT .or. ;
-		!SELF:_FilterInfo:Active .or. ;
+	IF SELF:_FilterInfo == NULL_OBJECT .OR. ;
+		!SELF:_FilterInfo:Active .OR. ;
 		SELF:_FilterInfo:FilterBlock == NULL_OBJECT ;
 		// .or. !SetDeleted()
 		RETURN TRUE
@@ -353,7 +353,7 @@ PROTECTED METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 	LOCAL nMax AS INT
 	// Note that nFldPos is 1 based
 	nMax := (INT) SELF:_Fields?:Length  
-	IF nFldPos <= 0 .or. nFldPos > nMax 
+	IF nFldPos <= 0 .OR. nFldPos > nMax 
 		THROW ArgumentException{"Invalid Field Index, must be between 1 and "+SELF:FieldCount:ToString(), NAMEOF(nFldPos)}
 	ENDIF
 	RETURN TRUE	
@@ -459,11 +459,11 @@ VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	RETURN SELF:_Order:OrderDestroy(info)
 
 /// <inheritdoc />
-VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
+VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
    /* CA-Cl*pper does not generate RT error when default ORDERINFO() method
     * is called
     */
-   	RETURN SELF:_Order:OrderInfo(nOrdinal)
+   	RETURN SELF:_Order:OrderInfo(nOrdinal, info)
 
 /// <inheritdoc />
 VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
@@ -510,7 +510,7 @@ VIRTUAL METHOD ForceRel( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD RelArea(nRelNum AS INT) AS INT
+VIRTUAL METHOD RelArea(nRelNum AS DWORD) AS DWORD
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -518,7 +518,7 @@ VIRTUAL METHOD RelEval(info AS DbRelInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD RelText(nRelNum AS INT) AS STRING
+VIRTUAL METHOD RelText(nRelNum AS DWORD) AS STRING
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -575,7 +575,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 		oResult := SELF:_Separator
 	CASE DBI_SETDELIMITER            
 		oResult := SELF:_Separator		
-		IF oNewValue != NULL .and. oNewValue:GetType() == TYPEOF(STRING)
+		IF oNewValue != NULL .AND. oNewValue:GetType() == TYPEOF(STRING)
 			SELF:_Separator	:= (STRING) oNewValue
 		ENDIF
 	CASE DBI_DB_VERSION

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -34,7 +34,7 @@ CLASS WorkAreas
 
 	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
 	PRIVATE METHOD AdjustArea( nArea REF LONG) AS LOGIC
-		IF  nArea > 0 .and.  nArea <= MaxWorkAreas
+		IF  nArea > 0 .AND.  nArea <= MaxWorkAreas
 			 nArea -=1
 			RETURN TRUE
 		ENDIF          
@@ -49,7 +49,7 @@ CLASS WorkAreas
 				IF RDDs[i] != NULL
 					VAR oRdd := RDDs[i]
 					TRY
-						lResult := lResult .and. oRdd:Close()
+						lResult := lResult .AND. oRdd:Close()
 					CATCH e AS Exception
 						lResult := FALSE
 						LastException := e
@@ -70,7 +70,7 @@ CLASS WorkAreas
 				IF RDDs[i] != NULL
 					VAR oRdd := RDDs[i]
 					TRY
-						lResult := lResult .and. oRdd:Flush()
+						lResult := lResult .AND. oRdd:Flush()
 					CATCH e AS Exception
 						lResult := FALSE
 						LastException := e

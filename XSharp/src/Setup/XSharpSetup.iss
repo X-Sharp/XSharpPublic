@@ -14,11 +14,11 @@
 
 ; version info and similar stuff.
   
-#define Version             "2.0.0.3"
-#define FileNameVersion     "2Beta3"
-#define VIVersion           "2.0.0.3"
-#define TouchDate           "2018-07-16"
-#define TouchTime           "02:00:03"
+#define Version             "2.0.0.4"
+#define FileNameVersion     "2Beta4"
+#define VIVersion           "2.0.0.4"
+#define TouchDate           "2018-08-10"
+#define TouchTime           "02:00:04"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -1351,10 +1351,13 @@ begin
     TaskKill('msbuild.exe');
     PrintButton := TButton.Create(WizardForm);
     PrintButton.Caption := '&Print...';
-    PrintButton.Left := WizardForm.InfoAfterPage.Left + 96;
-    PrintButton.Top := WizardForm.InfoAfterPage.Height + 88;
+    { PrintButton is placed on the License Page, bottom right of the license Memo. Width and Height are copied from BackButton}
+    PrintButton.Parent := WizardForm.LicenseAcceptedRadio.Parent
+    PrintButton.Top := WizardForm.LicenseAcceptedRadio.Top;
+    PrintButton.Width := WizardForm.BackButton.Width;
+    PrintButton.Height := WizardForm.BackButton.Height;
+    PrintButton.Left := WizardForm.LicenseMemo.Left+WizardForm.LicenseMemo.Width - PrintButton.Width;
     PrintButton.OnClick := @PrintButtonClick;
-    PrintButton.Parent := WizardForm.NextButton.Parent;
     OriginalTypeChange := WizardForm.TypesCombo.OnChange ;
     WizardForm.TypesCombo.OnChange := @TypeChange;
     Log('InitializeWizard end');

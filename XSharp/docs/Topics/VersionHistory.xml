@@ -10,6 +10,42 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading1">Changes in 2.0.0.4 (Bandol Beta 4)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The compiler was accepting just an identifier without a INSTANCE, EXPORT or other prefix and without a type inside a class declaration. It would create a public field of type USUAL. That is no longer possible.</li>
+      <li styleclass="List">Functions now always take precedence over methods. If you want to call a method inside the same class you need to either prefix it with the typename (for static methods) or with the SELF: prefix. If there is no conflicting function name then you can still call the method with just its name. We recommend to prefix the method calls to make your code easier to read.</li>
+      <li styleclass="List">Improved the positional keyword detection algorithm</li>
+      <li styleclass="List">The || operator now maps to the logical or &#160;(a .OR. b) and not to the binary or (_OR(a,b))</li>
+      <li styleclass="List">The VAR statement now also correctly parses <br/><br/><text styleclass="Code Example">VAR x = SomeFunction()</text><br/></li>
+    </list>
+    <para styleclass="List"><tab />And will compile this with a warning that you should use the assignment operator (:=).</para>
+    <para styleclass="List"><tab />We have added this because many people (including we) copy examples from VB and C# where the operator is a single equals token.</para>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Added several functions that were missing, such as __Str() and DoEvents()</li>
+      <li styleclass="List">Fixed a problem in the macro compiler with non-english culctures.</li>
+      <li styleclass="List">Added several overloads for Is..() functions that take a PSZ in stead of a string, such as IsAlpha() and IsUpper().</li>
+      <li styleclass="List">Added some missing error defines, such as E_DEFAULT and E_RETRY.</li>
+      <li styleclass="List">Fix for a problem with SubStr() and a negative argument</li>
+      <li styleclass="List">Fix for a problem with IsInstanceOf()</li>
+      <li styleclass="List">Fix for a problem with Val() and a hex value with an embedded &apos;E&apos; character</li>
+      <li styleclass="List">Added implicit conversions from ARRAY to OBJECT[] and back. </li>
+    </list>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem when building projects in the latest preview of Visual Studio</li>
+      <li styleclass="List">Several &apos;keywords&apos; were not case synchronized before, such as TRUE, FALSE, NULL_STRING etc,</li>
+      <li styleclass="List">Keywords are not case synchronized on the current line as long as the user has the cursor on them or immediately after them. That means that when you type String and want to continue to change it to StringComparer then the formatter will no longer kick in and change &quot;String&quot; to the keyword case before you have the chance to complete the word.</li>
+      <li styleclass="List">The Control Order dialog inside the form editor was not saving its changes.</li>
+      <li styleclass="List">Added an option to include all entities from the editor, or just the members from the current selected type in the right dropdown of the editor</li>
+      <li styleclass="List">The editor was also matching braces inside literal strings and comments. This has been fixed.</li>
+      <li styleclass="List">Fixed a problem with the CodeDom parser where extended strings (strings containing CRLF tokens or other special tokens) were parsed incorrectly. This resulted in problems in the windows forms editor.</li>
+      <li styleclass="List">The member resolution code in the editor was not following the same logic as the compiler: When a function and a method with the same name exist it was resolving to the method in stead of the function. This has been fixed.</li>
+      <li styleclass="List">Fixed a problem when debugging in X64 mode.</li>
+      <li styleclass="List">Fixed an exception when comparing source code files with SCC integration.</li>
+      <li styleclass="List"></li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.0.3 (Bandol Beta 3)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

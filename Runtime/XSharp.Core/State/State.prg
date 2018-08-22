@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -392,7 +392,7 @@ CLASS XSharp.RuntimeState
 	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
 		// ensure we have dd, mm and yy
-		IF format:IndexOf("DD") == -1 .or. format:IndexOf("MM") == -1 .or. format:IndexOf("YY") == -1
+		IF format:IndexOf("DD") == -1 .OR. format:IndexOf("MM") == -1 .OR. format:IndexOf("YY") == -1
 			RETURN
 		ENDIF
 		SetValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
@@ -463,7 +463,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The workarea information for the current Thread.</summary>
 	PUBLIC PROPERTY Workareas AS WorkAreas
 	GET
-		IF _workareas == null_object
+		IF _workareas == NULL_OBJECT
 			_workareas := WorkAreas{}
 		ENDIF
 		RETURN _workareas
@@ -474,7 +474,7 @@ CLASS XSharp.RuntimeState
 	GET
 		LOCAL coll AS BYTE[]
 		coll := GetInstance():_collationTable 
-		IF coll == NULL .or. coll :Length < 256
+		IF coll == NULL .OR. coll :Length < 256
 			_SetCollation("Generic")
 			coll := GetInstance():_collationTable := GetValue<BYTE[]>(SET.CollationTable)
 		ENDIF

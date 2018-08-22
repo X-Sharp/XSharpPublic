@@ -19,8 +19,10 @@ grammar XSharp;
  * Parser Rules
 */
 
-// Known issues:
-// - preprocessor , #region, #using etc
+// Known issues
+// Local a as long
+//  a := 10
+//  ? (a) + 1     <-- parser sees this as typecast and not as paren expression
 
 options {
         tokenVocab=XSharpLexer;
@@ -211,29 +213,29 @@ namespace_          : BEGIN NAMESPACE Name=name e=eos
                       END NAMESPACE Ignored=name?  eos
                     ;
 
-interface_        : (Attributes=attributes)? (Modifiers=interfaceModifiers)?            
-                    INTERFACE (Namespace=nameDot)? Id=identifier                        
-                    TypeParameters=typeparameters?                                      // TypeParameters indicate Generic Interface
-                    ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
-                    (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
-                    e=eos
-                    (Members+=classmember)*
-                    END INTERFACE Ignored=identifier?   eos
-                  ;
+interface_          : (Attributes=attributes)? (Modifiers=interfaceModifiers)?            
+                      INTERFACE (Namespace=nameDot)? Id=identifier                        
+                      TypeParameters=typeparameters?                                      // TypeParameters indicate Generic Interface
+                      ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
+                      (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
+                      e=eos
+                      (Members+=classmember)*
+                      END INTERFACE Ignored=identifier?   eos
+                    ;
 
 interfaceModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
                     ;
 
-class_            : (Attributes=attributes)? (Modifiers=classModifiers)?              
-                    CLASS (Namespace=nameDot)? Id=identifier                          
-                    TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
-                    (INHERIT BaseType=datatype)?                                  
-                    (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                    (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
-                    e=eos
-                    (Members+=classmember)*
-                    END CLASS Ignored=identifier?
-                    eos
+class_              : (Attributes=attributes)? (Modifiers=classModifiers)?              
+                      CLASS (Namespace=nameDot)? Id=identifier                          
+                      TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
+                      (INHERIT BaseType=datatype)?                                  
+                      (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
+                      (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
+                      e=eos
+                      (Members+=classmember)*
+                      END CLASS Ignored=identifier?
+                      eos
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -257,17 +259,17 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)                    #classOrStruct
 
 // End of Extensions for Generic Classes
 
-structure_              : (Attributes=attributes)? (Modifiers=structureModifiers)?
-                        STRUCTURE (Namespace=nameDot)? Id=identifier
-                        TypeParameters=typeparameters?
-                        (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                        (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
-                        (Members+=classmember)*
-                        END STRUCTURE Ignored=identifier?
-                        eos
-                        ;
+structure_          : (Attributes=attributes)? (Modifiers=structureModifiers)?
+                      STRUCTURE (Namespace=nameDot)? Id=identifier
+                      TypeParameters=typeparameters?
+                      (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
+                      (Members+=classmember)*
+                      END STRUCTURE Ignored=identifier?
+                      eos
+                    ;
 
-structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
+structureModifiers  : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
                     ;
 
 
@@ -280,7 +282,7 @@ delegate_           : (Attributes=attributes)? (Modifiers=delegateModifiers)?
                       e=eos
                     ;
 
-delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
+delegateModifiers   : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
                     ;
 
 
@@ -294,10 +296,10 @@ enum_               : (Attributes=attributes)? (Modifiers=enumModifiers)?
 enumModifiers       : ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
                     ;
 
-enummember              : (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? eos
-                        ;
+enummember          : (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? eos
+                    ;
 
-event_               :  (Attributes=attributes)? (Modifiers=eventModifiers)?
+event_              : (Attributes=attributes)? (Modifiers=eventModifiers)?
                        EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=eos
                         | (LineAccessors += eventLineAccessor)+ end=eos
@@ -322,34 +324,34 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
 
 
 
-classvars               : (Attributes=attributes)? (Modifiers=classvarModifiers)?
-                          Vars=classVarList
-                          eos
-                        ;
+classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
+                      Vars=classVarList
+                      eos
+                    ;
 
-classvarModifiers       : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
-                        ;
+classvarModifiers   : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
+                    ;
 
-classVarList            : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
-                        ;
+classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
+                    ;
 
-classvar                : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
-                        ;
+classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+                    ;
 
-arraysub                : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
-                        | ArrayIndex+=expression (COMMA ArrayIndex+=expression)+			// x,y
-                        | ArrayIndex+=expression
-                        ;
+arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
+                    | ArrayIndex+=expression (COMMA ArrayIndex+=expression)+			// x,y
+                    | ArrayIndex+=expression
+                    ;
 
-property                : (Attributes=attributes)? (Modifiers=memberModifiers)?
-                          PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
-                          (ParamList=propertyParameterList)?
-                          (AS Type=datatype)?
-                          ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
-                            | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
-                            | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
-                          )
-                        ;
+property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
+                      PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
+                      (ParamList=propertyParameterList)?
+                      (AS Type=datatype)?
+                      ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=eos	// Auto
+                        | (LineAccessors+=propertyLineAccessor)+ end=eos													// Single Line
+                        | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? Ignored=identifier?  eos				// Multi Line
+                      )
+                    ;
 
 propertyParameterList
                     : LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? RBRKT
@@ -377,22 +379,22 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
                       end=eos
                     ;
 
-classmember       : Member=method                                 #clsmethod
-                  | decl=declare                                  #clsdeclare
-                  | Member=constructor                            #clsctor
-                  | Member=destructor                             #clsdtor
-                  | Member=classvars                              #clsvars
-                  | Member=property                               #clsproperty
-                  | Member=operator_                              #clsoperator
-                  | Member=structure_                             #nestedStructure
-                  | Member=class_                                 #nestedClass
-                  | Member=delegate                               #nestedDelegate
-                  | Member=enum_                                  #nestedEnum
-                  | Member=event_                                 #nestedEvent
-                  | Member=interface_                             #nestedInterface
-                  | {_ClsFunc}? Member=function                   #clsfunction      // Equivalent to static method
-                  | {_ClsFunc}? Member=procedure                  #clsprocedure     // Equivalent to static method
-                  ;
+classmember         : Member=method                                 #clsmethod
+                    | decl=declare                                  #clsdeclare
+                    | Member=constructor                            #clsctor
+                    | Member=destructor                             #clsdtor
+                    | Member=classvars                              #clsvars
+                    | Member=property                               #clsproperty
+                    | Member=operator_                              #clsoperator
+                    | Member=structure_                             #nestedStructure
+                    | Member=class_                                 #nestedClass
+                    | Member=delegate_                               #nestedDelegate
+                    | Member=enum_                                  #nestedEnum
+                    | Member=event_                                 #nestedEvent
+                    | Member=interface_                             #nestedInterface
+                    | {_ClsFunc}? Member=function                   #clsfunction      // Equivalent to static method
+                    | {_ClsFunc}? Member=procedure                  #clsprocedure     // Equivalent to static method
+                    ;
 
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
@@ -410,8 +412,8 @@ constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ;
 
-declare           : DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=identifier)* eos
-                  ;
+declare             : DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=identifier)* eos
+                    ;
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       DESTRUCTOR (LPAREN RPAREN)? 
@@ -433,10 +435,10 @@ destructorModifiers : ( Tokens+=EXTERN )+
     // VO uses ^ for Exponent
 
 */
-overloadedOps           : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                                    MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
-                                    GT | LT | GTE | LTE |
-                                    AND | OR )  // these two do not exist in C# and are mapped to & and |
+overloadedOps       : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
+                              GT | LT | GTE | LTE |
+                              AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
 
 conversionOps		: Token=( IMPLICIT | EXPLICIT )
@@ -450,23 +452,23 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       StmtBlk=statementBlock
                     ;
 
-operatorModifiers : ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
-                  ;
+operatorModifiers   : ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
+                    ;
 
-memberModifiers   : ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
-                  ;
+memberModifiers     : ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
+                    ;
 
-attributes        : ( AttrBlk+=attributeBlock )+
-                  ;
+attributes          : ( AttrBlk+=attributeBlock )+
+                    ;
 
-attributeBlock    : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
-                  ;
+attributeBlock      : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
+                    ;
 
-attributeTarget   : Id=identifier COLON
-                  | Kw=keyword COLON
-                  ;
+attributeTarget     : Id=identifier COLON
+                    | Kw=keyword COLON
+                    ;
 
-attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
+attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
                     ;
 
 attributeParam      : Name=identifierName ASSIGN_OP Expr=expression     #propertyAttributeParam
@@ -477,7 +479,7 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
                     ;
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
-                    ;
+                      ;
 
 statement           : Decl=localdecl                        #declarationStmt
                     | {_xBaseVars}? xbasedecl               #xbasedeclStmt
@@ -557,10 +559,10 @@ statement           : Decl=localdecl                        #declarationStmt
                       StmtBlk=statementBlock
                       (e=END FIXED? eos)?						#blockStmt
 
-					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
-					// The first ExpressonStmt rule matches a single expression
-					// The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
-					// The third rule matches more than one expression
+                      // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
+                      // The first ExpressonStmt rule matches a single expression
+                      // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
+                      // The third rule matches more than one expression
                     | {validExpressionStmt()}?
                       Exprs+=expression  end=eos									#expressionStmt
                     | {validExpressionStmt()}?
@@ -570,12 +572,12 @@ statement           : Decl=localdecl                        #declarationStmt
 	                ;
 
 
-ifElseBlock			: Cond=expression end=eos StmtBlk=statementBlock
+ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 
-					  | ELSE eos ElseBlock=statementBlock)?
+                    | ELSE eos ElseBlock=statementBlock)?
                     ;
 
-caseBlock			: Key=CASE Cond=expression end=eos StmtBlk=statementBlock NextCase=caseBlock?
+caseBlock           : Key=CASE Cond=expression end=eos StmtBlk=statementBlock NextCase=caseBlock?
                     | Key=OTHERWISE end=eos StmtBlk=statementBlock
                     ;
 
@@ -583,10 +585,10 @@ caseBlock			: Key=CASE Cond=expression end=eos StmtBlk=statementBlock NextCase=c
 switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=eos StmtBlk=statementBlock
                     ;
 
-catchBlock			: (Id=identifier)? (AS Type=datatype)? end=eos StmtBlk=statementBlock
+catchBlock          : (Id=identifier)? (AS Type=datatype)? end=eos StmtBlk=statementBlock
                     ;
 
-recoverBlock		: (USING Id=identifier)? end=eos StmtBlock=statementBlock
+recoverBlock        : (USING Id=identifier)? end=eos StmtBlock=statementBlock
                     ;
 
 variableDeclaration	: (LOCAL? Var=IMPLIED | Var=VAR) Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)*
@@ -633,13 +635,13 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 
 // Old Style xBase declarations
 
-xbasedecl        : T=(PRIVATE                               // PRIVATE Foo, Bar
+xbasedecl           : T=(PRIVATE                               // PRIVATE Foo, Bar
                       |PUBLIC                               // PUBLIC  Foo, Bar
                       |MEMVAR                               // MEMVAR  Foo, Bar
                       |PARAMETERS                           // PARAMETERS Foo, Bar
-                     ) Vars+=identifierName (COMMA Vars+=identifierName)*
-                     end=eos
-                 ;
+                      ) Vars+=identifierName (COMMA Vars+=identifierName)*
+                      end=eos
+                    ;
 
 // The operators in VO have the following precedence level:
 //    lowest (13)  assignment           := *= /= %= ^= += -= <<= >>=
@@ -694,16 +696,16 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
 
                     // Primary expressions
                     // Note: No need to check for extra ) } or ] tokens. The expression rule does that already
-primary             : Key=SELF                                        #selfExpression
-                    | Key=SUPER                                       #superExpression
-                    | Literal=literalValue                            #literalExpression		// literals
-                    | LiteralArray=literalArray                       #literalArrayExpression	// { expr [, expr] }
-                    | AnonType=anonType                               #anonTypeExpression		// { .id := expr [, .id := expr] }
-                    | CbExpr=codeblock                                #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-                    | AnoExpr=anonymousMethodExpression               #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
-                    | Query=linqQuery                                 #queryExpression        // LINQ
+primary             : Key=SELF                                                  #selfExpression
+                    | Key=SUPER                                                 #superExpression
+                    | Literal=literalValue                                      #literalExpression		// literals
+                    | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
+                    | AnonType=anonType                                         #anonTypeExpression		// { .id := expr [, .id := expr] }
+                    | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
+                    | AnoExpr=anonymousMethodExpression                         #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
+                    | Query=linqQuery                                           #queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
-                      ADDROF Func=name LPAREN RPAREN RCURLY           #delegateCtorCall		// delegate{ obj , @func() }
+                      ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | Type=datatype LCURLY ArgList=argumentList  RCURLY	
                                                    Init=objectOrCollectioninitializer? #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
@@ -745,89 +747,87 @@ boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName        
 
 // Initializers
 
-objectOrCollectioninitializer :	ObjInit=objectinitializer
+objectOrCollectioninitializer : ObjInit=objectinitializer
                               | CollInit=collectioninitializer
                               ;
 
-objectinitializer		: LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? RCURLY
-						;
-
-memberinitializer		: Name=identifierName ASSIGN_OP Expr=initializervalue
-						;
-
-initializervalue		: Init=objectOrCollectioninitializer // Put this first to make sure we are not matching a literal array for { expr [, expr] }
-						| Expr=expression
-						;
-
-collectioninitializer	: LCURLY Members+=expression (COMMA Members+=expression)* RCURLY
-						;
-
-bracketedArgumentList	: Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
-						;
-
-
-unnamedArgument	   // NOTE: Separate rule for bracketedarguments because they cannot use identifierName syntax
-					:  Expr=expression?
+objectinitializer   : LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? RCURLY
                     ;
 
-argumentList		  // NOTE: Optional argumentlist is handled in the rules that use this rule
-					:  Args+=namedArgument (COMMA Args+=namedArgument)*
+memberinitializer   : Name=identifierName ASSIGN_OP Expr=initializervalue
                     ;
 
-namedArgument		// NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-					:  {_namedArgs}?  Name=identifierName ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
-					|  ( RefOut=(REF | OUT) )? Expr=expression?
+initializervalue    : Init=objectOrCollectioninitializer // Put this first to make sure we are not matching a literal array for { expr [, expr] }
+                    | Expr=expression
+                    ;
+
+collectioninitializer : LCURLY Members+=expression (COMMA Members+=expression)* RCURLY
+                      ;
+
+bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
+                      ;
+
+                      // NOTE: Separate rule for bracketedarguments because they cannot use identifierName syntax
+unnamedArgument     :  Expr=expression?
+                    ;
+                    // NOTE: Optional argumentlist is handled in the rules that use this rule
+argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
+                    ;
+
+                    // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
+namedArgument       :  {_namedArgs}?  Name=identifierName ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
+                    |  ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
 
 
-iif					: (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? RPAREN
+iif                 : (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression? COMMA FalseExpr=expression? RPAREN
                     ;
 
-nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot
-                    | Name=aliasedName DOT											#simpleOrAliasedNameDot
+nameDot             : Left=nameDot Right=simpleName DOT                         #qualifiedNameDot
+                    | Name=aliasedName DOT                                      #simpleOrAliasedNameDot
                     ;
 
-name				: Left=name Op=DOT Right=simpleName								#qualifiedName
-                    | Name=aliasedName												#simpleOrAliasedName
+name                : Left=name Op=DOT Right=simpleName                         #qualifiedName
+                    | Name=aliasedName                                          #simpleOrAliasedName
                     ;
 
-aliasedName			: Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
-                    | Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
-                    | Name=simpleName												#identifierOrGenericName
+aliasedName         : Global=GLOBAL Op=COLONCOLON Right=simpleName              #globalQualifiedName
+                    | Alias=identifierName Op=COLONCOLON Right=simpleName       #aliasQualifiedName
+                    | Name=simpleName                                           #identifierOrGenericName
                     ;
 
-simpleName			: Id=identifier	GenericArgList=genericArgumentList?
+simpleName          : Id=identifier	GenericArgList=genericArgumentList?
                     ;
 
 genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
                     ;
 
-identifierName		: Id=identifier
+identifierName      : Id=identifier
                     ;
 
-datatype			: ARRAY OF TypeName=typeName                                    #arrayOfType
-                    | TypeName=typeName PTR											#ptrDatatype
-                    | TypeName=typeName (Ranks+=arrayRank)+							#arrayDatatype
-                    | TypeName=typeName 											#simpleDatatype
-                    | TypeName=typeName QMARK 										#nullableDatatype
+datatype            : ARRAY OF TypeName=typeName                                    #arrayOfType
+                    | TypeName=typeName PTR                                         #ptrDatatype
+                    | TypeName=typeName (Ranks+=arrayRank)+                         #arrayDatatype
+                    | TypeName=typeName                                             #simpleDatatype
+                    | TypeName=typeName QMARK                                       #nullableDatatype
                     ;
 
-arrayRank			: LBRKT (Commas+=COMMA)* RBRKT
+arrayRank           : LBRKT (Commas+=COMMA)* RBRKT
                     ;
 
-typeName			: NativeType=nativeType
+typeName            : NativeType=nativeType
                     | XType=xbaseType
                     | Name=name
                     ;
 
-usualTypeName		: NativeType=nativeType					// just type typenames that are allowed for USUAL variables
-					| XType=xbaseType				
-					;
+usualTypeName       : NativeType=nativeType					// just type typenames that are allowed for USUAL variables
+                    | XType=xbaseType				
+                    ;
 
                     // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule
                     // with a missing Expression which would not work for the core dialect
-literalArray		: (LT Type=datatype GT)? LCURLY RCURLY															// {}
-					| (LT Type=datatype GT)? LCURLY Elements+=arrayElement (COMMA Elements+=arrayElement)* RCURLY   // {e,e,e} or {e,,e} or {,e,} etc
+literalArray        : (LT Type=datatype GT)? LCURLY RCURLY															// {}
+                    | (LT Type=datatype GT)? LCURLY Elements+=arrayElement (COMMA Elements+=arrayElement)* RCURLY   // {e,e,e} or {e,,e} or {,e,} etc
                     ;
 
 arrayElement        : Expr=expression?      // VO Array elements are optional
@@ -835,11 +835,11 @@ arrayElement        : Expr=expression?      // VO Array elements are optional
 
 // Anonymous Types
 
-anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY
+anonType            : CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY
                     ;
 
-anonMember			: Name=identifierName ASSIGN_OP Expr=expression
-					| Expr=expression
+anonMember          : Name=identifierName ASSIGN_OP Expr=expression
+                    | Expr=expression
                     ;
 
 

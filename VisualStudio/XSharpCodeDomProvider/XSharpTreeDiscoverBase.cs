@@ -351,13 +351,19 @@ namespace XSharp.CodeDom
             newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
         }
 
-        protected void FillCodeSource(CodeObject element, IToken endOfFirstLine, ParserRuleContext context)
+        protected void FillCodeSource(CodeObject element, ParserRuleContext context, IList<IToken> tokens)
         {
-            int length = context.Stop.StopIndex - endOfFirstLine.StopIndex - 2;
-            string extract = "";
-            if (length > 0)
-                extract = this.SourceCode.Substring(endOfFirstLine.StopIndex + 1, length).TrimStart();
-            element.UserData[XSharpCodeConstants.USERDATA_CODE] = extract;
+            StringBuilder prototype = new StringBuilder();
+            var index = ((XSharpToken) context.Start).OriginalTokenIndex;
+            var lastindex = ((XSharpToken)context.Stop).OriginalTokenIndex;
+            while (index > 0 && index < tokens.Count)
+            {
+                prototype.Append(tokens[index].Text);
+                if (index == lastindex)
+                    break;
+                index++;
+            }
+            element.UserData[XSharpCodeConstants.USERDATA_CODE] = prototype.ToString();
         }
 
         protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)

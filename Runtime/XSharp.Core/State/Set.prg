@@ -691,22 +691,46 @@ FUNCTION SetInternational(cMode AS STRING) AS STRING
 	RETURN cOld
 
 
+ 
 /// <summary>
-/// Return the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
+/// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
 /// The Core dialect always compares according to the Unicode rules.
+/// The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal".
 /// </summary>
-/// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal"
-/// </returns>
+/// <returns>The current setting for SetCollation().</returns>
 FUNCTION SetCollation() AS STRING 
 	RETURN RuntimeState.CollationMode:ToString():ToUpper()
 
 /// <summary>
 /// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
 /// The Core dialect always compares according to the Unicode rules.
+/// The other dialects use the rules defined with SetCollation for string comparison. There are 4 possible values:
+/// <list type="bullet">
+/// <item>
+/// <term>Windows (the default)</term>
+/// <description>Windows collation. <br/>This uses the windows ansi comparison mechanism that Visual Objects uses as well.
+/// That means that the Unicode strings from .Net are converted to Ansi first and then compared with the Ansi comparison rules.
+/// In most cases characters that are not available in the Ansi codepage are translated to a question mark '?' and are therefore all seen as equal. <br/>
+/// If you want true unicode comparison you need the Unicode value for SetCollation.
+/// </description>
+/// <term>Clipper</term>
+/// <description>This uses string comparison tables that are the same as the character comparison tables in the Visual Objects
+/// nation modules. Each character from the unicode string is converted to a character from the OEM codepage first using the
+/// DosCodePage from the runtime state. the resulting OEM characters are then looked up in the 256 character weight tables that
+/// are part of the runtime dll. You can switch to a different table by using SetNatDLL().
+/// </description>
+/// <term>Unicode</term>
+/// <description>This uses the normal Unicode String.Compare routines for string comparisons. 
+/// </description>
+/// <term>Ordinal</term>
+/// <description>This uses the normal Ordinal String.Compare routines from DotNet. This is the fastest.
+/// </description>
+/// </list>
 /// </summary>
-// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
-/// <returns>
-/// </returns>
+/// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal" </returns>
+///
+/// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
+/// <returns>The previous setting for SetCollation().</returns>
 FUNCTION SetCollation(cCollation AS STRING)  AS STRING
 	LOCAL cOld AS STRING
 	cOld := RuntimeState.CollationMode:ToString():ToUpper()

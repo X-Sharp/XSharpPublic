@@ -59,7 +59,7 @@ FUNCTION FloatFormat(f AS FLOAT,nLen AS INT,nDec AS INT) AS FLOAT
 		// not very efficient but this is what VO does
 		LOCAL nDigits AS INT
 		nDigits := f:Digits
-		IF nDigits < 0
+		IF nDigits < 0 
 			nDigits := (SHORT) RuntimeState.Digits
 		ENDIF
 		LOCAL fTemp AS FLOAT

@@ -236,6 +236,12 @@ CLASS XSharp.RuntimeState
         GET GetValue<DWORD>(Set.DIGITS);
         SET SetValue<DWORD>(Set.DIGITS, VALUE)
 
+    /// <summary>Logical setting that fixes the number of digits used to display numeric output.</summary>
+    STATIC PROPERTY DigitsFixed AS LOGIC ;
+        GET GetValue<LOGIC>(Set.DigitFixed);
+        SET SetValue<LOGIC>(Set.DigitFixed, VALUE)
+
+
 	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
     STATIC PROPERTY DosCodePage AS LONG 
         GET 
@@ -267,6 +273,13 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Exact AS LOGIC ;
         GET GetValue<LOGIC>(Set.EXACT);
         SET SetValue<LOGIC>(Set.EXACT, VALUE)
+
+    /// <summary>Logical setting that fixes the number of decimal digits used to display numbers.</summary>
+    STATIC PROPERTY Fixed AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Fixed);
+        SET SetValue<LOGIC>(Set.Fixed, VALUE)
+
+
 
 	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
    STATIC PROPERTY FloatDelta AS REAL8 ;

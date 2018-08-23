@@ -21,11 +21,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL l AS LOGIC
 			l := FALSE
 			wb := l
-			l := FALSE
+			l := TRUE
+            Assert.Equal(l, TRUE)
 			l := wb
-			Assert.Equal(l, TRUE)
-			l := !wb
 			Assert.Equal(l, FALSE)
+			l := !wb
+			Assert.Equal(l, TRUE)
+            wb := ! wb
 			Assert.Equal((LOGIC) (wb .AND. wb), TRUE)
 			Assert.Equal((LOGIC) (wb .AND. !wb), FALSE)
 			Assert.Equal((LOGIC) (wb .OR. wb), TRUE)

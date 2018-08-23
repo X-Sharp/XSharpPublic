@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -291,7 +291,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD UsualConversionTests() AS VOID
 			LOCAL u AS USUAL
 			LOCAL d AS DWORD
-			u := -1
+			u := UInt32.MaxValue
 			d := UsualConversionTests_helper(u)
 			Assert.Equal(UInt32.MaxValue - 1 , d)
 		

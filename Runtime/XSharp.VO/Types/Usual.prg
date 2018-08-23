@@ -36,13 +36,13 @@ BEGIN NAMESPACE XSharp
             _NIL := __Usual{__UsualType.Void}
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(type AS __UsualType )
             SELF:_valueData := _UsualData{}
             SELF:_flags     := UsualFlags{type}
             SELF:_refData   := NULL
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(u AS __Usual)
             SELF:_flags     := u:_flags
             SELF:_valueData	:= u:_valueData
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp
 
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(f AS FLOAT)
             SELF(__UsualType.Float)
             SELF:_valueData:r8		:= f:Value
@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp
             SELF:_flags:Decimals	:= (Sbyte) f:Decimals
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(r8 AS REAL8)
             SELF(__UsualType.Float)
             SELF:_valueData:r8		:= r8
@@ -66,43 +66,43 @@ BEGIN NAMESPACE XSharp
             SELF:_flags:Decimals	:= -1
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS LOGIC)
-            SELF(__UsualType.LOGIC)
+            SELF(__UsualType.Logic)
             SELF:_valueData:l		:= VALUE
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS ARRAY)
-            SELF(__UsualType.ARRAY)
+            SELF(__UsualType.Array)
             SELF:_refData			:= VALUE
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS DATE)
             SELF(__UsualType.DATE)
             SELF:_valueData:d		:= VALUE
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS System.DateTime)
             SELF(__UsualType.DateTime)
             SELF:_valueData:dt		:= VALUE
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS LONG)
             SELF(__UsualType.Long)
             _valueData:i			:= VALUE
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS INT64)
             SELF(__UsualType.Int64)
             SELF:_valueData:i64		:= VALUE
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS UINT64)
             IF VALUE < Int64.MaxValue
                 SELF(__UsualType.Int64)
@@ -113,17 +113,18 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN
 
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(d AS System.Decimal)
             SELF(__UsualType.Decimal)
             SELF:_refdata	:= d
 
-
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS System.IntPtr)
-            SELF(__UsualType.PTR)
+            SELF(__UsualType.Ptr)
             SELF:_valueData:p		:= VALUE
             RETURN
 
-
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(VALUE AS PSZ)
             SELF(__UsualType.String)
             SELF:_refData			:= Psz2String(VALUE)
@@ -290,7 +291,7 @@ BEGIN NAMESPACE XSharp
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
-        PRIVATE PROPERTY _floatValue    AS FLOAT			GET FLOAT{ _valueData:r8, _width, _decimals}
+        PRIVATE PROPERTY _floatValue    AS FLOAT			GET __VOFloat{ _valueData:r8, _width, _decimals}
         PRIVATE PROPERTY _i64Value		AS INT64			GET _valueData:i64
         PRIVATE PROPERTY _intValue		AS INT				GET _valueData:i
         PRIVATE PROPERTY _logicValue	AS LOGIC			GET _valueData:l
@@ -327,6 +328,7 @@ BEGIN NAMESPACE XSharp
                     END SWITCH
             END GET
         END PROPERTY
+
         INTERNAL PROPERTY IsObject		AS LOGIC GET _usualtype == __UsualType.Object
         INTERNAL PROPERTY IsPtr			AS LOGIC GET _usualtype == __UsualType.Ptr
         INTERNAL PROPERTY IsSymbol		AS LOGIC GET _usualtype == __UsualType.Symbol
@@ -406,7 +408,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties FOR the Debugger
         /// <exclude />
-        PROPERTY @@Value AS OBJECT
+        PROPERTY Value AS OBJECT
             GET
                 SWITCH _UsualType
                     CASE __UsualType.Array		; RETURN _arrayValue
@@ -853,7 +855,7 @@ BEGIN NAMESPACE XSharp
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
         STATIC OPERATOR !=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
-            IF lhs:_usualType == __UsualType.STRING .AND. rhs:_usualType == __UsualType.STRING
+            IF lhs:_usualType == __UsualType.String .AND. rhs:_usualType == __UsualType.String
                 RETURN ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
             ELSE
                 RETURN ! lhs:UsualEquals(rhs, "!=")
@@ -917,9 +919,9 @@ BEGIN NAMESPACE XSharp
                             NOP // error below
                         END SWITCH
 
-                CASE __UsualType.LOGIC
+                CASE __UsualType.Logic
                     SWITCH rhs:_usualType
-                    CASE __UsualType.LOGIC		; RETURN SELF:_logicValue == rhs:_logicValue
+                    CASE __UsualType.Logic		; RETURN SELF:_logicValue == rhs:_logicValue
                         CASE __UsualType.Long		; RETURN SELF:_logicValue == (rhs:_intValue <> 0)
                         CASE __UsualType.Int64		; RETURN SELF:_logicValue == (rhs:_i64Value <> 0)
                         CASE __UsualType.Decimal	; RETURN SELF:_logicValue == (rhs:_decimalValue <> 0)
@@ -943,17 +945,17 @@ BEGIN NAMESPACE XSharp
                             NOP // error below
                     END SWITCH
 
-                CASE __UsualType.STRING
+                CASE __UsualType.String
                     SWITCH rhs:_usualType
-                        CASE __UsualType.STRING		; RETURN SELF:_stringValue == rhs:_stringValue
+                        CASE __UsualType.String		; RETURN SELF:_stringValue == rhs:_stringValue
                         CASE __UsualType.Symbol		; RETURN SELF:_stringValue == rhs:_symValue
                         OTHERWISE
                             NOP // error below
                     END SWITCH
 
-                CASE __UsualType.ARRAY
+                CASE __UsualType.Array
                     SWITCH rhs:_usualType
-                        CASE __UsualType.ARRAY		; RETURN SELF:_refData == rhs:_refData
+                        CASE __UsualType.Array		; RETURN SELF:_refData == rhs:_refData
                         OTHERWISE
                             NOP // error below
                     END SWITCH
@@ -990,7 +992,7 @@ BEGIN NAMESPACE XSharp
         #region Unary Operators
         /// <summary>This operator is used in code generated by the compiler when needed.</summary>
         STATIC OPERATOR !(u AS __Usual) AS LOGIC
-            IF u:_usualType == __UsualType.LOGIC
+            IF u:_usualType == __UsualType.Logic
                 RETURN !u:_logicValue
             ENDIF
             THROW UnaryError("!", u)
@@ -1075,10 +1077,10 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1142,10 +1144,10 @@ BEGIN NAMESPACE XSharp
                         END SWITCH
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1215,7 +1217,7 @@ BEGIN NAMESPACE XSharp
                                 RETURN lhs:_intValue / rhs:_i64Value
                             ENDIF
                         CASE __UsualType.Float
-                            RETURN FLOAT{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                            RETURN __VOFloat{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
@@ -1251,7 +1253,7 @@ BEGIN NAMESPACE XSharp
                                 RETURN lhs:_i64Value / rhs:_i64Value
                             ENDIF
                         CASE __UsualType.Float
-                            RETURN FLOAT{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                            RETURN __VOFloat{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
@@ -1268,10 +1270,10 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1296,7 +1298,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_intValue % rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_intValue % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_intValue % rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                     END SWITCH
@@ -1305,17 +1307,17 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_i64Value % rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_i64Value % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_i64Value % rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                      END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1341,7 +1343,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_intValue * rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_intValue * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_intValue * rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                     END SWITCH
@@ -1350,17 +1352,17 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_i64Value * rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_i64Value * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_i64Value * rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1445,6 +1447,7 @@ BEGIN NAMESPACE XSharp
         #region Implicit FROM USUAL TO Other Type
 
         /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS ARRAY
             SWITCH u:_usualType
                 CASE __UsualType.Array	; RETURN (ARRAY) u:_refData
@@ -1458,6 +1461,8 @@ BEGIN NAMESPACE XSharp
             END SWITCH
             THROW ConversionError(ARRAY, TYPEOF(ARRAY), u)
 
+        /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS CODEBLOCK
             SWITCH u:_usualType
                 CASE __UsualType.CodeBlock
@@ -1472,6 +1477,7 @@ BEGIN NAMESPACE XSharp
             THROW ConversionError(CODEBLOCK, TYPEOF(CODEBLOCK), u)
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS LOGIC
             SWITCH u:_usualType
                 CASE __UsualType.Logic		; RETURN u:_logicValue
@@ -1484,6 +1490,7 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS DATE
             SWITCH u:_usualType
             CASE __UsualType.Date		; RETURN u:_dateValue
@@ -1494,6 +1501,7 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS DateTime
             SWITCH u:_usualType
                 CASE __UsualType.Date		; RETURN (DateTime) u:_dateValue
@@ -1504,6 +1512,7 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS System.IntPtr
             SWITCH u:_usualType
                 CASE __UsualType.Ptr		; RETURN u:_ptrValue
@@ -1516,26 +1525,29 @@ BEGIN NAMESPACE XSharp
                 END SWITCH
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
             SWITCH u:_usualType
                 CASE __UsualType.String	; RETURN u:_stringValue
                 CASE __UsualType.Void	; RETURN ""
-            CASE __UsualType.SYMBOL	; RETURN (STRING) u:_symValue
+            CASE __UsualType.Symbol	; RETURN (STRING) u:_symValue
                 OTHERWISE
                     THROW ConversionError(STRING, TYPEOF(STRING), u)
                 END SWITCH
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SYMBOL
             SWITCH u:_usualType
                 CASE __UsualType.String	; RETURN (SYMBOL) u:_stringValue
                 CASE __UsualType.Void	; RETURN SYMBOL{""}
-            CASE __UsualType.SYMBOL	; RETURN u:_symValue
+            CASE __UsualType.Symbol	; RETURN u:_symValue
                 OTHERWISE
                     THROW ConversionError(SYMBOL, TYPEOF(SYMBOL), u)
                 END SWITCH
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS PSZ
             SWITCH u:_usualType
                 CASE __UsualType.Ptr	; RETURN (PSZ) u:_ptrValue
@@ -1548,6 +1560,7 @@ BEGIN NAMESPACE XSharp
             #endregion
         #region Implicit Numeric Operators
         /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS BYTE
             TRY
                 SWITCH u:_usualType
@@ -1576,6 +1589,7 @@ BEGIN NAMESPACE XSharp
             RETURN 0
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SHORT
             TRY
                 SWITCH u:_usualType
@@ -1605,6 +1619,7 @@ BEGIN NAMESPACE XSharp
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS LONG
             TRY
                 SWITCH u:_usualType
@@ -1632,6 +1647,7 @@ BEGIN NAMESPACE XSharp
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS INT64
             TRY
                 SWITCH u:_usualType
@@ -1660,58 +1676,62 @@ BEGIN NAMESPACE XSharp
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS System.Decimal
             TRY
                 SWITCH u:_usualType
                 CASE __UsualType.Long	; RETURN CHECKED(u:_intValue)
-                    CASE __UsualType.Int64	; RETURN CHECKED(u:_i64Value)
-                    CASE __UsualType.Float	; RETURN CHECKED((System.Decimal) u:_r8Value)
-                    CASE __UsualType.Decimal; RETURN CHECKED(u:_decimalValue)
-                    CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
-                    CASE __UsualType.Void	; RETURN 0
-                    OTHERWISE
-                        THROW ConversionError(__UsualType.DECIMAL, TYPEOF(INT64), u)
-                    END SWITCH
+                CASE __UsualType.Int64	; RETURN CHECKED(u:_i64Value)
+                CASE __UsualType.Float	; RETURN CHECKED((System.Decimal) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN CHECKED(u:_decimalValue)
+                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Void	; RETURN 0
+                OTHERWISE
+                    THROW ConversionError(__UsualType.DECIMAL, TYPEOF(INT64), u)
+                END SWITCH
             CATCH ex AS OverflowException
                 THROW OverflowError(ex, "DECIMAL", TYPEOF(INT64), u)
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SByte
             TRY
                 SWITCH u:_usualType
                 CASE __UsualType.Long	; RETURN CHECKED( (SByte) u:_intValue)
-                    CASE __UsualType.Int64	; RETURN CHECKED( (SByte) u:_i64Value)
-                    CASE __UsualType.Float	; RETURN CHECKED( (SByte) u:_r8Value)
-                    CASE __UsualType.Decimal; RETURN CHECKED((SByte) u:_decimalValue )
-                    CASE __UsualType.Logic	; RETURN (SByte) IIF(u:_logicValue, 1, 0)
-                    CASE __UsualType.Void	; RETURN 0
-                    OTHERWISE
-                        THROW ConversionError(BYTE, TYPEOF(SByte), u)
-                    END SWITCH
+                CASE __UsualType.Int64	; RETURN CHECKED( (SByte) u:_i64Value)
+                CASE __UsualType.Float	; RETURN CHECKED( (SByte) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN CHECKED((SByte) u:_decimalValue )
+                CASE __UsualType.Logic	; RETURN (SByte) IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Void	; RETURN 0
+                OTHERWISE
+                    THROW ConversionError(BYTE, TYPEOF(SByte), u)
+                END SWITCH
             CATCH ex AS OverflowException
                 THROW OverflowError(ex, "SBYTE", TYPEOF(SByte), u)
             END TRY
 
             // Unsigned
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS WORD
             TRY
                 SWITCH u:_usualType
                 CASE __UsualType.Long	; RETURN CHECKED((WORD) u:_intValue)
-                    CASE __UsualType.Int64	; RETURN CHECKED((WORD) u:_i64Value)
-                    CASE __UsualType.Float	; RETURN CHECKED((WORD) u:_r8Value)
-                    CASE __UsualType.Decimal; RETURN CHECKED((WORD) u:_decimalValue )
-                    CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
-                    CASE __UsualType.Void	; RETURN 0
-                    OTHERWISE
-                        THROW ConversionError(WORD, TYPEOF(WORD), u)
-                    END SWITCH
+                CASE __UsualType.Int64	; RETURN CHECKED((WORD) u:_i64Value)
+                CASE __UsualType.Float	; RETURN CHECKED((WORD) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN CHECKED((WORD) u:_decimalValue )
+                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Void	; RETURN 0
+                OTHERWISE
+                    THROW ConversionError(WORD, TYPEOF(WORD), u)
+                END SWITCH
             CATCH ex AS OverflowException
                 THROW OverflowError(ex, "WORD", TYPEOF(WORD), u)
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS DWORD
             TRY
                 SWITCH u:_usualType
@@ -1733,24 +1753,26 @@ BEGIN NAMESPACE XSharp
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS UINT64
             TRY
                 SWITCH u:_usualType
                 CASE __UsualType.Long	; RETURN CHECKED((UINT64) u:_intValue)
-                    CASE __UsualType.Int64	; RETURN CHECKED((UINT64) u:_i64Value)
-                    CASE __UsualType.Float	; RETURN CHECKED((UINT64) u:_r8Value)
-                    CASE __UsualType.Decimal; RETURN CHECKED((UINT64) u:_decimalValue )
-                    CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
-                    CASE __UsualType.Void	; RETURN 0
-                    OTHERWISE
-                        THROW ConversionError(UINT64, TYPEOF(UINT64), u)
-                    END SWITCH
+                CASE __UsualType.Int64	; RETURN CHECKED((UINT64) u:_i64Value)
+                CASE __UsualType.Float	; RETURN CHECKED((UINT64) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN CHECKED((UINT64) u:_decimalValue )
+                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Void	; RETURN 0
+                OTHERWISE
+                    THROW ConversionError(UINT64, TYPEOF(UINT64), u)
+                END SWITCH
             CATCH ex AS OverflowException
                 THROW OverflowError(ex, "UINT64", TYPEOF(UINT64), u)
             END TRY
 
             // Single, Double and FLoat
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL4
             TRY
                 SWITCH u:_usualType
@@ -1758,7 +1780,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Int64	; RETURN CHECKED((REAL4) u:_i64Value)
                     CASE __UsualType.Float	; RETURN CHECKED((REAL4) u:_r8Value)
                     CASE __UsualType.Decimal; RETURN CHECKED((REAL4) u:_decimalValue )
-                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                    CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                     CASE __UsualType.Void	; RETURN 0
                     OTHERWISE
                         THROW ConversionError(REAL4, TYPEOF(REAL4), u)
@@ -1768,32 +1790,34 @@ BEGIN NAMESPACE XSharp
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL8
             TRY
                 SWITCH u:_usualType
                 CASE __UsualType.Long	; RETURN CHECKED((REAL8) u:_intValue)
-                    CASE __UsualType.Int64	; RETURN CHECKED((REAL8) u:_i64Value)
-                    CASE __UsualType.Float	; RETURN CHECKED((REAL8) u:_r8Value)
-                    CASE __UsualType.Decimal; RETURN CHECKED((REAL8) u:_decimalValue )
-                    CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
-                    CASE __UsualType.Void	; RETURN 0
-                    OTHERWISE
-                        THROW ConversionError(REAL8, TYPEOF(REAL8), u)
-                    END SWITCH
-            CATCH ex AS OverflowException
+                CASE __UsualType.Int64	; RETURN CHECKED((REAL8) u:_i64Value)
+                CASE __UsualType.Float	; RETURN CHECKED((REAL8) u:_r8Value)
+                CASE __UsualType.Decimal; RETURN CHECKED((REAL8) u:_decimalValue )
+                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Void	; RETURN 0
+                OTHERWISE
+                    THROW ConversionError(REAL8, TYPEOF(REAL8), u)
+                END SWITCH
+        CATCH ex AS OverflowException
                 THROW OverflowError(ex, "REAL8", TYPEOF(REAL8), u)
             END TRY
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
             TRY
                 SWITCH u:_usualType
-                    CASE __UsualType.Long	; RETURN CHECKED(FLOAT{(REAL8) u:_intValue})
-                    CASE __UsualType.Int64	; RETURN CHECKED(FLOAT{(REAL8) u:_i64Value})
+                    CASE __UsualType.Long	; RETURN CHECKED(__VOFloat{(REAL8) u:_intValue})
+                    CASE __UsualType.Int64	; RETURN CHECKED(__VOFloat{(REAL8) u:_i64Value})
                     CASE __UsualType.Float	; RETURN u:_floatValue
-                    CASE __UsualType.Decimal; RETURN CHECKED(FLOAT{(REAL8) u:_decimalValue})
-                CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0)}
-                    CASE __UsualType.Void	; RETURN FLOAT{0}
+                    CASE __UsualType.Decimal; RETURN CHECKED(__VOFloat{(REAL8) u:_decimalValue})
+                    CASE __UsualType.Logic	; RETURN __VOFloat{IIF(u:_logicValue, 1, 0)}
+                    CASE __UsualType.Void	; RETURN __VOFloat{0}
                     OTHERWISE
                         THROW ConversionError(FLOAT, TYPEOF(FLOAT), u)
                     END SWITCH
@@ -1807,6 +1831,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>This operator is used in code generated by the compiler when needed.</summary>
         /// Note this generates error XS0553.
         /// However our compiler needs this one. Therefore disable XS0553
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS OBJECT) AS __Usual
             LOCAL result AS __Usual
             IF VALUE != NULL .AND. VALUE:GetType() == TYPEOF(__Usual)
@@ -1819,83 +1844,103 @@ BEGIN NAMESPACE XSharp
             RETURN result
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS LOGIC) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS BYTE) AS __Usual
             RETURN __Usual{(INT)VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS ARRAY) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS DATE) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS System.DateTime) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS FLOAT) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS REAL8) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS SHORT) AS __Usual
             RETURN __Usual{(INT)VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS LONG) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS INT64) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS UINT64) AS __Usual
             RETURN __Usual{VALUE}
 
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS PSZ) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS SYMBOL) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS System.Decimal) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS System.IntPtr) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS SByte) AS __Usual
             RETURN __Usual{(INT)VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS REAL4) AS __Usual
             RETURN __Usual{(REAL8)VALUE }
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS STRING) AS __Usual
             RETURN __Usual{VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS WORD) AS __Usual
             RETURN __Usual{(INT)VALUE}
 
             /// <summary>This operator is used in code generated by the compiler when needed.</summary>
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(VALUE AS DWORD) AS __Usual
             RETURN IIF((VALUE <= 0x7fffffff),__Usual{(LONG)VALUE },__Usual{(FLOAT)VALUE })
             #endregion
@@ -1942,21 +1987,22 @@ BEGIN NAMESPACE XSharp
             RETURN SELF
 
             /// <exclude />
+        [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
             SWITCH u:_usualType
-                CASE __UsualType.ARRAY		; RETURN u:_arrayValue
+                CASE __UsualType.Array		; RETURN u:_arrayValue
                 CASE __UsualType.CodeBlock	; RETURN u:_codeblockValue
                 CASE __UsualType.Date			; RETURN u:_dateValue
-            CASE __UsualType.DateTime		; RETURN u:_dateTimeValue
+                CASE __UsualType.DateTime		; RETURN u:_dateTimeValue
                 CASE __UsualType.Decimal		; RETURN u:_decimalValue
-                CASE __UsualType.FLOAT		; RETURN u:_floatValue
+                CASE __UsualType.Float		; RETURN u:_floatValue
                 CASE __UsualType.Int64		; RETURN u:_i64Value
                 CASE __UsualType.Long			; RETURN u:_intValue
-                CASE __UsualType.LOGIC		; RETURN u:_logicValue
-                CASE __UsualType.OBJECT		; RETURN u:_refData
-                CASE __UsualType.PTR			; RETURN u:_ptrValue
-                CASE __UsualType.STRING		; RETURN u:_refData
-                CASE __UsualType.SYMBOL		; RETURN u:_symValue
+                CASE __UsualType.Logic		; RETURN u:_logicValue
+                CASE __UsualType.Object		; RETURN u:_refData
+                CASE __UsualType.Ptr			; RETURN u:_ptrValue
+                CASE __UsualType.String		; RETURN u:_refData
+                CASE __UsualType.Symbol		; RETURN u:_symValue
                 CASE __UsualType.Void		; RETURN NULL
                 OTHERWISE					; RETURN NULL
                 END SWITCH
@@ -1994,17 +2040,17 @@ BEGIN NAMESPACE XSharp
 
             SWITCH (SELF:_usualType)
                 CASE __UsualType.Array		; strResult := IIF (SELF:_refData == NULL, "NULL_ARRAY", SELF:_arrayValue:ToString())
-                CASE __UsualType.CODEBLOCK  ; strResult := IIF (SELF:_refData == NULL, "NULL_CODEBLOCK", SELF:_codeblockValue:ToString())
-                CASE __UsualType.OBJECT		; strResult := IIF (SELF:_refData == NULL, "NULL_OBJECT", SELF:_refData:ToString())
+                CASE __UsualType.CodeBlock  ; strResult := IIF (SELF:_refData == NULL, "NULL_CODEBLOCK", SELF:_codeblockValue:ToString())
+                CASE __UsualType.Object		; strResult := IIF (SELF:_refData == NULL, "NULL_OBJECT", SELF:_refData:ToString())
                 CASE __UsualType.Date		; strResult := SELF:_dateValue:ToString()
             CASE __UsualType.DateTime	; strResult := SELF:_dateTimeValue:ToString()
                 CASE __UsualType.Decimal	; strResult := IIF (SELF:_refData == NULL, "0", SELF:_decimalValue:ToString())
                 CASE __UsualType.Float		; strResult := SELF:_r8Value:ToString()
                 CASE __UsualType.Long		; strResult := SELF:_intValue:ToString()
                 CASE __UsualType.Int64		; strResult := SELF:_i64Value:ToString()
-                CASE __UsualType.LOGIC		; strResult := IIF(!SELF:_logicValue , ".F." , ".T.")
-                CASE __UsualType.PTR		; strResult := SELF:_ptrValue:ToString()
-                CASE __UsualType.STRING		; strResult := IIF (SELF:_refData == NULL, "NULL_STRING", SELF:_stringValue:ToString())
+                CASE __UsualType.Logic		; strResult := IIF(!SELF:_logicValue , ".F." , ".T.")
+                CASE __UsualType.Ptr		; strResult := SELF:_ptrValue:ToString()
+                CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, "NULL_STRING", SELF:_stringValue:ToString())
                 CASE __UsualType.Symbol		; strResult := SELF:_symValue:ToString()
                 CASE __UsualType.Void		; strResult := "NIL"
                 OTHERWISE					; strResult := ""
@@ -2018,7 +2064,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
             IF conversionType:IsPointer
                 SWITCH SELF:_usualType
-                    CASE __UsualType.PTR	; RETURN _ptrValue
+                    CASE __UsualType.Ptr	; RETURN _ptrValue
                     CASE __UsualType.Long	; RETURN (IntPtr) _intValue
                 CASE __UsualType.Int64	; RETURN (IntPtr) _i64Value
                     OTHERWISE
@@ -2050,19 +2096,19 @@ BEGIN NAMESPACE XSharp
             /// <exclude />
         PUBLIC METHOD GetTypeCode() AS System.TypeCode
             SWITCH _usualType
-                CASE __UsualType.ARRAY	; RETURN TypeCode.Object
-            CASE __UsualType.CodeBlock; RETURN TypeCode.Object
+                CASE __UsualType.Array	; RETURN TypeCode.Object
+                CASE __UsualType.CodeBlock; RETURN TypeCode.Object
                 CASE __UsualType.Date	; RETURN TypeCode.Object
                 CASE __UsualType.DateTime; RETURN TypeCode.DateTime
                 CASE __UsualType.Decimal; RETURN TypeCode.Decimal
-                CASE __UsualType.FLOAT	; RETURN TypeCode.Object
+                CASE __UsualType.Float ; RETURN TypeCode.Object
                 CASE __UsualType.Int64	; RETURN TypeCode.Int64
                 CASE __UsualType.Long	; RETURN TypeCode.Int32
-                CASE __UsualType.LOGIC	; RETURN TypeCode.Boolean
-                CASE __UsualType.OBJECT	; RETURN TypeCode.Object
-                CASE __UsualType.PTR	; RETURN TypeCode.Object
-                CASE __UsualType.STRING ; RETURN TypeCode.String
-                CASE __UsualType.SYMBOL ; RETURN TypeCode.Object
+                CASE __UsualType.Logic	; RETURN TypeCode.Boolean
+                CASE __UsualType.Object	; RETURN TypeCode.Object
+                CASE __UsualType.Ptr	; RETURN TypeCode.Object
+                CASE __UsualType.String ; RETURN TypeCode.String
+                CASE __UsualType.Symbol ; RETURN TypeCode.Object
                 CASE __UsualType.Void
                 OTHERWISE				; RETURN TypeCode.Object
                 END SWITCH
@@ -2077,11 +2123,11 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Date			; RETURN "D"
                     CASE __UsualType.DateTime		; RETURN "D"
                     CASE __UsualType.DECIMAL		; RETURN "N"
-                    CASE __UsualType.FLOAT		; RETURN "N"
+                    CASE __UsualType.Float		; RETURN "N"
                     CASE __UsualType.Int64		; RETURN "N"
                     CASE __UsualType.Long			; RETURN "N"
                     CASE __UsualType.Logic		; RETURN "L"
-                    CASE __UsualType.PTR			; RETURN "-"
+                    CASE __UsualType.Ptr			; RETURN "-"
                     CASE __UsualType.String		; RETURN "C"
                     CASE __UsualType.Object		; RETURN "O"
                     CASE __UsualType.Symbol		; RETURN "#"
@@ -2219,7 +2265,7 @@ BEGIN NAMESPACE XSharp
         [FieldOffset(1)] EXPORT width AS Sbyte
         [FieldOffset(2)] EXPORT decimals AS Sbyte
         [FieldOffset(3)] EXPORT isByRef AS LOGIC
-
+        [DebuggerStepThroughAttribute];
         CONSTRUCTOR(type AS __UsualType)
             usualType := type
             width	  := 0

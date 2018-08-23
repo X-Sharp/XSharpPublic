@@ -121,9 +121,13 @@ FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
       VAR cFormat := XSharp.RuntimeState.DateFormat
       
       IF lSet
-         cFormat := cFormat:Replace( "YY", "YYYY" )
-      ELSE
-         cFormat := cFormat:Replace( "YYYY", "YY" )
+        IF ! cFormat:Contains("YYYY")
+            cFormat := cFormat:Replace( "YY", "YYYY" )
+        ENDIF
+        ELSE
+            IF cFormat:Contains("YYYY")
+                cFormat := cFormat:Replace( "YYYY", "YY" )
+            ENDIF
       ENDIF
       
       SetDateFormat( cFormat )

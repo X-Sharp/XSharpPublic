@@ -3302,7 +3302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 int len = context.Token.Text.Length;
                                 int dec = args[1].Length;
                                 arg0 = MakeArgument(GenerateLiteral(context.Token));
-                                arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
+                                arg1 = MakeArgument(GenerateLiteral("0", 0));
                                 arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
                                 expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2));
                             }

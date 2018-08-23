@@ -2142,7 +2142,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             var token = initexpr.GetLiteralToken();
-            if (token != null)
+            if (token == null)
+            {
+                return MakeDefaultParameter(initexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));
+            }
+            else
+            
             {
                 var nullExpr = GenerateLiteralNull();
                 switch (token.Type)
@@ -2214,7 +2219,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return MakeDefaultParameter(GenerateLiteral(token), GenerateLiteral(0));   // 0 = regular .Net Value
                 }
             }
-            return null;
         }
 
         public override void ExitParameter([NotNull] XP.ParameterContext context)
@@ -2224,6 +2228,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // are no Attributes on the parameter, such as [CallerMember]
             if (context.Default != null && context.Attributes == null && ! _options.NoClipCall)
             {
+                // only encode when there are parameters in this list after the current one
+                // that have no default. Otherwise we let Roslyn take care of it.
+                var ParamList = context.Parent as XP.ParameterListContext;
+                var needed = false;
+                var found = false;
+                foreach (var param in ParamList._Params)
+                {
+                    if (param == context)
+                    {
+                        found = true;
+                    }
+                    else if (found && param.Default == null)
+                    {
+                        needed = true;
+                    }
+                }
+                if (!needed)
+                {
+                    // Roslyn can handle it.
+                    return;
+                }
                 AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)
                 {

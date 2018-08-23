@@ -197,11 +197,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         var arg = attr.CommonConstructorArguments[0];
                         switch (desc)
                         {
-                            case 0: 
+                            case 0:
                                 // normal .Net Object
                                 // return value  or null
                                 if (arg.Type != null && arg.Value != null)
-                                    return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                {
+                                    if (arg.Type.SpecialType == SpecialType.None)
+                                    {
+                                        // Enum type? can be casted to Int32
+                                        return ConstantValue.Create(arg.Value, SpecialType.System_Int32);
+                                    }
+                                    else
+                                        return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                }
                                 else
                                     return ConstantValue.Null;
                             case 1:

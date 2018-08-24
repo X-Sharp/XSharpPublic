@@ -37,7 +37,7 @@ namespace XSharp.Project
         public override int Open(bool newFile, bool openWith, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
         {
             windowFrame = null;
-            Guid editorType = Guid.Empty;
+            Guid editorType = VSConstants.LOGVIEWID_Primary;
             string fullPath = this.GetFullPathForDocument();
             switch (System.IO.Path.GetExtension(fullPath).ToLower())
             {

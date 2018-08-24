@@ -1,23 +1,23 @@
-﻿using System
-using System.Collections.Generic
-using System.Collections.Immutable
+﻿USING System
+USING System.Collections.Generic
+USING System.Collections.Immutable
  
-begin namespace XSharpModel
-class ParseResult
-	property Types			as IList<EntityObject> auto
-	property Entities		as IList<EntityObject> auto
-	property SpecialLines   as IList<LineObject> auto
-	property Locals         as IList<EntityObject> auto
-	property SourceLength   as int auto
-	property LineCount      as int auto
+BEGIN NAMESPACE XSharpModel
+CLASS ParseResult
+	PROPERTY Types			AS IList<EntityObject> AUTO
+	PROPERTY Entities		AS IList<EntityObject> AUTO
+	PROPERTY SpecialLines   AS IList<LineObject> AUTO
+	PROPERTY Locals         AS IList<EntityObject> AUTO
+	PROPERTY SourceLength   AS INT AUTO
+	PROPERTY LineCount      AS INT AUTO
 
-	constructor (oParser as Parser)
-		self:Types			:= oParser:Types:ToImmutableArray()
-		self:Entities		:= oParser:Entities:ToImmutableArray()
-		self:SpecialLines   := oParser:SpecialLines:ToImmutableArray()
-		self:SourceLength   := oParser:SourceLength
-		self:LineCount      := oParser:LineCount
-		self:Locals			:= oParser:Locals
+	CONSTRUCTOR (oParser AS Parser)
+		SELF:Types			:= oParser:Types:ToImmutableArray()
+		SELF:Entities		:= oParser:Entities:ToImmutableArray()
+		SELF:SpecialLines   := oParser:SpecialLines:ToImmutableArray()
+		SELF:SourceLength   := oParser:SourceLength
+		SELF:LineCount      := oParser:LineCount
+		SELF:Locals			:= oParser:Locals
 
-end class
-end namespace
+END CLASS
+END NAMESPACE

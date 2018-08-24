@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -22,7 +22,7 @@ namespace Microsoft.VisualStudio.Project
     // RvdH: Note that the C# project system calls the constructor with a null outputassembly
     //       we therefore retrieve all the info through the ProjectNode in stead.
     //
-    // 
+    //
     class Output : IVsOutput2
     {
         private ProjectNode project;
@@ -98,7 +98,10 @@ namespace Microsoft.VisualStudio.Project
             {
                 szProperty = ProjectFileConstants.TargetPath;
             }
-
+            if (string.Equals(szProperty, "FinalOutputPath", StringComparison.OrdinalIgnoreCase))
+            {
+                szProperty = ProjectFileConstants.TargetPath;
+            }
             string value = project.GetProjectProperty(szProperty);
             pvar = value;
 

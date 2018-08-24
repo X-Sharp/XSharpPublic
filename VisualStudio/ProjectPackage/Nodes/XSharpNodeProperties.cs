@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -157,11 +157,11 @@ namespace XSharp.Project
         }
     }
 
-        [CLSCompliant(false), ComVisible(true)]
+    [CLSCompliant(false), ComVisible(true)]
     public class XSharpLinkedFileNodeProperties : XSharpFileNodeProperties
     {
         #region properties
- 
+
         [Browsable(false)]
         public override bool IsLink
         {
@@ -202,7 +202,7 @@ namespace XSharp.Project
         }
 
 
-         #endregion
+        #endregion
 
         #region ctors
         public XSharpDependentFileNodeProperties(HierarchyNode node)
@@ -314,7 +314,7 @@ namespace XSharp.Project
                 }
             }
         }
- 
+
         [SRCategoryAttribute(SR.Misc)]
         [LocDisplayName(SR.Version)]
         [SRDescriptionAttribute(SR.VersionDescription)]
@@ -404,7 +404,7 @@ namespace XSharp.Project
         {
             get
             {
-                string result =_node.GetMsBuildProperty("name");
+                string result = _node.GetMsBuildProperty("name");
                 if (string.IsNullOrEmpty(result))
                     result = base.Identity;
                 return result;
@@ -446,7 +446,7 @@ namespace XSharp.Project
         [SRCategoryAttribute(SR.Misc)]
         [LocDisplayName(SR.FileType)]
         [SRDescriptionAttribute(SR.FileTypeDescription)]
-        public override  string FileType
+        public override string FileType
         {
             get
             {

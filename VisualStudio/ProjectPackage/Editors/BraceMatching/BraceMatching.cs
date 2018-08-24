@@ -10,6 +10,10 @@ using static XSharp.Project.XSharpConstants;
 using XSharpColorizer;
 using Microsoft.VisualStudio.Text.Classification;
 using System.Collections.Immutable;
+using LanguageService.SyntaxTree;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using XSharpLanguage;
+using LanguageService.CodeAnalysis.XSharp;
 
 namespace XSharp.Project.Editors.BraceMatching
 {
@@ -126,23 +130,60 @@ namespace XSharp.Project.Editors.BraceMatching
             {
 
             }
+            // use the tokens stored in the buffer properties
+            XSharpTokens xTokens = null;
+            IList<IToken> tokens = null;
+            int offset = 0;
+            if (SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            {
+                xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                if (xTokens.SnapShot.Version != currentChar.Snapshot.Version)
+                {
+                    // get source from the start of the file until the current entity
+                    var xfile = SourceBuffer.GetFile();
+                    var member = XSharpTokenTools.FindMemberAtPosition(currentChar.Position, xfile);
+                    if (member != null)
+                    {
+                        offset = member.Interval.Start;
+                        var length = member.Interval.Width;
+                        if (offset + length > currentChar.Snapshot.Length)
+                        {
+                            length = currentChar.Snapshot.Length - offset;
+                        }
+                        string text = currentChar.Snapshot.GetText(offset, length);
+                        var reporter = new ErrorIgnorer();
+                        ITokenStream tokenStream;
+                        XSharpParseOptions parseoptions;
+                        var prj = xfile.Project.ProjectNode;
+                        parseoptions = prj.ParseOptions;
+                        bool ok = XSharp.Parser.VsParser.Lex(text, xfile.FullPath, parseoptions, reporter, out tokenStream);
+                        var bstream = tokenStream as BufferedTokenStream;
+                        tokens = bstream.GetTokens();
+                    }
+                }
+                else
+                {
+                    tokens = xTokens.TokenStream.GetTokens();
+                }
+            }
+
             // First, try to match Simple chars
             if (m_braceList.ContainsKey(currentText))   //the key is the open brace
             {
                 char closeChar;
                 m_braceList.TryGetValue(currentText, out closeChar);
-                if (BraceMatchingTagger.FindMatchingCloseChar(currentChar, currentText, closeChar, View.TextViewLines.Count, out pairSpan) == true)
+                if (BraceMatchingTagger.FindMatchingCloseChar(currentChar, currentText, closeChar, out pairSpan, tokens, offset) == true)
                 {
                     yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(currentChar, 1), new TextMarkerTag("blue"));
                     yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("blue"));
                 }
             }
-            else if (m_braceList.ContainsValue(lastText))    //the value is the close brace, which is the *previous* character 
+            else if (m_braceList.ContainsValue(lastText))    //the value is the close brace, which is the *previous* character
             {
                 var open = from n in m_braceList
                             where n.Value.Equals(lastText)
                             select n.Key;
-                if (BraceMatchingTagger.FindMatchingOpenChar(lastChar, (char)open.ElementAt<char>(0), lastText, View.TextViewLines.Count, out pairSpan) == true)
+                if (BraceMatchingTagger.FindMatchingOpenChar(lastChar, (char)open.ElementAt<char>(0), lastText, out pairSpan, tokens, offset) == true)
                 {
                     yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(lastChar, 1), new TextMarkerTag("blue"));
                     yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("blue"));
@@ -160,7 +201,7 @@ namespace XSharp.Project.Editors.BraceMatching
 
                 if (xsClassifier != null )
                 {
-                    
+
                     ITextSnapshot snapshot = xsClassifier.Snapshot;
                     if (snapshot.Version != currentChar.Snapshot.Version)
                         yield break;
@@ -276,54 +317,95 @@ namespace XSharp.Project.Editors.BraceMatching
         }
 
 
-        private static bool FindMatchingCloseChar(SnapshotPoint startPoint, char open, char close, int maxLines, out SnapshotSpan pairSpan)
+        private static int findtokeninList(IList<IToken> tokens, int startpos)
+        {
+            int min = 0;
+            int max = tokens.Count-1;
+            bool found = false;
+            IToken token = null;
+            int tokenpos = -1;
+            while (true)
+            {
+                tokenpos = (min + max) / 2;
+                token = tokens[tokenpos];
+                // check position
+                if (token.StartIndex <= startpos && token.StopIndex >= startpos)
+                {
+                    found = true;
+                    break;
+                }
+                else if (token.StopIndex < startpos)
+                {
+                    min = tokenpos;
+                }
+                else
+                {
+                    max = tokenpos;
+                }
+                if (min == max -1)
+                {
+                    token = tokens[min];
+                    if (token.StartIndex <= startpos && token.StopIndex >= startpos)
+                    {
+                        tokenpos = min;
+                        found = true;
+                        break;
+                    }
+                    token = tokens[max];
+                    if (token.StartIndex <= startpos && token.StopIndex >= startpos)
+                    {
+                        tokenpos = max;
+                        found = true;
+                        break;
+                    }
+
+                    found = false;
+                    break;
+                }
+            }
+            if (found )
+                return tokenpos;
+            return -1;
+        }
+
+        private static bool FindMatchingCloseChar(SnapshotPoint startPoint, char open, char close, out SnapshotSpan pairSpan, IList<IToken> tokens, int offset)
         {
             pairSpan = new SnapshotSpan(startPoint.Snapshot, 1, 1);
             try
             {
-	            ITextSnapshotLine line = startPoint.GetContainingLine();
-	            string lineText = line.GetText();
-	            int lineNumber = line.LineNumber;
-	            int offset = startPoint.Position - line.Start.Position + 1;
-	
-	            int stopLineNumber = startPoint.Snapshot.LineCount - 1;
-	            if (maxLines > 0)
-	                stopLineNumber = Math.Min(stopLineNumber, lineNumber + maxLines);
-	
-	            int openCount = 0;
-	            while (true)
-	            {
-	                //walk the entire line
-	                while (offset < line.Length)
-	                {
-	                    char currentChar = lineText[offset];
-	                    if (currentChar == close) //found the close character
-	                    {
-	                        if (openCount > 0)
-	                        {
-	                            openCount--;
-	                        }
-	                        else    //found the matching close
-	                        {
-	                            pairSpan = new SnapshotSpan(startPoint.Snapshot, line.Start + offset, 1);
-	                            return true;
-	                        }
-	                    }
-	                    else if (currentChar == open) // this is another open
-	                    {
-	                        openCount++;
-	                    }
-	                    offset++;
-	                }
-	
-	                //move on to the next line
-	                if (++lineNumber > stopLineNumber)
-	                    break;
-	
-	                line = line.Snapshot.GetLineFromLineNumber(lineNumber);
-	                lineText = line.GetText();
-	                offset = 0;
-	            }
+                int startpos = startPoint.Position;
+                if (tokens != null)
+                {
+                    int tokenpos = findtokeninList(tokens, startpos-offset);
+                    if (tokenpos == -1)
+                        return false;
+                    IToken token = tokens[tokenpos];
+                    // open/close braces are operators
+                    if (!XSharpLexer.IsOperator(token.Type))
+                        return false;
+                    int openCount = 0;
+                    for (int i = tokenpos+1; i < tokens.Count; i++)
+                    {
+                        token = tokens[i];
+                        if (XSharpLexer.IsOperator(token.Type))
+                        {
+                            string text = token.Text;
+                            if (text[0] == open)
+                                openCount++;
+                            if (text[0] == close)
+                            {
+                                if (openCount > 0)
+                                    openCount--;
+                                else
+                                {
+                                    pairSpan = new SnapshotSpan(startPoint.Snapshot, token.StartIndex + offset, 1);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
             }
             catch (System.Exception ex)
             {
@@ -333,66 +415,46 @@ namespace XSharp.Project.Editors.BraceMatching
             return false;
         }
 
-        private static bool FindMatchingOpenChar(SnapshotPoint startPoint, char open, char close, int maxLines, out SnapshotSpan pairSpan)
+        private static bool FindMatchingOpenChar(SnapshotPoint startPoint, char open, char close, out SnapshotSpan pairSpan,IList<IToken> tokens, int offset)
         {
             pairSpan = new SnapshotSpan(startPoint, startPoint);
             try
             {
-
-                ITextSnapshotLine line = startPoint.GetContainingLine();
-
-                int lineNumber = line.LineNumber;
-                int offset = startPoint - line.Start - 1; //move the offset to the character before this one
-
-                //if the offset is negative, move to the previous line
-                if (offset < 0)
+                int startpos = startPoint.Position;
+                if (tokens != null)
                 {
-                    line = line.Snapshot.GetLineFromLineNumber(--lineNumber);
-                    offset = line.Length - 1;
-                }
+                    int tokenpos = findtokeninList(tokens, startpos - offset);
+                    if (tokenpos == -1)
+                        return false;
+                    IToken token = tokens[tokenpos];
+                    // open/close braces are operators
+                    if (!XSharpLexer.IsOperator(token.Type))
+                        return false;
 
-                string lineText = line.GetText();
-
-                int stopLineNumber = 0;
-                if (maxLines > 0)
-                    stopLineNumber = Math.Max(stopLineNumber, lineNumber - maxLines);
-
-                int closeCount = 0;
-
-                while (true)
-                {
-                    // Walk the entire line
-                    while (offset >= 0)
+                    int closeCount = 0;
+                    for (int i = tokenpos - 1; i >= 0; i--)
                     {
-                        char currentChar = lineText[offset];
-
-                        if (currentChar == open)
+                        token = tokens[i];
+                        if (XSharpLexer.IsOperator(token.Type))
                         {
-                            if (closeCount > 0)
+                            string text = token.Text;
+                            if (text[0] == close)
+                                closeCount++;
+                            if (text[0] == open)
                             {
-                                closeCount--;
-                            }
-                            else // We've found the open character
-                            {
-                                pairSpan = new SnapshotSpan(line.Start + offset, 1); //we just want the character itself
-                                return true;
+                                if (closeCount > 0)
+                                    closeCount--;
+                                else
+                                {
+                                    pairSpan = new SnapshotSpan(startPoint.Snapshot, token.StartIndex+offset, 1);
+                                    return true;
+                                }
                             }
                         }
-                        else if (currentChar == close)
-                        {
-                            closeCount++;
-                        }
-                        offset--;
                     }
-
-                    // Move to the previous line
-                    if (--lineNumber < stopLineNumber)
-                        break;
-
-                    line = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    lineText = line.GetText();
-                    offset = line.Length - 1;
                 }
+                return false;
+
             }
             catch (System.Exception ex)
             {

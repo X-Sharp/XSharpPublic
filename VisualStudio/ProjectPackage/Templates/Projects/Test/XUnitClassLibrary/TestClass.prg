@@ -15,15 +15,15 @@ $endif$USING System.Text
 using XUnit
 BEGIN NAMESPACE $safeprojectname$
 	CLASS TestClass
-	CONSTRUCTOR()
+	CONSTRUCTOR() STRICT
 		RETURN		
 		
 	[Fact];
-	METHOD TestMethod1 AS VOID
+	METHOD TestMethod1 AS VOID STRICT
 		Assert.Equal(1,1)
 	RETURN
 	[Fact];
-	METHOD TestMethod2 AS VOID
+	METHOD TestMethod2 AS VOID STRICT
 		Assert.Equal(True, False) // Note that this will fail of course
 	END CLASS
 END NAMESPACE

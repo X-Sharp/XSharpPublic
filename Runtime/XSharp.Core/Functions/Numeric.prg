@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -55,7 +55,7 @@ FUNCTION AbsShort(si AS SHORT) AS LONG
 /// </summary>
 /// <param name="dividend">The dividend of the division operation</param>
 /// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
 FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS REAL8
 	RETURN dividend % divisor
 
@@ -64,7 +64,7 @@ FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS REAL8
 /// </summary>
 /// <param name="dividend">The dividend of the division operation</param>
 /// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
 FUNCTION Mod(dividend AS INT64, divisor AS INT64) AS INT64
 	RETURN dividend % divisor
 
@@ -74,7 +74,7 @@ FUNCTION Mod(dividend AS INT64, divisor AS INT64) AS INT64
 /// </summary>
 /// <param name="dividend">The dividend of the division operation</param>
 /// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
 FUNCTION Mod(dividend AS LONG, divisor AS LONG) AS LONG
 	RETURN dividend % divisor
 

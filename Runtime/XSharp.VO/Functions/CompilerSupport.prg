@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -46,9 +46,9 @@ FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
 		VAR mode := RuntimeState.CollationMode 
 		SWITCH mode
 		CASE CollationMode.Windows
-			ret := StringCompareHelpers.CompareWindows(strLHS, strRHS) 
+			ret := XSharp.StringCompareHelpers.CompareWindows(strLHS, strRHS) 
 		CASE CollationMode.Clipper
-			ret := StringCompareHelpers.CompareClipper(strLHS, strRHS)
+			ret := XSharp.StringCompareHelpers.CompareClipper(strLHS, strRHS)
 		CASE CollationMode.Unicode
 			ret := String.Compare(strLHS, strRHS)
 		OTHERWISE

@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -1649,8 +1649,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN ret
 
-        PROPERTY IsHot AS LOGIC GET RETURN SELF:_Hot
-        PROPERTY IsNewRecord AS LOGIC GET RETURN SELF:_NewRecord
+        PROPERTY IsHot AS LOGIC GET SELF:_Hot
+        PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
             
             /// <inheritdoc />
         METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
@@ -1872,7 +1872,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_EvalResult := cbBlock:EvalBlock()
             CATCH ex AS Exception
                 SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
-                RETURN Null
+                RETURN NULL
             FINALLY
                 // Restore previous WorkArea
                 NOP
@@ -2222,8 +2222,8 @@ BEGIN NAMESPACE XSharp.RDD
                         For example, the value 0x03 indicates the table has a structural .cdx and a 
                         Memo field.
                         29 	Code page mark
-                        30 – 31 	Reserved, contains 0x00
-                        32 – n 	Field subrecords
+                        30 â€“ 31 	Reserved, contains 0x00
+                        32 â€“ n 	Field subrecords
                         The number of fields determines the number of field subrecords. 
                         One field subrecord exists for each field in the table.
                         n+1 			Header record terminator (0x0D)

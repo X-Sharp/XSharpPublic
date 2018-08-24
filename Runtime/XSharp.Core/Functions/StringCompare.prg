@@ -6,13 +6,16 @@
 
 USING System.Globalization
 // StringComparer class that takes care of Windows and Clipper string comparisons
+/// <exclude />
 STATIC CLASS XSharp.StringCompareHelpers
 	PRIVATE STATIC collationTable AS BYTE[]
 	PRIVATE STATIC encDos	AS System.Text.Encoding
+    PRIVATE STATIC encWin	AS System.Text.Encoding
 	PRIVATE STATIC nCPWin	AS LONG
-	PRIVATE STATIC bLHS		AS BYTE[]
+	PRIVATE STATIC bLHS		AS BYTE[]       // cache byte array to avoid having to allocate bytes for every comparison
 	PRIVATE STATIC bRHS		AS BYTE[]
 	PRIVATE STATIC gate		AS OBJECT
+    /// <exclude />
 	STATIC CONSTRUCTOR
 		// Register event Handlers, so we can reread tye DOS and Windows codepages
 		// and collation table when the user changes these
@@ -23,28 +26,38 @@ STATIC CLASS XSharp.StringCompareHelpers
 		bRHS := BYTE[]{512}
 		gate := OBJECT{}
 
+    /// <exclude />
 	STATIC METHOD Changed (o AS OBJECT, e AS eventArgs) AS VOID
 		getvalues()
-		
+
+    /// <exclude />
 	STATIC METHOD GetValues() AS VOID
 		nCPWin			:= runtimestate.WinCodePage
 		collationTable	:= RuntimeState.CollationTable
 		encDos			:= System.Text.Encoding.GetEncoding(runtimestate.DosCodePage)
+        encWin			:= System.Text.Encoding.GetEncoding(nCPWin)
 		RETURN
 		
+    /// <exclude />
 	STATIC METHOD CompareWindows(strLHS AS STRING, strRHS AS STRING) AS INT
-		RETURN Win32.CompareStringAnsi(nCPWin, Win32.SORT_STRINGSORT,strLHS, strLHS:Length, strRHS, strRHS:Length) -2
+		LOCAL nLen	AS INT
+        LOCAL result AS INT
+		nLen := Math.Min(strLHS:Length, strRHS:Length)
+        BEGIN LOCK gate
+			IF nLen > bLHS:Length
+				bLHS := BYTE[]{nLen}
+				bRHS := BYTE[]{nLen}
+			ENDIF
+			encWin:GetBytes(strLHS, 0, nLen, bLHS, 0)
+			encWin:GetBytes(strRHS, 0, nLen, bRHS, 0)
+            result := Win32.CompareStringAnsi(nCPWin, Win32.SORT_STRINGSORT,bLHS, strLHS:Length, bRHS, strRHS:Length) -2
+        END LOCK
+        RETURN result
+        
 		
-	/// <summary>
-	/// Compare 2 strings. This function is used by the compiler for string comparisons
-	/// </summary>
-	/// <param name="strLHS">The first string .</param>
-	/// <param name="strRHS">The second string.</param>
-	/// <returns>
-	/// -1 strLHS precedes strRHS in the sort order. 
-	///  0 strLHS occurs in the same position as strRHS in the sort order. 
-	///  1 strLHS follows strRHS in the sort order. 
-	STATIC METHOD CompareClipper(strLHS AS STRING, strRHS AS STRING) AS INT
+		
+    /// <exclude />
+    STATIC METHOD CompareClipper(strLHS AS STRING, strRHS AS STRING) AS INT
 		LOCAL rLen   AS INT
 		LOCAL nLen	AS INT
 		// when we get here then reference equality is not TRUE. THat has been checked

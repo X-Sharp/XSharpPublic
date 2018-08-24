@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -336,6 +336,7 @@ FUNCTION AAdd<T>(a AS __ArrayBase<T>,x AS T) AS T WHERE T IS NEW()
 	a:Add(x)
 	RETURN x 	
 	
+/// <summary>
 /// Duplicate an array .
 /// </summary>
 /// <param name="a"></param>

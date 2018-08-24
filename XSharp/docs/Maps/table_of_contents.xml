@@ -610,9 +610,6 @@
             <topicref type="topic" id="423889587575677" build="ALL" modified="2016-11-03T15:44:16.962Z" icon="0" href="DateLiterals">
               <caption translate="true">Date Literals</caption>
             </topicref>
-            <topicref type="topic" id="426777729632575" build="ALL" modified="2016-11-03T15:45:44.749Z" icon="0" href="Keyword-Literals">
-              <caption translate="true">Keyword Literals</caption>
-            </topicref>
             <topicref type="topic" id="423887867754946" build="ALL" modified="2016-11-03T15:44:26.511Z" icon="0" href="LogicLiterals">
               <caption translate="true">Logic Literals</caption>
             </topicref>
@@ -624,14 +621,8 @@
               <topicref type="topic" id="423890126324200" build="ALL" modified="2016-11-03T15:44:50.541Z" icon="0" href="IntegerLiterals">
                 <caption translate="true">Integer Literals</caption>
               </topicref>
-              <topicref type="topic" id="423887952433382" build="ALL" modified="2016-11-03T15:44:53.634Z" icon="0" href="HexLiterals">
-                <caption translate="true">Hex Literals</caption>
-              </topicref>
-              <topicref type="topic" id="423888047209841" build="ALL" modified="2016-11-03T15:44:58.931Z" icon="0" href="BinaryLiterals">
-                <caption translate="true">Binary Literals</caption>
-              </topicref>
-              <topicref type="topic" id="423890067649063" build="ALL" modified="2016-11-03T15:45:01.314Z" icon="0" href="RealLiterals">
-                <caption translate="true">Real Literals</caption>
+              <topicref type="topic" id="423890067649063" build="ALL" modified="2018-08-24T13:08:04.518Z" icon="0" href="RealLiterals">
+                <caption translate="true">Floating point Literals</caption>
               </topicref>
             </topicref>
             <topicref type="topic" id="423890264622123" build="ALL" modified="2016-11-03T15:45:09.293Z" icon="0" href="SymbolLiterals">

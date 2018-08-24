@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CHAR</title>
   <keywords>
     <keyword>CHAR</keyword>
@@ -9,6 +9,8 @@
     <header>
       <para styleclass="Heading1">CHAR</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The CHAR keyword denotes an type to represent a Unicode character. The Unicode Standard identifies each Unicode character with a unique 21-bit scalar number called a code point, and defines the UTF-16 encoding form that specifies how a code point is encoded into a sequence of one or more 16-bit values. Each 16-bit value ranges from hexadecimal 0x0000 through 0xFFFF and is stored in a Char structure. The value of a Char object is its 16-bit numeric (ordinal) value.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

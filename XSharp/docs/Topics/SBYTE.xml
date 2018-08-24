@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SBYTE</title>
   <body>
-    <header><para styleclass="Heading1">SBYTE</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1">SBYTE</para>
+    </header>
+    <para styleclass="Normal">The SBYTE keyword denotes an integral type that stores signed 8-bit values with values ranging from negative 128 to positive 127.</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

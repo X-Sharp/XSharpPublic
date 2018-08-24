@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USUAL</title>
   <keywords>
     <keyword>USUAL</keyword>
@@ -9,6 +9,18 @@
     <header>
       <para styleclass="Heading1">USUAL</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The USUAL keyword denotes a datatype that can contain any data type. It consists internally of a type flag and a value. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The USUAL keyword is a special type of declaration that allows any data type to be stored in it at runtime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">USUAL is provided primarily for compatibility with code originally written in Visual Objects. It is not recommended for use in new code because the compiler cannot perform any type checking on expressions where one or more operands are USUAL. Any data type errors will only be discovered at runtime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Locals, parameters and fields declared as USUAL also incur considerably more runtime overhead than strongly typed variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The literal value NIL may be assigned into any storage location typed as USUAL. The value NIL indicates the absence of any other data type or value, and is conceptually equivalent to storing NULL into a reference type. NIL is the default value for a local USUAL variable that has not been initialized.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When the left operand of the &apos;:&apos; operator is a USUAL, the compiler will generate a late bound call to the method, field or property specified as the right operand. This call may fail if the value contained in the USUAL at runtime does not have such a member, the member type is incorrect or inaccessible, or if the name evaluates to a method and the number of parameters or their types is incorrect. The /lb compiler option must be enabled in order to use a USUAL as the left operand of the &apos;:&apos; operator, otherwise a compile-time error will be raised.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

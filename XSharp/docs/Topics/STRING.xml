@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STRING</title>
   <keywords>
     <keyword>STRING</keyword>
@@ -9,6 +9,8 @@
     <header>
       <para styleclass="Heading1">STRING</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">A STRING is a sequential collection of Unicode characters that is used to represent text. A String object is a sequential collection of System.Char objects that represent a string. The value of theString object is the content of the sequential collection, and that value is immutable (that is, it is read-only). For more information about the immutability of strings, see the Immutability and the StringBuilder class section later in this topic. The maximum size of a String object in memory is 2 GB, or about 1 billion characters.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Please note that you cannot CAST strings to PSZ like you can in Visual Objects. The PSZ type consists of 8 bits per character where the STRING type has 16 bits per character.</para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SYMBOL</title>
   <keywords>
     <keyword>SYMBOL</keyword>
@@ -9,6 +9,22 @@
     <header>
       <para styleclass="Heading1">SYMBOL</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The SYMBOL keyword declares a type contains a 32-bit integer that represents an index into an array of strings.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Since a SYMBOL represents a string, there is a built-in implicit conversion from SYMBOL to STRING, and from STRING to SYMBOL.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Since the underlying value of a SYMBOL is an integer, there is a built-in explicit conversion from SYMBOL to DWORD and from DWORD to SYMBOL. A cast is necessary in order to perform explicit conversions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Unlike with Visual Objects, the number of symbols is not limited by available memory or symbols that are declared in another library. <br/></para>
+    <para styleclass="Normal">Literal symbols consist of the &apos;#&apos; character followed by one or more alphanumeric character. The first character must be a letter or an underscore.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Some examples of literal symbols are shown below:</para>
+    <para styleclass="Normal">#XSharp<br/>#XSHARP</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that although literal symbols can be specified with lower or upper case letters, the strings they represent are converted to uppercase at compile time, for compatibility with Visual Objects. It is not possible to specify a literal symbol that contains lower case letters, the StringToAtom() function must be used.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The compiler-defined constant NULL_SYMBOL can be used to express a null symbol, i.e. a symbol that has no associated string value.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

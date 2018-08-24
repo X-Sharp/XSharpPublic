@@ -532,7 +532,7 @@
       <config-value name="tocname">Table of Contents</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Bandol beta 3 (2.0.0.3)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Bandol beta 4 (2.0.0.4)</variable>
     </variables>
     <helpcontext-numbers/>
   </config>

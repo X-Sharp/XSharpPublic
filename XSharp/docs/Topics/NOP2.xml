@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>NOP</title>
+  <keywords>
+    <keyword>NOP</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">NOP</para>
     </header>
-    <para styleclass="Normal">nop<tab />:<tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">NOP</text>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">eos</link></para>
+    <para styleclass="Normal">nop<tab />:<tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#3366ff;">NOP</text>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">eos</link></para>
   </body>
 </topic>

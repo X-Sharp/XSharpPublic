@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN USING</title>
   <keywords>
     <keyword>BEGIN</keyword>
+    <keyword>BEGIN USING</keyword>
     <keyword>END</keyword>
+    <keyword>END USING</keyword>
     <keyword>USING</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">BEGIN USING</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#000000;">( expression | </text><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL" style="font-weight:normal; font-style:normal; color:#000000;">variableDeclaration</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ) &#160;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; statementBlock</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">garbage</link><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ( expression | </text><link displaytype="text" defaultstyle="true" type="topiclink" href="LOCAL" style="font-weight:normal; font-style:normal; color:#000000;">variableDeclaration</link><text style="font-weight:normal; font-style:normal; color:#000000;"> ) &#160;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; statementBlock</text><br/><text style="font-weight:bold; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">garbage</link><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link></para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

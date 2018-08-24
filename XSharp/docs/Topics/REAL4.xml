@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>REAL4</title>
   <keywords>
     <keyword>REAL4</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">REAL4</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The REAL4 keyword denotes a single precision 32 bit number with values ranging from negative 3.402823e38 to positive 3.402823e38, as well as positive or negative zero, PositiveInfinity, NegativeInfinity, and not a number ( NaN). It is intended to represent values that are extremely large (such as distances between planets or galaxies) or extremely small (such as the molecular mass of a substance in kilograms) and that often are imprecise (such as the distance from earth to another solar system). The REAL4 type complies with the IEC 60559:1989 (IEEE 754) standard for binary floating-point arithmetic.</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

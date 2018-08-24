@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>INT</title>
   <keywords>
     <keyword>INT</keyword>
@@ -9,8 +9,9 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">INT</para>
+      <para styleclass="Heading1">INT / LONG / LONGINT</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The INT or LONG keyword denotes an integral type that stores signed 32-bit values with values that range from negative 2,147,483,648 (which is represented by the Int32.MinValue constant) through positive 2,147,483,647 (which is represented by the Int32.MaxValue constant) The .NET Framework also includes an unsigned 32-bit integer value type, UInt32 or DWORD, which represents values that range from 0 to 4,294,967,295.</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

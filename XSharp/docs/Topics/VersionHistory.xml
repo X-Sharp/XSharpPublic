@@ -15,7 +15,7 @@
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The compiler was accepting just an identifier without a INSTANCE, EXPORT or other prefix and without a type inside a class declaration. It would create a public field of type USUAL. That is no longer possible.</li>
       <li styleclass="List">Functions now always take precedence over methods. If you want to call a method inside the same class you need to either prefix it with the typename (for static methods) or with the SELF: prefix. If there is no conflicting function name then you can still call the method with just its name. We recommend to prefix the method calls to make your code easier to read.</li>
-      <li styleclass="List">Improved the positional keyword detection algorithm</li>
+      <li styleclass="List"><text styleclass="Body Text">Improved the positional keyword detection algorithm (this also affects the source code editor)</text></li>
       <li styleclass="List">The || operator now maps to the logical or &#160;(a .OR. b) and not to the binary or (_OR(a,b))</li>
       <li styleclass="List">The VAR statement now also correctly parses <br/><br/><text styleclass="Code Example">VAR x = SomeFunction()</text><br/></li>
     </list>
@@ -24,18 +24,19 @@
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Error messages about conflicting types now include the fully qualified type name.</li>
       <li styleclass="List">The compiler no longer includes the width for literal Floats. This is compatible with VO.</li>
+      <li styleclass="List">A Default parameter of type Enum is now allowed. Also the compiler is no longer using the DefaultParameter attribute in VO / Vulcan dialect when not strictly necessary.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Added several functions that were missing, such as __Str() and DoEvents()</li>
       <li styleclass="List">Fixed a problem in the macro compiler with non-english culctures.</li>
-      <li styleclass="List">Added several overloads for Is..() functions that take a PSZ in stead of a string, such as IsAlpha() and IsUpper().</li>
+      <li styleclass="List">Added several overloads for Is..() functions that take a PSZ instead of a string, such as IsAlpha() and IsUpper().</li>
       <li styleclass="List">Added some missing error defines, such as E_DEFAULT and E_RETRY.</li>
       <li styleclass="List">Fix for a problem with SubStr() and a negative argument</li>
       <li styleclass="List">Fix for a problem with IsInstanceOf()</li>
       <li styleclass="List">Fix for a problem with Val() and a hex value with an embedded &apos;E&apos; character</li>
       <li styleclass="List">Added implicit conversions from ARRAY to OBJECT[] and back. </li>
-      <li styleclass="List">Several changes to the code for Transform() and Unformat() to cover several </li>
+      <li styleclass="List">Several changes to the code for Transform() and Unformat() to cover several exotic picture formats</li>
       <li styleclass="List">Changes to the code for SetCentury() to automatically also adjust the date format (SetDateFormat())</li>
       <li styleclass="List">Fixes for the Str() family of functions in combination with SetFixed() and SetDigitFixed().</li>
     </list>
@@ -57,6 +58,9 @@
         <li styleclass="List">WPF and other templates now include STRICT calling convention for the same reason</li>
         <li styleclass="List">The XAML editor could not properly load the current DLL or EXE and had therefore problems resolving namespaces and adding user controls to the tool palette. This has been fixed.</li>
       </list>
+    </list>
+    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">We have added an option to the Tools/Editor/XSharp/Intellisense options that allow you to control how the member combobox in the editor works. You can choose to only show methods &amp; properties of the current type or all entities in the right combobox. The left combobox always shows all types in the file.</li>
     </list>
     <para styleclass="List"></para>
     <para styleclass="Heading1">Changes in 2.0.0.3 (Bandol Beta 3)</para>

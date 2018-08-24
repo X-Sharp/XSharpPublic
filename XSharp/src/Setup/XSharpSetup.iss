@@ -17,7 +17,7 @@
 #define Version             "2.0.0.4"
 #define FileNameVersion     "2Beta4"
 #define VIVersion           "2.0.0.4"
-#define TouchDate           "2018-08-10"
+#define TouchDate           "2018-08-23"
 #define TouchTime           "02:00:04"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -331,10 +331,8 @@ Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{app}\MsBuil
 ;Documentation
 Source: "{#DocFolder}XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
-Source: "{#DocFolder}XSVulcan.chm";                      DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.msha";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.cab";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
-Source: "{#DocFolder}XSVulcan.cab";                      DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
 Source: "{#BinRtHelpFolder}XSRuntime.chm";               DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#BinRtHelpFolder}XSRuntime.cab";               DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>INT64</title>
   <keywords>
     <keyword>INT64</keyword>
@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">INT64</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">The INT64 keyword denotes an integral type that stores signed 64-bit values with values that range from negative 9,223,372,036,854,775,808 through positive 9,223,372,036,854,775,807</para>
   </body>
 </topic>

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Array Indices</title>
   <body>
     <header>
       <para styleclass="Heading1">Array Indices</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">arraysub &#160; &#160; &#160; &#160; : expression (] [ expression)+ &#160; &#160; &#160;</text><text style="font-weight:normal; font-style:italic; color:#000000;">// x][y</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;| expression (, expression)+ &#160; &#160; </text><text style="font-weight:normal; font-style:italic; color:#000000;">// x,y</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;| expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">arraysub &#160; &#160; &#160; &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: expression (] [ expression)+ &#160; &#160; &#160;</text><text style="font-weight:normal; font-style:italic; color:#000000;">// x][y</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;| expression (, expression)+ &#160; &#160; </text><text style="font-weight:normal; font-style:italic; color:#000000;">// x,y</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;| expression</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
   </body>
 </topic>

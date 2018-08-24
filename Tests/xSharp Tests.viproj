@@ -62736,8 +62736,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C617 - || and && translate to binary or and and operators, instad of the logical ones
 
 ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
-; ************** APPLICATION C618 Function calls should take preference over method calls *************
-Application = C618 Function calls should take preference over method calls
+; ************** APPLICATION C618 - Function calls should take preference over method calls *************
+Application = C618 - Function calls should take preference over method calls
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -62768,17 +62768,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C618 Function calls should take preference over method calls FileGroups]
-[C618 Function calls should take preference over method calls Files]
+[C618 - Function calls should take preference over method calls FileGroups]
+[C618 - Function calls should take preference over method calls Files]
 File = %AppPath%\Prg\C618.prg
 FileGUID = BF41870B-6500-4369-BFF1-CE1A633D7A3E
 FileType = Code
-[C618 Function calls should take preference over method calls References]
+[C618 - Function calls should take preference over method calls References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C618 Function calls should take preference over method calls Resources]
-[C618 Function calls should take preference over method calls Native Resources]
-[C618 Function calls should take preference over method calls License files]
-[C618 Function calls should take preference over method calls General Options]
+[C618 - Function calls should take preference over method calls Resources]
+[C618 - Function calls should take preference over method calls Native Resources]
+[C618 - Function calls should take preference over method calls License files]
+[C618 - Function calls should take preference over method calls General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -62804,7 +62804,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C618 Function calls should take preference over method calls Configurations]
+[C618 - Function calls should take preference over method calls Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -62831,17 +62831,17 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C618 Function calls should take preference over method calls
+ENDApplication = C618 - Function calls should take preference over method calls
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C619 Optional Parameters in Vulcan dialect *************
-Application = C619 Optional Parameters in Vulcan dialect
+; ************** APPLICATION C619 - Optional Parameters in Vulcan dialect *************
+Application = C619 - Optional Parameters in Vulcan dialect
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Vulcan
@@ -62866,19 +62866,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C619 Optional Parameters in Vulcan dialect FileGroups]
-[C619 Optional Parameters in Vulcan dialect Files]
+[C619 - Optional Parameters in Vulcan dialect FileGroups]
+[C619 - Optional Parameters in Vulcan dialect Files]
 File = %AppPath%\Prg\C619.prg
 FileGUID = B5B6379D-34AC-4665-A235-26E38F863746
 FileType = Code
-[C619 Optional Parameters in Vulcan dialect References]
+[C619 - Optional Parameters in Vulcan dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C619 Optional Parameters in Vulcan dialect Resources]
-[C619 Optional Parameters in Vulcan dialect Native Resources]
-[C619 Optional Parameters in Vulcan dialect License files]
-[C619 Optional Parameters in Vulcan dialect General Options]
+[C619 - Optional Parameters in Vulcan dialect Resources]
+[C619 - Optional Parameters in Vulcan dialect Native Resources]
+[C619 - Optional Parameters in Vulcan dialect License files]
+[C619 - Optional Parameters in Vulcan dialect General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -62904,7 +62904,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C619 Optional Parameters in Vulcan dialect Configurations]
+[C619 - Optional Parameters in Vulcan dialect Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -62931,7 +62931,203 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=1
   ForceConsole=0
   ForceX86=0
-ENDApplication = C619 Optional Parameters in Vulcan dialect
+ENDApplication = C619 - Optional Parameters in Vulcan dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C620 - Problem resloving method with both instance and static overloads *************
+Application = C620 - Problem resloving method with both instance and static overloads
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C620\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C620
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = A2A04C0A-E1BC-43B9-BAB4-940F934B342A
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C620 - Problem resloving method with both instance and static overloads FileGroups]
+[C620 - Problem resloving method with both instance and static overloads Files]
+File = %AppPath%\Prg\C620.prg
+FileGUID = 90EA0C80-94BD-4B8A-A2E9-56F455F24DE3
+FileType = Code
+[C620 - Problem resloving method with both instance and static overloads References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C620 - Problem resloving method with both instance and static overloads Resources]
+[C620 - Problem resloving method with both instance and static overloads Native Resources]
+[C620 - Problem resloving method with both instance and static overloads License files]
+[C620 - Problem resloving method with both instance and static overloads General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C620 - Problem resloving method with both instance and static overloads Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C620 - Problem resloving method with both instance and static overloads
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C621 - Problems with same named functions and methods *************
+Application = C621 - Problems with same named functions and methods
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C621\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C621
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3600B374-AC58-4840-B3B8-FD2462DEB46D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C621 - Problems with same named functions and methods FileGroups]
+[C621 - Problems with same named functions and methods Files]
+File = %AppPath%\Prg\C621.prg
+FileGUID = 378CB737-F264-4408-BEDC-687A0BDFFAAE
+FileType = Code
+[C621 - Problems with same named functions and methods References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C621 - Problems with same named functions and methods Resources]
+[C621 - Problems with same named functions and methods Native Resources]
+[C621 - Problems with same named functions and methods License files]
+[C621 - Problems with same named functions and methods General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C621 - Problems with same named functions and methods Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C621 - Problems with same named functions and methods
 [EndApplications]
 
 [Configurations]

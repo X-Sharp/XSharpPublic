@@ -137,7 +137,7 @@
       <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\VsLangProj.dll</HintPath>
       <Private>True</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-	</Reference>
+    </Reference>
     <Reference Include="XSharp.CodeAnalysis, Version=1.2.1.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.CodeAnalysis</Name>
       <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
@@ -162,7 +162,6 @@
     <Compile Include="ProjectSystem\XProject.prg" />
     <Compile Include="ProjectSystem\XSolution.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="Support.prg" />
     <Compile Include="TextInterval.prg" />
     <Compile Include="TextRange.prg" />
     <Compile Include="TypeExtensions.prg" />

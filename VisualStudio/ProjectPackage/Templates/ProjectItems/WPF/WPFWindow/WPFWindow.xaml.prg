@@ -19,11 +19,11 @@ begin namespace $rootnamespace$
     /// Interaction logic for $safeitemname$.xaml
     /// </summary>
     public partial class $safeitemname$ INHERIT Window
-    
-        public CONSTRUCTOR() //$safeitemname$()
+
+        public CONSTRUCTOR() STRICT //$safeitemname$()
             InitializeComponent()
 			RETURN
-		
-		
+
+
     end class
 End NameSpace

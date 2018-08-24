@@ -1,75 +1,75 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-using System
-begin namespace XSharpModel
-	
-	static class XFileTypeHelpers
-		// Methods
-		static method GetFileType(filename as string) as XFileType
-			
-			var ext := System.IO.Path.GetExtension(filename):ToLower()
-			switch ext
-				case ".prg"
-				case ".xs"
-					return XFileType.SourceCode
-				case ".ppo"
-					return XFileType.PreprocessorOutput
-				case ".vh"
-				case ".xh"
-					return XFileType.Header
-				case ".xsfrm"
-				case ".vnfrm"
-					return XFileType.VOForm
-				case ".xsmnu"
-				case ".vnmnu"
-					return XFileType.VOMenu
-				case ".xsdbs"
-				case ".vndbs"
-					return XFileType.VODBServer
-				case ".xsfs"
-				case ".vnfs"
-					return XFileType.VOFieldSpec
-				case ".xaml"
-					return XFileType.XAML
-				case ".settings"
-					return XFileType.Settings
-				case ".resx"
-					return XFileType.ManagedResource
-				case ".licx"
-					return XFileType.License
-				case ".rc"
-					return XFileType.NativeResource
-			end switch
-			return XFileType.Unknown
-		
-		static method IsVOBinary( self type as XFileType) as logic
-			switch (type)
-				case XFileType.VOMenu
-				case XFileType.VODBServer
-				case XFileType.VOFieldSpec
-				case XFileType.VOForm
-				case XFileType.VOIndex
-				case XFileType.VOOrder
-					return true
-			end switch
-			return false 
-		
-		static method OpenInSourceCodeEditor( self type as XFileType) as logic
-			switch (type)
-				case XFileType.SourceCode
-				case XFileType.Header
-				case XFileType.NativeResource
-				case XFileType.Unknown
-					return true
-			end switch
-			return false
-		
-		
-	end class
+USING System
+BEGIN NAMESPACE XSharpModel
 
-end namespace 
+	STATIC CLASS XFileTypeHelpers
+		// Methods
+		STATIC METHOD GetFileType(filename AS STRING) AS XFileType
+
+			VAR ext := System.IO.Path.GetExtension(filename):ToLower()
+			SWITCH ext
+				CASE ".prg"
+				CASE ".xs"
+					RETURN XFileType.SourceCode
+				CASE ".ppo"
+					RETURN XFileType.PreprocessorOutput
+				CASE ".vh"
+				CASE ".xh"
+					RETURN XFileType.Header
+				CASE ".xsfrm"
+				CASE ".vnfrm"
+					RETURN XFileType.VOForm
+				CASE ".xsmnu"
+				CASE ".vnmnu"
+					RETURN XFileType.VOMenu
+				CASE ".xsdbs"
+				CASE ".vndbs"
+					RETURN XFileType.VODBServer
+				CASE ".xsfs"
+				CASE ".vnfs"
+					RETURN XFileType.VOFieldSpec
+				CASE ".xaml"
+					RETURN XFileType.XAML
+				CASE ".settings"
+					RETURN XFileType.Settings
+				CASE ".resx"
+					RETURN XFileType.ManagedResource
+				CASE ".licx"
+					RETURN XFileType.License
+				CASE ".rc"
+					RETURN XFileType.NativeResource
+			END SWITCH
+			RETURN XFileType.Unknown
+
+		STATIC METHOD IsVOBinary( SELF type AS XFileType) AS LOGIC
+			SWITCH (type)
+				CASE XFileType.VOMenu
+				CASE XFileType.VODBServer
+				CASE XFileType.VOFieldSpec
+				CASE XFileType.VOForm
+				CASE XFileType.VOIndex
+				CASE XFileType.VOOrder
+					RETURN TRUE
+			END SWITCH
+			RETURN FALSE
+
+		STATIC METHOD OpenInSourceCodeEditor( SELF type AS XFileType) AS LOGIC
+			SWITCH (type)
+				CASE XFileType.SourceCode
+				CASE XFileType.Header
+				CASE XFileType.NativeResource
+				CASE XFileType.Unknown
+					RETURN TRUE
+			END SWITCH
+			RETURN FALSE
+
+
+	END CLASS
+
+END NAMESPACE
 

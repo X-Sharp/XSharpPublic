@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -233,43 +233,45 @@ namespace XSharp.CodeDom
         {
             if (base.IsCurrentClass || base.IsCurrentStruct)
             {
-                if (e.CustomAttributes.Count > 0)
-                {
-                    this.GenerateAttributes(e.CustomAttributes);
-                }
-                this.OutputMemberAccessModifier(e.Attributes);
-                base.Output.Write("CONSTRUCTOR(");
-                this.OutputParameters(e.Parameters);
-                base.Output.WriteLine(")");
-                CodeExpressionCollection baseConstructorArgs = e.BaseConstructorArgs;
-                CodeExpressionCollection chainedConstructorArgs = e.ChainedConstructorArgs;
-                if (baseConstructorArgs.Count > 0)
-                {
-                    this.Indent++;
-                    base.Output.Write("SUPER(");
-                    this.OutputExpressionList(baseConstructorArgs);
-                    base.Output.WriteLine(");");
-                    this.Indent--;
-                }
-                else if (chainedConstructorArgs.Count > 0)
-                {
-                    this.Indent++;
-                    base.Output.Write("SELF(");
-                    this.OutputExpressionList(chainedConstructorArgs);
-                    base.Output.WriteLine(");");
-                    this.Indent--;
-                }
-                this.Indent++;
                 // Do we have some Source Code pushed here by our Parser ??
-                // --> See XSharpTreeDiscover.EnterConstructor for reading that information
+                // when so then that source code also includes the constructor line
                 if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
                 {
                     String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
                     this.Output.Write(sourceCode);
-                    //this.Output.WriteLine();
                 }
                 else
+                {
+
+                    if (e.CustomAttributes.Count > 0)
+                    {
+                        this.GenerateAttributes(e.CustomAttributes);
+                    }
+                    this.OutputMemberAccessModifier(e.Attributes);
+                    base.Output.Write("CONSTRUCTOR(");
+                    this.OutputParameters(e.Parameters);
+                    base.Output.WriteLine(")  STRICT");
+                    CodeExpressionCollection baseConstructorArgs = e.BaseConstructorArgs;
+                    CodeExpressionCollection chainedConstructorArgs = e.ChainedConstructorArgs;
+                    if (baseConstructorArgs.Count > 0)
+                    {
+                        this.Indent++;
+                        base.Output.Write("SUPER(");
+                        this.OutputExpressionList(baseConstructorArgs);
+                        base.Output.WriteLine(");");
+                        this.Indent--;
+                    }
+                    else if (chainedConstructorArgs.Count > 0)
+                    {
+                        this.Indent++;
+                        base.Output.Write("SELF(");
+                        this.OutputExpressionList(chainedConstructorArgs);
+                        base.Output.WriteLine(");");
+                        this.Indent--;
+                    }
+                    this.Indent++;
                     this.GenerateStatements(e.Statements);
+                }
                 this.Indent--;
             }
         }
@@ -501,62 +503,64 @@ namespace XSharp.CodeDom
             //
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
-                if (e.CustomAttributes.Count > 0)
+                // Do we have some Source Code pushed here by our Parser ??
+                // this code contains the method declaration line as well
+                if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
                 {
-                    this.GenerateAttributes(e.CustomAttributes);
+                    String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
+                    this.Output.Write(sourceCode);
                 }
-
-                if (e.ReturnTypeCustomAttributes.Count > 0)
+                else
                 {
-                    this.GenerateAttributes(e.ReturnTypeCustomAttributes, "return: ");
-                }
-
-                if (!base.IsCurrentInterface)
-                {
-                    if (e.PrivateImplementationType == null)
+                    if (e.CustomAttributes.Count > 0)
                     {
-                        this.OutputMemberAccessModifier(e.Attributes);
-                        this.OutputMemberScopeModifier(e.Attributes);
+                        this.GenerateAttributes(e.CustomAttributes);
                     }
-                    else
+
+                    if (e.ReturnTypeCustomAttributes.Count > 0)
                     {
-                        // Per default, all Methods are VIRTUALs
-                        base.Output.Write("VIRTUAL ");
+                        this.GenerateAttributes(e.ReturnTypeCustomAttributes, "return: ");
                     }
-                }
 
-                base.Output.Write("METHOD ");
+                    if (!base.IsCurrentInterface)
+                    {
+                        if (e.PrivateImplementationType == null)
+                        {
+                            this.OutputMemberAccessModifier(e.Attributes);
+                            this.OutputMemberScopeModifier(e.Attributes);
+                        }
+                        else
+                        {
+                            // Per default, all Methods are VIRTUALs
+                            base.Output.Write("VIRTUAL ");
+                        }
+                    }
 
-                if (e.PrivateImplementationType != null)
-                {
-                    base.Output.Write(e.PrivateImplementationType.BaseType);
-                    base.Output.Write(this.staticSelector);
-                }
+                    base.Output.Write("METHOD ");
 
-                this.OutputIdentifier(e.Name);
-                this.OutputGenericParameters(e.TypeParameters);
-                base.Output.Write("(");
-                this.OutputParameters(e.Parameters);
-                base.Output.Write(") AS ");
-                this.OutputType(e.ReturnType);
-                base.Output.WriteLine();
+                    if (e.PrivateImplementationType != null)
+                    {
+                        base.Output.Write(e.PrivateImplementationType.BaseType);
+                        base.Output.Write(this.staticSelector);
+                    }
 
-                if (!this.IsCurrentInterface && ((e.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Abstract))
-                {
+                    this.OutputIdentifier(e.Name);
+                    this.OutputGenericParameters(e.TypeParameters);
+                    base.Output.Write("(");
+                    this.OutputParameters(e.Parameters);
+                    base.Output.Write(") AS ");
+                    this.OutputType(e.ReturnType);
+                    base.Output.Write(" STRICT");
+                    base.Output.WriteLine();
                     this.Indent++;
-                    // Do we have some Source Code pushed here by our Parser ??
-                    // --> See XSharpTreeDiscover.EnterMethod for reading that information
-                    if (e.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
+                    if (!this.IsCurrentInterface && ((e.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Abstract))
                     {
-                        String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
-                        this.Output.Write(sourceCode);
-                        //this.Output.WriteLine();
-                    }
-                    else
                         this.GenerateStatements(e.Statements);
+                    }
                     this.Indent--;
                 }
             }
+
         }
 
         protected override void GenerateMethodInvokeExpression(CodeMethodInvokeExpression e)
@@ -1140,7 +1144,7 @@ namespace XSharp.CodeDom
                 // some types with parsing problems have their definition saved as userdata
                 return typeRef.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
             }
-                
+
             while (arrayElementType.ArrayElementType != null)
             {
                 arrayElementType = arrayElementType.ArrayElementType;
@@ -1219,7 +1223,7 @@ namespace XSharp.CodeDom
                 case "system.decimal":
                     return "System.Decimal";
             }
-            // 
+            //
             StringBuilder sb = new StringBuilder(baseType.Length + 10);
             string str3 = typeRef.BaseType;
             int startIndex = 0;
@@ -1578,7 +1582,7 @@ namespace XSharp.CodeDom
             }
             base.OutputAttributeArgument(arg);
             //restore name
-            arg.Name = name; 
+            arg.Name = name;
         }
 
 

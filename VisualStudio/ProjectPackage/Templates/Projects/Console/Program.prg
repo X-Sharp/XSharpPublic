@@ -5,7 +5,7 @@ $endif$USING System.Text
 
 BEGIN NAMESPACE $safeprojectname$
 
-	FUNCTION Start() AS VOID
+	FUNCTION Start() AS VOID STRICT
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")
         Console.ReadKey()

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -57,8 +57,8 @@ namespace XSharp.CodeDom
 
     internal class TypeXType
     {
-        internal System.Type Type { get; private set; } 
-        internal XType xType { get; private set; } 
+        internal System.Type Type { get; private set; }
+        internal XType xType { get; private set; }
 
         internal TypeXType(System.Type type) { Type = type; xType = null; }
         internal TypeXType(XType xtype) { xType = xtype; Type = null; }
@@ -173,7 +173,7 @@ namespace XSharp.CodeDom
         {
             if (_members.ContainsKey(name))
             {
-                // no need to include the type itself in the cache. This cache only 
+                // no need to include the type itself in the cache. This cache only
                 // has fields and properties for the current window/control in the designer
                 return (_members[name].MemberType | mtype) != 0;
             }
@@ -437,7 +437,7 @@ namespace XSharp.CodeDom
             // That's a Class
             newClass.IsClass = true;
             newClass.Comments.AddRange(context.GetLeadingComments(_tokens));
-            // 
+            //
             if (context.Modifiers == null)
             {
                 newClass.TypeAttributes = System.Reflection.TypeAttributes.Public;
@@ -554,11 +554,12 @@ namespace XSharp.CodeDom
             }
             else
             {
+
                 if (context.StmtBlk != null)
                 {
                     // Copy all source code to User_Data
                     // --> See XSharpCodeGenerator.GenerateMethod for writing
-                    FillCodeSource(newMethod, context.end.Stop, context);
+                    FillCodeSource(newMethod, context, _tokens);
 
                     // The designer will need to locate the code in the file, so we must add the location
                     if (context.StmtBlk.ChildCount > 0)
@@ -575,7 +576,7 @@ namespace XSharp.CodeDom
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
-            // Reset 
+            // Reset
             initComponent = null;
             _locals.Clear();
         }
@@ -629,13 +630,7 @@ namespace XSharp.CodeDom
                 if (context.Modifiers.STATIC().Length > 0)
                     ctor.Attributes |= MemberAttributes.Static;
             }
-            if (context.StmtBlk != null)
-            {
-                // Copy all source code to User_Data
-                // --> See XSharpCodeGenerator.GenerateMethod for writing
-                FillCodeSource(ctor, context.end.Stop, context);
-            }
-            //
+            FillCodeSource(ctor, context, _tokens);
             this.CurrentClass.Members.Add(ctor);
         }
 
@@ -1070,7 +1065,7 @@ namespace XSharp.CodeDom
             }
 
             // Build a list of the elements from Left to Right so we can easily find without recursion
-            // are AccessMember 
+            // are AccessMember
             // LHS of first element is usually:
             // - self
             // - super
@@ -1513,12 +1508,13 @@ namespace XSharp.CodeDom
     {
         public static CodeCommentStatement[] GetLeadingComments(this ParserRuleContext context, IList<IToken> tokens)
         {
-            int endPos = context.Start.TokenIndex - 1;
+            // comment ends with token before the start of the method/class etc.
+            int endPos = ((XSharpToken)context.Start).OriginalTokenIndex- 1;
             int startPos = endPos;
             var stmts = new List<CodeCommentStatement>();
             while (startPos >= 0 && (tokens[startPos].Channel != 0 || tokens[startPos].Type == XSharpLexer.EOS))
             {
-                var token = tokens[startPos];
+                var token = tokens[startPos] ;
                 if (XSharpLexer.IsComment(token.Type))
                 {
                     string line = token.Text.TrimStart();

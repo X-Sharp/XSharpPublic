@@ -155,35 +155,35 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oCheckNotOverwriteProjectFiles:Location := System.Drawing.Point{18 , 226}
 		SELF:oCheckNotOverwriteProjectFiles:Name := "CheckNotOverwriteProjectFiles"
 		SELF:oCheckNotOverwriteProjectFiles:Size := System.Drawing.Size{289 , 27}
-		SELF:oCheckNotOverwriteProjectFiles:TabIndex := 1
+		SELF:oCheckNotOverwriteProjectFiles:TabIndex := 13
 		SELF:oCheckNotOverwriteProjectFiles:Text := "Do not overwrite project files if they already exist"
 		SELF:oGroupBox2:Controls:Add(SELF:oCheckNotOverwriteProjectFiles)
 		
 		SELF:oTextAppName:Location := System.Drawing.Point{171 , 201}
 		SELF:oTextAppName:Name := "TextAppName"
 		SELF:oTextAppName:Size := System.Drawing.Size{137 , 20}
-		SELF:oTextAppName:TabIndex := 14
+		SELF:oTextAppName:TabIndex := 12
 		SELF:oGroupBox2:Controls:Add(SELF:oTextAppName)
 		
 		SELF:oLabelSource2:AutoSize := TRUE
 		SELF:oLabelSource2:Location := System.Drawing.Point{171 , 183}
 		SELF:oLabelSource2:Name := "LabelSource2"
 		SELF:oLabelSource2:Size := System.Drawing.Size{99 , 17}
-		SELF:oLabelSource2:TabIndex := 13
+		SELF:oLabelSource2:TabIndex := 11
 		SELF:oLabelSource2:Text := "App / library name:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabelSource2)
 		
 		SELF:oTextSolutionName:Location := System.Drawing.Point{18 , 201}
 		SELF:oTextSolutionName:Name := "TextSolutionName"
 		SELF:oTextSolutionName:Size := System.Drawing.Size{137 , 20}
-		SELF:oTextSolutionName:TabIndex := 12
+		SELF:oTextSolutionName:TabIndex := 10
 		SELF:oGroupBox2:Controls:Add(SELF:oTextSolutionName)
 		
 		SELF:oLabelSource1:AutoSize := TRUE
 		SELF:oLabelSource1:Location := System.Drawing.Point{18 , 183}
 		SELF:oLabelSource1:Name := "LabelSource1"
 		SELF:oLabelSource1:Size := System.Drawing.Size{80 , 17}
-		SELF:oLabelSource1:TabIndex := 11
+		SELF:oLabelSource1:TabIndex := 9
 		SELF:oLabelSource1:Text := "Solution name:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabelSource1)
 		
@@ -191,7 +191,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oButtonOutput:Location := System.Drawing.Point{279 , 158}
 		SELF:oButtonOutput:Name := "ButtonOutput"
 		SELF:oButtonOutput:Size := System.Drawing.Size{27 , 20}
-		SELF:oButtonOutput:TabIndex := 10
+		SELF:oButtonOutput:TabIndex := 8
 		SELF:oButtonOutput:Text := "..."
 		SELF:oGroupBox2:Controls:Add(SELF:oButtonOutput)
 		
@@ -199,21 +199,21 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oButtonSource:Location := System.Drawing.Point{279 , 116}
 		SELF:oButtonSource:Name := "ButtonSource"
 		SELF:oButtonSource:Size := System.Drawing.Size{27 , 20}
-		SELF:oButtonSource:TabIndex := 7
+		SELF:oButtonSource:TabIndex := 5
 		SELF:oButtonSource:Text := "..."
 		SELF:oGroupBox2:Controls:Add(SELF:oButtonSource)
 		
 		SELF:oTextOutput:Location := System.Drawing.Point{18 , 158}
 		SELF:oTextOutput:Name := "TextOutput"
 		SELF:oTextOutput:Size := System.Drawing.Size{254 , 20}
-		SELF:oTextOutput:TabIndex := 9
+		SELF:oTextOutput:TabIndex := 7
 		SELF:oGroupBox2:Controls:Add(SELF:oTextOutput)
 		
 		SELF:oLabel2:AutoSize := TRUE
 		SELF:oLabel2:Location := System.Drawing.Point{18 , 140}
 		SELF:oLabel2:Name := "Label2"
 		SELF:oLabel2:Size := System.Drawing.Size{73 , 17}
-		SELF:oLabel2:TabIndex := 8
+		SELF:oLabel2:TabIndex := 6
 		SELF:oLabel2:Text := "Output folder:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabel2)
 		
@@ -221,14 +221,14 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oLabelSource:Location := System.Drawing.Point{18 , 98}
 		SELF:oLabelSource:Name := "LabelSource"
 		SELF:oLabelSource:Size := System.Drawing.Size{75 , 17}
-		SELF:oLabelSource:TabIndex := 5
+		SELF:oLabelSource:TabIndex := 3
 		SELF:oLabelSource:Text := "Source folder:"
 		SELF:oGroupBox2:Controls:Add(SELF:oLabelSource)
 		
 		SELF:oTextSource:Location := System.Drawing.Point{18 , 116}
 		SELF:oTextSource:Name := "TextSource"
 		SELF:oTextSource:Size := System.Drawing.Size{254 , 20}
-		SELF:oTextSource:TabIndex := 6
+		SELF:oTextSource:TabIndex := 4
 		SELF:oTextSource:TextChanged += SELF:TextSource_TextChanged
 		SELF:oGroupBox2:Controls:Add(SELF:oTextSource)
 		

@@ -3,44 +3,44 @@
 // Creation Date : 8/2/2017 3:23:20 PM
 // Created for   : 
 // WorkStation   : ZEUS
-using System.Windows.Forms
+USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VOEditors
 	INTERFACE IVOWEDControl
 	// properties
-	PROPERTY IsGridEnabled as LOGIC GET
-	PROPERTY ReadOnly as LOGIC GET SET 
-	PROPERTY IsDirty as LOGIC GET 
+	PROPERTY IsGridEnabled AS LOGIC GET
+	PROPERTY ReadOnly AS LOGIC GET SET 
+	PROPERTY IsDirty AS LOGIC GET 
 
-	PROPERTY IWin32Window as IWin32Window GET 
+	PROPERTY IWin32Window AS IWin32Window GET 
 
-	METHOD Action(nType as Actions) AS VOID
-	METHOD CanDoAction(nType as Actions) AS LOGIC
+	METHOD Action(nType AS Actions) AS VOID
+	METHOD CanDoAction(nType AS Actions) AS LOGIC
 	
-	METHOD Dispose() as VOID
-	METHOD ShowTabOrder() as VOID
-	METHOD TestForm() as VOID
+	METHOD Dispose() AS VOID
+	METHOD ShowTabOrder() AS VOID
+	METHOD TestForm() AS VOID
 	METHOD ToggleGrid() AS VOID
 
 	// Recorder
-	METHOD StopRecorder() as VOID
-	METHOD RecordCommand(sCommand as STRING) as VOID
+	METHOD StopRecorder() AS VOID
+	METHOD RecordCommand(sCommand AS STRING) AS VOID
 
 	// IO
-	METHOD Save(strFile as STRING) AS LOGIC
-	METHOD Save(strFile as STRING, lFormOnly as LOGIC) AS LOGIC
+	METHOD Save(strFile AS STRING) AS LOGIC
+	METHOD Save(strFile AS STRING, lFormOnly AS LOGIC) AS LOGIC
 	METHOD OpenWindow(cFileName AS STRING) AS LOGIC
 	METHOD OpenMenu(cFileName AS STRING) AS LOGIC
 	METHOD OpenDBServer(cFileName AS STRING) AS LOGIC
 	METHOD OpenFieldSpec(cFileName AS STRING) AS LOGIC
 
 	// Delegates
-	PROPERTY IsDirtyChanged as EventHandler SET
-	PROPERTY TriggerSave as EventHandler SET
-	PROPERTY StatusMessage as StatusMessageDelegate SET
+	PROPERTY IsDirtyChanged AS EventHandler SET
+	PROPERTY TriggerSave AS EventHandler SET
+	PROPERTY StatusMessage AS StatusMessageDelegate SET
 	END INTERFACE
 
-	DELEGATE StatusMessageDelegate(cMsg as STRING) AS VOID
+	DELEGATE StatusMessageDelegate(cMsg AS STRING) AS VOID
 	
 END NAMESPACE
 

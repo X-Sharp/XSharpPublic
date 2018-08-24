@@ -38,7 +38,7 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
-
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -590,7 +590,10 @@ namespace Microsoft.VisualStudio.Project
       private bool alreadyHandledOverwritePrompts = false;
 
       private EnvDTE.Globals globals;
- 
+
+        private IVsBuildManagerAccessor buildManagerAccessor;
+
+
         #endregion
 
         #region abstract properties
@@ -1520,7 +1523,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 taskProvider.Dispose();
             }
+
             taskProvider = new TaskProvider(this.site);
+            this.buildManagerAccessor = (IVsBuildManagerAccessor)this.Site.GetService(typeof(SVsBuildManagerAccessor));
 
             return VSConstants.S_OK;
         }
@@ -2122,7 +2127,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 return e.ErrorCode;
             }
             finally
@@ -2323,19 +2328,19 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (IOException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch (UnauthorizedAccessException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch (ArgumentException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
             catch (NotSupportedException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
             }
         }
 
@@ -2488,16 +2493,16 @@ namespace Microsoft.VisualStudio.Project
             string cTarget = target;
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
-            System.Diagnostics.Trace.WriteLine("<<-- ProjectNode.Build("+cTarget+")");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("<<-- ProjectNode.Build("+cTarget+")");
             BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
                 bool engineLogOnlyCritical = BuildPrelude(output);
                 this.SetBuildConfigurationProperties(configCanonicalName);
                 result = this.InvokeMsBuild(target);
-                
+
             }
-            System.Diagnostics.Trace.WriteLine("-->> ProjectNode.Build()");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("-->> ProjectNode.Build()");
             return result;
         }
 
@@ -2599,7 +2604,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch (ArgumentException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
 
@@ -2667,19 +2672,19 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch (ArgumentNullException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (ArgumentException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (FormatException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (OverflowException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
 
@@ -2716,19 +2721,19 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch (ArgumentNullException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (ArgumentException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (FormatException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (OverflowException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
 
@@ -2763,19 +2768,19 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch (ArgumentNullException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (ArgumentException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (FormatException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
                 catch (OverflowException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                 }
             }
 
@@ -3461,7 +3466,6 @@ namespace Microsoft.VisualStudio.Project
             bool designTime = BuildKind.Sync == buildKind;
             //projectInstance = null;
 
-            var accessor = (IVsBuildManagerAccessor)this.Site.GetService(typeof(SVsBuildManagerAccessor));
             if (!TryBeginBuild(designTime))
             {
                 if (null != uiThreadCallback)
@@ -3494,7 +3498,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 if (useProvidedLogger && buildLogger != null)
                 {
-                    ErrorHandler.ThrowOnFailure(accessor.RegisterLogger(submission.SubmissionId, buildLogger));
+                    ErrorHandler.ThrowOnFailure(this.buildManagerAccessor.RegisterLogger(submission.SubmissionId, buildLogger));
                 }
 
                 if (buildKind == BuildKind.Async)
@@ -5771,18 +5775,34 @@ namespace Microsoft.VisualStudio.Project
         {
             // Init output params
             frame = null;
+            Guid view = logicalView;
+            // The find window opens with a TextView
+            if (view == VSConstants.LOGVIEWID.TextView_guid)
+            {
+                view = VSConstants.LOGVIEWID.Code_guid;
+            }
 
             HierarchyNode n = this.NodeFromItemId(itemId);
+
+
             if (n == null)
             {
                 throw new ArgumentException(SR.GetString(SR.ParameterMustBeAValidItemId, CultureInfo.CurrentUICulture), "itemId");
             }
-
+            IVsUIHierarchy hier;
+            uint itemId2;
+            IVsWindowFrame windowFrame;
+           bool isOpen = VsShellUtilities.IsDocumentOpen(this.Site, n.Url, view, out hier, out itemId2, out windowFrame);
+            if (isOpen)
+            {
+                frame = windowFrame;
+                return VSConstants.S_OK;
+            }
             // Delegate to the document manager object that knows how to open the item
             DocumentManager documentManager = n.GetDocumentManager();
-            if (documentManager != null)
+            if (documentManager != null )
             {
-                return documentManager.Open(ref logicalView, punkDocDataExisting, out frame, WindowFrameShowAction.DoNotShow);
+                return documentManager.Open(ref view, punkDocDataExisting, out frame, WindowFrameShowAction.DoNotShow);
             }
 
             // This node does not have an associated document manager and we must fail
@@ -5955,23 +5975,18 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         private bool TryBeginBuild(bool designTime, bool requiresUIThread = false)
         {
-            IVsBuildManagerAccessor accessor = null;
 
-            if (this.Site != null)
-            {
-                accessor = this.Site.GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
-            }
 
             bool releaseUIThread = false;
 
             try
             {
                 // If the SVsBuildManagerAccessor service is absent, we're not running within Visual Studio.
-                if (accessor != null)
+                if (this.buildManagerAccessor != null)
                 {
                     if (requiresUIThread)
                     {
-                        int result = accessor.ClaimUIThreadForBuild();
+                        int result = buildManagerAccessor.ClaimUIThreadForBuild();
                         if (result < 0)
                         {
                             // Not allowed to claim the UI thread right now. Try again later.
@@ -5983,7 +5998,7 @@ namespace Microsoft.VisualStudio.Project
 
                     if (designTime)
                     {
-                        int result = accessor.BeginDesignTimeBuild();
+                        int result = buildManagerAccessor.BeginDesignTimeBuild();
                         if (result < 0)
                         {
                             // Not allowed to begin a design-time build at this time. Try again later.
@@ -6015,8 +6030,8 @@ namespace Microsoft.VisualStudio.Project
                 // we need to release the UI thread.
                 if (releaseUIThread)
                 {
-                    Debug.Assert(accessor != null, "We think we need to release the UI thread for an accessor we don't have!");
-                    Marshal.ThrowExceptionForHR(accessor.ReleaseUIThreadForBuild());
+                    Debug.Assert(buildManagerAccessor != null, "We think we need to release the UI thread for an accessor we don't have!");
+                    Marshal.ThrowExceptionForHR(buildManagerAccessor.ReleaseUIThreadForBuild());
                 }
             }
         }
@@ -6031,21 +6046,15 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         private void EndBuild(BuildSubmission submission, bool designTime, bool requiresUIThread = false)
         {
-            IVsBuildManagerAccessor accessor = null;
 
-            if (this.Site != null)
-            {
-                accessor = this.Site.GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
-            }
-
-            if (accessor != null)
+            if (this.buildManagerAccessor != null)
             {
                 // It's very important that we try executing all three end-build steps, even if errors occur partway through.
                 try
                 {
                     if (submission != null)
                     {
-                        Marshal.ThrowExceptionForHR(accessor.UnregisterLoggers(submission.SubmissionId));
+                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.UnregisterLoggers(submission.SubmissionId));
                     }
                 }
                 catch (Exception ex)
@@ -6062,7 +6071,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (designTime)
                     {
-                        Marshal.ThrowExceptionForHR(accessor.EndDesignTimeBuild());
+                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.EndDesignTimeBuild());
                     }
                 }
                 catch (Exception ex)
@@ -6080,7 +6089,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (requiresUIThread)
                     {
-                        Marshal.ThrowExceptionForHR(accessor.ReleaseUIThreadForBuild());
+                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.ReleaseUIThreadForBuild());
                     }
                 }
                 catch (Exception ex)
@@ -6728,7 +6737,7 @@ namespace Microsoft.VisualStudio.Project
             globals = new Microsoft.VisualStudio.Project.Automation.OAGlobals(this);
         }
 
- 
+
         public void InitializeGlobals()
         {
             ((Microsoft.VisualStudio.Project.Automation.OAGlobals)globals).Initialize();

@@ -29,6 +29,8 @@ using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using XSharp.Project;
+
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
@@ -1236,7 +1238,8 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("COM Exception : " );
+                XSharpProjectPackage.Instance.DisplayException(e);
                 return e.ErrorCode;
             }
 
@@ -1707,7 +1710,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(COMException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
                     returnValue = e.ErrorCode;
                 }
                 if(returnValue != VSConstants.S_OK)
@@ -2954,7 +2957,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception :" + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnCode = e.ErrorCode;
 
             	// Try to recover

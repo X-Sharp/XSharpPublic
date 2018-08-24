@@ -3,38 +3,38 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-using XSharpModel
-using XSharp.VODesigners
+USING XSharpModel
+USING XSharp.VODesigners
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
-	PROTECT oXProject as XProject
+	PROTECT oXProject AS XProject
 
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
 		SUPER(_oSurface , _oGrid) 
 	RETURN
-	METHOD Open(cFileName as STRING) AS LOGIC
+	METHOD Open(cFileName AS STRING) AS LOGIC
 		LOCAL aFiles AS IList<XFile>
-		LOCAL aFieldSpecs as ArrayList
+		LOCAL aFieldSpecs AS ArrayList
 		LOCAL lModule AS LOGIC
 		LOCAL lMerge := FALSE AS LOGIC
-		LOCAL oFile as XFile
+		LOCAL oFile AS XFile
 		oFile := XSharpModel.XSolution.FindFile(cFileName)
 		IF oFile == NULL_OBJECT
-			LOCAL cPrgFileName as STRING
+			LOCAL cPrgFileName AS STRING
 			cPrgFileName := XFuncs.GetModuleFilenameFromBinary(cFileName)+".PRG"
 			oFile := XSharpModel.XSolution.FindFile(cPrgFileName)
-			if (oFile != NULL_OBJECT)
+			IF (oFile != NULL_OBJECT)
 				oXProject := oFile:Project
 				XFuncs.EnsureFileNodeExists(oXProject, cFileName)
 				oFile := XSharpModel.XSolution.FindFile(cFileName)
 			ENDIF
 		ENDIF
-		if (oFile != NULL_OBJECT)
+		IF (oFile != NULL_OBJECT)
 			oXProject := oFile:Project
-		else
-		endif
-		if oXProject == NULL
+		ELSE
+		ENDIF
+		IF oXProject == NULL
 			XFuncs.ErrorBox("Cannot find project for file "+cFileName)
 			RETURN FALSE
 		ENDIF
@@ -55,8 +55,8 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			RETURN TRUE
 		END IF
 		aFiles := XFuncs.FindItemsOfType(oXProject, XFileType.VOFieldSpec, NULL)
-		FOREACH oFs as XFile in aFiles
-			local cFullName as STRING
+		FOREACH oFs AS XFile IN aFiles
+			LOCAL cFullName AS STRING
 			cFullName := oFS:FullPath
 			lModule := Funcs.GetModuleFilenameFromBinary(cFullName):ToUpper() == Funcs.GetModuleFilenameFromBinary(cFileName):ToUpper()
 			IF lModule
@@ -90,7 +90,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			RETURN FALSE
 		END IF
 		
-		FOREACH  oDesign  as  FSEDesignFieldSpec in aFieldSpecs
+		FOREACH  oDesign  AS  FSEDesignFieldSpec IN aFieldSpecs
 			IF oDesign != NULL .and. .not. SELF:NameExists(oDesign:Name)
 				oDesign:oItem:SetValues()
 				SELF:oListView:Items:Add(oDesign:oItem)
@@ -167,7 +167,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		VAR oGenerator := CodeGenerator{oStream:Editor}
 		oGenerator:BeginCode()
 		
-		FOREACH oDesign as FSEDesignFieldSpec in aDesign
+		FOREACH oDesign AS FSEDesignFieldSpec IN aDesign
 			oCode := GetCodeContents(oDesign)
 			VAR cName := oDesign:GetProperty("classname"):TextValue
 			oGenerator:WriteEntity(XIde.EntityType._Class	   , cName , cName , EntityOptions.AddUser, oCode:aClass)
@@ -176,11 +176,11 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		NEXT
 		
 		aPrevNames := List<STRING>{}
-		FOREACH cName as STRING IN SELF:aUsedFieldSpecNames
+		FOREACH cName AS STRING IN SELF:aUsedFieldSpecNames
 			aPrevNames:Add(cName)
 		NEXT
 		SELF:LoadUsedFieldSpecNames()
-		FOREACH cName as STRING IN aPrevNames
+		FOREACH cName AS STRING IN aPrevNames
 			IF .not. SELF:aUsedFieldSpecNames:Contains(cName)
 				oGenerator:DeleteEntity(XIde.EntityType._Class , cName , cName)
 				oGenerator:DeleteEntity(XIde.EntityType._Constructor , cName , cName)
@@ -231,7 +231,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			SELF:nActionSaved := SELF:nAction
 			SELF:ResetModified()
 			XFuncs.EnsureFileNodeExists(oXProject, cFileName)
-			FOREACH cDelete as STRING in SELF:aFilesToDelete
+			FOREACH cDelete AS STRING IN SELF:aFilesToDelete
 				IF FileInfo{cDelete}:FullName:ToUpper() != FileInfo{cOrigFilename}:FullName:ToUpper()
 					XFuncs.DeleteFile(oXProject, cDelete)
 				END IF

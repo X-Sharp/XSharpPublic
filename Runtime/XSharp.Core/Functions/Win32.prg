@@ -6,7 +6,7 @@
 
 
 USING System.Runtime.InteropServices
-CLASS Win32
+INTERNAL STATIC CLASS Win32
 	[DllImport("kernel32.dll", SetLastError := FALSE, EntryPoint := "GetOEMCP")];
 	EXTERN STATIC METHOD GetDosCodePage() AS LONG
 
@@ -14,8 +14,8 @@ CLASS Win32
 	EXTERN STATIC METHOD GetWinCodePage() AS LONG
 	
 	
-	[DllImport("kernel32.dll", EntryPoint := "CompareStringA", CharSet:=CharSet.Ansi)];
-	EXTERN STATIC METHOD  CompareStringAnsi(LCID AS INT, cmpFlags AS DWORD , bString1 AS STRING, chCount1 AS INT , bString2 AS STRING , chCount2 AS INT) AS INT
+	[DllImport("kernel32.dll", EntryPoint := "CompareStringA")];
+	EXTERN STATIC METHOD  CompareStringAnsi(LCID AS INT, cmpFlags AS DWORD , bString1 AS BYTE[], chCount1 AS INT , bString2 AS BYTE[] , chCount2 AS INT) AS INT
 
 	PUBLIC CONST SORT_STRINGSORT := 0x00001000  AS INT
 END CLASS

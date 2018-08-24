@@ -438,6 +438,22 @@ FUNCTION SetMath(nFPU AS DWORD) AS DWORD
 /// </summary>
 /// <returns>
 /// </returns>
+/// <remarks>
+/// In Visual Objects the nation DLL is an external DLL. For X# there are no separate
+/// nation DLL. The nation support code is integrated in XSharp.Core.DLL.
+/// For compatibility you can still use the SetNatDLL() function to switch to another
+/// nation module. <br/>
+/// The available nation modules are (just like in Visual Objects):<br/> 
+/// 	"BRAZIL", "CROATIA", "CZECH852", "CZECH895", "DANISH", "DUTCH", "FINNISH", 
+/// 	"FRENCH", "GENERIC", "GERMAN", "GERMAN2", "HUNG852", "HUNGCWI", "ITALIAN", 
+///     "NORWEGN", "POL-ISO", "POL-MAZ", "POL852", "PORT850", "PORT860", "ROMANIA", 
+/// 	"RUSSIAN", "SERBIA", "SL-W-95", "SL-W-AS7", "SL-W-EE", "SLOV852", "SLOV895", 
+/// 	"SPANISH", "SWEDISH", "UK"
+/// <br/> You may specify a DLL name with full path. The Runtime will strip the path and extension
+/// from the file name and will look for one of the names listed above.<br/> 
+/// The nation DLL name is NOT case sensitive.
+///</remarks>
+	
 FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	LOCAL cBase AS STRING
 	_SetNatDLL(cnewDLL)
@@ -445,7 +461,7 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	_SetCollation(cBase)
 	RETURN String.Compare(Messages.CurrentLanguageName, cBase, TRUE) == 0
 
-/// </exclude>
+/// <exclude/>
 FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", TYPEOF(Functions):Assembly }
 	VAR obj := rm:GetObject(cBase) 
@@ -457,7 +473,7 @@ FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 		ENDIF
 	ENDIF
 	RETURN FALSE
-	
+/// <exclude/>	
 INTERNAL FUNCTION	_SetNatDLL(cNewDLL AS STRING) AS STRING
 	LOCAL cBase AS STRING
 	cBase := System.IO.Path.GetFileNameWithoutExtension(cNewDLL)
@@ -498,6 +514,8 @@ FUNCTION __SetPathArray() AS STRING[]
 /// <summary>
 /// Set the Path array that is used by the File() function to locate files outside of the current directory.
 /// This is a combination of the SetDefault() and SetPath() variables
+/// This array gets cleared when SetPath() or SetDefault() is called and is initialized the first time File() or a related function
+//  is called after the path has been changed.
 /// </summary>
 /// <param name="aPath"></param>
 /// <returns>
@@ -660,12 +678,13 @@ FUNCTION SetInternational() AS STRING
 /// </returns>
 /// <remarks>
 /// SetInternational() allows XSharp apps to operate in different international modes.  
-/// The "Clipper" mode is provided for compatibility with CA-Clipper applications and uses an 
-/// internationalization routine defined in the nation module.  The "Windows" mode uses international services provided by Windows.
+/// The "CLIPPER" mode is provided for compatibility with CA-Clipper applications and uses an 
+/// internationalization routine defined in the nation module.
+/// The "Windows" mode uses international services provided by Windows.
 /// When you set this mode several settings will be changed
 /// <list type="table">
 /// <listheader>
-/// <term>Setting</term> <description>Value in #Clipper mode</description>
+/// <term>Setting</term> <description>Initial value in CLIPPER mode</description>
 /// </listheader>
 ///	<item><term>SetAmExt</term> <description>Empty String</description></item>  
 /// <item><term>SetPmExt</term> <description>Empty String</description></item>  
@@ -707,34 +726,42 @@ FUNCTION SetCollation() AS STRING
 
 /// <summary>
 /// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
+/// </summary>
+/// <remarks>
 /// The Core dialect always compares according to the Unicode rules.
 /// The other dialects use the rules defined with SetCollation for string comparison. There are 4 possible values:
-/// <list type="bullet">
+/// <list type="table">
 /// <item>
 /// <term>Windows (the default)</term>
-/// <description>Windows collation. <br/>This uses the windows ansi comparison mechanism that Visual Objects uses as well.
+/// <description>This uses the normal windows Ansi comparison mechanism that Visual Objects uses as well.
 /// That means that the Unicode strings from .Net are converted to Ansi first and then compared with the Ansi comparison rules.
+/// 
 /// In most cases characters that are not available in the Ansi codepage are translated to a question mark '?' and are therefore all seen as equal. <br/>
 /// If you want true unicode comparison you need the Unicode value for SetCollation.
 /// </description>
+/// </item>
+/// <item>
 /// <term>Clipper</term>
 /// <description>This uses string comparison tables that are the same as the character comparison tables in the Visual Objects
 /// nation modules. Each character from the unicode string is converted to a character from the OEM codepage first using the
 /// DosCodePage from the runtime state. the resulting OEM characters are then looked up in the 256 character weight tables that
 /// are part of the runtime dll. You can switch to a different table by using SetNatDLL().
 /// </description>
+/// </item>
+/// <item>
 /// <term>Unicode</term>
 /// <description>This uses the normal Unicode String.Compare routines for string comparisons. 
 /// </description>
+/// </item>
+/// <item>
 /// <term>Ordinal</term>
 /// <description>This uses the normal Ordinal String.Compare routines from DotNet. This is the fastest.
 /// </description>
+/// </item>
 /// </list>
-/// </summary>
+/// </remarks>
 /// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal" </returns>
-///
 /// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
-/// <returns>The previous setting for SetCollation().</returns>
 FUNCTION SetCollation(cCollation AS STRING)  AS STRING
 	LOCAL cOld AS STRING
 	cOld := RuntimeState.CollationMode:ToString():ToUpper()

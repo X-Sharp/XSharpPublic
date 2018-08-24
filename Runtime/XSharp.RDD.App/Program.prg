@@ -421,7 +421,7 @@ BEGIN NAMESPACE XSharp.RDD.App
                 myDBF:Append( FALSE )
                 myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
                 myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
-                myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",true)==0 )
+                myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0 )
                 myDBF:PutValue( 4, DateTime.Now )
             NEXT
             myDBF:Close()
@@ -434,12 +434,12 @@ BEGIN NAMESPACE XSharp.RDD.App
                 Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
                 Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
                 LOCAL o AS OBJECT
-                LOCAL dt as DateTime
+                LOCAL dt AS DateTime
                 o := myDBF:GetValue(4)
                 IF ( o IS DateTime )
                     dt := (DateTime)o
                 ENDIF
-                Assert.Equal( true, o IS DateTime )
+                Assert.Equal( TRUE, o IS DateTime )
                 Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
                 myDBF:Skip(1)
             NEXT

@@ -834,7 +834,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 /// </summary>
 /// <param name="oValue">Object containing the numeric value to convert.</param>
 /// <returns>The value in the form of a float. </returns>
-/// <exception>cref="System.InvalidCastException">Thrown when the parameter <paramref name="oValue"/> cannot be converted to a FLOAT.</exception>
+/// <exception>System.InvalidCastException Thrown when the parameter <paramref name="oValue"/> cannot be converted to a FLOAT.</exception>
     FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
         LOCAL typ := oValue:GetType() AS System.Type
         IF typ == typeof(FLOAT)

@@ -616,8 +616,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return !init.Constructor.IsImplicitlyDeclared || init.InitializerExpressionOpt != null;
                 case BoundKind.ConvertedTupleLiteral:
                     return false;
+#if XSHARP
+                case BoundKind.FieldAccess:
+                    return false;
+                case BoundKind.PropertyAccess:
+                    return false;
+                case BoundKind.Local:
+                    return false;
                 default:
                     return true;
+#else
+                default:
+                    return true;
+
+#endif
             }
         }
 

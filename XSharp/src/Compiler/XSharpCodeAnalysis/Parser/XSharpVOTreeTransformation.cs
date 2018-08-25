@@ -2228,6 +2228,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // are no Attributes on the parameter, such as [CallerMember]
             if (context.Default != null && context.Attributes == null && ! _options.NoClipCall)
             {
+                /*
                 // only encode when there are parameters in this list after the current one
                 // that have no default. Otherwise we let Roslyn take care of it.
                 var ParamList = context.Parent as XP.ParameterListContext;
@@ -2249,6 +2250,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Roslyn can handle it.
                     return;
                 }
+                }*/
                 AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)
                 {

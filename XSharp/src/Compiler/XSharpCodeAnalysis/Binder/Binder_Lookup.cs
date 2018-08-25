@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (ms.IsStatic && ms.ContainingType.Name.EndsWith("Functions",System.StringComparison.OrdinalIgnoreCase))
                         {
                             SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, ms, null);
-                            functionResults.MergeEqual(result);
+                            functionResults.MergeEqual(single);
                         }
                     }
                 }
@@ -108,55 +108,32 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (!functionResults.IsClear)
             {
-                // compare the original results with the results found 
-                Symbol funcSym, sym;
-                for (int i = 0; i < functionResults.Symbols.Count;i++)
+                // compare the function results with the overall results found
+                // create a list of functions and methods
+                // function first and then the methods
+                LookupResult mergedResults = LookupResult.GetInstance();
+                mergedResults.MergeEqual(functionResults);
+                // now add the symbols from result that do not exist 
+                for (int j = 0; j < result.Symbols.Count; j++)
                 {
-                    funcSym = functionResults.Symbols[i];
-                    var funcFound = false;
-                    for (int j = 0; j < result.Symbols.Count; j++)
+                    var sym = result.Symbols[j];
+                    var found = false;
+                    for (int i = 0; i < mergedResults.Symbols.Count; i++)
                     {
-                        sym = result.Symbols[j];
-                        if (funcSym == sym)
+                        if (sym == mergedResults.Symbols[i])
                         {
-                            funcFound = true;
+                            found = true;
                             break;
                         }
                     }
-                    if (! funcFound && functionResults.Symbols.Count == result.Symbols.Count)
+                    if (!found)
                     {
-                        // IN X# we prefer a function over a static method
-                        //if (Compilation.Options.IsDialectVO)
-                        {
-                            var temp = functionResults;
-                            functionResults = result;
-                            result.Clear();
-                            result.MergeEqual(temp);
-                        }
-                    }
-
-                    if (! funcFound && funcSym.Kind == SymbolKind.Method)
-                    {
-                        for (int j = 0; j < result.Symbols.Count; j++)
-                        {
-                            sym = result.Symbols[j];
-                            if (sym.Kind == SymbolKind.Method)
-                            {
-                                var info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous,
-                                    new object[] {
-                                    funcSym.Name,
-                                    new FormattedSymbol(sym, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    new FormattedSymbol(funcSym, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    sym.Kind.ToString()});
-                                if (useSiteDiagnostics == null)
-                                {
-                                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                                }
-                                useSiteDiagnostics.Add(info);
-                            }
-                        }
+                        SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, sym, null);
+                        mergedResults.MergeEqual(single);
                     }
                 }
+                result.Clear();
+                result.MergeEqual(mergedResults);
             }
             // C563 Make sure the error is generated for Inaccessible types.
             if (! result.IsClear && result.Kind == LookupResultKind.Inaccessible && result.Error != null )

@@ -13052,6 +13052,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the function because in X# functions take precedence over methods..
+        /// </summary>
+        internal static string WRN_FunctionsTakePrecedenceOverMethods {
+            get {
+                return ResourceManager.GetString("WRN_FunctionsTakePrecedenceOverMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A get accessor is automatically generated for a set accessor without body..
         /// </summary>
         internal static string WRN_GeneratingGetAccessor {

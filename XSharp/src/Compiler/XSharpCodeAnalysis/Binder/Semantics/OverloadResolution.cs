@@ -289,6 +289,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            // generate warning that function takes precedence over static method
+            var func1 = m1.Member.ContainingType.Name.EndsWith("Functions");
+            var func2 = m2.Member.ContainingType.Name.EndsWith("Functions");
+            if (func1 && ! func2)
+            {
+                result = BetterResult.Left;
+                var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
+                    new object[] {
+                            m1.Member.Name,
+                            new FormattedSymbol(m1.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                            new FormattedSymbol(m2.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                            m1.Member.Kind.ToString()});
+                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                useSiteDiagnostics.Add(info);
+
+            }
+            if (func2 && !func1)
+            {
+                result = BetterResult.Right;
+                var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
+                    new object[] {
+                            m2.Member.Name,
+                            new FormattedSymbol(m2.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                            new FormattedSymbol(m1.Member, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                            m2.Member.Kind.ToString()});
+                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                useSiteDiagnostics.Add(info);
+
+            }
             return false;
         }
 

@@ -12,22 +12,22 @@
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading1">Changes in 2.0.0.4 (Bandol Beta 4)</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List"><text style="font-weight:bold;">POSSIBLY BREAKING CHANGE: Functions now always take precedence over same named methods</text>. If you want to call a method inside the same class you need to either prefix it with the typename (for static methods) or with the SELF: prefix. If there is no conflicting function name then you can still call the method with just its name. We recommend to prefix the method calls to make your code easier to read.</li>
       <li styleclass="List">The compiler was accepting just an identifier without a INSTANCE, EXPORT or other prefix and without a type inside a class declaration. It would create a public field of type USUAL. That is no longer possible.</li>
-      <li styleclass="List">Functions now always take precedence over methods. If you want to call a method inside the same class you need to either prefix it with the typename (for static methods) or with the SELF: prefix. If there is no conflicting function name then you can still call the method with just its name. We recommend to prefix the method calls to make your code easier to read.</li>
       <li styleclass="List"><text styleclass="Body Text">Improved the positional keyword detection algorithm (this also affects the source code editor)</text></li>
       <li styleclass="List">The || operator now maps to the logical or &#160;(a .OR. b) and not to the binary or (_OR(a,b))</li>
       <li styleclass="List">The VAR statement now also correctly parses <br/><br/><text styleclass="Code Example">VAR x = SomeFunction()</text><br/></li>
     </list>
     <para styleclass="List"><tab />And will compile this with a warning that you should use the assignment operator (:=).</para>
     <para styleclass="List"><tab />We have added this because many people (including we) copy examples from VB and C# where the operator is a single equals token.</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Error messages about conflicting types now include the fully qualified type name.</li>
       <li styleclass="List">The compiler no longer includes the width for literal Floats. This is compatible with VO.</li>
-      <li styleclass="List">A Default parameter of type Enum is now allowed. Also the compiler is no longer using the DefaultParameter attribute in VO / Vulcan dialect when not strictly necessary.</li>
+      <li styleclass="List">A Default parameter of type Enum is now allowed. </li>
     </list>
     <para styleclass="Heading2">Runtime</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Added several functions that were missing, such as __Str() and DoEvents()</li>
       <li styleclass="List">Fixed a problem in the macro compiler with non-english culctures.</li>
       <li styleclass="List">Added several overloads for Is..() functions that take a PSZ instead of a string, such as IsAlpha() and IsUpper().</li>
@@ -41,8 +41,8 @@
       <li styleclass="List">Fixes for the Str() family of functions in combination with SetFixed() and SetDigitFixed().</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">Fixed a problem when building projects in the latest preview of Visual Studio</li>
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem when building projects in the latest build of Visual Studio</li>
       <li styleclass="List">Several &apos;keywords&apos; were not case synchronized before, such as TRUE, FALSE, NULL_STRING etc,</li>
       <li styleclass="List">Keywords are not case synchronized on the current line as long as the user has the cursor on them or immediately after them. That means that when you type String and want to continue to change it to StringComparer then the formatter will no longer kick in and change &quot;String&quot; to the keyword case before you have the chance to complete the word.</li>
       <li styleclass="List">The Control Order dialog inside the form editor was not saving its changes.</li>
@@ -53,24 +53,24 @@
       <li styleclass="List">Fixed a problem when debugging in X64 mode.</li>
       <li styleclass="List">Fixed an exception when comparing source code files with SCC integration.</li>
       <li styleclass="List">Fixed several problems w.r.t. the XAML editor:</li>
-      <list id="52" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="104" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="List">Code is now generated with STRICT calling convention to avoid problems when compiler option &quot;Impliciting CLIPPER calling convention&quot; is enabled</li>
         <li styleclass="List">WPF and other templates now include STRICT calling convention for the same reason</li>
         <li styleclass="List">The XAML editor could not properly load the current DLL or EXE and had therefore problems resolving namespaces and adding user controls to the tool palette. This has been fixed.</li>
       </list>
     </list>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">We have added an option to the Tools/Editor/XSharp/Intellisense options that allow you to control how the member combobox in the editor works. You can choose to only show methods &amp; properties of the current type or all entities in the right combobox. The left combobox always shows all types in the file.</li>
+      <li styleclass="List">Some of the project and item templates have been updated. Methods and constructors without parameters now have a STRICT calling convention. Also the compiler option /vo15 has been explicitly disabled in templates for the Core dialect.</li>
     </list>
-    <para styleclass="List"></para>
     <para styleclass="Heading1">Changes in 2.0.0.3 (Bandol Beta 3)</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">When 2 method overloads have matching prototypes the compiler now prefers the non generic one over the generic one</li>
       <li styleclass="List">Fixed an exception that could occur when compiling a single line of source code with a preprocessor command in it.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Added Mod() function</li>
       <li styleclass="List">Added ArrayNew() overload with no parameters</li>
     </list>
@@ -79,7 +79,7 @@
       <li styleclass="List">Added missing string resource for USUAL overflow errors</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Improved keyword case synchronization and indenting. Also a source file is &apos;Keyword Case&apos; synchronized when opened.</li>
       <li styleclass="List">Opening a source file by double clicking the find results window no longer opens a new window for the same source file</li>
       <li styleclass="List">Improved type lookup speed for intellisense</li>
@@ -91,16 +91,16 @@
       <li styleclass="List">Fixed problem in the window editor with generating code for tab pages</li>
     </list>
     <para styleclass="Heading2">Vulcan XPorter</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Project dependencies defined in the solution file were not properly converted</li>
     </list>
     <para styleclass="Heading2">VO XPorter</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem where resource names were replaced with the value of a define </li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.0.2 (Bandol Beta 2)</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The compiler now transparently accepts both Int and Dword parameters for XBase Array indices</li>
       <li styleclass="List">When the compiler finds a weakly typed function in XSharp.VO and a strongly typed version in XSharp.Core then it will choose the strongly typed version in XSharp.Core now.</li>
       <li styleclass="List">In the VO and Vulcan dialect sometimes an (incorrect) warning &apos;duplicate usings&apos; was displayed. This is now suppressed.</li>
@@ -110,7 +110,7 @@
       <li styleclass="List">/vo6, /vo7 and /vo11 are now only supported in the VO/Vulcan dialect</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Removed DWORD overloads for Array indexers</li>
       <li styleclass="List">Fixed overload problem for ErrString()</li>
       <li styleclass="List">Fixed overload problem for _DebOut()</li>
@@ -119,7 +119,7 @@
       <li styleclass="Normal"><text styleclass="Body Text">Fixed memory blocks now get filled with 0xFF when they are released to help detect problems </text></li>
     </list>
     <para styleclass="Heading2">Visual Studio</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fix &apos;Hang&apos; in VS2017 when building</li>
       <li styleclass="List">Fix &apos;Hang&apos; in VS2017 when a tooltip (QuickInfo) was displayed</li>
       <li styleclass="List">Fixed problem with debugging x64 apps</li>
@@ -129,20 +129,20 @@
       <li styleclass="List">Enhancements in the Goto Definition</li>
     </list>
     <para styleclass="Heading2">Build System</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fix problem with CRLF in embedded resource commandline option</li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.0.1 (Bandol Beta 1)</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">New features</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Added support for <text style="font-weight:bold;">ARRAY OF </text>language construct. See the <link displaytype="text" defaultstyle="true" type="topiclink" href="The-X-Runtime">Runtime chapter</link> &#160;for more information about this.</li>
       <li styleclass="List">Added support for the X# Runtime assemblies when compiling in the VO or Vulcan dialects.</li>
       <li styleclass="List">Added support for the &quot;Pseudo&quot; function ARGCOUNT() that returns the # of declared parameters in a function/method compiled with clipper calling convention.</li>
       <li styleclass="List">Added a new warning number for assigning values to a foreach local variable. Assigning to USING and FIXED locals will generate an error. </li>
     </list>
     <para styleclass="Heading3">Optimizations</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Optimized the code generation for Clipper calling convention functions/methods</li>
       <li styleclass="List">The /cf and /norun compiler options are no longer supported</li>
       <li styleclass="List">The preprocessor no longer strips white space. This should result in better error messages when compiling code that uses the preprocessor.</li>
@@ -151,7 +151,7 @@
       <li styleclass="List">The preprocessor now generates an error when it detects recursive #include files. </li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem when using the [CallerMemberAttribute] on parameters when compiling in Vulcan or VO Dialect</li>
       <li styleclass="List">Abstract properties should no longer generate a warning about a body</li>
       <li styleclass="List">You can now correctly use ENUM values as array indexes. </li>
@@ -161,7 +161,7 @@
       <li styleclass="List">Fixed an issue where the declaration LOCAL x[10] was not compiled correctly. This now compiles into a local VO Array with 10 elements.</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Build 1.2.1 introduced a problem that could cause output files to be locked by the intellisense engine. This has been fixed</li>
       <li styleclass="List">The editor parser had problems with nested types. This has been fixed</li>
       <li styleclass="List">Enum members were not included in code completion for enums inside X# projects</li>
@@ -187,12 +187,12 @@
       <li styleclass="List">Added XSharp.Core.DLL, XSharp.VO.DLL and XSharp.Macrocompiler.DLL.<br/>Most runtime functions are implemented and supported. See the <link displaytype="text" defaultstyle="true" type="topiclink" href="The-X-Runtime">X# Runtime chapter</link> for more information<br/></li>
     </list>
     <para styleclass="Heading2">VO XPorter</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">SDK related options have been removed. They will be moved to a new tool later.</li>
     </list>
     <para styleclass="Heading1">Changes in 1.2.1</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem where a compilation error resulted in the message &quot;Failed to emit module&quot; without further information</li>
       <li styleclass="List">Fixed a problem with ++, -- += and similar operations in aliased expressions (like CUSTOMER-&gt;CUSTNO++)</li>
       <li styleclass="List">Constructor initializers and Collection initializers were not working after a constructor with parameters. That has been fixed.</li>
@@ -201,14 +201,14 @@
     </list>
     <para styleclass="Code Example"><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">CATCH ID AS ExceptionType</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">CATCH ID &#160; &#160; &#160; &#160; &#160; &#160; &#160; </text><tab /><text style="font-weight:normal; font-style:italic; color:#000000;">// defaults to Exception type</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">CATCH AS ExceptionType</text><tab /><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">CATCH</text><tab /><tab /><tab /><tab /><text style="font-weight:normal; font-style:italic; color:#000000;">// defaults to Exception type</text></para>
     <para styleclass="Heading2">Visual Studio Integration</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Improved the speed of the background code scanning</li>
       <li styleclass="List">Improved the speed of the background parser inside the editor</li>
       <li styleclass="List">Fixed a problem in the codedom provider that is used by the windows forms editor</li>
     </list>
     <para styleclass="Heading1">Changes in 1.2.0</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">You can now pass NULL for parameters declared by reference for compatibility with VO &amp; Vulcan. <br/>We STRONGLY advise not to do this, unless you make sure that the function expects this and does not assign to the reference parameter without checking for a NULL reference first. This will only work when the /vo7 compiler option is enabled.</li>
       <li styleclass="List">We have made some optimizations in the Lexer. The compiler should be a little faster because of that</li>
       <li styleclass="List">We fixed a problem with the automatic constructor generation (/vo16) for classes that inherit from classes defined in an external DLL </li>
@@ -223,7 +223,7 @@
       <li styleclass="List">The compiler now generates a warning when the #pragma command is used</li>
     </list>
     <para styleclass="Heading2"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#000000;">Visual Studio Integration</text></para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">More performance improvements in the editor. Especially large source files with incorrect code could slow down the editor. </li>
       <li styleclass="List">The editor parser no longer tries to parse include files repeatedly when these files contain #defines only (like the Vulcan header files)</li>
       <li styleclass="List">The source code editor tried to show intellisense for words in a comment region. That has been fixed.</li>
@@ -233,19 +233,19 @@
       <li styleclass="List">Matching keywords, such as IF .. ENDIF and FOR .. NEXT should now be highlighted in the editor</li>
       <li styleclass="List">If you select an identifier in the editor then that identifier will be highlighted in the current method/function on all places where it is used</li>
       <li styleclass="List">We have added several features that you need to enable/disable on the <text style="font-weight:bold;">Tools/Options/Text Editor/XSharp/Intellisens</text>e dialog:</li>
-      <list id="52" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <list id="104" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="List">The code completion in the editor also supports instance member completion when a dot is pressed.<br/>Please note that the compiler ONLY accepts this in the Core language, not in the VO &amp; Vulcan dialect. So the option has no effect inside projects with other dialects.</li>
         <li styleclass="List">We have added some options to control the sorting of the DropDown comboboxes in the editor, as well as if fields/instance variables should be included in these comboboxes. When you do not sort, then the entries in the dropdown box will be shown in the order in which they are found in the source file.</li>
         <li styleclass="List">We have added the option to autocomplete identifiers when typing. This includes locals, parameters, class fields, namespaces, types etc.</li>
       </list>
     </list>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Overridden methods in subclasses with the same signature as the parent methods they override are no longer counted as overloads in completionlists</li>
       <li styleclass="List">A missing reference DLL could &quot;kill&quot; the intellisense engine. This no longer happens. Of course the type info from a missing referenced DLL is not included. </li>
       <li styleclass="List">Properties and methods in the generated source files for XAML code (the .g.prg files in the OBJ folder) are now also parsed and included in the completion lists in intellisense and in the Class Browser and Object Browser windows. </li>
     </list>
     <para styleclass="Heading2"><text style="font-weight:bold;">VOXPorter</text></para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The installer now includes the correct version of VOXPorter &lt;g&gt;</li>
       <li styleclass="List">VOXporter now supports the following commandline options:<br/><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">/s:&lt;source folder or aef&gt;</text></li>
     </list>
@@ -253,13 +253,13 @@
     <para styleclass="Normal"><tab /><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">/r:&lt;runtime folder&gt;</text></para>
     <para styleclass="Normal"><tab /><tab /><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">/nowarning</text></para>
     <para styleclass="Normal"></para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Some code corrections were added for issues found in the GUI classes</li>
       <li styleclass="List">The template files can now also be found when VOXPorter is run from a different working directory</li>
     </list>
     <para styleclass="Heading1">Changes in 1.1.2</para>
     <para styleclass="Heading2">Compiler</para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="104" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Added compiler warning for code that contains a #pragma</li>
       <li styleclass="List">Fixed a problem with iif() functions and negative literal values</li>
     </list>

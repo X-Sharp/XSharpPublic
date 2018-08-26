@@ -17,7 +17,7 @@
 #define Version             "2.0.0.4"
 #define FileNameVersion     "2Beta4"
 #define VIVersion           "2.0.0.4"
-#define TouchDate           "2018-08-23"
+#define TouchDate           "2018-08-26"
 #define TouchTime           "02:00:04"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -181,14 +181,15 @@ ChangesEnvironment=yes
 
 
 [Components]
-Name: "main";             Description: "The XSharp Compiler and Build System";        Types: full compact custom; Flags: fixed; 
-Name: "main\script";      Description: "Register .prgx as X# Script extension";       Types: full custom;  
-Name: "main\ngen";        Description: "Optimize performance by generating native images"; Types: full custom;  
-Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
-Name: "vs2015\help";      Description: "Install VS 2015 documentation";               Types: full custom;         Check: HelpViewer22Found;
-Name: "vs2017";           Description: "Visual Studio 2017 Integration";              Types: full custom;         Check: vs2017IsInstalled;
-Name: "vs2017\help";      Description: "Install VS 2017 documentation";               Types: full custom;         Check: vs2017IsInstalled;
-Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";  Types: full custom;                  
+Name: "main";             Description: "The XSharp Compiler and Build System";              Types: full compact custom; Flags: fixed checkablealone disablenouninstallwarning; 
+Name: "main\script";      Description: "Register .prgx as X# Script extension";             Types: full custom;         Flags: disablenouninstallwarning; 
+Name: "main\ngen";        Description: "Optimize performance by generating native images";  Types: full custom;         Flags: disablenouninstallwarning;    
+Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recomended !)";   Types: full custom;         Flags: disablenouninstallwarning; 
+Name: "vs2015";           Description: "Visual Studio 2015 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2015IsInstalled; 
+Name: "vs2015\help";      Description: "Install VS 2015 documentation";                     Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
+Name: "vs2017";           Description: "Visual Studio 2017 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+Name: "vs2017\help";      Description: "Install VS 2017 documentation";                     Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";        Types: full custom;         Flags: disablenouninstallwarning;
 
 
 
@@ -339,17 +340,25 @@ Source: "{#BinRtHelpFolder}XSRuntime.cab";               DestDir: "{app}\Help"; 
 ;XIDE
 Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; 
 
+; Runtime in the GAC
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
+
 ; Runtime
-Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
+Components: not main\gac; Source: "{#BinRtFolder}XSharp.Core.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinRtFolder}XSharp.VO.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinFolder}XSharp.CodeAnalysis.dll";           DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinFolder}XSharp.Scripting.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+
 Source: "{#BinRtFolder}XSharp.Core.pdb";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
 Source: "{#BinRtFolder}XSharp.VO.pdb";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 ; Macro compiler
-Source: "{#BinFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
 Source: "{#BinFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
 Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
 Source: "{#BinFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Collections.Immutable.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
 Source: "{#BinFolder}System.Reflection.Metadata.dll";       DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 

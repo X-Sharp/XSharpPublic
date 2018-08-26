@@ -8,7 +8,7 @@ This is not correct, the function should be always used, not the same named stat
 Indeed at teh runtime the static method is (incorrectly) called.
 */
 FUNCTION Start() AS VOID
-	LOCAL o AS TestClass
+	LOCAL o AS TestClass               
 	o := TestClass{}
 	o:InstanceTest("abc")
 	TestClass.StaticTest("def")

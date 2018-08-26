@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9066</title>
+  <keywords>
+    <keyword>XS9066</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9066</para>
+    </header>
+    <para styleclass="Normal">This warning has been introduced in version 2.0.0.4 to help you find name conflicts between (built-in) functions and methods. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code demonstrates this new warning:<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">FUNCTION Left(c AS STRING , dwLen AS INT) AS STRING<br/>RETURN NULL<br/><br/>CLASS TestClass<br/> &#160; METHOD Test(cPath AS STRING) AS STRING<br/> &#160; &#160; &#160;Left(cPath , 1)<br/> &#160; STATIC METHOD Left(c AS STRING,n AS Int32) AS STRING<br/> &#160; &#160; &#160;// do something<br/> &#160; RETURN NULL<br/>END CLASS<br/><br/></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">A warning will be generated for the call to Left inside TestClass:Test():</text></para>
+    <para styleclass="Body Text" style="margin-left:13px;"><text styleclass="Normal" style="font-size:9pt;">Method &apos;Left&apos; is ambiguous. Could be &apos;Functions.Left(string, int)&apos; or &apos;TestClass.Left(string, int)&apos;. Using the function because in X# functions take precedence over static methods. To call the method use the fully qualified name.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">This behavior has been changed to be compatible with Visual Objects. In Visual Objects the concept of static methods does not exist and you would always call the Left() function in this code.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">If you want to call the method from the class instead of the function you need to change the code to</text><br/></para>
+    <para styleclass="Code with box"><br/><tab />TestClass.Left(cPath , 1)<br/></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">If you change the code in the class and make Left() an instance method, then you need to prefix the call to Left with SELF: if you want to call the method in the class like in the example below:</text><br/></para>
+    <para styleclass="Code with box">FUNCTION Left(c AS STRING , dwLen AS INT) AS STRING<br/>RETURN NULL<br/><br/>CLASS TestClass<br/> &#160; METHOD Test(cPath AS STRING) AS STRING<br/> &#160; &#160; &#160;SELF:Left(cPath , 1)<br/> &#160; METHOD Left(c AS STRING,n AS Int32) AS STRING<br/> &#160; &#160; &#160;// Do something<br/> &#160; RETURN NULL<br/>END CLASS<br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

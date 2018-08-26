@@ -1,119 +1,120 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectTypeGuids>{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
-    <ProjectGuid>$guid1$</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>$safeprojectname$</RootNamespace>
-    <AssemblyName>$safeprojectname$</AssemblyName>
-    <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
-    <Name>$safeprojectname$</Name>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>false</GenerateFullPaths>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+    <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectTypeGuids>{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
+        <ProjectGuid>$guid1$</ProjectGuid>
+        <OutputType>WinExe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>$safeprojectname$</RootNamespace>
+        <AssemblyName>$safeprojectname$</AssemblyName>
+        <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
+        <Name>$safeprojectname$</Name>
+        <Nologo>true</Nologo>
+        <GenerateFullPaths>false</GenerateFullPaths>
+        <vo15>false</vo15>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <EmitDebugInformation>true</EmitDebugInformation>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <EmitDebugInformation>false</EmitDebugInformation>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
 
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+    <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
 
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-	<Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    $if$ ($targetframeworkversion$ >= 3.5)
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    $endif$
-    $if$ ($targetframeworkversion$ >= 4.5)
-    <Reference Include="System.Net.Http"/>
-    $endif$
-    $if$ ($targetframeworkversion$ >= 4.0)
-    <Reference Include="System.Xaml">
-  <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    $endif$
-    $if$ ($targetframeworkversion$ >= 3.0)
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    $endif$
-  </ItemGroup>  
-  
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </ApplicationDefinition>
-    <Page Include="WPFWindow1.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.prg">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="WPFWindow1.xaml.prg">
-      <DependentUpon>WPFWindow1.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-    </None>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="mscorlib" />
+        <Reference Include="System" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
+        $if$ ($targetframeworkversion$ >= 3.5)
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="System.Xml.Linq" />
+        $endif$
+        $if$ ($targetframeworkversion$ >= 4.5)
+        <Reference Include="System.Net.Http"/>
+        $endif$
+        $if$ ($targetframeworkversion$ >= 4.0)
+        <Reference Include="System.Xaml">
+            <RequiredTargetFramework>4.0</RequiredTargetFramework>
+        </Reference>
+        $endif$
+        $if$ ($targetframeworkversion$ >= 3.0)
+        <Reference Include="WindowsBase" />
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
+        $endif$
+    </ItemGroup>
 
-$if$ ($targetframeworkversion$ > 4.0)
-<ItemGroup>
-    <None Include="App.config" />
-</ItemGroup>
-$endif$
-  
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
+    <ItemGroup>
+        <ApplicationDefinition Include="App.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </ApplicationDefinition>
+        <Page Include="WPFWindow1.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Compile Include="App.xaml.prg">
+            <DependentUpon>App.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="WPFWindow1.xaml.prg">
+            <DependentUpon>WPFWindow1.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.prg">
+            <SubType>Code</SubType>
+        </Compile>
+        <EmbeddedResource Include="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <None Include="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+        </None>
+        <AppDesigner Include="Properties\" />
+    </ItemGroup>
+
+    $if$ ($targetframeworkversion$ > 4.0)
+    <ItemGroup>
+        <None Include="App.config" />
+    </ItemGroup>
+    $endif$
+
+    <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+    <ProjectExtensions>
+        <ProjectCapabilities>
+            <ProjectConfigurationsDeclaredAsItems />
+        </ProjectCapabilities>
+    </ProjectExtensions>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+        <PreBuildEvent />
+        <PostBuildEvent />
+        <RunPostBuildEvent />
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+        <PreBuildEvent />
+        <PostBuildEvent />
+        <RunPostBuildEvent />
+    </PropertyGroup>
 
 </Project>

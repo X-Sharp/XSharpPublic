@@ -243,7 +243,7 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    members.AddRange(file.EntityList);
+                    members.AddRange(file.EntityList.Where(member  =>  includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine)));
                     foreach (var ent in file.EntityList)
                     {
                         if (ent is XType)
@@ -258,7 +258,10 @@ namespace XSharp.LanguageService
                                 {
                                     if (! members.Contains(member))
                                     {
-                                        members.Add(member);
+                                        if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
+                                        {
+                                            members.Add(member);
+                                        }
                                     }
                                 }
 
@@ -268,7 +271,7 @@ namespace XSharp.LanguageService
                 }
                 if (sortItems)
                 {
-                    members = members.OrderBy(x => x.Name).ToList();
+                    members = members.OrderBy(x => x.FullName).ToList();
                 }
                 // Add member for class declaration. This also makes sure that there at least one
                 // element in the members list, which is convenient.

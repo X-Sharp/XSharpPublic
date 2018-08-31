@@ -189,6 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         SourceHashAlgorithm _checksumAlgorithm;
 
         IList<ParseErrorData> _parseErrors;
+        bool _duplicateFile = false;
 
         IList<string> includeDirs;
 
@@ -641,7 +642,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void InsertStream(string filename, ITokenStream input, XSharpToken symbol = null)
+        void InsertStream(string filename, ITokenStream input, XSharpToken symbol )
         {
             if (_options.ShowDefs)
             {
@@ -767,10 +768,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var oldtokens = symbolDefines[def.Text];
                     var cOld = oldtokens.AsString();
                     var cNew = line.AsString();
+                    def.SourceSymbol = null;    // make sure we point to the location in the include file when this happens  (and not to the location where we were included)
                     if (cOld == cNew)
-                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
+                    {
+                        // check to see if the same file has been added twice
+                        var oldToken = oldtokens[0];
+                        var newToken = line[0];
+                        if (oldToken.TokenSource.SourceName != newToken.TokenSource.SourceName || oldToken.Line != newToken.Line)
+                        {
+                            _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
+                        }
+                        else 
+                        {
+                            if (! _duplicateFile)
+                            {
+                                _duplicateFile = true;
+                                var includeName = newToken.SourceName;
+                                var defText = def.Text;
+                                if (inputs.Symbol != null)
+                                {
+                                    def = new XSharpToken(inputs.Symbol);
+                                    def.SourceSymbol = null;
+                                }
+                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
+                            }
+                        }
+                    }
                     else
+                    {
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew));
+                    }
                 }
                 symbolDefines[def.Text] = line;
                 if (_options.ShowDefs)
@@ -1033,7 +1060,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var tokenSource = new ListTokenSource(clone, nfp);
                 var tokenStream = new BufferedTokenStream(tokenSource);
                 tokenStream.Fill();
-                InsertStream(nfp, tokenStream);
+                InsertStream(nfp, tokenStream, fileNameToken);
             }
             else
             {

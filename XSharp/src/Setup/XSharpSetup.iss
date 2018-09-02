@@ -6,10 +6,10 @@
 
 
 #ifndef Compression
-#define Compression     "lzma/fast"
+#define Compression     "lzma/ultra64"
 #endif
-#define FOX
-;#undef FOX
+;#define FOX
+#undef FOX
 
 
 ; version info and similar stuff.
@@ -184,7 +184,7 @@ ChangesEnvironment=yes
 Name: "main";             Description: "The XSharp Compiler and Build System";              Types: full compact custom; Flags: fixed checkablealone disablenouninstallwarning; 
 Name: "main\script";      Description: "Register .prgx as X# Script extension";             Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "main\ngen";        Description: "Optimize performance by generating native images";  Types: full custom;         Flags: disablenouninstallwarning;    
-Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recomended !)";   Types: full custom;         Flags: disablenouninstallwarning; 
+Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recommended !)";   Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2015IsInstalled; 
 Name: "vs2015\help";      Description: "Install VS 2015 documentation";                     Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
 Name: "vs2017";           Description: "Visual Studio 2017 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -408,7 +408,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties FOR the Debugger
         /// <exclude />
-        PROPERTY Value AS OBJECT
+        PROPERTY VALUE AS OBJECT
             GET
                 SWITCH _UsualType
                     CASE __UsualType.Array		; RETURN _arrayValue
@@ -446,7 +446,8 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Ptr		; RETURN SELF:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
                         // Uses String Comparison rules
                         // Vulcan does a case insensitive comparison ?
-                    CASE __UsualType.String		; RETURN String.Compare( _stringValue,  rhs:_stringValue)
+//                    CASE __UsualType.String		; RETURN String.Compare( _stringValue,  rhs:_stringValue)
+                    CASE __UsualType.String		; RETURN __StringCompare( _stringValue,  rhs:_stringValue)
                     CASE __UsualType.Symbol		; RETURN String.Compare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
                     OTHERWISE					; RETURN 0
                     END SWITCH
@@ -2237,7 +2238,7 @@ BEGIN NAMESPACE XSharp
                 _uvalue := u
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY @@Value AS OBJECT GET _uvalue:Value
+            PUBLIC PROPERTY @@Value AS OBJECT GET _uvalue:VALUE
             PUBLIC PROPERTY Type  AS __UsualType GET _uvalue:_usualType
 
         END CLASS

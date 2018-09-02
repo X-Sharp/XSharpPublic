@@ -162,8 +162,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.MacroScript = macroScript;
             return result;
         }
-
-        internal static void FixResources(CommandLineArguments args)
+        internal static void FixResources(CommandLineArguments args, Compilation compilation)
         {
             if (!string.IsNullOrEmpty(args.Win32ResourceFile) ||
                 !string.IsNullOrEmpty(args.Win32Icon) ||
@@ -176,6 +175,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (hRes != IntPtr.Zero)
                     {
                         var res = EndUpdateResource(hRes, false);
+                    }
+                    
+                    if (compilation.StrongNameKeys != null)
+                    {
+                        // We have to resign the assembly because updating the resources
+                        // may have invalidated the signature.
+                        var provider = new DesktopStrongNameProvider();
+                        using (var inputstream = provider.CreateInputStream())
+                        {
+                            using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            {
+                                fs.CopyTo(inputstream);
+                            }
+                            using (var outputstream = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
+                            {
+                                provider.SignAssembly(compilation.StrongNameKeys, inputstream, outputstream);
+                                outputstream.Flush();
+                            }
+                        }
                     }
                 }
             }

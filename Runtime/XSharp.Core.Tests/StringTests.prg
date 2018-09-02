@@ -400,10 +400,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
    [Fact, Trait("Category", "Memo")];
 	METHOD MemoTest() AS VOID
 		LOCAL sToWrite := "test" AS STRING
-		MemoWrit("test.txt", sToWrite)
-		VAR sText := System.IO.File.ReadAllText("test.txt")
+		MemoWrit("MemoTest.txt", sToWrite)
+		VAR sText := System.IO.File.ReadAllText("MemoTest.txt")
 		Assert.Equal(sToWrite, sText)
-		sText := MemORead("test.txt")
+		sText := MemORead("MemoTest.txt")
 		Assert.Equal(sToWrite, sText)
 		
 

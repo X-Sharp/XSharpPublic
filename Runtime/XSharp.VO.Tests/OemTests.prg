@@ -28,9 +28,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// should be the same, no special characters
 			Assert.Equal(c1, c2)
 			c1 := "ÇüéâäàåçêëèïîìÄÅÉæ"
-			c2 := Oem2Ansi(c1)
+			c2 := Ansi2Oem(c1)
 			Assert.NotEqual(c1, c2)
-			c2 := Ansi2Oem(c2)
+			c2 := Oem2Ansi(c2)
 			Assert.Equal(c1, c2)
 
 		RETURN

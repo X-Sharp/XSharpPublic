@@ -177,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var res = EndUpdateResource(hRes, false);
                     }
                     
-                    if (compilation.StrongNameKeys != null)
+                    if (compilation.HasStrongName)
                     {
                         // We have to resign the assembly because updating the resources
                         // may have invalidated the signature.

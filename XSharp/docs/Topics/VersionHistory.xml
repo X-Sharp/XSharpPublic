@@ -9,17 +9,18 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
-    <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Normal">ss<snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading1">Changes in 2.0.0.5 (Bandol Beta 5)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The strong named key for assemblies with native resources was invalid. This has been fixed</li>
-      <li styleclass="List">When an include file was included twice for the same source (PRG) file then a large number of compiler warnings for duplicate #defines would be generated. Especially when the Vulcan VOWIn32APILibrary.vh was included twice then over 15000 compiler warnings would be generated per source file where this happened. This large number of warnings could lead to excessive memory usage by the compiler. We are now outputting a compilation error when we detect that the same file was included twice. We have also added a limit of 500 preprocessor errors per source (PRG) file.</li>
-      <li styleclass="List">A change in Beta 4 could result in compiler warnings about unused variables that were introduced automatically by the X# compiler. This warning will no longer be generated.s</li>
+      <li styleclass="List">When an include file was included twice for the same source (PRG) file then a large number of compiler warnings for duplicate #defines would be generated. Especially when the Vulcan VOWin32APILibrary.vh was included twice then over 15000 compiler warnings would be generated per source file where this happened. This large number of warnings could lead to excessive memory usage by the compiler. We are now outputting a compilation error when we detect that the same file was included twice. We have also added a limit of 500 preprocessor errors per source (PRG) file.</li>
+      <li styleclass="List">A change in Beta 4 could result in compiler warnings about unused variables that were introduced automatically by the X# compiler. This warning will no longer be generated.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem in the Ansi2OEM and OEM2Ansi functions.</li>
+      <li styleclass="List">Fixed a problem with string comparisons in runtime functions like ASort(). This now also respects the new runtime property CompilerOptionVO13 to control the sorting</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -29,7 +30,6 @@
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The default value for VO15 has been changed back from false to undefined. </li>
     </list>
-    <para styleclass="List"></para>
     <para styleclass="Heading1">Changes in 2.0.0.4 (Bandol Beta 4)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

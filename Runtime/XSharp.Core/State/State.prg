@@ -142,7 +142,14 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.OPTIONVO11);
         SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
 
-	/// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
+	/// <summary>The current compiler setting for the VO13 compiler option as defined when compiling the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
+        GET GetValue<LOGIC>(Set.OPTIONVO13);
+        SET SetValue<LOGIC>(Set.OPTIONVO13, VALUE)
+
+
+    /// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);

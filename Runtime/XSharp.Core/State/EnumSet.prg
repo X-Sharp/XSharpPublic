@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER CollationTable := 80  // byte[]
 		MEMBER ErrorLevel   := 81  // DWORD
 		MEMBER ErrorBlock   := 82  // CodeBlock
-
+        MEMBER OPTIONVO13	:= 83	// Logic
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC
 

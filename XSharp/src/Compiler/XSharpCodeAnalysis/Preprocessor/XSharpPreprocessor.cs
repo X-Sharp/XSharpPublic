@@ -389,9 +389,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _options = options;
             _fileName = fileName;
             if (_options.VOPreprocessorBehaviour)
+            {
                 symbolDefines = new Dictionary<string, IList<XSharpToken>>(CaseInsensitiveComparison.Comparer);
+            }
             else
+            {
                 symbolDefines = new Dictionary<string, IList<XSharpToken>>(/* case sensitive */);
+            }
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
@@ -436,8 +440,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             inputs = new InputState(lexerStream);
+            // Add defines from the command line.
             foreach (var symbol in options.PreprocessorSymbols)
-                symbolDefines[symbol] = null;
+            {
+                var tokens = new List<XSharpToken>();
+                symbolDefines[symbol] = tokens;
+            }
 
             initStdDefines(options, fileName);
         }
@@ -782,7 +790,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var cOld = oldtokens.AsString();
                     var cNew = line.AsString();
                     def.SourceSymbol = null;    // make sure we point to the location in the include file when this happens  (and not to the location where we were included)
-                    if (cOld == cNew)
+                    if (cOld == cNew && oldtokens?.Count > 0)
                     {
                         // check to see if the same file has been added twice
                         var oldToken = oldtokens[0];

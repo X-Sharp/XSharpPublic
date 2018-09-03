@@ -546,7 +546,6 @@ INTERNAL STATIC CLASS TransFormHelpers
         //
         // Note: A,N,X,L and Y template chars are treated as normal letters in VO for numeric pictures
         //
-        LOCAL cOriginalTemplate AS STRING
         LOCAL nPicFunc          AS TransformPictures
         LOCAL cTemplate         AS STRING
         LOCAL cReturn           AS STRING
@@ -574,10 +573,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                     cTemplate += "." + System.String{'9' , nValue:Decimals}
                 END IF
             END IF
-            cOriginalTemplate := cTemplate
         ENDIF
-        
-        cOriginalTemplate := cTemplate
         
         // Convert the arithmetic chars of the VO style template into the .NET format string
         lWhole := TRUE

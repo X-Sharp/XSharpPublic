@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -140,7 +140,6 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		
 		VAR aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
-		VAR nLen    := aFields:Length
 		VAR list := List<STRING>{}
 		FOREACH fi AS FieldInfo IN aFields
 			IF fi:IsPublic || fi:IsFamily 

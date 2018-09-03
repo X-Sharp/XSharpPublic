@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -447,7 +447,12 @@ BEGIN NAMESPACE XSharp
                         // Uses String Comparison rules
                         // Vulcan does a case insensitive comparison ?
 //                    CASE __UsualType.String		; RETURN String.Compare( _stringValue,  rhs:_stringValue)
-                    CASE __UsualType.String		; RETURN __StringCompare( _stringValue,  rhs:_stringValue)
+                    CASE __UsualType.String
+                        IF RuntimeState.CompilerOptionVO13
+                            RETURN __StringCompare( _stringValue,  rhs:_stringValue)
+                        ELSE
+                            RETURN String.Compare( _stringValue,  rhs:_stringValue)
+                        ENDIF                            
                     CASE __UsualType.Symbol		; RETURN String.Compare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
                     OTHERWISE					; RETURN 0
                     END SWITCH

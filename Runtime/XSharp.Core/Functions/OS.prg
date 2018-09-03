@@ -263,7 +263,7 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 	LOCAL nResult AS DWORD
 	nResult := RuntimeState.LockTries
 	RuntimeState.LockTries := nValue
-	RETURN nValue
+	RETURN nResult
 
 
 

@@ -408,7 +408,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties FOR the Debugger
         /// <exclude />
-        PROPERTY VALUE AS OBJECT
+        PROPERTY @@Value AS OBJECT
             GET
                 SWITCH _UsualType
                     CASE __UsualType.Array		; RETURN _arrayValue
@@ -449,9 +449,9 @@ BEGIN NAMESPACE XSharp
 //                    CASE __UsualType.String		; RETURN String.Compare( _stringValue,  rhs:_stringValue)
                     CASE __UsualType.String
                         IF RuntimeState.CompilerOptionVO13
-                            RETURN __StringCompare( _stringValue,  rhs:_stringValue)
+                            RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
                         ELSE
-                            RETURN String.Compare( _stringValue,  rhs:_stringValue)
+                            RETURN String.Compare( SELF:_stringValue,  rhs:_stringValue)
                         ENDIF                            
                     CASE __UsualType.Symbol		; RETURN String.Compare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
                     OTHERWISE					; RETURN 0
@@ -578,7 +578,11 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        RETURN lhs:_stringValue> rhs:_stringValue
+                        IF RuntimeState.CompilerOptionVO13
+                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) > 0
+                        ELSE
+                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) > 0
+                        ENDIF                            
                     ELSE
                         NOP // error below
                     ENDIF
@@ -651,7 +655,11 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        RETURN lhs:_stringValue>= rhs:_stringValue
+                        IF RuntimeState.CompilerOptionVO13
+                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) >= 0
+                        ELSE
+                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) >= 0
+                        ENDIF                            
                     ELSE
                         NOP // error below
                     ENDIF
@@ -724,7 +732,11 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        RETURN lhs:_stringValue< rhs:_stringValue
+                        IF RuntimeState.CompilerOptionVO13
+                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) < 0
+                        ELSE
+                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) < 0
+                        ENDIF                            
                     ELSE
                         NOP // error below
                     ENDIF
@@ -797,7 +809,11 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        RETURN  lhs:_stringValue<= rhs:_stringValue
+                        IF RuntimeState.CompilerOptionVO13
+                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) <= 0
+                        ELSE
+                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) <= 0
+                        ENDIF                            
                     ELSE
                         NOP // error below
                     ENDIF
@@ -2247,30 +2263,29 @@ BEGIN NAMESPACE XSharp
             PUBLIC PROPERTY Type  AS __UsualType GET _uvalue:_usualType
 
         END CLASS
-        */
     END STRUCTURE
 
 
     [StructLayout(LayoutKind.Explicit)];
     INTERNAL STRUCTURE _UsualData
         // Fields
-        [FieldOffset(0)] INTERNAL d AS __VoDate
-        [FieldOffset(0)] INTERNAL r8 AS REAL8
-        [FieldOffset(0)] INTERNAL i AS LONG
-        [FieldOffset(0)] INTERNAL i64 AS INT64
-        [FieldOffset(0)] INTERNAL l AS LOGIC
-        [FieldOffset(0)] INTERNAL p AS System.IntPtr
-        [FieldOffset(0)] INTERNAL s AS SYMBOL
-        [FieldOffset(0)] INTERNAL dt AS System.DateTime
+        [FieldOffset(0)] INTERNAL d     AS __VoDate
+        [FieldOffset(0)] INTERNAL r8    AS REAL8
+        [FieldOffset(0)] INTERNAL i     AS LONG
+        [FieldOffset(0)] INTERNAL i64   AS INT64
+        [FieldOffset(0)] INTERNAL l     AS LOGIC
+        [FieldOffset(0)] INTERNAL p     AS System.IntPtr
+        [FieldOffset(0)] INTERNAL s     AS SYMBOL
+        [FieldOffset(0)] INTERNAL dt    AS System.DateTime
     END STRUCTURE
 
 
     [StructLayout(LayoutKind.Explicit, Pack := 1)];
     INTERNAL STRUCTURE UsualFlags
-        [FieldOffset(0)] EXPORT usualType AS __UsualType
-        [FieldOffset(1)] EXPORT width AS Sbyte
-        [FieldOffset(2)] EXPORT decimals AS Sbyte
-        [FieldOffset(3)] EXPORT isByRef AS LOGIC
+        [FieldOffset(0)] EXPORT usualType   AS __UsualType
+        [FieldOffset(1)] EXPORT width       AS Sbyte
+        [FieldOffset(2)] EXPORT decimals    AS Sbyte
+        [FieldOffset(3)] EXPORT isByRef     AS LOGIC
         [DebuggerStepThroughAttribute];
         CONSTRUCTOR(type AS __UsualType)
             usualType := type

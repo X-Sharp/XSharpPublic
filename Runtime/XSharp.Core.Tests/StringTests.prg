@@ -400,11 +400,24 @@ BEGIN NAMESPACE XSharp.Core.Tests
    [Fact, Trait("Category", "Memo")];
 	METHOD MemoTest() AS VOID
 		LOCAL sToWrite := "test" AS STRING
-		MemoWrit("test.txt", sToWrite)
-		VAR sText := System.IO.File.ReadAllText("test.txt")
+		MemoWrit("MemoTest.txt", sToWrite)
+		VAR sText := System.IO.File.ReadAllText("MemoTest.txt")
 		Assert.Equal(sToWrite, sText)
-		sText := MemORead("test.txt")
+		sText := MemORead("MemoTest.txt")
 		Assert.Equal(sToWrite, sText)
-		END CLASS
+		
 
+   [Fact, Trait("Category", "Conversion")];
+	METHOD Ansi2OemTest() AS VOID
+        XSharp.RuntimeState.DosCodePage := 437
+        XSharp.RuntimeState.WinCodePage := 1252
+        LOCAL cSource as STRING
+        LOCAL cTarget as string
+        cSource := "ÄËÏÖÜäëïöü"
+        cTarget := e"\u017d\u0045\u0049\u2122\u0161\u201e\u2030\u2039\u201d\u0081"
+        Assert.Equal(cTarget, Ansi2Oem(cSource))
+        cSource := "ÄEIÖÜäëïöü"     // there are no E and I with umlaut in codepage 437
+        Assert.Equal(cSource, Oem2Ansi(cTarget))
+    Assert.Equal(cSource, Oem2Ansi(Ansi2Oem(cSource)))
+END CLASS
 END NAMESPACE

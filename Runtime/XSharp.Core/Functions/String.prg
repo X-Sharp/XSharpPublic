@@ -655,9 +655,18 @@ FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffset AS DWORD) AS DWORD
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
+/// <param name="cSource">String in Ansi format</param>
+/// <returns>String converted to Unicode
 /// </returns>
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Ansi - Oem - Unicode will take place
+/// if you use this function. <br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
 FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -673,15 +682,25 @@ FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
-	OemToCharBuffA(bSource, bDest, (DWORD) iLen)
+	CharToOemBuffA(bSource, bDest, (DWORD) iLen)
 	RETURN bDest
 
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
+/// <param name="cSource">String in Ansi format</param>
+/// <returns>String converted to Unicode
 /// </returns>
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
+/// if you use this function.<br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
+
 FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -695,9 +714,17 @@ FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
-/// </returns>
+/// <param name="cSource">String in OEM format</param>
+/// <returns>String converted to Ansi
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
+/// if you use this function.<br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
 FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -712,7 +739,7 @@ FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
-	CharToOemBuffA(bSource, bDest, (DWORD) iLen)
+	OemToCharBuffA(bSource, bDest, (DWORD) iLen)
 	RETURN bDest
 
 /// <summary>
@@ -748,9 +775,18 @@ INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cch
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
+/// <param name="cSource">String in OEM format</param>
+/// <returns>String converted to Ansi
 /// </returns>
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
+/// if you use this function.<br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
 FUNCTION Oem2AnsiA(cSource REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT

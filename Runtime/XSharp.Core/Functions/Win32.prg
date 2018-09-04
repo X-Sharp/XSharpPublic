@@ -14,8 +14,14 @@ INTERNAL STATIC CLASS Win32
 	EXTERN STATIC METHOD GetWinCodePage() AS LONG
 	
 	
-	[DllImport("kernel32.dll", EntryPoint := "CompareStringA")];
-	EXTERN STATIC METHOD  CompareStringAnsi(LCID AS INT, cmpFlags AS DWORD , bString1 AS BYTE[], chCount1 AS INT , bString2 AS BYTE[] , chCount2 AS INT) AS INT
+	[DllImport("kernel32.dll", EntryPoint := "CompareStringA", SetLastError := TRUE)];
+	EXTERN STATIC METHOD  CompareStringAnsi(LCID AS INT, cmpFlags AS DWORD , bString1 AS BYTE[], chCount1 AS INT , bString2 AS BYTE[] , chCount2 AS INT) AS INT PASCAL 
+	[DllImport("kernel32.dll", EntryPoint := "CompareStringA", CharSet := CharSet.Ansi, SetLastError := TRUE)];
+	EXTERN STATIC METHOD  CompareStringAnsi2(LCID AS INT, cmpFlags AS DWORD , bString1 AS STRING, chCount1 AS INT , bString2 AS STRING , chCount2 AS INT) AS INT PASCAL 
 
 	PUBLIC CONST SORT_STRINGSORT := 0x00001000  AS INT
+    PUBLIC CONST CSTR_LESS_THAN := 1 AS INT
+    PUBLIC CONST CSTR_EQUAL := 2  AS INT
+    PUBLIC CONST CSTR_GREATER_THAN := 3  AS INT
+
 END CLASS

@@ -8,7 +8,7 @@
 #ifndef Compression
 #define Compression     "lzma/ultra64"
 #endif
-;#define FOX
+#define FOX
 #undef FOX
 
 

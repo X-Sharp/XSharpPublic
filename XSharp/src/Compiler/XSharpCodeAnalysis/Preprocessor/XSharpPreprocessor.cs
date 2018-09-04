@@ -367,19 +367,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _ppoStream = null;
         }
-        bool maxErrorsReported = false;
-        const int MAXERRORS = 500;
         internal void addParseError(ParseErrorData error)
         {
-            if (_parseErrors.Count < MAXERRORS)
-                _parseErrors.Add(error);
-            else if (! maxErrorsReported)
-            {
-                maxErrorsReported = true;
-                error = new ParseErrorData(error.Node, ErrorCode.ERR_PreProcessorError, "Too many errors and warnings");
-                _parseErrors.Add(error);
-            }
-
+             _parseErrors.Add(error);
         }
         internal XSharpPreprocessor(XSharpLexer lexer, ITokenStream lexerStream, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {

@@ -260,7 +260,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Retrieve the alias name.</summary>
 	PROPERTY Alias 		AS STRING	GET
 	/// <summary>Retrieve the workarea number.</summary>
-	PROPERTY Area		AS LONG		GET 
+	PROPERTY Area		AS DWORD		GET 
 	/// <summary>Is the table at the logical beginning-of-file.</summary>
 	PROPERTY BoF 		AS LOGIC	GET
 	/// <summary>Is the current row deleted?</summary>

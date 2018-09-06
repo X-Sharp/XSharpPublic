@@ -11,13 +11,13 @@ BEGIN NAMESPACE XSharp.RDD
 CLASS WorkAreas
 	// Not static because every thread can have its own workareas structure
 	#region Constants
-		PUBLIC CONST MaxWorkAreas := 4096 AS LONG
+		PUBLIC CONST MaxWorkAreas := 4096 AS DWORD
 	#endregion
 	
 	#region Fields
-	PRIVATE Aliases  AS Dictionary<STRING, LONG>	// 1 based area numbers !
+	PRIVATE Aliases  AS Dictionary<STRING, DWORD>	// 1 based area numbers !
 	PRIVATE RDDs	 AS IRDD[]    
-	PRIVATE iCurrentWorkarea AS LONG
+	PRIVATE iCurrentWorkarea AS DWORD
 	PUBLIC LastException AS Exception 
 
 	///<summary>Get singleton Workareas object for current thread</summary>
@@ -28,12 +28,12 @@ CLASS WorkAreas
 
 	#endregion
 	CONSTRUCTOR()
-		Aliases 			:= Dictionary<STRING, LONG>{MaxWorkAreas}
+		Aliases 			:= Dictionary<STRING, DWORD>{ (INT) MaxWorkAreas}
 		RDDs				:= IRDD[]{MaxWorkAreas}   
 		iCurrentWorkArea	:= 1
 
 	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
-	PRIVATE METHOD AdjustArea( nArea REF LONG) AS LOGIC
+	PRIVATE METHOD AdjustArea( nArea REF DWORD) AS LOGIC
 		IF  nArea > 0 .AND.  nArea <= MaxWorkAreas
 			 nArea -=1
 			RETURN TRUE
@@ -81,7 +81,7 @@ CLASS WorkAreas
 		RETURN lResult 
 
 	///<summary>Close area with 1 based workarea number</summary>
-	PUBLIC METHOD CloseArea( nArea AS LONG) AS LOGIC
+	PUBLIC METHOD CloseArea( nArea AS DWORD) AS LOGIC
 		LOCAL lResult := FALSE AS LOGIC
 		IF AdjustArea(REF  nArea)
 			BEGIN LOCK RDDs               
@@ -104,7 +104,7 @@ CLASS WorkAreas
 		RETURN lResult   
 
 	///<summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
-	PUBLIC METHOD FindAlias(sAlias AS STRING) AS LONG
+	PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
 		sAlias := sAlias:ToUpperInvariant()
 		BEGIN LOCK RDDs 
 			IF Aliases:ContainsKey(sAlias)
@@ -114,8 +114,8 @@ CLASS WorkAreas
 		RETURN 0  
 
 	///<summary> Return 1 based empty Workarea</summary>
-	PUBLIC METHOD FindEmptyArea(fromStart AS LOGIC) AS LONG
-		LOCAL i AS LONG
+	PUBLIC METHOD FindEmptyArea(fromStart AS LOGIC) AS DWORD
+		LOCAL i AS DWORD
 		BEGIN LOCK RDDs                                  
 			IF fromStart
 				FOR i := 0 TO MaxWorkAreas-1   
@@ -134,7 +134,7 @@ CLASS WorkAreas
 		RETURN 0
 
 	///<summary>Get Alias for 1 based Workarea Number</summary>
-	PUBLIC METHOD GetAlias( nArea AS LONG) AS STRING
+	PUBLIC METHOD GetAlias( nArea AS DWORD) AS STRING
 		IF AdjustArea(REF nArea) 
 			BEGIN LOCK RDDs
 				IF RDDs[nArea] != NULL
@@ -145,7 +145,7 @@ CLASS WorkAreas
 		RETURN NULL       
 		    
 	///<summary>Get RDD object for 1 based Workarea Number</summary>
-	PUBLIC METHOD GetRDD( nArea AS LONG) AS IRDD
+	PUBLIC METHOD GetRDD( nArea AS DWORD) AS IRDD
 		IF AdjustArea(REF nArea)
 			BEGIN LOCK RDDs
 				RETURN RDDs[ nArea]
@@ -154,7 +154,7 @@ CLASS WorkAreas
 		RETURN NULL
 		
 	///<summary>Set RDD object and ALias for 1 based Workarea Number</summary>
-	PUBLIC METHOD SetArea( nArea AS LONG, sAlias AS STRING, oRDD AS IRDD) AS LOGIC
+	PUBLIC METHOD SetArea( nArea AS DWORD, sAlias AS STRING, oRDD AS IRDD) AS LOGIC
 		// sAlias and oRdd may be empty (when clearing the RDD)
 		IF AdjustArea(REF nArea)
 			IF ! String.IsNullOrEmpty(sAlias)
@@ -169,12 +169,12 @@ CLASS WorkAreas
 		RETURN FALSE   
 
 	///<summary>Get 1 based Current workarea Number</summary>
-	PUBLIC PROPERTY CurrentWorkAreaNO AS LONG GET iCurrentWorkArea
+	PUBLIC PROPERTY CurrentWorkAreaNO AS DWORD GET iCurrentWorkArea SET iCurrentWorkarea := VALUE 
 
 	///<summary>Get Current workarea Object</summary>
 	PUBLIC PROPERTY CurrentWorkArea AS IRDD
 		GET                               
-			LOCAL  nArea AS LONG
+			LOCAL  nArea AS DWORD
 			nArea := iCurrentWorkarea
 			IF AdjustArea(REF nArea)
 				BEGIN LOCK RDDs

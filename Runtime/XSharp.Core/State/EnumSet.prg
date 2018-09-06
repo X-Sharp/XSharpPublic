@@ -84,6 +84,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER ErrorLevel   := 81  // DWORD
 		MEMBER ErrorBlock   := 82  // CodeBlock
         MEMBER OPTIONVO13	:= 83	// Logic
+        MEMBER LastRddError := 84   // Exception object
 		MEMBER DICT        := 98	// LOGIC
 		MEMBER INTL        := 99	// LOGIC
 

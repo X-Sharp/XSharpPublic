@@ -283,6 +283,15 @@ CLASS XSharp.RuntimeState
         GET GetValue<DWORD>(Set.LOCKTRIES);
         SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
 
+    STATIC PROPERTY HPLocking AS LOGIC ;
+        GET GetValue<LOGIC>(Set.HPLOCKING);
+        SET SetValue<LOGIC>(Set.HPLOCKING, VALUE)
+
+    STATIC PROPERTY NewIndexLock AS LOGIC ;
+        GET GetValue<LOGIC>(Set.NEWINDEXLOCK);
+        SET SetValue<LOGIC>(Set.NEWINDEXLOCK, VALUE)
+
+
 	/// <summary>The current default MemoBlock size.</summary>
     STATIC PROPERTY MemoBlockSize AS DWORD;
         GET GetValue<DWORD>(Set.MEMOBLOCKSIZE);

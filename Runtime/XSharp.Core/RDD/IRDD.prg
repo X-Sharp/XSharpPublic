@@ -245,7 +245,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Compile an expression.</summary>
 	/// <param name="sBlock">The expression to compile.</param>
 
-	METHOD Compile(sBlock AS STRING)				AS LOGIC
+	METHOD Compile(sBlock AS STRING)				AS ICodeBlock
 	/// <summary>Evaluate a code block.</summary>
 	/// <param name="sBlock">The code block to evaluate.</param>
 	METHOD EvalBlock(oBlock AS ICodeBlock)			AS OBJECT	
@@ -258,9 +258,9 @@ INTERFACE XSharp.RDD.IRdd
 
 	// Properties
 	/// <summary>Retrieve the alias name.</summary>
-	PROPERTY Alias 		AS STRING	GET
+	PROPERTY Alias 		AS STRING	GET SET
 	/// <summary>Retrieve the workarea number.</summary>
-	PROPERTY Area		AS DWORD		GET 
+	PROPERTY Area		AS DWORD	GET SET
 	/// <summary>Is the table at the logical beginning-of-file.</summary>
 	PROPERTY BoF 		AS LOGIC	GET
 	/// <summary>Is the current row deleted?</summary>

@@ -154,9 +154,11 @@ CLASS WorkAreas
 		RETURN NULL
 		
 	///<summary>Set RDD object and ALias for 1 based Workarea Number</summary>
-	PUBLIC METHOD SetArea( nArea AS DWORD, sAlias AS STRING, oRDD AS IRDD) AS LOGIC
+	PUBLIC METHOD SetArea( nArea AS DWORD, oRDD AS IRDD) AS LOGIC
 		// sAlias and oRdd may be empty (when clearing the RDD)
+        oRDD:Area := nArea
 		IF AdjustArea(REF nArea)
+            VAR sAlias := oRDD:Alias
 			IF ! String.IsNullOrEmpty(sAlias)
 				sAlias := sAlias:ToUpperInvariant()
 			ENDIF			

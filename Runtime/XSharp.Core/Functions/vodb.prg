@@ -11,6 +11,7 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Reflection
 USING System.Linq
+USING System.Text
 /// <summary>
 /// Return the full path of the file
 /// </summary>
@@ -29,7 +30,7 @@ FUNCTION DBF() AS STRING
     /// <returns>
     /// </returns>
 FUNCTION FCount() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA() AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA("FCount") AS IRDD
     IF (oRDD != NULL)
         RETURN (DWORD) oRDD:FieldCount
     ENDIF
@@ -74,9 +75,9 @@ FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBAlias(nArea AS DWORD) AS STRING
-    LOCAL oRDDS AS WorkAreas
-    oRDDS := RddHelpers.WAS()
-    RETURN oRDDS:GetAlias(nArea)
+    LOCAL was AS WorkAreas
+    was := WorkAreas.GetInstance()
+    RETURN was:GetAlias(nArea)
     
     /// <summary>
     /// Add a new record.
@@ -185,7 +186,7 @@ FUNCTION VODBClearScope() AS LOGIC
     /// </returns>
 FUNCTION VODBCloseAll() AS LOGIC
     LOCAL oWAS AS WorkAreas
-    oWAS := RddHelpers.WAS()
+    oWAS := WorkAreas.GetInstance()
     RETURN oWAS:CloseAll()
     
     /// <summary>
@@ -219,7 +220,7 @@ FUNCTION VODBCommit() AS LOGIC
     /// </returns>
 FUNCTION VODBCommitAll() AS LOGIC
     LOCAL oWAS AS WorkAreas
-    oWAS := RddHelpers.WAS()
+    oWAS := WorkAreas.GetInstance()
     RETURN oWAS:CommitAll()
     
     /// <summary>
@@ -233,6 +234,28 @@ FUNCTION VODBContinue() AS LOGIC
         RETURN oRDD:Continue()
     ENDIF
     RETURN FALSE   
+    
+    /// <summary>
+    /// Create new file through the specified RDDs
+    /// </summary>
+    /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
+    /// <param name="aStruct">Structure to use when creating the file.</param>
+    /// <param name="rddList">List of RDDs to use when creating the file</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
+    /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
+    /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
+    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+    /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
+FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+    LOCAL ret := FALSE AS LOGIC
+    LOCAL rddType AS Type
+    IF ( rddType := _VoDbRddNameToType( cRddName ) ) == NULL
+        PostArgumentError( "VODBCreate", EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
+    ELSE
+        ret := VODBCreate( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
+    ENDIF
+    RETURN ret
     
     /// <summary>
     /// Create new file through the specified RDDs
@@ -287,45 +310,45 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL uiOldArea := 0 AS DWORD
+    LOCAL uiNewArea := 0 AS DWORD
     LOCAL ret   := FALSE   AS LOGIC
+    LOCAL oWa      := Workareas.GetInstance() AS Workareas
     TRY
         RuntimeState.LastRddError := NULL
         IF String.IsNullOrEmpty( cName )
-            PostArgumentError( __ENTITY__, EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
+            PostArgumentError( "VODBCreate", EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
         ELSEIF aStruct == NULL
-            PostArgumentError( __ENTITY__, EDB_USE, nameof(aStruct), 2 ,NULL)
+            PostArgumentError( "VODBCreate", EDB_USE, nameof(aStruct), 2 ,NULL)
         ELSEIF lNew && ! ( ret := VODBSelect( 0, REF uiOldArea ) )
-            PostError( __ENTITY__, EG_CREATE, EDB_NOAREAS )
+            PostError( "VODBCreate", EG_CREATE, EDB_NOAREAS )
         ELSE
             ret := TRUE   
         ENDIF
-        IF ! lNew
+        IF lNew
+             uiNewArea := oWa:FindEmptyArea(TRUE)
+        ELSE
             // VO Closes the current workarea
-            LOCAL oArea AS IRDD
-            oArea := WorkAreas.GetInstance():CurrentWorkArea
-            IF oArea != NULL
-                oArea:Close()
-            ENDIF
+            uiNewArea := oWA:CurrentWorkAreaNO
+            oWa:CloseArea(uiNewArea)
         ENDIF
-        IF ret && String.IsNullOrEmpty( cAlias ) && ! ( ret := _AliasFromFilename( cName, cAlias ) )
-            PostArgumentError( __ENTITY__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+        oWa:CurrentWorkAreaNO := uiNewArea
+        IF ret && String.IsNullOrEmpty( cAlias ) && ! ( ret := _VoDbAliasFromFilename( cName, cAlias ) )
+            PostArgumentError( "VODBCreate", EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF   
-        IF ret && ! ( ret := _IsAliasUnused( cAlias ) )
-            PostArgumentError( __ENTITY__, EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+        IF ret && ! ( ret := _VoDbIsAliasUnused( cAlias ) )
+            PostArgumentError( "VODBCreate", EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF
         // Now all arguments are valid. So lets create the RDD Object and try to create the file
         LOCAL oRDD AS IRDD
-        oRDD := _CreateRDDInstance(rddType)
+        oRDD := _VoDbCreateRDDInstance(rddType, cAlias)
         IF oRDD == NULL
-            PostArgumentError( __ENTITY__, EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
+            PostArgumentError( "VODBCreate", EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
             ret := FALSE
-        ELSEIF ! _IsAliasUnused( cAlias )
-            PostArgumentError( __ENTITY__, EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
+        ELSEIF ! _VoDbIsAliasUnused( cAlias )
+            PostArgumentError( "VODBCreate", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
             ret := FALSE
         ELSE
-            LOCAL oWa      := Workareas.GetInstance() AS Workareas
-            cAlias := cAlias:ToUpperInvariant()
-            ret := oWa:SetArea(RDDHelpers.CWANum(), cAlias, oRDD)
+            ret := oWa:SetArea(uiNewArea, oRDD)
             IF ! String.IsNullOrEmpty( cDelim )
                 oRDD:Info( DBI_SETDELIMITER, cDelim ) 
             ENDIF
@@ -343,8 +366,9 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
                 dboi:Shared    := FALSE
                 dboi:ReadOnly  := FALSE
                 dboi:Alias     := cAlias
-                dboi:WorkArea  := RDDHelpers.CWANum()
-                ret := oWa:SetArea(dboi:WorkArea, cAlias, oRdd)
+                dboi:WorkArea  := oWa:FindEmptyArea(TRUE)
+                oRDD:Alias := cAlias
+                ret := oWa:SetArea(uiNewArea, oRdd)
                 IF lJustOpen
                     ret := oRdd:Open( dboi )
                 ELSE
@@ -352,7 +376,7 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
                 ENDIF
             ENDIF
             IF ret .AND. ! lKeep
-                oWa:CloseArea(RDDHelpers.CWANum())
+                oWa:CloseArea(uiNewArea)
                 IF uiOldArea != 0
                     oWa:CurrentWorkAreaNO := uiOldArea
                 ENDIF
@@ -1033,7 +1057,7 @@ FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
             nNew := (DWORD) owa:FindEmptyArea(TRUE)
         ENDIF
         IF nNew > WorkAreas.MaxWorkareas
-            PostArgumentError( __ENTITY__, EDB_SELECT, "nNew", 1, <OBJECT>{ nNew } )
+            PostArgumentError( "VODBSelect", EDB_SELECT, "nNew", 1, <OBJECT>{ nNew } )
         ELSE
             owa:CurrentWorkAreaNO :=  nNew
         ENDIF
@@ -1215,8 +1239,98 @@ FUNCTION VODBUnlockAll() AS LOGIC
     /// <returns>
     /// </returns>
     
-FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS RDDLIST,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-    THROW  NotImplementedException{}
+FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS _RDDLIST,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
+
+    LOCAL oRdd := NULL  AS RegisteredRDD
+    LOCAL ret := FALSE AS LOGIC
+    FOREACH VAR name IN rddList:atomRddName
+        oRdd := RegisteredRDD.Find(name)
+        oRdd:Load()
+    NEXT
+    IF oRdd != NULL_OBJECT
+        ret := VODBUseArea(lNew, oRdd:RddType, cName, cAlias, lShare, lReadOnly)
+    ENDIF
+    RETURN ret
+FUNCTION VODBUseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
+    LOCAL ret  := FALSE   AS LOGIC
+    LOCAL rddType AS Type
+    
+    IF ( rddType := _VoDbRddNameToType( rddName ) ) == NULL
+        PostArgumentError( "VODBUseArea", EDB_RDDNOTFOUND, "rddName", 3, <OBJECT>{ rddName } )
+    ELSE
+        ret := VODBUseArea( lNew, rddType, cName, cAlias, lShare, lReadOnly )
+    ENDIF
+    
+    RETURN ret  
+    
+    
+    
+FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
+    LOCAL ret   := FALSE AS LOGIC
+    LOCAL area  := 0    AS DWORD
+    LOCAL wa   := Workareas.GetInstance() AS WorkAreas
+    IF String.IsNullOrEmpty( cName )
+        PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
+    ELSE
+        ret := TRUE
+        NetErr( FALSE )
+        cName := cName:Trim() // :ToUpperInvariant()
+        
+        IF String.IsNullOrEmpty( cAlias )
+            TRY
+                cAlias := Path.GetFileNameWithoutExtension( cName )
+            CATCH  AS ArgumentException
+                PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
+                ret := FALSE
+            END TRY   
+        ENDIF
+        IF lNew
+            area := wa:FindEmptyArea(TRUE)
+            IF area > Workareas.MaxWorkareas  .OR. area == 0
+                ret := FALSE
+            ELSE
+                wa:CurrentWorkAreaNO := area
+            ENDIF
+        ELSE
+            area := wa:CurrentWorkAreaNO
+        ENDIF   
+        IF ret
+            wa:CloseArea(area)
+            LOCAL rdd :=_VoDbCreateRDDInstance( rddType, cAlias ) AS IRDD
+            
+            IF rdd == NULL
+                PostArgumentError( "VODBUseArea", EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
+                ret := FALSE
+            ELSEIF ! _VoDbIsAliasUnused( cAlias )
+                PostArgumentError( "VODBUseArea", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
+                ret := FALSE
+            ELSE
+                LOCAL dboi := DBOPENINFO{} AS DBOPENINFO
+                LOCAL uiArea AS DWORD
+                uiArea := wa:CurrentWorkAreaNO
+                dboi:FileName     := Path.ChangeExtension( cName, NULL )
+                dboi:Extension    := Path.GetExtension( cName )
+                dboi:Shared      := lShare
+                dboi:ReadOnly    := lReadOnly
+                dboi:Alias       := cAlias
+                dboi:WorkArea    := uiArea
+                rdd:Alias        := cAlias
+                ret := wa:SetArea(uiArea, rdd)
+                IF (ret)
+                    ret := rdd:Open( dboi ) 
+                ENDIF
+                IF ! ret
+                    wa:CloseArea(uiArea)
+                ENDIF
+                wa:CurrentWorkAreaNO := uiArea
+            ENDIF   
+        ENDIF
+    ENDIF
+    
+    RETURN ret
+    
+    
+    
     //	LOCAL oRDD := RDDHelpers.CWA("VODBUseArea") AS IRDD
     //	IF oRDD != NULL
     //		
@@ -1256,7 +1370,7 @@ INTERNAL FUNCTION PostError( funcName AS STRING, gencode AS DWORD, subcode AS DW
     
     
     // Returns false if alias is illegal
-INTERNAL FUNCTION _AliasFromFilename( cFilename AS STRING, cAlias REF STRING ) AS LOGIC
+INTERNAL FUNCTION _VoDbAliasFromFilename( cFilename AS STRING, cAlias REF STRING ) AS LOGIC
     LOCAL ret AS LOGIC
     TRY
         cAlias := Path.GetFileNameWithoutExtension( cFilename )
@@ -1264,45 +1378,56 @@ INTERNAL FUNCTION _AliasFromFilename( cFilename AS STRING, cAlias REF STRING ) A
     CATCH AS ArgumentException
         ret := FALSE 
     END TRY
-    
-    IF ret && ! ( Char.IsLetterOrDigit( cAlias, 0 ) || "_`~!@#$%^&()-+={}[]';":IndexOf(cAlias[0]) != -1 )
-        ret := FALSE
+    IF ret
+        LOCAL sb AS StringBuilder
+        sb := StringBuilder{cAlias:Length}
+        FOREACH VAR c IN cAlias
+            IF Char.IsLetterOrDigit(c)
+                sb:Append(c)
+            ELSE
+                sb:Append('_')
+            ENDIF
+        NEXT
+        cAlias := sb:ToString()
     ENDIF
-    
     RETURN ret   
     
+
+// Check if Alias is used for current thread
+INTERNAL FUNCTION _VoDbIsAliasUnused( cAlias AS STRING ) AS LOGIC
+    RETURN Workareas.GetInstance():FindAlias(cAlias) == 0
     
-INTERNAL FUNCTION _IsAliasUnused( cAlias AS STRING ) AS LOGIC
-    RETURN _FindAliasNum( cAlias ) == 0
-    
-INTERNAL FUNCTION _FindRDD( cAlias AS STRING ) AS IRDD
-    VAR nArea := Workareas.GetInstance():FindAlias(cAlias)
-    IF nArea != 0
-        RETURN Workareas.GetInstance():GetRDD(nArea)
-    ENDIF
-    RETURN NULL
-    
-INTERNAL FUNCTION _FindAliasNum( cAlias AS STRING ) AS DWORD
-    RETURN (DWORD) Workareas.GetInstance():FindAlias(cAlias)
-    
-    
-INTERNAL FUNCTION _CreateRDDInstance( rddType AS Type ) AS IRDD
+// Create RDD Object from RDD Type
+INTERNAL FUNCTION _VoDbCreateRDDInstance( rddType AS Type , cAlias AS STRING) AS IRDD
     LOCAL ret    AS IRDD
-    
     TRY
-        ret := (IRDD) rddType:InvokeMember( NULL, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance, NULL, NULL, <OBJECT>{} )   
+        ret := (IRDD) rddType:InvokeMember( NULL, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance, NULL, NULL, <OBJECT>{} )
+        ret:Alias := cAlias:ToUpperInvariant()
     CATCH
         ret := NULL
     END TRY
     RETURN ret 
     
-
-
-INTERNAL FUNCTION NoTableError( funcName AS STRING ) AS RddError
-   LOCAL e := RddError{} AS RddError
-   e:SubSystem := "DBCMD"
-   e:Severity := 2
-   e:GenCode := EG_NOTABLE
-   e:SubCode := EDB_NOTABLE
-   e:FuncSym := funcName
-   RETURN e
+    
+    
+    
+INTERNAL FUNCTION _VoDbRddNameToType( cRDDName AS STRING ) AS Type
+    LOCAL ret := NULL AS  Type
+    LOCAL oRdd        AS RegisteredRDD
+    oRdd := RegisteredRDD.Find(cRddName)
+    IF (oRdd != NULL)   
+        oRdd:Load()
+        ret := oRdd:RddType
+    ENDIF
+    IF ret == NULL       
+        LOCAL loadedAssemblies := AppDomain.CurrentDomain:GetAssemblies() AS Assembly[]
+        LOCAL x AS INT
+        
+        FOR x := 1 UPTO loadedAssemblies:Length
+            ret := loadedAssemblies[x]:GetType( cRDDName, FALSE, TRUE )
+            IF ret != NULL
+                EXIT
+            ENDIF   
+        NEXT
+    ENDIF
+    RETURN ret   

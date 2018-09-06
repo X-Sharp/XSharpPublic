@@ -9,24 +9,16 @@ USING System.Reflection
 BEGIN NAMESPACE XSharp.RDD
     STATIC CLASS RDDHelpers
     
-        STATIC METHOD WAS AS WorkAreas
-            RETURN WorkAreas.GetInstance()
-            
         STATIC METHOD CWA(cFunction AS STRING) AS IRDD 
             LOCAL oResult AS IRDD
             RuntimeState.LastRddError := NULL
-            oResult := CWA()
+            oResult := WorkAreas.GetInstance().CurrentWorkArea
             IF oResult != NULL_OBJECT
                 RETURN oResult
             ENDIF
             RuntimeState.LastRddError := NoTableError(cFunction)
             RETURN NULL
             
-        STATIC METHOD CWA AS IRDD 
-            RETURN WorkAreas.GetInstance().CurrentWorkArea
-            
-        STATIC METHOD CWANum AS DWORD
-            RETURN WorkAreas.GetInstance().CurrentWorkAreaNO
             
         STATIC METHOD CWANum(cFunction AS STRING)  AS DWORD
             VAR oWA := WorkAreas.GetInstance().CurrentWorkArea
@@ -136,3 +128,14 @@ BEGIN NAMESPACE XSharp.RDD
 
     END STRUCTURE
 END NAMESPACE
+
+
+// Generate NOTABLE Error    
+INTERNAL FUNCTION NoTableError( funcName AS STRING ) AS RddError
+    LOCAL e := RddError{} AS RddError
+    e:SubSystem := "DBCMD"
+    e:Severity := 2
+    e:GenCode := EG_NOTABLE
+    e:SubCode := EDB_NOTABLE
+    e:FuncSym := funcName
+    RETURN e

@@ -88,15 +88,15 @@ CLASS DbOpenInfo
 	/// <summary>The filename (optionally includig a path) for the table that must be opened.</summary>
 	PUBLIC FileName		AS STRING
 	/// <summary>Workarea number in which the table will be opened.</summary>
-	PUBLIC WorkArea		AS LONG    
+	PUBLIC WorkArea		AS DWORD    
 	
 	CONSTRUCTOR()
 		
-	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, liWorkArea AS LONG, lShared AS LOGIC, lReadOnly AS LOGIC)
+	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, dwWorkArea AS DWORD, lShared AS LOGIC, lReadOnly AS LOGIC)
 		FileName 	:= sFileName
         Extension   := Path.GetExtension(sFileName)
 		Alias	 	:= sAlias
-		WorkArea	:= liWorkArea
+		WorkArea	:= dwWorkArea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
 	/// <summary>Return the numeric FileMode based on the Shared and Readonly flags </summary>

@@ -16,7 +16,7 @@ CLASS Workarea IMPLEMENTS IRdd
 	// That is handled in the DBF class which inherits from RddBase
 	#region Fields
 	/// <summary>Workarea Number (1 based) </summary>
-	PUBLIC _Area			AS LONG		
+	PUBLIC _Area			AS DWORD		
 	/// <summary> Unique Alias </summary>
 	PUBLIC _Alias			AS STRING	
 	/// <summary>File name of the main file</summary>
@@ -87,7 +87,7 @@ CLASS Workarea IMPLEMENTS IRdd
 		SELF:_Result	 := NULL
 		SELF:_FileName	 := String.Empty
 		SELF:_Fields	 := NULL
-		SELF:_Area		 := -1
+		SELF:_Area		 := 0
 		SELF:_Shared	 := FALSE
 		SELF:_ReadOnly   := FALSE
 		SELF:_MaxFieldNameLength := 10
@@ -634,7 +634,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	VIRTUAL PROPERTY Alias AS STRING GET _Alias
 
 /// <inheritdoc />
-	VIRTUAL PROPERTY Area AS LONG GET _Area
+	VIRTUAL PROPERTY Area AS DWORD GET _Area
 
 /// <inheritdoc />
 	VIRTUAL PROPERTY BoF AS LOGIC GET _Bof

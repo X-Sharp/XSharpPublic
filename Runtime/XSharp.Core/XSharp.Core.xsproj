@@ -140,6 +140,7 @@
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
     <Compile Include="Functions\International.prg" />
+    <Compile Include="Functions\Macro.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />
     <Compile Include="Functions\OS.prg" />

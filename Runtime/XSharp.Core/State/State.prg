@@ -395,11 +395,11 @@ CLASS XSharp.RuntimeState
 		DO WHILE dateformat.IndexOf("dd") != -1
 			dateformat		:= dateformat:Replace("dd", "d")
 		ENDDO
-		// change dates to dd and mm
+		// change dates to dd and mm and then everything to upper case
 		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-		_SetThreadValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
-		_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
-		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
+		SELF:_SetThreadValue(Set.Century, dateformat:IndexOf("YYYY",StringComparison.OrdinalIgnoreCase) != -1)
+		SELF:_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		SELF:_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
 		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
 		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
@@ -409,7 +409,6 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.EPOCH, (DWORD) 1910)
 		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
 		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
-
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
 		RETURN
 

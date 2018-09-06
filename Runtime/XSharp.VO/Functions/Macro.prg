@@ -30,62 +30,8 @@ INTERNAL STATIC CLASS MacroHelpers
 	END PROPERTY
 
 	STATIC METHOD Initialize() AS VOID
-		LOCAL oMacroAsm		 := NULL_OBJECT AS Assembly
 		// first locate the assembly that has the macro compiler in the list of loaded assemblies
-		FOREACH oAsm AS Assembly IN AppDomain.CurrentDomain:GetAssemblies()
-			IF oAsm:GetName():Name:ToLower() == "xsharp.macrocompiler"
-				oMacroAsm := oAsm
-				EXIT
-			ENDIF
-		NEXT
-		IF oMacroAsm == NULL_OBJECT
-			LOCAL oVOAsm	AS Assembly
-			LOCAL cFileName AS STRING
-			oVOAsm := TYPEOF(XSharp.VO.Functions):Assembly
-			cFileName := oVOASM:Location:ToLower()
-			cFileName := cFileName:Replace("xsharp.vo", "xsharp.macrocompiler")
-			IF File.Exists(cFileName)
-				TRY
-					oMacroAsm := Assembly.LoadFrom(cFileName)
-				CATCH  AS Exception
-					THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler from the file "+cFileName}
-				END TRY
-			ENDIF
-		ENDIF
-		IF oMacroAsm == NULL_OBJECT
-			// locate the macro compiler in the GAC or in the path
-			LOCAL cPath AS STRING
-			cPath := System.Environment.GetEnvironmentVariable("PATH")
-			LOCAL aPaths AS STRING[]
-			aPaths := cPath:Split(';',StringSplitOptions.RemoveEmptyEntries)
-			FOREACH VAR path IN aPaths
-				LOCAL cFileName AS STRING
-				cFileName := System.IO.Path.Combine(path, "XSharp.MacroCompiler.dll")
-				IF System.IO.File.Exists(cFileName)
-					TRY
-						oMacroAsm := Assembly.LoadFrom(cFileName)
-						EXIT
-					CATCH  AS Exception
-						THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler from the file "+cFileName}
-					END TRY
-				ENDIF
-			NEXT
-		ENDIF
-		IF oMacroAsm == NULL_OBJECT
-			// try to load from the GAC
-			LOCAL oAsm AS Assembly
-			LOCAL oName AS AssemblyName
-			LOCAL cName AS STRING
-			oAsm := TYPEOF(XSharp.VO.Functions):Assembly
-			oName := oAsm:GetName()
-			cName := oName:FullName
-			cName := cName:Replace("XSharp.VO", "XSharp.MacroCompiler")
-			TRY
-				oMacroAsm := Assembly.Load(cName)
-			CATCH AS Exception
-				THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler with strong name "+cName}
-			END TRY
-		ENDIF
+        var oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
 		IF oMacroAsm != NULL_OBJECT
 			LOCAL oType AS System.Type
 			oType := oMacroAsm:GetType("XSharp.MacroCompiler",FALSE,TRUE)
@@ -98,7 +44,10 @@ INTERNAL STATIC CLASS MacroHelpers
 				ENDIF
 			ELSE
 				THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler class in the assembly "+oMacroAsm:Location}
-			ENDIF
+            ENDIF
+        ELSE
+            // AssemblyHelper.Load will throw an exception
+            NOP 
 		ENDIF
 		RETURN
 		

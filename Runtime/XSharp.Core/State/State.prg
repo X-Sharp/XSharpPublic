@@ -298,6 +298,11 @@ CLASS XSharp.RuntimeState
         GET GetValue<CollationMode>(Set.Intl);
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
+	/// <summary>Last error that occurred in the RDD subsystem.</summary>
+    STATIC PROPERTY LastRddError AS Exception ;
+        GET GetValue<Exception>(Set.LastRddError);
+        SET SetValue<Exception>(Set.LastRddError, VALUE)
+
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     STATIC PROPERTY LockTries AS DWORD ;
         GET GetValue<DWORD>(Set.LOCKTRIES);
@@ -509,10 +514,50 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-	STATIC PRIVATE _macrocompiler AS System.Type
-	PUBLIC STATIC PROPERTY MacroCompiler AS System.Type GET _macrocompiler SET _macrocompiler := VALUE
+	STATIC INTERNAL _macrocompilerType   AS System.Type
+    STATIC INTERNAL _macrocompiler       AS IMacroCompiler
+	PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
+        GET
+            IF _macrocompiler == NULL 
+                _LoadMacroCompiler()
+            ENDIF
+            RETURN _macrocompiler
+        END GET
+        SET
+            _macrocompiler := VALUE
+        END SET
+    END PROPERTY
+    
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
 	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
+
+    PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
+        IF _macroCompilerType == NULL_OBJECT
+            VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
+		    IF oMacroAsm != NULL_OBJECT
+			    LOCAL oType AS System.Type
+			    oType := oMacroAsm:GetType("XSharp.MacroCompiler",FALSE,TRUE)
+			    IF oType != NULL_OBJECT
+				    // create instance of this type
+				    IF TYPEOF(IMacroCompiler):IsAssignableFrom(oType)
+					    _macroCompilerType := oType
+				    ELSE
+					    THROW Error{EG_CORRUPTION, "", "Could not create the macro compiler from the type "+ otype:Fullname+" in the assembly "+oMacroAsm:Location}
+				    ENDIF
+			    ELSE
+				    THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler class in the assembly "+oMacroAsm:Location}
+                ENDIF
+            ELSE
+                // AssemblyHelper.Load will throw an exception
+                NOP 
+		    ENDIF
+        ENDIF
+        IF _macroCompilerType != NULL_OBJECT
+			_macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+		ENDIF
+		RETURN 
+
+
 END CLASS
 
 

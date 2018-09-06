@@ -7,53 +7,7 @@
 USING System.Reflection
 USING System.IO
 
-INTERNAL STATIC CLASS MacroHelpers
-	STATIC PRIVATE oMacroCompiler		AS IMacroCompiler
-	STATIC PRIVATE oMacroCompilerType	AS System.Type
-	STATIC PROPERTY Compiler AS IMacroCompiler
-		GET
-			LOCAL oMCType AS System.Type
-			oMCType  := XSharp.RuntimeState.MacroCompiler
-			IF oMCType == NULL_OBJECT 
-				MacroHelpers.Initialize()
-				oMCType := XSharp.RuntimeState.MacroCompiler
-			ENDIF
-			IF oMcType != oMacroCompilerType
-				oMacroCompilerType := oMcType
-				oMacroCompiler     := NULL_OBJECT
-			ENDIF
-			IF oMacroCompiler == NULL_OBJECT
-				oMacroCompiler := Activator:CreateInstance(oMCType) ASTYPE IMacroCompiler
-			ENDIF
-			RETURN oMacroCompiler
-		END GET
-	END PROPERTY
-
-	STATIC METHOD Initialize() AS VOID
-		// first locate the assembly that has the macro compiler in the list of loaded assemblies
-        var oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
-		IF oMacroAsm != NULL_OBJECT
-			LOCAL oType AS System.Type
-			oType := oMacroAsm:GetType("XSharp.MacroCompiler",FALSE,TRUE)
-			IF oType != NULL_OBJECT
-				// create instance of this type
-				IF TYPEOF(IMacroCompiler):IsAssignableFrom(oType)
-					XSharp.RuntimeState.MacroCompiler := oType
-				ELSE
-					THROW Error{EG_CORRUPTION, "", "Could not create the macro compiler from the type "+ otype:Fullname+" in the assembly "+oMacroAsm:Location}
-				ENDIF
-			ELSE
-				THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler class in the assembly "+oMacroAsm:Location}
-            ENDIF
-        ELSE
-            // AssemblyHelper.Load will throw an exception
-            NOP 
-		ENDIF
-		RETURN
-		
-END	CLASS
-		
-		
+	
 		
 /// <summary>
 /// Evaluate an expression contained in a string.
@@ -112,7 +66,7 @@ FUNCTION MCompile(cMacro AS STRING) AS XSharp._CODEBLOCK
 /// <seealso cref="M:XSharp.VO.Functions.MExec(XSharp.CodeBlock)" />
 FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._CodeBlock
 	
-	VAR oMC := MacroHelpers.Compiler
+	VAR oMC := XSharp.RuntimeState.MacroCompiler
 	IF oMC != NULL_OBJECT
 		VAR oMod := XSharp.RuntimeState.AppModule
 		IF oMod == NULL_OBJECT
@@ -184,21 +138,3 @@ FUNCTION TYPE(cExpression AS STRING) AS STRING
 	RETURN cRet
 	
 	
-/// <summary>
-/// Get the type of the class that is used to compile macros
-/// </summary>
-/// <returns>The type of the currently defined MacroCompiler. This may be NULL if no type has been set yet and no macros have been compiled.</returns>
-/// <seealso cref="T:XSharp.IMacroCompiler"/>
-FUNCTION GetMacroCompiler () AS System.Type
-	RETURN XSharp.RuntimeState.MacroCompiler
-	
-/// <summary>
-/// Set the type of the class that must be used to compile macros
-/// </summary>
-/// <param name="oCompiler">The type of the class that implements the macro compiler. This type MUST implement IMacroCompiler.</param>
-/// <returns>The type of the previously defined MacroCompiler. This may be NULL if no type has been set yet and no macros have been compiled.</returns>
-/// <seealso cref="T:XSharp.IMacroCompiler"/>
-FUNCTION SetMacroCompiler (oCompiler AS System.Type) AS System.Type
-VAR old := XSharp.RuntimeState.MacroCompiler
-XSharp.RuntimeState.MacroCompiler := oCompiler
-RETURN old

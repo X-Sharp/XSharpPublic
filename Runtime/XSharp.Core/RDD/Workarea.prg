@@ -548,9 +548,21 @@ VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD Compile(sBlock AS STRING) AS LOGIC
-	THROW NotImplementedException{__ENTITY__}
-
+VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
+    LOCAL oBlock := NULL AS ICodeBlock
+    TRY
+        LOCAL oC AS IMacroCompiler
+        oC := XSharp.RuntimeState.MacroCompiler
+        LOCAL oType := typeof(Workarea) AS System.Type
+        IF oC != NULL
+            LOCAL isBlock AS LOGIC
+            oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock)
+        ENDIF
+    CATCH e AS Exception
+        XSharp.RuntimeState.LastRddError := e
+    END TRY
+    RETURN oBlock
+    
 /// <inheritdoc />
 VIRTUAL METHOD EvalBlock(oBlock AS ICodeBlock) AS OBJECT
 	RETURN oBlock:EvalBlock()
@@ -631,10 +643,10 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 		THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-	VIRTUAL PROPERTY Alias AS STRING GET _Alias
+	VIRTUAL PROPERTY Alias AS STRING GET _Alias SET _Alias := VALUE
 
 /// <inheritdoc />
-	VIRTUAL PROPERTY Area AS DWORD GET _Area
+	VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := VALUE 
 
 /// <inheritdoc />
 	VIRTUAL PROPERTY BoF AS LOGIC GET _Bof

@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="Defines.prg" />
     <Compile Include="ErrorEnum.prg" />
+    <Compile Include="Functions\AssemblyLoader.prg" />
     <Compile Include="Functions\Convert.prg" />
     <Compile Include="Functions\Debug.prg" />
     <Compile Include="Functions\Error.prg" />

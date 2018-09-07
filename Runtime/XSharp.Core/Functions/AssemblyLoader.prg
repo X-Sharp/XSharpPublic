@@ -5,33 +5,33 @@
 //
 
 // Code to load assemblies such as the Macro compiler and RDD system
-using System.Reflection
+USING System.Reflection
 STATIC CLASS XSharp.AssemblyHelper
-    STATIC METHOD Load(cName as string) as Assembly
-        local cLowerName := cName:ToLower() as STRING
+    STATIC METHOD Load(cName AS STRING) AS Assembly
+        LOCAL cLowerName := cName:ToLower() AS STRING
         // first locate the assembly that has the macro compiler in the list of loaded assemblies
         FOREACH oAsm AS Assembly IN AppDomain.CurrentDomain:GetAssemblies()
             IF oAsm:GetName():Name:ToLower() == cLowerName
-                return oAsm
+                RETURN oAsm
             ENDIF
         NEXT
-        var oCore := typeof(Error):Assembly
+        VAR oCore := typeof(Error):Assembly
         // locate the dll in the GAC 
-        var oName := oCore:GetName()
-        var cFullName := oName:FullName:Replace("XSharp.Core", cName)
+        VAR oName := oCore:GetName()
+        VAR cFullName := oName:FullName:Replace("XSharp.Core", cName)
         TRY
-            var oAsm := Assembly.Load(cFullName)
+            VAR oAsm := Assembly.Load(cFullName)
             RETURN oAsm
         CATCH AS Exception
             NOP
         END TRY
         // locate in the same folder as X# Core
-        var cFileName := oCore:Location:ToLower()
+        VAR cFileName := oCore:Location:ToLower()
         cFileName := cFileName:Replace("xsharp.core", cName)
         IF System.IO.File.Exists(cFileName)
             TRY
                 VAR oAsm  := Assembly.LoadFrom(cFileName)
-                return oAsm
+                RETURN oAsm
             CATCH  AS Exception
                 THROW Error{EG_CORRUPTION, "", "Could not load "+cName+ " from the file "+cFileName}
             END TRY
@@ -42,7 +42,7 @@ STATIC CLASS XSharp.AssemblyHelper
             TRY
                 cFilename := FPathName()
                 VAR oAsm  := Assembly.LoadFrom(cFileName)
-                return oAsm
+                RETURN oAsm
             CATCH  AS Exception
                 THROW Error{EG_CORRUPTION, "", "Could not load "+cName+ " from the file "+cFileName}
             END TRY

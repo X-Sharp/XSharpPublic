@@ -1,9 +1,9 @@
-//
+﻿//
 // Copyright (c) B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp.RDD
+USING XSharp.RDD
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFNSX RDD. For DBF/SMT/NSX.</summary>
 CLASS DBFNSX INHERIT DBFSMT
@@ -32,7 +32,7 @@ METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
+METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
 	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC

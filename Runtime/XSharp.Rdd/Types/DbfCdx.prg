@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -33,7 +33,7 @@ METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
 METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
+METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
 	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
@@ -51,7 +51,7 @@ METHOD OrderListRebuild( ) AS LOGIC
 METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC		
     THROW NotImplementedException{}
 /// <inheritdoc />
-VIRTUAL PROPERTY Found as LOGIC	
+VIRTUAL PROPERTY Found AS LOGIC	
 GET
 	THROW NotImplementedException{}
 END GET

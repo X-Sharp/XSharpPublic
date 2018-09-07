@@ -1,6 +1,60 @@
 ﻿USING System.Globalization
 
 FUNCTION Start AS VOID
+    setinternational ( #windows )
+? "setinternational ( #windows )"
+?
+// set the default to true, and it´s in sync with the dateformat at startup.
+// setcentury(TRUE) // <--------------------
+
+? "Current SetCentury() default setting is " + setcentury() + " , should be TRUE"
+? GetDateFormat()
+?
+setcentury( FALSE )
+? "Setcentury(false)"
+? GetDateFormat() + _chr(9) + "only ok, if it shows 'DD.MM.YY'"
+?
+setcentury( TRUE )
+? "Setcentury(true)"
+? GetDateFormat()
+?
+setcentury( FALSE )
+? "Setcentury(false)"
+? GetDateFormat()
+?
+setcentury( TRUE )
+? "Setcentury(true)"
+? GetDateFormat()
+?
+?
+?
+? "The initial Setinternational (#clipper ) behaviour is already compatible with VO"
+SetInternational( #clipper)
+? "SetInternational( #clipper)"
+
+SetDatecountry ( 5 ) // "GERMAN" define in VO.
+?
+? Getdateformat() // "DD.MM.YY"
+? setcentury() // false
+?
+setcentury( TRUE )
+? "Setcentury(true)"
+? GetDateFormat()
+?
+setcentury( FALSE )
+? "Setcentury(false)"
+? GetDateFormat()
+?
+// switch back to #Windows
+setinternational ( #windows )
+? "setinternational ( #windows )"
+?
+? "Current SetCentury() default setting is " + setcentury() + " , should be TRUE"
+? GetDateFormat()
+wait
+RETURN
+
+FUNCTION Start2a AS VOID
     LOCAL o AS OBJECT[]
     LOCAL a AS ARRAY
 	a := {"aa", "bb", {1,2,3}}

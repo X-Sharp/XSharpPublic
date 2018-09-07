@@ -53,8 +53,6 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _lockScheme     AS DbfLocking
         PROTECT _NewRecord      AS LOGIC
         //
-        INTERNAL _LastCodeBlock    AS ICodeblock
-        INTERNAL _EvalBlock        AS OBJECT
         
         CONSTRUCTOR()
             SELF:_hFile := F_ERROR
@@ -811,9 +809,8 @@ BEGIN NAMESPACE XSharp.RDD
             // Should we set to .DBF per default ?
             IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
                 SELF:_OpenInfo:Extension := ".DBF"
-                //
-                SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
             ENDIF
+            SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
             //
             SELF:_Hot := FALSE
             SELF:_FileName := SELF:_OpenInfo:FileName
@@ -1752,11 +1749,11 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             
             /// <inheritdoc />
-        METHOD OrderInfo(nOrdinal AS LONG) AS OBJECT
+        METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
             IF _oIndex != NULL
-                RETURN _oIndex:OrderInfo(nOrdinal)
+                RETURN _oIndex:OrderInfo(nOrdinal,info )
             ELSE
-                RETURN SUPER:OrderInfo(nOrdinal)
+                RETURN SUPER:OrderInfo(nOrdinal,info )
             ENDIF
             
             /// <inheritdoc />
@@ -1817,67 +1814,23 @@ BEGIN NAMESPACE XSharp.RDD
             
             // CodeBlock Support
             
-        PRIVATE METHOD _macroCompile(cMacro AS STRING ) AS ICodeblock
-            VAR oMC := XSharp.RuntimeState.MacroCompiler
-            IF oMC != NULL_OBJECT
-                VAR oMod := XSharp.RuntimeState.AppModule
-                IF oMod == NULL_OBJECT
-                    XSharp.RuntimeState.AppModule := TYPEOF(XSharp.Core.Functions):Module
-                ENDIF
-                LOCAL iResult AS ICodeBlock
-                LOCAL oResult AS XSharp.CodeBlock
-                LOCAL lIsCodeblock AS LOGIC
-                iResult := oMC:Compile(cMacro, TRUE, oMod, OUT lIsCodeBlock)
-                oResult := XSharp._CodeBlock{iResult, cMacro, lIsCodeBlock}
-                RETURN oResult
+        VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
+            LOCAL result AS ICodeBlock
+            result := SUPER:Compile(sBlock)
+            IF result == NULL
+                SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
             ENDIF
-            RETURN NULL_OBJECT	
-            
-        VIRTUAL METHOD Compile(sBlock AS STRING) AS LOGIC
-            LOCAL isOk AS LOGIC
-            //
-            isOk := FALSE
-            IF (!string.IsNullOrEmpty(sBlock))
-                IF ( !sBlock:TrimStart():StartsWith("{") )
-                    sBlock := "{||" + sBlock + "}"
-                ENDIF
-                TRY
-                    IF (XSharp.RuntimeState.MacroCompiler == NULL)
-                        SELF:_LastCodeBlock := NULL
-                        SELF:_dbfError( ERDD.CORRUPT, GenCode.EG_CORRUPTION, "DBF.Compile")
-                        RETURN isOk
-                    ENDIF
-                    SELF:_LastCodeBlock :=SELF:_macroCompile(sBlock)
-                    isOk := TRUE
-                    RETURN isOk
-                    
-                CATCH ex AS Exception
-                    SELF:_LastCodeBlock := NULL
-                    SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, ex:Message)
-                    RETURN isOk
-                END TRY
-            ENDIF
-            SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
-            RETURN isOk
+            RETURN result
             
             //	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT	
         VIRTUAL METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
-            // Save Current WorkArea
-            NOP
-            // Switch to Current DBF/WorkArea ?
-            NOP
-            // 
-            SELF:_EvalResult := NULL
+            LOCAL result := NULL AS OBJECT
             TRY
-                SELF:_EvalResult := cbBlock:EvalBlock()
+                result := cbBlock:EvalBlock()
             CATCH ex AS Exception
                 SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
-                RETURN NULL
-            FINALLY
-                // Restore previous WorkArea
-                NOP
             END TRY
-            RETURN SELF:_EvalResult
+            RETURN result
             
             // Other
             /// <inheritdoc />
@@ -1887,7 +1840,9 @@ BEGIN NAMESPACE XSharp.RDD
             SWITCH nOrdinal
                 CASE DbInfo.DBI_ISDBF
                 CASE DbInfo.DBI_CANPUTREC
-                    oResult := TRUE		
+                    oResult := TRUE
+                CASE DbInfo.DBI_GETRECSIZE
+                    oResult := SELF:_RecordLength
                 CASE DbInfo.DBI_LASTUPDATE
                     oResult := SELF:_Header:LastUpdate
                 CASE DbInfo.DBI_GETHEADERSIZE
@@ -2234,6 +2189,9 @@ BEGIN NAMESPACE XSharp.RDD
                         see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
                         
                         */
+
+                    
+
                     END STRUCTURE
                 /// <summary>DBF Field.</summary>                            
                 STRUCTURE DbfField   
@@ -2407,7 +2365,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Inpired by Harbour
             STRUCTURE DbfLocking
                 // Offset of the Locking
-                PUBLIC Offset AS INT64
+                PUBLIC Offset AS UINT64
                 // Length for File
                 PUBLIC FileSize AS UINT64
                 // Length for Record
@@ -2466,14 +2424,156 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:iOffset := -1
                 
             VIRTUAL PROPERTY Offset AS LONG
-            GET
-                RETURN SELF:iOffset
-            END GET
+                GET
+                    RETURN SELF:iOffset
+                END GET
             
-            // Should be INTERNAL
-            SET
-                SELF:iOffset := VALUE
-            END SET
-        END PROPERTY
-    END CLASS
+                // Should be INTERNAL
+                SET
+                    SELF:iOffset := VALUE
+                END SET
+            END PROPERTY
+      END CLASS
+                
+      ENUM DbfHeaderCodepage INHERIT BYTE
+      
+         MEMBER CP_DBF_DOS_OLD           := 0x00  // MS-DOS previous versions
+         MEMBER CP_DBF_DOS_US            := 0x01  // U.S. MS-DOS
+         MEMBER CP_DBF_DOS_INTL          := 0x02  // International MS-DOS
+         MEMBER CP_DBF_WIN_ANSI          := 0x03  // Windows ANSI
+         MEMBER CP_DBF_MAC_STANDARD      := 0x04  // Standard Macintosh
+
+         MEMBER CP_DBF_DOS_EEUROPEAN     := 0x64  // Eastern European MS-DOS
+         MEMBER CP_DBF_DOS_RUSSIAN       := 0x65  // Russian MS-DOS
+         MEMBER CP_DBF_DOS_NORDIC        := 0x66  // Nordic MS-DOS
+         MEMBER CP_DBF_DOS_ICELANDIC     := 0x67  // Icelandic MS-DOS
+         MEMBER CP_DBF_DOS_KAMENICKY     := 0x68  // Kamenicky (Czech) MS-DOS (1)
+         MEMBER CP_DBF_DOS_MAZOVIA       := 0x69  // Mazovia (Polish) MS-DOS  (1)
+         MEMBER CP_DBF_DOS_GREEK         := 0x6A  // Greek MS-DOS (437G)      (1)
+         MEMBER CP_DBF_DOS_TURKISH       := 0x6B  // Turkish MS-DOS
+         MEMBER CP_DBF_DOS_CANADIAN      := 0x6C  // Canadian MS-DOS
+                                         
+         MEMBER CP_DBF_WIN_CHINESE_1	 := 0x78	// Chinese (Hong Kong SAR, Taiwan) Windows CP 950
+         MEMBER CP_DBF_WIN_KOREAN        := 0x79	// Korean Windows				CP 949
+
+         MEMBER CP_DBF_WIN_CHINESE_2	 := 0x7A	 // Chinese (PRC, Singapore) Windows	CP 936
+         MEMBER CP_DBF_WIN_JAPANESE		 := 0x7B	 // Japanese Windows				CP 932
+         MEMBER CP_DBF_WIN_THAI			 := 0x7C	 // Thai Windows					CP 874
+         MEMBER CP_DBF_WIN_HEBREW		 := 0x7D	 // Hebrew Windows				CP 1255
+         MEMBER CP_DBF_WIN_ARABIC		 := 0x7E	 // Arabic Windows				CP 1256
+
+         MEMBER CP_DBF_WIN_EEUROPEAN     := 0xC8   // Eastern European Windows
+         MEMBER CP_DBF_WIN_RUSSIAN       := 0xC9   // Russian Windows
+         MEMBER CP_DBF_WIN_GREEK         := 0xCB   // Greek Windows
+         MEMBER CP_DBF_WIN_TURKISH       := 0xCA   // Turkish Windows
+
+         MEMBER CP_DBF_MAC_RUSSIAN       := 0x96   // Russian Macintosh (1)
+         MEMBER CP_DBF_MAC_EEUROPEAN     := 0x97   // Macintosh EE
+         MEMBER CP_DBF_MAC_GREEK         := 0x98   // Greek Macintosh
+      END ENUM
+     //  Values for Windows and DOS Codepages
+      ENUM Codepage
+      
+         MEMBER CP_INI_DOS_US            := 437   // U.S. MS-DOS
+         MEMBER CP_INI_DOS_MAZOVIA       := 620   // Mazovia (Polish) MS-DOS (1)
+         MEMBER CP_INI_DOS_GREEK         := 737   // Greek MS-DOS (1)
+         MEMBER CP_INI_DOS_INTL          := 850   // International MS-DOS
+         MEMBER CP_INI_DOS_EEUROPEAN     := 852   // Eastern European MS-DOS
+         MEMBER CP_INI_DOS_TURKISH       := 857   // Turkish MS-DOS
+         MEMBER CP_INI_DOS_ICELANDIC     := 861   // Icelandic MS-DOS
+         MEMBER CP_INI_DOS_CANADIAN      := 863   // Canadian MS-DOS
+         MEMBER CP_INI_DOS_NORDIC        := 865   // Nordic MS-DOS
+         MEMBER CP_INI_DOS_RUSSIAN       := 866   // Russian MS-DOS
+         MEMBER CP_INI_DOS_KAMENICKY     := 895   // Kamenicky (Czech) MS-DOS (1)
+         
+         MEMBER CP_INI_WIN_THAI          := 874   // Thai Windows
+         MEMBER CP_INI_WIN_JAPANESE      := 932   // Japanese Windows
+         MEMBER CP_INI_WIN_CHINESE1      := 936   // Chinese (PRC, Singapore) Windows
+         MEMBER CP_INI_WIN_KOREAN        := 949   // Korean Windows
+         MEMBER CP_INI_WIN_CHINESE2      := 950   // Chinese (Hong Kong SAR, Taiwan) Windows
+         
+         MEMBER CP_INI_WIN_EEUROPEAN     := 1250  // Eastern European Windows
+         MEMBER CP_INI_WIN_RUSSIAN       := 1251  // Russian Windows
+         MEMBER CP_INI_WIN_ANSI          := 1252  // Windows ANSI
+         MEMBER CP_INI_WIN_GREEK         := 1253  // Greek Windows
+         MEMBER CP_INI_WIN_TURKISH       := 1254  // Turkish Windows
+         MEMBER CP_INI_WIN_HEBREW        := 1255  // Hebrew Windows
+         MEMBER CP_INI_WIN_ARABIC        := 1256  // Arabic Windows
+         
+         MEMBER CP_INI_MAC_STANDARD      := 10000 // Standard Macintosh
+         MEMBER CP_INI_MAC_GREEK         := 10006 // Greek Macintosh
+         MEMBER CP_INI_MAC_RUSSIAN       := 10007 // Russian Macintosh (1)
+         MEMBER CP_INI_MAC_EEUROPEAN     := 10029 // Macintosh EE
+      END ENUM
+
+
+STATIC CLASS CodePageExtensions
+    METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS CodePage
+        SWITCH headerCodePage
+        CASE DbfHeaderCodepage.CP_DBF_DOS_US        ; RETURN  Codepage.CP_INI_DOS_US        
+        CASE DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA   ; RETURN  Codepage.CP_INI_DOS_MAZOVIA   
+        CASE DbfHeaderCodepage.CP_DBF_DOS_GREEK     ; RETURN  Codepage.CP_INI_DOS_GREEK     
+        CASE DbfHeaderCodepage.CP_DBF_DOS_INTL      ; RETURN  Codepage.CP_INI_DOS_INTL      
+        CASE DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN ; RETURN  Codepage.CP_INI_DOS_EEUROPEAN 
+        CASE DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC ; RETURN  Codepage.CP_INI_DOS_ICELANDIC 
+        CASE DbfHeaderCodepage.CP_DBF_DOS_NORDIC    ; RETURN  Codepage.CP_INI_DOS_NORDIC    
+        CASE DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN   ; RETURN  Codepage.CP_INI_DOS_RUSSIAN   
+        CASE DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY ; RETURN  Codepage.CP_INI_DOS_KAMENICKY 
+        CASE DbfHeaderCodepage.CP_DBF_DOS_TURKISH   ; RETURN  Codepage.CP_INI_DOS_TURKISH   
+        CASE DbfHeaderCodepage.CP_DBF_DOS_CANADIAN  ; RETURN  Codepage.CP_INI_DOS_CANADIAN  
+        CASE DbfHeaderCodepage.CP_DBF_WIN_THAI      ; RETURN  Codepage.CP_INI_WIN_THAI	    
+        CASE DbfHeaderCodepage.CP_DBF_WIN_JAPANESE  ; RETURN  Codepage.CP_INI_WIN_JAPANESE  
+        CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_1 ; RETURN  Codepage.CP_INI_WIN_CHINESE1  
+        CASE DbfHeaderCodepage.CP_DBF_WIN_KOREAN    ; RETURN  Codepage.CP_INI_WIN_KOREAN	
+        CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_2 ; RETURN  Codepage.CP_INI_WIN_CHINESE2  
+
+        CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN ; RETURN Codepage.CP_INI_WIN_EEUROPEAN  
+        CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN   ; RETURN Codepage.CP_INI_WIN_RUSSIAN    
+        CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI      ; RETURN Codepage.CP_INI_WIN_ANSI       
+        CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK     ; RETURN Codepage.CP_INI_WIN_GREEK      
+        CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH   ; RETURN Codepage.CP_INI_WIN_TURKISH    
+        CASE DbfHeaderCodepage.CP_DBF_WIN_HEBREW    ; RETURN Codepage.CP_INI_WIN_HEBREW     
+        CASE DbfHeaderCodepage.CP_DBF_WIN_ARABIC    ; RETURN Codepage.CP_INI_WIN_ARABIC     
+                                                        
+        CASE DbfHeaderCodepage.CP_DBF_MAC_STANDARD  ; RETURN Codepage.CP_INI_MAC_STANDARD   
+        CASE DbfHeaderCodepage.CP_DBF_MAC_GREEK     ; RETURN Codepage.CP_INI_MAC_GREEK      
+        CASE DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN   ; RETURN Codepage.CP_INI_MAC_RUSSIAN    
+        CASE DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN ; RETURN Codepage.CP_INI_MAC_EEUROPEAN
+        OTHERWISE
+            RETURN 0
+
+        END SWITCH
+        
+      METHOD ToHeaderCodePage(SELF codePage AS CodePage) AS DbfHeaderCodePage
+        SWITCH codePage
+            CASE Codepage.CP_INI_DOS_US       ; RETURN DbfHeaderCodepage.CP_DBF_DOS_US         
+            CASE Codepage.CP_INI_DOS_MAZOVIA  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA    
+            CASE Codepage.CP_INI_DOS_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_DOS_GREEK      
+            CASE Codepage.CP_INI_DOS_INTL     ; RETURN DbfHeaderCodepage.CP_DBF_DOS_INTL       
+            CASE Codepage.CP_INI_DOS_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN  
+            CASE Codepage.CP_INI_DOS_ICELANDIC; RETURN DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC  
+            CASE Codepage.CP_INI_DOS_NORDIC   ; RETURN DbfHeaderCodepage.CP_DBF_DOS_NORDIC     
+            CASE Codepage.CP_INI_DOS_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN    
+            CASE Codepage.CP_INI_DOS_KAMENICKY; RETURN DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY  
+            CASE Codepage.CP_INI_DOS_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_TURKISH    
+            CASE Codepage.CP_INI_DOS_CANADIAN ; RETURN DbfHeaderCodepage.CP_DBF_DOS_CANADIAN   
+                                              
+            CASE Codepage.CP_INI_WIN_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN  
+            CASE Codepage.CP_INI_WIN_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN    
+            CASE Codepage.CP_INI_WIN_ANSI     ; RETURN DbfHeaderCodepage.CP_DBF_WIN_ANSI       
+            CASE Codepage.CP_INI_WIN_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_WIN_GREEK      
+            CASE Codepage.CP_INI_WIN_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_TURKISH    
+                                              
+            CASE Codepage.CP_INI_MAC_STANDARD ; RETURN DbfHeaderCodepage.CP_DBF_MAC_STANDARD   
+            CASE Codepage.CP_INI_MAC_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_MAC_GREEK      
+            CASE Codepage.CP_INI_MAC_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN    
+            CASE Codepage.CP_INI_MAC_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN  
+            
+         OTHERWISE
+            RETURN DbfHeaderCodepage.CP_DBF_DOS_US 
+        END SWITCH
+END CLASS    
+
 END NAMESPACE
+
+

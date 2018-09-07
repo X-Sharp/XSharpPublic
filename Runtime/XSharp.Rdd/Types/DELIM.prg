@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -13,7 +13,6 @@ CLASS DELIM INHERIT Workarea
 		SELF:_hFile         := IntPtr.Zero
 		SELF:_TransRec 		:= TRUE
 		SELF:_RecordLength 	:= 0
-		SELF:_BufferSize 	:= 0
 		SELF:_Delimiter		:= e"\""
 		SELF:_Separator		:= ","    
 //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC

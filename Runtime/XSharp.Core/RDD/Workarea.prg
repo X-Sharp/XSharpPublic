@@ -51,11 +51,9 @@ CLASS Workarea IMPLEMENTS IRdd
 	// Some flags that are stored here but managed in subclasses
 	PUBLIC _TransRec		AS LOGIC
 	/// <summary>Size of record</summary>
-	PUBLIC _RecordLength	AS WORD   	
+	PUBLIC _RecordLength	AS LONG   	
 	/// <summary>Current Record</summary>
 	PUBLIC _RecordBuffer	AS BYTE[]	
-	/// <summary>Size of current record buffer</summary>
-	PUBLIC _BufferSize		AS LONG
 	/// <summary>Field delimiter (for DELIM RDD)</summary>
 	PUBLIC _Delimiter		AS STRING	
 	/// <summary>Field separator (for DELIM RDD)</summary>

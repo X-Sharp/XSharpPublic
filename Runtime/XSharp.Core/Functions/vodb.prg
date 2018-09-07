@@ -12,6 +12,7 @@ USING System.IO
 USING System.Reflection
 USING System.Linq
 USING System.Text
+
 /// <summary>
 /// Return the full path of the file
 /// </summary>
@@ -66,7 +67,35 @@ FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
     RETURN 0   
     
     
-    
+/// <summary>
+/// Return the number of records
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION RecCount() AS DWORD
+    LOCAL oRDD := RDDHelpers.CWA("RecCount") AS IRDD
+    IF (oRDD != NULL)
+        RETURN (DWORD) oRDD:RecCount
+    ENDIF
+    RETURN 0   
+
+FUNCTION RecSize AS LONG
+    LOCAL nSize := NULL AS OBJECT
+    VODbInfo(DBInfo.DBI_GETRECSIZE, REF nSize)
+    RETURN (LONG) nSize
+
+/// <summary>
+/// Return the number of records
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION LastRec() AS DWORD
+    LOCAL oRDD := RDDHelpers.CWA("LastRec") AS IRDD
+    IF (oRDD != NULL)
+        RETURN (DWORD) oRDD:RecCount
+    ENDIF
+    RETURN 0   
+      
     
     /// <summary>
     /// Return the alias of a specified work area as a string.

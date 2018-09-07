@@ -8,6 +8,20 @@ BEGIN NAMESPACE XSharp.RDD.App
     FUNCTION Start() AS VOID
         LOCAL myTest := TestDBF{} AS TestDBF
         //
+        VODbUseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
+        ? Dbf()
+        ? "Fields", FCount(), "Records", RecCount(), "RecSize", RecSize()
+        LOCAL i AS DWORD
+        FOR i := 1 TO FCount()
+            LOCAL oValue AS OBJECT
+            IF VoDbFieldGet(i, REF oValue)
+                ? i, FieldName(i), oValue
+            ELSE
+                ? i, FieldName(i), "** Error **"
+            ENDIF
+        NEXT
+        VoDbCloseArea()
+        Console.Read()
         myTest:OpenDBF()
         myTest:OpenDBFErr()
         myTest:OpenDBFShowFields()

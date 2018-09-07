@@ -118,6 +118,7 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:_Bof := TRUE
                         SELF:_Found :=TRUE
                         SELF:_BufferValid := FALSE
+                        SELF:_isValid := FALSE
                     ELSE
                         // File empty, or trying to go outside ?
                         SELF:_RecNo := SELF:RecCount + 1
@@ -1844,6 +1845,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
             LOCAL result AS ICodeBlock
             result := SUPER:Compile(sBlock)
+            SELF:_LastCodeBlock := result
             IF result == NULL
                 SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
             ENDIF
@@ -1854,6 +1856,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL result := NULL AS OBJECT
             TRY
                 result := cbBlock:EvalBlock()
+                SELF:_EvalResult := result
             CATCH ex AS Exception
                 SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
             END TRY

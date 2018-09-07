@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
+    /// <summary>DBF Header Codepage numbers.</summary>  
     ENUM DbfHeaderCodepage INHERIT BYTE
     
         MEMBER CP_DBF_DOS_OLD           := 0x00  // MS-DOS previous versions
@@ -41,7 +42,8 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER CP_DBF_MAC_EEUROPEAN     := 0x97   // Macintosh EE
         MEMBER CP_DBF_MAC_GREEK         := 0x98   // Greek Macintosh
     END ENUM
-    //  Values for Windows and DOS Codepages
+    //  
+    /// <summary>OS Codepages as used in DBF files.</summary>  
     ENUM OsCodepage
     
         MEMBER CP_INI_DOS_US            := 437   // U.S. MS-DOS
@@ -75,6 +77,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER CP_INI_MAC_RUSSIAN       := 10007 // Russian Macintosh (1)
         MEMBER CP_INI_MAC_EEUROPEAN     := 10029 // Macintosh EE
     END ENUM
+    
     /// <summary>DBF Field flags.</summary>                            
     [Flags];
     ENUM DBFFieldFlags AS BYTE
@@ -84,7 +87,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER Binary:=4
         MEMBER AutoIncrementing:=12
     END ENUM
-    
+    /// <summary>DBF Locking model.</summary>                            
     ENUM DbfLockingModel
         MEMBER Clipper52    // Clipper 5.2 locking scheme
         MEMBER Clipper53    // Clipper 5.3 locking scheme
@@ -97,12 +100,14 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF Table flags.</summary>                            
     [Flags];
     ENUM DBFTableFlags AS BYTE
-        MEMBER HasMemoField:=2
+        MEMBER None         :=0
         MEMBER HasStructuralCDX:=1
-        MEMBER IsDBC:=4
-        MEMBER None:=0
+        MEMBER HasMemoField :=2
+        MEMBER IsDBC        :=4
+        MEMBER IsOLE        := 128
     END ENUM
-    
+
+    /// <summary>DBF File Versions.</summary>                            
     ENUM DBFVersion AS BYTE
         MEMBER FoxBase:=2
         MEMBER FoxBaseDBase3NoMemo:=3
@@ -150,7 +155,8 @@ BEGIN NAMESPACE XSharp.RDD
             MEMBER SIZE         := 32
         END ENUM
         /// <summary>Offsets in the header of a DBF.</summary>
-            
+
+
     STATIC CLASS CodePageExtensions
         METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS OsCodePage
             SWITCH headerCodePage
@@ -215,7 +221,19 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 OTHERWISE
                     RETURN DbfHeaderCodepage.CP_DBF_DOS_US 
+            END SWITCH
+
+            STATIC METHOD IsAnsi (SELF codePage AS DBFHeaderCodePage) AS LOGIC
+                SWITCH codePage
+                CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN
+                CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN
+                CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI
+                CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK
+                CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH
+                    RETURN TRUE
                 END SWITCH
+                RETURN FALSE
+ 
     END CLASS    
     
     

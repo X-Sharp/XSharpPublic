@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _oRDD       AS DBF
         PROTECT _blockSize  AS SHORT
         PROTECT _defExt     AS STRING
-        PROTECT _lockScheme AS DbfLocking
+        PROTECT _lockScheme AS Dbf.DbfLocking
         
         PROPERTY DefExt AS STRING
             GET

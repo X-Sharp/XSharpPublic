@@ -18,19 +18,24 @@ CLASS WorkAreas
 	PRIVATE Aliases  AS Dictionary<STRING, DWORD>	// 1 based area numbers !
 	PRIVATE RDDs	 AS IRDD[]    
 	PRIVATE iCurrentWorkarea AS DWORD
+    PRIVATE workAreaStack AS Stack<DWORD>
 	PUBLIC LastException AS Exception 
 
-	///<summary>Get singleton Workareas object for current thread</summary>
-	STATIC METHOD GetInstance() AS WorkAreas
-		VAR oState	:= XSharp.RuntimeState.GetInstance() 
-		VAR oInstance := oState:WorkAreas 
-		RETURN oInstance
+    INTERNAL METHOD PushCurrentWorkarea(dwCurrent AS DWORD) AS VOID
+        workAreaStack:Push(dwCurrent)
+        
+    INTERNAL METHOD PopCurrentWorkarea() AS DWORD
+        IF workAreaStack:Count > 0
+            RETURN workAreaStack:Pop()
+        ENDIF
+        RETURN 0
 
 	#endregion
 	CONSTRUCTOR()
 		Aliases 			:= Dictionary<STRING, DWORD>{ (INT) MaxWorkAreas}
 		RDDs				:= IRDD[]{MaxWorkAreas}   
 		iCurrentWorkArea	:= 1
+        workAreaStack       := Stack<DWORD>{}
 
 	///<summary>Convert 1 based Workarea number to 0 based with validation</summary>
 	PRIVATE METHOD AdjustArea( nArea REF DWORD) AS LOGIC

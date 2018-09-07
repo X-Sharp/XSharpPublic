@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _oRDD       AS DBF
         PROTECT _blockSize  AS SHORT
         PROTECT _defExt     AS STRING
-        PROTECT _lockScheme AS DBF.DbfLocking
+        PROTECT _lockScheme AS DbfLocking
         
         PROPERTY DefExt AS STRING
             GET
@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
-            SELF:_lockScheme:Initialize( DBF.DbfLockingModel.Clipper52 )            
+            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )            
             
             
             /// <inheritdoc />

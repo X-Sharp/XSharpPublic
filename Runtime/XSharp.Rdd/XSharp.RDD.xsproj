@@ -10,8 +10,8 @@
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>true</Unsafe>
-    <INS>false</INS>
+    <Unsafe>false</Unsafe>
+    <INS>true</INS>
     <NS>false</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
@@ -121,6 +121,7 @@
     <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
     <Compile Include="SubCodes.prg" />
+    <Compile Include="Types\Enums.prg" />
     <Compile Include="_Dummy.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />

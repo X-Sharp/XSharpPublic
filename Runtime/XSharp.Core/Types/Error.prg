@@ -219,7 +219,17 @@ BEGIN NAMESPACE XSharp
     e:FuncSym     := cFuncName
     e:Description := ErrString( dwGenCode )
     RETURN e
-    
+
+    STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, aArgs PARAMS OBJECT[] ) AS Error
+    LOCAL e AS Error
+    e := Error{dwGenCode, dwSubCode}
+    e:SubSystem   := "DBCMD"
+    e:FuncSym     := cFuncName
+    e:Description := ErrString( dwGenCode )
+    e:Args        := aArgs
+    RETURN e
+
+
     STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e			  := Error{dwGenCode, dwSubCode}

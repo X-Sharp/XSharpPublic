@@ -5,8 +5,8 @@
 //
 
 // Debug Output and Stack trace info etc.
-using System.Reflection
-using System.Diagnostics
+USING System.Reflection
+USING System.Diagnostics
 
 
 /// <summary>
@@ -25,7 +25,7 @@ FUNCTION DebOut32( s AS STRING ) AS VOID
 /// </returns>
 FUNCTION _DebOut32( s AS STRING ) AS VOID
    System.Diagnostics.Debug.WriteLine(s)
-   return
+   RETURN
 
 
 /// <summary>
@@ -35,8 +35,8 @@ FUNCTION _DebOut32( s AS STRING ) AS VOID
 /// <returns>
 /// </returns>
 
-function ProcFile(dwActivation as DWORD) as string
-	return ProcFile((int) dwActivation + 1) 
+FUNCTION ProcFile(dwActivation AS DWORD) AS STRING
+	RETURN ProcFile((INT) dwActivation + 1) 
 
 /// <summary>
 /// Return the source file for the active code line
@@ -44,8 +44,8 @@ function ProcFile(dwActivation as DWORD) as string
 /// <returns>
 /// </returns>
 
-function ProcFile() as string
-	return ProcFile( (int) 1)
+FUNCTION ProcFile() AS STRING
+	RETURN ProcFile( (INT) 1)
 
 /// <summary>
 /// Return the source file for the active code line
@@ -53,11 +53,11 @@ function ProcFile() as string
 /// <param name="dwActivation"></param>
 /// <returns>
 /// </returns>
-function ProcFile(activation as int) as string
+FUNCTION ProcFile(activation AS INT) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL file := "" AS STRING
    
-   if ( activation + 1 < st:FrameCount .and. activation >= 0)
+   IF ( activation + 1 < st:FrameCount .AND. activation >= 0)
 	  // Note: add 1 so this function isn't included in the stack trace
       file :=  st:GetFrame( (INT) activation + 1 ):GetFileName()  
    ENDIF
@@ -71,16 +71,16 @@ function ProcFile(activation as int) as string
 /// <returns>
 /// </returns>
 
-function ProcLine(dwActivation as DWORD) as dword
-	return ProcLine((int) dwActivation + 1) 
+FUNCTION ProcLine(dwActivation AS DWORD) AS DWORD
+	RETURN ProcLine((INT) dwActivation + 1) 
 
 /// <summary>
 /// Return the source line number of the last line executed in an activated entity.
 /// </summary>
 /// <returns>
 /// </returns>
-function ProcLine() as dword
-	return ProcLine( (int) 1)
+FUNCTION ProcLine() AS DWORD
+	RETURN ProcLine( (INT) 1)
 
 
 /// <summary>
@@ -89,11 +89,11 @@ function ProcLine() as dword
 /// <param name="dwActivation"></param>
 /// <returns>
 /// </returns>
-function ProcLine(activation as INT) as dword
+FUNCTION ProcLine(activation AS INT) AS DWORD
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL line := 0 AS DWORD
    
-   if ( activation + 1 < st:FrameCount .and. activation >= 0)
+   IF ( activation + 1 < st:FrameCount .AND. activation >= 0)
 	  // Note: add 1 so this function isn't included in the stack trace
       line := (DWORD) st:GetFrame( (INT) activation + 1 ):GetFileLineNumber()  
    ENDIF
@@ -106,8 +106,8 @@ function ProcLine(activation as INT) as dword
 /// </summary>
 /// <returns>
 /// </returns>
-function ProcName() as string 
-	return ProcName( 1)
+FUNCTION ProcName() AS STRING 
+	RETURN ProcName( 1)
 
 /// <summary>
 /// Return the name of an activated entity.
@@ -115,13 +115,13 @@ function ProcName() as string
 /// <param name="dwActivation"></param>
 /// <returns>
 /// </returns>
-function ProcName(activation as int) as string
+FUNCTION ProcName(activation AS INT) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL name := "" AS STRING
    
-   if ( activation + 1 < st:FrameCount .and. activation >= 0)
-		var mi := st:GetFrame( activation + 1 ):GetMethod()
-		var t  := mi:DeclaringType
+   IF ( activation + 1 < st:FrameCount .AND. activation >= 0)
+		VAR mi := st:GetFrame( activation + 1 ):GetMethod()
+		VAR t  := mi:DeclaringType
 		IF t == NULL 
 			name := mi:Name:ToUpperInvariant()
 		ELSE
@@ -139,11 +139,11 @@ function ProcName(activation as int) as string
 /// <returns>
 /// </returns>
 /// <remarks>This function is inlined by the compiler </remarks>
-function AltD() as void
-	if System.Diagnostics.Debugger.IsAttached
+FUNCTION AltD() AS VOID
+	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
-	endif
-	return  
+	ENDIF
+	RETURN  
 
 /// <summary>
 /// Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.
@@ -152,8 +152,8 @@ function AltD() as void
 /// <returns>
 /// </returns>
 /// <remarks>This function is inlined by the compiler </remarks>
-function AltD(nMode as Int) as void
-	if System.Diagnostics.Debugger.IsAttached
+FUNCTION AltD(nMode AS INT) AS VOID
+	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
-	endif
-	return  
+	ENDIF
+	RETURN  

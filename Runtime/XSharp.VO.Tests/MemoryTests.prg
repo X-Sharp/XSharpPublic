@@ -6,7 +6,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-using XUnit
+USING XUnit
 
 
 BEGIN NAMESPACE XSharp.VO.Tests
@@ -14,10 +14,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS MemoryTests
 		[Fact, Trait("Category", "Memory")]; 
 		UNSAFE METHOD MemoryTest() AS VOID
-			LOCAL p,q as IntPtr
+			LOCAL p,q AS IntPtr
 			p := MemAlloc(10)
 			q := MemAlloc(20)
-			Assert.NotEqual(null, p)
+			Assert.NotEqual(NULL, p)
 			Assert.NotEqual(p,q)
 			Assert.Equal(MemFree(p),0)
 			Assert.Equal(MemFree(q),0)

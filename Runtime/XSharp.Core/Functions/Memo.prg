@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -7,8 +7,8 @@
 
 
 PUBLIC CLASS MemoHelpers
-	CONST BLANK      := 0x20 as INT
-	CONST END_MEMO   := 0x1A as INT // ^Z
+	CONST BLANK      := 0x20 AS INT
+	CONST END_MEMO   := 0x1A AS INT // ^Z
 	CONST MAX_WIDTH  := 254 AS INT
 	CONST TAB		 := 9 AS INT
 	CONST LINE_FEED  := 10 AS INT
@@ -26,9 +26,9 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nLines := 0 AS DWORD
 		LOCAL nIndex := 0 AS INT
 		IF cMemo == NULL
-			return 0
-		endif
-		IF nLineLen > 0 .and. nLineLen <= MemoHelpers.MAX_WIDTH
+			RETURN 0
+		ENDIF
+		IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
 	
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -58,7 +58,7 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nSrc  := 0 AS INT
 		
 		
-		IF nPos <= cMemo:Length .and. nLineLen > 0 .and. nLineLen <= MemoHelpers.MAX_WIDTH
+		IF nPos <= cMemo:Length .AND. nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
 		
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -67,7 +67,7 @@ PUBLIC CLASS MemoHelpers
 			nTempLen := 1
 			nLineNum := 1
 			
-			DO WHILE nIndex < nPos .and. nTempLen != 0
+			DO WHILE nIndex < nPos .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				IF nIndex <= nPos
@@ -92,7 +92,7 @@ PUBLIC CLASS MemoHelpers
 		RETURN Tuple<INT,INT>{ nLineNum, nColumn }
 		
 		
-	STATIC METHOD  MLcToPos( cMemo AS STRING, nLineLen AS INT, nLineNum as INT, nColumn as INT, nTabSize as INT, lWrap as LOGIC) AS DWORD 
+	STATIC METHOD  MLcToPos( cMemo AS STRING, nLineLen AS INT, nLineNum AS INT, nColumn AS INT, nTabSize AS INT, lWrap AS LOGIC) AS DWORD 
 		LOCAL nTempLen	:= 0 AS INT
 		LOCAL nChar		:= 0 AS INT
 		LOCAL nCrLf		:= 0 AS INT
@@ -100,7 +100,7 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nPos		:= 0 AS INT
 		
 		
-		IF  nLineNum > 0 .and. nLineLen > 4 .and. nLineLen <= MAX_WIDTH
+		IF  nLineNum > 0 .AND. nLineLen > 4 .AND. nLineLen <= MAX_WIDTH
 		
 			IF nTabSize >= nLineLen
 				nTabSize := nLineLen - 1
@@ -109,7 +109,7 @@ PUBLIC CLASS MemoHelpers
 			nTempLen := 1
 			
 			nLineNum --
-			DO WHILE nLineNum != 0 .and. nTempLen != 0
+			DO WHILE nLineNum != 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				nLineNum --
@@ -119,14 +119,14 @@ PUBLIC CLASS MemoHelpers
 			//  previous line it won't be counted.  We must add as two chars
 			//  to the buffer position in order for it to work out correctly.
 			
-			IF IsCrLf( cMemo, nIndex, nCrLf ) .and. nCrLf == SOFT_CR_LF
+			IF IsCrLf( cMemo, nIndex, nCrLf ) .AND. nCrLf == SOFT_CR_LF
 				nIndex += 2
 			ENDIF
 			
 			DO WHILE nPos < nColumn
 			
 				IF nIndex < cMemo:Length
-					nChar := cMemo[(int) nIndex]
+					nChar := cMemo[(INT) nIndex]
 				ELSE
 					nChar := END_MEMO
 				ENDIF
@@ -153,7 +153,7 @@ PUBLIC CLASS MemoHelpers
 		LOCAL nChar AS INT
 		
 		nCrLf := 0
-		IF nPos + 1 < cMemo:Length .and. (INT) cMemo[(INT) nPos + 1] == LINE_FEED
+		IF nPos + 1 < cMemo:Length .AND. (INT) cMemo[(INT) nPos + 1] == LINE_FEED
 			nChar := (INT) cMemo[(INT) nPos]
 			SWITCH nCHar
 			CASE HARD_CR
@@ -178,7 +178,7 @@ PUBLIC CLASS MemoHelpers
 		   nPos		:= nStart
 		   lCont	:= TRUE
    
-		   DO WHILE lCont .and. nPos < nLength .and. nWidth <= nLineLen
+		   DO WHILE lCont .AND. nPos < nLength .AND. nWidth <= nLineLen
 			  nChar := (INT) cMemo[nPos]
 			  DO CASE
 			  CASE nChar == TAB
@@ -229,7 +229,7 @@ PUBLIC CLASS MemoHelpers
 			oBuilder := System.Text.StringBuilder{ (INT) nLineLen }
 		END IF
 		
-		IF nLineNum > 0 .and. nLineLen > 0 .and. nLineLen <= MAX_WIDTH
+		IF nLineNum > 0 .AND. nLineLen > 0 .AND. nLineLen <= MAX_WIDTH
 		
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
@@ -237,18 +237,18 @@ PUBLIC CLASS MemoHelpers
 			nIndex :=  dOffset
 			nLineNum --
 			nTempLen := 1
-			DO WHILE nLineNum != 0 .and. nTempLen != 0
+			DO WHILE nLineNum != 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				dOffset += nTempLen
 				nLineNum --
 			ENDDO
 			
-			IF nLineNum == 0 .and. nTempLen != 0
+			IF nLineNum == 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nSrc := 0
 				nDes := 0
-				DO WHILE nSrc < nTempLen .and. nDes < nLineLen
+				DO WHILE nSrc < nTempLen .AND. nDes < nLineLen
 					nChar := cMemo[ (INT) nSrc + nIndex]
 					DO CASE
 						CASE IsCrLf( cMemo, nSrc + nIndex, REF nCrLf )
@@ -321,9 +321,9 @@ FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset AS DWORD) AS STRING
 /// </returns>
 FUNCTION MLine3(cMemo AS STRING,nLineNum AS DWORD,nOffSet REF DWORD) AS STRING
 	LOCAL cResult AS STRING
-	LOCAL iOffSet := (INT) nOffSet as INT
+	LOCAL iOffSet := (INT) nOffSet AS INT
 	IF nOffSet < cMemo:Length
-		cResult := Trim(MemoHelpers.MLine( cMemo , (int) nLineNum , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
+		cResult := Trim(MemoHelpers.MLine( cMemo , (INT) nLineNum , MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, FALSE, REF iOffSet ))
 	ELSE
 		cResult := ""
 	ENDIF
@@ -344,7 +344,7 @@ FUNCTION MLine3(cMemo AS STRING,nLineNum AS DWORD,nOffSet REF DWORD) AS STRING
 FUNCTION MemoLine(cMemo AS STRING, nLineLen := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNum := 1 AS DWORD,;
 nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	LOCAL dPos := 0 AS INT
-	RETURN MemoHelpers.MLine(cMemo, (int) nLineNum, (int) nLineLen, (int) nTabSize, lWrap, FALSE, REF DPos)
+	RETURN MemoHelpers.MLine(cMemo, (INT) nLineNum, (INT) nLineLen, (INT) nTabSize, lWrap, FALSE, REF DPos)
 	
 /// <summary>
 /// Return the contents of a text file as a string.
@@ -396,7 +396,7 @@ FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 /// </returns>
 FUNCTION MLPos2(cMemo AS STRING,nLineNum AS DWORD) AS DWORD
 	LOCAL nIndex := 0 AS INT
-	MemoHelpers.MLine( cMemo, (int)  nLineNum, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
+	MemoHelpers.MLine( cMemo, (INT)  nLineNum, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
 	RETURN (DWORD) nIndex
 	
 	
@@ -426,7 +426,7 @@ FUNCTION MemLines(cMemo AS STRING) AS DWORD
 	
 	
 FUNCTION _MPosToLc(cMemo AS STRING,nLineLen AS DWORD,nPos AS DWORD,nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS Tuple<INT, INT>
-	RETURN MemoHelpers.MPosToLc(cMemo, (int) nLineLen, (int) nPos, (int) nTabSize, lWrap)
+	RETURN MemoHelpers.MPosToLc(cMemo, (INT) nLineLen, (INT) nPos, (INT) nTabSize, lWrap)
 	
-FUNCTION MLcToPos( cMemo as STRING, nLineLen as DWORD, nLineNum as DWORD, nColumn as DWORD, nTabSize as DWORD, lWrap as LOGIC) AS DWORD CLIPPER
-	RETURN MemoHelpers.MLcToPos(cMemo, (int) nLineLen, (int) nLineNum, (int) nColumn, (int) nTabSize, lWrap)
+FUNCTION MLcToPos( cMemo AS STRING, nLineLen AS DWORD, nLineNum AS DWORD, nColumn AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD CLIPPER
+	RETURN MemoHelpers.MLcToPos(cMemo, (INT) nLineLen, (INT) nLineNum, (INT) nColumn, (INT) nTabSize, lWrap)

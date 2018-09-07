@@ -5,8 +5,8 @@
 //
 
 
-using XSharp
-using System.Runtime.InteropServices
+USING XSharp
+USING System.Runtime.InteropServices
 
 
 
@@ -18,13 +18,13 @@ using System.Runtime.InteropServices
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function FRead(pHandle as IntPtr,pData as IntPtr,dwCount as dword) as dword
-	local bData as byte[]
-	local dwResult as DWORD
-	bData := byte[] {(int) dwCount}
+FUNCTION FRead(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
+	LOCAL bData AS BYTE[]
+	LOCAL dwResult AS DWORD
+	bData := BYTE[] {(INT) dwCount}
 	dwResult := FRead3(pHandle, bData, dwCount)
-	Marshal.Copy(bData, 0, pData, (int) dwResult)
-	return dwResult
+	Marshal.Copy(bData, 0, pData, (INT) dwResult)
+	RETURN dwResult
 	
 
 
@@ -36,12 +36,12 @@ function FRead(pHandle as IntPtr,pData as IntPtr,dwCount as dword) as dword
 /// <param name="nBuffLen"></param>
 /// <returns>
 /// </returns>
-function FReadLine(pFile ,nBuffLen) as string CLIPPER
-	if nBuffLen == NIL
-		return XSharp.Core.Functions.FreadLine(pFile, 0)
-	else
-		return XSharp.Core.Functions.FreadLine(pFile, nBuffLen)
-	endif
+FUNCTION FReadLine(pFile ,nBuffLen) AS STRING CLIPPER
+	IF nBuffLen == NIL
+		RETURN XSharp.Core.Functions.FreadLine(pFile, 0)
+	ELSE
+		RETURN XSharp.Core.Functions.FreadLine(pFile, nBuffLen)
+	ENDIF
 
 
 /// <summary>
@@ -52,12 +52,12 @@ function FReadLine(pFile ,nBuffLen) as string CLIPPER
 /// <param name="nOrigin"></param>
 /// <returns>
 /// </returns>
-function FSeek(hFile ,nOffset ,nOrigin ) as long CLIPPER
-	if nOrigin == NIL
-		return XSharp.Core.Functions.FSeek3(hFile, nOffSet, FS_SET)
-	else
-		return XSharp.Core.Functions.FSeek3(hFile, nOffSet, nOrigin)
-	endif
+FUNCTION FSeek(hFile ,nOffset ,nOrigin ) AS LONG CLIPPER
+	IF nOrigin == NIL
+		RETURN XSharp.Core.Functions.FSeek3(hFile, nOffSet, FS_SET)
+	ELSE
+		RETURN XSharp.Core.Functions.FSeek3(hFile, nOffSet, nOrigin)
+	ENDIF
 	
 
 
@@ -69,12 +69,12 @@ function FSeek(hFile ,nOffset ,nOrigin ) as long CLIPPER
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWrite(pHandle ,c ,nCount ) as dword CLIPPER
-	if nCount == NIL
-		return XSharp.Core.Functions.Fwrite(pHandle, c)
-	else
-		return XSharp.Core.Functions.Fwrite3(pHandle, c, nCount)
-	endif
+FUNCTION FWrite(pHandle ,c ,nCount ) AS DWORD CLIPPER
+	IF nCount == NIL
+		RETURN XSharp.Core.Functions.Fwrite(pHandle, c)
+	ELSE
+		RETURN XSharp.Core.Functions.Fwrite3(pHandle, c, nCount)
+	ENDIF
 
 /// <summary>
 /// Write a string, a carriage-return character, and a linefeed character to an open file.
@@ -84,12 +84,12 @@ function FWrite(pHandle ,c ,nCount ) as dword CLIPPER
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteLine(pFile ,c ,nCount) as dword CLIPPER
-	if nCount == NIL
-		return XSharp.Core.Functions.FwriteLine(pFile, c)
-	else
-		return XSharp.Core.Functions.FwriteLine3(pFile, c, nCount)
-	endif
+FUNCTION FWriteLine(pFile ,c ,nCount) AS DWORD CLIPPER
+	IF nCount == NIL
+		RETURN XSharp.Core.Functions.FwriteLine(pFile, c)
+	ELSE
+		RETURN XSharp.Core.Functions.FwriteLine3(pFile, c, nCount)
+	ENDIF
 
 /// <summary>
 /// Write a string to an open file, with SetAnsi() dependency.
@@ -99,12 +99,12 @@ function FWriteLine(pFile ,c ,nCount) as dword CLIPPER
 /// <param name="nCount"></param>
 /// <returns>
 /// </returns>
-function FWriteText(pHandle ,c ,nCount ) as dword CLIPPER
-	if nCount == NIL
-		return XSharp.Core.Functions.FWriteText3(pHandle, c, Slen(c))
-	else
-		return XSharp.Core.Functions.FWriteText3(pHandle, c, nCount)
-	endif 
+FUNCTION FWriteText(pHandle ,c ,nCount ) AS DWORD CLIPPER
+	IF nCount == NIL
+		RETURN XSharp.Core.Functions.FWriteText3(pHandle, c, Slen(c))
+	ELSE
+		RETURN XSharp.Core.Functions.FWriteText3(pHandle, c, nCount)
+	ENDIF 
 
 /// <summary>
 /// Break a path name into its components.
@@ -117,8 +117,8 @@ function FWriteText(pHandle ,c ,nCount ) as dword CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION SplitPath(cPath AS STRING,cDrive REF STRING,cDir REF STRING,cName REF STRING,cExt REF STRING) AS VOID
-   _SplitPath(cPath, out cDrive, out cDir, out cName, out cExt)
-	return
+   _SplitPath(cPath, OUT cDrive, OUT cDir, OUT cName, OUT cExt)
+	RETURN
 
 
 /// <summary>
@@ -131,26 +131,26 @@ FUNCTION SplitPath(cPath AS STRING,cDrive REF STRING,cDir REF STRING,cName REF S
 /// <param name="pszExt"></param>
 /// <returns>
 /// </returns>
-function SplitPath(pszPath as Psz,pszDrive as Psz,pszDir as Psz,pszName as Psz,pszExt as Psz) as void
+FUNCTION SplitPath(pszPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,pszExt AS PSZ) AS VOID
    LOCAL cDrive AS STRING
    LOCAL cDir   AS STRING
    LOCAL cName  AS STRING
    LOCAL cExt   AS STRING
-   local cPath  as string
+   LOCAL cPath  AS STRING
    cPath := Psz2String(pszPath)
-   _SplitPath(cPath, out cDrive, out cDir, out cName, out cExt)
-	if pszDrive != null_psz
+   _SplitPath(cPath, OUT cDrive, OUT cDir, OUT cName, OUT cExt)
+	IF pszDrive != NULL_PSZ
 		MemCopyString(pszDrive, cDrive, (DWORD) Slen(cDrive)+1)
-	endif
-	if pszDir != null_psz
+	ENDIF
+	IF pszDir != NULL_PSZ
 		MemCopyString(pszDir, cDir, (DWORD) Slen(cDir)+1)
-	endif
-	if pszName != null_psz
+	ENDIF
+	IF pszName != NULL_PSZ
 		MemCopyString(pszName, cName, (DWORD) Slen(cName)+1)
-	endif
-	if pszExt != null_psz
+	ENDIF
+	IF pszExt != NULL_PSZ
 		MemCopyString(pszExt, cExt, (DWORD) Slen(cExt)+1)
-	endif
+	ENDIF
 
 
 //	return

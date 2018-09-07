@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 
@@ -17,15 +17,15 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Trait("Category", "OS")];
 		[Fact];
-		method TestOs as void
-			local c1, c2 as string
+		METHOD TestOs AS VOID
+			LOCAL c1, c2 AS STRING
 			c1 := OS()
 			c2 := OS(true)
 			Assert.NotEqual(c1, c2)
 
 		[Trait("Category", "OS")];
 		[Fact];
-		method TestEnv as void
+		METHOD TestEnv AS VOID
 			LOCAL c1, c2 AS STRING
 			SetEnv("Robert", null)
 			c1 := GetEnv("Robert")

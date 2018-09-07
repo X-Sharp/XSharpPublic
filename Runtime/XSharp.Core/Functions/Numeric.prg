@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -55,8 +55,8 @@ FUNCTION AbsShort(si AS SHORT) AS LONG
 /// </summary>
 /// <param name="dividend">The dividend of the division operation</param>
 /// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
-FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS real8
+/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
+FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS REAL8
 	RETURN dividend % divisor
 
 /// <summary>
@@ -64,8 +64,8 @@ FUNCTION Mod(dividend AS REAL8, divisor AS REAL8) AS real8
 /// </summary>
 /// <param name="dividend">The dividend of the division operation</param>
 /// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
-FUNCTION Mod(dividend AS Int64, divisor AS Int64) AS Int64
+/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
+FUNCTION Mod(dividend AS INT64, divisor AS INT64) AS INT64
 	RETURN dividend % divisor
 
 
@@ -74,7 +74,7 @@ FUNCTION Mod(dividend AS Int64, divisor AS Int64) AS Int64
 /// </summary>
 /// <param name="dividend">The dividend of the division operation</param>
 /// <param name="divisor">The divisor of the division operation</param>
-/// <returns>A number representing the remainder of <nDividend> divided by <nDivisor>.</returns>
+/// <returns>A number representing the remainder of <paramref name="dividend"/> divided by <paramref name="divisor"/>.</returns>
 FUNCTION Mod(dividend AS LONG, divisor AS LONG) AS LONG
 	RETURN dividend % divisor
 
@@ -94,8 +94,8 @@ FUNCTION SwapByte(b AS BYTE) AS BYTE
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function SwapDWord(dw as dword) as dword
-	local dw1, dw2 as dword
+FUNCTION SwapDWord(dw AS DWORD) AS DWORD
+	LOCAL dw1, dw2 AS DWORD
 	dw1 := (dw & 0x0000ffff) << 16
 	dw2 := (dw >> 16) & 0x0000ffff
 	dw := dw1 | dw2
@@ -117,11 +117,11 @@ FUNCTION SwapInt(li AS LONG) AS LONG
 /// <returns>
 /// </returns>
 FUNCTION SwapLong(li AS LONG) AS LONG
-	local li1, li2 as LONG
+	LOCAL li1, li2 AS LONG
 	li1 := (li & 0x0000ffff) << 16
 	li2 := (li >> 16) & 0x0000ffff
 	li := li1 | li2
-	return li
+	RETURN li
 
 
 /// <summary>
@@ -140,7 +140,7 @@ FUNCTION SwapInt64( i64 AS INT64 ) AS INT64
 /// <returns>
 /// </returns>
 FUNCTION SwapShort(si AS SHORT) AS SHORT
-RETURN	 ((short)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
+RETURN	 ((SHORT)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
 
 /// <summary>
 /// Exchange the right and left halves of a word.

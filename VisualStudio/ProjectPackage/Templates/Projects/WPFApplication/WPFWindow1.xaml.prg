@@ -20,7 +20,7 @@ BEGIN NAMESPACE $safeprojectname$
     /// </summary>
     PUBLIC PARTIAL CLASS $safeitemname$ INHERIT Window
     
-        PUBLIC CONSTRUCTOR() 
+        PUBLIC CONSTRUCTOR() STRICT
             InitializeComponent()
 			RETURN
 

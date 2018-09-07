@@ -6,7 +6,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-using XUnit
+USING XUnit
 
 
 BEGIN NAMESPACE XSharp.Core.Tests
@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	CLASS IOTests
 
 		[Fact, Trait("Category", "Misc")]; 
-		method FileTest() as void
+		METHOD FileTest() AS VOID
 			Assert.Equal(true,File("c:\windows\system32\shell32.dll"))
 			Assert.Equal(false,File(null))
 
@@ -22,5 +22,5 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		RETURN
 
 	END CLASS
-end namespace // XSharp.Runtime.Tests
+END NAMESPACE // XSharp.Runtime.Tests
 

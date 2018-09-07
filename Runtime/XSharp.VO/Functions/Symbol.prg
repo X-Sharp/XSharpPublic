@@ -11,8 +11,8 @@
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function String2Atom(c as string) as symbol
-	return symbol{c, false}
+FUNCTION String2Atom(c AS STRING) AS SYMBOL
+	RETURN SYMBOL{c, FALSE}
 	
 	/// <summary>
 	/// Convert a string to an uppercase Symbol.
@@ -20,8 +20,8 @@ function String2Atom(c as string) as symbol
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-function String2Symbol(c as string) as symbol
-	return symbol{c, true}
+FUNCTION String2Symbol(c AS STRING) AS SYMBOL
+	RETURN SYMBOL{c, TRUE}
 	
 	
 	/// <summary>
@@ -30,8 +30,8 @@ function String2Symbol(c as string) as symbol
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-function Symbol2String(s as symbol) as string
-	return s:ToString()
+FUNCTION Symbol2String(s AS SYMBOL) AS STRING
+	RETURN s:ToString()
 
 	/// <summary>
 	/// Concatenate two Symbols.
@@ -40,8 +40,8 @@ function Symbol2String(s as symbol) as string
 	/// <param name="s2"></param>
 	/// <returns>
 	/// </returns>
-function ConcatAtom(s1 as symbol,s2 as symbol) as symbol
-	return Symbol{ s1:ToString()+ s2:ToString()}
+FUNCTION ConcatAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS SYMBOL
+	RETURN SYMBOL{ s1:ToString()+ s2:ToString()}
 	
 	/// <summary>
 	/// Concatenate three Symbols.
@@ -51,8 +51,8 @@ function ConcatAtom(s1 as symbol,s2 as symbol) as symbol
 	/// <param name="s3"></param>
 	/// <returns>
 	/// </returns>
-function ConcatAtom3(s1 as symbol,s2 as symbol,s3 as symbol) as symbol
-	return Symbol{ s1:ToString() +s2:ToString() +s3:ToString() }
+FUNCTION ConcatAtom3(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL) AS SYMBOL
+	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() }
 
 	/// <summary>
 	/// </summary>
@@ -62,8 +62,8 @@ function ConcatAtom3(s1 as symbol,s2 as symbol,s3 as symbol) as symbol
 	/// <param name="s4"></param>
 	/// <returns>
 	/// </returns>
-function ConcatAtom4(s1 as symbol,s2 as symbol,s3 as symbol,s4 as symbol) as symbol
-	return Symbol{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() }
+FUNCTION ConcatAtom4(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL) AS SYMBOL
+	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() }
 	
 	/// <summary>
 	/// </summary>
@@ -74,8 +74,8 @@ function ConcatAtom4(s1 as symbol,s2 as symbol,s3 as symbol,s4 as symbol) as sym
 	/// <param name="s5"></param>
 	/// <returns>
 	/// </returns>
-function ConcatAtom5(s1 as symbol,s2 as symbol,s3 as symbol,s4 as symbol,s5 as symbol) as symbol
-	return Symbol{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() +s5:ToString()}
+FUNCTION ConcatAtom5(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL,s5 AS SYMBOL) AS SYMBOL
+	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() +s5:ToString()}
 	
 	
 	/// <summary>
@@ -83,8 +83,8 @@ function ConcatAtom5(s1 as symbol,s2 as symbol,s3 as symbol,s4 as symbol,s5 as s
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function MaxAtom() as dword
-	return (DWORD) __Symbol.SymbolTable.Strings:Count
+FUNCTION MaxAtom() AS DWORD
+	RETURN (DWORD) __Symbol.SymbolTable.Strings:Count
 	
 	
 	
@@ -94,8 +94,8 @@ function MaxAtom() as dword
 	/// <param name="s2"></param>
 	/// <returns>
 	/// </returns>
-function SysCompAtom(s1 as symbol,s2 as symbol) as int
-	return __StringCompare(s1:ToString(), s2:ToString())
+FUNCTION SysCompAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS INT
+	RETURN __StringCompare(s1:ToString(), s2:ToString())
 
 
 	/// <summary>
@@ -104,8 +104,8 @@ function SysCompAtom(s1 as symbol,s2 as symbol) as int
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-function SysAddAtom(s as STRING) as Symbol
-	return Symbol { s, FALSE} 
+FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
+	RETURN SYMBOL { s, FALSE} 
 
 
 	/// <summary>
@@ -114,8 +114,8 @@ function SysAddAtom(s as STRING) as Symbol
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	function SysAddAtom(p as Psz) as Symbol
-		return Symbol { Psz2String(p), FALSE} 
+	FUNCTION SysAddAtom(p AS PSZ) AS SYMBOL
+		RETURN SYMBOL { Psz2String(p), FALSE} 
 
 
 	/// <summary>
@@ -124,8 +124,8 @@ function SysAddAtom(s as STRING) as Symbol
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-	function SysAddAtomUpperA(s as string) as Symbol
-		return Symbol { s, TRUE} 	
+	FUNCTION SysAddAtomUpperA(s AS STRING) AS SYMBOL
+		RETURN SYMBOL { s, TRUE} 	
 	
 	/// <summary>
 	/// Convert a null-terminated string to an uppercase Symbol and add it to the atom table.
@@ -133,8 +133,8 @@ function SysAddAtom(s as STRING) as Symbol
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	function SysAddAtomUpperA(p as Psz) as Symbol
-		return Symbol { Psz2String(p), TRUE} 	
+	FUNCTION SysAddAtomUpperA(p AS PSZ) AS SYMBOL
+		RETURN SYMBOL { Psz2String(p), TRUE} 	
 
 	/// <summary>
 	/// Determine whether a Symbol is in the atom table.
@@ -142,8 +142,8 @@ function SysAddAtom(s as STRING) as Symbol
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	function SysFindAtom(s as STRING) as Symbol
-		return __Symbol.Find(s)
+	FUNCTION SysFindAtom(s AS STRING) AS SYMBOL
+		RETURN __Symbol.Find(s)
 			
 	/// <summary>
 	/// Determine whether a Symbol is in the atom table.
@@ -151,8 +151,8 @@ function SysAddAtom(s as STRING) as Symbol
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	function SysFindAtom(p as Psz) as Symbol
-		return __Symbol.Find(Psz2String(p))
+	FUNCTION SysFindAtom(p AS PSZ) AS SYMBOL
+		RETURN __Symbol.Find(Psz2String(p))
 	
 	/// <summary>
 	/// Convert a Symbol to a null-terminated string.
@@ -160,5 +160,5 @@ function SysAddAtom(s as STRING) as Symbol
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-	function SysGetAtomName(s as Symbol) as Psz
-		return s:SysGetAtomName()
+	FUNCTION SysGetAtomName(s AS SYMBOL) AS PSZ
+		RETURN s:SysGetAtomName()

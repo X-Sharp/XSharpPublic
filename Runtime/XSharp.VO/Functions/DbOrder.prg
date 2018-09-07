@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-#ifdef COMPILEIT
+#ifdef NOTDEFINED
 /// <summary>
 /// </summary>
 /// <returns>
@@ -23,11 +23,11 @@ FUNCTION DbReindex() AS LOGIC
 	
 
 
-FUNCTION DbSeek(xValue, lSoft, lLast)
+FUNCTION DbSeek(xValue, lSoft, lLast) AS LOGIC CLIPPER
 	LOCAL dbsci     IS _DBSCOPEINFO
 	LOCAL lRet      AS LOGIC
 	
-	Default(@lSoft, SetSoftSeek())
+	DEFAULT(@lSoft, SetSoftSeek())
 	
 	MemClear(@dbsci, _SIZEOF(_DBSCOPEINFO))
 	
@@ -37,7 +37,7 @@ FUNCTION DbSeek(xValue, lSoft, lLast)
 	
 	VODBSetScope(@dbsci)
 	
-	Default(@xValue, "")
+	DEFAULT(@xValue, "")
 	
 	IF !VODBSeek(xValue, lSoft)
 		RETURN DoError(#DbSeek)
@@ -55,7 +55,7 @@ FUNCTION DbSeek(xValue, lSoft, lLast)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbSetFound(lFnd)
+FUNCTION DbSetFound(lFnd AS LOGIC) AS LOGIC 
 	RETURN VODBSetFound(lFnd)
 	
 	
@@ -78,7 +78,7 @@ FUNCTION DBSETORDERCONDITION(  cFor,       ;
 		lAdditive,  ;
 		lCurrent,   ;
 		lCustom,    ;
-		lNoOptimize     )
+		lNoOptimize     ) AS LOGIC CLIPPER
 	
 	
 	RETURN OrdCondSet( cFor, uCobFor, lAll, uCobWhile, uCobEval, ;
@@ -90,7 +90,7 @@ FUNCTION DBSETORDERCONDITION(  cFor,       ;
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbSetIndex(cIndex, uOrder)
+FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 	
 	IF IsNil(cIndex)
 		RETURN ORDLISTCLEAR()
@@ -103,11 +103,11 @@ FUNCTION DbSetIndex(cIndex, uOrder)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbSetOrder (uOrder, cBagName)
+FUNCTION DbSetOrder (uOrder, cBagName) AS LOGIC CLIPPER
 	
 	LOCAL pszOrder          AS PSZ
 	
-	Default(@cBagName, "")
+	DEFAULT(@cBagName, "")
 	
 	RETURN VODBOrdSetFocus(cBagName, uOrder, @pszOrder)
 	
@@ -118,7 +118,7 @@ FUNCTION DbSetOrder (uOrder, cBagName)
 /// </returns>
 
 
-FUNCTION IndexCount()
+FUNCTION IndexCount() AS DWORD 
 	LOCAL nRet      AS DWORD
 	IF Used()
 		nRet := DbOrderInfo(DBOI_ORDERCOUNT)
@@ -133,7 +133,7 @@ FUNCTION IndexCount()
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION INDEXEXT       ()
+FUNCTION INDEXEXT       () AS STRING STRICT
 	RETURN VODBOrdBagExt()
 	
 	
@@ -143,7 +143,7 @@ FUNCTION INDEXEXT       ()
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION INDEXKEY       (uOrder)
+FUNCTION INDEXKEY(uOrder) AS STRING CLIPPER
 	
 	LOCAL uRetVal   AS USUAL
 	
@@ -165,18 +165,18 @@ FUNCTION INDEXKEY       (uOrder)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION INDEXORD       ()
+FUNCTION INDEXORD       () AS INT STRICT
 	
-	LOCAL uRetVal := NIL
+	LOCAL uRetVal := NIL AS USUAL
 	
 	uRetVal := DbOrderInfo(DBOI_NUMBER, "", NIL)
 	
-	Default(@uRetVal, 0)
+	DEFAULT(@uRetVal, 0)
 	
 	RETURN uRetVal
 	
 	
-STATIC FUNCTION OrdScopeNum(nScope)                 AS SHORT        CLIPPER
+STATIC FUNCTION OrdScopeNum(nScope)  AS SHORT CLIPPER
 	
 	IF !IsNumeric( nScope )
 		nScope := 0
@@ -196,7 +196,7 @@ STATIC FUNCTION OrdScopeNum(nScope)                 AS SHORT        CLIPPER
 	
 	
 	
-FUNCTION OrdSetRelation (cAlias, bKey, cKey)
+FUNCTION OrdSetRelation (cAlias, bKey, cKey) AS USUAL CLIPPER
 	
 	DbSetRelation(cAlias, bKey, cKey)
 	
@@ -208,9 +208,7 @@ FUNCTION OrdSetRelation (cAlias, bKey, cKey)
 	
 	
 	
-	//  FUNCTION OrdSetScope    (nScope, xVal)
-	
-FUNCTION OrdScope       (nScope, xVal)
+FUNCTION OrdScope       (nScope, xVal) AS USUAL CLIPPER
 	LOCAL n     AS DWORD
 	
 	nScope := OrdScopeNum(nScope)
@@ -226,13 +224,13 @@ FUNCTION OrdScope       (nScope, xVal)
 	
 	
 	
-FUNCTION OrdSkipUnique  (nCount)
+FUNCTION OrdSkipUnique  (nCount) AS USUAL CLIPPER
 	RETURN VODBOrderInfo ( DBOI_SKIPUNIQUE, "", NIL,@nCount )
 	
 	
 	
 	
-FUNCTION OrdIsUnique    (xOrder, cOrderBag)
+FUNCTION OrdIsUnique    (xOrder, cOrderBag) AS USUAL CLIPPER
 	
 	RETURN DbOrderInfo(DBOI_UNIQUE, cOrderBag, xOrder)
 	
@@ -244,8 +242,7 @@ FUNCTION OrdIsUnique    (xOrder, cOrderBag)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDBAGEXT      ()
-	
+FUNCTION ORDBAGEXT () AS STRING STRICT
 	RETURN VODBOrdBagExt()
 	
 	
@@ -255,8 +252,7 @@ FUNCTION ORDBAGEXT      ()
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDBAGNAME     (uOrder)
-	
+FUNCTION ORDBAGNAME     (uOrder) AS STRING CLIPPER
 	RETURN DbOrderInfo(DBOI_BAGNAME, "", uOrder)
 	
 	
@@ -279,79 +275,78 @@ FUNCTION OrdCondSet(   cFor,       ;
 		lAdditive,  ;
 		lCurrent,   ;
 		lCustom,    ;
-		lNoOptimize     )
+		lNoOptimize     ) AS LOGIC CLIPPER
 	
 	
 	LOCAL lRetCode          AS LOGIC
-	LOCAL dbOrdCondInfo     IS _DBORDERCONDINFO
+	LOCAL dbOrdCondInfo     AS DbOrderCondInfo
 	
-	MemClear( @dbOrdCondInfo, _SIZEOF(_DBORDERCONDINFO) )
 	
 	IF !IsNil(cFor)
-		MemCopy( @dbOrdCondInfo.abFor[1], String2Psz( cFor), SLen(cFor) )
+        dbOrdCondInfo:ForExpression := cFor
 	ENDIF
 	
 	
 	IF !IsNil(uCobFor)
-		MemCopy(@dbOrdCondInfo.itmCobFor, @uCobFor, _SIZEOF(_ITEM))
+        dbOrdCondInfo:ForBlock := uCobFor
 	ENDIF
 	
 	IF !IsNil(uCobWhile)
-		MemCopy(@dbOrdCondInfo.itmCobWhile,  @uCobWhile, _SIZEOF(_ITEM))
+		dbOrdCondInfo:WhileBlock := uCobWhile
 	ENDIF
 	
 	IF !IsNil(uCobEval)
-		MemCopy(@dbOrdCondInfo.itmCobEval , @uCobEval, _SIZEOF(_ITEM))
+		dbOrdCondInfo:EvalBlock := uCobEval
 	ENDIF
 	
-	IF !IsNil(nStep)
-		dbOrdCondInfo.lStep := nStep
+	IF IsNumeric(nStep)
+		dbOrdCondInfo:StepSize := nStep
 	ENDIF
 	
-	IF !IsNil(nStart)
-		dbOrdCondInfo.lStartRecno := nStart
+	IF IsNumeric(nStart)
+		dbOrdCondInfo:StartRecNo := nStart
 	ENDIF
 	
-	IF !IsNil(nNext)
-		dbOrdCondInfo.lNextCount := nNext
+	IF IsNumeric(nNext)
+		dbOrdCondInfo:NextCount := nNext
 	ENDIF
 	
-	IF !IsNil(nRecno)
-		dbOrdCondInfo.lRecno := nRecno
+	IF IsNumeric(nRecno)
+		dbOrdCondInfo:RecNo := nRecno
 	ENDIF
 	
-	IF !IsNil(lRest)
-		dbOrdCondInfo.fRest := lRest
+	IF IsLogic(lRest)
+		dbOrdCondInfo:Rest := lRest
 	ENDIF
 	
-	IF !IsNil(lDescending)
-		dbOrdCondInfo.fDescending := lDescending
-	ENDIF
-	
-	
-	IF !IsNil(lAll)
-		dbOrdCondInfo.fAll := lAll
+	IF IsLogic(lDescending)
+		dbOrdCondInfo:Descending := lDescending
 	ENDIF
 	
 	
-	IF !IsNil(lAdditive)
-		dbOrdCondInfo.fAdditive := lAdditive
+	IF IsLogic(lAll)
+		dbOrdCondInfo:All := lAll
 	ENDIF
 	
-	IF !IsNil(lCustom)
-		dbOrdCondInfo.fCustom := lCustom
+	
+	IF IsLogic(lAdditive)
+		dbOrdCondInfo:Additive := lAdditive
 	ENDIF
 	
-	IF !IsNil(lCurrent)
-		dbOrdCondInfo.fUseCurrent := lCurrent
+	IF IsLogic(lCustom)
+		dbOrdCondInfo:Custom := lCustom
+	ENDIF
+	
+	IF IsLogic(lCurrent)
+		dbOrdCondInfo:UseCurrent := lCurrent
 	ENDIF
 	
 	
 	IF !IsNil(lNoOptimize)
-		dbOrdCondInfo.fNoOptimize := lNoOptimize
+		dbOrdCondInfo:NoOptimize := lNoOptimize
 	ENDIF
 	
-	lRetCode := VODBOrdCondSet( @dbOrdCondInfo )
+	lRetCode := VODBOrdCondSet( dbOrdCondInfo )
 	
 	IF !lRetCode
 		lRetCode := DoError(#OrdCondSet)
@@ -365,7 +360,7 @@ FUNCTION OrdCondSet(   cFor,       ;
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique)
+FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 	
 	LOCAL lRetCode  AS LOGIC
 	
@@ -415,7 +410,7 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION OrdDescend     (xOrder, cOrdBag, lDescend)
+FUNCTION OrdDescend     (xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 	
 	IF !IsLogic( lDescend )
 		lDescend := NIL
@@ -427,7 +422,7 @@ FUNCTION OrdDescend     (xOrder, cOrdBag, lDescend)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDDESTROY     (uOrder, cOrdBag)
+FUNCTION ORDDESTROY     (uOrder, cOrdBag) AS LOGIC CLIPPER
 	
 	LOCAL lRetCode  AS LOGIC
 	
@@ -462,7 +457,7 @@ FUNCTION ORDDESTROY     (uOrder, cOrdBag)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDFOR         (uOrder, cOrdBag, cFor)
+FUNCTION ORDFOR         (uOrder, cOrdBag, cFor) AS LOGIC CLIPPER
 	
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
@@ -480,7 +475,7 @@ FUNCTION ORDFOR         (uOrder, cOrdBag, cFor)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDKEY         (uOrder, cOrdBag)
+FUNCTION ORDKEY(uOrder, cOrdBag) AS USUAL CLIPPER
 	
 	LOCAL xKey      AS USUAL
 	
@@ -493,17 +488,17 @@ FUNCTION ORDKEY         (uOrder, cOrdBag)
 	ENDIF
 	
 	RETURN xKey
-FUNCTION OrdKeyAdd      (xOrder, cOrdBag, xVal)
+FUNCTION OrdKeyAdd(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
 	
 	RETURN DbOrderInfo(DBOI_KEYADD, cOrdBag, xOrder, xVal)
 	
 
-FUNCTION OrdKeyDel      (xOrder, cOrdBag, xVal)
+FUNCTION OrdKeyDel(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
 	
 	RETURN DbOrderInfo( DBOI_KEYDELETE, cOrdBag, xOrder, NIL)
 	
 	
-FUNCTION OrdKeyGoto     (nKeyNo)
+FUNCTION OrdKeyGoto     (nKeyNo) AS LOGIC CLIPPER
 	LOCAL lRetCode  AS LOGIC
 	
 	IF IsNumeric(nKeyNo)
@@ -516,19 +511,16 @@ FUNCTION OrdKeyGoto     (nKeyNo)
 	
 	
 	
-FUNCTION OrdKeyCount    (xOrder, cOrdBag)
-	
+FUNCTION OrdKeyCount    (xOrder, cOrdBag) AS USUAL CLIPPER
 	RETURN DbOrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, NIL)
 	
 	
-FUNCTION ORDKeyNo       (xOrder, cOrdBag)
-	
+FUNCTION ORDKeyNo       (xOrder, cOrdBag) 	AS USUAL CLIPPER
 	RETURN DbOrderInfo( DBOI_POSITION, cOrdBag, xOrder, NIL)
 	
 	
 	
-FUNCTION ORDKeyVal      ()
-	
+FUNCTION ORDKeyVal      () AS USUAL STRICT
 	RETURN DbOrderInfo( DBOI_KEYVAL, NIL ,NIL, NIL)
 	
 	
@@ -540,7 +532,7 @@ FUNCTION ORDKeyVal      ()
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDLISTADD     (cOrdBag, uOrder)
+FUNCTION ORDLISTADD     (cOrdBag, uOrder) AS LOGIC CLIPPER
 	
 	LOCAL lRetCode  AS LOGIC
 	
@@ -558,7 +550,7 @@ FUNCTION ORDLISTADD     (cOrdBag, uOrder)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDLISTCLEAR   (cOrdBag, uOrder)
+FUNCTION ORDLISTCLEAR   (cOrdBag, uOrder)  AS LOGIC CLIPPER
 	
 	LOCAL lRetCode  AS LOGIC
 	
@@ -579,7 +571,7 @@ FUNCTION ORDLISTCLEAR   (cOrdBag, uOrder)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION __OrdListClear()
+FUNCTION __OrdListClear()  AS LOGIC STRICT
 	LOCAL lRet      AS LOGIC
 	LOCAL lOpen     AS LOGIC
 	LOCAL cDBF      AS STRING
@@ -615,7 +607,7 @@ FUNCTION __OrdListClear()
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDLISTREBUILD ()
+FUNCTION ORDLISTREBUILD ()  AS LOGIC STRICT
 	
 	LOCAL lRetCode  AS LOGIC
 	
@@ -632,7 +624,7 @@ FUNCTION ORDLISTREBUILD ()
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION OrdName        (uOrder, cOrdBag)
+FUNCTION OrdName(uOrder, cOrdBag) AS LOGIC CLIPPER
 	
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
@@ -646,7 +638,7 @@ FUNCTION OrdName        (uOrder, cOrdBag)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDNUMBER      (uOrder, cOrdBag)
+FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 	
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
@@ -661,12 +653,11 @@ FUNCTION ORDNUMBER      (uOrder, cOrdBag)
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDSETFOCUS    (uOrder, cOrdBag)
-	LOCAL pszOrder    AS   PSZ
+FUNCTION ORDSETFOCUS    (uOrder, cOrdBag) AS USUAL CLIPPER
+	LOCAL cOrder    AS   STRING
 	
-	Default(@cOrdBag, "")
-	VODBOrdSetFocus(cOrdBag, uOrder, @pszOrder)
-	RETURN Psz2String(pszOrder)
-	
+	DEFAULT(@cOrdBag, "")
+	VODBOrdSetFocus(cOrdBag, uOrder, REF cOrder)
+	RETURN cOrder
 	
 #endif

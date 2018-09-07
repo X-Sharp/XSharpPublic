@@ -39,7 +39,7 @@ CLASS XSharp.OleDateTime
 	CONSTRUCTOR() 
 		dt := DateTime.MinValue
 
-	CONSTRUCTOR(val  as System.DateTime)
+	CONSTRUCTOR(val  AS System.DateTime)
 		dt := val
 
 	CONSTRUCTOR(uDate AS USUAL) 

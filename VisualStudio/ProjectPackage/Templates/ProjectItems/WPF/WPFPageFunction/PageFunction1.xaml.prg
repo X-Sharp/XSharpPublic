@@ -19,8 +19,8 @@ begin namespace $rootnamespace$
     /// Interaction logic for $safeitemrootname$.xaml
     /// </summary>
     public partial class $safeitemrootname$ inherit PageFunction<String>
-    
-        public constructor()
+
+        public constructor()  STRICT
             InitializeComponent()
 			return
     end class

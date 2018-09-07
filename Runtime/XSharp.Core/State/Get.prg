@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 #include "GetSet.xh"
-using XSharp
+USING XSharp
 
 
 /// <summary>
@@ -12,8 +12,8 @@ using XSharp
 /// </summary>
 /// <returns>
 /// </returns>
-function GetAnsi() as logic
-	return RuntimeState.Ansi
+FUNCTION GetAnsi() AS LOGIC
+	RETURN RuntimeState.Ansi
 	
 	
 	/// <summary>
@@ -34,17 +34,17 @@ function GetAnsi() as logic
 	/// <param name="nPad"></param>
 	/// <returns>
 	/// </returns>
-function GetChunkBase64(b1 as byte,b2 as byte,b3 as byte,nPad as int) as string
+FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
 	/// THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 	
 	/// <summary>
 	/// Get the current X# search path for opening file.
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetCurPath() as string
-	getstate string Set.Path
+FUNCTION GetCurPath() AS STRING
+	getstate STRING Set.Path
 	
 	
 	/// <summary>
@@ -52,30 +52,30 @@ function GetCurPath() as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetDefault() as string
-	getstate string Set.Default 
+FUNCTION GetDefault() AS STRING
+	getstate STRING Set.Default 
 	
 	/// <summary>
 	/// Return the current SetDefaultDir() setting.
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetDefaultDir() as string
-	getstate string Set.Default 
+FUNCTION GetDefaultDir() AS STRING
+	getstate STRING Set.Default 
 	
 	
 
-function GetMimType(c as string) as string
+FUNCTION GetMimType(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 	
 	/// <summary>
 	/// Get the current DLL for nation-dependent operations and messages.
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetNatDLL() as string
-	getstate string Set.NatDLL 
+FUNCTION GetNatDLL() AS STRING
+	getstate STRING Set.NatDLL 
 	
 	
 	/// <summary>
@@ -83,8 +83,8 @@ function GetNatDLL() as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetPMExt() as string
-	getstate string Set.PmExt
+FUNCTION GetPMExt() AS STRING
+	getstate STRING Set.PmExt
 	
 	
 
@@ -95,16 +95,16 @@ function GetPMExt() as string
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetTimeSep() as Dword
-	getstate dword Set.TimeSep
+FUNCTION GetTimeSep() AS DWORD
+	getstate DWORD Set.TimeSep
 	
 	/// <summary>
 	/// Returns TimeZone difference for current timezone in Hours
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetTimeZoneDiff() as int
-	return TimeZoneInfo.Local.BaseUtcOffSet:Hours
+FUNCTION GetTimeZoneDiff() AS INT
+	RETURN TimeZoneInfo.Local.BaseUtcOffSet:Hours
 
-function GetYield as logic
-	return SetYield()
+FUNCTION GetYield AS LOGIC
+	RETURN SetYield()

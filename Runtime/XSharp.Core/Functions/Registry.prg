@@ -3,10 +3,10 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-define VO_APPS			:= "Software\ComputerAssociates\CA-Visual Objects Applications"
-define VO_LOCALMACHINE	:= "HKEY_LOCAL_MACHINE\"+VO_APPS 
-define VO_CURRENTUSER	:= "HKEY_CURRENT_USER\"+VO_APPS 
-using Microsoft.Win32
+DEFINE VO_APPS			:= "Software\ComputerAssociates\CA-Visual Objects Applications"
+DEFINE VO_LOCALMACHINE	:= "HKEY_LOCAL_MACHINE\"+VO_APPS 
+DEFINE VO_CURRENTUSER	:= "HKEY_CURRENT_USER\"+VO_APPS 
+USING Microsoft.Win32
 /// <summary>
 /// Save a numeric value to the Registry.
 /// </summary>
@@ -15,27 +15,27 @@ using Microsoft.Win32
 /// <param name="nKeyVal"></param>
 /// <returns>
 /// </returns>
-function SetRTRegInt(cSubKey as string,cKeyName as string,nKeyVal as dword) as logic
-	local cKey as string
+FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS LOGIC
+	LOCAL cKey AS STRING
 	cKey := VO_LOCALMACHINE
-	if ! String.IsNullOrEmpty( cSubKey )
+	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
-	endif
+	ENDIF
 	// try HKLM first
-	try
-		if Registry.GetValue(cKey,cKeyName,null) != null
+	TRY
+		IF Registry.GetValue(cKey,cKeyName,NULL) != NULL
 			Registry.SetValue(cKey,cKeyName,nKeyVal)
-		endif
-	end try
+		ENDIF
+	END TRY
 	// always write to HKCU
 	cKey := VO_CURRENTUSER
-	if ! String.IsNullOrEmpty( cSubKey )
+	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
-	endif
-	try    
+	ENDIF
+	TRY    
 		Registry.SetValue(cKey,cKeyName,nKeyVal)
-	end try
-	return ! Registry.GetValue(cKey,cKeyName,null) == null
+	END TRY
+	RETURN ! Registry.GetValue(cKey,cKeyName,NULL) == NULL
 	
 	
 	/// <summary>
@@ -46,27 +46,27 @@ function SetRTRegInt(cSubKey as string,cKeyName as string,nKeyVal as dword) as l
 	/// <param name="cKeyVal"></param>
 	/// <returns>
 	/// </returns>
-function SetRTRegString(cSubKey as string,cKeyName as string,cKeyVal as string) as logic
-	local cKey as string
+FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) AS LOGIC
+	LOCAL cKey AS STRING
 	cKey := VO_LOCALMACHINE
-	if ! String.IsNullOrEmpty( cSubKey )
+	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
-	endif
+	ENDIF
 	// try HKLM first
-	try    
-		if Registry.GetValue(cKey,cKeyName,null) != null
+	TRY    
+		IF Registry.GetValue(cKey,cKeyName,NULL) != NULL
 			Registry.SetValue(cKey,cKeyName,cKeyVal)
-		endif
-	end try
+		ENDIF
+	END TRY
 	// always write to HKCU
 	cKey := VO_CURRENTUSER
-	if ! String.IsNullOrEmpty( cSubKey )
+	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
-	endif
-	try    
+	ENDIF
+	TRY    
 		Registry.SetValue(cKey,cKeyName,cKeyVal)
-	end try
-	return ! Registry.GetValue(cKey,cKeyName,null) == null
+	END TRY
+	RETURN ! Registry.GetValue(cKey,cKeyName,NULL) == NULL
 	
 	/// <summary>
 	/// Retrieve a numeric value from the Registry.
@@ -75,31 +75,31 @@ function SetRTRegString(cSubKey as string,cKeyName as string,cKeyVal as string) 
 	/// <param name="cKeyName"></param>
 	/// <returns>
 	/// </returns>
-function QueryRTRegInt(cSubKey as string,cKeyName as string) as dword
-	local cKey as string
-	local o as object
+FUNCTION QueryRTRegInt(cSubKey AS STRING,cKeyName AS STRING) AS DWORD
+	LOCAL cKey AS STRING
+	LOCAL o AS OBJECT
 	
 	// First try to read from HKCU
 	cKey := VO_CURRENTUSER
-	if ! String.IsNullOrEmpty( cSubKey )
+	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
-	endif
-	o := Registry.GetValue(cKey,cKeyName,null)
+	ENDIF
+	o := Registry.GetValue(cKey,cKeyName,NULL)
 	// If that fails then read from HKLM
-	if o == null
+	IF o == NULL
 		cKey := VO_LOCALMACHINE
-		if ! String.IsNullOrEmpty( cSubKey )
+		IF ! String.IsNullOrEmpty( cSubKey )
 			cKey += "\" + cSubKey
-		endif
-		try
-			o := Registry.GetValue(cKey,cKeyName,null)
-		end try
-		if o == null
+		ENDIF
+		TRY
+			o := Registry.GetValue(cKey,cKeyName,NULL)
+		END TRY
+		IF o == NULL
 			o := 0
-		endif
-	endif
+		ENDIF
+	ENDIF
 	
-	return Convert.ToUInt32(o)
+	RETURN Convert.ToUInt32(o)
 	/// <summary>
 	/// Retrieve a string value from the Registry.
 	/// </summary>
@@ -107,30 +107,30 @@ function QueryRTRegInt(cSubKey as string,cKeyName as string) as dword
 	/// <param name="cKeyName"></param>
 	/// <returns>
 	/// </returns>
-function QueryRTRegString(cSubKey as string,cKeyName as string) as string
-	local cKey as string
-	local o as object
+FUNCTION QueryRTRegString(cSubKey AS STRING,cKeyName AS STRING) AS STRING
+	LOCAL cKey AS STRING
+	LOCAL o AS OBJECT
 	
 	cKey := VO_CURRENTUSER
-	if ! String.IsNullOrEmpty( cSubKey )
+	IF ! String.IsNullOrEmpty( cSubKey )
 		cKey += "\" + cSubKey
-	endif
+	ENDIF
 	
-	o := Registry.GetValue(cKey,cKeyName,null)
-	if o == null
+	o := Registry.GetValue(cKey,cKeyName,NULL)
+	IF o == NULL
 		cKey := VO_LOCALMACHINE
-		if ! String.IsNullOrEmpty( cSubKey )
+		IF ! String.IsNullOrEmpty( cSubKey )
 			cKey += "\" + cSubKey
-		endif
-		try
-			o := Registry.GetValue(cKey,cKeyName,null)
-		end try
-		if o == null
+		ENDIF
+		TRY
+			o := Registry.GetValue(cKey,cKeyName,NULL)
+		END TRY
+		IF o == NULL
 			o := ""
-		endif
-	endif
+		ENDIF
+	ENDIF
 	
-	return Convert.ToString(o)
+	RETURN Convert.ToString(o)
 	
 	
 	/// <summary>
@@ -138,18 +138,18 @@ function QueryRTRegString(cSubKey as string,cKeyName as string) as string
 	/// <param name="cSubKey"></param>
 	/// <returns>
 	/// </returns>
-function DeleteRTRegKey(cSubKey as string) as logic
-local oKey := NULL as RegistryKey 
-	try
-	oKey := Registry.LocalMachine:OpenSubKey(VO_APPS, true)
-		if (oKey != null)
+FUNCTION DeleteRTRegKey(cSubKey AS STRING) AS LOGIC
+LOCAL oKey := NULL AS RegistryKey 
+	TRY
+	oKey := Registry.LocalMachine:OpenSubKey(VO_APPS, TRUE)
+		IF (oKey != NULL)
 	oKey:DeleteSubKey(cSubKey)
-endif
-end try
-	try
-	oKey := Registry.CurrentUser:OpenSubKey(VO_APPS, true)
-		if (oKey != null)
+ENDIF
+END TRY
+	TRY
+	oKey := Registry.CurrentUser:OpenSubKey(VO_APPS, TRUE)
+		IF (oKey != NULL)
 	oKey:DeleteSubKey(cSubKey)
-endif
-end try
-return oKey != null_object
+ENDIF
+END TRY
+RETURN oKey != NULL_OBJECT

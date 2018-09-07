@@ -13,9 +13,9 @@ USING XSharp.RDD
 
 /// <summary>Advantage Index support.</summary>
 CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
-    PRIVATE oRDD as ADSRDD
+    PRIVATE oRDD AS ADSRDD
 	/// <inheritdoc />
-	CONSTRUCTOR(oArea as WorkArea)
+	CONSTRUCTOR(oArea AS WorkArea)
 		SUPER(oArea)
         oRdd := oArea ASTYPE ADSRDD
 	/// <inheritdoc />
@@ -31,7 +31,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
+    VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />

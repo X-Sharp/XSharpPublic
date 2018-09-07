@@ -3,22 +3,22 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using XUnit
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING XUnit
 
-begin namespace XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.VO.Tests
 	
-	class pszTests
+	CLASS pszTests
 		[Fact, Trait("Category", "Psz")];
-		method CreatePszTest() as void
-			local p as psz
+		METHOD CreatePszTest() AS VOID
+			LOCAL p AS PSZ
 			p := String2Psz("Robert was here")
 			Assert.Equal("Robert was here", Psz2String(p))
-			Assert.Equal((int) PszLen(p), 15)
+			Assert.Equal((INT) PszLen(p), 15)
 
-	end class
-end namespace
+	END CLASS
+END NAMESPACE
 

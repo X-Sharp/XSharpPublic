@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -14,7 +14,7 @@ USING XSharp
 /// <returns>
 /// </returns>
 FUNCTION GetAMExt() AS STRING
-	getstate STRING Set.AmExt 
+	GETSTATE STRING Set.AmExt 
 
 /// <summary>
 /// Returns a string representing the morning extension for time strings in 12-hour format.
@@ -22,7 +22,7 @@ FUNCTION GetAMExt() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetAMExt() AS STRING
-	getstate STRING Set.AmExt 
+	GETSTATE STRING Set.AmExt 
 
 /// <summary>
 /// Set the morning extension for time strings in 12-hour format.
@@ -31,7 +31,7 @@ FUNCTION SetAMExt() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetAMExt(cExt AS STRING) AS STRING
-	setstate STRING Set.AmExt cExt
+	SETSTATE STRING Set.AmExt cExt
 
 
 /// <summary>
@@ -40,7 +40,7 @@ FUNCTION SetAMExt(cExt AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION GetAmPm() AS LOGIC
-	getstate LOGIC Set.AmPm
+	GETSTATE LOGIC Set.AmPm
 
 /// <summary>
 /// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
@@ -48,7 +48,7 @@ FUNCTION GetAmPm() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetAmPm() AS LOGIC
-	getstate LOGIC Set.AmPm
+	GETSTATE LOGIC Set.AmPm
 
 /// <summary>
 /// Change the setting that determines whether time strings are in 12-hour or 24-hour format.
@@ -57,7 +57,7 @@ FUNCTION SetAmPm() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.AmPm lSet
+	SETSTATE LOGIC Set.AmPm lSet
 
 /// <summary>
 /// Return and the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
@@ -87,7 +87,7 @@ FUNCTION SetAnsi(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetBeep() AS LOGIC
-	getstate LOGIC Set.BELL
+	GETSTATE LOGIC Set.BELL
 
 /// <summary>
 /// Change the setting that determines whether a beep is sounded by the error system when an error occurs.
@@ -96,7 +96,7 @@ FUNCTION SetBeep() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetBeep(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.BELL lSet
+	SETSTATE LOGIC Set.BELL lSet
 
 
 /// <summary>
@@ -106,7 +106,7 @@ FUNCTION SetBeep(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetCentury() AS LOGIC
-	getstate LOGIC Set.Century 
+	GETSTATE LOGIC Set.Century 
 
 /// <summary>
 /// Change the setting that determines whether to include or omit century digits in the date format.
@@ -115,7 +115,25 @@ FUNCTION SetCentury() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Century lSet
+	LOCAL lOld AS LOGIC
+    lOld := XSharp.RuntimeState.GetValue<LOGIC>(Set.CENTURY)
+    IF lOld != lSet
+      VAR cFormat := XSharp.RuntimeState.DateFormat
+      
+      IF lSet
+        IF ! cFormat:Contains("YYYY")
+            cFormat := cFormat:Replace( "YY", "YYYY" )
+        ENDIF
+        ELSE
+            IF cFormat:Contains("YYYY")
+                cFormat := cFormat:Replace( "YYYY", "YY" )
+            ENDIF
+      ENDIF
+      
+      SetDateFormat( cFormat )
+      
+    ENDIF
+    RETURN lOld
 
 
 /// <summary>
@@ -125,7 +143,7 @@ FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetCpu() AS DWORD
-	getstate DWORD Set.CPU
+	GETSTATE DWORD Set.CPU
 
 
 /// <summary>
@@ -135,7 +153,7 @@ FUNCTION SetCpu() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetCpu(nCpu AS DWORD) AS DWORD
-	setstate DWORD Set.CPU nCPU
+	SETSTATE DWORD Set.CPU nCPU
 
 
 /// <summary>
@@ -145,7 +163,7 @@ FUNCTION SetCpu(nCpu AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDateCountry() AS DWORD
-	getstate DWORD Set.DATECOUNTRY
+	GETSTATE DWORD Set.DATECOUNTRY
 
 /// <summary>
 /// Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
@@ -167,7 +185,7 @@ FUNCTION SetDateCountry(dwCountry AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION GetDateFormat() AS STRING
-	getstate STRING Set.DateFormat
+	GETSTATE STRING Set.DateFormat
 
 /// <summary>
 /// Change the setting that determines the X# date format.
@@ -188,7 +206,7 @@ FUNCTION SetDateFormat(cDateFormat AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetDecimal() AS DWORD
-	getstate DWORD Set.Decimals 
+	GETSTATE DWORD Set.Decimals 
 
 /// <summary>
 /// Return and change the setting that determines the number of decimal places used to display numbers.
@@ -197,7 +215,7 @@ FUNCTION SetDecimal() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDecimal(nDec AS DWORD) AS DWORD
-	setstate DWORD Set.Decimals nDec
+	SETSTATE DWORD Set.Decimals nDec
 
 /// <summary>
 /// Return the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
@@ -206,7 +224,7 @@ FUNCTION SetDecimal(nDec AS DWORD) AS DWORD
 /// </returns>
 
 FUNCTION SetDecimalSep() AS DWORD
-	getstate DWORD Set.DecimalSep 
+	GETSTATE DWORD Set.DecimalSep 
 
 /// <summary>
 /// Return and change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
@@ -215,7 +233,7 @@ FUNCTION SetDecimalSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDecimalSep(wSep AS DWORD) AS DWORD
-	setstate DWORD Set.DecimalSep wSep
+	SETSTATE DWORD Set.DecimalSep wSep
 
 /// <summary>
 /// Return the setting that determines the default drive and directory.
@@ -224,7 +242,7 @@ FUNCTION SetDecimalSep(wSep AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDefault() AS STRING
-	getstate STRING Set.Default 
+	GETSTATE STRING Set.Default 
 
 /// <summary>
 /// Change the setting that determines the default drive and directory.
@@ -234,7 +252,7 @@ FUNCTION SetDefault() AS STRING
 /// </returns>
 FUNCTION SetDefault(cDefault AS STRING) AS STRING
 	__SetPathArray(NULL)
-	setstate STRING Set.Default cDefault
+	SETSTATE STRING Set.Default cDefault
 	
 
 /// <summary>
@@ -243,7 +261,7 @@ FUNCTION SetDefault(cDefault AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetDeleted() AS LOGIC
-	getstate LOGIC Set.Deleted 
+	GETSTATE LOGIC Set.Deleted 
 
 /// <summary>
 /// Change the setting that determines whether to ignore or include records that are marked for deletion.
@@ -252,7 +270,7 @@ FUNCTION SetDeleted() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetDeleted(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Deleted lSet
+	SETSTATE LOGIC Set.Deleted lSet
 
 /// <summary>
 /// Return the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
@@ -260,7 +278,7 @@ FUNCTION SetDeleted(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetDigit() AS DWORD
-	getstate DWORD Set.DIGITS 
+	GETSTATE DWORD Set.DIGITS 
 
 /// <summary>
 /// Change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
@@ -269,7 +287,7 @@ FUNCTION SetDigit() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDigit(nDig AS DWORD) AS DWORD
-	setstate DWORD Set.DIGITS nDIg
+	SETSTATE DWORD Set.DIGITS nDIg
 
 /// <summary>
 /// Return the setting that fixes the number of digits used to display numeric output.
@@ -278,7 +296,7 @@ FUNCTION SetDigit(nDig AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetDigitFixed() AS LOGIC
-	getstate LOGIC Set.DigitFixed 
+	GETSTATE LOGIC Set.DigitFixed 
 
 /// <summary>
 /// Change the setting that fixes the number of digits used to display numeric output.
@@ -287,7 +305,7 @@ FUNCTION SetDigitFixed() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetDigitFixed(f AS LOGIC) AS LOGIC
-	setstate LOGIC Set.DigitFixed f
+	SETSTATE LOGIC Set.DigitFixed f
 
 
 /// <summary>
@@ -296,7 +314,7 @@ FUNCTION SetDigitFixed(f AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetEpoch() AS DWORD
-	getstate DWORD Set.Epoch 
+	GETSTATE DWORD Set.Epoch 
 
 /// <summary>
 /// Change the setting that determines how dates without century digits are interpreted.
@@ -311,7 +329,7 @@ FUNCTION SetEpoch(wEpoch AS DWORD) AS DWORD
 	wCent := (( wEpoch / 100) +1) * 100
 	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochYear, wYear)
 	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochCent, wCent)
-	setstate DWORD Set.Epoch	 wEpoch
+	SETSTATE DWORD Set.Epoch	 wEpoch
 
 /// <summary>
 /// Return the setting that determines whether error information is written to the error log file by the default runtime error handler.
@@ -319,7 +337,7 @@ FUNCTION SetEpoch(wEpoch AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetErrorLog() AS LOGIC
-	getstate LOGIC Set.ERRRORLOG 
+	GETSTATE LOGIC Set.ERRRORLOG 
 
 /// <summary>
 /// Change the setting that determines whether error information is written to the error log file by the default runtime error handler.
@@ -328,7 +346,7 @@ FUNCTION SetErrorLog() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetErrorLog(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.ERRRORLOG lSet
+	SETSTATE LOGIC Set.ERRRORLOG lSet
 
 /// <summary>
 /// Return the setting for an exact match for character string comparisons.
@@ -336,7 +354,7 @@ FUNCTION SetErrorLog(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetExact() AS LOGIC
-	getstate LOGIC Set.Exact 
+	GETSTATE LOGIC Set.Exact 
 
 /// <summary>
 /// Change the setting for an exact match for character string comparisons.
@@ -345,7 +363,7 @@ FUNCTION SetExact() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetExact(fExact AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Exact fExact
+	SETSTATE LOGIC Set.Exact fExact
 
 /// <summary>
 /// Return the setting that determines whether to open database files in exclusive or shared mode.
@@ -353,7 +371,7 @@ FUNCTION SetExact(fExact AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetExclusive() AS LOGIC
-	getstate LOGIC Set.Exclusive 
+	GETSTATE LOGIC Set.Exclusive 
 
 /// <summary>
 /// Change the setting that determines whether to open database files in exclusive or shared mode.
@@ -362,7 +380,7 @@ FUNCTION SetExclusive() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetExclusive(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Exclusive lSet
+	SETSTATE LOGIC Set.Exclusive lSet
 
 /// <summary>
 /// Return the setting that determines whether assignments are made to fields or to memory variables.
@@ -370,7 +388,7 @@ FUNCTION SetExclusive(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetFieldStore() AS LOGIC
-	getstate LOGIC Set.FieldStore
+	GETSTATE LOGIC Set.FieldStore
 
 /// <summary>
 /// Change the setting that determines whether assignments are made to fields or to memory variables.
@@ -379,7 +397,7 @@ FUNCTION SetFieldStore() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetFieldStore(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.FieldStore lSet
+	SETSTATE LOGIC Set.FieldStore lSet
 
 /// <summary>
 /// Return the setting that fixes the number of decimal digits used to display numbers.
@@ -387,7 +405,7 @@ FUNCTION SetFieldStore(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetFixed() AS LOGIC
-	getstate LOGIC Set.Fixed 
+	GETSTATE LOGIC Set.Fixed 
 
 /// <summary>
 /// Change the setting that fixes the number of decimal digits used to display numbers.
@@ -396,7 +414,7 @@ FUNCTION SetFixed() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetFixed(fFixed AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Fixed fFixed
+	SETSTATE LOGIC Set.Fixed fFixed
 
 /// <summary>
 /// Return the setting that determines the internal operational characteristics of the underlying floating-point system.
@@ -404,7 +422,7 @@ FUNCTION SetFixed(fFixed AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetMath() AS DWORD
-	getstate DWORD Set.MATH
+	GETSTATE DWORD Set.MATH
 
 /// <summary>
 /// Change the setting that determines the internal operational characteristics of the underlying floating-point system.
@@ -413,13 +431,29 @@ FUNCTION SetMath() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetMath(nFPU AS DWORD) AS DWORD
-	setstate DWORD Set.MATH nFPU
+	SETSTATE DWORD Set.MATH nFPU
 
 /// <summary>
 /// Activate a new DLL for nation-dependent operations and messages.
 /// </summary>
 /// <returns>
 /// </returns>
+/// <remarks>
+/// In Visual Objects the nation DLL is an external DLL. For X# there are no separate
+/// nation DLL. The nation support code is integrated in XSharp.Core.DLL.
+/// For compatibility you can still use the SetNatDLL() function to switch to another
+/// nation module. <br/>
+/// The available nation modules are (just like in Visual Objects):<br/> 
+/// 	"BRAZIL", "CROATIA", "CZECH852", "CZECH895", "DANISH", "DUTCH", "FINNISH", 
+/// 	"FRENCH", "GENERIC", "GERMAN", "GERMAN2", "HUNG852", "HUNGCWI", "ITALIAN", 
+///     "NORWEGN", "POL-ISO", "POL-MAZ", "POL852", "PORT850", "PORT860", "ROMANIA", 
+/// 	"RUSSIAN", "SERBIA", "SL-W-95", "SL-W-AS7", "SL-W-EE", "SLOV852", "SLOV895", 
+/// 	"SPANISH", "SWEDISH", "UK"
+/// <br/> You may specify a DLL name with full path. The Runtime will strip the path and extension
+/// from the file name and will look for one of the names listed above.<br/> 
+/// The nation DLL name is NOT case sensitive.
+///</remarks>
+	
 FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	LOCAL cBase AS STRING
 	_SetNatDLL(cnewDLL)
@@ -427,9 +461,9 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	_SetCollation(cBase)
 	RETURN String.Compare(Messages.CurrentLanguageName, cBase, TRUE) == 0
 
-/// </exclude>
+/// <exclude/>
 FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
-	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", typeof(Functions):Assembly }
+	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", TYPEOF(Functions):Assembly }
 	VAR obj := rm:GetObject(cBase) 
 	IF obj != NULL
 		VAR bytes := obj ASTYPE BYTE[]
@@ -439,12 +473,12 @@ FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 		ENDIF
 	ENDIF
 	RETURN FALSE
-	
+/// <exclude/>	
 INTERNAL FUNCTION	_SetNatDLL(cNewDLL AS STRING) AS STRING
 	LOCAL cBase AS STRING
 	cBase := System.IO.Path.GetFileNameWithoutExtension(cNewDLL)
 	Messages.SetCurrentLanguage(cBase)
-	setstate STRING Set.NatDLL cNewDLL
+	SETSTATE STRING Set.NatDLL cNewDLL
 
 /// <summary>
 /// Return the setting that determines the search path for opening files. This may be a semi colon separated list of folders.
@@ -452,7 +486,7 @@ INTERNAL FUNCTION	_SetNatDLL(cNewDLL AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetPath() AS STRING
-	getstate STRING Set.Path 
+	GETSTATE STRING Set.Path 
 
 
 /// <summary>
@@ -463,7 +497,7 @@ FUNCTION SetPath() AS STRING
 /// </returns>
 FUNCTION SetPath(cPath AS STRING) AS STRING
 	__SetPathArray(NULL)
-	setstate STRING Set.Path cPath
+	SETSTATE STRING Set.Path cPath
 
 
 /// <summary>
@@ -475,17 +509,19 @@ FUNCTION SetPath(cPath AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION __SetPathArray() AS STRING[]
-	getstate STRING[] Set.PathArray 
+	GETSTATE STRING[] Set.PathArray 
 
 /// <summary>
 /// Set the Path array that is used by the File() function to locate files outside of the current directory.
 /// This is a combination of the SetDefault() and SetPath() variables
+/// This array gets cleared when SetPath() or SetDefault() is called and is initialized the first time File() or a related function
+//  is called after the path has been changed.
 /// </summary>
 /// <param name="aPath"></param>
 /// <returns>
 /// </returns>
 FUNCTION __SetPathArray(aPath AS STRING[]) AS STRING[]
-	setstate STRING[] Set.PathArray aPath
+	SETSTATE STRING[] Set.PathArray aPath
 
 /// <summary>
 /// Returns a string representing the evening extension for time strings in 12-hour format.
@@ -493,7 +529,7 @@ FUNCTION __SetPathArray(aPath AS STRING[]) AS STRING[]
 /// <returns>
 /// </returns>
 FUNCTION SetPMExt() AS STRING
-	getstate STRING Set.PmExt
+	GETSTATE STRING Set.PmExt
 
 /// <summary>
 /// Set the evening extension for time strings in 12-hour format.
@@ -502,7 +538,7 @@ FUNCTION SetPMExt() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetPMExt(cExt AS STRING) AS STRING
-	setstate STRING Set.PmExt cExt
+	SETSTATE STRING Set.PmExt cExt
 
 /// <summary>
 /// Return the setting that displays numbers in scientific notation.
@@ -510,7 +546,7 @@ FUNCTION SetPMExt(cExt AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetScience() AS LOGIC
-	getstate LOGIC Set.Science 
+	GETSTATE LOGIC Set.Science 
 
 /// <summary>
 /// Change the setting that displays numbers in scientific notation.
@@ -519,7 +555,7 @@ FUNCTION SetScience() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Science lSet
+	SETSTATE LOGIC Set.Science lSet
 
 /// <summary>
 /// Return the setting that determines whether a seek operation will find a close match when no exact match is found.
@@ -527,7 +563,7 @@ FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetSoftSeek() AS LOGIC
-	getstate LOGIC Set.SoftSeek 
+	GETSTATE LOGIC Set.SoftSeek 
 
 /// <summary>
 /// Change the setting that determines whether a seek operation will find a close match when no exact match is found.
@@ -536,7 +572,7 @@ FUNCTION SetSoftSeek() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.SoftSeek lSet
+	SETSTATE LOGIC Set.SoftSeek lSet
 
 /// <summary>
 /// Return the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
@@ -544,7 +580,7 @@ FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetThousandSep() AS DWORD
-	getstate DWORD Set.ThousandSep 
+	GETSTATE DWORD Set.ThousandSep 
 
 /// <summary>
 /// Change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
@@ -553,7 +589,7 @@ FUNCTION SetThousandSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetThousandSep(wSep AS DWORD) AS DWORD
-	setstate DWORD Set.ThousandSep wSep
+	SETSTATE DWORD Set.ThousandSep wSep
 
 /// <summary>
 /// Return the setting that determines the separation character to be used in time strings.
@@ -561,7 +597,7 @@ FUNCTION SetThousandSep(wSep AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetTimeSep() AS DWORD
-	getstate DWORD Set.TimeSep 
+	GETSTATE DWORD Set.TimeSep 
 
 /// <summary>
 /// Change the setting that determines the separation character to be used in time strings.
@@ -570,7 +606,7 @@ FUNCTION SetTimeSep() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION SetTimeSep(dwChar AS DWORD) AS DWORD
-	setstate DWORD Set.TimeSep dwChar
+	SETSTATE DWORD Set.TimeSep dwChar
 
 /// <summary>
 /// Return the setting that determines whether to include unique record keys in an order.
@@ -579,7 +615,7 @@ FUNCTION SetTimeSep(dwChar AS DWORD) AS DWORD
 /// </returns>
 
 FUNCTION SetUnique() AS LOGIC
-	getstate LOGIC Set.Unique 
+	GETSTATE LOGIC Set.Unique 
 
 /// <summary>
 /// Change the setting that determines whether to include unique record keys in an order.
@@ -589,14 +625,14 @@ FUNCTION SetUnique() AS LOGIC
 /// </returns>
 
 FUNCTION SetUnique(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Unique lSet
+	SETSTATE LOGIC Set.Unique lSet
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION SetYield() AS LOGIC
-	getstate LOGIC Set.Yield 
+	GETSTATE LOGIC Set.Yield 
 
 /// <summary>
 /// </summary>
@@ -604,7 +640,7 @@ FUNCTION SetYield() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION SetYield(lSet AS LOGIC) AS LOGIC
-	setstate LOGIC Set.Yield lSet
+	SETSTATE LOGIC Set.Yield lSet
 
 
 /// <summary>
@@ -614,7 +650,7 @@ FUNCTION SetYield(lSet AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION ErrorLevel(dw AS DWORD) AS DWORD 
-	setstate DWORD Set.ErrorLevel dw
+	SETSTATE DWORD Set.ErrorLevel dw
 
 
 /// <summary>
@@ -642,12 +678,13 @@ FUNCTION SetInternational() AS STRING
 /// </returns>
 /// <remarks>
 /// SetInternational() allows XSharp apps to operate in different international modes.  
-/// The "Clipper" mode is provided for compatibility with CA-Clipper applications and uses an 
-/// internationalization routine defined in the nation module.  The "Windows" mode uses international services provided by Windows.
+/// The "CLIPPER" mode is provided for compatibility with CA-Clipper applications and uses an 
+/// internationalization routine defined in the nation module.
+/// The "Windows" mode uses international services provided by Windows.
 /// When you set this mode several settings will be changed
 /// <list type="table">
 /// <listheader>
-/// <term>Setting</term> <description>Value in #Clipper mode</description>
+/// <term>Setting</term> <description>Initial value in CLIPPER mode</description>
 /// </listheader>
 ///	<item><term>SetAmExt</term> <description>Empty String</description></item>  
 /// <item><term>SetPmExt</term> <description>Empty String</description></item>  
@@ -672,27 +709,59 @@ FUNCTION SetInternational(cMode AS STRING) AS STRING
 	CASE "ORDINAL"
 		RuntimeState.GetInstance()._SetInternationalWindows()
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, nameof(cMode), "Unsupported international mode: "+ cMode)
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cMode), "Unsupported international mode: "+ cMode)
 	END SWITCH
 	RETURN cOld
 
 
+ 
 /// <summary>
-/// Return the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
+/// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
 /// The Core dialect always compares according to the Unicode rules.
+/// The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal".
 /// </summary>
-/// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal"
-/// </returns>
+/// <returns>The current setting for SetCollation().</returns>
 FUNCTION SetCollation() AS STRING 
 	RETURN RuntimeState.CollationMode:ToString():ToUpper()
 
 /// <summary>
 /// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
-/// The Core dialect always compares according to the Unicode rules.
 /// </summary>
-// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
-/// <returns>
-/// </returns>
+/// <remarks>
+/// The Core dialect always compares according to the Unicode rules.
+/// The other dialects use the rules defined with SetCollation for string comparison. There are 4 possible values:
+/// <list type="table">
+/// <item>
+/// <term>Windows (the default)</term>
+/// <description>This uses the normal windows Ansi comparison mechanism that Visual Objects uses as well.
+/// That means that the Unicode strings from .Net are converted to Ansi first and then compared with the Ansi comparison rules.
+/// 
+/// In most cases characters that are not available in the Ansi codepage are translated to a question mark '?' and are therefore all seen as equal. <br/>
+/// If you want true unicode comparison you need the Unicode value for SetCollation.
+/// </description>
+/// </item>
+/// <item>
+/// <term>Clipper</term>
+/// <description>This uses string comparison tables that are the same as the character comparison tables in the Visual Objects
+/// nation modules. Each character from the unicode string is converted to a character from the OEM codepage first using the
+/// DosCodePage from the runtime state. the resulting OEM characters are then looked up in the 256 character weight tables that
+/// are part of the runtime dll. You can switch to a different table by using SetNatDLL().
+/// </description>
+/// </item>
+/// <item>
+/// <term>Unicode</term>
+/// <description>This uses the normal Unicode String.Compare routines for string comparisons. 
+/// </description>
+/// </item>
+/// <item>
+/// <term>Ordinal</term>
+/// <description>This uses the normal Ordinal String.Compare routines from DotNet. This is the fastest.
+/// </description>
+/// </item>
+/// </list>
+/// </remarks>
+/// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal" </returns>
+/// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
 FUNCTION SetCollation(cCollation AS STRING)  AS STRING
 	LOCAL cOld AS STRING
 	cOld := RuntimeState.CollationMode:ToString():ToUpper()
@@ -706,6 +775,6 @@ FUNCTION SetCollation(cCollation AS STRING)  AS STRING
 	CASE "ORDINAL"
 		RuntimeState.CollationMode := CollationMode.Ordinal
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, nameof(cCollation), "Unsupported collation mode: "+cCollation)
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cCollation), "Unsupported collation mode: "+cCollation)
 	END SWITCH
 	RETURN cOld

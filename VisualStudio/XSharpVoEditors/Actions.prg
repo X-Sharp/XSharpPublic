@@ -2,7 +2,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-using XSharp.VODesigners
+USING XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 
 	/// <summary>

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -20,13 +20,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD FileTest() AS VOID
 			LOCAL hFile AS PTR
 			LOCAL cLine AS USUAL
-			local cFile as string
+			LOCAL cFile AS STRING
 			LOCAL cText	AS STRING
 			cFile := "test.txt"
 			hFile := FCreate(cFile)
-			cLine := "Line1"
+			cLine := "line1"
 			FWriteLine(hFile, cLine)
-			cLine := "Line2"
+			cLine := "line2"
 			FWriteLine(hFile, cLine)
 			FClose(hFile)
 			cText := MemoRead(cFile)

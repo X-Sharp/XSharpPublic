@@ -3,41 +3,175 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+// internal functions used by FieldBlock and FieldWBlock
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION SELECT(xValue AS USUAL) AS USUAL 
+	
+	LOCAL sSelect   AS DWORD
+	LOCAL sCurrent  AS DWORD
+	
+	sCurrent := VODBGetSelect()
+	
+	sSelect := _SELECT(xValue)
+	
+	VODBSetSelect(INT(sCurrent))
+	
+	RETURN sSelect
 
-#ifdef COMPILEIT
+
+
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION _Select(xValue) AS USUAL CLIPPER
+	LOCAL nSelect           AS DWORD
+	LOCAL sAlias            AS SYMBOL
+	LOCAL xType             AS DWORD
+	LOCAL nAsc              AS DWORD
+	
+	
+	IF IsNil(xValue)
+		RETURN( VODBGetSelect() )
+	ENDIF
+	
+	xType := UsualType(xValue)
+	
+	IF xType =SYMBOL
+		nSelect := (DWORD) VODBSymSelect(xValue)
+		
+	ELSEIF xType =STRING
+		nSelect := 0
+		
+		IF SLen(xValue) = 1
+			nSelect := Val(xValue)
+			nAsc := Asc( Upper(xValue) )
+			IF nAsc > 64 .AND. nAsc < 75
+				nSelect := nAsc - 64
+			ENDIF
+		ENDIF
+		
+		IF (nSelect > 0) .OR. ("0" == xValue)
+			nSelect := VODBSetSelect(INT(nSelect))
+		ELSE
+			sAlias  := SysAddAtom( String2Psz( Upper( AllTrim(xValue) ) ) )
+			nSelect := (DWORD) VODBSymSelect(sAlias)
+		ENDIF
+		
+	ELSE
+		nSelect := VODBSetSelect(xValue)
+	ENDIF
+	
+	RETURN nSelect
+
+FUNCTION DoError (nSymFunc, nTries) AS USUAL CLIPPER
+    RETURN NIL
+#ifdef NOTDEFINED
+FUNCTION __FieldGetNum( fieldpos AS DWORD ) AS USUAL
+   LOCAL ret := NULL AS OBJECT
+   VODBFieldGet( fieldpos, REF ret )
+   RETURN ret
+
+FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
+   LOCAL ret := NULL AS OBJECT
+   LOCAL curArea AS DWORD
+   curArea := RuntimeState.CurrentWorkarea
+   TRY
+      RuntimeState.CurrentWorkarea := workarea
+      VODBFieldGet( fieldpos, REF ret )
+   FINALLY
+      RuntimeState.CurrentWorkarea := curArea
+   END TRY   
+   RETURN ret
+
+
+
+
+
+FUNCTION __FieldSetNum( fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
+   IF ! VODBFieldPut( fieldpos, uValue )
+      DoError( #__FieldSet )
+    ENDIF
+    // return original value to allow chained expressions
+   RETURN uValue
+
+
+FUNCTION __FieldSetWaNum( nArea AS DWORD, fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
+   LOCAL curArea AS DWORD
+   curArea := RuntimeState.CurrentWorkarea
+   TRY
+      RuntimeState.CurrentWorkarea := nArea
+      IF ! VODBFieldPut( fieldpos, uValue )        
+         DoError( #__FieldSet )
+      ENDIF 
+   FINALLY
+      RuntimeState.CurrentWorkarea := curArea
+   END TRY   
+   RETURN uValue
+
+
+
 
 /// <summary>
 /// Return a set-get code block for a field that is identified by its name.
 /// </summary>
-/// <param name="cVAr"></param>
+/// <param name="cFieldName"></param>
 /// <returns>
 /// </returns>
-function FieldBlock(cVAr as string) as object
-	return 
-return null_object   
-	
+FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
+    LOCAL oCB  := NULL AS CODEBLOCK
+    LOCAL nPos := 0    AS DWORD
+    IF ! String.IsNullOrEmpty(cFieldName)
+        nPos := FieldPos(cFieldName)
+        IF nPos != 0
+            oCB := MCompile("{|x| iif( IsNil(x), __FieldGetNum( "+nPos:ToString()+"), __FieldSetNum( "+nPos:ToString()+" , x)")
+        ENDIF
+    ENDIF
+    RETURN oCB
+        
+ /// <summary>
+/// Return a set-get code block for a field that is identified by a Symbol.
+/// </summary>
+/// <param name="symFieldName"></param>
+/// <returns>
+/// </returns>
+FUNCTION FieldBlockSym(symFieldName AS SYMBOL) AS CODEBLOCK
+    RETURN FieldBlock(symFieldName)   
 	
 /// <summary>
 /// Return a set-get code block for a field, specified as a string, in a specified work area.
 /// </summary>
-/// <param name="cVar"></param>
+/// <param name="cFieldName"></param>
 /// <param name="nArea"></param>
 /// <returns>
 /// </returns>
-function FieldWBlock(cVar as string,nArea as dword) as object
-	
-	return null_object   
-
+FUNCTION FieldWBlock(cFieldName AS STRING,nArea AS DWORD) AS CODEBLOCK
+    LOCAL oCB  := NULL AS CODEBLOCK
+    LOCAL nPos := 0    AS DWORD
+    IF ! String.IsNullOrEmpty(cFieldName)
+        nPos := FieldPos(cFieldName, nArea)
+        IF nPos != 0
+            VAR cPars := nArea:ToSTring()+","+nPos:ToString()
+            oCB := MCompile("{|x| iif( IsNil(x), __FieldGetWaNum("+cPars+"), __FieldSetWaNum("+cPars+", x)")
+        ENDIF
+    ENDIF
+    RETURN oCB
 
 /// <summary>
-/// Return a set-get code block for a field that is identified by a Symbol.
+/// Return a set-get code block for a field, specified as a Symbol, in a specified work area.
 /// </summary>
-/// <param name="symVar"></param>
+/// <param name="symFieldname"></param>
+/// <param name="nArea"></param>
 /// <returns>
 /// </returns>
-function FieldBlockSym(symVar as Symbol) as object
-	/// THROW NotImplementedException{}
-	return null_object   
+FUNCTION FieldWBlockSym(symFieldname AS SYMBOL,nArea AS DWORD) AS CODEBLOCK
+	RETURN FieldWBlock(symFieldname, nArea)
+
+
+
 
 /// <summary>
 /// Get the contents of a field that is identified by a work area alias and the field name.
@@ -46,9 +180,9 @@ function FieldBlockSym(symVar as Symbol) as object
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function FieldGetAlias(symAlias as Symbol,symField as Symbol) as Usual
+FUNCTION FieldGetAlias(symAlias AS SYMBOL,symField AS SYMBOL) AS USUAL
 	/// THROW NotImplementedException{}
-	return Usual._NIL   
+	RETURN NIL   
 
 
 
@@ -58,9 +192,9 @@ function FieldGetAlias(symAlias as Symbol,symField as Symbol) as Usual
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function FieldGetSelect(uSelect as Usual,symField as Symbol) as Usual
+FUNCTION FieldGetSelect(uSelect AS USUAL,symField AS SYMBOL) AS USUAL
 	/// THROW NotImplementedException{}
-	return Usual._NIL   
+	RETURN NIL   
 
 
 /// <summary>
@@ -69,9 +203,9 @@ function FieldGetSelect(uSelect as Usual,symField as Symbol) as Usual
 /// <param name="symVar"></param>
 /// <returns>
 /// </returns>
-function FieldGetSym(symVar as Symbol) as Usual
+FUNCTION FieldGetSym(symVar AS SYMBOL) AS USUAL
 	/// THROW NotImplementedException{}
-	return Usual._NIL   
+	RETURN NIL   
 
 /// <summary>
 /// Return the position of a field that is identified by a Symbol.
@@ -79,9 +213,9 @@ function FieldGetSym(symVar as Symbol) as Usual
 /// <param name="sField"></param>
 /// <returns>
 /// </returns>
-function FieldPosSym(sField as Symbol) as dword
+FUNCTION FieldPosSym(sField AS SYMBOL) AS DWORD
 	/// THROW NotImplementedException{}
-	return 0   
+	RETURN 0   
 
 
 
@@ -93,9 +227,9 @@ function FieldPosSym(sField as Symbol) as dword
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function FieldPutAlias(symAlias as Symbol,symField as Symbol,u as Usual) as Usual
+FUNCTION FieldPutAlias(symAlias AS SYMBOL,symField AS SYMBOL,u AS USUAL) AS USUAL
 	/// THROW NotImplementedException{}
-	return Usual._NIL   
+	RETURN NIL   
 
 /// <summary>
 /// Set the value of a field that is identified by its Symbolic name.
@@ -104,9 +238,9 @@ function FieldPutAlias(symAlias as Symbol,symField as Symbol,u as Usual) as Usua
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function FieldPutSym(symVar as Symbol,u as Usual) as Usual
+FUNCTION FieldPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
 	/// THROW NotImplementedException{}
-	return Usual._NIL   
+	RETURN NIL   
 
 /// <summary>
 /// </summary>
@@ -115,33 +249,9 @@ function FieldPutSym(symVar as Symbol,u as Usual) as Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function FieldPutSelect(uSelect as Usual,symField as Symbol,u as Usual) as Usual
+FUNCTION FieldPutSelect(uSelect AS USUAL,symField AS SYMBOL,u AS USUAL) AS USUAL
 	/// THROW NotImplementedException{}
-	return Usual._NIL   
-
-
-
-/// <summary>
-/// Return a set-get code block for a field, specified as a Symbol, in a specified work area.
-/// </summary>
-/// <param name="symVar"></param>
-/// <param name="nArea"></param>
-/// <returns>
-/// </returns>
-function FieldWBlockSym(symVar as Symbol,nArea as dword) as object
-	/// THROW NotImplementedException{}
-	return null_object   
-
-
-
-/// <summary>
-/// Determine whether a database file is open.
-/// </summary>
-/// <returns>
-/// </returns>
-function Used() as logic
-	/// THROW NotImplementedException{}
-	return false   
+	RETURN NIL   
 
 
 
@@ -154,23 +264,15 @@ function Used() as logic
 /// <param name="nSelect"></param>
 /// <returns>
 /// </returns>
-function ALIAS          (nSelect)
-	
-	if IsNil(nSelect)
-		return Alias0()
-	endif
-	
-	return VODBAlias(nSelect)
+FUNCTION ALIAS (nSelect) AS STRING CLIPPER
+	IF IsNil(nSelect)
+		RETURN Alias0()
+	ENDIF
+	RETURN VODBAlias(nSelect)
 
 
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function BOF() AS LOGIC
-	return VODBBof()
-
+FUNCTION Alias0Sym() AS SYMBOL
+   RETURN (SYMBOL) Alias0()
 
 
 /// <summary>
@@ -178,22 +280,29 @@ function BOF() AS LOGIC
 /// <returns>
 /// </returns>
 
-function DBAPPEND       (lReleaseLocks)
-	local lRetCode  as logic
+FUNCTION DBAPPEND       (lReleaseLocks) AS LOGIC CLIPPER
+	LOCAL lRetCode  AS LOGIC
 	
-	if IsNil(lReleaseLocks)
-		lReleaseLocks := .t.
-	endif
+	IF IsNil(lReleaseLocks)
+		lReleaseLocks := .T.
+	ENDIF
 	
 	lRetCode := VODBAppend(lReleaseLocks)
 	
-	if !lRetCode
+	IF !lRetCode
 		//    UH 06/26/1998
 		//    lRetCode := DoError(#DBAPPEND)
-		NetErr(.t.)
-	endif
+		NetErr(.T.)
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
+
+
+
+
+
+
+
 
 
 
@@ -203,89 +312,15 @@ function DBAPPEND       (lReleaseLocks)
 /// </summary>
 /// <returns>
 /// </returns>
-function DBBUFFREFRESH  ()
+FUNCTION DBCLEARINDEX   (uOrder, cOrdBag) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
-	
-	lRetCode := VODBBuffRefresh()
-	
-	if !lRetCode
-		lRetCode := DoError(#DBBUFFREFRESH)
-	endif
-	
-	return lRetCode
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCLEARFILTER  ()
-	
-	local lRetCode  as logic
-	
-	lRetCode := VODBClearFilter()
-	
-	if !lRetCode
-		lRetCode := DoError(#DBCLEARFILTER)
-	endif
-	
-	return lRetCode
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCLEARINDEX   (uOrder, cOrdBag)
-	
-	return ORDLISTCLEAR(cOrdBag, uOrder)
+	RETURN ORDLISTCLEAR(cOrdBag, uOrder)
 
 
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCLEARRELATION()
-	return VODBClearRelation()
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCLOSEALL     ()
-	return VODBCloseAll()
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCLOSEAREA    ()
-	return VODBCloseArea()
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCOMMIT       ()
-	return VODBCommit()
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBCOMMITALL    ()
-	return VODBCommitAll()
 
 
 
@@ -321,7 +356,7 @@ function DBCOMMITALL    ()
 /// </summary>
 /// <returns>
 /// </returns>
-function DBCREATE (   cName,      ;
+FUNCTION DBCREATE (   cName,      ;
 	aStru,      ;
 	xDriver,    ;
 	lNew,       ;
@@ -329,20 +364,20 @@ function DBCREATE (   cName,      ;
 	cDelim,     ;
 	lJustOpen,  ;
 	aHidden     ;
-	)
+	) AS LOGIC CLIPPER
 	
-	local           rddList         as _RDDLIST
-	local           lKeep           as logic
-	local           lRetCode        as logic
-	local           aRdds           as array
+	LOCAL           rddList         AS _RDDLIST
+	LOCAL           lKeep           AS LOGIC
+	LOCAL           lRetCode        AS LOGIC
+	LOCAL           aRdds           AS ARRAY
 	
-	if aStru = NIL
+	IF aStru = NIL
 		aStru := {}
-	endif
+	ENDIF
 	
-	if !IsArray( aStru )
-		return .f.
-	endif
+	IF !IsArray( aStru )
+		RETURN .F.
+	ENDIF
 	
 	
 	//
@@ -354,48 +389,48 @@ function DBCREATE (   cName,      ;
 	//      NIL -   to close file after creating
 	//
 	
-	if lNew = NIL
-		lNew    := .t.
-		lKeep   := .f.
-	else
-		lKeep   := .t.
-	endif
+	IF lNew = NIL
+		lNew    := .T.
+		lKeep   := .F.
+	ELSE
+		lKeep   := .T.
+	ENDIF
 	
-	if lJustOpen == NIL
-		lJustOpen := .f.
-	endif
+	IF lJustOpen == NIL
+		lJustOpen := .F.
+	ENDIF
 	
 	aRdds   := __RddList(xDriver, aHidden)
 	rddList := __AllocRddList(aRdds)
 	
-	if IsNil(cAlias)
+	IF IsNil(cAlias)
 		cAlias := ""
-	endif
+	ENDIF
 	
-	if IsNil(cDelim)
+	IF IsNil(cDelim)
 		cDelim := ""
-	endif
+	ENDIF
 	
 	lRetCode := VODBCreate(cName, aStru, rddList, lNew, cAlias, cDelim, lKeep, lJustOpen)
 	
-	if rddList != null_ptr
+	IF rddList != NULL_PTR
 		MemFree(RDDLIST)
-	endif
+	ENDIF
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DBCREATE)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DBCREATEINDEX(cName, cExpr, cobExpr, lUnique)
+FUNCTION DBCREATEINDEX(cName, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 	
-	return OrdCreate(cName, NIL, cExpr, cobExpr, lUnique)
+	RETURN OrdCreate(cName, NIL, cExpr, cobExpr, lUnique)
 
 
 
@@ -403,45 +438,44 @@ function DBCREATEINDEX(cName, cExpr, cobExpr, lUnique)
 /// </summary>
 /// <returns>
 /// </returns>
-function DBCREATEORDER  (uOrder, cName, cExpr, cobExpr, lUnique)
+FUNCTION DBCREATEORDER  (uOrder, cName, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 	
-	return OrdCreate(cName, uOrder, cExpr, cobExpr, lUnique)
+	RETURN OrdCreate(cName, uOrder, cExpr, cobExpr, lUnique)
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DBDELETE ()
+FUNCTION DBDELETE () AS LOGIC STRICT
 	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
 	lRetCode := VODBDelete ()
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DBDELETE)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DbDeleteOrder(uOrder, cOrdBag)
-	local cOrder as usual
-	local lRet   as logic
+FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
+	LOCAL lRet   AS LOGIC
 	
-	lRet := true
+	lRet := TRUE
+
+	IF IsNumeric(uOrder)
+		LOCAL oOrder AS OBJECT
+		lRet := VODBOrderInfo(DBOI_NAME,"",uOrder, REF oOrder)
+		uOrder := oOrder
+	ENDIF
 	
-	if IsNumeric(uOrder)
-		cOrder := NIL
-		lRet := VODBOrderInfo(DBOI_NAME,"",uOrder, @cOrder)
-		uOrder := cOrder
-	endif
-	
-	return ORDDESTROY(uOrder, cOrdBag)
+	RETURN ORDDESTROY(uOrder, cOrdBag)
 
 
 
@@ -449,62 +483,35 @@ function DbDeleteOrder(uOrder, cOrdBag)
 /// </summary>
 /// <returns>
 /// </returns>
-function DBDRIVER       ()
-	return RDDNAME()
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest)
+FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
-	if IsNil(lRest)
-		lRest := .f.
-	endif
+	IF IsNil(lRest)
+		lRest := .F.
+	ENDIF
 	
 	lRetCode := VODBEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbEval)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DbFieldInfo(nOrdinal, nPos, xNewVal)
+FUNCTION DbFieldInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
+	LOCAL oNewVal := xNewVal AS OBJECT
 	
-	if !VODBFieldInfo(nOrdinal, nPos, @xNewVal)
+	IF !VODBFieldInfo(nOrdinal, nPos, REF oNewVal)
 		DoError(#DbFieldInfo)
-	endif
+	ENDIF
 	
-	return xNewVal
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbFIlter()
-	
-	return VODBFilter()
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbGetSelect()
-	
-	return VODBGetSelect()
+	RETURN oNewVal
 
 
 
@@ -513,52 +520,19 @@ function DbGetSelect()
 /// </summary>
 /// <returns>
 /// </returns>
-function DbGoBottom()
+FUNCTION DbGoto(uRecId) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
-	
-	lRetCode := VODBGoBottom()
-	
-	if !lRetCode
-		lRetCode := DoError(#DbGoBottom)
-	endif
-	
-	return lRetCode
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbGoto(uRecId)
-	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
 	lRetCode := VODBGoto(uRecId)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbGoto)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbGotop()
-	
-	local lRetCode  as logic
-	
-	lRetCode := VODBGoTop()
-	
-	if !lRetCode
-		lRetCode := DoError(#DbGotop)
-	endif
-	
-	return lRetCode
 
 
 
@@ -566,32 +540,13 @@ function DbGotop()
 /// </summary>
 /// <returns>
 /// </returns>
-function DbInfo(nOrdinal, xNewVal)
-	
-	if !VODBInfo(nOrdinal, @xNewVal)
+FUNCTION DbInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
+	LOCAL oNewVal := xNewVal AS OBJECT
+	IF !VODBInfo(nOrdinal, REF oNewVal)
 		DoError(#DbInfo)
-	endif
+	ENDIF
 	
-	return xNewVal
-
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbContinue()
-	
-	local lRetCode as logic
-	
-	lRetCode := VODBContinue()
-	
-	if !lRetCode
-		lRetCode := DoError(#DbContinue)
-	endif
-	
-	return lRetCode
+	RETURN oNewVal
 
 
 
@@ -599,33 +554,33 @@ function DbContinue()
 /// </summary>
 /// <returns>
 /// </returns>
-function DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest )
+FUNCTION DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest ) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
-	if IsNil(lRest)
-		lRest := .f.
-	endif
+	IF IsNil(lRest)
+		lRest := .F.
+	ENDIF
 	
-	if IsNil(uCobWhile)
-		uCobWhile := {|| .t. }
-	else
-		lRest := .t.
-	endif
+	IF IsNil(uCobWhile)
+		uCobWhile := {|| .T. }
+	ELSE
+		lRest := .T.
+	ENDIF
 	
-	if IsNil(nNext)
+	IF IsNil(nNext)
 		nNext := 0
-	endif
+	ENDIF
 	
 	lRetCode := VODBLocate(uCobFor, uCobWhile, nNext, uRecId, lRest)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbLocate)
-	else
+	ELSE
 		lRetCode := VODBFound()
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 
@@ -633,54 +588,37 @@ function DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest )
 /// </summary>
 /// <returns>
 /// </returns>
-function DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal)
-	local lKeyVal   as logic
+FUNCTION DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal) AS USUAL CLIPPER
+	LOCAL lKeyVal   AS LOGIC
 	
-	if !IsString(cBagName)
+	IF !IsString(cBagName)
 		cBagName := ""
-	endif
+	ENDIF
 	
-	if IsString(uOrder)
-		if Len(uOrder) == 0
+	IF IsString(uOrder)
+		IF Len(uOrder) == 0
 			uOrder := NIL
-		endif
-	endif
+		ENDIF
+	ENDIF
 	
-	if nOrdinal == DBOI_KEYVAL
-		lKeyVal  := .t.
+	IF nOrdinal == DBOI_KEYVAL
+		lKeyVal  := .T.
 		nOrdinal := DBOI_EXPRESSION
-	endif
-	
-	VODBOrderInfo(nOrdinal, cBagName, uOrder, @xNewVal)
-	
-	if lKeyVal
-		if IsString(xNewVal)
-			if Len(xNewVal) == 0
+	ENDIF
+    LOCAL oNewVal := xNewVal AS OBJECT	
+	VODBOrderInfo(nOrdinal, cBagName, uOrder, REF oNewVal)
+	xNewVal := oNewVal
+	IF lKeyVal
+		IF IsString(xNewVal)
+			IF Len(xNewVal) == 0
 				xNewVal := NIL
-			else
+			ELSE
 				xNewVal := &(xNewVal)
-			endif
-		endif
-	endif
+			ENDIF
+		ENDIF
+	ENDIF
 	
-	return xNewVal
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbPack()
-	
-	local lRetCode  as logic
-	
-	lRetCode := VODBPack()
-	
-	if !lRetCode
-		lRetCode := DoError(#DbPack)
-	endif
-	
-	return lRetCode
+	RETURN xNewVal
 
 
 
@@ -689,26 +627,13 @@ function DbPack()
 /// </summary>
 /// <returns>
 /// </returns>
-function DbRecordInfo(nOrdinal, uRecId, xNewVal)
-	VODBRecordInfo(nOrdinal, uRecId, @xNewVal)
-	return xNewVal
+FUNCTION DbRecordInfo(nOrdinal, uRecId, xNewVal) AS USUAL CLIPPER
+	LOCAL oNewVal := xNewVal AS OBJECT
+	VODBRecordInfo(nOrdinal, uRecId, REF oNewVal)
+	RETURN oNewVal
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbRecall()
-	
-	local lRetCode  as logic
-	
-	lRetCode := VODBRecall()
-	
-	if !lRetCode
-		lRetCode := DoError(#DbRecall)
-	endif
-	
-	return lRetCode
+
 
 
 
@@ -718,45 +643,44 @@ function DbRecall()
 /// </summary>
 /// <returns>
 /// </returns>
-function DbRLock(uRecord)
-	
-	return VODBRlock(uRecord)
+FUNCTION DbRLock(uRecord) AS USUAL CLIPPER
+	RETURN VODBRlock(uRecord)
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DbRLockList()
+FUNCTION DbRLockList() AS ARRAY STRICT
 	
-	local lockList          as _LOCKLIST
-	local aLockList := {}   as array
-	local i                 as dword
-	local nRecords          as usual
-	
+	LOCAL lockList          AS DWORD[]
+	LOCAL aLockList := {}   AS ARRAY
+	LOCAL i                 AS DWORD
+	LOCAL oRecords          AS OBJECT
+	LOCAL nRecords          AS DWORD
 	nRecords := 0
 	
-	if !VODBInfo(DBI_LOCKCOUNT, @nRecords)
+	IF !VODBInfo(DBI_LOCKCOUNT, REF oRecords)
 		DoError(#DbRLockList)
-	else
-		lockList := DbInfo(DBI_GETLOCKARRAY)
-		
-		for i := 1 to nRecords
-			AAdd(aLockList, lockList.lRecno[i])
-		next
-	endif
+	ELSE
+		lockList := (DWORD[]) DbInfo(DBI_GETLOCKARRAY)
+		nRecords := COnvert.ToUInt32(oRecords)
+		FOR i := 1 TO nRecords
+			AAdd(aLockList, lockList[i])
+		NEXT
+	ENDIF
 	
-	return aLockList
+	RETURN aLockList
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DbRSelect(nPos)
+FUNCTION DbRSelect(nPos) AS DWORD CLIPPER
 	
-	Default(@nPos, 0)
+	DEFAULT( REF nPos, 0)
 	
-	return VODBRSelect(nPos)
+	RETURN VODBRSelect(nPos)
 
 
 
@@ -765,17 +689,17 @@ function DbRSelect(nPos)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbRUnLock(uRecId)
+FUNCTION DbRUnLock(uRecId) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
 	lRetCode := VODBUnlock(uRecId)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbRUnLock)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 
@@ -784,36 +708,36 @@ function DbRUnLock(uRecId)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbSelect(nNew)
+FUNCTION DbSelect(nNew) AS DWORD CLIPPER
 	
-	local nOld  as dword
+	LOCAL nOld  AS DWORD
 	
-	Default(@nNew, 0)
+	DEFAULT( REF nNew, 0)
 	
-	VODBSelect(nNew, @nOld)
+	VODBSelect(nNew, REF nOld)
 	
-	return nOld
+	RETURN nOld
 
 
 
 /// <summary>
 /// </summary>
 /// <returns>
-/// </returns>
-function DbSelectArea(xValue)
+/// </returns> 
+FUNCTION DbSelectArea(xValue) AS LOGIC CLIPPER
 	
-	local sSelect   as short
+	LOCAL sSelect   AS SHORT
 	
 	sSelect := _SELECT(xValue)
 	
-	if sSelect = 0
-		ptrErrInfo := _VODBErrInfoPtr()
-		ptrErrInfo.pszArg     := AsPsz(xValue)
-		ptrErrInfo.dwArgType  := UsualType(xValue)
+	IF sSelect = 0
+//		ptrErrInfo := _VODBErrInfoPtr()
+//		ptrErrInfo.pszArg     := xValue)
+//		ptrErrInfo.dwArgType  := UsualType(xValue)
 		DoError(#DbSelectArea)
-	endif
+	ENDIF
 	
-	return (sSelect > 0)
+	RETURN (sSelect > 0)
 
 
 
@@ -824,11 +748,11 @@ function DbSelectArea(xValue)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbSetSelect(nSelect)
+FUNCTION DbSetSelect(nSelect) AS DWORD CLIPPER
 	
-	Default(@nSelect, 0)
+	DEFAULT( REF  nSelect, 0)
 	
-	return VODBSetSelect(nSelect)
+	RETURN (DWORD) VODBSetSelect(nSelect)
 
 
 
@@ -837,11 +761,11 @@ function DbSetSelect(nSelect)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbSymSelect(sAlias)
+FUNCTION DbSymSelect(sAlias)  AS DWORD CLIPPER
 	
-	Default(@sAlias, Alias0Sym())
+	DEFAULT( REF  sAlias, Alias0Sym())
 	
-	return VODBSymSelect(sAlias)
+	RETURN VODBSymSelect(sAlias)
 
 
 
@@ -851,20 +775,17 @@ function DbSymSelect(sAlias)
 /// </summary>
 /// <returns>
 /// </returns>
-function DBRELATION     (wPos)
+FUNCTION DBRELATION     (wPos)  AS STRING CLIPPER
 	
-	local pszRelText        as psz
-	local cRelation         as string
+	LOCAL cRelText  := "" AS STRING
 	
-	Default(@wPos, 1)
+	DEFAULT(  REF wPos, 1)
 	
-	if !VODBRelation(wPos, @pszRelText)
+	IF !VODBRelation(wPos, REF cRelText)
 		DoError(#DBRELATION)
-	else
-		cRelation := Psz2String(pszRelText)
-	endif
+	ENDIF
 	
-	return cRelation
+	RETURN cRelText
 
 
 
@@ -872,9 +793,11 @@ function DBRELATION     (wPos)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbSetDriver(cDriver)
-	
-	return RddSetDefault(cDriver)
+FUNCTION DbSetDriver(cDriver) AS STRING CLIPPER
+	IF PCount >= 1
+        RETURN RddSetDefault(cDriver)
+    ENDIF
+	RETURN RddSetDefault()
 
 
 
@@ -882,21 +805,21 @@ function DbSetDriver(cDriver)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbSetFilter(cbFilter, cFilter)
+FUNCTION DbSetFilter(cbFilter, cFilter) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
-	if IsNil(cFilter)
+	IF IsNil(cFilter)
 		cFilter := "UNKNOWN"
-	endif
+	ENDIF
 	
 	lRetCode := VODBSetFilter(cbFilter, cFilter)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbSetFilter)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 
@@ -905,76 +828,62 @@ function DbSetFilter(cbFilter, cFilter)
 /// </summary>
 /// <returns>
 /// </returns>
-function DbSetRelation  (xAlias, uCobKey, cKey)
+FUNCTION DbSetRelation  (xAlias, uCobKey, cKey) AS LOGIC CLIPPER
 	
-	local nSelect   as dword
-	local cAlias    as string
-	local xType     as dword
-	local lRetCode  as logic
+	LOCAL nSelect   AS DWORD
+	LOCAL cAlias    AS STRING
+	LOCAL xType     AS DWORD
+	LOCAL lRetCode  AS LOGIC
 	
-	if IsNil(cKey)
+	IF IsNil(cKey)
 		cKey := ""
-	endif
+	ENDIF
 	
 	xType := UsualType(xAlias)
 	
-	if xType = string
+	IF xType = STRING
 		nSelect := Val(xAlias)
 		
-		if nSelect = 0
+		IF nSelect = 0
 			cAlias := xAlias
-		else
+		ELSE
 			cAlias := ALIAS(nSelect)
-		endif
+		ENDIF
 		
-	else
+	ELSE
 		cAlias := ALIAS(xAlias)
-	endif
+	ENDIF
 	
 	lRetCode := VODBSetRelation(cAlias, uCobKey, cKey)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbSetRelation)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DBSKIP         (nRecords)
+FUNCTION DBSKIP (nRecords) AS LOGIC CLIPPER
 	
-	local lRetCode  as logic
+	LOCAL lRetCode  AS LOGIC
 	
-	if IsNil(nRecords)
+	IF IsNil(nRecords)
 		nRecords := 1
-	endif
+	ENDIF
 	
 	lRetCode := VODBSkip(nRecords)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DBSKIP)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbUnLock()
-	local lRetCode  as logic
-	
-	lRetCode := VODBUnlock(NIL)
-	
-	if !lRetCode
-		lRetCode := DoError(#DbUnLock)
-	endif
-	
-	return lRetCode
 
 
 
@@ -983,17 +892,7 @@ function DbUnLock()
 /// </summary>
 /// <returns>
 /// </returns>
-function DbUnlockAll()
-	return VODBUnlockAll()
-
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DBUSEAREA (lNew,      ;   // Select the next free Area
+FUNCTION DBUSEAREA (lNew,      ;   // Select the next free Area
 	xDriver,    ;   // RDD name
 	cName,      ;   // File name
 	cAlias,     ;   // Alias qualifier
@@ -1003,24 +902,24 @@ function DBUSEAREA (lNew,      ;   // Select the next free Area
 	cDelim,     ;   // Character for delimitted files
 	aHidden     ;   // List of hidden RDDs as array
 	;
-	)                   as logic    clipper
+	)                   AS LOGIC    CLIPPER
 	
 	
-	local           lRetCode        as logic
-	local           rddList         as _RDDLIST
-	local           nTries          as dword
-	local           aRdds           as array
+	LOCAL           lRetCode        AS LOGIC
+	LOCAL           rddList         AS _RDDLIST
+	LOCAL           nTries          AS DWORD
+	LOCAL           aRdds           AS ARRAY
 	
 	
-	Default(@lNew, .f.)
+	DEFAULT( REF lNew, .F.)
 	
-	Default(@cAlias, "")
+	DEFAULT( REF cAlias, "")
 	
-	Default( @lShare, !SetExclusive())
+	DEFAULT( REF lShare, !SetExclusive())
 	
-	Default(@lReadOnly, .f.)
+	DEFAULT( REF lReadOnly, .F.)
 	
-	Default(@cDelim, "")
+	DEFAULT( REF cDelim, "")
 	
 	nTries := 1
 	
@@ -1028,147 +927,78 @@ function DBUSEAREA (lNew,      ;   // Select the next free Area
 	
 	rddList := __AllocRddList(aRdds)
 	
-	do while .t.
+	DO WHILE .T.
 		
-		if !Empty(aStru)
+		IF !Empty(aStru)
 			
 			lRetCode := DBCREATE   ( cName, aStru, aRdds, lNew,;
-			cAlias, cDelim, .t.)
-		else
+			cAlias, cDelim, .T.)
+		ELSE
 			
 			lRetCode := VODBUseArea(lNew, rddList, cName, cAlias,;
 			lShare, lReadOnly)
 			
-		endif
+		ENDIF
 		
-		if lRetCode
-			exit
-		else
-			if ( DoError(#DBUSEAREA, nTries) != E_RETRY )
-				exit
-			endif
+		IF lRetCode
+			EXIT
+		ELSE
+			IF ( DoError(#DBUSEAREA, nTries) != E_RETRY )
+				EXIT
+			ENDIF
 			nTries := nTries + 1
-		endif
+		ENDIF
 		
-	enddo
+	ENDDO
 	
-	if rddList != null_ptr
+	IF rddList != NULL_PTR
 		MemFree(RDDLIST)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function DbZap()
-	
-	local lRetCode  as logic
-	
-	lRetCode := VODBZap()
-	
-	if !lRetCode
-		lRetCode := DoError(#DbZap)
-	endif
-	
-	return lRetCode
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DELETED        ()
+FUNCTION FIELDPUT (wPos AS USUAL, xValue  AS USUAL) AS USUAL 
 	
-	return VODBDeleted()
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function EOF() AS LOGIC
-	return VODBEof()
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function FIELDPUT (wPos, xValue)
+	LOCAL xRetVal AS USUAL
 	
-	local xRetVal as usual
-	
-	if VODBFieldPut(wPos, xValue)
+	IF VODBFieldPut(wPos, xValue)
 		xRetVal := xValue
-	else
+	ELSE
 		DoError(#FIELDPUT)
-	endif
+	ENDIF
 	
-	return xRetVal
+	RETURN xRetVal
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function FieldGet(wPos)
+FUNCTION FieldGet(wPos) AS USUAL CLIPPER
 	
-	local xRetVal as usual
+	LOCAL xRetVal AS OBJECT
 	
-	Default(@wPos, 1)
+	DEFAULT( REF wPos, 1)
 	
-	if !VODBFieldGet(wPos, @xRetVal)
+	IF !VODBFieldGet(wPos, REF xRetVal)
 		DoError(#FIELDGET)
-	endif
+	ENDIF
 	
-	return xRetVal
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function FLOCK          ()
-	
-	return VODBFlock()
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function Found()
-	return VODBFound()
+	RETURN xRetVal
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function Header()
-	return DbInfo(DBI_GETHEADERSIZE)
-
-
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function LastRec()
-	
-	return VODBLastRec()
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function LUpdate()
-	return DbInfo(DBI_LASTUPDATE)
-
-
+FUNCTION LUpdate()  AS DATE STRICT
+	RETURN DbInfo(DBI_LASTUPDATE)
 
 
 /// <summary>
@@ -1176,23 +1006,20 @@ function LUpdate()
 /// <returns>
 /// </returns>
 
-function RDDCount(nType)
-	if IsNil(nType)
-		nType := RDT_FULL + RDT_TRANSFER
-	endif
-	return VODBRddCount(nType)
+FUNCTION RDDCount(nType) AS DWORD CLIPPER
+	RETURN VODBRddCount()
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function RDDInfo        (nOrdinal, xNewVal)
+FUNCTION RDDInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
+	LOCAL oNewVal := xNewVal AS OBJECT
+	IF !VODBRDDInfo(nOrdinal, REF oNewVal)
+	ENDIF
 	
-	if !VODBRDDInfo(nOrdinal, @xNewVal)
-	endif
-	
-	return xNewVal
+	RETURN oNewVal
 
 
 
@@ -1200,193 +1027,61 @@ function RDDInfo        (nOrdinal, xNewVal)
 /// </summary>
 /// <returns>
 /// </returns>
-function RDDList        (nType)
+FUNCTION RDDList        (nType) AS ARRAY CLIPPER
 	
-	local rddList           as _RDDLIST
-	local aRddList := {}    as array
-	local i                 as dword
-	local nCount            as dword
+	LOCAL rddList           AS _RDDLIST
+	LOCAL aRddList := {}    AS ARRAY
+	LOCAL i                 AS DWORD
+	LOCAL nCount            AS DWORD
+
+	nCount := VODBRddCount()
 	
-	if IsNil(nType)
-		nType := RDT_FULL + RDT_TRANSFER
-	endif
-	
-	nCount := VODBRddCount(nType)
-	
-	if nCount > 0
+	IF nCount > 0
 		
-		rddList := MemAlloc( (_sizeof(dword)) + (nCount * _sizeof(symbol)) )
+		rddList := MemAlloc( (_SIZEOF(DWORD)) + (nCount * _SIZEOF(SYMBOL)) )
 		rddList.uiRddCount := nCount
 		
-		if VODBRddList(rddList, nType)
+		IF VODBRddList(rddList, nType)
 			
-			for i := 1 to rddList.uiRddCount
+			FOR i := 1 TO rddList.uiRddCount
 				AAdd( aRddList, Symbol2String(rddList.atomRddName[i]) )
-			next
+			NEXT
 			
-		endif
+		ENDIF
 		
 		MemFree(RDDLIST)
 		
-	endif
-	return aRddList
+	ENDIF
+	RETURN aRddList
 
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function RDDName        ()
-	local cRet      as string
+
+
+
+
+
+
+
+
+FUNCTION DBMemoExt      (cDriver) AS STRING CLIPPER
 	
-	if Used()
-		cRet := VODBRddName()
-	else
-		cRet := RddSetDefault(NIL)
-	endif
-	
-	return cRet
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-
-function RddSetDefault  (cDriver)
-	
-	if !IsString(cDriver)
-		cDriver := NIL
-	else
-		if (cDriver == null_string)  .OR. ( Empty(Trim(cDriver)) )
-			cDriver := NIL
-		endif
-	endif
-	
-	return RDDINFO(_SET_DEFAULTRDD, cDriver)
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function RecSize() as long
-	return DbInfo(DBI_GETRECSIZE)
-
-
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function RLock()
-	return (VODBRlock(NIL))
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function RecCount()
-	return VODBLastRec()
-
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function RecNo()
-	return VODBRecno()
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function _Select(xValue)
-	local nSelect           as dword
-	local sAlias            as symbol
-	local xType             as dword
-	local nAsc              as dword
-	
-	
-	if IsNil(xValue)
-		return( VODBGetSelect() )
-	endif
-	
-	xType := UsualType(xValue)
-	
-	if xType =symbol
-		nSelect := VODBSymSelect(xValue)
-		
-	elseif xType =string
-		nSelect := 0
-		
-		if SLen(xValue) = 1
-			nSelect := Val(xValue)
-			nAsc := Asc( Upper(xValue) )
-			if nAsc > 64 .AND. nAsc < 75
-				nSelect := nAsc - 64
-			endif
-		endif
-		
-		if (nSelect > 0) .OR. ("0" == xValue)
-			nSelect := VODBSetSelect(int(nSelect))
-		else
-			sAlias  := SysAddAtom( String2Psz( Upper( AllTrim(xValue) ) ) )
-			nSelect := VODBSymSelect(sAlias)
-		endif
-		
-	else
-		nSelect := VODBSetSelect(xValue)
-	endif
-	
-	return nSelect
-
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-function Select(xValue)
-	
-	local sSelect   as dword
-	local sCurrent  as dword
-	
-	sCurrent := VODBGetSelect()
-	
-	sSelect := _SELECT(xValue)
-	
-	VODBSetSelect(int(sCurrent))
-	
-	return sSelect
-
-
-
-function DBMemoExt      (cDriver)
-	
-	if IsNil(cDriver)
+	IF IsNil(cDriver)
 		cDriver := ""
-	endif
+	ENDIF
 	
-	return VODBMemoExt(cDriver)
+	RETURN VODBMemoExt(cDriver)
 
 
 
 
-function RDDVersion     (nParm)
+FUNCTION RDDVersion     (nParm) AS USUAL CLIPPER
 	
-	if !IsNumeric(nParm)
+	IF !IsNumeric(nParm)
 		nParm := 0
-	endif
+	ENDIF
 	
-	return DbInfo(DBI_RDD_VERSION, nParm)
+	RETURN DbInfo(DBI_RDD_VERSION, nParm)
 
 
 
@@ -1395,30 +1090,30 @@ function RDDVersion     (nParm)
 
 
 
-function DBMemoField        (xField)
-	local n,i        as dword
-	local xRet       as usual
-	local nFields    as dword
+FUNCTION DBMemoField (xField AS USUAL)  AS USUAL
+	LOCAL n,i        AS DWORD
+	LOCAL xRet       AS USUAL
+	LOCAL nFields    AS DWORD
 	
-	if IsNumeric(xField)
+	IF IsNumeric(xField)
 		n := xField
-	elseif IsSymbol(xField)
+	ELSEIF IsSymbol(xField)
 		n := FieldPosSym(xField)
-	elseif IsString(xField)
+	ELSEIF IsString(xField)
 		n := FieldPos(xField)
-		else
+		ELSE
 		nFields := FCount()
-		for i := 1 to nFields
-			if DbFieldInfo(i, DBS_TYPE) == "M"
+		FOR i := 1 TO nFields
+			IF DbFieldInfo(i, DBS_TYPE) == "M"
 				n := i
-				exit
-			endif
-		next
-	endif
+				EXIT
+			ENDIF
+		NEXT
+	ENDIF
 	
 	xRet := DbInfo( DBI_MEMOFIELD, n )
 	
-	return xRet
+	RETURN xRet
 
 
 //---------------------------------------------------------------------------
@@ -1428,18 +1123,17 @@ function DBMemoField        (xField)
 //  Call default error handler
 //
 
-function DoError        (nSymFunc, nTries)
-	local oError    as Error
+FUNCTION DoError (nSymFunc, nTries) AS USUAL CLIPPER
+	LOCAL oError    AS Error
 	
 	oError := ErrorBuild(_VODBErrInfoPtr())
-	oError:Stack := ErrorStack(1) 
 	
 	oError:FuncSym := nSymFunc
 	
-	if !IsNil(nTries)
+	IF !IsNil(nTries)
 		oError:Tries   := nTries
-	endif
-	return Eval(ErrorBlock(), oError)
+	ENDIF
+	RETURN Eval(ErrorBlock(), oError)
 
 
 
@@ -1458,120 +1152,120 @@ function DoError        (nSymFunc, nTries)
 //
 
 /*
-function __AllocRddList (aRdds as array)    as _RDDLIST     pascal
-	local n,i           as dword
-	local rddList       as _RDDLIST
+FUNCTION __AllocRddList (aRdds AS ARRAY)    AS _RDDLIST     PASCAL
+	LOCAL n,i           AS DWORD
+	LOCAL rddList       AS _RDDLIST
 	n       := ALen(aRdds)
-	rddList := MemAlloc( (_sizeof(dword)) + (n * _sizeof(symbol)) )
+	rddList := MemAlloc( (_SIZEOF(DWORD)) + (n * _SIZEOF(SYMBOL)) )
 	
 	rddList.uiRddCount := n
 	~"RANGECHECK-"
-	for i := 1 to n
+	FOR i := 1 TO n
 		rddList.atomRddName[i] := SysAddAtomUpperA(aRdds[i])
-	next
-	return rddList
+	NEXT
+	RETURN rddList
 //
 */
-function __RddList      (xDriver, aHidden)
+FUNCTION __RddList      (xDriver, aHidden) AS ARRAY CLIPPER
 	
-	local   nType   as dword
-	local   aRdds   as array
-	local   n       as dword
-	local   i       as dword
-	local   lBlob   as logic
-	local   lDbf    as logic
+	LOCAL   nType   AS DWORD
+	LOCAL   aRdds   AS ARRAY
+	LOCAL   n       AS DWORD
+	LOCAL   i       AS DWORD
+	LOCAL   lBlob   AS LOGIC
+	LOCAL   lDbf    AS LOGIC
 	
 	//  UH 09/24/1997
 	//  IF (!IsArray(xDriver) .OR. IsString(xDriver))
-	if IsArray(xDriver)
-		nType := array
-	elseif IsString(xDriver)
+	IF IsArray(xDriver)
+		nType := ARRAY
+	ELSEIF IsString(xDriver)
 		//  UH 11/13/1997
-		if SLen(xDriver) = 0
+		IF SLen(xDriver) = 0
 			xDriver := RddSetDefault()
-		endif
-		nType := string
-	else
+		ENDIF
+		nType := STRING
+	ELSE
 		xDriver := RddSetDefault()
-		nType := string
-	endif
+		nType := STRING
+	ENDIF
 	
 	//  UH 09/24/1997
 	//  nType := UsualType(xDriver)
 	
-	if nType == array
+	IF nType == ARRAY
 		aRdds := xDriver
 		
-	elseif nType == string
+	ELSEIF nType == STRING
 		aRdds := {}
 		
-		UpperA(xDriver)
+		xDriver := Upper(xDriver)
 		
-		do case
-			case xDriver = "DBFNTX"
-		lDbf := .t.
-			case xDriver = "_DBFCDX"
-		lDbf := .t.
-			case xDriver = "DBFCDX"
-				lBlob := .t.
-				lDbf  := .t.
+		DO CASE
+			CASE xDriver = "DBFNTX"
+		lDbf := .T.
+			CASE xDriver = "_DBFCDX"
+		lDbf := .T.
+			CASE xDriver = "DBFCDX"
+				lBlob := .T.
+				lDbf  := .T.
 		xDriver := "_DBFCDX"
-			case xDriver = "DBFMDX"
-		lDbf := .t.
-			otherwise
-				lDbf := .f.
-		lBlob := .f.
-		endcase
+			CASE xDriver = "DBFMDX"
+		lDbf := .T.
+			OTHERWISE
+				lDbf := .F.
+		lBlob := .F.
+		ENDCASE
 		
-		if lDbf
+		IF lDbf
 			AAdd(aRdds, "CAVODBF")
-		endif
+		ENDIF
 		
 		AAdd(aRdds, xDriver)
 		
 		// UH (for David, Don)
-		if lBlob
+		IF lBlob
 			AAdd(aRdds, "DBFCDX")
-		endif
+		ENDIF
 		
-	endif
+	ENDIF
 	
-	if UsualType(aHidden) == array
+	IF UsualType(aHidden) == ARRAY
 		n := ALen(aHidden)
 		
-		for i := 1 to n
+		FOR i := 1 TO n
 			AAdd(aRdds, aHidden[i])
-		next
-	endif
+		NEXT
+	ENDIF
 	
-	return aRdds
+	RETURN aRdds
 
 
-function _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      as logic clipper
+FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 	
-	local aStruct       as array
-	local oError        as usual
-	local i,n           as int
-	local uErrBlock     as usual
-	local nSelect       as int
-	local aField        as array
+	LOCAL aStruct       AS ARRAY
+	LOCAL oError        AS USUAL
+	LOCAL i,n           AS INT
+	LOCAL uErrBlock     AS USUAL
+	LOCAL nSelect       AS INT
+	LOCAL aField        AS ARRAY
 	
-	field field_name, field_type, field_len, field_dec
+	FIELD field_name, field_type, field_len, field_dec
 	
 	nSelect := 0
 	
-	Default(@lNew, .f.)
+	DEFAULT( REF lNew, .F.)
 	
-	if ( Used() .AND. !lNew )
+	IF ( Used() .AND. !lNew )
 		DBCLOSEAREA()
-	endif
+	ENDIF
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
-		if ( Empty(cFile2) )
+		IF ( Empty(cFile2) )
 			
 			DBCREATE(cFile1,                                    ;
 			{ {"FIELD_NAME", "C", 10, 0},   ;
@@ -1579,22 +1273,22 @@ function _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      as logic clipper
 			{"FIELD_LEN", "N", 3, 0},       ;
 			{"FIELD_DEC", "N", 3, 0} },     ;
 			cDriver,                        ;
-			.f.,                            ;
+			.F.,                            ;
 			cAlias)
 			
 			
-		else
+		ELSE
 			
 			
 			DBUSEAREA(lNew, cDriver, cFile2)
 			
 			aStruct := {}
 			
-			n := LASTREC()
+			n := (INT) LASTREC()
 			
 			VODBGoTop()
 			
-			do while !EOF()
+			DO WHILE !EOF()
 				aField := {}
 				AAdd(aField, AllTrim(field_name))
 				AAdd(aField, AllTrim(field_type))
@@ -1602,153 +1296,153 @@ function _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      as logic clipper
 				AAdd(aField, field_dec)
 				
 				AAdd( aStruct, aField )
-				DBSKIP(1, .f.)
-			enddo
+				DBSKIP(1, .F.)
+			ENDDO
 			
 			VODBCloseArea()
 			
-			if lNew
+			IF lNew
 				VODBSetSelect(nSelect)
-			endif
+			ENDIF
 			
 			
 			
 			
-			for i := 1 to n
+			FOR i := 1 TO n
 				
-				if (aStruct[i, DBS_TYPE] == "C") .AND. (aStruct[i, DBS_DEC] != 0)
+				IF (aStruct[i, DBS_TYPE] == "C") .AND. (aStruct[i, DBS_DEC] != 0)
 					aStruct[i,DBS_LEN] += aStruct[i,DBS_DEC] * 256
-				endif
+				ENDIF
 				
-			next
+			NEXT
 			
 			DBCREATE(cFile1, aStruct, cDriver, lNew, cAlias )
 			
-		endif
+		ENDIF
 		
 		
-		recover using oError
+		RECOVER USING oError
 		VODBCloseArea()
-		oError:FuncSym := #_DBCREATE
-		Eval( uErrBlock, oError)
-	end sequence
+		//oError:FuncSym := #_DBCREATE
+		//Eval( uErrBlock, oError)
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
-	return ( Used() )
+	RETURN ( Used() )
 
 
 
 
 
-function AFields(aNames, aTypes, aLens, aDecs)  as dword clipper
+FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
 	
-	local aStruct           as array
-	local siCount           as dword
-	local si                as dword
-	local lNamesOk  := .f.  as logic
-	local lTypesOk  := .f.  as logic
-	local lLensOk   := .f.  as logic
-	local lDecsOk   := .f.  as logic
+	LOCAL aStruct           AS ARRAY
+	LOCAL siCount           AS DWORD
+	LOCAL si                AS DWORD
+	LOCAL lNamesOk  := .F.  AS LOGIC
+	LOCAL lTypesOk  := .F.  AS LOGIC
+	LOCAL lLensOk   := .F.  AS LOGIC
+	LOCAL lDecsOk   := .F.  AS LOGIC
 	
-	if (Empty(aStruct := DbStruct() ))
-		return (0)
-	endif
+	IF (Empty(aStruct := DbStruct() ))
+		RETURN (0)
+	ENDIF
 	
 	siCount := ALen(aStruct)
 	
-	if UsualType(aNames) == array
+	IF UsualType(aNames) == ARRAY
 		siCount := Min(siCount, Len(aNames) )
-		lNamesOk := .t.
-	endif
+		lNamesOk := .T.
+	ENDIF
 	
 	
-	if UsualType(aTypes) == array
+	IF UsualType(aTypes) == ARRAY
 		siCount := Min( siCount, Len(aTypes) )
-		lTypesOk := .t.
-	endif
+		lTypesOk := .T.
+	ENDIF
 	
 	
-	if UsualType(aLens) == array
+	IF UsualType(aLens) == ARRAY
 		siCount := Min( siCount, Len(aLens) )
-		lLensOk := .t.
-	endif
+		lLensOk := .T.
+	ENDIF
 	
 	
-	if UsualType(aDecs) == array
+	IF UsualType(aDecs) == ARRAY
 		siCount := Min( siCount, Len(aDecs) )
-		lDecsOk := .t.
-	endif
+		lDecsOk := .T.
+	ENDIF
 	
 	
-	for si := 1 to siCount
+	FOR si := 1 TO siCount
 		
-		if lNamesOk
+		IF lNamesOk
 			aNames[si] := aStruct[si, DBS_NAME]
-		endif
+		ENDIF
 		
-		if lTypesOk
+		IF lTypesOk
 			aTypes[si] := aStruct[si, DBS_TYPE]
-		endif
+		ENDIF
 		
-		if lLensOk
+		IF lLensOk
 			aLens[si]  := aStruct[si, DBS_LEN]
-		endif
+		ENDIF
 		
-		if lDecsOk
+		IF lDecsOk
 			aDecs[si]  := aStruct[si, DBS_DEC]
-		endif
+		ENDIF
 		
-	next
+	NEXT
 	
 	
-	return siCount
+	RETURN siCount
 
 
 
 
 
-function DbCopyStruct(cFile as string, aFields as array) as logic pascal
+FUNCTION DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC STRICT
 	
-	return DBCREATE(cFile, __DBFLEDIT(DbStruct(), aFields, null_array) )
+	RETURN DBCREATE(cFile, __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) )
 
 
 
-function DbCOpyXStruct(cFile) as logic pascal
+FUNCTION DbCOpyXStruct(cFile AS STRING) AS LOGIC STRICT
 	
-	local siSaveSel,n,i as dword
-	local aStruct       as array
-	local lRetCode      as logic
-	local oError        as usual
-	local uErrBlock     as usual
+	LOCAL siSaveSel,n,i AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL oError        AS USUAL
+	LOCAL uErrBlock     AS USUAL
 	
-	field field_name, field_type, field_len, field_dec
+	FIELD field_name, field_type, field_len, field_dec
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
 		aStruct := DbStruct()
 		
 		n := Len(aStruct)
 		
-		VODBSelect(0, @siSaveSel)
+		VODBSelect(0, REF siSaveSel)
 		
 		_DbCreate(cFile)
 		
 		
 		
-		for i := 1 to n
+		FOR i := 1 TO n
 			
-			if aStruct[i, DBS_TYPE] == "C" .AND. aStruct[i, DBS_LEN] > 255
-				aStruct[i, DBS_DEC] := short(aStruct[i, DBS_LEN] / 256)
+			IF aStruct[i, DBS_TYPE] == "C" .AND. aStruct[i, DBS_LEN] > 255
+				aStruct[i, DBS_DEC] := SHORT(aStruct[i, DBS_LEN] / 256)
 				aStruct[i, DBS_LEN] := aStruct[i, DBS_LEN] % 256
-			endif
+			ENDIF
 			
 			lRetCode := DBAPPEND()
 			
@@ -1757,22 +1451,22 @@ function DbCOpyXStruct(cFile) as logic pascal
 			field_len   := aStruct[i, DBS_LEN]
 			field_dec   := aStruct[i, DBS_DEC]
 			
-		next
+		NEXT
 		
-		if (VODBGetSelect() <> siSaveSel)
+		IF (VODBGetSelect() <> siSaveSel)
 			DBCLOSEAREA()
-			VODBSetSelect(int(siSaveSel))
-		endif
+			VODBSetSelect(INT(siSaveSel))
+		ENDIF
 		
-		recover using oError
-		oError:FuncSym := #DBCOPYXSTRUCT
-		Eval( uErrBlock, oError)
-		lRetCode := .f.
-	end sequence
+		RECOVER USING oError
+		//oError:FuncSym := #DBCOPYXSTRUCT
+		//Eval( uErrBlock, oError)
+		lRetCode := .F.
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
@@ -1783,52 +1477,51 @@ function DbCOpyXStruct(cFile) as logic pascal
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function DbStruct() as array pascal
+FUNCTION DbStruct() AS ARRAY PASCAL
 	
-	local aStruct   as array
-	local nFCount   as dword
-	local nProps    as dword
-	local i,j       as dword
-	local aField    as array
-	local xNewVal   as usual
+	LOCAL aStruct   AS ARRAY
+	LOCAL nFCount   AS DWORD
+	LOCAL nProps    AS DWORD
+	LOCAL i,j       AS DWORD
+	LOCAL aField    AS ARRAY
+	LOCAL xNewVal   AS USUAL
 	
 	aStruct := {}
 	nFCount := FCount()
 	
-	if !Used()
+	IF !Used()
 		ptrErrInfo := _VODBErrInfoPtr()
 		
 		ptrErrInfo.dwGenCode      := EG_NOTABLE
 		ptrErrInfo.dwSubCode      := EDB_NOTABLE
 		ptrErrInfo.pszSubSystem   := String2Psz("DBCMD")
 		ptrErrInfo.dwSeverity     := ES_ERROR
-		ptrErrInfo.lCanDefault    := .t.
+		ptrErrInfo.lCanDefault    := .T.
 		ptrErrInfo.symFuncSym     := #DBSTRUCT
 		
 		DefErrorGen(ptrErrInfo)
-	else
-		for i := 1 upto nFCount
+	ELSE
+		FOR i := 1 UPTO nFCount
 			aField := {}
 			
-			
-			if !VODBFieldInfo(DBS_PROPERTIES, i, @xNewVal)
+        	LOCAL oNewVal := xNewVal AS OBJECT
+			IF !VODBFieldInfo(DBS_PROPERTIES, i, REF oNewVal)
 				DoError(#DbFieldInfo)
-			endif
-			nProps:= xNewVal
-			
-			for j := 1 upto nProps
-				if !VODBFieldInfo(j, i, @xNewVal)
+			ENDIF
+			nProps:= Convert.ToUint32(oNewVal)
+			FOR j := 1 UPTO nProps
+				IF !VODBFieldInfo(j, i, REF oNewVal)
 					DoError(#DbFieldInfo)
-				endif
-				AAdd(aField, xNewVal)
-			next
+				ENDIF
+				AAdd(aField, oNewVal)
+			NEXT
 			
 			AAdd(aStruct, aField)
 			
-		next
-	endif
+		NEXT
+	ENDIF
 	
-	return aStruct
+	RETURN aStruct
 
 
 
@@ -1836,29 +1529,29 @@ function DbStruct() as array pascal
 
 
 
-static function ParamError  (dwArgNum  as dword  ,    ;
-	dwArgType as dword       )       as usual pascal
+STATIC FUNCTION ParamError  (dwArgNum  AS DWORD  ,    ;
+	dwArgType AS DWORD       )       AS USUAL PASCAL
 	
-	local oError    as usual
+	LOCAL oError    AS USUAL
 	
 	ptrErrInfo := _VODBErrInfoPtr()
 	
 	ptrErrInfo.pszSubSystem   := String2Psz("DBCMD")
 	ptrErrInfo.dwGenCode      := EG_ARG
 	ptrErrInfo.dwSeverity     := ES_ERROR
-	ptrErrInfo.lCanDefault    := .f.
-	ptrErrInfo.lCanRetry      := .t.
-	ptrErrInfo.lCanSubstitute := .f.
+	ptrErrInfo.lCanDefault    := .F.
+	ptrErrInfo.lCanRetry      := .T.
+	ptrErrInfo.lCanSubstitute := .F.
 	ptrErrInfo.dwArgType      := dwArgType
 	ptrErrInfo.dwArgNum       := dwArgNum
 	
 	oError := DefErrorGen(ptrErrInfo)
 	
-	return oError
+	RETURN oError
 
-static function DBCMDError  ()                              as usual pascal
+STATIC FUNCTION DBCMDError  ()                              AS USUAL PASCAL
 	
-	local oError    as usual
+	LOCAL oError    AS USUAL
 	
 	ptrErrInfo := _VODBErrInfoPtr()
 	
@@ -1866,12 +1559,12 @@ static function DBCMDError  ()                              as usual pascal
 	ptrErrInfo.dwSubCode      := EDB_NOTABLE
 	ptrErrInfo.pszSubSystem   := String2Psz("DBCMD")
 	ptrErrInfo.dwSeverity     := ES_ERROR
-	ptrErrInfo.lCanDefault    := .t.
+	ptrErrInfo.lCanDefault    := .T.
 	
 	oError := DefErrorGen(ptrErrInfo)
 	
 	//	UH 05/03/1999
-	return oError
+	RETURN oError
 
 
 
@@ -1883,9 +1576,9 @@ static function DBCMDError  ()                              as usual pascal
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-function IndexHPLock(lSet as Usual) as logic
+FUNCTION IndexHPLock(lSet AS USUAL) AS LOGIC
 	/// THROW NotImplementedException{}
-	return false   
+	RETURN FALSE   
 
 /// <summary>
 /// Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
@@ -1893,9 +1586,9 @@ function IndexHPLock(lSet as Usual) as logic
 /// <param name="lSet"></param>
 /// <returns>
 /// </returns>
-function NewIndexLock(lSet as Usual) as logic
+FUNCTION NewIndexLock(lSet AS USUAL) AS LOGIC
 	/// THROW NotImplementedException{}
-	return false   
+	RETURN FALSE   
 
 
 
@@ -1904,7 +1597,7 @@ function NewIndexLock(lSet as Usual) as logic
 /// </summary>
 /// <returns>
 /// </returns>
-function NewLocks() as logic
+FUNCTION NewLocks() AS LOGIC
 	/// THROW NotImplementedException{}
-	return false   
+	RETURN FALSE   
 #endif

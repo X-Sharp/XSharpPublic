@@ -15,10 +15,10 @@ USING System.Text
 /// <returns>
 /// </returns>
 FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
-	IF ! cSource:IsString .or. String.IsNullOrEmpty(cSource)
+	IF ! cSource:IsString .OR. String.IsNullOrEmpty(cSource)
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
 	ENDIF
-	IF ! block:IsCodeBlock .or. block == NULL_CODEBLOCK
+	IF ! block:IsCodeBlock .OR. block == NULL_CODEBLOCK
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(block), 2, <OBJECT>{ block} )
 	ENDIF
 	IF nStart == NIL
@@ -118,7 +118,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    LOCAL iRepl            AS INT
 
    IF ! uTarget:IsString
-      THROW Error.ArgumentError( __ENTITY__, nameof(uTarget), 1 , <OBJECT>{uTarget})
+      THROW Error.ArgumentError( __ENTITY__, NAMEOF(uTarget), 1 , <OBJECT>{uTarget})
    ELSE
       cSource := uTarget
 
@@ -128,7 +128,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ENDIF
 
    IF ! uSearch:IsString
-      THROW Error.ArgumentError( __ENTITY__, nameof(uSearch), 2 ,  <OBJECT>{uSearch})
+      THROW Error.ArgumentError( __ENTITY__, NAMEOF(uSearch), 2 ,  <OBJECT>{uSearch})
    ELSE
       cSearch := uSearch
       IF cSearch == ""
@@ -141,7 +141,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ELSEIF uReplace:IsNil
       cReplace := ""
    ELSE
-      THROW  Error.ArgumentError( __ENTITY__, nameof(uReplace), 3 , <OBJECT>{uReplace})
+      THROW  Error.ArgumentError( __ENTITY__, NAMEOF(uReplace), 3 , <OBJECT>{uReplace})
    ENDIF
 
    IF PCount() > 3
@@ -150,7 +150,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
       ELSEIF uStart:IsNil
          nStart := 0
       ELSE
-         THROW Error.ArgumentError( __ENTITY__, nameof(uStart), 4 ,  <OBJECT>{uStart})
+         THROW Error.ArgumentError( __ENTITY__, NAMEOF(uStart), 4 ,  <OBJECT>{uStart})
       ENDIF
 
       IF PCount() > 4
@@ -159,7 +159,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
          ELSEIF uCount:IsNil
             iCount := 0
          ELSE
-            THROW Error.ArgumentError( __ENTITY__, nameof(uCount), 5 , <OBJECT>{uCount})
+            THROW Error.ArgumentError( __ENTITY__, NAMEOF(uCount), 5 , <OBJECT>{uCount})
          ENDIF
       ENDIF
    ENDIF
@@ -308,12 +308,12 @@ FUNCTION SubS(c ,iStart ,wLen ) AS STRING CLIPPER
 /// </returns>
 FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
 	IF ! c:IsString
-		THROW Error.ArgumentError(__ENTITY__, nameof(c), 1, <OBJECT>{c})
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(c), 1, <OBJECT>{c})
 	ENDIF
 	IF uStart:IsNil
 		uStart := 1
 	ELSEIF ! uStart:IsNumeric
-		THROW Error.ArgumentError(__ENTITY__, nameof(uStart), 2, <OBJECT>{uStart})
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(uStart), 2, <OBJECT>{uStart})
 	ENDIF
 	VAR start := (INT) uStart 
 	VAR strValue := (STRING) c 
@@ -334,12 +334,12 @@ FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
 	ELSEIF uLen:IsNumeric
 		RETURN __SubStr(strValue, start, (INT) uLen)
 	ELSE
-		THROW Error.ArgumentError(__ENTITY__, nameof(uLen), 3, <OBJECT>{uLen})
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(uLen), 3, <OBJECT>{uLen})
 	ENDIF
 
 FUNCTION EmptyString (s AS STRING) AS LOGIC
 	IF !String.IsNullOrEmpty(s)
-		FOREACH c AS char IN s
+		FOREACH c AS CHAR IN s
 			SWITCH c
 			CASE '\r'
 			CASE '\n'

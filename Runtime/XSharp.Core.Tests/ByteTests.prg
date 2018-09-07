@@ -8,7 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 
@@ -18,23 +18,23 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Trait("Category", "Swap")];
 		[Fact];
-		METHOD SwapByteTest() as void 
-			Assert.Equal((word)86,SwapByte((byte)101))
-			Assert.Equal((word)0x12,SwapByte(0x21))
-		return
+		METHOD SwapByteTest() AS VOID 
+			Assert.Equal((WORD)86,SwapByte((BYTE)101))
+			Assert.Equal((WORD)0x12,SwapByte(0x21))
+		RETURN
 		[Trait("Category", "Swap")];
 		[Fact];
-		METHOD SwapwordTest() as void 
-			Assert.Equal((word)0x1234,SwapWord(0x3412))
-		return
+		METHOD SwapwordTest() AS VOID 
+			Assert.Equal((WORD)0x1234,SwapWord(0x3412))
+		RETURN
 		[Trait("Category", "Swap")];
 		[Fact];
-		METHOD SwapLongTest() as void 
+		METHOD SwapLongTest() AS VOID 
 			Assert.Equal(0x12345678L,Swaplong(0x56781234))
 		RETURN
 		[Trait("Category", "Swap")];
 		[Fact];
-		METHOD SwapDwordTest() as void 
+		METHOD SwapDwordTest() AS VOID 
 			Assert.Equal( 0x12345678U,Swapdword(0x56781234))
 		RETURN
 	END CLASS

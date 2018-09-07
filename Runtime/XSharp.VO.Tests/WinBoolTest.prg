@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 // WinBool test
@@ -16,19 +16,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS WinBoolTests
 	 
 		[Fact, Trait("Category", "Misc")]; 
-		METHOD ConversionTests as VOID
-			local wb as __WinBool
-			local l as logic
-			l := true
+		METHOD ConversionTests AS VOID
+			LOCAL wb AS __WinBool
+			LOCAL l AS LOGIC
+			l := FALSE
 			wb := l
-			l := false
+			l := TRUE
+            Assert.Equal(l, TRUE)
 			l := wb
-			Assert.Equal(l, true)
+			Assert.Equal(l, FALSE)
 			l := !wb
-			Assert.Equal(l, false)
-			Assert.Equal((logic) (wb .and. wb), true)
-			Assert.Equal((logic) (wb .and. !wb), false)
-			Assert.Equal((logic) (wb .or. wb), true)
+			Assert.Equal(l, TRUE)
+            wb := ! wb
+			Assert.Equal((LOGIC) (wb .AND. wb), TRUE)
+			Assert.Equal((LOGIC) (wb .AND. !wb), FALSE)
+			Assert.Equal((LOGIC) (wb .OR. wb), TRUE)
 		RETURN
 
 	END CLASS

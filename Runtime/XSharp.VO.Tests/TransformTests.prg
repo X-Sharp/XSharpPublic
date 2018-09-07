@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS TransFormTests
 
 		[Fact, Trait("Category", "TransForm")];
-		METHOD LogicalTest() AS VOID 
+		METHOD TransformLogicalTest() AS VOID 
 			// with @R other chars are appended, but only a single YN or TF flag is written. Other positions become a space
 			Assert.Equal("Y", Transform(TRUE, "Y"))
 			Assert.Equal("N", Transform(FALSE, "Y"))
@@ -29,16 +29,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetNatDll("French.DLL")
 			Assert.Equal("O", Transform(TRUE, "Y"))
 			Assert.Equal("N", Transform(FALSE, "Y"))
-			Assert.Equal("V", Transform(TRUE, "L"))
+			Assert.Equal("T", Transform(TRUE, "L"))     // you would expect V but VO returns T
 			Assert.Equal("F", Transform(FALSE, "L"))
-			Assert.Equal("V x", Transform(TRUE, "@R L x"))
+			Assert.Equal("T x", Transform(TRUE, "@R L x"))  // you would expect V but VO returns T x
 			Assert.Equal("F x", Transform(FALSE, "@R L x"))
 			Assert.Equal("O x", Transform(TRUE, "@R YYx"))
 			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
 
 		[Fact, Trait("Category", "TransForm")];
-		METHOD DateTest() AS VOID 
+		METHOD TransformDateTest() AS VOID 
 			// with @R other chars are appended, but only a single YN or TF flag is written. Other positions become a space
+            SetCentury(TRUE)
 			Assert.Equal("10/12/2010", Transform(2010.12.10,"@E"))
 			Assert.Equal("20/11/2010", Transform(2010.11.20,"@E"))
 			SetDateFormat("dd-mm-yyyy")
@@ -47,14 +48,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("20-11-10", Transform(2010.11.20,"@D"))
 
 		[Fact, Trait("Category", "TransForm")];
-		METHOD StringTest() AS VOID 
+		METHOD TransformStringTest() AS VOID 
 			Assert.Equal("ABC", Transform("abc", "@!"))
 			Assert.Equal("AbC", Transform("abc", "!a!"))
 			Assert.Equal("1234 AB", Transform("1234ab", "@R! 9999 AA"))
 			Assert.Equal("1234 AB", Transform("1234ab", "@R 9999 !!"))
 
 		[Fact, Trait("Category", "TransForm")];
-		METHOD LongTest() AS VOID 
+		METHOD TransformLongTest() AS VOID 
 			SetDecimalSep('.')
 			SetThousandSep(',')
 			Assert.Equal("  1", Transform(1, "999"))
@@ -79,12 +80,33 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 		[Fact, Trait("Category", "TransForm")];
-		METHOD FLoatTest() AS VOID 
+		METHOD TransformFLoatTest() AS VOID 
 			SetDecimalSep('.')
 			SetThousandSep(',')
 			Assert.Equal("1.23", Transform(1.23, "9.99"))
 			Assert.Equal("1,23", Transform(1.23, "@E 9.99"))
-			Assert.Equal("*.**", Transform(12.34, "9.99"))			
+			Assert.Equal("*.**", Transform(12.34, "9.99"))
+        [Fact, Trait("Category", "TransForm")];
+        METHOD TransformNumericTest AS VOID
+			SetDecimalSep(',')
+			SetThousandSep('.')
+            Assert.Equal("      2,45", Transform (    2.45 , "@R 999,999.99" ) )
+            Assert.Equal("     -2,45", Transform (   -2.45 , "@R 999,999.99" ) )
+            Assert.Equal("    124,00", Transform (     124 , "@R 999,999.99" )  )  
+            Assert.Equal("   -124,00", Transform (    -124 , "@R 999,999.99" )  ) 
+
+        [Fact, Trait("Category", "Unformat")];
+        METHOD UnformatCTest AS VOID
+            Assert.Equal("8161XV", Unformat("8161 XV", "@R! 9999 AA","C"))
+            Assert.Equal("8161 XV", Unformat("8161 XV", "@! 9999 AA","C"))
+
+       [Fact, Trait("Category", "Unformat")];
+        METHOD UnformatNTest AS VOID
+			SetDecimalSep(',')
+			SetThousandSep('.')
+            Assert.Equal( 1.234d, (REAL8)(FLOAT) Unformat("1,234", "9.999","N"))
+            Assert.Equal( 1234567.89d, (REAL8)(FLOAT) Unformat("1.234.567,89", "9,999,999.99","N"))
+
 
 // some new failing tests:
 	[Fact, Trait("Category", "TransForm")];
@@ -145,7 +167,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.Equal( "  1234.567"			, Str(1234.567) )
 		Assert.Equal( "  1234.5678"			, Str(1234.5678) )
 		Assert.Equal( "  1234.5679012345"	, Str(1234.5679012345) )
-		Assert.Equal( "123456.78901234567"	, Str(123456.78901234567) )
+		Assert.Equal( "123456.78901234568"	, Str(123456.78901234567) )
 		Assert.Equal( "999999" , Str(999999) )
 		Assert.Equal( "******" , Str(1000000) )
 
@@ -184,12 +206,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   Assert.Equal( Str1(12.34567)        		, "          12.346")
 	   Assert.Equal( Str(12.34 , 10, 2)    		, "     12.34")
 	   Assert.Equal( Str(12.34 , 5, 2)     		, "12.34")
-	   Assert.Equal( Str(12.34 , 4, 2)     		, "12.3")
+	   Assert.Equal( Str(12.34 , 4, 2)     		, "****") // VO wrong: 12.3
 	   Assert.Equal( Str(12.34 , 4, 1)     		, "12.3")
 	   Assert.Equal( Str(12.34 , 2, 1)     		, "**")
 	   Assert.Equal( Str3(12.34 , 10, 2)   		, "     12.34")
 	   Assert.Equal( Str3(12.34 , 5, 2)    		, "12.34")
-	   Assert.Equal( Str3(12.34 , 4, 2)     	, "12.3")
+	   Assert.Equal( Str3(12.34 , 4, 2)     	, "****") // VO wrong: 12.3
 	   Assert.Equal( Str3(12.34 , 4, 1)     	, "12.3")
 	   Assert.Equal( Str3(12.34 , 2, 1)    		, "**")
 	   Assert.Equal( Str(-12.34)            	, "         -12.340")
@@ -197,9 +219,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   Assert.Equal( Str(-12.3456)         		, "         -12.346")
 	   Assert.Equal( Str1(-12.3456)         	, "         -12.346")
 	   Assert.Equal( Str(-12.34 , 10, 2)    	, "    -12.34")
-	   Assert.Equal( Str(-12.34 , 5, 2)     	, "-12.3")	 //VO wrong: -2.34
-	   Assert.Equal( Str(-12.34 , 4, 2)     	, "-12.")
-	   Assert.Equal( Str(-12.34 , 4, 1)     	, " -12")    //VO wrong: -2.3
+	   Assert.Equal( Str(-12.34 , 5, 2)     	, "*****")	 //VO wrong: -2.34
+	   Assert.Equal( Str(-12.34 , 4, 2)     	, "****")    // VO wrong: -12.
+	   Assert.Equal( Str(-12.34 , 4, 1)     	, "****")    //VO wrong: -2.3
+       Assert.Equal( Str(-12.34 , 4, 0)     	, " -12")    //VO wrong: -2.3
 	   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
 	RETURN
 
@@ -212,7 +235,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   SetDigit(12)
 
 	   SetFixed(FALSE)
-	   SetDigitFixed(FALSE)
+	   SetDigitFixed(FALSE) 
    
 	   Assert.Equal( Str(12.34)            		, "          12.34")
 	   Assert.Equal( Str1(12.34)          		, "          12.34")
@@ -230,12 +253,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   Assert.Equal( Str1(12.34567)        		, "          12.34567")
 	   Assert.Equal( Str(12.34 , 10, 2)    		, "     12.34")
 	   Assert.Equal( Str(12.34 , 5, 2)     		, "12.34")
-	   Assert.Equal( Str(12.34 , 4, 2)     		, "12.3")
+	   Assert.Equal( Str(12.34 , 4, 2)     		, "****") // VO returns 12.3
 	   Assert.Equal( Str(12.34 , 4, 1)     		, "12.3")
 	   Assert.Equal( Str(12.34 , 2, 1)     		, "**")
 	   Assert.Equal( Str3(12.34 , 10, 2)   		, "     12.34")
 	   Assert.Equal( Str3(12.34 , 5, 2)    		, "12.34")
-	   Assert.Equal( Str3(12.34 , 4, 2)     	, "12.3")
+	   Assert.Equal( Str3(12.34 , 4, 2)     	, "****")   // VO 12.3
 	   Assert.Equal( Str3(12.34 , 4, 1)     	, "12.3")
 	   Assert.Equal( Str3(12.34 , 2, 1)    		, "**")
 	   Assert.Equal( Str(-12.34)            	, "         -12.34")
@@ -243,36 +266,43 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   Assert.Equal( Str(-12.3456)         		, "         -12.3456")
 	   Assert.Equal( Str1(-12.3456)         	, "         -12.3456")
 	   Assert.Equal( Str(-12.34 , 10, 2)    	, "    -12.34")
-	   Assert.Equal( Str(-12.34 , 5, 2)     	, "-12.3")	 //VO: -2.34
-	   Assert.Equal( Str(-12.34 , 4, 2)     	, "-12.")
-	   Assert.Equal( Str(-12.34 , 4, 1)     	, " -12")    //VO: -2.3
+	   Assert.Equal( Str(-12.34 , 5, 2)     	, "*****")	 //VO: -2.34
+	   Assert.Equal( Str(-12.34 , 4, 2)     	, "****")    // VO 
+	   Assert.Equal( Str(-12.34 , 4, 1)     	, "****")    //VO: -2.3
 	   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
 
 
 	[Fact, Trait("Category", "Val")];
 	METHOD ValTests() AS VOID
+		SetDecimalSep(',')
+		SetThousandSep('.')
 		Assert.Equal(123, (INT) Val("123") )
-		Assert.Equal(123.456, (FLOAT) Val("123.456") )
+		Assert.Equal(123.456, (FLOAT) Val("123,456") )
 
 		Assert.Equal(0, (INT) Val("") )
 
 		Assert.Equal(0, (INT) Val("abc") )
 		Assert.Equal(123, (INT) Val("123abc") )
 		Assert.Equal(123, (INT) Val("123abc456") )
-		Assert.Equal(123, (INT) Val("123abc456.789") )
-		Assert.Equal(0, (INT) Val("abc123456.789") )
+		Assert.Equal(123, (INT) Val("123abc456,789") )
+		Assert.Equal(0, (INT) Val("abc123456,789") )
 		Assert.Equal(255, (INT) Val("0xFF") )
 		Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
 		Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
 		Assert.Equal(11, (INT) Val("11L11") )
-		Assert.Equal(1.000, (FLOAT) Val("1,000.1") )
-		Assert.Equal(1.001, (FLOAT) Val("1,001.1") )
+        
+		Assert.Equal(1.0001, (FLOAT) Val("1,000.1") )
+		Assert.Equal(1.0011, (FLOAT) Val("1,001.1") )
+		SetDecimalSep('.')
+		SetThousandSep(',')
+		Assert.Equal(1000.1, (FLOAT) Val("1,000.1") )
+		Assert.Equal(1001.1, (FLOAT) Val("1,001.1") )
 	RETURN
 
 	[Fact, Trait("Category", "SplitPath")];
 	METHOD SplitPathTests() AS VOID
 		LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
-		SplitPath("C:\folder\file.ext" ,  cDrive , cDir , cFile , cExt)
+		SplitPath("C:\folder\file.ext" ,  REF cDrive , REF cDir , REF cFile , REF cExt)
 		
 		Assert.Equal("C:" , cDrive)
 		Assert.Equal("\folder\" , cDir)
@@ -294,8 +324,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		pszFile  := MemAlloc(255+1)
 		pszExt   := MemAlloc(7+1) 
 	
-		SplitPath(String2Psz(cPath), pszDrive, pszDir,        ;
-			 pszFile, pszExt)
+		SplitPath( String2Psz(cPath), pszDrive, pszDir, pszFile, pszExt)
 	
 		cDrive := Psz2String(pszDrive)
 		cDir   := Psz2String(pszDir)
@@ -327,7 +356,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	[Fact, Trait("Category", "Empty")];
 	METHOD EmptyFuncTests() AS VOID
 		Assert.True(Empty(0))
-		Assert.True(Empty(false))
+		Assert.True(Empty(FALSE))
 		Assert.True(Empty(""))
 		Assert.True(Empty(Chr(10) + Chr(9) + Chr(13)))
 		Assert.True(Empty(NULL_SYMBOL))
@@ -347,7 +376,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		
 
 		Assert.False(Empty(1))
-		Assert.False(Empty(true))
+		Assert.False(Empty(TRUE))
 		Assert.False(Empty("a"))
 		Assert.False(Empty(Chr(1)))
 		Assert.False(Empty(#abc))
@@ -368,6 +397,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.False(IsClassOf(#None, #None))
 		Assert.False(IsClassOf(#None, #TestClassChild))
 		Assert.False(IsClassOf(#TestClassChild, #None))
+
+	[Fact, Trait("Category", "IsInstanceOf")];
+	METHOD IsInstanceOf_Tests() AS VOID
+		Assert.True(IsInstanceOf(123 , "System.Int32"))
+		Assert.True(IsInstanceOf(TRUE , "System.Boolean"))
+		Assert.False(IsInstanceOf(123 , "Nothing"))
 
 	[Fact, Trait("Category", "AClone")];
 	METHOD AClone_Tests() AS VOID

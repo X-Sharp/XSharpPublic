@@ -164,9 +164,9 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(System.IO.FileNotFoundException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
 
-                if(!Utilities.IsInAutomationFunction(this.Site))
+                if (!Utilities.IsInAutomationFunction(this.Site))
                 {
                     string message = e.Message;
                     string title = string.Empty;
@@ -492,7 +492,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
 
                 dataObject = null;
             }
@@ -803,7 +803,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
 
@@ -841,12 +841,12 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnValue = e.ErrorCode;
             }
             catch(ArgumentException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 returnValue = Marshal.GetHRForException(e);
             }
 
@@ -919,11 +919,11 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(ExternalException e)
                 {
-                    Trace.WriteLine("Exception : " + e.Message);
+                    XSharpProjectPackage.Instance.DisplayException(e);
 
                     // If it is a drop from windows and we get any kind of error ignore it. This
                     // prevents bogus messages from the shell from being displayed
-                    if(dropDataType != DropDataType.Shell)
+                    if (dropDataType != DropDataType.Shell)
                     {
                         throw;
                     }
@@ -936,7 +936,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Trace.WriteLine("Exception : " + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
 
                 returnValue = e.ErrorCode;
             }
@@ -974,7 +974,7 @@ namespace Microsoft.VisualStudio.Project
             // We catch External exceptions since it might be that it is not our data on the clipboard.
             catch(ExternalException e)
             {
-                Trace.WriteLine("Exception :" + e.Message);
+                XSharpProjectPackage.Instance.DisplayException(e);
                 return false;
             }
         }

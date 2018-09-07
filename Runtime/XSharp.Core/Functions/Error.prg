@@ -10,14 +10,14 @@
 /// </summary>
 /// <param name="nGenCode">The error code exported by an error object. One of the GenCodes enum values</param>
 /// <returns>The message string associated with the error code.  Error messages are nation-dependent.</returns>
-function ErrString(nGenCode as dword) as string
-	local cResource as string
-	if nGenCode > XSharp.GenCode.EG_MAX
+FUNCTION ErrString(nGenCode AS DWORD) AS STRING
+	LOCAL cResource AS STRING
+	IF nGenCode > XSharp.GenCode.EG_MAX
 		cResource := "RT_MSG_ERR_UNKNOWN"
-	else
+	ELSE
 		cResource := "RT_MSG_ERR_" + nGenCode:ToString()
-	endif
-	return Messages.GetString(cResource)
+	ENDIF
+	RETURN Messages.GetString(cResource)
 	
 	
 	
@@ -26,16 +26,16 @@ function ErrString(nGenCode as dword) as string
 	/// </summary>
 	/// <param name="nDosErr">The DOS error number that you want a description for.</param>
 	/// <returns>The message string associated with the error number.</returns>
-function DosErrString(nDosErr as dword) as string
+FUNCTION DosErrString(nDosErr AS DWORD) AS STRING
 	LOCAL cResource AS STRING
-	local cResult as string
+	LOCAL cResult AS STRING
 	cResource := "RT_MSG_DOSERR_" + nDosErr:ToString() 
 	// when not found return string from RT_MSG_DOSERR_UNKNOWN
 	cResult := Messages.GetString(cResource)
 	IF String.IsNullOrEmpty(cResult)
 		cResult := Messages.GetString("RT_MSG_DOSERR_UNKNOWN")
 	ENDIF
-	return cResult
+	RETURN cResult
 
 
 
@@ -47,65 +47,63 @@ function DosErrString(nDosErr as dword) as string
 /// </returns>
 FUNCTION TypeString( nType AS DWORD ) AS STRING
    LOCAL ret AS STRING
-   switch nType
-   case 0
+   SWITCH nType
+   CASE 0
       ret := "NIL"
-   CASE  LONG
+   CASE  __UsualType.Long
       ret := "LONGINT"
-   CASE  DATE
+   CASE  __UsualType.Date
       ret := "DATE"
-   CASE  FLOAT
+   CASE  __UsualType.Float
       ret := "FLOAT"
    CASE  4
       ret := "FIXED"
-   CASE  ARRAY
+   CASE  __UsualType.Array
       ret := "ARRAY"
-   CASE  OBJECT
+   CASE  __UsualType.Object
       ret := "OBJECT"
-   CASE  STRING
+   CASE  __UsualType.String
       ret := "STRING"
-   CASE  LOGIC
+   CASE  __UsualType.Logic
       ret := "LOGIC"
-   CASE  CODEBLOCK
+   CASE  __UsualType.CodeBlock
       ret := "CODEBLOCK"
-   CASE  SYMBOL
+   CASE  __UsualType.Symbol
       ret := "SYMBOL"
-   CASE  BYTE
+   CASE  __UsualType.Byte
       ret := "BYTE"
-   CASE  SHORT
+   CASE  __UsualType.Shortint
       ret := "SHORTINT"
-   CASE  WORD
+   CASE  __UsualType.Word
       ret := "WORD"
-   CASE  DWORD
+   CASE  __UsualType.DWord
       ret := "DWORD"
-   CASE  REAL4
+   CASE  __UsualType.Real4
       ret := "REAL4"
-   CASE  REAL8
+   CASE  __UsualType.Real8
       ret := "REAL8"
-   CASE  PSZ
+   CASE  __UsualType.Psz
       ret := "PSZ"
-   CASE  PTR
+   CASE  __UsualType.Ptr
       ret := "PTR"
-   CASE  USUAL
+   CASE  __UsualType.Usual
       ret := "USUAL"
-   CASE  20
-      ret := "UNKNOWN"
-   CASE  21
-      ret := "@"
-   CASE  INT64
+   CASE  __UsualType.Int64
       ret := "INT64"
-   CASE  UINT64
+   CASE  __UsualType.UInt64
       ret := "UINT64"
-   CASE  24
+   CASE  __UsualType.Char
       ret := "CHAR"
-   CASE  25
+   CASE  __UsualType.Dynamic
       ret := "DYNAMIC"
-   CASE  26
+   CASE  __UsualType.DateTime
       ret := "DATETIME"
-   CASE  27
+   CASE  __UsualType.Decimal
       ret := "DECIMAL"
-   CASE  32
+   CASE  __UsualType.Memo
       ret := "MEMO"
+   CASE  __UsualType.Invalid
+      ret := "INVALID"
    OTHERWISE
       ret := "UNKNOWN"
    END SWITCH 

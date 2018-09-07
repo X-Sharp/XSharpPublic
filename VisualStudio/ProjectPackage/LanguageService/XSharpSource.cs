@@ -85,5 +85,12 @@ namespace XSharp.LanguageService
         //{
         //    return base.BeginParse(line, idx, info, reason, view, callback);
         //}
+        public override void OnCommand(IVsTextView textView, VSConstants.VSStd2KCmdID command, char ch)
+        {
+            base.OnCommand(textView, command, ch);
+            // Vulcan formats the keywords here.
+            
+        }
+
     }
 }

@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL oObject AS OBJECT
 			/// note that vulcan does not return true for IsClassOf(#Tester, "Object")
 			oObject := CreateInstance(#Tester)
-			Assert.NotEqual(null_object, oObject)
+			Assert.NotEqual(NULL_OBJECT, oObject)
 			IVarPut(oObject,"Name", "X#")
 			Assert.Equal("X#", IVarGet(oObject, "Name"))
 			IVarPut(oObject,"Age",42)
@@ -124,9 +124,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("22", (STRING)u:TestOther2C(2))
 
 			u := Tester{}
-			Assert.Equal(2121+1+2+3, (int)u:TestMe(1,2,3))
-			Assert.Equal(4242+1+2+3, (int)u:TestMe2(1,2,3))
-			Assert.Equal(6363+1+2+3, (int)u:TestMe3(1,2,3))
+			Assert.Equal(2121+1+2+3, (INT)u:TestMe(1,2,3))
+			Assert.Equal(4242+1+2+3, (INT)u:TestMe2(1,2,3))
+			Assert.Equal(6363+1+2+3, (INT)u:TestMe3(1,2,3))
 		RETURN
 
 		[Fact, Trait("Category", "OOP")];
@@ -135,7 +135,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u := Tester{}
 
 			u:age := 42
-			Assert.Equal(42, (int)u:AGE)
+			Assert.Equal(42, (INT)u:AGE)
 
 			u:FULLNAME := "Olympiacos"
 			Assert.Equal("Olympiacos", u:fullNAme)

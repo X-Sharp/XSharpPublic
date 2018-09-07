@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-begin namespace XSharp.Internal
+BEGIN NAMESPACE XSharp.Internal
 	
 	
 	
@@ -11,126 +11,138 @@ begin namespace XSharp.Internal
 	/// This class is used to mark IntPtr _DLL arguments with the actual type
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Parameter)];
-		sealed class ActualTypeAttribute inherit Attribute
-		private initonly _value as System.Type
+	SEALED CLASS ActualTypeAttribute INHERIT Attribute
+		PRIVATE INITONLY _value AS System.Type
+		///<summary>The actual type of the parameter.</summary>
+		PROPERTY VALUE AS System.Type GET _value
 		
-		property Value as System.Type get _value
+		CONSTRUCTOR(VALUE AS System.Type)
+			_value := VALUE
 		
-		constructor(value as System.Type)
-			_value := value
-		
-	end class
+	END CLASS
 	
 	/// <summary>
 	/// This class exposes the namespace and globalclass in an assembly
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class ClassLibraryAttribute inherit Attribute
-		private initonly _globalClassName as string
-		private initonly _defaultNameSpace as string
+		SEALED CLASS ClassLibraryAttribute INHERIT Attribute
+		PRIVATE INITONLY _globalClassName AS STRING
+		PRIVATE INITONLY _defaultNameSpace AS STRING
+		///<summary>Name of the class where functions, defines and globals are stored.</summary>
+		PROPERTY GlobalClassName AS STRING GET _globalClassName
+        ///<summary>Default namespace of the assembly.</summary>
+		PROPERTY DefaultNameSpace AS STRING GET _defaultNameSpace
 		
-		property GlobalClassName as string get _globalClassName
-		property DefaultNameSpace as string get _defaultNameSpace
-		
-		constructor(globalClassName as string, defaultNameSpace as string)
+		CONSTRUCTOR(globalClassName AS STRING, defaultNameSpace AS STRING)
 			_globalClassName := globalClassName
 			_defaultNameSpace := defaultNameSpace
 		
-	end class
+	END CLASS
 	
 	
 	/// <summary>
-	/// this class documents the parameter names for methods and functions
+	/// This class documents the parameter names for methods and functions
 	/// with Clipper calling convention
 	/// </summary>
 	
 	[AttributeUsage(AttributeTargets.Method)];
-		sealed class ClipperCallingConventionAttribute inherit Attribute
-		private initonly _parameterNames as string[]
+		SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
+		PRIVATE INITONLY _parameterNames AS STRING[]
+		///<summary>List of parameter names for the method or constructor </summary>
+		PROPERTY ParameterNames AS STRING[] GET _parameterNames
 		
-		property ParameterNames as string[] get _parameterNames
-		
-		constructor(parameterNames as string[])
+		CONSTRUCTOR(parameterNames AS STRING[])
 			_parameterNames := parameterNames
 		
-	end class
+	END CLASS
 	
 	
 	/// <summary>
-	/// this class records the compiler version used to build an assembly
+	/// This class records the compiler version used to build an assembly
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class CompilerVersionAttribute inherit Attribute
-		private initonly _version as string
+	SEALED CLASS CompilerVersionAttribute INHERIT Attribute
+		PRIVATE INITONLY _version AS STRING
+	    ///<summary>The version and dialect of the compiler that created the assembly.</summary>	
+		PROPERTY Version AS STRING GET _version
 		
-		property Version as string get _version
-		
-		constructor(version as string)
+		CONSTRUCTOR(version AS STRING)
 			_version := version
 		
-	end class
+	END CLASS
 	
 	
 	/// <summary>
-	/// this class is used to mark default parameter values in the middle of a parameter list
-	/// Value is obvious
-	/// Flag means:
-	/// 0 = Regular .Net default value 
-	/// 1 = NIL
-	/// 2 = Date (value is LONG ticks, empty for NULL_DATE)
-	/// 3 = Symbol, value can be empty or a string
-	/// 4 = PSZ, null = empty, or a string
-	/// 5 = IntPtr (can be 0 for NullPtr)
-	/// </summary>
-	sealed class DefaultParameterValueAttribute inherit Attribute
-		private initonly _value as object
-		private initonly _flag  as int
+	/// this class is used to mark default parameter values in the middle of a parameter list.
+    /// </summary>
+    /// <remarks>
+    /// It is used when compiling in VO or Vulcan mode.
+    /// And only for parameters that are followed by parameters without default value (because that is not supported by the .Net framework).<br/>
+    /// The X# compiler will find this attribute at compile time and will insert its value into the argument list.
+    /// </remarks>
+	SEALED CLASS DefaultParameterValueAttribute INHERIT Attribute
+		PRIVATE INITONLY _value AS OBJECT
+		PRIVATE INITONLY _flag  AS INT
+		/// <summary>Value of the default parameter</summary>
+		PROPERTY VALUE AS OBJECT GET _value
+        /// <summary>Flag indicating the type of the default parameter</summary>
+        /// <remarks>
+	    /// 0 = Regular .Net default value 
+	    /// 1 = NIL
+	    /// 2 = Date (value is LONG ticks, empty for NULL_DATE)
+	    /// 3 = Symbol, value can be empty or a string
+	    /// 4 = PSZ, null = empty, or a string
+	    /// 5 = IntPtr (can be 0 for NullPtr)
+	    /// </remarks>
+		PROPERTY Flag  AS INT    GET _flag
 		
-		property Value as object get _value
-		property Flag  as int    get _flag
-		
-		constructor(value as object, flag as int)
-			_value := value
+		CONSTRUCTOR(VALUE AS OBJECT, flag AS INT)
+			_value := VALUE
 			_flag  := flag
 		
-	end class
+	END CLASS
 	
 	/// <summary>
-	/// this class is used to describe VOSTRUCT and UNION structures which have a different semantics
+	/// This class is used to describe VOSTRUCT and UNION structures which have a different semantics
 	/// AS actually means Struct PTR. IS means Struct
 	/// Please note that the size assumes x86 (32 bits) OS.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Struct)];
-		sealed class VoStructAttribute inherit Attribute
-		private _size				as int
-		private _largestMemberSize  as int
+		SEALED CLASS VoStructAttribute INHERIT Attribute
+		PRIVATE _size				AS INT
+		PRIVATE _largestMemberSize  AS INT
+		///<summary>Total size of the VOSTRUCT or UNION.</summary>	
+		PROPERTY Size				AS INT GET _size
+        ///<summary>Size of the largest member.</summary>	
+		PROPERTY LargestMemberSize	AS INT GET _largestMemberSize
 		
-		property Size				as int get _size
-		property LargestMemberSize	as int get _largestMemberSize
-		
-		constructor(size as int, largestMemberSize as int)
+		CONSTRUCTOR(size AS INT, largestMemberSize AS INT)
 			_size := size
 			_largestMemberSize := largestMemberSize
 		
-	end class
+	END CLASS
 	
-end namespace
+END NAMESPACE
 
 
-begin namespace XSharp
+BEGIN NAMESPACE XSharp
 	/// <summary>
-	/// this class records the compiler version used to build an assembly
-	/// Not internal because it is supposed to be used by 3rd party vendors as well
-	/// </summary>
+	/// This class is used to tell the compiler that the assembly has types in a specific namespace.
+    /// When the compiler is called with the /ins command line option, then the names specified with this attribute
+    /// will be automatically included in the USING list when compiling.
+    /// </summary>
+    /// <remarks>
+	/// This type is not in the internal namespace because it is supposed to be used by 3rd party vendors as well
+	/// </remarks>
 	[AttributeUsage(AttributeTargets.Assembly)];
-		sealed class ImplicitNamespaceAttribute inherit Attribute
-		private initonly _namespace as string
+	SEALED CLASS ImplicitNamespaceAttribute INHERIT Attribute
+		PRIVATE INITONLY _namespace AS STRING
+	    ///<summary>Name of the implicit namespace.</summary>		
+		PROPERTY Namespace AS STRING GET _namespace
 		
-		property Namespace as string get _namespace
-		
-		constructor(namespace as string)
+		CONSTRUCTOR(namespace AS STRING)
 			_namespace := namespace
 		
-	end class
+	END CLASS
 	
-end namespace
+END NAMESPACE

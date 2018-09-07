@@ -1,58 +1,58 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using XSharp
-using System.Text
+USING XSharp
+USING System.Text
 // Array of chars used for the various trim functions
-internal global trimChars := <char>{ ' ' } as char[]
+INTERNAL GLOBAL trimChars := <CHAR>{ ' ' } AS CHAR[]
 
 
 
-function AllTrim(c as string) as string
-	if ( c == null )
-		return c
-	endif
-	return c:Trim(trimChars)
+FUNCTION AllTrim(c AS STRING) AS STRING
+	IF ( c == NULL )
+		RETURN c
+	ENDIF
+	RETURN c:Trim(trimChars)
 
 
 
-internal function _Asc(c as string, lAnsi as logic) as dword
-	local ascValue := 0 as dword
-	local chValue as char
-	if ( !String.IsNullOrEmpty(c) ) 
+INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
+	LOCAL ascValue := 0 AS DWORD
+	LOCAL chValue AS CHAR
+	IF ( !String.IsNullOrEmpty(c) ) 
 		chValue := c[0]
-		ascValue := (dword) chValue
-		if ascValue > 127
-			local encoding as Encoding
-			if lAnsi
+		ascValue := (DWORD) chValue
+		IF ascValue > 127
+			LOCAL encoding AS Encoding
+			IF lAnsi
 				encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
-			else
+			ELSE
 				encoding := Encoding.GetEncoding(RuntimeState.DOSCodePage) 
-			endif
-			local buffer as byte[]
-			var chars := <char> {chValue}
-			if encoding:IsSingleByte
-				buffer := byte[]{1}
+			ENDIF
+			LOCAL buffer AS BYTE[]
+			VAR chars := <CHAR> {chValue}
+			IF encoding:IsSingleByte
+				buffer := BYTE[]{1}
 				encoding:GetBytes(chars,0,1,buffer,0)
 				ascValue := buffer[0]
-			else
-				buffer := byte[]{2}
-				if encoding:GetBytes(chars,0,1,buffer,0) == 1
+			ELSE
+				buffer := BYTE[]{2}
+				IF encoding:GetBytes(chars,0,1,buffer,0) == 1
 					ascValue := buffer[0]
-				else
-					if BitConverter.IsLittleEndian
-						local tmp := buffer[0] as byte
+				ELSE
+					IF BitConverter.IsLittleEndian
+						LOCAL tmp := buffer[0] AS BYTE
 						buffer[0] := buffer[1]
 						buffer[1] := tmp
-					endif
+					ENDIF
 					ascValue := BitConverter.ToUInt16( buffer, 0 )
-				endif
-			endif
-		endif
-	endif
-	return ascValue
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+	RETURN ascValue
 
 /// <summary>
 /// Convert a character to its ASCII value using DOS codepage
@@ -60,8 +60,8 @@ internal function _Asc(c as string, lAnsi as logic) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Asc(c as string) as dword
-	return _Asc(c, false)
+FUNCTION Asc(c AS STRING) AS DWORD
+	RETURN _Asc(c, FALSE)
 
 
 /// <summary>
@@ -70,14 +70,14 @@ function Asc(c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function AscW(c as string) as dword
-	local ascValue := 0 as dword
-	local chValue as char
-	if ( !String.IsNullOrEmpty(c) ) 
+FUNCTION AscW(c AS STRING) AS DWORD
+	LOCAL ascValue := 0 AS DWORD
+	LOCAL chValue AS CHAR
+	IF ( !String.IsNullOrEmpty(c) ) 
 		chValue := c[0]
-		ascValue := (dword) chValue
-	endif
-	return ascValue
+		ascValue := (DWORD) chValue
+	ENDIF
+	RETURN ascValue
 
 
 /// <summary>
@@ -86,8 +86,8 @@ function AscW(c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function AscA(c as string) as dword
-	return _Asc(c, true)
+FUNCTION AscA(c AS STRING) AS DWORD
+	RETURN _Asc(c, TRUE)
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -98,12 +98,12 @@ function AscA(c as string) as dword
 /// The position of the first occurrence of cSearch within cTarget.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
-function At(cSearch as string,c as string) as dword
-	local position := 0 as dword
-	if ( c != null .and. cSearch != null )
-		position := (dword) c:IndexOf(cSearch, StringComparison.Ordinal) +1
-	endif
-	return position
+FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
+	LOCAL position := 0 AS DWORD
+	IF ( c != NULL .AND. cSearch != NULL )
+		position := (DWORD) c:IndexOf(cSearch, StringComparison.Ordinal) +1
+	ENDIF
+	RETURN position
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -114,8 +114,8 @@ function At(cSearch as string,c as string) as dword
 /// The position of the first occurrence of cSearch within cTarget.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At() returns 0.
 /// </returns>
-function At2(cSearch as string,c as string) as dword
-	return At(cSearch,c)
+FUNCTION At2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN At(cSearch,c)
 
 
 /// <summary>
@@ -128,13 +128,13 @@ function At2(cSearch as string,c as string) as dword
 /// The position of the first occurrence of cSearch within cTarget behind the give position.  If cSearch is not found, At() returns 0.
 /// If cSearch is empty or c is empty, At3() returns 0.
 /// </returns>
-function At3(cSearch as string,c as string,dwOff as dword) as dword
-	local position := 0 as dword
+FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
+	LOCAL position := 0 AS DWORD
 	// note dwOffset is ZERO based in VO
-	if ( c != null .and. cSearch != null .and. dwOff <= c:Length )
-		position := (dword) c:IndexOf(cSearch,(int)dwOff) +1
-	endif
-	return position
+	IF ( c != NULL .AND. cSearch != NULL .AND. dwOff <= c:Length )
+		position := (DWORD) c:IndexOf(cSearch,(INT)dwOff) +1
+	ENDIF
+	RETURN position
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string, without regard for case.
@@ -143,12 +143,12 @@ function At3(cSearch as string,c as string,dwOff as dword) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function AtC(cSearch as string,c as string) as dword
-	local position := 0 as dword
-	if ( c != null .and. cSearch != null )
-		position := (dword) c:IndexOf(cSearch, StringComparison.OrdinalIgnoreCase) +1
-	endif
-	return position
+FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
+	LOCAL position := 0 AS DWORD
+	IF ( c != NULL .AND. cSearch != NULL )
+		position := (DWORD) c:IndexOf(cSearch, StringComparison.OrdinalIgnoreCase) +1
+	ENDIF
+	RETURN position
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string, without regard for case.
@@ -157,8 +157,8 @@ function AtC(cSearch as string,c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function AtC2(cSearch as string,c as string) as dword
-	return AtC(cSearch,c)  
+FUNCTION AtC2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN AtC(cSearch,c)  
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
@@ -167,8 +167,8 @@ function AtC2(cSearch as string,c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function ATCLine(cSearch as string,c as string) as dword
-	return AtLine( cSearch:ToUpper(), c:ToUpper() )
+FUNCTION ATCLine(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN AtLine( cSearch:ToUpper(), c:ToUpper() )
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
@@ -177,8 +177,8 @@ function ATCLine(cSearch as string,c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function ATCLine2(cSearch as string,c as string) as dword
-	return AtLine2( cSearch:ToUpper(), c:ToUpper() )
+FUNCTION ATCLine2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN AtLine2( cSearch:ToUpper(), c:ToUpper() )
 
 /// <summary>
 /// Return the line number of the first occurrence of a substring within a multiple line string.
@@ -187,23 +187,23 @@ function ATCLine2(cSearch as string,c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function ATLine(cSearch as string,c as string) as dword
+FUNCTION ATLine(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL nPos AS DWORD
-	IF String.IsNullOrEmpty(c) .or. String.IsNullOrEmpty(cSearch)
+	IF String.IsNullOrEmpty(c) .OR. String.IsNullOrEmpty(cSearch)
 		RETURN 0
-	endif
+	ENDIF
 	IF c:StartsWith(cSearch) 
-		return 1
-	endif
+		RETURN 1
+	ENDIF
 	nPos    := At( cSearch, c )
-	if (nPos > 0)
+	IF (nPos > 0)
 		c := Left( c, nPos - 1 )
 		nPos := MemLines( c)
 		IF c:EndsWith(e"\r\n")
 			nPos++
-		endif
-	endif
-	return nPos
+		ENDIF
+	ENDIF
+	RETURN nPos
 
 
 /// <summary>
@@ -213,26 +213,26 @@ function ATLine(cSearch as string,c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function ATLine2(cSearch as string,c as string) as dword
-	return ATLine(cSearch, c)
+FUNCTION ATLine2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN ATLine(cSearch, c)
 
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function B64EncFile(c as string) as string
+FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
 /// <param name="cIn"></param>
 /// <returns>
 /// </returns>
-function B64EncString(cIn as string) as string
+FUNCTION B64EncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 
 
@@ -243,7 +243,7 @@ function B64EncString(cIn as string) as string
 /// <returns>
 /// </returns>
 FUNCTION Buffer(dwSize AS DWORD) AS STRING
-	RETURN String{'\0', (int) dwSize}
+	RETURN STRING{'\0', (INT) dwSize}
 
 
 
@@ -255,22 +255,22 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// <returns>
 /// A string which is assembled from the even characters in c.
 /// </returns>
-function CharEven(c as string) as string
-	local evenChars:=null as string
-	if ( !string.IsNullOrEmpty(c) ) 
+FUNCTION CharEven(c AS STRING) AS STRING
+	LOCAL evenChars:=NULL AS STRING
+	IF ( !string.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
-		local isEven := false as  logic
-		local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
+		LOCAL isEven := FALSE AS  LOGIC
+		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 		
-		foreach ch as char in c//hars 
-			if isEven
+		FOREACH ch AS CHAR IN c//hars 
+			IF isEven
 				sb:Append(ch)
-			endif
+			ENDIF
 			isEven := !isEven
-		next
+		NEXT
 		evenChars := sb:ToString()
-	endif
-	return evenChars
+	ENDIF
+	RETURN evenChars
 
 /// <summary>
 /// Return a string whose odd-numbered characters and even-numbered characters are from 2 different strings.
@@ -279,30 +279,30 @@ function CharEven(c as string) as string
 /// <param name="c2"></param>
 /// <returns>
 /// </returns>
-function CharMix(cOdd as string,cEven as string) as string
-	local n1 := 0 as int
-	local n2 := 0 as int
-	local i1 := 0 as int
-	local i2 := 0  as int
-	local sb as StringBuilder 
+FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
+	LOCAL n1 := 0 AS INT
+	LOCAL n2 := 0 AS INT
+	LOCAL i1 := 0 AS INT
+	LOCAL i2 := 0  AS INT
+	LOCAL sb AS StringBuilder 
 	
-	if cEven:Length == 0
-		return ""
-	else
+	IF cEven:Length == 0
+		RETURN ""
+	ELSE
 		sb := StringBuilder{ cOdd:Length * 2 }
 		n1 := cOdd:Length - 1
 		n2 := cEven:Length - 1
 		
-		for i1 := 0 upto n1
+		FOR i1 := 0 UPTO n1
 			sb:Append( cOdd[i1] )
-			if i2 > n2
+			IF i2 > n2
 				i2 := 0
-			endif
+			ENDIF
 			sb:Append( cEven[i2++] )
-		next
+		NEXT
 		
-		return sb:ToString()
-	endif
+		RETURN sb:ToString()
+	ENDIF
 
 
 /// <summary>
@@ -312,22 +312,22 @@ function CharMix(cOdd as string,cEven as string) as string
 /// <returns>
 /// A string which is assembled from the odd characters in c.
 /// </returns>
-function CharOdd(c as string) as string
-	local oddChars:=null as string
-	if ( !string.IsNullOrEmpty(c) ) 
+FUNCTION CharOdd(c AS STRING) AS STRING
+	LOCAL oddChars:=NULL AS STRING
+	IF ( !string.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
-		local isOdd  := true as  logic
-		local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
+		LOCAL isOdd  := TRUE AS  LOGIC
+		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 		
-		foreach ch as char in c//chars 
-			if isOdd
+		FOREACH ch AS CHAR IN c//chars 
+			IF isOdd
 				sb:Append(ch)
-			endif
+			ENDIF
 			isOdd := !isOdd
-		next
+		NEXT
 		oddChars := sb:ToString()
-	endif
-	return oddChars
+	ENDIF
+	RETURN oddChars
 
 
 /// <summary>
@@ -339,12 +339,12 @@ function CharOdd(c as string) as string
 /// The character at the given position as a string, if position is beyond the length
 /// of the length of the string String.Empty is returned.
 /// </returns>
-function CharPos(c as string, nStart as dword) as string
-	local result := string.Empty as string
-	if ( nStart >= 1 && nStart <= (dword) c:Length )
-		result := c:SubString((int)nStart-1,1)
-	endif
-	return result
+FUNCTION CharPos(c AS STRING, nStart AS DWORD) AS STRING
+	LOCAL result := string.Empty AS STRING
+	IF ( nStart >= 1 && nStart <= (DWORD) c:Length )
+		result := c:SubString((INT)nStart-1,1)
+	ENDIF
+	RETURN result
 
 
 
@@ -354,10 +354,10 @@ function CharPos(c as string, nStart as dword) as string
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-function CHR(dwChar as dword) as string
-	var buffer := byte[]{1} 
-	buffer[0] := (byte) dwChar
-	return System.Text.Encoding:ASCII:GetString(buffer)
+FUNCTION CHR(dwChar AS DWORD) AS STRING
+	VAR buffer := BYTE[]{1} 
+	buffer[0] := (BYTE) dwChar
+	RETURN System.Text.Encoding:ASCII:GetString(buffer)
 
 
 /// <summary>
@@ -366,9 +366,9 @@ function CHR(dwChar as dword) as string
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-function ChrA(c as dword) as string
+FUNCTION ChrA(c AS DWORD) AS STRING
   LOCAL b   AS BYTE
-  local ret as STRING
+  LOCAL ret AS STRING
    b := (BYTE)( c & 0xFF )  // VO ignores the high 24 bits
 
    IF b <= 0x7F
@@ -378,7 +378,7 @@ function ChrA(c as dword) as string
 
       encoding := Encoding.Default
 
-      LOCAL chars := Char[]{ 1 } AS Char[]
+      LOCAL chars := CHAR[]{ 1 } AS CHAR[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
       LOCAL decoder := encoding:GetDecoder() AS Decoder
       bytes[__ARRAYBASE__] := b
@@ -396,9 +396,9 @@ function ChrA(c as dword) as string
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-function ChrW(c as dword) as string
+FUNCTION ChrW(c AS DWORD) AS STRING
    IF c > 0xFFFF
-      throw Error.ArgumentError( __ENTITY__, "dwChar", "Number too High")
+      THROW Error.ArgumentError( __ENTITY__, "dwChar", "Number too High")
    ENDIF
    RETURN Convert.ToChar( (INT) ( c & 0xFFFF ) ):ToString()
  
@@ -409,9 +409,9 @@ function ChrW(c as dword) as string
 /// <param name="cKey"></param>
 /// <returns>
 /// </returns>
-function Crypt(cSource as string,cKey as string) as string
+FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
@@ -420,9 +420,9 @@ function Crypt(cSource as string,cKey as string) as string
 /// <param name="cKey"></param>
 /// <returns>
 /// </returns>
-function CryptA(cSource as string,cKey as string) as string
+FUNCTION CryptA(cSource AS STRING,cKey AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// Decode a file from an e-mail transfer.
@@ -431,12 +431,12 @@ function CryptA(cSource as string,cKey as string) as string
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-function DecodeBase64(cMailPart as string,hFile as IntPtr) as int
-	if cMailPart == null .or. cMailPart:Length== 0
-		return 0
-	endif
-	var aBytes := Convert.FromBase64String( cMailPart )
-	return (INT) FWrite3(hFile, aBytes, (DWORD) aBytes:Length)
+FUNCTION DecodeBase64(cMailPart AS STRING,hFile AS IntPtr) AS INT
+	IF cMailPart == NULL .OR. cMailPart:Length== 0
+		RETURN 0
+	ENDIF
+	VAR aBytes := Convert.FromBase64String( cMailPart )
+	RETURN (INT) FWrite3(hFile, aBytes, (DWORD) aBytes:Length)
 
 
 	
@@ -447,21 +447,21 @@ function DecodeBase64(cMailPart as string,hFile as IntPtr) as int
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-function EncodeBase64(hFileIn as IntPtr,hFileOut as IntPtr) as int
-	local nSize as dword
-	local nRead as dword
+FUNCTION EncodeBase64(hFileIn AS IntPtr,hFileOut AS IntPtr) AS INT
+	LOCAL nSize AS DWORD
+	LOCAL nRead AS DWORD
 	// determine file size
 	FSeek3(hFileIn, 0, FS_END)
 	nSize := Ftell(hFileIn)
 	FSeek3(hFileIn, 0, FS_SET)
-	var aBuffer := byte[]{ (int) nSize}
+	VAR aBuffer := BYTE[]{ (INT) nSize}
 	nRead := Fread3(hFileIn, aBuffer, nSize)
-	if nRead != nSize
-		return 0
-	endif
-	var cContents := Convert.ToBase64String(aBuffer, Base64FormattingOptions.InsertLineBreaks)
+	IF nRead != nSize
+		RETURN 0
+	ENDIF
+	VAR cContents := Convert.ToBase64String(aBuffer, Base64FormattingOptions.InsertLineBreaks)
 	nSize := FWrite(hFileOut, cContents)
-	return (int) nSize
+	RETURN (INT) nSize
 
 
 
@@ -473,53 +473,53 @@ function EncodeBase64(hFileIn as IntPtr,hFileOut as IntPtr) as int
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function HardCR(c as string) as string
-	return c:Replace( (char) 141, (char) 13 )
+FUNCTION HardCR(c AS STRING) AS STRING
+	RETURN c:Replace( (CHAR) 141, (CHAR) 13 )
 
 
-function _nibble (c as char) as byte
-	local b as byte
-	switch c
-	case '0'
-	case '1'
-	case '2'
-	case '3'
-	case '4'
-	case '5'
-	case '6'
-	case '7'
-	case '8'
-	case '9'
-		b := (byte) c - '0'
-	case 'A'
-	case 'B'
-	case 'C'
-	case 'D'
-	case 'E'
-	case 'F'
-		b := (byte) c - 'A' + 10
+FUNCTION _nibble (c AS CHAR) AS BYTE
+	LOCAL b AS BYTE
+	SWITCH c
+	CASE '0'
+	CASE '1'
+	CASE '2'
+	CASE '3'
+	CASE '4'
+	CASE '5'
+	CASE '6'
+	CASE '7'
+	CASE '8'
+	CASE '9'
+		b := (BYTE) c - '0'
+	CASE 'A'
+	CASE 'B'
+	CASE 'C'
+	CASE 'D'
+	CASE 'E'
+	CASE 'F'
+		b := (BYTE) c - 'A' + 10
 	OTHERWISE
 		b := 0
-	end switch
-	return b
+	END SWITCH
+	RETURN b
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Hex2C(c as string) as string
-	local i as int
-	local sb as StringBuilder
+FUNCTION Hex2C(c AS STRING) AS STRING
+	LOCAL i AS INT
+	LOCAL sb AS StringBuilder
 	sb := StringBuilder{c:Length}
 	i := 0
-	do while i <= c:Length - 2
-		var b1 := _nibble(c[i])
-		var b2 := _nibble(c[i+1])
-		var b  := (b1 << 4) + b2
+	DO WHILE i <= c:Length - 2
+		VAR b1 := _nibble(c[i])
+		VAR b2 := _nibble(c[i+1])
+		VAR b  := (b1 << 4) + b2
 		sb:Append( chr( b))
 		i += 2
-	enddo
-	return sb:ToString()
+	ENDDO
+	RETURN sb:ToString()
 
 /// <summary>
 /// Indicate whether a substring is contained in a string.
@@ -529,12 +529,12 @@ function Hex2C(c as string) as string
 /// <returns>
 /// True if the searched string is in the string.
 /// </returns>
-function Instr(cSearch as string,c as string) as logic
-	local result := false as logic
-	if cSearch != null .and. c != null
+FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
+	LOCAL result := FALSE AS LOGIC
+	IF cSearch != NULL .AND. c != NULL
 		result := c:IndexOf( cSearch, StringComparison.Ordinal ) > -1
-	endif
-	return result   
+	ENDIF
+	RETURN result   
 
 
 
@@ -546,15 +546,15 @@ function Instr(cSearch as string,c as string) as logic
 /// <returns>
 /// A string of the left first characters in the given length.
 /// </returns>function Len(c as string) as dword
-function Left(c as string, dwLen as dword) as string
-	if ( c!=null )
-		if dwLen < c:Length
-			c := c:Substring( 0, (int) dwLen )
-		else
-			nop
-		endif
-	endif
-	return c
+FUNCTION Left(c AS STRING, dwLen AS DWORD) AS STRING
+	IF ( c!=NULL )
+		IF dwLen < c:Length
+			c := c:Substring( 0, (INT) dwLen )
+		ELSE
+			NOP
+		ENDIF
+	ENDIF
+	RETURN c
 
 
 /// <summary>
@@ -564,11 +564,11 @@ function Left(c as string, dwLen as dword) as string
 /// <returns>
 /// Returns the input string with all characters converted to lowercase.
 /// </returns>
-function Lower(cSource as string) as string
-	if cSource != null
+FUNCTION Lower(cSource AS STRING) AS STRING
+	IF cSource != NULL
 		cSource := cSource:ToLower()
-	endif
-	return cSource
+	ENDIF
+	RETURN cSource
 
 /// <summary>
 /// Convert the uppercase and mixed case characters in a string to lowercase, 
@@ -579,11 +579,11 @@ function Lower(cSource as string) as string
 /// <returns>
 /// Returns the input string with all characters converted to lowercase.
 /// </returns>
-function LowerA(cSource ref string) as string
-	if cSource != null
+FUNCTION LowerA(cSource REF STRING) AS STRING
+	IF cSource != NULL
 		cSource := cSource:ToLower()
-	endif
-	return cSource
+	ENDIF
+	RETURN cSource
 
 /// <summary>
 /// Remove leading spaces from a string.
@@ -592,11 +592,11 @@ function LowerA(cSource ref string) as string
 /// <returns>
 /// The input strings without eading spaces.
 /// </returns>
-function LTrim(c as string) as string
-	if (c == null)
-		return c
-	endif
-	return c:TrimStart(trimChars)
+FUNCTION LTrim(c AS STRING) AS STRING
+	IF (c == NULL)
+		RETURN c
+	ENDIF
+	RETURN c:TrimStart(trimChars)
 
 
 
@@ -608,8 +608,8 @@ function LTrim(c as string) as string
 /// <returns>
 /// THe number how often the string to be searched for occurs in the original string.
 /// </returns>
-function Occurs(cSearch as string,c as string) as dword
-	return Occurs3(cSearch,c, 0)   
+FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN Occurs3(cSearch,c, 0)   
 
 /// <summary>
 /// Return the number of times a substring occurs in a string.
@@ -619,8 +619,8 @@ function Occurs(cSearch as string,c as string) as dword
 /// <returns>
 /// THe number how often the string to be searched for occurs in the original string.
 /// </returns>
-function Occurs2(cSearch as string,c as string) as dword
-	return Occurs3(cSearch,c, 0)   
+FUNCTION Occurs2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN Occurs3(cSearch,c, 0)   
 
 /// <summary>
 /// Return the number of times a substring occurs in a string, starting at a specified position.
@@ -630,90 +630,117 @@ function Occurs2(cSearch as string,c as string) as dword
 /// <param name="nOffs"></param>
 /// <returns>
 /// </returns>
-function Occurs3(cSrc as string,c as string,nOffset as dword) as dword
-	local pos as int
-	local count as dword
+FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffset AS DWORD) AS DWORD
+	LOCAL pos AS INT
+	LOCAL count AS DWORD
 	
-	if String.IsNullOrEmpty(cSrc) .or. String.IsNullOrEmpty(c)
-		return 0
-	endif
+	IF String.IsNullOrEmpty(cSrc) .OR. String.IsNullOrEmpty(c)
+		RETURN 0
+	ENDIF
 	
-	if nOffset > 0
+	IF nOffset > 0
 		nOffSet -= 1
-	endif
+	ENDIF
 	
 	count := 0
-	if nOffSet < (dword) c:Length
-		do while ( pos := c:IndexOf(cSrc, (int)nOffSet, StringComparison.Ordinal) ) >= 0
+	IF nOffSet < (DWORD) c:Length
+		DO WHILE ( pos := c:IndexOf(cSrc, (INT)nOffSet, StringComparison.Ordinal) ) >= 0
 			count++
-			nOffSet := (dword)pos + cSrc:Length
-		enddo
-	endif
+			nOffSet := (DWORD)pos + cSrc:Length
+		ENDDO
+	ENDIF
 	
-	return count
+	RETURN count
 
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
+/// <param name="cSource">String in Ansi format</param>
+/// <returns>String converted to Unicode
 /// </returns>
-function Ansi2Oem(cSource as string) as string
-	local aBytes as byte[]
-	local iLen	 as int
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Ansi - Oem - Unicode will take place
+/// if you use this function. <br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
+FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
+	LOCAL aBytes AS BYTE[]
+	LOCAL iLen	 AS INT
 	iLen := cSource:Length
 	aBytes := String2Bytes(cSource)
 	aBytes := Ansi2Oem(aBytes, iLen)
-	return Bytes2String(aBytes, iLen)
+	RETURN Bytes2String(aBytes, iLen)
 
-function Ansi2Oem(bSource as byte[]) as byte[]
-	return Ansi2Oem(bSource, bSource:Length)
+FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
+	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
-function Ansi2Oem(bSource as byte[], iLen as INT) as byte[]
-	local bDest as byte[]
-	bDest := byte[]{iLen}
-	OemToCharBuffA(bSource, bDest, (dword) iLen)
-	return bDest
+FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
+	LOCAL bDest AS BYTE[]
+	bDest := BYTE[]{iLen}
+	CharToOemBuffA(bSource, bDest, (DWORD) iLen)
+	RETURN bDest
 
 /// <summary>
 /// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
+/// <param name="cSource">String in Ansi format</param>
+/// <returns>String converted to Unicode
 /// </returns>
-function Ansi2OemA(cSource ref string) as string
-	local aBytes as byte[]
-	local iLen	 as int
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
+/// if you use this function.<br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
+
+FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
+	LOCAL aBytes AS BYTE[]
+	LOCAL iLen	 AS INT
 	iLen := cSource:Length
 	aBytes := String2Bytes(cSource)
 	aBytes := Ansi2Oem(aBytes, iLen)
 	cSource := Bytes2String(aBytes, iLen)  
-	return cSource
+	RETURN cSource
 
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
-/// </returns>
-function Oem2Ansi(cSource as string) as string
-	local aBytes as byte[]
-	local iLen	 as int
+/// <param name="cSource">String in OEM format</param>
+/// <returns>String converted to Ansi
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
+/// if you use this function.<br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
+FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
+	LOCAL aBytes AS BYTE[]
+	LOCAL iLen	 AS INT
 	iLen := cSource:Length
 	aBytes := String2Bytes(cSource)
 	aBytes := Oem2Ansi(aBytes, iLen)
-	return Bytes2String(aBytes, iLen)
+	RETURN Bytes2String(aBytes, iLen)
 
-function Oem2Ansi(bSource as byte[]) as byte[]
-	return Oem2Ansi(bSource, bSource:Length)
+FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
+	RETURN Oem2Ansi(bSource, bSource:Length)
 
-function Oem2Ansi(bSource as byte[], iLen as int) as byte[]
-	local bDest as byte[]
-	bDest := byte[]{iLen}
-	CharToOemBuffA(bSource, bDest, (dword) iLen)
-	return bDest
+FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
+	LOCAL bDest AS BYTE[]
+	bDest := BYTE[]{iLen}
+	OemToCharBuffA(bSource, bDest, (DWORD) iLen)
+	RETURN bDest
 
 /// <summary>
 /// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
@@ -723,9 +750,9 @@ function Oem2Ansi(bSource as byte[], iLen as int) as byte[]
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function Oem2AnsiBuff(bDest as byte[],bSource as byte[],dwCount as dword) as byte[]
+FUNCTION Oem2AnsiBuff(bDest AS BYTE[],bSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	OemToCharBuffA(bSource, bDest, dwCount)
-	return bDest
+	RETURN bDest
 
 /// <summary>
 /// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
@@ -735,30 +762,39 @@ function Oem2AnsiBuff(bDest as byte[],bSource as byte[],dwCount as dword) as byt
 /// <param name="dwCount"></param>
 /// <returns>
 /// </returns>
-function Ansi2OemBuff(bDest as byte[],bSource as byte[],dwCount as dword) as byte[]
+FUNCTION Ansi2OemBuff(bDest AS BYTE[],bSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	CharToOemBuffA(bSource, bDest, dwCount)
-	return bDest
+	RETURN bDest
 
 
 
-INTERNAL _DLL FUNCTION CharToOemBuffA( lpszSrc AS byte[], lpszDst AS byte[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.CharToOemBuffA
-INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS byte[], lpszDst AS byte[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.OemToCharBuffA
+INTERNAL _DLL FUNCTION CharToOemBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.CharToOemBuffA
+INTERNAL _DLL FUNCTION OemToCharBuffA( lpszSrc AS BYTE[], lpszDst AS BYTE[], cchDstLength AS DWORD ) AS LOGIC PASCAL:USER32.OemToCharBuffA
 
 
 /// <summary>
 /// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
 /// </summary>
-/// <param name="cSource"></param>
-/// <returns>
+/// <param name="cSource">String in OEM format</param>
+/// <returns>String converted to Ansi
 /// </returns>
-function Oem2AnsiA(cSource REF string) as string
-	local aBytes as byte[]
-	local iLen	 as int
+/// <remarks>This is a compatibility function. Do not use this unless you really have to.
+/// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
+/// if you use this function.<br/>
+/// You should also realize that Ansi2Oem(Oem2Ansi(cSource)) will not always return cSource. Some characters may
+/// not be available in the OEM codepage and could be translated to other characters.
+/// For example: Windows codepage 1252 has Capital E Umlaut on position 203.
+/// When translated to OEM codepage 437 this will become captial E without umlaut (69). Converting back to Ansi
+/// this will remain a E without umlaut.
+/// </remarks>
+FUNCTION Oem2AnsiA(cSource REF STRING) AS STRING
+	LOCAL aBytes AS BYTE[]
+	LOCAL iLen	 AS INT
 	iLen := cSource:Length
 	aBytes := String2Bytes(cSource)
 	aBytes := Oem2Ansi(aBytes, iLen)
 	cSource := Bytes2String(aBytes, iLen)
-	return cSource
+	RETURN cSource
 
 
 /// <summary>
@@ -768,31 +804,31 @@ function Oem2AnsiA(cSource REF string) as string
 /// <returns>
 /// The converted string according to the CurrentCulture
 /// </returns>
-function Proper(cString as string) as string
-	local sb as StringBuilder
-	local inside as logic
-	if cString != null
+FUNCTION Proper(cString AS STRING) AS STRING
+	LOCAL sb AS StringBuilder
+	LOCAL inside AS LOGIC
+	IF cString != NULL
 		sb := StringBuilder{cString:Length}
-		inside := false
-		foreach ch as char in cString
-			var cToAdd := ch
-			if inside
-				if Char.IsLetterOrDigit(ch)
+		inside := FALSE
+		FOREACH ch AS CHAR IN cString
+			VAR cToAdd := ch
+			IF inside
+				IF Char.IsLetterOrDigit(ch)
 					cToAdd := char.ToLower(ch)
-				else
-					inside := false
-				endif
-			else
-				if Char.IsLetterOrDigit(ch)
+				ELSE
+					inside := FALSE
+				ENDIF
+			ELSE
+				IF Char.IsLetterOrDigit(ch)
 					cToAdd := char.ToUpper(ch)
-					inside := true
-				endif
-			endif
+					inside := TRUE
+				ENDIF
+			ENDIF
 			sb:append(cToAdd)
-		next
+		NEXT
 		cString := sb:ToString()
-	endif
-	return cString
+	ENDIF
+	RETURN cString
 
 /// <summary>
 /// Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
@@ -800,18 +836,18 @@ function Proper(cString as string) as string
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function ProperA(c ref string) as string
+FUNCTION ProperA(c REF STRING) AS STRING
 	c := Proper(c)
-	return c
+	RETURN c
 
 /// <summary>
 /// </summary>
 /// <param name="cIn"></param>
 /// <returns>
 /// </returns>
-function QPEncString(cIn as string) as string
+FUNCTION QPEncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 
 /// <summary>
@@ -822,12 +858,12 @@ function QPEncString(cIn as string) as string
 /// <returns>
 /// The right most position of the string to be searched inside the searched string.
 /// </returns>
-function RAt(cSearch as string,c as string) as dword
-	local rightMost := 0 as dword
-	if cSearch != null .and. c != null
-		rightMost:= (dword) c:LastIndexOf(cSearch, StringComparison.Ordinal) + 1
-	endif
-	return rightMost
+FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
+	LOCAL rightMost := 0 AS DWORD
+	IF cSearch != NULL .AND. c != NULL
+		rightMost:= (DWORD) c:LastIndexOf(cSearch, StringComparison.Ordinal) + 1
+	ENDIF
+	RETURN rightMost
 
 /// <summary>
 /// Return the position of the last occurrence of a substring within a string.
@@ -837,8 +873,8 @@ function RAt(cSearch as string,c as string) as dword
 /// <returns>
 /// The right most position of the string to be searched inside the searched string.
 /// </returns>
-function RAt2(cSearch as string,c as string) as dword
-	return RAt(cSearch,c) 
+FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN RAt(cSearch,c) 
 
 /// <summary>
 /// Return the position of the last occurrence of a substring within a string.
@@ -849,19 +885,19 @@ function RAt2(cSearch as string,c as string) as dword
 /// <returns>
 /// </returns>
 
-function RAt3(cSearch as string,c as string,dwOffSet as dword) as dword
-	local nResult := 0 as dword
-	if cSearch != null .and. c != null
-		if dwOffSet > (dword) c:Length 
+FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
+	LOCAL nResult := 0 AS DWORD
+	IF cSearch != NULL .AND. c != NULL
+		IF dwOffSet > (DWORD) c:Length 
 			dwOffSet := 0U
-		endif
-		var cTemp := c:Substring((int) dwOffSet)
+		ENDIF
+		VAR cTemp := c:Substring((INT) dwOffSet)
 		nResult := RAt(cSearch, cTemp)
-		if nResult > 0U
+		IF nResult > 0U
 			nResult := nResult+dwOffSet
-		endif
-	endif
-	return nResult
+		ENDIF
+	ENDIF
+	RETURN nResult
 
 /// <summary>
 /// Return the line number of the last occurrence of a substring within a multiline string.
@@ -870,15 +906,15 @@ function RAt3(cSearch as string,c as string,dwOffSet as dword) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function RAtLine(cSearch as string, c as string) as dword
-	local nPos as dword
-	if cSearch == null .or. c == null
-		return 0
-	endif
+FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
+	LOCAL nPos AS DWORD
+	IF cSearch == NULL .OR. c == NULL
+		RETURN 0
+	ENDIF
 	nPos := RAt(cSearch,c)
 	c := Left(c,nPos-1)
 	
-	return MemLines(c)
+	RETURN MemLines(c)
 
 
 
@@ -889,8 +925,8 @@ function RAtLine(cSearch as string, c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function RATLine2(cSearch as string,c as string) as dword
-	return RatLine(cSearch, c)
+FUNCTION RATLine2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN RatLine(cSearch, c)
 
 /// <summary>
 /// Repeat a string a specified number of times.
@@ -900,8 +936,8 @@ function RATLine2(cSearch as string,c as string) as dword
 /// <returns>
 /// A string which consist of dwCount replications of c.
 /// </returns>
-function Repl(c as string,dwCount as dword) as string
-	return Replicate(c, dwCount)
+FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
+	RETURN Replicate(c, dwCount)
 /// <summary>
 /// Repeat a string a specified number of times.
 /// </summary>
@@ -910,12 +946,12 @@ function Repl(c as string,dwCount as dword) as string
 /// <returns>
 /// A string which consist of dwCount replications of c.
 /// </returns>
-function Replicate(c as string,dwCount as dword) as string
-	local cReturn := "" as string
-	if dwCount > 0 .and. c != null
-		cReturn := System.Text.StringBuilder{}:Insert( 0, c, (int) dwCount ):ToString()
-	endif
-	return cReturn
+FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
+	LOCAL cReturn := "" AS STRING
+	IF dwCount > 0 .AND. c != NULL
+		cReturn := System.Text.StringBuilder{}:Insert( 0, c, (INT) dwCount ):ToString()
+	ENDIF
+	RETURN cReturn
 
 /// <summary>
 /// Return a substring beginning with the rightmost character.
@@ -925,15 +961,15 @@ function Replicate(c as string,dwCount as dword) as string
 /// <returns>
 /// Returns the right most part in the given length.
 /// </returns>
-function Right(c as string,dwLen as dword) as string
-	if c != null
-		if dwLen > c:Length
-			nop
-		else
-			c := c:Substring( c:Length - (int) dwLen, (int) dwLen )
-		endif
-	endif
-	return c
+FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
+	IF c != NULL
+		IF dwLen > c:Length
+			NOP
+		ELSE
+			c := c:Substring( c:Length - (INT) dwLen, (INT) dwLen )
+		ENDIF
+	ENDIF
+	RETURN c
 
 
 /// <summary>
@@ -942,11 +978,11 @@ function Right(c as string,dwLen as dword) as string
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function RTrim(c as string) as string
-	if ( c == null )
-		return c
-	endif
-	return c:TrimEnd(trimChars)
+FUNCTION RTrim(c AS STRING) AS STRING
+	IF ( c == NULL )
+		RETURN c
+	ENDIF
+	RETURN c:TrimEnd(trimChars)
 
 
 
@@ -958,12 +994,12 @@ function RTrim(c as string) as string
 /// <returns>
 /// A opy of the input string.
 /// </returns>
-function SClone(c as string) as string
-	local clonedString := null as string
-	if (c != null)
+FUNCTION SClone(c AS STRING) AS STRING
+	LOCAL clonedString := NULL AS STRING
+	IF (c != NULL)
 		clonedString := String.Copy( c )
-	endif
-	return clonedString
+	ENDIF
+	RETURN clonedString
 
 
 
@@ -973,8 +1009,8 @@ function SClone(c as string) as string
 /// <param name="dwSize"></param>
 /// <returns>
 /// </returns>
-function Space(dwSize as dword) as string
-	return string{' ',(int)dwSize}
+FUNCTION Space(dwSize AS DWORD) AS STRING
+	RETURN STRING{' ',(INT)dwSize}
 
 /// <summary>
 /// Create a string of spaces.
@@ -982,8 +1018,8 @@ function Space(dwSize as dword) as string
 /// <param name="dwSize"></param>
 /// <returns>
 /// </returns>
-function Space(iSize as int) as string
-	return string{' ',iSize}
+FUNCTION Space(iSize AS INT) AS STRING
+	RETURN STRING{' ',iSize}
 
 
 /// <summary>
@@ -993,12 +1029,12 @@ function Space(iSize as int) as string
 /// <returns>
 /// The length of the string.
 /// </returns>
-function SLen(c as string) as dword
-	local len := 0 as dword
-	if c != null
-		len := (dword) c:Length
-	endif
-	return len
+FUNCTION SLen(c AS STRING) AS DWORD
+	LOCAL len := 0 AS DWORD
+	IF c != NULL
+		len := (DWORD) c:Length
+	ENDIF
+	RETURN len
 
 
 /// <summary>
@@ -1007,61 +1043,61 @@ function SLen(c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function SoundEx(c as string) as string
-	local sb		as StringBuilder
-	local iLen		as int
-	local ret		as string
-	local i			as int
-	local cLastChar as char
-	local cSoundExChar as char
+FUNCTION SoundEx(c AS STRING) AS STRING
+	LOCAL sb		AS StringBuilder
+	LOCAL iLen		AS INT
+	LOCAL ret		AS STRING
+	LOCAL i			AS INT
+	LOCAL cLastChar AS CHAR
+	LOCAL cSoundExChar AS CHAR
 	
-	if String.IsNullOrEmpty(c)
-		return "0000"
-	end if
-	cLastChar := (char) 0
+	IF String.IsNullOrEmpty(c)
+		RETURN "0000"
+	END IF
+	cLastChar := (CHAR) 0
 	c	 := c:ToUpper()
 	iLen := c:Length - 1
 	sb := StringBuilder{}
 	sb:Append( c[0] )
-	for i := 1 to iLen
+	FOR i := 1 TO iLen
 		cSoundExChar := _SoundExChar( c[i] )
-		if cSoundExChar != '0' .and. cSoundExChar != cLastChar
+		IF cSoundExChar != '0' .AND. cSoundExChar != cLastChar
 			sb:Append( cSoundExChar )
-		endif
+		ENDIF
 		cLastChar := cSoundExChar
-		if sb:Length == 4
-			exit
-		endif
-	next
+		IF sb:Length == 4
+			EXIT
+		ENDIF
+	NEXT
 	ret := sb:ToString()
 	
-	return ret:PadRight( 4, '0' ) 
+	RETURN ret:PadRight( 4, '0' ) 
 
-internal function _SoundExChar( c as char ) as char
-	local ret as char
-	ret := (char) 0
-	switch c
-		case c'A' ;	case c'E'; case c'I'; case c'O'; case c'U'; case c'Y'
+INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
+	LOCAL ret AS CHAR
+	ret := (CHAR) 0
+	SWITCH c
+		CASE c'A' ;	CASE c'E'; CASE c'I'; CASE c'O'; CASE c'U'; CASE c'Y'
 			ret := c'0'
-		case c'H' ;	case c'W'
+		CASE c'H' ;	CASE c'W'
 			ret := c'0'
-		case c'B' ;	case c'F';case c'P' ;case c'V'
+		CASE c'B' ;	CASE c'F';CASE c'P' ;CASE c'V'
 			ret := c'1'
-		case c'C' ;	case c'G';case c'J' ;case c'K';case c'Q';case c'S';case c'X';case c'Z'
+		CASE c'C' ;	CASE c'G';CASE c'J' ;CASE c'K';CASE c'Q';CASE c'S';CASE c'X';CASE c'Z'
 			ret := c'2'
-		case c'D' ;	case c'T'
+		CASE c'D' ;	CASE c'T'
 			ret := c'3'
-		case c'L' 
+		CASE c'L' 
 			ret := c'4'
-		case c'M' ;	case c'N'
+		CASE c'M' ;	CASE c'N'
 			ret := c'5'
-		case c'R'
+		CASE c'R'
 			ret := '6'
-		otherwise
+		OTHERWISE
 			ret := '0'
-	end switch
+	END SWITCH
 	
-	return ret
+	RETURN ret
 
 
 
@@ -1071,9 +1107,9 @@ internal function _SoundExChar( c as char ) as char
 /// <param name="s"></param>
 /// <returns>
 /// </returns>
-function StrEvaluate(s as string) as string
+FUNCTION StrEvaluate(s AS STRING) AS STRING
 	/// THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 
 
@@ -1089,52 +1125,52 @@ function StrEvaluate(s as string) as string
 /// A new string with the substring from the starting position in the given length being subsituted with the insert string.
 /// </returns>
 
-function Stuff(c as string,nStart as dword,nToDelete as dword,cIns as string) as string
-	local result := cIns as string
-	if c != null
-		if string.IsNullOrEmpty(cIns)
+FUNCTION Stuff(c AS STRING,nStart AS DWORD,nToDelete AS DWORD,cIns AS STRING) AS STRING
+	LOCAL result := cIns AS STRING
+	IF c != NULL
+		IF string.IsNullOrEmpty(cIns)
 			cIns := ""
-		endif
-		if nStart > 0
+		ENDIF
+		IF nStart > 0
 			nStart -= 1
-		endif
-		local part1 := c as string
-		if  (int) nStart < c:Length 
-			part1 := c:Substring(0,(int)nStart)
-		endif
-		local part2 := "" as string
-		var iOffSet := (int) (nStart + nToDelete)
-		if  iOffSet  < c:length 
+		ENDIF
+		LOCAL part1 := c AS STRING
+		IF  (INT) nStart < c:Length 
+			part1 := c:Substring(0,(INT)nStart)
+		ENDIF
+		LOCAL part2 := "" AS STRING
+		VAR iOffSet := (INT) (nStart + nToDelete)
+		IF  iOffSet  < c:length 
 			part2 := c:Substring( iOffSet )
-		endif
+		ENDIF
 		result := part1 + cIns + part2
-	endif
-	return result
+	ENDIF
+	RETURN result
 
 // Note: worker function that accepts negative arguments
 // because the untyped Substr() allows these
-function __SubStr( c as string, nStart as int, nLength as int ) as string
-	if c != null
-		if nStart == 0
+FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
+	IF c != NULL
+		IF nStart == 0
 			nStart := 1
-		endif
+		ENDIF
 		
-		if nStart < 0
+		IF nStart < 0
 			nStart := c:Length+nStart+1
-		endif
+		ENDIF
 		
-		if nLength < 0
+		IF nLength < 0
 			nLength := c:Length
-		endif
+		ENDIF
 		
-		if nStart <= c:Length .and. nStart > 0
+		IF nStart <= c:Length .AND. nStart > 0
 			nLength := Math.Min( c:Length - nStart + 1, nLength )
 			c := c:Substring( nStart - 1, nLength )
-		else
+		ELSE
 			c := ""
-		endif
-	endif
-	return c
+		ENDIF
+	ENDIF
+	RETURN c
 
 /// <summary>
 /// Extract a substring from a string, using strong typing and only two arguments.
@@ -1144,11 +1180,11 @@ function __SubStr( c as string, nStart as int, nLength as int ) as string
 /// <returns>
 /// The extracted substring.
 /// </returns>
-function SubStr2(c as string,dwStart as dword) as string
-	if c != null
-		c := __SubStr( c, (int) dwStart, ( c:Length - (int) dwStart  + 1 ) )
-	endif
-	return c
+FUNCTION SubStr2(c AS STRING,dwStart AS DWORD) AS STRING
+	IF c != NULL
+		c := __SubStr( c, (INT) dwStart, ( c:Length - (INT) dwStart  + 1 ) )
+	ENDIF
+	RETURN c
 
 /// <summary>
 /// Extract a substring from a string, using strong typing and three required arguments.
@@ -1159,11 +1195,11 @@ function SubStr2(c as string,dwStart as dword) as string
 /// <returns>
 /// The extracted substring in the given length.
 /// </returns>
-function SubStr3(c as string,dwStart as dword,dwLen as dword) as string
-	if c != null
-		c := __SubStr( c, (int) dwStart, (int) dwLen )
-	endif
-	return c
+FUNCTION SubStr3(c AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
+	IF c != NULL
+		c := __SubStr( c, (INT) dwStart, (INT) dwLen )
+	ENDIF
+	RETURN c
 
 
 
@@ -1173,11 +1209,11 @@ function SubStr3(c as string,dwStart as dword,dwLen as dword) as string
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Trim(c as string) as string
-	if ( c == null )
-		return c
-	endif
-	return c:TrimEnd(trimChars)
+FUNCTION Trim(c AS STRING) AS STRING
+	IF ( c == NULL )
+		RETURN c
+	ENDIF
+	RETURN c:TrimEnd(trimChars)
 
 
 
@@ -1187,11 +1223,11 @@ function Trim(c as string) as string
 /// <param name="cSorce"></param>
 /// <returns>
 /// </returns>
-function Upper(cSource as string) as string
-	if cSource != null
+FUNCTION Upper(cSource AS STRING) AS STRING
+	IF cSource != NULL
 		cSource := cSource:ToUpper()
-	endif
-	return cSource
+	ENDIF
+	RETURN cSource
 
 
 /// <summary>
@@ -1200,11 +1236,11 @@ function Upper(cSource as string) as string
 /// <param name="cSorce"></param>
 /// <returns>
 /// </returns>
-function UpperA(cSource ref string) as string
-	if cSource != null
+FUNCTION UpperA(cSource REF STRING) AS STRING
+	IF cSource != NULL
 		cSource := cSource:ToUpper()
-	endif
-	return cSource
+	ENDIF
+	RETURN cSource
 
 /// <summary>
 /// </summary>
@@ -1212,124 +1248,124 @@ function UpperA(cSource ref string) as string
 /// <param name="hfOut"></param>
 /// <returns>
 /// </returns>
-unsafe function UUDecodeLine(cLine as string,hfOut as ptr) as dword
+UNSAFE FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
 	THROW NotImplementedException{}
-return 0   
+RETURN 0   
 
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function UUEncFile(c as string) as string
+FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function UUEncLine(c as string) as string
+FUNCTION UUEncLine(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	return String.Empty   
+	RETURN String.Empty   
 
 
 
 /// <summary>Determine if the leftmost character in a string is alphabetic.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is alphabetic.</returns>
-function IsAlpha(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
+FUNCTION IsAlpha(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsLetter( cSource, 0 )
-	endif
-	return ret
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is alphanumeric.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
-function IsAlNum(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
+FUNCTION IsAlNum(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsLetterOrDigit( cSource, 0 )
-	endif
-	return ret
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is alphanumeric..</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
-function IsAlphaNum(cSource as string) as logic
-	return IsAlNum(cSource)
+FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
+	RETURN IsAlNum(cSource)
 
 
 /// <summary>Determine if the leftmost character in a string is a digit (that is, a numeric digit between 0 and 9).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is a number from 0 to 9; otherwise FALSE.</returns>
-function IsDigit(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
+FUNCTION IsDigit(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsDigit(cSource, 0 )
-	endif
-	return ret
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is a binary digit  (0 or 1)).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
-function IsBDigit(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
-		switch cSource[0]
-			case '0'
-			case '1'
-				ret := true
-		end switch
-	endif
-	return ret
+FUNCTION IsBDigit(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
+		SWITCH cSource[0]
+			CASE '0'
+			CASE '1'
+				ret := TRUE
+		END SWITCH
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is hex otherwise FALSE.</returns>
-function IsXDigit(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
-		local c as char
+FUNCTION IsXDigit(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
+		LOCAL c AS CHAR
 		c := cSource[0]
-		if char.IsDigit(c) .or. ;
-			(c >= 'A' .and. c <= 'F') .or. ;
-			(c >= 'a' .and. c <= 'f')
-			ret := true
-		endif
-	endif
-	return ret
+		IF char.IsDigit(c) .OR. ;
+			(c >= 'A' .AND. c <= 'F') .OR. ;
+			(c >= 'a' .AND. c <= 'f')
+			ret := TRUE
+		ENDIF
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
-function IsSpace(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
+FUNCTION IsSpace(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
 		ret := char.IsWhiteSpace(cSource,0)
-	endif
-	return ret
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is uppercase.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
-function IsUpper(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
+FUNCTION IsUpper(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsUpper(cSource, 0 )
-	endif
-	return ret
+	ENDIF
+	RETURN ret
 
 /// <summary>Determine if the leftmost character in a string is lower.</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
-function IsLower(cSource as string) as logic
-	local ret := false as logic
-	if ! String.IsNullOrEmpty( cSource )
+FUNCTION IsLower(cSource AS STRING) AS LOGIC
+	LOCAL ret := FALSE AS LOGIC
+	IF ! String.IsNullOrEmpty( cSource )
 		ret := Char.IsLower(cSource, 0 )
-	endif
-	return ret
+	ENDIF
+	RETURN ret
 

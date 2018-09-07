@@ -14,10 +14,10 @@ begin namespace $rootnamespace$
 
     PARTIAL CLASS $safeitemrootname$ INHERIT System.Windows.Forms.UserControl
 
-        public CONSTRUCTOR()  
+        public CONSTRUCTOR() STRICT
             InitializeComponent()
 			return
 
-   
+
     END CLASS
 end namespace

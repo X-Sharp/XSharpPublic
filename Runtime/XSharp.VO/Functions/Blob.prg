@@ -24,7 +24,7 @@ FUNCTION BLOBDirectExport(nPointer, cTargetFile, nMode) AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS Usual
+FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS USUAL
 	RETURN DbInfo( BLOB_DIRECT_GET, <OBJECT>{nPointer, nStart, nCount} )
 	
 	
@@ -33,7 +33,7 @@ FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS Usual
+FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS USUAL
 	RETURN DbInfo( BLOB_DIRECT_IMPORT, <OBJECT>{nOldPointer, cSourceFile} )
 
 		
@@ -41,7 +41,7 @@ FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS Usual
+FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS USUAL
 	RETURN DbInfo( BLOB_DIRECT_PUT, <OBJECT>{nOldPointer, uBlob} )
 	
 	
@@ -64,7 +64,7 @@ FUNCTION BLOBExport (nFieldPos, cFileName, nMode)  AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS Usual
+FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS USUAL
 	RETURN DbInfo( BLOB_GET, <OBJECT>{nFieldNo, nStart, nLen} )
 	
 	
@@ -86,7 +86,7 @@ FUNCTION BLOBImport (nFieldPos, cFileName)  AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootGet() AS Usual
+FUNCTION BLOBRootGet() AS USUAL
 	RETURN DbInfo( BLOB_ROOT_GET )
 	
 	
@@ -94,14 +94,14 @@ FUNCTION BLOBRootGet() AS Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootLock() AS Usual
+FUNCTION BLOBRootLock() AS USUAL
 	RETURN DbInfo( BLOB_ROOT_LOCK )
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootPut(xblob) AS Usual
+FUNCTION BLOBRootPut(xblob) AS USUAL
 	RETURN DbInfo( BLOB_ROOT_PUT, xBlob )
 	
 	
@@ -109,7 +109,7 @@ FUNCTION BLOBRootPut(xblob) AS Usual
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION BLOBRootUnlock()  AS Usual
+FUNCTION BLOBRootUnlock()  AS USUAL
 	
 	RETURN DbInfo( BLOB_ROOT_UNLOCK )
 	

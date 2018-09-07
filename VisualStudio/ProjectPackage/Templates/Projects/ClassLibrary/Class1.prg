@@ -5,7 +5,7 @@ $endif$USING System.Text
 
 BEGIN NAMESPACE $safeprojectname$
 	CLASS Class1
-	CONSTRUCTOR()
+	CONSTRUCTOR() STRICT
 		RETURN		
  
 	END CLASS

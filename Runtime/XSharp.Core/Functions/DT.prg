@@ -13,22 +13,22 @@
 /// An 11-character string in 12-hour format with either "am" or "pm."  If cTime does not represent a valid military time, a String.Empty is returned.
 /// </returns>
 FUNCTION AmPm(cTime AS STRING) AS STRING
-	local nSeconds as dword
-	local nHours as dword
-	local nMinutes as dword
-	if String.IsNullOrEmpty(cTime)
-		return ""
-	endif
+	LOCAL nSeconds AS DWORD
+	LOCAL nHours AS DWORD
+	LOCAL nMinutes AS DWORD
+	IF String.IsNullOrEmpty(cTime)
+		RETURN ""
+	ENDIF
 	nSeconds := Secs(cTime) 
-	if (nSeconds) > 86400
-		return ""
-	endif	
+	IF (nSeconds) > 86400
+		RETURN ""
+	ENDIF	
 	nSeconds := nSeconds % 86400
 	nHours   := nSeconds / 3600
 	nSeconds := nSeconds % 3600
 	nMinutes := nSeconds / 60
 	nSeconds := nSeconds % 60
-	return _TimeString(nHours, nMinutes, nSeconds, true, GetAmExt(), GetPmExt())
+	RETURN _TimeString(nHours, nMinutes, nSeconds, TRUE, GetAmExt(), GetPmExt())
 
 
 /// <summary>
@@ -42,17 +42,17 @@ FUNCTION AmPm(cTime AS STRING) AS STRING
 /// <remarks>
 /// </remarks>
 FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
-	local nStart as dword
-	local nEnd   as dword
-	local nDiff  as dword
+	LOCAL nStart AS DWORD
+	LOCAL nEnd   AS DWORD
+	LOCAL nDiff  AS DWORD
 	nStart := Secs(cStartTime)
 	nEnd   := Secs(cEndTime)
-	if nStart > nEnd
+	IF nStart > nEnd
 		nDiff := 86400 + nEnd - nStart
-	else
+	ELSE
 		nDiff := nEnd - nStart
-	endif
-	return TString(nDiff)
+	ENDIF
+	RETURN TString(nDiff)
 
 /// <summary>
 /// Format a set of numbers representing an hour, minute, and second as a time string.
@@ -83,15 +83,15 @@ FUNCTION ConTime(dt AS DateTime) AS STRING
 /// </returns>
 FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
 	LOCAL result AS STRING
-	IF dwDay < 1 .or. dwDay > 7
+	IF dwDay < 1 .OR. dwDay > 7
 		result := ""
 	ELSEIF RuntimeState.International == CollationMode.Clipper
 		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDay -1)
 	ELSE
-		var culture := System.Globalization.CultureInfo.CurrentCulture 
+		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
 		result := culture:DateTimeFormat:GetDayName((DayOfWeek) dwDay-1)   
 	ENDIF
-	return result
+	RETURN result
 /// <summary>
 /// Convert the number that identifies a month into the name of the month.
 /// </summary>
@@ -100,12 +100,12 @@ FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
 /// </returns>
 FUNCTION NToCMonth(dwMonth AS DWORD) AS STRING
 	LOCAL result AS STRING
-	IF dwMonth < 1 .or. dwMonth > 12
+	IF dwMonth < 1 .OR. dwMonth > 12
 		result := ""
 	ELSEIF RuntimeState.International == CollationMode.Clipper
 		result := __CavoStr(VOErrors.RT_MSG_MONTH1 + dwMonth -1)
-	else
-		var culture := System.Globalization.CultureInfo.CurrentCulture 
+	ELSE
+		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
 		result := culture:DateTimeFormat:GetMonthName((INT)dwMonth)   
 	ENDIF
 	RETURN result
@@ -117,32 +117,32 @@ FUNCTION NToCMonth(dwMonth AS DWORD) AS STRING
 /// <returns>The number of seconds from midnight to the time specified.  The return value cannot be greater than 86,400, the number of seconds in a day.
 /// </returns>
 FUNCTION Secs(cTime AS STRING) AS DWORD
-	local cSeparator as string
-	local nHours as int
-	local nMinutes as int
-	local nSeconds as int
-	local nExpectedLength as int
-	local result as dword
-	if String.IsNullOrEmpty(cTime)
-		return 0
-	endif
+	LOCAL cSeparator AS STRING
+	LOCAL nHours AS INT
+	LOCAL nMinutes AS INT
+	LOCAL nSeconds AS INT
+	LOCAL nExpectedLength AS INT
+	LOCAL result AS DWORD
+	IF String.IsNullOrEmpty(cTime)
+		RETURN 0
+	ENDIF
 	cSeparator := chr(GetTimeSep())
 	nExpectedLength := 6 + 2 * cSeparator:Length
-	if cTime:Length >= nExpectedLength
-		local nOffSet := 0 as int
-		try
+	IF cTime:Length >= nExpectedLength
+		LOCAL nOffSet := 0 AS INT
+		TRY
 			nHours   := Int32.Parse(cTime:Substring(nOffSet,2))
 			nOffSet += cSeparator:Length +2
 			nMinutes := Int32.Parse(cTime:Substring(nOffSet,2))
 			nOffSet += cSeparator:Length +2
 			nSeconds := Int32.Parse(cTime:Substring(nOffSet,2))
 			result := (DWORD) nHours * 3600 + nMinutes * 60 + nSeconds
-		catch 
+		CATCH 
 			result := 0
-		end try
-	else
+		END TRY
+	ELSE
 		result := 0
-	endif
+	ENDIF
 	RETURN result
 
 
@@ -158,9 +158,9 @@ FUNCTION Days(nSeconds AS REAL8) AS INT
 /// Return the number of seconds that have elapsed since midnight.
 /// </summary>
 /// <returns>The number of seconds that have elapsed since midnight in the form seconds.hundredths.  Numbers range from 0 to 86,399.</returns>
-FUNCTION Seconds() AS Real8
-	var dt := DateTime.Now
-	return dt:Hour * 3600 + dt:Minute * 60 + dt:Second + Math.Round( (real8) dt:Millisecond/1000,2)
+FUNCTION Seconds() AS REAL8
+	VAR dt := DateTime.Now
+	RETURN dt:Hour * 3600 + dt:Minute * 60 + dt:Second + Math.Round( (REAL8) dt:Millisecond/1000,2)
 
 
 
@@ -169,8 +169,8 @@ FUNCTION Seconds() AS Real8
 /// </summary>
 /// <returns>
 /// </returns>
-function Time() as string
-   var d := DateTime.Now 
+FUNCTION Time() AS STRING
+   VAR d := DateTime.Now 
    RETURN _TimeString(d)
 
 /// <summary>
@@ -178,41 +178,41 @@ function Time() as string
 /// </summary>
 /// <returns>
 /// </returns>
-function Time24() as string
+FUNCTION Time24() AS STRING
    LOCAL d := DateTime.Now AS DateTime
    RETURN _TimeString((DWORD) d:Hour,(DWORD) d:Minute,(DWORD) d:Second,FALSE,"","")
 
 
 
-function TString(fSeconds as Real8) as string
+FUNCTION TString(fSeconds AS REAL8) AS STRING
    RETURN TString( (DWORD) Math.Round( fSeconds, MidpointRounding.ToEven ) )   
 
-function TString(dwSeconds as DWORD) as string
-   local dwHours as dword
-   local dwMinutes as dword
+FUNCTION TString(dwSeconds AS DWORD) AS STRING
+   LOCAL dwHours AS DWORD
+   LOCAL dwMinutes AS DWORD
    // truncate to one day
    dwSeconds := dwSeconds % (24 * 60 * 60)
    dwHours   := dwSeconds / (60 * 60)
    dwSeconds := dwSeconds % (60 * 60)
    dwMinutes := dwSeconds / 60 
    dwSeconds := dwSeconds % 60 
-   return _TimeString(dwHours, dwMinutes, dwSeconds, GetAmPm(), GetAMExt(), GetPMExt())
+   RETURN _TimeString(dwHours, dwMinutes, dwSeconds, GetAmPm(), GetAMExt(), GetPMExt())
 
 
-internal FUNCTION _TimeString( d AS DateTime ) AS STRING	
+INTERNAL FUNCTION _TimeString( d AS DateTime ) AS STRING	
    RETURN _TimeString( (DWORD) d:Hour, (DWORD) d:Minute, (DWORD) d:Second, SetAMPM(), GetAMExt(), GetPMExt() )
 
 
-internal FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGIC, cAM AS STRING, cPM AS STRING ) AS STRING	
+INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGIC, cAM AS STRING, cPM AS STRING ) AS STRING	
    LOCAL cTimeSep   AS STRING
    LOCAL lAfternoon AS LOGIC
    // no exceptions, vo simply returns an empty string
    IF h < 0 || h > 23
-      return ""
+      RETURN ""
    ELSEIF m < 0 || m > 59
-      return ""
+      RETURN ""
    ELSEIF s < 0 || s > 59
-      return ""
+      RETURN ""
    ENDIF
    
    IF s == 60

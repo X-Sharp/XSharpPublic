@@ -6,7 +6,7 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-using XUnit
+USING XUnit
 
 
 BEGIN NAMESPACE XSharp.Core.Tests
@@ -14,11 +14,11 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	CLASS FileIOTests
 
 		[Fact, Trait("Category", "File IO")]; 
-		method FileTest() as void
-			local hFile as IntPtr
-			local sText as string 
-			local sToWrite as string
-			local sFile as string
+		METHOD FileTest() AS VOID
+			LOCAL hFile AS IntPtr
+			LOCAL sText AS STRING 
+			LOCAL sToWrite AS STRING
+			LOCAL sFile AS STRING
 			sFile	 := "FileIo.txt"
 			sToWrite := "This is a line of text"
 			hFile := FCreate2(sFile,FC_NORMAL)

@@ -733,7 +733,7 @@ internal static class XHelperMethods
             // If we fail to get it we can exit now.
             if (null == outputWindow)
             {
-                Trace.WriteLine("Failed to get a reference to IVsOutputWindow");
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to get a reference to IVsOutputWindow");
                 return;
             }
             // Now get the window pane for the general output.
@@ -743,14 +743,14 @@ internal static class XHelperMethods
             {
                 if (Microsoft.VisualStudio.ErrorHandler.Failed(outputWindow.CreatePane(ref guidGeneral, tabName, 1, 0)))
                 {
-                    Trace.WriteLine("Failed to get a reference to the Output window General pane");
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to get a reference to the Output window General pane");
                     return;
                 }
                 outputWindow.GetPane(ref guidGeneral, out windowPane);
             }
             if (Microsoft.VisualStudio.ErrorHandler.Failed(windowPane.OutputString(outputText)))
             {
-                Trace.WriteLine("Failed to write on the Output window");
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to write on the Output window");
             }
             //
         }

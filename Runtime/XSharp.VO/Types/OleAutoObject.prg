@@ -157,7 +157,7 @@ CLASS XSharp.OleAutoObject
 			
 	#endregion
 		
-	#region	Internal Properties
+	#region	INTERNAL Properties
 			
 	// Access to OBJECT inside AutoObject
 	ACCESS __ComObject AS OBJECT
@@ -165,7 +165,7 @@ CLASS XSharp.OleAutoObject
 			
 	#endregion
 		
-	#region Static Methods
+	#region STATIC Methods
 	STATIC METHOD OleCreateObject(cProgId AS STRING) AS OBJECT
 		LOCAL oComObject := NULL AS OBJECT
 		LOCAL objecttype AS System.Type
@@ -174,7 +174,7 @@ CLASS XSharp.OleAutoObject
 			IF objecttype != NULL
 				oComObject        := System.Activator.CreateInstance (objecttype)
 			ENDIF
-		CATCH as Exception
+		CATCH AS Exception
 			// We catch the exception but do not process it
 		END TRY
 		RETURN oComObject
@@ -220,7 +220,7 @@ CLASS XSharp.OleAutoObject
 	STATIC METHOD  OleUnWrapObject(oObject AS OBJECT) AS OBJECT
 		LOCAL oAuto AS OleAutoObject
 		IF oObject != NULL
-			IF oObject is OleAutoObject
+			IF oObject IS OleAutoObject
 				oAuto := (OleAutoObject) oObject
 				oObject := oAuto:__ComObject
 			ENDIF
@@ -318,7 +318,7 @@ STATIC METHOD  __OleIVarPut(oComObject AS OBJECT, oType AS System.Type, cName AS
 	cMethod := __ENTITY__
 				
 	IF oComObject == NULL
-		THROW Error.NullArgumentError( cMethod, nameof(oComObject), 1 )
+		THROW Error.NullArgumentError( cMethod, NAMEOF(oComObject), 1 )
 	ENDIF
 				
 	// Get the inner OBJECT from OleAutoObjects
@@ -373,7 +373,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 	cMethod  := __ENTITY__
 			
 	IF oComObject == NULL
-		THROW Error.NullArgumentError( __ENTITY__, nameof(oComObject), 1 )
+		THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oComObject), 1 )
 	ENDIF
 	t  :=oType
 	oComObject := OleUnWrapObject(oComObject)
@@ -405,7 +405,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 			END TRY
 		ELSE
 			pi := mi:GetParameters()
-			IF pi:Length == 1 .and. mi:IsDefined( TYPEOF( XSharp.Internal.ClipperCallingConventionAttribute ), FALSE )
+			IF pi:Length == 1 .AND. mi:IsDefined( TYPEOF( XSharp.Internal.ClipperCallingConventionAttribute ), FALSE )
 				retval := mi:Invoke(oComObject, <OBJECT>{args})
 			ELSEIF pi:Length == 0
 				retval := mi:Invoke(oComObject, NULL )
@@ -432,7 +432,7 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 						pArg     := (USUAL) oArg
 						oArgs[x] := pArg[1]
 								
-					ELSEIF oArg is NamedArg
+					ELSEIF oArg IS NamedArg
 						// Named Argument ?   
 						nLastUnNamed:= Math.Min( x - 1, nLastUnNamed )
 						VAR oNamedArg   := (NamedArg) oArg

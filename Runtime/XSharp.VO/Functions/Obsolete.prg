@@ -583,7 +583,7 @@ FUNCTION _AsPsz(u AS USUAL) AS PSZ
 	RETURN NULL_PSZ
 
 [Obsolete] ;
-function AsPsz(u as __Usual) as Psz
+FUNCTION AsPsz(u AS __Usual) AS PSZ
 	RETURN NULL_PSZ
 
 [Obsolete] ;
@@ -591,11 +591,11 @@ FUNCTION ErrorCount(dw AS USUAL) AS DWORD
 	RETURN 0  
 
 [Obsolete] ;
-function ErrorFunc(ptrFunc as Usual) as Usual
-	return NIL   
+FUNCTION ErrorFunc(ptrFunc AS USUAL) AS USUAL
+	RETURN NIL   
 
 [Obsolete] ;
-function ErrorMessageBox(pszText as Psz,pszCapt as Psz,dwB1 as dword,dwB2 as dword,dwB3 as dword) as dword
+FUNCTION ErrorMessageBox(pszText AS PSZ,pszCapt AS PSZ,dwB1 AS DWORD,dwB2 AS DWORD,dwB3 AS DWORD) AS DWORD
 	RETURN 0  
 
 [Obsolete] ;
@@ -619,18 +619,18 @@ FUNCTION _ArrayPutPoly(a AS USUAL,x AS USUAL,n1 AS USUAL) AS USUAL
 	RETURN NIL  
 
 [Obsolete] ;
-function CompString() as int
-	return 0   
+FUNCTION CompString() AS INT
+	RETURN 0   
 
 [Obsolete] ;
-function SBTODB(c as string) as string
+FUNCTION SBTODB(c AS STRING) AS STRING
 	RETURN String.Empty   
 
 [Obsolete];
-function SEvalA(cSource as usual,block as usual,nStart as usual,nCount as usual) as string
+FUNCTION SEvalA(cSource AS USUAL,block AS USUAL,nStart AS USUAL,nCount AS USUAL) AS STRING
 	RETURN cSource
 
-[ObsoleteAttribute( "'SysObject()' is not supported", true )] ;
+[ObsoleteAttribute( "'SysObject()' is not supported", TRUE )] ;
 FUNCTION SysObject() AS USUAL
    RETURN NIL
 
@@ -658,19 +658,19 @@ RETURN IntPtr.Zero
 
 
 [Obsolete];
-FUNCTION ItemCopyC(pszVal AS Psz,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
+FUNCTION ItemCopyC(pszVal AS PSZ,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
 RETURN 0   
 
 [Obsolete];
-FUNCTION ItemFreeC(pszVal AS Psz) AS LOGIC
+FUNCTION ItemFreeC(pszVal AS PSZ) AS LOGIC
 RETURN FALSE   
 
 [Obsolete];
-FUNCTION ItemGetC(ptrAny AS IntPtr) AS Psz
+FUNCTION ItemGetC(ptrAny AS IntPtr) AS PSZ
 RETURN NULL_PSZ
 
 [Obsolete];
-FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS Psz) AS Psz
+FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS PSZ) AS PSZ
 RETURN NULL_PSZ
 
 [Obsolete];
@@ -690,23 +690,23 @@ FUNCTION ItemGetNL(ptrAny AS IntPtr) AS LONG
 RETURN 0   
 
 [Obsolete];
-FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS Psz
+FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
 RETURN NULL_PSZ
 
 [Obsolete];
-FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS Psz) AS IntPtr
+FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS PSZ) AS IntPtr
 RETURN IntPtr.Zero
 
 [Obsolete];
-FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS Psz,uilen AS DWORD) AS IntPtr
+FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS PSZ,uilen AS DWORD) AS IntPtr
 RETURN IntPtr.Zero
 
 [Obsolete];
-FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS Psz) AS IntPtr
+FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS PSZ) AS IntPtr
 RETURN IntPtr.Zero
 
 [Obsolete];
-FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS Psz,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
+FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS PSZ,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
 RETURN IntPtr.Zero
 
 [Obsolete];
@@ -750,8 +750,8 @@ FUNCTION ItemType(ptrAny AS IntPtr) AS DWORD
 RETURN 0   
 
 [Obsolete( "'GetDASPtr()' is not supported and always returns IntPtr.Zero" )] ;
-function GetDASPtr() as IntPtr
-	return IntPtr.Zero   
+FUNCTION GetDASPtr() AS IntPtr
+	RETURN IntPtr.Zero   
 	
 
 

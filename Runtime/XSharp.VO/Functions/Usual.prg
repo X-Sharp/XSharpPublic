@@ -12,8 +12,8 @@
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function Empty(uVal as Usual) as logic
-	return uVal:IsEmpty
+FUNCTION Empty(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsEmpty
 
 
 /// <summary>
@@ -22,37 +22,37 @@ function Empty(uVal as Usual) as logic
 /// <param name="dwType"></param>
 /// <returns>
 /// </returns>
-function EmptyUsual(dwType as dword) as __Usual
-	local result as usual
-	switch dwType
-	case ARRAY
+FUNCTION EmptyUsual(dwType AS DWORD) AS __Usual
+	LOCAL result AS USUAL
+	SWITCH dwType
+	CASE ARRAY
 		result := __Usual{NULL_ARRAY}
-	case byte; case word; case dword; case shortint;  case long; case int64
+	CASE BYTE; CASE WORD; CASE DWORD; CASE SHORTINT;  CASE LONG; CASE INT64
 		result := __Usual{0}
-	case float; case real4; case real8; case (DWORD) UsualType.Decimal
+	CASE FLOAT; CASE REAL4; CASE REAL8; CASE (DWORD) __UsualType.Decimal
 		result := __Usual{0.0}
-	case string
+	CASE STRING
 		result := __Usual{NULL_STRING}
-	case date
+	CASE DATE
 		result := __Usual{(DATE) 0}
-	case (DWORD) UsualType.DateTime
+	CASE (DWORD) __UsualType.DateTime
 		result := __Usual{DateTime.MinValue}
-	case logic
+	CASE LOGIC
 		result := __Usual{FALSE}
-	case Ptr
+	CASE PTR
 		result := __Usual{NULL_PTR}
-	case PSZ
+	CASE PSZ
 		result := __Usual{NULL_PSZ}
-	case symbol
+	CASE SYMBOL
 		result := __Usual{NULL_SYMBOL}
-	case USUAL
+	CASE USUAL
 		result := NIL
-	case CODEBLOCK
-		result := __Usual{null_codeblock}
-	otherwise
-		throw Error.ArgumentError(__ENTITY__, nameof(dwType) , "Unknown type parameter")
-	end switch
-	return result
+	CASE CODEBLOCK
+		result := __Usual{NULL_CODEBLOCK}
+	OTHERWISE
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(dwType) , "Unknown type parameter")
+	END SWITCH
+	RETURN result
 
 /// <summary>
 /// Determine if a value is an Array.
@@ -60,8 +60,8 @@ function EmptyUsual(dwType as dword) as __Usual
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsArray(uVal as __Usual) as logic
-	return uVal:IsArray
+FUNCTION IsArray(uVal AS __Usual) AS LOGIC
+	RETURN uVal:IsArray
 
 /// <summary>
 /// Determine if a value is passed by reference
@@ -69,8 +69,8 @@ function IsArray(uVal as __Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsByRef(uVal as Usual) as logic
-	return uVal:IsByRef
+FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsByRef
 
 
 /// <summary>
@@ -79,8 +79,8 @@ function IsByRef(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsCodeBlock(uVal as Usual) as logic
-	return uVal:IsCodeBlock
+FUNCTION IsCodeBlock(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsCodeBlock
 
 /// <summary>
 /// Determine if a value is a Date.
@@ -88,8 +88,8 @@ function IsCodeBlock(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsDate(uVal as Usual) as logic
-	return uVal:IsDate
+FUNCTION IsDate(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsDate
 
 
 /// <summary>
@@ -98,8 +98,8 @@ function IsDate(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsDateTime(uVal as Usual) as logic
-	return uVal:IsDateTime
+FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsDateTime
 
 /// <summary>
 /// Determine if a value is a DateTime.
@@ -107,8 +107,8 @@ function IsDateTime(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsDecimal(uVal as Usual) as logic
-	return uVal:IsDecimal
+FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsDecimal
 
 
 /// <summary>
@@ -117,8 +117,8 @@ function IsDecimal(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns> 
 /// </returns>
-function IsFloat(uVal as Usual) as logic
-	return uVal:IsFloat
+FUNCTION IsFloat(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsFloat
 
 /// <summary>
 /// Determine if a value is a logical.
@@ -126,8 +126,8 @@ function IsFloat(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsLogic(uVal as Usual) as logic
-	return uVal:IsLogic
+FUNCTION IsLogic(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsLogic
 
 /// <summary>
 /// Determine if a value is a LONGINT.
@@ -135,8 +135,8 @@ function IsLogic(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsLong(uVal as Usual) as logic
-	return uVal:IsLong
+FUNCTION IsLong(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsLong
 
 /// <summary>
 /// Determine if a value is __Usual._NIL.
@@ -144,8 +144,8 @@ function IsLong(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsNil(uVal as Usual) as logic
-	return uVal:IsNil
+FUNCTION IsNil(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsNil
 
 /// <summary>
 /// Determine if a value is a numeric.
@@ -153,8 +153,8 @@ function IsNil(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsNumeric(uVal as Usual) as logic
-	return uVal:IsNumeric
+FUNCTION IsNumeric(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsNumeric
 
 /// <summary>
 /// Determine if a value is an object.
@@ -162,8 +162,8 @@ function IsNumeric(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsObject(uVal as Usual) as logic
-	return uVal:IsObject
+FUNCTION IsObject(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsObject
 
 
 /// <summary>
@@ -172,8 +172,8 @@ function IsObject(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsPtr(uVal as Usual) as logic
-	return uVal:IsPtr
+FUNCTION IsPtr(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsPtr
 
 /// <summary>
 /// Determine if a value is a string.
@@ -181,8 +181,8 @@ function IsPtr(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsString(uVal as Usual) as logic
-	return uVal:IsString
+FUNCTION IsString(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsString
 
 /// <summary>
 /// Determine if a value is a Symbol.
@@ -190,8 +190,8 @@ function IsString(uVal as Usual) as logic
 /// <param name="uVal"></param>
 /// <returns>
 /// </returns>
-function IsSymbol(uVal as Usual) as logic
-	return uVal:IsSymbol
+FUNCTION IsSymbol(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsSymbol
 
 
 
@@ -202,14 +202,14 @@ function IsSymbol(uVal as Usual) as logic
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function Len(u as Usual) as dword
-	if u:IsArray
-		return (DWORD) ((array) u):Length
-	elseif u:IsString
-		return (dword) ((string) u):Length
-	else
-		throw Error.DataTypeError(__ENTITY__, u, 1, u)
-	endif
+FUNCTION Len(u AS USUAL) AS DWORD
+	IF u:IsArray
+		RETURN (DWORD) ((ARRAY) u):Length
+	ELSEIF u:IsString
+		RETURN (DWORD) ((STRING) u):Length
+	ELSE
+		THROW Error.DataTypeError(__ENTITY__, u, 1, u)
+	ENDIF
 
 
 
@@ -223,11 +223,11 @@ function Len(u as Usual) as dword
 /// <param name="uDefaultValue"></param>
 /// <returns>
 /// </returns>
-function Default(uVar REF Usual, uDefaultValue as Usual) as void
-	if uVar:IsNil
+FUNCTION DEFAULT(uVar REF USUAL, uDefaultValue AS USUAL) AS VOID
+	IF uVar:IsNil
 		uVar := uDefaultValue
-	endif
-	return  
+	ENDIF
+	RETURN  
 
 
 /// <summary>
@@ -236,13 +236,13 @@ function Default(uVar REF Usual, uDefaultValue as Usual) as void
 /// <param name="refu"></param>
 /// <returns> 
 /// </returns>
-function EnforceNumeric(u REF Usual) as void
-	if u:IsNil
+FUNCTION EnforceNumeric(u REF USUAL) AS VOID
+	IF u:IsNil
 		u := 0
-	elseif ! u:IsNumeric
-		throw Error.DataTypeError(__ENTITY__, u, 1, u)
-	endif
-	return  
+	ELSEIF ! u:IsNumeric
+		THROW Error.DataTypeError(__ENTITY__, u, 1, u)
+	ENDIF
+	RETURN  
 
 /// <summary>
 /// Make sure a variable is of a certain type.
@@ -251,10 +251,10 @@ function EnforceNumeric(u REF Usual) as void
 /// <param name="nType"></param>
 /// <returns>
 /// </returns>
-function EnforceType(u REF Usual, dwType as DWORD) as void
-	if u:IsNil
+FUNCTION EnforceType(u REF USUAL, dwType AS DWORD) AS VOID
+	IF u:IsNil
 		u := EmptyUsual(dwType)
-	elseif UsualType(u) != dwType
-		throw Error.DataTypeError(__ENTITY__, u, 1, u, dwType)
-	endif
-	return  
+	ELSEIF UsualType(u) != dwType
+		THROW Error.DataTypeError(__ENTITY__, u, 1, u, dwType)
+	ENDIF
+	RETURN  

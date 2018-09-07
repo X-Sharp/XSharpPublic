@@ -10,8 +10,8 @@
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION AbsFloat(f AS Float) AS Float
-	RETURN Float{Math.Abs(f:Value)}
+FUNCTION AbsFloat(f AS FLOAT) AS FLOAT
+	RETURN FLOAT{Math.Abs(f:Value)}
 
 
 /// <summary>
@@ -20,15 +20,15 @@ FUNCTION AbsFloat(f AS Float) AS Float
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-FUNCTION Fact(n AS DWORD) AS Float
-	local result := 1 as double
-	if  n > 0
-		local i as dword
-		for i := 1 upto n
+FUNCTION Fact(n AS DWORD) AS FLOAT
+	LOCAL result := 1 AS double
+	IF  n > 0
+		LOCAL i AS DWORD
+		FOR i := 1 UPTO n
 			result := result * i
-		next
-	endif
-RETURN Float{result}
+		NEXT
+	ENDIF
+RETURN FLOAT{result}
 
 
 /// <summary>
@@ -36,7 +36,7 @@ RETURN Float{result}
 /// <param name="o"></param>
 /// <returns>
 /// </returns>
-function FClone(o as float) as Float
+FUNCTION FClone(o AS FLOAT) AS FLOAT
 	// no need to clone. Value type
 	RETURN o
 
@@ -50,26 +50,26 @@ function FClone(o as float) as Float
 /// <param name="nDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION FloatFormat(f AS Float,nLen AS INT,nDec AS INT) AS Float
-	if nDec < 0
+FUNCTION FloatFormat(f AS FLOAT,nLen AS INT,nDec AS INT) AS FLOAT
+	IF nDec < 0
 		nDec := f:Decimals
-	endif
-	if nLen < 0
+	ENDIF
+	IF nLen < 0
 		// determine length by creating new float and converting it to string
 		// not very efficient but this is what VO does
-		local nDigits as int
+		LOCAL nDigits AS INT
 		nDigits := f:Digits
-		if nDigits < 0
-			nDigits := (short) RuntimeState.Digits
-		endif
-		local fTemp as float
-		fTemp := float{f:value, nDigits, nDec}
-		var cTemp := Ntrim(fTemp)
+		IF nDigits < 0 
+			nDigits := (SHORT) RuntimeState.Digits
+		ENDIF
+		LOCAL fTemp AS FLOAT
+		fTemp := FLOAT{f:value, nDigits, nDec}
+		VAR cTemp := Ntrim(fTemp)
 		nLen := cTemp:Length
-	elseif nDec != 0 .and. nLen != 0 .and. nLen < nDec +2
+	ELSEIF nDec != 0 .AND. nLen != 0 .AND. nLen < nDec +2
 		nLen := nDec + 2
-	endif
-	RETURN Float{f:Value, nLen, nDec}  
+	ENDIF
+	RETURN FLOAT{f:Value, nLen, nDec}  
 
 
 /// <summary>
@@ -78,8 +78,8 @@ FUNCTION FloatFormat(f AS Float,nLen AS INT,nDec AS INT) AS Float
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-FUNCTION Frac(f AS Float) AS Float
-	return f - Integer(f)
+FUNCTION Frac(f AS FLOAT) AS FLOAT
+	RETURN f - Integer(f)
 
 
 
@@ -89,8 +89,8 @@ FUNCTION Frac(f AS Float) AS Float
 /// <param name="wDec"></param>
 /// <returns>
 /// </returns>
-FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS Float
-	RETURN Float{xd, wDec}
+FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS FLOAT
+	RETURN FLOAT{xd, wDec}
 
 
 /// <summary>
@@ -99,18 +99,18 @@ FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS Float
 /// <param name="fDelta"></param>
 /// <returns>
 /// </returns>
-FUNCTION SetFloatDelta(fDelta AS Real8) AS Real8
-	var result := RuntimeState.FloatDelta
+FUNCTION SetFloatDelta(fDelta AS REAL8) AS REAL8
+	VAR result := RuntimeState.FloatDelta
 	RuntimeState.FloatDelta := fDelta
-	return result
+	RETURN result
 
 /// <summary>
 /// Return the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION SetFloatDelta() AS Real8
-	return RuntimeState.FloatDelta
+FUNCTION SetFloatDelta() AS REAL8
+	RETURN RuntimeState.FloatDelta
 
 
 

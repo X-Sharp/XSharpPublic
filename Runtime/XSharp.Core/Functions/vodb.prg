@@ -13,89 +13,6 @@ USING System.Reflection
 USING System.Linq
 USING System.Text
 
-/// <summary>
-/// Return the full path of the file
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION DBF() AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("DBF") AS IRDD
-    IF oRDD != NULL
-        RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
-    ENDIF                            
-    RETURN String.Empty
-    
-    /// <summary>
-    /// Return the number of fields in the current database file.
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION FCount() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("FCount") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:FieldCount
-    ENDIF
-    RETURN 0
-    
-    
-    /// <summary>
-    /// Return the name of a field as a string.
-    /// </summary>
-    /// <param name="dwFieldPos"></param>
-    /// <returns>
-    /// </returns>
-FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("FieldName") AS IRDD
-    IF (oRDD != NULL)
-        RETURN oRDD:FieldName((INT) dwFieldPos)
-    ENDIF
-    RETURN String.Empty   
-    
-    
-    
-    /// <summary>
-    /// Return the position of a field.
-    /// </summary>
-    /// <param name="sFieldName"></param>
-    /// <returns>
-    /// </returns>
-FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("FieldPos") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:FieldIndex(sFieldName) 
-    ENDIF
-    RETURN 0   
-    
-    
-/// <summary>
-/// Return the number of records
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION RecCount() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("RecCount") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:RecCount
-    ENDIF
-    RETURN 0   
-
-FUNCTION RecSize AS LONG
-    LOCAL nSize := NULL AS OBJECT
-    VODbInfo(DBInfo.DBI_GETRECSIZE, REF nSize)
-    RETURN (LONG) nSize
-
-/// <summary>
-/// Return the number of records
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION LastRec() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("LastRec") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:RecCount
-    ENDIF
-    RETURN 0   
-      
     
     /// <summary>
     /// Return the alias of a specified work area as a string.
@@ -104,9 +21,7 @@ FUNCTION LastRec() AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBAlias(nArea AS DWORD) AS STRING
-    LOCAL was AS WorkAreas
-    was := WorkAreas.GetInstance()
-    RETURN was:GetAlias(nArea)
+    RETURN RuntimeState.Workareas:GetAlias(nArea)
     
     /// <summary>
     /// Add a new record.
@@ -214,9 +129,7 @@ FUNCTION VODBClearScope() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBCloseAll() AS LOGIC
-    LOCAL oWAS AS WorkAreas
-    oWAS := WorkAreas.GetInstance()
-    RETURN oWAS:CloseAll()
+    RETURN RuntimeState.Workareas:CloseAll()
     
     /// <summary>
     /// Close all files in a work area.
@@ -248,9 +161,7 @@ FUNCTION VODBCommit() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBCommitAll() AS LOGIC
-    LOCAL oWAS AS WorkAreas
-    oWAS := WorkAreas.GetInstance()
-    RETURN oWAS:CommitAll()
+    RETURN RuntimeState.Workareas:CommitAll()
     
     /// <summary>
     /// Resume a pending locate condition.
@@ -341,7 +252,6 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
     LOCAL uiOldArea := 0 AS DWORD
     LOCAL uiNewArea := 0 AS DWORD
     LOCAL ret   := FALSE   AS LOGIC
-    LOCAL oWa      := Workareas.GetInstance() AS Workareas
     TRY
         RuntimeState.LastRddError := NULL
         IF String.IsNullOrEmpty( cName )
@@ -354,13 +264,13 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
             ret := TRUE   
         ENDIF
         IF lNew
-             uiNewArea := oWa:FindEmptyArea(TRUE)
+             uiNewArea := RuntimeState.Workareas:FindEmptyArea(TRUE)
         ELSE
             // VO Closes the current workarea
-            uiNewArea := oWA:CurrentWorkAreaNO
-            oWa:CloseArea(uiNewArea)
+            uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
+            RuntimeState.Workareas:CloseArea(uiNewArea)
         ENDIF
-        oWa:CurrentWorkAreaNO := uiNewArea
+        RuntimeState.Workareas:CurrentWorkAreaNO := uiNewArea
         IF ret && String.IsNullOrEmpty( cAlias ) && ! ( ret := _VoDbAliasFromFilename( cName, cAlias ) )
             PostArgumentError( "VODBCreate", EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF   
@@ -377,7 +287,7 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
             PostArgumentError( "VODBCreate", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
             ret := FALSE
         ELSE
-            ret := oWa:SetArea(uiNewArea, oRDD)
+            ret := RuntimeState.Workareas:SetArea(uiNewArea, oRDD)
             IF ! String.IsNullOrEmpty( cDelim )
                 oRDD:Info( DBI_SETDELIMITER, cDelim ) 
             ENDIF
@@ -395,9 +305,9 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
                 dboi:Shared    := FALSE
                 dboi:ReadOnly  := FALSE
                 dboi:Alias     := cAlias
-                dboi:WorkArea  := oWa:FindEmptyArea(TRUE)
+                dboi:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
                 oRDD:Alias := cAlias
-                ret := oWa:SetArea(uiNewArea, oRdd)
+                ret := RuntimeState.Workareas:SetArea(uiNewArea, oRdd)
                 IF lJustOpen
                     ret := oRdd:Open( dboi )
                 ELSE
@@ -405,9 +315,9 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
                 ENDIF
             ENDIF
             IF ret .AND. ! lKeep
-                oWa:CloseArea(uiNewArea)
+                RuntimeState.Workareas:CloseArea(uiNewArea)
                 IF uiOldArea != 0
-                    oWa:CurrentWorkAreaNO := uiOldArea
+                    RuntimeState.Workareas:CurrentWorkAreaNO := uiOldArea
                 ENDIF
             ENDIF
         ENDIF
@@ -913,10 +823,9 @@ FUNCTION VODBRddList() AS STRING[]
     LOCAL aList AS List<STRING>
     
     aList := List<STRING>{}
-    LOCAL oWAs := Workareas.GetInstance() AS Workareas
     LOCAL i AS DWORD
     FOR i := 1 TO WorkAreas.MaxWorkAreas
-        VAR oRDD := oWAs.GetRDD(i)
+        VAR oRDD := RuntimeState.Workareas.GetRDD(i)
         IF oRDD != NULL
             LOCAL cName AS STRING
             cName := oRDD:SysName
@@ -970,7 +879,7 @@ FUNCTION VODBRecall() AS LOGIC
 FUNCTION VODBRecno() AS OBJECT
     LOCAL oRDD := RDDHelpers.CWA("VODBRecno") AS IRDD
     IF oRDD != NULL                     
-        RETURN oRDD:RecId
+        RETURN oRDD:Recno
     ENDIF                            
     RETURN NULL
     
@@ -1079,16 +988,15 @@ FUNCTION VODBSeek(oValue AS OBJECT,lSoftSeek AS LOGIC) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
-    LOCAL owa := WorkAreas.GetInstance() AS WorkAreas
-    nOld := (DWORD) owa:CurrentWorkAreaNO
+    nOld := (DWORD) RuntimeState.Workareas:CurrentWorkAreaNO
     IF nNew != nOld
         IF nNew == 0
-            nNew := (DWORD) owa:FindEmptyArea(TRUE)
+            nNew := (DWORD) RuntimeState.Workareas:FindEmptyArea(TRUE)
         ENDIF
         IF nNew > WorkAreas.MaxWorkareas
             PostArgumentError( "VODBSelect", EDB_SELECT, "nNew", 1, <OBJECT>{ nNew } )
         ELSE
-            owa:CurrentWorkAreaNO :=  nNew
+            RuntimeState.Workareas:CurrentWorkAreaNO :=  nNew
         ENDIF
     ENDIF          
     RETURN TRUE
@@ -1167,8 +1075,18 @@ FUNCTION VODBSetScope(scope AS DBSCOPEINFO) AS LOGIC
     /// <param name="siNew"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBSetSelect(siNew AS INT) AS INT
-    THROW  NotImplementedException{}
+FUNCTION VODBSetSelect(siNew AS INT) AS DWORD
+    IF siNew == -1
+        siNew := (INT) RuntimeState.Workareas:FindEmptyArea(FALSE)
+    ELSEIF siNEw == 0
+        siNew := (INT) RuntimeState.Workareas:FindEmptyArea(TRUE)
+    ENDIF
+    IF siNew == 0 || siNew > Workareas.MaxWorkAreas
+      PostArgumentError( "VODBSetSelect", EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
+    ELSE      
+      RuntimeState.CurrentWorkarea := (DWORD) siNew   
+    ENDIF
+    RETURN (DWORD) siNew
     
     /// <summary>
     /// Move the record pointer relative to the current record.
@@ -1297,7 +1215,6 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS S
 FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
     LOCAL ret   := FALSE AS LOGIC
     LOCAL area  := 0    AS DWORD
-    LOCAL wa   := Workareas.GetInstance() AS WorkAreas
     IF String.IsNullOrEmpty( cName )
         PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
     ELSE
@@ -1314,17 +1231,17 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
             END TRY   
         ENDIF
         IF lNew
-            area := wa:FindEmptyArea(TRUE)
+            area := RuntimeState.Workareas:FindEmptyArea(TRUE)
             IF area > Workareas.MaxWorkareas  .OR. area == 0
                 ret := FALSE
             ELSE
-                wa:CurrentWorkAreaNO := area
+                RuntimeState.Workareas:CurrentWorkAreaNO := area
             ENDIF
         ELSE
-            area := wa:CurrentWorkAreaNO
+            area := RuntimeState.Workareas:CurrentWorkAreaNO
         ENDIF   
         IF ret
-            wa:CloseArea(area)
+            RuntimeState.Workareas:CloseArea(area)
             LOCAL rdd :=_VoDbCreateRDDInstance( rddType, cAlias ) AS IRDD
             
             IF rdd == NULL
@@ -1336,7 +1253,7 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
             ELSE
                 LOCAL dboi := DBOPENINFO{} AS DBOPENINFO
                 LOCAL uiArea AS DWORD
-                uiArea := wa:CurrentWorkAreaNO
+                uiArea := RuntimeState.Workareas:CurrentWorkAreaNO
                 dboi:FileName     := Path.ChangeExtension( cName, NULL )
                 dboi:Extension    := Path.GetExtension( cName )
                 dboi:Shared      := lShare
@@ -1344,14 +1261,14 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
                 dboi:Alias       := cAlias
                 dboi:WorkArea    := uiArea
                 rdd:Alias        := cAlias
-                ret := wa:SetArea(uiArea, rdd)
+                ret := RuntimeState.Workareas:SetArea(uiArea, rdd)
                 IF (ret)
                     ret := rdd:Open( dboi ) 
                 ENDIF
                 IF ! ret
-                    wa:CloseArea(uiArea)
+                    RuntimeState.Workareas:CloseArea(uiArea)
                 ENDIF
-                wa:CurrentWorkAreaNO := uiArea
+                RuntimeState.Workareas:CurrentWorkAreaNO := uiArea
             ENDIF   
         ENDIF
     ENDIF
@@ -1424,7 +1341,7 @@ INTERNAL FUNCTION _VoDbAliasFromFilename( cFilename AS STRING, cAlias REF STRING
 
 // Check if Alias is used for current thread
 INTERNAL FUNCTION _VoDbIsAliasUnused( cAlias AS STRING ) AS LOGIC
-    RETURN Workareas.GetInstance():FindAlias(cAlias) == 0
+    RETURN RuntimeState.Workareas:FindAlias(cAlias) == 0
     
 // Create RDD Object from RDD Type
 INTERNAL FUNCTION _VoDbCreateRDDInstance( rddType AS Type , cAlias AS STRING) AS IRDD

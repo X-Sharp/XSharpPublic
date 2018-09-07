@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Called from CreateMemFile : The Header has been filled with 0, so the BlockSize is 0
             // Called from OpenMemFile : The Header contains the Size of Block to use
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
-            SELF:_lockScheme:Initialize( DBF.DbfLockingModel.FoxPro )
+            SELF:_lockScheme:Initialize( DbfLockingModel.FoxPro )
             IF ( SELF:BlockSize == 0 )
                 //SELF:BlockSize := FPT_DEFBLOCKSIZE
                 SELF:BlockSize := (SHORT) XSharp.RuntimeState.MemoBlockSize
@@ -189,7 +189,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:OpenMemFile( info )
             
             
-        Virtual PROPERTY BlockSize 	 AS SHORT
+        VIRTUAL PROPERTY BlockSize 	 AS SHORT
             GET 
                 LOCAL nSize := 0 AS SHORT
                 LOCAL isOk AS LOGIC

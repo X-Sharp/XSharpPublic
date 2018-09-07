@@ -1,48 +1,10 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
  
 USING XSharp.RDD
-#ifdef COMPILEIT
-/// <summary>
-/// Get the contents of a field that is identified by its work area and a Symbol.
-/// </summary>
-/// <param name="dwArea"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
-FUNCTION FieldGetArea(dwArea AS DWORD,symField AS SYMBOL) AS USUAL
-	THROW NotImplementedException{}
-RETURN NIL   
-
-
-/// <summary>
-/// Set the value of a field identified by its work area number and field name.
-/// </summary>
-/// <param name="dwArea"></param>
-/// <param name="symField"></param>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
-FUNCTION FieldPutArea(dwArea AS DWORD,symField AS SYMBOL,u AS USUAL) AS USUAL
-	THROW NotImplementedException{}
-RETURN NIL   
-
-
-
-/// <summary>
-/// Return the name of a field as a Symbol.
-/// </summary>
-/// <param name="dwPos"></param>
-/// <returns>
-/// </returns>
-FUNCTION FieldSym(dwPos AS DWORD) AS SYMBOL
-	THROW  NotImplementedException{}
-RETURN NULL_SYMBOL   
-
-
 
 
 
@@ -219,7 +181,7 @@ RETURN FALSE
 /// <param name="pszOrder"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,pszOrder AS USUAL) AS LOGIC
+FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder REF STRING) AS LOGIC
 	THROW  NotImplementedException{}
 RETURN FALSE   
 
@@ -354,12 +316,20 @@ RETURN FALSE
 /// <summary>
 /// Select a new work area by specifying its alias as a symbol and return the number of the current work area.
 /// </summary>
-/// <param name="sAlias"></param>
+/// <param name="symAlias"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBSymSelect(sAlias AS SYMBOL) AS INT
-	THROW  NotImplementedException{}
-RETURN 0   
+FUNCTION VODBSymSelect(symAlias AS SYMBOL) AS INT
+   LOCAL ret AS DWORD
+   IF symAlias == NULL_SYMBOL
+      ret := RuntimeState.CurrentWorkarea
+   ELSE
+      ret := RuntimeState.Workareas:FindAlias( AsString(symAlias) )
+      IF ret != 0
+         VODBSetSelect( (INT) ret )
+      ENDIF
+   ENDIF
+   RETURN (INT) ret
 
 /// <summary>
 /// </summary>
@@ -387,4 +357,3 @@ FUNCTION VODBUnlock(uRecno AS USUAL) AS LOGIC
 	THROW  NotImplementedException{}
 RETURN FALSE   
 
-#endif

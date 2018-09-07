@@ -599,7 +599,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DBI_LASTUPDATE
 		oResult := DateTime.MinValue 
 	CASE DBI_GETLOCKARRAY
-		oResult := <LONG>{}
+		oResult := <DWORD>{}
 	CASE DBI_BOF           
 		oResult := SELF:_BOF
 	CASE DBI_EOF           

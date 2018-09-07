@@ -149,6 +149,11 @@ CLASS XSharp.RuntimeState
         SET SetValue<LOGIC>(Set.OPTIONVO13, VALUE)
 
 
+	/// <summary>Gets / Sets the current workarea number for the current thread</summary>
+    STATIC PROPERTY CurrentWorkArea AS DWORD ;
+        GET Workareas:CurrentWorkAreaNO ;
+        SET Workareas:CurrentWorkAreaNO  := VALUE
+
     /// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
@@ -228,10 +233,17 @@ CLASS XSharp.RuntimeState
         GET GetValue<DWORD>(Set.DECIMALS);
         SET SetValue<DWORD>(Set.DECIMALS, VALUE)
 
+
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
     STATIC PROPERTY DecimalSep AS DWORD ;
         GET GetValue<DWORD>(Set.DecimalSep);
         SET SetValue<DWORD>(Set.DecimalSep, VALUE)
+
+	/// <summary>The default RDD</summary>
+    STATIC PROPERTY DefaultRDD AS STRING ;
+        GET GetValue<STRING>(Set.DEFAULTRDD);
+        SET SetValue<STRING>(Set.DEFAULTRDD, VALUE)
+
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
     STATIC PROPERTY Deleted AS LOGIC ;
@@ -485,14 +497,22 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
-	PUBLIC PROPERTY Workareas AS WorkAreas
+	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
 	GET
-		IF _workareas == NULL_OBJECT
-			_workareas := WorkAreas{}
+       LOCAL inst AS RuntimeState
+        inst := GetInstance()
+		IF inst:_workareas == NULL_OBJECT
+			inst:_workareas := WorkAreas{}
 		ENDIF
-		RETURN _workareas
+		RETURN inst:_workareas
 	END GET
-	END PROPERTY
+    END PROPERTY
+    STATIC METHOD PushCurrentWorkarea(dwArea AS DWORD) AS VOID
+        RuntimeState.WorkAreas:PushCurrentWorkArea(dwArea)
+        
+    STATIC METHOD PopCurrentWorkarea() AS DWORD
+        RETURN RuntimeState.WorkAreas:PopCurrentWorkArea()
+
 	PRIVATE _collationTable AS BYTE[]
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET

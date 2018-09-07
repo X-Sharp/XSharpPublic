@@ -128,19 +128,64 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
 /// </returns>
 // _FIELD->Name
 FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
-	RETURN NIL
+   LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
+   LOCAL ret := NULL AS OBJECT
+   IF fieldpos == 0
+      BREAK Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldGet",  fieldName  )
+   ELSE
+      VODBFieldGet( fieldpos, REF ret )
+   ENDIF
+   RETURN ret
+
 
 // CUSTOMER->NAME
 FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
-	RETURN NIL
+   LOCAL ret AS USUAL
+   LOCAL newArea := SELECT( alias ) AS DWORD
+   LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
+   IF newArea > 0
+      RuntimeState.CurrentWorkarea := newArea
+      TRY
+         ret := __FieldGet( fieldName )
+      FINALLY
+         RuntimeState.CurrentWorkarea := curArea
+      END TRY   
+   ELSE
+      BREAK Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldGetWA", alias  )
+   ENDIF
+   RETURN ret
 
 // _FIELD->Name := "Foo"
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
-	RETURN uValue
+   LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
+   IF fieldpos == 0
+      BREAK Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldSet",  fieldName  )
+   ELSE
+      IF !VODBFieldPut( fieldpos, uValue)
+         DoError( #__FieldSet )   
+      ENDIF
+    ENDIF
+    // We return the original value to allow chained expressions
+   RETURN uValue
+
 
 // CUSTOMER->Name := "Foo"
 FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) AS USUAL
-	RETURN uValue
+   LOCAL newArea := SELECT( alias ) AS DWORD
+   LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
+   IF newArea > 0
+      RuntimeState.CurrentWorkarea := newArea
+
+      TRY
+         __FieldSet( fieldName, uValue )
+      FINALLY
+         RuntimeState.CurrentWorkarea := curArea
+      END TRY   
+   ELSE
+      BREAK Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldSetWA", alias  )
+   ENDIF
+   // Note: must return the same value passed in, to allow chained assignment expressions
+   RETURN uValue
 
 
 // MEMVAR myName
@@ -159,7 +204,16 @@ FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
 // __pushWorkarea( alias ) ; DoSomething() ; __popWorkArea()
 
 FUNCTION __pushWorkarea( alias AS USUAL ) AS VOID
-	RETURN 
-
-FUNCTION __popWorkarea() AS VOID
+   LOCAL newArea := SELECT( alias ) AS DWORD
+   IF newArea > 0
+      RuntimeState.PushCurrentWorkarea( newArea )
+   ELSE
+      BREAK Error.VODBError( EG_ARG, EDB_BADALIAS, { alias } )
+   ENDIF
    RETURN
+
+// This is used by the -> operator to restore the previous workarea
+FUNCTION __popWorkarea() AS VOID
+   RuntimeState.PopCurrentWorkarea()
+   RETURN
+   

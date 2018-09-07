@@ -13,13 +13,30 @@ BEGIN NAMESPACE XSharp.RDD.App
         ? "Fields", FCount(), "Records", RecCount(), "RecSize", RecSize()
         LOCAL i AS DWORD
         FOR i := 1 TO FCount()
-            LOCAL oValue AS OBJECT
+            LOCAL oValue := NULL AS OBJECT
             IF VoDbFieldGet(i, REF oValue)
                 ? i, FieldName(i), oValue
             ELSE
                 ? i, FieldName(i), "** Error **"
             ENDIF
         NEXT
+        VoDbSkip(1)
+        FOR i := 1 TO FCount()
+            LOCAL oValue := NULL AS OBJECT
+            IF VoDbFieldGet(i, REF oValue)
+                ? i, FieldName(i), oValue
+            ELSE
+                ? i, FieldName(i), "** Error **"
+            ENDIF
+        NEXT
+        VoDbGoTop()
+        ? "GoTop Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
+        VoDbSkip(-1)
+        ? "After skip -1 Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
+        VoDbGoBottom()
+        ? "GoBottom Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
+        VoDbSkip(1)
+        ? "Skip 1 Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
         VoDbCloseArea()
         Console.Read()
         myTest:OpenDBF()

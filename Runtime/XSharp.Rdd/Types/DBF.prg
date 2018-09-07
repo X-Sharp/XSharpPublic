@@ -106,11 +106,17 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:_Bof := FALSE
                         SELF:_Found :=TRUE
                         SELF:_BufferValid := FALSE
+                    ELSEIF nRec <= 0
+                        SELF:_RecNo := 1
+                        SELF:_EOF := FALSE
+                        SELF:_Bof := TRUE
+                        SELF:_Found :=TRUE
+                        SELF:_BufferValid := FALSE
                     ELSE
                         // File empty, or trying to go outside ?
                         SELF:_RecNo := SELF:RecCount + 1
                         SELF:_EOF := TRUE		
-                        SELF:_Bof := TRUE
+                        SELF:_Bof := FALSE
                         SELF:_Found := FALSE
                         SELF:_BufferValid := FALSE
                     ENDIF
@@ -340,7 +346,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             RETURN unlocked
             
-        // Unlock a record. The Offset depends on the LockScheme
+            // Unlock a record. The Offset depends on the LockScheme
         PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
             LOCAL unlocked AS LOGIC
             LOCAL iOffset AS UINT64
@@ -364,7 +370,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN unlocked
             
-        // Lock the file. The Offset depends on the LockScheme
+            // Lock the file. The Offset depends on the LockScheme
         PROTECT METHOD _lockFile( ) AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL iOffset AS UINT64
@@ -385,7 +391,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
             // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
-        // Return the result of the operation
+            // Return the result of the operation
         PROTECTED METHOD _tryLock( nOffset AS UINT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
             LOCAL locked AS LOGIC
             //
@@ -721,9 +727,9 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_hFile    := FCreate( SELF:_FileName) 
             IF ( SELF:_hFile != F_ERROR )
                 LOCAL fieldCount :=  SELF:_Fields:Length AS INT
-                LOCAL fieldDefSize := fieldCount * FLDOFFSETS.SIZE AS INT
+                LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
                 // First, just the Header
-                SELF:_Header:HeaderLen := HDROFFSETS.SIZE + fieldDefSize + 1
+                SELF:_Header:HeaderLen := DbfHeader.SIZE + fieldDefSize + 1
                 SELF:_Header:isHot := TRUE
                 // Init Header, should it be a parameter ?
                 SELF:_Header:Version := DBFVersion.FoxBaseDBase3NoMemo
@@ -766,7 +772,7 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD _writeFieldsHeader() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL fieldCount :=  SELF:_Fields:Length AS INT
-            LOCAL fieldDefSize := fieldCount * FLDOFFSETS.SIZE AS INT
+            LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
             // Now, create the Structure
             LOCAL fieldsBuffer := BYTE[]{ fieldDefSize +1 } AS BYTE[] // +1 to add 0Dh stored as the field terminator. 
             LOCAL currentField := DbfField{} AS DbfField
@@ -783,12 +789,12 @@ BEGIN NAMESPACE XSharp.RDD
                 currentField:Len := (BYTE)SELF:_Fields[ i ]:Length
                 currentField:Dec := (BYTE)SELF:_Fields[ i ]:Decimals
                 //
-                Array.Copy( currentField:Buffer, 0, fieldsBuffer, i*FLDOFFSETS.SIZE, FLDOFFSETS.SIZE )
+                Array.Copy( currentField:Buffer, 0, fieldsBuffer, i*DbfField.SIZE, DbfField.SIZE )
             NEXT
             // Terminator
             fieldsBuffer[fieldDefSize] := 13
             // Go end of Header
-            isOk := ( FSeek3( SELF:_hFile, HDROFFSETS.SIZE, SeekOrigin.Begin ) == HDROFFSETS.SIZE )
+            isOk := ( FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE )
             IF ( isOk )
                 // Write Fields and Terminator
                 TRY
@@ -839,17 +845,17 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD _readHeader() AS LOGIC
             LOCAL isOk AS LOGIC
             //
-            isOk := ( FRead3(SELF:_hFile, SELF:_Header:Buffer, HDROFFSETS.SIZE) == HDROFFSETS.SIZE )
+            isOk := ( FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE )
             //
             IF ( isOk )
-                LOCAL fieldCount := (( SELF:_Header:HeaderLen - HDROFFSETS.SIZE) / FLDOFFSETS.SIZE ) AS INT
+                LOCAL fieldCount := (( SELF:_Header:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
                 // Something wrong in Size...
                 IF ( fieldCount <= 0 )
                     RETURN FALSE
                 ENDIF
                 SELF:_RecCount := SELF:_Header:RecCount
                 // Move to top, after header
-                isOk := ( FSeek3( SELF:_hFile, HDROFFSETS.SIZE, SeekOrigin.Begin ) == HDROFFSETS.SIZE )
+                isOk := ( FSeek3( SELF:_hFile, DbfHeader.SIZE, SeekOrigin.Begin ) == DbfHeader.SIZE )
                 IF ( isOk )
                     isOk := _readFieldsHeader()
                 ENDIF
@@ -859,8 +865,8 @@ BEGIN NAMESPACE XSharp.RDD
             // Read the Fields Header, filling the _Fields List with RddFieldInfo            
         PRIVATE METHOD _readFieldsHeader() AS LOGIC
             LOCAL isOk AS LOGIC
-            LOCAL fieldCount := (( SELF:_Header:HeaderLen - HDROFFSETS.SIZE) / FLDOFFSETS.SIZE ) AS INT
-            LOCAL fieldDefSize := fieldCount * FLDOFFSETS.SIZE AS INT
+            LOCAL fieldCount := (( SELF:_Header:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
+            LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
             //
             // Read full Fields Header
             VAR fieldsBuffer := BYTE[]{ fieldDefSize } 
@@ -878,7 +884,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
                     //
-                    Array.Copy( fieldsBuffer, i*FLDOFFSETS.SIZE, currentField:Buffer, 0, FLDOFFSETS.SIZE )
+                    Array.Copy( fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
                     SELF:_Fields[ i ] := DbfRddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
                     // !!! WARNING !!! The Field Index MUST NOT BE corrected by __ARRAYBASE__ when
                     // calling _isMemoField()
@@ -916,7 +922,7 @@ BEGIN NAMESPACE XSharp.RDD
                 FSeek3( SELF:_hFile, 0, FS_SET )
                 // Write just the File Header
                 TRY
-                    ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)HDROFFSETS.SIZE ) == (DWORD)HDROFFSETS.SIZE )
+                    ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
                 CATCH 
                     SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
                     ret := FALSE
@@ -1022,7 +1028,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SWITCH
             RETURN
             
-        // Add the list of Fields ot the DBF, by calling SetFieldExtent and AddField
+            // Add the list of Fields ot the DBF, by calling SetFieldExtent and AddField
         METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
             // Ok, this will set the Fields for the current object
             // But what if the file is ALREADY opened ????
@@ -1087,10 +1093,10 @@ BEGIN NAMESPACE XSharp.RDD
                         oResult := SELF:_Fields[nArrPos]:Alias
                         
                     CASE DbFieldInfo.DBS_ISNULL
-                    CASE DbFieldInfo.DBS_COUNTER
+                CASE DbFieldInfo.DBS_COUNTER
                     CASE DbFieldInfo.DBS_STEP    
                     
-                CASE DbFieldInfo.DBS_BLOB_GET     
+                    CASE DbFieldInfo.DBS_BLOB_GET     
                     CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
                         // is more efficient than using Type() or ValType()
                         // since the data itself does not have to be retrieved
@@ -1209,7 +1215,7 @@ BEGIN NAMESPACE XSharp.RDD
             num11 := (((100 * (num3 - 49)) + num5) + num9)
             RETURN System.DateTime{System.Convert.ToInt32(num11), System.Convert.ToInt32(num10), System.Convert.ToInt32(num8)}
             
-        // Convert a System.DateTime Date to a Julian Date
+            // Convert a System.DateTime Date to a Julian Date
         PROTECT METHOD _dateTimeToJulian( dt AS DateTime ) AS LONG
             LOCAL Month := dt:Month AS INT
             LOCAL Day := dt:Day AS INT
@@ -1224,7 +1230,7 @@ BEGIN NAMESPACE XSharp.RDD
             result := Day + (153 * Month - 457) / 5 + 365 * Year + (Year / 4) - (Year / 100) + (Year / 400) - 678882
             RETURN result
             
-        // Convert the data stored in the buffer (BYTE[]) to an .NET Object. The convertion is drived by fieldType
+            // Convert the data stored in the buffer (BYTE[]) to an .NET Object. The convertion is drived by fieldType
         INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], fieldType AS DbFieldType, nDec AS LONG) AS OBJECT
             LOCAL str AS STRING
             LOCAL data AS OBJECT
@@ -1240,8 +1246,8 @@ BEGIN NAMESPACE XSharp.RDD
             //
             data := NULL
             SWITCH fieldType
-            CASE DbFieldType.Float
-                CASE DbFieldType.Number
+                CASE DbFieldType.Float
+            CASE DbFieldType.Number
                 CASE DbFieldType.Double
                     //
                     IF (! String.IsNullOrWhiteSpace(str))
@@ -1330,7 +1336,7 @@ BEGIN NAMESPACE XSharp.RDD
             objTypeCode := Type.GetTypeCode( objType )
             //
             SWITCH objTypeCode
-            CASE TypeCode.String
+                CASE TypeCode.String
                 CASE TypeCode.Char
                     IF ( fieldType == DbFieldType.Character )
                         IF ( objTypeCode == TypeCode.Char )
@@ -1353,7 +1359,7 @@ BEGIN NAMESPACE XSharp.RDD
                         isOk := FALSE
                     ENDIF
                     
-                CASE TypeCode.Decimal
+            CASE TypeCode.Decimal
                 CASE TypeCode.Double
                 CASE TypeCode.Single
                 
@@ -1645,11 +1651,11 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK 
             ENDIF
             RETURN ret
-
+            
         PROPERTY IsHot AS LOGIC GET SELF:_Hot
         PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
-            
-            /// <inheritdoc />
+        
+        /// <inheritdoc />
         METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
             LOCAL nArrPos := nFldPos AS LONG
@@ -1838,7 +1844,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oResult AS OBJECT
             oResult := NULL
             SWITCH nOrdinal
-                CASE DbInfo.DBI_ISDBF
+            CASE DbInfo.DBI_ISDBF
                 CASE DbInfo.DBI_CANPUTREC
                     oResult := TRUE
                 CASE DbInfo.DBI_GETRECSIZE
@@ -1885,7 +1891,7 @@ BEGIN NAMESPACE XSharp.RDD
                     
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
-            END SWITCH
+                END SWITCH
             RETURN oResult  
             
             
@@ -1909,15 +1915,15 @@ BEGIN NAMESPACE XSharp.RDD
             IF isOk
                 //
                 SWITCH nOrdinal
-                    CASE DBRI_DELETED
-                    CASE DBRI_ENCRYPTED
-                    CASE DBRI_RAWRECORD
-                    CASE DBRI_RAWMEMOS
-                    CASE DBRI_RAWDATA
-                        // Move
-                        SELF:GoTo( nCurrent )
-                        // and get Data
-                        SELF:_readRecord()
+                CASE DBRI_DELETED
+                CASE DBRI_ENCRYPTED
+                CASE DBRI_RAWRECORD
+                CASE DBRI_RAWMEMOS
+                CASE DBRI_RAWDATA
+                    // Move
+                    SELF:GoTo( nCurrent )
+                    // and get Data
+                    SELF:_readRecord()
                 END SWITCH
                 //
                 SWITCH nOrdinal
@@ -1936,11 +1942,11 @@ BEGIN NAMESPACE XSharp.RDD
                     CASE DBRI_RECSIZE 
                         oNewValue := SELF:_RecordLength
                     CASE DBRI_RAWRECORD
-                CASE DBRI_RAWMEMOS
+                    CASE DBRI_RAWMEMOS
                     CASE DBRI_ENCRYPTED
                     OTHERWISE
                         oNewValue := SUPER:Info(nOrdinal, oNewValue)
-                    END SWITCH 
+                END SWITCH 
             ENDIF
             //
             RETURN isOk
@@ -2017,130 +2023,106 @@ BEGIN NAMESPACE XSharp.RDD
         //	PROPERTY LastSubCode	AS LONG GET
         //	PROPERTY LastError		AS Exception GET
         
-        /// <summary>Offsets in the header of a DBF.</summary>
-        PUBLIC ENUM HDROFFSETS
-            MEMBER SIG			:= 0
-            MEMBER YEAR			:= 1
-            MEMBER MONTH	    := 2
-            MEMBER DAY          := 3
-            MEMBER RECCOUNT     := 4
-            MEMBER DATAOFFSET   := 8
-            MEMBER RECSIZE      := 10
-            MEMBER RESERVED1    := 12
-            MEMBER TRANSACTION  := 14
-            MEMBER ENCRYPTED    := 15
-            MEMBER DBASELAN     := 16
-            MEMBER MULTIUSER    := 20
-            MEMBER RESERVED2   := 24
-            MEMBER HASTAGS	    := 28
-            MEMBER CODEPAGE     := 29
-            MEMBER RESERVED3    := 30
-            MEMBER SIZE         := 32
-            
-        END ENUM
-        /// <summary>Offsets in the Field structure</summary>        
-        PUBLIC ENUM FLDOFFSETS
-            MEMBER NAME			:= 0
-            MEMBER NAME_SIZE    := 11
-            MEMBER TYPE			:= 11
-            MEMBER OFFSET	    := 12
-            MEMBER LEN          := 16
-            MEMBER DEC          := 17
-            MEMBER FLAGS        := 18
-            MEMBER COUNTER      := 19
-            MEMBER INCSTEP      := 23
-            MEMBER RESERVED1    := 24
-            MEMBER RESERVED2    := 25
-            MEMBER RESERVED3    := 26
-            MEMBER RESERVED4    := 27
-            MEMBER RESERVED5    := 28
-            MEMBER RESERVED6	:= 29
-            MEMBER RESERVED7    := 30
-            MEMBER HASTAG       := 31
-            MEMBER SIZE         := 32
-        END ENUM
-        
         /// <summary>DBF Header.</summary>        
         STRUCTURE DbfHeader                     
             // Fixed Buffer of 32 bytes
             // Matches the DBF layout  
             // Read/Write to/from the Stream with the Buffer 
             // and access individual values using the other fields
+
+           PRIVATE CONST OFFSET_SIG			    := 0  AS BYTE
+           PRIVATE CONST OFFSET_YEAR			:= 1  AS BYTE
+           PRIVATE CONST OFFSET_MONTH	        := 2  AS BYTE
+           PRIVATE CONST OFFSET_DAY             := 3  AS BYTE
+           PRIVATE CONST OFFSET_RECCOUNT        := 4  AS BYTE
+           PRIVATE CONST OFFSET_DATAOFFSET      := 8  AS BYTE
+           PRIVATE CONST OFFSET_RECSIZE         := 10 AS BYTE
+           PRIVATE CONST OFFSET_RESERVED1       := 12 AS BYTE
+           PRIVATE CONST OFFSET_TRANSACTION     := 14 AS BYTE
+           PRIVATE CONST OFFSET_ENCRYPTED       := 15 AS BYTE
+           PRIVATE CONST OFFSET_DBASELAN        := 16 AS BYTE
+           PRIVATE CONST OFFSET_MULTIUSER       := 20 AS BYTE
+           PRIVATE CONST OFFSET_RESERVED2       := 24 AS BYTE
+           PRIVATE CONST OFFSET_HASTAGS	        := 28 AS BYTE
+           PRIVATE CONST OFFSET_CODEPAGE        := 29 AS BYTE
+           PRIVATE CONST OFFSET_RESERVED3       := 30 AS BYTE
+           INTERNAL CONST SIZE                  := 32 AS BYTE
+
             PUBLIC Buffer   AS BYTE[]
             // Hot ?  => Header has changed ?
             PUBLIC isHot	AS LOGIC
             
             PROPERTY Version    AS DBFVersion	;
-            GET (DBFVersion) Buffer[HDROFFSETS.SIG] ;
-            SET Buffer[HDROFFSETS.SIG] := (BYTE) VALUE
+            GET (DBFVersion) Buffer[OFFSET_SIG] ;
+            SET Buffer[OFFSET_SIG] := (BYTE) VALUE
             
                 PROPERTY Year		AS BYTE			;
-                GET Buffer[HDROFFSETS.YEAR]	;
-                SET Buffer[HDROFFSETS.YEAR] := VALUE, isHot := TRUE
+                GET Buffer[OFFSET_YEAR]	;
+                SET Buffer[OFFSET_YEAR] := VALUE, isHot := TRUE
                 
                     PROPERTY Month		AS BYTE			;
-                    GET Buffer[HDROFFSETS.MONTH]	;
-                    SET Buffer[HDROFFSETS.MONTH] := VALUE, isHot := TRUE
+                    GET Buffer[OFFSET_MONTH]	;
+                    SET Buffer[OFFSET_MONTH] := VALUE, isHot := TRUE
                     
                     PROPERTY Day		AS BYTE			;
-                    GET Buffer[HDROFFSETS.DAY]	;
-                    SET Buffer[HDROFFSETS.DAY] := VALUE, isHot := TRUE
+                    GET Buffer[OFFSET_DAY]	;
+                    SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
                     
                     PROPERTY RecCount	AS LONG			;
-                    GET BitConverter.ToInt32(Buffer, HDROFFSETS.RECCOUNT) ;
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.RECCOUNT, SIZEOF(LONG)), isHot := TRUE
+                    GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
                     
                     PROPERTY HeaderLen	AS SHORT		;
-                    GET BitConverter.ToInt16(Buffer, HDROFFSETS.DATAOFFSET);
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
+                    GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
                     
                     // Length of one data record, including deleted flag
                     PROPERTY RecordLen	AS SHORT		;
-                    GET BitConverter.ToInt16(Buffer, HDROFFSETS.RECSIZE);
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.RECSIZE, SIZEOF(SHORT)), isHot := TRUE
+                    GET BitConverter.ToInt16(Buffer, OFFSET_RECSIZE);
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(SHORT)), isHot := TRUE
                     
                     PROPERTY Reserved1	AS SHORT		;
-                    GET BitConverter.ToInt16(Buffer, HDROFFSETS.RESERVED1);
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.RESERVED1, SIZEOF(SHORT)), isHot := TRUE
+                    GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
                     
                     PROPERTY Transaction AS BYTE		;
-                    GET Buffer[HDROFFSETS.TRANSACTION];
-                    SET Buffer[HDROFFSETS.TRANSACTION] := VALUE, isHot := TRUE
+                    GET Buffer[OFFSET_TRANSACTION];
+                    SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
                     
                     PROPERTY Encrypted	AS BYTE			;
-                    GET Buffer[HDROFFSETS.ENCRYPTED];
-                    SET Buffer[HDROFFSETS.ENCRYPTED] := VALUE, isHot := TRUE
+                    GET Buffer[OFFSET_ENCRYPTED];
+                    SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
                     
                     PROPERTY DbaseLan	AS LONG			;
-                    GET BitConverter.ToInt32(Buffer, HDROFFSETS.DBASELAN) ;
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.DBASELAN, SIZEOF(LONG)), isHot := TRUE
+                    GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
                     
                     PROPERTY MultiUser	AS LONG			;
-                    GET BitConverter.ToInt32(Buffer, HDROFFSETS.MULTIUSER)	;
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.MULTIUSER, SIZEOF(LONG)), isHot := TRUE
+                    GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
                     
                     PROPERTY Reserved2	AS LONG			;
-                    GET BitConverter.ToInt32(Buffer, HDROFFSETS.RESERVED2);
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.RESERVED2, SIZEOF(LONG))
+                    GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
                     
                     PROPERTY HasTags	AS DBFTableFlags ;
-                    GET (DBFTableFlags)Buffer[HDROFFSETS.HASTAGS] ;
-                    SET Buffer[HDROFFSETS.HASTAGS] := (BYTE) VALUE, isHot := TRUE
+                    GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
+                    SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
                     
                     PROPERTY CodePage	AS BYTE			 ;
-                    GET Buffer[HDROFFSETS.CODEPAGE]  ;
-                    SET Buffer[HDROFFSETS.CODEPAGE] := (BYTE) VALUE, isHot := TRUE
+                    GET Buffer[OFFSET_CODEPAGE]  ;
+                    SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
                     
                     PROPERTY Reserved3	AS SHORT         ;
-                    GET BitConverter.ToInt16(Buffer, HDROFFSETS.RESERVED3);
-                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, HDROFFSETS.RESERVED3, SIZEOF(SHORT)), isHot := TRUE
+                    GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
+                    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
                     
                     PROPERTY LastUpdate AS DateTime      ;
                     GET DateTime{1900+Year, Month, Day} ;
                     SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
                     
                     METHOD initialize() AS VOID STRICT
-                        Buffer := BYTE[]{HDROFFSETS.SIZE}
+                        Buffer := BYTE[]{DbfHeader.SIZE}
                         isHot  := FALSE
                         RETURN
                         // Dbase (7?) Extends this with
@@ -2189,28 +2171,47 @@ BEGIN NAMESPACE XSharp.RDD
                         see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
                         
                         */
-
-                    
-
+                        
+                        
+                        
                     END STRUCTURE
                 /// <summary>DBF Field.</summary>                            
-                STRUCTURE DbfField   
+                STRUCTURE DbfField
+                    PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
+                    PRIVATE CONST OFFSET_TYPE		   := 11   AS BYTE
+                    PRIVATE CONST OFFSET_OFFSET	       := 12   AS BYTE
+                    PRIVATE CONST OFFSET_LEN          := 16   AS BYTE
+                    PRIVATE CONST OFFSET_DEC          := 17   AS BYTE
+                    PRIVATE CONST OFFSET_FLAGS        := 18   AS BYTE
+                    PRIVATE CONST OFFSET_COUNTER      := 19   AS BYTE
+                    PRIVATE CONST OFFSET_INCSTEP      := 23   AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED1    := 24   AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED2    := 25   AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED3    := 26   AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED4    := 27   AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED5    := 28   AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED6	   := 29  AS BYTE
+                    PRIVATE CONST OFFSET_RESERVED7    := 30   AS BYTE
+                    PRIVATE CONST OFFSET_HASTAG       := 31   AS BYTE
+                    INTERNAL CONST NAME_SIZE           := 11  AS BYTE
+                    INTERNAL CONST SIZE                := 32  AS BYTE
+
                     // Fixed Buffer of 32 bytes
                     // Matches the DBF layout
                     // Read/Write to/from the Stream with the Buffer 
                     // and access individual values using the other fields
                     METHOD initialize() AS VOID
-                        SELF:Buffer := BYTE[]{FLDOFFSETS.SIZE}
+                        SELF:Buffer := BYTE[]{SIZE}
                         
                     PUBLIC Buffer		 AS BYTE[]	  
                     
                     PROPERTY Name		 AS STRING
                     GET 
-                        LOCAL fieldName := BYTE[]{FLDOFFSETS.NAME_SIZE} AS BYTE[]
-                        Array.Copy( Buffer, FLDOFFSETS.NAME, fieldName, 0, FLDOFFSETS.NAME_SIZE )
+                        LOCAL fieldName := BYTE[]{DbfField.NAME_SIZE} AS BYTE[]
+                        Array.Copy( Buffer, OFFSET_NAME, fieldName, 0, DbfField.NAME_SIZE )
                         LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
                         IF count == -1
-                            count := FLDOFFSETS.NAME_SIZE
+                            count := DbfField.NAME_SIZE
                         ENDIF
                         LOCAL str := System.Text.Encoding.ASCII:GetString( fieldName,0, count ) AS STRING
                         IF ( str == NULL )
@@ -2221,71 +2222,71 @@ BEGIN NAMESPACE XSharp.RDD
                     END GET
                     SET
                         // Be sure to fill the Buffer with 0
-                        Array.Clear( Buffer, FLDOFFSETS.NAME, FLDOFFSETS.NAME_SIZE )
-                        System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(FLDOFFSETS.NAME_SIZE,VALUE:Length), Buffer, FLDOFFSETS.NAME )
+                        Array.Clear( Buffer, OFFSET_NAME, DbfField.NAME_SIZE )
+                        System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(DbfField.NAME_SIZE,VALUE:Length), Buffer, OFFSET_NAME )
                     END SET
                 END PROPERTY
                 
                 PROPERTY Type		 AS DBFieldType ;
-                GET (DBFieldType) Buffer[ FLDOFFSETS.TYPE ] ;
-                SET Buffer[ FLDOFFSETS.TYPE ] := (BYTE) VALUE
+                GET (DBFieldType) Buffer[ OFFSET_TYPE ] ;
+                SET Buffer[ OFFSET_TYPE ] := (BYTE) VALUE
                 
                 // Offset from record begin in FP
                 PROPERTY Offset 	 AS LONG ;
-                GET BitConverter.ToInt32(Buffer, FLDOFFSETS.OFFSET);
-                SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, FLDOFFSETS.OFFSET, SIZEOF(LONG))
+                GET BitConverter.ToInt32(Buffer, OFFSET_OFFSET);
+                SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_OFFSET, SIZEOF(LONG))
                 
                 PROPERTY Len		 AS BYTE;
-                GET Buffer[FLDOFFSETS.Len]  ;
-                SET Buffer[FLDOFFSETS.Len] := (BYTE) VALUE
+                GET Buffer[OFFSET_Len]  ;
+                SET Buffer[OFFSET_Len] := (BYTE) VALUE
                 
                 PROPERTY Dec		 AS BYTE;
-                GET Buffer[FLDOFFSETS.Dec]  ;
-                SET Buffer[FLDOFFSETS.Dec] := (BYTE) VALUE
+                GET Buffer[OFFSET_Dec]  ;
+                SET Buffer[OFFSET_Dec] := (BYTE) VALUE
                 
                 PROPERTY Flags		 AS DBFFieldFlags;
-                GET (DBFFieldFlags)Buffer[FLDOFFSETS.Flags] ;
-                SET Buffer[FLDOFFSETS.Flags] := (BYTE) VALUE
+                GET (DBFFieldFlags)Buffer[OFFSET_Flags] ;
+                SET Buffer[OFFSET_Flags] := (BYTE) VALUE
                 
                 PROPERTY Counter	 AS LONG;
-                GET BitConverter.ToInt32(Buffer, FLDOFFSETS.Counter);
-                SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, FLDOFFSETS.Counter, SIZEOF(LONG))
+                GET BitConverter.ToInt32(Buffer, OFFSET_Counter);
+                SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_Counter, SIZEOF(LONG))
                 
                 PROPERTY IncStep	 AS BYTE;
-                GET Buffer[FLDOFFSETS.IncStep]  ;
-                SET Buffer[FLDOFFSETS.IncStep] := (BYTE) VALUE
+                GET Buffer[OFFSET_IncStep]  ;
+                SET Buffer[OFFSET_IncStep] := (BYTE) VALUE
                 
                 PROPERTY Reserved1   AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved1]  ;
-                SET Buffer[FLDOFFSETS.Reserved1] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved1]  ;
+                SET Buffer[OFFSET_Reserved1] := (BYTE) VALUE
                 
                 PROPERTY Reserved2   AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved2]  ;
-                SET Buffer[FLDOFFSETS.Reserved2] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved2]  ;
+                SET Buffer[OFFSET_Reserved2] := (BYTE) VALUE
                 
                 PROPERTY Reserved3   AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved3]  ;
-                SET Buffer[FLDOFFSETS.Reserved3] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved3]  ;
+                SET Buffer[OFFSET_Reserved3] := (BYTE) VALUE
                 
                 PROPERTY Reserved4  AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved4]  ;
-                SET Buffer[FLDOFFSETS.Reserved4] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved4]  ;
+                SET Buffer[OFFSET_Reserved4] := (BYTE) VALUE
                 
                 PROPERTY Reserved5   AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved5]  ;
-                SET Buffer[FLDOFFSETS.Reserved5] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved5]  ;
+                SET Buffer[OFFSET_Reserved5] := (BYTE) VALUE
                 
                 PROPERTY Reserved6   AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved6]  ;
-                SET Buffer[FLDOFFSETS.Reserved6] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved6]  ;
+                SET Buffer[OFFSET_Reserved6] := (BYTE) VALUE
                 
                 PROPERTY Reserved7   AS BYTE;
-                GET Buffer[FLDOFFSETS.Reserved7]  ;
-                SET Buffer[FLDOFFSETS.Reserved7] := (BYTE) VALUE
+                GET Buffer[OFFSET_Reserved7]  ;
+                SET Buffer[OFFSET_Reserved7] := (BYTE) VALUE
                 
                 PROPERTY HasTag		 AS BYTE;
-                GET Buffer[FLDOFFSETS.HasTag]  ;
-                SET Buffer[FLDOFFSETS.HasTag] := (BYTE) VALUE
+                GET Buffer[OFFSET_HasTag]  ;
+                SET Buffer[OFFSET_HasTag] := (BYTE) VALUE
             END STRUCTURE
             
             
@@ -2310,108 +2311,55 @@ BEGIN NAMESPACE XSharp.RDD
                 
             END STRUCTURE
             
-            ENUM DBFVersion AS BYTE
-                MEMBER FoxBase:=2
-                MEMBER FoxBaseDBase3NoMemo:=3
-                MEMBER dBase4 :=4
-                MEMBER dBase5 :=5
-                MEMBER VO :=7
-                MEMBER Flagship := 0x13
-                MEMBER Flagship248 := 0x23
-                MEMBER VisualFoxPro:=0x30
-                MEMBER VisualFoxProWithAutoIncrement:=0x31
-                MEMBER Flagship248WithDBV := 0x33
-                MEMBER dBase4SQLTableNoMemo:=0x43
-                MEMBER dBase4SQLSystemNoMemo:=0x63
-                MEMBER dBase4WithMemo_:=0x7b
-                MEMBER FoxBaseDBase3WithMemo:=0x83
-                MEMBER VOWithMemo := 0x87
-                MEMBER dBase4WithMemo:=0x8b
-                MEMBER dBase4SQLTableWithMemo:=0xcb
-                MEMBER ClipperSixWithSMT:=0xe5
-                MEMBER FoxPro2WithMemo:=0xf5
-                MEMBER FoxBASE_:=0xfb
+        END CLASS
+        // Inpired by Harbour
+        STRUCTURE DbfLocking
+            // Offset of the Locking
+            PUBLIC Offset AS UINT64
+            // Length for File
+            PUBLIC FileSize AS UINT64
+            // Length for Record
+            PUBLIC RecordSize AS UINT64
+            // 
+            PUBLIC Direction AS LONG
+            
+            METHOD Initialize( model AS DbfLockingModel ) AS VOID
+                SWITCH model
+                    CASE DbfLockingModel.Clipper52
+                        SELF:Offset := 1000000000U
+                        SELF:FileSize := 1000000000U
+                        SELF:RecordSize := 1U
+                        SELF:Direction := 1
+                    CASE DbfLockingModel.Clipper53
+                        SELF:Offset := 1000000000U
+                        SELF:FileSize := 1000000000U
+                        SELF:RecordSize := 1U
+                        SELF:Direction := 1
+                    CASE DbfLockingModel.Clipper53Ext
+                        SELF:Offset := 4000000000U
+                        SELF:FileSize := 294967295U
+                        SELF:RecordSize := 1U
+                        SELF:Direction := 1                    
+                    CASE DbfLockingModel.FoxPro
+                        SELF:Offset := 0x40000000U
+                        SELF:FileSize := 0x07ffffffU
+                        SELF:RecordSize := 1U
+                        SELF:Direction := 2
+                    CASE DbfLockingModel.FoxProExt
+                        SELF:Offset := 0x7ffffffeU
+                        SELF:FileSize := 0x3ffffffdU
+                        SELF:RecordSize := 1U
+                        SELF:Direction := -1
+                    CASE DbfLockingModel.Harbour64
+                        SELF:Offset := 0x7FFFFFFF00000001U
+                        SELF:FileSize := 0x7ffffffeU
+                        SELF:RecordSize := 1U
+                        SELF:Direction := 1                        
+                END SWITCH
                 
-                MEMBER Unknown:=0
-            END ENUM
-            
-            /// <summary>DBF Table flags.</summary>                            
-            [Flags];
-            ENUM DBFTableFlags AS BYTE
-                MEMBER HasMemoField:=2
-                MEMBER HasStructuralCDX:=1
-                MEMBER IsDBC:=4
-                MEMBER None:=0
-            END ENUM
-            /// <summary>DBF Field flags.</summary>                            
-            [Flags];
-            ENUM DBFFieldFlags AS BYTE
-                MEMBER None:=0
-                MEMBER System:=1
-                MEMBER AllowNullValues:=2
-                MEMBER Binary:=4
-                MEMBER AutoIncrementing:=12
-            END ENUM
-            
-            ENUM DbfLockingModel
-                MEMBER Clipper52    // Clipper 5.2 locking scheme
-                MEMBER Clipper53    // Clipper 5.3 locking scheme
-                MEMBER FoxPro       // Visual FoxPro locking scheme
-                MEMBER FoxProExt    // Visual FoxPro locking scheme
-                MEMBER Clipper53Ext // Clipper 5.3 with Files up to 4GB
-                MEMBER Harbour64    // Locking scheme for files > 4GB
-            END ENUM
-            
-            // Inpired by Harbour
-            STRUCTURE DbfLocking
-                // Offset of the Locking
-                PUBLIC Offset AS UINT64
-                // Length for File
-                PUBLIC FileSize AS UINT64
-                // Length for Record
-                PUBLIC RecordSize AS UINT64
-                // 
-                PUBLIC Direction AS LONG
+                END STRUCTURE
                 
-                METHOD Initialize( model AS DbfLockingModel ) AS VOID
-                    SWITCH model
-                        CASE DbfLockingModel.Clipper52
-                            SELF:Offset := 1000000000U
-                            SELF:FileSize := 1000000000U
-                            SELF:RecordSize := 1U
-                            SELF:Direction := 1
-                        CASE DbfLockingModel.Clipper53
-                            SELF:Offset := 1000000000U
-                            SELF:FileSize := 1000000000U
-                            SELF:RecordSize := 1U
-                            SELF:Direction := 1
-                        CASE DbfLockingModel.Clipper53Ext
-                            SELF:Offset := 4000000000U
-                            SELF:FileSize := 294967295U
-                            SELF:RecordSize := 1U
-                            SELF:Direction := 1                    
-                        CASE DbfLockingModel.FoxPro
-                            SELF:Offset := 0x40000000U
-                            SELF:FileSize := 0x07ffffffU
-                            SELF:RecordSize := 1U
-                            SELF:Direction := 2
-                        CASE DbfLockingModel.FoxProExt
-                            SELF:Offset := 0x7ffffffeU
-                            SELF:FileSize := 0x3ffffffdU
-                            SELF:RecordSize := 1U
-                            SELF:Direction := -1
-                        CASE DbfLockingModel.Harbour64
-                            SELF:Offset := 0x7FFFFFFF00000001U
-                            SELF:FileSize := 0x7ffffffeU
-                            SELF:RecordSize := 1U
-                            SELF:Direction := 1                        
-                    END SWITCH
-                    
-                    END STRUCTURE
-                    
-            END CLASS
-            
-            
+                
         CLASS DbfRddFieldInfo INHERIT RddFieldInfo
             PROTECTED iOffset AS LONG
             
@@ -2424,156 +2372,20 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:iOffset := -1
                 
             VIRTUAL PROPERTY Offset AS LONG
-                GET
-                    RETURN SELF:iOffset
-                END GET
+            GET
+                RETURN SELF:iOffset
+            END GET
             
-                // Should be INTERNAL
-                SET
-                    SELF:iOffset := VALUE
-                END SET
-            END PROPERTY
-      END CLASS
-                
-      ENUM DbfHeaderCodepage INHERIT BYTE
-      
-         MEMBER CP_DBF_DOS_OLD           := 0x00  // MS-DOS previous versions
-         MEMBER CP_DBF_DOS_US            := 0x01  // U.S. MS-DOS
-         MEMBER CP_DBF_DOS_INTL          := 0x02  // International MS-DOS
-         MEMBER CP_DBF_WIN_ANSI          := 0x03  // Windows ANSI
-         MEMBER CP_DBF_MAC_STANDARD      := 0x04  // Standard Macintosh
-
-         MEMBER CP_DBF_DOS_EEUROPEAN     := 0x64  // Eastern European MS-DOS
-         MEMBER CP_DBF_DOS_RUSSIAN       := 0x65  // Russian MS-DOS
-         MEMBER CP_DBF_DOS_NORDIC        := 0x66  // Nordic MS-DOS
-         MEMBER CP_DBF_DOS_ICELANDIC     := 0x67  // Icelandic MS-DOS
-         MEMBER CP_DBF_DOS_KAMENICKY     := 0x68  // Kamenicky (Czech) MS-DOS (1)
-         MEMBER CP_DBF_DOS_MAZOVIA       := 0x69  // Mazovia (Polish) MS-DOS  (1)
-         MEMBER CP_DBF_DOS_GREEK         := 0x6A  // Greek MS-DOS (437G)      (1)
-         MEMBER CP_DBF_DOS_TURKISH       := 0x6B  // Turkish MS-DOS
-         MEMBER CP_DBF_DOS_CANADIAN      := 0x6C  // Canadian MS-DOS
-                                         
-         MEMBER CP_DBF_WIN_CHINESE_1	 := 0x78	// Chinese (Hong Kong SAR, Taiwan) Windows CP 950
-         MEMBER CP_DBF_WIN_KOREAN        := 0x79	// Korean Windows				CP 949
-
-         MEMBER CP_DBF_WIN_CHINESE_2	 := 0x7A	 // Chinese (PRC, Singapore) Windows	CP 936
-         MEMBER CP_DBF_WIN_JAPANESE		 := 0x7B	 // Japanese Windows				CP 932
-         MEMBER CP_DBF_WIN_THAI			 := 0x7C	 // Thai Windows					CP 874
-         MEMBER CP_DBF_WIN_HEBREW		 := 0x7D	 // Hebrew Windows				CP 1255
-         MEMBER CP_DBF_WIN_ARABIC		 := 0x7E	 // Arabic Windows				CP 1256
-
-         MEMBER CP_DBF_WIN_EEUROPEAN     := 0xC8   // Eastern European Windows
-         MEMBER CP_DBF_WIN_RUSSIAN       := 0xC9   // Russian Windows
-         MEMBER CP_DBF_WIN_GREEK         := 0xCB   // Greek Windows
-         MEMBER CP_DBF_WIN_TURKISH       := 0xCA   // Turkish Windows
-
-         MEMBER CP_DBF_MAC_RUSSIAN       := 0x96   // Russian Macintosh (1)
-         MEMBER CP_DBF_MAC_EEUROPEAN     := 0x97   // Macintosh EE
-         MEMBER CP_DBF_MAC_GREEK         := 0x98   // Greek Macintosh
-      END ENUM
-     //  Values for Windows and DOS Codepages
-      ENUM Codepage
-      
-         MEMBER CP_INI_DOS_US            := 437   // U.S. MS-DOS
-         MEMBER CP_INI_DOS_MAZOVIA       := 620   // Mazovia (Polish) MS-DOS (1)
-         MEMBER CP_INI_DOS_GREEK         := 737   // Greek MS-DOS (1)
-         MEMBER CP_INI_DOS_INTL          := 850   // International MS-DOS
-         MEMBER CP_INI_DOS_EEUROPEAN     := 852   // Eastern European MS-DOS
-         MEMBER CP_INI_DOS_TURKISH       := 857   // Turkish MS-DOS
-         MEMBER CP_INI_DOS_ICELANDIC     := 861   // Icelandic MS-DOS
-         MEMBER CP_INI_DOS_CANADIAN      := 863   // Canadian MS-DOS
-         MEMBER CP_INI_DOS_NORDIC        := 865   // Nordic MS-DOS
-         MEMBER CP_INI_DOS_RUSSIAN       := 866   // Russian MS-DOS
-         MEMBER CP_INI_DOS_KAMENICKY     := 895   // Kamenicky (Czech) MS-DOS (1)
-         
-         MEMBER CP_INI_WIN_THAI          := 874   // Thai Windows
-         MEMBER CP_INI_WIN_JAPANESE      := 932   // Japanese Windows
-         MEMBER CP_INI_WIN_CHINESE1      := 936   // Chinese (PRC, Singapore) Windows
-         MEMBER CP_INI_WIN_KOREAN        := 949   // Korean Windows
-         MEMBER CP_INI_WIN_CHINESE2      := 950   // Chinese (Hong Kong SAR, Taiwan) Windows
-         
-         MEMBER CP_INI_WIN_EEUROPEAN     := 1250  // Eastern European Windows
-         MEMBER CP_INI_WIN_RUSSIAN       := 1251  // Russian Windows
-         MEMBER CP_INI_WIN_ANSI          := 1252  // Windows ANSI
-         MEMBER CP_INI_WIN_GREEK         := 1253  // Greek Windows
-         MEMBER CP_INI_WIN_TURKISH       := 1254  // Turkish Windows
-         MEMBER CP_INI_WIN_HEBREW        := 1255  // Hebrew Windows
-         MEMBER CP_INI_WIN_ARABIC        := 1256  // Arabic Windows
-         
-         MEMBER CP_INI_MAC_STANDARD      := 10000 // Standard Macintosh
-         MEMBER CP_INI_MAC_GREEK         := 10006 // Greek Macintosh
-         MEMBER CP_INI_MAC_RUSSIAN       := 10007 // Russian Macintosh (1)
-         MEMBER CP_INI_MAC_EEUROPEAN     := 10029 // Macintosh EE
-      END ENUM
-
-
-STATIC CLASS CodePageExtensions
-    METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS CodePage
-        SWITCH headerCodePage
-        CASE DbfHeaderCodepage.CP_DBF_DOS_US        ; RETURN  Codepage.CP_INI_DOS_US        
-        CASE DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA   ; RETURN  Codepage.CP_INI_DOS_MAZOVIA   
-        CASE DbfHeaderCodepage.CP_DBF_DOS_GREEK     ; RETURN  Codepage.CP_INI_DOS_GREEK     
-        CASE DbfHeaderCodepage.CP_DBF_DOS_INTL      ; RETURN  Codepage.CP_INI_DOS_INTL      
-        CASE DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN ; RETURN  Codepage.CP_INI_DOS_EEUROPEAN 
-        CASE DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC ; RETURN  Codepage.CP_INI_DOS_ICELANDIC 
-        CASE DbfHeaderCodepage.CP_DBF_DOS_NORDIC    ; RETURN  Codepage.CP_INI_DOS_NORDIC    
-        CASE DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN   ; RETURN  Codepage.CP_INI_DOS_RUSSIAN   
-        CASE DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY ; RETURN  Codepage.CP_INI_DOS_KAMENICKY 
-        CASE DbfHeaderCodepage.CP_DBF_DOS_TURKISH   ; RETURN  Codepage.CP_INI_DOS_TURKISH   
-        CASE DbfHeaderCodepage.CP_DBF_DOS_CANADIAN  ; RETURN  Codepage.CP_INI_DOS_CANADIAN  
-        CASE DbfHeaderCodepage.CP_DBF_WIN_THAI      ; RETURN  Codepage.CP_INI_WIN_THAI	    
-        CASE DbfHeaderCodepage.CP_DBF_WIN_JAPANESE  ; RETURN  Codepage.CP_INI_WIN_JAPANESE  
-        CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_1 ; RETURN  Codepage.CP_INI_WIN_CHINESE1  
-        CASE DbfHeaderCodepage.CP_DBF_WIN_KOREAN    ; RETURN  Codepage.CP_INI_WIN_KOREAN	
-        CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_2 ; RETURN  Codepage.CP_INI_WIN_CHINESE2  
-
-        CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN ; RETURN Codepage.CP_INI_WIN_EEUROPEAN  
-        CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN   ; RETURN Codepage.CP_INI_WIN_RUSSIAN    
-        CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI      ; RETURN Codepage.CP_INI_WIN_ANSI       
-        CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK     ; RETURN Codepage.CP_INI_WIN_GREEK      
-        CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH   ; RETURN Codepage.CP_INI_WIN_TURKISH    
-        CASE DbfHeaderCodepage.CP_DBF_WIN_HEBREW    ; RETURN Codepage.CP_INI_WIN_HEBREW     
-        CASE DbfHeaderCodepage.CP_DBF_WIN_ARABIC    ; RETURN Codepage.CP_INI_WIN_ARABIC     
-                                                        
-        CASE DbfHeaderCodepage.CP_DBF_MAC_STANDARD  ; RETURN Codepage.CP_INI_MAC_STANDARD   
-        CASE DbfHeaderCodepage.CP_DBF_MAC_GREEK     ; RETURN Codepage.CP_INI_MAC_GREEK      
-        CASE DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN   ; RETURN Codepage.CP_INI_MAC_RUSSIAN    
-        CASE DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN ; RETURN Codepage.CP_INI_MAC_EEUROPEAN
-        OTHERWISE
-            RETURN 0
-
-        END SWITCH
-        
-      METHOD ToHeaderCodePage(SELF codePage AS CodePage) AS DbfHeaderCodePage
-        SWITCH codePage
-            CASE Codepage.CP_INI_DOS_US       ; RETURN DbfHeaderCodepage.CP_DBF_DOS_US         
-            CASE Codepage.CP_INI_DOS_MAZOVIA  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA    
-            CASE Codepage.CP_INI_DOS_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_DOS_GREEK      
-            CASE Codepage.CP_INI_DOS_INTL     ; RETURN DbfHeaderCodepage.CP_DBF_DOS_INTL       
-            CASE Codepage.CP_INI_DOS_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN  
-            CASE Codepage.CP_INI_DOS_ICELANDIC; RETURN DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC  
-            CASE Codepage.CP_INI_DOS_NORDIC   ; RETURN DbfHeaderCodepage.CP_DBF_DOS_NORDIC     
-            CASE Codepage.CP_INI_DOS_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN    
-            CASE Codepage.CP_INI_DOS_KAMENICKY; RETURN DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY  
-            CASE Codepage.CP_INI_DOS_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_TURKISH    
-            CASE Codepage.CP_INI_DOS_CANADIAN ; RETURN DbfHeaderCodepage.CP_DBF_DOS_CANADIAN   
-                                              
-            CASE Codepage.CP_INI_WIN_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN  
-            CASE Codepage.CP_INI_WIN_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN    
-            CASE Codepage.CP_INI_WIN_ANSI     ; RETURN DbfHeaderCodepage.CP_DBF_WIN_ANSI       
-            CASE Codepage.CP_INI_WIN_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_WIN_GREEK      
-            CASE Codepage.CP_INI_WIN_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_TURKISH    
-                                              
-            CASE Codepage.CP_INI_MAC_STANDARD ; RETURN DbfHeaderCodepage.CP_DBF_MAC_STANDARD   
-            CASE Codepage.CP_INI_MAC_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_MAC_GREEK      
-            CASE Codepage.CP_INI_MAC_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN    
-            CASE Codepage.CP_INI_MAC_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN  
-            
-         OTHERWISE
-            RETURN DbfHeaderCodepage.CP_DBF_DOS_US 
-        END SWITCH
-END CLASS    
-
+            // Should be INTERNAL
+            SET
+                SELF:iOffset := VALUE
+            END SET
+        END PROPERTY
+    END CLASS
+    
+    
+    
+    
 END NAMESPACE
 
 

@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC METHOD CWA(cFunction AS STRING) AS IRDD 
             LOCAL oResult AS IRDD
             RuntimeState.LastRddError := NULL
-            oResult := WorkAreas.GetInstance().CurrentWorkArea
+            oResult := RuntimeState.Workareas:CurrentWorkArea
             IF oResult != NULL_OBJECT
                 RETURN oResult
             ENDIF
@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD
             
             
         STATIC METHOD CWANum(cFunction AS STRING)  AS DWORD
-            VAR oWA := WorkAreas.GetInstance().CurrentWorkArea
+            VAR oWA := RuntimeState.Workareas:CurrentWorkArea
             IF oWA != NULL
                 RETURN oWA:Area
             ENDIF

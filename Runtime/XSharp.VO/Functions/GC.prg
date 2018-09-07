@@ -9,9 +9,9 @@
 /// </summary>
 /// <returns>
 /// </returns>
-function AllowCollectThread() as void
+FUNCTION AllowCollectThread() AS VOID
 	/// THROW NotImplementedException{}
-	return  
+	RETURN  
 
 
 /// <summary>
@@ -19,9 +19,9 @@ function AllowCollectThread() as void
 /// </summary>
 /// <returns>
 /// </returns>
-function Collect() as void
+FUNCTION Collect() AS VOID
 	/// THROW NotImplementedException{}
-	return  
+	RETURN  
 
 
 /// <summary>
@@ -29,32 +29,32 @@ function Collect() as void
 /// </summary>
 /// <returns>
 /// </returns>
-function CollectCount() as dword
+FUNCTION CollectCount() AS DWORD
 	/// THROW NotImplementedException{}
-	return 0   
+	RETURN 0   
 
 /// <summary>
 /// Call the garbage collector.
 /// </summary>
 /// <returns>
 /// </returns>
-function CollectForced() as void
+FUNCTION CollectForced() AS VOID
 	/// THROW NotImplementedException{}
-	return  
+	RETURN  
 
 
 [Obsolete( "'AxitCalled()' is not supported and always returns FALSE" )] ;
-	function AxitCalled(o as object) as logic
-return false  
+	FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
+RETURN FALSE  
 
 /// <summary>
 /// Check whether the application is in a garbage collection phase.
 /// </summary>
 /// <returns>
 /// </returns>
-function InCollect() as logic
+FUNCTION InCollect() AS LOGIC
 	/// THROW NotImplementedException{}
-	return false   
+	RETURN FALSE   
 
 
 
@@ -64,9 +64,9 @@ function InCollect() as logic
 /// <param name="oSource"></param>
 /// <returns>
 /// </returns>
-function RegisterAxit(oSource as object) as void
+FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
 	/// THROW NotImplementedException{}
-	return 
+	RETURN 
 
 
 /// <summary>
@@ -75,6 +75,6 @@ function RegisterAxit(oSource as object) as void
 /// <param name="oSource"></param>
 /// <returns>
 /// </returns>
-function UnRegisterAxit(oSource as object) as logic
+FUNCTION UnRegisterAxit(oSource AS OBJECT) AS LOGIC
 	/// THROW NotImplementedException{}
-	return false   
+	RETURN FALSE   

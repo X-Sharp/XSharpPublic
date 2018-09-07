@@ -4,8 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Runtime.InteropServices
-using System.Reflection
+USING System.Runtime.InteropServices
+USING System.Reflection
 
 /// <summary>
 /// Evaluate a code block or an object's Eval() method.
@@ -14,60 +14,60 @@ using System.Reflection
 /// <param name="args"></param>
 /// <returns>
 /// </returns>
-function Eval(block as ICodeblock, args params usual[]) as usual
-	local result as usual
-	if block == null
-		throw Error.NullArgumentError(__ENTITY__, nameof(block), 1)
-	endif
-	if block is codeblock // compile time codeblock
-			var cb := (codeblock) block
+FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
+	LOCAL result AS USUAL
+	IF block == NULL
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(block), 1)
+	ENDIF
+	IF block IS CODEBLOCK // compile time codeblock
+			VAR cb := (CODEBLOCK) block
 		result := cb:Eval(args)
-	else
+	ELSE
 		// runtime codeblock ? convert args to object[]
-		var num := args:Length
-		var oArgs := object[]{num}
-		for var i := 1 to num
-			oArgs[i] := (object) args[i]
-		next
+		VAR num := args:Length
+		VAR oArgs := OBJECT[]{num}
+		FOR VAR i := 1 TO num
+			oArgs[i] := (OBJECT) args[i]
+		NEXT
 		result := block:EvalBlock(oArgs)
-	endif
-	return result
+	ENDIF
+	RETURN result
 	
-function Eval( uCodeBlock as usual, args params usual[] ) as usual
-	local result as usual
-	if uCodeBlock:IsNil
-		throw Error.NullArgumentError(__ENTITY__, nameof(uCodeBlock), 1)
-	elseif ! uCodeBlock:IsCodeBlock
-		result := Eval( (object) uCodeBlock, args )
-	else 
-		result := Eval( (codeblock) uCodeBlock, args )
-	endif
-	return result
+FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
+	LOCAL result AS USUAL
+	IF uCodeBlock:IsNil
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(uCodeBlock), 1)
+	ELSEIF ! uCodeBlock:IsCodeBlock
+		result := Eval( (OBJECT) uCodeBlock, args )
+	ELSE 
+		result := Eval( (CODEBLOCK) uCodeBlock, args )
+	ENDIF
+	RETURN result
 	
-function Eval( obj as object,  args params usual[] ) as usual
-	local result as usual
+FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
+	LOCAL result AS USUAL
 	
-	if obj == null
-		throw Error.NullArgumentError(__ENTITY__, nameof(obj), 1)
-	elseif obj is XSharp.CodeBlock
-		result := Eval( (codeblock) obj, args )
-	else
-		var types   := Type[]{ 1 }
-		types[__ARRAYBASE__]	:= typeof( usual[] )
-		var oType := obj:GetType()
-		local mi as MethodInfo
-		mi := oType:GetMethod( "Eval", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase, null, types, null )
+	IF obj == NULL
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(obj), 1)
+	ELSEIF obj IS XSharp.CodeBlock
+		result := Eval( (CODEBLOCK) obj, args )
+	ELSE
+		VAR types   := Type[]{ 1 }
+		types[__ARRAYBASE__]	:= TYPEOF( USUAL[] )
+		VAR oType := obj:GetType()
+		LOCAL mi AS MethodInfo
+		mi := oType:GetMethod( "Eval", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase, NULL, types, NULL )
 		
-		if mi != null
-			var pars := object[]{ 1 }
+		IF mi != NULL
+			VAR pars := OBJECT[]{ 1 }
 			pars[__ARRAYBASE__] := args
 			result := mi:Invoke( obj , pars )
-		else 
-			throw Error.ArgumentError( __ENTITY__, "obj","Argument is not a codeblock"  ,1)
-		endif
-	endif
+		ELSE 
+			THROW Error.ArgumentError( __ENTITY__, "obj","Argument is not a codeblock"  ,1)
+		ENDIF
+	ENDIF
 	
-	return result
+	RETURN result
 
 
 /// <summary>
@@ -76,18 +76,18 @@ function Eval( obj as object,  args params usual[] ) as usual
 /// <param name="uCodeBlock"></param>
 /// <returns>
 /// </returns>
-function CParamCount(oCodeBlock as CodeBlock) as dword
-	if oCodeBlock == null_object
-		throw Error.NullArgumentError(__ENTITY__, nameof(oCodeBlock), 1)
-	endif
-	return (dword) oCodeBlock:PCount()
+FUNCTION CParamCount(oCodeBlock AS CODEBLOCK) AS DWORD
+	IF oCodeBlock == NULL_OBJECT
+		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(oCodeBlock), 1)
+	ENDIF
+	RETURN (DWORD) oCodeBlock:PCount()
 
 
 FUNCTION __CanEval(uValue AS USUAL) AS LOGIC 
-	IF uValue:isCodeBlock .and. uValue != NULL_CODEBLOCK
+	IF uValue:isCodeBlock .AND. uValue != NULL_CODEBLOCK
 		RETURN TRUE
-	endif
-	IF uValue:IsObject .and. IsMethod(uValue, "Eval")
+	ENDIF
+	IF uValue:IsObject .AND. IsMethod(uValue, "Eval")
 		RETURN TRUE
-	endif
-	return false
+	ENDIF
+	RETURN FALSE

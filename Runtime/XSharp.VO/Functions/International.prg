@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Text
+USING System.Text
 
 /// <summary>
 /// Look up an identifier in a string table and returns its corresponding string.
@@ -13,7 +13,7 @@ using System.Text
 /// <param name="xModule"></param>
 /// <returns>
 /// </returns>
-function LoadResString(cDef ,id ,xModule ) as string CLIPPER
+FUNCTION LoadResString(cDef ,id ,xModule ) AS STRING CLIPPER
    LOCAL cRet  := "" AS STRING
    LOCAL uiID  := 0	 AS DWORD
    LOCAL hInst AS IntPtr
@@ -68,5 +68,5 @@ INTERNAL _DLL FUNCTION GetModuleHandleW( name AS STRING ) AS IntPtr PASCAL:Kerne
 /// <param name="wLen"></param>
 /// <returns>
 /// </returns>
-function MBSubstr(c as usual,iStart as usual,wLen as usual) as string
-	return Substr(c, iStart, wLen)
+FUNCTION MBSubstr(c AS USUAL,iStart AS USUAL,wLen AS USUAL) AS STRING
+	RETURN Substr(c, iStart, wLen)

@@ -56,7 +56,8 @@ namespace XSharp.Project
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("XSharpResultSource.FindResults Exception : " + ex.Message);
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpResultSource.FindResults failed : " );
+                XSharpProjectPackage.Instance.DisplayException(ex);
             }
         }
 

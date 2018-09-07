@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
-    <ProjectName>$(MSBuildProjectName)</ProjectName>
-    <ProjectExt>$(MSBuildProjectExtension)</ProjectExt>
-    <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
-    <ProjectFileName>$(MSBuildProjectFile)</ProjectFileName>
-    <ProjectPath>$(MSBuildProjectDirectory)\$(MSBuildProjectFile)</ProjectPath>
-    <TargetPlatformVersion>7.0</TargetPlatformVersion>
-  	<UseOSWinMdReferences>true</UseOSWinMdReferences>
-    <OutputType>exe</OutputType>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
-    <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
-    <Name>$(MSBuildProjectName)</Name>
-    <RootNamespace>$(Name)</RootNamespace>
-    <AssemblyName>$(Name)</AssemblyName>
-    <Dialect>Core</Dialect>
-  </PropertyGroup>
-  <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
-  <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''" >Debug</Configuration>
-    <Platform      Condition="'$(Platform)' == ''" >AnyCPU</Platform>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
-    <Optimize>false</Optimize>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
-    <Optimize>true</Optimize>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
+        <ProjectName>$(MSBuildProjectName)</ProjectName>
+        <ProjectExt>$(MSBuildProjectExtension)</ProjectExt>
+        <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
+        <ProjectFileName>$(MSBuildProjectFile)</ProjectFileName>
+        <ProjectPath>$(MSBuildProjectDirectory)\$(MSBuildProjectFile)</ProjectPath>
+        <TargetPlatformVersion>7.0</TargetPlatformVersion>
+        <UseOSWinMdReferences>true</UseOSWinMdReferences>
+        <OutputType>exe</OutputType>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
+        <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
+        <Name>$(MSBuildProjectName)</Name>
+        <RootNamespace>$(Name)</RootNamespace>
+        <AssemblyName>$(Name)</AssemblyName>
+        <Dialect>Core</Dialect>
+    </PropertyGroup>
+    <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
+    <PropertyGroup>
+        <Configuration Condition="'$(Configuration)' == ''" >Debug</Configuration>
+        <Platform      Condition="'$(Platform)' == ''" >AnyCPU</Platform>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
+        <Optimize>false</Optimize>
+        <EmitDebugInformation>true</EmitDebugInformation>
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
+        <Optimize>true</Optimize>
+        <EmitDebugInformation>true</EmitDebugInformation>
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
 </Project>

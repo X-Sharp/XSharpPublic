@@ -9,7 +9,10 @@
 "Language"="X#"
 
 
-; Specifies the debug engines supported by the language.  Here we are specifying that X# can be used when Managed or Mixed Mode debugging.
+; Specifies the debug engines supported by the language. 
+; Here we are specifying that X# can be used when Managed or Mixed Mode debugging.
 [$RootKey$\AD7Metrics\ExpressionEvaluator\{f579403a-d3d3-47a0-bf03-9709575bee69}\{363398fa-76ad-44bb-a750-0abdc02bf4de}\Engine]
+; Managed Only
 "0"="{449EC4CC-30D2-4032-9256-EE18EB41B62B}"
-"1"="{2E36F1D4-B23C-435D-AB41-18E608940038}"
+; Managed and Native
+"1"="{92EF0900-2251-11D2-B72E-0000F87572EF}"

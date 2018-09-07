@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -29,7 +29,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		THROW NotImplementedException{}
 		
 	/// <inheritdoc />
-	VIRTUAL METHOD OrderInfo(nOrdinal AS INT) AS OBJECT
+	VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 		THROW NotImplementedException{}
 		
 	/// <inheritdoc />

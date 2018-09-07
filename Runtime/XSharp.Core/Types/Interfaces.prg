@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp
 		PROPERTY Day		AS INT GET
 		/// <summary>Date as System.DateTime structure</summary>
 		/// <returns>System.DateTime value</returns>
-		PROPERTY @@Value	AS DateTime GET 
+		PROPERTY Value		AS DateTime GET 
 		/// <summary>Is the date empty (NULL_DATE)</summary>
 		/// <returns>Logical value</returns>
 		PROPERTY IsEmpty	AS LOGIC GET
@@ -71,6 +71,6 @@ BEGIN NAMESPACE XSharp
 		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.ICodeBlock"/>
-		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module as System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
+		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
 	END INTERFACE
 END NAMESPACE

@@ -16,15 +16,15 @@ USING NUnit.Framework
 BEGIN NAMESPACE $safeprojectname$
 	[TestFixture];
 	CLASS TestClass
-	CONSTRUCTOR()
+	CONSTRUCTOR()  STRICT
 		RETURN		
 		
 	[Test];
-	METHOD TestMethod1 AS VOID
+	METHOD TestMethod1 AS VOID  STRICT
 		Assert.AreEqual(1,1)
 	RETURN
 	[Test];
-	METHOD TestMethod2 AS VOID
+	METHOD TestMethod2 AS VOID  STRICT
 		Assert.AreEqual(True, False) // Note that this will fail of course
 	END CLASS
 END NAMESPACE

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -28,7 +28,7 @@ namespace XSharp.CodeDom
         protected Dictionary<string, XType> _xtypes;    // XSharp type cache
         protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
         protected IList<string> _usings;          // uses for type lookup
-        protected IList<IToken> _tokens;          // used to find comments 
+        protected IList<IToken> _tokens;          // used to find comments
 
         internal Dictionary<ParserRuleContext, List<XCodeMemberField>> FieldList { get; set; }
         internal string SourceCode { get; set; }
@@ -70,7 +70,7 @@ namespace XSharp.CodeDom
             // Datatype is ptrDatatype
             // or arrayDatatype
             // or simpleDatatype
-            // or nullableDatatype 
+            // or nullableDatatype
             // they all have a TypeName
             XSharpParser.TypeNameContext tn = null;
             if (context is XSharpParser.PtrDatatypeContext)
@@ -182,7 +182,9 @@ namespace XSharp.CodeDom
             {
                 System.Type type = findType(sName);
                 if (type != null)
+                {
                     return new XCodeTypeReference(type);
+                }
             }
             if (context is XSharpParser.QualifiedNameContext)
             {
@@ -344,18 +346,24 @@ namespace XSharp.CodeDom
             data.CaretPosition = new System.Drawing.Point(col, line);
             data.FileName = this.CurrentFile;
             // point is where the designer will try to focus if the
-            // user wants to add event handler stuff.  
+            // user wants to add event handler stuff.
             newElement.UserData[typeof(CodeDomDesignerData)] = data;
             newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
         }
 
-        protected void FillCodeSource(CodeObject element, IToken endOfFirstLine, ParserRuleContext context)
+        protected void FillCodeSource(CodeObject element, ParserRuleContext context, IList<IToken> tokens)
         {
-            int length = context.Stop.StopIndex - endOfFirstLine.StopIndex - 2;
-            string extract = "";
-            if (length > 0)
-                extract = this.SourceCode.Substring(endOfFirstLine.StopIndex + 1, length).TrimStart();
-            element.UserData[XSharpCodeConstants.USERDATA_CODE] = extract;
+            StringBuilder prototype = new StringBuilder();
+            var index = ((XSharpToken) context.Start).OriginalTokenIndex;
+            var lastindex = ((XSharpToken)context.Stop).OriginalTokenIndex;
+            while (index > 0 && index < tokens.Count)
+            {
+                prototype.Append(tokens[index].Text);
+                if (index == lastindex)
+                    break;
+                index++;
+            }
+            element.UserData[XSharpCodeConstants.USERDATA_CODE] = prototype.ToString();
         }
 
         protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)
@@ -578,7 +586,7 @@ namespace XSharp.CodeDom
                 return text;
             }
             StringBuilder retval = new StringBuilder(text.Length);
-            for (int ix = 0; ix < text.Length;)
+            for (int ix = 1; ix < text.Length;)
             {
                 // Search the next escape char '\'
                 int jx = text.IndexOf('\\', ix);
@@ -703,7 +711,14 @@ namespace XSharp.CodeDom
                 return new XCodeTypeReference(type);
             }
             else
-                return new XCodeTypeReference(name);
+            {
+                var xtype = _projectNode.ResolveXType(name, _usings.ToImmutableArray());
+                if (xtype != null)
+                    return new XCodeTypeReference(xtype.FullName);
+                else
+                    return new XCodeTypeReference(name);
+            }
+
 
         }
         protected System.Type findType(string typeName)
@@ -714,7 +729,9 @@ namespace XSharp.CodeDom
             }
             var type = _projectNode.ResolveType(typeName, _usings.ToImmutableArray());
             if (type != null)
+            {
                 _types.Add(typeName, type);
+            }
             return type;
 
         }
@@ -867,7 +884,7 @@ namespace XSharp.CodeDom
         #endregion
         #region Common Methods
         private XCodeNamespace _currentNamespace;
-        public XCodeNamespace CurrentNamespace  
+        public XCodeNamespace CurrentNamespace
         {
             get
             {

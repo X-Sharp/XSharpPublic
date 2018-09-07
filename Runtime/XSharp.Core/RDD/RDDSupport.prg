@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -88,35 +88,35 @@ CLASS DbOpenInfo
 	/// <summary>The filename (optionally includig a path) for the table that must be opened.</summary>
 	PUBLIC FileName		AS STRING
 	/// <summary>Workarea number in which the table will be opened.</summary>
-	PUBLIC WorkArea		AS LONG    
+	PUBLIC WorkArea		AS DWORD    
 	
 	CONSTRUCTOR()
 		
-	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, liWorkArea AS LONG, lShared AS LOGIC, lReadOnly AS LOGIC)
+	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, dwWorkArea AS DWORD, lShared AS LOGIC, lReadOnly AS LOGIC)
 		FileName 	:= sFileName
         Extension   := Path.GetExtension(sFileName)
 		Alias	 	:= sAlias
-		WorkArea	:= liWorkArea
+		WorkArea	:= dwWorkArea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
 	/// <summary>Return the numeric FileMode based on the Shared and Readonly flags </summary>
-	public property FileMode as DWORD 
-	get
-		local nMode as DWORD
+	PUBLIC PROPERTY FileMode AS DWORD 
+	GET
+		LOCAL nMode AS DWORD
 		nMode := FO_COMPAT
-		if (Shared)
+		IF (Shared)
 			nMode |= FO_SHARED
-		else
+		ELSE
 			nMode |= FO_EXCLUSIVE
-		endif
-		if (ReadOnly)
+		ENDIF
+		IF (ReadOnly)
 			nMode |= FO_READ
-		else
+		ELSE
 			nMode |= FO_READWRITE
-		endif
-		return nMode
-	end get
-	end property
+		ENDIF
+		RETURN nMode
+	END GET
+	END PROPERTY
 END CLASS  
 
 /// <summary>Helper class to store information needed to create a conditional order.</summary> 
@@ -183,7 +183,8 @@ CLASS DbOrderInfo
 	PUBLIC Order		AS OBJECT
 	/// <summary>The index file name.</summary>
 	PUBLIC BagName		AS STRING
-	//PUBLIC Result		AS OBJECT 	// Is this needed ?
+	/// <summary>Return value for some order operations.</summary>
+	PUBLIC Result		AS OBJECT 	
 END CLASS
 
 /// <summary>Helper class to store a list of relational information.</summary> 
@@ -266,7 +267,7 @@ STRUCTURE DbSeekInfo
 	/// <summary>A flag that is TRUE if a soft seek is to be performed. </summary>
 	PUBLIC SoftSeek AS LOGIC
 	/// <summary>An object containing the key value to find.</summary>
-	PUBLIC Value	AS OBJECT
+	PUBLIC VALUE	AS OBJECT
 END STRUCTURE
 
 /// <summary>Helper class to store information needed to perform a physical sort. </summary> 
@@ -358,18 +359,13 @@ END CLASS
 CLASS DbJoinList
 END CLASS
 
-CLASS OrderStatus
-END CLASS
+
 
 CLASS RddList
 END CLASS
 
 
 CLASS DbFieldNames
-END CLASS
-
-
-CLASS DbWORKAREASTATUS
 END CLASS
 
 

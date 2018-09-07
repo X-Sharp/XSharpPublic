@@ -14,7 +14,7 @@ BEGIN NAMESPACE $safeprojectname$
 
     PUBLIC PARTIAL CLASS Form1 INHERIT System.Windows.Forms.Form
     
-        PUBLIC CONSTRUCTOR()  //$safeitemrootname$
+        PUBLIC CONSTRUCTOR()   STRICT//$safeitemrootname$
             InitializeComponent()
 			RETURN
         

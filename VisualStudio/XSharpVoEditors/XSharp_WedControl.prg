@@ -1,12 +1,12 @@
 ﻿USING System.Drawing
 USING System.IO
-using XSharp.VOEditors
-using System.Windows.Forms
-using XSharp.VODesigners
+USING XSharp.VOEditors
+USING System.Windows.Forms
+USING XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 
-	PROPERTY StatusMessage as StatusMessageDelegate AUTO
+	PROPERTY StatusMessage AS StatusMessageDelegate AUTO
 
     CONSTRUCTOR()
         SUPER()
@@ -41,7 +41,7 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 		SELF:oMed := XSharp_VOMenuEditor{SELF , VOWEDControl.Grid }
     	SELF:oEditor := SELF:oMed
 		IF ! SELF:oMed:Open(cFileName)
-			return false
+			RETURN false
 		ENDIF
         SELF:oMed:IsDirtyChanged := SELF:oIsDirtyChangedHandler
         SELF:oMed:TriggerSave := SELF:oTriggerSaveHandler
@@ -52,7 +52,7 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 		SELF:oFed := XSharp_VOFieldSpecEditor{SELF , VOWEDControl.Grid }
     	SELF:oEditor := SELF:oFed
 		IF ! SELF:oFed:Open(cFileName)
-			return false
+			RETURN false
 		ENDIF
         SELF:oFed:IsDirtyChanged := SELF:oIsDirtyChangedHandler
         SELF:oFed:TriggerSave := SELF:oTriggerSaveHandler
@@ -63,7 +63,7 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 		SELF:oDed := XSharp_VODbServerEditor{SELF , VOWEDControl.Grid }
     	SELF:oEditor := SELF:oDed
 		IF ! SELF:oDed:Open(cFileName)
-			return false
+			RETURN false
 		ENDIF
         SELF:oDed:IsDirtyChanged := SELF:oIsDirtyChangedHandler
         SELF:oDed:TriggerSave := SELF:oTriggerSaveHandler
@@ -78,9 +78,9 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 	PROPERTY IsGridEnabled AS LOGIC GET oWed != NULL && oWed:IsGridEnabled
 
 
-	PROPERTY ReadOnly as LOGIC GET SUPER:oEditor:ReadOnly SET SUPER:ReadOnly := Value
+	PROPERTY ReadOnly AS LOGIC GET SUPER:oEditor:ReadOnly SET SUPER:ReadOnly := VALUE
 
-	PROPERTY IWin32Window as IWin32Window GET (IWin32Window) SELF
+	PROPERTY IWin32Window AS IWin32Window GET (IWin32Window) SELF
 
 	METHOD ToggleGrid() AS VOID
 		IF SELF:oWed != NULL
@@ -99,17 +99,17 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 	RETURN
 
 	// Menu options
-	METHOD CanDoAction(nType as Actions) AS LOGIC
-		VAR lOk := CanDoAction( (DesignerActionType) (int) nType)
+	METHOD CanDoAction(nType AS Actions) AS LOGIC
+		VAR lOk := CanDoAction( (DesignerActionType) (INT) nType)
 		RETURN lOk
 
-	METHOD Action(nType as Actions) AS VOID
-		DoAction( (DesignerActionType) (int) nType)
+	METHOD Action(nType AS Actions) AS VOID
+		DoAction( (DesignerActionType) (INT) nType)
 	
-	METHOD ShowStatusBarMessage(cMessage as STRING) AS VOID
-		if (SELF:StatusMessage != NULL)
+	METHOD ShowStatusBarMessage(cMessage AS STRING) AS VOID
+		IF (SELF:StatusMessage != NULL)
 			StatusMessage(cMessage)
-		endif
+		ENDIF
 
 END CLASS
 END NAMESPACE

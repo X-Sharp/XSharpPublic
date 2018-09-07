@@ -7,7 +7,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
-using XUnit
+USING XUnit
 
 
 // WinBool test
@@ -16,17 +16,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	CLASS ErrorTests
 	 
 		[Fact, Trait("Category", "Error")]; 
-		method Tests as void
-			local u as usual
-			begin sequence
-				Assert.Equal (true, canBreak())
-				if canBreak()
-					break 10
-				endif
-			recover using u
-				Assert.Equal(10, (int) u)
-			end sequence
-			Assert.Equal (false, canBreak())
+		METHOD Tests AS VOID
+			LOCAL u AS USUAL
+			BEGIN SEQUENCE
+				Assert.Equal (TRUE, canBreak())
+				IF canBreak()
+					BREAK 10
+				ENDIF
+			RECOVER USING u
+				Assert.Equal(10, (INT) u)
+			END SEQUENCE
+			Assert.Equal (FALSE, canBreak())
 		RETURN
 
 	END CLASS

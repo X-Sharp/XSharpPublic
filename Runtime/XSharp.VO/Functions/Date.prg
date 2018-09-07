@@ -1,15 +1,15 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
 USING XSharp
-using System.Globalization
+USING System.Globalization
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
-/// <param name="cString">A 32-bit binary date represented as a string � least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
+/// <param name="cString">A 32-bit binary date represented as a string — least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
 /// <returns>A date value that corresponds to the date specified in cString.  If cString is not a valid binary date, Bin2Date() returns a NULL_DATE.
 /// </returns>
 FUNCTION Bin2Date(cString AS STRING) AS DATE
@@ -75,7 +75,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 	LOCAL nDay, nMonth, nYear AS DWORD
 	LOCAL nDayPos, nMonthPos, nYearPos AS INT
 	dDate := (DATE) 0
-	IF string.IsNullOrEmpty(cDate) .or. String.IsNullOrEmpty(cDateFormat)
+	IF string.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat)
 		RETURN dDate
 	ENDIF
 	LOCAL nPos AS INT
@@ -83,7 +83,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 	nDayPos := nMonthPos := nYearPos := 0
 	cSep := "./-"
 	nPos := 0
-	FOREACH c AS char IN cDateFormat
+	FOREACH c AS CHAR IN cDateFormat
 		SWITCH c
 		CASE 'D'
 			IF nDayPos == 0
@@ -106,7 +106,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 			ENDIF
 		END SWITCH
 	NEXT
-	IF nDayPos == 0 .or. nMonthPos == 0 .or. nYearPos == 0
+	IF nDayPos == 0 .OR. nMonthPos == 0 .OR. nYearPos == 0
 		RETURN dDate
 	ENDIF
 	TRY
@@ -134,7 +134,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 /// The year, month, and day can be separated by any character other than a number. 
 /// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().  
 /// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
-/// <returns>The date value that corresponds to the numbers specified in <cDate>.  If cDate is not a valid ANSI date, CToDAnsi() returns a NULL_DATE.
+/// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If cDate is not a valid ANSI date, CToDAnsi() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 	RETURN CToD(cDate, "YYYY.MM.DD")
@@ -144,7 +144,9 @@ FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 /// Convert a Date to a 32-bit binary Date string.
 /// </summary>
 /// <param name="dValue">The date value to convert.</param>
-/// <returns>Date2Bin() is a conversion function that converts a date data type into a 4-byte string.  Typical applications include reading foreign file types in their native format and then saving, reading, decrypting, and transmitting date types in their compressed binary form instead of in strings.  Its inverse is Bin2Date().
+/// <returns>Date2Bin() is a conversion function that converts a date data type into a 4-byte string.
+/// Typical applications include reading foreign file types in their native format and then saving, reading, decrypting, and
+/// transmitting date types in their compressed binary form instead of in strings.  Its inverse is Bin2Date().
 /// </returns>
 FUNCTION Date2Bin(dValue AS DATE) AS STRING
 	RETURN L2Bin((LONG) (DATE) dValue)
@@ -220,8 +222,8 @@ FUNCTION DToS(dDate AS DATE) AS STRING
 FUNCTION JCDOW(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
-	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") as CultureInfo
-	return culture:DateTimeFormat:GetDayName(dt:DayOfWeek)
+	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") AS CultureInfo
+	RETURN culture:DateTimeFormat:GetDayName(dt:DayOfWeek)
 
 /// <summary>
 /// </summary>
@@ -232,8 +234,8 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 	LOCAL dt := d AS DateTime
 	LOCAL cal := JapaneseCalendar{} AS JapaneseCalendar
 	LOCAL month := cal:GetMonth(dt) AS INT
-	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") as CultureInfo
-	return culture:DateTimeFormat:GetMonthName(month)
+	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") AS CultureInfo
+	RETURN culture:DateTimeFormat:GetMonthName(month)
 
 
 /// <summary>
@@ -242,7 +244,7 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION JCYEAR(d AS DATE) AS STRING
-	return Year(d):ToString()
+	RETURN Year(d):ToString()
 
 /// <summary>
 /// Extract the number of the month from a DATE.
@@ -270,7 +272,7 @@ FUNCTION Month(d AS DATE) AS DWORD
 FUNCTION SToD(cDate AS STRING) AS DATE
 	LOCAL convertedDate AS DATE
 	TRY
-		IF cDate:Length == 8 .and. cDate[0] == '0' .and. cDate[1] == '0'
+		IF cDate:Length == 8 .AND. cDate[0] == '0' .AND. cDate[1] == '0'
 			// VO adjusts date strings like "00yyMMdd" to epoch-based year
 			LOCAL dwY AS DWORD
 			dwY := UInt32.Parse(cDate:Substring(0,4))

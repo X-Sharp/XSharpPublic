@@ -1,109 +1,110 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <PropertyGroup>
-    <ProjectGuid>$guid1$</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>$safeprojectname$</RootNamespace>
-    <AssemblyName>$safeprojectname$</AssemblyName>
-    <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
-    <Name>$safeprojectname$</Name>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    $if$ ($targetframeworkversion$ >= 3.5)
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    $endif$
+    <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+    <PropertyGroup>
+        <ProjectGuid>$guid1$</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>$safeprojectname$</RootNamespace>
+        <AssemblyName>$safeprojectname$</AssemblyName>
+        <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
+        <Name>$safeprojectname$</Name>
+        <Nologo>true</Nologo>
+        <GenerateFullPaths>true</GenerateFullPaths>
+        <Dialect>Core</Dialect>
+        <vo15>false</vo15>
+        <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
+        <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+        <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+        <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+        <IsCodedUITest>False</IsCodedUITest>
+        <TestProjectType>UnitTest</TestProjectType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <EmitDebugInformation>true</EmitDebugInformation>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <EmitDebugInformation>false</EmitDebugInformation>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="mscorlib" />
+        <Reference Include="System" />
+        $if$ ($targetframeworkversion$ >= 3.5)
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+        $endif$
     </ItemGroup>
     <Choose>
-      <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
-        <ItemGroup>
-          <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-        </ItemGroup>
-      </When>
-      <Otherwise>
-        <ItemGroup>
-          <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-        </ItemGroup>
-      </Otherwise>
+        <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+            <ItemGroup>
+                <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+            </ItemGroup>
+        </When>
+        <Otherwise>
+            <ItemGroup>
+                <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+            </ItemGroup>
+        </Otherwise>
     </Choose>
     <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestClass.prg">
-      <SubType>Code</SubType>
-    </Compile>
+        <Compile Include="Properties\AssemblyInfo.prg">
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="TestClass.prg">
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
     <Choose>
-      <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
-        <ItemGroup>
-          <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <Private>False</Private>
-          </Reference>
-          <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <Private>False</Private>
-          </Reference>
-          <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <Private>False</Private>
-          </Reference>
-          <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <Private>False</Private>
-          </Reference>
-        </ItemGroup>
-      </When>
+        <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+            <ItemGroup>
+                <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+                    <Private>False</Private>
+                </Reference>
+                <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+                    <Private>False</Private>
+                </Reference>
+                <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+                    <Private>False</Private>
+                </Reference>
+                <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+                    <Private>False</Private>
+                </Reference>
+            </ItemGroup>
+        </When>
     </Choose>
     <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+    <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
     <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
+    <ProjectExtensions>
+        <ProjectCapabilities>
+            <ProjectConfigurationsDeclaredAsItems />
+        </ProjectCapabilities>
+    </ProjectExtensions>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+        <PreBuildEvent />
+        <PostBuildEvent />
+        <RunPostBuildEvent />
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+        <PreBuildEvent />
+        <PostBuildEvent />
+        <RunPostBuildEvent />
+    </PropertyGroup>
 </Project>

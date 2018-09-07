@@ -4,31 +4,31 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Runtime.InteropServices
-using System.Runtime.CompilerServices
-using System.Runtime.Remoting
-using System.Reflection
-using System.Diagnostics
-using System.Runtime.InteropServices.ComTypes
+USING System.Runtime.InteropServices
+USING System.Runtime.CompilerServices
+USING System.Runtime.Remoting
+USING System.Reflection
+USING System.Diagnostics
+USING System.Runtime.InteropServices.ComTypes
 
 /// <summary>VO Compatible class to create an OLEAutObject from a file on disk.</summary>	
 [DebuggerDisplay( "Type= {__ComObject}, File={cFileName}", Type := "OleAutoObjectFromFile" )];
 CLASS XSharp.OleAutoObjectFromFile INHERIT OleAutoObject
    PROTECT _cFileName 	AS STRING
    
-   CONSTRUCTOR(cFile as STRING)
-      local oDoc  as Object
-      local type  as System.Type
-      local oObj  as MarshalByRefObject
+   CONSTRUCTOR(cFile AS STRING)
+      LOCAL oDoc  AS OBJECT
+      LOCAL type  AS System.Type
+      LOCAL oObj  AS MarshalByRefObject
       
       _cFileName := cFile
-      try
+      TRY
          oDoc    := Marshal.BindToMoniker(cFile)
          oObj    := (MarshalByRefObject) oDoc
          type    := oObj:GetType()
          
-         super(oDoc, type)
-      end try
+         SUPER(oDoc, type)
+      END TRY
    
       RETURN
 

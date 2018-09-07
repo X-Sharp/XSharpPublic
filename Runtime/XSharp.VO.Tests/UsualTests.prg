@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -63,9 +63,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (INT64) u)
 			u := UInt64.MaxValue
-			Assert.Throws(typeof(Error), { => l := (INT64) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => l := (INT64) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => l := (INT64) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => l := (INT64) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -78,9 +78,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (LONG) u)
 			u := UInt32.MaxValue
-			Assert.Throws(typeof(Error), { => l := (LONG) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => l := (LONG) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => l := (LONG) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => l := (LONG) u})	// Conversion Error
 			
 			RETURN
 
@@ -94,9 +94,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (SHORT) u)
 			u := UInt16.MaxValue
-			Assert.Throws(typeof(Error), { => l := (SHORT) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => l := (SHORT) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => l := (SHORT) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => l := (SHORT) u})	// Conversion Error
 			
 			RETURN
 
@@ -110,24 +110,24 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (SByte) u)
 			u := Byte.MaxValue
-			Assert.Throws(typeof(Error), { => l := (SByte) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => l := (SByte) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => l := (SByte) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => l := (SByte) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualUInt64Tests() AS VOID
 			LOCAL u AS USUAL
-			LOCAL d AS UInt64
-			u := (Uint64) 1
+			LOCAL d AS UINT64
+			u := (UINT64) 1
 			Assert.Equal(UsualType(u), (DWORD) INT64)
 			d := u
 			Assert.Equal(d,1U)
-			Assert.Equal(d,  (UInt64) u)
+			Assert.Equal(d,  (UINT64) u)
 			u := -1
-			Assert.Throws(typeof(Error), { => d := (UInt64) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => d := (UINT64) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => d := (UInt64) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => d := (UINT64) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -140,9 +140,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(d,1U)
 			Assert.Equal(d,  (DWORD) u)
 			u := -1
-			Assert.Throws(typeof(Error), { => d := (DWORD) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => d := (DWORD) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => d := (DWORD) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => d := (DWORD) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -155,9 +155,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(w,1)
 			Assert.Equal(w,  (WORD) u)
 			u := -1
-			Assert.Throws(typeof(Error), { => w := (WORD) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => w := (WORD) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => w := (WORD) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => w := (WORD) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -171,9 +171,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(b,1U)
 			Assert.Equal(b,  (BYTE) u)
 			u :=  -1
-			Assert.Throws(typeof(Error), { => b := (BYTE) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => b := (BYTE) u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(typeof(Error), { => b := (BYTE) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => b := (BYTE) u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT) u, 4)
 			u++
 			Assert.Equal((INT) u, 5)
-			Assert.Throws(typeof(Error), { => u += "a"})	
+			Assert.Throws(TYPEOF(Error), { => u += "a"})	
 
 			u := (INT64) 1
 			u += (INT) 1
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT64) u, 4)
 			u++
 			Assert.Equal((INT64) u, 5)
-			Assert.Throws(typeof(Error), { => u += "a"})	
+			Assert.Throws(TYPEOF(Error), { => u += "a"})	
 
 			u :=   1.0
 			u += 1
@@ -210,12 +210,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((FLOAT) u, 4.0)
 			u ++
 			Assert.Equal((FLOAT) u, 5.0)
-			Assert.Throws(typeof(Error), { => u += "a"})	
+			Assert.Throws(TYPEOF(Error), { => u += "a"})	
 
 			u := "abc"
 			u += "def"
 			Assert.Equal((STRING) u, "abcdef")
-			Assert.Throws(typeof(Error), { => u += 1})	
+			Assert.Throws(TYPEOF(Error), { => u += 1})	
 
 			VAR d := (DATE) datetime.Now
 			u := d
@@ -235,7 +235,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT) u, 97)
 			u--
 			Assert.Equal((INT) u, 96)
-			Assert.Throws(typeof(Error), { => u -= "a"})	
+			Assert.Throws(TYPEOF(Error), { => u -= "a"})	
 
 			u := (INT64) 1000
 			u -= (INT) 1
@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT64) u, 997)
 			u--
 			Assert.Equal((INT64) u, 996)
-			Assert.Throws(typeof(Error), { => u -= "a"})	
+			Assert.Throws(TYPEOF(Error), { => u -= "a"})	
 
 			u := 111.1
 			u -= 1
@@ -257,12 +257,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((FLOAT) u, 108.1)
 			u--
 			Assert.Equal((FLOAT) u, 107.1)
-			Assert.Throws(typeof(Error), { => u -= "a"})	
+			Assert.Throws(TYPEOF(Error), { => u -= "a"})	
 
 			u := "abc"
 			u -= "def"
 			Assert.Equal((STRING) u, "abcdef")
-			Assert.Throws(typeof(Error), { => u -= 1})	
+			Assert.Throws(TYPEOF(Error), { => u -= 1})	
 
 		[Fact, Trait("Category", "Usual string comparisons")];
 		METHOD UsualStringComparisons() AS VOID
@@ -286,6 +286,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT
 			
 			SetExact(lExact)
+
+		[Fact, Trait("Category", "Usual conversion tests")];
+		METHOD UsualConversionTests() AS VOID
+			LOCAL u AS USUAL
+			LOCAL d AS DWORD
+			u := UInt32.MaxValue
+			d := UsualConversionTests_helper(u)
+			Assert.Equal(UInt32.MaxValue - 1 , d)
+		
+		METHOD UsualConversionTests_helper(d AS DWORD) AS DWORD
+			d --
+		RETURN d
+		
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

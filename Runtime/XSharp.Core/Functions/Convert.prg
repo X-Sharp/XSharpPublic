@@ -3,25 +3,25 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Text
+USING System.Text
 /// <summary>
 /// Convert a string containing a 32-bit unsigned integer to a double word.
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2DW(c as string) as dword
-	local dwResult := 0 as dword
-	if c!= null .and. c:Length >= 4
-		local aBytes as byte[]
-		aBytes := byte[]{4}
-		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
+FUNCTION Bin2DW(c AS STRING) AS DWORD
+	LOCAL dwResult := 0 AS DWORD
+	IF c!= NULL .AND. c:Length >= 4
+		LOCAL aBytes AS BYTE[]
+		aBytes := BYTE[]{4}
+		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (BYTE) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (BYTE) _AND(c:Chars[3], 0xFF)
 		dwResult := BitConverter.ToUInt32(aBytes, 0)
-	endif
-	return dwResult
+	ENDIF
+	RETURN dwResult
 
 /// <summary>
 /// Convert a string containing a 16-bit signed integer to a short integer.
@@ -29,16 +29,16 @@ function Bin2DW(c as string) as dword
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2I(c as string) as short
-	local siResult := 0 as short
-	if c!= null .and. c:Length >= 2
-		local aBytes as byte[]
-		aBytes := byte[]{2}
-		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
+FUNCTION Bin2I(c AS STRING) AS SHORT
+	LOCAL siResult := 0 AS SHORT
+	IF c!= NULL .AND. c:Length >= 2
+		LOCAL aBytes AS BYTE[]
+		aBytes := BYTE[]{2}
+		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
 		siResult := BitConverter.ToInt16(aBytes, 0)
-	endif
-	return siResult
+	ENDIF
+	RETURN siResult
 
 /// <summary>
 /// Convert a string containing a 32-bit signed integer to a long integer.
@@ -46,18 +46,18 @@ function Bin2I(c as string) as short
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2L(c as string) as long
-	local liResult := 0 as long
-	if c!= null .and. c:Length >= 4
-		local aBytes as byte[]
-		aBytes := byte[]{4}
-		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
+FUNCTION Bin2L(c AS STRING) AS LONG
+	LOCAL liResult := 0 AS LONG
+	IF c!= NULL .AND. c:Length >= 4
+		LOCAL aBytes AS BYTE[]
+		aBytes := BYTE[]{4}
+		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (BYTE) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (BYTE) _AND(c:Chars[3], 0xFF)
 		liResult := BitConverter.ToInt32(aBytes, 0)
-	endif
-	return liResult
+	ENDIF
+	RETURN liResult
 
 
 /// <summary>
@@ -66,8 +66,8 @@ function Bin2L(c as string) as long
 /// <param name="pszC"></param>
 /// <returns>
 /// </returns>
-function Bin2Logic(c as string) as logic
-	return c != null .and. c[0] != 0
+FUNCTION Bin2Logic(c AS STRING) AS LOGIC
+	RETURN c != NULL .AND. c[0] != 0
 
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
 	RETURN L2Bin( p:ToInt32())
@@ -77,8 +77,8 @@ FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2Ptr(c as string) as IntPtr
-return (IntPtr) Bin2L(c)
+FUNCTION Bin2Ptr(c AS STRING) AS IntPtr
+RETURN (IntPtr) Bin2L(c)
 
 /// <summary>
 /// Convert a string containing a 32-bit Floating point number to a Real4 value.
@@ -86,18 +86,18 @@ return (IntPtr) Bin2L(c)
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2Real4(c as string) as real4
-	local r4Result := 0 as real4
-	if c!= null .and. c:Length >= 4
-		local aBytes as byte[]
-		aBytes := byte[]{4}
-		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
+FUNCTION Bin2Real4(c AS STRING) AS REAL4
+	LOCAL r4Result := 0 AS REAL4
+	IF c!= NULL .AND. c:Length >= 4
+		LOCAL aBytes AS BYTE[]
+		aBytes := BYTE[]{4}
+		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (BYTE) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (BYTE) _AND(c:Chars[3], 0xFF)
 		r4Result := BitConverter.ToSingle(aBytes, 0)
-	endif
-	return r4Result
+	ENDIF
+	RETURN r4Result
 
 
 /// <summary>
@@ -106,22 +106,22 @@ function Bin2Real4(c as string) as real4
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2REAL8(c as string) as real8
-	local r8Result := 0 as real8
-	if c!= null .and. c:Length >= 8
-		local aBytes as byte[]
-		aBytes := byte[]{8}
-		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
-		aBytes[2] := (byte) _AND(c:Chars[2], 0xFF)
-		aBytes[3] := (byte) _AND(c:Chars[3], 0xFF)
-		aBytes[4] := (byte) _AND(c:Chars[4], 0xFF)
-		aBytes[5] := (byte) _AND(c:Chars[5], 0xFF)
-		aBytes[6] := (byte) _AND(c:Chars[6], 0xFF)
-		aBytes[7] := (byte) _AND(c:Chars[7], 0xFF)
+FUNCTION Bin2REAL8(c AS STRING) AS REAL8
+	LOCAL r8Result := 0 AS REAL8
+	IF c!= NULL .AND. c:Length >= 8
+		LOCAL aBytes AS BYTE[]
+		aBytes := BYTE[]{8}
+		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
+		aBytes[2] := (BYTE) _AND(c:Chars[2], 0xFF)
+		aBytes[3] := (BYTE) _AND(c:Chars[3], 0xFF)
+		aBytes[4] := (BYTE) _AND(c:Chars[4], 0xFF)
+		aBytes[5] := (BYTE) _AND(c:Chars[5], 0xFF)
+		aBytes[6] := (BYTE) _AND(c:Chars[6], 0xFF)
+		aBytes[7] := (BYTE) _AND(c:Chars[7], 0xFF)
 		r8Result := BitConverter.ToDouble(aBytes, 0)
-	endif
-	return r8Result
+	ENDIF
+	RETURN r8Result
 
 /// <summary>
 /// Convert a string containing a 16-bit unsigned integer to a word.
@@ -129,16 +129,16 @@ function Bin2REAL8(c as string) as real8
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function Bin2W(c as string) as word
-	local wResult := 0 as word
-	if c!= null .and. c:Length >= 2
-		local aBytes as byte[]
-		aBytes := byte[]{2}
-		aBytes[0] := (byte) _AND(c:Chars[0], 0xFF)
-		aBytes[1] := (byte) _AND(c:Chars[1], 0xFF)
+FUNCTION Bin2W(c AS STRING) AS WORD
+	LOCAL wResult := 0 AS WORD
+	IF c!= NULL .AND. c:Length >= 2
+		LOCAL aBytes AS BYTE[]
+		aBytes := BYTE[]{2}
+		aBytes[0] := (BYTE) _AND(c:Chars[0], 0xFF)
+		aBytes[1] := (BYTE) _AND(c:Chars[1], 0xFF)
 		wResult := BitConverter.ToUInt16(aBytes, 0)
-	endif
-	return wResult
+	ENDIF
+	RETURN wResult
 
 
 
@@ -148,47 +148,47 @@ function Bin2W(c as string) as word
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function CTOL(c as string) as logic
-	if c != null 
-		if c[0] == 'T' .or. c[0] == 't' .or. c[0] == 'Y' .or. c[0] =='y'
-			return true	
-		endif
-	endif
-	return false
+FUNCTION CTOL(c AS STRING) AS LOGIC
+	IF c != NULL 
+		IF c[0] == 'T' .OR. c[0] == 't' .OR. c[0] == 'Y' .OR. c[0] =='y'
+			RETURN TRUE	
+		ENDIF
+	ENDIF
+	RETURN FALSE
 
 
-function _GetHexChar(c as char, c1 out char, c2 out char) as string
-	local s as string
-	s := String.Format("{0:X2}",(int) c)
+FUNCTION _GetHexChar(c AS CHAR, c1 OUT CHAR, c2 OUT CHAR) AS STRING
+	LOCAL s AS STRING
+	s := String.Format("{0:X2}",(INT) c)
 	c1 := s[0]
 	c2 := s[1]
-	return s
+	RETURN s
 
 /// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
-function C2Hex(cSource as string) as string
-	local sb as StringBuilder
+FUNCTION C2Hex(cSource AS STRING) AS STRING
+	LOCAL sb AS StringBuilder
 	sb := StringBuilder{cSource:Length*2}
-	foreach c as char in cSource
-		local c1, c2 as char
-		_GetHexChar(c, out c1, out c2)
+	FOREACH c AS CHAR IN cSource
+		LOCAL c1, c2 AS CHAR
+		_GetHexChar(c, OUT c1, OUT c2)
 		sb:Append(c1)
 		sb:Append(c2)
-	next
-	return sb:ToString()
+	NEXT
+	RETURN sb:ToString()
 
 // helper function to convert bytes to string
 
-internal function _bytes2String(byteArray as byte[]) as string
-	local sb as StringBuilder
+INTERNAL FUNCTION _bytes2String(byteArray AS BYTE[]) AS STRING
+	LOCAL sb AS StringBuilder
 	sb := StringBuilder{}
-	foreach var b in byteArray
-		sb:Append( (char) b)
-	next
-	return sb:ToString()
+	FOREACH VAR b IN byteArray
+		sb:Append( (CHAR) b)
+	NEXT
+	RETURN sb:ToString()
 
 /// <summary>
 /// Convert a double word to a string containing a 32-bit unsigned integer.
@@ -196,9 +196,9 @@ internal function _bytes2String(byteArray as byte[]) as string
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function DW2Bin(n as dword) as string
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return _bytes2String(byteArray)
+FUNCTION DW2Bin(n AS DWORD) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN _bytes2String(byteArray)
 
 /// <summary>
 /// Return the high-order (leftmost) byte in a number.
@@ -206,9 +206,9 @@ function DW2Bin(n as dword) as string
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function HiByte(dw as word) as byte
-	local upper := Convert.ToByte(dw >> 8) as byte
-	return (byte) upper   
+FUNCTION HiByte(dw AS WORD) AS BYTE
+	LOCAL upper := Convert.ToByte(dw >> 8) AS BYTE
+	RETURN (BYTE) upper   
 
 /// <summary>
 /// Return the high-order (leftmost) word in a number.
@@ -216,9 +216,9 @@ function HiByte(dw as word) as byte
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function HiWord(dw as dword) as word
-	local upper := Convert.ToUInt16(dw >> 16) as word
-	return (word) upper
+FUNCTION HiWord(dw AS DWORD) AS WORD
+	LOCAL upper := Convert.ToUInt16(dw >> 16) AS WORD
+	RETURN (WORD) upper
 
 
 /// <summary>
@@ -227,9 +227,9 @@ function HiWord(dw as dword) as word
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function I2Bin(n as short) as string
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return _bytes2String(byteArray)
+FUNCTION I2Bin(n AS SHORT) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN _bytes2String(byteArray)
 
 
 
@@ -239,9 +239,9 @@ function I2Bin(n as short) as string
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function L2Bin(n as long) as string
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return _bytes2String(byteArray)
+FUNCTION L2Bin(n AS LONG) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN _bytes2String(byteArray)
 
 
 /// <summary>
@@ -250,8 +250,8 @@ function L2Bin(n as long) as string
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function LoByte(dw as word) as byte
-	return (byte) (dw & 0x00FF)
+FUNCTION LoByte(dw AS WORD) AS BYTE
+	RETURN (BYTE) (dw & 0x00FF)
 
 /// <summary>
 /// Return the low-order (rightmost) word in a number.
@@ -259,8 +259,8 @@ function LoByte(dw as word) as byte
 /// <param name="dw"></param>
 /// <returns>
 /// </returns>
-function LoWord(dw as dword) as word
-	return (word) (dw & 0xFFFF) 
+FUNCTION LoWord(dw AS DWORD) AS WORD
+	RETURN (WORD) (dw & 0xFFFF) 
 
 
 /// <summary>
@@ -269,12 +269,12 @@ function LoWord(dw as dword) as word
 /// <param name="l"></param>
 /// <returns>
 /// </returns>
-function Logic2Bin(l as logic) as string
-	if l
-		return e"\x0001"
-	else
-		return e"\x0000"
-	endif
+FUNCTION Logic2Bin(l AS LOGIC) AS STRING
+	IF l
+		RETURN e"\x0001"
+	ELSE
+		RETURN e"\x0000"
+	ENDIF
 
 
 /// <summary>
@@ -283,12 +283,12 @@ function Logic2Bin(l as logic) as string
 /// <param name="l"></param>
 /// <returns>
 /// </returns>
-function LTOC(l as logic) as string
-	if l
-		return "T"
-	else
-		return "F"
-	endif
+FUNCTION LTOC(l AS LOGIC) AS STRING
+	IF l
+		RETURN "T"
+	ELSE
+		RETURN "F"
+	ENDIF
 
 
 
@@ -299,9 +299,9 @@ function LTOC(l as logic) as string
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Real42Bin(n as real4) as string
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return _bytes2String(byteArray)
+FUNCTION Real42Bin(n AS REAL4) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN _bytes2String(byteArray)
 
 /// <summary>
 /// Convert a Real8 value to a string containing an 8-byte Floating point number.
@@ -309,9 +309,9 @@ function Real42Bin(n as real4) as string
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function Real82Bin(n as real8) as string
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return _bytes2String(byteArray)
+FUNCTION Real82Bin(n AS REAL8) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN _bytes2String(byteArray)
 
 
 
@@ -322,6 +322,6 @@ function Real82Bin(n as real8) as string
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
-function W2Bin(n as word) as string
-	local byteArray := BitConverter.GetBytes( n ) as byte[]
-	return _bytes2String(byteArray)
+FUNCTION W2Bin(n AS WORD) AS STRING
+	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
+	RETURN _bytes2String(byteArray)

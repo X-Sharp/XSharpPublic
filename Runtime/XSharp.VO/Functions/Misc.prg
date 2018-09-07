@@ -16,7 +16,7 @@
 /// True if x is &gt;= y and &lt;= z otherwise false.
 /// </returns>
 FUNCTION Between(val AS USUAL,min AS USUAL,max AS USUAL) AS LOGIC
-	RETURN val >=min .and.  val<=max
+	RETURN val >=min .AND.  val<=max
 
 
  
@@ -46,7 +46,7 @@ FUNCTION Between(val AS USUAL,min AS USUAL,max AS USUAL) AS LOGIC
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION InList(u AS USUAL, args params USUAL[]) AS LOGIC
+FUNCTION InList(u AS USUAL, args PARAMS USUAL[]) AS LOGIC
 	RETURN _InListWorker(u, args, FALSE)
 /// <summary>
 /// Indicate whether the first expression in a series is repeated in the exact same form later in the series.
@@ -54,7 +54,7 @@ FUNCTION InList(u AS USUAL, args params USUAL[]) AS LOGIC
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION InListExact(u AS USUAL, args params USUAL[]) AS LOGIC
+FUNCTION InListExact(u AS USUAL, args PARAMS USUAL[]) AS LOGIC
 	RETURN _InListWorker(u, args, TRUE)
 
 
@@ -98,27 +98,27 @@ INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], lExact AS LO
 /// </returns>
 FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 
-	IF u1:IsNumeric .and. u2:IsNumeric
+	IF u1:IsNumeric .AND. u2:IsNumeric
 
-		IF u1:IsFloat .or. u2:IsFloat
+		IF u1:IsFloat .OR. u2:IsFloat
 			RETURN (USUAL) Math.Max( (REAL8) u1, (REAL8) u2)
 
-		ELSEIF u1:IsDecimal .or. u2:IsDecimal
+		ELSEIF u1:IsDecimal .OR. u2:IsDecimal
 			RETURN (USUAL) Math.Max( (Decimal) u1, (Decimal) u2)
 
-		ELSEIF u1:IsInt64 .or. u2:IsInt64
+		ELSEIF u1:IsInt64 .OR. u2:IsInt64
 			RETURN (USUAL) Math.Max( (INT64) u1, (INT64) u2)
 		ENDIF
 		RETURN (USUAL) Math.Max( (LONG) u1, (LONG) u2)
 
-	ELSEIF u1:IsDate .and. u2:IsDate
-		RETURN iif ((DATE) u1 > (DATE) u2, u1, u2)
+	ELSEIF u1:IsDate .AND. u2:IsDate
+		RETURN IIF ((DATE) u1 > (DATE) u2, u1, u2)
 
-	ELSEIF u1:IsString .and. u2:IsString
-		RETURN iif ((STRING) u1 > (STRING) u2, u1, u2)
+	ELSEIF u1:IsString .AND. u2:IsString
+		RETURN IIF ((STRING) u1 > (STRING) u2, u1, u2)
 
 	ELSE
-        THROW Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __ENTITY__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
 	RETURN u1
 
@@ -132,27 +132,27 @@ FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 /// <returns>
 /// </returns>
 FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
-	IF u1:IsNumeric .and. u2:IsNumeric
+	IF u1:IsNumeric .AND. u2:IsNumeric
 
-		IF u1:IsFloat .or. u2:IsFloat
+		IF u1:IsFloat .OR. u2:IsFloat
 			
 			RETURN (USUAL) Math.Min((REAL8) u1, (REAL8) u2)
 		
-		ELSEIF u1:IsDecimal .or. u2:IsDecimal
+		ELSEIF u1:IsDecimal .OR. u2:IsDecimal
 			RETURN (USUAL) Math.Min( (Decimal) u1, (Decimal) u2)
 		
-		ELSEIF u1:IsInt64 .or. u2:IsInt64
+		ELSEIF u1:IsInt64 .OR. u2:IsInt64
 			RETURN (USUAL) Math.Min( (INT64) u1, (INT64) u2)
 		ENDIF
 		RETURN (USUAL) Math.Min( (LONG) u1, (LONG) u2)
 	
-	ELSEIF u1:IsDate .and. u2:IsDate
-		RETURN iif ((DATE) u1 <(DATE) u2, u1, u2)
+	ELSEIF u1:IsDate .AND. u2:IsDate
+		RETURN IIF ((DATE) u1 <(DATE) u2, u1, u2)
 	
-	ELSEIF u1:IsString .and. u2:IsString
-		RETURN iif ((STRING) u1 <(STRING) u2, u1, u2)
+	ELSEIF u1:IsString .AND. u2:IsString
+		RETURN IIF ((STRING) u1 <(STRING) u2, u1, u2)
 	ELSE
-        THROW Error.ArgumentError( __ENTITY__, nameof(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __ENTITY__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
 	RETURN u1
 
@@ -204,7 +204,7 @@ FUNCTION RGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
 /// </returns>
 [Obsolete];
 FUNCTION SysObject(o AS USUAL) AS OBJECT
-	RETURN null_object   
+	RETURN NULL_OBJECT   
 
 
 /// <summary>

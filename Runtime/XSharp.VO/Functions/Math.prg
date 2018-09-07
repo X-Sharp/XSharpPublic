@@ -10,10 +10,10 @@
 /// <param name="f"></param>
 /// <returns>
 /// </returns>
-function Float2Long(f as usual) as long
-	local flValue as float
-	flValue := (float) f
-	return (long) flValue
+FUNCTION Float2Long(f AS USUAL) AS LONG
+	LOCAL flValue AS FLOAT
+	flValue := (FLOAT) f
+	RETURN (LONG) flValue
 	
 	/// <summary>
 	/// Return the absolute value of a numeric expression, regardless of its sign.
@@ -21,20 +21,20 @@ function Float2Long(f as usual) as long
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Abs(n as usual) as usual
-	local uRet as usual
-	if n:IsInt64
-		uRet := Math.Abs( (int64) n )
-	elseif n:IsDecimal
+FUNCTION Abs(n AS USUAL) AS USUAL
+	LOCAL uRet AS USUAL
+	IF n:IsInt64
+		uRet := Math.Abs( (INT64) n )
+	ELSEIF n:IsDecimal
 		uRet := Math.Abs( (Decimal) n)
-	elseif n:isInteger
-		uRet := Math.Abs( (int) n )
-	elseif n:IsFLoat
+	ELSEIF n:isInteger
+		uRet := Math.Abs( (INT) n )
+	ELSEIF n:IsFLoat
 		uRet := AbsFloat( n )
-	else
-		throw  Error.ArgumentError( __ENTITY__, nameof(n), "Argument not numeric",1)
-	endif
-	return uRet
+	ELSE
+		THROW  Error.ArgumentError( __ENTITY__, NAMEOF(n), "Argument not numeric",1)
+	ENDIF
+	RETURN uRet
 	
 	/// <summary>
 	/// Calculate the arc cotangent of a number.
@@ -42,12 +42,12 @@ function Abs(n as usual) as usual
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function ACot(n as usual) as float
-	local f as float
-	local r8 as real8
+FUNCTION ACot(n AS USUAL) AS FLOAT
+	LOCAL f AS FLOAT
+	LOCAL r8 AS REAL8
 	f := n
 	r8 := f
-	return 2 * Math.ATan(1) + Math.ATan(r8)
+	RETURN 2 * Math.ATan(1) + Math.ATan(r8)
 	
 	
 	
@@ -57,12 +57,12 @@ function ACot(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function ATan(n as usual) as float
-	local f as float
-	local r8 as real8
+FUNCTION ATan(n AS USUAL) AS FLOAT
+	LOCAL f AS FLOAT
+	LOCAL r8 AS REAL8
 	f := n
 	r8 := f
-	return Math.ATan(r8)
+	RETURN Math.ATan(r8)
 	
 	
 	/// <summary>
@@ -71,37 +71,37 @@ function ATan(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Ceil(n as usual) as usual
-	local result as usual
-	if n:IsInteger
+FUNCTION Ceil(n AS USUAL) AS USUAL
+	LOCAL result AS USUAL
+	IF n:IsInteger
 		result := n
-	elseif n:IsDecimal
-		local d as decimal
+	ELSEIF n:IsDecimal
+		LOCAL d AS decimal
 		d := (decimal) n
 		d := Math.Ceiling(d)
-		if d <= int32.MaxValue .and. d >= int32.MinValue
+		IF d <= int32.MaxValue .AND. d >= int32.MinValue
 			result := COnvert.ToInt32(d)
-		elseif d <= int64.MaxValue .and. d >= int64.MinValue
+		ELSEIF d <= int64.MaxValue .AND. d >= int64.MinValue
 			result := COnvert.ToInt64(d)
-		else
+		ELSE
 			result := d
-		endif
+		ENDIF
 		
-	elseif n:IsFloat
-		local r8 as real8
-		r8 := (float) n
+	ELSEIF n:IsFloat
+		LOCAL r8 AS REAL8
+		r8 := (FLOAT) n
 		r8 := Math.Ceiling(r8)
-		if r8 <= int32.MaxValue .and. r8 >= int32.MinValue
+		IF r8 <= int32.MaxValue .AND. r8 >= int32.MinValue
 			result := COnvert.ToInt32(r8)
-		elseif r8 <= int64.MaxValue .and. r8 >= int64.MinValue
+		ELSEIF r8 <= int64.MaxValue .AND. r8 >= int64.MinValue
 			result := COnvert.ToInt64(r8)
-		else
+		ELSE
 			result := r8
-		endif
-	else
-		throw  Error.ArgumentError( __ENTITY__, nameof(n), "Argument not numeric",1)
-	endif
-	return result
+		ENDIF
+	ELSE
+		THROW  Error.ArgumentError( __ENTITY__, NAMEOF(n), "Argument not numeric",1)
+	ENDIF
+	RETURN result
 	
 	/// <summary>
 	/// Calculate the cosine of a number.
@@ -109,10 +109,10 @@ function Ceil(n as usual) as usual
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Cos(n as usual) as float
-	local f := n as float
-	local r8 := (real8) f as real8
-	return Math.Cos(r8)
+FUNCTION Cos(n AS USUAL) AS FLOAT
+	LOCAL f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN Math.Cos(r8)
 	
 	/// <summary>
 	/// Calculate the cotangent of a value.
@@ -120,10 +120,10 @@ function Cos(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Cot(n as usual) as float
-	local f := n as float
-	local r8 := (real8) f as real8
-	return 2 * ATan( 1 ) + Math.ATan( r8 )
+FUNCTION Cot(n AS USUAL) AS FLOAT
+	LOCAL f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN 2 * ATan( 1 ) + Math.ATan( r8 )
 	
 	
 	
@@ -133,10 +133,10 @@ function Cot(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function EXP(n as usual) as float
-	local f := n as float
-	local r8 := (real8) f as real8
-	return Math.Exp(r8)
+FUNCTION EXP(n AS USUAL) AS FLOAT
+	LOCAL f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN Math.Exp(r8)
 	
 	
 	/// <summary>
@@ -145,37 +145,37 @@ function EXP(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Floor(n as usual) as usual
-	local result as usual
-	if n:IsInteger
+FUNCTION Floor(n AS USUAL) AS USUAL
+	LOCAL result AS USUAL
+	IF n:IsInteger
 		result := n
-	elseif n:IsDecimal
-		local d as decimal
+	ELSEIF n:IsDecimal
+		LOCAL d AS decimal
 		d := (decimal) n
 		d := Math.Floor(d)
-		if d <= int32.MaxValue .and. d >= int32.MinValue
+		IF d <= int32.MaxValue .AND. d >= int32.MinValue
 			result := COnvert.ToInt32(d)
-		elseif d <= int64.MaxValue .and. d >= int64.MinValue
+		ELSEIF d <= int64.MaxValue .AND. d >= int64.MinValue
 			result := COnvert.ToInt64(d)
-		else
+		ELSE
 			result := d
-		endif
+		ENDIF
 		
-	elseif n:IsFloat
-		local r8 as real8
-		r8 := (float) n
+	ELSEIF n:IsFloat
+		LOCAL r8 AS REAL8
+		r8 := (FLOAT) n
 		r8 := Math.Floor(r8)
-		if r8 <= int32.MaxValue .and. r8 >= int32.MinValue
+		IF r8 <= int32.MaxValue .AND. r8 >= int32.MinValue
 			result := COnvert.ToInt32(r8)
-		elseif r8 <= int64.MaxValue .and. r8 >= int64.MinValue
+		ELSEIF r8 <= int64.MaxValue .AND. r8 >= int64.MinValue
 			result := COnvert.ToInt64(r8)
-		else
+		ELSE
 			result := r8
-		endif
-	else
-		throw  Error.ArgumentError( __ENTITY__, nameof(n), "Argument not numeric",1)
-	endif
-	return result
+		ENDIF
+	ELSE
+		THROW  Error.ArgumentError( __ENTITY__, NAMEOF(n), "Argument not numeric",1)
+	ENDIF
+	RETURN result
 	
 	
 	/// <summary>
@@ -184,20 +184,20 @@ function Floor(n as usual) as usual
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Integer(n as usual) as usual
-	local result as usual
-	if n:IsInteger
+FUNCTION Integer(n AS USUAL) AS USUAL
+	LOCAL result AS USUAL
+	IF n:IsInteger
 		result := n
-	elseif n:IsFloat .or. n:IsDecimal
-		if n > 0.0
+	ELSEIF n:IsFloat .OR. n:IsDecimal
+		IF n > 0.0
 			result := Floor(n)
-		else
+		ELSE
 			result := Ceil(n)
-		endif
-	else
-		throw Error.ArgumentError( __ENTITY__, nameof(n), "Argument not numeric",1)
-	endif
-	return result
+		ENDIF
+	ELSE
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(n), "Argument not numeric",1)
+	ENDIF
+	RETURN result
 	
 	/// <summary>
 	/// Calculate the natural logarithm of a numeric value.
@@ -205,10 +205,10 @@ function Integer(n as usual) as usual
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function LOG(n as usual) as float
-	local f := n as float
-	local r8 := (real8) f as real8
-	return Math.Log(r8)
+FUNCTION LOG(n AS USUAL) AS FLOAT
+	LOCAL f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN Math.Log(r8)
 	
 	/// <summary>
 	/// Calculate the common logarithm of a numeric value.
@@ -216,10 +216,10 @@ function LOG(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Log10(n as usual) as float
-	local f := n as float
-	local r8 := (real8) f as real8
-	return Math.Log10(r8) 
+FUNCTION Log10(n AS USUAL) AS FLOAT
+	LOCAL f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN Math.Log10(r8) 
 	
 	
 	
@@ -230,31 +230,31 @@ function Log10(n as usual) as float
 	/// <param name="y"></param>
 	/// <returns>
 	/// </returns>
-function POW(x as usual,y as usual) as float
-	local r8x := (real8) (float) x as real8
-	local r8y := (real8) (float) y as real8
-	return Math.Pow(x, y)
+FUNCTION POW(x AS USUAL,y AS USUAL) AS FLOAT
+	LOCAL r8x := (REAL8) (FLOAT) x AS REAL8
+	LOCAL r8y := (REAL8) (FLOAT) y AS REAL8
+	RETURN Math.Pow(x, y)
 	
 	
-internal global _randomGenerator as Random   
+INTERNAL GLOBAL _randomGenerator AS Random   
 /// <summary>
 /// Return a random number between 0 and 1.
 /// </summary>
 /// <param name="nSeed"></param>
 /// <returns>
 /// </returns>
-function Rand(nSeed as usual) as float
-	if !nSeed:IsNumeric .or. nSeed <= 0
-		nSeed := (int) DateTime.Now:Ticks
-	endif
+FUNCTION Rand(nSeed AS USUAL) AS FLOAT
+	IF !nSeed:IsNumeric .OR. nSeed <= 0
+		nSeed := (INT) DateTime.Now:Ticks
+	ENDIF
 	_randomGenerator := Random{ nSeed }
-	return _randomGenerator:NextDouble()
+	RETURN _randomGenerator:NextDouble()
 	
-function Rand() as float
-	if _randomGenerator == null
+FUNCTION Rand() AS FLOAT
+	IF _randomGenerator == NULL
 		_randomGenerator := Random{ 100001 }
-	endif
-	return _randomGenerator:NextDouble() 
+	ENDIF
+	RETURN _randomGenerator:NextDouble() 
 	
 	/// <summary>
 	/// Round a number to a specified number of digits.
@@ -265,15 +265,15 @@ function Rand() as float
 	/// </returns>
 	
 	#define MAX_DECIMALS 15
-function Round(n as usual,iDec as int) as usual
-	local ret    as usual
-	local IsLong   as logic
-	local IsInt64  as logic
-	local r8     as real8
+FUNCTION Round(n AS USUAL,iDec AS INT) AS USUAL
+	LOCAL ret    AS USUAL
+	LOCAL IsLong   AS LOGIC
+	LOCAL IsInt64  AS LOGIC
+	LOCAL r8     AS REAL8
 	
-	if ! n:IsNumeric
-		throw Error.ArgumentError( __ENTITY__, nameof(n), "Argument is not numeric")
-	endif
+	IF ! n:IsNumeric
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(n), "Argument is not numeric")
+	ENDIF
 	
 	// For Integers we could round the numbers 
 	// Round(12345, -1) -> 12350
@@ -281,52 +281,52 @@ function Round(n as usual,iDec as int) as usual
 	IsLong  := n:IsLong
 	r8  := n
 	
-	if iDec > 0
+	IF iDec > 0
 			// Round after decimal point
-			if iDec > MAX_DECIMALS
+			IF iDec > MAX_DECIMALS
 				iDec := MAX_DECIMALS
-			endif
+			ENDIF
 			
 		r8 := Math.Round( r8, iDec, MidpointRounding.AwayFromZero ) 
-	else   
+	ELSE   
 		// Round before decimal point
 		iDec := -iDec   
 		
-		if iDec > MAX_DECIMALS
+		IF iDec > MAX_DECIMALS
 			iDec := MAX_DECIMALS
-		endif
+		ENDIF
 		
 		r8 := r8 / ( 10 ^ iDec )
 		r8 := Math.Round( r8, 0, MidpointRounding.AwayFromZero )
 		r8 := r8 * ( 10 ^ iDec )
 		
-		if r8 < 0
+		IF r8 < 0
 			isLong	:= r8 >= Int32.MinValue 
 			isInt64 := r8 >= Int64.MinValue 
-		else
+		ELSE
 			isLong  := r8 <= Int32.MaxValue
 			isInt64 := r8 <= Int64.MaxValue 
-		endif
+		ENDIF
 		iDec := 0   
-	endif
+	ENDIF
 	
-	if isLong .or. IsInt64
+	IF isLong .OR. IsInt64
 		iDec := 0
-	endif
+	ENDIF
 	
-	if iDec == 0 
-		if IsLong
-			ret := (int) r8
-		elseif IsInt64
-			ret := (int64) r8
-		else
-			ret := float{r8, 0}
-		endif
-	else
-		ret := float{r8, iDec}
-	endif
+	IF iDec == 0 
+		IF IsLong
+			ret := (INT) r8
+		ELSEIF IsInt64
+			ret := (INT64) r8
+		ELSE
+			ret := FLOAT{r8, 0}
+		ENDIF
+	ELSE
+		ret := FLOAT{r8, iDec}
+	ENDIF
 	
-	return ret   
+	RETURN ret   
 	
 	
 	/// <summary>
@@ -335,10 +335,10 @@ function Round(n as usual,iDec as int) as usual
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Sin(n as usual) as float
-	local f := n as float
-	local r8 := (real8) f as real8
-	return Math.Sin(r8)
+FUNCTION Sin(n AS USUAL) AS FLOAT
+	LOCAL f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN Math.Sin(r8)
 	
 	/// <summary>
 	/// Return the square root of a positive number.
@@ -346,10 +346,10 @@ function Sin(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function SQRT(n as usual) as float
-	local  f := n as float
-	local r8 := (real8) f as real8
-	return Math.SQrt(r8)
+FUNCTION SQRT(n AS USUAL) AS FLOAT
+	LOCAL  f := n AS FLOAT
+	LOCAL r8 := (REAL8) f AS REAL8
+	RETURN Math.SQrt(r8)
 	
 	/// <summary>
 	/// Calculate the tangent of a number.
@@ -357,7 +357,7 @@ function SQRT(n as usual) as float
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-function Tan(n as usual) as float
-local  f := n as float
-local r8 := (real8) f as real8
-return Math.Tan(r8)  
+FUNCTION Tan(n AS USUAL) AS FLOAT
+LOCAL  f := n AS FLOAT
+LOCAL r8 := (REAL8) f AS REAL8
+RETURN Math.Tan(r8)  

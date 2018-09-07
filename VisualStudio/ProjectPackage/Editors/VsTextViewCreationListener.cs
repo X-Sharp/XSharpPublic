@@ -26,7 +26,7 @@ namespace XSharp.Project
     // This code is used to determine if a file is opened inside a Vulcan project
     // or another project.
     // When the language service is set to our language service then we look for the file in the RDT
-    // and ask for a property where we know what X# returns. When then result is different then 
+    // and ask for a property where we know what X# returns. When then result is different then
     // we assume it is a Vulcan file, and we will set the language service to that from Vulcan.
     // You must make sure that the Project System package is also added as a MEF component to the vsixmanifest
     // otherwise the Export will not work.
@@ -87,7 +87,7 @@ namespace XSharp.Project
             if (serviceProvider == null)
                 return false;
             // Find the document in the Running Document Table and Get Its hierarchy object
-            // so we can ask for a property that we can use to see if this is 'Ours' 
+            // so we can ask for a property that we can use to see if this is 'Ours'
             IVsRunningDocumentTable rdt = serviceProvider.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
             uint itemID;
             IVsHierarchy hierarchy;
@@ -99,10 +99,14 @@ namespace XSharp.Project
                 Marshal.Release(unkDocData);
             }
             object result;
+            bool ours = false;
             // Ask for the Language. X# returns the product name
             // the implementation for this property is inside XSharpFileNode.
-            hierarchy.GetProperty(itemID, (int)__VSHPROPID8.VSHPROPID_DiagHubLanguage, out result);
-            bool ours = (result is string && (string)result == Constants.Product);
+            if (hierarchy != null)
+            {
+                hierarchy.GetProperty(itemID, (int)__VSHPROPID8.VSHPROPID_DiagHubLanguage, out result);
+                ours = (result is string && (string)result == Constants.Product);
+            }
             if (! ours)
             {
                 // this could be a XAML generated source file that is not in the hierarchy

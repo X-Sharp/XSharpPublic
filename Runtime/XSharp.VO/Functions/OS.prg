@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Reflection
+USING System.Reflection
 
 
 /// <summary>
@@ -13,8 +13,8 @@ using System.Reflection
 /// <param name="pszDir"></param>
 /// <returns>
 /// </returns>
-function DirChange(pszDir as Psz) as int
-	return XSharp.Core.Functions.DirChange(Psz2String(pszDir))
+FUNCTION DirChange(pszDir AS PSZ) AS INT
+	RETURN XSharp.Core.Functions.DirChange(Psz2String(pszDir))
 	
 /// <summary>
 /// Create a directory.
@@ -22,8 +22,8 @@ function DirChange(pszDir as Psz) as int
 /// <param name="pszDir"></param>
 /// <returns>
 /// </returns>
-function DirMake(pszDir as Psz) as int
-	return XSharp.Core.Functions.DirMake(Psz2String(pszDir))
+FUNCTION DirMake(pszDir AS PSZ) AS INT
+	RETURN XSharp.Core.Functions.DirMake(Psz2String(pszDir))
 	
 /// <summary>
 /// Remove a directory.
@@ -31,8 +31,8 @@ function DirMake(pszDir as Psz) as int
 /// <param name="pszDir"></param>
 /// <returns>
 /// </returns>
-function DirRemove(pszDir as Psz) as int
-	return XSharp.Core.Functions.DirRemove(Psz2String(pszDir))
+FUNCTION DirRemove(pszDir AS PSZ) AS INT
+	RETURN XSharp.Core.Functions.DirRemove(Psz2String(pszDir))
 
 	/// <summary>
 	/// Change the current disk drive.
@@ -40,8 +40,8 @@ function DirRemove(pszDir as Psz) as int
 	/// <param name="pszDisk"></param>
 	/// <returns>
 	/// </returns>
-function DiskChange(pszDisk as Psz) as logic
-	return XSharp.Core.Functions.DiskChange(Psz2String(pszDisk))
+FUNCTION DiskChange(pszDisk AS PSZ) AS LOGIC
+	RETURN XSharp.Core.Functions.DiskChange(Psz2String(pszDisk))
  
 	
 
@@ -49,15 +49,15 @@ function DiskChange(pszDisk as Psz) as logic
 /// </summary>
 /// <returns>
 /// </returns>
-function GetRTFullPath() as string
-	return Assembly.GetAssembly(typeof(XSharp.__Usual)):Location
+FUNCTION GetRTFullPath() AS STRING
+	RETURN Assembly.GetAssembly(TYPEOF(XSharp.__Usual)):Location
 
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetThreadCount() as dword
-	return (DWORD) System.Diagnostics.Process.GetCurrentProcess():Threads:Count
+FUNCTION GetThreadCount() AS DWORD
+	RETURN (DWORD) System.Diagnostics.Process.GetCurrentProcess():Threads:Count
 
 
 	/// <summary>
@@ -65,5 +65,5 @@ function GetThreadCount() as dword
 	/// </summary>
 	/// <returns>
 	/// </returns>
-function GetTickCountLow() as dword
+FUNCTION GetTickCountLow() AS DWORD
 	RETURN (DWORD)Environment.TickCount*10	

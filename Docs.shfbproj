@@ -25,7 +25,7 @@
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.XML" />
       <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.VO\XSharp.VO.dll" />
     </DocumentationSources>
-    <HelpTitle>XSharp Runtime Documentation</HelpTitle>
+    <HelpTitle>X# Runtime Reference</HelpTitle>
     <HelpFileVersion>2.0.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
@@ -36,10 +36,10 @@
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>False</IndentHtml>
+    <IndentHtml>True</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, Protected, ProtectedInternalAsProtected, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <ApiFilter>
@@ -136,16 +136,15 @@
     </ApiFilter>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
-      <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (attributes) used by the compiler. These are normally not used in End users  (your) code</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL</NamespaceSummaryItem>
-    </NamespaceSummaries>
+<NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (classes and attributes) used by the compiler. These are normally not used in End users  (your) code</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system</NamespaceSummaryItem>
+<NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL</NamespaceSummaryItem></NamespaceSummaries>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">
         <component id="Syntax Component">
@@ -233,14 +232,14 @@
     <IncludeFavorites>True</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
-    <FeedbackEMailAddress>info%40xsharp..eu</FeedbackEMailAddress>
-    <FeedbackEMailLinkText>info%40xsharp..eu</FeedbackEMailLinkText>
+    <FeedbackEMailAddress>info%40xsharp.eu</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
     <FooterText>
     </FooterText>
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations />
-    <RootNamespaceTitle>XSharp Runtime Documentation</RootNamespaceTitle>
+    <RootNamespaceTitle>X# Runtime Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2018 XSharp BV, All rights reserved</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>

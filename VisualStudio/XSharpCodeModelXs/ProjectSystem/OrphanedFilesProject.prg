@@ -3,99 +3,99 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-using System.Threading.Tasks
-using EnvDTE
-using LanguageService.CodeAnalysis
-using LanguageService.CodeAnalysis.XSharp
-using System.Collections.Concurrent
-using System.Collections.Immutable
-using Microsoft.VisualStudio
-using Microsoft.VisualStudio.Shell.Interop
-using System.Diagnostics
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING System.Threading.Tasks
+USING EnvDTE
+USING LanguageService.CodeAnalysis
+USING LanguageService.CodeAnalysis.XSharp
+USING System.Collections.Concurrent
+USING System.Collections.Immutable
+USING Microsoft.VisualStudio
+USING Microsoft.VisualStudio.Shell.Interop
+USING System.Diagnostics
 
-begin namespace XSharpModel
-	class OrphanedFilesProject implements IXSharpProject
+BEGIN NAMESPACE XSharpModel
+	CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
 	#region properties
-		property IntermediateOutputPath as string get ""
-		property IsVsBuilding as logic get false
-		property OutputFile as string get ""
-		property ParseOptions as XSharpParseOptions get XSharpParseOptions.Default
-		property PrefixClassesWithDefaultNamespace as logic get false
-		property Project as XProject auto
-		property RootNameSpace as string get "" 
-		property Url as string get "" 
-		property DisableRegions as logic get false
-		property DisableLexing as logic get false
-		property DisableParsing as logic get false
-		property KeywordsUppercase as logic get TRUE
+		PROPERTY IntermediateOutputPath AS STRING GET ""
+		PROPERTY IsVsBuilding AS LOGIC GET false
+		PROPERTY OutputFile AS STRING GET ""
+		PROPERTY ParseOptions AS XSharpParseOptions GET XSharpParseOptions.Default
+		PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET false
+		PROPERTY Project AS XProject AUTO
+		PROPERTY RootNameSpace AS STRING GET "" 
+		PROPERTY Url AS STRING GET "" 
+		PROPERTY DisableRegions AS LOGIC GET false
+		PROPERTY DisableLexing AS LOGIC GET false
+		PROPERTY DisableParsing AS LOGIC GET false
+		PROPERTY KeywordsUppercase AS LOGIC GET TRUE
 	#endregion
 		
 		
-		virtual method AddFileNode(strFileName as string) as void
-			return
+		VIRTUAL METHOD AddFileNode(strFileName AS STRING) AS VOID
+			RETURN
 		
-		virtual method AddIntellisenseError(file as string, line as long, column as long, Length as long, errCode as string, message as string, sev as DiagnosticSeverity) as void
-			return
-		
-		
-		virtual method ClearIntellisenseErrors(file as string) as void
-			return
+		VIRTUAL METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
+			RETURN
 		
 		
-		virtual method DeleteFileNode(strFileName as string) as void
-			return
+		VIRTUAL METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
+			RETURN
 		
 		
-		virtual method DocumentGetText(file as string, isOpen ref logic) as string
+		VIRTUAL METHOD DeleteFileNode(strFileName AS STRING) AS VOID
+			RETURN
+		
+		
+		VIRTUAL METHOD DocumentGetText(file AS STRING, isOpen REF LOGIC) AS STRING
 			//
 			isOpen := false
-			return ""
+			RETURN ""
 		
-		virtual method DocumentInsertLine(fileName as string, line as long, text as string) as logic
+		VIRTUAL METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
 			//
-			return false
+			RETURN false
 		
-		virtual method DocumentSetText(fileName as string, text as string) as logic
+		VIRTUAL METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
 			//
-			return false
+			RETURN false
 		
-		virtual method FindProject(sProject as string) as Project
+		VIRTUAL METHOD FindProject(sProject AS STRING) AS Project
 			//
-			return null
+			RETURN null
 		
-		virtual method GetIntellisenseErrorPos(fileName as string) as System.Collections.Generic.List<IXErrorPosition>
-			return List<IXErrorPosition>{}
+		VIRTUAL METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
+			RETURN List<IXErrorPosition>{}
 		
-		virtual method HasFileNode(strFileName as string) as logic
-			return true
+		VIRTUAL METHOD HasFileNode(strFileName AS STRING) AS LOGIC
+			RETURN true
 		
-		virtual method IsDocumentOpen(file as string) as logic
-			return true
+		VIRTUAL METHOD IsDocumentOpen(file AS STRING) AS LOGIC
+			RETURN true
 		
-		virtual method OpenElement(file as string, line as long, column as long) as void
-			return
-		
-		
-		virtual method SetStatusBarAnimation(onoff as logic, id as short) as void
-			return
+		VIRTUAL METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
+			RETURN
 		
 		
-		virtual method SetStatusBarText(message as string) as void
-			return
+		VIRTUAL METHOD SetStatusBarAnimation(onoff AS LOGIC, id AS SHORT) AS VOID
+			RETURN
 		
 		
-		virtual method ShowIntellisenseErrors() as void
-			return
+		VIRTUAL METHOD SetStatusBarText(message AS STRING) AS VOID
+			RETURN
 		
 		
+		VIRTUAL METHOD ShowIntellisenseErrors() AS VOID
+			RETURN
 		
 		
 		
-	end class
+		
+		
+	END CLASS
 	
-end namespace 
+END NAMESPACE 
 

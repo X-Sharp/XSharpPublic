@@ -299,6 +299,12 @@
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\XSharpSpecialOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\XSharpSpecialOptions.Designer.cs">
+      <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>
@@ -501,6 +507,7 @@
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
+    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
@@ -583,6 +590,9 @@
   <ItemGroup>
     <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\XSharpSpecialOptions.resx">
+      <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wix\FolderBrowserTextBox.resx">
       <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>

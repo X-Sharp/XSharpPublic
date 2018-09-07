@@ -5,24 +5,24 @@ USING System.IO
 USING Xide
 USING XSharpModel
 USING System.Reflection
-using XSharp.VODesigners
+USING XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
-	PROTECT oXProject as XProject
+	PROTECT oXProject AS XProject
 
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
 		SUPER(_oSurface , _oGrid) 
 		oXProject  := NULL_OBJECT
 	RETURN
 
-	METHOD Open(cFileName as STRING) AS LOGIC
-		LOCAL oFile as XFile
-		local lOk as LOGIC
+	METHOD Open(cFileName AS STRING) AS LOGIC
+		LOCAL oFile AS XFile
+		LOCAL lOk AS LOGIC
 		oFile := XSharpModel.XSolution.FindFile(cFileName)
-		if (oFile != NULL_OBJECT)
+		IF (oFile != NULL_OBJECT)
 			oXProject := oFile:Project
-		endif
-		if oXProject == NULL
+		ENDIF
+		IF oXProject == NULL
 			XFuncs.ErrorBox("Cannot find project for file "+cFileName)
 			RETURN FALSE
 		ENDIF
@@ -41,46 +41,46 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		SELF:lLoading := FALSE
 		IF lOk
 			SELF:oSurface:Controls:Add(SELF:oPanel)
-			SELF:oGrid:PropertyModified := self:oPropertyUpdatedHandler
+			SELF:oGrid:PropertyModified := SELF:oPropertyUpdatedHandler
 			SELF:oGrid:ControlKeyPressed := SELF:oControlKeyPressedHandler
 			SELF:InitReadonlyProperties()
 			SELF:GiveFocus()
 		ENDIF
 		RETURN lOk
-	METHOD GetAvailableFieldSpec(cFieldSpec as STRING) AS FSEDesignFieldSpec
+	METHOD GetAvailableFieldSpec(cFieldSpec AS STRING) AS FSEDesignFieldSpec
 		IF aAvailableFieldSpecs == NULL
 			aAvailableFieldSpecs  := ArrayList{}
 		ENDIF
-		FOREACH oFs as FSEDesignFieldSpec in aAvailableFieldSpecs
-			if String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase) 
-				return oFS
+		FOREACH oFs AS FSEDesignFieldSpec IN aAvailableFieldSpecs
+			IF String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase) 
+				RETURN oFS
 			ENDIF
 		NEXT
 		RETURN NULL
-	METHOD ReadAllAvailableFieldSpecs(cModule as STRING) AS VOID
-		local aFiles as IList<XFile>
+	METHOD ReadAllAvailableFieldSpecs(cModule AS STRING) AS VOID
+		LOCAL aFiles AS IList<XFile>
 		SELF:aAvailableFieldSpecs:Clear()
 		SELF:aFieldSpecsInModule:Clear()
 		aFiles := XFuncs.FindItemsOfType(oXProject, XFileType.VOFieldSpec, NULL)
-		FOREACH oFile as XFile in aFiles
-			LOCAL cName as STRING
-			LOCAL lInModule as LOGIC
+		FOREACH oFile AS XFile IN aFiles
+			LOCAL cName AS STRING
+			LOCAL lInModule AS LOGIC
 			cName	  := oFile:FullPath
 			lInModule := Funcs.GetModuleFileNameFromBinary(cName):ToUpper() == cModule:ToUpper()
-			if cName:ToUpper():Contains(".FIELDSPECS.VNFS") .or. ;
+			IF cName:ToUpper():Contains(".FIELDSPECS.VNFS") .or. ;
 				cName:ToUpper():Contains(".FIELDSPECS.XSFS")
 				VAR aFS := VOFieldSpecEditor.OpenXML(cName, NULL)
-				self:aAvailableFieldSpecs:AddRange(aFs)
-				if (lInModule)
+				SELF:aAvailableFieldSpecs:AddRange(aFs)
+				IF (lInModule)
 					SELF:aFieldSpecsInModule:AddRange(aFs)		
-				endif
+				ENDIF
 			ELSE
-				LOCAL fs as FSEDesignFieldSpec
+				LOCAL fs AS FSEDesignFieldSpec
 				fs := VOFieldSpecEditor.OPenVNFS(cName, (VOFieldSpecEditor) NULL)
 				SELF:aAvailableFieldspecs:Add(fs)
-				if (lInModule)
+				IF (lInModule)
 					SELF:aFieldSpecsInModule:Add(fs)		
-				endif
+				ENDIF
 			ENDIF			
 		NEXT
 
@@ -170,12 +170,12 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
 		aCode := ArrayList{}
 		VAR aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
-		FOREACH oDesign as DBEDesignDBServer in aDesign
+		FOREACH oDesign AS DBEDesignDBServer IN aDesign
 			cFieldSpec := oDesign:GetProperty("classname"):TextValue
 			cFieldSpec := cFieldSpec:Trim():ToUpper()
 			IF SELF:IsFieldSpecInModule(cFieldSpec)
 				lSaveFieldSpecs := TRUE
-				FOREACH oFieldSpec as FSEDesignFieldSpec in aFieldSpecs
+				FOREACH oFieldSpec AS FSEDesignFieldSpec IN aFieldSpecs
 					IF oFieldSpec:Name:ToUpper() == cFieldSpec
 						aCode:Add(oFieldSpec)
 						SELF:CopyPropertyValues(oDesign , oFieldSpec)
@@ -192,14 +192,14 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		NEXT
 
 		IF aFieldSpecs:Count != 0 .and. lSaveFieldSpecs
-			LOCAL cFieldSpecFileName as STRING
+			LOCAL cFieldSpecFileName AS STRING
 			cFieldSpecFileName := cModule + ".FieldSpecs.vnfs"
 			XFuncs.DeleteFile(oXProject, cFieldSpecFileName)
 			cFieldSpecFileName := cModule + ".FieldSpecs.xsfs"
 			VOFieldSpecEditor.SaveToXml( cFieldSpecFileName, aFieldSpecs)
 			XFuncs.EnsureFileNodeExists(OXProject, cFieldSpecFileName)
 
-			FOREACH oFieldSpec as  FSEDesignFieldSpec in aFieldSpecs
+			FOREACH oFieldSpec AS  FSEDesignFieldSpec IN aFieldSpecs
 				VAR cFile := oFieldSpec:cVNfsFileName
 				IF .not. String.IsNullOrEmpty(cFile) .and. .not. oFieldSpec:cVNfsFileName:ToUpper():Contains(".FIELDSPECS.XSFS")
 					XFuncs.DeleteFile(oXProject, cFile)
@@ -226,7 +226,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		END IF
 		
 		IF lSuccess
-			FOREACH cFile as STRING in SELF:aFilesToDelete
+			FOREACH cFile AS STRING IN SELF:aFilesToDelete
 				XFuncs.DeleteFile(oXProject, cFile)
 			NEXT
 			SELF:aFilesToDelete:Clear()
@@ -234,9 +234,9 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		
 	RETURN lSuccess
 
-	METHOD ProcessExtraEntity(aLines as List<String>, oGenerator as CodeGenerator, cClass as string, lAdd as LOGIC) as VOID
-		LOCAL oTempStream as XSharp_EditorStream
-		LOCAL oTempGenerator as CodeGenerator
+	METHOD ProcessExtraEntity(aLines AS List<STRING>, oGenerator AS CodeGenerator, cClass AS STRING, lAdd AS LOGIC) AS VOID
+		LOCAL oTempStream AS XSharp_EditorStream
+		LOCAL oTempGenerator AS CodeGenerator
 		oTempStream := XSharp_EditorStream{}
 		oTempStream:Load(aLines)
 		oTempGenerator := CodeGenerator{oTempStream:Editor}
@@ -261,7 +261,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		oGenerator:WriteEntity(XIde.EntityType._Access,  "FIELDDESC" , cName ,EntityOptions.None , oCode:aFieldDesc)
 		oGenerator:WriteEntity(XIde.EntityType._Access,  "INDEXLIST" , cName , EntityOptions.None, oCode:aIndexList)
 
-		FOREACH aAdditional as List<String> in oCode:aAdditional
+		FOREACH aAdditional AS List<STRING> IN oCode:aAdditional
 			SELF:ProcessExtraEntity(aAdditional, oGenerator, cName, TRUE)
 		NEXT
 		//
@@ -283,20 +283,20 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		LOCAL aDesign AS ArrayList
 		LOCAL cValue AS STRING
 		LOCAL oMI AS MEthodInfo
-		LOCAL oType as System.Type
+		LOCAL oType AS System.Type
 		
 		aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
-		oType := Typeof(VODbServerEditor)
+		oType := TYPEOF(VODbServerEditor)
 		oMI := oType:GetMethod("TranslateLine", BindingFlags.Static | BindingFlags.NonPublic )
-		FOREACH oDesign  as  DBEDesignDBServer in aDesign
+		FOREACH oDesign  AS  DBEDesignDBServer IN aDesign
 			aValues := NameValueCollection{}
-			FOREACH oProp as  DesignProperty in oDesign:aProperties
+			FOREACH oProp AS  DesignProperty IN oDesign:aProperties
 				DO CASE
 				CASE oProp:Name == "hlname"
 					// it appears that %hlname% tag is translated to %fldname% in VO
 					cValue := oDesign:GetProperty("fldname"):TextValue // BIG BAD UGLY HACK
 				CASE oProp:cEnumType == "YESNO"
-					cValue := iif(oProp:ValueLogic , "TRUE" , "FALSE")
+					cValue := IIF(oProp:ValueLogic , "TRUE" , "FALSE")
 				CASE oProp:Name == "type"
 					IF (INT)oProp:Value == 6
 						cValue := "X"
@@ -320,18 +320,18 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			END CASE
 			aValues:Add("usualtype" , cValue)
 			
-			FOREACH aTempEntity AS List<STRING> in VODBServerEditor.Template:aAccessAssign
+			FOREACH aTempEntity AS List<STRING> IN VODBServerEditor.Template:aAccessAssign
 				VAR aEntity := List<STRING>{}
-				FOREACH cLine as STRING IN aTempEntity
+				FOREACH cLine AS STRING IN aTempEntity
 					IF (oMI != NULL_OBJECT)
-						local cNew as STRING
+						LOCAL cNew AS STRING
 						cNew := (STRING) oMI:Invoke(NULL_OBJECT, <OBJECT>{cLine, aValues})
 						aEntity:Add(cNew)
 					ELSE
 						aEntity:Add(cLine)
 					ENDIF
 				NEXT
-				LOCAL lDelete := lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0" as LOGIC
+				LOCAL lDelete := lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0" AS LOGIC
 				SELF:ProcessExtraEntity(aEntity, oGenerator, cClass, !lDelete)
 			NEXT
 		NEXT
@@ -339,12 +339,12 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	RETURN
 END CLASS
 STATIC CLASS BufferExtensions
-		STATIC METHOD GetEntityObject(SELF editor as XSharpBuffer, nItem as LONG) as XIDE.EntityObject
-			local oLine := editor:GetLine(nItem) as XIde.LineObject
+		STATIC METHOD GetEntityObject(SELF editor AS XSharpBuffer, nItem AS LONG) AS XIDE.EntityObject
+			LOCAL oLine := editor:GetLine(nItem) AS XIde.LineObject
 			IF oLine != NULL .and. oLine:ContainsEntity
-				return oLine:LastEntity
-			endif
-			return NULL_OBJECT
+				RETURN oLine:LastEntity
+			ENDIF
+			RETURN NULL_OBJECT
 			
 END CLASS
 END NAMESPACE

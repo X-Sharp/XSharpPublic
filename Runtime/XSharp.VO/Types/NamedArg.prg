@@ -7,7 +7,7 @@
 /// <summary>VO Compatible type to allow name/value pairs for Ole Automation parameters</summary>
 CLASS XSharp.NamedArg
    PROPERTY ArgName AS STRING AUTO
-   PROPERTY Value   AS USUAL AUTO
+   PROPERTY VALUE   AS USUAL AUTO
    
    CONSTRUCTOR( symArgName AS STRING, uValue AS USUAL )
       SELF:ArgName	:= symArgName

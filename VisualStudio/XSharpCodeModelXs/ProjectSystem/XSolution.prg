@@ -3,107 +3,137 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using System.Collections.Concurrent
-using System.Collections.Generic
-using System
-begin namespace XSharpModel
-	static class XSolution
+USING System.Collections.Concurrent
+USING System.Collections.Generic
+USING System
+BEGIN NAMESPACE XSharpModel
+	STATIC CLASS XSolution
 		// Fields
-		static private _orphanedFilesProject := null as XProject
-		const private OrphanedFiles := "(OrphanedFiles)" as string
-		static initonly private xProjects := ConcurrentDictionary<string, XProject>{StringComparer.OrdinalIgnoreCase} as ConcurrentDictionary<string, XProject>
+		STATIC PRIVATE _orphanedFilesProject := null AS XProject
+		CONST PRIVATE OrphanedFiles := "(OrphanedFiles)" AS STRING
+		STATIC INITONLY PRIVATE xProjects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase} AS ConcurrentDictionary<STRING, XProject>
 		
+		PUBLIC STATIC OutputWindow AS IOutPutWindow
 		// Methods
-		static method Add(project as XProject) as logic
-			return Add(project:Name, project)
+		STATIC CONSTRUCTOR 
+			OutputWindow := ModelOutputWindow{}
+
+		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
+			OutputWindow:DisplayOutPutMessage(message)
+		STATIC METHOD WriteException(ex AS Exception) AS VOID
+			LOCAL space := "" AS STRING
+			DO WHILE ex != null
+				WriteOutputMessage(String.Format("{0}***** exception {1}", space, ex:GetType()))
+				WriteOutputMessage(ex:Message)
+				WriteOutputMessage(ex:StackTrace)
+				space += " "
+				ex := ex:InnerException
+			ENDDO
+			RETURN
+
+
+		STATIC METHOD @@Add(project AS XProject) AS LOGIC
+			RETURN @@Add(project:Name, project)
 		
-		static method Add(projectName as string, project as XProject) as logic
-			if xProjects:ContainsKey(projectName)
-				return false
-			endif
-			return xProjects:TryAdd(projectName, project)
+		STATIC METHOD @@Add(projectName AS STRING, project AS XProject) AS LOGIC
+			WriteOutputMessage("XModel.Solution.Add() "+projectName)
+			IF xProjects:ContainsKey(projectName)
+				RETURN false
+			ENDIF
+			RETURN xProjects:TryAdd(projectName, project)
 		
-		static method CloseAll() as void
+		STATIC METHOD CloseAll() AS VOID
+			WriteOutputMessage("XModel.Solution.CloseAll()")
 			xProjects:Clear()
 			SystemTypeController.Clear()
-			if _orphanedFilesProject != null .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
-				foreach var info in _orphanedFilesProject:AssemblyReferences
+			IF _orphanedFilesProject != null .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
+				FOREACH VAR info IN _orphanedFilesProject:AssemblyReferences
 					SystemTypeController.LoadAssembly(info:FileName)
-				next
-			endif
+				NEXT
+			ENDIF
 		
-		static method FileClose(fileName as string) as void
-			if FindFile(fileName):Project == _orphanedFilesProject
+		STATIC METHOD FileClose(fileName AS STRING) AS VOID
+			IF FindFile(fileName):Project == _orphanedFilesProject
 				_orphanedFilesProject:RemoveFile(fileName)
-			endif
+			ENDIF
 		
-		static method FindFile(fileName as string) as XFile
-			foreach var project in xProjects
-				var file := project:Value:FindFullPath(fileName)
-				if file != null
-					return file
-				endif
-			next
-			return null
+		STATIC METHOD FindFile(fileName AS STRING) AS XFile
+			FOREACH VAR project IN xProjects
+				VAR file := project:Value:FindFullPath(fileName)
+				IF file != null
+					RETURN file
+				ENDIF
+			NEXT
+			RETURN null
 		
-		static method FindFullPath(fullPath as string) as XFile
-			foreach var project in xProjects
-				var file := project:Value:FindFullPath(fullPath)
-				if file != null
-					return file
-				endif
-			next
-			return null
+		STATIC METHOD FindFullPath(fullPath AS STRING) AS XFile
+			FOREACH VAR project IN xProjects
+				VAR file := project:Value:FindFullPath(fullPath)
+				IF file != null
+					RETURN file
+				ENDIF
+			NEXT
+			RETURN null
 		
-		static method FindProject(projectFile as string) as XProject
-			local project as XProject
+		STATIC METHOD FindProject(projectFile AS STRING) AS XProject
+			LOCAL project AS XProject
 			projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
 			project := null
-			if xProjects:TryGetValue(projectFile, out project) .and. project != null
-				return project
-			endif
-			return null
+			IF xProjects:TryGetValue(projectFile, OUT project) .and. project != null
+				RETURN project
+			ENDIF
+			RETURN null
 		
-		static method Remove(projectName as string) as logic
-			if xProjects:ContainsKey(projectName)
-				var project := xProjects:Item[projectName]
+		STATIC METHOD @@Remove(projectName AS STRING) AS LOGIC
+			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
+			IF xProjects:ContainsKey(projectName)
+				VAR project := xProjects:Item[projectName]
 				project:UnLoad()
-				var result := xProjects:TryRemove(projectName, out project)
+				VAR result := xProjects:TryRemove(projectName, OUT project)
 				SystemTypeController.UnloadUnusedAssemblies()
-				return result
-			endif
-			return false
+				RETURN result
+			ENDIF
+			RETURN false
 		
-		static method Remove(project as XProject) as logic
-			if project != null
-				return Remove(project:Name)
-			endif
-			return false
+		STATIC METHOD @@Remove(project AS XProject) AS LOGIC
+			IF project != null
+				RETURN @@Remove(project:Name)
+			ENDIF
+			RETURN false
 		
-		static method WalkFile(fileName as string) as void
-			var file := FindFile(fileName)
-			if file != null
+		STATIC METHOD WalkFile(fileName AS STRING) AS VOID
+			VAR file := FindFile(fileName)
+			IF file != null
 				ModelWalker.GetWalker():FileWalk(file)
-			endif
-			return 		
+			ENDIF
+			RETURN 		
 		
 		// Properties
-		static property OrphanedFilesProject as XProject
-			get
-				if _orphanedFilesProject == null
+		STATIC PROPERTY OrphanedFilesProject AS XProject
+			GET
+				IF _orphanedFilesProject == null
 					_orphanedFilesProject := XProject{OrphanedFilesProject{}}
-					var projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
+					VAR projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
 					projectNode:Project := _orphanedFilesProject
-					if xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
-						projectNode:Project:AddAssemblyReference(typeof(string):Assembly:Location)
-					endif
-				endif
-				return _orphanedFilesProject
-			end get
-		end property
+					IF xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
+						projectNode:Project:AddAssemblyReference(TYPEOF(STRING):Assembly:Location)
+					ENDIF
+				ENDIF
+				RETURN _orphanedFilesProject
+			END GET
+		END PROPERTY
 		
 		
-	end class
-	
-end namespace 
+	END CLASS
+
+	CLASS ModelOutputWindow IMPLEMENTS IOutputWindow
+		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
+			System.Diagnostics.Debug.WriteLine(message)
+			RETURN
+	END CLASS	
+
+	INTERFACE IOutputWindow
+		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
+	END INTERFACE
+END NAMESPACE 
 

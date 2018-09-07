@@ -12,9 +12,9 @@
 /// <param name="xValue"></param>
 /// <returns>
 /// </returns>
-function MAssign(cExp as string,xValue as Usual) as Usual
-	throw NotImplementedException{}
-return	 NIL   
+FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
+	THROW NotImplementedException{}
+RETURN	 NIL   
 
 
 
@@ -24,9 +24,9 @@ return	 NIL
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
-function MemVarBlock(cVar as string) as object
-	throw NotImplementedException{}
-return	 null_object   
+FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
+	THROW NotImplementedException{}
+RETURN	 NULL_OBJECT   
 
 /// <summary>
 /// Return the contents of a memory variable.
@@ -34,9 +34,9 @@ return	 null_object
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
-function MemVarGet(cVar as string) as Usual
-	throw NotImplementedException{}
-return	 NIL   
+FUNCTION MemVarGet(cVar AS STRING) AS USUAL
+	THROW NotImplementedException{}
+RETURN	 NIL   
 
 /// <summary>
 /// Assign a value to a memory variable of a given name.
@@ -45,9 +45,9 @@ return	 NIL
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function MemVarPut(cVar as string,u as Usual) as Usual
-	throw NotImplementedException{}
-return	 NIL   
+FUNCTION MemVarPut(cVar AS STRING,u AS USUAL) AS USUAL
+	THROW NotImplementedException{}
+RETURN	 NIL   
 
 
 
@@ -59,9 +59,9 @@ return	 NIL
 /// <param name="cVar"></param>
 /// <returns>
 /// </returns>
-function VarGet(cVar as string) as Usual
-	throw NotImplementedException{}
-return	 NIL   
+FUNCTION VarGet(cVar AS STRING) AS USUAL
+	THROW NotImplementedException{}
+RETURN	 NIL   
 
 /// <summary>
 /// Assign a value to a field or a memory variable of a given name.
@@ -70,9 +70,9 @@ return	 NIL
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function VarPut(cVar as string,u as Usual) as Usual
-	throw NotImplementedException{}
-return	 NIL   
+FUNCTION VarPut(cVar AS STRING,u AS USUAL) AS USUAL
+	THROW NotImplementedException{}
+RETURN	 NIL   
 
 
 
@@ -83,9 +83,9 @@ return	 NIL
 /// <param name="symVar"></param>
 /// <returns>
 /// </returns>
-function VarGetSym(symVar as Symbol) as Usual
+FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
 	THROW NotImplementedException{}
-	return NIL   
+	RETURN NIL   
 
 /// <summary>
 /// </summary>
@@ -93,9 +93,9 @@ function VarGetSym(symVar as Symbol) as Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-function VarPutSym(symVar as Symbol,u as Usual) as Usual
+FUNCTION VarPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
 	THROW NotImplementedException{}
-	return NIL  
+	RETURN NIL  
 
 	/// <summary>
 	/// Obtain a set-get code block for a given memory variable.
@@ -103,7 +103,7 @@ function VarPutSym(symVar as Symbol,u as Usual) as Usual
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarBlockSym(symVar AS Symbol) AS OBJECT
+	FUNCTION MemVarBlockSym(symVar AS SYMBOL) AS OBJECT
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
@@ -112,7 +112,7 @@ function VarPutSym(symVar as Symbol,u as Usual) as Usual
 	/// <param name="symVar"></param>
 	/// <returns> 
 	/// </returns>
-	FUNCTION MemVarGetSym(symVar AS Symbol) AS Usual
+	FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL
 		THROW NotImplementedException{}
 	RETURN NIL   
 
@@ -122,6 +122,6 @@ function VarPutSym(symVar as Symbol,u as Usual) as Usual
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarPutSym(symVar AS Symbol,u AS Usual) AS Usual
+	FUNCTION MemVarPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
 		THROW NotImplementedException{}
 	RETURN NIL      

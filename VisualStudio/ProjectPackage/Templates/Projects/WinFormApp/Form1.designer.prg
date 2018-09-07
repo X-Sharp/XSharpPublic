@@ -11,7 +11,7 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected method Dispose(disposing as logic) as void
+        protected method Dispose(disposing as logic) as void  STRICT
 
             if (disposing .AND. (components != null))
                 components:Dispose()
@@ -25,7 +25,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private method InitializeComponent() as void
+        private method InitializeComponent() as void  STRICT
             self:components := System.ComponentModel.Container{}
             self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
             self:Text := "$safeitemrootname$"

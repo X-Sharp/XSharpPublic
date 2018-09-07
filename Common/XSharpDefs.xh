@@ -3,7 +3,7 @@
 //
 // XSharp Standard Preprocessor Directives
 //
-// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // This file is automatically included in every source file unless /nostddefs is used.
@@ -12,4 +12,19 @@
 //
 
 #define CRLF e"\r\n"
+
+// The following UDCs require the xBase Runtime
+#ifndef __DIALECT_CORE__
+#command ACCEPT [<msg>] TO <v>         	=> <v> := _Accept( <msg> )
+#xcommand WAIT [<msg>]                  => _Wait( <msg> )
+#xcommand WAIT [<msg>] TO <v>           => <v> := _Wait( <msg> )
+#xcommand QUIT                          => _Quit()
+
+#xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ]  => ;
+          IF <v1> == NIL ; <v1> := <x1> ; END        ;
+          [; IF <vn> == NIL ; <vn> := <xn> ; END ]
+
+#xcommand STORE <value> TO <var1> [, <varN> ]   => ;
+                <var1> := [ <varN> := ] <value>
+#endif
 

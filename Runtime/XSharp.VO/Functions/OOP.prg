@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -50,9 +50,19 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN aMethods:ToArray()
 		
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
+	RETURN FindClass(cName, TRUE)
+	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
-		FOREACH asm AS Assembly IN FindOurAssemblies()
+		LOCAL aAssemblies AS IEnumerable<Assembly>
+
+		IF lOurAssembliesOnly
+			aAssemblies := FindOurAssemblies()
+		ELSE
+			aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
+		END IF
+		
+		FOREACH asm AS Assembly IN aAssemblies
 			ret := asm:GetType( cName, FALSE, TRUE )
 			IF ret != NULL
 				EXIT 
@@ -115,7 +125,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 		DO WHILE t != NULL
 			VAR pi := t:GetProperty( cName , BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
-			IF pi != NULL .and. ( (lGet .and. pi:CanRead) .or. (.not. lGet .and. pi:CanWrite) )
+			IF pi != NULL .AND. ( (lGet .AND. pi:CanRead) .OR. (.NOT. lGet .AND. pi:CanWrite) )
 				RETURN 3U
 			ELSE
 				t := t:BaseType
@@ -130,7 +140,6 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		
 		VAR aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
-		VAR nLen    := aFields:Length
 		VAR list := List<STRING>{}
 		FOREACH fi AS FieldInfo IN aFields
 			IF fi:IsPublic || fi:IsFamily 
@@ -193,7 +202,7 @@ INTERNAL STATIC CLASS OOPHelpers
 				VAR name := oInfo:Name:Toupper()
 				DO CASE
 					CASE oInfo:MemberType == MemberTypes.Field
-						IF listVar:IndexOf(name)  == -1 .and. ((FieldInfo)oInfo):IsPublic
+						IF listVar:IndexOf(name)  == -1 .AND. ((FieldInfo)oInfo):IsPublic
 							listVar:Add(name)
 						END IF
 					CASE oInfo:MemberType == MemberTypes.Property
@@ -201,7 +210,7 @@ INTERNAL STATIC CLASS OOPHelpers
 							listVar:Add(name)
 						END IF
 					CASE oInfo:MemberType == MemberTypes.Method
-						IF listMethod:IndexOf(name)  == -1 .and. .not. ((MethodInfo)oInfo):IsSpecialName
+						IF listMethod:IndexOf(name)  == -1 .AND. .NOT. ((MethodInfo)oInfo):IsSpecialName
 							listMethod:Add(name)
 						END IF
 				END CASE
@@ -216,7 +225,7 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC) AS PropertyInfo
 		DO WHILE t != NULL
 			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public  | BindingFlags.DeclaredOnly ) 
-			IF oInfo != NULL .and. ( (lAccess .and. oInfo:CanRead) .or. (.not. lAccess .and. oInfo:CanWrite) )
+			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
 				RETURN oInfo
 			ELSE
 				t := t:BaseType
@@ -229,7 +238,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public  | BindingFlags.DeclaredOnly ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
-				IF lAccess .or. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
+				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
 					RETURN oInfo
 				ENDIF
 			ELSE
@@ -243,7 +252,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			RETURN FALSE
 		ELSEIF oFld:IsPublic
 			RETURN TRUE
-		ELSEIF lSelf .and. (oFld:IsFamily .or. oFld:IsFamilyOrAssembly)
+		ELSEIF lSelf .AND. (oFld:IsFamily .OR. oFld:IsFamilyOrAssembly)
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
@@ -254,39 +263,39 @@ INTERNAL STATIC CLASS OOPHelpers
 		t := oObject:GetType()
 		//Todo: optimization
 		VAR fldInfo := FindField(t, cIVar,TRUE)
-		IF fldInfo != NULL_OBJECT .and. IsFieldVisible(fldInfo, lSelf)
+		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			RETURN fldInfo:GetValue(oObject)
 		ENDIF
 		VAR propInfo := FindProperty(t, cIVar,TRUE)
-		IF propInfo != NULL_OBJECT .and. propInfo:CanRead
+		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
-		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar} )
+		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar} )
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
 		t := oObject:GetType()
 		VAR fldInfo := FindField(t, cIVar,FALSE)
 		//Todo: optimization
-		IF fldInfo != NULL_OBJECT .and. IsFieldVisible(fldInfo, lSelf)
+		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			oValue := MyConvert(oValue, fldInfo:FieldType)
 			fldInfo:SetValue(oObject, oValue)
 			RETURN
 		ENDIF
 		LOCAL propInfo AS PropertyInfo
 		propInfo := FindProperty(t, cIVar, lSelf)
-		IF propInfo != NULL_OBJECT .and. propInfo:CanWrite
+		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite
 			oValue := MyConvert(oValue, propInfo:PropertyType)
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
-		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), nameof(cIVar), 2, <OBJECT>{cIVar})
+		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar})
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC
 		LOCAL t := oObject?:GetType() AS Type
 		result := NIL
 		IF t == NULL
-			THROW Error.NullArgumentError( __ENTITY__, nameof(oObject), 1 )
+			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
 		ENDIF
 		LOCAL mi AS MethodInfo
 		mi := t:GetMethod(cMethod,BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
@@ -302,7 +311,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		paramInfo := mi:GetParameters()
 		// Clipper calling convention ?
 		LOCAL lClipper := FALSE AS LOGIC
-		IF paramInfo:Length == 1 .and. mi:IsDefined( TYPEOF( ClipperCallingConventionAttribute ), FALSE )
+		IF paramInfo:Length == 1 .AND. mi:IsDefined( TYPEOF( ClipperCallingConventionAttribute ), FALSE )
 			lClipper := TRUE
 		ENDIF
 		LOCAL oArgs AS OBJECT[]
@@ -318,7 +327,7 @@ INTERNAL STATIC CLASS OOPHelpers
 					IF pi:ParameterType == TYPEOF(USUAL)
 						// We need to box a usual here 
 						oArgs[nPar] := Myconvert(arg, TYPEOF(__USUAL))
-					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .or. arg == NULL
+					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
 						oArgs[nPar] := uArgs[nPar]
 					ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
 						// Parameter array of certain type
@@ -378,7 +387,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-				THROW Error.VOError( EG_NOMETHOD, "Send", nameof(cMethod), 2, <OBJECT>{cMethod} )
+				THROW Error.VOError( EG_NOMETHOD, "Send", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
 			ENDIF
 		ENDIF
 		RETURN result
@@ -394,7 +403,7 @@ END CLASS
 /// <param name="args">A comma-separated list of arguments to pass to symMethod.</param>
 /// <returns>A reference to aTarget.</returns>
 FUNCTION ASend(aTarget AS ARRAY, cName AS STRING, args PARAMS USUAL[] ) AS ARRAY 
-	IF aTarget != NULL .and. ! String.IsNullOrEmpty( cName )
+	IF aTarget != NULL .AND. ! String.IsNullOrEmpty( cName )
 		FOREACH VAR x IN aTarget
 			__InternalSend( x, cName, args )
 		NEXT
@@ -586,7 +595,7 @@ FUNCTION IsClassOf(cClassName AS STRING,cSuperClassName AS STRING) AS LOGIC
 	LOCAL tSub   := OOPHelpers.FindClass(cClassName) AS Type
 	LOCAL tSuper := OOPHelpers.FindClass(cSuperClassName) AS Type
 	// IsClassOf() in VO returns TRUE when child and parent class is the same (and it exists)
-	RETURN tSub != NULL .and. tSuper != NULL .and. (tSub == tSuper .or. tSub:IsSubclassOf(tSuper))
+	RETURN tSub != NULL .AND. tSuper != NULL .AND. (tSub == tSuper .OR. tSub:IsSubclassOf(tSuper))
 	
 	
 	
@@ -601,7 +610,10 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,cName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
 		RETURN FALSE
 	ENDIF
-	LOCAL oType := OOPHelpers.FindClass(cName) AS System.Type
+	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
+	IF oType == NULL
+		RETURN FALSE
+	END IF
 	RETURN oType:IsAssignableFrom(oObject:GetType())
 	
 	
@@ -875,10 +887,10 @@ FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
 /// <returns>Return value of the method call. </returns>
 FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL 
 	IF !o:IsObject
-	     THROW Error.VOError( EG_DATATYPE, "Send", nameof(o), 1, <OBJECT>{ o}  )
+	     THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(o), 1, <OBJECT>{ o}  )
 	ENDIF
 	IF ! uMethod:IsString  && ! uMethod:IsSymbol
-		THROW Error.VOError( EG_DATATYPE, "Send", nameof(uMethod) , 2, <OBJECT>{ uMethod } )
+		THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
 	ENDIF
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
@@ -990,10 +1002,10 @@ FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 				RETURN (DWORD) met:GetParameters():Length
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", nameof(cMethod), 2, <OBJECT>{cMethod} )
+			THROW Error.VOError( EG_NOMETHOD,  "MParamCount", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", nameof(cClass), 1, <OBJECT>{cClass} )
+		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", NAMEOF(cClass), 1, <OBJECT>{cClass} )
 	ENDIF
 	RETURN 0   
 	
@@ -1021,10 +1033,10 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 				RETURN (DWORD) oMI:GetParameters():Length
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
+			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
+		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 	RETURN 0   
 	
@@ -1055,10 +1067,10 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 				RETURN result
 			ENDIF
 		ELSE
-			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", nameof(symFunction), 1, <OBJECT>{symFunction} )
+			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
 	ELSE
-		THROW Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <OBJECT>{symFunction} )
+		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 
 	RETURN  NIL   

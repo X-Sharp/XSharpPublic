@@ -10,8 +10,8 @@
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>true</Unsafe>
-    <INS>false</INS>
+    <Unsafe>false</Unsafe>
+    <INS>true</INS>
     <NS>false</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
@@ -130,6 +130,7 @@
     <Compile Include="Types\DbfNtx\NtxPageList.prg" />
     <Compile Include="Types\DbfNtx\NtxSort.prg" />
     <Compile Include="Types\DbfNtx\SortHelper.prg" />
+    <Compile Include="Types\Enums.prg" />
     <Compile Include="_Dummy.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
@@ -152,7 +153,6 @@
     <Folder Include="ACE" />
     <Folder Include="Types" />
     <Folder Include="Properties\" />
-    <Folder Include="Types\DbfNtx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

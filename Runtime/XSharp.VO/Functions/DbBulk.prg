@@ -14,33 +14,33 @@
 /// <returns>
 /// </returns>
 /*
-function __allocNames    (aStru as array)                as _FIELDNAMES  pascal
+FUNCTION __allocNames    (aStru AS ARRAY)                AS _FIELDNAMES  PASCAL
 	
-	local n,i       as dword
-	local cName		as string
-	local pszName 	as psz
-	local nSize		as dword
-	local fldNames  as _FIELDNAMES
+	LOCAL n,i       AS DWORD
+	LOCAL cName		AS STRING
+	LOCAL pszName 	AS PSZ
+	LOCAL nSize		AS DWORD
+	LOCAL fldNames  AS _FIELDNAMES
 	~"RANGECHECK-"
 	n := ALen(aStru)
 	
-	fldNames := MemAlloc( (_sizeof(dword)) + (n * _sizeof(psz)) )
+	fldNames := MemAlloc( (_SIZEOF(DWORD)) + (n * _SIZEOF(PSZ)) )
 	
 	fldNames.uiFieldCount := n
 	
-	for i := 1 to n
+	FOR i := 1 TO n
 		//	UH 11/12/1997
 		//	fldNames.lpbName[i] := PTR(_CAST, Upper(aStru[i]))
 		cName := Upper(aStru[i])
 		nSize := SLen(cName) + 1
 		pszName := MemAlloc(nSize)
-		if pszName != null_psz
-			MemCopy(pszName, ptr(_cast, cName), nSize)
-		endif
+		IF pszName != NULL_PSZ
+			MemCopy(pszName, PTR(_CAST, cName), nSize)
+		ENDIF
 		fldNames.lpbName[i] := pszName
-	next
+	NEXT
 	
-	return fldNames
+	RETURN fldNames
 */
 //
 // __DBAvg()
@@ -51,24 +51,24 @@ function __allocNames    (aStru as array)                as _FIELDNAMES  pascal
 //  sum value.
 //
 
-function __DBAvg        (siValue as short)          as short        pascal
+FUNCTION __DBAvg        (siValue AS SHORT)          AS SHORT        PASCAL
 	
-	local  siRet    as short
-	static siSum    as short
+	LOCAL  siRet    AS SHORT
+	STATIC siSum    AS SHORT
 	
-	if siValue == 2
-		return siSum
-	endif
+	IF siValue == 2
+		RETURN siSum
+	ENDIF
 	
 	siRet := siSum
 	
-	if siValue == 0
+	IF siValue == 0
 		siSum := 0
-	else
+	ELSE
 		siSum := siSum + siValue
-	endif
+	ENDIF
 	
-	return siRet
+	RETURN siRet
 
 /// <summary>
 /// </summary>
@@ -76,54 +76,54 @@ function __DBAvg        (siValue as short)          as short        pascal
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function __DBFLEDIT      (aStruct as array, aNames as array, aMatch as array) as array export local
+FUNCTION __DBFLEDIT      (aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY EXPORT LOCAL
 	
-	local aNew      as array
-	local cobScan   as codeblock
-	local cName     as string
-	local n, i, j   as dword
-	local lMatch	as logic
+	LOCAL aNew      AS ARRAY
+	LOCAL cobScan   AS CODEBLOCK
+	LOCAL cName     AS STRING
+	LOCAL n, i, j   AS DWORD
+	LOCAL lMatch	AS LOGIC
 	
 	
-	if Empty(aNames)
-		return (aStruct)
-	endif
+	IF Empty(aNames)
+		RETURN (aStruct)
+	ENDIF
 	
 	//	UH 11/30/1998
-	if Empty(aMatch)
-		lMatch := .f.
-	else
-		lMatch := .t.
-	endif
+	IF Empty(aMatch)
+		lMatch := .F.
+	ELSE
+		lMatch := .T.
+	ENDIF
 	
 	aNew:= {}
 	n   := Len(aNames)
 	
-	for i := 1 to n
+	FOR i := 1 TO n
 		AAdd(aNew, WithoutAlias(AllTrim(aNames[i])))
-	next
+	NEXT
 	
 	aNames := aNew
 	
 	aNew    := {}
 	cobScan   := {|aFld| aFld[DBS_NAME] == cName}
 	
-	for i := 1 to n
+	FOR i := 1 TO n
 		cName := aNames[i]
 		j := AScan(aStruct, cobScan)
 		
-		if j > 0
-			if lMatch
-				if aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
+		IF j > 0
+			IF lMatch
+				IF aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
 					AAdd(aNew, aStruct[j])
-				endif
-			else
+				ENDIF
+			ELSE
 				AAdd(aNew, aStruct[j])
-			endif
-		endif
-	next
+			ENDIF
+		ENDIF
+	NEXT
 	
-	return aNew
+	RETURN aNew
 
 /// <summary>
 /// </summary>
@@ -131,25 +131,25 @@ function __DBFLEDIT      (aStruct as array, aNames as array, aMatch as array) as
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function __UniqueAlias   (cDbfName as string)            as string       pascal
+FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING       PASCAL
 	
-	local cAlias    as string
-	local n         as dword
-	local nSelect   as dword
+	LOCAL cAlias    AS STRING
+	LOCAL n         AS DWORD
+	LOCAL nSelect   AS DWORD
 	
 	//  UH 11/09/1999
 	//  n := At(".", cDbfName )
 	n := RAt(".", cDbfName )
 	
-	if n > 0
+	IF n > 0
 		cDbfName := SubStr(cDbfName, 1, n - 1)
-	endif
+	ENDIF
 	
 	n := RAt("\", cDbfName)
 	
-	if n > 0
+	IF n > 0
 		cDbfName := SubStr(cDbfName, n+1)
-	endif
+	ENDIF
 	
 	n := 1
 	
@@ -157,44 +157,44 @@ function __UniqueAlias   (cDbfName as string)            as string       pascal
 	
 	nSelect := SELECT(cAlias)
 	
-	do while nSelect > 0
-		if Len(cAlias) < 9
+	DO WHILE nSelect > 0
+		IF Len(cAlias) < 9
 			cAlias := cAlias + AllTrim(Str(n))
-		else
+		ELSE
 			cAlias := SubStr(cAlias, 1, 8) + AllTrim(Str(n))
-		endif
+		ENDIF
 		
 		n++
 		nSelect := SELECT(cAlias)
-	enddo
+	ENDDO
 	
-	return cAlias
+	RETURN cAlias
 
 
 
 
 
-function DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden)     as logic clipper
-	local siFrom        as dword
-	local siTo          as dword
-	local n, i          as dword
-	local aStruct       as array
-	local aMatch		  as array
-	local lRetCode      as logic
-	local lAnsi         as logic
+FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden)     AS LOGIC CLIPPER
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL n, i          AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL aMatch		  AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL lAnsi         AS LOGIC
 	
 	lAnsi  := SetAnsi()
-	try	
+	TRY	
 		siTo := VODBGetSelect()
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
-		if Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, null_array) )
-			break ParamError(array, 2)
-		endif
+		IF Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) )
+			BREAK ParamError(ARRAY, 2)
+		ENDIF
 		
-		DBUSEAREA(true, cDriver, cFile, __UniqueAlias(cFile), true, true,/*aStru*/,/*cDelim*/, aHidden)
+		DBUSEAREA(TRUE, cDriver, cFile, __UniqueAlias(cFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, aHidden)
 		siFrom := VODBGetSelect()
 		
 		aFields := {}
@@ -202,192 +202,192 @@ function DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		n := FCount()
 		aMatch := DbStruct()
 		
-		for i := 1 to n
+		FOR i := 1 TO n
 			AAdd(aFields, FieldName(i))
-		next
+		NEXT
 		
-		if ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
-			SetAnsi(.t.)
-		endif
+		IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
+			SetAnsi(.T.)
+		ENDIF
 		
-		if !Empty(aStruct := __DBFLEDIT(aStruct, aFields, aMatch))
+		IF !Empty(aStruct := __DBFLEDIT(aStruct, aFields, aMatch))
 			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
-		endif
+		ENDIF
 		
-		if (siFrom > 0)
+		IF (siFrom > 0)
 			DBCLOSEAREA()
-		endif
+		ENDIF
 		
-		VODBSetSelect(int(siTo))
+		VODBSetSelect(INT(siTo))
 		
 		
-	catch e as Exception
-		if  siFrom > 0
-			VODBSetSelect(int(siFrom))
+	CATCH e AS Exception
+		IF  siFrom > 0
+			VODBSetSelect(INT(siFrom))
 			DBCLOSEAREA()
-		endif
+		ENDIF
 		
 		oError:FuncSym := #DBAPP
-		throw Error{e}
-	end try
+		THROW Error{e}
+	END TRY
 	
 	
 	SetAnsi( lAnsi )
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
-function DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)as logic 
+FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)AS LOGIC 
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local siPos         as dword
-	local aStruct       as array
-	local lRetCode      as logic
-	local lAnsi         as logic
-	local lDbfAnsi      as logic
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL siPos         AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL lAnsi         AS LOGIC
+	LOCAL lDbfAnsi      AS LOGIC
 	
 	
 	lAnsi  := SetAnsi()
 	
 	
-	try
+	TRY
 		
 		siTo := VODBGetSelect()
 		
-		if (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, null_array) ))
-			break ParamError(array, 3)
-		endif
+		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) ))
+			BREAK ParamError(ARRAY, 3)
+		ENDIF
 		
-		if Empty(cFile)
-			break ParamError(string, 1)
-		else
-			if Empty(siPos := At(".", cFile ) )
+		IF Empty(cFile)
+			BREAK ParamError(STRING, 1)
+		ELSE
+			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
-			endif
-		endif
+			ENDIF
+		ENDIF
 		
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "DELIM", .t., __UniqueAlias(cFile), cDelim, .t.)
+		DBCREATE(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim, .T.)
 		
 		siFrom := VODBGetSelect()
 		
 		
-		if ( !lAnsi .AND. lDbfAnsi)
-			SetAnsi(.t.)
-		endif
+		IF ( !lAnsi .AND. lDbfAnsi)
+			SetAnsi(.T.)
+		ENDIF
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
 		DBCLOSEAREA()
 		
-		VODBSetSelect(int(siTo))
+		VODBSetSelect(INT(siTo))
 		
 		
-	catch e as Exception
+	CATCH e AS Exception
 		oError:FuncSym := #DBAPPDELIM
-		throw Error{e}
-	end try
+		THROW Error{e}
+	END TRY
 	
 	
 	
 	SetAnsi( lAnsi )
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
 
-function DbAppSdf(cFile, aFields, uCobFor,;
+FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
-	lRest                   )      as logic clipper
+	lRest                   )      AS LOGIC CLIPPER
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local siPos         as dword
-	local aStruct       as array
-	local lRetCode      as logic
-	local oError        as usual
-	local uErrBlock     as usual
-	local lAnsi         as logic
-	local lDbfAnsi      as logic
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL siPos         AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL oError        AS USUAL
+	LOCAL uErrBlock     AS USUAL
+	LOCAL lAnsi         AS LOGIC
+	LOCAL lDbfAnsi      AS LOGIC
 	
 	
 	lAnsi  := SetAnsi()
 	
-	try		
+	TRY		
 		siTo := VODBGetSelect()
 		
-		if (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, null_array) ))
-			throw ParamError(array, 2)
-		endif
+		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) ))
+			THROW ParamError(ARRAY, 2)
+		ENDIF
 		
-		if Empty(cFile)
-			throw ParamError(string, 1)
-		else
-			if Empty(siPos := At(".", cFile ) )
+		IF Empty(cFile)
+			THROW ParamError(STRING, 1)
+		ELSE
+			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
-			endif
-		endif
+			ENDIF
+		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "SDF", .t., __UniqueAlias(cFile), ,.t.)
+		DBCREATE(cFile, aStruct, "SDF", .T., __UniqueAlias(cFile), ,.T.)
 		
 		siFrom := VODBGetSelect()
 		
-		if ( !lAnsi .AND. lDbfAnsi )
-			SetAnsi(.t.)
-		endif
+		IF ( !lAnsi .AND. lDbfAnsi )
+			SetAnsi(.T.)
+		ENDIF
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
 		DBCLOSEAREA()
-		VODBSetSelect(int(siTo))
+		VODBSetSelect(INT(siTo))
 		
-	catch e as Exception
+	CATCH e AS Exception
 		oError:FuncSym := #DBAPPSDF
-		throw Error{e}
-	end try
+		THROW Error{e}
+	END TRY
 	
 	
 	SetAnsi( lAnsi )
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
-function DbCOpy(cFile, aFields, uCobFor,;
+FUNCTION DbCOpy(cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
-	lRest, cDriver, aHidden    )     as logic clipper
+	lRest, cDriver, aHidden    )     AS LOGIC CLIPPER
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local aStruct       as array
-	local lRetCode      as logic
-	local oError        as usual
-	local uErrBlock     as usual
-	local lAnsi         as logic
-	local lDbfAnsi      as logic
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL oError        AS USUAL
+	LOCAL uErrBlock     AS USUAL
+	LOCAL lAnsi         AS LOGIC
+	LOCAL lDbfAnsi      AS LOGIC
 	
 	lAnsi    := SetAnsi()
 	
 	siFrom   := VODBGetSelect()
-	lRetCode := .f.
+	lRetCode := .F.
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		if  Empty(AFields)                      .AND. ;
+		IF  Empty(AFields)                      .AND. ;
 			IsNil(uCobFor)                      .AND. ;
 			IsNil(uCobWhile)                    .AND. ;
 			IsNil(nNext)                        .AND. ;
@@ -400,65 +400,65 @@ function DbCOpy(cFile, aFields, uCobFor,;
 			(DbOrderInfo(DBOI_ORDERCOUNT) = 0)
 			
 			lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cFile, DbInfo(DBI_FULLPATH) )
-		else
-			if ( Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, null_array)) )
-				break ParamError(array, 2)
-			endif
+		ELSE
+			IF ( Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY)) )
+				BREAK ParamError(ARRAY, 2)
+			ENDIF
 			
 			DBCREATE( cFile, aStruct, cDriver,, __UniqueAlias(cFile),,,aHidden)
 			
-			if ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
-				SetAnsi(.t.)
-			endif
+			IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
+				SetAnsi(.T.)
+			ENDIF
 			
-			DBUSEAREA(.t., cDriver, cFile, __UniqueAlias(cFile),,,,,aHidden)
+			DBUSEAREA(.T., cDriver, cFile, __UniqueAlias(cFile),,,,,aHidden)
 			
 			VODBSelect(siFrom, @siTo)
 			
 			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 			
-			if (siTo > 0)
-				VODBSetSelect(int(siTo))
+			IF (siTo > 0)
+				VODBSetSelect(INT(siTo))
 				VODBCloseArea()
-			endif
+			ENDIF
 			
-			VODBSetSelect(int(siFrom))
-		endif
+			VODBSetSelect(INT(siFrom))
+		ENDIF
 		
-		recover using oError
+		RECOVER USING oError
 		SetAnsi(lAnsi)
 		oError:FuncSym := #DBCOPY
 		Eval( uErrBlock, oError)
-	end sequence
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
 	SetAnsi( lAnsi )
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
-define BUFF_SIZE := 0x00008000
-define FO_CREATE := 0x00001000
+DEFINE BUFF_SIZE := 0x00008000
+DEFINE FO_CREATE := 0x00001000
 
-function DBFileCopy( hfFrom, cFile, cFullPath )
+FUNCTION DBFileCopy( hfFrom, cFile, cFullPath )
 	
-	local lRetCode  as logic
-	local ptrBuff   as ptr
-	local hfTo      as ptr
-	local oError    as Error
-	local n         as dword
-	local dwPos     as long
+	LOCAL lRetCode  AS LOGIC
+	LOCAL ptrBuff   AS PTR
+	LOCAL hfTo      AS PTR
+	LOCAL oError    AS Error
+	LOCAL n         AS DWORD
+	LOCAL dwPos     AS LONG
 	
 	
-	if At(".", cFile) == 0
+	IF At(".", cFile) == 0
 		cFile := cFile + Right(cFullPath, 4)
-	endif
+	ENDIF
 	
 	hfTo := FxOpen( cFile, FO_CREATE, "")
 	
-	if hfTo == F_ERROR
+	IF hfTo == F_ERROR
 		
 		oError := Error{1}
 		oError:SubSystem                := "DBCMD"
@@ -469,9 +469,9 @@ function DBFileCopy( hfFrom, cFile, cFullPath )
 		
 		oError:@@Throw()
 		
-		lRetCode := .f.
+		lRetCode := .F.
 		
-	else
+	ELSE
 		
 		dwPos := FSeek3(hfFrom, 0, FS_RELATIVE )
 		
@@ -481,42 +481,42 @@ function DBFileCopy( hfFrom, cFile, cFullPath )
 		n       := BUFF_SIZE
 		ptrBuff := MemAlloc(n)
 		
-		do while n == BUFF_SIZE
+		DO WHILE n == BUFF_SIZE
 			n := FRead3(hfFrom, ptrBuff, BUFF_SIZE)
 			
 			FWrite3(hfTo, ptrBuff, n)
-		enddo
+		ENDDO
 		
 		MemFree(ptrBuff)
 		
 		FClose(hfTo)
 		
-		lRetCode := .t.
+		lRetCode := .T.
 		
 		
 		FSeek3(hfFrom, dwPos, FS_SET )
 		
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 
 
 
-function DBCOPYDELIM     (cFile, cDelim, aFields,   ;
+FUNCTION DBCOPYDELIM     (cFile, cDelim, aFields,   ;
 	uCobFor, uCobWhile, nNext,;
-	nRec, lRest                )   as logic clipper
+	nRec, lRest                )   AS LOGIC CLIPPER
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local siPos         as dword
-	local aStruct       as array
-	local lRetCode      as logic
-	local oError        as usual
-	local uErrBlock     as usual
-	local lAnsi         as logic
-	local lDbfAnsi      as logic
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL siPos         AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL oError        AS USUAL
+	LOCAL uErrBlock     AS USUAL
+	LOCAL lAnsi         AS LOGIC
+	LOCAL lDbfAnsi      AS LOGIC
 	
 	lAnsi  := SetAnsi()
 	
@@ -524,68 +524,68 @@ function DBCOPYDELIM     (cFile, cDelim, aFields,   ;
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
-		if Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, null_array))
-			break ParamError(array, 3)
-		endif
+		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY))
+			BREAK ParamError(ARRAY, 3)
+		ENDIF
 		
-		if Empty(cFile)
-			break ParamError(string, 1)
-		else
-			if Empty(siPos := At(".", cFile ) )
+		IF Empty(cFile)
+			BREAK ParamError(STRING, 1)
+		ELSE
+			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
-			endif
-		endif
+			ENDIF
+		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "DELIM", .t., __UniqueAlias(cFile), cDelim)
+		DBCREATE(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim)
 		
-		if ( !lAnsi .AND. lDbfAnsi)
-			SetAnsi(.t.)
-		endif
+		IF ( !lAnsi .AND. lDbfAnsi)
+			SetAnsi(.T.)
+		ENDIF
 		
 		VODBSelect(siFrom, @siTo)
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
-		VODBSetSelect(int(siTo))
+		VODBSetSelect(INT(siTo))
 		DBCLOSEAREA()
-		VODBSetSelect(int(siFrom))
+		VODBSetSelect(INT(siFrom))
 		
-		recover using oError
+		RECOVER USING oError
 		oError:FuncSym := #DBCOPYDELIM
 		Eval( uErrBlock, oError)
-	end sequence
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
 	
 	SetAnsi( lAnsi )
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
-function DbCopySDF(cFile, aFields, uCobFor,;
+FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
-	lRest                      )   as logic clipper
+	lRest                      )   AS LOGIC CLIPPER
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local siPos         as dword
-	local aStruct       as array
-	local lRetCode      as logic
-	local oError        as usual
-	local uErrBlock     as usual
-	local cAlias        as string
-	local lAnsi         as logic
-	local lDbfAnsi      as logic
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL siPos         AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL lRetCode      AS LOGIC
+	LOCAL oError        AS USUAL
+	LOCAL uErrBlock     AS USUAL
+	LOCAL cAlias        AS STRING
+	LOCAL lAnsi         AS LOGIC
+	LOCAL lDbfAnsi      AS LOGIC
 	
 	
 	lAnsi  := SetAnsi()
@@ -594,110 +594,110 @@ function DbCopySDF(cFile, aFields, uCobFor,;
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
-		if Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, null_array))
-			break ParamError(array, 2)
-		endif
+		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY))
+			BREAK ParamError(ARRAY, 2)
+		ENDIF
 		
-		if Empty(cFile)
-			break ParamError(string, 1)
-		else
-			if Empty(siPos := At(".", cFile ) )
+		IF Empty(cFile)
+			BREAK ParamError(STRING, 1)
+		ELSE
+			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
-			endif
-		endif
+			ENDIF
+		ENDIF
 		
 		cAlias := __UniqueAlias(cFile)
 		
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DBCREATE(cFile, aStruct, "SDF", .t., cAlias)
+		DBCREATE(cFile, aStruct, "SDF", .T., cAlias)
 		
 		
-		if ( !lAnsi .AND. lDbfAnsi)
-			SetAnsi(.t.)
-		endif
+		IF ( !lAnsi .AND. lDbfAnsi)
+			SetAnsi(.T.)
+		ENDIF
 		
 		VODBSelect(siFrom, @siTo)
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
-		VODBSetSelect(int(siTo))
+		VODBSetSelect(INT(siTo))
 		DBCLOSEAREA()
-		VODBSetSelect(int(siFrom))
+		VODBSetSelect(INT(siFrom))
 		
-		recover using oError
+		RECOVER USING oError
 		oError:FuncSym := #DBCOPYSDF
 		Eval( uErrBlock, oError)
-	end sequence
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
 	
 	SetAnsi( lAnsi )
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
 
-function DbJoin(cAlias, cFile, aFields, uCobFor) as logic clipper
+FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 	
-	local siFrom1       as dword
-	local siFrom2       as dword
-	local siTo          as dword
-	local aStruct       as array
-	local oError        as usual
-	local lRetCode      as logic
-	local uErrBlock     as usual
+	LOCAL siFrom1       AS DWORD
+	LOCAL siFrom2       AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL oError        AS USUAL
+	LOCAL lRetCode      AS LOGIC
+	LOCAL uErrBlock     AS USUAL
 	
 	//  UH 02/03/1997
-	local pJoinList     as _JOINLIST
+	LOCAL pJoinList     AS _JOINLIST
 	
 	
-	if IsNil(uCobFor)
-		uCobFor := {|| .t.}
-	endif
+	IF IsNil(uCobFor)
+		uCobFor := {|| .T.}
+	ENDIF
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
 		siFrom1 := VODBGetSelect()
 		
 		siFrom2 := SELECT(cAlias)
 		
 		
-		if siFrom2 = 0
-			break ParamError(1, string)
-		endif
+		IF siFrom2 = 0
+			BREAK ParamError(1, STRING)
+		ENDIF
 		
-		VODBSetSelect(int(siFrom1))
+		VODBSetSelect(INT(siFrom1))
 		
 		
-		if Empty( aStruct := __TargetFields(cAlias, aFields, @pJoinList) )
+		IF Empty( aStruct := __TargetFields(cAlias, aFields, @pJoinList) )
 			ClearstrucErrInfo()
 			
 			strucErrInfo.pszSubSystem   := String2Psz("DBCMD")
 			strucErrInfo.dwGenCode      := EG_ARG
 			strucErrInfo.dwSubCode      := EDB_NOFIELDS
 			strucErrInfo.dwSeverity     := ES_ERROR
-			strucErrInfo.lCanDefault    := .f.
-			strucErrInfo.lCanRetry      := .f.
-			strucErrInfo.lCanSubstitute := .f.
+			strucErrInfo.lCanDefault    := .F.
+			strucErrInfo.lCanRetry      := .F.
+			strucErrInfo.lCanSubstitute := .F.
 			
 			oError := DefErrorGen(_VODBErrInfoPtr())
 			
-			break oError
-		endif
+			BREAK oError
+		ENDIF
 		
-		DBCREATE( cFile, aStruct,"" , .t., "" )
+		DBCREATE( cFile, aStruct,"" , .T., "" )
 		
 		
 		VODBSelect(siFrom1, @siTo)
@@ -706,65 +706,65 @@ function DbJoin(cAlias, cFile, aFields, uCobFor) as logic clipper
 		
 		lRetCode := DbGotop()
 		
-		do while !EOF()
+		DO WHILE !EOF()
 			
-			VODBSetSelect(int(siFrom2))
+			VODBSetSelect(INT(siFrom2))
 			
 			lRetCode := DbGotop()
 			
-			do while ! EOF()
+			DO WHILE ! EOF()
 				
-				VODBSetSelect(int(siFrom1))
+				VODBSetSelect(INT(siFrom1))
 				
-				if ( Eval(uCobFor) )
+				IF ( Eval(uCobFor) )
 					DbJoinAppend(siTo, pJoinList)
-				endif
+				ENDIF
 				
-				VODBSetSelect(int(siFrom2))
+				VODBSetSelect(INT(siFrom2))
 				DBSKIP(1)
-			enddo
+			ENDDO
 			
-			VODBSetSelect(int(siFrom1))
+			VODBSetSelect(INT(siFrom1))
 			
 			DBSKIP(1)
 			
-		enddo
+		ENDDO
 		
-		recover using oError
+		RECOVER USING oError
 		oError:FuncSym := #DBJOIN
 		Eval( uErrBlock, oError)
-	end sequence
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
 	MemFree(pJoinList)
 	
-	if siTo > 0
-		VODBSetSelect(int(siTo))
+	IF siTo > 0
+		VODBSetSelect(INT(siTo))
 		DBCLOSEAREA()
-	endif
+	ENDIF
 	
-	VODBSetSelect(int(siFrom1))
+	VODBSetSelect(INT(siFrom1))
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 /*
-function DbJoinAppend(nSelect    as dword,    ;
-	struList   as _JOINLIST)   as logic        pascal
+FUNCTION DbJoinAppend(nSelect    AS DWORD,    ;
+	struList   AS _JOINLIST)   AS LOGIC        PASCAL
 	
-	local lRetCode as logic
+	LOCAL lRetCode AS LOGIC
 	
 	lRetCode := VODBJoinAppend(nSelect, struList)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbJoinAppend)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 */
 
 
@@ -773,35 +773,35 @@ function DbJoinAppend(nSelect    as dword,    ;
 
 
 
-function DbSort(	cFile, aFields, uCobFor,;
+FUNCTION DbSort(	cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
-	lRest                   )   as logic clipper
+	lRest                   )   AS LOGIC CLIPPER
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local aStruct       as array
-	local oError        as usual
-	local lRetCode      as logic
-	local fnFieldNames  as _FIELDNAMES
-	local fnSortNames   as _FIELDNAMES
-	local uErrBlock     as usual
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL oError        AS USUAL
+	LOCAL lRetCode      AS LOGIC
+	LOCAL fnFieldNames  AS _FIELDNAMES
+	LOCAL fnSortNames   AS _FIELDNAMES
+	LOCAL uErrBlock     AS USUAL
 	//	UH 09/23/1997
-	local cRdd 			as string
+	LOCAL cRdd 			AS STRING
 	
-	fnFieldNames := null_ptr
-	fnSortNames  := null_ptr
+	fnFieldNames := NULL_PTR
+	fnSortNames  := NULL_PTR
 	
 	siFrom := VODBGetSelect()
 	
-	Default(@lRest, .f.)
+	DEFAULT(@lRest, .F.)
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
 		aStruct := DbStruct()
 		
@@ -810,72 +810,72 @@ function DbSort(	cFile, aFields, uCobFor,;
 		
 		fnFieldNames := _allocFieldNames(aStruct)
 		
-		if Empty(AFields)
-			break ParamError(array, 2)
-		endif
+		IF Empty(AFields)
+			BREAK ParamError(ARRAY, 2)
+		ENDIF
 		
 		fnSortNames := __allocNames(AFields)
 		
 		//	UH 09/23/1997
 		//	DBCREATE(cFile, aStruct, "", .T.)
-		DBCREATE(cFile, aStruct, cRdd, .t.)
+		DBCREATE(cFile, aStruct, cRdd, .T.)
 		
 		VODBSelect(siFrom, @siTo)
 		
 		lRetCode := VODBSort(siTo, fnFieldNames, uCobFor, uCobWhile, nNext, nRec, lRest, fnSortNames)
 		
-		if !lRetCode
+		IF !lRetCode
 			ptrErrInfo := _VODBErrInfoPtr()
-			break DefErrorGen(ptrErrInfo)
-		endif
+			BREAK DefErrorGen(ptrErrInfo)
+		ENDIF
 		
 		_freeFieldNames(fnFieldNames)
 		
 		_freeFieldNames(fnSortNames)
 		
-		if (siTo > 0)
-			VODBSetSelect(int(siTo))
+		IF (siTo > 0)
+			VODBSetSelect(INT(siTo))
 			VODBCloseArea()
-		endif
+		ENDIF
 		
-		VODBSetSelect(int(siFrom))
+		VODBSetSelect(INT(siFrom))
 		
 		
-		recover using oError
+		RECOVER USING oError
 		
-		if fnFieldNames != null_ptr
+		IF fnFieldNames != NULL_PTR
 			_freeFieldNames(fnFieldNames)
-		endif
+		ENDIF
 		
-		if fnSortNames != null_ptr
+		IF fnSortNames != NULL_PTR
 			_freeFieldNames(fnSortNames)
-		endif
+		ENDIF
 		
 		oError:FuncSym := #DBSORT
 		Eval( uErrBlock, oError)
-	end sequence
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
-	return lRetCode
+	RETURN lRetCode
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-function DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) as logic clipper
+FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
 	
-	local fldNames  as _FIELDNAMES
-	local lRetCode  as logic
+	LOCAL fldNames  AS _FIELDNAMES
+	LOCAL lRetCode  AS LOGIC
 	
 	
-	if !IsNil(uCobWhile)
-		lRest := .t.
-	endif
+	IF !IsNil(uCobWhile)
+		lRest := .T.
+	ENDIF
 	
-	if IsNil(lRest)
-		lRest := .f.
-	endif
+	IF IsNil(lRest)
+		lRest := .F.
+	ENDIF
 	
 	fldNames := _allocFieldNames(aStru)
 	
@@ -884,11 +884,11 @@ function DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) as logic 
 	
 	_freeFieldNames(fldNames)
 	
-	if !lRetCode
+	IF !lRetCode
 		lRetCode := DoError(#DbTrans)
-	endif
+	ENDIF
 	
-	return lRetCode
+	RETURN lRetCode
 
 
 
@@ -898,73 +898,73 @@ function DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) as logic 
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function DbTotal(cFile, bKey, aFields,     ;
+FUNCTION DbTotal(cFile, bKey, aFields,     ;
 	uCobFor, uCobWhile, nNext,;
-	nRec, lRest, xDriver ) 	as logic clipper
+	nRec, lRest, xDriver ) 	AS LOGIC CLIPPER
 	
-	local siFrom        as dword
-	local siTo          as dword
-	local i, n          as dword
-	local aStruct       as array
-	local aFldNum       as array
-	local aNum          as array
-	local lSomething    as logic
-	local kEval
-	local oError        as usual
-	local lRetCode      as logic
-	local fldNames      as _FIELDNAMES
-	local uErrBlock     as usual
-	
-	
-	if IsNil(uCobWhile)
-		uCobWhile := {|| .t.}
-	else
-		lRest := .t.
-	endif
-	
-	if IsNil(uCobFor)
-		uCobFor := {|| .t.}
-	endif
-	
-	if IsNil(lRest)
-		lRest := .f.
-	endif
+	LOCAL siFrom        AS DWORD
+	LOCAL siTo          AS DWORD
+	LOCAL i, n          AS DWORD
+	LOCAL aStruct       AS ARRAY
+	LOCAL aFldNum       AS ARRAY
+	LOCAL aNum          AS ARRAY
+	LOCAL lSomething    AS LOGIC
+	LOCAL kEval
+	LOCAL oError        AS USUAL
+	LOCAL lRetCode      AS LOGIC
+	LOCAL fldNames      AS _FIELDNAMES
+	LOCAL uErrBlock     AS USUAL
 	
 	
-	if !IsNil(nRec)
+	IF IsNil(uCobWhile)
+		uCobWhile := {|| .T.}
+	ELSE
+		lRest := .T.
+	ENDIF
+	
+	IF IsNil(uCobFor)
+		uCobFor := {|| .T.}
+	ENDIF
+	
+	IF IsNil(lRest)
+		lRest := .F.
+	ENDIF
+	
+	
+	IF !IsNil(nRec)
 		DbGoto(nRec)
 		nNext := 1
-	else
+	ELSE
 		
-		if IsNil(nNext)
+		IF IsNil(nNext)
 			nNext := -1
-		else
-			lRest := .t.
-		endif
+		ELSE
+			lRest := .T.
+		ENDIF
 		
-		if !lRest
+		IF !lRest
 			DbGotop()
-		endif
+		ENDIF
 		
-	endif
+	ENDIF
 	
 	aFldNum := {}
 	
 	n := Len(AFields)
 	
-	for i := 1 to n
+	FOR i := 1 TO n
 		AAdd(aFldNum, FieldPos( AllTrim(AFields[i]) ) )
-	next
+	NEXT
 	
 	aNum  := ArrayNew(n)
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
 		aStruct := DbStruct()
 		
@@ -976,8 +976,8 @@ function DbTotal(cFile, bKey, aFields,     ;
 		
 		n := FCount()
 		
-		for i := 1 to n
-			if DbFieldInfo(DBS_TYPE, i) != "M"
+		FOR i := 1 TO n
+			IF DbFieldInfo(DBS_TYPE, i) != "M"
 				
 				AAdd(aStruct, { FieldName(i)   , ;
 				DbFieldInfo(DBS_TYPE, i), ;
@@ -986,87 +986,87 @@ function DbTotal(cFile, bKey, aFields,     ;
 				}                           ;
 				)
 				
-			endif
-		next
+			ENDIF
+		NEXT
 		
 		
-		if ( Empty(aStruct) )
-			break ParamError(array, 3)
-		endif
+		IF ( Empty(aStruct) )
+			BREAK ParamError(ARRAY, 3)
+		ENDIF
 		
 		fldNames := _allocFieldNames(aStruct)
 		
 		//	DBCREATE( cFile, aStruct, "", .T.)
-		if IsNil(xDriver)
+		IF IsNil(xDriver)
 			xDriver := RddSetDefault()
-		endif
-		DBCREATE( cFile, aStruct, xDriver, .t.)
+		ENDIF
+		DBCREATE( cFile, aStruct, xDriver, .T.)
 		
 		VODBSelect(siFrom, @siTo)
 		
 		n := Len(aFldNum)
 		
-		do while ( (!EOF()) .AND. nNext != 0 .AND. Eval(uCobWhile) )
+		DO WHILE ( (!EOF()) .AND. nNext != 0 .AND. Eval(uCobWhile) )
 			
-			lSomething := .f.
+			lSomething := .F.
 			
 			AFill(aNum, 0)
 			
 			kEval := Eval(bKey)
 			
-			do while ( nNext-- != 0 .AND. Eval(uCobWhile) .AND. kEval = Eval(bKey) )
-				if ( Eval(uCobFor) )
-					if ( !lSomething )
+			DO WHILE ( nNext-- != 0 .AND. Eval(uCobWhile) .AND. kEval = Eval(bKey) )
+				IF ( Eval(uCobFor) )
+					IF ( !lSomething )
 						//	CollectForced()
 						lRetCode := VODBTransRec(siTo, fldNames)
-						lSomething := .t.
-					endif
+						lSomething := .T.
+					ENDIF
 					
-					for i := 1 to n
+					FOR i := 1 TO n
 						aNum[i] := aNum[i] + FIELDGET(aFldNum[i])
-					next
+					NEXT
 					
-				endif
+				ENDIF
 				
-				DBSKIP(1, .f.)
+				DBSKIP(1, .F.)
 				
-			enddo
+			ENDDO
 			
-			if ( lSomething )
-				VODBSetSelect(int(siTo))
+			IF ( lSomething )
+				VODBSetSelect(INT(siTo))
 				
-				for i := 1 to n
+				FOR i := 1 TO n
 					FIELDPUT(aFldNum[i], aNum[i])
-				next
+				NEXT
 				
-				VODBSetSelect(int(siFrom))
-			endif
+				VODBSetSelect(INT(siFrom))
+			ENDIF
 			
-		enddo
+		ENDDO
 		
 		_freeFieldNames(fldNames)
 		
 		
-		if (siTo > 0)
-			VODBSetSelect(int(siTo))
+		IF (siTo > 0)
+			VODBSetSelect(INT(siTo))
 			VODBCloseArea()
-		endif
+		ENDIF
 		
-		VODBSetSelect(int(siFrom))
+		VODBSetSelect(INT(siFrom))
 		
-		recover using oError
-		if fldNames != null_ptr
+		RECOVER USING oError
+		IF fldNames != NULL_PTR
 			_freeFieldNames(fldNames)
-		endif
+		ENDIF
 		
 		oError:FuncSym := #DBTOTAL
 		Eval( uErrBlock, oError)
-		lRetCode := .f.
-	end sequence
+		lRetCode := .F.
+	END SEQUENCE
 	
 	ErrorBlock(uErrBlock)
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 /// <summary>
 /// </summary>
@@ -1074,29 +1074,29 @@ function DbTotal(cFile, bKey, aFields,     ;
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function DbUpdate(cAlias, uCobKey, lRand, bReplace) as logic clipper
+FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 	
-	local siTo, siFrom  as dword
-	local kEval         as usual
-	local oError        as usual
-	local uErrBlock     as usual
-	local lRetCode      as logic
+	LOCAL siTo, siFrom  AS DWORD
+	LOCAL kEval         AS USUAL
+	LOCAL oError        AS USUAL
+	LOCAL uErrBlock     AS USUAL
+	LOCAL lRetCode      AS LOGIC
 	
 	
-	if (lRand == NIL)
-		lRand := .f.
-	endif
+	IF (lRand == NIL)
+		lRand := .F.
+	ENDIF
 	
 	uErrBlock := ErrorBlock( {|o| _Break(o) } )
 	
-	lRetCode := .t.
+	lRetCode := .T.
 	
-	begin sequence
+	BEGIN SEQUENCE
 		
 		
-		if !Used()
-			break DBCMDError()
-		endif
+		IF !Used()
+			BREAK DBCMDError()
+		ENDIF
 		
 		
 		DbGotop()
@@ -1107,51 +1107,51 @@ function DbUpdate(cAlias, uCobKey, lRand, bReplace) as logic clipper
 		siFrom := SELECT(cAlias)
 		DbGotop()
 		
-		do while !EOF()
+		DO WHILE !EOF()
 			
 			kEval := Eval(uCobKey)
 			
-			VODBSetSelect(int(siTo))
+			VODBSetSelect(INT(siTo))
 			
-			if lRand
+			IF lRand
 				
 				DbSeek(kEval)
 				
-				if FOUND()
+				IF FOUND()
 					Eval(bReplace)
-				endif
+				ENDIF
 				
-			else
+			ELSE
 				
-				do while ( Eval(uCobKey) < kEval .AND. !EOF() )
+				DO WHILE ( Eval(uCobKey) < kEval .AND. !EOF() )
 					DBSKIP(1)
-				enddo
+				ENDDO
 				
-				if ( Eval(uCobKey) == kEval .AND. !EOF() )
+				IF ( Eval(uCobKey) == kEval .AND. !EOF() )
 					Eval(bReplace)
-				endif
+				ENDIF
 				
-			endif
+			ENDIF
 			
-			VODBSetSelect(int(siFrom))
+			VODBSetSelect(INT(siFrom))
 			
 			DBSKIP(1)
 			
-		enddo
+		ENDDO
 		
-		recover using oError
+		RECOVER USING oError
 		oError:FuncSym := #DBUPDATE
 		Eval( uErrBlock, oError)
-		lRetCode := .f.
-	end sequence
+		lRetCode := .F.
+	END SEQUENCE
 	
 	
-	VODBSetSelect(int(siTo))
+	VODBSetSelect(INT(siTo))
 	
 	ErrorBlock(uErrBlock)
 	
 	
-	return (lRetCode)
+	RETURN (lRetCode)
 
 
 
@@ -1161,48 +1161,48 @@ function DbUpdate(cAlias, uCobKey, lRand, bReplace) as logic clipper
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-function __TargetFields  (cAlias as string, aNames as array, ppJoinList as ptr) as array pascal export local
+FUNCTION __TargetFields  (cAlias AS STRING, aNames AS ARRAY, ppJoinList AS PTR) AS ARRAY PASCAL EXPORT LOCAL
 	
-	local aNew      as array
-	local cName     as string
-	local aStruct   as array
-	local adbStruct as array
-	local n, i      as dword
-	local siPos     as dword
-	local siSelect  as dword
-	local nBytes    as dword
-	local aFldList  as array
+	LOCAL aNew      AS ARRAY
+	LOCAL cName     AS STRING
+	LOCAL aStruct   AS ARRAY
+	LOCAL adbStruct AS ARRAY
+	LOCAL n, i      AS DWORD
+	LOCAL siPos     AS DWORD
+	LOCAL siSelect  AS DWORD
+	LOCAL nBytes    AS DWORD
+	LOCAL aFldList  AS ARRAY
 	
 	//  UH 02/03/1997
-	local pJoinList as _JOINLIST
+	LOCAL pJoinList AS _JOINLIST
 	
 	adbStruct := DbStruct()
 	aStruct   := {}
 	aFldList := {}
 	
-	if ( Empty(aNames) )
+	IF ( Empty(aNames) )
 		
 		aNames    := {}
 		n         := FCount()
 		siSelect   := VODBGetSelect()
 		
-		for i := 1 to n
+		FOR i := 1 TO n
 			cName := adbStruct[i, DBS_NAME]
 			
 			AAdd(aFldList, {siSelect, FieldPos(cName)})
 			AAdd(aStruct, aDbStruct[i])
 			AAdd(aNames, cName)
-		next
+		NEXT
 		
-	else
+	ELSE
 		
 		n := Len(aNames)
 		
 		aNew := {}
 		
-		for i := 1 to n
+		FOR i := 1 TO n
 			AAdd(aNew, AllTrim(Upper(aNames[i])))
-		next
+		NEXT
 		
 		aNames := aNew
 		
@@ -1210,20 +1210,20 @@ function __TargetFields  (cAlias as string, aNames as array, ppJoinList as ptr) 
 		
 		siSelect := VODBGetSelect()
 		
-		for i := 1 to n
+		FOR i := 1 TO n
 			
 			cName := adbStruct[i, DBS_NAME]
 			
-			if AScan(aNames, {|c| c == cName}) > 0
+			IF AScan(aNames, {|c| c == cName}) > 0
 				
 				AAdd(aFldList, {siSelect, FieldPos(cName)})
 				AAdd(aStruct, aDbStruct[i])
 				
-			endif
+			ENDIF
 			
-		next
+		NEXT
 		
-	endif
+	ENDIF
 	
 	siSelect := SELECT(cAlias)
 	
@@ -1233,90 +1233,90 @@ function __TargetFields  (cAlias as string, aNames as array, ppJoinList as ptr) 
 	
 	
 	/* Herntz re-wrote the below code. Join seems to work just fine now. */
-	for i := 1 to n
-		if "->" $ aNames[i]
+	FOR i := 1 TO n
+		IF "->" $ aNames[i]
 			cName := SubStr(aNames[i], At(">", aNames[i]) + 1)
-		else
+		ELSE
 			cName :=  aNames[i]
-		endif
+		ENDIF
 		
 		siPos := AScan(aDbStruct, {|a| a[DBS_NAME] == cName})
-		if siPos > 0 .AND. (AScan( aStruct, {|c|c[DBS_NAME]== cName }) == 0)
+		IF siPos > 0 .AND. (AScan( aStruct, {|c|c[DBS_NAME]== cName }) == 0)
 			AAdd(aFldList, {siSelect, FieldPos(cName)})
 			AAdd(aStruct, aDbStruct[siPos])
-		endif
-	next
+		ENDIF
+	NEXT
 	
 	n := ALen(aStruct)
 	
-	nBytes      := n * _sizeof(_JOINFIELD) + _sizeof(_JOINLIST)		// This allocates 1 element too much, but that does not hurt...
+	nBytes      := n * _SIZEOF(_JOINFIELD) + _SIZEOF(_JOINLIST)		// This allocates 1 element too much, but that does not hurt...
 	pJoinList   := MemAlloc(nBytes)
 	
 	MemClear(pJoinList, nBytes)
 	
 	pJoinList.uiCount    := n
 	
-	for i := 1 to n
+	FOR i := 1 TO n
 		pJoinList.jfldInfo[i].uiSrcSel := aFldList[i,1]
 		pJoinList.jfldInfo[i].uiSrcPos := aFldList[i,2] - 1
-	next
+	NEXT
 	
-	ptr(ppJoinList) := pJoinList
+	PTR(ppJoinList) := pJoinList
 	
-	return aStruct
+	RETURN aStruct
 
 
 
 /*
-function _allocFieldNames(aStru as Array)           as XSharp.RDD._FIELDNAMES  pascal
+FUNCTION _allocFieldNames(aStru AS ARRAY)           AS XSharp.RDD._FIELDNAMES  PASCAL
 	
-	local n,i       as dword
-	local fldNames  as _FIELDNAMES
-	local pszName   as PSZ
+	LOCAL n,i       AS DWORD
+	LOCAL fldNames  AS _FIELDNAMES
+	LOCAL pszName   AS PSZ
 	//  UH 11/12/1997
-	local cName     as string
-	local nSize     as dword
+	LOCAL cName     AS STRING
+	LOCAL nSize     AS DWORD
 	n := ALen(aStru)
 	
-	fldNames := MemAlloc( (_sizeof(dword)) + (n * _sizeof(PSZ)) )
+	fldNames := MemAlloc( (_SIZEOF(DWORD)) + (n * _SIZEOF(PSZ)) )
 	
 	fldNames.uiFieldCount := n
 	
 	~"RANGECHECK-"
-	for i := 1 to n
+	FOR i := 1 TO n
 		//  UH 11/12/1997
 		//  pszName := AsPsz(Upper(aStru[i,1]))
 		//  fldNames.lpbName[i] := PTR(_CAST, pszName)
 		cName := Upper(aStru[i, 1])
 		nSize := SLen(cName) + 1
 		pszName := MemAlloc(nSize)
-		if pszName != null_psz
-			MemCopy(pszName, ptr(_cast, cName), nSize)
-		endif
+		IF pszName != NULL_PSZ
+			MemCopy(pszName, PTR(_CAST, cName), nSize)
+		ENDIF
 		fldNames.lpbName[i] := pszName
-	next
+	NEXT
 	
-	return fldNames
+	RETURN fldNames
 
 
 
-function _freeFieldNames(fldNames  as XSharp.RDD._FIELDNAMES) as void pascal
+FUNCTION _freeFieldNames(fldNames  AS XSharp.RDD._FIELDNAMES) AS VOID PASCAL
 	//
 	//  UH 11/12/1997
 	//
-	local n,i       as dword
+	LOCAL n,i       AS DWORD
 	~"RANGECHECK-"
 	n := fldNames.uiFieldCount
 	
-	for i := 1 to n
-		if fldNames.lpbName[i] != null_ptr
+	FOR i := 1 TO n
+		IF fldNames.lpbName[i] != NULL_PTR
 			MemFree(fldNames.lpbName[i])
-		endif
-	next
+		ENDIF
+	NEXT
 	
 	MemFree(fldNames)
 	
-	return
+	RETURN
 
 */
 
@@ -1326,12 +1326,12 @@ function _freeFieldNames(fldNames  as XSharp.RDD._FIELDNAMES) as void pascal
 /// <param name="symField"></param>
 /// <returns>
 /// </returns>
-static function WithoutAlias(cName)                         as string pascal
+STATIC FUNCTION WithoutAlias(cName)                         AS STRING PASCAL
 	
 	cName   := SubStr(cName, At(">", cName) + 1 )
 	cName   := Trim(Upper(cName))
 	
-	return cName
+	RETURN cName
 
 
 #endif

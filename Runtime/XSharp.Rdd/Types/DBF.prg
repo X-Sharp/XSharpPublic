@@ -2031,7 +2031,7 @@ BEGIN NAMESPACE XSharp.RDD
             // and access individual values using the other fields
 
            PRIVATE CONST OFFSET_SIG			    := 0  AS BYTE
-           PRIVATE CONST OFFSET_YEAR			:= 1  AS BYTE
+           PRIVATE CONST OFFSET_YEAR			:= 1  AS BYTE           // add 1900 so possible values are 1900 - 2155
            PRIVATE CONST OFFSET_MONTH	        := 2  AS BYTE
            PRIVATE CONST OFFSET_DAY             := 3  AS BYTE
            PRIVATE CONST OFFSET_RECCOUNT        := 4  AS BYTE
@@ -2109,8 +2109,8 @@ BEGIN NAMESPACE XSharp.RDD
                     GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
                     SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
                     
-                    PROPERTY CodePage	AS BYTE			 ;
-                    GET Buffer[OFFSET_CODEPAGE]  ;
+                    PROPERTY CodePage	AS DbfHeaderCodepage			 ;
+                    GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
                     SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
                     
                     PROPERTY Reserved3	AS SHORT         ;
@@ -2120,7 +2120,11 @@ BEGIN NAMESPACE XSharp.RDD
                     PROPERTY LastUpdate AS DateTime      ;
                     GET DateTime{1900+Year, Month, Day} ;
                     SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
+
+                    PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
+
                     
+
                     METHOD initialize() AS VOID STRICT
                         Buffer := BYTE[]{DbfHeader.SIZE}
                         isHot  := FALSE
@@ -2238,11 +2242,11 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 PROPERTY Len		 AS BYTE;
                 GET Buffer[OFFSET_Len]  ;
-                SET Buffer[OFFSET_Len] := (BYTE) VALUE
+                SET Buffer[OFFSET_Len] := VALUE
                 
                 PROPERTY Dec		 AS BYTE;
                 GET Buffer[OFFSET_Dec]  ;
-                SET Buffer[OFFSET_Dec] := (BYTE) VALUE
+                SET Buffer[OFFSET_Dec] := VALUE
                 
                 PROPERTY Flags		 AS DBFFieldFlags;
                 GET (DBFFieldFlags)Buffer[OFFSET_Flags] ;
@@ -2254,39 +2258,39 @@ BEGIN NAMESPACE XSharp.RDD
                 
                 PROPERTY IncStep	 AS BYTE;
                 GET Buffer[OFFSET_IncStep]  ;
-                SET Buffer[OFFSET_IncStep] := (BYTE) VALUE
+                SET Buffer[OFFSET_IncStep] :=  VALUE
                 
                 PROPERTY Reserved1   AS BYTE;
                 GET Buffer[OFFSET_Reserved1]  ;
-                SET Buffer[OFFSET_Reserved1] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved1] :=  VALUE
                 
                 PROPERTY Reserved2   AS BYTE;
                 GET Buffer[OFFSET_Reserved2]  ;
-                SET Buffer[OFFSET_Reserved2] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved2] := VALUE
                 
                 PROPERTY Reserved3   AS BYTE;
                 GET Buffer[OFFSET_Reserved3]  ;
-                SET Buffer[OFFSET_Reserved3] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved3] :=  VALUE
                 
                 PROPERTY Reserved4  AS BYTE;
                 GET Buffer[OFFSET_Reserved4]  ;
-                SET Buffer[OFFSET_Reserved4] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved4] :=  VALUE
                 
                 PROPERTY Reserved5   AS BYTE;
                 GET Buffer[OFFSET_Reserved5]  ;
-                SET Buffer[OFFSET_Reserved5] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved5] :=  VALUE
                 
                 PROPERTY Reserved6   AS BYTE;
                 GET Buffer[OFFSET_Reserved6]  ;
-                SET Buffer[OFFSET_Reserved6] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved6] :=  VALUE
                 
                 PROPERTY Reserved7   AS BYTE;
                 GET Buffer[OFFSET_Reserved7]  ;
-                SET Buffer[OFFSET_Reserved7] := (BYTE) VALUE
+                SET Buffer[OFFSET_Reserved7] :=  VALUE
                 
                 PROPERTY HasTag		 AS BYTE;
                 GET Buffer[OFFSET_HasTag]  ;
-                SET Buffer[OFFSET_HasTag] := (BYTE) VALUE
+                SET Buffer[OFFSET_HasTag] :=  VALUE
             END STRUCTURE
             
             

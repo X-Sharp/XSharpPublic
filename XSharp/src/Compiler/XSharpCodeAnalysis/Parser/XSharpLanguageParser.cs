@@ -204,7 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
                 foreach (var pragmaToken in pragmaTokens)
                 {
-                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
+                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorNoPragma, "#pragma not (yet) supported, command is ignored"));
                 }
             }
             XSharpPreprocessor pp = null;
@@ -367,52 +367,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
-
-            if ( _options.ParseLevel < ParseLevel.Complete||
-                parser.NumberOfSyntaxErrors != 0 || 
-                (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
-            {
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                if (tree != null)
-                {
-                    eof.XNode = new XTerminalNodeImpl(tree.Stop);
-                }
-                else
-                {
-                    eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
-                }
-                var result = _syntaxFactory.CompilationUnit(
-                    treeTransform.GlobalEntities.Externs,
-                    treeTransform.GlobalEntities.Usings,
-                    treeTransform.GlobalEntities.Attributes,
-                    treeTransform.GlobalEntities.Members,
-                    eof);
-                result.XNode = tree;
-                result.XTokens = _lexerTokenStream;
-                result.XPPTokens = _preprocessorTokenStream;
-                result.IncludedFiles = pp.IncludedFiles;
-                return result;
-            }
-//#endif
+            bool hasErrors = false;
+            SyntaxToken eof = null;
             try
             {
-                walker.Walk(treeTransform, tree);
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                if (!parseErrors.IsEmpty())
+
+                if ( _options.ParseLevel < ParseLevel.Complete|| 
+                    parser.NumberOfSyntaxErrors != 0 || 
+                    (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
                 {
+                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                     eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    if (tree != null)
+                    {
+                        eof.XNode = new XTerminalNodeImpl(tree.Stop);
+                    }
+                    else
+                    {
+                        eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
+                    }
+                    hasErrors = true;
+                }
+           
+                if (! hasErrors)
+                {
+                    walker.Walk(treeTransform, tree);
+                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                    if (!parseErrors.IsEmpty())
+                    {
+                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    }
                 }
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs, 
                     treeTransform.GlobalEntities.Usings,
                     treeTransform.GlobalEntities.Attributes, 
                     treeTransform.GlobalEntities.Members, eof);
-                // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
-                if (!_options.MacroScript )
+                result.HasDocComments = lexer.HasDocComments;
+                result.HasPragmas = lexer.HasPragmas;
+                if (!_options.MacroScript  && ! hasErrors)
                 {
                     result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                     result.Globals = treeTransform.GlobalEntities.Globals;

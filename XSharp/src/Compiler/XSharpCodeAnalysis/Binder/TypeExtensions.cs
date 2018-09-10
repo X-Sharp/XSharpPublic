@@ -180,5 +180,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VOStructAttribute);
             }
         }
+
+        static internal bool IsXsCompilerGenerated(this Symbol symbol) 
+        {
+            if (symbol.Kind == SymbolKind.Local || symbol.Kind == SymbolKind.Parameter)
+            {
+                if (symbol.Name != null && symbol.Name.StartsWith("Xs$") )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

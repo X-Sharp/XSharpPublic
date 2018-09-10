@@ -37,7 +37,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public SyntaxTriviaList GetLeadingTrivia(CompilationUnitSyntax cu)
         {
             var list = new SyntaxTriviaList();
-            if (cu == null)
+            if (cu == null || !cu.HasDocComments)
                 return list;
             XSharpToken start = this.Start as XSharpToken;
             var tokens = ((BufferedTokenStream) cu.XTokens).GetTokens();

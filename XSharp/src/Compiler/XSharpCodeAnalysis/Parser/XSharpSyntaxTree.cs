@@ -92,6 +92,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
         public bool HasPCall { get; internal set; } = false;
         public bool NeedsProcessing { get; internal set; } = false;
+        public bool HasDocComments { get; internal set; } = false;
+        public bool HasPragmas { get; internal set; } = false;
         public XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
         public Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
     }
@@ -159,6 +161,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public ITokenStream XPPTokens => internalUnit.XPPTokens;
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
         public bool NeedsProcessing => internalUnit.NeedsProcessing;
+        public bool HasDocComments => internalUnit.HasDocComments;
+        public bool HasPragmas => internalUnit.HasPragmas;
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
     }
 }

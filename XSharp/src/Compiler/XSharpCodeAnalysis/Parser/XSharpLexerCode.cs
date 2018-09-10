@@ -750,6 +750,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case DOC_COMMENT:
                             HasDocComments = true;
                             break;
+                        case PRAGMA:
+                            HasPragmas = true;
+                            break;
                         case SYMBOL_CONST:
                             var text = t.Text.Substring(1);
                             if (KwIds.ContainsKey(text))
@@ -1055,10 +1058,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             HasPPMacros = true;
                             HasPreprocessorTokens = true;
-                        }
-                        else if (kwtype == PRAGMA)
-                        {
-                            HasPragmas = true;
                         }
                         return true;
                     }

@@ -464,6 +464,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
+        private LocalDeclarationStatementSyntax GenerateReturnVar(TypeSyntax type, ExpressionSyntax expr= null)
+        {
+            var localdecl = GenerateLocalDecl(XSharpSpecialNames.ReturnName, type,expr);
+            localdecl.Declaration.XGenerated = true;
+            localdecl.XGenerated = true;
+            return localdecl;
+
+        }
         protected override BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
         {
             // This method changes the body of the entry point for the VO Syntax
@@ -504,7 +512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Type != null && context.Type.GetText().ToLower() != "void")
             {
-                newbody.Add(GenerateLocalDecl(XSharpSpecialNames.ReturnName, context.Type.Get<TypeSyntax>()));
+                newbody.Add(GenerateReturnVar(context.Type.Get<TypeSyntax>()));
                 needsExtraReturn = true;
                 needsReturnValue = true;
                 hasReturnVar = true;
@@ -520,7 +528,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (! hasReturnVar)
                         {
-                            newbody.Add(GenerateLocalDecl(XSharpSpecialNames.ReturnName, _objectType));
+                            newbody.Add(GenerateReturnVar(_objectType));
                             hasReturnVar = true;
                         }
                         needsReturnValue = true;
@@ -2046,7 +2054,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         errcode = ErrorCode.WRN_NoReturnValueAllowed;
                         if (context.Expr.GetLiteralToken() == null) // no  literal so we must evaluate the expression
                         {
-                            var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
+                            var declstmt = GenerateReturnVar( _impliedType, expr);
                             var retstmt = GenerateReturn(null);
                             var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
                             context.Put(block);

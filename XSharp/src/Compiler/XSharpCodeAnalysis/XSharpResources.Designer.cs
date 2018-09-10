@@ -13052,7 +13052,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the function because in X# functions take precedence over methods..
+        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the function because in X# functions take precedence over static methods. To call the method use the fully qualified name..
         /// </summary>
         internal static string WRN_FunctionsTakePrecedenceOverMethods {
             get {
@@ -13970,6 +13970,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_PossibleMistakenNullStatement_Title {
             get {
                 return ResourceManager.GetString("WRN_PossibleMistakenNullStatement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #pragma not (yet) supported, command is ignored.
+        /// </summary>
+        internal static string WRN_PreProcessorNoPragma {
+            get {
+                return ResourceManager.GetString("WRN_PreProcessorNoPragma", resourceCulture);
             }
         }
         

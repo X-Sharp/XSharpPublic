@@ -5262,5 +5262,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_AssignmentOperatorExpected" xml:space="preserve">
     <value>Assignment operator ':=' expected.</value>
   </data>
-  
+  <data name="WRN_PreProcessorNoPragma" xml:space="preserve">
+    <value>#pragma directive is not (yet) supported, directive is ignored</value>
+  </data>
 </root>

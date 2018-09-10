@@ -1075,7 +1075,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
             nfp = includeFile.FileName;
-            if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed )
+            if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
                 var clone = includeFile.Tokens.CloneArray();
                 var tokenSource = new ListTokenSource(clone, nfp);

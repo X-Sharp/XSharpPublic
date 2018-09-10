@@ -86,6 +86,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool HasPPMessages { get; private set; }
         public bool HasPPUDCs { get; private set; }
         public bool HasPPMacros { get; private set; }
+        public bool HasDocComments { get; private set; }
         public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes || HasPPMacros || HasPPIfdefs;
 
         internal IList<ParseErrorData> LexErrors => _lexErrors;
@@ -737,29 +738,35 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 else
                 {
                     t = base.NextToken() as XSharpToken;
-                    if (t.Type == ML_COMMENT)
+                    switch (t.Type)
                     {
-                        if (!t.Text.EndsWith("*/"))
-                        {
-                            _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
-                        }
-                    }
-                    if (t.Type == SYMBOL_CONST)
-                    {
-                        var text = t.Text.Substring(1);
-                        if (KwIds.ContainsKey(text))
-                        {
-                            var kwid = KwIds[text];
-                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                        case ML_COMMENT:
+
+                            if (!t.Text.EndsWith("*/"))
                             {
-                                // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
-                                t.Text = "#";
-                                t.Type = NEQ2;
-                                t.StopIndex = t.StartIndex;
-                                InputStream.Seek(t.StartIndex + 1);
+                                _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
                             }
-                        }
+                            break;
+                        case DOC_COMMENT:
+                            HasDocComments = true;
+                            break;
+                        case SYMBOL_CONST:
+                            var text = t.Text.Substring(1);
+                            if (KwIds.ContainsKey(text))
+                            {
+                                var kwid = KwIds[text];
+                                if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                                {
+                                    // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
+                                    t.Text = "#";
+                                    t.Type = NEQ2;
+                                    t.StopIndex = t.StartIndex;
+                                    InputStream.Seek(t.StartIndex + 1);
+                                }
+                            }
+                            break;
                     }
+                
                 }
             }
             var type = t.Type;
@@ -1048,6 +1055,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             HasPPMacros = true;
                             HasPreprocessorTokens = true;
+                        }
+                        else if (kwtype == PRAGMA)
+                        {
+                            HasPragmas = true;
                         }
                         return true;
                     }

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -15,22 +15,22 @@ USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
-    CLASS DBF INHERIT Workarea  
-        PROTECT _Header			AS DbfHeader    
-        //PROTECT _HeaderLength	AS WORD  	// Size of header 
+    CLASS DBF INHERIT Workarea
+        PROTECT _Header			AS DbfHeader
+        //PROTECT _HeaderLength	AS WORD  	// Size of header
         PROTECT _BufferValid	AS LOGIC	// Current Record is Valid
         PROTECT _HasMemo		AS LOGIC
         PROTECT _HasTags		AS LOGIC
-        PROTECT _HasAutoInc		AS LOGIC 
+        PROTECT _HasAutoInc		AS LOGIC
         PROTECT _HasTimeStamp	AS LOGIC
         //PROTECT _LastUpdate	    AS DateTime
-        PROTECT _RecCount		AS LONG		
+        PROTECT _RecCount		AS LONG
         PROTECT _RecNo			AS LONG
-        //PROTECT _Temporary		AS LOGIC    
+        //PROTECT _Temporary		AS LOGIC
         //PROTECT _NullCount		AS LONG
         //PROTECT _NullOffSet		AS LONG
         PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
-        PROTECT _Positioned		AS LOGIC 	// 
+        PROTECT _Positioned		AS LOGIC 	//
         PROTECT _Appended		AS LOGIC	// Record has been added ?
         PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
         PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
@@ -38,14 +38,14 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _HeaderLocked	AS LOGIC
         PROTECT _PackMemo		AS LOGIC
         INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-        PROTECT _ParentRelInfo	AS DbRelInfo  // parent rel struct   
+        PROTECT _ParentRelInfo	AS DbRelInfo  // parent rel struct
         PROTECT _Locks			AS List<LONG>
         //PROTECT _DirtyRead		AS LONG
         //PROTECT _HasTrigger		AS LOGIC
         //PROTECT _Encrypted		AS LOGIC	// Current record Encrypted
         //PROTECT _TableEncrypted 	AS LOGIC	// Whole table encrypted
-        //PROTECT _CryptKey		AS STRING       
-        //PROTRECT _Trigger		as DbTriggerDelegate  
+        //PROTECT _CryptKey		AS STRING
+        //PROTRECT _Trigger		as DbTriggerDelegate
         PROTECT _oIndex			AS BaseIndex
         PROTECT _oMemo			AS BaseMemo
         PROTECT _Hot            AS LOGIC
@@ -53,15 +53,15 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _lockScheme     AS DbfLocking
         PROTECT _NewRecord      AS LOGIC
         //
-        
+
         CONSTRUCTOR()
             SELF:_hFile := F_ERROR
             SELF:_Header := DbfHeader{} // DbfHeader is a Structure, so the object is already created, no ?
             SELF:_Header:initialize()
             SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
             SELF:_Locks := List<LONG>{}
-            
-            
+
+
             //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
             /// <inheritdoc />
         METHOD GoTop() AS LOGIC
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
             ENDIF
             RETURN FALSE
-            
+
             /// <inheritdoc />
         METHOD GoBottom() AS LOGIC
             IF ( SELF:_hFile != F_ERROR )
@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
             ENDIF
             RETURN FALSE
-            
+
             /// <inheritdoc />
         METHOD GoTo(nRec AS LONG) AS LOGIC
             IF ( SELF:_hFile != F_ERROR )
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
                         // virtual pos
                         SELF:_RecNo := nRec
-                        SELF:_EOF := FALSE		
+                        SELF:_EOF := FALSE
                         SELF:_Bof := FALSE
                         SELF:_Found :=TRUE
                         SELF:_BufferValid := FALSE
@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         // File empty, or trying to go outside ?
                         SELF:_RecNo := SELF:RecCount + 1
-                        SELF:_EOF := TRUE		
+                        SELF:_EOF := TRUE
                         SELF:_Bof := FALSE
                         SELF:_Found := FALSE
                         SELF:_BufferValid := FALSE
@@ -124,7 +124,7 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
             ENDIF
             RETURN FALSE
-            
+
             /// <inheritdoc />
         METHOD GoToId(oRec AS OBJECT) AS LOGIC
             LOCAL result AS LOGIC
@@ -138,9 +138,9 @@ BEGIN NAMESPACE XSharp.RDD
                 END TRY
             END LOCK
             RETURN result
-            
-            
-            
+
+
+
             /// <inheritdoc />
         METHOD Skip(nToSkip AS INT) AS LOGIC
             LOCAL result AS LOGIC
@@ -164,12 +164,12 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN result
             ENDIF
             RETURN FALSE
-            
-            
+
+
             //	METHOD SkipFilter(nToSkip AS INT) AS LOGIC
-            //	METHOD SkipRaw(nToSkip AS INT) AS LOGIC 
+            //	METHOD SkipRaw(nToSkip AS INT) AS LOGIC
             //	METHOD SkipScope(nToSkip AS INT) AS LOGIC
-            
+
             // Append and Delete
         METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD
                             // Now, update state
                             SELF:_RecCount++
                             SELF:_RecNo := SELF:RecCount
-                            SELF:_EOF := FALSE		
+                            SELF:_EOF := FALSE
                             SELF:_Bof := FALSE
                             SELF:_Deleted := FALSE
                             SELF:_BufferValid := TRUE
@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN isOk
-            
+
             // Lock the "future" record (Recno+1) and the Header
             // Unlock the Header
         METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
@@ -233,7 +233,7 @@ BEGIN NAMESPACE XSharp.RDD
             //
             BEGIN LOCK SELF
                 IF ( lockMode == DbLockMode.Lock )
-                    // Try to Lock for 123 ms 
+                    // Try to Lock for 123 ms
                     isOk := SELF:HeaderLock( lockMode )
                     IF ( isOk )
                         // Now Add the "new" record to the Locked Records ?
@@ -255,7 +255,7 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
             //
             RETURN isOk
-            
+
             // LockMethod.File      : Unlock all records and Lock the File
             // LockMethod.Exclusive : Unlock all records and lock the indicated record
             // LockMethod.Multiple  : Loc the indicated record
@@ -266,19 +266,19 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( lockInfo:@@METHOD == DbLockInfo.LockMethod.Exclusive ) .OR. ;
                 ( lockInfo:@@METHOD == DbLockInfo.LockMethod.Multiple )
                     isOk := SELF:_lockRecord( lockInfo )
-                ELSEIF ( lockInfo:@@METHOD == DbLockInfo.LockMethod.File ) 
+                ELSEIF ( lockInfo:@@METHOD == DbLockInfo.LockMethod.File )
                     isOk := SELF:_lockDBFFile( )
                 ELSE
                     isOk := TRUE
                 ENDIF
             END LOCK
             RETURN isOk
-            
-            // Place a lock on the Header. The "real" offset locked depends on the Lock Scheme, defined by the DBF Type         
+
+            // Place a lock on the Header. The "real" offset locked depends on the Lock Scheme, defined by the DBF Type
         METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
             //
             IF ( lockMode == DbLockMode.Lock )
-                // Try to Lock for 123 ms 
+                // Try to Lock for 123 ms
                 SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries)
             ELSE
                 TRY
@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN SELF:_HeaderLocked
-            
+
             // Unlock a indicated record number. If 0, Unlock ALL records
             // Then unlock the File if needed
         METHOD UnLock(oRecId AS OBJECT) AS LOGIC
@@ -326,7 +326,7 @@ BEGIN NAMESPACE XSharp.RDD
                 isOk := TRUE
             ENDIF
             RETURN isOk
-            
+
             // Unlock file. The Offset depends on the LockScheme
         PROTECT METHOD _unlockFile( ) AS LOGIC
             LOCAL unlocked AS LOGIC
@@ -345,7 +345,7 @@ BEGIN NAMESPACE XSharp.RDD
                 unlocked := FALSE
             END TRY
             RETURN unlocked
-            
+
             // Unlock a record. The Offset depends on the LockScheme
         PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
             LOCAL unlocked AS LOGIC
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Locks:Remove( recordNbr )
             ENDIF
             RETURN unlocked
-            
+
             // Lock the file. The Offset depends on the LockScheme
         PROTECT METHOD _lockFile( ) AS LOGIC
             LOCAL locked AS LOGIC
@@ -387,8 +387,8 @@ BEGIN NAMESPACE XSharp.RDD
             CATCH
                 locked := FALSE
             END TRY
-            RETURN locked            
-            
+            RETURN locked
+
             // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
             // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
             // Return the result of the operation
@@ -410,7 +410,7 @@ BEGIN NAMESPACE XSharp.RDD
             UNTIL ( locked .OR. (nTries==0) )
             //
             RETURN locked
-            
+
             // Lock the DBF File : All records are first unlocked, then the File is locked
         PROTECTED METHOD _lockDBFFile() AS LOGIC
             LOCAL isOk := TRUE AS LOGIC
@@ -432,7 +432,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN isOk
-            
+
             // Lock a record number. The Offset depends on the LockScheme
         PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
             LOCAL locked AS LOGIC
@@ -456,8 +456,8 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Locks:Add( recordNbr )
             ENDIF
             RETURN locked
-            
-            
+
+
             // LockMethod.Exclusive : Unlock all records and lock the indicated record
             // LockMethod.Multiple  : Loc the indicated record
         PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
@@ -491,7 +491,7 @@ BEGIN NAMESPACE XSharp.RDD
                         // One lock at a time
                         IF( SELF:_fLocked )
                             // Unlock all records and file
-                            SELF:UnLock( 0 ) 
+                            SELF:UnLock( 0 )
                         ENDIF
                         // Now, lock the one
                         isOk := SELF:_lockRecord( (LONG)nToLock )
@@ -503,23 +503,23 @@ BEGIN NAMESPACE XSharp.RDD
             //
             lockInfo:Result := isOk
             RETURN isOk
-            
-            
-            // Un Delete the curretn Record            
+
+
+            // Un Delete the curretn Record
         METHOD Recall() AS LOGIC
             LOCAL isOk AS LOGIC
             //
             isOk := SELF:_readRecord()
             IF isOk
-                SELF:_RecordBuffer[ 0 ] := (BYTE)' ' 
+                SELF:_RecordBuffer[ 0 ] := (BYTE)' '
                 SELF:_Deleted := FALSE
                 //
                 SELF:GoHot()
             ELSE
                 SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
             ENDIF
-            RETURN isOk            
-            
+            RETURN isOk
+
             // Mark the current record as DELETED
         METHOD Delete() AS LOGIC
             LOCAL isOk AS LOGIC
@@ -527,7 +527,7 @@ BEGIN NAMESPACE XSharp.RDD
             BEGIN LOCK SELF
                 isOk := SELF:_readRecord()
                 IF isOk
-                    SELF:_RecordBuffer[ 0 ] := (BYTE)'*' 
+                    SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
                     SELF:_Deleted := TRUE
                     //
                     SELF:GoHot()
@@ -536,9 +536,9 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             END LOCK
             RETURN isOk
-            
+
             // Retrieve the raw content of a record
-        METHOD GetRec() AS BYTE[]  
+        METHOD GetRec() AS BYTE[]
             LOCAL records := NULL AS BYTE[]
             // Read Record to Buffer
             BEGIN LOCK SELF
@@ -549,9 +549,9 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             END LOCK
             RETURN records
-            
+
             // Put the content of a record as raw data
-        METHOD PutRec(aRec AS BYTE[]) AS LOGIC 
+        METHOD PutRec(aRec AS BYTE[]) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             // First, Check the Size
             IF ( aRec:Length == SELF:_RecordLength )
@@ -563,7 +563,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_dbfError( ERDD.DATAWIDTH, XSharp.Gencode.EG_DATAWIDTH )
             ENDIF
             RETURN isOk
-            
+
             // Suppress all DELETED record
         METHOD Pack() AS LOGIC
             LOCAL isOk AS LOGIC
@@ -617,9 +617,9 @@ BEGIN NAMESPACE XSharp.RDD
                 //
             ENDIF
             RETURN isOk
-            
-            
-            // Remove all records 
+
+
+            // Remove all records
         METHOD Zap() AS LOGIC
             LOCAL isOk AS LOGIC
             //
@@ -647,16 +647,16 @@ BEGIN NAMESPACE XSharp.RDD
                     // Zap Memo
                     IF _oMemo != NULL
                         RETURN _oMemo:Zap()
-                    ELSE                            
+                    ELSE
                         RETURN SUPER:Zap()
                     ENDIF
                 ENDIF
             ENDIF
             RETURN isOk
-            
-            // Open and Close   
+
+            // Open and Close
             /// <inheritdoc />
-        METHOD Close() 			AS LOGIC 
+        METHOD Close() 			AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF ( SELF:_hFile != NULL )
                 // Validate
@@ -685,7 +685,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN isOk
-            
+
             // Move to the End of file, and place a End-Of-File Marker (0x1A)
         PRIVATE METHOD _putEndOfFileMarker() AS LOGIC
             // According to DBASE.com Knowledge base :
@@ -701,10 +701,10 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN isOk
-            
+
             // Create a DBF File, based on the DbOpenInfo Structure
             // Write the File Header, and the Fields Header; Create the Memo File if needed
-        METHOD Create(info AS DbOpenInfo) AS LOGIC  
+        METHOD Create(info AS DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
             //
             isOk := FALSE
@@ -724,7 +724,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
             //
-            SELF:_hFile    := FCreate( SELF:_FileName) 
+            SELF:_hFile    := FCreate( SELF:_FileName)
             IF ( SELF:_hFile != F_ERROR )
                 LOCAL fieldCount :=  SELF:_Fields:Length AS INT
                 LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
@@ -749,16 +749,16 @@ BEGIN NAMESPACE XSharp.RDD
                     IF ( isOk )
                         IF ( SELF:_HasMemo )
                             isOk := SELF:CreateMemFile( info )
-                        ENDIF  
+                        ENDIF
                         // Don't forget to allocate memory for Records
                         SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
-                        // 
+                        //
                     ENDIF
                 ENDIF
                 IF ( !isok )
                     IF ( SELF:_HasMemo )
                         SELF:CloseMemFile( )
-                    ENDIF  
+                    ENDIF
                     FClose( SELF:_hFile )
                 ELSE
                     SELF:GoTop()
@@ -767,14 +767,14 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_DbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_CREATE )
             ENDIF
             RETURN isOK
-            
-            // Write the Fields Header, based on the _Fields List            
+
+            // Write the Fields Header, based on the _Fields List
         PRIVATE METHOD _writeFieldsHeader() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL fieldCount :=  SELF:_Fields:Length AS INT
             LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
             // Now, create the Structure
-            LOCAL fieldsBuffer := BYTE[]{ fieldDefSize +1 } AS BYTE[] // +1 to add 0Dh stored as the field terminator. 
+            LOCAL fieldsBuffer := BYTE[]{ fieldDefSize +1 } AS BYTE[] // +1 to add 0Dh stored as the field terminator.
             LOCAL currentField := DbfField{} AS DbfField
             currentField:Initialize()
             LOCAL nStart AS INT
@@ -799,13 +799,13 @@ BEGIN NAMESPACE XSharp.RDD
                 // Write Fields and Terminator
                 TRY
                     isOk := ( FWrite3( SELF:_hFile, fieldsBuffer, (DWORD)fieldsBuffer:Length ) == (DWORD)fieldsBuffer:Length )
-                CATCH 
+                CATCH
                     SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
                 END TRY
             ENDIF
             //
             RETURN isOk
-            
+
             /// <inheritdoc />
         METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
@@ -822,7 +822,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_FileName := SELF:_OpenInfo:FileName
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
-            SELF:_hFile    := Fopen(SELF:_FileName, SELF:_OpenInfo:FileMode) 
+            SELF:_hFile    := Fopen(SELF:_FileName, SELF:_OpenInfo:FileMode)
             IF ( SELF:_hFile != F_ERROR )
                 isOk := SELF:_ReadHeader()
                 IF ( isOk )
@@ -840,8 +840,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN isOk
-            
-            // Read the DBF Header, retrieve RecCount, then read the Fields Header 
+
+            // Read the DBF Header, retrieve RecCount, then read the Fields Header
         PRIVATE METHOD _readHeader() AS LOGIC
             LOCAL isOk AS LOGIC
             //
@@ -861,15 +861,15 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN isOk
-            
-            // Read the Fields Header, filling the _Fields List with RddFieldInfo            
+
+            // Read the Fields Header, filling the _Fields List with RddFieldInfo
         PRIVATE METHOD _readFieldsHeader() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL fieldCount := (( SELF:_Header:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
             LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
             //
             // Read full Fields Header
-            VAR fieldsBuffer := BYTE[]{ fieldDefSize } 
+            VAR fieldsBuffer := BYTE[]{ fieldDefSize }
             isOk := ( FRead3( SELF:_hFile, fieldsBuffer, (DWORD)fieldDefSize ) == (DWORD)fieldDefSize )
             IF ( isOk )
                 SELF:_HasMemo := FALSE
@@ -897,8 +897,8 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
             ENDIF
             RETURN isOk
-            
-            // Write the DBF file Header : Last DateTime of modification (now), Current Reccount    
+
+            // Write the DBF file Header : Last DateTime of modification (now), Current Reccount
         PRIVATE METHOD _writeHeader() AS LOGIC
             LOCAL ret := TRUE AS LOGIC
             // Really ?
@@ -923,7 +923,7 @@ BEGIN NAMESPACE XSharp.RDD
                 // Write just the File Header
                 TRY
                     ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
-                CATCH 
+                CATCH
                     SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
                     ret := FALSE
                 END TRY
@@ -932,16 +932,16 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN ret
-            
-            // Filtering and Scoping 
+
+            // Filtering and Scoping
             //	METHOD ClearFilter() 	AS LOGIC
-            //	METHOD ClearScope() 	AS LOGIC 
-            //	METHOD Continue()		AS LOGIC     
-            //	METHOD GetScope()		AS DbScopeInfo 
+            //	METHOD ClearScope() 	AS LOGIC
+            //	METHOD Continue()		AS LOGIC
+            //	METHOD GetScope()		AS DbScopeInfo
             //	METHOD ScopeInfo(nOrdinal AS LONG) AS OBJECT
-            //	METHOD SetFilter(info AS DbFilterInfo) AS LOGIC 
+            //	METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
             //	METHOD SetScope(info AS DbScopeInfo) AS LOGIC
-            
+
             // Fields
             // Set the Number of Fields the AddField Method will add
         METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
@@ -951,7 +951,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_RecordLength := 1 // 1 for DELETED
             SELF:_HasMemo := FALSE
             RETURN TRUE
-            
+
             // Add a Field to the _Fields List. Fields are added in the order of method call
         METHOD AddField(info AS RddFieldInfo) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -974,17 +974,17 @@ BEGIN NAMESPACE XSharp.RDD
             IF isOk
                 IF ( SELF:_addFieldPos < SELF:_Fields:Length )
                     SELF:_checkFields( info )
-                    SELF:_Fields[ SELF:_addFieldPos++ ] := DbfRddFieldInfo{ info:Name, info:FieldType, info:Length, info:Decimals } 
+                    SELF:_Fields[ SELF:_addFieldPos++ ] := DbfRddFieldInfo{ info:Name, info:FieldType, info:Length, info:Decimals }
                     SELF:_RecordLength += (WORD)info:Length
                 ELSE
                     isOk := FALSE
                 ENDIF
             ENDIF
-            IF ( isOk ) .AND. info:FieldType == DbFieldType.Memo 
+            IF ( isOk ) .AND. info:FieldType == DbFieldType.Memo
                 SELF:_HasMemo := TRUE
             ENDIF
             RETURN isOk
-            
+
             // Check if a Field definition is correct :
             // Date Length must be 8, Number are long enough to store Dot anf Decs (if any), ...
         PROTECT METHOD _checkFields(info REF RddFieldInfo) AS VOID
@@ -1011,15 +1011,15 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
                     ENDIF
                 CASE DbFieldType.Date
-                    IF ( info:Length != 8 ) .OR. ( info:Decimals != 0 ) 
+                    IF ( info:Length != 8 ) .OR. ( info:Decimals != 0 )
                         SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
                     ENDIF
                 CASE DbFieldType.Logic
-                    IF ( info:Length != 1 ) .OR. ( info:Decimals != 0 ) 
+                    IF ( info:Length != 1 ) .OR. ( info:Decimals != 0 )
                         SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
                     ENDIF
                 CASE DbFieldType.Memo
-                    IF ( info:Length != 10 ) .OR. ( info:Decimals != 0 ) 
+                    IF ( info:Length != 10 ) .OR. ( info:Decimals != 0 )
                         SELF:_dbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_ARG )
                     ENDIF
                 OTHERWISE
@@ -1027,7 +1027,7 @@ BEGIN NAMESPACE XSharp.RDD
                     info:FieldType := DbFieldType.Unknown
             END SWITCH
             RETURN
-            
+
             // Add the list of Fields ot the DBF, by calling SetFieldExtent and AddField
         METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
             // Ok, this will set the Fields for the current object
@@ -1053,7 +1053,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN isOk
-            
+
             /// <inheritdoc />
         METHOD FieldIndex(fieldName AS STRING) AS LONG
             IF ( SELF:_hFile != F_ERROR )
@@ -1068,7 +1068,7 @@ BEGIN NAMESPACE XSharp.RDD
                 NEXT
             ENDIF
             RETURN 0
-            
+
             /// <inheritdoc />
         METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
@@ -1091,43 +1091,43 @@ BEGIN NAMESPACE XSharp.RDD
                         oResult := SELF:_Fields[nArrPos]:FieldType:ToString():Substring(0,1)
                     CASE DbFieldInfo.DBS_ALIAS
                         oResult := SELF:_Fields[nArrPos]:Alias
-                        
+
                     CASE DbFieldInfo.DBS_ISNULL
                 CASE DbFieldInfo.DBS_COUNTER
-                    CASE DbFieldInfo.DBS_STEP    
-                    
-                    CASE DbFieldInfo.DBS_BLOB_GET     
+                    CASE DbFieldInfo.DBS_STEP
+
+                    CASE DbFieldInfo.DBS_BLOB_GET
                     CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
                         // is more efficient than using Type() or ValType()
                         // since the data itself does not have to be retrieved
                         // from the BLOB file in order to determine the type.
-                    CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file	
+                    CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file
                     CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
                     CASE DbFieldInfo.DBS_BLOB_POINTER	// Returns a numeric pointer to the data in a blob
                         // file. This pointer can be used with BLOBDirectGet(),
                         // BLOBDirectImport(), etc.
-                        
-                    CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
-                    CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN		
-                    
-                    CASE DbFieldInfo.DBS_STRUCT				
-                    CASE DbFieldInfo.DBS_PROPERTIES			
-                    CASE DbFieldInfo.DBS_USER		
-                    
+
+                    CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
+                    CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
+
+                    CASE DbFieldInfo.DBS_STRUCT
+                    CASE DbFieldInfo.DBS_PROPERTIES
+                    CASE DbFieldInfo.DBS_USER
+
                     OTHERWISE
                         oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
                     END SWITCH
             END LOCK
             RETURN oResult
-            
+
             /// <inheritdoc />
         METHOD FieldName(nFldPos AS LONG) AS STRING
             RETURN SUPER:FieldName( nFldPos )
-            
-            
-            // Read & Write		
-            
-            // Move to the current record, then read the raw Data into the internal RecordBuffer; Set the DELETED Flag 
+
+
+            // Read & Write
+
+            // Move to the current record, then read the raw Data into the internal RecordBuffer; Set the DELETED Flag
         PRIVATE METHOD _readRecord() AS LOGIC
             LOCAL isOk AS LOGIC
             // Buffer is supposed to be correct
@@ -1151,7 +1151,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN isOk
-            
+
             // Move to the current record, write the raw Data, then update the Header (for DateTime mainly)
         PRIVATE METHOD _writeRecord() AS LOGIC
             LOCAL isOk AS LOGIC
@@ -1178,14 +1178,14 @@ BEGIN NAMESPACE XSharp.RDD
                             IF ( SELF:_Shared )
                                 SELF:_writeHeader()
                             ENDIF
-                        CATCH 
+                        CATCH
                             SELF:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
                         END TRY
-                    ENDIF 
+                    ENDIF
                 ENDIF
             ENDIF
             RETURN isOk
-            
+
             // Convert a Julian Date to a System.DateTime Date
         PROTECT METHOD _julianToDateTime(julianDateAsLong AS INT64) AS System.DateTime
             LOCAL num2 AS REAL8
@@ -1214,7 +1214,7 @@ BEGIN NAMESPACE XSharp.RDD
             num10 := ((num7 + 2) - (12 * num9))
             num11 := (((100 * (num3 - 49)) + num5) + num9)
             RETURN System.DateTime{System.Convert.ToInt32(num11), System.Convert.ToInt32(num10), System.Convert.ToInt32(num8)}
-            
+
             // Convert a System.DateTime Date to a Julian Date
         PROTECT METHOD _dateTimeToJulian( dt AS DateTime ) AS LONG
             LOCAL Month := dt:Month AS INT
@@ -1229,7 +1229,7 @@ BEGIN NAMESPACE XSharp.RDD
             //modified Julian Date
             result := Day + (153 * Month - 457) / 5 + 365 * Year + (Year / 4) - (Year / 100) + (Year / 400) - 678882
             RETURN result
-            
+
             // Convert the data stored in the buffer (BYTE[]) to an .NET Object. The convertion is drived by fieldType
         INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], fieldType AS DbFieldType, nDec AS LONG) AS OBJECT
             LOCAL str AS STRING
@@ -1276,7 +1276,7 @@ BEGIN NAMESPACE XSharp.RDD
                     //                        //
                     //                        data := System.DateTime.MinValue
                     //                    ENDIF
-                    
+
                 CASE DbFieldType.Integer
                     //
                     IF (! String.IsNullOrWhiteSpace(str))
@@ -1322,7 +1322,7 @@ BEGIN NAMESPACE XSharp.RDD
                     data := buffer
                 END SWITCH
             RETURN Data
-            
+
             // Convert the value (OBJECT) to the corresponding DBF Type (fieldType), and put the result in binary form (buffer)
         INTERNAL VIRTUAL METHOD _convertFieldToData( oValue AS OBJECT, buffer AS BYTE[], fieldType AS DbFieldType, dec AS LONG) AS LOGIC
             LOCAL objType AS System.Type
@@ -1330,7 +1330,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL encoding AS ASCIIEncoding
             LOCAL isOk := FALSE AS LOGIC
             LOCAL str AS STRING
-            // 
+            //
             encoding := ASCIIEncoding{}
             objType := oValue:GetType()
             objTypeCode := Type.GetTypeCode( objType )
@@ -1358,11 +1358,11 @@ BEGIN NAMESPACE XSharp.RDD
                         // Type Error !
                         isOk := FALSE
                     ENDIF
-                    
+
             CASE TypeCode.Decimal
                 CASE TypeCode.Double
                 CASE TypeCode.Single
-                
+
                 CASE TypeCode.Byte
                 CASE TypeCode.SByte
                 CASE TypeCode.Int16
@@ -1370,8 +1370,8 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE TypeCode.Int64
                 CASE TypeCode.UInt16
                 CASE TypeCode.UInt32
-                CASE TypeCode.UInt64   
-                
+                CASE TypeCode.UInt64
+
                     IF ( fieldType == DbFieldType.Number ) .OR. ;
                     ( fieldType == DbFieldType.Float ) .OR. ;
                     ( fieldType == DbFieldType.Double ) .OR. ;
@@ -1395,7 +1395,7 @@ BEGIN NAMESPACE XSharp.RDD
                         // Type Error !
                         isOk := FALSE
                     ENDIF
-                    
+
                 CASE TypeCode.Boolean
                     IF ( fieldType == DbFieldType.Logic )
                         buffer[0] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
@@ -1404,7 +1404,7 @@ BEGIN NAMESPACE XSharp.RDD
                         // Type Error !
                         isOk := FALSE
                     ENDIF
-                    
+
                 CASE TypeCode.DateTime
                     IF ( fieldType == DbFieldType.Date )
                         LOCAL dt AS DateTime
@@ -1432,24 +1432,24 @@ BEGIN NAMESPACE XSharp.RDD
                         // Type Error !
                         isOk := FALSE
                     ENDIF
-                    
+
                 END SWITCH
             //
             RETURN isOk
-            
+
             // Throw a Error, indicating the SubSystem Code and the General Code
         INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
-            
+
         INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
-            
+
         INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
-            
+
         INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
             SELF:_DbfError(iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
-            
+
         INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
             LOCAL oError AS RddError
             //
@@ -1463,14 +1463,14 @@ BEGIN NAMESPACE XSharp.RDD
             oError:Description := strMessage
             //
             THROW oError
-            
-            // Calculate the position of the Field in the BYTE[] that holds the Data 
+
+            // Calculate the position of the Field in the BYTE[] that holds the Data
             // Offset is Zero-Based
         INTERNAL METHOD _getFieldOffset( nFldPos AS LONG ) AS LONG
             // 1 To Skip Deleted field
             LOCAL iOffset := 1 AS INT
             LOCAL fld AS DbfRddFieldInfo
-            // 
+            //
             LOCAL nArrPos := nFldPos AS LONG
             LOCAL nStart := 1 AS LONG
             LOCAL i AS LONG
@@ -1488,7 +1488,7 @@ BEGIN NAMESPACE XSharp.RDD
                 iOffset := fld:Offset
             ENDIF
             RETURN iOffset
-            
+
             // Like FiedName, but on DbFieldType
         INTERNAL VIRTUAL METHOD _FieldType( nFldPos AS LONG ) AS DbFieldType
             LOCAL nArrPos := nFldPos AS LONG
@@ -1497,16 +1497,16 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN SELF:_Fields[ nArrPos ]:FieldType
-            
+
             // Indicate if a Field is a Memo
             // At DBF Level, TRUE only for DbFieldType.Memo
         INTERNAL VIRTUAL METHOD _isMemoField( nFldPos AS LONG ) AS LOGIC
             //
             RETURN SELF:_isMemoFieldType( SELF:_FieldType(nFldPos ) )
-            
+
         INTERNAL VIRTUAL METHOD _isMemoFieldType( fieldType AS DbFieldType ) AS LOGIC
             RETURN ( fieldType == DbFieldType.Memo )
-            
+
             // Retrieve the BlockNumber as it is written in the DBF
         INTERNAL METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
             LOCAL blockNbr := 0 AS LONG
@@ -1527,7 +1527,7 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR str :=  encoding:GetString( SELF:_RecordBuffer, iOffset, SELF:_Fields[nArrPos]:Length)
                     IF ( str == NULL )
                         str := String.Empty
-                    ENDIF            
+                    ENDIF
                     str := str:Trim()
                     IF String.IsNullOrEmpty(str)
                         blockNbr := 0
@@ -1538,7 +1538,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN blockNbr
-            
+
             /// <inheritdoc />
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL ret := NULL AS OBJECT
@@ -1549,7 +1549,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF _oMemo != NULL
                         // At this level, the return value is the raw Data, in BYTE[]
                         RETURN _oMemo:GetValue(nFldPos)
-                    ELSE                            
+                    ELSE
                         RETURN SUPER:GetValue(nFldPos)
                     ENDIF
                 ELSE
@@ -1573,23 +1573,23 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
             ENDIF
             RETURN ret
-            
+
             /// <inheritdoc />
         METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-            IF _oMemo != NULL                    
+            IF _oMemo != NULL
                 RETURN _oMemo:GetValueFile(nFldPos, fileName)
-            ELSE                            
+            ELSE
                 RETURN SUPER:GetValueFile(nFldPos, fileName)
             ENDIF
-            
+
             /// <inheritdoc />
         METHOD GetValueLength(nFldPos AS LONG) AS LONG
-            IF _oMemo != NULL                    
+            IF _oMemo != NULL
                 RETURN _oMemo:GetValueLength(nFldPos)
-            ELSE                            
+            ELSE
                 RETURN SUPER:GetValueLength(nFldPos)
             ENDIF
-            
+
             /// <inheritdoc />
         METHOD Flush() 			AS LOGIC
             LOCAL isOk AS LOGIC
@@ -1600,24 +1600,24 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN FALSE
             ENDIF
             isOk := SELF:GoCold()
-            IF isOk 
+            IF isOk
                 IF ( SELF:_Shared )
                     SELF:HeaderLock( DbLockMode.Lock )
                 ENDIF
-                SELF:_putEndOfFileMarker()        
+                SELF:_putEndOfFileMarker()
                 SELF:_writeHeader()
                 IF ( SELF:_Shared )
                     SELF:HeaderLock( DbLockMode.UnLock )
-                ENDIF                
+                ENDIF
             ENDIF
             //
             FFlush( SELF:_hFile )
-            IF _oMemo != NULL                 
+            IF _oMemo != NULL
                 isOk := _oMemo:Flush()
             ENDIF
             RETURN isOk
-            
-            // Save any Pending Change            
+
+            // Save any Pending Change
         METHOD GoCold()			AS LOGIC
             LOCAL ret AS LOGIC
             //
@@ -1629,9 +1629,9 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
             ENDIF
             RETURN ret
-            
+
             // Indicate that the content of the current buffer needs to be saved
-        METHOD GoHot()			AS LOGIC   
+        METHOD GoHot()			AS LOGIC
             LOCAL ret AS LOGIC
             //
             ret := TRUE
@@ -1648,13 +1648,13 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         SELF:_Hot := TRUE
                     ENDIF
-                END LOCK 
+                END LOCK
             ENDIF
             RETURN ret
-            
+
         PROPERTY IsHot AS LOGIC GET SELF:_Hot
         PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
-        
+
         /// <inheritdoc />
         METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
@@ -1662,10 +1662,10 @@ BEGIN NAMESPACE XSharp.RDD
             IF __ARRAYBASE__ == 0
                 nArrPos -= 1
             ENDIF
-            // Ok, so the Data position in the RecordBuffer is iOffset, 
+            // Ok, so the Data position in the RecordBuffer is iOffset,
             // its Length is SELF:_Fields[nArrPos]:Length
             IF SELF:_isMemoField( nFldPos )
-                IF _oMemo != NULL           
+                IF _oMemo != NULL
                     IF _oMemo:PutValue(nFldPos, oValue)
                         // Update the Field Info with the new MemoBlock Position
                         // Create a Destination buffer for the conversion
@@ -1676,7 +1676,7 @@ BEGIN NAMESPACE XSharp.RDD
                         //
                         SELF:GoHot()
                     ENDIF
-                ELSE                            
+                ELSE
                     RETURN SUPER:PutValue(nFldPos, oValue)
                 ENDIF
             ELSE
@@ -1689,46 +1689,46 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:GoHot()
             ENDIF
             RETURN TRUE
-            
+
             /// <inheritdoc />
         METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-            IF _oMemo != NULL   
+            IF _oMemo != NULL
                 RETURN _oMemo:PutValueFile(nFldPos, fileName)
-            ELSE                            
+            ELSE
                 RETURN SUPER:PutValue(nFldPos, fileName)
             ENDIF
-            
-            
+
+
             // Locking
-            //	METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC  
-            //	METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
-            //	METHOD Lock(uiMode AS DbLockMode) AS LOGIC 
+            //	METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
+            //	METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
+            //	METHOD Lock(uiMode AS DbLockMode) AS LOGIC
             //	METHOD UnLock(oRecId AS OBJECT) AS LOGIC
-            
-            // Memo File Access 
+
+            // Memo File Access
             /// <inheritdoc />
-        METHOD CloseMemFile() 	AS LOGIC    
-            IF _oMemo != NULL                    
+        METHOD CloseMemFile() 	AS LOGIC
+            IF _oMemo != NULL
                 RETURN _oMemo:CloseMemFile()
-            ELSE                            
+            ELSE
                 RETURN SUPER:CloseMemFile()
             ENDIF
             /// <inheritdoc />
         METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
-            IF _oMemo != NULL                    
+            IF _oMemo != NULL
                 RETURN _oMemo:CreateMemFile(info)
-            ELSE                            
+            ELSE
                 RETURN SUPER:CreateMemFile(info)
             ENDIF
-            
+
             /// <inheritdoc />
-        METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC   
-            IF _oMemo != NULL                    
+        METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
+            IF _oMemo != NULL
                 RETURN _oMemo:OpenMemFile(info)
-            ELSE                            
+            ELSE
                 RETURN SUPER:OpenMemFile(info)
             ENDIF
-            
+
             // Indexes
             /// <inheritdoc />
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
@@ -1737,23 +1737,23 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 RETURN SUPER:OrderCondition(info)
             ENDIF
-            
+
             /// <inheritdoc />
-        METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
+        METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             IF _oIndex != NULL
                 RETURN _oIndex:OrderCreate(info)
             ELSE
                 RETURN SUPER:OrderCreate(info)
             ENDIF
-            
+
             /// <inheritdoc />
-        METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
+        METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
             IF _oIndex != NULL
                 RETURN _oIndex:OrderDestroy(info)
             ELSE
                 RETURN SUPER:OrderDestroy(info)
             ENDIF
-            
+
             /// <inheritdoc />
         METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
             IF _oIndex != NULL
@@ -1761,7 +1761,7 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 RETURN SUPER:OrderInfo(nOrdinal,info )
             ENDIF
-            
+
             /// <inheritdoc />
         METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
             IF _oIndex != NULL
@@ -1769,7 +1769,7 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 RETURN SUPER:OrderListAdd(info)
             ENDIF
-            
+
             /// <inheritdoc />
         METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
             IF _oIndex != NULL
@@ -1785,7 +1785,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:OrderListFocus(info)
             ENDIF
             /// <inheritdoc />
-        METHOD OrderListRebuild() AS LOGIC 
+        METHOD OrderListRebuild() AS LOGIC
             IF _oIndex != NULL
                 RETURN _oIndex:OrderListRebuild()
             ELSE
@@ -1798,28 +1798,28 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 RETURN SUPER:Seek(info)
             ENDIF
-            
+
             // Relations
             //	METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
             //	METHOD ChildStart(info AS DbRelInfo) AS LOGIC
             //	METHOD ChildSync(info AS DbRelInfo) AS LOGIC
             //	METHOD ClearRel() AS LOGIC
-            //	METHOD ForceRel() AS LOGIC  
-            //	METHOD RelArea(nRelNum AS LONG) AS LONG 
+            //	METHOD ForceRel() AS LOGIC
+            //	METHOD RelArea(nRelNum AS LONG) AS LONG
             //	METHOD RelEval(info AS DbRelInfo) AS LOGIC
             //	METHOD RelText(nRelNum AS LONG) AS STRING
-            //	METHOD SetRel(info AS DbRelInfo) AS LOGIC  
+            //	METHOD SetRel(info AS DbRelInfo) AS LOGIC
             //	METHOD SyncChildren() AS LOGIC
-            
-            // Trans	
+
+            // Trans
             //    METHOD Trans(info AS DbTransInfo) 		AS LOGIC
             //    METHOD TransRec(info AS DbTransInfo) 	AS LOGIC
-            
+
             // Blob
             //	METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
-            
+
             // CodeBlock Support
-            
+
         VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
             LOCAL result AS ICodeBlock
             result := SUPER:Compile(sBlock)
@@ -1827,8 +1827,8 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
             ENDIF
             RETURN result
-            
-            //	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT	
+
+            //	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT
         VIRTUAL METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
             LOCAL result := NULL AS OBJECT
             TRY
@@ -1837,7 +1837,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
             END TRY
             RETURN result
-            
+
             // Other
             /// <inheritdoc />
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
@@ -1852,11 +1852,11 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbInfo.DBI_LASTUPDATE
                     oResult := SELF:_Header:LastUpdate
                 CASE DbInfo.DBI_GETHEADERSIZE
-                    oResult := SELF:_Header:HeaderLen 
+                    oResult := SELF:_Header:HeaderLen
                     // DbInfo.GETLOCKARRAY
                     // DbInfo.TABLEEXT
                     // DbInfo.FULLPATH
-                    // DbInfo.MEMOTYPE 
+                    // DbInfo.MEMOTYPE
                     // DbInfo.TABLETYPE
                     //                CASE DbInfo.FILEHANDLE
                     //                    oResult := SELF:_hFile
@@ -1869,13 +1869,13 @@ BEGIN NAMESPACE XSharp.RDD
                     //                    oResult := SELF:_Shared
                     //                CASE DbInfo.ISFLOCK
                     //                    oResult := SELF:_fLocked
-                CASE DbInfo.DBI_VALIDBUFFER 
+                CASE DbInfo.DBI_VALIDBUFFER
                     oResult := SELF:_BufferValid
-                    // DbInfo.POSITIONED 
+                    // DbInfo.POSITIONED
                     // DbInfo.ISENCRYPTED
                     // DbInfo.DECRYPT
                     // DbInfo.ENCRYPT
-                    // DbInfo.LOCKCOUNT 
+                    // DbInfo.LOCKCOUNT
                     // DbInfo.LOCKOFFSET
                     // DbInfo.LOCKTEST
                     // DbInfo.LOCKSCHEME
@@ -1888,17 +1888,17 @@ BEGIN NAMESPACE XSharp.RDD
                     // DbInfo.RDD_VERSION
                     // DbInfo.CODEPAGE
                     // DbInfo.DOS_CODEPAGE
-                    
+
                 OTHERWISE
                     oResult := SUPER:Info(nOrdinal, oNewValue)
                 END SWITCH
-            RETURN oResult  
-            
-            
-            
-            
+            RETURN oResult
+
+
+
+
             /// <inheritdoc />
-        VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
+        VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             LOCAL nCurrent := 0 AS LONG
             LOCAL isOk AS LOGIC
             //
@@ -1939,42 +1939,42 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
                     CASE DBRI_RECNO
                         oNewValue := SELF:RecNo
-                    CASE DBRI_RECSIZE 
+                    CASE DBRI_RECSIZE
                         oNewValue := SELF:_RecordLength
                     CASE DBRI_RAWRECORD
                     CASE DBRI_RAWMEMOS
                     CASE DBRI_ENCRYPTED
                     OTHERWISE
                         oNewValue := SUPER:Info(nOrdinal, oNewValue)
-                END SWITCH 
+                END SWITCH
             ENDIF
             //
             RETURN isOk
-            
+
             //	METHOD Sort(info AS DbSortInfo) AS LOGIC
-            
+
             // Properties
             //	PROPERTY Alias 		AS STRING GET
             /// <inheritdoc />
         PROPERTY BoF 		AS LOGIC GET SELF:_Bof
-        
+
         /// <inheritdoc />
-        PROPERTY Deleted 	AS LOGIC 
+        PROPERTY Deleted 	AS LOGIC
             GET
                 // Update ?
                 SELF:_readRecord()
                 RETURN SELF:_Deleted
             END GET
         END PROPERTY
-        
+
         /// <inheritdoc />
         PROPERTY EoF 		AS LOGIC GET SELF:_Eof
-        
-        //PROPERTY Exclusive	AS LOGIC GET 
-        
+
+        //PROPERTY Exclusive	AS LOGIC GET
+
         /// <inheritdoc />
-        PROPERTY FieldCount AS LONG 
-            GET 
+        PROPERTY FieldCount AS LONG
+            GET
                 LOCAL ret := 0 AS LONG
                 IF ( SELF:_Fields != NULL )
                     ret := SELF:_Fields:Length
@@ -1982,12 +1982,12 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN ret
             END GET
         END PROPERTY
-        
-        //	PROPERTY FilterText	AS STRING GET 
+
+        //	PROPERTY FilterText	AS STRING GET
         PROPERTY Found		AS LOGIC GET SELF:_Found
-        
+
         /// <inheritdoc />
-        PROPERTY RecCount	AS LONG 
+        PROPERTY RecCount	AS LONG
             GET
                 IF ( SELF:_Shared )
                     SELF:_RecCount := SELF:_calculateRecCount()
@@ -1995,8 +1995,8 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_RecCount
             END GET
         END PROPERTY
-        
-        PRIVATE METHOD _calculateRecCount()	AS LONG 
+
+        PRIVATE METHOD _calculateRecCount()	AS LONG
             LOCAL reccount AS LONG
             //
             reccount := 0
@@ -2009,25 +2009,25 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN reccount
-            
+
             /// <inheritdoc />
         PROPERTY RecNo		AS INT GET SELF:_RecNo
-        
+
         //	PROPERTY Shared		AS LOGIC GET
         /// <inheritdoc />
         VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(Dbf):ToString()
-        
-        //	
+
+        //
         // Error Handling
         //	PROPERTY LastGenCode	AS LONG GET
         //	PROPERTY LastSubCode	AS LONG GET
         //	PROPERTY LastError		AS Exception GET
-        
-        /// <summary>DBF Header.</summary>        
-        STRUCTURE DbfHeader                     
+
+        /// <summary>DBF Header.</summary>
+        STRUCTURE DbfHeader
             // Fixed Buffer of 32 bytes
-            // Matches the DBF layout  
-            // Read/Write to/from the Stream with the Buffer 
+            // Matches the DBF layout
+            // Read/Write to/from the Stream with the Buffer
             // and access individual values using the other fields
 
            PRIVATE CONST OFFSET_SIG			    := 0  AS BYTE
@@ -2051,79 +2051,79 @@ BEGIN NAMESPACE XSharp.RDD
             PUBLIC Buffer   AS BYTE[]
             // Hot ?  => Header has changed ?
             PUBLIC isHot	AS LOGIC
-            
+
             PROPERTY Version    AS DBFVersion	;
             GET (DBFVersion) Buffer[OFFSET_SIG] ;
             SET Buffer[OFFSET_SIG] := (BYTE) VALUE
-            
+
                 PROPERTY Year		AS BYTE			;
                 GET Buffer[OFFSET_YEAR]	;
                 SET Buffer[OFFSET_YEAR] := VALUE, isHot := TRUE
-                
+
                     PROPERTY Month		AS BYTE			;
                     GET Buffer[OFFSET_MONTH]	;
                     SET Buffer[OFFSET_MONTH] := VALUE, isHot := TRUE
-                    
+
                     PROPERTY Day		AS BYTE			;
                     GET Buffer[OFFSET_DAY]	;
                     SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
-                    
+
                     PROPERTY RecCount	AS LONG			;
                     GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
-                    
+
                     PROPERTY HeaderLen	AS SHORT		;
                     GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
-                    
+
                     // Length of one data record, including deleted flag
                     PROPERTY RecordLen	AS SHORT		;
                     GET BitConverter.ToInt16(Buffer, OFFSET_RECSIZE);
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(SHORT)), isHot := TRUE
-                    
+
                     PROPERTY Reserved1	AS SHORT		;
                     GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
-                    
+
                     PROPERTY Transaction AS BYTE		;
                     GET Buffer[OFFSET_TRANSACTION];
                     SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
-                    
+
                     PROPERTY Encrypted	AS BYTE			;
                     GET Buffer[OFFSET_ENCRYPTED];
                     SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
-                    
+
                     PROPERTY DbaseLan	AS LONG			;
                     GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
-                    
+
                     PROPERTY MultiUser	AS LONG			;
                     GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
-                    
+
                     PROPERTY Reserved2	AS LONG			;
                     GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
-                    
+
                     PROPERTY HasTags	AS DBFTableFlags ;
                     GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
                     SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
-                    
+
                     PROPERTY CodePage	AS DbfHeaderCodepage			 ;
                     GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
                     SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
-                    
+
                     PROPERTY Reserved3	AS SHORT         ;
                     GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
                     SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
-                    
+
                     PROPERTY LastUpdate AS DateTime      ;
                     GET DateTime{1900+Year, Month, Day} ;
                     SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
 
                     PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
 
-                    
+
 
                     METHOD initialize() AS VOID STRICT
                         Buffer := BYTE[]{DbfHeader.SIZE}
@@ -2131,7 +2131,7 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN
                         // Dbase (7?) Extends this with
                         // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
-                        // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG    
+                        // [FieldOffSet(63)] PUBLIC Reserved6 AS LONG
                         /*
                         0x02   FoxBASE
                         0x03   FoxBASE+/Dbase III plus, no memo
@@ -2144,42 +2144,42 @@ BEGIN NAMESPACE XSharp.RDD
                         0x31   Visual FoxPro, autoincrement enabled
                         0x33   Flagship 2/4/8 + dbv
                         0x43   dBASE IV SQL table files, no memo
-                        0x63   dBASE IV SQL system files, no memo 
+                        0x63   dBASE IV SQL system files, no memo
                         0x7B   dBASE IV, with memo
                         0x83   FoxBASE+/dBASE III PLUS, with memo
                         0x87   VO/Vulcan Ansi encoding with memo
                         0x8B   dBASE IV with memo
-                        0xCB   dBASE IV SQL table files, with memo 
+                        0xCB   dBASE IV SQL table files, with memo
                         0xE5   Clipper SIX driver, with SMT memo
                         0xF5   FoxPro 2.x (or earlier) with memo
                         0xFB   FoxBASE
-                        
+
                         FoxPro additional Table structure:
                         28 	Table flags:
                         0x01   file has a structural .cdx
                         0x02   file has a Memo field
                         0x04   file is a database (.dbc)
-                        This byte can contain the sum of any of the above values. 
-                        For example, the value 0x03 indicates the table has a structural .cdx and a 
+                        This byte can contain the sum of any of the above values.
+                        For example, the value 0x03 indicates the table has a structural .cdx and a
                         Memo field.
                         29 	Code page mark
                         30 – 31 	Reserved, contains 0x00
                         32 – n 	Field subrecords
-                        The number of fields determines the number of field subrecords. 
+                        The number of fields determines the number of field subrecords.
                         One field subrecord exists for each field in the table.
                         n+1 			Header record terminator (0x0D)
-                        n+2 to n+264 	A 263-byte range that contains the backlink, which is the 
-                        relative path of an associated database (.dbc) file, information. 
-                        If the first byte is 0x00, the file is not associated with a database. 
-                        Therefore, database files always contain 0x00.	
+                        n+2 to n+264 	A 263-byte range that contains the backlink, which is the
+                        relative path of an associated database (.dbc) file, information.
+                        If the first byte is 0x00, the file is not associated with a database.
+                        Therefore, database files always contain 0x00.
                         see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
-                        
+
                         */
-                        
-                        
-                        
+
+
+
                     END STRUCTURE
-                /// <summary>DBF Field.</summary>                            
+                /// <summary>DBF Field.</summary>
                 STRUCTURE DbfField
                     PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
                     PRIVATE CONST OFFSET_TYPE		   := 11   AS BYTE
@@ -2202,15 +2202,15 @@ BEGIN NAMESPACE XSharp.RDD
 
                     // Fixed Buffer of 32 bytes
                     // Matches the DBF layout
-                    // Read/Write to/from the Stream with the Buffer 
+                    // Read/Write to/from the Stream with the Buffer
                     // and access individual values using the other fields
                     METHOD initialize() AS VOID
                         SELF:Buffer := BYTE[]{SIZE}
-                        
-                    PUBLIC Buffer		 AS BYTE[]	  
-                    
+
+                    PUBLIC Buffer		 AS BYTE[]
+
                     PROPERTY Name		 AS STRING
-                    GET 
+                    GET
                         LOCAL fieldName := BYTE[]{DbfField.NAME_SIZE} AS BYTE[]
                         Array.Copy( Buffer, OFFSET_NAME, fieldName, 0, DbfField.NAME_SIZE )
                         LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
@@ -2230,80 +2230,80 @@ BEGIN NAMESPACE XSharp.RDD
                         System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(DbfField.NAME_SIZE,VALUE:Length), Buffer, OFFSET_NAME )
                     END SET
                 END PROPERTY
-                
+
                 PROPERTY Type		 AS DBFieldType ;
                 GET (DBFieldType) Buffer[ OFFSET_TYPE ] ;
                 SET Buffer[ OFFSET_TYPE ] := (BYTE) VALUE
-                
+
                 // Offset from record begin in FP
                 PROPERTY Offset 	 AS LONG ;
                 GET BitConverter.ToInt32(Buffer, OFFSET_OFFSET);
                 SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_OFFSET, SIZEOF(LONG))
-                
+
                 PROPERTY Len		 AS BYTE;
                 GET Buffer[OFFSET_Len]  ;
                 SET Buffer[OFFSET_Len] := VALUE
-                
+
                 PROPERTY Dec		 AS BYTE;
                 GET Buffer[OFFSET_Dec]  ;
                 SET Buffer[OFFSET_Dec] := VALUE
-                
+
                 PROPERTY Flags		 AS DBFFieldFlags;
                 GET (DBFFieldFlags)Buffer[OFFSET_Flags] ;
                 SET Buffer[OFFSET_Flags] := (BYTE) VALUE
-                
+
                 PROPERTY Counter	 AS LONG;
                 GET BitConverter.ToInt32(Buffer, OFFSET_Counter);
                 SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_Counter, SIZEOF(LONG))
-                
+
                 PROPERTY IncStep	 AS BYTE;
                 GET Buffer[OFFSET_IncStep]  ;
                 SET Buffer[OFFSET_IncStep] :=  VALUE
-                
+
                 PROPERTY Reserved1   AS BYTE;
                 GET Buffer[OFFSET_Reserved1]  ;
                 SET Buffer[OFFSET_Reserved1] :=  VALUE
-                
+
                 PROPERTY Reserved2   AS BYTE;
                 GET Buffer[OFFSET_Reserved2]  ;
                 SET Buffer[OFFSET_Reserved2] := VALUE
-                
+
                 PROPERTY Reserved3   AS BYTE;
                 GET Buffer[OFFSET_Reserved3]  ;
                 SET Buffer[OFFSET_Reserved3] :=  VALUE
-                
+
                 PROPERTY Reserved4  AS BYTE;
                 GET Buffer[OFFSET_Reserved4]  ;
                 SET Buffer[OFFSET_Reserved4] :=  VALUE
-                
+
                 PROPERTY Reserved5   AS BYTE;
                 GET Buffer[OFFSET_Reserved5]  ;
                 SET Buffer[OFFSET_Reserved5] :=  VALUE
-                
+
                 PROPERTY Reserved6   AS BYTE;
                 GET Buffer[OFFSET_Reserved6]  ;
                 SET Buffer[OFFSET_Reserved6] :=  VALUE
-                
+
                 PROPERTY Reserved7   AS BYTE;
                 GET Buffer[OFFSET_Reserved7]  ;
                 SET Buffer[OFFSET_Reserved7] :=  VALUE
-                
+
                 PROPERTY HasTag		 AS BYTE;
                 GET Buffer[OFFSET_HasTag]  ;
                 SET Buffer[OFFSET_HasTag] :=  VALUE
             END STRUCTURE
-            
-            
-            /// <summary>DBase 7 Field.</summary>                            
+
+
+            /// <summary>DBase 7 Field.</summary>
             [StructLayout(LayoutKind.Explicit)];
-            STRUCTURE Dbf7Field   
+            STRUCTURE Dbf7Field
                 // Dbase 7 has 32 Bytes for Field Names
                 // Fixed Buffer of 32 bytes
                 // Matches the DBF layout
-                // Read/Write to/from the Stream with the Buffer 
+                // Read/Write to/from the Stream with the Buffer
                 // and access individual values using the other fields
-                [FieldOffSet(00)] PUBLIC Buffer		 AS BYTE[]	
-                [FieldOffSet(00)] PUBLIC Name		 AS BYTE[]    // Field name in ASCII (zero-filled).	  
+                [FieldOffSet(00)] PUBLIC Buffer		 AS BYTE[]
+                [FieldOffSet(00)] PUBLIC Name		 AS BYTE[]    // Field name in ASCII (zero-filled).
                 [FieldOffSet(32)] PUBLIC Type		 AS BYTE 	// Field type in ASCII (B, C, D, N, L, M, @, I, +, F, 0 or G).
                 [FieldOffSet(33)] PUBLIC Len		 AS BYTE 	// Field length in binary.
                 [FieldOffSet(34)] PUBLIC Dec		 AS BYTE
@@ -2311,10 +2311,10 @@ BEGIN NAMESPACE XSharp.RDD
                 [FieldOffSet(37)] PUBLIC HasTag		 AS BYTE    // Production .MDX field flag; 0x01 if field has an index tag in the production .MDX file; 0x00 if the field is not indexed.
                 [FieldOffSet(38)] PUBLIC Reserved2	 AS SHORT
                 [FieldOffSet(40)] PUBLIC Counter	 AS LONG	// Next Autoincrement value, if the Field type is Autoincrement, 0x00 otherwise.
-                [FieldOffSet(44)] PUBLIC Reserved3	 AS LONG	
-                
+                [FieldOffSet(44)] PUBLIC Reserved3	 AS LONG
+
             END STRUCTURE
-            
+
         END CLASS
         // Inpired by Harbour
         STRUCTURE DbfLocking
@@ -2324,9 +2324,9 @@ BEGIN NAMESPACE XSharp.RDD
             PUBLIC FileSize AS UINT64
             // Length for Record
             PUBLIC RecordSize AS UINT64
-            // 
+            //
             PUBLIC Direction AS LONG
-            
+
             METHOD Initialize( model AS DbfLockingModel ) AS VOID
                 SWITCH model
                     CASE DbfLockingModel.Clipper52
@@ -2343,7 +2343,7 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:Offset := 4000000000U
                         SELF:FileSize := 294967295U
                         SELF:RecordSize := 1U
-                        SELF:Direction := 1                    
+                        SELF:Direction := 1
                     CASE DbfLockingModel.FoxPro
                         SELF:Offset := 0x40000000U
                         SELF:FileSize := 0x07ffffffU
@@ -2358,38 +2358,38 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:Offset := 0x7FFFFFFF00000001U
                         SELF:FileSize := 0x7ffffffeU
                         SELF:RecordSize := 1U
-                        SELF:Direction := 1                        
+                        SELF:Direction := 1
                 END SWITCH
-                
+
                 END STRUCTURE
-                
-                
+
+
         CLASS DbfRddFieldInfo INHERIT RddFieldInfo
             PROTECTED iOffset AS LONG
-            
+
             CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
                 SUPER( sName, sType, nLength, nDecimals )
                 SELF:iOffset := -1
-                
+
             CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
                 SUPER( sName, nType, nLength, nDecimals )
                 SELF:iOffset := -1
-                
+
             VIRTUAL PROPERTY Offset AS LONG
             GET
                 RETURN SELF:iOffset
             END GET
-            
+
             // Should be INTERNAL
             SET
                 SELF:iOffset := VALUE
             END SET
         END PROPERTY
     END CLASS
-    
-    
-    
-    
+
+
+
+
 END NAMESPACE
 
 

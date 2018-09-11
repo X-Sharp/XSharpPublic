@@ -46,7 +46,7 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -60,7 +60,7 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>c:\xsharp\dev\xsharp\src\common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
+    <CommandLineOption>/parallel-</CommandLineOption>
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
@@ -113,16 +113,14 @@
     <Compile Include="ACE\AceUnpublished64.prg" />
     <Compile Include="Advantage\AdsADT.prg" />
     <Compile Include="Advantage\ADSIndex.prg" />
+    <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\AdsRDD.prg" />
     <Compile Include="Advantage\AxDBFCDX.prg" />
     <Compile Include="Advantage\AxDBFNTX.prg" />
     <Compile Include="Advantage\AxDBFVFP.prg" />
     <Compile Include="Advantage\AXSqlRDD.prg" />
-    <Compile Include="Advantage\ADSMemo.prg" />
     <Compile Include="Advantage\Functions.prg" />
     <Compile Include="SubCodes.prg" />
-    <Compile Include="Types\Enums.prg" />
-    <Compile Include="_Dummy.prg" />
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
     <Compile Include="Types\DbfCdx.prg" />
@@ -134,14 +132,16 @@
     <Compile Include="Types\DbfSmt.prg" />
     <Compile Include="Types\DbMemo.prg" />
     <Compile Include="Types\DELIM.prg" />
-    <Compile Include="Types\SDF.prg" />
+    <Compile Include="Types\Enums.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Types\SDF.prg" />
+    <Compile Include="_Dummy.prg" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ACE\" />
     <Folder Include="Advantage\" />
-    <Folder Include="ACE" />
     <Folder Include="Types" />
     <Folder Include="Properties\" />
   </ItemGroup>

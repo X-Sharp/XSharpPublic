@@ -1,7 +1,7 @@
 ﻿// NtxOrder.prg
 // Created by    : fabri
 // Creation Date : 7/9/2018 7:10:50 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.RDD
     /// The NtxOrder class.
     /// </summary>
     CLASS NtxOrder
-    
+
         PROTECT _oRDD           AS DBFNTX
         PROTECT _Header         AS NtxHeader
         PROTECT _PageList       AS NtxPageList
@@ -29,25 +29,25 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _Hot            AS LOGIC
         PROTECT _OrderName      AS STRING
         PROTECT _HPLocking      AS LOGIC
-        
+
         PROTECT _KeyExpr        AS STRING
         PROTECT _ForExpr        AS STRING
         PROTECT _cbKeyExpr      AS ICodeBlock
         PROTECT _cbForExpr      AS ICodeBlock
-        
+
         PROTECT _lockScheme     AS Dbf.DbfLocking
-        
+
         /// <inheritdoc />
         CONSTRUCTOR(oRDD AS DBFNTX)
             _oRDD := oRDD
-            
+
         CONSTRUCTOR(oRDD AS DBFNTX, filePath AS STRING)
-            SELF(oRDD)   
+            SELF(oRDD)
             //_oRDD := oRDD
             // Get the FileName
             SELF:FileName := filePath
-            
-            
+
+
         PROPERTY FileName AS STRING
             GET
                 RETURN SELF:_fileName
@@ -66,8 +66,8 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             END SET
         END PROPERTY
-        
-        
+
+
         METHOD Open( dbordInfo AS DBORDERINFO ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL i AS LONG
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRDD:_ReadOnly
             //
-            SELF:_hFile    := Fopen(SELF:_FileName, SELF:_oRDD:_OpenInfo:FileMode) 
+            SELF:_hFile    := Fopen(SELF:_FileName, SELF:_oRDD:_OpenInfo:FileMode)
             IF ( SELF:_hFile == F_ERROR )
                 SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:_fileName)
                 RETURN FALSE
@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:Close()
             ENDIF
             RETURN isOk
-            
+
         PUBLIC METHOD Flush() AS LOGIC
             SELF:GoCold()
             IF (((!SELF:_Shared) .AND. (SELF:_Hot)) .AND. (SELF:_hFile != F_ERROR))
@@ -170,7 +170,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             FFlush( SELF:_hFile )
             RETURN TRUE
-            
+
         PUBLIC METHOD Commit() AS LOGIC
             SELF:GoCold()
             IF (((!SELF:_Shared) .AND. (SELF:_Hot)) .AND. (SELF:_hFile != F_ERROR))
@@ -181,13 +181,13 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             FFlush( SELF:_hFile )
             RETURN TRUE
-            
+
         PUBLIC METHOD GoCold() AS LOGIC
             IF (SELF:_oRDD:Hot)
                 RETURN SELF:_KeyUpdate(SELF:_oRDD:RecNo, SELF:_oRDD:IsNewRecord )
             ENDIF
             RETURN TRUE
-            
+
         PUBLIC METHOD Close() AS LOGIC
             SELF:Flush()
             TRY
@@ -198,19 +198,16 @@ BEGIN NAMESPACE XSharp.RDD
                     FClose( SELF:_hFile )
                     SELF:_hFile := F_ERROR
                 ENDIF
-                
+
             FINALLY
                 SELF:_HPLocking := FALSE
                 SELF:_hFile := F_ERROR
             END TRY
             RETURN TRUE
-            
-            
-            
-            // Vulcan.RDD.DBFNTX/NtxOrder
-            USING System
-            USING Vulcan.Runtime
-            
+
+
+
+
         PRIVATE METHOD _KeyUpdate( recno AS DWORD , isNew AS LOGIC ) AS LOGIC
             LOCAL flag AS LOGIC
             LOCAL flag2 AS LOGIC
@@ -248,7 +245,7 @@ BEGIN NAMESPACE XSharp.RDD
                 GOTOENDIF
                 TRY
                     flag2 := (LOGIC)SELF:m_Area:m_valResult
-                    
+
                 CATCH innerExcept AS Exception
                     errorInfo := SELF:m_Area:PostError(GenCodes.EG_DATATYPE, SubCodes.ERDD_KEY_EVAL, SELF:m_strFileName)
                     errorInfo:ArgTypeType := TYPEOF(LOGIC)
@@ -332,9 +329,9 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN FALSE
             ENDIF
             RETURN TRUE
-            
-            
-            
+
+
+
         PRIVATE METHOD _getTypeCode(oValue AS OBJECT ) AS TypeCode
             LOCAL typeCode AS TypeCode
             //
@@ -355,11 +352,11 @@ BEGIN NAMESPACE XSharp.RDD
                             CASE TypeCode.UInt16
                             CASE TypeCode.Int32
                                 typeCode := TypeCode.Int32
-                                
+
                             CASE TypeCode.UInt32
                             CASE TypeCode.Int64
                             CASE TypeCode.UInt64
-                            
+
                             CASE TypeCode.Single
                             CASE TypeCode.Double
                                 typeCode := TypeCode.Double
@@ -373,15 +370,15 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
             ENDIF
-            RETURN typeCode            
-            
+            RETURN typeCode
+
         PRIVATE METHOD _genSeed() AS LONG
             LOCAL dateTime AS DateTime
             //
             dateTime := DateTime{Environment.TickCount}
             RETURN ((dateTime:Hour * 60 + dateTime:Minute) * 60 + dateTime:Second) * 100 + dateTime:Millisecond
-            
-            
+
+
         PROTECTED METHOD _lockBytes( nOffset AS UINT64, nLong AS LONG  ) AS LOGIC
             LOCAL locked AS LOGIC
             //
@@ -393,7 +390,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             //
             RETURN locked
-            
+
         PROTECTED METHOD _unlockBytes( nOffset AS UINT64, nLong AS LONG  ) AS LOGIC
             LOCAL unlocked AS LOGIC
             //
@@ -405,7 +402,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             //
             RETURN unlocked
-            
+
         PRIVATE METHOD _lockInit() AS LOGIC
             LOCAL tries AS LONG
             LOCAL seed AS LONG
@@ -414,7 +411,7 @@ BEGIN NAMESPACE XSharp.RDD
             seed := 0
             SELF:_parkPlace := 0
             seed := _genSeed()
-            // MAX_TRIES := 50 
+            // MAX_TRIES := 50
             WHILE (tries++ < MAX_TRIES ) .AND. (SELF:_parkPlace == 0)
                 IF (seed <= 0)
                     seed := 1
@@ -427,11 +424,11 @@ BEGIN NAMESPACE XSharp.RDD
             ENDDO
             //
             RETURN TRUE
-            
+
         PRIVATE METHOD _lockExit() AS LOGIC
             RETURN SELF:_unLockBytes( ~(SELF:m_lockInfo:liSpace + 1), 1)
-            
-            
+
+
             /// <inheritdoc />
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
@@ -457,22 +454,22 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD OrderListRebuild( ) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD Seek(info AS DbSeekInfo) AS LOGIC		
+        METHOD Seek(info AS DbSeekInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        VIRTUAL PROPERTY Found AS LOGIC	
+        VIRTUAL PROPERTY Found AS LOGIC
             GET
                 THROW NotImplementedException{}
             END GET
-        END PROPERTY     
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        END PROPERTY
+
+
+
+
+
+
+
+
+
     END CLASS
 END NAMESPACE // XSharp.RDD

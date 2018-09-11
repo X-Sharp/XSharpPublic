@@ -11,7 +11,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         CONSTRUCTOR()
             SUPER()
-            //SELF:_oIndex := NtxIndex{SELF}
+            SELF:_oIndex := NtxIndex{SELF}
             RETURN
             
         PROPERTY SysName AS STRING GET TYPEOF(DbfNtx):ToString()	

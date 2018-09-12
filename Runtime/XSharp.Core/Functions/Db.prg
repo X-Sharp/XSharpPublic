@@ -41,11 +41,8 @@ FUNCTION DBF() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION DbPack() AS LOGIC STRICT
-	
 	LOCAL lRetCode  AS LOGIC
-	
 	lRetCode := VODBPack()
-	
 	IF !lRetCode
 		//lRetCode := DoError(#DbPack)
 	ENDIF

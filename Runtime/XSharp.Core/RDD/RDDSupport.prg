@@ -8,7 +8,7 @@ USING System.IO
 USING XSharp.RDD.Enums
 // The classes below are simple. No properties, but all public fields.
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.Support
 
 /// <summary>Helper class to store the scope and codeblock for a DbEval() operation. </summary> 
 CLASS DbEvalInfo  
@@ -353,7 +353,10 @@ CLASS RddFieldInfo
 		Decimals 	:= nDecimals
 		Alias       := sName
 		RETURN
-	
+	METHOD Clone() AS RddFieldInfo
+        var info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
+        info:Alias := SELF:Alias
+        RETURN info
 END CLASS
 
 CLASS DbJoinList

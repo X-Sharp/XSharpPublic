@@ -6,7 +6,7 @@
 USING System.IO
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 
 /// <summary>Base class for DBF based RDDs. Holds common propertis such as the Workarea number, Alias, Fields list and various flags.</summary> 
@@ -73,6 +73,7 @@ CLASS Workarea IMPLEMENTS IRdd
 	/// <summary>Current index implementation.</summary>
 	PUBLIC _Order			AS IOrder
 
+
 	#endregion
 
 	CONSTRUCTOR() 
@@ -93,7 +94,7 @@ CLASS Workarea IMPLEMENTS IRdd
 		SELF:_Alias		 := String.Empty
 		SELF:_RecordBuffer := NULL
 /// <inheritdoc />			
-VIRTUAL METHOD DbEval(info AS XSharp.RDD.DbEvalInfo) AS LOGIC
+VIRTUAL METHOD DbEval(info AS DbEvalInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -269,11 +270,11 @@ VIRTUAL METHOD Close( ) AS LOGIC
 	RETURN TRUE
 
 /// <inheritdoc />
-VIRTUAL METHOD Create(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD Open(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -299,7 +300,7 @@ VIRTUAL METHOD Continue( ) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
-VIRTUAL METHOD GetScope( ) AS XSharp.RDD.DbScopeInfo
+VIRTUAL METHOD GetScope( ) AS DbScopeInfo
 	IF SELF:_ScopeInfo != NULL_OBJECT
 		RETURN SELF:_ScopeInfo:Clone()
 	ENDIF
@@ -318,8 +319,12 @@ VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 	ENDIF
 	RETURN TRUE
 
+VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
+    // Initialize the Fields array
+	THROW NotImplementedException{__ENTITY__}
+
 /// <inheritdoc />
-VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
+VIRTUAL METHOD SetScope(info AS DbScopeInfo) AS LOGIC
 	SELF:ClearScope()
 	IF (info != NULL_OBJECT)
 		SELF:_ScopeInfo := info:Clone()
@@ -329,9 +334,8 @@ VIRTUAL METHOD SetScope(info AS XSharp.RDD.DbScopeInfo) AS LOGIC
 /// <inheritdoc />
 VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
-
 /// <inheritdoc />
-VIRTUAL METHOD CreateFields(fields AS RddFieldInfo[]) AS LOGIC
+VIRTUAL METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
 	THROW NotImplementedException{__ENTITY__}
 
 /// <inheritdoc />
@@ -339,7 +343,7 @@ VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
 	LOCAL nMax AS INT
 	nMax := SELF:FieldCount
 	FOR VAR nFldPos := 0 TO nMax -1
-		IF String.Compare(SELF:_Fields[nFldPos]:Name, fieldName, StringComparison.OrdinalIgnoreCase) == 0
+		IF SELF:_Fields[nFldPos] != NULL .AND. String.Compare(SELF:_Fields[nFldPos]:Name, fieldName, StringComparison.OrdinalIgnoreCase) == 0
 			// Note that we must return 1 based fldPos
 			RETURN nFldPos+1
 		ENDIF

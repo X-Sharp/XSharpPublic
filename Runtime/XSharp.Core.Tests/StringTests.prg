@@ -411,8 +411,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD Ansi2OemTest() AS VOID
         XSharp.RuntimeState.DosCodePage := 437
         XSharp.RuntimeState.WinCodePage := 1252
-        LOCAL cSource as STRING
-        LOCAL cTarget as string
+        LOCAL cSource AS STRING
+        LOCAL cTarget AS STRING
         cSource := "ÄËÏÖÜäëïöü"
         cTarget := e"\u017d\u0045\u0049\u2122\u0161\u201e\u2030\u2039\u201d\u0081"
         Assert.Equal(cTarget, Ansi2Oem(cSource))

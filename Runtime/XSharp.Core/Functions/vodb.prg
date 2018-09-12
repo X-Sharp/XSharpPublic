@@ -7,6 +7,7 @@
 USING XSharp
 USING XSharp.RDD
 USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
 USING System.Collections.Generic
 USING System.IO
 USING System.Reflection
@@ -618,7 +619,7 @@ FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
 FUNCTION VODBOrdBagExt() AS STRING
     LOCAL oRDD := RDDHelpers.CWA("VODBOrdBagExt") AS IRDD
     IF oRDD != NULL
-        VAR info := XSharp.RDD.DbOrderInfo{}
+        VAR info := DbOrderInfo{}
         RETURN (STRING) oRDD:OrderInfo( DBOI_BAGEXT, info)
     ENDIF                            
     RETURN String.Empty
@@ -671,12 +672,24 @@ FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCode
 FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
     IF oRDD != NULL                  
-        VAR info := XSharp.RDD.DbOrderInfo{}
+        VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
         RETURN oRDD:OrderDestroy(info)
     ENDIF                            
     RETURN FALSE
+
+    /// <summary>
+    /// Return information about index files and the orders in them.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="cBagName"></param>
+    /// <param name="uOrder"></param>
+    /// <param name="oValue"></param>
+    /// <returns>
+    /// </returns>
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
+    RETURN VoDbOrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
     
     /// <summary>
     /// Return information about index files and the orders in them.
@@ -684,16 +697,16 @@ FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// <param name="nOrdinal"></param>
     /// <param name="cBagName"></param>
     /// <param name="uOrder"></param>
-    /// <param name="ptrRet"></param>
+    /// <param name="oValue"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,ptrRet REF OBJECT) AS LOGIC
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
     IF oRDD != NULL                  
-        VAR info := XSharp.RDD.DbOrderInfo{}
+        VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
-        ptrRet :=  oRDD:OrderInfo(nOrdinal, info)
+        oValue :=  oRDD:OrderInfo(nOrdinal, info)
         RETURN TRUE
     ENDIF                            
     RETURN FALSE
@@ -709,7 +722,7 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,ptr
 FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
     IF oRDD != NULL                  
-        VAR info := XSharp.RDD.DbOrderInfo{}
+        VAR info := DbOrderInfo{}
         info:BagName := cBagName
         IF oOrder == NULL
             info:AllTags := TRUE
@@ -732,7 +745,7 @@ FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     IF oRDD == NULL
         RETURN TRUE // not logical but compatible with VO
     ELSE
-        VAR info := XSharp.RDD.DbOrderInfo{}
+        VAR info := DbOrderInfo{}
         info:BagName := cBagName
         IF oOrder == NULL
             info:AllTags := TRUE
@@ -765,7 +778,7 @@ FUNCTION VODBOrdListRebuild() AS LOGIC
 FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder REF STRING) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBOrdSetFocus") AS IRDD
     IF oRDD != NULL                     
-        VAR info := XSharp.RDD.DbOrderInfo{}
+        VAR info     := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
         strPreviousOrder := String.Empty
@@ -814,7 +827,11 @@ FUNCTION VODBRddCount() AS DWORD
     /// </returns>
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
     THROW  NotImplementedException{}
-    
+
+FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
+    THROW  NotImplementedException{}
+
+
 [Obsolete( "'VODBRddList( rddList, nRddType )' is not supported, use VODBRddList() instead", TRUE )];
 FUNCTION VODBRddList(rddList AS RddList,nRddType AS DWORD) AS LOGIC
     THROW  NotImplementedException{}

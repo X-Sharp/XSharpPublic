@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
 /// <summary>Definition for the interface that each RDD must implement</summary>
 /// <seealso cref="T:XSharp.RDD.Workarea"/>
 INTERFACE XSharp.RDD.IRdd

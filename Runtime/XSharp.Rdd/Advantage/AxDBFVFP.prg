@@ -13,11 +13,9 @@ CLASS XSharp.ADS.AXDBFVFP INHERIT ADSRDD
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SUPER()
-        SUPER:m_usTableType := ACE.ADS_VFP
-        SUPER:m_strDriver := "Advantage.AXDBFVFP"
-        SUPER:MAX_KEY_SIZE := 240
-	/// <inheritdoc />
-		VIRTUAL PROPERTY SysName AS STRING GET m_strDriver
+        SUPER:_TableType    := ACE.ADS_VFP
+        SUPER:_Driver       := "Advantage.AXDBFVFP"
+        SUPER:_MaxKeySize  := 240
 END CLASS
 
 /// <summary>Advantage.AXSQLVFP RDD </summary>
@@ -25,10 +23,8 @@ CLASS XSharp.ADS.AXSQLVFP INHERIT AXSQLRDD
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SUPER()
-        SUPER:m_usTableType := ACE.ADS_VFP
-        SUPER:m_strDriver := "Advantage.AXSQLVFP"
-        SUPER:MAX_KEY_SIZE := 240
-	/// <inheritdoc />
-		VIRTUAL PROPERTY SysName AS STRING GET m_strDriver
+        SUPER:_TableType    := ACE.ADS_VFP
+        SUPER:_Driver       := "Advantage.AXSQLVFP"
+        SUPER:_MaxKeySize  := 240
 
 END CLASS

@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp
 USING XSharp.RDD
-
+USING XSharp.RDD.Support
 /// <summary>Advantage Index support.</summary>
 CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PRIVATE oRDD AS ADSRDD
@@ -19,15 +19,15 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 		SUPER(oArea)
         oRdd := oArea ASTYPE ADSRDD
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
+    VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
+    VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+    VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
@@ -35,15 +35,15 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+    VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+    VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+    VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
@@ -51,7 +51,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 		THROW NotImplementedException{}
 
 	/// <inheritdoc />
-    VIRTUAL METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC
+    VIRTUAL METHOD Seek(info AS DbSeekInfo) AS LOGIC
 		THROW NotImplementedException{}
 
 END CLASS

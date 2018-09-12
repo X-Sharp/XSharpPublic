@@ -10,12 +10,13 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp
 USING XSharp.RDD
-using XSharp.RDD.ENums
+USING XSharp.RDD.ENums
+USING XSharp.RDD.Support
 
 CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
-    PRIVATE oRDD as ADSRDD 
+    PRIVATE oRDD AS ADSRDD 
 
-	CONSTRUCTOR(oArea as WorkArea)
+	CONSTRUCTOR(oArea AS WorkArea)
 		SUPER(oArea)
         oRdd := oArea ASTYPE ADSRDD
 
@@ -28,27 +29,23 @@ CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
     
 	/// <inheritdoc />
 	VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
-        LOCAL aFormat  AS Char[]
+        LOCAL aFormat  AS CHAR[]
         LOCAL wLength  AS WORD
         LOCAL dwLength AS DWORD
         nFldPos += 1
-        if oRDD:_Fields[nFldPos ]:fieldType == DbFieldType.Memo
-            oRDD:ACECALL(ACE.AdsGetFieldLength(oRDD:m_hTable, (DWord)(nFldPos + 1) , out dwLength))
-            return (int) dwLength
+        IF oRDD:_Fields[nFldPos ]:fieldType == DbFieldType.Memo
+            oRDD:ACECALL(ACE.AdsGetFieldLength(oRDD:_Table, (DWORD)(nFldPos + 1) , OUT dwLength))
+            RETURN (INT) dwLength
         ELSE
             IF oRDD:_Fields[nFldPos]:fieldType == DbFieldType.Date
-                aFormat := Char[]{ACE.ADS_MAX_DATEMASK}
-                wlength := (Word)aFormat:Length 
-                oRDD:ACECALL(ACE.AdsGetDateFormat(aFormat, ref wlength))
-                return (int) wLength
+                aFormat := CHAR[]{ACE.ADS_MAX_DATEMASK}
+                wlength := (WORD)aFormat:Length 
+                oRDD:ACECALL(ACE.AdsGetDateFormat(aFormat, REF wlength))
+                RETURN (INT) wLength
             ELSE
-                return oRDD:_Fields[nFldPos]:Length
+                RETURN oRDD:_Fields[nFldPos]:Length
             ENDIF
         ENDIF
-        
-
- 
-
 
     #region Unsupported
 	/// <inheritdoc />
@@ -57,7 +54,7 @@ CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
 	    RETURN oRDD:Unsupported("CloseMemFile")
 
 	/// <inheritdoc />
-    VIRTUAL METHOD CreateMemFile(info AS XSharp.RDD.DbOpenInfo) AS LOGIC
+    VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
 	    RETURN oRDD:Unsupported("CreateMemFile")
 

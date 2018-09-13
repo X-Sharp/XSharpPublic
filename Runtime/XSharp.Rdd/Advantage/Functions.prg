@@ -9,11 +9,11 @@ USING XSharp.ADS
 
 /// <summary>Return the AXS locking status.</summary>
 FUNCTION AX_AXSLocking( ) AS LOGIC 
-    RETURN AX_RddHelper(_SET_AXSLOCKING)
+    RETURN AX_RddHelper(_SET_AXSLOCKING, TRUE)
 
 /// <summary>Return and set the AXS locking status.</summary>
 FUNCTION AX_AXSLocking( bMode AS LOGIC) AS LOGIC 
-    RETURN AX_RddHelper(_SET_AXSLOCKING, bMode)
+    RETURN AX_RddHelper(_SET_AXSLOCKING, bMode, TRUE)
 
 /// <summary>copy a BLOB to a file.</summary>
 FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC 
@@ -86,28 +86,30 @@ FUNCTION AX_PercentIndexed() AS INT
 
 /// <summary>Return the AXS Rights Checking status.</summary>
 FUNCTION AX_RightsCheck( ) AS LOGIC 
-    RETURN AX_RddHelper(_SET_RIGHTSCHECKING)
+    RETURN AX_RddHelper(_SET_RIGHTSCHECKING, TRUE)
 
 /// <summary>Return and set the AXS Rights Checking status.</summary>
 FUNCTION AX_RightsCheck( bMode AS LOGIC) AS LOGIC 
-    RETURN AX_RddHelper(_SET_RIGHTSCHECKING, bMode)
+    RETURN AX_RddHelper(_SET_RIGHTSCHECKING, bMode, TRUE)
 
-FUNCTION AX_SetCollation( strCollation AS STRING ) AS OBJECT
-   RETURN VoDbRDDINFO( _SET_COLLATION_NAME, strCollation )
-
+FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
+    LOCAL oldCollation := strCollation AS OBJECT
+    VoDbRDDINFO( _SET_COLLATION_NAME, REF oldCollation )
+    RETURN (STRING) oldCollation
+    
 PROCEDURE AX_SetConnectionHandle( lHandle AS DWORD ) 
    VoDbRddInfo( _SET_CONNECTION_HANDLE, lHandle )
 RETURN 
 
 FUNCTION AX_SetExactKeyPos( ) AS LOGIC
-    RETURN AX_RddHelper(_SET_EXACTKEYPOS )
+    RETURN AX_RddHelper(_SET_EXACTKEYPOS, TRUE)
 
 FUNCTION AX_SetExactKeyPos( bMode AS LOGIC) AS LOGIC
-    RETURN AX_RddHelper(_SET_EXACTKEYPOS, bMode)
+    RETURN AX_RddHelper(_SET_EXACTKEYPOS, bMode, TRUE)
 
-FUNCTION AX_RddHelper(iInfo AS INT) AS LOGIC
+FUNCTION AX_RddHelper(iInfo AS INT, lDefault AS LOGIC) AS LOGIC
     LOCAL bRetVal := NULL AS OBJECT
-    LOCAL lRetVal := FALSE AS LOGIC
+    LOCAL lRetVal := lDefault AS LOGIC
     IF VoDbRDDINFO( (DWORD) iInfo , REF bRetVal)
         IF ! bRetVal IS LOGIC
             lRetVal := TRUE
@@ -118,9 +120,9 @@ FUNCTION AX_RddHelper(iInfo AS INT) AS LOGIC
     RETURN lRetVal
 
 
-FUNCTION AX_RddHelper(iInfo AS INT, lNewValue AS LOGIC) AS LOGIC
+FUNCTION AX_RddHelper(iInfo AS INT, lNewValue AS LOGIC, lDefault AS LOGIC) AS LOGIC
     LOCAL bRetVal AS LOGIC
-    bRetVal := AX_RddHelper(iInfo)
+    bRetVal := AX_RddHelper(iInfo, lDefault)
     VoDbRDDINFO( (DWORD) iInfo , lNewValue)
     RETURN bRetVal
 

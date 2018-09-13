@@ -396,7 +396,7 @@ FUNCTION VODBExit() AS INT
 FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBFieldGet") AS IRDD
     IF (oRDD != NULL)
-        ptrRet := oRDD:GetValue((INT) nPos)
+        ptrRet := oRDD:GetValue((INT) nPos-1)
         RETURN TRUE
     ENDIF
     RETURN FALSE   
@@ -412,7 +412,7 @@ FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBFieldInfo") AS IRDD
     IF (oRDD != NULL)
-        ptrRet := oRDD:FieldInfo((INT) nPos, (INT) nOrdinal, ptrRet)
+        ptrRet := oRDD:FieldInfo((INT) nPos-1, (INT) nOrdinal, ptrRet)
         RETURN TRUE
     ENDIF
     RETURN FALSE   
@@ -427,7 +427,7 @@ FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOG
 FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBFieldPut") AS IRDD
     IF (oRDD != NULL)
-        RETURN oRDD:PutValue((INT) nPos, xValue)
+        RETURN oRDD:PutValue((INT) nPos-1, xValue)
     ENDIF
     RETURN FALSE   
     
@@ -558,7 +558,11 @@ FUNCTION VODBGoTop() AS LOGIC
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA("VODBInfo") AS IRDD
     IF (oRDD != NULL)
-        ptrRet := oRDD:Info((INT) nOrdinal, ptrRet)
+        IF (nOrdinal == DBI_RDD_OBJECT)
+            ptrRet := oRDD
+        ELSE
+            ptrRet := oRDD:Info((INT) nOrdinal, ptrRet)
+        ENDIF
         RETURN TRUE
     ENDIF
     RETURN FALSE   
@@ -826,10 +830,20 @@ FUNCTION VODBRddCount() AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
-    THROW  NotImplementedException{}
+    LOCAL oValue AS OBJECT
+    oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
+    IF oRet != NULL_OBJECT
+        RuntimeState.SetValue((INT) nOrdinal, oRet)
+    ENDIF
+    oRet := oValue
+    RETURN oValue != NULL
 
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
-    THROW  NotImplementedException{}
+    LOCAL oValue AS OBJECT
+    oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
+    RuntimeState.SetValue((INT) nOrdinal, oRet)
+    RETURN TRUE
+
 
 
 [Obsolete( "'VODBRddList( rddList, nRddType )' is not supported, use VODBRddList() instead", TRUE )];
@@ -1280,7 +1294,13 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
                 rdd:Alias        := cAlias
                 ret := RuntimeState.Workareas:SetArea(uiArea, rdd)
                 IF (ret)
-                    ret := rdd:Open( dboi ) 
+                    TRY
+                        RuntimeState.LastRddError := NULL
+                        ret := rdd:Open( dboi )
+                    CATCH e AS Exception
+                        RuntimeState.LastRddError := e
+                        ret := FALSE
+                    END TRY
                 ENDIF
                 IF ! ret
                     RuntimeState.Workareas:CloseArea(uiArea)

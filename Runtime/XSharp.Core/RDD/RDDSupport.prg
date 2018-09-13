@@ -354,7 +354,7 @@ CLASS RddFieldInfo
 		Alias       := sName
 		RETURN
 	METHOD Clone() AS RddFieldInfo
-        var info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
+        VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
         info:Alias := SELF:Alias
         RETURN info
 END CLASS

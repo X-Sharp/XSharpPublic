@@ -1458,5 +1458,9 @@ INTERNAL STATIC EXTERN METHOD AdsGetDataLength(hTable AS IntPtr , lFieldOrdinal 
 [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 INTERNAL STATIC EXTERN METHOD AdsSetIndexDirection(hIndex AS IntPtr ,  usReverseDirection AS WORD) AS DWORD 
 
+[DllImport("ace32.dll", CharSet := CharSet.Ansi, EntryPoint := "AdsSetProperty90")];
+INTERNAL STATIC EXTERN METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS DWORD , uqValue REF DWORD ) AS DWORD
+
+
 END CLASS
 END NAMESPACE

@@ -173,7 +173,21 @@ CLASS WorkAreas
 			END LOCK
 			RETURN TRUE
 		ENDIF          
-		RETURN FALSE   
+		RETURN FALSE
+        
+	///<summary>Unlock All RDDs referenced by this workarea list</summary>
+	PUBLIC METHOD UnLockAll() AS LOGIC
+		LOCAL lResult := TRUE AS LOGIC
+		BEGIN LOCK RDDs      
+			LastException := NULL
+			FOR VAR i := 0 TO MaxWorkAreas-1
+				IF RDDs[i] != NULL
+					VAR oRdd := RDDs[i]
+    				lResult := lResult .AND. oRdd:Unlock(0)
+				ENDIF              
+			NEXT           
+		END LOCK                       
+		RETURN lResult 
 
 	///<summary>Get 1 based Current workarea Number</summary>
 	PUBLIC PROPERTY CurrentWorkAreaNO AS DWORD GET iCurrentWorkArea SET iCurrentWorkarea := VALUE 

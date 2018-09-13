@@ -914,6 +914,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
             IF lJulian == 0
                 RETURN DbDate{0,0,0}
             ELSE
+                // there is a function to convert julian to string but it does not always work correctly
+                // this seems to always do the job
                 LOCAL wLength := ACE.ADS_MAX_DATEMASK+1 AS DWORD
                 chars := CHAR[]{wLength}
                 result := ACE.AdsGetString(SELF:_Table, dwField, chars, REF wLength, 0)

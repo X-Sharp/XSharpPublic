@@ -14,15 +14,20 @@ USING System.Reflection
 USING System.Linq
 USING System.Text
 
-    
-    /// <summary>
-    /// Return the alias of a specified work area as a string.
-    /// </summary>
-    /// <param name="nArea"></param>
-    /// <returns>
-    /// </returns>
+
+/// <summary>
+/// Return the alias of a specified work area as a string.
+/// </summary>
+/// <param name="nArea"></param>
+/// <returns>
+/// </returns>
 FUNCTION VODBAlias(nArea AS DWORD) AS STRING
-    RETURN RuntimeState.Workareas:GetAlias(nArea)
+    TRY
+        RETURN RuntimeState.Workareas:GetAlias(nArea)
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN String.Empty
     
     /// <summary>
     /// Add a new record.
@@ -31,10 +36,13 @@ FUNCTION VODBAlias(nArea AS DWORD) AS STRING
     /// <returns>
     /// </returns>
 FUNCTION VODBAppend(lReleaseLocks AS LOGIC) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBAppend") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBAppend") AS IRDD
         RETURN oRDD:Append(lReleaseLocks)
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE   
     
     /// <summary>
@@ -45,48 +53,53 @@ FUNCTION VODBAppend(lReleaseLocks AS LOGIC) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBBlobInfo") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBBlobInfo") AS IRDD
         ptrRet := oRDD:BlobInfo(nOrdinal, nPos)
         RETURN TRUE
-    ENDIF
-    RETURN FALSE   
-    
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     /// <summary>
     /// Determine when beginning-of-file is encountered.
     /// </summary>
     /// <returns>
     /// </returns>
 FUNCTION VODBBof() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBBof") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBBof") AS IRDD
         RETURN oRDD:BoF
-    ENDIF
-    
-    RETURN FALSE   
-    
+        
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     /// <summary>
     /// </summary>
     /// <returns>
     /// </returns>
 FUNCTION VODBBuffRefresh() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBBuffRefresh") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBBuffRefresh") AS IRDD
         oRDD:RecInfo(0, DbRecordInfo.DBRI_Updated,NULL)
         RETURN TRUE
-    ENDIF
-    RETURN FALSE   
-    
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE    
     /// <summary>
     /// Clear a logical filter condition.
     /// </summary>
     /// <returns>
     /// </returns>
 FUNCTION VODBClearFilter() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearFilter") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBClearFilter") AS IRDD
         RETURN oRDD:ClearFilter()
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE   
     
     /// <summary>
@@ -95,10 +108,13 @@ FUNCTION VODBClearFilter() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBClearLocate() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearLocate") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBClearLocate") AS IRDD
         RETURN oRDD:ClearScope()
-    ENDIF
+        
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE   
     
     /// <summary>
@@ -107,10 +123,12 @@ FUNCTION VODBClearLocate() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBClearRelation() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearRelation") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBClearRelation") AS IRDD
         RETURN oRDD:ClearRel()
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE   
     
     /// <summary>
@@ -118,19 +136,25 @@ FUNCTION VODBClearRelation() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBClearScope() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearScope") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBClearScope") AS IRDD
         RETURN oRDD:ClearScope()
-    ENDIF
-    RETURN FALSE   
-    
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     /// <summary>
     /// Close all files in all work areas.
     /// </summary>
     /// <returns>
     /// </returns>
 FUNCTION VODBCloseAll() AS LOGIC
-    RETURN RuntimeState.Workareas:CloseAll()
+    TRY
+        RETURN RuntimeState.Workareas:CloseAll()
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Close all files in a work area.
@@ -138,10 +162,12 @@ FUNCTION VODBCloseAll() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBCloseArea() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBFlock") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFlock") AS IRDD
         RETURN oRDD:Close()
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE   
     
     /// <summary>
@@ -150,10 +176,12 @@ FUNCTION VODBCloseArea() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBCommit() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBCommit") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBCommit") AS IRDD
         RETURN oRDD:Flush()
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE   
     
     /// <summary>
@@ -162,18 +190,24 @@ FUNCTION VODBCommit() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBCommitAll() AS LOGIC
-    RETURN RuntimeState.Workareas:CommitAll()
-    
+    TRY
+        RETURN RuntimeState.Workareas:CommitAll()
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE 
     /// <summary>
     /// Resume a pending locate condition.
     /// </summary>
     /// <returns>
     /// </returns>
 FUNCTION VODBContinue() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBContinue") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBContinue") AS IRDD
         RETURN oRDD:Continue()
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE   
     
     /// <summary>
@@ -189,14 +223,17 @@ FUNCTION VODBContinue() AS LOGIC
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-    LOCAL ret := FALSE AS LOGIC
-    LOCAL rddType AS Type
-    IF ( rddType := _VoDbRddNameToType( cRddName ) ) == NULL
-        PostArgumentError( "VODBCreate", EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
-    ELSE
-        ret := VODBCreate( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
-    ENDIF
-    RETURN ret
+    TRY
+        LOCAL rddType AS Type
+        IF ( rddType := _VoDbRddNameToType( cRddName ) ) == NULL
+            PostArgumentError( "VODBCreate", EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
+        ELSE
+            RETURN VODBCreate( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
+        ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Create new file through the specified RDDs
@@ -211,16 +248,19 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName A
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-    LOCAL oRdd := NULL  AS RegisteredRDD
-    LOCAL ret := FALSE AS LOGIC
-    FOREACH VAR name IN rddList:atomRddName
-        oRdd := RegisteredRDD.Find(name)
-        oRdd:Load()
-    NEXT
-    IF (oRdd != NULL_OBJECT)
-        ret := VODBCreate(cName, aStruct, oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-    ENDIF
-    RETURN ret  
+    TRY
+        LOCAL oRdd := NULL  AS RegisteredRDD
+        FOREACH VAR name IN rddList:atomRddName
+            oRdd := RegisteredRDD.Find(name)
+            oRdd:Load()
+        NEXT
+        IF (oRdd != NULL_OBJECT)
+            RETURN VODBCreate(cName, aStruct, oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
+        ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Create new file through the specified RDDs
@@ -235,8 +275,12 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-    RETURN VoDbCreate(cName, aStruct:ToArray(), rddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-    
+    TRY
+        RETURN VoDbCreate(cName, aStruct:ToArray(), rddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     /// <summary>
     /// Create new file through the specified RDDs
     /// </summary>
@@ -250,10 +294,10 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-    LOCAL uiOldArea := 0 AS DWORD
-    LOCAL uiNewArea := 0 AS DWORD
-    LOCAL ret   := FALSE   AS LOGIC
     TRY
+        LOCAL uiOldArea := 0 AS DWORD
+        LOCAL uiNewArea := 0 AS DWORD
+        LOCAL ret   := FALSE   AS LOGIC
         RuntimeState.LastRddError := NULL
         IF String.IsNullOrEmpty( cName )
             PostArgumentError( "VODBCreate", EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
@@ -265,7 +309,7 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
             ret := TRUE   
         ENDIF
         IF lNew
-             uiNewArea := RuntimeState.Workareas:FindEmptyArea(TRUE)
+            uiNewArea := RuntimeState.Workareas:FindEmptyArea(TRUE)
         ELSE
             // VO Closes the current workarea
             uiNewArea := RuntimeState.Workareas:CurrentWorkAreaNO
@@ -333,11 +377,13 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
     /// <returns>
     /// </returns>
 FUNCTION VODBDelete() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBDelete") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBDelete") AS IRDD
         RETURN oRDD:Delete()
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Return the deleted status of the current record.
@@ -345,11 +391,13 @@ FUNCTION VODBDelete() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBDeleted() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBDeleted") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBDeleted") AS IRDD
         RETURN oRDD:Deleted
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Determine when end-of-file is encountered.
@@ -357,11 +405,13 @@ FUNCTION VODBDeleted() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBEof() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBEof") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBEof") AS IRDD
         RETURN oRDD:EoF
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Evaluate a code block for each record that matches a specified scope and/or condition.
@@ -369,22 +419,45 @@ FUNCTION VODBEof() AS LOGIC
     /// <param name="uBlock"></param>
     /// <param name="uCobFor"></param>
     /// <param name="uCobWhile"></param>
-    /// <param name="nNext"></param>
+    /// <param name="uNext"></param>
     /// <param name="nRecno"></param>
     /// <param name="lRest"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBEval(uBlock AS OBJECT,uCobFor AS OBJECT,uCobWhile AS OBJECT,nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
-    THROW  NotImplementedException{}
-    //RETURN FALSE   
-    
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION VODBExit() AS INT
-    THROW  NotImplementedException{}
-    //RETURN 0   
+FUNCTION VODBEval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+    TRY
+        LOCAL nNext AS LONG
+        IF uBlock == NULL
+            THROW Error.ArgumentError("VODBEVal", nameof(uBlock),1, <OBJECT>{uBlock})
+        ELSEIF uCobFor == NULL
+            THROW Error.ArgumentError("VODBEVal", nameof(uCobFor),2, <OBJECT>{uCobFor})        
+        ELSEIF uCobWhile == NULL    
+            THROW Error.ArgumentError("VODBEVal", nameof(uCobWhile),3, <OBJECT>{uCobWhile})
+        ELSE
+            TRY
+                IF uNext != NULL
+                    nNext := Convert.ToInt32(uNext)
+                ELSE
+                    nNext := 0
+                ENDIF
+            CATCH AS Exception
+                THROW Error.ArgumentError("VODBEVal", nameof(uNext),4, <OBJECT>{uNext})
+            END TRY
+        ENDIF
+        LOCAL oRDD := RDDHelpers.CWA("VODBEval") AS IRDD
+        LOCAL oInfo AS DbEvalInfo
+        oInfo := DbEvalInfo{}
+        oInfo:Block := uBlock
+        oInfo:ScopeInfo:ForBlock := uCobFor
+        oInfo:ScopeInfo:WhileBlock := uCobWhile
+        oInfo:ScopeInfo:NextCount  := nNext
+        oInfo:ScopeInfo:RecId      := nRecno
+        oInfo:ScopeInfo:Rest       := lRest
+        RETURN oRDD:DbEval(oInfo)
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Retrieve the value of a specified database field.
@@ -394,12 +467,14 @@ FUNCTION VODBExit() AS INT
     /// <returns>
     /// </returns>
 FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBFieldGet") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFieldGet") AS IRDD
         ptrRet := oRDD:GetValue((INT) nPos-1)
         RETURN TRUE
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Retrieve field definition information about a field.
@@ -410,12 +485,14 @@ FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBFieldInfo") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFieldInfo") AS IRDD
         ptrRet := oRDD:FieldInfo((INT) nPos-1, (INT) nOrdinal, ptrRet)
         RETURN TRUE
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Set the value of a specified database field.
@@ -425,11 +502,14 @@ FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOG
     /// <returns>
     /// </returns>
 FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBFieldPut") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFieldPut") AS IRDD
         RETURN oRDD:PutValue((INT) nPos-1, xValue)
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
     
     /// <summary>
     /// </summary>
@@ -438,11 +518,13 @@ FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBFileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBFileGet") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFileGet") AS IRDD
         RETURN oRDD:GetValueFile((INT) nPos, cFile)
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// </summary>
@@ -451,11 +533,13 @@ FUNCTION VODBFileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBFilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBFilePut") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFilePut") AS IRDD
         RETURN oRDD:PutValueFile((INT) nPos, cFile)
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Return a filter.
@@ -463,10 +547,12 @@ FUNCTION VODBFilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBFilter() AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("VODBFilter") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBFilter") AS IRDD
         RETURN oRDD:FilterText
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     
     RETURN string.Empty   
     
@@ -476,15 +562,17 @@ FUNCTION VODBFilter() AS STRING
     /// <returns>
     /// </returns>
 FUNCTION VODBFlock() AS LOGIC
-    VAR oRDD := RDDHelpers.CWA("VODBFlock")
-    IF (oRDD != NULL)
+    TRY    
+        VAR oRDD := RDDHelpers.CWA("VODBFlock")
         LOCAL dbli AS DbLockInfo
         dbli := DbLockInfo{}
         dbli:Result := FALSE
         dbli:@@METHOD := DbLockInfo.LockMethod.File
         RETURN oRDD:Lock(dbli)
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Determine if the previous search operation succeeded.
@@ -492,11 +580,14 @@ FUNCTION VODBFlock() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBFound() AS LOGIC
-    VAR oRDD := RDDHelpers.CWA("VODBFound")
-    IF (oRDD != NULL)
+    TRY
+        VAR oRDD := RDDHelpers.CWA("VODBFound")
         RETURN oRDD:Found
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
     
     
     /// <summary>
@@ -505,10 +596,12 @@ FUNCTION VODBFound() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBGetSelect() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("VODBGetSelect") AS IRDD
-    IF oRDD != NULL
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBGetSelect") AS IRDD
         RETURN oRDD:Area
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN 0
     
     /// <summary>
@@ -517,11 +610,13 @@ FUNCTION VODBGetSelect() AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBGoBottom() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBGoBottom") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBGoBottom") AS IRDD
         RETURN oRDD:GoBottom()
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Move to a record specified by record number.
@@ -530,11 +625,13 @@ FUNCTION VODBGoBottom() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBGoto(uRecId AS OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBGoto") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBGoto") AS IRDD
         RETURN oRDD:GoToId(uRecID)
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Move to the first logical record.
@@ -542,11 +639,14 @@ FUNCTION VODBGoto(uRecId AS OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBGoTop() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBGoTop") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBGoTop") AS IRDD
         RETURN oRDD:GoTop()
-    ENDIF
-    RETURN FALSE   
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
     
     /// <summary>
     /// Retrieve information about a work area.
@@ -556,15 +656,18 @@ FUNCTION VODBGoTop() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBInfo") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBInfo") AS IRDD
         IF (nOrdinal == DBI_RDD_OBJECT)
             ptrRet := oRDD
         ELSE
             ptrRet := oRDD:Info((INT) nOrdinal, ptrRet)
         ENDIF
         RETURN TRUE
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE   
     
     /// <summary>
@@ -573,9 +676,37 @@ FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
     /// <param name="struList"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJOINLIST) AS LOGIC
-    THROW  NotImplementedException{}
-    //RETURN FALSE   
+FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJoinList) AS LOGIC
+    LOCAL result := FALSE AS LOGIC
+    TRY
+        LOCAL nCount AS LONG
+        LOCAL nDestSel AS DWORD
+        LOCAL nFld AS LONG
+        LOCAL oRDDDest AS IRDD
+        LOCAL oRDDSrc AS IRDD
+        LOCAL oValue  AS OBJECT
+        nCount := struList:Count
+        nDestSel := struList:DestSel
+        oRDDDest := RuntimeState.Workareas.GetRDD(nDestSel)
+        IF oRDDDest == NULL
+            PostNoTableError("VODBJoinAppend")
+        ELSE
+            FOR nFld := 0 TO nCount-1
+                oRDDSrc := RuntimeState.Workareas.GetRDD(struList:Fields[nFld]:Area)
+                IF oRDDSrc == NULL_OBJECT
+                    PostNoTableError("VODBJoinAppend")
+                ENDIF
+                oValue := oRDDSrc:GetValue((INT) struList:Fields[nFld]:Pos)
+                result := oRDDDest:PutValue(nFld, oValue)
+                IF ! result
+                    EXIT
+                ENDIF
+            NEXT
+        ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN result
     
     /// <summary>
     /// Return the number of the last record in a database file.
@@ -583,10 +714,13 @@ FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJOINLIST) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBLastRec() AS LONG
-    LOCAL oRDD := RDDHelpers.CWA("VODBLastRec") AS IRDD
-    IF (oRDD != NULL)
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBLastRec") AS IRDD
         RETURN oRDD:RecCount
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN 0
     
     
@@ -600,9 +734,23 @@ FUNCTION VODBLastRec() AS LONG
     /// <param name="lRest"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBLocate(uCobFor AS OBJECT,uCobWhile AS OBJECT,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
-    THROW  NotImplementedException{}
-    //RETURN FALSE   
+FUNCTION VODBLocate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODbMemoExt") AS IRDD
+        LOCAL scopeinfo := DBSCOPEINFO{} AS DBSCOPEINFO
+        scopeinfo:ForBlock := uCobFor
+        scopeinfo:WhileBlock := uCobWhile
+        scopeinfo:Rest:= lRest
+        scopeinfo:RecId := uRecID
+        scopeinfo:NextCount := nNext
+        IF oRDD:SetScope(scopeinfo)
+            RETURN oRDD:SkipScope(1)
+        ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
     
     /// <summary>
     /// </summary>
@@ -610,10 +758,13 @@ FUNCTION VODBLocate(uCobFor AS OBJECT,uCobWhile AS OBJECT,nNext AS LONG,uRecId A
     /// <returns>
     /// </returns>
 FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("VODbMemoExt") AS IRDD
-    IF oRDD != NULL
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODbMemoExt") AS IRDD
         RETURN (STRING) oRDD:Info(DBI_MEMOEXT, NULL)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN String.Empty
     /// <summary>
     /// Return the default index file extension for a work area as defined by the its RDD.
@@ -621,11 +772,14 @@ FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
     /// <returns>Default extension for the current workarea, or an empty string when no table is open in the current workarea.
     /// </returns>
 FUNCTION VODBOrdBagExt() AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdBagExt") AS IRDD
-    IF oRDD != NULL
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdBagExt") AS IRDD
         VAR info := DbOrderInfo{}
         RETURN (STRING) oRDD:OrderInfo( DBOI_BAGEXT, info)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN String.Empty
     
     /// <summary>
@@ -635,10 +789,13 @@ FUNCTION VODBOrdBagExt() AS STRING
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdCondSet") AS IRDD
-    IF oRDD != NULL
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdCondSet") AS IRDD
         RETURN oRDD:OrderCondition(ordCondInfo)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     /// <summary>
@@ -653,8 +810,8 @@ FUNCTION VODBOrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeBlock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdCreate") AS IRDD
-    IF oRDD != NULL                  
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdCreate") AS IRDD
         VAR info := DbOrderCreateInfo{}
         info:BagName 		:= cBagName
         info:Order			:= oOrder
@@ -663,7 +820,10 @@ FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCode
         info:Unique			:= lUnique
         info:OrdCondInfo 	:= ordCondInfo		
         RETURN oRDD:OrderCreate(info)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     /// <summary>
@@ -674,26 +834,18 @@ FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCode
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
-    IF oRDD != NULL                  
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
         VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
         RETURN oRDD:OrderDestroy(info)
-    ENDIF                            
+        
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
-
-    /// <summary>
-    /// Return information about index files and the orders in them.
-    /// </summary>
-    /// <param name="nOrdinal"></param>
-    /// <param name="cBagName"></param>
-    /// <param name="uOrder"></param>
-    /// <param name="oValue"></param>
-    /// <returns>
-    /// </returns>
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
-    RETURN VoDbOrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
     
     /// <summary>
     /// Return information about index files and the orders in them.
@@ -704,15 +856,34 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oVa
     /// <param name="oValue"></param>
     /// <returns>
     /// </returns>
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
+    TRY
+        RETURN VoDbOrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    /// <summary>
+    /// Return information about index files and the orders in them.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="cBagName"></param>
+    /// <param name="uOrder"></param>
+    /// <param name="oValue"></param>
+    /// <returns>
+    /// </returns>
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
-    IF oRDD != NULL                  
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
         VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
         oValue :=  oRDD:OrderInfo(nOrdinal, info)
         RETURN TRUE
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     
@@ -724,8 +895,8 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oVa
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
-    IF oRDD != NULL                  
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
         VAR info := DbOrderInfo{}
         info:BagName := cBagName
         IF oOrder == NULL
@@ -734,7 +905,10 @@ FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
             info:Order   := oOrder
         ENDIF
         RETURN oRDD:OrderListAdd(info)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     /// <summary>
@@ -745,20 +919,24 @@ FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
-    IF oRDD == NULL
-        RETURN TRUE // not logical but compatible with VO
-    ELSE
-        VAR info := DbOrderInfo{}
-        info:BagName := cBagName
-        IF oOrder == NULL
-            info:AllTags := TRUE
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd",FALSE) AS IRDD
+        IF oRDD == NULL
+            RETURN TRUE // not logical but compatible with VO
         ELSE
-            info:Order   := oOrder
+            VAR info := DbOrderInfo{}
+            info:BagName := cBagName
+            IF oOrder == NULL
+                info:AllTags := TRUE
+            ELSE
+                info:Order   := oOrder
+            ENDIF
+            RETURN oRDD:OrderListDelete(info) 
         ENDIF
-        RETURN oRDD:OrderListDelete(info) 
-    ENDIF
-    
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE    
     
     /// <summary>
     /// Rebuild all orders in the order list of a work area.
@@ -766,10 +944,13 @@ FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdListRebuild() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdListRebuild") AS IRDD
-    IF oRDD != NULL                  
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdListRebuild") AS IRDD
         RETURN oRDD:OrderListRebuild()
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     /// <summary>
@@ -780,8 +961,8 @@ FUNCTION VODBOrdListRebuild() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder REF STRING) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdSetFocus") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBOrdSetFocus") AS IRDD
         VAR info     := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
@@ -791,7 +972,9 @@ FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder R
             strPreviousOrder := (STRING)info:Result
         ENDIF
         RETURN result
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     RETURN FALSE
     
     /// <summary>
@@ -800,10 +983,13 @@ FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder R
     /// <returns>
     /// </returns>
 FUNCTION VODBPack() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBPack") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBPack") AS IRDD
         RETURN oRDD:Pack()
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     /// <summary>
@@ -821,8 +1007,12 @@ FUNCTION VODBRddCount(nRddType AS DWORD) AS DWORD
     /// <returns>
 /// </returns>
 FUNCTION VODBRddCount() AS DWORD
-    RETURN (DWORD) VODBRddList():Length
-    
+    TRY
+        RETURN (DWORD) VODBRddList():Length
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN 0
     /// <summary>
     /// </summary>
     /// <param name="nOrdinal"></param>
@@ -830,43 +1020,56 @@ FUNCTION VODBRddCount() AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
-    LOCAL oValue AS OBJECT
-    oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
-    IF oRet != NULL_OBJECT
-        RuntimeState.SetValue((INT) nOrdinal, oRet)
-    ENDIF
-    oRet := oValue
-    RETURN oValue != NULL
-
+    TRY
+        LOCAL oValue AS OBJECT
+        oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
+        IF oRet != NULL_OBJECT
+            RuntimeState.SetValue((INT) nOrdinal, oRet)
+        ENDIF
+        oRet := oValue
+        RETURN oValue != NULL
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
+    
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
-    LOCAL oValue AS OBJECT
-    oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
-    RuntimeState.SetValue((INT) nOrdinal, oRet)
-    RETURN TRUE
-
-
-
+    TRY
+        LOCAL oValue AS OBJECT
+        oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
+        RuntimeState.SetValue((INT) nOrdinal, oRet)
+        RETURN TRUE
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
+    
 [Obsolete( "'VODBRddList( rddList, nRddType )' is not supported, use VODBRddList() instead", TRUE )];
 FUNCTION VODBRddList(rddList AS RddList,nRddType AS DWORD) AS LOGIC
     THROW  NotImplementedException{}
     
 FUNCTION VODBRddList() AS STRING[]
-    LOCAL aList AS List<STRING>
-    
-    aList := List<STRING>{}
-    LOCAL i AS DWORD
-    FOR i := 1 TO WorkAreas.MaxWorkAreas
-        VAR oRDD := RuntimeState.Workareas.GetRDD(i)
-        IF oRDD != NULL
-            LOCAL cName AS STRING
-            cName := oRDD:SysName
-            IF !aList:Contains(cName)
-                aList:Add(cname)
+    TRY
+        LOCAL aList AS List<STRING>
+        aList := List<STRING>{}
+        LOCAL i AS DWORD
+        FOR i := 1 TO WorkAreas.MaxWorkAreas
+            VAR oRDD := RuntimeState.Workareas.GetRDD(i)
+            IF oRDD != NULL
+                LOCAL cName AS STRING
+                cName := oRDD:SysName
+                IF !aList:Contains(cName)
+                    aList:Add(cname)
+                ENDIF
             ENDIF
-        ENDIF
-    NEXT
-    RETURN aList:ToArray()
-    
+        NEXT
+        RETURN aList:ToArray()
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN NULL
     
     
     /// <summary>
@@ -875,20 +1078,28 @@ FUNCTION VODBRddList() AS STRING[]
     /// <returns>
     /// </returns>
 FUNCTION VODBRddName() AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("VODBRddName") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRddName") AS IRDD
         RETURN oRDD:SysName
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN String.Empty
     
     /// <summary>
     /// Return and optionally change the default RDD for the application.
     /// </summary>
-    /// <param name="cDrv"></param>
+    /// <param name="cNewRDD"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBRddSetDefault(cDrv AS STRING) AS STRING
-    THROW  NotImplementedException{}
+FUNCTION VODBRddSetDefault(cNewRDD AS STRING) AS STRING
+    LOCAL cOldRDD AS STRING
+    cOldRDD := Runtimestate.DefaultRDD
+    IF ! String.IsNullOrEmpty(cNewRDD)
+        Runtimestate.DefaultRDD := cNewRDD
+    ENDIF
+    RETURN cOldRDD
     
     /// <summary>
     /// Restore the current record if it is marked for deletion.
@@ -896,10 +1107,13 @@ FUNCTION VODBRddSetDefault(cDrv AS STRING) AS STRING
     /// <returns>
     /// </returns>
 FUNCTION VODBRecall() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecall") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRecall") AS IRDD
         RETURN oRDD:Recall()
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     /// <summary>
@@ -908,10 +1122,13 @@ FUNCTION VODBRecall() AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBRecno() AS OBJECT
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecno") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRecno") AS IRDD
         RETURN oRDD:Recno
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN NULL
     
     /// <summary>
@@ -919,10 +1136,13 @@ FUNCTION VODBRecno() AS OBJECT
     /// <returns>
     /// </returns>
 FUNCTION VODBRecordGet() AS BYTE[]
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecordGet") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRecordGet") AS IRDD
         RETURN oRDD:GetRec()
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN NULL       
     
     /// <summary>
@@ -934,11 +1154,14 @@ FUNCTION VODBRecordGet() AS BYTE[]
     /// <returns>
     /// </returns>
 FUNCTION VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecordInfo") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRecordInfo") AS IRDD
         oRDD:RecInfo(oRecID, (INT) nOrdinal, oRet )
         RETURN TRUE
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE       
     
     /// <summary>
@@ -947,10 +1170,13 @@ FUNCTION VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS L
     /// <returns>
     /// </returns>
 FUNCTION VODBRecordPut(aRecord AS BYTE[]) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecordPut") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRecordPut") AS IRDD
         RETURN oRDD:PutRec(aRecord)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE       
     
     /// <summary>
@@ -961,11 +1187,14 @@ FUNCTION VODBRecordPut(aRecord AS BYTE[]) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBRelation(nPos AS DWORD,sRel REF STRING) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecordPut") AS IRDD
-    IF oRDD != NULL                     
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRecordPut") AS IRDD
         sRel :=  oRDD:RelText(nPos)
         RETURN TRUE
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE       
     
     /// <summary>
@@ -975,14 +1204,17 @@ FUNCTION VODBRelation(nPos AS DWORD,sRel REF STRING) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBRlock(uRecId AS OBJECT) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBRlock") AS IRDD
-    IF oRDD != NULL
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRlock") AS IRDD
         LOCAL lockInfo AS DbLockInfo
         lockInfo := DbLockInfo{}
         lockInfo:RecId := uRecID
         lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
         RETURN oRDD:Lock(lockInfo)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE 
     /// <summary>
     /// Return the work area number of a relation.
@@ -991,7 +1223,13 @@ FUNCTION VODBRlock(uRecId AS OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBRSelect(nPos AS DWORD) AS DWORD
-    THROW  NotImplementedException{}
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBRSelect") AS IRDD
+        RETURN oRDD:RelArea(nPos)
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN 0
     
     /// <summary>
     /// Move to the record having the specified key value.
@@ -1001,14 +1239,17 @@ FUNCTION VODBRSelect(nPos AS DWORD) AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBSeek(oValue AS OBJECT,lSoftSeek AS LOGIC) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSeek") AS IRDD
-    IF oRDD != NULL           
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSeek") AS IRDD
         VAR info 		:= DbSeekInfo{}
         info:Value 		:= oValue          
         info:SoftSeek 	:= lSoftSeek
         //info:Last		:= lLast 
         RETURN oRDD:Seek(info)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE       
     
     /// <summary>
@@ -1019,17 +1260,22 @@ FUNCTION VODBSeek(oValue AS OBJECT,lSoftSeek AS LOGIC) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
-    nOld := (DWORD) RuntimeState.Workareas:CurrentWorkAreaNO
-    IF nNew != nOld
-        IF nNew == 0
-            nNew := (DWORD) RuntimeState.Workareas:FindEmptyArea(TRUE)
+    TRY
+        nOld := (DWORD) RuntimeState.Workareas:CurrentWorkAreaNO
+        IF nNew != nOld
+            IF nNew == 0
+                nNew := (DWORD) RuntimeState.Workareas:FindEmptyArea(TRUE)
+            ENDIF
+            IF nNew > WorkAreas.MaxWorkareas
+                PostArgumentError( "VODBSelect", EDB_SELECT, "nNew", 1, <OBJECT>{ nNew } )
+            ELSE
+                RuntimeState.Workareas:CurrentWorkAreaNO :=  nNew
+            ENDIF
         ENDIF
-        IF nNew > WorkAreas.MaxWorkareas
-            PostArgumentError( "VODBSelect", EDB_SELECT, "nNew", 1, <OBJECT>{ nNew } )
-        ELSE
-            RuntimeState.Workareas:CurrentWorkAreaNO :=  nNew
-        ENDIF
-    ENDIF          
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN TRUE
     
     /// <summary>
@@ -1040,13 +1286,16 @@ FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetFilter") AS IRDD
-    IF oRDD != NULL           
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSetFilter") AS IRDD
         VAR info 		 := DbFilterInfo{}
         info:FilterBlock := oBlock         
         info:FilterText  := cFilter
         RETURN oRDD:SetFilter(info)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE       
     
     /// <summary>
@@ -1056,10 +1305,13 @@ FUNCTION VODBSetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSetFound(lFound AS LOGIC) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetFilter") AS IRDD
-    IF oRDD != NULL           
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSetFound") AS IRDD
         oRDD:Found := TRUE
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE   
     
     /// <summary>
@@ -1069,13 +1321,16 @@ FUNCTION VODBSetFound(lFound AS LOGIC) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSetLocate(oBlock AS ICodeBlock) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetLocate") AS IRDD
-    IF oRDD != NULL        
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSetLocate") AS IRDD
         VAR scope := oRDD:GetScope()
         scope:ForBlock := oBlock
         oRDD:SetScope(scope)    
         RETURN TRUE
-    ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE                            
     
     /// <summary>
@@ -1086,8 +1341,29 @@ FUNCTION VODBSetLocate(oBlock AS ICodeBlock) AS LOGIC
     /// <param name="cKey"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS OBJECT,cKey AS STRING) AS LOGIC
-    THROW  NotImplementedException{}
+FUNCTION VODBSetRelation(cAlias AS STRING,oKey  AS ICodeBlock,cKey AS STRING) AS LOGIC
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSetRelation") AS IRDD
+        LOCAL nDest := RuntimeState.Workareas.FindAlias(cAlias) AS DWORD
+        IF nDest == 0
+            PostArgumentError("VODBSetRelation",EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
+        ENDIF
+        LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRDD
+        IF oDest == NULL_OBJECT
+            PostArgumentError("VODBSetRelation",EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
+        ENDIF
+        LOCAL oRelInfo AS DbRelInfo
+        oRelInfo := DbRelInfo{}
+        oRelInfo:Parent := oRDD
+        oRelInfo:Child  := oDest
+        oRelInfo:Key    := cKey
+        oRelInfo:Block  := oKey
+        RETURN oRDD:SetRel(oRelInfo)
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
+    
     
     /// <summary>
     /// </summary>
@@ -1095,10 +1371,13 @@ FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS OBJECT,cKey AS STRING) AS L
     /// <returns>
     /// </returns>
 FUNCTION VODBSetScope(scope AS DBSCOPEINFO) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetLocate") AS IRDD
-    IF oRDD != NULL        
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSetLocate") AS IRDD
         RETURN oRDD:SetScope(scope)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     /// <summary>
     /// Select a new work area.
@@ -1107,17 +1386,22 @@ FUNCTION VODBSetScope(scope AS DBSCOPEINFO) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSetSelect(siNew AS INT) AS DWORD
-    IF siNew == -1
-        siNew := (INT) RuntimeState.Workareas:FindEmptyArea(FALSE)
-    ELSEIF siNEw == 0
-        siNew := (INT) RuntimeState.Workareas:FindEmptyArea(TRUE)
-    ENDIF
-    IF siNew == 0 || siNew > Workareas.MaxWorkAreas
-      PostArgumentError( "VODBSetSelect", EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
-    ELSE      
-      RuntimeState.CurrentWorkarea := (DWORD) siNew   
-    ENDIF
-    RETURN (DWORD) siNew
+    TRY
+        IF siNew == -1
+            siNew := (INT) RuntimeState.Workareas:FindEmptyArea(FALSE)
+        ELSEIF siNEw == 0
+            siNew := (INT) RuntimeState.Workareas:FindEmptyArea(TRUE)
+        ENDIF
+        IF siNew == 0 || siNew > Workareas.MaxWorkAreas
+            PostArgumentError( "VODBSetSelect", EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
+        ELSE      
+            RuntimeState.CurrentWorkarea := (DWORD) siNew   
+        ENDIF
+        RETURN (DWORD) siNew
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN 0
     
     /// <summary>
     /// Move the record pointer relative to the current record.
@@ -1126,10 +1410,13 @@ FUNCTION VODBSetSelect(siNew AS INT) AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION VODBSkip(nRecords AS LONG) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSkip") AS IRDD
-    IF oRDD != NULL        
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSkip") AS IRDD
         RETURN oRDD:Skip(nRecords)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE   
     
     /// <summary>
@@ -1139,31 +1426,147 @@ FUNCTION VODBSkip(nRecords AS LONG) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBSkipScope") AS IRDD
-    IF oRDD != NULL    
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSkipScope") AS IRDD
         oRDD:SetScope(scope)    
         RETURN oRDD:Skip(nRecords)
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE   
+    
+INTERNAL FUNCTION _VODBBuildTrans( dbti AS DbTransInfo, lpfn AS DbFieldNames, src AS IRDD, dst AS IRDD ) AS LOGIC
+    LOCAL oTmp          AS OBJECT
+    LOCAL srcFieldCount AS DWORD
+    LOCAL dstFieldCount AS DWORD
+    LOCAL fMatch        AS LOGIC
+    LOCAL i             AS LONG
+    LOCAL j             AS LONG
+    LOCAL uiSrc         AS LONG
+    LOCAL uiDst         AS LONG
+    
+    oTmp := src:Info( DBInfo.DBI_FCOUNT, NULL)
+    srcFieldCount := Convert.ToUInt32( oTmp )
+    oTmp := dst:Info( DBInfo.DBI_FCOUNT, NULL )
+    dstFieldCount := Convert.ToUInt32( oTmp )
+    
+    fMatch := (DWORD) dbti:ItemCount == srcFieldCount && srcFieldCount == dstFieldCount
+    j := 1
+    FOR i := 0 UPTO lpfn:fieldCount -1
+    
+        uiSrc := src:FieldIndex( lpfn:fields[i] )
+        uiDst := dst:FieldIndex( lpfn:fields[i]  )
+        
+        IF uiSrc == 0 || uiDst == 0
+            fMatch := FALSE
+        ELSE
+            // Note that lpTransItems wants the Field Positions to start with 0
+            dbti:Items[j]:Source       := uiSrc - 1
+            dbti:Items[j]:Destination  := uiDst - 1
+            j++
+            
+            IF fMatch
+                // todo
+                
+                LOCAL srcFld AS RddFieldInfo
+                LOCAL dstFld AS RddFieldInfo
+                srcFld := src:GetField(uiSrc)
+                dstFld := dst:GetField(uiDst)
+                fMatch := uiSrc == uiDst && srcFld:SameType( dstFld )
+            ENDIF
+        ENDIF 
+    NEXT
+    
+    dbti:ItemCount := j -1
+    
+    RETURN fMatch
     
     /// <summary>
     /// </summary>
     /// <param name="nDest"></param>
-    /// <param name="fnNames"></param>
+    /// <param name="fieldNames"></param>
     /// <param name="uCobFor"></param>
     /// <param name="uCobWhile"></param>
     /// <param name="nNext"></param>
     /// <param name="nRecno"></param>
     /// <param name="lRest"></param>
-    /// <param name="fnSortNames"></param>
+    /// <param name="sortNames"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS OBJECT,uCobWhile AS OBJECT,;
-nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
-    THROW  NotImplementedException{}
+FUNCTION VODBSort(nDest AS DWORD,fieldNames AS DbFieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,;
+nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS DbFieldNames) AS LOGIC
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBSort") AS IRDD
+        LOCAL info AS DbSortInfo
+        info := DbSortInfo{fieldNames:fieldCount, sortNames:fieldCount}
+        _VoDbTransSetInfo(oRDD, info:TransInfo, "VODBSort", nDest, fieldNames,uCobFor, uCobWhile, nNext, nRecno, lRest)        
+        // Now process the fieldnames in the sortnames list
+        LOCAL nFld AS INT
+        FOR nFld := 0 TO sortNames:fieldCount -1
+            // Could be FieldName / ACDB to indicate the sort method
+            VAR parts := sortNames:fields[nFld]:Split('/')
+            IF parts:Length > 1
+                VAR part = parts[1]
+                IF part:IndexOf('A') > -1
+                    info:Items[nFld]:Flags |= DbSortItem.SF_Default
+                ENDIF
+                IF part:IndexOf('C') > -1
+                    info:Items[nFld]:Flags |= DbSortItem.SF_Case
+                ENDIF
+                IF part:IndexOf('D') > -1
+                    info:Items[nFld]:Flags |= DbSortItem.SF_Descending
+                ENDIF
+                IF part:IndexOf('B') > -1
+                    info:Items[nFld]:Flags |= DbSortItem.SF_Ascii
+                ENDIF
+            ENDIF
+            LOCAL iField AS INT
+            iField := oRDD:FieldIndex(parts[0])
+            IF iField == 0
+                PostArgumentError( "VODBSort", EDB_FIELDNAME, nameof(sortNames), 8, <OBJECT>{ sortNames:fields[nFld] } )
+            ENDIF
+            info:Items[nFld]:FieldNo := iField
+        NEXT
+        RETURN oRDD:Sort( info )
+        
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     
+    RETURN FALSE   
     
-    
+INTERNAL FUNCTION _VoDbTransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS DbFieldNames,;
+uCobFor AS ICodeBlock ,uCobWhile AS ICodeBlock ,;
+nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
+    LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
+    IF oDest == NULL
+        PostNoTableError("VODBTrans")
+    ENDIF
+    info:Destination := oDest
+    IF !_VODBBuildTrans( info, fldNames, oRDD, oDest )
+        PostArgumentError( cFunc, EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
+    ENDIF
+    info:Flags := DbTransInfo.Match
+    LOCAL oCanPutRec AS OBJECT
+    oCanPutRec := oRdd:Info(DBInfo.DBI_CANPUTREC, NULL)
+    IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec
+        info:Flags |= DbTransInfo.PutRec
+    ENDIF
+    info:Scope:ForBlock := uCobFor
+    info:Scope:WhileBlock := uCobWhile
+    IF nNext != NULL
+        TRY
+            info:Scope:NextCount := Convert.ToInt32(nNext)
+        CATCH AS Exception
+            info:Scope:NextCount := 0
+        END TRY
+    ELSE
+        info:Scope:NextCount := 0
+    ENDIF
+    info:Scope:RecId := nRecno
+    info:Scope:Rest  := lRest     
+    RETURN
     /// <summary>
     /// </summary>
     /// <param name="nDest"></param>
@@ -1175,10 +1578,19 @@ nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS 
     /// <param name="lRest"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS OBJECT,uCobWhile AS OBJECT,;
+FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,;
 nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
-    THROW  NotImplementedException{}
-    
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBTrans") AS IRDD
+        LOCAL info AS DbTransInfo
+        info := DbTransInfo{fldNames:fieldCount}
+        _VoDbTransSetInfo(oRDD, info, "VODBTrans", nDest, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest)
+        RETURN oRDD:Trans( info )
+        
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE      
     /// <summary>
     /// </summary>
     /// <param name="nDest"></param>
@@ -1186,7 +1598,35 @@ nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS DbFieldNames) AS LOGIC
-    THROW  NotImplementedException{}
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBUnlock") AS IRDD
+        LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
+        LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
+        IF oDest == NULL_OBJECT
+            PostNoTableError("VODBTransRec")
+        ENDIF
+        dbti:Destination := oDest
+        dbti:ItemCount := fldNames:FieldCount
+        IF _VODBBuildTrans( dbti, fldNames, oRDD, oDest )
+            LOCAL oCanPutRec AS OBJECT
+            dbti:Flags |= DBTRANSINFO.Match
+            oCanPutRec := oRDD:Info( DBInfo.DBI_CANPUTREC, NULL )
+            IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
+                oCanPutRec := oDest:Info(DBInfo.DBI_CANPUTREC, NULL )
+                IF oCanPutRec != NULL .AND. (LOGIC) oCanPutRec
+                    dbti:Flags |= DBTRANSINFO.PutRec
+                ENDIF
+            ENDIF
+        ENDIF
+        RETURN oRDD:TransRec( dbti )
+
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
+    RETURN FALSE  
+    
+    
     
     /// <summary>
     /// Release all locks for a work area.
@@ -1195,7 +1635,15 @@ FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS DbFieldNames) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBUnlock(uRecno AS OBJECT) AS LOGIC
-    THROW  NotImplementedException{}
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBUnlock") AS IRDD
+        RETURN oRDD:UnLock(uRecno)    
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
+    RETURN FALSE   
+    
     
     /// <summary>
     /// Release all locks for all work areas.
@@ -1203,7 +1651,13 @@ FUNCTION VODBUnlock(uRecno AS OBJECT) AS LOGIC
     /// <returns>
     /// </returns>
 FUNCTION VODBUnlockAll() AS LOGIC
-    THROW  NotImplementedException{}
+    TRY
+        RuntimeState.Workareas:UnlockAll()
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
+    RETURN FALSE   
     
     /// <summary>
     /// Open a database file.
@@ -1218,100 +1672,108 @@ FUNCTION VODBUnlockAll() AS LOGIC
     /// </returns>
     
 FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS _RDDLIST,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-
-    LOCAL oRdd := NULL  AS RegisteredRDD
-    LOCAL ret := FALSE AS LOGIC
-    FOREACH VAR name IN rddList:atomRddName
-        oRdd := RegisteredRDD.Find(name)
-        oRdd:Load()
-    NEXT
-    IF oRdd != NULL_OBJECT
-        ret := VODBUseArea(lNew, oRdd:RddType, cName, cAlias, lShare, lReadOnly)
-    ENDIF
-    RETURN ret
+    TRY
+        LOCAL oRdd := NULL  AS RegisteredRDD
+        FOREACH VAR name IN rddList:atomRddName
+            oRdd := RegisteredRDD.Find(name)
+            oRdd:Load()
+        NEXT
+        IF oRdd != NULL_OBJECT
+            RETURN VODBUseArea(lNew, oRdd:RddType, cName, cAlias, lShare, lReadOnly)
+        ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE    
 FUNCTION VODBUseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-    LOCAL ret  := FALSE   AS LOGIC
-    LOCAL rddType AS Type
+    TRY
+        LOCAL rddType AS Type
+        IF ( rddType := _VoDbRddNameToType( rddName ) ) == NULL
+            PostArgumentError( "VODBUseArea", EDB_RDDNOTFOUND, "rddName", 3, <OBJECT>{ rddName } )
+        ELSE
+            RETURN VODBUseArea( lNew, rddType, cName, cAlias, lShare, lReadOnly )
+        ENDIF
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
     
-    IF ( rddType := _VoDbRddNameToType( rddName ) ) == NULL
-        PostArgumentError( "VODBUseArea", EDB_RDDNOTFOUND, "rddName", 3, <OBJECT>{ rddName } )
-    ELSE
-        ret := VODBUseArea( lNew, rddType, cName, cAlias, lShare, lReadOnly )
-    ENDIF
-    
-    RETURN ret  
+    RETURN FALSE
     
     
     
 FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
-    LOCAL ret   := FALSE AS LOGIC
-    LOCAL area  := 0    AS DWORD
-    IF String.IsNullOrEmpty( cName )
-        PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
-    ELSE
-        ret := TRUE
-        NetErr( FALSE )
-        cName := cName:Trim() // :ToUpperInvariant()
-        
-        IF String.IsNullOrEmpty( cAlias )
-            TRY
-                cAlias := Path.GetFileNameWithoutExtension( cName )
-            CATCH  AS ArgumentException
-                PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
-                ret := FALSE
-            END TRY   
-        ENDIF
-        IF lNew
-            area := RuntimeState.Workareas:FindEmptyArea(TRUE)
-            IF area > Workareas.MaxWorkareas  .OR. area == 0
-                ret := FALSE
-            ELSE
-                RuntimeState.Workareas:CurrentWorkAreaNO := area
-            ENDIF
+    TRY
+        LOCAL ret   := FALSE AS LOGIC
+        LOCAL area  := 0    AS DWORD
+        IF String.IsNullOrEmpty( cName )
+            PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
         ELSE
-            area := RuntimeState.Workareas:CurrentWorkAreaNO
-        ENDIF   
-        IF ret
-            RuntimeState.Workareas:CloseArea(area)
-            LOCAL rdd :=_VoDbCreateRDDInstance( rddType, cAlias ) AS IRDD
+            ret := TRUE
+            NetErr( FALSE )
+            cName := cName:Trim() // :ToUpperInvariant()
             
-            IF rdd == NULL
-                PostArgumentError( "VODBUseArea", EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
-                ret := FALSE
-            ELSEIF ! _VoDbIsAliasUnused( cAlias )
-                PostArgumentError( "VODBUseArea", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
-                ret := FALSE
+            IF String.IsNullOrEmpty( cAlias )
+                TRY
+                    cAlias := Path.GetFileNameWithoutExtension( cName )
+                CATCH  AS ArgumentException
+                    PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
+                    ret := FALSE
+                END TRY   
+            ENDIF
+            IF lNew
+                area := RuntimeState.Workareas:FindEmptyArea(TRUE)
+                IF area > Workareas.MaxWorkareas  .OR. area == 0
+                    ret := FALSE
+                ELSE
+                    RuntimeState.Workareas:CurrentWorkAreaNO := area
+                ENDIF
             ELSE
-                LOCAL dboi := DBOPENINFO{} AS DBOPENINFO
-                LOCAL uiArea AS DWORD
-                uiArea := RuntimeState.Workareas:CurrentWorkAreaNO
-                dboi:FileName     := Path.ChangeExtension( cName, NULL )
-                dboi:Extension    := Path.GetExtension( cName )
-                dboi:Shared      := lShare
-                dboi:ReadOnly    := lReadOnly
-                dboi:Alias       := cAlias
-                dboi:WorkArea    := uiArea
-                rdd:Alias        := cAlias
-                ret := RuntimeState.Workareas:SetArea(uiArea, rdd)
-                IF (ret)
-                    TRY
-                        RuntimeState.LastRddError := NULL
-                        ret := rdd:Open( dboi )
-                    CATCH e AS Exception
-                        RuntimeState.LastRddError := e
-                        ret := FALSE
-                    END TRY
-                ENDIF
-                IF ! ret
-                    RuntimeState.Workareas:CloseArea(uiArea)
-                ENDIF
-                RuntimeState.Workareas:CurrentWorkAreaNO := uiArea
+                area := RuntimeState.Workareas:CurrentWorkAreaNO
             ENDIF   
+            IF ret
+                RuntimeState.Workareas:CloseArea(area)
+                LOCAL rdd :=_VoDbCreateRDDInstance( rddType, cAlias ) AS IRDD
+                
+                IF rdd == NULL
+                    PostArgumentError( "VODBUseArea", EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
+                    ret := FALSE
+                ELSEIF ! _VoDbIsAliasUnused( cAlias )
+                    PostArgumentError( "VODBUseArea", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
+                    ret := FALSE
+                ELSE
+                    LOCAL dboi := DBOPENINFO{} AS DBOPENINFO
+                    LOCAL uiArea AS DWORD
+                    uiArea := RuntimeState.Workareas:CurrentWorkAreaNO
+                    dboi:FileName     := Path.ChangeExtension( cName, NULL )
+                    dboi:Extension    := Path.GetExtension( cName )
+                    dboi:Shared      := lShare
+                    dboi:ReadOnly    := lReadOnly
+                    dboi:Alias       := cAlias
+                    dboi:WorkArea    := uiArea
+                    rdd:Alias        := cAlias
+                    ret := RuntimeState.Workareas:SetArea(uiArea, rdd)
+                    IF (ret)
+                        TRY
+                            RuntimeState.LastRddError := NULL
+                            ret := rdd:Open( dboi )
+                        CATCH e AS Exception
+                            RuntimeState.LastRddError := e
+                            ret := FALSE
+                        END TRY
+                    ENDIF
+                    IF ! ret
+                        RuntimeState.Workareas:CloseArea(uiArea)
+                    ENDIF
+                    RuntimeState.Workareas:CurrentWorkAreaNO := uiArea
+                ENDIF   
+            ENDIF
         ENDIF
-    ENDIF
-    
-    RETURN ret
-    
+        
+        RETURN ret
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE 
     
     
     //	LOCAL oRDD := RDDHelpers.CWA("VODBUseArea") AS IRDD
@@ -1325,10 +1787,13 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
     /// <returns>
     /// </returns>
 FUNCTION VODBZap() AS LOGIC
-    LOCAL oRDD := RDDHelpers.CWA("VODBZap") AS IRDD
-    IF oRDD != NULL
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA("VODBZap") AS IRDD
         RETURN oRDD:Zap()
-    ENDIF                            
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    
     RETURN FALSE
     
     
@@ -1375,12 +1840,12 @@ INTERNAL FUNCTION _VoDbAliasFromFilename( cFilename AS STRING, cAlias REF STRING
     ENDIF
     RETURN ret   
     
-
-// Check if Alias is used for current thread
+    
+    // Check if Alias is used for current thread
 INTERNAL FUNCTION _VoDbIsAliasUnused( cAlias AS STRING ) AS LOGIC
     RETURN RuntimeState.Workareas:FindAlias(cAlias) == 0
     
-// Create RDD Object from RDD Type
+    // Create RDD Object from RDD Type
 INTERNAL FUNCTION _VoDbCreateRDDInstance( rddType AS Type , cAlias AS STRING) AS IRDD
     LOCAL ret    AS IRDD
     TRY
@@ -1398,7 +1863,7 @@ INTERNAL FUNCTION _VoDbRddNameToType( cRDDName AS STRING ) AS Type
     LOCAL ret := NULL AS  Type
     LOCAL oRdd        AS RegisteredRDD
     oRdd := RegisteredRDD.Find(cRddName)
-    IF (oRdd != NULL)   
+    IF oRDD != NULL   
         oRdd:Load()
         ret := oRdd:RddType
     ENDIF

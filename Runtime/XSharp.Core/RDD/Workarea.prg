@@ -370,6 +370,16 @@ VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT)
 	ENDIF
 	THROW NotImplementedException{__ENTITY__}
 
+VIRTUAL METHOD GetField(nFldPos AS INT) AS RDDFieldInfo
+	IF SELF:_FieldIndexValidate(nFldPos)
+		IF __ARRAYBASE__ == 0
+			nFldPos -= 1
+		ENDIF
+		RETURN SELF:_Fields[nFldPos]
+	ENDIF          
+	RETURN NULL
+    
+
 /// <inheritdoc />
 VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
 	// Note that nFldPos is 1 based

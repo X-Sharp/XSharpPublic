@@ -9,27 +9,27 @@ USING System.Reflection
 BEGIN NAMESPACE XSharp.RDD
     STATIC CLASS RDDHelpers
     
-        STATIC METHOD CWA(cFunction AS STRING) AS IRDD 
+        STATIC METHOD CWA(cFunction AS STRING, lThrow := TRUE AS LOGIC) AS IRDD 
             LOCAL oResult AS IRDD
             RuntimeState.LastRddError := NULL
             oResult := RuntimeState.Workareas:CurrentWorkArea
             IF oResult != NULL_OBJECT
                 RETURN oResult
             ENDIF
-            RuntimeState.LastRddError := NoTableError(cFunction)
+            IF lThrow
+                PostNoTableError(cFunction)
+            ENDIF
             RETURN NULL
-            
             
         STATIC METHOD CWANum(cFunction AS STRING)  AS DWORD
             VAR oWA := RuntimeState.Workareas:CurrentWorkArea
             IF oWA != NULL
                 RETURN oWA:Area
             ENDIF
-            RuntimeState.LastRddError := NoTableError(cFunction)
+            PostNoTableError(cFunction)
             RETURN 0
-            
-            
         END CLASS
+
     CLASS RegisteredRDD
         PROPERTY AssemblyName   AS STRING AUTO 
         PROPERTY Assembly       AS Assembly AUTO 
@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // ADS DBFCDX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // ADS DBFNTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // ADS AXDBFVFP
-            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.ADSADT",    "XSharp.ADS.ADSADT"})       // ADSADT
+            RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.ADSADT",    "XSharp.ADS.ADSADT"})         // ADSADT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXDBFVFP",  "XSharp.ADS.AXDBFVFP"})       // ADS AXDBFVFP
@@ -141,11 +141,11 @@ END NAMESPACE
 
 
 // Generate NOTABLE Error    
-INTERNAL FUNCTION NoTableError( funcName AS STRING ) AS RddError
+INTERNAL FUNCTION PostNoTableError( funcName AS STRING ) AS RddError
     LOCAL e := RddError{} AS RddError
     e:SubSystem := "DBCMD"
     e:Severity := 2
     e:GenCode := EG_NOTABLE
     e:SubCode := EDB_NOTABLE
     e:FuncSym := funcName
-    RETURN e
+    THROW e

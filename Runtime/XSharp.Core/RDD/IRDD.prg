@@ -94,7 +94,9 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 	/// <summary>Retrieve a column name based on its ONE based column number.</summary>
 	/// <param name="nFldPos">The ONE based number of the column whose name you want to obtain.</param>
-	METHOD FieldName(nFldPos AS LONG)		AS STRING 
+	METHOD FieldName(nFldPos AS LONG)		AS STRING
+
+    METHOD GetField(nFldPos AS LONG) AS RDDFieldInfo
 	// Read & Write		
 	/// <summary>Get a value for the specified column.</summary>	
 	/// <param name="nFldPos">1 based column number for which the value should be retrieved.</param>

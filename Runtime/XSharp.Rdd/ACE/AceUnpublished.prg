@@ -228,7 +228,14 @@ BEGIN NAMESPACE XSharp.ADS
             ELSE
                 RETURN ACEUNPUB64.AdsConvertJulianToString(dJulian, pucJulian, REF pusLen)
             ENDIF
-            
+
+		PUBLIC STATIC METHOD AdsSetProperty90(hObj AS Intptr, ulOperation AS DWORD , uqValue AS UINT64 ) AS DWORD 
+            IF Is32
+                RETURN ACEUNPUB32.AdsSetProperty90(hObj, ulOperation, uqValue)
+            ELSE
+                RETURN ACEUNPUB64.AdsSetProperty90(hObj, ulOperation, uqValue)
+            ENDIF
+
     #endregion
         
         // the methods below are defined in the 32 bit and 64 bit branches but not used
@@ -340,7 +347,6 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsSetLastError(ulErrCode as DWORD , pucDetails as string ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetPacketSize(hConnect as Intptr, usPacketLength as WORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetProperty(hObj as Intptr, ulOperation as DWORD , ulValue as DWORD ) as DWORD 
-		PUBLIC STATIC EXTERN METHOD AdsSetProperty90(hObj as Intptr, ulOperation as DWORD , uqValue as UINT64 ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetRecordPartial(hObj as Intptr, pucRec as string , ulLen as DWORD ) as DWORD 
         PUBLIC STATIC EXTERN METHOD AdsSetTableCharType(hTbl as Intptr, usCharType as WORD ) as DWORD 
 		PUBLIC STATIC EXTERN METHOD AdsSetTimeStampRaw(hObj as Intptr, lFieldOrdinal as DWORD , pucBuf ref UINT64 , ulLen as DWORD ) as DWORD 

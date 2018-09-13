@@ -1790,7 +1790,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE64.AdsGetFieldDecimals(hTable, lFieldOrdinal, OUT pusDecimals)
             ENDIF
             
-        PUBLIC STATIC METHOD AdsGetFieldName(hTable AS IntPtr , usFld AS WORD , [IN] [OUT] strName AS StringBuilder , pusBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetFieldName(hTable AS IntPtr , usFld AS WORD , [IN] [OUT] strName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetFieldName(hTable, usFld, strName, REF pusBufLen)
             ELSE
@@ -2003,13 +2003,7 @@ BEGIN NAMESPACE XSharp.ADS
             ELSE
                 RETURN ACE64.AdsSetLogical(hObj, strFldName, bValue)
             ENDIF
-        PUBLIC STATIC METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS DWORD , dwValue REF DWORD ) AS DWORD
-            IF Is32Bits
-                RETURN ACE32.AdsSetProperty90(hObj, ulOperation, REF dwValue)
-            ELSE
-                RETURN ACE64.AdsSetProperty90(hObj, ulOperation, REF dwValue)
-            ENDIF
-            
+               
         PUBLIC STATIC METHOD AdsReindex(hObject AS IntPtr) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsReindex(hObject)

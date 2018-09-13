@@ -17,7 +17,8 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat
 		VALUE := val
 		Digits := len
 		Decimals := dec
-		
+	OVERRIDE METHOD ToString() AS STRING
+        RETURN @@VALUE:ToString()
 END	STRUCTURE
 		
 /// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary> 
@@ -32,11 +33,15 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	/// <inheritdoc />
 	PROPERTY Value		AS DateTime GET DateTime{Year, Month, Day}
 	/// <inheritdoc />
-	PROPERTY IsEmpty	AS LOGIC GET Month != 0
+	PROPERTY IsEmpty	AS LOGIC GET Month == 0
 	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)
 		Year	:= nYear
 		Month   := nMonth
 		Day     := nDay
 		RETURN
-		
+	OVERRIDE METHOD ToString() AS STRING
+        IF IsEmpty
+            RETURN "    -  -  "
+        ENDIF
+        RETURN SELF:@@Value:ToString("yyyy-MM-dd")
 END STRUCTURE

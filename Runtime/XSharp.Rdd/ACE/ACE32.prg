@@ -670,7 +670,7 @@ INTERNAL STATIC EXTERN METHOD AdsGetFieldLength(hTable AS IntPtr , pucFldName AS
 INTERNAL STATIC EXTERN METHOD AdsGetFieldLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-INTERNAL STATIC EXTERN METHOD AdsGetFieldName(hTable AS IntPtr , usFld AS WORD , [IN] [OUT] pucName AS StringBuilder , pusBufLen REF WORD ) AS DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldName(hTable AS IntPtr , usFld AS WORD , [IN] [OUT] pucName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 
 [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 INTERNAL STATIC EXTERN METHOD AdsGetFieldNum(hTable AS IntPtr , pucFldName AS STRING , pusNum OUT WORD ) AS DWORD 
@@ -1459,7 +1459,7 @@ INTERNAL STATIC EXTERN METHOD AdsGetDataLength(hTable AS IntPtr , lFieldOrdinal 
 INTERNAL STATIC EXTERN METHOD AdsSetIndexDirection(hIndex AS IntPtr ,  usReverseDirection AS WORD) AS DWORD 
 
 [DllImport("ace32.dll", CharSet := CharSet.Ansi, EntryPoint := "AdsSetProperty90")];
-INTERNAL STATIC EXTERN METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS DWORD , uqValue REF DWORD ) AS DWORD
+INTERNAL STATIC EXTERN METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS WORD , uqValue REF DWORD ) AS DWORD
 
 
 END CLASS

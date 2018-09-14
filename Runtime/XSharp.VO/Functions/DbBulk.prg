@@ -64,13 +64,13 @@ FUNCTION __DBFLEDIT(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY
 	n   := Len(aNames)
 	
 	FOR i := 1 TO n
-		AAdd(aNew, WithoutAlias(AllTrim(aNames[i])))
+		AAdd(aNew, Db.WithoutAlias(AllTrim(aNames[i])))
 	NEXT
 	
-	aNames := aNew
-	
+	aNames  := aNew
+	cName   := ""
 	aNew    := {}
-	cobScan   := {|aFld| aFld[DBS_NAME] == cName}
+	cobScan := {|aFld| aFld[DBS_NAME] == cName}
 	
 	FOR i := 1 TO n
 		cName := aNames[i]
@@ -148,6 +148,8 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 	LOCAL lAnsi         AS LOGIC
 	
 	lAnsi  := SetAnsi()
+    lRetCode := FALSE
+    siFrom := 0
 	TRY	
 		siTo := VODBGetSelect()
 		IF !Used()
@@ -269,8 +271,6 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	LOCAL siPos         AS DWORD
 	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
-	LOCAL oError        AS USUAL
-	LOCAL uErrBlock     AS USUAL
 	LOCAL lAnsi         AS LOGIC
 	LOCAL lDbfAnsi      AS LOGIC
 	
@@ -323,13 +323,13 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 	LOCAL siTo          AS DWORD
 	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
-	LOCAL oError        AS USUAL
 	LOCAL lAnsi         AS LOGIC
 	LOCAL lDbfAnsi      AS LOGIC
 	
 	lAnsi    := SetAnsi()
 	
 	siFrom   := VODBGetSelect()
+    siTo    := 0    
 	lRetCode := .F.
 	
 	
@@ -461,7 +461,7 @@ FUNCTION DBCOPYDELIM     (cFile, cDelim, aFields,   ;
 	lAnsi  := SetAnsi()
 	
 	siFrom := VODBGetSelect()
-	
+	siTo   := 0
 	TRY
 		
 		IF !Used()
@@ -522,6 +522,7 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
 	
 	lAnsi  := SetAnsi()
 	siFrom := VODBGetSelect()
+    siTo   := 0
 	TRY
 		
 		IF !Used()
@@ -588,7 +589,8 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 	IF IsNil(uCobFor)
 		uCobFor := {|| .T.}
 	ENDIF
-	
+	siTo   := 0
+    siFrom1 := 0
 	TRY
 		
 		siFrom1 := VODBGetSelect()
@@ -681,16 +683,14 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL aStruct       AS ARRAY
-	LOCAL oError        AS USUAL
 	LOCAL lRetCode      AS LOGIC
 	LOCAL fnFieldNames  AS DbFieldNames
 	LOCAL fnSortNames   AS DbFieldNames
-	LOCAL uErrBlock     AS USUAL
 	LOCAL cRdd 			AS STRING
 	
 	
 	siFrom := VODBGetSelect()
-	
+	siTo   := 0
 	DEFAULT(REF lRest, .F.)
 	
 	TRY
@@ -780,11 +780,8 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	LOCAL aNum          AS ARRAY
 	LOCAL lSomething    AS LOGIC
 	LOCAL kEval         AS USUAL
-	LOCAL oError        AS USUAL
-	LOCAL lRetCode      AS LOGIC
+	LOCAL lRetCode  := FALSE   AS LOGIC
 	LOCAL fldNames      AS DbFieldNames
-	LOCAL uErrBlock     AS USUAL
-	
 	
 	IF IsNil(uCobWhile)
 		uCobWhile := {|| .T.}
@@ -799,7 +796,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	IF IsNil(lRest)
 		lRest := .F.
 	ENDIF
-	
+	siTo   := 0
 	
 	IF !IsNil(nRec)
 		DbGoto(nRec)
@@ -821,7 +818,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	aFldNum := {}
 	
 	n := Len(AFields)
-	
+	siTo   := 0
 	FOR i := 1 TO n
 		AAdd(aFldNum, FieldPos( AllTrim(AFields[i]) ) )
 	NEXT
@@ -916,7 +913,6 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 		THROW e
 	END TRY
 	
-	ErrorBlock(uErrBlock)
 	
 	RETURN (lRetCode)
 
@@ -932,7 +928,7 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 	LOCAL kEval         AS USUAL
 	LOCAL lRetCode      AS LOGIC
 	
-	
+	siTo := VODBGetSelect()
 	IF (lRand == NIL)
 		lRand := .F.
 	ENDIF
@@ -949,7 +945,7 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 		
 		DbGotop()
 		
-		siTo := VODBGetSelect()
+		
 		
 		
 		siFrom := SELECT(cAlias)
@@ -1002,15 +998,7 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
-INTERNAL FUNCTION WithoutAlias(cName AS STRING) AS STRING 
-	cName   := SubStr(cName, At(">", cName) + 1 )
-	cName   := Trim(Upper(cName))
-	RETURN cName
+
+
 
 

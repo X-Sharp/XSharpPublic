@@ -57,6 +57,10 @@ CLASS DbFilterInfo
 		oClone:Optimized   := SELF:Optimized
 		oClone:Active	   := FALSE
 		RETURN oClone
+        
+    CONSTRUCTOR
+        SELF:Clear()
+        RETURN
 END CLASS 
 
 /// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>                 
@@ -390,10 +394,6 @@ STRUCTURE DbJoinField
     PUBLIC Area AS DWORD
     PUBLIC Pos  AS DWORD
 END STRUCTURE
-
-CLASS RddList
-END CLASS
-
 
 CLASS DbFieldNames
     PUBLIC fields AS STRING[]

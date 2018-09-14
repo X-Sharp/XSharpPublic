@@ -3,6 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+USING XSharp.RDD.Support
+
+
 
 BEGIN NAMESPACE XSharp.RDD
 	/// <summary>DBFNTX RDD. For DBF/DBT/NTX.</summary>
@@ -132,7 +135,7 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 			
-		PUBLIC METHOD GoTo(record AS Int ) AS LOGIC
+		PUBLIC METHOD GoTo(record AS INT ) AS LOGIC
 			RETURN SUPER:GoTo(record)
 			
 			
@@ -145,14 +148,12 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 			
-			
-			
-		PUBLIC METHOD Skip( move AS LONG ) AS LOGIC
+		PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
 			BEGIN LOCK SELF
 				IF SELF:_ntxList:CurrentOrder != NULL
-					RETURN SELF:_ntxList:CurrentOrder:Skip(move)
+					RETURN SELF:_ntxList:CurrentOrder:SkipRaw(move)
 				ELSE
-					RETURN SUPER:Skip(move)
+					RETURN SUPER:SkipRaw(move)
 				ENDIF
 			END LOCK
 			

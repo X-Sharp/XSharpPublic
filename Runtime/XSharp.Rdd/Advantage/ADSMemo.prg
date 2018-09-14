@@ -15,71 +15,75 @@ USING XSharp.RDD.Support
 
 CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
     PRIVATE oRDD AS ADSRDD 
-
-	CONSTRUCTOR(oArea AS WorkArea)
-		SUPER(oArea)
-        oRdd := oArea ASTYPE ADSRDD
-
-	// Read & Write		
-
-	/// <inheritdoc />
-	VIRTUAL METHOD Flush() 			AS LOGIC
-		RETURN oRDD:Flush()
-
     
-	/// <inheritdoc />
-	VIRTUAL METHOD GetValueLength(nFldPos AS INT) AS INT
-        LOCAL aFormat  AS CHAR[]
-        LOCAL wLength  AS WORD
-        LOCAL dwLength AS DWORD
-        nFldPos += 1
-        IF oRDD:_Fields[nFldPos ]:fieldType == DbFieldType.Memo
-            oRDD:ACECALL(ACE.AdsGetFieldLength(oRDD:_Table, (DWORD)(nFldPos + 1) , OUT dwLength))
-            RETURN (INT) dwLength
-        ELSE
-            IF oRDD:_Fields[nFldPos]:fieldType == DbFieldType.Date
-                aFormat := CHAR[]{ACE.ADS_MAX_DATEMASK}
-                wlength := (WORD)aFormat:Length 
-                oRDD:ACECALL(ACE.AdsGetDateFormat(aFormat, REF wlength))
-                RETURN (INT) wLength
-            ELSE
-                RETURN oRDD:_Fields[nFldPos]:Length
-            ENDIF
+    CONSTRUCTOR(oArea AS WorkArea)
+        SUPER(oArea)
+        oRdd := oArea ASTYPE ADSRDD
+    #region Helpers    
+    PROPERTY Table AS IntPtr GET oRDD:_Table
+    
+    PRIVATE METHOD ACECall(nResult AS DWORD) AS LOGIC
+        RETURN SELF:oRDD:AceCall(nResult)
+    PRIVATE METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
+        SELF:oRDD:UnSupported(strFunctionName )
+        RETURN FALSE
+    #endregion        
+    /// <summary>This method is not supported by the AdsMemo class </summary>
+    #region Supported
+    VIRTUAL METHOD Flush() 			AS LOGIC
+        RETURN oRDD:Flush()
+        
+        /// <inheritdoc />
+    METHOD GetValueLength(nFldPos AS LONG) AS LONG
+        LOCAL fld AS RddFieldInfo
+        LOCAL dwLen AS DWORD
+        LOCAL dwField := (DWORD) nFldPos +1 AS DWORD
+        fld := SELF:oRDD:_Fields[nFldPos]
+        IF fld:FieldType == DbFieldType.Memo
+            SELF:ACECALL(ACE.AdsGetFieldLength(SELF:Table, dwField,OUT dwLen))
+            RETURN (LONG) dwLen
+        ELSEIF fld:FieldType == DbFieldType.Date
+            LOCAL chars AS CHAR[]
+            chars := CHAR[]{ACE.ADS_MAX_DATEMASK+1}
+            LOCAL wLen := (WORD) chars:Length AS WORD
+            SELF:ACECALL(ACE.AdsGetDateFormat(chars, REF wLen))
+            RETURN wLen
         ENDIF
-
+        RETURN fld:Length
+        #endregion
     #region Unsupported
-	/// <inheritdoc />
+    /// <summary>This method is not supported by the AdsMemo class </summary>
     VIRTUAL METHOD CloseMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
-	    RETURN oRDD:Unsupported("CloseMemFile")
-
-	/// <inheritdoc />
+        RETURN SELF:Unsupported("CloseMemFile")
+        
+        /// <summary>This method is not supported by the AdsMemo class </summary>
     VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
-	    RETURN oRDD:Unsupported("CreateMemFile")
-
-	/// <inheritdoc />
-	VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
-	    RETURN oRDD:Unsupported("GetValue")
-
-	/// <inheritdoc />
-	VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-	    RETURN oRDD:Unsupported("GetValueFile")
-
-	/// <inheritdoc />
+        RETURN SELF:Unsupported("CreateMemFile")
+        
+        /// <summary>This method is not supported by the AdsMemo class </summary>
+    VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
+        RETURN SELF:Unsupported("GetValue")
+        
+        /// <summary>This method is not supported by the AdsMemo class </summary>
+    VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        RETURN SELF:Unsupported("GetValueFile")
+        
+        /// <summary>This method is not supported by the AdsMemo class </summary>
     VIRTUAL METHOD OpenMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
-	    RETURN oRDD:Unsupported("OpenMemFile")
-
-	/// <inheritdoc />
-	VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-        RETURN oRDD:Unsupported("PutValue")
-
-	/// <inheritdoc />
-	VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        RETURN SELF:Unsupported("OpenMemFile")
+        
+        /// <summary>This method is not supported by the AdsMemo class </summary>
+    VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+        RETURN SELF:Unsupported("PutValue")
+        
+        /// <summary>This method is not supported by the AdsMemo class </summary>
+    VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
         // Not needed for Advantage. Handled externally
-	    RETURN oRDD:Unsupported("PutValueFile")
-
-    #endregion
-
+        RETURN SELF:Unsupported("PutValueFile")
+        
+        #endregion
+        
 END CLASS

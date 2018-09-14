@@ -34,60 +34,6 @@ FUNCTION __DBAvg(siValue AS LONG) AS LONG
 	
 	RETURN siRet
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
-FUNCTION __DBFLEDIT(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY 
-	
-	LOCAL aNew      AS ARRAY
-	LOCAL cobScan   AS CODEBLOCK
-	LOCAL cName     AS STRING
-	LOCAL n, i, j   AS DWORD
-	LOCAL lMatch	AS LOGIC
-	
-	
-	IF Empty(aNames)
-		RETURN (aStruct)
-	ENDIF
-	
-	//	UH 11/30/1998
-	IF Empty(aMatch)
-		lMatch := .F.
-	ELSE
-		lMatch := .T.
-	ENDIF
-	
-	aNew:= {}
-	n   := Len(aNames)
-	
-	FOR i := 1 TO n
-		AAdd(aNew, Db.WithoutAlias(AllTrim(aNames[i])))
-	NEXT
-	
-	aNames  := aNew
-	cName   := ""
-	aNew    := {}
-	cobScan := {|aFld| aFld[DBS_NAME] == cName}
-	
-	FOR i := 1 TO n
-		cName := aNames[i]
-		j := AScan(aStruct, cobScan)
-		
-		IF j > 0
-			IF lMatch
-				IF aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
-					AAdd(aNew, aStruct[j])
-				ENDIF
-			ELSE
-				AAdd(aNew, aStruct[j])
-			ENDIF
-		ENDIF
-	NEXT
-	
-	RETURN aNew
 
 /// <summary>
 /// </summary>
@@ -156,7 +102,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 			BREAK Db.DBCMDError()
 		ENDIF
 		
-		IF Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) )
+		IF Empty( aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY) )
 			BREAK Db.ParamError(ARRAY, 2)
 		ENDIF
 		
@@ -176,7 +122,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 			SetAnsi(.T.)
 		ENDIF
 		
-		IF !Empty(aStruct := __DBFLEDIT(aStruct, aFields, aMatch))
+		IF !Empty(aStruct := Db.FieldList(aStruct, aFields, aMatch))
 			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		ENDIF
 		
@@ -220,7 +166,7 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 		
 		siTo := VODBGetSelect()
 		
-		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) ))
+		IF (Empty( aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY) ))
 			BREAK Db.ParamError(ARRAY, 3)
 		ENDIF
 		
@@ -280,7 +226,7 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	TRY		
 		siTo := VODBGetSelect()
 		
-		IF (Empty( aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) ))
+		IF (Empty( aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY) ))
 			THROW Db.ParamError(ARRAY, 2)
 		ENDIF
 		
@@ -355,7 +301,7 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 			
 			lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cFile, DbInfo(DBI_FULLPATH) )
 		ELSE
-			IF ( Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY)) )
+			IF ( Empty(aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY)) )
 				BREAK Db.ParamError(ARRAY, 2)
 			ENDIF
 			
@@ -447,9 +393,7 @@ FUNCTION DBFileCopy( hfFrom, cFile, cFullPath ) AS LOGIC CLIPPER
 
 
 
-FUNCTION DBCOPYDELIM     (cFile, cDelim, aFields,   ;
-	uCobFor, uCobWhile, nNext,;
-	nRec, lRest                )   AS LOGIC CLIPPER
+FUNCTION DBCOPYDELIM (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -468,7 +412,7 @@ FUNCTION DBCOPYDELIM     (cFile, cDelim, aFields,   ;
 			BREAK Db.DBCMDError()
 		ENDIF
 		
-		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY))
+		IF Empty(aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY))
 			BREAK Db.ParamError(ARRAY, 3)
 		ENDIF
 		
@@ -529,7 +473,7 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
 			BREAK Db.DBCMDError()
 		ENDIF
 		
-		IF Empty(aStruct := __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY))
+		IF Empty(aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY))
 			BREAK Db.ParamError(ARRAY, 2)
 		ENDIF
 		
@@ -664,18 +608,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION DbJoinAppend(nSelect AS DWORD, list AS DbJoinList)   AS LOGIC        
-	LOCAL lRetCode AS LOGIC
-	lRetCode := VODBJoinAppend(nSelect, list)
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbJoinAppend")
-	ENDIF
-	RETURN lRetCode
-
-
-
-
-
-
+	RETURN DbDo("DbJoinAppend", VODBJoinAppend(nSelect, list))
 
 
 FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS LOGIC CLIPPER
@@ -742,7 +675,6 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
 	
 	LOCAL fldNames  AS DbFieldNames
-	LOCAL lRetCode  AS LOGIC
 	
 	IF !IsNil(uCobWhile)
 		lRest := .T.
@@ -754,13 +686,7 @@ FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC 
 	
 	fldNames := Db.AllocFieldNames(aStru)
 	
-	lRetCode := VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest)
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError(#DbTrans)
-	ENDIF
-	
-	RETURN lRetCode
+	RETURN DbDo("DbTrans", VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest))
 
 
 

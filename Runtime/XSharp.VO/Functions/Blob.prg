@@ -11,12 +11,7 @@
 /// <returns>
 /// </returns>
 FUNCTION BLOBDirectExport(nPointer, cTargetFile, nMode) AS LOGIC CLIPPER
-	LOCAL       lRet AS LOGIC
-	lRet := DbInfo( BLOB_DIRECT_EXPORT, <OBJECT>{ nPointer, cTargetFile, nMode } )
-	IF !lRet
-		DoError(#BLOBDirectExport)
-	ENDIF
-	RETURN lRet
+	RETURN DbDo("BLOBDirectExport", DbInfo( BLOB_DIRECT_EXPORT, <OBJECT>{ nPointer, cTargetFile, nMode } ))
 	
 	
 	
@@ -51,14 +46,8 @@ FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBExport (nFieldPos, cFileName, nMode)  AS LOGIC CLIPPER
-	LOCAL lRet          AS LOGIC
 	DbInfo( BLOB_NMODE, nMode )
-	lRet := VODBFileGet( nfieldPos, cFileName )
-	IF !lRet
-		DoError(#BLOBExport)
-	ENDIF
-	RETURN lRet
-
+  	RETURN DbDo("BLOBExport", VODBFileGet( nfieldPos, cFileName ))
 
 /// <summary>
 /// </summary>
@@ -73,13 +62,7 @@ FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBImport (nFieldPos, cFileName)  AS LOGIC CLIPPER
-	LOCAL lRet      AS LOGIC
-	lRet := VODBFilePut( nFieldPos, cFileName )
-	IF !lRet
-		DoError(#BLOBImport)
-	ENDIF
-	RETURN lRet
-	
+	RETURN DbDo("BLOBImport", VODBFilePut( nFieldPos, cFileName ) )
 	
 	
 /// <summary>
@@ -110,7 +93,6 @@ FUNCTION BLOBRootPut(xblob) AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBRootUnlock()  AS USUAL STRICT
-	
 	RETURN DbInfo( BLOB_ROOT_UNLOCK )
 	
 
@@ -119,7 +101,5 @@ FUNCTION BLOBRootUnlock()  AS USUAL STRICT
 /// <returns>
 /// </returns>
 FUNCTION DBBLOBINFO(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
-	IF !VODBBlobInfo(nOrdinal, nPos, REF xNewVal)
-		DoError(#DBBLOBINFO)
-	ENDIF
+	DbDo("DBBLOBINFO", VODBBlobInfo(nOrdinal, nPos, REF xNewVal))
 	RETURN xNewVal

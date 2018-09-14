@@ -7,8 +7,6 @@
 USING XSharp.RDD
 USING XSharp.RDD.Support
 
-
-
 /// <summary>
 /// Return the alias of a specified work area as a symbol.
 /// </summary>
@@ -16,8 +14,7 @@ USING XSharp.RDD.Support
 /// <returns>
 /// </returns>
 FUNCTION VODBAliasSym(nArea AS DWORD) AS SYMBOL
-	THROW  NotImplementedException{}
-RETURN NULL_SYMBOL   
+    RETURN AsSymbol(VODbAlias(nArea))
 
 
 /// <summary>
@@ -27,9 +24,12 @@ RETURN NULL_SYMBOL
 /// <param name="ptrRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
+	LOCAL oRet := NULL AS OBJECT
+    LOCAL result AS LOGIC
+    result := VODBBlobInfo(nOrdinal, nPos, REF oRet)
+    ptrRet := oRet
+    RETURN result	  
 
 
 /// <summary>
@@ -44,8 +44,22 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBEval(uBlock AS USUAL,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    LOCAL cbFor   := NULL AS ICodeBlock
+    LOCAL cbWhile := NULL AS ICodeBlock
+    LOCAL cbEval   := NULL AS ICodeBlock
+    LOCAL oFor    := uCobFor   AS OBJECT
+    LOCAL oWhile  := uCobWhile AS OBJECT
+    LOCAL oEval   := uBlock AS OBJECT
+    IF oFor IS ICodeBlock
+        cbFor := (ICodeBlock) oFor
+    ENDIF
+    IF oWhile IS ICodeBlock
+        cbWhile := (ICodeBlock) oWhile
+    ENDIF
+    IF oEval IS ICodeBlock
+        cbEval := (ICodeBlock) oEval
+    ENDIF
+    RETURN VODbEval(cbEval, cbFor, cbWhile, (OBJECT) nNext, (OBJECT) nRecno, lRest)
 
 
 /// <summary>
@@ -56,9 +70,13 @@ RETURN FALSE
 /// <param name="ptrRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,VALUE REF USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
+	LOCAL oRet := NULL AS OBJECT
+    LOCAL result AS LOGIC
+    result := VODBFieldInfo(nOrdinal, nPos, REF oRet)
+    ptrRet := oRet
+    RETURN result	
+
 
 /// <summary>
 /// Set the value of a specified database field.
@@ -68,8 +86,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    RETURN VODBFieldPut(nPos, (OBJECT) xValue)
 
 
 
@@ -80,8 +97,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBGoto(uRecId AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    RETURN VODBGoto((OBJECT) uRecID)
 
 /// <summary>
 /// Retrieve information about a work area.
@@ -91,8 +107,11 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+	LOCAL oRet := NULL AS OBJECT
+    LOCAL result AS LOGIC
+    result := VODbInfo(nOrdinal, REF oRet)
+    ptrRet := oRet
+    RETURN result
 
 
 /// <summary>
@@ -106,8 +125,17 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBLocate(uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS LONG,uRecId AS USUAL,lRest AS LOGIC) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    LOCAL cbFor   := NULL AS ICodeBlock
+    LOCAL cbWhile := NULL AS ICodeBlock
+    LOCAL oFor    := uCobFor   AS OBJECT
+    LOCAL oWhile  := uCobWhile AS OBJECT
+    IF oFor IS ICodeBlock
+        cbFor := (ICodeBlock) oFor
+    ENDIF
+    IF oWhile IS ICodeBlock
+        cbWhile := (ICodeBlock) oWhile
+    ENDIF
+    RETURN VODbLocate(cbFor, cbWhile, nNext, (OBJECT) uRecID, lRest)
 
 
 
@@ -123,8 +151,15 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdCreate(cBagName AS STRING,uOrder AS USUAL,cExpr AS STRING,uCobExpr AS USUAL,lUnique AS LOGIC,ptrCondInfo AS DbOrderCondInfo) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    LOCAL cbKey AS ICodeBlock
+    LOCAL oKey AS OBJECT
+    oKey := uCobExpr
+    IF oKey IS ICodeBlock
+        cbKey := (ICodeBlock) oKey
+    ELSE
+        cbKey := NULL
+    ENDIF
+RETURN VODbOrdCreate(cBagName, (OBJECT) uOrder, cExpr, cbKey, lUnique, ptrCondInfo)
 
 /// <summary>
 /// Remove an order from an open index file.
@@ -134,8 +169,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    RETURN VODbOrdDestroy(cOrdBag, (OBJECT) uOrder)
 
 /// <summary>
 /// Return information about index files and the orders in them.
@@ -143,13 +177,15 @@ RETURN FALSE
 /// <param name="nOrdinal"></param>
 /// <param name="cBagName"></param>
 /// <param name="uOrder"></param>
-/// <param name="ptrRet"></param>
+/// <param name="uRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS USUAL,ptrRet REF OBJECT) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
-
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS USUAL,uRet REF USUAL) AS LOGIC
+    LOCAL oRet := NULL AS OBJECT   
+    LOCAL result AS LOGIC
+    result := VODbOrderInfo(nOrdinal, cBagName, (OBJECT) uOrder, REF oRet)
+    uRet := oRet
+    RETURN result
 
 /// <summary>
 /// Open an index file and add specified orders to the order list in a work area.
@@ -159,8 +195,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBOrdListAdd(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    RETURN VODbOrdListAdd(cOrdBag, (OBJECT) uOrder)
 
 /// <summary>
 /// Remove orders from the order list in a work area and close associated index files.
@@ -169,9 +204,8 @@ RETURN FALSE
 /// <param name="uOrder"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBOrdListClear(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VoDbOrdListClear(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
+    RETURN VoDbOrdListClear(cOrdBag, (OBJECT) uOrder)
 
 
 /// <summary>
@@ -182,19 +216,8 @@ RETURN FALSE
 /// <param name="pszOrder"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder REF STRING) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
-
-
-/// <summary>
-/// Return the current record number.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION VODBRecno() AS USUAL
-	THROW  NotImplementedException{}
-RETURN NIL   
+FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS LOGIC
+    RETURN VoDbOrdSetFocus(cOrdBag, (OBJECT) uOrder, OUT cOrder)
 
 
 /// <summary>
@@ -205,18 +228,13 @@ RETURN NIL
 /// <param name="ptrRet"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,ptrRet REF OBJECT) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LOGIC
+    LOCAL oRet AS OBJECT
+    LOCAL lResult AS LOGIC
+    lResult := VODBRecordInfo(nOrdinal, (OBJECT) uRecID, REF oRet)
+    uRet := oRet
+    RETURN lResult
 
-/// <summary>
-/// </summary>
-/// <param name="pszRecord"></param>
-/// <returns>
-/// </returns>
-FUNCTION VODBRecordPut(pszRecord AS __Psz) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
 
 /// <summary>
 /// Return the linking expression of a specified relation.
@@ -225,9 +243,12 @@ RETURN FALSE
 /// <param name="pszRel"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBRelation(nPos AS DWORD,pszRel AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VODBRelation(nPos AS DWORD, uRel REF USUAL) AS LOGIC
+    LOCAL cRel := "" AS STRING
+    LOCAL lResult AS LOGIC
+    lResult := VODBRelation(nPos, REF cRel)
+    uRel := cRel
+    RETURN lResult
 
 /// <summary>
 /// Lock the current record.
@@ -236,9 +257,8 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBRlock(uRecId AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
-
+    RETURN VoDbRLock((OBJECT) uRecId)
+    
 /// <summary>
 /// Move to the record having the specified key value.
 /// </summary>
@@ -247,8 +267,7 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSeek(xValue AS USUAL,lSoft AS LOGIC) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+RETURN VODBSeek( (OBJECT) xValue, lSoft)
 
 /// <summary>
 /// Select a new work area and retrieve the current work area.
@@ -257,9 +276,12 @@ RETURN FALSE
 /// <param name="riOld"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBSelect(nNew AS DWORD,riOld AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VODBSelect(nNew AS DWORD,riOld REF USUAL) AS LOGIC
+	LOCAL nOld := 0 AS DWORD
+    LOCAL lResult AS LOGIC
+    lResult := VODBSelect(nNew, REF nOld)
+    riOld := nOld
+    RETURN lResult
 
 /// <summary>
 /// Set a filter condition.
@@ -269,8 +291,13 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSetFilter(uCobFilter AS USUAL,cFilter AS STRING) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    LOCAL cbFilter := NULL AS ICodeBlock
+    LOCAL oFilter  :=  uCobFilter AS OBJECT
+    IF oFilter IS ICodeBlock
+        cbFilter := (ICodeBlock) oFilter
+    ENDIF
+    RETURN VODBSetFilter(cbFilter, cFilter)
+
 
 
 /// <summary>
@@ -280,8 +307,13 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSetLocate(uCobFor AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    LOCAL cbFor := NULL AS ICodeBlock
+    LOCAL oFor := uCobFor AS OBJECT
+    IF oFor IS ICodeBlock
+        cbFor := (ICodeBlock) oFor
+    ENDIF
+    RETURN VODBSetLocate(cbFor)
+  
 
 /// <summary>
 /// Relate a specified work area to the current work area.
@@ -292,8 +324,13 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS USUAL,cKey AS STRING) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    LOCAL cbKey := NULL AS ICodeBlock
+    LOCAL oKey := uCobKey AS OBJECT
+    IF oKey IS ICodeBlock
+        cbKey := (ICodeBlock) oKey
+    ENDIF
+	RETURN VODbSetRelation(cAlias, cbKey, cKey)
+
 
 
 /// <summary>
@@ -308,11 +345,18 @@ RETURN FALSE
 /// <param name="fnSortNames"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS USUAL,uCobWhile AS USUAL,;
-	nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
-
+FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS USUAL,uCobWhile AS USUAL, nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
+    LOCAL cbFor   := NULL AS ICodeBlock
+    LOCAL cbWhile := NULL AS ICodeBlock
+    LOCAL oFor    := uCobFor   AS OBJECT
+    LOCAL oWhile  := uCobWhile AS OBJECT
+    IF oFor IS ICodeBlock
+        cbFor := (ICodeBlock) oFor
+    ENDIF
+    IF oWhile IS ICodeBlock
+        cbWhile := (ICodeBlock) oWhile
+    ENDIF
+    RETURN VODbSort(nDest, fnNames, cbFor, cbWhile, (OBJECT) nNext, (OBJECT) nRecno, lRest, fnSortNames)
 
 /// <summary>
 /// Select a new work area by specifying its alias as a symbol and return the number of the current work area.
@@ -343,10 +387,18 @@ FUNCTION VODBSymSelect(symAlias AS SYMBOL) AS INT
 /// <param name="lRest"></param>
 /// <returns>
 /// </returns>
-FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS USUAL,uCobWhile AS USUAL,;
-	nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS USUAL,uCobWhile AS USUAL, nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
+    LOCAL cbFor   := NULL AS ICodeBlock
+    LOCAL cbWhile := NULL AS ICodeBlock
+    LOCAL oFor    := uCobFor   AS OBJECT
+    LOCAL oWhile  := uCobWhile AS OBJECT
+    IF oFor IS ICodeBlock
+        cbFor := (ICodeBlock) oFor
+    ENDIF
+    IF oWhile IS ICodeBlock
+        cbWhile := (ICodeBlock) oWhile
+    ENDIF
+    RETURN VODBTrans(nDest, fldNames, cbFor, cbWhile, (OBJECT) nNext, (OBJECT) nRecno, lRest)
 
 /// <summary>
 /// Release all locks for a work area.
@@ -355,6 +407,6 @@ RETURN FALSE
 /// <returns>
 /// </returns>
 FUNCTION VODBUnlock(uRecno AS USUAL) AS LOGIC
-	THROW  NotImplementedException{}
-RETURN FALSE   
+    RETURN VODbUnLock((OBJECT) uRecno)
+
 

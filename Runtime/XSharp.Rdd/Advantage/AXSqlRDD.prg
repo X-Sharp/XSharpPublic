@@ -7,19 +7,19 @@
 USING System
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-
+USING XSharp.RDD.Support
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC m_hStatement AS System.IntPtr
 
 	/// <summary>Create instande of RDD </summary>
     CONSTRUCTOR()
         SELF:m_hStatement := System.IntPtr.Zero
-        SUPER:m_strDriver := "Advantage.AXSQLRDD"
+        SUPER:_Driver := "Advantage.AXSQLRDD"
 
 	/// <inheritdoc />
     VIRTUAL PROPERTY SysName AS STRING GET typeof(AXSQLRDD):ToString()
 	/// <inheritdoc />
-    VIRTUAL METHOD Close() AS Logic
+    VIRTUAL METHOD Close() AS LOGIC
         IF (! SUPER:Close())
             RETURN FALSE
         ENDIF
@@ -31,18 +31,18 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
 
     PRIVATE METHOD ACEORDER() AS System.IntPtr
-        RETURN SUPER:m_hTable
+        RETURN SUPER:_Table
 
     PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:m_hStatement
 
 	/// <inheritdoc />
-    VIRTUAL METHOD Info(uiOrdinal AS Int, oNewValue as Object) AS Object
+    VIRTUAL METHOD Info(uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
         IF (uiOrdinal == DBInfo.DBI_GET_ACE_STMT_HANDLE )
-            Return SELF:m_hStatement
+            RETURN SELF:m_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 	/// <inheritdoc />
-    VIRTUAL METHOD Open(lpOpenInfo AS DBOPENINFO) AS Logic
+    VIRTUAL METHOD Open(lpOpenInfo AS DBOPENINFO) AS LOGIC
         //LOCAL sName AS string
         //LOCAL usual3 AS Usual
         //LOCAL usual AS Usual
@@ -148,20 +148,20 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 //
             //END TRY
         //ENDIF
-        //IF (! SUPER:ACECALL(ACE.AdsExecuteSQLDirect(SELF:m_hStatement, sName, @(SELF:m_hTable))))
+        //IF (! SUPER:ACECALL(ACE.AdsExecuteSQLDirect(SELF:m_hStatement, sName, @(SELF:_Table))))
             ////
             //SUPER:PrintCallTrace(<string>{"AdsExecuteSQLDirect failed"})
             //SELF:Close()
             //RDDBase.SetNetErr(TRUE)
             //RETURN FALSE
         //ENDIF
-        //IF (! (SUPER:m_hTable != System.IntPtr.Zero))
+        //IF (! (SUPER:_Table != System.IntPtr.Zero))
             ////
             //RETURN SELF:Close()
         //ENDIF
         //pucName := Char[]{261}
         //length := (Word)pucName:Length 
-        //IF (! SUPER:ACECALL(ACE.AdsGetTableType(SUPER:m_hTable, @(SELF:m_usTableType))))
+        //IF (! SUPER:ACECALL(ACE.AdsGetTableType(SUPER:_Table, @(SELF:m_usTableType))))
             ////
             //SELF:Close()
             //RDDBase.SetNetErr(TRUE)
@@ -173,7 +173,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             //RDDBase.SetNetErr(TRUE)
             //RETURN FALSE
         //ENDIF
-        //IF (ACE.AdsGetTableFilename(SUPER:m_hTable, 3, pucName, @(length)) == 0)
+        //IF (ACE.AdsGetTableFilename(SUPER:_Table, 3, pucName, @(length)) == 0)
             ////
             //SUPER:m_dbfName := string{pucName, 0, length}
             //SUPER:m_fileName := SUPER:m_dbfName
@@ -190,40 +190,40 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         //Functions.Default(@(usual2), "")
         //SUPER:m_alias := Functions.__ConstructUniqueAlias(usual2)
         //RDDBase.aliases[((Long)RuntimeState.get_CurrentWorkarea()  - 1) + 1] := SUPER:m_alias
-        //ACE.AdsGetIndexHandle(SUPER:m_hTable, null, @(SELF:m_hIndex))
+        //ACE.AdsGetIndexHandle(SUPER:_Table, null, @(SELF:m_hIndex))
         RETURN SUPER:RecordMovement()
  
 
 	/// <inheritdoc />
-   VIRTUAL METHOD RecInfo(iRecID AS Object, uiOrdinal AS Int, oNewValue as OBJECT) AS OBJECT
-    LOCAL isLive AS Byte
-    LOCAL recNum AS DWord
-    LOCAL dwCRC AS DWord
-    LOCAL dwCRC2 AS DWord
+   VIRTUAL METHOD RecInfo(iRecID AS OBJECT, uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+    LOCAL isLive AS BYTE
+    LOCAL recNum AS DWORD
+    LOCAL dwCRC AS DWORD
+    LOCAL dwCRC2 AS DWORD
     IF uiOrdinal != DBRecordInfo.DBRI_UPDATED  
         RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
     ENDIF
-    IF ACEUNPUB.AdsSqlPeekStatement(SUPER:m_hTable, out isLive) == 0 .AND. isLive == 0
-        SUPER:ACECALL(ACE.AdsGetRecordNum(SUPER:m_hTable, ACE.ADS_IGNOREFILTERS, out recNum))
-        SUPER:ACECALL(ACE.AdsGetRecordCRC(SUPER:m_hTable, out dwCRC, 1))
-        ACE.AdsCloseTable(SUPER:m_hTable)
-        SUPER:m_hTable := System.IntPtr.Zero
-        SUPER:m_hIndex := System.IntPtr.Zero
-        SUPER:ACECALL(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:m_hTable))
-        IF ACE.AdsGotoRecord(SUPER:m_hTable, recNum) == 0
-            IF ACE.AdsGetRecordCRC(SUPER:m_hTable, out dwCRC2, 1) == 0 .AND. dwCRC == dwCRC2
+    IF ACEUNPUB.AdsSqlPeekStatement(SUPER:_Table, OUT isLive) == 0 .AND. isLive == 0
+        SUPER:ACECALL(ACE.AdsGetRecordNum(SUPER:_Table, ACE.ADS_IGNOREFILTERS, OUT recNum))
+        SUPER:ACECALL(ACE.AdsGetRecordCRC(SUPER:_Table, OUT dwCRC, 1))
+        ACE.AdsCloseTable(SUPER:_Table)
+        SUPER:_Table := System.IntPtr.Zero
+        SUPER:_Index := System.IntPtr.Zero
+        SUPER:ACECALL(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:_Table))
+        IF ACE.AdsGotoRecord(SUPER:_Table, recNum) == 0
+            IF ACE.AdsGetRecordCRC(SUPER:_Table, OUT dwCRC2, 1) == 0 .AND. dwCRC == dwCRC2
                 SUPER:RecordMovement()
                 SUPER:_Found := TRUE
             ELSE
                 SUPER:RecordMovement()
             ENDIF
         ELSE
-            SUPER:ACECALL(ACE.AdsGotoTop(SUPER:m_hTable))
+            SUPER:ACECALL(ACE.AdsGotoTop(SUPER:_Table))
             SUPER:RecordMovement()
         ENDIF
-        SUPER:ACECALL(ACE.AdsGetIndexHandle(SUPER:m_hTable, null, OUT SELF:m_hIndex))
+        SUPER:ACECALL(ACE.AdsGetIndexHandle(SUPER:_Table, NULL, OUT SELF:_Index))
     ELSE
-        SUPER:ACECALL(ACE.AdsRefreshRecord(SUPER:m_hTable))
+        SUPER:ACECALL(ACE.AdsRefreshRecord(SUPER:_Table))
     ENDIF
     RETURN TRUE
 

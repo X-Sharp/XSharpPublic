@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DELIM RDD. For reading and writing delimited files.</summary>
 CLASS DELIM INHERIT Workarea  

@@ -4,19 +4,19 @@
 // See License.txt in the project root for license information.
 //
 
-using XSharp.ADS
-#ifdef NOTIMPLEMENTED 
+USING XSharp.ADS
 
-// Return the AXS locking status
+
+/// <summary>Return the AXS locking status.</summary>
 FUNCTION AX_AXSLocking( ) AS LOGIC 
-    RETURN AX_RddHelper(_SET_AXSLOCKING)
+    RETURN AX_RddHelper(_SET_AXSLOCKING, TRUE)
 
-// Return and set the AXS locking status
+/// <summary>Return and set the AXS locking status.</summary>
 FUNCTION AX_AXSLocking( bMode AS LOGIC) AS LOGIC 
-    RETURN AX_RddHelper(_SET_AXSLOCKING, bMode)
+    RETURN AX_RddHelper(_SET_AXSLOCKING, bMode, TRUE)
 
-
-FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC // copy a BLOB to a file
+/// <summary>copy a BLOB to a file.</summary>
+FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC 
     LOCAL hTable AS DWORD
     LOCAL ulRetCode AS DWORD
 
@@ -24,86 +24,107 @@ FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC // c
     ulRetCode := ACE.AdsBinaryToFile( hTable, cFieldName , cFileName )
     RETURN ulRetCode == 0 
 
-FUNCTION AX_File2BLOB( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC // copy a file into a BLOB
+/// <summary>copy a file into a BLOB.</summary>
+FUNCTION AX_File2BLOB( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC 
     LOCAL hTable AS DWORD
     LOCAL ulRetCode AS DWORD
-
     hTable := AX_GetAceTableHandle()
     ulRetCode := ACE.AdsFileToBinary( hTable, cFieldName , ACE.ADS_BINARY , cFileName )
     RETURN ulRetCode == 0 
 
-
-FUNCTION AX_GetAceIndexHandle( uIndexFile as OBJECT, uOrder as OBJECT) AS DWORD
-    // Returns an  index handle for the current workarea.  This handle can be used
-    // to call the Advantage Client Engine directly.
-    // Returns a 0 if there is a problem or if no index was found.
+/// <summary>Returns an  index handle for the current workarea.  This handle can be used
+/// to call the Advantage Client Engine directly.</summary>
+/// <returns> Returns a 0 if there is a problem or if no index was found..</returns>
+FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS DWORD
 
     // uIndexFile -- filename or NIL
     // uOrder -- order name, number, or NIL
-    RETURN (DWORD) DBORDERINFO( DBOI_GET_ACE_INDEX_HANDLE, uIndexFile, uOrder )
+    LOCAL oRet := NULL AS OBJECT
+    IF VoDbOrderInfo(DBOI_GET_ACE_INDEX_HANDLE, "", uOrder, REF oRet)
+        RETURN Convert.ToUint32(oRet)
+    ENDIF
+    RETURN 0
 
 
 
+/// <summary>Returns the statement handle for the current workarea.  This handle can be used
+/// to call the Advantage Client Engine directly.  Only for use with the AXSQL RDDs.</summary>
+/// <returns> Returns a 0 if there is a problem.</returns>
 FUNCTION AX_GetAceStmtHandle() AS DWORD
-    // Returns the statement handle for the current workarea.  This handle can be used
-    // to call the Advantage Client Engine directly.  Only for use with the AXSQL RDDs.
-    // Returns a 0 if there is a problem.
-    RETURN (DWORD) DBINFO( DBI_GET_ACE_STMT_HANDLE )
+    LOCAL oHandle := NULL AS OBJECT
+    IF VoDbInfo( DBI_GET_ACE_STMT_HANDLE , REF oHandle)
+        RETURN Convert.ToUint32(oHandle)
+    ENDIF
+    RETURN 0
 
+/// <summary>Returns the table handle for the current workarea.  This handle can be used to call the Advantage Client Engine directly.</summary>
+/// <returns> Returns a 0 if there is a problem.</returns>
 FUNCTION AX_GetAceTableHandle() AS DWORD
-    // Returns the table handle for the current workarea.  This handle can be used
-    // to call the Advantage Client Engine directly.
-    // Returns a 0 if there is a problem.
-    RETURN (DWORD) DBINFO( DBI_GET_ACE_TABLE_HANDLE )
+    LOCAL oHandle := NULL AS OBJECT
+    IF VoDbInfo( DBI_GET_ACE_TABLE_HANDLE , REF oHandle)
+        RETURN Convert.ToUint32(oHandle)
+    ENDIF
+    RETURN 0
 
-FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC // Return .T. if Advantage is loaded.
-    // cFileName must start with a drive letter ("X:\") or a UNC path ("\\server\volume\path\")
+/// <summary>Return .T. if Advantage is loaded.</summary>
+/// <remarks>cFileName must start with a drive letter ("X:\") or a UNC path ("\\server\volume\path\")</remarks>
+FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC // 
     LOCAL usLoaded AS WORD
     usLoaded := 0
     ACE.AdsIsServerLoaded  (  cFileName , REF usLoaded )
     RETURN ( usLoaded == ACE.ADS_REMOTE_SERVER  .OR. usLoaded = ACE.ADS_AIS_SERVER )
 
+/// <summary>Return the percentage of keys added to a currently building index</summary>
+FUNCTION AX_PercentIndexed() AS INT 
+    LOCAL oRet := NULL AS OBJECT
+    IF VoDbOrderInfo(DBOI_AXS_PERCENT_INDEXED, NULL, NULL, REF oRet)
+        RETURN Convert.ToInt32(oRet)
+    ENDIF
+    RETURN 0
+    
 
-FUNCTION AX_PercentIndexed() AS INT // Return the percentage of keys added to a currently building index
-    RETURN (INT) DBORDERINFO(  DBOI_AXS_PERCENT_INDEXED )
 
-
-// Return the AXS Rights Checking status
+/// <summary>Return the AXS Rights Checking status.</summary>
 FUNCTION AX_RightsCheck( ) AS LOGIC 
-    RETURN AX_RddHelper(_SET_RIGHTSCHECKING)
+    RETURN AX_RddHelper(_SET_RIGHTSCHECKING, TRUE)
 
-// Return and set the AXS Rights Checking status
+/// <summary>Return and set the AXS Rights Checking status.</summary>
 FUNCTION AX_RightsCheck( bMode AS LOGIC) AS LOGIC 
-    RETURN AX_RddHelper(_SET_RIGHTSCHECKING, bMode)
+    RETURN AX_RddHelper(_SET_RIGHTSCHECKING, bMode, TRUE)
 
-FUNCTION AX_SetCollation( strCollation AS STRING ) AS OBJECT
-   RETURN RDDINFO( _SET_COLLATION_NAME, strCollation )
-
+FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
+    LOCAL oldCollation := strCollation AS OBJECT
+    VoDbRDDINFO( _SET_COLLATION_NAME, REF oldCollation )
+    RETURN (STRING) oldCollation
+    
 PROCEDURE AX_SetConnectionHandle( lHandle AS DWORD ) 
-   RDDINFO( _SET_CONNECTION_HANDLE, lHandle )
+   VoDbRddInfo( _SET_CONNECTION_HANDLE, lHandle )
 RETURN 
 
 FUNCTION AX_SetExactKeyPos( ) AS LOGIC
-    RETURN AX_RddHelper(_SET_EXACTKEYPOS )
+    RETURN AX_RddHelper(_SET_EXACTKEYPOS, TRUE)
 
-FUNCTION AX_SetExactKeyPos( bMode as LOGIC) AS LOGIC
-    RETURN AX_RddHelper(_SET_EXACTKEYPOS, bMode)
+FUNCTION AX_SetExactKeyPos( bMode AS LOGIC) AS LOGIC
+    RETURN AX_RddHelper(_SET_EXACTKEYPOS, bMode, TRUE)
 
-FUNCTION AX_RddHelper(iInfo as INT) AS LOGIC
-    LOCAL bRetVal as OBJECT
-    bRetVal := RDDINFO( iInfo )
-    IF ! bRetVal is LOGIC
-         bRetVal := TRUE
+FUNCTION AX_RddHelper(iInfo AS INT, lDefault AS LOGIC) AS LOGIC
+    LOCAL bRetVal := NULL AS OBJECT
+    LOCAL lRetVal := lDefault AS LOGIC
+    IF VoDbRDDINFO( (DWORD) iInfo , REF bRetVal)
+        IF ! bRetVal IS LOGIC
+            lRetVal := TRUE
+        ELSE
+            lRetVal := (LOGIC) bRetVal
+        ENDIF
     ENDIF
-    RETURN (logic) bRetVal
+    RETURN lRetVal
 
 
-FUNCTION AX_RddHelper(iInfo as INT, lNewValue as LOGIC) AS LOGIC
-    LOCAL bRetVal as LOGIC
-    bRetVal := AX_RddHelper(iInfo)
-    RDDINFO( iInfo , lNewValue)
+FUNCTION AX_RddHelper(iInfo AS INT, lNewValue AS LOGIC, lDefault AS LOGIC) AS LOGIC
+    LOCAL bRetVal AS LOGIC
+    bRetVal := AX_RddHelper(iInfo, lDefault)
+    VoDbRDDINFO( (DWORD) iInfo , lNewValue)
     RETURN bRetVal
-
 
 
 PROCEDURE AX_SetPassword( szEncodeKey AS STRING ) // Set password for record encryption
@@ -135,10 +156,10 @@ FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGI
 
 
 FUNCTION AX_SetSQLTablePasswords( aPasswords AS OBJECT ) AS VOID
-    RDDINFO( _SET_SQL_TABLE_PASSWORDS, aPasswords )
+    VoDbRddInfo( _SET_SQL_TABLE_PASSWORDS, aPasswords )
     RETURN 
 
-FUNCTION AX_Transaction( iAction as INT) AS LOGIC // Transaction call
+FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
     LOCAL usInTrans AS WORD
     LOCAL ulRetVal AS DWORD
     //
@@ -171,19 +192,19 @@ FUNCTION AX_Transaction( ) AS LOGIC // Transaction call
     RETURN ( usInTrans != 0 )
 
 
+/// <summary>return .T. if the current workarea is using Advantage Server or AIS Server and
+/// .F. IF USING Advantage RDD IN a LOCAL mode</summary>
 FUNCTION AX_UsingClientServer( ) AS LOGIC
-    // return .T. if the current workarea is using Advantage Server or AIS Server and
-    // .F. IF USING Advantage RDD IN a LOCAL mode
-	THROW NotImplementedException{}
-	/*
     LOCAL ulRetCode AS DWORD
     LOCAL ConnectionHandle := 0 AS IntPtr
     LOCAL usServerType := 0 AS WORD
     LOCAL strFileName AS STRING
-    strFileName := (String) XSharp.Core.Functions.DBINFO( DBInfo.DBI_FULLPATH )
-    ulRetCode := ACE.AdsFindConnection(  strFileName , OUT ConnectionHandle )
-    ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )
-    RETURN ( usServerType == ACE.ADS_REMOTE_SERVER ) .OR. ( usServerType == ACE.ADS_AIS_SERVER )
-	*/
-
-#endif
+    LOCAL oFileName := NULL AS OBJECT
+    IF VODbInfo(DBI_FULLPATH , REF oFileName)
+        strFileName := (STRING) oFileName
+        ulRetCode := ACE.AdsFindConnection(  strFileName , OUT ConnectionHandle )
+        ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )
+        RETURN ( usServerType == ACE.ADS_REMOTE_SERVER ) .OR. ( usServerType == ACE.ADS_AIS_SERVER )
+    ENDIF
+    RETURN FALSE
+    

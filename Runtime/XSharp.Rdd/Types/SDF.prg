@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>SDF RDD. For reading and writing text files.</summary>
 CLASS SDF INHERIT Workarea  

@@ -133,7 +133,6 @@
     <Compile Include="ErrorEnum.prg" />
     <Compile Include="Functions\AssemblyLoader.prg" />
     <Compile Include="Functions\Convert.prg" />
-    <Compile Include="Functions\Db.prg" />
     <Compile Include="Functions\Debug.prg" />
     <Compile Include="Functions\Error.prg" />
     <Compile Include="Functions\FileSearch.prg" />
@@ -149,12 +148,12 @@
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\StringCompare.prg" />
     <Compile Include="Functions\unsafe.prg" />
-    <Compile Include="Functions\vodb.prg" />
     <Compile Include="Functions\Win32.prg" />
     <Compile Include="Messages.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
+    <Compile Include="RDD\Dbfunctions.prg" />
     <Compile Include="RDD\DbFloat.prg" />
     <Compile Include="RDD\RDDDefines.prg" />
     <Compile Include="RDD\RddEnums.prg" />
@@ -164,6 +163,7 @@
     <Compile Include="RDD\RddError.prg" />
     <Compile Include="RDD\RddHelpers.prg" />
     <Compile Include="RDD\RDDSupport.prg" />
+    <Compile Include="RDD\vodbfunctions.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
     <Compile Include="State\Get.prg" />

@@ -394,18 +394,15 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName A
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS XSharp.RDD.RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-    RETURN VoDb.Do ({ =>
     LOCAL oRdd := NULL  AS RegisteredRDD
     FOREACH VAR name IN rddList:atomRddName
         oRdd := RegisteredRDD.Find(name)
         oRdd:Load()
     NEXT
-    IF (oRdd != NULL_OBJECT)
+    IF oRdd != NULL_OBJECT
         RETURN VODBCreate(cName, aStruct, oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-    ELSE
-        RETURN FALSE
     ENDIF
-    })
+    RETURN FALSE
     /// <summary>
     /// Create new file through the specified RDDs
     /// </summary>
@@ -419,9 +416,7 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-    RETURN VoDb.Do ({ =>
     RETURN VoDbCreate(cName, aStruct:ToArray(), rddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-    })
     /// <summary>
     /// Create new file through the specified RDDs
     /// </summary>

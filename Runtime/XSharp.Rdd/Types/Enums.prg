@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
     STATIC CLASS CodePageExtensions
-        METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS OsCodePage
+        STATIC METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS OsCodePage
             SWITCH headerCodePage
             CASE DbfHeaderCodepage.CP_DBF_DOS_US        ; RETURN OsCodepage.CP_INI_DOS_US        
                 CASE DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA   ; RETURN OsCodepage.CP_INI_DOS_MAZOVIA   
@@ -194,7 +194,7 @@ BEGIN NAMESPACE XSharp.RDD
                     
                 END SWITCH
                 
-        METHOD ToHeaderCodePage(SELF codePage AS OsCodePage) AS DbfHeaderCodePage
+        STATIC METHOD ToHeaderCodePage(SELF codePage AS OsCodePage) AS DbfHeaderCodePage
             SWITCH codePage
             CASE OsCodepage.CP_INI_DOS_US       ; RETURN DbfHeaderCodepage.CP_DBF_DOS_US         
                 CASE OsCodepage.CP_INI_DOS_MAZOVIA  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA    

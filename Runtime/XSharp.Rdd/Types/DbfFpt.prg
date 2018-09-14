@@ -6,7 +6,7 @@
 
 USING System.Text
 USING XSharp.RDD.Enums
-
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 

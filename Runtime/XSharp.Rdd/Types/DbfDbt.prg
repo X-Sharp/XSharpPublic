@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
-            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )            
+            SELF:_lockScheme:Initialize( Dbf.DbfLockingModel.Clipper52 )            
             
             
             /// <inheritdoc />

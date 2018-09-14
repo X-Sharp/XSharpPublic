@@ -153,6 +153,7 @@
     <Folder Include="ACE" />
     <Folder Include="Types" />
     <Folder Include="Properties\" />
+    <Folder Include="Types\DbfNtx\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

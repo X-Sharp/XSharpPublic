@@ -9,7 +9,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.IO
-using System.Runtime.CompilerServices
+USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD
 
@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD
 	CLASS NtxHeader
 		PROTECTED _hFile AS IntPtr
 		
-		PROPERTY Bytes AS DbfNtxHeader AUTO GET 
+		PUBLIC Bytes AS DbfNtxHeader
 		
 		
 		METHOD Read() AS LOGIC
@@ -143,6 +143,10 @@ BEGIN NAMESPACE XSharp.RDD
 			PROPERTY Unique	AS LOGIC  ;
 			GET Buffer[ NTXOFFSETS.UNIQUE] != 0 ;
 			SET Buffer[ NTXOFFSETS.UNIQUE ] := IIF(VALUE,1,0), isHot := TRUE
+
+			PROPERTY Descending	AS LOGIC  ;
+			GET Buffer[ NTXOFFSETS.DESCENDING] != 0 ;
+			SET Buffer[ NTXOFFSETS.DESCENDING ] := IIF(VALUE,1,0), isHot := TRUE
 			
 			PROPERTY ForExpression	 AS STRING ;
 			GET _GetString(NTXOFFSETS.FOREXPRESSION, NTXOFFSETS.EXPRESSION_SIZE ) ;
@@ -174,6 +178,7 @@ BEGIN NAMESPACE XSharp.RDD
 			MEMBER KEYEXPRESSION := 22
 			MEMBER EXPRESSION_SIZE := 256
 			MEMBER UNIQUE := 258
+			MEMBER DESCENDING := 280
 			MEMBER FOREXPRESSION := 282
 			MEMBER ORDNAME := 538
 			

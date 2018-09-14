@@ -14,6 +14,7 @@ USING System.Reflection
 USING System.Text
 USING System.Threading
 USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD        
 
@@ -200,11 +201,13 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_Ansi := SELF:_oRdd:_Ansi
                             // Key
                             SELF:_KeyExpr := SELF:_Header:Bytes:KeyExpression
-                            IF (!SELF:_oRdd:Compile(SELF:_KeyExpr))
-                                SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
-                                RETURN FALSE
-                            ENDIF
-                            SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
+							TRY
+								SELF:_oRdd:Compile(SELF:_KeyExpr)
+							CATCH
+								SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+								RETURN FALSE
+							END TRY
+							SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRDD:_LastCodeBlock
                             //
                             SELF:_oRdd:GoTo(1)
                             LOCAL evalOk AS LOGIC
@@ -223,10 +226,12 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_Conditional := FALSE
                             SELF:_ForExpr := SELF:_Header:Bytes:ForExpression
                             IF (SELF:_ForExpr:Length > 0)
-                                IF (!SELF:_oRdd:Compile(SELF:_Header:Bytes:ForExpression))
-                                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
-                                    RETURN FALSE
-                                ENDIF
+								TRY
+									SELF:_oRdd:Compile(SELF:_Header:Bytes:ForExpression)
+								CATCH
+									SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+									RETURN FALSE
+								END TRY
                                 SELF:_ForCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
                                 SELF:_oRdd:GoTo(1)
                                 evalOk := TRUE
@@ -265,7 +270,7 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_firstPageOffset := SELF:_Header:Bytes:FirstPageOffset
                             SELF:_nextUnusedPageOffset := SELF:_Header:Bytes:NextUnusedPageOffset
                             SELF:_Unique := SELF:_Header:Bytes:Unique
-                            SELF:_Descending := SELF:_Header:Bytes:Descend
+                            SELF:_Descending := SELF:_Header:Bytes:Descending
                             //
                             SELF:_midItem := NtxItem{SELF:_keySize, SELF:_oRdd}
                             SELF:_oneItem := NtxItem{SELF:_keySize, SELF:_oRdd}
@@ -279,7 +284,7 @@ BEGIN NAMESPACE XSharp.RDD
                             ENDIF
                             //
                             // Standard Locking Scheme
-                            SELF:_lockScheme:Initialize( Dbf.DbfLockingModel.Clipper52 )
+                            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
                             // Except
                             IF ((SELF:_Header:Bytes:Signature & NtxConst.NEW_LOCK ) != 0)
                                 SELF:_lockScheme:Offset := -1
@@ -599,7 +604,11 @@ BEGIN NAMESPACE XSharp.RDD
                             IF (createInfo:Block != NULL)
                                 SELF:_KeyCodeBlock := createInfo:Block
                             ELSE
-                                isOk := SELF:_oRdd:Compile(Expression)
+								TRY
+									SELF:_oRdd:Compile(Expression)
+								CATCH
+									isOk := FALSE
+								END TRY
                                 IF (isOk)
                                     SELF:_KeyCodeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
                                 ENDIF
@@ -698,7 +707,7 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_Header:Bytes:MaxItem := (WORD)SELF:_MaxEntry
                             SELF:_Header:Bytes:HalfPage := (WORD)SELF:_halfPage
                             SELF:_Header:Bytes:Unique := SELF:_Unique
-                            SELF:_Header:Bytes:Descend := SELF:_Descending
+                            SELF:_Header:Bytes:Descending := SELF:_Descending
                             SELF:_Header:Bytes:KeyExpression := SELF:_KeyExpr
                             SELF:_Header:Bytes:ForExpression := SELF:_ForExpr
                             SELF:_Header:Bytes:OrdName := SELF:_orderName
@@ -712,7 +721,7 @@ BEGIN NAMESPACE XSharp.RDD
                             ENDIF
                             SELF:_maxLockTries := (INT)Xsharp.RuntimeState.LockTries
                             SELF:_tagNumber := 1
-                            SELF:_lockScheme:Initialize( Dbf.DbfLockingModel.Clipper52 )
+                            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
                             IF ( XSharp.RuntimeState.NewIndexLock )
                                 SELF:_Header:Bytes:Signature |= NtxConst.COND_INDEX //16
                                 SELF:_lockScheme:Offset := -1
@@ -772,9 +781,11 @@ BEGIN NAMESPACE XSharp.RDD
                         CASE TypeCode.Decimal
                             TRY
                                 expr := "STR(" + SELF:_KeyExpr + ")"
-                                IF (!SELF:_oRdd:Compile(expr))
-                                    RETURN FALSE
-                                ENDIF
+								TRY
+									SELF:_oRdd:Compile(expr)
+								CATCH
+									RETURN FALSE
+								END TRY
                                 cdeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
                                 SELF:_oRdd:EvalBlock(cdeBlock)
                                 expr := (STRING)SELF:_oRdd:_EvalResult
@@ -916,11 +927,7 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN SELF:_CreateEmpty()
                     ENDIF
                     //
-                    sortInfo := DBSORTINFO{}
-                    sortInfo:TransInfo := DbTransInfo{}
-                    sortInfo:TransInfo:Items := DbTransItem[]{0}
-                    sortInfo:TransInfo:Scope := DbScopeInfo{}
-                    sortInfo:Items := DbSortItem[]{ 1 }
+                    sortInfo := DBSORTINFO{0,1}
                     //
                     hasBlock := SELF:_oRdd:_OrderCondInfo:EvalBlock != NULL
                     evalCount := 1
@@ -1708,14 +1715,14 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                     
                     
-                PUBLIC METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS Enums.DBOrderInfo ) AS LOGIC
+                PUBLIC METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
                     LOCAL uiRealLen AS LONG
                     LOCAL result AS LOGIC
                     //
                     uiRealLen := 0
                     result := TRUE
                     BEGIN SWITCH uiScope
-                    CASE Enums.DBOrderInfo.DBOI_SCOPETOP
+                    CASE DBOrder_Info.DBOI_SCOPETOP
                         SELF:_topScope := itmScope
                         SELF:_hasTopScope := (itmScope != NULL)
                         IF (itmScope != NULL)
@@ -1723,7 +1730,7 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_topScopeBuffer, SELF:_Ansi, REF uiRealLen)
                             SELF:_topScopeSize := uiRealLen
                         ENDIF
-                    CASE Enums.DBOrderInfo.DBOI_SCOPEBOTTOM
+                    CASE DBOrder_Info.DBOI_SCOPEBOTTOM
                         SELF:_bottomScope := itmScope
                         SELF:_hasBottomScope := (itmScope != NULL)
                         IF (itmScope != NULL)
@@ -1759,7 +1766,7 @@ BEGIN NAMESPACE XSharp.RDD
                 WHILE SELF:_findItemPos(REF lplPos, FALSE)
                 END WHILE
                 IF (SELF:_hasTopScope)
-                    SELF:_ScopeSeek(Enums.DBOrderInfo.DBOI_SCOPETOP)
+                    SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     WHILE SELF:_findItemPos(REF lplPos2, FALSE)
                     END WHILE
                 ENDIF
@@ -1839,7 +1846,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN num
                 
                 
-            PRIVATE METHOD _ScopeSeek(uiScope AS Enums.DBOrderInfo ) AS LOGIC
+            PRIVATE METHOD _ScopeSeek(uiScope AS DBOrder_Info ) AS LOGIC
                 LOCAL result AS LOGIC
                 LOCAL seekInfo AS DBSEEKINFO
                 LOCAL obj AS OBJECT
@@ -1847,7 +1854,7 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 result := TRUE
                 seekInfo := DBSEEKINFO{}
-                IF (uiScope == Enums.DBOrderInfo.DBOI_SCOPETOP)
+                IF (uiScope == DBOrder_Info.DBOI_SCOPETOP)
                     obj := SELF:_topScope
                     IF (obj == NULL)
                         result := SELF:GoTop()
@@ -1916,7 +1923,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
                 IF ((SELF:_hasTopScope) .OR. (SELF:_hasBottomScope))
-                    SELF:_ScopeSeek(Enums.DBOrderInfo.DBOI_SCOPEBOTTOM)
+                    SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                     records := SELF:_getScopePos()
                 ELSE
                     IF (( XSharp.RuntimeState.Deleted ) .OR. (SELF:_oRdd:_FilterInfo:Active))
@@ -2023,7 +2030,7 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
                         RETURN FALSE
                     ENDIF
-                    RETURN SELF:_ScopeSeek(Enums.DBOrderInfo.DBOI_SCOPEBOTTOM)
+                    RETURN SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
                     
                 FINALLY
                     IF (locked)
@@ -2054,7 +2061,7 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
                         RETURN FALSE
                     ENDIF
-                    result := SELF:_ScopeSeek(Enums.DBOrderInfo.DBOI_SCOPETOP)
+                    result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     IF (!SELF:_oRdd:_Found)
                         SELF:_oRdd:_Bof := TRUE
                     ENDIF
@@ -2194,7 +2201,7 @@ BEGIN NAMESPACE XSharp.RDD
                     num := SELF:_oRdd:StringCompare(byteArray, SELF:_topScopeBuffer, SELF:_keySize)
                     IF (num < 0)
                         IF (seekInfo:SoftSeek)
-                            RETURN SELF:_ScopeSeek(Enums.DBOrderInfo.DBOI_SCOPETOP)
+                            RETURN SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                         ENDIF
                         RETURN SELF:_oRdd:GoToId(0)
                     ENDIF
@@ -3057,6 +3064,46 @@ BEGIN NAMESPACE XSharp.RDD
     
     
 END NAMESPACE
+
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEGIN NAMESPACE XSharp.RDD 
 	INTERNAL CLASS NtxScanInfo
 		INTERNAL lPos AS LONG
 		INTERNAL lRecno AS LONG
@@ -6108,3 +6155,4 @@ END NAMESPACE
 	
 	
 END NAMESPACE
+*/

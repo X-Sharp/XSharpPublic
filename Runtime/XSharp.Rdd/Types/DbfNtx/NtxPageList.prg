@@ -14,14 +14,14 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>
     /// The NtxPageList class.
     /// </summary>
-    CLASS NtxPageList
+    INTERNAL CLASS NtxPageList
         PROTECT _Pages AS List<NtxPage>
         PROTECT _Order AS NtxOrder
         
         PRIVATE METHOD _FindPage(pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
-            ntxPage := SELF:_Pages:Find( { p => p:Number == pageNo } )
+            ntxPage := SELF:_Pages:Find( { p => p:PageNo == pageNo } )
             RETURN ntxPage
             
             
@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:Read(pageNo)
-            IF ( ntxPage != null )
+            IF ( ntxPage != NULL )
                 ntxPage:Hot := TRUE
             ENDIF
             RETURN ntxPage
@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.RDD
             //
             ntxPage := SELF:_FindPage(pageNo)
             IF (ntxPage == NULL)
-                ntxPage := NtxPage{SELF:m_Order, 0L}
+                ntxPage := NtxPage{SELF:_Order, 0L}
                 ntxPage:PageNo := pageNo
                 SELF:_Pages:Add(ntxPage)
             ENDIF
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF (isOk)
                     SELF:_Order:Flush()
                 ENDIF
-            CATCH Exception
+            CATCH AS Exception
                 isOk := FALSE
             END TRY
             IF ((isOk) .AND. (!keepData))

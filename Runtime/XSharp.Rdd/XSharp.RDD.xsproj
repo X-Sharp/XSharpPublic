@@ -129,6 +129,15 @@
     <Compile Include="Types\DbfMemo.prg" />
     <Compile Include="Types\DbfNsx.prg" />
     <Compile Include="Types\DbfNtx.prg" />
+    <Compile Include="Types\DbfNtx\NtxHeader.prg" />
+    <Compile Include="Types\DbfNtx\NtxItem.prg" />
+    <Compile Include="Types\DbfNtx\NtxLevel.prg" />
+    <Compile Include="Types\DbfNtx\NtxOrder.prg" />
+    <Compile Include="Types\DbfNtx\NtxOrderList.prg" />
+    <Compile Include="Types\DbfNtx\NtxPage.prg" />
+    <Compile Include="Types\DbfNtx\NtxPageList.prg" />
+    <Compile Include="Types\DbfNtx\NtxSort.prg" />
+    <Compile Include="Types\DbfNtx\SortHelper.prg" />
     <Compile Include="Types\DbfSmt.prg" />
     <Compile Include="Types\DbMemo.prg" />
     <Compile Include="Types\DELIM.prg" />

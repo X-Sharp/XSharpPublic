@@ -309,6 +309,7 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 				NEXT
 			ENDIF
+			RETURN TRUE
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC

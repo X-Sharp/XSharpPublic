@@ -5,6 +5,7 @@
 //
 USING System.Text
 USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
@@ -88,7 +89,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
-            SELF:_lockScheme:Initialize( Dbf.DbfLockingModel.Clipper52 )            
+            SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )            
             
             
             /// <inheritdoc />
@@ -223,7 +224,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF newBlock
                 IF ( SELF:_Shared )
-                    locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
+                    locked := SELF:_tryLock( (UINT64)SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data
                 FSeek3( SELF:_hFile, 0, FS_END )
@@ -263,7 +264,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             IF ( locked )
-                SELF:_unlock( SELF:_lockScheme:Offset, 1 )
+                SELF:_unlock( (UINT64)SELF:_lockScheme:Offset, 1 )
             ENDIF
             //
             IF !isOk

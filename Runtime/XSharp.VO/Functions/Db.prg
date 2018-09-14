@@ -9,18 +9,20 @@ USING XSharp.Rdd.Support
 USING XSharp.Rdd
 USING System.Linq
 USING System.Collections.Generic
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+
+INTERNAL FUNCTION DbDo(funcName AS STRING, resultToCheck AS LOGIC) AS LOGIC
+    IF !resultToCheck
+        resultToCheck := (LOGIC) DoError(funcName)
+    ENDIF
+    RETURN resultToCheck
 
 
-FUNCTION SELECT(xValue AS USUAL) AS USUAL 
+FUNCTION Select(xValue AS USUAL) AS USUAL
     LOCAL dwSelect   AS DWORD
     LOCAL dwCurrent  AS DWORD
     dwCurrent := VODBGetSelect()
     dwSelect := _SELECT(xValue)
-    VODBSetSelect(INT(dwCurrent))
+    VODBSetSelect((INT) dwCurrent)
     RETURN dwSelect
     
     /// <summary>
@@ -28,40 +30,41 @@ FUNCTION SELECT(xValue AS USUAL) AS USUAL
     /// <returns>
     /// </returns>
 FUNCTION _Select(xValue) AS USUAL CLIPPER
-    LOCAL nSelect           AS DWORD
+    LOCAL nSelect           AS LONG
     LOCAL sAlias            AS SYMBOL
     LOCAL xType             AS DWORD
     LOCAL nAsc              AS DWORD
     
     IF IsNil(xValue)
-        RETURN( VODBGetSelect() )
+        RETURN  (INT) VODBGetSelect() 
     ENDIF
     xType := UsualType(xValue)
-    
-    IF xType = SYMBOL
-        nSelect := (DWORD) VODBSymSelect(xValue)
-        
-    ELSEIF xType =STRING
+    SWITCH xType
+    CASE SYMBOL
+        nSelect := VODBSymSelect(xValue)
+    CASE STRING
         nSelect := 0
-        IF SLen(xValue) = 1
-            nSelect := Val(xValue)
-            nAsc := Asc( Upper(xValue) )
+        LOCAL cValue := xValue AS STRING
+        IF SLen(cValue) = 1
+            nSelect := Val(cValue)
+            nAsc := Asc( Upper(cValue) )
             IF nAsc > 64 .AND. nAsc < 75
-                nSelect := nAsc - 64
+                nSelect := (INT) nAsc - 64
             ENDIF
         ENDIF
         
-        IF (nSelect > 0) .OR. ("0" == xValue)
-            nSelect := VODBSetSelect(INT(nSelect))
+        IF (nSelect > 0) .OR. ("0" == cValue)
+            nSelect := (INT) VODBSetSelect(nSelect)
         ELSE
-            sAlias  := SysAddAtom( String2Psz( Upper( AllTrim(xValue) ) ) )
-            nSelect := (DWORD) VODBSymSelect(sAlias)
+            sAlias  := AsSymbol( AllTrim(cValue) )
+            nSelect := VODBSymSelect(sAlias)
         ENDIF
-        
-    ELSE
-        nSelect := VODBSetSelect(xValue)
-    ENDIF
-    
+    CASE LONG
+    CASE FLOAT
+        nSelect := (INT) VODBSetSelect(xValue)
+    OTHERWISE
+        nSelect := 0
+    END SWITCH
     RETURN nSelect
     
 FUNCTION __FieldGetNum( fieldpos AS DWORD ) AS USUAL
@@ -82,25 +85,15 @@ FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
     RETURN ret
     
     
-    
-    
-    
 FUNCTION __FieldSetNum( fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
-    IF ! VODBFieldPut( fieldpos, uValue )
-        DoError( #__FieldSet )
-    ENDIF
-    // return original value to allow chained expressions
-    RETURN uValue
-    
+    RETURN DbDo("__FieldSetNum ", VODBFieldPut( fieldpos, uValue ))
     
 FUNCTION __FieldSetWaNum( nArea AS DWORD, fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
     LOCAL curArea AS DWORD
     curArea := RuntimeState.CurrentWorkarea
     TRY
         RuntimeState.CurrentWorkarea := nArea
-        IF ! VODBFieldPut( fieldpos, uValue )        
-            DoError( #__FieldSet )
-        ENDIF 
+        DbDo("__FieldSetWaNum", VODBFieldPut( fieldpos, uValue ) )
     FINALLY
         RuntimeState.CurrentWorkarea := curArea
     END TRY   
@@ -121,7 +114,8 @@ FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
     IF ! String.IsNullOrEmpty(cFieldName)
         nPos := FieldPos(cFieldName)
         IF nPos != 0
-            oCB := MCompile("{|x| iif( IsNil(x), __FieldGetNum( "+nPos:ToString()+"), __FieldSetNum( "+nPos:ToString()+" , x)")
+            //oCB := MCompile("{|x| iif( IsNil(x), __FieldGetNum( "+nPos:ToString()+"), __FieldSetNum( "+nPos:ToString()+" , x)")
+            oCb := {|x| IIF(isNil(x), __FieldGetNum(nPos), __FieldSetNum(nPos, x))}
         ENDIF
     ENDIF
     RETURN oCB
@@ -148,8 +142,9 @@ FUNCTION FieldWBlock(cFieldName AS STRING,nArea AS DWORD) AS CODEBLOCK
     IF ! String.IsNullOrEmpty(cFieldName)
         nPos := FieldPos(cFieldName, nArea)
         IF nPos != 0
-            VAR cPars := nArea:ToSTring()+","+nPos:ToString()
-            oCB := MCompile("{|x| iif( IsNil(x), __FieldGetWaNum("+cPars+"), __FieldSetWaNum("+cPars+", x)")
+            //VAR cPars := nArea:ToSTring()+","+nPos:ToString()
+            // oCB := MCompile("{|x| iif( IsNil(x), __FieldGetWaNum("+cPars+"), __FieldSetWaNum("+cPars+", x)")
+            oCB := {|x| IIF( IsNil(x), __FieldGetWaNum(nArea, nPos), __FieldSetWaNum(nArea, nPos, x)) }
         ENDIF
     ENDIF
     RETURN oCB
@@ -310,8 +305,8 @@ FUNCTION DbAppend(lReleaseLocks) AS LOGIC CLIPPER
     lRetCode := VODBAppend(lReleaseLocks)
     
     IF !lRetCode
-        //    UH 06/26/1998
-        //    lRetCode := DoError(#DBAPPEND)
+        //    No Error but NetErr gets set for compatibility reasons
+        //    lRetCode := DoError("DbAppend")
         NetErr(.T.)
     ENDIF
     
@@ -324,33 +319,8 @@ FUNCTION DbAppend(lReleaseLocks) AS LOGIC CLIPPER
     /// </returns>
 FUNCTION DbClearIndex(uOrder, cOrdBag) AS LOGIC CLIPPER
     RETURN OrdListClear(cOrdBag, uOrder)
-    *----------------------------------------------------------------------------
-        *
-        *   DBCREATE( cName,    ;   // target file (DBF)
-        *           aStru       ;   // structure array like return value of DBSTRUCT()
-        *           [,lNew]     ;   // select new workarea ? (default .F.)
-        *           [,cAlias]   ;   // alias name for workarae
-        *           [,cDriver]  ;   // name of RDD
-        *           [,lOpen]    ;   // JUST OPEN the file (we need the structure
-        *                           // parameter aStru to be able to open SDF and
-        *                           // DELIMited datafiles. If this parameter is
-        *                           // given, DBCREATE() works like DBUSEAREA()
-        *           [,cDelim]   ;   // delimiter for DELIM RDD
-        *           [,lJustOpen];   // just open this file (simulate USE)
-        *           [,aRdds]    ;   // Array with names of RDDs we want inherit
-        *                           // some methods from
-        *           )
-        *
-        *   Returns:    LOGICAL ->  .F. ... Failure
-        *                           .T. ... Success
-        *
-        *   Example:    IF DBCREATE("NEWDB.DBF", DBSTRUCT(), .T.,,,.T.)
-        *                   ...
-        *
-        *               ENDIF
-        *
-    *----------------------------------------------------------------------------
-    
+
+
     /// <summary>
     /// </summary>
     /// <returns>
@@ -396,16 +366,12 @@ FUNCTION DbCreate (   cName,  aStru, cDriver, lNew,  cAlias, cDelim, lJustOpen, 
     ENDIF
     LOCAL oDriver := cDriver AS OBJECT
     IF oDriver IS STRING
-        lRetCode := VODBCreate(cName, aStru, (STRING) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen)
+        lRetCode := DbDo("DbCreate", VODBCreate(cName, aStru, (STRING) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen))
     ELSEIF oDriver IS System.Type
-        lRetCode := VODBCreate( cName, aStru, (Type) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen )
+        lRetCode := DbDo("DbCreate", VODBCreate( cName, aStru, (Type) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen ))
     ELSE
         THROW Error.DataTypeError( "DbCreate", nameof(cDriver), 3, { cDriver } )
     ENDIF
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError("DbCreate")
-    ENDIF
-    
     RETURN lRetCode
     
     
@@ -431,16 +397,7 @@ FUNCTION DbCreateOrder  (uOrder, cName, cExpr, cobExpr, lUnique) AS LOGIC CLIPPE
     /// <returns>
     /// </returns>
 FUNCTION DbDelete () AS LOGIC STRICT
-
-    LOCAL lRetCode  AS LOGIC
-    
-    lRetCode := VODBDelete ()
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError("DBDELETE")
-    ENDIF
-    
-    RETURN lRetCode
+    RETURN DbDo("DbDelete ", VODBDelete() )
     
     
     /// <summary>
@@ -458,7 +415,7 @@ FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
         uOrder := oOrder
     ENDIF
     
-    RETURN ORDDESTROY(uOrder, cOrdBag)
+    RETURN OrdDestroy(uOrder, cOrdBag)
     
     
     
@@ -467,20 +424,11 @@ FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
-
-    LOCAL lRetCode  AS LOGIC
-    
     IF IsNil(lRest)
         lRest := .F.
     ENDIF
-    
-    lRetCode := VODBEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DbEval)
-    ENDIF
-    
-    RETURN lRetCode
+    RETURN DbDo("DbEval", VODBEval(VoDb.ValidBlock(uBlock), VoDb.ValidBlock(uCobFor), VoDb.ValidBlock(uCobWhile), nNext, nRecno, lRest) )
+  
     
     
     /// <summary>
@@ -489,11 +437,7 @@ FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPP
     /// </returns>
 FUNCTION DbFieldInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
     LOCAL oNewVal := xNewVal AS OBJECT
-    
-    IF !VODBFieldInfo(nOrdinal, nPos, REF oNewVal)
-        DoError(#DbFieldInfo)
-    ENDIF
-    
+    DbDo("DbFieldInfo", !VODBFieldInfo(nOrdinal, nPos, REF oNewVal))
     RETURN oNewVal
     
     
@@ -504,16 +448,7 @@ FUNCTION DbFieldInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbGoto(uRecId) AS LOGIC CLIPPER
-
-    LOCAL lRetCode  AS LOGIC
-    
-    lRetCode := VODBGoto(uRecId)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DbGoto)
-    ENDIF
-    
-    RETURN lRetCode
+    RETURN DbDo("DbGoto", VODBGoto(uRecId) )
     
     
     /// <summary>
@@ -522,10 +457,7 @@ FUNCTION DbGoto(uRecId) AS LOGIC CLIPPER
     /// </returns>
 FUNCTION DbInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
     LOCAL oNewVal := xNewVal AS OBJECT
-    IF !VODBInfo(nOrdinal, REF oNewVal)
-        DoError(#DbInfo)
-    ENDIF
-    
+    DbDo("DbInfo", VODBInfo(nOrdinal, REF oNewVal))
     RETURN oNewVal
     
     
@@ -550,12 +482,8 @@ FUNCTION DbLocate(uCobFor, uCobWhile, nNext, uRecId, lRest ) AS LOGIC CLIPPER
     IF IsNil(nNext)
         nNext := 0
     ENDIF
-    
-    lRetCode := VODBLocate(uCobFor, uCobWhile, nNext, uRecId, lRest)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DbLocate)
-    ELSE
+    lRetCode := DbDo("DbLocate", VODBLocate(VoDb.ValidBlock(uCobFor), VoDb.ValidBlock(uCobWhile), nNext, uRecId, lRest))
+    IF lRetCode
         lRetCode := VODBFound()
     ENDIF
     
@@ -633,9 +561,7 @@ FUNCTION DbRLockList() AS ARRAY STRICT
     LOCAL nRecords          AS DWORD
     nRecords := 0
     
-    IF !VODBInfo(DBI_LOCKCOUNT, REF oRecords)
-        DoError(#DbRLockList)
-    ELSE
+    IF DbDo("DbRLockList", VODBInfo(DBI_LOCKCOUNT, REF oRecords))
         lockList := (DWORD[]) DbInfo(DBI_GETLOCKARRAY)
         nRecords := COnvert.ToUInt32(oRecords)
         FOR i := 1 TO nRecords
@@ -663,18 +589,7 @@ FUNCTION DbRSelect(nPos) AS DWORD CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbRUnLock(uRecId) AS LOGIC CLIPPER
-
-    LOCAL lRetCode  AS LOGIC
-    
-    lRetCode := VODBUnlock(uRecId)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DbRUnLock)
-    ENDIF
-    
-    RETURN lRetCode
-    
-    
+    RETURN DbDo("DbRUnLock", VODBUnlock(uRecId) )
     
     
     /// <summary>
@@ -698,18 +613,9 @@ FUNCTION DbSelect(nNew) AS DWORD CLIPPER
     /// <returns>
     /// </returns> 
 FUNCTION DbSelectArea(xValue) AS LOGIC CLIPPER
-
     LOCAL sSelect   AS SHORT
-    
     sSelect := _SELECT(xValue)
-    
-    IF sSelect = 0
-        //		ptrErrInfo := _VODBErrInfoPtr()
-        //		ptrErrInfo.pszArg     := xValue)
-        //		ptrErrInfo.dwArgType  := UsualType(xValue)
-        DoError(#DbSelectArea)
-    ENDIF
-    
+    DbDo("DbSelectArea", sSelect != 0)
     RETURN (sSelect > 0)
     
     
@@ -749,9 +655,7 @@ FUNCTION DbSymSelect(sAlias)  AS DWORD CLIPPER
 FUNCTION DbRelation(wPos)  AS STRING CLIPPER
     LOCAL cRelText  := "" AS STRING
     DEFAULT(  REF wPos, 1)
-    IF !VODBRelation(wPos, REF cRelText)
-        DoError("DbRelation")
-    ENDIF
+    DbDo("DbRelation", VODBRelation(wPos, REF cRelText))
     RETURN cRelText
     
     
@@ -773,20 +677,10 @@ FUNCTION DbSetDriver(cDriver) AS STRING CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbSetFilter(cbFilter, cFilter) AS LOGIC CLIPPER
-
-    LOCAL lRetCode  AS LOGIC
-    
     IF IsNil(cFilter)
         cFilter := "UNKNOWN"
     ENDIF
-    
-    lRetCode := VODBSetFilter(cbFilter, cFilter)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DbSetFilter)
-    ENDIF
-    
-    RETURN lRetCode
+    RETURN DbDo("DbSetFilter", VODBSetFilter(cbFilter, cFilter) )
     
     
     
@@ -800,7 +694,6 @@ FUNCTION DbSetRelation  (xAlias, uCobKey, cKey) AS LOGIC CLIPPER
     LOCAL nSelect   AS DWORD
     LOCAL cAlias    AS STRING
     LOCAL xType     AS DWORD
-    LOCAL lRetCode  AS LOGIC
     
     IF IsNil(cKey)
         cKey := ""
@@ -820,35 +713,22 @@ FUNCTION DbSetRelation  (xAlias, uCobKey, cKey) AS LOGIC CLIPPER
     ELSE
         cAlias := ALIAS(xAlias)
     ENDIF
-    
-    lRetCode := VODBSetRelation(cAlias, uCobKey, cKey)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DbSetRelation)
-    ENDIF
-    
-    RETURN lRetCode
+
+    RETURN DbDo("DbSetRelation", VODBSetRelation(cAlias, uCobKey, cKey) )
+   
+
     
     
     /// <summary>
     /// </summary>
     /// <returns>
     /// </returns>
-FUNCTION DBSKIP (nRecords) AS LOGIC CLIPPER
-
-    LOCAL lRetCode  AS LOGIC
-    
+FUNCTION DbSkip (nRecords) AS LOGIC CLIPPER
     IF IsNil(nRecords)
         nRecords := 1
     ENDIF
+    RETURN DbDo("DbSkip", VODBSkip(nRecords) )
     
-    lRetCode := VODBSkip(nRecords)
-    
-    IF !lRetCode
-        lRetCode := (LOGIC) DoError(#DBSKIP)
-    ENDIF
-    
-    RETURN lRetCode
     
     
     
@@ -896,16 +776,13 @@ FUNCTION DbUseArea (lNew, xDriver, cName, cAlias, lShare, lReadOnly, aStru, cDel
     /// </summary>
     /// <returns>
     /// </returns>
-FUNCTION FIELDPUT (wPos AS USUAL, xValue  AS USUAL) AS USUAL 
+FUNCTION FieldPut (wPos AS USUAL, xValue  AS USUAL) AS USUAL 
 
     LOCAL xRetVal := NIL AS USUAL
-    
-    IF VODBFieldPut(wPos, xValue)
+
+    IF DbDo("FieldPut", VODBFieldPut(wPos, xValue) )
         xRetVal := xValue
-    ELSE
-        DoError(#FIELDPUT)
     ENDIF
-    
     RETURN xRetVal
     
     /// <summary>
@@ -913,15 +790,9 @@ FUNCTION FIELDPUT (wPos AS USUAL, xValue  AS USUAL) AS USUAL
     /// <returns>
     /// </returns>
 FUNCTION FieldGet(wPos) AS USUAL CLIPPER
-
     LOCAL xRetVal := NIL AS OBJECT
-    
     DEFAULT( REF wPos, 1)
-    
-    IF !VODBFieldGet(wPos, REF xRetVal)
-        DoError(#FIELDGET)
-    ENDIF
-    
+    DbDo("FieldGet", VODBFieldGet(wPos, REF xRetVal))
     RETURN xRetVal
     
     
@@ -948,9 +819,7 @@ FUNCTION RDDCount(nType) AS DWORD CLIPPER
     /// </returns>
 FUNCTION RDDInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
     LOCAL oNewVal := xNewVal AS OBJECT
-    IF !VODBRDDInfo(nOrdinal, REF oNewVal)
-    ENDIF
-    
+    VODBRDDInfo(nOrdinal, REF oNewVal)
     RETURN oNewVal
     
     
@@ -970,17 +839,7 @@ FUNCTION RDDList (nType) AS ARRAY CLIPPER
     RETURN aRddList
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
 FUNCTION DBMemoExt      (cDriver) AS STRING CLIPPER
-
     IF IsNil(cDriver)
         cDriver := ""
     ENDIF
@@ -989,19 +848,11 @@ FUNCTION DBMemoExt      (cDriver) AS STRING CLIPPER
     
     
     
-    
 FUNCTION RDDVersion     (nParm) AS USUAL CLIPPER
-
     IF !IsNumeric(nParm)
         nParm := 0
     ENDIF
-    
     RETURN DbInfo(DBI_RDD_VERSION, nParm)
-    
-    
-    
-    
-    
     
     
     
@@ -1032,127 +883,10 @@ FUNCTION DBMemoField (xField AS USUAL)  AS USUAL
     RETURN xRet
     
     
-    //---------------------------------------------------------------------------
-    //
-    //  DoError()
-    //
-    //  Call default error handler
-    //
-    
-    
-    
-    
-    
-    *----------------------------------------------------------------------------
-        *
-        *   Some useful STATIC functions
-        *
-        *
-    *----------------------------------------------------------------------------
-    
-    //---------------------------------------------------------------------------
-    //
-    //  __AllocRddList()
-    //
-    //  Transfers a VO-Array into a DIM Array structure
-    //
-    
-    /*
-    FUNCTION __AllocRddList (aRdds AS ARRAY)    AS _RDDLIST     PASCAL
-    LOCAL n,i           AS DWORD
-    LOCAL rddList       AS _RDDLIST
-    n       := ALen(aRdds)
-    rddList := MemAlloc( (_SIZEOF(DWORD)) + (n * _SIZEOF(SYMBOL)) )
-    
-    rddList.uiRddCount := n
-    ~"RANGECHECK-"
-    FOR i := 1 TO n
-    rddList.atomRddName[i] := SysAddAtomUpperA(aRdds[i])
-    NEXT
-    RETURN rddList
-    //
-    */
-FUNCTION __RddList      (xDriver, aHidden) AS ARRAY CLIPPER
-
-    LOCAL   nType   AS DWORD
-    LOCAL   aRdds   AS ARRAY
-    LOCAL   n       AS DWORD
-    LOCAL   i       AS DWORD
-    LOCAL   lBlob   AS LOGIC
-    LOCAL   lDbf    AS LOGIC
-    
-    //  UH 09/24/1997
-    //  IF (!IsArray(xDriver) .OR. IsString(xDriver))
-    IF IsArray(xDriver)
-        nType := ARRAY
-    ELSEIF IsString(xDriver)
-        //  UH 11/13/1997
-        IF SLen(xDriver) = 0
-            xDriver := RddSetDefault()
-        ENDIF
-        nType := STRING
-    ELSE
-        xDriver := RddSetDefault()
-        nType := STRING
-    ENDIF
-    
-    //  UH 09/24/1997
-    //  nType := UsualType(xDriver)
-    lBlob := .F.
-    aRdds := {}
-    IF nType == ARRAY
-        aRdds := xDriver
-        
-    ELSEIF nType == STRING
-    
-        xDriver := Upper(xDriver)
-        
-        DO CASE
-        CASE xDriver = "DBFNTX"
-            lDbf := .T.
-        CASE xDriver = "_DBFCDX"
-            lDbf := .T.
-        CASE xDriver = "DBFCDX"
-                lBlob := .T.
-                lDbf  := .T.
-            xDriver := "_DBFCDX"
-        CASE xDriver = "DBFMDX"
-            lDbf := .T.
-        OTHERWISE
-                lDbf := .F.
-            lBlob := .F.
-        ENDCASE
-        
-        IF lDbf
-            AAdd(aRdds, "CAVODBF")
-        ENDIF
-        
-        AAdd(aRdds, xDriver)
-        
-        // UH (for David, Don)
-        IF lBlob
-            AAdd(aRdds, "DBFCDX")
-        ENDIF
-        
-    ENDIF
-    
-    IF UsualType(aHidden) == ARRAY
-        n := ALen(aHidden)
-        
-        FOR i := 1 TO n
-            AAdd(aRdds, aHidden[i])
-        NEXT
-    ENDIF
-    
-    RETURN aRdds
-    
-    
 FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 
     LOCAL aStruct       AS ARRAY
-    LOCAL oError        AS USUAL
     LOCAL i,n           AS INT
-    LOCAL uErrBlock     AS USUAL
     LOCAL nSelect       AS INT
     LOCAL aField        AS ARRAY
     
@@ -1163,17 +897,12 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
     DEFAULT( REF lNew, .F.)
     
     IF ( Used() .AND. !lNew )
-        DBCLOSEAREA()
+        VoDbCloseArea()
     ENDIF
     
-    uErrBlock := ErrorBlock( {|o| _Break(o) } )
-    
-    
-    BEGIN SEQUENCE
-    
+    TRY
         IF ( Empty(cFile2) )
-        
-            DBCREATE(cFile1,                                    ;
+            DBCREATE(cFile1,                ;
             { {"FIELD_NAME", "C", 10, 0},   ;
             {"FIELD_TYPE", "C", 1, 0},      ;
             {"FIELD_LEN", "N", 3, 0},       ;
@@ -1181,28 +910,19 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
             cDriver,                        ;
             .F.,                            ;
             cAlias)
-            
-            
         ELSE
-        
-        
             DBUSEAREA(lNew, cDriver, cFile2)
-            
             aStruct := {}
-            
-            n := (INT) LASTREC()
-            
+            n := VoDbLastRec()
             VODBGoTop()
-            
-            DO WHILE !EOF()
-                aField := {}
-                AAdd(aField, AllTrim(field_name))
-                AAdd(aField, AllTrim(field_type))
-                AAdd(aField, field_len)
-                AAdd(aField, field_dec)
-                
+            DO WHILE !VoDbEOF()
+                aField := ArrayNew(4)
+                aField[DBS_NAME] :=  AllTrim(field_name)
+                aField[DBS_TYPE] := AllTrim(field_type)
+                aField[DBS_LEN ] := field_len
+                aField[DBS_DEC ] := field_dec
                 AAdd( aStruct, aField )
-                DBSKIP(1, .F.)
+                VoDbSkip(1)
             ENDDO
             
             VODBCloseArea()
@@ -1211,29 +931,19 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
                 VODBSetSelect(nSelect)
             ENDIF
             
-            
-            
-            
             FOR i := 1 TO n
-            
                 IF (aStruct[i, DBS_TYPE] == "C") .AND. (aStruct[i, DBS_DEC] != 0)
                     aStruct[i,DBS_LEN] += aStruct[i,DBS_DEC] * 256
                 ENDIF
-                
             NEXT
-            
             DBCREATE(cFile1, aStruct, cDriver, lNew, cAlias )
-            
         ENDIF
         
-        
-    RECOVER USING oError
+    CATCH e AS RddError
         VODBCloseArea()
-        //oError:FuncSym := #_DBCREATE
-        //Eval( uErrBlock, oError)
-    END SEQUENCE
-    
-    ErrorBlock(uErrBlock)
+        e:FuncSym := #_DBCREATE
+        THROW e
+    END TRY
     
     RETURN ( Used() )
     
@@ -1305,16 +1015,12 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
     RETURN siCount
     
     
-    
-    
-    
-FUNCTION DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC STRICT
+FUNCTION __DbCopyStruct(cFile AS STRING, aFields AS ARRAY) AS LOGIC STRICT
 
-    RETURN DBCREATE(cFile, __DBFLEDIT(DbStruct(), aFields, NULL_ARRAY) )
+    RETURN DBCREATE(cFile, Db.FieldList(DbStruct(), aFields, NULL_ARRAY) )
     
     
-    
-FUNCTION DbCOpyXStruct(cFile AS STRING) AS LOGIC STRICT
+FUNCTION DbCopyXStruct(cFile AS STRING) AS LOGIC STRICT
 
     LOCAL siSaveSel,n,i AS DWORD
     LOCAL aStruct       AS ARRAY
@@ -1323,8 +1029,6 @@ FUNCTION DbCOpyXStruct(cFile AS STRING) AS LOGIC STRICT
     FIELD field_name, field_type, field_len, field_dec
     
     TRY
-    
-    
         IF !Used()
             THROW Db.DBCMDError()
         ENDIF
@@ -1336,8 +1040,6 @@ FUNCTION DbCOpyXStruct(cFile AS STRING) AS LOGIC STRICT
         VODBSelect(0, REF siSaveSel)
         
         _DbCreate(cFile)
-        
-        
         
         FOR i := 1 TO n
         
@@ -1356,7 +1058,7 @@ FUNCTION DbCOpyXStruct(cFile AS STRING) AS LOGIC STRICT
         NEXT
         
         IF (VODBGetSelect() <> siSaveSel)
-            DBCLOSEAREA()
+            DbCloseArea()
             VODBSetSelect(INT(siSaveSel))
         ENDIF
         
@@ -1366,12 +1068,7 @@ FUNCTION DbCOpyXStruct(cFile AS STRING) AS LOGIC STRICT
         lRetCode := .F.
     END TRY
     
-    
-    
     RETURN (lRetCode)
-    
-    
-    
     
     /// <summary>
     /// </summary>
@@ -1399,14 +1096,10 @@ FUNCTION DbStruct() AS ARRAY PASCAL
             aField := {}
             
             LOCAL oNewVal := NULL AS OBJECT
-            IF !VODBFieldInfo(DBS_PROPERTIES, i, REF oNewVal)
-                DoError("DbFieldInfo")
-            ENDIF
+            DbDo("DbFieldInfo", VODBFieldInfo(DBS_PROPERTIES, i, REF oNewVal))
             nProps:= Convert.ToUint32(oNewVal)
             FOR j := 1 UPTO nProps
-                IF !VODBFieldInfo(j, i, REF oNewVal)
-                    DoError("DbFieldInfo")
-                ENDIF
+                DbDo("DbFieldInfo", VODBFieldInfo(j, i, REF oNewVal))
                 AAdd(aField, oNewVal)
             NEXT
             
@@ -1650,5 +1343,55 @@ INTERNAL STATIC CLASS Db
     INTERNAL STATIC METHOD WithoutAlias(cName AS STRING) AS STRING 
         cName   := SubStr(cName, At(">", cName) + 1 )
         cName   := Trim(Upper(cName))
-        RETURN cName   
+        RETURN cName
+
+INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY 
+	
+	LOCAL aNew      AS ARRAY
+	LOCAL cobScan   AS CODEBLOCK
+	LOCAL cName     AS STRING
+	LOCAL n, i, j   AS DWORD
+	LOCAL lMatch	AS LOGIC
+	
+	
+	IF Empty(aNames)
+		RETURN (aStruct)
+	ENDIF
+	
+	//	UH 11/30/1998
+	IF Empty(aMatch)
+		lMatch := .F.
+	ELSE
+		lMatch := .T.
+	ENDIF
+	
+	aNew:= {}
+	n   := Len(aNames)
+	
+	FOR i := 1 TO n
+		AAdd(aNew, Db.WithoutAlias(AllTrim(aNames[i])))
+	NEXT
+	
+	aNames  := aNew
+	cName   := ""
+	aNew    := {}
+	cobScan := {|aFld| aFld[DBS_NAME] == cName}
+	
+	FOR i := 1 TO n
+		cName := aNames[i]
+		j := AScan(aStruct, cobScan)
+		
+		IF j > 0
+			IF lMatch
+				IF aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
+					AAdd(aNew, aStruct[j])
+				ENDIF
+			ELSE
+				AAdd(aNew, aStruct[j])
+			ENDIF
+		ENDIF
+	NEXT
+	
+	RETURN aNew
+
 END CLASS

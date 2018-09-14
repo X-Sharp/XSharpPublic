@@ -35,12 +35,10 @@ FUNCTION DbSeek(xValue, lSoft, lLast) AS LOGIC CLIPPER
 	ENDIF
 	VODBSetScope( dbsci)
 	DEFAULT(REF xValue, "")
-	IF !VODBSeek(xValue, lSoft)
-		RETURN (LOGIC) DoError(#DbSeek)
-	ENDIF
-	lRet := VODBFound()
-	VODBSetScope(dbsci)
-	
+    IF lRet := DbDo("DbSeek", VODBSeek(xValue, lSoft))
+	    lRet := VODBFound()
+	    VODBSetScope(dbsci)
+    ENDIF
 	RETURN lRet
 	
 /// <summary>
@@ -251,7 +249,6 @@ FUNCTION OrdCondSet(   cFor,       ;
 		lNoOptimize     ) AS LOGIC CLIPPER
 	
 	
-	LOCAL lRetCode          AS LOGIC
 	LOCAL dbOrdCondInfo     AS DbOrderCondInfo
 	
 	dbOrdCondInfo := DbOrderCondInfo{}
@@ -259,18 +256,9 @@ FUNCTION OrdCondSet(   cFor,       ;
         dbOrdCondInfo:ForExpression := cFor
 	ENDIF
 	
-	
-	IF !IsNil(uCobFor)
-        dbOrdCondInfo:ForBlock := uCobFor
-	ENDIF
-	
-	IF !IsNil(uCobWhile)
-		dbOrdCondInfo:WhileBlock := uCobWhile
-	ENDIF
-	
-	IF !IsNil(uCobEval)
-		dbOrdCondInfo:EvalBlock := uCobEval
-	ENDIF
+    dbOrdCondInfo:ForBlock := VoDb.ValidBlock(uCobFor)
+    dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(uCobWhile)
+	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(uCobEval)
 	
 	IF IsNumeric(nStep)
 		dbOrdCondInfo:StepSize := nStep
@@ -319,13 +307,7 @@ FUNCTION OrdCondSet(   cFor,       ;
 		dbOrdCondInfo:NoOptimize := lNoOptimize
 	ENDIF
 	
-	lRetCode := VODBOrdCondSet( dbOrdCondInfo )
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError(#OrdCondSet)
-	ENDIF
-	
-	RETURN lRetCode
+	RETURN DbDo("OrdCondSet", VODBOrdCondSet( dbOrdCondInfo ))
 	
 	
 	
@@ -334,9 +316,6 @@ FUNCTION OrdCondSet(   cFor,       ;
 /// <returns>
 /// </returns>
 FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
-	
-	LOCAL lRetCode  AS LOGIC
-	
 	IF IsNil(lUnique)
 		lUnique := SetUnique()
 	ENDIF
@@ -362,13 +341,8 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 		ENDIF
 	ENDIF
 	
-	lRetCode := VODBOrdCreate (cName, cOrder, cExpr, cobExpr, lUnique, NULL)
+    RETURN DbDo("OrdCreate", VODBOrdCreate (cName, cOrder, cExpr, cobExpr, lUnique, NULL))
 	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError(#OrdCreate)
-	ENDIF
-	
-	RETURN lRetCode
 	
 /// <summary>
 /// </summary>
@@ -387,21 +361,14 @@ FUNCTION OrdDescend     (xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION OrdDestroy (uOrder, cOrdBag) AS LOGIC CLIPPER
-	
-	LOCAL lRetCode AS LOGIC
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
 	ENDIF
-	IF IsString(uOrder)
-		lRetCode := VODBOrdDestroy (cOrdBag, uOrder)
-	ELSE
-		RddError.PostArgumentError("OrdDestroy", EDB_ORDDESTROY, nameof(uOrder), 1, {uOrder})
-        lRetCode := FALSE
-	ENDIF
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("OrdDestroy")
-	ENDIF
-	RETURN lRetCode
+	IF !IsString(uOrder)
+        RddError.PostArgumentError("OrdDestroy", EDB_ORDDESTROY, nameof(uOrder), 1, {uOrder})
+        RETURN FALSE
+    ENDIF
+    RETURN DbDo("OrdDestroy", VODBOrdDestroy (cOrdBag, uOrder))
 	
 	
 /// <summary>
@@ -480,17 +447,8 @@ FUNCTION ORDKeyVal      () AS USUAL STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION ORDLISTADD     (cOrdBag, uOrder) AS LOGIC CLIPPER
-	
-	LOCAL lRetCode  AS LOGIC
-	
-	lRetCode := VODBOrdListAdd(cOrdBag, uOrder)
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError(#ORDLISTADD)
-	ENDIF
-	
-	RETURN lRetCode
+FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
+	RETURN DbDo("OrdListAdd", VODBOrdListAdd(cOrdBag, uOrder))
 
 
 
@@ -499,16 +457,10 @@ FUNCTION ORDLISTADD     (cOrdBag, uOrder) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION OrdListClear   (cOrdBag, uOrder)  AS LOGIC CLIPPER
-	LOCAL lRetCode  AS LOGIC
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
-	ENDIF
-	lRetCode := VODBOrdListClear(cOrdBag, uOrder)
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("OrdListClear")
-	ENDIF
-	
-	RETURN lRetCode
+    ENDIF
+    RETURN DbDo("OrdListClear", VODBOrdListClear(cOrdBag, uOrder))
 	
 	
 /// <summary>
@@ -552,14 +504,8 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION OrdListRebuild ()  AS LOGIC STRICT
-	LOCAL lRetCode  AS LOGIC
-	lRetCode := VODBOrdListRebuild()
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("OrdListRebuild")
-	ENDIF
-	RETURN lRetCode
-	
-	
+    RETURN DbDo("OrdListRebuild", VODBOrdListRebuild())
+
 /// <summary>
 /// </summary>
 /// <returns>

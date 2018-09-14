@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN oResult
             ENDIF
             IF lThrow
-                PostNoTableError(cFunction)
+                RddError.PostNoTableError(cFunction)
             ENDIF
             RETURN NULL
             
@@ -26,10 +26,10 @@ BEGIN NAMESPACE XSharp.RDD
             IF oWA != NULL
                 RETURN oWA:Area
             ENDIF
-            PostNoTableError(cFunction)
+            RddError.PostNoTableError(cFunction)
             RETURN 0
-        END CLASS
-
+            END CLASS
+            
     CLASS RegisteredRDD
         PROPERTY AssemblyName   AS STRING AUTO 
         PROPERTY Assembly       AS Assembly AUTO 
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY RddType        AS System.Type AUTO
         PROPERTY TypeName       AS STRING AUTO
         STATIC PRIVATE rDDs     AS Dictionary<STRING, RegisteredRDD>
-            
+        
         CONSTRUCTOR(cRDDName AS STRING, oType AS System.Type)
             SELF:RddName        := cRDDName
             SELF:RddType        := oType
@@ -50,8 +50,8 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:RddName      := cRddName
             SELF:TypeName     := cTypeName
             RETURN    
-
-         STATIC CONSTRUCTOR()
+            
+        STATIC CONSTRUCTOR()
             rDDs    := Dictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "CAVODBF", "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBF",     "XSharp.RDD.DBF"})          // Just DBF
@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "DBFNSX",  "XSharp.RDD.DBFNSX"})       // DBF + SMT + NSX
-
+            
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "ADSADT",    "XSharp.ADS.ADSADT"})       // ADSADT
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
@@ -80,39 +80,40 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // ADS DBFCDX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // ADS DBFNTX
             RegisteredRDD.Add( RegisteredRDD{"XSharp.RDD", "Advantage.AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // ADS AXDBFVFP
-
-        RETURN
-
+            
+            RETURN
+            
         STATIC METHOD Find(cRddName AS STRING) AS RegisteredRDD
-           IF RDDs:ContainsKey(cRddName)
-              RETURN (RegisteredRDD) RDDs:Item[cRddName]
-           ENDIF
-           RETURN NULL
-
+            IF RDDs:ContainsKey(cRddName)
+                RETURN (RegisteredRDD) RDDs:Item[cRddName]
+            ENDIF
+            RETURN NULL
+            
         STATIC METHOD Add(oRDD AS RegisteredRDD) AS LOGIC
-           LOCAL cRddname AS STRING
-           cRddName := oRDD:RddName
-           IF RDDs:ContainsKey(cRddName)
-              RETURN FALSE
-           ENDIF
-           RDDs:Add(cRddName, oRDD)
-           RETURN TRUE
+            LOCAL cRddname AS STRING
+            cRddName := oRDD:RddName
+            IF RDDs:ContainsKey(cRddName)
+                RETURN FALSE
+            ENDIF
+            RDDs:Add(cRddName, oRDD)
+            RETURN TRUE
+            
         METHOD Load() AS VOID
-             IF SELF:RddType == NULL 
+            IF SELF:RddType == NULL 
                 IF SELF:Assembly == NULL
                     SELF:Assembly := AssemblyHelper.Load(SELF:AssemblyName)
                 ENDIF
                 IF (SELF:Assembly != NULL)
-                  SELF:RddType := SELF:Assembly:GetType(SELF:TypeName)
+                    SELF:RddType := SELF:Assembly:GetType(SELF:TypeName)
                 ENDIF
-             ENDIF
-
-    END CLASS
-
-    STRUCTURE _RddList
+            ENDIF
+            
+            END CLASS
+            
+    STRUCTURE RddList
         EXPORT atomRddName AS STRING[]
         PROPERTY uiRDDCount AS DWORD GET (DWORD) atomRDDName:Length
-
+        
         // Create RDDList from class Tree
         CONSTRUCTOR(oRDD AS WorkArea)
             VAR names := List<STRING>{}
@@ -129,23 +130,15 @@ BEGIN NAMESPACE XSharp.RDD
             ENDDO
             names:Reverse()
             atomRDDName := names:ToArray()
-
+            
         CONSTRUCTOR(aNames AS STRING[])
             atomRDDName := aNames
             RETURN
             
             
-
+            
     END STRUCTURE
 END NAMESPACE
 
 
-// Generate NOTABLE Error    
-INTERNAL FUNCTION PostNoTableError( funcName AS STRING ) AS RddError
-    LOCAL e := RddError{} AS RddError
-    e:SubSystem := "DBCMD"
-    e:Severity := 2
-    e:GenCode := EG_NOTABLE
-    e:SubCode := EDB_NOTABLE
-    e:FuncSym := funcName
-    THROW e
+

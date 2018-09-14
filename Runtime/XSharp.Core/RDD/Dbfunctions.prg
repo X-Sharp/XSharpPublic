@@ -20,7 +20,13 @@ FUNCTION Alias0() AS STRING
     ENDIF                            
     RETURN String.Empty
 
-
+    /// <summary>
+    /// Determine when beginning-of-file is encountered.
+    /// </summary>
+    /// <returns>TRUE after an attempt to skip backward beyond the first logical record in a database file or if
+    /// the current database file contains no records; otherwise, FALSE.  If there is no database file open in the
+    /// current work area, BOF() returns TRUE.</returns>
+    /// <remarks>BOF() is the same as VODBBOF().</remarks>
 FUNCTION BOF() AS LOGIC    
    RETURN VODBBof()
 
@@ -44,7 +50,7 @@ FUNCTION DbPack() AS LOGIC STRICT
 	LOCAL lRetCode  AS LOGIC
 	lRetCode := VODBPack()
 	IF !lRetCode
-		//lRetCode := DoError(#DbPack)
+		lRetCode := (LOGIC) DoError("DbPack")
 	ENDIF
 	
 	RETURN lRetCode
@@ -60,7 +66,7 @@ FUNCTION DbRecall() AS LOGIC STRICT
 	lRetCode := VODBRecall()
 	
 	IF !lRetCode
-		//lRetCode := DoError(#DbRecall)
+		lRetCode := (LOGIC) DoError("DbRecall")
 	ENDIF
 	
 	RETURN lRetCode
@@ -75,32 +81,26 @@ FUNCTION DbUnLock() AS LOGIC STRICT
 	lRetCode := VODBUnlock(NULL_OBJECT)
 	
 	IF !lRetCode
-		//lRetCode := DoError(#DbUnLock)
+		lRetCode := (LOGIC) DoError("DbUnLock")
 	ENDIF
 	
 	RETURN lRetCode
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <summary>Remove all records from the current workarea./// </summary>
+/// <returns>TRUE if successful; otherwise, FALSE./// </returns>
 FUNCTION DbZap() AS LOGIC STRICT
-	
 	LOCAL lRetCode  AS LOGIC
-	
 	lRetCode := VODBZap()
-	
 	IF !lRetCode
-		//lRetCode := DoError(#DbZap)
+		lRetCode := (LOGIC) DoError("DbZap")
 	ENDIF
-	
 	RETURN lRetCode
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <summary>Release all locks for all work areas.</summary>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <remarks>DBUnlockAll() releases any record or file locks obtained by the current process for any work area.
+/// DBUnlockAll() is only meaningful on a shared database.  It is equivalent to calling DBUnlock() on every occupied work area.</remarks>
 FUNCTION DbUnlockAll() AS LOGIC STRICT
 	RETURN VODBUnlockAll()
 
@@ -111,7 +111,14 @@ FUNCTION DbUnlockAll() AS LOGIC STRICT
 FUNCTION DELETED() AS LOGIC STRICT
 	RETURN VODBDeleted()
 
-FUNCTION EOF() AS LOGIC
+     /// <summary>
+    /// Determine when end-of-file is encountered.
+    /// </summary>
+    //// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
+    /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
+    /// database file open in the current work area, EOF() returns TRUE.<remarks>
+    /// <remarks>EOF() is the same as VODBEOF().</remarks>
+    FUNCTION EOF() AS LOGIC
    RETURN VODBEof()
 
 /// <summary>
@@ -222,7 +229,7 @@ FUNCTION DBBUFFREFRESH  () AS LOGIC STRICT
 	lRetCode := VODBBuffRefresh()
 	
 	IF !lRetCode
-		//lRetCode := DoError(#DBBUFFREFRESH)
+		lRetCode := (LOGIC) DoError("DBBUFFREFRESH")
 	ENDIF
 	
 	RETURN lRetCode
@@ -238,7 +245,7 @@ FUNCTION DBCLEARFILTER  () AS LOGIC STRICT
 	lRetCode := VODBClearFilter()
 	
 	IF !lRetCode
-		//lRetCode := DoError(#DBCLEARFILTER)
+		lRetCode := (LOGIC) DoError("DBCLEARFILTER")
 	ENDIF
 	
 	RETURN lRetCode
@@ -291,7 +298,7 @@ FUNCTION DbContinue() AS LOGIC STRICT
 	LOCAL lRetCode AS LOGIC
 	lRetCode := VODBContinue()
 	IF !lRetCode
-		//lRetCode := DoError(#DbContinue)
+		lRetCode := (LOGIC) DoError("DbContinue")
 	ENDIF
 	
 	RETURN lRetCode
@@ -330,7 +337,7 @@ FUNCTION DbGoBottom() AS LOGIC STRICT
 	LOCAL lRetCode  AS LOGIC
 	lRetCode := VODBGoBottom()
 	IF !lRetCode
-		//lRetCode := DoError(#DbGoBottom)
+		lRetCode := (LOGIC) DoError("DbGoBottom")
 	ENDIF
 	
 	RETURN lRetCode
@@ -342,15 +349,11 @@ FUNCTION DbGoBottom() AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbGotop() AS LOGIC STRICT
-	
 	LOCAL lRetCode  AS LOGIC
-	
 	lRetCode := VODBGoTop()
-	
 	IF !lRetCode
-		//lRetCode := DoError(#DbGotop)
+		lRetCode := (LOGIC) DoError("DbGotop")
 	ENDIF
-	
 	RETURN lRetCode
 
 
@@ -360,13 +363,11 @@ FUNCTION DbGotop() AS LOGIC STRICT
 /// </returns>
 FUNCTION RDDName        () AS STRING STRICT
 	LOCAL cRet      AS STRING
-	
 	IF Used()
 		cRet := VODBRddName()
 	ELSE
 		cRet := RddSetDefault()
 	ENDIF
-	
 	RETURN cRet
 
 
@@ -414,3 +415,13 @@ FUNCTION RLock() AS LOGIC STRICT
 /// </returns>
 FUNCTION Used() AS LOGIC
     RETURN RuntimeState.Workareas:CurrentWorkArea != NULL
+
+
+FUNCTION DoError (cSymFunc AS STRING, nTries:= 0 AS INT) AS OBJECT
+	LOCAL oError    AS Error
+    LOCAL bBlock    AS ICodeBlock
+	oError := Error{RuntimeState.LastRDDError}
+	oError:FuncSym := cSymFunc
+    oError:Tries   := nTries
+    bBlock := XSharp.RuntimeState.GetValue<ICodeBlock>(Set.ErrorBlock)
+	RETURN bBlock:EvalBlock(oError)

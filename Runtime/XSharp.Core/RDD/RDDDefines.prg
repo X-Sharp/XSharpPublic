@@ -173,106 +173,106 @@ DEFINE DBI_GET_ACE_STMT_HANDLE   := DbInfo.DBI_GET_ACE_STMT_HANDLE
 
 
 // OrderInfo Defines
-DEFINE DBOI_CONDITION 	:= DBOrderInfo.DBOI_CONDITION      // String: The order's conditional expression     
-DEFINE DBOI_EXPRESSION 	:= DBOrderInfo.DBOI_EXPRESSION 	// String: The order's key expression             
-DEFINE DBOI_POSITION 	:= DBOrderInfo.DBOI_POSITION  	// Number: The current key position in scope and filter  
-DEFINE DBOI_RECNO 		:= DBOrderInfo.DBOI_RECNO 		  	// Number: The current key position disregarding filters 
-DEFINE DBOI_NAME 		:= DBOrderInfo.DBOI_NAME 		   	// String: The name of the order                      
-DEFINE DBOI_NUMBER 		:= DBOrderInfo.DBOI_NUMBER 		 	// Number: The numeric position in the list of orders
-DEFINE DBOI_BAGNAME 	:= DBOrderInfo.DBOI_BAGNAME 	 	// String: The name of the file containing this order
-DEFINE DBOI_INDEXNAME 	:= DBOrderInfo.DBOI_INDEXNAME   // Alias
-DEFINE DBOI_BAGEXT 		:= DBOrderInfo.DBOI_BAGEXT 		   	// String: The extension of the file containing this order
-DEFINE DBOI_INDEXEXT  	:= DBOrderInfo.DBOI_INDEXEXT  	   // Alias
-DEFINE DBOI_ORDERCOUNT  := DBOrderInfo.DBOI_ORDERCOUNT     // Number: The count of ORDERS contained in an index file or in total
-DEFINE DBOI_FILEHANDLE 	:= DBOrderInfo.DBOI_FILEHANDLE 		// Stream: The stream of the index
-DEFINE DBOI_ISCOND 		:= DBOrderInfo.DBOI_ISCOND 			// Logic : Does the order have a FOR condition?
-DEFINE DBOI_ISDESC 		:= DBOrderInfo.DBOI_ISDESC 			// Logic : Is the order DESCENDing? 
-DEFINE DBOI_UNIQUE 		:= DBOrderInfo.DBOI_UNIQUE 			// Logic : Does the order have the UNIQUE attribute?
+DEFINE DBOI_CONDITION 	:= DbOrder_Info.DBOI_CONDITION      // String: The order's conditional expression     
+DEFINE DBOI_EXPRESSION 	:= DbOrder_Info.DBOI_EXPRESSION 	// String: The order's key expression             
+DEFINE DBOI_POSITION 	:= DbOrder_Info.DBOI_POSITION  	// Number: The current key position in scope and filter  
+DEFINE DBOI_RECNO 		:= DbOrder_Info.DBOI_RECNO 		  	// Number: The current key position disregarding filters 
+DEFINE DBOI_NAME 		:= DbOrder_Info.DBOI_NAME 		   	// String: The name of the order                      
+DEFINE DBOI_NUMBER 		:= DbOrder_Info.DBOI_NUMBER 		 	// Number: The numeric position in the list of orders
+DEFINE DBOI_BAGNAME 	:= DbOrder_Info.DBOI_BAGNAME 	 	// String: The name of the file containing this order
+DEFINE DBOI_INDEXNAME 	:= DbOrder_Info.DBOI_INDEXNAME   // Alias
+DEFINE DBOI_BAGEXT 		:= DbOrder_Info.DBOI_BAGEXT 		   	// String: The extension of the file containing this order
+DEFINE DBOI_INDEXEXT  	:= DbOrder_Info.DBOI_INDEXEXT  	   // Alias
+DEFINE DBOI_ORDERCOUNT  := DbOrder_Info.DBOI_ORDERCOUNT     // Number: The count of ORDERS contained in an index file or in total
+DEFINE DBOI_FILEHANDLE 	:= DbOrder_Info.DBOI_FILEHANDLE 		// Stream: The stream of the index
+DEFINE DBOI_ISCOND 		:= DbOrder_Info.DBOI_ISCOND 			// Logic : Does the order have a FOR condition?
+DEFINE DBOI_ISDESC 		:= DbOrder_Info.DBOI_ISDESC 			// Logic : Is the order DESCENDing? 
+DEFINE DBOI_UNIQUE 		:= DbOrder_Info.DBOI_UNIQUE 			// Logic : Does the order have the UNIQUE attribute?
 
 
 /* Clipper 5.3-level constants */
-DEFINE DBOI_FULLPATH 	:= DBOrderInfo.DBOI_FULLPATH 	   	// String: The full path to the index file (Bag)
-DEFINE DBOI_KEYTYPE 	:= DBOrderInfo.DBOI_KEYTYPE 	 	// The type of the order's key  
-DEFINE DBOI_KEYSIZE 	:= DBOrderInfo.DBOI_KEYSIZE 	 	// Number: The length of the order's key
-DEFINE DBOI_KEYCOUNT 	:= DBOrderInfo.DBOI_KEYCOUNT 	 	// Number: The count of keys in scope and filter
-DEFINE DBOI_SETCODEBLOCK:= DBOrderInfo.DBOI_SETCODEBLOCK 	// Block : The codeblock that produces the key 
-DEFINE DBOI_KEYDEC 		:= DBOrderInfo.DBOI_KEYDEC 		 	// Number: The # of decimals in a numeric key 
-DEFINE DBOI_HPLOCKING 	:= DBOrderInfo.DBOI_HPLOCKING 	 	// Logic : Using High Performance locking for this order?
-DEFINE DBOI_LOCKOFFSET 	:= DBOrderInfo.DBOI_LOCKOFFSET  	// Number: The offset used for logical locking 
-DEFINE DBOI_KEYADD 		:= DbOrderInfo.DBOI_KEYADD 		 	// Logic: Custom Index: Was Key added successfully? 
-DEFINE DBOI_KEYDELETE 	:= DbOrderInfo.DBOI_KEYDELETE 		// Logic: Custom Index: Was Key Deletion successful? 
-DEFINE DBOI_KEYVAL 		:= DbOrderInfo.DBOI_KEYVAL 			// Object: The value of the current key 
-DEFINE DBOI_SCOPETOP 	:= DbOrderInfo.DBOI_SCOPETOP 		// Object: Get or Set the scope top    
-DEFINE DBOI_SCOPEBOTTOM := DbOrderInfo.DBOI_SCOPEBOTTOM	// Object: Get or Set the scope bottom
-DEFINE DBOI_SCOPETOPCLEAR := DbOrderInfo.DBOI_SCOPETOPCLEAR  	// None	 :
-DEFINE DBOI_SCOPEBOTTOMCLEAR:= DbOrderInfo.DBOI_SCOPEBOTTOMCLEAR // None :
-DEFINE DBOI_CUSTOM 		:= DbOrderInfo.DBOI_CUSTOM // Logic: Is this a Custom Index?  
-DEFINE DBOI_SKIPUNIQUE 	:= DbOrderInfo.DBOI_SKIPUNIQUE // Logic: Was a skip to adjacent unique Key successful?  
-DEFINE DBOI_KEYSINCLUDED:= DbOrderInfo.DBOI_KEYSINCLUDED 	// Number: Number of keys in the index order
-DEFINE DBOI_KEYNORAW 	:= DbOrderInfo.DBOI_KEYNORAW 	 // Number: The key number disregarding filters
-DEFINE DBOI_KEYCOUNTRAW := DbOrderInfo.DBOI_KEYCOUNTRAW   // Number: The key count disregarding filter  
-DEFINE DBOI_OPTLEVEL 	:= DbOrderInfo.DBOI_OPTLEVEL 	 // Number: Optimization level for current query
+DEFINE DBOI_FULLPATH 	:= DbOrder_Info.DBOI_FULLPATH 	   	// String: The full path to the index file (Bag)
+DEFINE DBOI_KEYTYPE 	:= DbOrder_Info.DBOI_KEYTYPE 	 	// The type of the order's key  
+DEFINE DBOI_KEYSIZE 	:= DbOrder_Info.DBOI_KEYSIZE 	 	// Number: The length of the order's key
+DEFINE DBOI_KEYCOUNT 	:= DbOrder_Info.DBOI_KEYCOUNT 	 	// Number: The count of keys in scope and filter
+DEFINE DBOI_SETCODEBLOCK:= DbOrder_Info.DBOI_SETCODEBLOCK 	// Block : The codeblock that produces the key 
+DEFINE DBOI_KEYDEC 		:= DbOrder_Info.DBOI_KEYDEC 		 	// Number: The # of decimals in a numeric key 
+DEFINE DBOI_HPLOCKING 	:= DbOrder_Info.DBOI_HPLOCKING 	 	// Logic : Using High Performance locking for this order?
+DEFINE DBOI_LOCKOFFSET 	:= DbOrder_Info.DBOI_LOCKOFFSET  	// Number: The offset used for logical locking 
+DEFINE DBOI_KEYADD 		:= DbOrder_Info.DBOI_KEYADD 		 	// Logic: Custom Index: Was Key added successfully? 
+DEFINE DBOI_KEYDELETE 	:= DbOrder_Info.DBOI_KEYDELETE 		// Logic: Custom Index: Was Key Deletion successful? 
+DEFINE DBOI_KEYVAL 		:= DbOrder_Info.DBOI_KEYVAL 			// Object: The value of the current key 
+DEFINE DBOI_SCOPETOP 	:= DbOrder_Info.DBOI_SCOPETOP 		// Object: Get or Set the scope top    
+DEFINE DBOI_SCOPEBOTTOM := DbOrder_Info.DBOI_SCOPEBOTTOM	// Object: Get or Set the scope bottom
+DEFINE DBOI_SCOPETOPCLEAR := DbOrder_Info.DBOI_SCOPETOPCLEAR  	// None	 :
+DEFINE DBOI_SCOPEBOTTOMCLEAR:= DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR // None :
+DEFINE DBOI_CUSTOM 		:= DbOrder_Info.DBOI_CUSTOM // Logic: Is this a Custom Index?  
+DEFINE DBOI_SKIPUNIQUE 	:= DbOrder_Info.DBOI_SKIPUNIQUE // Logic: Was a skip to adjacent unique Key successful?  
+DEFINE DBOI_KEYSINCLUDED:= DbOrder_Info.DBOI_KEYSINCLUDED 	// Number: Number of keys in the index order
+DEFINE DBOI_KEYNORAW 	:= DbOrder_Info.DBOI_KEYNORAW 	 // Number: The key number disregarding filters
+DEFINE DBOI_KEYCOUNTRAW := DbOrder_Info.DBOI_KEYCOUNTRAW   // Number: The key count disregarding filter  
+DEFINE DBOI_OPTLEVEL 	:= DbOrder_Info.DBOI_OPTLEVEL 	 // Number: Optimization level for current query
 
 
-DEFINE DBOI_STRICTREAD := DbOrderInfo.DBOI_STRICTREAD  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
-DEFINE DBOI_OPTIMIZE   := DbOrderInfo.DBOI_OPTIMIZE    /* Flag for whether to use query optimization             */
-DEFINE DBOI_AUTOOPEN   := DbOrderInfo.DBOI_AUTOOPEN    /* Flag for automatically opening structural indexes      */
-DEFINE DBOI_AUTOORDER  := DbOrderInfo.DBOI_AUTOORDER   /* When a structural index is opened, the order to be set */
-DEFINE DBOI_AUTOSHARE  := DbOrderInfo.DBOI_AUTOSHARE   /* When a network is detected, open the index shared, otherwise open exclusively   */ 
+DEFINE DBOI_STRICTREAD := DbOrder_Info.DBOI_STRICTREAD  /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  */
+DEFINE DBOI_OPTIMIZE   := DbOrder_Info.DBOI_OPTIMIZE    /* Flag for whether to use query optimization             */
+DEFINE DBOI_AUTOOPEN   := DbOrder_Info.DBOI_AUTOOPEN    /* Flag for automatically opening structural indexes      */
+DEFINE DBOI_AUTOORDER  := DbOrder_Info.DBOI_AUTOORDER   /* When a structural index is opened, the order to be set */
+DEFINE DBOI_AUTOSHARE  := DbOrder_Info.DBOI_AUTOSHARE   /* When a network is detected, open the index shared, otherwise open exclusively   */ 
 
 
 /* Harbour extensions */
 
-DEFINE DBOI_SKIPEVAL           := DbOrderInfo.DBOI_SKIPEVAL           /* skip while code block doesn't return TRUE */
-DEFINE DBOI_SKIPEVALBACK       := DbOrderInfo.DBOI_SKIPEVALBACK       /* skip backward while code block doesn't return TRUE */
-DEFINE DBOI_SKIPREGEX          := DbOrderInfo.DBOI_SKIPREGEX          /* skip while regular expression on index key doesn't return TRUE */
-DEFINE DBOI_SKIPREGEXBACK      := DbOrderInfo.DBOI_SKIPREGEXBACK      /* skip backward while regular expression on index key doesn't return TRUE */
-DEFINE DBOI_SKIPWILD           := DbOrderInfo.DBOI_SKIPWILD           /* skip while while comparison with given pattern with wildcards doesn't return TRUE */
-DEFINE DBOI_SKIPWILDBACK       := DbOrderInfo.DBOI_SKIPWILDBACK       /* skip backward while comparison with given pattern with wildcards doesn't return TRUE */
-DEFINE DBOI_SCOPEEVAL          := DbOrderInfo.DBOI_SCOPEEVAL          /* skip through index evaluating given C function */
-DEFINE DBOI_FINDREC            := DbOrderInfo.DBOI_FINDREC            /* find given record in a Tag beginning from TOP */
-DEFINE DBOI_FINDRECCONT        := DbOrderInfo.DBOI_FINDRECCONT        /* find given record in a Tag beginning from current position */
-DEFINE DBOI_SCOPESET           := DbOrderInfo.DBOI_SCOPESET           /* set both scopes */
-DEFINE DBOI_SCOPECLEAR         := DbOrderInfo.DBOI_SCOPECLEAR         /* clear both scopes */
+DEFINE DBOI_SKIPEVAL           := DbOrder_Info.DBOI_SKIPEVAL           /* skip while code block doesn't return TRUE */
+DEFINE DBOI_SKIPEVALBACK       := DbOrder_Info.DBOI_SKIPEVALBACK       /* skip backward while code block doesn't return TRUE */
+DEFINE DBOI_SKIPREGEX          := DbOrder_Info.DBOI_SKIPREGEX          /* skip while regular expression on index key doesn't return TRUE */
+DEFINE DBOI_SKIPREGEXBACK      := DbOrder_Info.DBOI_SKIPREGEXBACK      /* skip backward while regular expression on index key doesn't return TRUE */
+DEFINE DBOI_SKIPWILD           := DbOrder_Info.DBOI_SKIPWILD           /* skip while while comparison with given pattern with wildcards doesn't return TRUE */
+DEFINE DBOI_SKIPWILDBACK       := DbOrder_Info.DBOI_SKIPWILDBACK       /* skip backward while comparison with given pattern with wildcards doesn't return TRUE */
+DEFINE DBOI_SCOPEEVAL          := DbOrder_Info.DBOI_SCOPEEVAL          /* skip through index evaluating given C function */
+DEFINE DBOI_FINDREC            := DbOrder_Info.DBOI_FINDREC            /* find given record in a Tag beginning from TOP */
+DEFINE DBOI_FINDRECCONT        := DbOrder_Info.DBOI_FINDRECCONT        /* find given record in a Tag beginning from current position */
+DEFINE DBOI_SCOPESET           := DbOrder_Info.DBOI_SCOPESET           /* set both scopes */
+DEFINE DBOI_SCOPECLEAR         := DbOrder_Info.DBOI_SCOPECLEAR         /* clear both scopes */
 
 
-DEFINE DBOI_BAGCOUNT           := DbOrderInfo.DBOI_BAGCOUNT           /* number of open order bags */
-DEFINE DBOI_BAGNUMBER          := DbOrderInfo.DBOI_BAGNUMBER          /* bag position in bag list */
-DEFINE DBOI_BAGORDER           := DbOrderInfo.DBOI_BAGORDER           /* number of first order in a bag */
-DEFINE DBOI_ISMULTITAG         := DbOrderInfo.DBOI_ISMULTITAG         /* does RDD support multi tag in index file */
-DEFINE DBOI_ISSORTRECNO        := DbOrderInfo.DBOI_ISSORTRECNO        /* is record number part of key in sorting */
-DEFINE DBOI_LARGEFILE          := DbOrderInfo.DBOI_LARGEFILE          /* is large file size (>=4GB) supported */
-DEFINE DBOI_TEMPLATE           := DbOrderInfo.DBOI_TEMPLATE           /* order with free user keys */
-DEFINE DBOI_MULTIKEY           := DbOrderInfo.DBOI_MULTIKEY           /* custom order with multikeys */
-DEFINE DBOI_CHGONLY            := DbOrderInfo.DBOI_CHGONLY            /* update only existing keys */
-DEFINE DBOI_PARTIAL            := DbOrderInfo.DBOI_PARTIAL            /* is index partially updated */
-DEFINE DBOI_SHARED             := DbOrderInfo.DBOI_SHARED             /* is index open in shared mode */
-DEFINE DBOI_ISREADONLY         := DbOrderInfo.DBOI_ISREADONLY         /* is index open in readonly mode */
-DEFINE DBOI_READLOCK           := DbOrderInfo.DBOI_READLOCK           /* get/set index read lock */
-DEFINE DBOI_WRITELOCK          := DbOrderInfo.DBOI_WRITELOCK          /* get/set index write lock */
-DEFINE DBOI_UPDATECOUNTER      := DbOrderInfo.DBOI_UPDATECOUNTER      /* get/set update index counter */
-DEFINE DBOI_EVALSTEP           := DbOrderInfo.DBOI_EVALSTEP           /* eval step (EVERY) used in index command */
-DEFINE DBOI_ISREINDEX          := DbOrderInfo.DBOI_ISREINDEX          /* Is reindex in process */
-DEFINE DBOI_I_BAGNAME          := DbOrderInfo.DBOI_I_BAGNAME          /* created index name */
-DEFINE DBOI_I_TAGNAME          := DbOrderInfo.DBOI_I_TAGNAME          /* created tag name */
-DEFINE DBOI_RELKEYPOS          := DbOrderInfo.DBOI_RELKEYPOS          /* get/set relative key position (in range 0 - 1) */
-DEFINE DBOI_USECURRENT         := DbOrderInfo.DBOI_USECURRENT         /* get/set "use current index" flag */
-DEFINE DBOI_INDEXTYPE          := DbOrderInfo.DBOI_INDEXTYPE          /* current index type */
-DEFINE DBOI_RESETPOS           := DbOrderInfo.DBOI_RESETPOS           /* rest logical and raw positions */
-DEFINE DBOI_INDEXPAGESIZE      := DbOrderInfo.DBOI_INDEXPAGESIZE      /* get index page size */
+DEFINE DBOI_BAGCOUNT           := DbOrder_Info.DBOI_BAGCOUNT           /* number of open order bags */
+DEFINE DBOI_BAGNUMBER          := DbOrder_Info.DBOI_BAGNUMBER          /* bag position in bag list */
+DEFINE DBOI_BAGORDER           := DbOrder_Info.DBOI_BAGORDER           /* number of first order in a bag */
+DEFINE DBOI_ISMULTITAG         := DbOrder_Info.DBOI_ISMULTITAG         /* does RDD support multi tag in index file */
+DEFINE DBOI_ISSORTRECNO        := DbOrder_Info.DBOI_ISSORTRECNO        /* is record number part of key in sorting */
+DEFINE DBOI_LARGEFILE          := DbOrder_Info.DBOI_LARGEFILE          /* is large file size (>=4GB) supported */
+DEFINE DBOI_TEMPLATE           := DbOrder_Info.DBOI_TEMPLATE           /* order with free user keys */
+DEFINE DBOI_MULTIKEY           := DbOrder_Info.DBOI_MULTIKEY           /* custom order with multikeys */
+DEFINE DBOI_CHGONLY            := DbOrder_Info.DBOI_CHGONLY            /* update only existing keys */
+DEFINE DBOI_PARTIAL            := DbOrder_Info.DBOI_PARTIAL            /* is index partially updated */
+DEFINE DBOI_SHARED             := DbOrder_Info.DBOI_SHARED             /* is index open in shared mode */
+DEFINE DBOI_ISREADONLY         := DbOrder_Info.DBOI_ISREADONLY         /* is index open in readonly mode */
+DEFINE DBOI_READLOCK           := DbOrder_Info.DBOI_READLOCK           /* get/set index read lock */
+DEFINE DBOI_WRITELOCK          := DbOrder_Info.DBOI_WRITELOCK          /* get/set index write lock */
+DEFINE DBOI_UPDATECOUNTER      := DbOrder_Info.DBOI_UPDATECOUNTER      /* get/set update index counter */
+DEFINE DBOI_EVALSTEP           := DbOrder_Info.DBOI_EVALSTEP           /* eval step (EVERY) used in index command */
+DEFINE DBOI_ISREINDEX          := DbOrder_Info.DBOI_ISREINDEX          /* Is reindex in process */
+DEFINE DBOI_I_BAGNAME          := DbOrder_Info.DBOI_I_BAGNAME          /* created index name */
+DEFINE DBOI_I_TAGNAME          := DbOrder_Info.DBOI_I_TAGNAME          /* created tag name */
+DEFINE DBOI_RELKEYPOS          := DbOrder_Info.DBOI_RELKEYPOS          /* get/set relative key position (in range 0 - 1) */
+DEFINE DBOI_USECURRENT         := DbOrder_Info.DBOI_USECURRENT         /* get/set "use current index" flag */
+DEFINE DBOI_INDEXTYPE          := DbOrder_Info.DBOI_INDEXTYPE          /* current index type */
+DEFINE DBOI_RESETPOS           := DbOrder_Info.DBOI_RESETPOS           /* rest logical and raw positions */
+DEFINE DBOI_INDEXPAGESIZE      := DbOrder_Info.DBOI_INDEXPAGESIZE      /* get index page size */
 
-DEFINE DBOI_USER 				:= DbOrderInfo.DBOI_USER
+DEFINE DBOI_USER 				:= DbOrder_Info.DBOI_USER
 
 // Advantage extensions
 
-DEFINE DBOI_AXS_PERCENT_INDEXED  := DbOrderInfo.DBOI_AXS_PERCENT_INDEXED
-DEFINE DBOI_GET_ACE_INDEX_HANDLE := DbOrderInfo.DBOI_GET_ACE_INDEX_HANDLE
+DEFINE DBOI_AXS_PERCENT_INDEXED  := DbOrder_Info.DBOI_AXS_PERCENT_INDEXED
+DEFINE DBOI_GET_ACE_INDEX_HANDLE := DbOrder_Info.DBOI_GET_ACE_INDEX_HANDLE
 
 
 // Duplicates
-DEFINE DBOI_KEYGOTO 	:= DbOrderInfo.DBOI_POSITION
-DEFINE DBOI_KEYGOTORAW 	:= DbOrderInfo.DBOI_KEYNORAW
-DEFINE DBOI_KEYNO	 	:= DbOrderInfo.DBOI_POSITION
+DEFINE DBOI_KEYGOTO 	:= DbOrder_Info.DBOI_POSITION
+DEFINE DBOI_KEYGOTORAW 	:= DbOrder_Info.DBOI_KEYNORAW
+DEFINE DBOI_KEYNO	 	:= DbOrder_Info.DBOI_POSITION
 
 // Blob defines
 

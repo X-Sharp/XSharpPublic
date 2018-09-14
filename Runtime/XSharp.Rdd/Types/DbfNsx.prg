@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFNSX RDD. For DBF/SMT/NSX.</summary>
 CLASS DBFNSX INHERIT DBFSMT

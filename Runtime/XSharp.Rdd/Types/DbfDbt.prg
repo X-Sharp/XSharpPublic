@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _oRDD       AS DBF
         PROTECT _blockSize  AS SHORT
         PROTECT _defExt     AS STRING
-        PROTECT _lockScheme AS Dbf.DbfLocking
+        PROTECT _lockScheme AS DbfLocking
         
         PROPERTY DefExt AS STRING
             GET
@@ -223,7 +223,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF newBlock
                 IF ( SELF:_Shared )
-                    locked := SELF:_tryLock( (UINT64)SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
+                    locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data
                 FSeek3( SELF:_hFile, 0, FS_END )
@@ -263,7 +263,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             IF ( locked )
-                SELF:_unlock( (UINT64)SELF:_lockScheme:Offset, 1 )
+                SELF:_unlock( SELF:_lockScheme:Offset, 1 )
             ENDIF
             //
             IF !isOk

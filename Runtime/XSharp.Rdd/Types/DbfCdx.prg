@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 // Inherits all standard DBF and Memo behavior
 // Only adds Order Handling
@@ -24,31 +24,31 @@ CONSTRUCTOR(oRDD AS DBF)
 	SUPER(oRDD)   
 	_oRDD := oRDD
 /// <inheritdoc />		
-METHOD OrderCondition(info AS XSharp.RDD.DbOrderCondInfo) AS LOGIC
+METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderCreate(info AS XSharp.RDD.DbOrderCreateInfo) AS LOGIC
+METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
     THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderDestroy(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderListAdd(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderListDelete(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD OrderListFocus(info AS XSharp.RDD.DbOrderInfo) AS LOGIC
+METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
 METHOD OrderListRebuild( ) AS LOGIC
 	THROW NotImplementedException{}
 /// <inheritdoc />
-METHOD Seek(info AS XSharp.RDD.DbSeekInfo) AS LOGIC		
+METHOD Seek(info AS DbSeekInfo) AS LOGIC		
     THROW NotImplementedException{}
 /// <inheritdoc />
 VIRTUAL PROPERTY Found AS LOGIC	

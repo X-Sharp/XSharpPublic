@@ -6,9 +6,11 @@
 
 USING System.IO
 USING XSharp.RDD.Enums
+USING System.Collections.Generic
+USING System.Linq
 // The classes below are simple. No properties, but all public fields.
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.Support
 
 /// <summary>Helper class to store the scope and codeblock for a DbEval() operation. </summary> 
 CLASS DbEvalInfo  
@@ -18,6 +20,9 @@ CLASS DbEvalInfo
 
 	/// <summary>A DbScopeInfo structure limiting the evaluation of Block.</summary>
 	PUBLIC ScopeInfo AS DbScopeInfo
+    CONSTRUCTOR()
+        SELF:ScopeInfo := DbScopeInfo{}
+        RETURN
 END CLASS 
 
 
@@ -52,6 +57,10 @@ CLASS DbFilterInfo
 		oClone:Optimized   := SELF:Optimized
 		oClone:Active	   := FALSE
 		RETURN oClone
+        
+    CONSTRUCTOR
+        SELF:Clear()
+        RETURN
 END CLASS 
 
 /// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>                 
@@ -273,9 +282,15 @@ END STRUCTURE
 /// <summary>Helper class to store information needed to perform a physical sort. </summary> 
 CLASS DbSortInfo 
 	/// <summary>A DbTransInfo object holding the destination work area, column transfer information, and scoping information for the Sort() method. </summary>
-	PUBLIC TransInfo AS DbTransInfo
+	PUBLIC TransInfo  AS DbTransInfo
 	/// <summary>An array of DbSortItem structures defining the key values for the sort.  Note that the key values are processed in the order that they appear in this array. </summary>
-	PUBLIC Items	 AS DbSortItem[]
+	PUBLIC Items	  AS DbSortItem[]
+	/// <summary>Number of items in the Items array. </summary>
+    PROPERTY ItemCount  AS LONG GET Items:Length
+    CONSTRUCTOR(transItemCount AS LONG, sortItemCount AS LONG)
+        SELF:TransInfo := DbTransInfo{transItemCount}
+        SELF:Items     := DbSortItem[]{sortItemCount}
+        RETURN
 END CLASS
 
 /// <summary>Helper structure to store information about a single sort key value. </summary> 
@@ -318,6 +333,11 @@ CLASS DbTransInfo
 	PUBLIC CONST Match	:= 1 AS LONG
 	/// <summary>The RDD has the ability to transfer an entire row.</summary>
 	PUBLIC CONST PutRec	:= 2 AS LONG
+    PUBLIC PROPERTY ItemCount AS LONG AUTO
+    CONSTRUCTOR(itemCount AS LONG)
+        SELF:Items := DbTransItem[]{itemCount}
+        SELF:Scope := DbScopeInfo{}
+        SELF:ItemCount := itemCount
 END CLASS
 
 /// <summary>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</summary> 
@@ -353,19 +373,34 @@ CLASS RddFieldInfo
 		Decimals 	:= nDecimals
 		Alias       := sName
 		RETURN
-	
+	METHOD Clone() AS RddFieldInfo
+        VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
+        info:Alias := SELF:Alias
+        RETURN info
+    METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
+        RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 END CLASS
 
 CLASS DbJoinList
+    PUBLIC DestSel AS DWORD
+    PUBLIC Fields AS DbJoinField[]
+    PUBLIC PROPERTY Count AS LONG GET Fields:Length
+    PUBLIC CONSTRUCTOR(nFields AS LONG)
+        SELF:Fields := DbJoinField[]{nFields}
+        RETURN
 END CLASS
 
-
-
-CLASS RddList
-END CLASS
-
+STRUCTURE DbJoinField
+    PUBLIC Area AS DWORD
+    PUBLIC Pos  AS DWORD
+END STRUCTURE
 
 CLASS DbFieldNames
+    PUBLIC fields AS STRING[]
+    PROPERTY fieldCount AS LONG GET fields:Length
+    CONSTRUCTOR (aFields AS IList<STRING>)
+        SELF:Fields := aFields:ToArray()
+        RETURN
 END CLASS
 
 

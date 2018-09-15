@@ -14,7 +14,8 @@ BEGIN NAMESPACE XSharp.RDD
 
     PUBLIC INTERFACE IRddSortWriter
         METHOD WriteSorted( sortInfo AS DBSORTINFO , obj AS OBJECT ) AS LOGIC
-            END INTERFACE
+    
+	END INTERFACE
             
             
     PUBLIC CLASS RddSortHelper

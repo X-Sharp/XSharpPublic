@@ -16,7 +16,7 @@ USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
-    CLASS DBF INHERIT Workarea
+    CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         PROTECT _Header			AS DbfHeader
         //PROTECT _HeaderLength	AS WORD  	// Size of header
         PROTECT _BufferValid	AS LOGIC	// Current Record is Valid
@@ -2074,24 +2074,144 @@ BEGIN NAMESPACE XSharp.RDD
             //
             RETURN isOk
 
-            //	METHOD Sort(info AS DbSortInfo) AS LOGIC
+		METHOD Sort(info AS DbSortInfo) AS LOGIC
+			LOCAL recordNumber AS LONG
+			LOCAL trInfo AS DbTransInfo
+			LOCAL hasWhile AS LOGIC
+			LOCAL hasFor AS LOGIC
+			LOCAL sort AS RddSortHelper
+			LOCAL i AS DWORD
+			LOCAL fieldPos AS LONG
+			LOCAL isNum AS LONG
+			LOCAL isOk AS LOGIC
+			LOCAL isQualified AS LOGIC
+			LOCAL readMore AS LOGIC
+			LOCAL limit AS LOGIC
+			LOCAL rec AS DBFSortRecord
+			LOCAL sc AS DbfSortCompare
+			//
+			recordNumber := 0
+			trInfo := info:TransInfo
+			hasWhile := trInfo:Scope:WhileBlock != NULL
+			hasFor := trInfo:Scope:ForBlock != NULL
+			sort := RddSortHelper{info, (DWORD)SELF:RecCount}
+			// 
+			i := 0
+			WHILE i < info:Items:Length
+				fieldPos := info:Items[i]:FieldNo
+				isNum := 0
+				IF (SELF:_Fields[fieldPos]:FieldType == DBFieldType.Number )
+					isNum := 2
+					info:Items[i]:Flags |= isNum
+				ENDIF
+				info:Items[i]:OffSet := SELF:_getFieldOffset(fieldPos)
+				info:Items[i]:Length := (LONG)SELF:_Fields[fieldPos]:Length
+				//Next Field
+				i++
+			ENDDO
+			isOk := TRUE
+			isQualified := TRUE
+			readMore := TRUE
+			limit := TRUE
+			//
+			//			IF ( SELF:_Relations:Count > 0)
+			//				SELF:ForceRel()
+			//			ENDIF
+			//
+			IF (trInfo:Scope:RecId != NULL)
+				recordNumber := Convert.ToInt32(trInfo:Scope:RecId)
+				isOk := SELF:GoTo(recordNumber)
+				readMore := TRUE
+				limit := TRUE
+				recordNumber := 1
+			ELSE
+				IF (trInfo:Scope:NextCount != 0)
+					limit := TRUE
+					recordNumber := trInfo:Scope:NextCount
+					IF (recordNumber < 1)
+						readMore := FALSE
+					ENDIF
+				ELSE
+					readMore := TRUE
+					limit := FALSE
+					IF ((trInfo:Scope:WhileBlock == NULL) .AND. (!trInfo:Scope:Rest))
+						isOk := SELF:GoTop()
+					ENDIF
+				ENDIF
+			ENDIF
+			WHILE ( isOk .AND. !SELF:_Eof .AND. readMore)
+				IF hasWhile
+					readMore := (LOGIC)trInfo:Scope:WhileBlock:EvalBlock()
+				ENDIF
+				IF readMore .AND. hasFor
+					isQualified := (LOGIC)trInfo:Scope:ForBlock:EvalBlock()
+				ELSE
+					isQualified := readMore
+				ENDIF
+				IF ((isOk) .AND. (isQualified))
+					isOk := SELF:_readRecord()
+					IF (isOk)
+						rec := DBFSortRecord{SELF:_RecordBuffer, (DWORD)SELF:_RecNo}
+						isOk := sort:Add(rec)
+					ENDIF
+				ENDIF
+				IF readMore .AND. limit
+					readMore := (--recordNumber != 0)
+				ENDIF
+				IF isOk .AND. readMore
+					isOk := SELF:Skip(1)
+				ENDIF
+			END WHILE
+			IF isOk
+				sc := DbfSortCompare{SELF, info}
+				isOk := sort:Sort(sc)
+			ENDIF
+			IF isOk
+				isOk := sort:Write(SELF)
+			ENDIF
+			RETURN isOk            
+			
+			// IRddSortWriter Interface, used by RddSortHelper
+		PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , o AS OBJECT ) AS LOGIC			
+			LOCAL record AS DBFSortRecord
+			//
+			record := (DBFSortRecord)o
+			Array.Copy(record:Data, SELF:_RecordBuffer, SELF:_RecordLength)
+			RETURN SELF:TransRec(sortInfo:TransInfo)
 
             // Properties
             //	PROPERTY Alias 		AS STRING GET
             /// <inheritdoc />
-        PROPERTY BoF 		AS LOGIC GET SELF:_Bof
-
-        /// <inheritdoc />
-        PROPERTY Deleted 	AS LOGIC
-            GET
-                // Update ?
-                SELF:_readRecord()
-                RETURN SELF:_Deleted
-            END GET
-        END PROPERTY
-
-        /// <inheritdoc />
-        PROPERTY EoF 		AS LOGIC GET SELF:_Eof
+		PROPERTY BoF 		AS LOGIC
+			GET 
+				IF SELF:_RelInfo != NULL
+					SELF:ForceRel()
+				ENDIF
+				RETURN SELF:_Bof
+			END GET
+		END PROPERTY
+		
+		/// <inheritdoc />
+		PROPERTY Deleted 	AS LOGIC 
+			GET
+				IF SELF:_RelInfo != NULL
+					SELF:ForceRel()
+				ENDIF				
+				// Update ?
+				SELF:_readRecord()
+				RETURN SELF:_Deleted
+			END GET
+		END PROPERTY
+		
+		/// <inheritdoc />
+		PROPERTY EoF 		AS LOGIC
+			GET 
+				IF SELF:_RelInfo != NULL
+					SELF:ForceRel()
+				ENDIF
+				RETURN SELF:_Eof
+			END GET
+		END PROPERTY
 
         //PROPERTY Exclusive	AS LOGIC GET
 
@@ -2530,6 +2650,100 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
     END CLASS
+
+		INTERNAL CLASS DBFSortRecord
+		PRIVATE _data AS BYTE[]
+		PRIVATE _Recno AS DWORD
+		
+		INTERNAL PROPERTY Data AS BYTE[] GET _data
+		
+		INTERNAL PROPERTY Recno AS DWORD GET _Recno
+		
+		INTERNAL CONSTRUCTOR(data AS BYTE[] , uiRecno AS DWORD )
+			SELF:_data := (BYTE[])data:Clone()
+			SELF:_Recno := uiRecno
+			
+			END CLASS
+			
+			
+			
+	INTERNAL CLASS DBFSortCompare IMPLEMENTS System.Collections.IComparer
+	
+		PRIVATE _sortInfo AS DBSORTINFO
+		PRIVATE _oRdd AS DBF
+		
+		INTERNAL CONSTRUCTOR( rdd AS DBF, info AS DBSORTINFO )
+			SELF:_oRdd := rdd
+			SELF:_sortInfo := info
+			
+			
+		PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS LONG
+			LOCAL recordX AS DBFSortRecord
+			LOCAL recordY AS DBFSortRecord
+			LOCAL dataBuffer AS BYTE[]
+			LOCAL dataBuffer2 AS BYTE[]
+			LOCAL diff AS LONG
+			LOCAL i AS LONG
+			LOCAL iLen AS LONG
+			LOCAL flags AS LONG
+			LOCAL start AS LONG
+			LOCAL dataX AS BYTE[]
+			LOCAL dataY AS BYTE[]
+			LOCAL longValue1 AS LONG
+			LOCAL longValue2 AS LONG
+			//
+			recordX := (DBFSortRecord)x
+			recordY := (DBFSortRecord)y
+			IF (recordX:Recno == recordY:Recno)
+				RETURN 0
+			ENDIF
+			//
+			dataBuffer := recordX:data
+			dataBuffer2 := recordY:data
+			diff := 0
+			i := 0
+			WHILE (diff == 0) .AND. (i < (LONG)SELF:_sortInfo:Items:Length)
+				start := SELF:_sortInfo:Items[i]:OffSet
+				iLen := SELF:_sortInfo:Items[i]:Length
+				flags := SELF:_sortInfo:Items[i]:Flags
+				// Long Value ?
+				IF ((flags & DbSortItem.SF_Long) != 0)
+					longValue1 := BitConverter.ToInt32(dataBuffer, start)
+					longValue2 := BitConverter.ToInt32(dataBuffer2, start)
+					diff := longValue1 - longValue2
+				ELSE
+					// String Value ?
+					IF ((flags & DbSortItem.SF_Ascii) != 0)
+						//
+						i := 0
+						WHILE i < iLen
+							diff := dataBuffer[i + start] - dataBuffer2[i + start]
+							IF (diff != 0)
+								EXIT
+							ENDIF
+							//
+							i++
+						ENDDO
+					ELSE
+						// String not ASCII : User Runtime comparer
+						dataX := BYTE[]{ iLen }
+						dataY := BYTE[]{ iLen }
+						Array.Copy(dataBuffer, start, dataX, 0, iLen)
+						Array.Copy(dataBuffer2, start, dataY, 0, iLen)
+						diff := SELF:_oRDD:StringCompare(dataX, dataY, iLen)
+					ENDIF
+				ENDIF
+				IF ((flags & DbSortItem.SF_Descending) != 0)
+					diff *= -1
+				ENDIF
+				i++
+			END WHILE
+			IF (diff == 0)
+				diff := (LONG)(recordX:Recno - recordY:Recno)
+			ENDIF
+			RETURN diff
+			
+	END CLASS
 
 
 END NAMESPACE

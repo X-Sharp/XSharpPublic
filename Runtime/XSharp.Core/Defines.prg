@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -8,11 +8,29 @@
 //
 // subscripts for Directory() array
 //
+/// <summary>Position in DbStruct and DbCreate sub-array for fileName (as a string).</summary>
+/// <seealso cref="M:XSharp.VO.Functions.DbCreate"/>
+/// <seealso cref="M:XSharp.VO.Functions.DbStruct"/>
 DEFINE F_NAME  := 1
+/// <summary>Position in DbStruct and DbCreate sub-array for filesize(as a numeric).</summary>
+/// <seealso cref="M:XSharp.VO.Functions.DbCreate"/>
+/// <seealso cref="M:XSharp.VO.Functions.DbStruct"/>
 DEFINE F_SIZE  := 2
+/// <summary>Position in DbStruct and DbCreate sub-array for file date(as a date).</summary>
+/// <seealso cref="M:XSharp.VO.Functions.DbCreate"/>
+/// <seealso cref="M:XSharp.VO.Functions.DbStruct"/>
 DEFINE F_DATE  := 3
+/// <summary>Position in DbStruct and DbCreate sub-array for file time(as a string).</summary>
+/// <seealso cref="M:XSharp.VO.Functions.DbCreate"/>
+/// <seealso cref="M:XSharp.VO.Functions.DbStruct"/>
 DEFINE F_TIME  := 4
+/// <summary>Position in DbStruct and DbCreate sub-array for file attributes(as a string).</summary>
+/// <seealso cref="M:XSharp.VO.Functions.DbCreate"/>
+/// <seealso cref="M:XSharp.VO.Functions.DbStruct"/>
 DEFINE F_ATTR  := 5
+/// <summary>Length of DbStruct and DbCreate sub-array.</summary>
+/// <seealso cref="M:XSharp.VO.Functions.DbCreate"/>
+/// <seealso cref="M:XSharp.VO.Functions.DbStruct"/>
 DEFINE F_LEN   := 5   // length of array
 
 

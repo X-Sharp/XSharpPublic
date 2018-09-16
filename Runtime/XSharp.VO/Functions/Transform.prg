@@ -746,29 +746,35 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         END CLASS
         
-        
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( dValue AS DATE, cPicture AS STRING ) AS STRING
     RETURN TransFormHelpers.TransformD(dValue, cPicture)	
     
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( lValue AS LOGIC, cPicture AS STRING ) AS STRING
     RETURN TransFormHelpers.TransformL(lValue, cPicture)
     
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
     RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
     
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
     RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
     
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( nValue AS FLOAT, cPicture AS STRING ) AS STRING
     RETURN TransFormHelpers.TransformN( nValue, cPicture, FALSE)
     
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform(cValue AS STRING, cPicture AS STRING) AS STRING
     RETURN TransFormHelpers.TransformS(cValue, cPicture)
     
+/// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
     LOCAL ret AS USUAL
     SWITCH uValue:_UsualType
-CASE __UsualType.Float
+    CASE __UsualType.Float
     CASE __UsualType.Decimal
         ret := TransformHelpers.TransformN( uValue, cPicture , FALSE)
     CASE __UsualType.Int64
@@ -793,7 +799,7 @@ CASE __UsualType.Date
     END SWITCH
     RETURN ret
     
-    
+/// <summary>Convert a transformed string back to its original value.</summary>    
 FUNCTION Unformat( 	cValue	AS STRING,  cSayPicture AS STRING, cType AS STRING)	AS USUAL PASCAL
 LOCAL uRetVal		AS USUAL
 LOCAL lNullable     AS LOGIC

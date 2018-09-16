@@ -516,9 +516,10 @@ CLASS XSharp.RuntimeState
 		RETURN inst:_workareas
 	END GET
     END PROPERTY
+    /// <exclude />
     STATIC METHOD PushCurrentWorkarea(dwArea AS DWORD) AS VOID
         RuntimeState.WorkAreas:PushCurrentWorkArea(dwArea)
-        
+    /// <exclude />    
     STATIC METHOD PopCurrentWorkarea() AS DWORD
         RETURN RuntimeState.WorkAreas:PopCurrentWorkArea()
 
@@ -555,8 +556,9 @@ CLASS XSharp.RuntimeState
             _macrocompiler := VALUE
         END SET
     END PROPERTY
-    
+	/// <summary></summary>	
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
+	/// <summary></summary>	
 	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
 
     PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID

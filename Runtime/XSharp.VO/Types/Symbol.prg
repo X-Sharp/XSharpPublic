@@ -290,10 +290,12 @@ BEGIN NAMESPACE XSharp
         #endregion
 
 
+            /// <exclude/>
             METHOD CompareTo(o AS OBJECT) AS LONG
             RETURN CompareTo((SYMBOL)o)
 
 
+            /// <exclude/>
             METHOD CompareTo(rhs AS SYMBOL) AS LONG
             RETURN __StringCompare(SELF:_value, rhs:_value)
 

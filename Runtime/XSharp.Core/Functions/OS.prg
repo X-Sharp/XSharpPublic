@@ -400,6 +400,7 @@ FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL
 
     RETURN cPath
 
+/// <exclude/>	
 FUNCTION _ExecName() AS STRING
     RETURN System.Reflection.Assembly.GetExecutingAssembly():Location
 

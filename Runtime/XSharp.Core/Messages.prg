@@ -2,16 +2,19 @@
 USING System.Globalization
 USING System.Resources
 
-
+/// <exclude />
 FUNCTION SetLiteral(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 
+/// <exclude />
 FUNCTION GetStringDXAX(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 
+/// <exclude />
 FUNCTION VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
 	RETURN VO_Sprintf( __CavoStr( format ), args )
 
+/// <exclude />
 FUNCTION VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
 	LOCAL ret        AS STRING
 	// The format string should start with "%Vn" to indicate a variable number
@@ -56,7 +59,6 @@ FUNCTION VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
 
 	RETURN ret
 
-
 FUNCTION __CavoStr( resid AS DWORD ) AS STRING
 	// Strings are stored in a Managed resource with a name
 	// the name matches the enum names
@@ -74,7 +76,7 @@ FUNCTION __CavoStr( resid AS DWORD ) AS STRING
 	ENDIF
 	RETURN strMessage
 
-
+/// <exclude />
 INTERNAL CLASS Messages
 	STATIC PRIVATE _instance   AS Messages
 	STATIC PRIVATE _instanceName AS STRING

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -152,7 +152,7 @@ FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 		bp++
 	ENDDO
 	RETURN pszSource
-
+/// <exclude/>
 FUNCTION String2Mem(s AS STRING) AS IntPtr
 	LOCAL result := 0 AS IntPtr
 	IF s != NULL
@@ -163,7 +163,7 @@ FUNCTION String2Mem(s AS STRING) AS IntPtr
 		Marshal.Copy(bytes,0,result, len)
 	ENDIF
 	RETURN result
-
+/// <exclude/>
 UNSAFE FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
 	IF pString == IntPtr.Zero .OR. nLen == 0
 		RETURN String.Empty
@@ -180,6 +180,7 @@ RETURN result
 
 
 // The following functions are used by Crypt
+/// <exclude/>
 FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
    LOCAL ret AS BYTE PTR
    LOCAL x   AS INT
@@ -195,6 +196,7 @@ FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
 
    RETURN PSZ{ ret }
 
+/// <exclude/>
 FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
    LOCAL sb AS StringBuilder
    LOCAL x  AS DWORD
@@ -214,6 +216,7 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
 
 
 // parameters are 0 based
+/// <exclude/>
 FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
    LOCAL ret := 0 AS DWORD
    IF p != NULL_PSZ
@@ -222,6 +225,7 @@ FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
    RETURN ret
 
 // parameters are 0 based
+/// <exclude/>
 FUNCTION _NPut( p AS PSZ, dwOffset AS DWORD, b AS BYTE ) AS VOID
    IF p != NULL_PSZ
       ((BYTE PTR)p)[dwOffset+1] := b
@@ -244,6 +248,9 @@ FUNCTION IsAlpha(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsAlpha(cSource)
 
+/// <summary>Determine if the leftmost character in a string is alphanumeric.</summary>
+/// <param name="pszSource">The string to examine.</param>
+/// <returns>TRUE if the first character is alphanumeric.</returns>
 FUNCTION IsAlphaNum(pszSource AS PSZ) AS LOGIC
 	RETURN XSharp.VO.Functions.IsAlNum(pszSource)
 

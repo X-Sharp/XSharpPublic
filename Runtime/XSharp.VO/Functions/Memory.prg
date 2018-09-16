@@ -12,13 +12,13 @@ USING System.Diagnostics
 
 #region Basic Memory Allocation
 
-
+/// <summary>Enable / disable memory tracing</summary>
 FUNCTION MemTrace(lSet AS LOGIC) AS LOGIC
 	LOCAL lOld AS LOGIC
 	lOld := FixedMemory.MemTrace
 	FixedMemory.MemTrace := lSet
 	RETURN lOld
-
+/// <summary>Retrieve memory tracing state.</summary>
 FUNCTION MemTrace() AS LOGIC
 	LOCAL lOld AS LOGIC
 	lOld := FixedMemory.MemTrace
@@ -189,24 +189,24 @@ RETURN lOk
 #region Obsolete Memory functions    
 
 
-
+/// <exclude/>
 [ObsoleteAttribute( "'MemExit()' is not supported and and always returns 0" )] ;
 FUNCTION MemExit() AS DWORD
 	RETURN FixedMemory.SUCCESS
 
-
+/// <exclude/>
 [ObsoleteAttribute( "'MemInit()' is not supported and and always returns 0" )] ;
 FUNCTION MemInit() AS DWORD
 	RETURN FixedMemory.SUCCESS
 
 
-
+/// <exclude/>
 [ObsoleteAttribute( "'MemCompact()' is not supported and has no effect" )] ;
 FUNCTION MemCompact() AS DWORD
 	RETURN MemGrpCompact(0)
 
 
-
+/// <exclude/>
 [ObsoleteAttribute( "'MemGrpCompact()' is not supported and has no effect" )] ;
 FUNCTION MemGrpCompact(dwGroup AS DWORD) AS DWORD
 	VAR result := FixedMemory.SUCCESS
@@ -564,7 +564,8 @@ FUNCTION MemWord( pMemory AS IntPtr, wValue AS WORD, dwCount AS DWORD ) AS IntPt
 		ENDIF
 	NEXT
 	RETURN pRet
-
+/// <summary>Walk the memory with a MemWalker delegate.</summary>
+/// <remarks>Only memory blocks that were allocated while MemTrace was set to TRUE will be included.</remarks>
 FUNCTION MemWalk(pEnum AS MemWalker) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := TRUE

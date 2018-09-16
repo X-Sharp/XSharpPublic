@@ -339,7 +339,7 @@ FUNCTION VODBUnlock(uRecno AS USUAL) AS LOGIC
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="cRddName">Name of the RDD to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
@@ -362,7 +362,7 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, cRddName AS STRING, lNew
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="oRddType">Type of the RDDs to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>

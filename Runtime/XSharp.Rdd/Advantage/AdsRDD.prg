@@ -59,7 +59,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   INTERNAL STATIC METHOD _HasFlag(dw AS DWORD, flag AS DWORD) AS LOGIC
     RETURN _AND(dw, flag) == flag
     
-  INTERNAL METHOD ACECALL(ulRetCode AS DWORD) AS LOGIC
+  INTERNAL METHOD _CheckError(ulRetCode AS DWORD) AS LOGIC
     IF ulRetCode != 0
       SELF:ADSERROR( ulRetCode, EG_NOCLASS)
       RETURN FALSE
@@ -165,7 +165,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL fi AS RddFieldInfo
     LOCAL wDecimals AS WORD
     LOCAL wFields AS WORD
-    SELF:ACECALL(ACE.AdsGetNumFields(SELF:_Table, OUT wFields))
+    SELF:_CheckError(ACE.AdsGetNumFields(SELF:_Table, OUT wFields))
     IF !SELF:SetFieldExtent(wFields)
       RETURN FALSE
     ENDIF
@@ -174,11 +174,11 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     FOR num := 1u TO wFields STEP 1
       LOCAL usType AS WORD
       LOCAL cName AS STRING
-      SELF:ACECALL(ACE.AdsGetFieldType(SELF:_Table, num, OUT usType))
+      SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, num, OUT usType))
       LOCAL ulLength AS DWORD
-      SELF:ACECALL(ACE.AdsGetFieldLength(SELF:_Table, num, OUT ulLength))
+      SELF:_CheckError(ACE.AdsGetFieldLength(SELF:_Table, num, OUT ulLength))
       wLen := (WORD) sb:Length
-      SELF:ACECALL(ACE.AdsGetFieldName(SELF:_Table, (WORD)num, sb, REF wLen))
+      SELF:_CheckError(ACE.AdsGetFieldName(SELF:_Table, (WORD)num, sb, REF wLen))
       cName := STRING{sb,0, wLen}
       fi := RddFieldInfo{cName,DbFieldType.Character,1,0}
       fi:Length := (INT) ulLength
@@ -225,7 +225,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           ELSE
             fi:Length := (INT) ulLength
           ENDIF
-          SELF:ACECALL(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals))
+          SELF:_CheckError(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals))
         fi:Decimals := wDecimals
       CASE ACE.ADS_LOGICAL
         fi:fieldType := DbFieldType.Logic
@@ -237,7 +237,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       CASE ACE.ADS_CURDOUBLE
           fi:Length := 20
           fi:fieldType := DbFieldType.Number
-          SELF:ACECALL(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals))
+          SELF:_CheckError(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals))
         fi:Decimals := wDecimals
       OTHERWISE
           SELF:ADSERROR(ERDD_CORRUPT_HEADER, EG_DATATYPE)
@@ -282,10 +282,10 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
   INTERNAL METHOD _SetPaths() AS DWORD
     IF !string.IsNullOrEmpty(SetDefault()) 
-      SELF:ACECALL(ACE.AdsSetDefault(SetDefault()))
+      SELF:_CheckError(ACE.AdsSetDefault(SetDefault()))
     ENDIF
     IF !string.IsNullOrEmpty(SetPath()) 
-      SELF:ACECALL(ACE.AdsSetSearchPath(SetPath()))
+      SELF:_CheckError(ACE.AdsSetSearchPath(SetPath()))
     ENDIF
     RETURN 0u
     
@@ -348,16 +348,16 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL length := MAX_PATH AS WORD
     LOCAL afileName AS CHAR[]
     afileName := CHAR[]{length}
-    SELF:ACECALL(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME, afileName, REF length))
+    SELF:_CheckError(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME, afileName, REF length))
     SELF:_FileName := STRING {aFileName,0, length}
     IF result != 0
       SELF:Close()
       RETURN FALSE
     ENDIF
     LOCAL numIndexes AS WORD
-    SELF:ACECALL(ACE.AdsGetNumIndexes(SELF:_Table, OUT numIndexes))
+    SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:_Table, OUT numIndexes))
     IF numIndexes > 0 
-      SELF:ACECALL(ACE.AdsGetIndexHandleByOrder(SELF:_Table, 1, OUT SELF:_Index))
+      SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:_Table, 1, OUT SELF:_Index))
     ENDIF
     SELF:_Encoding := Encoding.GetEncoding(IIF (charset == ACE.ADS_ANSI, RuntimeState.WinCodePage,RuntimeState.DosCodePage))
     LOCAL blockSize AS WORD
@@ -367,7 +367,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       _HasMemo := FALSE
     ENDIF
     LOCAL dwLength AS DWORD
-    SELF:ACECALL(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength))
+    SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength))
     SELF:_RecordLength := (LONG) dwLength
     SELF:Alias   := info:Alias
     SELF:Area    := info:WorkArea
@@ -378,7 +378,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL result AS LOGIC
     result := SUPER:Close()
     IF SELF:_Table != IntPtr.Zero
-      SELF:ACECALL(ACE.AdsCloseTable(SELF:_Table))
+      SELF:_CheckError(ACE.AdsCloseTable(SELF:_Table))
       SELF:_Table := IntPtr.Zero
     ENDIF
     SELF:_Index := IntPtr.Zero
@@ -414,15 +414,15 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     IF alias:Length > 10
       alias := string.Empty
     ENDIF
-    SELF:ACECALL(ACE.AdsCreateTable90(SELF:_Connection, info:FileName, alias, SELF:_TableType, charset, SELF:_LockType, SELF:_CheckRights, 0, strFieldDef, 0u, SELF:_Collation, OUT SELF:_Table))
+    SELF:_CheckError(ACE.AdsCreateTable90(SELF:_Connection, info:FileName, alias, SELF:_TableType, charset, SELF:_LockType, SELF:_CheckRights, 0, strFieldDef, 0u, SELF:_Collation, OUT SELF:_Table))
     SELF:_Encoding := Encoding.GetEncoding(IIF (charset== ACE.ADS_ANSI, RuntimeState.WinCodePage, RuntimeState.DosCodePage))
     length := MAX_PATH
     LOCAL fileName AS CHAR[]
     fileName := CHAR[]{length}
-    SELF:ACECALL(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME , fileName, REF length))
+    SELF:_CheckError(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME , fileName, REF length))
     SELF:_FileName := STRING{fileName,0, length}
     LOCAL dwLength AS DWORD
-    SELF:ACECALL(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength))
+    SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength))
     SELF:_RecordLength := (LONG) dwLength
     IF !SUPER:Create(info)
       SELF:Close()
@@ -501,13 +501,13 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL atEOF AS WORD
     LOCAL isFound AS WORD
     LOCAL lRecno AS DWORD
-    SELF:ACECALL(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS,  OUT lRecno))
+    SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS,  OUT lRecno))
     SELF:_Recno := lRecno
-    SELF:ACECALL(ACE.AdsAtBOF(SELF:_Table, OUT atBOF))
+    SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT atBOF))
     SUPER:_Bof := (atBOF == 1)
-    SELF:ACECALL(ACE.AdsAtEOF(SELF:_Table, OUT atEOF))
+    SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT atEOF))
     SUPER:_Eof := (atEOF == 1)
-    SELF:ACECALL(ACE.AdsIsFound(SELF:_Table,  OUT isFound))
+    SELF:_CheckError(ACE.AdsIsFound(SELF:_Table,  OUT isFound))
     SUPER:_Found := (isFound == 1)
     IF atBOF == 1 .AND. atEOF == 0
       SELF:GoTop()
@@ -523,14 +523,14 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
     /// <inheritdoc />
   VIRTUAL METHOD GoBottom() AS LOGIC
-    SELF:ACECALL(SELF:_CheckVODeletedFlag())
-    SELF:ACECALL(ACE.AdsGotoBottom(SELF:CurrentOrder))
+    SELF:_CheckError(SELF:_CheckVODeletedFlag())
+    SELF:_CheckError(ACE.AdsGotoBottom(SELF:CurrentOrder))
     RETURN SELF:RecordMovement()
     
     /// <inheritdoc />
   VIRTUAL METHOD GoTop() AS LOGIC
-    SELF:ACECALL(SELF:_CheckVODeletedFlag())
-    SELF:ACECALL(ACE.AdsGotoTop(SELF:CurrentOrder))
+    SELF:_CheckError(SELF:_CheckVODeletedFlag())
+    SELF:_CheckError(ACE.AdsGotoTop(SELF:CurrentOrder))
     RETURN SELF:RecordMovement()
     
     /// <inheritdoc />
@@ -538,16 +538,16 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL recordnum AS DWORD
     LOCAL atEOF     AS WORD
     LOCAL atBOF     AS WORD
-    SELF:ACECALL(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT recordnum))
+    SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT recordnum))
     IF recordnum == lRec
-      SELF:ACECALL(ACE.AdsAtEOF(SELF:_Table, OUT atEOF))
-      SELF:ACECALL(ACE.AdsAtBOF(SELF:_Table, OUT atBOF))
+      SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT atEOF))
+      SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT atBOF))
       IF atEOF== 0 .AND. atBOF == 0
-        SELF:ACECALL(ACE.AdsWriteRecord(SELF:_Table))
-        SELF:ACECALL(ACE.AdsRefreshRecord(SELF:_Table))
+        SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table))
+        SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table))
       ENDIF
     ELSE
-      SELF:ACECALL(ACE.AdsGotoRecord(SELF:_Table, lRec))
+      SELF:_CheckError(ACE.AdsGotoRecord(SELF:_Table, lRec))
     ENDIF
     RETURN SELF:RecordMovement()
     
@@ -566,15 +566,15 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   VIRTUAL METHOD Skip(lCount AS LONG) AS LOGIC
     LOCAL result AS DWORD
     LOCAL flag AS LOGIC
-    SELF:ACECALL(SELF:_CheckVODeletedFlag())
+    SELF:_CheckError(SELF:_CheckVODeletedFlag())
     IF lCount == 0
-      SELF:ACECALL(ACE.AdsWriteRecord(SELF:_Table))
+      SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table))
       result := ACE.AdsRefreshRecord(SELF:_Table)
     ELSE
       result := ACE.AdsSkip(SELF:CurrentOrder, lCount)
     ENDIF
     IF result != ACE.AE_NO_CURRENT_RECORD .AND. result != 0
-      SELF:ACECALL(result)
+      SELF:_CheckError(result)
     ENDIF
     flag := SELF:RecordMovement()
     IF lCount > 0
@@ -609,13 +609,13 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     wBufLen   := (WORD)(SELF:_MaxKeySize + 1) 
     result := ACE.AdsGetScope(hIndex, usScopeOption, aScope, REF wBufLen)
     IF result != ACE.AE_NO_SCOPE .AND. result != 0
-      SELF:ACECALL(result)
+      SELF:_CheckError(result)
     ENDIF
     str := oScope:ToString()
     IF !String.IsNullOrEmpty(str)
-      SELF:ACECALL(ACE.AdsSetScope(hIndex, usScopeOption, str, (WORD)str:Length , ACE.ADS_STRINGKEY))
+      SELF:_CheckError(ACE.AdsSetScope(hIndex, usScopeOption, str, (WORD)str:Length , ACE.ADS_STRINGKEY))
     ELSE
-      SELF:ACECALL(ACE.AdsClearScope(hIndex, usScopeOption))
+      SELF:_CheckError(ACE.AdsClearScope(hIndex, usScopeOption))
     ENDIF
     // return the previous scope
     IF result == ACE.AE_NO_SCOPE
@@ -634,7 +634,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
     /// <inheritdoc />
   VIRTUAL METHOD GoCold() AS LOGIC
-    SELF:ACECALL(ACE.AdsWriteRecord(SELF:_Table))
+    SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table))
     RETURN SELF:RecordMovement()
     
     /// <inheritdoc />
@@ -646,16 +646,16 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL numRecs AS DWORD
     LOCAL result AS DWORD
     //
-    SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
+    SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
     // GoHot must have lock when not exclusive
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE) 
       // Only allowed when not Readonly
       IF _HasFlag(options,ACE.ADS_READONLY) 
         SELF:ADSERROR(ERDD.READONLY, XSharp.Gencode.EG_READONLY)
       ENDIF
-      SELF:ACECALL(ACE.AdsIsTableLocked(SELF:_Table, OUT isTableLocked))
+      SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isTableLocked))
       IF isTableLocked == 0
-        SELF:ACECALL(ACE.AdsIsRecordLocked(SELF:_Table, 0, OUT isRecordLocked))
+        SELF:_CheckError(ACE.AdsIsRecordLocked(SELF:_Table, 0, OUT isRecordLocked))
         IF isRecordLocked == 0
           dwRecNo := 0
           IF SELF:IsADT
@@ -668,7 +668,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
               IF result == 0 .OR. result == ACE.AE_TABLE_NOT_SHARED
                 RETURN TRUE
               ENDIF
-              SELF:ACECALL(result)
+              SELF:_CheckError(result)
             ENDIF
           ENDIF
           SELF:ADSERROR(ERDD.UNLOCKED, XSharp.Gencode.EG_STROVERFLOW, XSharp.Severity.ES_ERROR)
@@ -680,7 +680,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     /// <inheritdoc />
   VIRTUAL METHOD Zap() AS LOGIC
     LOCAL options AS DWORD
-    SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
+    SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
     // Only allowed when opened exclusively
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE) 
       SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED , "Zap")
@@ -689,7 +689,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     IF _HasFlag(options, ACE.ADS_READONLY) 
       SELF:ADSERROR(ERDD.READONLY, EG_READONLY, "Zap")
     ENDIF
-    SELF:ACECALL(ACE.AdsZapTable(SELF:_Table))
+    SELF:_CheckError(ACE.AdsZapTable(SELF:_Table))
     RETURN SELF:GoTop()
     
     
@@ -701,31 +701,31 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     //
     IF fReleaseLocks
       //
-      SELF:ACECALL(ACE.AdsGetHandleType(SELF:_Table, OUT handleType))
+      SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT handleType))
       IF handleType != ACE.ADS_CURSOR
         result := ACE.AdsIsTableLocked(SELF:_Table, OUT isTableLocked)
         IF isTableLocked == 0
           result := ACE.AdsUnlockTable(SELF:_Table)
           // When Unlock fails because not shared or because not locked, then no problem
           IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != ACE.AE_TABLE_NOT_LOCKED  .AND. result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
           ENDIF
         ENDIF
       ENDIF
     ENDIF
-    SELF:ACECALL(ACE.AdsAppendRecord(SELF:_Table))
+    SELF:_CheckError(ACE.AdsAppendRecord(SELF:_Table))
     result := ACE.AdsLockRecord(SELF:_Table, 0)
     IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
-      SELF:ACECALL(result)
+      SELF:_CheckError(result)
     ENDIF
     RETURN SELF:RecordMovement()
     
   VIRTUAL METHOD DeleteRecord() AS LOGIC
-    SELF:ACECALL(ACE.AdsDeleteRecord(SELF:_Table))
+    SELF:_CheckError(ACE.AdsDeleteRecord(SELF:_Table))
     RETURN TRUE
     
   VIRTUAL METHOD Recall() AS LOGIC
-    SELF:ACECALL(ACE.AdsRecallRecord(SELF:_Table))
+    SELF:_CheckError(ACE.AdsRecallRecord(SELF:_Table))
     RETURN SELF:RecordMovement()
     
     #endregion
@@ -741,7 +741,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL dwField  := (DWORD) nFldPos + 1 AS DWORD
     LOCAL fld       := SELF:_Fields[nFldPos] AS RddFieldInfo
     length  := (DWORD) fld:Length +1
-    SELF:ACECALL(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType))
+    SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType))
     SWITCH fld:FieldType
     CASE DbFieldType.Character
         SWITCH wType
@@ -750,7 +750,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         CASE ACE.ADS_MONEY
       CASE ACE.ADS_ROWVERSION
         CASE ACE.ADS_MODTIME
-            ACECALL(ACE.AdsIsEmpty(SELF:_Table,  dwField , OUT isEmpty))
+            _CheckError(ACE.AdsIsEmpty(SELF:_Table,  dwField , OUT isEmpty))
             IF isEmpty == 1
               RETURN NULL
             ENDIF
@@ -779,7 +779,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         CASE ACE.AE_NO_CURRENT_RECORD
           RETURN STRING{' ', (INT) length}
         OTHERWISE
-          SELF:ACECALL(result)
+          SELF:_CheckError(result)
       END SWITCH
     CASE DbFieldType.Memo
         SWITCH wType
@@ -800,20 +800,20 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
                   RETURN NULL
               ENDIF
             OTHERWISE
-              SELF:ACECALL(result)
+              SELF:_CheckError(result)
             END SWITCH
             SWITCH wType
             CASE ACE.ADS_MEMO
                 chars := CHAR[] {++length}
-                SELF:ACECALL(ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0))
+                SELF:_CheckError(ACE.AdsGetString(SELF:_Table, dwField, chars, REF length ,0))
               RETURN SELF:_Ansi2Unicode(chars, (INT) length)
             CASE ACE.ADS_NMEMO
                 chars := CHAR[] {++length}
-              SELF:ACECALL(ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0))
+              SELF:_CheckError(ACE.AdsGetStringW(SELF:_Table, dwField, chars, REF length ,0))
           CASE ACE.ADS_BINARY
             CASE ACE.ADS_IMAGE
                 bytes := BYTE[] {length}
-                SELF:ACECALL(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ))
+                SELF:_CheckError(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ))
               RETURN bytes
             END SWITCH
             
@@ -825,11 +825,11 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
                 RETURN NULL
               ENDIF
             ELSE
-              SELF:ACECALL(result)
+              SELF:_CheckError(result)
             ENDIF
             length := (DWORD) fld:Length
             bytes := BYTE[] {length}
-            SELF:ACECALL(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ))
+            SELF:_CheckError(ACE.AdsGetBinary(SELF:_Table, dwField, 0, bytes, REF length ))
           RETURN bytes
       END SWITCH
     CASE DbFieldType.Number
@@ -861,7 +861,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         result := ACE.AdsGetLogical(SELF:_Table, dwField, OUT wValue)
         IF result ==  ACE.AE_NO_CURRENT_RECORD
           wValue := 0
-        ELSEIF ! SELF:ACECALL(result)
+        ELSEIF ! SELF:_CheckError(result)
           // Exception
         ENDIF
       RETURN wValue == 0
@@ -871,9 +871,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         IF result == ACE.AE_NO_CURRENT_RECORD
             RETURN DbDate{0,0,0}
         ELSEIF result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
         ENDIF
-        SELF:ACECALL(result)
         TRY
             IF lJulian == 0
                 RETURN DbDate{0,0,0}
@@ -901,7 +900,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
   METHOD Pack () AS LOGIC
     LOCAL options AS DWORD
-    SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
+    SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
       SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED, "Pack")
       RETURN FALSE
@@ -910,7 +909,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       SELF:ADSERROR(ERDD_READONLY, EG_READONLY, "Pack")
       RETURN FALSE
     ENDIF
-    SELF:ACECALL(ACE.AdsPackTable(SELF:_Table))
+    SELF:_CheckError(ACE.AdsPackTable(SELF:_Table))
     RETURN SELF:GoTop()
     
   METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
@@ -921,7 +920,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       RETURN FALSE
     ENDIF
     IF oValue == NULL
-      SELF:ACECALL(ACE.AdsSetEmpty(SELF:_Table, dwField))
+      SELF:_CheckError(ACE.AdsSetEmpty(SELF:_Table, dwField))
       RETURN TRUE
     ENDIF
     // Handle IDate and IFloat
@@ -942,7 +941,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ENDIF
     LOCAL wType AS WORD
     LOCAL result := 0 AS DWORD
-    SELF:ACECALL(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType))
+    SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType))
     SWITCH fld:FieldType
     CASE DbFieldType.Character
     CASE DbFieldType.Memo
@@ -1021,7 +1020,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         IF wType != ACE.ADS_AUTOINC
           LOCAL r8 AS REAL8
           r8 := Convert.ToDouble(oValue)
-          SELF:ACECALL(ACE.AdsSetDouble(SELF:_Table, dwField, r8))
+          SELF:_CheckError(ACE.AdsSetDouble(SELF:_Table, dwField, r8))
         ELSE
           NOP // Do not allow to write to AUTO INC field
       ENDIF
@@ -1029,7 +1028,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         IF tc != TypeCode.Boolean
           SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Logic value expected")
         ENDIF
-      SELF:ACECALL(ACE.AdsSetLogical(SELF:_Table, dwField, IIF( (LOGIC) oValue, 1, 0)))
+      SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, IIF( (LOGIC) oValue, 1, 0)))
     CASE DbFieldType.Date
         IF tc != TypeCode.DateTime
           SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
@@ -1037,8 +1036,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         LOCAL dt   := (DateTime) oValue AS DateTime
         LOCAL text := dt:ToString("yyyyMMdd") AS STRING
         LOCAL r8Julian AS REAL8
-        SELF:ACECALL(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian))
-      SELF:ACECALL(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian))
+        SELF:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian))
+      SELF:_CheckError(ACE.AdsSetJulian(SELF:_Table, dwField, (LONG) r8Julian))
     OTHERWISE
       SELF:ADSError(ERDD_DATATYPE, EG_DataType, "PutValue")
     END SWITCH
@@ -1085,7 +1084,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
               RETURN TRUE
             ENDIF
           ELSEIF result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
           ENDIF
           RETURN isDeleted != 0
           
@@ -1095,7 +1094,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       PROPERTY Reccount AS LONG
         GET
           LOCAL dwCount AS DWORD
-          SELF:ACECALL(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwCount))
+          SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwCount))
           RETURN (LONG) dwCount
         END GET
       END PROPERTY
@@ -1107,7 +1106,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           IF result == ACE.AE_NO_CURRENT_RECORD
             dwRecno := 0
           ELSEIF result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
           ENDIF
           RETURN (LONG) dwRecno
         END GET
@@ -1137,22 +1136,22 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       ENDIF
       IF lockInfo:@@Method == DBLockInfo.LockMethod.File
         result := ACE.AdsLockTable(SELF:_Table)
-        SELF:ACECALL(result)
+        SELF:_CheckError(result)
       ENDIF
-      SELF:ACECALL(ACE.AdsGetHandleType(SELF:_Table, OUT handleType))
+      SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT handleType))
       IF lRecno == 0 .AND. handleType != ACE.ADS_CURSOR
-        SELF:ACECALL(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
+        SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
         IF isLocked == 0
           result := ACE.AdsUnlockTable(SELF:_Table)
           IF result != ACE.AE_TABLE_NOT_LOCKED  .AND. result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
             result  := ACE.AdsLockRecord(SELF:_Table, lRecno)
           ENDIF
         ENDIF
       ENDIF
       
       IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
-        SELF:ACECALL(result)
+        SELF:_CheckError(result)
       ENDIF
       lockInfo:Result := TRUE
       RETURN TRUE
@@ -1172,7 +1171,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         result := ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
       ENDIF
       IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
-        SELF:ACECALL(result)
+        SELF:_CheckError(result)
       ENDIF
       RETURN TRUE
       
@@ -1188,12 +1187,12 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         // Clear normal filter
         result := ACE.AdsClearFilter(SELF:_Table)
         IF result != ACE.AE_NO_FILTER .AND. result != 0
-          SELF:ACECALL(result)
+          SELF:_CheckError(result)
         ENDIF
         // Clear optimized filter
         result := ACE.AdsClearAOF(SELF:_Table)
         IF result != ACE.AE_NO_FILTER .AND. result != 0
-          SELF:ACECALL(result)
+          SELF:_CheckError(result)
         ENDIF
       ENDIF
       SELF:_FilterInfo := DbFilterInfo{}
@@ -1213,23 +1212,23 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS LOGIC
       LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
-      SELF:ACECALL(IIF(SELF:_CheckVODateFormat(),0,1))
+      SELF:_CheckError(IIF(SELF:_CheckVODateFormat(),0,1))
       IF String.IsNullOrEmpty(fi:FilterText)
         // clear filter
         // Ignore "No filter" error
         result := ACE.AdsClearFilter(SELF:_Table)
         IF result != ACE.AE_NO_FILTER
-          SELF:ACECALL(result)
+          SELF:_CheckError(result)
         ENDIF
         result := ACE.AdsClearAOF(SELF:_Table)
         IF result != ACE.AE_NO_FILTER
-          SELF:ACECALL(result)
+          SELF:_CheckError(result)
         ENDIF
       ELSE
         IF RuntimeState.Optimize
-          SELF:ACECALL(ACE.AdsSetAOF(SELF:_Table, fi:FilterText, (WORD) ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF))
+          SELF:_CheckError(ACE.AdsSetAOF(SELF:_Table, fi:FilterText, (WORD) ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF))
         ELSE
-          SELF:ACECALL(ACE.AdsSetFilter(SELF:_Table, fi:FilterText))
+          SELF:_CheckError(ACE.AdsSetFilter(SELF:_Table, fi:FilterText))
         ENDIF
       ENDIF
       fi:Active := TRUE
@@ -1241,7 +1240,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     /// <inheritdoc />
     VIRTUAL METHOD ClearRel() AS LOGIC
       IF SELF:_Table != System.IntPtr.Zero
-        SELF:ACECALL(ACE.AdsClearRelation(SELF:_Table))
+        SELF:_CheckError(ACE.AdsClearRelation(SELF:_Table))
       ENDIF
       RETURN TRUE
       
@@ -1252,7 +1251,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         RETURN FALSE
       ENDIF
       LOCAL child := (ADSRDD) relInfo:Child AS ADSRDD
-      SELF:ACECALL(ACE.AdsSetRelation(SELF:_Table, child:ACEIndexHandle, relinfo:Key))
+      SELF:_CheckError(ACE.AdsSetRelation(SELF:_Table, child:ACEIndexHandle, relinfo:Key))
       RETURN TRUE
       
       #endregion
@@ -1266,7 +1265,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       LOCAL dwFldPos := (DWORD)(uiPos + 1)AS DWORD
       SWITCH uiOrdinal
       CASE DBS_BLOB_TYPE
-          SELF:ACECALL(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT fieldType))
+          SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT fieldType))
           SWITCH fieldType
           CASE ACE.ADS_MEMO
           CASE ACE.ADS_BINARY
@@ -1283,7 +1282,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
               RETURN -1
             ENDIF
             IF result != 0
-              SELF:ACECALL(result)
+              SELF:_CheckError(result)
             ENDIF
             RETURN length
           ENDIF
@@ -1306,14 +1305,14 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
             RETURN FALSE
           END TRY
           LOCAL locked AS WORD
-          ACECALL(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT locked))
+          _CheckError(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT locked))
           RETURN locked != 0
           
       CASE DBRecordInfo.DBRI_RECSIZE
           RETURN SELF:_RecordLength
           
       CASE DBRecordInfo.DBRI_UPDATED
-          SELF:ACECALL(ACE.AdsRefreshRecord(SELF:_Table))
+          SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table))
         RETURN NULL
         
       CASE DBRecordInfo.DBRI_RECNO
@@ -1321,7 +1320,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           IF (result == ACE.AE_NO_CURRENT_RECORD)
             dwRecno := 0u
           ELSEIF result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
           ENDIF
         RETURN dwRecno
       OTHERWISE
@@ -1359,17 +1358,17 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           
           aDate := CHAR[]{ACE.ADS_MAX_DATEMASK+1}
           DateLen := (WORD) aDate:Length
-          SELF:ACECALL(ACE.AdsSetDateFormat("MM/DD/YY"))
-          SELF:ACECALL(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
-          SELF:ACECALL(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT julDate))
+          SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YY"))
+          SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
+          SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT julDate))
           IF !SELF:_CheckVODateFormat()
-            SELF:ACECALL(1)
+            SELF:_CheckError(1)
           ENDIF
         RETURN (LONG)julDate
     CASE DbInfo.DBI_GETLOCKARRAY
       CASE DbInfo.DBI_LOCKCOUNT
           LOCAL numLocks AS WORD
-          SELF:ACECALL(ACE.AdsGetNumLocks(SELF:_Table, OUT numLocks))
+          SELF:_CheckError(ACE.AdsGetNumLocks(SELF:_Table, OUT numLocks))
           IF (uiOrdinal == DbInfo.DBI_LOCKCOUNT)
             RETURN numLocks
           ENDIF
@@ -1377,14 +1376,14 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
             IF SELF:_aRlocks == NULL .OR. SELF:_aRlocks:Length < numLocks
               SELF:_aRlocks := DWORD[]{numLocks}
             ENDIF
-            SELF:ACECALL(ACE.AdsGetAllLocks(SELF:_Table, SELF:_aRlocks, REF numLocks))
+            SELF:_CheckError(ACE.AdsGetAllLocks(SELF:_Table, SELF:_aRlocks, REF numLocks))
             RETURN SELF:_aRlocks
           ELSE
             RETURN NULL
         ENDIF
       CASE DbInfo.DBI_ISFLOCK
           LOCAL isLocked AS WORD
-          SELF:ACECALL(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
+          SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
         RETURN isLocked != 0
       CASE DbInfo.DBI_FILEHANDLE
         RETURN IntPtr.Zero
@@ -1392,10 +1391,10 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         RETURN FALSE
       CASE DbInfo.DBI_FOUND
           LOCAL isFound AS WORD
-          SELF:ACECALL(ACE.AdsIsFound(SELF:_Table, OUT isFound))
+          SELF:_CheckError(ACE.AdsIsFound(SELF:_Table, OUT isFound))
         RETURN isFound != 0
       CASE DbInfo.DBI_SHARED
-          SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
+          SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
         RETURN !_HasFlag(options,ACE.ADS_EXCLUSIVE) 
       CASE DbInfo.DBI_MEMOEXT
           SWITCH SELF:_TableType 
@@ -1417,7 +1416,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           IF result != ACE.AE_NO_MEMO_FILE
             RETURN 0
           ELSEIF result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
           ENDIF
           RETURN memoBlockSize
           

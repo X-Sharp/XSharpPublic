@@ -478,7 +478,7 @@ FUNCTION ClassName(o AS OBJECT) AS STRING
 FUNCTION ClassTree(o AS OBJECT) AS ARRAY
 	RETURN OOPHelpers.ClassTree(o?:GetType())
 	
-	
+/// <summary>Create a new instance of a named class</summary>	
 FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	IF ! ( cClassName:IsSymbol || cClassName:IsString )
 		THROW Error.DataTypeError( "CreateInstance", NAMEOF(cClassName), 1, cClassName)
@@ -915,10 +915,11 @@ FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	// CLIPPER calling convention for compatiblity with VO.
 	// Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
 	//       The compiler expects that
+/// <esclude />
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
-/// <summary>Helper function to convert ARRAY to USUAL[]</summary>	
+
 INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
@@ -974,7 +975,7 @@ INTERNAL FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	NEXT
 	RETURN uArgs
 	
-	
+/// <exclude/>	
 	// identical to CSend and __InternalSend but with a normal array of args
 FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY ) AS USUAL
 	LOCAL uArgs AS USUAL[]

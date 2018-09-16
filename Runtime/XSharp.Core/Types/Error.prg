@@ -22,8 +22,10 @@ BEGIN NAMESPACE XSharp
     PROPERTY Severity AS DWORD AUTO
     /// <summary>A string that describes the error condition.</summary>
     PROPERTY Description		AS STRING AUTO
+    /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
     PROPERTY Arg				AS STRING AUTO
     PRIVATE  _ArgType			AS DWORD
+    /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
     PROPERTY ArgType			AS DWORD 
       GET 
         RETURN _ArgType 
@@ -34,6 +36,7 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     PRIVATE  _ArgTypeType 		AS System.Type
+    /// <summary>The system type representing the data type of the argument that raised the error.</summary>
     PROPERTY ArgTypeType		AS System.Type 
       GET 
         RETURN _ArgTypeType 
@@ -45,6 +48,7 @@ BEGIN NAMESPACE XSharp
     END PROPERTY
     
     PRIVATE _ArgTypeReq			AS DWORD
+    /// <summary>A numeric value representing the expected type of the argument that raised the error.</summary>
     PROPERTY ArgTypeReq			AS DWORD 
       GET 
         RETURN _ArgTypeReq 
@@ -55,6 +59,7 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     PRIVATE  _ArgTypeReqType 		AS System.Type
+    /// <summary>The system type representing the expected type of the argument that raised the error.</summary>
     PROPERTY ArgTypeReqType		AS System.Type 
       GET 
         RETURN _ArgTypeReqType 
@@ -64,20 +69,33 @@ BEGIN NAMESPACE XSharp
         _ArgTypeReq 	 := TypeToUsualType(VALUE)
       END SET
     END PROPERTY
-    
+    /// <summary></summary>
     PROPERTY SubstituteType     AS DWORD AUTO
+    /// <summary></summary>
     PROPERTY ArgNum				AS DWORD AUTO
+    /// <summary></summary>
     PROPERTY MethodSelf			AS OBJECT AUTO
+    /// <summary></summary>
     PROPERTY CallFuncSym		AS STRING AUTO
+    /// <summary></summary>
     PROPERTY Args				AS OBJECT[] AUTO
+    /// <summary></summary>
     PROPERTY Tries				AS INT AUTO
+    /// <summary></summary>
     PROPERTY CanDefault         AS LOGIC AUTO
+    /// <summary></summary>
     PROPERTY CanRetry           AS LOGIC AUTO
+    /// <summary></summary>
     PROPERTY CanSubstitute      AS LOGIC AUTO
+    /// <summary></summary>
     PROPERTY Operation          AS STRING AUTO
+    /// <summary></summary>
     PROPERTY SubCodeText        AS STRING AUTO
+    /// <summary></summary>
     PROPERTY OSCode				AS DWORD AUTO
+    /// <summary></summary>
     PROPERTY FileHandle         AS DWORD AUTO
+    /// <summary></summary>
     PROPERTY MaxSize			AS DWORD AUTO
     
     PRIVATE METHOD setDefaultValues() AS VOID
@@ -93,16 +111,19 @@ BEGIN NAMESPACE XSharp
     SELF:OSCode			:= 0
     SELF:Description    := SELF:Message
     
+    /// <summary></summary>
     CONSTRUCTOR()
     SELF:setDefaultValues()
     RETURN
     
+    /// <summary></summary>
     CONSTRUCTOR (ex AS Exception)
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
     SELF:Description := ex:Message
     SELF:GenCode     := EG_EXCEPTION
-    
+
+    /// <summary></summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
@@ -114,12 +135,14 @@ BEGIN NAMESPACE XSharp
     
     
     
+    /// <summary></summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
     SELF:Arg	 := cArg
     
+    /// <summary></summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
     SUPER(cDescription)
     SELF:setDefaultValues()
@@ -128,6 +151,7 @@ BEGIN NAMESPACE XSharp
     SELF:Description	:= cDescription
     
     
+    /// <summary></summary>
     CONSTRUCTOR (dwgencode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
@@ -137,12 +161,14 @@ BEGIN NAMESPACE XSharp
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
     
+    /// <summary></summary>
     CONSTRUCTOR (dwgencode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
     SELF:Gencode := dwgencode
     SELF:SubCode := dwSubcode
     
     
+    /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
       LOCAL sb AS StringBuilder
       sb := StringBuilder{}
@@ -172,14 +198,17 @@ BEGIN NAMESPACE XSharp
       RETURN sb:ToString()
       
       
+    /// <summary></summary>
     METHOD @@Throw AS VOID STRICT
     // must override in subclass
     RETURN
     
     #region STATIC methods TO construct an error
+    /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING) AS Error
     RETURN ArgumentError(cFuncName, name, description, 0)
     
+    /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs PARAMS OBJECT[]) AS Error
     VAR err			:= Error{Gencode.EG_ARG, name, ErrString( EG_ARG )}
     err:FuncSym     := cFuncName
@@ -189,6 +218,7 @@ BEGIN NAMESPACE XSharp
     RETURN err
     
     
+    /// <exclude/>	
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD) AS Error
     VAR err			:= Error{Gencode.EG_ARG, name, description}
     err:FuncSym     := cFuncName
@@ -196,15 +226,18 @@ BEGIN NAMESPACE XSharp
     err:Argnum		:= iArgNum
     RETURN err
     
+    /// <exclude/>	
     STATIC METHOD WrapRawException( ex AS Exception ) AS Error
     LOCAL e AS Error
     e			  := Error{ ex }
     e:Description := ErrString( EG_EXCEPTION )
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
     RETURN VOError( NULL , dwGenCode, cFuncName, cArgName, iArgNum, aArgs )
     
+    /// <exclude/>	
     STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[]  ) AS Error
     LOCAL e AS Error
     e			  := Error{ ex, cFuncName, cArgName, iArgNum, aArgs }
@@ -212,6 +245,7 @@ BEGIN NAMESPACE XSharp
     e:Description := ErrString( dwGenCode )
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode}
@@ -220,6 +254,7 @@ BEGIN NAMESPACE XSharp
     e:Description := ErrString( dwGenCode )
     RETURN e
 
+    /// <exclude/>	
     STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode}
@@ -230,6 +265,7 @@ BEGIN NAMESPACE XSharp
     RETURN e
 
 
+    /// <exclude/>	
     STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e			  := Error{dwGenCode, dwSubCode}
@@ -238,6 +274,7 @@ BEGIN NAMESPACE XSharp
     e:Args        := aArgs
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode, cFuncName, cArgName, iArgNum}
@@ -246,6 +283,7 @@ BEGIN NAMESPACE XSharp
     e:Args        := aArgs
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
@@ -253,6 +291,7 @@ BEGIN NAMESPACE XSharp
     e:Description := __CavoStr( VOErrors.DATATYPEERROR )
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs PARAMS OBJECT[]) AS Error
     LOCAL e AS Error
     e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
@@ -260,6 +299,7 @@ BEGIN NAMESPACE XSharp
     e:Description := cDescription
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD ) AS Error
     LOCAL e AS Error
     e := Error{ ArgumentNullException{} ,cFuncName, cArgName, iArgNum}
@@ -267,6 +307,7 @@ BEGIN NAMESPACE XSharp
     e:Description := __CavoStr( VOErrors.ARGISNULL )
     RETURN e
     
+    /// <exclude/>	
     STATIC METHOD BoundError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{ ArgumentException{ErrString( EG_BOUND) } }
@@ -281,7 +322,7 @@ BEGIN NAMESPACE XSharp
     
     
     #endregion
-    
+    /// <exclude />
     STATIC METHOD TypeToUsualType(oType AS System.Type) AS DWORD
     SWITCH Type.GetTypeCode(oType)
     CASE TypeCode.Boolean
@@ -338,6 +379,8 @@ BEGIN NAMESPACE XSharp
       END SWITCH
     END SWITCH
     RETURN __UsualType.void
+    
+    /// <exclude />
     STATIC METHOD UsualTypeTotype(dwType AS DWORD) AS System.Type
     LOCAL typename := NULL AS STRING
     SWITCH dwType
@@ -399,40 +442,68 @@ BEGIN NAMESPACE XSharp
     ENDIF
     RETURN NULL
   END CLASS
-
+  /// <exclude />
   ENUM __UsualType AS BYTE
         // These numbers must match with the types defined in the compiler
         // They also match with the USUAL types in VO (BaseType.h)
+        /// <exclude/>	
         MEMBER @@Void		:=0
+        /// <exclude/>	
         MEMBER @@Long		:=1
+        /// <exclude/>	
         MEMBER @@Date		:=2
+        /// <exclude/>	
         MEMBER @@Float		:=3
+        /// <exclude/>	
         MEMBER @@Fixed      := 4 // Note # 4 (FIXED) was defined but never used in VO
+        /// <exclude/>	
         MEMBER @@Array		:=5
+        /// <exclude/>	
         MEMBER @@Object		:=6
+        /// <exclude/>	
         MEMBER @@String		:=7
+        /// <exclude/>	
         MEMBER @@Logic		:=8
+        /// <exclude/>	
         MEMBER @@CodeBlock	:=9
+        /// <exclude/>	
         MEMBER @@Symbol		:=10
         // see below for missing values
         // The follow numbers are defined but never stored inside a USUAL in VO and Vulcan
+        /// <exclude/>	
         MEMBER @@Byte		:=11
+        /// <exclude/>	
         MEMBER @@ShortInt	:=12
+        /// <exclude/>	
         MEMBER @@Word		:=13
+        /// <exclude/>	
         MEMBER @@DWord		:=14
+        /// <exclude/>	
         MEMBER @@Real4		:=15
+        /// <exclude/>	
         MEMBER @@Real8		:=16
+        /// <exclude/>	
         MEMBER @@Psz		:=17
+        /// <exclude/>	
         MEMBER @@Ptr		:=18
+        /// <exclude/>	
         MEMBER @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
         // 20 and 21 not used
+        /// <exclude/>	
         MEMBER @@Int64		:=22
+        /// <exclude/>	
         MEMBER @@Uint64     :=23
+        /// <exclude/>	
         MEMBER @@Char		:=24    // not stored in a usual
+        /// <exclude/>	
         MEMBER @@Dynamic    :=25
+        /// <exclude/>	
         MEMBER @@DateTime	:=26
+        /// <exclude/>	
         MEMBER @@Decimal	:=27
+        /// <exclude/>	
         MEMBER @@Memo		:=32	// Used in RDD system in VO
+        /// <exclude/>	
         MEMBER @@Invalid    :=99
     END ENUM
 

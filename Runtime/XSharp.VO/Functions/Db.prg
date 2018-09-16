@@ -323,6 +323,8 @@ FUNCTION DbClearIndex(uOrder, cOrdBag) AS LOGIC CLIPPER
     /// </summary>
     /// <returns>
     /// </returns>
+    /// <seealso cref="O:XSharp.Core.Functions.VODBCreate" />
+    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate" />
 FUNCTION DbCreate (   cName,  aStru, cDriver, lNew,  cAlias, cDelim, lJustOpen, aHidden ) AS LOGIC CLIPPER
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC

@@ -351,7 +351,9 @@ FUNCTION VODBUnlock(uRecno AS USUAL) AS LOGIC
     /// Thus, it may be important to check the return value to determine if the function succeeded.
     /// The LastRddError property in the runtimestate will contain needed information
     /// regarding any error that occurs.</remarks>        
-    
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+    /// <seealso cref="O:XSharp.Core.Functions.VODBCreate">VODbCreate in XSharp.Core</seealso>
+
 FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL aFldInfo AS RddFieldInfo[]
     aFldInfo := Db.ArrayToFieldInfo(aStruct)
@@ -368,13 +370,14 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, cRddName AS STRING, lNew
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    
     /// <remarks>VODBCreate() is like DBCreate().  This function, however, does not call the error
     /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
     /// Thus, it may be important to check the return value to determine if the function succeeded.
     /// The LastRddError property in the runtimestate will contain needed information
     /// regarding any error that occurs.</remarks>        
-    
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+    /// <seealso cref="O:XSharp.Core.Functions.VODBCreate">VODbCreate in XSharp.Core</seealso>
+   
 FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, oRddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL aFldInfo AS RddFieldInfo[]
     aFldInfo := Db.ArrayToFieldInfo(aStruct)

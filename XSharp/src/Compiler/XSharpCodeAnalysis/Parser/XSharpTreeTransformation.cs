@@ -185,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
-        public virtual string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        public static string GlobalFunctionClassName(XSharpTargetDLL targetDLL)
         {
             string className;
             switch (targetDLL)
@@ -204,6 +204,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
             return className;
+
+        }
+
+        public virtual string GetGlobalClassName(XSharpTargetDLL targetDLL)
+        {
+            return GlobalFunctionClassName(targetDLL);
         }
 
         #region Construction and destruction
@@ -228,33 +234,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp, XSharpTargetDLL targetDLL)
         {
             // trees is NOT used here, but it IS used in the VOTreeTransForm
-            if (_defTree == null)
-            {
-                lock (gate)
-                {
-                    if (_defTree == null)
-                    {
-                        var opt = CSharpParseOptions.Default;
-                        XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
-                        xopt.TargetDLL = targetDLL;
-                        opt = opt.WithXSharpSpecificOptions(xopt);
-                        var t = new XSharpTreeTransformation(null,opt , new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            var opt = CSharpParseOptions.Default;
+            XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
+            xopt.TargetDLL = targetDLL;
+            opt = opt.WithXSharpSpecificOptions(xopt);
+            var t = new XSharpTreeTransformation(null, opt, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                        string globalClassName = t.GetGlobalClassName(targetDLL);
+            string globalClassName = t.GetGlobalClassName(targetDLL);
 
-                        t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
-                        var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                        var tree = CSharpSyntaxTree.Create(
-                            (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                                t.GlobalEntities.Externs,
-                                t.GlobalEntities.Usings,
-                                t.GlobalEntities.Attributes,
-                                t.GlobalEntities.Members, eof).CreateRed());
-                        _defTree = tree;
-                    }
-                }
-            }
-            return _defTree;
+            t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
+            var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+            var tree = CSharpSyntaxTree.Create(
+                (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
+                    t.GlobalEntities.Externs,
+                    t.GlobalEntities.Usings,
+                    t.GlobalEntities.Attributes,
+                    t.GlobalEntities.Members, eof).CreateRed());
+            return tree;
         }
 
 
@@ -2060,7 +2056,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             prop.XNode = xnode;
             return prop;
         }
-        private static SyntaxTree _defTree;
 
         #endregion
 

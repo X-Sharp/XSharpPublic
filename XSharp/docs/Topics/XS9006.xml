@@ -9,13 +9,6 @@
     <header>
       <para styleclass="Heading1">Warning XS9006</para>
     </header>
-    <para styleclass="Normal">Warning directive: {0}</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This warning is generated with you include a #warning preprocessor direcive in your code</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example">#ifdef DEBUG__</para>
-    <para styleclass="Code Example">#warning Compiling in DEBUG mode</para>
-    <para styleclass="Code Example">#endif</para>
+    <para styleclass="Body Text">#pragma directive is not (yet) supported, directive is ignored</para>
   </body>
 </topic>

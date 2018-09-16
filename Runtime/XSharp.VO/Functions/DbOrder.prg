@@ -56,32 +56,15 @@ FUNCTION DbSetFound(lFnd AS LOGIC) AS LOGIC
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbSetOrderCondition(  cFor,       ;
-		uCobFor,    ;
-		lAll,       ;
-		uCobWhile,  ;
-		uCobEval,   ;
-		nStep,      ;
-		nStart,     ;
-		nNext,      ;
-		nRecno,     ;
-		lRest,      ;
-		lDescending,;
-		lAdditive,  ;
-		lCurrent,   ;
-		lCustom,    ;
-		lNoOptimize     ) AS LOGIC CLIPPER
-	
-	
+FUNCTION DbSetOrderCondition(  cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart, nNext, nRecno, lRest, lDescending, lAdditive, lCurrent, lCustom, lNoOptimize) AS LOGIC CLIPPER
 	RETURN OrdCondSet( cFor, uCobFor, lAll, uCobWhile, uCobEval, ;
 		nStep, nStart, nNext, nRecno, lRest,      ;
 		lDescending, lAdditive, lCurrent, lCustom, lNoOptimize)
 
 	
-/// <summary>
+/// <summary>Open an index file and add all its orders to the order list in a work area.
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 	
 	IF IsNil(cIndex)
@@ -93,8 +76,7 @@ FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbSetOrder(uOrder, cBagName) AS LOGIC CLIPPER
 	LOCAL cOrder  := "" AS STRING
 	DEFAULT( REF cBagName, "")
@@ -166,6 +148,7 @@ FUNCTION IndexOrd() AS INT STRICT
 	
 	
 /// <summary>Relate a specified work area to the current work area.</summary>
+
 FUNCTION OrdSetRelation(cAlias, bKey, cKey) AS USUAL CLIPPER
 	
 	DbSetRelation(cAlias, bKey, cKey)
@@ -229,8 +212,7 @@ FUNCTION OrdBagName(uOrder) AS STRING CLIPPER
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdCondSet(   cFor,       ;
 		uCobFor,    ;
 		lAll,       ;
@@ -312,8 +294,7 @@ FUNCTION OrdCondSet(   cFor,       ;
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 	IF IsNil(lUnique)
 		lUnique := SetUnique()
@@ -345,8 +326,7 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdDescend    (xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 	
 	IF !IsLogic( lDescend )
@@ -357,8 +337,7 @@ FUNCTION OrdDescend    (xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdDestroy(uOrder, cOrdBag) AS LOGIC CLIPPER
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
@@ -445,8 +424,7 @@ FUNCTION OrdKeyVal     () AS USUAL STRICT
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
 	RETURN _DbCallWithError("OrdListAdd", VODBOrdListAdd(cOrdBag, uOrder))
 
@@ -454,8 +432,7 @@ FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
 
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
@@ -465,8 +442,7 @@ FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION __OrdListClear()  AS LOGIC STRICT
 	LOCAL lRet      AS LOGIC
 	LOCAL lOpen     AS LOGIC
@@ -501,8 +477,7 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 	
 /// <summary>
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListRebuild ()  AS LOGIC STRICT
     RETURN _DbCallWithError("OrdListRebuild", VODBOrdListRebuild())
 

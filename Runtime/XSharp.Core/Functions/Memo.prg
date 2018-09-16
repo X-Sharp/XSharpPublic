@@ -5,21 +5,32 @@
 //
 
 
-
+/// <exclude />
 PUBLIC CLASS MemoHelpers
+    /// <exclude/>	
 	CONST BLANK      := 0x20 AS INT
+    /// <exclude/>	
 	CONST END_MEMO   := 0x1A AS INT // ^Z
+    /// <exclude/>	
 	CONST MAX_WIDTH  := 254 AS INT
+    /// <exclude/>	
 	CONST TAB		 := 9 AS INT
+    /// <exclude/>	
 	CONST LINE_FEED  := 10 AS INT
+    /// <exclude/>	
 	CONST HARD_CR    := 13 AS INT
+    /// <exclude/>	
 	CONST SOFT_CR    := 141 AS INT
+    /// <exclude/>	
 	CONST HARD_CR_LF := (HARD_CR << 8) | LINE_FEED AS INT
+    /// <exclude/>	
 	CONST SOFT_CR_LF := (SOFT_CR << 8) | LINE_FEED AS INT
+    /// <exclude/>	
 	CONST STD_TAB_WIDTH	:= 4 AS INT	
+    /// <exclude/>	
 	CONST STD_MEMO_WIDTH	 := 79	AS INT
 
-
+    /// <exclude/>	
 	STATIC METHOD  MLCount( cMemo AS STRING, nLineLen:= MemoHelpers.STD_MEMO_WIDTH AS INT, ;
 		nTabSize := MemoHelpers.STD_TAB_WIDTH AS INT,  lWrap := TRUE AS LOGIC) AS DWORD 
 		LOCAL nTempLen AS INT
@@ -45,9 +56,10 @@ PUBLIC CLASS MemoHelpers
 		ENDIF
 		RETURN nLines
 
+    /// <exclude/>	
 	STATIC METHOD GetTabPos( nPos AS INT, nTabSize AS INT ) AS INT
 		RETURN ( nPos + nTabSize ) - ( nPos % nTabSize )
-		
+    /// <exclude/>	
 	STATIC METHOD MPosToLc(cMemo AS STRING,nLineLen AS INT,nPos AS INT,nTabSize AS INT,lWrap AS LOGIC) AS Tuple<INT, INT>
 		LOCAL nLineNum := 0 AS INT
 		LOCAL nColumn := 0 AS INT
@@ -92,6 +104,7 @@ PUBLIC CLASS MemoHelpers
 		RETURN Tuple<INT,INT>{ nLineNum, nColumn }
 		
 		
+    /// <exclude/>	
 	STATIC METHOD  MLcToPos( cMemo AS STRING, nLineLen AS INT, nLineNum AS INT, nColumn AS INT, nTabSize AS INT, lWrap AS LOGIC) AS DWORD 
 		LOCAL nTempLen	:= 0 AS INT
 		LOCAL nChar		:= 0 AS INT
@@ -149,6 +162,7 @@ PUBLIC CLASS MemoHelpers
 		
 		RETURN (DWORD) ( nIndex + 1 )
 
+    /// <exclude/>	
 	STATIC METHOD IsCrLf( cMemo AS STRING, nPos AS INT, nCrLf REF INT ) AS LOGIC
 		LOCAL nChar AS INT
 		
@@ -165,6 +179,7 @@ PUBLIC CLASS MemoHelpers
 		RETURN nCRLF != 0
 
 		
+	/// <exclude/>	
 	STATIC METHOD LineLen( cMemo AS STRING, nStart AS INT, nLineLen AS INT, nTabSize AS INT , lWrap AS LOGIC ) AS INT
 	   LOCAL lCont AS LOGIC
 		   LOCAL nChar AS INT
@@ -215,7 +230,7 @@ PUBLIC CLASS MemoHelpers
 		   ENDIF
    
 		   RETURN nPos - nStart
-		
+	/// <exclude/>	
 	STATIC METHOD MLine( cMemo AS STRING, nLineNum AS INT, nLineLen AS INT, nTabSize AS INT, lWrap AS LOGIC, lJustCheck AS LOGIC, dOffset REF INT ) AS STRING
 		LOCAL oBuilder := NULL AS System.Text.StringBuilder
 		LOCAL nTempLen AS INT

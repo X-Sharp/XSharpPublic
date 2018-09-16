@@ -7,6 +7,7 @@ USING XSharp
 USING XSharp.RDD.Enums
 
 // RecInfo defines
+/// <exclude />
 DEFINE DBRI_DELETED 	:= DbRecordInfo.DBRI_DELETED 
 DEFINE DBRI_LOCKED 		:= DbRecordInfo.DBRI_LOCKED 		
 DEFINE DBRI_RECSIZE		:= DbRecordInfo.DBRI_RECSIZE		

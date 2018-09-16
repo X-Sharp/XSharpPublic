@@ -10,7 +10,7 @@ BEGIN NAMESPACE XSharp
 	/// These enums are also available as DEFINES and can therefore also be used without the "Gencode." prefix.
 	/// </note>
 	ENUM Gencode AS DWORD
-		MEMBER EG_UNKNOWN      := 0
+        MEMBER EG_UNKNOWN      := 0
 		MEMBER EG_ARG          := 1
 		MEMBER EG_BOUND        := 2
 		MEMBER EG_STROVERFLOW  := 3

@@ -8,10 +8,11 @@
 
 #define MB_TOPMOST 0x40000
 
-
+/// <summary>Take input from the keyboard and return it.</summary>
 FUNCTION _accept() AS STRING STRICT
    RETURN _accept( "" )
 
+/// <summary>Take input from the keyboard and return it.</summary>
 FUNCTION _accept( prompt AS STRING ) AS STRING
    LOCAL retval AS STRING
 
@@ -26,32 +27,38 @@ FUNCTION _accept( prompt AS STRING ) AS STRING
 
    RETURN IIF( retval == NULL, "", retval )
 
+/// <summary>Clear the terminal window and position the cursor at row and column 0.</summary>
 FUNCTION cls() AS VOID STRICT
    Console.Clear()
    RETURN
-
+    
+/// <summary>Return the screen column position of the cursor in the terminal window.</summary>
 FUNCTION Col() AS SHORT STRICT
    RETURN (SHORT) Console.CursorLeft
 
+/// <summary>Display the results of one or more expressions in the terminal window to the console, preceded with a newline.</summary>
 FUNCTION QOut() AS VOID STRICT
    Console.WriteLine()
    RETURN
 
+/// <summary>Display the results of one or more expressions in the terminal window to the console, preceded with a newline.</summary>
 FUNCTION QOut( o AS USUAL ) AS VOID
    Console.WriteLine()
    QQOut( o )
    RETURN
-
+/// <summary>Display the results of one or more expressions in the terminal window to the console, preceded with a newline.</summary>
 FUNCTION QOut( o PARAMS USUAL[] ) AS VOID
    Console.WriteLine()
    QQOut( o )
    RETURN
 
+/// <summary>Display the results of one or more expressions in the terminal window to the console.</summary>
 FUNCTION QQOut( o AS USUAL ) AS VOID
    //Console.Write( _ToVOString( o ) )
    Console.Write( AsString( o ) )
    RETURN
 
+/// <summary>Display the results of one or more expressions in the terminal window to the console.</summary>
 FUNCTION QQOut( o PARAMS  USUAL[] ) AS VOID
    LOCAL count := o:Length AS INT
    LOCAL x                 AS INT
@@ -64,16 +71,21 @@ FUNCTION QQOut( o PARAMS  USUAL[] ) AS VOID
    NEXT
    RETURN
 
+/// <summary>Return the screen row position of the cursor in the terminal window.</summary>
 FUNCTION Row() AS SHORT
    RETURN (SHORT) Console.CursorTop
 
+/// <summary>Move the cursor to a new position on the terminal window.</summary>
 FUNCTION SetPos( nRow AS INT, nCol AS INT ) AS VOID
    Console.SetCursorPosition( nCol, nRow )
    RETURN
 
+
+/// <summary>Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</summary>
  FUNCTION _wait() AS STRING STRICT
    RETURN _wait( __CavoStr(VoErrors.TMSG_PRESSANYKEY))
 
+/// <summary>Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</summary>
 FUNCTION _wait( prompt AS STRING ) AS STRING
    LOCAL info AS ConsoleKeyInfo
    LOCAL retval AS STRING
@@ -90,6 +102,6 @@ FUNCTION _wait( prompt AS STRING ) AS STRING
    END TRY
 
    RETURN retval
-
+/// <exclude/>
 FUNCTION DoEvents() AS VOID
     System.Windows.Forms.Application.DoEvents()

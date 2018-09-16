@@ -23,8 +23,8 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PROPERTY Index AS IntPtr GET oRDD:_Index SET oRDD:_Index := VALUE
     PROPERTY Table AS IntPtr GET oRDD:_Table
     
-    PRIVATE METHOD ACECall(nResult AS DWORD) AS LOGIC
-        RETURN SELF:oRDD:AceCall(nResult)
+    PRIVATE METHOD _CheckError(nResult AS DWORD) AS LOGIC
+        RETURN SELF:oRDD:_CheckError(nResult)
     #endregion
      /// <inheritdoc />    
     CONSTRUCTOR(oArea AS WorkArea)
@@ -49,7 +49,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         nonAdditive := TRUE
         mustEval := FALSE
         IF ! SELF:oRDD:_CheckVODateFormat()
-            SELF:oRDD:ACECALL(1)
+            SELF:oRDD:_CheckError(1)
         ENDIF
         mode := 0u
         IF (info:Unique)
@@ -94,7 +94,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             ACE.AdsClearProgressCallback()
             SELF:_CallbackFn := NULL
         ENDIF
-        SELF:ACECALL(result)
+        SELF:_CheckError(result)
         RETURN SELF:oRdd:GoTop()
         
         /// <inheritdoc />
@@ -108,7 +108,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         IF info:Order IS STRING
             orderName := (STRING) info:Order
             orderName := Path.GetFileNameWithoutExtension(orderName)
-            SELF:ACECALL(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex))
+            SELF:_CheckError(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex))
         ELSE
             TRY
                 orderNum := Convert.ToUInt16(info:Order)
@@ -117,11 +117,11 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 RETURN FALSE
             END TRY
             IF orderNum > 0
-                SELF:ACECALL(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT hIndex))
+                SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT hIndex))
             ENDIF
         ENDIF
         IF hIndex != IntPtr.Zero
-            SELF:ACECALL(ACE.AdsDeleteIndex(hIndex))
+            SELF:_CheckError(ACE.AdsDeleteIndex(hIndex))
             IF hIndex == SELF:Index
                 SELF:Index := IntPtr.Zero
             ENDIF
@@ -174,24 +174,24 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     CASE DBOI_BAGNAME
         len := MAX_PATH+1
         chars := CHAR[]{ len}
-        SELF:ACECALL(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_BASENAME, chars, REF len))
+        SELF:_CheckError(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_BASENAME, chars, REF len))
         info:Result := STRING{chars, 0, len}
         
     CASE DBOI_CONDITION
         len := ACE.ADS_MAX_INDEX_EXPR_LEN +1
         chars := CHAR[]{ len }
-        SELF:ACECALL(ACE.AdsGetIndexCondition(hIndex, chars, REF len))
+        SELF:_CheckError(ACE.AdsGetIndexCondition(hIndex, chars, REF len))
         info:Result := STRING{chars, 0, len}
         
     CASE DBOI_CUSTOM
         LOCAL wIsCustom AS WORD
-        SELF:ACECALL(ACE.AdsIsIndexCustom(hIndex, OUT wIsCustom))
+        SELF:_CheckError(ACE.AdsIsIndexCustom(hIndex, OUT wIsCustom))
         info:Result := wIsCustom != 0
         
     CASE DBOI_EXPRESSION
         len := ACE.ADS_MAX_INDEX_EXPR_LEN +1
         chars := CHAR[]{ len }
-        SELF:ACECALL(ACE.AdsGetIndexExpr(hIndex, chars, REF len))
+        SELF:_CheckError(ACE.AdsGetIndexExpr(hIndex, chars, REF len))
         info:Result := STRING{chars, 0, len}
         
     CASE DBOI_FILEHANDLE
@@ -200,7 +200,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     CASE DBOI_FULLPATH
         len := MAX_PATH+1
         chars := CHAR[]{ len}
-        SELF:ACECALL(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_FULLPATHNAME, chars, REF len))
+        SELF:_CheckError(ACE.AdsGetIndexFilename(hIndex, ACE.ADS_FULLPATHNAME, chars, REF len))
         info:Result := STRING{chars, 0, len}
         
     CASE DBOI_HPLOCKING
@@ -209,16 +209,16 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     CASE DBOI_ISCOND
         len := ACE.ADS_MAX_INDEX_EXPR_LEN +1
         chars := CHAR[]{ len }
-        SELF:ACECALL(ACE.AdsGetIndexCondition(hIndex, chars, REF len))
+        SELF:_CheckError(ACE.AdsGetIndexCondition(hIndex, chars, REF len))
         info:Result:= len > 0
         
     CASE DBOI_ISDESC
         LOCAL wDescending AS WORD
-        SELF:ACECALL(ACE.AdsIsIndexDescending(hIndex, OUT wDescending))
+        SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT wDescending))
         info:Result:= wDescending > 0
         
     CASE DBOI_KEYADD
-        SELF:ACECALL(ACE.AdsAddCustomKey(hIndex))
+        SELF:_CheckError(ACE.AdsAddCustomKey(hIndex))
         info:Result := TRUE
         
     CASE DBOI_KEYCOUNT
@@ -231,13 +231,13 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
           IF result == ACE.AE_NO_FILTER
             wOptLevel := ACE.ADS_OPTIMIZED_NONE
           ELSEIF result != 0
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
           ENDIF
           LOCAL dwCount AS DWORD
           IF (wOptLevel != ACE.ADS_OPTIMIZED_FULL)
-            SELF:ACECALL(ACE.AdsGetKeyCount(hIndex, ACE.ADS_RESPECTFILTERS, OUT dwCount))
+            SELF:_CheckError(ACE.AdsGetKeyCount(hIndex, ACE.ADS_RESPECTFILTERS, OUT dwCount))
           ELSE
-            SELF:ACECALL(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_RESPECTFILTERS, OUT dwCount))
+            SELF:_CheckError(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_RESPECTFILTERS, OUT dwCount))
           ENDIF
           info:Result := dwCount
         ENDIF
@@ -251,15 +251,15 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         info:Result := NULL
         
     CASE DBOI_KEYDELETE
-        SELF:ACECALL(ACE.AdsDeleteCustomKey(hIndex))
+        SELF:_CheckError(ACE.AdsDeleteCustomKey(hIndex))
         info:Result := TRUE
         
     CASE DBOI_KEYSIZE 
-        SELF:ACECALL(ACE.AdsGetKeyLength(hIndex, OUT len)) 
+        SELF:_CheckError(ACE.AdsGetKeyLength(hIndex, OUT len)) 
         info:Result := (LONG)len
         
     CASE DBOI_KEYTYPE
-        SELF:ACECALL(ACE.AdsGetKeyType(hIndex, OUT len))
+        SELF:_CheckError(ACE.AdsGetKeyType(hIndex, OUT len))
       BEGIN SWITCH len
     CASE ACE.ADS_STRING
       info:Result  := TypeCode.String
@@ -278,21 +278,21 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
       len  := SELF:oRDD:_MaxKeySize + 1
       chars := CHAR[]{len}
       
-      SELF:ACECALL(ACE.AdsExtractKey(hIndex, chars, REF len))
+      SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF len))
       info:Result  := STRING{chars, 0, len}
       
   CASE DBOI_NAME
       len  := MAX_PATH + 1
       chars := CHAR[]{len}
       
-      SELF:ACECALL(ACE.AdsGetIndexName(hIndex, chars, REF len))
+      SELF:_CheckError(ACE.AdsGetIndexName(hIndex, chars, REF len))
       info:Result := STRING{chars, 0, len}
       
   CASE DBOI_NUMBER
       IF (hIndex == IntPtr.Zero)
         info:Result  := 0
       ELSE
-        SELF:ACECALL(ACE.AdsGetIndexOrderByHandle(hIndex, OUT len))
+        SELF:_CheckError(ACE.AdsGetIndexOrderByHandle(hIndex, OUT len))
         info:Result := (LONG)len
     ENDIF
   CASE DBOI_ORDERCOUNT
@@ -301,31 +301,31 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         VAR indices := IntPtr[]{ numindices }
         chars  := CHAR[]{ _MAX_PATH }
         fileName := Path.GetFileName(info:BagName)
-        SELF:ACECALL(ACE.AdsGetAllIndexes(SELF:Table, indices, REF numindices))
+        SELF:_CheckError(ACE.AdsGetAllIndexes(SELF:Table, indices, REF numindices))
         VAR count := 0L
         FOR i := 0 TO numindices -1 
           len := (WORD)chars:Length
-          SELF:ACECALL(ACE.AdsGetIndexFilename(indices[i], ACE.ADS_BASENAMEANDEXT, chars, REF len))
+          SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], ACE.ADS_BASENAMEANDEXT, chars, REF len))
           IF string.Compare(STRING{chars, 0, len}, fileName, TRUE) == 0
             count++
           ENDIF
         NEXT
         info:Result := count
       ELSE
-        SELF:ACECALL(ACE.AdsGetNumIndexes(SELF:Table, OUT len))
+        SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:Table, OUT len))
         info:Result  := (LONG)len
     ENDIF
   CASE DBOI_POSITION
   CASE DBOI_RECNO
       LOCAL dwKeyNo AS DWORD
       IF AX_SetExactKeyPos()
-        SELF:ACECALL(ACE.AdsGetKeyNum(hIndex, 1, OUT dwKeyNo))
+        SELF:_CheckError(ACE.AdsGetKeyNum(hIndex, 1, OUT dwKeyNo))
         info:Result  := dwKeyNo
       ELSE
         LOCAL dwCount AS DWORD
         LOCAL r8Pos AS REAL8
-        SELF:ACECALL(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT dwCount))
-        SELF:ACECALL(ACE.AdsGetRelKeyPos(hIndex, OUT r8Pos))
+        SELF:_CheckError(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT dwCount))
+        SELF:_CheckError(ACE.AdsGetRelKeyPos(hIndex, OUT r8Pos))
         info:Result := (DWORD) (r8Pos  * (REAL8) dwCount)
       ENDIF
       
@@ -340,7 +340,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         chars := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
         result := ACE.AdsGetScope(hIndex, wScopeOption, chars, REF len)
         IF result != ACE.AE_NO_SCOPE .AND. result != 0
-          SELF:ACECALL(result)
+          SELF:_CheckError(result)
         ENDIF
         info:Result := SELF:oRDD:_Ansi2Unicode(chars, len)
         
@@ -353,13 +353,13 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         
     CASE DBOI_SKIPUNIQUE
         IF (info:Result != NULL)
-          SELF:ACECALL(ACE.AdsSkipUnique(hIndex, (LONG)info:Result ))
+          SELF:_CheckError(ACE.AdsSkipUnique(hIndex, (LONG)info:Result ))
         ELSE
-          SELF:ACECALL(ACE.AdsSkipUnique(hIndex, 1))
+          SELF:_CheckError(ACE.AdsSkipUnique(hIndex, 1))
         ENDIF
       RETURN SELF:oRDD:RecordMovement()
     CASE DBOI_UNIQUE
-        SELF:ACECALL(ACE.AdsIsIndexUnique(hIndex, OUT len))
+        SELF:_CheckError(ACE.AdsIsIndexUnique(hIndex, OUT len))
         info:Result := len != 0
         
     CASE DBOI_AXS_PERCENT_INDEXED
@@ -393,17 +393,17 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             RETURN FALSE
         ENDIF
         SELF:oRDD:_CheckVODateFormat()
-        SELF:ACECALL(ACE.AdsGetNumIndexes(SELF:Table, OUT numIndexes))
+        SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:Table, OUT numIndexes))
         wLength := 1000
         indices := IntPtr[]{ wLength }
         cIndexName := info:BagName
         result := ACE.AdsOpenIndex(SELF:Table, cIndexName, indices, REF wLength)
         IF result != ACE.AE_INDEX_ALREADY_OPEN 
-            SELF:ACECALL(result)
+            SELF:_CheckError(result)
             IF SELF:Index == IntPtr.Zero .AND. wLength > 0
                 wCurrent := numIndexes +1
                 LOCAL hIndex AS IntPtr
-                SELF:ACECALL(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex))
+                SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex))
                 SELF:Index := hIndex
             ENDIF
         ELSE
@@ -412,7 +412,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             pathName := CHAR[]{ MAX_PATH+1 }
             FOR i := 0 TO wLength -1
                 VAR wLen := (WORD)pathName:Length
-                SELF:ACECALL(ACE.AdsGetIndexFilename(indices[i], 1, pathName, REF wLen))
+                SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], 1, pathName, REF wLen))
                 IF string.Compare(info:BagName, STRING{pathName, 0, wLen}, TRUE) == 0
                     SELF:Index := indices[i]
                     EXIT
@@ -423,7 +423,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         
         /// <inheritdoc />
     VIRTUAL METHOD OrderListDelete(info AS DBORDERINFO ) AS LOGIC
-        SELF:ACECALL(ACE.AdsCloseAllIndexes(SELF:Table))
+        SELF:_CheckError(ACE.AdsCloseAllIndexes(SELF:Table))
         SELF:Index := IntPtr.Zero
         RETURN TRUE
         
@@ -440,7 +440,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF ! String.IsNullOrEmpty(orderName)
                 orderName := Path.GetFileNameWithoutExtension(orderName)
                 LOCAL hIndex AS IntPtr
-                SELF:ACECALL(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex))
+                SELF:_CheckError(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex))
                 SELF:Index := hIndex
                 RETURN SELF:oRDD:GoTop()
             ENDIF
@@ -454,7 +454,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             END TRY
             IF orderNum > 0
                 LOCAL hIndex AS IntPtr
-                SELF:ACECALL(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT hIndex))
+                SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT hIndex))
                 SELF:Index := hIndex
                 RETURN SELF:oRDD:GoTop()
             ELSE
@@ -467,12 +467,12 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         /// <inheritdoc />
     VIRTUAL METHOD OrderListRebuild() AS LOGIC
         LOCAL options AS DWORD
-        SELF:ACECALL(ACE.AdsGetTableOpenOptions(SELF:Table, OUT options))
+        SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:Table, OUT options))
         IF !AdsRDD._HasFlag(options, ACE.ADS_EXCLUSIVE)
             SELF:oRDD:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED, "OrderListRebuild")
             RETURN FALSE
         ENDIF
-        SELF:ACECALL(ACE.AdsReindex(SELF:Table))
+        SELF:_CheckError(ACE.AdsReindex(SELF:Table))
         RETURN SELF:oRDD:GoTop()
         
         
@@ -485,21 +485,21 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     IF SELF:Index == System.IntPtr.Zero
       SELF:oRDD:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_NOORDER, "Seek")
     ENDIF
-    SELF:ACECALL(SELF:oRDD:_CheckVODeletedFlag())
+    SELF:_CheckError(SELF:oRDD:_CheckVODeletedFlag())
     Key := seekinfo:value:ToString()
     seekMode := IIF (seekinfo:SoftSeek, ACE.ADS_SOFTSEEK, ACE.ADS_HARDSEEK)
     IF seekInfo:Last
-      SELF:ACECALL(ACE.AdsSeekLast(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, OUT found))
+      SELF:_CheckError(ACE.AdsSeekLast(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, OUT found))
       IF found== 0 .AND. seekinfo:SoftSeek  
-        SELF:ACECALL(ACE.AdsSeek(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, seekMode, OUT found))
+        SELF:_CheckError(ACE.AdsSeek(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, seekMode, OUT found))
       ENDIF
     ELSE
-      SELF:ACECALL(ACE.AdsSeek(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, seekMode, OUT found))
+      SELF:_CheckError(ACE.AdsSeek(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, seekMode, OUT found))
     ENDIF
     LOCAL atEOF AS WORD
     LOCAL atBOF AS WORD
-    SELF:ACECALL(ACE.AdsAtEOF(SELF:Table, OUT atEOF))
-    SELF:ACECALL(ACE.AdsAtBOF(SELF:Table, OUT atBOF))
+    SELF:_CheckError(ACE.AdsAtEOF(SELF:Table, OUT atEOF))
+    SELF:_CheckError(ACE.AdsAtBOF(SELF:Table, OUT atBOF))
     oRDD:_Found := found != 0
     oRDD:_Eof := atEOF != 0
     oRDD:_Bof := atBOF != 0
@@ -510,7 +510,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     ELSEIF result == 0
       SELF:oRDD:_Recno := dwRecord
     ELSE
-      SELF:ACECALL(result)
+      SELF:_CheckError(result)
     ENDIF
     RETURN TRUE
     INTERNAL METHOD ProgressCallback(usPercentDone AS WORD , ulCallbackID AS DWORD ) AS DWORD

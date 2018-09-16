@@ -232,7 +232,7 @@ BEGIN NAMESPACE XSharp
 
 
 			#endregion
-
+        /// <inheritdoc />
 		PUBLIC METHOD ToString() AS STRING
 			RETURN string.Format("[{0}]",_internalList:Count)
 

@@ -42,7 +42,7 @@ FUNCTION CollectForced() AS VOID
 	/// THROW NotImplementedException{}
 	RETURN  
 
-
+/// <exclude/>
 [Obsolete( "'AxitCalled()' is not supported and always returns FALSE" )] ;
 	FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
 RETURN FALSE  

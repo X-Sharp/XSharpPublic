@@ -13,10 +13,12 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat
 	PROPERTY Digits		AS INT AUTO GET PRIVATE SET
 	/// <inheritdoc />
 	PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
-	CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
+    /// <summary></summary>
+    CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
 		VALUE := val
 		Digits := len
 		Decimals := dec
+	/// <inheritdoc />
 	OVERRIDE METHOD ToString() AS STRING
         RETURN @@VALUE:ToString()
 END	STRUCTURE
@@ -34,11 +36,13 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	PROPERTY Value		AS DateTime GET DateTime{Year, Month, Day}
 	/// <inheritdoc />
 	PROPERTY IsEmpty	AS LOGIC GET Month == 0
+    /// <summary></summary>
 	CONSTRUCTOR(nYear AS INT, nMonth AS INT, nDay AS INT)
 		Year	:= nYear
 		Month   := nMonth
 		Day     := nDay
 		RETURN
+	/// <inheritdoc />
 	OVERRIDE METHOD ToString() AS STRING
         IF IsEmpty
             RETURN "    -  -  "

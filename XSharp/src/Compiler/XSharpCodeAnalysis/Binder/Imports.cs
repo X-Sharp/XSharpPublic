@@ -62,13 +62,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (opts.CommandLineArguments != null)
                 {
                     string functionsClass = null;
-                    if (compilation.Options.TargetDLL == XSharpTargetDLL.Core)
-                    {
-                        functionsClass = XSharpSpecialNames.XSharpCoreFunctionsClass;
-                    }
-                    else if (compilation.Options.IsDialectVO)
+                    if (compilation.Options.IsDialectVO )
                     {
                         functionsClass = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
+                    }
+                    else
+                    {
+                        functionsClass = Syntax.InternalSyntax.XSharpTreeTransformation.GlobalFunctionClassName(opts.TargetDLL);
                     }
                     if (!string.IsNullOrEmpty(functionsClass))
                     {

@@ -16,18 +16,15 @@ USING LanguageService.CodeAnalysis
 CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
     STATIC options AS ScriptOptions
 	STATIC cache   :=  Dictionary<STRING, XSharp.Codeblock>{} AS Dictionary<STRING, XSharp.Codeblock>
-	STATIC METHOD Initialize() AS VOID
-        
-		RETURN
 	STATIC CONSTRUCTOR
-        LOCAL oMC AS System.Type
+        LOCAL oMC AS IMacroCompiler
         oMC := XSharp.RuntimeState.MacroCompiler
         IF oMC == NULL
 		    SetMacroCompiler (typeof(XSharp.MacroCompiler))
         ENDIF
 		Appdomain.CurrentDomain:AssemblyLoad += AssemblyLoadEventHandler
 		RETURN
-	STATIC METHOD AssemblyLoadEventHandler(sender as OBJECT, args as AssemblyLoadEventArgs) AS VOID
+	STATIC METHOD AssemblyLoadEventHandler(sender AS OBJECT, args AS AssemblyLoadEventArgs) AS VOID
         IF options != NULL
 		    options := options:AddReferences(args:LoadedAssembly)
         ENDIF

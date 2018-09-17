@@ -9,16 +9,16 @@
 #define Compression     "lzma/ultra64"
 #endif
 #define FOX
-#undef FOX
+;#undef FOX
 
 
 ; version info and similar stuff.
   
-#define Version             "2.0.0.5"
-#define FileNameVersion     "2Beta5"
-#define VIVersion           "2.0.0.5"
-#define TouchDate           "2018-09-04"
-#define TouchTime           "02:00:05"
+#define Version             "2.0.0.6"
+#define FileNameVersion     "2Beta6"
+#define VIVersion           "2.0.0.6"
+#define TouchDate           "2018-09-11"
+#define TouchTime           "02:00:06"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"

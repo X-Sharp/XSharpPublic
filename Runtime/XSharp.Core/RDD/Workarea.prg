@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharp.RDD
 		// AutoShare
 		// etc
 		#endregion
-		
+		/// <exclude />
 		CONSTRUCTOR() 
 			SELF:_FilterInfo := DbFilterInfo{}
 			SELF:_ScopeInfo  := DbScopeInfo{}            
@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Alias		 := String.Empty
 			SELF:_RecordBuffer := NULL
 			SELF:_Disposed   := FALSE
-			
+		/// <exclude />	
 		DESTRUCTOR()
 			SELF:Dispose(FALSE)
 			

@@ -55,26 +55,26 @@ FUNCTION DBF() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION DbPack() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbPack", VODBPack())
+	RETURN _DbCallWithError(__FUNCTION__, VODBPack())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbRecall() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbRecall", VODbRecall())
+	RETURN _DbCallWithError(__FUNCTION__, VODbRecall())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbUnLock() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbUnLock", VODBUnlock(NULL_OBJECT))
+	RETURN _DbCallWithError(__FUNCTION__, VODBUnlock(NULL_OBJECT))
 
 /// <summary>Remove all records from the current workarea./// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
 FUNCTION DbZap() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbZap", VODBZap())
+	RETURN _DbCallWithError(__FUNCTION__, VODBZap())
 
 
 /// <summary>Release all locks for all work areas.</summary>
@@ -203,14 +203,14 @@ FUNCTION LastRec() AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION DBBuffRefresh() AS LOGIC STRICT
-	RETURN _DbCallWithError("DBBuffRefresh", VODBBuffRefresh())
+	RETURN _DbCallWithError(__FUNCTION__, VODBBuffRefresh())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DBClearFilter() AS LOGIC STRICT
-	RETURN _DbCallWithError("DBClearFilter", VODBClearFilter())
+	RETURN _DbCallWithError(__FUNCTION__, VODBClearFilter())
 
 /// <summary>
 /// </summary>
@@ -256,7 +256,7 @@ FUNCTION DBCommitAll() AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbContinue() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbContinue", VODbContinue())
+	RETURN _DbCallWithError(__FUNCTION__, VODbContinue())
 
 /// <summary>
 /// </summary>
@@ -287,7 +287,7 @@ FUNCTION DbGetSelect() AS DWORD STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbGoBottom() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbGoBottom", VODbGoBottom())
+	RETURN _DbCallWithError(__FUNCTION__, VODbGoBottom())
 
 
 /// <summary>
@@ -295,7 +295,7 @@ FUNCTION DbGoBottom() AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbGoTop() AS LOGIC STRICT
-	RETURN _DbCallWithError("DbGoTop", VODbGoTop())
+	RETURN _DbCallWithError(__FUNCTION__, VODbGoTop())
 
 /// <summary>
 /// </summary>

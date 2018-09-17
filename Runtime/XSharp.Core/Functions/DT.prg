@@ -183,10 +183,11 @@ FUNCTION Time24() AS STRING
    RETURN _TimeString((DWORD) d:Hour,(DWORD) d:Minute,(DWORD) d:Second,FALSE,"","")
 
 
-
+/// <summary>Convert a specified number of seconds to a time string.</summary>
 FUNCTION TString(fSeconds AS REAL8) AS STRING
    RETURN TString( (DWORD) Math.Round( fSeconds, MidpointRounding.ToEven ) )   
 
+/// <summary>Convert a specified number of seconds to a time string.</summary>
 FUNCTION TString(dwSeconds AS DWORD) AS STRING
    LOCAL dwHours AS DWORD
    LOCAL dwMinutes AS DWORD

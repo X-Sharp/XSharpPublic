@@ -163,7 +163,7 @@ FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldSet",  fieldName  )
     ELSE
-        _DbCallWithError("__FieldSet", VODBFieldPut( fieldpos, uValue))
+        _DbCallWithError(__FUNCTION__, VODBFieldPut( fieldpos, uValue))
     ENDIF
     // We return the original value to allow chained expressions
     RETURN uValue

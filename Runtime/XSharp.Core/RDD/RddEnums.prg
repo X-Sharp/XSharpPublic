@@ -4,8 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
-	/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
+	
 BEGIN NAMESPACE XSharp
+    /// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
 	ENUM CollationMode
 		MEMBER @@Windows
 		MEMBER @@Clipper

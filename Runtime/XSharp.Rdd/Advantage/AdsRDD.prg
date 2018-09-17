@@ -115,7 +115,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ACE.AdsSetEpoch((WORD)RuntimeState.Epoch )
     RETURN TRUE
     
-  METHOD _CheckRDDInfo() AS VOID
+  INTERNAL METHOD _CheckRDDInfo() AS VOID
     LOCAL oRet := NULL_OBJECT AS OBJECT
     IF AX_AXSLocking()
       SELF:_LockType := ACE.ADS_PROPRIETARY_LOCKING
@@ -157,7 +157,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     #endregion
     
   #region Open and Close
-  METHOD _FieldSub() AS LOGIC
+  PRIVATE METHOD _FieldSub() AS LOGIC
     LOCAL num AS DWORD
     LOCAL sb AS CHAR[]
     LOCAL wLen AS WORD
@@ -709,7 +709,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ENDIF
     RETURN SELF:RecordMovement()
     
-  VIRTUAL METHOD DeleteRecord() AS LOGIC
+  VIRTUAL METHOD Delete() AS LOGIC
     SELF:_CheckError(ACE.AdsDeleteRecord(SELF:_Table))
     RETURN TRUE
     

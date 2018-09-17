@@ -24,7 +24,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             RETURN FALSE
         ENDIF
         IF (SELF:m_hStatement != System.IntPtr.Zero)
-            SUPER:ACECALL(ACE.AdsCloseSQLStatement(SELF:m_hStatement))
+            SUPER:_CheckError(ACE.AdsCloseSQLStatement(SELF:m_hStatement))
             SELF:m_hStatement := System.IntPtr.Zero
         ENDIF
         RETURN TRUE
@@ -59,7 +59,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         //SUPER:AxCheckRDDInfo()
         //IF (SUPER:m_hConnection == System.IntPtr.Zero)
             ////
-            //SUPER:ACECALL(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."))
+            //SUPER:_CheckError(ACEUNPUB.AdsSetLastError(5036, "The SQL driver requires a connection to Advantage."))
             //RETURN FALSE
         //ENDIF
         //usual3 := Usual._NIL
@@ -80,49 +80,49 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             ////
             //RETURN FALSE
         //ENDIF
-        //IF (! SUPER:ACECALL(ACE.AdsCreateSQLStatement(SUPER:m_hConnection, @(SELF:m_hStatement))))
+        //IF (! SUPER:_CheckError(ACE.AdsCreateSQLStatement(SUPER:m_hConnection, @(SELF:m_hStatement))))
             ////
             //RETURN FALSE
         //ENDIF
-        //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableType(SELF:m_hStatement, SUPER:m_usTableType)))
+        //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableType(SELF:m_hStatement, SUPER:m_usTableType)))
             ////
             //RETURN FALSE
         //ENDIF
         //IF (RuntimeState.Collation == 1)
             ////
-            //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableCharType(SELF:m_hStatement, 2)))
+            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableCharType(SELF:m_hStatement, 2)))
                 ////
                 //RETURN FALSE
             //ENDIF
         //ELSE
             ////
-            //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableCharType(SELF:m_hStatement, 1)))
+            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableCharType(SELF:m_hStatement, 1)))
                 ////
                 //RETURN FALSE
             //ENDIF
         //ENDIF
-        //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableLockType(SELF:m_hStatement, SUPER:m_usLockType)))
+        //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableLockType(SELF:m_hStatement, SUPER:m_usLockType)))
             ////
             //RETURN FALSE
         //ENDIF
         //IF (lpOpenInfo:fReadOnly)
             ////
-            //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableReadOnly(SELF:m_hStatement, 1)))
+            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableReadOnly(SELF:m_hStatement, 1)))
                 ////
                 //RETURN FALSE
             //ENDIF
         //ELSE
             ////
-            //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableReadOnly(SELF:m_hStatement, 2)))
+            //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableReadOnly(SELF:m_hStatement, 2)))
                 ////
                 //RETURN FALSE
             //ENDIF
         //ENDIF
-        //IF (! SUPER:ACECALL(ACE.AdsStmtSetTableRights(SELF:m_hStatement, SUPER:m_usCheckRights)))
+        //IF (! SUPER:_CheckError(ACE.AdsStmtSetTableRights(SELF:m_hStatement, SUPER:m_usCheckRights)))
             ////
             //RETURN FALSE
         //ENDIF
-        //IF ((! String.IsNullOrEmpty(SUPER:m_strCollation) .AND. ((SUPER:m_usTableType == 3) .OR. (SUPER:m_usTableType == 4))) .AND. ! SUPER:ACECALL(ACE.AdsStmtSetTableCollation(SELF:m_hStatement, SUPER:m_strCollation)))
+        //IF ((! String.IsNullOrEmpty(SUPER:m_strCollation) .AND. ((SUPER:m_usTableType == 3) .OR. (SUPER:m_usTableType == 4))) .AND. ! SUPER:_CheckError(ACE.AdsStmtSetTableCollation(SELF:m_hStatement, SUPER:m_strCollation)))
             ////
             //RETURN FALSE
         //ENDIF
@@ -138,7 +138,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
                     //array2 := @@array:__GetElement(i)
                     //pucTableName := array2:__GetElement(0)
                     //pucPassword := array2:__GetElement(1)
-                    //IF (! SUPER:ACECALL(ACE.AdsStmtSetTablePassword(SELF:m_hStatement, pucTableName, pucPassword)))
+                    //IF (! SUPER:_CheckError(ACE.AdsStmtSetTablePassword(SELF:m_hStatement, pucTableName, pucPassword)))
                         ////
                         //RETURN FALSE
                     //ENDIF
@@ -148,7 +148,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 //
             //END TRY
         //ENDIF
-        //IF (! SUPER:ACECALL(ACE.AdsExecuteSQLDirect(SELF:m_hStatement, sName, @(SELF:_Table))))
+        //IF (! SUPER:_CheckError(ACE.AdsExecuteSQLDirect(SELF:m_hStatement, sName, @(SELF:_Table))))
             ////
             //SUPER:PrintCallTrace(<string>{"AdsExecuteSQLDirect failed"})
             //SELF:Close()
@@ -161,7 +161,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         //ENDIF
         //pucName := Char[]{261}
         //length := (Word)pucName:Length 
-        //IF (! SUPER:ACECALL(ACE.AdsGetTableType(SUPER:_Table, @(SELF:m_usTableType))))
+        //IF (! SUPER:_CheckError(ACE.AdsGetTableType(SUPER:_Table, @(SELF:m_usTableType))))
             ////
             //SELF:Close()
             //RDDBase.SetNetErr(TRUE)
@@ -204,12 +204,12 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:_Table, OUT isLive) == 0 .AND. isLive == 0
-        SUPER:ACECALL(ACE.AdsGetRecordNum(SUPER:_Table, ACE.ADS_IGNOREFILTERS, OUT recNum))
-        SUPER:ACECALL(ACE.AdsGetRecordCRC(SUPER:_Table, OUT dwCRC, 1))
+        SUPER:_CheckError(ACE.AdsGetRecordNum(SUPER:_Table, ACE.ADS_IGNOREFILTERS, OUT recNum))
+        SUPER:_CheckError(ACE.AdsGetRecordCRC(SUPER:_Table, OUT dwCRC, 1))
         ACE.AdsCloseTable(SUPER:_Table)
         SUPER:_Table := System.IntPtr.Zero
         SUPER:_Index := System.IntPtr.Zero
-        SUPER:ACECALL(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:_Table))
+        SUPER:_CheckError(ACE.AdsExecuteSQL(SELF:m_hStatement, OUT SELF:_Table))
         IF ACE.AdsGotoRecord(SUPER:_Table, recNum) == 0
             IF ACE.AdsGetRecordCRC(SUPER:_Table, OUT dwCRC2, 1) == 0 .AND. dwCRC == dwCRC2
                 SUPER:RecordMovement()
@@ -218,12 +218,12 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
                 SUPER:RecordMovement()
             ENDIF
         ELSE
-            SUPER:ACECALL(ACE.AdsGotoTop(SUPER:_Table))
+            SUPER:_CheckError(ACE.AdsGotoTop(SUPER:_Table))
             SUPER:RecordMovement()
         ENDIF
-        SUPER:ACECALL(ACE.AdsGetIndexHandle(SUPER:_Table, NULL, OUT SELF:_Index))
+        SUPER:_CheckError(ACE.AdsGetIndexHandle(SUPER:_Table, NULL, OUT SELF:_Index))
     ELSE
-        SUPER:ACECALL(ACE.AdsRefreshRecord(SUPER:_Table))
+        SUPER:_CheckError(ACE.AdsRefreshRecord(SUPER:_Table))
     ENDIF
     RETURN TRUE
 

@@ -332,53 +332,18 @@ FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS USUAL,uCob
     /// </returns>
 FUNCTION VODBUnlock(uRecno AS USUAL) AS LOGIC
     RETURN VODbUnLock((OBJECT) uRecno)
-    
-    /// <summary>
-    /// Create new file through the specified RDDs
-    /// </summary>
-    /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
-    /// <param name="aStruct">Structure to use when creating the file.</param>
-    /// <param name="cRddName">Name of the RDD to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
-    /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
-    /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
-    /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
-    /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    
-    /// <remarks>VODBCreate() is like DBCreate().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
-    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-    /// <seealso cref="O:XSharp.Core.Functions.VODBCreate">VODbCreate in XSharp.Core</seealso>
 
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <param name="aStruct">Array with structure to use when creating the file.</param>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL aFldInfo AS RddFieldInfo[]
     aFldInfo := Db.ArrayToFieldInfo(aStruct)
-    RETURN VoDbCreate(cName, aFldInfo:ToArray(), cRddName, lNew, cAlias, cDelim, lKeep, lJustOpen)  
-    /// <summary>
-    /// Create new file through the specified RDDs
-    /// </summary>
-    /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
-    /// <param name="aStruct">Structure to use when creating the file.</param>
+    RETURN VODBCreate(cName, aFldInfo:ToArray(), cRddName, lNew, cAlias, cDelim, lKeep, lJustOpen)  
+
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <param name="aStruct">Array with structure to use when creating the file.</param>
     /// <param name="oRddType">Type of the RDDs to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
-    /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
-    /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
-    /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
-    /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    /// <remarks>VODBCreate() is like DBCreate().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
-    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-    /// <seealso cref="O:XSharp.Core.Functions.VODBCreate">VODbCreate in XSharp.Core</seealso>
-   
 FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, oRddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL aFldInfo AS RddFieldInfo[]
     aFldInfo := Db.ArrayToFieldInfo(aStruct)
-    RETURN VoDbCreate(cName, aFldInfo, oRddType, lNew, cAlias, cDelim, lKeep, lJustOpen)  
+    RETURN VODBCreate(cName, aFldInfo, oRddType, lNew, cAlias, cDelim, lKeep, lJustOpen)  

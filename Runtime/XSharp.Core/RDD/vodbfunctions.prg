@@ -86,7 +86,7 @@ INTERNAL STATIC CLASS VoDb
     nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
         LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
         IF oDest == NULL
-            RddError.PostNoTableError("VODBTrans")
+            RddError.PostNoTableError(cFunc)
         ENDIF
         info:Destination := oDest
         IF !VoDb.BuildTrans( info, fldNames, oRDD, oDest )
@@ -178,16 +178,17 @@ FUNCTION VODBAlias(nArea AS DWORD) AS STRING
     /// </summary>
     /// <param name="lReleaseLocks"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBAppend() is like DBAppend() but is strongly typed.  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
- 
-
+    /// <remarks>VODBAppend() is like DBAppend() but is strongly typed.  
+    /// <span id='LastError' >
+    /// <br/>This function, however, does not call the error
+    /// handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
+    /// Thus, it may be important to check the return value to determine if the function succeeded.<br/>
+    /// The <see cref='P:XSharp.RuntimeState.LastRddError'>LastRddError property in the runtimestate</see>  will contain needed information
+    /// regarding any error that occurs.</span>
+    /// </remarks>
 FUNCTION VODBAppend(lReleaseLocks AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBAppend") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Append(lReleaseLocks)
     })
     
@@ -199,7 +200,7 @@ FUNCTION VODBAppend(lReleaseLocks AS LOGIC) AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBBlobInfo") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         ptrRet := oRDD:BlobInfo(nOrdinal, nPos)
         RETURN TRUE
     CATCH e AS Exception
@@ -215,16 +216,19 @@ FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGI
     /// <remarks>VODBBOF() is the same as BOF().</remarks>
 FUNCTION VODBBof() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBBof") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:BoF
     })
     
     /// <summary>
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>VODBBuffRefresh() is like DBBuffRefresh().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBBuffRefresh() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBBuffRefresh") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     oRDD:RecInfo(0, DbRecordInfo.DBRI_Updated,NULL)
     RETURN TRUE
     })
@@ -232,15 +236,13 @@ FUNCTION VODBBuffRefresh() AS LOGIC
     /// Clear a logical filter condition.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBClearFilter() is like DBClearFilter().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
-    
+    /// <remarks>VODBClearFilter() is like DBClearFilter().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+      
 FUNCTION VODBClearFilter() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearFilter") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:ClearFilter()
     })
     
@@ -248,15 +250,13 @@ FUNCTION VODBClearFilter() AS LOGIC
     /// Clear a locate condition by deleting the locate code block.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBClearLocate() is like DBClearLocate().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBClearLocate() is like DBClearLocate().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
     
 FUNCTION VODBClearLocate() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearLocate") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:ClearScope()
     })
     
@@ -264,39 +264,33 @@ FUNCTION VODBClearLocate() AS LOGIC
     /// Clear any active relations.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBClearRelation() is like DBClearRelation().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>    
+    /// <remarks>VODBClearRelation() is like DBClearRelation().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBClearRelation() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearRelation") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:ClearRel()
     })
     
     /// <summary>
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBClearScope() is like DBClearScope().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBClearScope() is like DBClearScope().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBClearScope() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBClearScope") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:ClearScope()
     })
     /// <summary>
     /// Close all files in all work areas.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBCloseAll() is like DBCloseAll().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBCloseAll() is like DBCloseAll().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBCloseAll() AS LOGIC
     RETURN VoDb.Do ({ =>
     RETURN RuntimeState.Workareas:CloseAll()
@@ -305,14 +299,12 @@ FUNCTION VODBCloseAll() AS LOGIC
     /// Close all files in a work area.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBCloseArea() is like DBCloseArea().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>      
+    /// <remarks>VODBCloseArea() is like DBCloseArea().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBCloseArea() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBFlock") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Close()
     })
     
@@ -320,14 +312,12 @@ FUNCTION VODBCloseArea() AS LOGIC
     /// Flush pending updates in one work area.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBCommit() is like DBCommit().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBCommit() is like DBCommit().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBCommit() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBCommit") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Flush()
     })
     
@@ -335,11 +325,9 @@ FUNCTION VODBCommit() AS LOGIC
     /// Flush pending updates in all work areas.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBCommitAll() is like DBCommitAll().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>    
+    /// <remarks>VODBCommitAll() is like DBCommitAll().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBCommitAll() AS LOGIC
     RETURN VoDb.Do ({ =>
     RETURN RuntimeState.Workareas:CommitAll()
@@ -348,55 +336,48 @@ FUNCTION VODBCommitAll() AS LOGIC
     /// Resume a pending locate condition.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBContinue() is like DBContinue().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBContinue() is like DBContinue().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBContinue() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBContinue") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Continue()
     })
-    
+
+    /// <overloads>
+    /// <summary>
+    /// Create new file through the specified RDDs
+    /// </summary>
+    /// </overloads>
     /// <summary>
     /// Create new file through the specified RDDs
     /// </summary>
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
-    /// <param name="rddList">List of RDDs to use when creating the file</param>
+    /// <param name="cRddName">Name of RDD to use when opening the file.</param>
     /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
     /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DBCreate function</seealso>
+    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate overloads in XSharp.VO</seealso>
+    /// <seealso cref="O:XSharp.Core.Functions.VODBCreate">VODbCreate overloads in XSharp.Core</seealso>
+    
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL rddType AS Type
     IF ( rddType := VoDb.RddNameToType( cRddName ) ) == NULL
-        RddError.PostArgumentError( "VODBCreate", EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
         RETURN FALSE
     ELSE
         RETURN VODBCreate( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
     ENDIF
     })
-    /// <summary>
-    /// Create new file through the specified RDDs
-    /// </summary>
-    /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
-    /// <param name="aStruct">Structure to use when creating the file.</param>
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="rddList">List of RDDs to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only whenl Open has a value of TRUE. The default is FALSE.</param>
-    /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
-    /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
-    /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
-    /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
 
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS XSharp.RDD.RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL oRdd := NULL  AS RegisteredRDD
@@ -407,38 +388,15 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS
     IF oRdd != NULL_OBJECT
         RETURN VODBCreate(cName, aStruct, oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
     ENDIF
-    RETURN FALSE
-    /// <summary>
-    /// Create new file through the specified RDDs
-    /// </summary>
-    /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
-    /// <param name="aStruct">Structure to use when creating the file.</param>
+    RETURN FALSE 
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
-    /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
-    /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
-    /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
-    /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
 
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDbCreate(cName, aStruct:ToArray(), rddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-    /// <summary>
-    /// Create new file through the specified RDDs
-    /// </summary>
-    /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
-    /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
-    /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
-    /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
-    /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
     
 FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDb.Do ({ =>
@@ -447,11 +405,11 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
     LOCAL ret   := FALSE   AS LOGIC
     RuntimeState.LastRddError := NULL
     IF String.IsNullOrEmpty( cName )
-        RddError.PostArgumentError( "VODBCreate", EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
     ELSEIF aStruct == NULL
-        RddError.PostArgumentError( "VODBCreate", EDB_USE, nameof(aStruct), 2 ,NULL)
+        RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(aStruct), 2 ,NULL)
     ELSEIF lNew && ! ( ret := VODBSelect( 0, REF uiOldArea ) )
-        RddError.PostError( "VODBCreate", EG_CREATE, EDB_NOAREAS )
+        RddError.PostError( __FUNCTION__, EG_CREATE, EDB_NOAREAS )
     ELSE
         ret := TRUE   
     ENDIF
@@ -464,19 +422,19 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
     ENDIF
     RuntimeState.Workareas:CurrentWorkAreaNO := uiNewArea
     IF ret && String.IsNullOrEmpty( cAlias ) && ! ( ret := VoDb.AliasFromFilename( cName, cAlias ) )
-        RddError.PostArgumentError( "VODBCreate", EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
     ENDIF   
     IF ret && ! ( ret := VoDb.IsAliasUnused( cAlias ) )
-        RddError.PostArgumentError( "VODBCreate", EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
     ENDIF
     // Now all arguments are valid. So lets create the RDD Object and try to create the file
     LOCAL oRDD AS IRDD
     oRDD := VoDb.CreateRDDInstance(rddType, cAlias)
     IF oRDD == NULL
-        RddError.PostArgumentError( "VODBCreate", EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
         ret := FALSE
     ELSEIF ! VoDb.IsAliasUnused( cAlias )
-        RddError.PostArgumentError( "VODBCreate", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
         ret := FALSE
     ELSE
         ret := RuntimeState.Workareas:SetArea(uiNewArea, oRDD)
@@ -520,15 +478,13 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
     /// Mark the current record for deletion.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBDelete() is like DBDelete().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBDelete() is like DBDelete().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
     /// <seealso cref="M:XSharp.VO.Functions.DbDelete">DbDelete Function</seealso>
 FUNCTION VODBDelete() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBDelete") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Delete()
     })
     
@@ -540,7 +496,7 @@ FUNCTION VODBDelete() AS LOGIC
     /// <seealso cref="M:XSharp.VO.Functions.Deleted">Deleted Function</seealso>
 FUNCTION VODBDeleted() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBDeleted") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Deleted
     })
     
@@ -551,10 +507,10 @@ FUNCTION VODBDeleted() AS LOGIC
     /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
     /// database file open in the current work area, VODBEOF() returns TRUE.</returns>
     /// <remarks>VODBEOF() is the same as EOF().</remarks>
-    /// <seealso cref="O:XSharp.VO.Functions.Eof" >Eof Function </seealso>
+    /// <seealso cref="M:XSharp.VO.Functions.Eof" >Eof Function </seealso>
 FUNCTION VODBEof() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBEof") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:EoF
     })
     
@@ -572,11 +528,11 @@ FUNCTION VODBEval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeB
     RETURN VoDb.Do ({ =>
     LOCAL nNext AS LONG
     IF uBlock == NULL
-        THROW Error.ArgumentError("VODBEVal", nameof(uBlock),1, <OBJECT>{uBlock})
+        THROW Error.ArgumentError(__FUNCTION__, nameof(uBlock),1, <OBJECT>{uBlock})
     ELSEIF uCobFor == NULL
-        THROW Error.ArgumentError("VODBEVal", nameof(uCobFor),2, <OBJECT>{uCobFor})        
+        THROW Error.ArgumentError(__FUNCTION__, nameof(uCobFor),2, <OBJECT>{uCobFor})        
     ELSEIF uCobWhile == NULL    
-        THROW Error.ArgumentError("VODBEVal", nameof(uCobWhile),3, <OBJECT>{uCobWhile})
+        THROW Error.ArgumentError(__FUNCTION__, nameof(uCobWhile),3, <OBJECT>{uCobWhile})
     ELSE
         TRY
             IF uNext != NULL
@@ -585,10 +541,10 @@ FUNCTION VODBEval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeB
                 nNext := 0
             ENDIF
         CATCH AS Exception
-            THROW Error.ArgumentError("VODBEVal", nameof(uNext),4, <OBJECT>{uNext})
+            THROW Error.ArgumentError(__FUNCTION__, nameof(uNext),4, <OBJECT>{uNext})
         END TRY
     ENDIF
-    LOCAL oRDD := RDDHelpers.CWA("VODBEval") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL oInfo AS DbEvalInfo
     oInfo := DbEvalInfo{}
     oInfo:Block := uBlock
@@ -607,7 +563,7 @@ FUNCTION VODBEval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeB
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBFieldGet") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         ptrRet := oRDD:GetValue((INT) nPos-1)
         RETURN TRUE
     CATCH e AS Exception
@@ -621,9 +577,12 @@ FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     /// <param name="nPos"></param>
     /// <param name="ptrRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>VODBFieldInfo() is like DBFieldInfo().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBFieldInfo") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         ptrRet := oRDD:FieldInfo((INT) nPos-1, (INT) nOrdinal, ptrRet)
         RETURN TRUE
     CATCH e AS Exception
@@ -636,9 +595,13 @@ FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOG
     /// <param name="nPos"></param>
     /// <param name="xValue"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+
 FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBFieldPut") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:PutValue((INT) nPos-1, xValue)
     })    
     
@@ -647,9 +610,12 @@ FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
     /// <param name="nPos"></param>
     /// <param name="cFile"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>VODBFileGet() is like DBFileGet().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBFileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBFileGet") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:GetValueFile((INT) nPos, cFile)
     })
     
@@ -660,7 +626,7 @@ FUNCTION VODBFileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBFilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBFilePut") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:PutValueFile((INT) nPos, cFile)
     })
     
@@ -669,9 +635,12 @@ FUNCTION VODBFilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
     /// </summary>
     /// <returns>
     /// </returns>
+    /// <remarks>VODBFilter() is like DBFilter().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBFilter() AS STRING
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBFilter") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:FilterText
     })
     
@@ -679,9 +648,12 @@ FUNCTION VODBFilter() AS STRING
     /// Lock an opened and shared database file.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>VODBFlock() is like DBFlock().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBFlock() AS LOGIC
     RETURN VoDb.Do ({ =>    
-    VAR oRDD := RDDHelpers.CWA("VODBFlock")
+    VAR oRDD := RDDHelpers.CWA(__FUNCTION__)
     LOCAL dbli AS DbLockInfo
     dbli := DbLockInfo{}
     dbli:Result := FALSE
@@ -694,9 +666,12 @@ FUNCTION VODBFlock() AS LOGIC
     /// </summary>
     /// <returns>
     /// </returns>
+    /// <remarks>VODBFound() is like Found().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBFound() AS LOGIC
     RETURN VoDb.Do ({ =>
-    VAR oRDD := RDDHelpers.CWA("VODBFound")
+    VAR oRDD := RDDHelpers.CWA(__FUNCTION__)
     RETURN oRDD:Found
     })
     
@@ -707,9 +682,12 @@ FUNCTION VODBFound() AS LOGIC
     /// </summary>
     /// <returns>
     /// </returns>
+    /// <remarks>VODBGetSelect() is like DBGetSelect().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBGetSelect() AS DWORD
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBGetSelect") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Area
     })
     
@@ -717,15 +695,13 @@ FUNCTION VODBGetSelect() AS DWORD
     /// Move to the last logical record.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBGoBottom() is like DBGoBottom().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBGoBottom() is like DBGoBottom().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
     
 FUNCTION VODBGoBottom() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBGoBottom") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:GoBottom()
     })
     /// <summary>
@@ -735,7 +711,7 @@ FUNCTION VODBGoBottom() AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBGoto(uRecId AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBGoto") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:GoToId(uRecID)
     })
     
@@ -743,15 +719,13 @@ FUNCTION VODBGoto(uRecId AS OBJECT) AS LOGIC
     /// Move to the first logical record.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBGoTop() is like DBGoTop().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBGoTop() is like DBGoTop().  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
     
 FUNCTION VODBGoTop() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBGoTop") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:GoTop()
     })
     
@@ -764,7 +738,7 @@ FUNCTION VODBGoTop() AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBInfo") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         IF (nOrdinal == DBI_RDD_OBJECT)
             ptrRet := oRDD
         ELSE
@@ -795,12 +769,12 @@ FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJoinList) AS LOGIC
     nDestSel := struList:DestSel
     oRDDDest := RuntimeState.Workareas.GetRDD(nDestSel)
     IF oRDDDest == NULL
-        RddError.PostNoTableError("VODBJoinAppend")
+        RddError.PostNoTableError(__FUNCTION__)
     ELSE
         FOR nFld := 0 TO nCount-1
             oRDDSrc := RuntimeState.Workareas.GetRDD(struList:Fields[nFld]:Area)
             IF oRDDSrc == NULL_OBJECT
-                RddError.PostNoTableError("VODBJoinAppend")
+                RddError.PostNoTableError(__FUNCTION__)
             ENDIF
             oValue := oRDDSrc:GetValue((INT) struList:Fields[nFld]:Pos)
             result := oRDDDest:PutValue(nFld, oValue)
@@ -819,7 +793,7 @@ FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJoinList) AS LOGIC
     /// </returns>
 FUNCTION VODBLastRec() AS LONG
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBLastRec") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:RecCount
     })  
     
@@ -832,14 +806,12 @@ FUNCTION VODBLastRec() AS LONG
     /// <param name="uRecId"></param>
     /// <param name="lRest"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-   /// <remarks>VODBLocate() is like DBLocate() but strongly typed.  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBLocate() is like DBLocate() but strongly typed.  
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBLocate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODbMemoExt") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL scopeinfo := DBSCOPEINFO{} AS DBSCOPEINFO
     scopeinfo:ForBlock := uCobFor
     scopeinfo:WhileBlock := uCobWhile
@@ -859,7 +831,7 @@ FUNCTION VODBLocate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,
     /// </returns>
 FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODbMemoExt") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN (STRING) oRDD:Info(DBI_MEMOEXT, NULL)
     })
     /// <summary>
@@ -869,24 +841,22 @@ FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
     /// </returns>
 FUNCTION VODBOrdBagExt() AS STRING
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdBagExt") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR info := DbOrderInfo{}
     RETURN (STRING) oRDD:OrderInfo( DBOI_BAGEXT, info)
     })
+    
     /// <summary>
     /// Set the condition and scope for an order.
     /// </summary>
     /// <param name="ordCondInfo">An object defining the condition and scope information. </param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-   /// <remarks>VODBOrdCondSet() is like DBOrdCondSet() but strongly typed and the condition information is passed in an object.  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
-    
+    /// <remarks>VODBOrdCondSet() is like OrdCondSet() but strongly typed and the condition information is passed in an object.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBOrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdCondSet") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:OrderCondition(ordCondInfo)
     })
     /// <summary>
@@ -899,15 +869,14 @@ FUNCTION VODBOrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
     /// <param name="lUnique">TRUE creates a unique order by including only those records with unique key values; FALSE uses all records in the database file. </param>
     /// <param name="ordCondInfo">An object defining the condition and scope information. </param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrdCreate() is like DbCreateOrder() but strongly typed and the condition information is passed in an object.  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBOrdCreate() is like DbCreateOrder() but strongly typed and the condition information is passed in an object.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeBlock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdCreate") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR info := DbOrderCreateInfo{}
     info:BagName 		:= cBagName
     info:Order			:= oOrder
@@ -923,15 +892,14 @@ FUNCTION VODBOrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCode
     /// <param name="cBagName"></param>
     /// <param name="oOrder"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrdDestroy() is like DbDeleteOrder() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBOrdDestroy() is like DbDeleteOrder() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR info := DbOrderInfo{}
     info:BagName := cBagName
     info:Order   := oOrder
@@ -945,11 +913,10 @@ FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// <param name="uOrder"></param>
     /// <param name="oValue"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrderInfo() is like DbOrderInfo() but strongly typed.  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBOrderInfo() is like DbOrderInfo() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
@@ -965,7 +932,7 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oVa
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBOrdDestroy") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
@@ -984,16 +951,13 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oVa
     /// <param name="cBagName"></param>
     /// <param name="oOrder"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrdListAdd() is like DbSetIndex() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
-    
+    /// <remarks>VODBOrdListAdd() is like DbSetIndex() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
 FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
     
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR info := DbOrderInfo{}
     info:BagName := cBagName
     IF oOrder == NULL
@@ -1010,16 +974,15 @@ FUNCTION VODBOrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// <param name="cBagName"></param>
     /// <param name="oOrder"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrdListClear() is like DBClearIndex() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBOrdListClear() is like DBClearIndex() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
     
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdListAdd",FALSE) AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__,FALSE) AS IRDD
     IF oRDD == NULL
         RETURN TRUE // not logical but compatible with VO
     ELSE
@@ -1037,15 +1000,14 @@ FUNCTION VODBOrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// Rebuild all orders in the order list of a work area.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrdListClear() is like OrdListRebuild(). This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBOrdListClear() is like OrdListRebuild().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBOrdListRebuild() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBOrdListRebuild") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:OrderListRebuild()
     })
     
@@ -1056,16 +1018,15 @@ FUNCTION VODBOrdListRebuild() AS LOGIC
     /// <param name="oOrder"></param>
     /// <param name="strPreviousOrder"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBOrdSetFocus() is like DbSetOrder() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBOrdSetFocus() is like DbSetOrder() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder OUT STRING) AS LOGIC
     strPreviousOrder := ""
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBOrdSetFocus") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         VAR info     := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
@@ -1084,15 +1045,13 @@ FUNCTION VODBOrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder O
     /// Remove all records that have been marked for deletion from a database file.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBPack() is like DbPack(). This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>          
+    /// <remarks>VODBPack() is like DbPack(). 
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
     
 FUNCTION VODBPack() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBPack") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Pack()
     })
     
@@ -1179,7 +1138,7 @@ FUNCTION VODBRddList() AS STRING[]
     /// </returns>
 FUNCTION VODBRddName() AS STRING
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRddName") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:SysName
     })
     /// <summary>
@@ -1200,14 +1159,13 @@ FUNCTION VODBRddSetDefault(cNewRDD AS STRING) AS STRING
     /// Restore the current record if it is marked for deletion.
     /// </summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBRecall() is like DBRecall(). This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>       
+    /// <remarks>VODBRecall() is like DBRecall().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBRecall() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecall") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Recall()
     })
     
@@ -1218,7 +1176,7 @@ FUNCTION VODBRecall() AS LOGIC
     /// </returns>
 FUNCTION VODBRecno() AS OBJECT
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecno") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Recno
     })
     
@@ -1228,7 +1186,7 @@ FUNCTION VODBRecno() AS OBJECT
     /// </returns>
 FUNCTION VODBRecordGet() AS BYTE[]
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecordGet") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:GetRec()
     }) 
     
@@ -1241,7 +1199,7 @@ FUNCTION VODBRecordGet() AS BYTE[]
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
 FUNCTION VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBRecordInfo") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         oRDD:RecInfo(oRecID, (INT) nOrdinal, oRet )
         RETURN TRUE
     CATCH e AS Exception
@@ -1252,11 +1210,11 @@ FUNCTION VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS L
     
     /// <summary>
     /// </summary>
-    /// <param name="pszRecord"></param>
+    /// <param name="aRecord"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
 FUNCTION VODBRecordPut(aRecord AS BYTE[]) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRecordPut") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:PutRec(aRecord)
     })
     
@@ -1266,14 +1224,13 @@ FUNCTION VODBRecordPut(aRecord AS BYTE[]) AS LOGIC
     /// <param name="nPos"></param>
     /// <param name="pszRel"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSetRelation() is like DBSetRelation(). This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBSetRelation() is like DBSetRelation().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBRelation(nPos AS DWORD,sRel REF STRING) AS LOGIC
     TRY
-        LOCAL oRDD := RDDHelpers.CWA("VODBRecordPut") AS IRDD
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         sRel :=  oRDD:RelText(nPos)
         RETURN TRUE
     CATCH e AS Exception
@@ -1287,14 +1244,13 @@ FUNCTION VODBRelation(nPos AS DWORD,sRel REF STRING) AS LOGIC
     /// </summary>
     /// <param name="uRecId"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBRlock() is like DBRlock() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>            
+    /// <remarks>VODBRlock() is like DBRlock() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBRlock(uRecId AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRlock") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL lockInfo AS DbLockInfo
     lockInfo := DbLockInfo{}
     lockInfo:RecId := uRecID
@@ -1306,14 +1262,13 @@ FUNCTION VODBRlock(uRecId AS OBJECT) AS LOGIC
     /// </summary>
     /// <param name="nPos"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBRSelect() is like DBRSelect() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>      
+    /// <remarks>VODBRSelect() is like DBRSelect() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBRSelect(nPos AS DWORD) AS DWORD
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBRSelect") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:RelArea(nPos)
     })
     /// <summary>
@@ -1322,14 +1277,13 @@ FUNCTION VODBRSelect(nPos AS DWORD) AS DWORD
     /// <param name="oValue"></param>
     /// <param name="lSoftSeek"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSeek() is like DBSeek() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBSeek() is like DBSeek() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSeek(oValue AS OBJECT,lSoftSeek AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSeek") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR info 		:= DbSeekInfo{}
     info:Value 		:= oValue          
     info:SoftSeek 	:= lSoftSeek
@@ -1344,11 +1298,10 @@ FUNCTION VODBSeek(oValue AS OBJECT,lSoftSeek AS LOGIC) AS LOGIC
     /// <param name="nNew"></param>
     /// <param name="nOld"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
- /// <remarks>VODBSelect() is like DBSelect() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>    
+    /// <remarks>VODBSelect() is like DBSelect() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
     TRY
         nOld := (DWORD) RuntimeState.Workareas:CurrentWorkAreaNO
@@ -1357,7 +1310,7 @@ FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
                 nNew := (DWORD) RuntimeState.Workareas:FindEmptyArea(TRUE)
             ENDIF
             IF nNew > WorkAreas.MaxWorkareas
-                RddError.PostArgumentError( "VODBSelect", EDB_SELECT, "nNew", 1, <OBJECT>{ nNew } )
+                RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(nNew), 1, <OBJECT>{ nNew } )
             ELSE
                 RuntimeState.Workareas:CurrentWorkAreaNO :=  nNew
             ENDIF
@@ -1375,14 +1328,13 @@ FUNCTION VODBSelect(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
     /// <param name="oBlock"></param>
     /// <param name="cFilter"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSetFilter() is like DBSetFilter() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>       
+    /// <remarks>VODBSetFilter() is like DBSetFilter() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetFilter") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR info 		 := DbFilterInfo{}
     info:FilterBlock := oBlock         
     info:FilterText  := cFilter
@@ -1394,14 +1346,12 @@ FUNCTION VODBSetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
     /// </summary>
     /// <param name="lFound"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSetFound() is like DBSetFound() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// <remarks>VODBSetFound() is like DBSetFound().
+    /// </remarks>
+    
 FUNCTION VODBSetFound(lFound AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetFound") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     oRDD:Found := TRUE
     RETURN TRUE
     })
@@ -1410,14 +1360,13 @@ FUNCTION VODBSetFound(lFound AS LOGIC) AS LOGIC
     /// </summary>
     /// <param name="oBlock"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSetLocate() is like DBSetLocate() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>            
+    /// <remarks>VODBSetLocate() is like DBSetLocate() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSetLocate(oBlock AS ICodeBlock) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetLocate") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     VAR scope := oRDD:GetScope()
     scope:ForBlock := oBlock
     oRDD:SetScope(scope)    
@@ -1431,21 +1380,20 @@ FUNCTION VODBSetLocate(oBlock AS ICodeBlock) AS LOGIC
     /// <param name="uCobKey"></param>
     /// <param name="cKey"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSetRelation() is like DBSetRelation() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>      
+    /// <remarks>VODBSetRelation() is like DBSetRelation() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSetRelation(cAlias AS STRING,oKey  AS ICodeBlock,cKey AS STRING) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetRelation") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL nDest := RuntimeState.Workareas.FindAlias(cAlias) AS DWORD
     IF nDest == 0
-        RddError.PostArgumentError("VODBSetRelation",EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
+        RddError.PostArgumentError(__FUNCTION__,EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
     ENDIF
     LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRDD
     IF oDest == NULL_OBJECT
-        RddError.PostArgumentError("VODBSetRelation",EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
+        RddError.PostArgumentError(__FUNCTION__,EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
     ENDIF
     LOCAL oRelInfo AS DbRelInfo
     oRelInfo := DbRelInfo{}
@@ -1461,9 +1409,9 @@ FUNCTION VODBSetRelation(cAlias AS STRING,oKey  AS ICodeBlock,cKey AS STRING) AS
     /// </summary>
     /// <param name="scope"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBSetScope(scope AS DBSCOPEINFO) AS LOGIC
+FUNCTION VODBSetScope(scope AS DbScopeInfo) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSetLocate") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:SetScope(scope)
     })
     /// <summary>
@@ -1471,11 +1419,10 @@ FUNCTION VODBSetScope(scope AS DBSCOPEINFO) AS LOGIC
     /// </summary>
     /// <param name="siNew">The number of the new work area. 0 indicates the first available free workarea. -1 indicates the last available free workarea.</param>
     /// <returns>The newly selected work area.</returns>
-    /// <remarks>VODBSetSelect() is like DBSetSelect() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>      
+    /// <remarks>VODBSetSelect() is like DBSetSelect() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSetSelect(siNew AS INT) AS DWORD
     RETURN VoDb.Do ({ =>
     IF siNew == -1
@@ -1484,7 +1431,7 @@ FUNCTION VODBSetSelect(siNew AS INT) AS DWORD
         siNew := (INT) RuntimeState.Workareas:FindEmptyArea(TRUE)
     ENDIF
     IF siNew == 0 || siNew > Workareas.MaxWorkAreas
-        RddError.PostArgumentError( "VODBSetSelect", EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
+        RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
     ELSE      
         RuntimeState.CurrentWorkarea := (DWORD) siNew   
     ENDIF
@@ -1496,14 +1443,13 @@ FUNCTION VODBSetSelect(siNew AS INT) AS DWORD
     /// </summary>
     /// <param name="nRecords">The number of logical records to move, relative to the current record.  A positive value means to skip forward, and a negative value means to skip backward. </param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBSkip() is like DBSkip() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBSkip() is like DBSkip() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBSkip(nRecords AS LONG) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSkip") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Skip(nRecords)
     })
     
@@ -1514,7 +1460,7 @@ FUNCTION VODBSkip(nRecords AS LONG) AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSkipScope") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     oRDD:SetScope(scope)    
     RETURN oRDD:Skip(nRecords)
     })
@@ -1534,10 +1480,10 @@ FUNCTION VODBSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC
     /// </returns>
 FUNCTION VODBSort(nDest AS DWORD,fieldNames AS DbFieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS DbFieldNames) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBSort") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL info AS DbSortInfo
     info := DbSortInfo{fieldNames:fieldCount, sortNames:fieldCount}
-    VoDb.TransSetInfo(oRDD, info:TransInfo, "VODBSort", nDest, fieldNames,uCobFor, uCobWhile, nNext, nRecno, lRest)        
+    VoDb.TransSetInfo(oRDD, info:TransInfo, __FUNCTION__, nDest, fieldNames,uCobFor, uCobWhile, nNext, nRecno, lRest)        
     // Now process the fieldnames in the sortnames list
     LOCAL nFld AS INT
     FOR nFld := 0 TO sortNames:fieldCount -1
@@ -1561,7 +1507,7 @@ FUNCTION VODBSort(nDest AS DWORD,fieldNames AS DbFieldNames,uCobFor AS ICodeBloc
         LOCAL iField AS INT
         iField := oRDD:FieldIndex(parts[0])
         IF iField == 0
-            RddError.PostArgumentError( "VODBSort", EDB_FIELDNAME, nameof(sortNames), 8, <OBJECT>{ sortNames:fields[nFld] } )
+            RddError.PostArgumentError( __FUNCTION__, EDB_FIELDNAME, nameof(sortNames), 8, <OBJECT>{ sortNames:fields[nFld] } )
         ENDIF
         info:Items[nFld]:FieldNo := iField
     NEXT
@@ -1580,10 +1526,10 @@ FUNCTION VODBSort(nDest AS DWORD,fieldNames AS DbFieldNames,uCobFor AS ICodeBloc
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
 FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBTrans") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL info AS DbTransInfo
     info := DbTransInfo{fldNames:fieldCount}
-    VoDb.TransSetInfo(oRDD, info, "VODBTrans", nDest, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest)
+    VoDb.TransSetInfo(oRDD, info, __FUNCTION__, nDest, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest)
     RETURN oRDD:Trans( info )
     
     })
@@ -1594,16 +1540,16 @@ FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS ICodeBlock
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
 FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS DbFieldNames) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBTransRec") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
     LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
     IF oDest == NULL_OBJECT
-        RddError.PostNoTableError("VODBTransRec")
+        RddError.PostNoTableError(__FUNCTION__)
     ENDIF
     dbti:Destination := oDest
     dbti:ItemCount := fldNames:FieldCount
     IF !VoDb.BuildTrans( dbti, fldNames, oRDD, oDest )
-        RddError.PostArgumentError( "VODBTransRec", EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
+        RddError.PostArgumentError( __FUNCTION__, EDB_DBSTRUCT, nameof(fldNames), 2, <OBJECT>{fldNames} )
     ENDIF
     LOCAL oCanPutRec AS OBJECT
     dbti:Flags |= DBTRANSINFO.Match
@@ -1623,25 +1569,23 @@ FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS DbFieldNames) AS LOGIC
     /// <param name="uRecno">The ID of the record to be unlocked.  To omit, specify NULL_OBJECT.
     /// This unlocks all locked records or the whole file. </param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBUnlock() is the same as DBUnlock().  This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBUnlock() is the same as DBUnlock().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBUnlock(uRecno AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBUnlock") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:UnLock(uRecno)    
     })
     
     
     /// <summary>Release all locks for all work areas.</summary>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBUnlockAll() is the same as DBUnlockAll().  This function, however, does not call
-    /// the error handler and will not, therefore, produce a runtime error message or create an error
-    /// object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.  
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBUnlockAll() is the same as DBUnlockAll().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBUnlockAll() AS LOGIC
     RETURN VoDb.Do ({ =>
     RuntimeState.Workareas:UnlockAll()
@@ -1658,11 +1602,10 @@ FUNCTION VODBUnlockAll() AS LOGIC
     /// <param name="lShare"></param>
     /// <param name="lReadOnly"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-    /// <remarks>VODBUseArea() is like DBUseArea() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBUseArea() is like DBUseArea() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
 FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS XSharp.RDD.RddList,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRdd := NULL  AS RegisteredRDD
@@ -1686,17 +1629,16 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS XSharp.RDD.RddList,cName AS STRING
     /// <param name="lShare"></param>
     /// <param name="lReadOnly"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBUseArea() is like DBUseArea() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBUseArea() is like DBUseArea() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBUseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL rddType AS Type
     IF ( rddType := VoDb.RddNameToType( rddName ) ) == NULL
-        RddError.PostArgumentError( "VODBUseArea", EDB_RDDNOTFOUND, "rddName", 3, <OBJECT>{ rddName } )
+        RddError.PostArgumentError( __FUNCTION__, EDB_RDDNOTFOUND, nameof(cName), 3, <OBJECT>{ rddName } )
     ELSE
         RETURN VODBUseArea( lNew, rddType, cName, cAlias, lShare, lReadOnly )
     ENDIF
@@ -1714,18 +1656,17 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS S
     /// <param name="lShare"></param>
     /// <param name="lReadOnly"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-    /// <remarks>VODBUseArea() is like DBUseArea() but strongly typed. This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBUseArea() is like DBUseArea() but strongly typed.
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+    
     
 FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL ret   := FALSE AS LOGIC
     LOCAL area  := 0    AS DWORD
     IF String.IsNullOrEmpty( cName )
-        RddError.PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
+        RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
     ELSE
         ret := TRUE
         NetErr( FALSE )
@@ -1735,7 +1676,7 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
             TRY
                 cAlias := Path.GetFileNameWithoutExtension( cName )
             CATCH  AS ArgumentException
-                RddError.PostArgumentError( "VODBUseArea", EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
+                RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
                 ret := FALSE
             END TRY   
         ENDIF
@@ -1754,10 +1695,10 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
             LOCAL rdd := VoDb.CreateRDDInstance( rddType, cAlias ) AS IRDD
             
             IF rdd == NULL
-                RddError.PostArgumentError( "VODBUseArea", EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
+                RddError.PostArgumentError( __FUNCTION__, EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
                 ret := FALSE
             ELSEIF ! VoDb.IsAliasUnused( cAlias )
-                RddError.PostArgumentError( "VODBUseArea", EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
+                RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
                 ret := FALSE
             ELSE
                 LOCAL dboi := DBOPENINFO{} AS DBOPENINFO
@@ -1794,15 +1735,13 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
     
     /// <summary>Remove all records from the current workarea.</summary>
     /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
-    /// <remarks>VODBZap() is like DBZap(). This function, however, does not call the error
-    /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
-    /// Thus, it may be important to check the return value to determine if the function succeeded.
-    /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>
+    /// <remarks>VODBZap() is like DBZap().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
     
 FUNCTION VODBZap() AS LOGIC
     RETURN VoDb.Do ({ =>
-    LOCAL oRDD := RDDHelpers.CWA("VODBZap") AS IRDD
+    LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Zap()
     })
 

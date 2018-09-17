@@ -2639,7 +2639,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SUPER( sName, nType, nLength, nDecimals )
                 SELF:iOffset := -1
 
-            VIRTUAL PROPERTY Offset AS LONG
+            PROPERTY Offset AS LONG
             GET
                 RETURN SELF:iOffset
             END GET

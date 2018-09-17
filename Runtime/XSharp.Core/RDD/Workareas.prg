@@ -19,7 +19,6 @@ CLASS WorkAreas
 	PRIVATE RDDs	 AS IRDD[]    
 	PRIVATE iCurrentWorkarea AS DWORD
     PRIVATE workAreaStack AS Stack<DWORD>
-	PUBLIC LastException AS Exception 
 
     INTERNAL METHOD PushCurrentWorkarea(dwCurrent AS DWORD) AS VOID
         workAreaStack:Push(dwCurrent)
@@ -31,6 +30,7 @@ CLASS WorkAreas
         RETURN 0
 
 	#endregion
+    /// <exclude />
 	CONSTRUCTOR()
 		Aliases 			:= Dictionary<STRING, DWORD>{ (INT) MaxWorkAreas}
 		RDDs				:= IRDD[]{MaxWorkAreas}   
@@ -49,7 +49,7 @@ CLASS WorkAreas
 	PUBLIC METHOD CloseAll() AS LOGIC
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
-			LastException := NULL
+			RuntimeState.LastRDDError := NULL
 			FOR VAR i := 0 TO MaxWorkAreas-1
 				IF RDDs[i] != NULL
 					VAR oRdd := RDDs[i]
@@ -57,7 +57,7 @@ CLASS WorkAreas
 						lResult := lResult .AND. oRdd:Close()
 					CATCH e AS Exception
 						lResult := FALSE
-						LastException := e
+						RuntimeState.LastRDDError  := e
 					END TRY
 				ENDIF              
 				RDDs[i] 	:= NULL
@@ -70,7 +70,7 @@ CLASS WorkAreas
 	PUBLIC METHOD CommitAll() AS LOGIC
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
-			LastException := NULL
+			RuntimeState.LastRDDError  := NULL
 			FOR VAR i := 0 TO MaxWorkAreas-1
 				IF RDDs[i] != NULL
 					VAR oRdd := RDDs[i]
@@ -78,7 +78,7 @@ CLASS WorkAreas
 						lResult := lResult .AND. oRdd:Flush()
 					CATCH e AS Exception
 						lResult := FALSE
-						LastException := e
+						RuntimeState.LastRDDError  := e
 					END TRY
 				ENDIF              
 			NEXT           
@@ -90,7 +90,7 @@ CLASS WorkAreas
 		LOCAL lResult := FALSE AS LOGIC
 		IF AdjustArea(REF  nArea)
 			BEGIN LOCK RDDs               
-				LastException := NULL
+				RuntimeState.LastRDDError  := NULL
 				IF RDDs[ nArea] != NULL
 					VAR oRdd := RDDs[ nArea]
 					TRY
@@ -100,7 +100,7 @@ CLASS WorkAreas
 						ENDIF
 					CATCH e AS Exception
 						lResult			:= FALSE  
-						LastException	:= e
+						RuntimeState.LastRDDError 	:= e
 					END TRY
 				ENDIF              
 				RDDs[ nArea] 		:= NULL
@@ -179,11 +179,15 @@ CLASS WorkAreas
 	PUBLIC METHOD UnLockAll() AS LOGIC
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
-			LastException := NULL
+			RuntimeState.LastRDDError := NULL
 			FOR VAR i := 0 TO MaxWorkAreas-1
 				IF RDDs[i] != NULL
+                    TRY
 					VAR oRdd := RDDs[i]
     				lResult := lResult .AND. oRdd:Unlock(0)
+                    CATCH e AS Exception
+                        RuntimeState.LastRDDError := e            
+                    END TRY
 				ENDIF              
 			NEXT           
 		END LOCK                       

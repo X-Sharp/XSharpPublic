@@ -10,6 +10,8 @@ USING System.Text
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.W2Bin(System.UInt16)' >W2Bin</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.DW2Bin(System.UInt32)' >DW2Bin</seealso>
 FUNCTION Bin2DW(c AS STRING) AS DWORD
 	LOCAL dwResult := 0 AS DWORD
 	IF c!= NULL .AND. c:Length >= 4
@@ -29,6 +31,8 @@ FUNCTION Bin2DW(c AS STRING) AS DWORD
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.I2Bin(System.Int16)'>I2Bin</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
 FUNCTION Bin2I(c AS STRING) AS SHORT
 	LOCAL siResult := 0 AS SHORT
 	IF c!= NULL .AND. c:Length >= 2
@@ -46,6 +50,8 @@ FUNCTION Bin2I(c AS STRING) AS SHORT
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.I2Bin(System.Int16)'>I2Bin</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
 FUNCTION Bin2L(c AS STRING) AS LONG
 	LOCAL liResult := 0 AS LONG
 	IF c!= NULL .AND. c:Length >= 4
@@ -66,19 +72,42 @@ FUNCTION Bin2L(c AS STRING) AS LONG
 /// <param name="pszC"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.LTOC(System.Boolean)' >LTOC</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Logic2Bin(System.Boolean)' >Logic2Bin</seealso>
 FUNCTION Bin2Logic(c AS STRING) AS LOGIC
 	RETURN c != NULL .AND. c[0] != 0
 
+/// <summary>
+/// Convert a intptr to a string
+/// </summary>
+/// <remarks>
+/// <note type='warning'>
+/// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
+/// </note>
+/// </remarks>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Ptr(System.IntPtr)' >Bin2Ptr</seealso>
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
-	RETURN L2Bin( p:ToInt32())
+    IF IntPtr.Size == 4
+	    RETURN L2Bin( p:ToInt32())
+    ELSE
+        THROW NotSupportedException{}
+    ENDIF
 
 /// <summary>
 /// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION Bin2Ptr(c AS STRING) AS IntPtr
-RETURN (IntPtr) Bin2L(c)
+/// <param name="cPointer"></param>
+/// <remarks>
+/// <note type='warning'>
+/// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
+/// </note>
+/// </remarks>
+/// <seealso cref='M:XSharp.Core.Functions.Ptr2Bin(System.IntPtr)' >Ptr2Bin</seealso>
+FUNCTION Bin2Ptr(cPointer AS STRING) AS IntPtr
+    IF IntPtr.Size == 4
+        RETURN (IntPtr) Bin2L(cPointer)
+    ELSE
+        THROW NotSupportedException{}
+    ENDIF
 
 /// <summary>
 /// Convert a string containing a 32-bit Floating point number to a Real4 value.
@@ -86,6 +115,9 @@ RETURN (IntPtr) Bin2L(c)
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Real42Bin(System.Single)' >Real42Bin</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Real82Bin(System.Double)' >Real82Bin</seealso>
+
 FUNCTION Bin2Real4(c AS STRING) AS REAL4
 	LOCAL r4Result := 0 AS REAL4
 	IF c!= NULL .AND. c:Length >= 4
@@ -106,6 +138,8 @@ FUNCTION Bin2Real4(c AS STRING) AS REAL4
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Real42Bin(System.Single)' >Real42Bin</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Real82Bin(System.Double)' >Real82Bin</seealso>
 FUNCTION Bin2REAL8(c AS STRING) AS REAL8
 	LOCAL r8Result := 0 AS REAL8
 	IF c!= NULL .AND. c:Length >= 8
@@ -129,6 +163,8 @@ FUNCTION Bin2REAL8(c AS STRING) AS REAL8
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.W2Bin(System.UInt16)' >W2Bin</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.DW2Bin(System.UInt32)' >DW2Bin</seealso>
 FUNCTION Bin2W(c AS STRING) AS WORD
 	LOCAL wResult := 0 AS WORD
 	IF c!= NULL .AND. c:Length >= 2
@@ -148,6 +184,9 @@ FUNCTION Bin2W(c AS STRING) AS WORD
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.LTOC(System.Boolean)' >LTOC</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Logic2Bin(System.Boolean)' >Logic2Bin</seealso>
+
 FUNCTION CTOL(c AS STRING) AS LOGIC
 	IF c != NULL 
 		IF c[0] == 'T' .OR. c[0] == 't' .OR. c[0] == 'Y' .OR. c[0] =='y'
@@ -195,6 +234,8 @@ INTERNAL FUNCTION _bytes2String(byteArray AS BYTE[]) AS STRING
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2W(System.String)' >Bin2W</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2DW(System.String)' >Bin2DW</seealso>
 FUNCTION DW2Bin(n AS DWORD) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)
@@ -226,6 +267,7 @@ FUNCTION HiWord(dw AS DWORD) AS WORD
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2I(System.String)' >Bin2I</seealso>
 FUNCTION I2Bin(n AS SHORT) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)
@@ -238,6 +280,7 @@ FUNCTION I2Bin(n AS SHORT) AS STRING
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2L(System.String)' >Bin2L</seealso>
 FUNCTION L2Bin(n AS LONG) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)
@@ -268,6 +311,8 @@ FUNCTION LoWord(dw AS DWORD) AS WORD
 /// <param name="l"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Logic(System.String)' >Bin2Logic</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.CTOL(System.String)' >CTOL</seealso>
 FUNCTION Logic2Bin(l AS LOGIC) AS STRING
 	IF l
 		RETURN e"\x0001"
@@ -282,6 +327,8 @@ FUNCTION Logic2Bin(l AS LOGIC) AS STRING
 /// <param name="l"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Logic(System.String)' >Bin2Logic</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.CTOL(System.String)' >CTOL</seealso>
 FUNCTION LTOC(l AS LOGIC) AS STRING
 	IF l
 		RETURN "T"
@@ -298,6 +345,8 @@ FUNCTION LTOC(l AS LOGIC) AS STRING
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Real8(System.String)' >Bin2Real8</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Real4(System.String)' >Bin2Real4</seealso>
 FUNCTION Real42Bin(n AS REAL4) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)
@@ -308,6 +357,8 @@ FUNCTION Real42Bin(n AS REAL4) AS STRING
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Real8(System.String)' >Bin2Real8</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Real4(System.String)' >Bin2Real4</seealso>
 FUNCTION Real82Bin(n AS REAL8) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)
@@ -321,6 +372,8 @@ FUNCTION Real82Bin(n AS REAL8) AS STRING
 /// <param name="n"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2W(System.String)' >Bin2W</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2DW(System.String)' >Bin2DW</seealso>
 FUNCTION W2Bin(n AS WORD) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)

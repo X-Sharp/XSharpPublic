@@ -330,7 +330,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return body;
         }
-        protected string GetEntityName(Boolean Full)
+        protected string GetEntityName(Boolean Full, Boolean funcNameOnly = false)
         {
             string name = "";
             string suffix = "";
@@ -522,7 +522,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
             else
-                name = name.ToUpper() + suffix;
+            {
+                if (funcNameOnly)
+                {
+                    int nPos = name.LastIndexOf('.');
+                    name = name.Substring(nPos + 1);
+                }
+                else
+                {
+                    name = name.ToUpper() + suffix;
+                }
+            }
             return name;
 
         }
@@ -7335,6 +7345,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         case "\"__entity__\"":
                             replacement = GetEntityName(false);
+                            break;
+                        case "\"__function__\"":
+                            replacement = GetEntityName(false,true);
                             break;
                         case "\"__sig__\"":
                             replacement = GetEntityName(true);

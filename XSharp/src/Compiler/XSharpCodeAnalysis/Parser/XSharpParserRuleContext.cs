@@ -64,15 +64,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                     startindex--;
                 }
-                // when compiing the runtime we suppress enum members, and defines and double underscores without xml comments
+                // when compiling the runtime we generate blank xml comments for enum members, defines and double underscores without xml comments
                 if (sb.Length == 0 && ((CSharpParseOptions)cu.SyntaxTree.Options).TargetDLL != XSharpTargetDLL.Other)
                 {
                     if (this is XSharpParser.EnummemberContext ||
                         this is XSharpParser.VodefineContext ||
                         (this is XSharpParser.IEntityContext
-                            && ((XSharpParser.IEntityContext) this).Name.StartsWith("__")))
+                            && ((XSharpParser.IEntityContext) this).ShortName.StartsWith("__")))
                     {
-                        sb.Append("/// <summary></summary> />\r\n");
+                        sb.Append("/// <summary></summary>");
                     }
                 }
                 if (sb.Length > 0)

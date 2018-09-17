@@ -10,7 +10,8 @@
 //
 // Caution: do not modify this file. It will be overwritten during product updates
 //
-
+#ifndef XSHARPDEFS_VH
+#define XSHARPDEFS_VH
 #define CRLF e"\r\n"
 
 // The following UDCs require the xBase Runtime
@@ -28,3 +29,4 @@
 				<var1> := [ <varN> := ] <value>
 
 #endif		 
+#endif

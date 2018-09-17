@@ -24,6 +24,13 @@ BEGIN NAMESPACE XSharp.RDD
 
 			
 			#REGION Order Support 
+		VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC
+			RETURN SELF:_ntxList:Create(orderInfo)
+
+		VIRTUAL METHOD OrderDestroy(orderInfo AS DBORDERINFO ) AS LOGIC
+			RETURN SUPER:OrderDestroy(orderInfo)
+
+
 		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo, fullPath AS STRING) AS LOGIC
 			//
 			BEGIN LOCK SELF

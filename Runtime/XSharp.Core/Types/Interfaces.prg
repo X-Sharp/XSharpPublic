@@ -60,8 +60,8 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines the Macro compiler subsystem
 	/// </summary>
-	/// <seealso cref="M:XSharp.VO.Functions.SetMacroCompiler(System.Type)"/>
-	/// <seealso cref="M:XSharp.VO.Functions.GetMacroCompiler"/>
+	/// <seealso cref="M:XSharp.Core.Functions.SetMacroCompiler(System.Type)"/>
+	/// <seealso cref="M:XSharp.Core.Functions.GetMacroCompiler"/>
 	/// <seealso cref="T:XSharp.ICodeBlock"/>
 	INTERFACE IMacroCompiler
 		/// <summary>Compile a string into a runtime codeblock.</summary>

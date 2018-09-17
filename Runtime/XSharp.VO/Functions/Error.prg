@@ -27,6 +27,7 @@ FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
 	XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cobError)
 	RETURN cbOld
 
+/// <inheritdoc />   
 FUNCTION ErrorBlock() AS USUAL STRICT
 	LOCAL cbOld AS CODEBLOCK
 	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)

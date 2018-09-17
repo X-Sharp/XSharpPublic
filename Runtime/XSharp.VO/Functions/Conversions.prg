@@ -489,12 +489,15 @@ FUNCTION _Str(n ,uLen ,uDec ) AS STRING CLIPPER
 // The following three functions are undocumented in Vulcan but sometimes used in user code
 // They are the equivalent of the STR() functions but always return with digit decimal separator
 // We route all three to the _Str() function that takes care of this already
+/// <exclude/>
 FUNCTION __Str(n AS USUAL) AS STRING
 	RETURN _Str( n)
 
+/// <exclude/>
 FUNCTION __Str(n AS USUAL,nLen AS USUAL) AS STRING
 	RETURN _Str( n, nLen)
 
+/// <exclude/>
 FUNCTION __Str(n AS USUAL,nLen AS USUAL, nDec AS USUAL) AS STRING
 	RETURN _Str( n, nLen, nDec)
 
@@ -658,6 +661,7 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
 FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
 
+/// <exclude/>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
 
@@ -834,7 +838,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 /// </summary>
 /// <param name="oValue">Object containing the numeric value to convert.</param>
 /// <returns>The value in the form of a float. </returns>
-/// <exception>System.InvalidCastException Thrown when the parameter <paramref name="oValue"/> cannot be converted to a FLOAT.</exception>
+/// <exception>System.InvalidCastException Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
     FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
         LOCAL typ := oValue:GetType() AS System.Type
         IF typ == typeof(FLOAT)

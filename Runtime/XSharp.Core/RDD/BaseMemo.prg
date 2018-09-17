@@ -53,7 +53,8 @@ CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
         /// <inheritdoc />
     VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
         THROW NotImplementedException{}
-        
+
+    /// <inheritdoc />        
     VIRTUAL METHOD Zap() AS LOGIC
         THROW NotImplementedException{}
         

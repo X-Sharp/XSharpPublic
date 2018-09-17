@@ -6,7 +6,9 @@
 
 // Code to load assemblies such as the Macro compiler and RDD system
 USING System.Reflection
+/// <exclude />
 STATIC CLASS XSharp.AssemblyHelper
+    /// <exclude />
     STATIC METHOD Load(cName AS STRING) AS Assembly
         LOCAL cLowerName := cName:ToLower() AS STRING
         // first locate the assembly that has the macro compiler in the list of loaded assemblies

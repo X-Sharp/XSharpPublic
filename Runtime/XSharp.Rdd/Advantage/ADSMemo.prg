@@ -22,8 +22,8 @@ CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
     #region Helpers    
     PROPERTY Table AS IntPtr GET oRDD:_Table
     
-    PRIVATE METHOD ACECall(nResult AS DWORD) AS LOGIC
-        RETURN SELF:oRDD:AceCall(nResult)
+    PRIVATE METHOD _CheckError(nResult AS DWORD) AS LOGIC
+        RETURN SELF:oRDD:_CheckError(nResult)
     PRIVATE METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
         SELF:oRDD:UnSupported(strFunctionName )
         RETURN FALSE
@@ -40,13 +40,13 @@ CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
         LOCAL dwField := (DWORD) nFldPos +1 AS DWORD
         fld := SELF:oRDD:_Fields[nFldPos]
         IF fld:FieldType == DbFieldType.Memo
-            SELF:ACECALL(ACE.AdsGetFieldLength(SELF:Table, dwField,OUT dwLen))
+            SELF:_CheckError(ACE.AdsGetFieldLength(SELF:Table, dwField,OUT dwLen))
             RETURN (LONG) dwLen
         ELSEIF fld:FieldType == DbFieldType.Date
             LOCAL chars AS CHAR[]
             chars := CHAR[]{ACE.ADS_MAX_DATEMASK+1}
             LOCAL wLen := (WORD) chars:Length AS WORD
-            SELF:ACECALL(ACE.AdsGetDateFormat(chars, REF wLen))
+            SELF:_CheckError(ACE.AdsGetDateFormat(chars, REF wLen))
             RETURN wLen
         ENDIF
         RETURN fld:Length

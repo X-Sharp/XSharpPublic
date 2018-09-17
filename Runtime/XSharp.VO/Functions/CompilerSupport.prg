@@ -131,7 +131,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
-        BREAK Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldGet",  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldGet",  fieldName  )
     ELSE
         VODBFieldGet( fieldpos, REF ret )
     ENDIF
@@ -139,6 +139,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     
     
     // CUSTOMER->NAME
+/// <exclude/>
 FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
     LOCAL ret AS USUAL
     LOCAL newArea := SELECT( alias ) AS DWORD
@@ -151,23 +152,25 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        BREAK Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldGetWA", alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldGetWA", alias  )
     ENDIF
     RETURN ret
     
     // _FIELD->Name := "Foo"
+/// <exclude/>
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
-        BREAK Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldSet",  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldSet",  fieldName  )
     ELSE
-        DbDo("__FieldSet", VODBFieldPut( fieldpos, uValue))
+        _DbCallWithError("__FieldSet", VODBFieldPut( fieldpos, uValue))
     ENDIF
     // We return the original value to allow chained expressions
     RETURN uValue
     
     
     // CUSTOMER->Name := "Foo"
+/// <exclude/>
 FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) AS USUAL
     LOCAL newArea := SELECT( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
@@ -180,7 +183,7 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        BREAK Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldSetWA", alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldSetWA", alias  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
@@ -188,11 +191,13 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
     
     // MEMVAR myName
     // ? MyName
+/// <exclude/>
 FUNCTION __MemVarGet(cName AS STRING) AS USUAL
     RETURN NIL
     
     // MEMVAR myName
     // MyName := "NewValue"
+/// <exclude/>
 FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     RETURN uValue
     
@@ -201,16 +206,18 @@ FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     // is translated to
     // __pushWorkarea( alias ) ; DoSomething() ; __popWorkArea()
     
+/// <exclude/>
 FUNCTION __pushWorkarea( alias AS USUAL ) AS VOID
     LOCAL newArea := SELECT( alias ) AS DWORD
     IF newArea > 0
         RuntimeState.PushCurrentWorkarea( newArea )
     ELSE
-        BREAK Error.VODBError( EG_ARG, EDB_BADALIAS, { alias } )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, { alias } )
     ENDIF
     RETURN
     
     // This is used by the -> operator to restore the previous workarea
+/// <exclude/>
 FUNCTION __popWorkarea() AS VOID
     RuntimeState.PopCurrentWorkarea()
     RETURN

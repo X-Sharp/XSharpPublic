@@ -273,10 +273,12 @@ FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
 	THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
+/// <exclude />
 [Obsolete];
 FUNCTION NationInit(dwInst AS DWORD) AS INT
 	RETURN 0   
 
+/// <exclude />
 [Obsolete];
 FUNCTION NationExit() AS INT
 	RETURN 0   
@@ -291,7 +293,7 @@ FUNCTION NVersion() AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty 
 
-
+ 
 FUNCTION MAKELANGID( p AS WORD, s AS WORD ) AS WORD
 	RETURN (WORD) ( ( s << 10 ) | p )
 
@@ -302,10 +304,10 @@ FUNCTION MAKELCID( lgid AS WORD, srtid AS WORD ) AS DWORD
 FUNCTION IsBiDi() AS LOGIC
    RETURN System.Windows.Forms.SystemInformation.MidEastEnabled   
 
-
+/// <exclude />
 _DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
 
-
+/// <exclude />
 [Obsolete];
 FUNCTION GetNatDllHandle() AS IntPtr STRICT
 	RETURN IntPtr.Zero

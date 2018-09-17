@@ -13,6 +13,14 @@ USING System.Reflection
 USING System.Linq
 USING System.Text
 
+/// <exclude />
+FUNCTION _DbCallWithError(funcName AS STRING, resultToCheck AS LOGIC) AS LOGIC
+    IF !resultToCheck
+        resultToCheck := (LOGIC) DoError(funcName)
+    ENDIF
+    RETURN resultToCheck
+
+
 FUNCTION Alias0() AS STRING
    LOCAL oRDD := RDDHelpers.CWA("Alias0") AS IRDD
     IF oRDD != NULL
@@ -27,7 +35,7 @@ FUNCTION Alias0() AS STRING
     /// the current database file contains no records; otherwise, FALSE.  If there is no database file open in the
     /// current work area, BOF() returns TRUE.</returns>
     /// <remarks>BOF() is the same as VODBBOF().</remarks>
-FUNCTION BOF() AS LOGIC    
+FUNCTION Bof() AS LOGIC    
    RETURN VODBBof()
 
 /// <summary>
@@ -47,54 +55,26 @@ FUNCTION DBF() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION DbPack() AS LOGIC STRICT
-	LOCAL lRetCode  AS LOGIC
-	lRetCode := VODBPack()
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbPack")
-	ENDIF
-	
-	RETURN lRetCode
+	RETURN _DbCallWithError("DbPack", VODBPack())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbRecall() AS LOGIC STRICT
-	
-	LOCAL lRetCode  AS LOGIC
-	
-	lRetCode := VODBRecall()
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbRecall")
-	ENDIF
-	
-	RETURN lRetCode
+	RETURN _DbCallWithError("DbRecall", VODbRecall())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbUnLock() AS LOGIC STRICT
-	LOCAL lRetCode  AS LOGIC
-	
-	lRetCode := VODBUnlock(NULL_OBJECT)
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbUnLock")
-	ENDIF
-	
-	RETURN lRetCode
+	RETURN _DbCallWithError("DbUnLock", VODBUnlock(NULL_OBJECT))
 
 /// <summary>Remove all records from the current workarea./// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
 FUNCTION DbZap() AS LOGIC STRICT
-	LOCAL lRetCode  AS LOGIC
-	lRetCode := VODBZap()
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbZap")
-	ENDIF
-	RETURN lRetCode
+	RETURN _DbCallWithError("DbZap", VODBZap())
 
 
 /// <summary>Release all locks for all work areas.</summary>
@@ -108,24 +88,24 @@ FUNCTION DbUnlockAll() AS LOGIC STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DELETED() AS LOGIC STRICT
+FUNCTION Deleted() AS LOGIC STRICT
 	RETURN VODBDeleted()
 
      /// <summary>
     /// Determine when end-of-file is encountered.
     /// </summary>
-    //// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
+    /// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
     /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
-    /// database file open in the current work area, EOF() returns TRUE.<remarks>
+    /// database file open in the current work area, EOF() returns TRUE.</returns>
     /// <remarks>EOF() is the same as VODBEOF().</remarks>
-    FUNCTION EOF() AS LOGIC
+FUNCTION Eof() AS LOGIC
    RETURN VODBEof()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION FLOCK() AS LOGIC STRICT
+FUNCTION Flock() AS LOGIC STRICT
 	RETURN VODBFlock()
 
 
@@ -222,40 +202,21 @@ FUNCTION LastRec() AS DWORD
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBBUFFREFRESH  () AS LOGIC STRICT
-	
-	LOCAL lRetCode  AS LOGIC
-	
-	lRetCode := VODBBuffRefresh()
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DBBUFFREFRESH")
-	ENDIF
-	
-	RETURN lRetCode
+FUNCTION DBBuffRefresh() AS LOGIC STRICT
+	RETURN _DbCallWithError("DBBuffRefresh", VODBBuffRefresh())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCLEARFILTER  () AS LOGIC STRICT
-	
-	LOCAL lRetCode  AS LOGIC
-	
-	lRetCode := VODBClearFilter()
-	
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DBCLEARFILTER")
-	ENDIF
-	
-	RETURN lRetCode
-
+FUNCTION DBClearFilter() AS LOGIC STRICT
+	RETURN _DbCallWithError("DBClearFilter", VODBClearFilter())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCLEARRELATION() AS LOGIC STRICT
+FUNCTION DBClearRelation() AS LOGIC STRICT
 	RETURN VODBClearRelation()
 
 
@@ -263,7 +224,7 @@ FUNCTION DBCLEARRELATION() AS LOGIC STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCLOSEALL     () AS LOGIC STRICT
+FUNCTION DBCloseAll() AS LOGIC STRICT
 	RETURN VODBCloseAll()
 
 
@@ -271,7 +232,7 @@ FUNCTION DBCLOSEALL     () AS LOGIC STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCLOSEAREA    () AS LOGIC STRICT
+FUNCTION DBCloseArea () AS LOGIC STRICT
 	RETURN VODBCloseArea()
 
 
@@ -279,14 +240,14 @@ FUNCTION DBCLOSEAREA    () AS LOGIC STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCOMMIT       () AS LOGIC STRICT
+FUNCTION DBCommit() AS LOGIC STRICT
 	RETURN VODBCommit()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCOMMITALL    () AS LOGIC STRICT
+FUNCTION DBCommitAll() AS LOGIC STRICT
 	RETURN VODBCommitAll()
 
 
@@ -295,21 +256,13 @@ FUNCTION DBCOMMITALL    () AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbContinue() AS LOGIC STRICT
-	LOCAL lRetCode AS LOGIC
-	lRetCode := VODBContinue()
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbContinue")
-	ENDIF
-	
-	RETURN lRetCode
-
-
+	RETURN _DbCallWithError("DbContinue", VODbContinue())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBDRIVER() AS STRING STRICT
+FUNCTION DbDriver() AS STRING STRICT
 	RETURN RDDNAME()
 
 
@@ -318,7 +271,7 @@ FUNCTION DBDRIVER() AS STRING STRICT
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbFIlter() AS STRING STRICT
+FUNCTION DbFilter() AS STRING STRICT
 	RETURN VODBFilter()
 
 /// <summary>
@@ -334,28 +287,15 @@ FUNCTION DbGetSelect() AS DWORD STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbGoBottom() AS LOGIC STRICT
-	LOCAL lRetCode  AS LOGIC
-	lRetCode := VODBGoBottom()
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbGoBottom")
-	ENDIF
-	
-	RETURN lRetCode
-
+	RETURN _DbCallWithError("DbGoBottom", VODbGoBottom())
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbGotop() AS LOGIC STRICT
-	LOCAL lRetCode  AS LOGIC
-	lRetCode := VODBGoTop()
-	IF !lRetCode
-		lRetCode := (LOGIC) DoError("DbGotop")
-	ENDIF
-	RETURN lRetCode
-
+FUNCTION DbGoTop() AS LOGIC STRICT
+	RETURN _DbCallWithError("DbGoTop", VODbGoTop())
 
 /// <summary>
 /// </summary>
@@ -406,7 +346,6 @@ FUNCTION RecSize AS LONG
 /// </returns>
 FUNCTION RLock() AS LOGIC STRICT
 	RETURN VODBRlock(NULL)
-
 
 /// <summary>
 /// Determine whether a database file is open.

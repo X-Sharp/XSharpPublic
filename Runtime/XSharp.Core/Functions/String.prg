@@ -477,7 +477,7 @@ FUNCTION HardCR(c AS STRING) AS STRING
 	RETURN c:Replace( (CHAR) 141, (CHAR) 13 )
 
 
-FUNCTION _nibble (c AS CHAR) AS BYTE
+INTERNAL FUNCTION _nibble (c AS CHAR) AS BYTE
 	LOCAL b AS BYTE
 	SWITCH c
 	CASE '0'
@@ -675,10 +675,16 @@ FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
 	aBytes := Ansi2Oem(aBytes, iLen)
 	RETURN Bytes2String(aBytes, iLen)
 
+/// <summary>
+/// Convert an array of bytes from ANSI to OEM.
+/// </summary>
 FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
+/// <summary>
+/// Convert an array of bytes from ANSI to OEM.
+/// </summary>
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
@@ -715,7 +721,7 @@ FUNCTION Ansi2OemA(cSource REF STRING) AS STRING
 /// Convert a string of OEM characters to ANSI characters.
 /// </summary>
 /// <param name="cSource">String in OEM format</param>
-/// <returns>String converted to Ansi
+/// <returns>String converted to Ansi</returns>
 /// <remarks>This is a compatibility function. Do not use this unless you really have to.
 /// X# is a Unicode app and conversions from Unicode - Oem - Ansi - Unicode will take place
 /// if you use this function.<br/>
@@ -733,9 +739,15 @@ FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
 	aBytes := Oem2Ansi(aBytes, iLen)
 	RETURN Bytes2String(aBytes, iLen)
 
+/// <summary>
+/// Convert an array of bytes from OEM to ANSI .
+/// </summary>
 FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 	RETURN Oem2Ansi(bSource, bSource:Length)
 
+/// <summary>
+/// Convert an array of bytes from OEM to ANSI .
+/// </summary>
 FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
@@ -1147,7 +1159,7 @@ FUNCTION Stuff(c AS STRING,nStart AS DWORD,nToDelete AS DWORD,cIns AS STRING) AS
 	ENDIF
 	RETURN result
 
-// Note: worker function that accepts negative arguments
+// Note: worker function that accepts negative arguments 
 // because the untyped Substr() allows these
 FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
 	IF c != NULL

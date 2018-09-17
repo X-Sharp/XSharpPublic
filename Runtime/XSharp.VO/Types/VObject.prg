@@ -6,8 +6,9 @@
 
 /// <summary>Base class for many types used in the VO SDK Classes</summary>
 CLASS XSharp.VObject
+    /// <summary>Cargo slot.</summary>
     EXPORT oCargo AS OBJECT
-    
+    /// <summary></summary>
     CONSTRUCTOR()
         SUPER()
         RETURN
@@ -15,7 +16,7 @@ CLASS XSharp.VObject
     DESTRUCTOR()
         Destroy()
         RETURN
-        
+    /// <summary>Free memory resources allocated for a VObject object and its derived objects.</summary> 
     VIRTUAL METHOD Destroy() AS USUAL CLIPPER
         RETURN SELF
         

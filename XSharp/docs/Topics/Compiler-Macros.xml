@@ -17,6 +17,7 @@
     <keyword>__DIALECT_VULCAN__</keyword>
     <keyword>__ENTITY__</keyword>
     <keyword>__FILE__</keyword>
+    <keyword>__FUNCTION__</keyword>
     <keyword>__LINE__</keyword>
     <keyword>__MODULE__</keyword>
     <keyword>__SIG__</keyword>
@@ -49,7 +50,7 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="28" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="29" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -213,6 +214,17 @@
         </td>
         <td>
           <para styleclass="Normal">Current source file name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__FUNCTION__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current function/method name without class prefix and in original case</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

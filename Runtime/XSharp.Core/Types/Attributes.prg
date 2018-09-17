@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.Internal
 		PRIVATE INITONLY _value AS System.Type
 		///<summary>The actual type of the parameter.</summary>
 		PROPERTY VALUE AS System.Type GET _value
-		
+		/// <summary></summary>	
 		CONSTRUCTOR(VALUE AS System.Type)
 			_value := VALUE
 		
@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp.Internal
 		PROPERTY GlobalClassName AS STRING GET _globalClassName
         ///<summary>Default namespace of the assembly.</summary>
 		PROPERTY DefaultNameSpace AS STRING GET _defaultNameSpace
-		
+		/// <summary></summary>	
 		CONSTRUCTOR(globalClassName AS STRING, defaultNameSpace AS STRING)
 			_globalClassName := globalClassName
 			_defaultNameSpace := defaultNameSpace
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.Internal
 		PRIVATE INITONLY _parameterNames AS STRING[]
 		///<summary>List of parameter names for the method or constructor </summary>
 		PROPERTY ParameterNames AS STRING[] GET _parameterNames
-		
+		/// <summary></summary>	
 		CONSTRUCTOR(parameterNames AS STRING[])
 			_parameterNames := parameterNames
 		
@@ -66,6 +66,7 @@ BEGIN NAMESPACE XSharp.Internal
 	    ///<summary>The version and dialect of the compiler that created the assembly.</summary>	
 		PROPERTY Version AS STRING GET _version
 		
+		/// <summary></summary>	
 		CONSTRUCTOR(version AS STRING)
 			_version := version
 		
@@ -96,8 +97,9 @@ BEGIN NAMESPACE XSharp.Internal
 	    /// </remarks>
 		PROPERTY Flag  AS INT    GET _flag
 		
-		CONSTRUCTOR(VALUE AS OBJECT, flag AS INT)
-			_value := VALUE
+		/// <summary></summary>	
+		CONSTRUCTOR(oValue AS OBJECT, flag AS INT)
+			_value := oValue
 			_flag  := flag
 		
 	END CLASS
@@ -116,6 +118,7 @@ BEGIN NAMESPACE XSharp.Internal
         ///<summary>Size of the largest member.</summary>	
 		PROPERTY LargestMemberSize	AS INT GET _largestMemberSize
 		
+		/// <summary></summary>	
 		CONSTRUCTOR(size AS INT, largestMemberSize AS INT)
 			_size := size
 			_largestMemberSize := largestMemberSize
@@ -140,6 +143,7 @@ BEGIN NAMESPACE XSharp
 	    ///<summary>Name of the implicit namespace.</summary>		
 		PROPERTY Namespace AS STRING GET _namespace
 		
+		/// <summary></summary>	
 		CONSTRUCTOR(namespace AS STRING)
 			_namespace := namespace
 		

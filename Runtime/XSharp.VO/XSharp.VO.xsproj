@@ -206,7 +206,7 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <DisabledWarnings>162,171,553</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>

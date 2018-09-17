@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp
 		STATIC PROPERTY _NULL_PSZ AS __Psz GET (__Psz) IntPtr.zero
 		PRIVATE STATIC _pszList AS List< IntPtr>
 		INTERNAL STATIC METHOD RegisterPsz(pszToRegister AS PSZ) AS VOID
-			IF _pszList == null
+			IF _pszList == NULL
 				_pszList := List<IntPtr>{}
 				AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @__FreePSZs() }
 			ENDIF
@@ -55,48 +55,50 @@ BEGIN NAMESPACE XSharp
 		CONSTRUCTOR (p AS IntPtr)
 			_value := p
 		
-		OVERRIDE METHOD ToString() AS STRING
+		/// <exclude/>
+        OVERRIDE METHOD ToString() AS STRING
 			RETURN Mem2String( _value, Length ) 
 	
 		/// <exclude />	
 		METHOD DebuggerString() AS STRING
-			RETURN IIF( _value == null_ptr, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
+			RETURN IIF( _value == NULL_PTR, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
 		
 		
 		/// <exclude />	
 		METHOD EQUALS( p AS PSZ ) AS LOGIC
 			
-			LOCAL ret := false AS LOGIC
+			LOCAL ret := FALSE AS LOGIC
 			IF _value == p:_value
-				ret := true
-			ELSEIF _value != null && p:_value != null
+				ret := TRUE
+			ELSEIF _value != NULL && p:_value != NULL
 				ret := String.CompareOrdinal( ToString(), p:ToString() ) == 0
 			ENDIF
 			RETURN ret   
 		
 		INTERNAL METHOD LessThan( p AS PSZ ) AS LOGIC
 			// todo: should this follow nation rules ?
-			LOCAL ret := false AS LOGIC
+			LOCAL ret := FALSE AS LOGIC
 			IF _value == p:_value
-				ret := false
-			ELSEIF _value != null && p:_value != null
+				ret := FALSE
+			ELSEIF _value != NULL && p:_value != NULL
 				ret := String.CompareOrdinal( ToString(), p:ToString() ) < 0
 			ENDIF
 			RETURN ret       
 
 		INTERNAL METHOD GreaterThan( p AS PSZ ) AS LOGIC
-			LOCAL ret := false AS LOGIC
+			LOCAL ret := FALSE AS LOGIC
 			// todo: should this follow nation rules ?
 			IF _value == p:_value
-				ret := false
-			ELSEIF _value != null && p:_value != null
+				ret := FALSE
+			ELSEIF _value != NULL && p:_value != NULL
 				ret := String.CompareOrdinal( ToString(), p:ToString() ) > 0
 			ENDIF
 			RETURN ret     
 		
 		
-		OVERRIDE METHOD EQUALS( o AS OBJECT ) AS LOGIC
-			LOCAL ret := false AS LOGIC
+			/// <exclude/>
+            OVERRIDE METHOD EQUALS( o AS OBJECT ) AS LOGIC
+			LOCAL ret := FALSE AS LOGIC
 			
 			IF o IS PSZ
 				ret := SELF:Equals( (PSZ) o )
@@ -110,9 +112,9 @@ BEGIN NAMESPACE XSharp
 		
 		/// <exclude />	
 		METHOD Free() AS VOID
-			IF _value != null_ptr
+			IF _value != NULL_PTR
 				MemFree( _value )
-				_value := null_ptr
+				_value := NULL_PTR
 			ENDIF
 			RETURN
 		/// <exclude />
@@ -120,7 +122,7 @@ BEGIN NAMESPACE XSharp
 			GET
 				LOCAL len AS DWORD
 				len := 0
-				IF _value != null_ptr
+				IF _value != NULL_PTR
 					DO WHILE _value[len+1] != 0
 						len++
 					ENDDO
@@ -131,12 +133,12 @@ BEGIN NAMESPACE XSharp
 		/// <exclude />
 		PROPERTY IsEmpty AS LOGIC
 			GET
-				LOCAL empty := true AS LOGIC
+				LOCAL empty := TRUE AS LOGIC
 				LOCAL b AS BYTE
 				LOCAL x := 1 AS INT
-				IF _value != null_ptr
+				IF _value != NULL_PTR
 					b := _value[x]
-					DO WHILE b != 0 .and. empty
+					DO WHILE b != 0 .AND. empty
 						SWITCH b
 							CASE 32
 							CASE 13
@@ -144,7 +146,7 @@ BEGIN NAMESPACE XSharp
 							CASE 9
 								NOP
 							OTHERWISE
-								empty := false
+								empty := FALSE
 						END SWITCH
 						x += 1
 						b := _value[x]
@@ -309,10 +311,12 @@ END NAMESPACE
 
 
 // This function is handled by the compiler. The runtime function should never be called
+/// <exclude />
 FUNCTION Cast2Psz(cSource AS STRING) AS PSZ
 	THROW NotImplementedException{}
 
 // This function is handled by the compiler. The runtime function should never be called
+/// <exclude />
 FUNCTION String2Psz(cSource AS STRING) AS PSZ
 	THROW NotImplementedException{}
 

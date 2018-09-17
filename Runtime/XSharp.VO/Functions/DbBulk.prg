@@ -15,6 +15,7 @@
 USING XSharp.RDD.Support
 
 
+/// <exclude/>
 FUNCTION __DBAvg(siValue AS LONG) AS LONG
 	
 	LOCAL  siRet    AS SHORT
@@ -81,9 +82,7 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 	RETURN cAlias
 
 
-
-
-
+/// <summary>Import records from a database file.</summary>
 FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden)     AS LOGIC CLIPPER
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -148,6 +147,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 	RETURN (lRetCode)
 
 
+/// <summary>Import records from a delimited text file.</summary>
 FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
@@ -207,7 +207,7 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 
 
 
-
+/// <summary>Import records from an SDF file.</summary>
 FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
 	lRest                   )      AS LOGIC CLIPPER
@@ -262,7 +262,7 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	RETURN (lRetCode)
 
 
-
+/// <summary>Export records to a new database file.</summary>
 FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver, aHidden    )     AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
@@ -336,11 +336,12 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 	RETURN (lRetCode)
 
 
-
+/// <exclude/>
 DEFINE BUFF_SIZE := 0x00008000
+/// <exclude/>
 DEFINE FO_CREATE := 0x00001000
 
-FUNCTION DBFileCopy( hfFrom, cFile, cFullPath ) AS LOGIC CLIPPER
+INTERNAL FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS LOGIC 
 	
 	LOCAL lRetCode  AS LOGIC
 	LOCAL ptrBuff   AS BYTE[]
@@ -392,6 +393,7 @@ FUNCTION DBFileCopy( hfFrom, cFile, cFullPath ) AS LOGIC CLIPPER
 
 
 
+/// <summary>Export records to a new delimited text file.</summary>
 
 FUNCTION DBCOPYDELIM (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)   AS LOGIC CLIPPER
 	
@@ -450,10 +452,8 @@ FUNCTION DBCOPYDELIM (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 	RETURN (lRetCode)
 
 
-
-FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
-	uCobWhile, nNext, nRec, ;
-	lRest                      )   AS LOGIC CLIPPER
+/// <summary>Export records to a new SDF file.</summary>
+FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -519,9 +519,8 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor,;
 
 
 
-
+/// <summary>Create a new database file by merging records/fields from two work areas.</summary>
 FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
-	
 	LOCAL siFrom1       AS DWORD
 	LOCAL siFrom2       AS DWORD
 	LOCAL siTo          AS DWORD
@@ -608,9 +607,10 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION DbJoinAppend(nSelect AS DWORD, list AS DbJoinList)   AS LOGIC        
-	RETURN DbDo("DbJoinAppend", VODBJoinAppend(nSelect, list))
+	RETURN _DbCallWithError("DbJoinAppend", VODBJoinAppend(nSelect, list))
 
-
+/// <summary>Copy records to a database file in sorted order.
+/// </summary>
 FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
@@ -686,7 +686,7 @@ FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC 
 	
 	fldNames := Db.AllocFieldNames(aStru)
 	
-	RETURN DbDo("DbTrans", VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest))
+	RETURN _DbCallWithError("DbTrans", VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest))
 
 
 
@@ -809,7 +809,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 					
 				ENDIF
 				
-				DBSKIP(1, .F.)
+				DBSKIP(1)
 				
 			ENDDO
 			

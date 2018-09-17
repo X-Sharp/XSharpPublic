@@ -300,7 +300,7 @@ BEGIN NAMESPACE XSharp.RDD
 			IF SELF:_Parents > 0
 				//
 				LOCAL max AS DWORD
-				max := 4096 // RuntimeState.Workareas.MaxWorkAreas <- what's wrong here ??
+				max := Workareas.MaxWorkAreas //<- what's wrong here ??
 				FOR VAR i := 1 TO max
 					VAR rdd := XSharp.RuntimeState.Workareas:GetRDD( (DWORD)i )
 					VAR wk := rdd ASTYPE Workarea

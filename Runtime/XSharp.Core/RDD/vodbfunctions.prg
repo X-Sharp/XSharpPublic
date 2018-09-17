@@ -347,7 +347,7 @@ FUNCTION VODBCommitAll() AS LOGIC
     /// <summary>
     /// Resume a pending locate condition.
     /// </summary>
-    //// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     /// <remarks>VODBContinue() is like DBContinue().  This function, however, does not call the error
     /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
     /// Thus, it may be important to check the return value to determine if the function succeeded.
@@ -365,12 +365,14 @@ FUNCTION VODBContinue() AS LOGIC
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="rddList">List of RDDs to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL rddType AS Type
@@ -387,12 +389,15 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName A
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="rddList">List of RDDs to use when creating the file</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only whenl Open has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
+
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS XSharp.RDD.RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL oRdd := NULL  AS RegisteredRDD
     FOREACH VAR name IN rddList:atomRddName
@@ -409,12 +414,15 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
+
 FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDbCreate(cName, aStruct:ToArray(), rddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
     /// <summary>
@@ -423,12 +431,15 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS
     /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
     /// <param name="aStruct">Structure to use when creating the file.</param>
     /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
-    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <lNew> is useful only when <lOpen> has a value of TRUE. The default is FALSE.</param>
+    /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
     /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
     /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
     /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
-    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
+    /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
     /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
+    /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+    /// <seealso cref="O:XSharp.VO.Functions.VODBCreate">VODbCreate in XSharp.VO</seealso>
+    
 FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL uiOldArea := 0 AS DWORD
@@ -513,7 +524,8 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
     /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
     /// Thus, it may be important to check the return value to determine if the function succeeded.
     /// The LastRddError property in the runtimestate will contain needed information
-    /// regarding any error that occurs.</remarks>        
+    /// regarding any error that occurs.</remarks>
+    /// <seealso cref="M:XSharp.VO.Functions.DbDelete">DbDelete Function</seealso>
 FUNCTION VODBDelete() AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA("VODBDelete") AS IRDD
@@ -525,6 +537,7 @@ FUNCTION VODBDelete() AS LOGIC
     /// </summary>
     /// <returns>TRUE if the current record is marked for deletion; otherwise, FALSE.  
     /// If there is no database file in use in the current work area, VODBDeleted() returns FALSE.</returns>
+    /// <seealso cref="M:XSharp.VO.Functions.Deleted">Deleted Function</seealso>
 FUNCTION VODBDeleted() AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA("VODBDeleted") AS IRDD
@@ -534,10 +547,11 @@ FUNCTION VODBDeleted() AS LOGIC
     /// <summary>
     /// Determine when end-of-file is encountered.
     /// </summary>
-    //// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
+    /// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
     /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
-    /// database file open in the current work area, VODBEOF() returns TRUE.<remarks>
+    /// database file open in the current work area, VODBEOF() returns TRUE.</returns>
     /// <remarks>VODBEOF() is the same as EOF().</remarks>
+    /// <seealso cref="O:XSharp.VO.Functions.Eof" >Eof Function </seealso>
 FUNCTION VODBEof() AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA("VODBEof") AS IRDD
@@ -940,7 +954,8 @@ FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
     RETURN VoDbOrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
-    })  /// <summary>
+    })  
+	/// <summary>
     /// Return information about index files and the orders in them.
     /// </summary>
     /// <param name="nOrdinal"></param>
@@ -1250,7 +1265,7 @@ FUNCTION VODBRecordPut(aRecord AS BYTE[]) AS LOGIC
     /// </summary>
     /// <param name="nPos"></param>
     /// <param name="pszRel"></param>
-    //// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     /// <remarks>VODBSetRelation() is like DBSetRelation(). This function, however, does not call the error
     /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.
     /// Thus, it may be important to check the return value to determine if the function succeeded.
@@ -1777,7 +1792,7 @@ FUNCTION VODBUseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias
     })
     
     
-    /// <summary>Remove all records from the current workarea./// </summary>
+    /// <summary>Remove all records from the current workarea.</summary>
     /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
     /// <remarks>VODBZap() is like DBZap(). This function, however, does not call the error
     /// handler and will not, therefore, produce a runtime error message or create an error object if it fails.

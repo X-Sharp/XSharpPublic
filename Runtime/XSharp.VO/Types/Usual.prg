@@ -433,6 +433,7 @@ BEGIN NAMESPACE XSharp
         #endregion
 
         #region implementation IComparable<T>
+        /// <exclude/>
         PUBLIC METHOD CompareTo(rhs AS __Usual) AS LONG
             IF SELF:_UsualType == rhs:_UsualType
                 // Compare ValueTypes
@@ -2057,6 +2058,7 @@ BEGIN NAMESPACE XSharp
             END SWITCH
             RETURN result
 
+        /// <exclude/>
         PUBLIC METHOD ToString() AS STRING
             LOCAL strResult AS STRING
 
@@ -2080,6 +2082,7 @@ BEGIN NAMESPACE XSharp
             RETURN strResult
 
 
+        /// <exclude/>
         PUBLIC METHOD ToString(provider AS System.IFormatProvider) AS STRING
             RETURN SELF:ToString()
 

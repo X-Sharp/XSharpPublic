@@ -155,14 +155,17 @@ BEGIN NAMESPACE XSharp.IO
 			SELF:Stream     := oStream
 			RETURN
 	END CLASS
-	
-	STATIC CLASS File
-		PUBLIC STATIC errorCode	:= 0 AS DWORD
+	/// <exclude />
+	INTERNAL STATIC CLASS File
+        /// <exclude />
+        PUBLIC STATIC errorCode	:= 0 AS DWORD
+        /// <exclude />
 		PUBLIC STATIC LastFound AS STRING
 		PRIVATE STATIC streams AS Dictionary<IntPtr, FileCacheElement >
 		PRIVATE STATIC random AS Random
 		
-		STATIC CONSTRUCTOR
+	    /// <exclude />
+        STATIC CONSTRUCTOR
 			streams := Dictionary<IntPtr, FileCacheElement >{}
 			random := Random{}
 		
@@ -1006,12 +1009,14 @@ FUNCTION FAttr2String(dwAttributes AS DWORD) AS STRING
 
 
 
+/// <exclude/>	
 FUNCTION Bytes2String(aBytes AS BYTE[], nBuffLen AS INT) AS STRING
 	LOCAL aChars := CHAR[]{nBuffLen} AS CHAR[]
 	LOCAL encoding := Encoding.Default AS Encoding
 	encoding:GetChars(aBytes, 0, nBuffLen, aChars, 0)
 	RETURN STRING{aChars, 0, nBuffLen}
 
+/// <exclude/>	
 FUNCTION String2Bytes(sSource AS STRING) AS BYTE[]
 	LOCAL ret AS BYTE[]
 	IF sSource != NULL

@@ -36,7 +36,6 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   INTERNAL _MaxKeySize AS WORD
   INTERNAL _Ansi  AS LOGIC
   INTERNAL _HasMemo AS LOGIC
-  INTERNAL _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
   INTERNAL _fieldCount AS LONG
   //	PRIVATE _CalltraceFile AS StreamWriter
   
@@ -434,7 +433,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
     // Check if a Field definition is correct :
     // Date Length must be 8, Number are long enough to store Dot and Decs (if any), ...
-  PROTECT METHOD _checkFields(info REF RddFieldInfo) AS VOID
+  PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
     // FieldName
     info:Name := info:Name:ToUpper():Trim()
     IF info:Name:Length > 10 
@@ -473,21 +472,11 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         // To be done : Support of Fox Field Types, ....
       info:FieldType := DbFieldType.Unknown
     END SWITCH
-    RETURN
+    RETURN TRUE
     
   VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
     LOCAL isOk AS LOGIC
-    // Check if the FieldName already exists
-    isok := SELF:FieldIndex(info:Name) == 0
-    IF isOk
-      IF SELF:_addFieldPos < SELF:_Fields:Length 
-        SELF:_checkFields( info )
-        SELF:_Fields[ SELF:_addFieldPos++ ] := info:Clone()
-        SELF:_RecordLength += (WORD)info:Length
-      ELSE
-        isOk := FALSE
-      ENDIF
-    ENDIF
+    isOk := SUPER:AddField(info)
     IF isOk  .AND. info:FieldType == DbFieldType.Memo
       SELF:_HasMemo := TRUE
     ENDIF
@@ -1199,13 +1188,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       RETURN TRUE
       
     METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
-      // Todo: Move to workarea later ?
-      // Initialize the Fields array
-      SELF:_Fields := RddFieldInfo[]{ fieldCount }
-      SELF:_addFieldPos := 0
-      SELF:_RecordLength := 1 // 1 for DELETED
       SELF:_HasMemo := FALSE
-      RETURN TRUE
+      RETURN SUPER:SetFieldExtent(fieldCount)
       
       
       /// <inheritdoc />

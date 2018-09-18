@@ -7432,13 +7432,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     EmptyList(),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
                     initializer);
-                expr = expr
-                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
+                if (!isNestedArray(context))
+                {
+                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
+                }
             }
             context.Put<ExpressionSyntax>(expr);
         }
 
-
+        private bool isNestedArray(XP.LiteralArrayContext context)
+        {
+            var parent = context.Parent as ParserRuleContext;
+            while (parent != null)
+            {
+                if (parent is XP.LiteralArrayContext)
+                    return true;
+                if (parent is XP.StatementContext)
+                    return false;
+                parent = parent.Parent as ParserRuleContext;
+            }
+            return false;
+        }
         public override void ExitArrayElement([NotNull] XP.ArrayElementContext context)
         {
             if (context.Expr != null)
@@ -8064,3 +8078,4 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     }
 }
+

@@ -131,7 +131,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldGet",  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE
         VODBFieldGet( fieldpos, REF ret )
     ENDIF
@@ -152,7 +152,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldGetWA", alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, alias  )
     ENDIF
     RETURN ret
     
@@ -161,7 +161,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
-        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, "__FieldSet",  fieldName  )
+        THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE
         _DbCallWithError(__FUNCTION__, VODBFieldPut( fieldpos, uValue))
     ENDIF
@@ -183,7 +183,7 @@ FUNCTION __FieldSetWa( alias AS STRING, fieldName AS STRING, uValue AS USUAL ) A
             RuntimeState.CurrentWorkarea := curArea
         END TRY   
     ELSE
-        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, "__FieldSetWA", alias  )
+        THROW Error.VODBError( EG_ARG, EDB_BADALIAS, __FUNCTION__, alias  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue

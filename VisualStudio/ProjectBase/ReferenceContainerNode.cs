@@ -286,7 +286,9 @@ namespace Microsoft.VisualStudio.Project
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
 			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 
-			foreach (string referenceType in SupportedReferenceTypes)
+            var children = new List<ReferenceNode>();
+
+            foreach (string referenceType in SupportedReferenceTypes)
 			{
 				bool isAssemblyReference = referenceType == ProjectFileConstants.Reference;
 				if (isAssemblyReference && !buildResult.IsSuccessful)
@@ -320,6 +322,7 @@ namespace Microsoft.VisualStudio.Project
                         if(!found)
                         {
                             this.AddChild(node);
+                            children.Add(node);
                         }
                         else
                         {
@@ -340,6 +343,21 @@ namespace Microsoft.VisualStudio.Project
                 {
                     //this.RemoveChild( node );
                     node.Remove(false);
+                }
+            }
+            var references = MSBuildProjectInstance.GetItems(buildResult.ProjectInstance, ProjectFileConstants.ReferencePath);
+            foreach (var reference in references)
+            {
+                string fullName = MSBuildItem.GetEvaluatedInclude(reference);
+                string name = Path.GetFileNameWithoutExtension(fullName);
+                foreach (var child in children)
+                {
+                    if (child is XSharpAssemblyReferenceNode && child.Caption == name)
+                    {
+                        var xChild = child as XSharpAssemblyReferenceNode;
+                        xChild.AssemblyPath = fullName;
+                        xChild.SetHintPathAndPrivateValue(buildResult.ProjectInstance, reference);
+                    }
                 }
             }
         }
@@ -493,7 +511,7 @@ namespace Microsoft.VisualStudio.Project
                 catch(FileLoadException)
                 {
                     // We must still try to load from here because this exception is thrown if we want
-                    // to add the same assembly refererence from different locations.
+                    // to add the same assembly reference from different locations.
                     tryToCreateAnAssemblyReference = true;
                 }
             }
@@ -521,7 +539,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Creates an assembly refernce node from a project element.
+        /// Creates an assembly reference node from a project element.
         /// </summary>
         protected virtual AssemblyReferenceNode CreateAssemblyReferenceNode(ProjectElement element)
         {

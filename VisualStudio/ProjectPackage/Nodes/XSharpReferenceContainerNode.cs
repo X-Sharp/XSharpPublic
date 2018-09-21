@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -41,7 +41,7 @@ namespace XSharp.Project
 
             if (comnode != null && comnode.Matches(selectorData, wrapperTool))
                return comnode;
-          
+
          }
          return base.AddReferenceFromSelectorData(selectorData, wrapperTool);
       }
@@ -53,7 +53,6 @@ namespace XSharp.Project
          {
              ProjectReferenceNode existingNode = existing as ProjectReferenceNode;
              return existingNode;
-
          }
          return node;
 
@@ -65,23 +64,7 @@ namespace XSharp.Project
           {
               node = new XSharpAssemblyReferenceNode(this.ProjectMgr, element);
           }
-          catch (ArgumentNullException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (FileNotFoundException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-          }
-          catch (BadImageFormatException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (FileLoadException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (System.Security.SecurityException e)
+          catch (Exception e)
           {
                 XSharpProjectPackage.Instance.DisplayException(e);
             }
@@ -140,15 +123,7 @@ namespace XSharp.Project
       {
          if (node != null)
          {
-            foreach (ReferenceNode child in this.EnumReferences())
-            {
-               // check for duplicate nodes
-               if (child.Caption == node.Caption )
-               {
-                   ExistingNode = child;
-                   return true;
-               }
-            }
+                return isDuplicateNode(node.Caption, ref ExistingNode);
          }
          ExistingNode = null;
          return false;
@@ -216,27 +191,10 @@ namespace XSharp.Project
               }
               node = new XSharpAssemblyReferenceNode(this.ProjectMgr, fileName);
           }
-          catch (ArgumentNullException e)
+          catch (Exception e)
           {
                 XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (FileNotFoundException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (BadImageFormatException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (FileLoadException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-          catch (System.Security.SecurityException e)
-          {
-                XSharpProjectPackage.Instance.DisplayException(e);
-            }
-
+          }
           return node;
       }
 

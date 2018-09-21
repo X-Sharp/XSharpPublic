@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -180,14 +180,14 @@ namespace Microsoft.VisualStudio.Project.Automation
                 if (String.IsNullOrEmpty(data))
                     return false;
                 return string.Compare(data, "True", true) == 0;
-                
+
             }
         }
         public override string RuntimeVersion
         {
             get
             {
-                var asm = BaseReferenceNode as AssemblyReferenceNode;
+                var asm = BaseReferenceNode as XSharp.Project.XSharpAssemblyReferenceNode;
                 return asm.GetMsBuildProperty("imageruntime");
             }
         }

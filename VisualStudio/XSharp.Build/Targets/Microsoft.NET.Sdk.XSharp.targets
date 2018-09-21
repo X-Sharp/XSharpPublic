@@ -1,12 +1,11 @@
 <!--
-***********************************************************************************************
-Microsoft.NET.Sdk.CSharp.targets
+XSharp.Sdk.targets, inspired by Microsoft.NET.Sdk.CSharp.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
           impossible to load or build your projects from the command-line or the IDE.
 
-Copyright (c) .NET Foundation. All rights reserved. 
+Copyright (c) XSharp B.V.  All Rights Reserved
 ***********************************************************************************************
 -->
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -18,7 +17,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ImplicitConfigurationDefine>$(Configuration.ToUpperInvariant())</ImplicitConfigurationDefine>
     
     <!-- Replace dashes and periods in the configuration with underscores.  This makes it more likely that
-         the resulting compilation constant will be a valid C# conditional compilation symbol.  As the set
+         the resulting compilation constant will be a valid X# conditional compilation symbol.  As the set
          of characters that aren't allowed is essentially open-ended, there's probably not a good way to
          fully sanitize the Configuration in MSBuild evaluation.  If the resulting string still isn't a
          valid conditional combilation symbol, then the compiler will generate the following error and

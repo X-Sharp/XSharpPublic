@@ -227,6 +227,8 @@ CLASS XSharp.RuntimeState
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(VALUE)
 
+	STATIC PROPERTY NullDateString AS STRING GET GetValue<STRING>(Set.DateFormatEmpty)
+
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
 
     STATIC PROPERTY Decimals AS DWORD ;

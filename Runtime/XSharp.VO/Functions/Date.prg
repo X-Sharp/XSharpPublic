@@ -44,15 +44,7 @@ FUNCTION CMonth(d AS DATE) AS STRING
 /// <param name="dwDay">A number representing a valid day of dwMonth.</param>
 /// <returns>The date that corresponds to the passed arguments.  If any of the arguments specified do not represent a valid year, month, or day, a NULL_DATE is returned.</returns>
 FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
-	IF dwY < 100
-		LOCAL lAfter AS LOGIC
-		lAfter := dwY > XSharp.RuntimeState.EpochYear
-		dwY += XSharp.RuntimeState.EpochCent
-		IF lAfter
-			dwY -= 100
-		ENDIF
-	ENDIF
-	RETURN DATE{dwY,dwM,dwDay}   
+    RETURN _ConDate(dwY, dwM, dwDay) 
 
 /// <summary>
 /// Convert a Date string to date format.
@@ -71,60 +63,7 @@ FUNCTION CToD(cDate AS STRING) AS DATE
 /// <returns>The date value that corresponds to the numbers specified in cDate.  If cDate is not a valid date, CToD() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
-	LOCAL dDate AS DATE
-	LOCAL nDay, nMonth, nYear AS DWORD
-	LOCAL nDayPos, nMonthPos, nYearPos AS INT
-	dDate := (DATE) 0
-	IF string.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat)
-		RETURN dDate
-	ENDIF
-	LOCAL nPos AS INT
-	LOCAL cSep AS STRING
-	nDayPos := nMonthPos := nYearPos := 0
-	cSep := "./-"
-	nPos := 0
-	FOREACH c AS CHAR IN cDateFormat
-		SWITCH c
-		CASE 'D'
-			IF nDayPos == 0
-				++nPos
-				nDayPos  := nPos
-			ENDIF
-		CASE 'M'
-			IF nMonthPos == 0
-				++nPos
-				nMonthPos  := nPos
-			ENDIF
-		CASE 'Y'
-			IF nYearPos == 0
-				++nPos
-				nYearPos  := nPos
-			ENDIF
-		OTHERWISE
-			IF cSep:IndexOf(c) == -1
-				cSep += c:ToString()
-			ENDIF
-		END SWITCH
-	NEXT
-	IF nDayPos == 0 .OR. nMonthPos == 0 .OR. nYearPos == 0
-		RETURN dDate
-	ENDIF
-	TRY
-		// we now know the seperators and the positions in the string
-		LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
-		nDay   := Uint32.Parse(aNums[nDayPos])
-		nMonth := Uint32.Parse(aNums[nMonthPos])
-		nYear  := Uint32.Parse(aNums[nYearPos])
-		IF aNums[nYearPos]:Length < 4
-			// Century missing ?
-			dDate := ConDate(nYear, nMonth, nDay)
-		ELSE
-			dDate := DATE{nYear, nMonth, nDay}
-		ENDIF
-	CATCH 
-		dDate := (DATE) 0
-	END TRY
-	RETURN dDate
+    RETURN _CToD(cDate, cDateFormat)
 
 
 /// <summary>
@@ -190,15 +129,7 @@ FUNCTION DoW(d AS DATE) AS DWORD
 /// A string representation of the given Date, formatted in the current Date format.
 /// </returns>
 FUNCTION DToC(d AS DATE) AS STRING
-	LOCAL result:="" AS STRING		
-	LOCAL cFormat := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet) AS STRING
-	IF ! d:IsEmpty
-		LOCAL dt := d AS Datetime
-		result := d:ToString(cFormat)
-	ELSE
-		result := XSharp.__VODate._NullDateString
-	ENDIF
-	RETURN result 
+    RETURN _DToC(d)
 
 /// <summary>
 /// Convert a Date value to a string formatted as string in ANSI format
@@ -208,11 +139,7 @@ FUNCTION DToC(d AS DATE) AS STRING
 /// An 8-character string in the format yyyymmdd.  If dDate is a NULL_DATE, a string of eight spaces is returned.  The return value is not affected by the current date format.
 /// </returns>
 FUNCTION DToS(dDate AS DATE) AS STRING
-	LOCAL result:="        " AS STRING		
-	IF ! dDate:IsEmpty
-		result := dDate:ToString("yyyyMMdd")
-	ENDIF
-	RETURN result 
+    RETURN _DToS(dDate)
 
 /// <summary>
 /// </summary>

@@ -4,6 +4,15 @@
 // See License.txt in the project root for license information.
 //
 USING System.Text
+USING System.Globalization
+USING System.Collections.Generic
+
+INTERNAL STATIC CLASS ConversionHelpers
+	STATIC INTERNAL usCulture AS CultureInfo
+	STATIC CONSTRUCTOR
+		usCulture := CultureInfo{"en-US"}
+END CLASS
+
 /// <summary>
 /// Convert a string containing a 32-bit unsigned integer to a double word.
 /// </summary>
@@ -377,3 +386,115 @@ FUNCTION Real82Bin(n AS REAL8) AS STRING
 FUNCTION W2Bin(n AS WORD) AS STRING
 	LOCAL byteArray := BitConverter.GetBytes( n ) AS BYTE[]
 	RETURN _bytes2String(byteArray)
+
+/// <summary>
+/// Convert a string containing a numeric value to a numeric data type.
+/// </summary>
+/// <param name="c"></param>
+/// <returns>
+/// </returns>
+FUNCTION _Val(cNumber AS STRING) AS OBJECT
+	cNumber := cNumber:Trim():ToUpper()
+	IF String.IsNullOrEmpty(cNumber)
+		RETURN 0
+	ENDIF
+	// find non numeric characters in cNumber and trim the field to that length
+	VAR pos := 0
+	VAR done := FALSE
+	VAR hex  := FALSE
+	VAR hasdec := FALSE
+	VAR hasexp := FALSE
+	VAR cDec := (CHAR) RuntimeState.DecimalSep
+    VAR cThous := (CHAR) RuntimeState.ThousandSep
+    cNumber := cNumber:Replace(cThous:ToString(),"")
+	IF cDec != '.'
+		cNumber := cNumber:Replace(cDec, '.')
+	ENDIF
+	FOREACH VAR c IN cNumber
+		SWITCH c
+		CASE '0'
+		CASE '1'
+		CASE '2'
+		CASE '3'
+		CASE '4'
+		CASE '5'
+		CASE '6'
+		CASE '7'
+		CASE '8'
+		CASE '9'
+		CASE '-'
+		CASE '+'
+			NOP
+		CASE '.'
+		CASE ','
+			IF hasdec
+				done := TRUE
+			ELSE
+				hasdec := TRUE
+			ENDIF
+		CASE 'A'
+		CASE 'B'
+		CASE 'C'
+		CASE 'D'
+		CASE 'F'
+			IF !hex
+				done := TRUE
+			ENDIF
+		CASE 'E'
+			// exponentional notation only allowed if decimal separator was there
+			IF hasdec
+				hasexp := TRUE
+			ELSE
+				IF !hex
+					done := TRUE
+				ENDIF
+			ENDIF
+		CASE 'L'	// LONG result
+		CASE 'U'	// DWORD result
+			done := TRUE
+		CASE 'X'
+			IF pos == 1
+				hex := TRUE
+			ELSE
+				done := TRUE
+			ENDIF
+		OTHERWISE
+			done := TRUE
+		END SWITCH
+		IF done
+			EXIT
+		ENDIF
+		pos += 1
+	NEXT
+	IF pos < cNumber:Length
+		cNumber := cNumber:SubString(0, pos)
+	ENDIF
+	IF cNumber:IndexOfAny(<CHAR> {'.'}) > -1
+		LOCAL r8Result := 0 AS REAL8
+		IF cDec != '.'
+			cNumber := cNumber:Replace(cDec, '.')
+		ENDIF
+		VAR style := NumberStyles.Number
+		IF hasexp
+			style |= NumberStyles.AllowExponent
+		ENDIF
+		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
+			RETURN r8Result
+		ENDIF
+	ELSE
+		LOCAL iResult := 0 AS INT64
+		LOCAL style AS NumberStyles
+		IF hex
+			cNumber := cNumber:Substring(2)
+			style := NumberStyles.HexNumber
+		ELSE
+			style := NumberStyles.Integer
+		ENDIF
+		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
+			IF iResult < Int32.MaxValue .AND. iResult > int32.MinValue
+				RETURN (INT) iResult
+			ENDIF
+			RETURN iResult
+		ENDIF
+	ENDIF
+	RETURN 0

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -568,30 +568,29 @@ BEGIN NAMESPACE XSharp
 		#endregion
 		
 		#region ToString()
-			// Use DateTime ToString) methods as helpers
-			INTERNAL STATIC PROPERTY _NullDateString AS STRING GET RuntimeState.GetValue<STRING>(Set.DateFormatEmpty)
+			// Use DateTime ToString() methods as helpers
 			/// <inheritdoc />
 			OVERRIDE METHOD ToString() AS STRING
 				IF (_value == 0)
-					RETURN _NullDateString
+					RETURN RuntimeState.NullDateString
 				ENDIF
 			RETURN DToC(SELF)
 			/// <inheritdoc />
 			METHOD ToString(provider AS System.IFormatProvider) AS STRING
 				IF (_value == 0)
-					RETURN _NullDateString
+					RETURN RuntimeState.NullDateString
 				ENDIF
 				RETURN VALUE:ToString(provider)
 			/// <inheritdoc />
 			METHOD ToString(s AS STRING) AS STRING
 				IF (_value == 0)
-					RETURN _NullDateString
+					RETURN RuntimeState.NullDateString
 				ENDIF
 				RETURN VALUE:ToString(s)
 			/// <inheritdoc />
 			METHOD ToString(s AS STRING, fp AS System.IFormatProvider) AS STRING
 				IF (_value == 0)
-					RETURN _NullDateString
+					RETURN RuntimeState.NullDateString
 				ENDIF
 				IF (s == NULL)
 					s := XSharp.RuntimeState.DateFormat

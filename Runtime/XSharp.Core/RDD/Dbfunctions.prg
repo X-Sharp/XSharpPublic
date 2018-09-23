@@ -359,8 +359,11 @@ FUNCTION Used() AS LOGIC
 FUNCTION DoError (cSymFunc AS STRING, nTries:= 0 AS INT) AS OBJECT
 	LOCAL oError    AS Error
     LOCAL bBlock    AS ICodeBlock
-	oError := Error{RuntimeState.LastRDDError}
+	oError         := (Error) RuntimeState.LastRDDError
 	oError:FuncSym := cSymFunc
     oError:Tries   := nTries
     bBlock := XSharp.RuntimeState.GetValue<ICodeBlock>(Set.ErrorBlock)
-	RETURN bBlock:EvalBlock(oError)
+    IF bBlock != NULL
+	    RETURN bBlock:EvalBlock(oError)
+    ENDIF
+    THROW oError

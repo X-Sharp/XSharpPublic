@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.Text
 BEGIN NAMESPACE XSharp.RDD
 
 	/// <summary>Base class for DBF based RDDs. Holds common propertis such as the Workarea number, Alias, Fields list and various flags.</summary> 
@@ -851,7 +852,48 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			THROW NotImplementedException{__ENTITY__}
-			
+
+        PRIVATE METHOD _PrepareKey(cKey AS STRING) AS STRING
+            VAR sbResult := StringBuilder{cKey:Length * 2} 
+            VAR sbId     := StringBuilder{cKey:Length}
+            // make sure we remove the _FIELD-> from the existing key
+            cKey := cKey:Replace("_FIELD->","")
+            FOREACH cChar AS CHAR IN cKey
+                IF Char.IsLetter(cChar) .OR. cChar = '_'
+                    // add char to id
+                    sbId:Append(cChar)
+                ELSEIF Char.IsDigit(cChar)
+                    // after letter or _ then it is part of the id
+                    IF sbid:Length > 0
+                        sbId:Append(cChar)
+                    ELSE
+                        sbResult:Append(cChar)
+                    ENDIF
+                ELSEIF cChar == '(' .OR. cChar == '{'
+                    IF sbid:Length > 0
+                        // function or constructor call, no _FIELD prefix
+                        sbResult:Append(sbId:ToString())
+                        sbId:Clear()
+                    ENDIF
+                    sbResult:Append(cChar)
+                ELSE
+                    // no alpha _ or numeric, so copy Id to result
+                    // and prefix with _FIELD
+                    IF sbid:Length > 0
+                        sbResult:Append( "_FIELD->")
+                        sbResult:Append(sbId:ToString())
+                        sbId:Clear()
+                    ENDIF
+                    sbResult:Append(cChar)
+                ENDIF
+            NEXT
+            // when we end with an id then append to the end of the result
+            IF sbid:Length > 0
+                sbResult:Append("_FIELD->")
+                sbResult:Append(sbId:ToString())
+            ENDIF  
+            RETURN sbResult:ToString()      
+
 			/// <inheritdoc />
 		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
 			LOCAL oBlock := NULL AS ICodeBlock
@@ -861,6 +903,7 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL oType := typeof(Workarea) AS System.Type
 				IF oC != NULL
 					LOCAL isBlock AS LOGIC
+                    sBlock := SELF:_PrepareKey(sBlock)
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock)
 				ENDIF
 			CATCH e AS Exception

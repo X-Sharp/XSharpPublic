@@ -90,7 +90,7 @@ CLASS WorkAreas
 		LOCAL lResult := FALSE AS LOGIC
 		IF AdjustArea(REF  nArea)
 			BEGIN LOCK RDDs               
-				RuntimeState.LastRDDError  := NULL
+				//RuntimeState.LastRDDError  := NULL
 				IF RDDs[ nArea] != NULL
 					VAR oRdd := RDDs[ nArea]
 					TRY

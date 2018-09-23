@@ -564,7 +564,7 @@ FUNCTION VODBEval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeB
 FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-        ptrRet := oRDD:GetValue((INT) nPos-1)
+        ptrRet := oRDD:GetValue((INT) nPos)
         RETURN TRUE
     CATCH e AS Exception
         RuntimeState.LastRDDError := e
@@ -583,7 +583,7 @@ FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-        ptrRet := oRDD:FieldInfo((INT) nPos-1, (INT) nOrdinal, ptrRet)
+        ptrRet := oRDD:FieldInfo((INT) nPos, (INT) nOrdinal, ptrRet)
         RETURN TRUE
     CATCH e AS Exception
         RuntimeState.LastRDDError := e
@@ -602,7 +602,7 @@ FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOG
 FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-    RETURN oRDD:PutValue((INT) nPos-1, xValue)
+    RETURN oRDD:PutValue((INT) nPos, xValue)
     })    
     
     /// <summary>

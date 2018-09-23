@@ -13,6 +13,10 @@ BEGIN NAMESPACE XSharp.RDD
 	CLASS RddError INHERIT Error
     CONSTRUCTOR()
          RETURN
+    CONSTRUCTOR(msg AS string)
+      SUPER(msg)
+         RETURN
+          
 
 STATIC METHOD PostArgumentError( funcName AS STRING, subcode AS DWORD, argName AS STRING, argNum AS DWORD, args AS OBJECT[] ) AS VOID
     LOCAL e AS Error

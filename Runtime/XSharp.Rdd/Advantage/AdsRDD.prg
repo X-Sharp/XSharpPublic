@@ -82,23 +82,21 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL message AS CHAR[]
     LOCAL wBufLen AS WORD
     LOCAL oError AS RddError
-    oError := RddError{}
+    IF strMessage == String.Empty
+      //
+      message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
+      wBufLen := (WORD) message:Length
+      IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
+        strMessage := STRING{message, 0, wBufLen}
+      ENDIF
+    ENDIF
+    oError := RddError{strMessage}
     oError:SubCode := iSubCode
     oError:Gencode := iGenCode
     oError:SubSystem := SELF:_Driver
     oError:Severity := iSeverity
     oError:FuncSym  := strFunction
     oError:FileName := SELF:_dbfName
-    IF strMessage == String.Empty
-      //
-      message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
-      wBufLen := (WORD) message:Length
-      IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
-        oError:Description := STRING{message, 0, wBufLen}
-      ENDIF
-    ELSE
-      oError:Description := strMessage
-    ENDIF
     THROW oError
     
     

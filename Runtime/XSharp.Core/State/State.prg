@@ -71,7 +71,7 @@ CLASS XSharp.RuntimeState
 
 		ENDIF
 		RETURN
-
+    /// <exclude />
 	DESTRUCTOR()
 		// What do we need to clean ?
 		IF oSettings != NULL
@@ -227,6 +227,8 @@ CLASS XSharp.RuntimeState
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(VALUE)
 
+	STATIC PROPERTY NullDateString AS STRING GET GetValue<STRING>(Set.DateFormatEmpty)
+
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
 
     STATIC PROPERTY Decimals AS DWORD ;
@@ -320,10 +322,11 @@ CLASS XSharp.RuntimeState
         GET GetValue<DWORD>(Set.LOCKTRIES);
         SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
 
+    /// <summary>The setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files</summary>
     STATIC PROPERTY HPLocking AS LOGIC ;
         GET GetValue<LOGIC>(Set.HPLOCKING);
         SET SetValue<LOGIC>(Set.HPLOCKING, VALUE)
-
+    /// <summary>The setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.</summary>
     STATIC PROPERTY NewIndexLock AS LOGIC ;
         GET GetValue<LOGIC>(Set.NEWINDEXLOCK);
         SET SetValue<LOGIC>(Set.NEWINDEXLOCK, VALUE)
@@ -524,6 +527,7 @@ CLASS XSharp.RuntimeState
         RETURN RuntimeState.WorkAreas:PopCurrentWorkArea()
 
 	PRIVATE _collationTable AS BYTE[]
+    /// <summary>Current collation table.</summary>
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]
@@ -545,6 +549,7 @@ CLASS XSharp.RuntimeState
 
 	STATIC INTERNAL _macrocompilerType   AS System.Type
     STATIC INTERNAL _macrocompiler       AS IMacroCompiler
+    /// <summary>Active Macro compiler</summary>
 	PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
         GET
             IF _macrocompiler == NULL 

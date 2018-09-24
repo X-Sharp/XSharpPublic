@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.Text
 BEGIN NAMESPACE XSharp.RDD
 
 	/// <summary>Base class for DBF based RDDs. Holds common propertis such as the Workarea number, Alias, Fields list and various flags.</summary> 
@@ -24,7 +25,9 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>File name of the main file</summary>
 		PUBLIC _FileName		AS STRING
 		/// <summary>List of Fields</summary>
-		PUBLIC _Fields		    AS RddFieldInfo[]	
+		PUBLIC _Fields		    AS RddFieldInfo[]
+        PRIVATE _fieldNames     AS Dictionary<STRING, INT>
+        PRIVATE _currentField   AS LONG
 		/// <summary>Is at BOF ?</summary>
 		PUBLIC _Bof			    AS LOGIC	
 		/// <summary>Is at bottom ?</summary>
@@ -86,7 +89,7 @@ BEGIN NAMESPACE XSharp.RDD
 		// AutoShare
 		// etc
 		#endregion
-		
+		/// <exclude />
 		CONSTRUCTOR() 
 			SELF:_FilterInfo := DbFilterInfo{}
 			SELF:_ScopeInfo  := DbScopeInfo{}            
@@ -106,7 +109,8 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Alias		 := String.Empty
 			SELF:_RecordBuffer := NULL
 			SELF:_Disposed   := FALSE
-			
+            SELF:_FieldNames := Dictionary<STRING, INT>{Stringcomparer.OrdinalIgnoreCase}
+		/// <exclude />	
 		DESTRUCTOR()
 			SELF:Dispose(FALSE)
 			
@@ -122,8 +126,59 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />			
 		VIRTUAL METHOD DbEval(info AS DbEvalInfo) AS LOGIC
-			//Todo Implement DbEval
-			THROW NotImplementedException{__ENTITY__}
+			// fetch locals from info
+            LOCAL nRecno   := 0 AS LONG
+            LOCAL isOk     := TRUE AS LOGIC
+            LOCAL lMore    := FALSE AS LOGIC
+            LOCAL lLimit   := FALSE AS LOGIC
+            LOCAL lRecordOk := TRUE AS LOGIC
+            LOCAL cbWhile   AS ICodeBlock
+            LOCAL cbFor     AS ICodeBlock
+            LOCAL cbEval    AS ICodeBlock
+            cbWhile  := info:ScopeInfo:WhileBlock 
+            cbFor    := info:ScopeInfo:ForBlock   
+            cbEval   := info:Block  
+            IF info:ScopeInfo:RecId != NULL
+                nRecno := Convert.ToInt32(info:ScopeInfo:RecId)
+                isOk   := SELF:GoTo(nRecno)
+                lLimit := TRUE
+                lMore  := FALSE
+                nRecno := 1
+            ELSEIF info:ScopeInfo:NextCount != 0
+                lLimit := TRUE
+                nRecno := info:ScopeInfo:NextCount
+                IF nRecno < 1
+                  lMore := FALSE
+                ENDIF
+            ELSE
+                lMore   := TRUE
+                lLimit  := FALSE
+                IF info:ScopeInfo:WhileBlock == NULL .AND. ! info:ScopeInfo:Rest
+                  isOk := SELF:GoTop()
+                ENDIF
+            ENDIF
+            DO WHILE isOk .AND. ! SELF:_Eof .AND. lMore
+                IF cbWhile != NULL
+                    lMore := (LOGIC) cbWhile:EvalBlock()
+                ENDIF
+                IF lMore .AND. cbFor != NULL
+                   lRecordOk := (LOGIC) cbFor:EvalBlock()
+                ELSE
+                   lRecordOk := lMore
+                ENDIF
+                IF lRecordOk .AND. cbEval != NULL
+                  isOk := (LOGIC) SELF:EvalBlock(cbEval)
+                ENDIF
+                IF lMore .AND. lLimit
+                    nRecno -= 1
+                    lMore := nRecno != 0
+                ENDIF
+                IF isOk .AND. lMore
+                    isOk := SELF:Skip(1)
+                ENDIF
+            ENDDO
+            RETURN isOk
+			
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD GoTop( ) AS LOGIC
@@ -173,86 +228,40 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN TRUE	
 			
 			/// <inheritdoc />
-			// Todo
 		VIRTUAL METHOD SkipFilter(nToSkip AS INT) AS LOGIC
-			//LOCAL Bottom /*, Deleted */ AS LOGIC
-			// When no active filter, record is Ok
-			//            IF SELF:_FilterInfo == NULL_OBJECT .OR. ;
-			//            !SELF:_FilterInfo:Active .OR. ;
-			//            SELF:_FilterInfo:FilterBlock == NULL_OBJECT ;
-			//            // .or. !SetDeleted()
-			//                RETURN TRUE
-			//            ENDIF
-			//            nToSkip := IIF(nToSkip < 0 , -1, 1)
-			//            Bottom := SELF:_Bottom    
-			RETURN FALSE
-			/*
-			WHILE( ! pArea->fBof && ! pArea->fEof )
-			{
-			/* SET DELETED * /
-			IF( hb_setGetDeleted() )
-			{
-			IF( SELF_DELETED( pArea, &fDeleted ) != HB_SUCCESS )
-			RETURN HB_FAILURE;
-			IF( fDeleted )
-			{
-			IF( SELF_SKIPRAW( pArea, lUpDown ) != HB_SUCCESS )
-			RETURN HB_FAILURE;
-			continue;
-			}
-			}
-			
-			/* SET FILTER TO * /
-			IF( pArea->dbfi.itmCobExpr )
-			{
-			IF( SELF_EVALBLOCK( pArea, pArea->dbfi.itmCobExpr ) != HB_SUCCESS )
-			RETURN HB_FAILURE;
-			
-			IF( HB_IS_LOGICAL( pArea->valResult ) &&
-			! hb_itemGetL( pArea->valResult ) )
-			{
-			IF( SELF_SKIPRAW( pArea, lUpDown ) != HB_SUCCESS )
-			RETURN HB_FAILURE;
-			continue;
-			}
-			}
-			
-			BREAK;
-			}
-			
-			/*
-			* The only one situation when we should repos is backward skipping
-			* if we are at BOTTOM position (it's SKIPFILTER called from GOBOTTOM)
-			* then GOEOF() if not then GOTOP()
-			* /
-			IF( pArea->fBof && lUpDown < 0 )
-			{
-			IF( fBottom )
-			{
-			/* GOTO EOF (phantom) record -
-			this IS the only one place WHERE GOTO IS used BY Harbour
-			directly and RDD which does not operate ON numbers should
-			serve this METHOD only AS SELF_GOEOF() synonym. IF it's a
-			problem then we can REMOVE this IF and always use SELF_GOTOP()
-			but it also means second table scan IF all records filtered
-			are OUT OF filter so I DO not want TO DO that. I will prefer
-			explicit ADD SELF_GOEOF() METHOD
-			* /
-			errCode = SELF_GOTO( pArea, 0 );
-			}
-			ELSE
-			{
-			errCode = SELF_GOTOP( pArea );
-			pArea->fBof = HB_TRUE;
-			}
-			}
-			ELSE
-			{
-			errCode = HB_SUCCESS;
-			}
-			
-			RETURN errCode; 
-			*/		
+			LOCAL fromBottom  := SELF:_Bottom AS LOGIC
+            LOCAL fromTop     := SELF:_Top    AS LOGIC
+            LOCAL recordOk    := FALSE AS LOGIC
+            LOCAL isOk        := TRUE AS LOGIC
+            LOCAL cbFilter    AS ICodeBlock
+            cbFilter := SELF:_FilterInfo:FilterBlock
+            DO WHILE recordOk .AND. !SELF:_Eof .AND. ! SELF:_Bof
+                IF SELF:_FilterInfo:Active
+                    recordOk := (LOGIC) cbFilter:EvalBlock()
+                ELSE
+                    recordOk := TRUE
+                ENDIF
+                IF recordOk .AND. RuntimeState.Deleted .AND. SELF:Deleted
+                    recordOk := FALSE
+                ENDIF
+                IF ! recordOk .AND. ! SELF:_Bof .AND. ! SELF:_EOF
+                    isOk :=   SELF:SkipRaw(nToSkip)
+                ENDIF
+             ENDDO
+             IF isOk
+                IF fromTop .AND. SELF:_Eof
+                    SELF:_BOF := TRUE
+                ELSEIF fromBottom .AND. SELF:_Bof
+                    SELF:_EOF := TRUE
+                ELSEIF SELF:_Bof .AND. nToSkip < 0
+                    // note that this will recurse!
+                    isOk := SELF:GoTop()
+                    SELF:_Bof := TRUE
+                    SELF:_Eof := FALSE
+                ENDIF
+             ENDIF
+            RETURN isOk
+
 			
 		/// <inheritdoc />
 		VIRTUAL METHOD SkipRaw(nToSkip AS INT) AS LOGIC
@@ -260,9 +269,67 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD SkipScope(nToSkip AS INT) AS LOGIC
-			// Todo: Implement SkipScope
-			THROW NotImplementedException{__ENTITY__}
-			
+			LOCAL lFound    := FALSE AS LOGIC
+            LOCAL lContinue := TRUE AS LOGIC
+            LOCAL result    := TRUE AS LOGIC
+            LOCAL nextCnt := SELF:_ScopeInfo:NextCount  AS LONG
+            // Note that this assumes that 
+            IF SELF:_ScopeInfo:RecId != NULL
+                result := SELF:GotoId(SELF:_ScopeInfo:RecId)
+                lContinue := ! SELF:_Eof
+                IF lContinue
+                    lContinue := (LOGIC) SELF:_ScopeInfo:WhileBlock:EvalBlock()
+                    IF lContinue 
+                        lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                    ENDIF
+                ENDIF
+            ELSEIF nextCnt > 0
+                DO WHILE lContinue .AND. ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                    result := SELF:Skip(1)
+                    lContinue := (LOGIC) SELF:_ScopeInfo:WhileBlock:EvalBlock()
+                    IF ! lContinue
+                        result := SELF:Skip(-1)
+                        EXIT
+                    ELSE
+                        lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                    ENDIF
+                    IF lFound
+                        nToSkip -= 1
+                    ENDIF
+                    nextCnt -= 1
+                    lContinue := nextCnt > 0
+                ENDDO
+            ELSEIF SELF:_ScopeInfo:Rest
+                DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                    result := SELF:Skip(1)
+                    lContinue := (LOGIC) SELF:_ScopeInfo:WhileBlock:EvalBlock()
+                    IF ! lContinue
+                        result := SELF:Skip(-1)
+                        EXIT
+                    ELSE
+                        lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                    ENDIF
+                    IF lFound
+                        nToSkip -= 1
+                    ENDIF
+                    nextCnt -= 1
+                    lContinue := nextCnt > 0
+                ENDDO
+            ELSE
+                result := SELF:GoTop()
+                DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                    lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                    IF lFound
+                        nToSkip -= 1
+                    ENDIF
+                    IF nToSkip != 0
+                        result := SELF:Skip(1)
+                    ENDIF
+                ENDDO
+            ENDIF
+            SELF:_Found := lFound
+            RETURN result
+            
 			/// <inheritdoc />
 		VIRTUAL METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 			THROW NotImplementedException{__ENTITY__}
@@ -313,7 +380,6 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
-			// todo: basic implementation
 			THROW NotImplementedException{__ENTITY__}
 			
 			/// <inheritdoc />
@@ -340,8 +406,14 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Continue( ) AS LOGIC
-			// Todo: Implement Continue
-			THROW NotImplementedException{__ENTITY__}
+			LOCAL result := FALSE AS LOGIC
+            IF SELF:_ScopeInfo:ForBlock != NULL
+                SELF:_ScopeInfo:NextCount := 0
+                SELF:_ScopeInfo:Rest      := FALSE
+                SELF:_ScopeInfo:RecId     := NULL
+                result := SELF:SkipScope(1)
+            ENDIF
+            RETURN result
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD GetScope( ) AS DbScopeInfo
@@ -364,8 +436,10 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN TRUE
 			
 		VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
-			// Initialize the Fields array
-			THROW NotImplementedException{__ENTITY__}
+            SELF:_Fields        := RddFieldInfo[]{ fieldCount }
+            SELF:_RecordLength  := 1 // 1 for DELETED
+            SELF:_currentField  := 0
+            RETURN TRUE
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD SetScope(info AS DbScopeInfo) AS LOGIC
@@ -374,36 +448,58 @@ BEGIN NAMESPACE XSharp.RDD
 				SELF:_ScopeInfo := info:Clone()
 			ENDIF
 			RETURN TRUE
-			
-		VIRTUAL METHOD SetFieldExtent(uiCount AS DWORD) AS LOGIC
-			//Todo Copy implementation from DBF or ADS
-			RETURN FALSE
-			
+            
+        PROTECT VIRTUAL METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
+            RETURN TRUE
+
 			/// <inheritdoc />
 		VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
-			// ToDo
-			// Copy implementation from ADS or DBF
-			// including _CheckFIeldName
-			
-			THROW NotImplementedException{__ENTITY__}
-			
+			LOCAL result AS LOGIC
+            result := SELF:FieldIndex(info:Name) == 0
+            IF result
+              IF SELF:_currentField < SELF:_Fields:Length 
+                SELF:_checkFields( info )
+                SELF:_Fields[ SELF:_currentField] := RDDFieldInfo{ info:Name, info:FieldType:ToString(), info:Length, info:Decimals}
+                SELF:_Fields[SELF:_currentField]:Alias := info:Alias
+                // the alias could be an empty string !
+                IF !String.IsNullOrEmpty(info:Alias) 
+                    SELF:_fieldNames:Add(info:Alias:Trim(), SELF:_currentField)
+                ELSE
+                    SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
+                ENDIF
+                SELF:_currentField++
+                SELF:_RecordLength += (WORD)info:Length
+              ELSE
+                result := FALSE
+              ENDIF
+            ENDIF
+			RETURN result
+            
 			/// <inheritdoc />
 		VIRTUAL METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
-			// ToDo
-			// Copy implementation from ADS or DBF
-			THROW NotImplementedException{__ENTITY__}
+            // fills the field list from the aFields array
+            LOCAL fieldCount AS LONG
+            LOCAL result := FALSE AS LOGIC
+            fieldCount := aFields:Length
+            IF  fieldCount > 0 
+                result := SELF:SetFieldExtent( fieldCount )
+                IF result
+                    FOR VAR i := 0 TO fieldCount - 1
+                        result := SELF:AddField( aFields[i] )
+                        IF !result
+                            EXIT
+                        ENDIF
+                    NEXT
+                ENDIF
+            ENDIF
+            RETURN result
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
-			LOCAL nMax AS INT
-			nMax := SELF:FieldCount
-			FOR VAR nFldPos := 0 TO nMax -1
-				IF SELF:_Fields[nFldPos] != NULL .AND. String.Compare(SELF:_Fields[nFldPos]:Name, fieldName, StringComparison.OrdinalIgnoreCase) == 0
-					// Note that we must return 1 based fldPos
-					RETURN nFldPos+1
-				ENDIF
-			NEXT 
-			RETURN 0
+            IF SELF:_fieldNames:ContainsKey(fieldName)
+                RETURN SELF:_fieldNames[fieldName]+1
+            ENDIF
+            RETURN 0
 			
 			/// <inheritdoc />
 		PROTECTED METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
@@ -418,19 +514,51 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 			// Note that nFldPos is 1 based
-			// Todo implement basic NAME, LEN, TYPE, DEC info
 			IF SELF:_FieldIndexValidate(nFldPos)
-				IF __ARRAYBASE__ == 0
-					nFldPos -= 1
-				ENDIF
-			ENDIF
-			THROW NotImplementedException{__ENTITY__}
+                LOCAL ofld AS RddFieldInfo
+                ofld := SELF:_Fields[nFldPos-1]
+                SWITCH nOrdinal
+                CASE DBS_NAME
+                    RETURN ofld:Name
+                CASE DBS_TYPE
+                    RETURN oFld:FieldType:ToString()
+                CASE DBS_LEN
+                    RETURN oFld:Length
+                CASE DBS_DEC
+                    RETURN oFld:Decimals
+                CASE DBS_ALIAS
+                    IF oNewValue IS STRING
+                        IF _fieldNames:ContainsValue(nFldPos-1)
+                            // Should always be the case
+                            FOREACH VAR pair IN SELF:_fieldNames
+                                IF pair:value == nFldPos-1
+                                    SELF:_fieldNames:Remove(pair:Key)
+                                    EXIT
+                                ENDIF
+                            NEXT
+                        ENDIF
+                        oFld:Alias := ((STRING) oNewValue):ToUpperInvariant()
+                        // the new alias could be an empty string !
+                        IF !String.IsNullOrEmpty(oFld:Alias) 
+                            SELF:_fieldNames:Add(oFld:Alias:Trim(), nFldPos-1)
+                        ELSE
+                            SELF:_fieldNames:Add(oFld:Name:Trim(), nFldPos-1)
+                        ENDIF
+                    ENDIF
+                    IF oFld:Alias != NULL
+                        RETURN oFld:Alias
+                    ELSE
+                        RETURN oFld:Name
+                    ENDIF
+                CASE DBS_PROPERTIES
+                    RETURN 5
+                END SWITCH
+            ENDIF
+            RETURN NULL
+
 			
 		VIRTUAL METHOD GetField(nFldPos AS INT) AS RDDFieldInfo
 			IF SELF:_FieldIndexValidate(nFldPos)
-				IF __ARRAYBASE__ == 0
-					nFldPos -= 1
-				ENDIF
 				RETURN SELF:_Fields[nFldPos]
 			ENDIF          
 			RETURN NULL
@@ -440,10 +568,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD FieldName(nFldPos AS INT) AS STRING
 			// Note that nFldPos is 1 based
 			IF SELF:_FieldIndexValidate(nFldPos)
-				IF __ARRAYBASE__ == 0
-					nFldPos -= 1
-				ENDIF
-				RETURN SELF:_Fields[nFldPos]:Name
+				RETURN SELF:_Fields[nFldPos-1]:Name
 			ENDIF          
 			RETURN String.Empty
 			
@@ -569,7 +694,6 @@ BEGIN NAMESPACE XSharp.RDD
 				
 				/// <inheritdoc />
 			VIRTUAL METHOD ChildSync(info AS DbRelInfo) AS LOGIC
-				// Todo: Implement ChildSync
 				THROW NotImplementedException{__ENTITY__}
 
 			PRIVATE METHOD isChildPredicate( info AS DbRelInfo ) AS LOGIC
@@ -648,20 +772,128 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 			VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
-				// Todo: Implement Trans
-				THROW NotImplementedException{__ENTITY__}
+			    LOCAL cbFor     := info:Scope:ForBlock AS ICodeBlock
+                LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeBlock
+                LOCAL result    := TRUE AS LOGIC
+                LOCAL lQualified:= TRUE AS LOGIC
+                LOCAL lMore     := TRUE AS LOGIC
+                LOCAL lLimit    := TRUE AS LOGIC
+                LOCAL nRecno    := 0    AS LONG
+                IF SELF:_Relations:Count > 0
+                    SELF:ForceRel()
+                ENDIF
+                IF info:Scope:RecId != NULL
+                    nRecno := Convert.ToInt32(info:Scope:RecId)
+                    result := SELF:Goto(nRecno)
+                    lMore  := TRUE
+                    lLimit := TRUE
+                ELSEIF info:Scope:NextCount != 0
+                    lLimit := TRUE
+                    nRecno := info:Scope:NextCount
+                    IF nRecno < 1
+                        lMore := FALSE
+                    ENDIF
+                ELSE
+                    lMore   := TRUE
+                    lLimit  := FALSE
+                    IF cbWhile == NULL .AND. ! info:Scope:Rest
+                        result := SELF:GoTop()
+                    ENDIF
+                ENDIF
+                DO WHILE result .AND. ! SELF:_Eof .AND. lMore
+                    IF cbWhile != NULL
+                        lMore := (LOGIC) cbWhile:EvalBlock()
+                    ENDIF
+                    IF lMore .AND. cbFor != NULL
+                        lQualified := (LOGIC) cbFor:EvalBlock()
+                    ELSE
+                        lQualified := lMore
+                    ENDIF
+                    IF result .AND. lQualified
+                        result := SELF:TransRec(info)
+                    ENDIF
+                    IF lMore .AND. lLimit
+                        nRecno -= 1
+                        lMore := nRecno != 0
+                    ENDIF
+                    IF result .AND. lMore
+                        SELF:Skip(1)
+                    ENDIF
+                ENDDO 
+                RETURN result
 				
 				/// <inheritdoc />
 			VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
-				// Todo: Implement Trans
-				THROW NotImplementedException{__ENTITY__}
-				
+                LOCAL oDest  AS IRDD
+                LOCAL result AS LOGIC
+                LOCAL oValue AS OBJECT
+                oDest := info:Destination
+                result := oDest:Append(TRUE)
+                IF _AND(info:Flags , DbTransInfo.PutRec) != 0
+                    VAR buffer := SELF:GetRec()
+                    result := oDest:PutRec(buffer)
+                ELSE
+                    FOR VAR i := 0 TO info:ItemCount
+                        LOCAL oItem AS DbTransItem
+                        oItem  := info:Items[i]
+                        oValue := SELF:GetValue(oItem:Source)
+                        result := oDest:PutValue(oItem:Destination, oValue)
+                        IF ! result
+                            EXIT
+                        ENDIF
+                    NEXT
+                ENDIF
+                IF result .AND. SELF:Deleted
+                    result := oDest:Delete()
+                ENDIF
+                RETURN result
 				#endregion
 				
 			/// <inheritdoc />
 		VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			THROW NotImplementedException{__ENTITY__}
-			
+
+        PRIVATE METHOD _PrepareKey(cKey AS STRING) AS STRING
+            VAR sbResult := StringBuilder{cKey:Length * 2} 
+            VAR sbId     := StringBuilder{cKey:Length}
+            // make sure we remove the _FIELD-> from the existing key
+            cKey := cKey:Replace("_FIELD->","")
+            FOREACH cChar AS CHAR IN cKey
+                IF Char.IsLetter(cChar) .OR. cChar = '_'
+                    // add char to id
+                    sbId:Append(cChar)
+                ELSEIF Char.IsDigit(cChar)
+                    // after letter or _ then it is part of the id
+                    IF sbid:Length > 0
+                        sbId:Append(cChar)
+                    ELSE
+                        sbResult:Append(cChar)
+                    ENDIF
+                ELSEIF cChar == '(' .OR. cChar == '{'
+                    IF sbid:Length > 0
+                        // function or constructor call, no _FIELD prefix
+                        sbResult:Append(sbId:ToString())
+                        sbId:Clear()
+                    ENDIF
+                    sbResult:Append(cChar)
+                ELSE
+                    // no alpha _ or numeric, so copy Id to result
+                    // and prefix with _FIELD
+                    IF sbid:Length > 0
+                        sbResult:Append( "_FIELD->")
+                        sbResult:Append(sbId:ToString())
+                        sbId:Clear()
+                    ENDIF
+                    sbResult:Append(cChar)
+                ENDIF
+            NEXT
+            // when we end with an id then append to the end of the result
+            IF sbid:Length > 0
+                sbResult:Append("_FIELD->")
+                sbResult:Append(sbId:ToString())
+            ENDIF  
+            RETURN sbResult:ToString()      
+
 			/// <inheritdoc />
 		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
 			LOCAL oBlock := NULL AS ICodeBlock
@@ -671,6 +903,7 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL oType := typeof(Workarea) AS System.Type
 				IF oC != NULL
 					LOCAL isBlock AS LOGIC
+                    sBlock := SELF:_PrepareKey(sBlock)
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock)
 				ENDIF
 			CATCH e AS Exception

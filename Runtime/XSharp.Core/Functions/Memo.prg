@@ -322,6 +322,9 @@ FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD) AS STRING
 /// </returns>
 FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset REF DWORD) AS STRING
 	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
+/// <summary>
+/// Extract a line of text from a string, specifying an optional offset argument.
+/// </summary>    
 FUNCTION MLine(cMemo AS STRING,nLineNum AS DWORD,nOffset AS DWORD) AS STRING
 	RETURN MLine3(cMemo, nLineNum, REF nOffSet)
 	
@@ -439,9 +442,10 @@ FUNCTION MLCount1( cMemo AS STRING) AS DWORD
 FUNCTION MemLines(cMemo AS STRING) AS DWORD
 	RETURN MemoHelpers.MLCount(cMemo, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
 	
-	
+/// <exclude />
 FUNCTION _MPosToLc(cMemo AS STRING,nLineLen AS DWORD,nPos AS DWORD,nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS Tuple<INT, INT>
 	RETURN MemoHelpers.MPosToLc(cMemo, (INT) nLineLen, (INT) nPos, (INT) nTabSize, lWrap)
-	
+
+/// <summary>Return the position of a character in a formatted string.</summary>
 FUNCTION MLcToPos( cMemo AS STRING, nLineLen AS DWORD, nLineNum AS DWORD, nColumn AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD CLIPPER
 	RETURN MemoHelpers.MLcToPos(cMemo, (INT) nLineLen, (INT) nLineNum, (INT) nColumn, (INT) nTabSize, lWrap)

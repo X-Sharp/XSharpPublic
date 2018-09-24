@@ -115,7 +115,14 @@ BEGIN NAMESPACE XSharp
     CONSTRUCTOR()
     SELF:setDefaultValues()
     RETURN
-    
+
+    CONSTRUCTOR (msg AS STRING)
+    SUPER(msg)
+    SELF:setDefaultValues()
+    SELF:Description := msg
+    SELF:GenCode     := EG_EXCEPTION
+    RETURN 
+
     /// <summary></summary>
     CONSTRUCTOR (ex AS Exception)
     SUPER(ex.Message,ex)

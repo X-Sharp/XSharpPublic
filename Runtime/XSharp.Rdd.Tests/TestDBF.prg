@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING Xunit
 USING XSharp.RDD
+USING XSharp.Rdd.Support
 
 BEGIN NAMESPACE XSharp.RDD.Tests
 

@@ -101,11 +101,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestDBF.prg" />
+    <Compile Include="TestDbfNtx.prg" />
     <Compile Include="TestHelpers.prg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="customer.dbf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="dbase_03.dbf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -113,6 +114,12 @@
     <None Include="dbase_03_summary.html" />
     <None Include="packages.config" />
     <None Include="Readme.md" />
+    <None Include="TESTNTX2.DBF">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TESTNTX2.NTX">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

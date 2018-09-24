@@ -201,6 +201,8 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_Ansi := SELF:_oRdd:_Ansi
                             // Key
                             SELF:_KeyExpr := SELF:_Header:Bytes:KeyExpression
+							// UGLY HACK
+							SELF:_KeyExpr := "_FIELD->" + SELF:_KeyExpr
 							TRY
 								SELF:_oRdd:Compile(SELF:_KeyExpr)
 							CATCH
@@ -291,7 +293,7 @@ BEGIN NAMESPACE XSharp.RDD
                             ENDIF
                             // NTX has only one Tag index
                             SELF:_tagNumber := 1
-                            SELF:_maxLockTries := (LONG)XSharp.RuntimeState.LockTries
+                            SELF:_maxLockTries := 99 //(LONG)XSharp.RuntimeState.LockTries
                             SELF:_readLocks := 0
                             //
                             isOk := TRUE

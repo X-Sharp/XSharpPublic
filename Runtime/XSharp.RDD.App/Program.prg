@@ -2,6 +2,8 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING XSharp.Rdd.Support
+
 USING STATIC XSharp.Core.Functions
 BEGIN NAMESPACE XSharp.RDD.App
 

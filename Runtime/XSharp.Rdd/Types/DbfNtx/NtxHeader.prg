@@ -45,6 +45,8 @@ BEGIN NAMESPACE XSharp.RDD
 		CONSTRUCTOR( fileHandle AS IntPtr )
 			//
 			SELF:_hFile := fileHandle
+			SELF:Bytes := DbfNtxHeader{}
+			SELF:Bytes:initialize();
 			
 			RETURN
 			

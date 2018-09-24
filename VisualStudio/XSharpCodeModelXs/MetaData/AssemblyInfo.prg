@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
@@ -27,7 +27,7 @@ CLASS AssemblyInfo
 		PRIVATE _projects AS ImmutableList<XProject>
 		PRIVATE _reference AS VSLangProj.Reference
 		PRIVATE _zeroNamespace AS AssemblyInfo.NameSpaceContainer
-		
+
 		PRIVATE STATIC WorkFolder AS STRING
 		PRIVATE STATIC FailedAssemblies AS Dictionary<STRING, INT>
 
@@ -35,13 +35,13 @@ CLASS AssemblyInfo
 		PUBLIC STATIC PROPERTY DisableForeignProjectReferences AS LOGIC AUTO
 		PUBLIC STATIC PROPERTY DisableXSharpProjectReferences AS LOGIC AUTO
 		STATIC CONSTRUCTOR
-			// Clear temp files from previous run 
+			// Clear temp files from previous run
 			FailedAssemblies := Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
 			VAR cFolder := Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 			cFolder := System.IO.Path.Combine(cFolder, "XSharp\Temp")
 			IF ! System.IO.Directory.Exists(cFolder)
 				System.IO.Directory.CreateDirectory(cFolder)
-			ENDIF			
+			ENDIF
 			WorkFolder := cFolder
 			LOCAL oDir := DirectoryInfo{cFolder} AS DirectoryInfo
 			FOREACH VAR oFile IN oDir:GetFiles()
@@ -56,8 +56,8 @@ CLASS AssemblyInfo
 			DisableAssemblyReferences := FALSE
 			DisableForeignProjectReferences := FALSE
 			RETURN
-			
-			
+
+
 			// Methods
 		CONSTRUCTOR()
 			SUPER()
@@ -65,17 +65,17 @@ CLASS AssemblyInfo
 			SELF:_assembly := NULL
 			SELF:_projects := ImmutableList<XProject>.Empty
 			SELF:_clearInfo()
-			
+
 		CONSTRUCTOR(reference AS VSLangProj.Reference)
 			SELF()
 			SELF:_reference := reference
-			
+
 		CONSTRUCTOR(_cFileName AS STRING, _dModified AS System.DateTime)
 			SELF()
 			SELF:FileName := _cFileName
 			SELF:Modified := _dModified
 			SELF:UpdateAssembly()
-			
+
 		PRIVATE METHOD _clearInfo() AS VOID
 			//
 			SELF:_aTypes := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
@@ -86,18 +86,18 @@ CLASS AssemblyInfo
 			SELF:_zeroNamespace := AssemblyInfo.NameSpaceContainer{"_"}
 			SELF:_LoadedTypes := FALSE
 			SELF:_HasExtensions := FALSE
-			
+
 		METHOD AddProject(project AS XProject) AS VOID
 			IF ! SELF:_projects:Contains(project)
 				SELF:_projects := SELF:_projects:Add(project)
 			ENDIF
-			
+
 		PRIVATE METHOD CurrentDomain_AssemblyResolve(sender AS OBJECT, args AS System.ResolveEventArgs) AS Assembly
 			VAR folders := List<STRING>{}	// list of folders that we have tried
 			VAR folderPath := System.IO.Path.GetDirectoryName(SELF:FileName)
 			VAR name := AssemblyName{args:Name}:Name + ".dll"
 			VAR assemblyPath := System.IO.Path.Combine(folderPath, name)
-			WriteOutputMessage("--> CurrentDomain_AssemblyResolve : "+assemblyPath) 
+			WriteOutputMessage("--> CurrentDomain_AssemblyResolve : "+assemblyPath)
 			IF System.IO.File.Exists(assemblyPath)
 				VAR assembly := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 				IF assembly != NULL
@@ -110,7 +110,7 @@ CLASS AssemblyInfo
 				IF ! folders:Contains(folderPath)
 					assemblyPath := System.IO.Path.Combine(folderPath, name)
 					IF System.IO.File.Exists(assemblyPath)
-						VAR asm := Assembly.LoadFrom(assemblyPath)
+						VAR asm := AssemblyInfo.LoadAssemblyFromFile(assemblyPath)
 						IF asm != NULL
 							RETURN asm
 						ENDIF
@@ -120,7 +120,7 @@ CLASS AssemblyInfo
 			NEXT
 			WriteOutputMessage("<-- CurrentDomain_AssemblyResolve : "+assemblyPath)
 			RETURN NULL
-			
+
 		METHOD GetType(name AS STRING) AS System.Type
 			IF SELF:IsModifiedOnDisk
 				SELF:LoadAssembly()
@@ -132,7 +132,7 @@ CLASS AssemblyInfo
 				RETURN SELF:Types:Item[name]
 			ENDIF
 			RETURN NULL
-			
+
 		PRIVATE METHOD GetTypeTypesFromType(oType AS System.Type) AS AssemblyInfo.TypeTypes
 			IF oType:IsValueType
 				RETURN AssemblyInfo.TypeTypes.Structure
@@ -144,7 +144,7 @@ CLASS AssemblyInfo
 				RETURN AssemblyInfo.TypeTypes.Delegate
 			ENDIF
 			RETURN AssemblyInfo.TypeTypes.Class
-			
+
 		PRIVATE STATIC METHOD HasExtensionAttribute(memberInfo AS MemberInfo) AS LOGIC
 			TRY
 				VAR customAttributes := memberInfo:GetCustomAttributes(FALSE)
@@ -153,11 +153,11 @@ CLASS AssemblyInfo
 						RETURN TRUE
 					ENDIF
 				NEXT
-			CATCH 
+			CATCH
 				// Failed to retrieve custom attributes
 			END TRY
 			RETURN FALSE
-			
+
 		INTERNAL METHOD LoadAssembly() AS VOID
 			WriteOutputMessage("--> LoadAssembly : "+SELF:FileName)
 			IF String.IsNullOrEmpty(SELF:FileName) .AND. SELF:_reference != NULL
@@ -172,7 +172,7 @@ CLASS AssemblyInfo
 				SELF:_clearInfo()
 			ENDIF
 			WriteOutputMessage("<-- LoadAssembly : "+SELF:FileName)
-			
+
 		STATIC METHOD FindPdbName(fileName AS STRING) AS STRING
 			WriteOutputMessage("--> FindPDBName : "+fileName)
 			TRY
@@ -193,8 +193,8 @@ CLASS AssemblyInfo
 				WriteOutputMessage("<-- FindPDBName : "+fileName)
 			END TRY
 			RETURN string.Empty
-			
-			
+
+
 		STATIC METHOD LoadAssemblyFromFile(fileName AS STRING) AS Assembly
 			LOCAL result  AS Assembly
 			LOCAL iAttempts AS INT
@@ -214,12 +214,12 @@ CLASS AssemblyInfo
 					LOCAL PdbRenamed   := FALSE AS LOGIC
 					TRY
 						VAR temp		:=  System.IO.Path.Combine(WorkFolder, System.IO.Path.GetFileName(fileName))
-						System.IO.File.Copy(fileName, temp,true)
+						System.IO.File.Copy(fileName, temp,TRUE)
 						VAR rawAssembly := System.IO.File.ReadAllBytes(temp)
 						cPdb		:= FindPdbName(temp)
 						System.IO.File.Delete(temp)
 						cPdbCopy := System.IO.Path.ChangeExtension(temp, ".p$$")
-						IF !String.IsNullOrEmpty(cPdb) .and. System.IO.File.Exists(cPdb)
+						IF !String.IsNullOrEmpty(cPdb) .AND. System.IO.File.Exists(cPdb)
 							PdbRenamed := TRUE
 							IF System.IO.File.Exists(cPdbCopy)
 								System.IO.File.Delete(cPdbCopy)
@@ -283,20 +283,20 @@ CLASS AssemblyInfo
 				WriteOutputMessage("<-- LoadAssemblyFromFile : "+fileName)
 			END TRY
 			RETURN NULL
-			
+
 		METHOD RemoveProject(project AS XProject) AS VOID
 			//
 			IF SELF:_projects:Contains(project)
 				SELF:_projects := SELF:_projects:Remove(project)
 			ENDIF
-		
+
 		METHOD Refresh() AS VOID
 			VAR currentDT  := System.IO.File.GetLastWriteTime(SELF:FileName)
 			IF currentDT != SELF:Modified
 				WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
 				SELF:UpdateAssembly()
 			ENDIF
-			
+
 		INTERNAL METHOD UpdateAssembly() AS VOID
 			LOCAL aTypes AS Dictionary<STRING, System.Type>
 			LOCAL nspace AS STRING
@@ -362,7 +362,7 @@ CLASS AssemblyInfo
 								EXIT
 							ENDIF
 						NEXT
-					
+
 					ENDIF
 				CATCH e AS Exception
 					XSolution.WriteException(e)
@@ -387,8 +387,8 @@ CLASS AssemblyInfo
 					XSolution.WriteException(ex)
 				END TRY
 				currentDomain:AssemblyResolve -= System.ResolveEventHandler{ SELF, @CurrentDomain_AssemblyResolve() }
-			
-				IF types != NULL .and. types:Length != 0 .AND. (aTypes:Count == 0  .or. ! _LoadedTypes)
+
+				IF types != NULL .AND. types:Length != 0 .AND. (aTypes:Count == 0  .OR. ! _LoadedTypes)
 					TRY
 						FOREACH VAR type IN types
 							fullName := type:FullName
@@ -422,7 +422,7 @@ CLASS AssemblyInfo
 									SELF:_zeroNamespace:AddType(simpleName, SELF:GetTypeTypesFromType(type))
 								ENDIF
 								// Public Type, not Nested and no Underscore
-								IF type:IsPublic .and. simpleName.IndexOf('+') == -1  .and. simpleName.IndexOf('_') == -1
+								IF type:IsPublic .AND. simpleName.IndexOf('+') == -1  .AND. simpleName.IndexOf('_') == -1
 									// Get the Namespace
 									nspace := type:Namespace
 									// and the normal name
@@ -455,7 +455,7 @@ CLASS AssemblyInfo
 							ENDIF
 						NEXT
 						SELF:_LoadedTypes := TRUE
-						SELF:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase) 
+						SELF:_aTypes := aTypes.ToImmutableDictionary(System.StringComparer.OrdinalIgnoreCase)
 						SELF:_assembly := NULL
 					CATCH e AS System.Exception
 						XSolution.WriteException(e)
@@ -474,16 +474,16 @@ CLASS AssemblyInfo
 				RETURN System.IO.Path.GetFileName(SELF:fileName)
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY FileName AS STRING AUTO
-		
+
 		PROPERTY FullName AS STRING GET SELF:_fullName
 		PROPERTY GlobalClassName AS STRING GET SELF:_globalClassName
-		
+
 		PROPERTY HasProjects AS LOGIC GET SELF:_projects:Count > 0
-		
+
 		PROPERTY ImplicitNamespaces AS IList<STRING> GET SELF:_implicitNamespaces
-		
+
 		PROPERTY IsModifiedOnDisk AS LOGIC
 			GET
 				IF String.IsNullOrEmpty(SELF:fileName)
@@ -495,10 +495,10 @@ CLASS AssemblyInfo
 				RETURN (System.IO.File.GetLastWriteTime(SELF:fileName) != SELF:Modified)
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY Modified AS System.DateTime GET SELF:_Modified SET SELF:_Modified := VALUE
 		PROPERTY Namespaces AS IList<STRING> GET SELF:_nameSpaceTexts
-		PROPERTY RuntimeVersion AS STRING 
+		PROPERTY RuntimeVersion AS STRING
 			GET
 				SELF:UpdateAssembly()
 				IF SELF:_assembly != NULL
@@ -508,34 +508,34 @@ CLASS AssemblyInfo
 			END GET
 		END PROPERTY
 		PROPERTY Types AS IDictionary<STRING, System.Type> GET SELF:_aTypes
-		
+
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.AssemblyInfo " +message )
-		
+
 		// Nested Types
 		INTERNAL CLASS NameSpaceContainer
 			// Fields
 			INTERNAL _NameSpace := "" AS STRING
 			INTERNAL _Types AS SortedList<STRING, AssemblyInfo.TypeTypes>
-			
+
 			CONSTRUCTOR(_cNameSpace AS STRING);SUPER()
 				//
 				SELF:_NameSpace := _cNameSpace
 				SELF:_Types := SortedList<STRING, AssemblyInfo.TypeTypes>{}
-				
+
 			METHOD AddType(typeName AS STRING, type AS AssemblyInfo.TypeTypes) AS VOID
 				//
 				IF ! SELF:_Types:ContainsKey(typeName)
 					//
 					SELF:_Types:Add(typeName, type)
 				ENDIF
-				
+
 			METHOD Clear() AS VOID
 				//
 				SELF:_Types:Clear()
 			END CLASS
-				
+
 		INTERNAL ENUM TypeTypes AS LONG
 			MEMBER @@All:=0xff
 			MEMBER @@Class:=1
@@ -544,9 +544,9 @@ CLASS AssemblyInfo
 			MEMBER @@None:=0
 			MEMBER @@Structure:=2
 		END ENUM
-		
-		
+
+
 	END CLASS
-	
-END NAMESPACE 
+
+END NAMESPACE
 

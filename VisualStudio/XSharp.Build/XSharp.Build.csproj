@@ -65,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="netstandard.rsp" />
     <None Include="Targets\Microsoft.NET.Sdk.XSharp.props" />
     <None Include="Targets\Microsoft.NET.Sdk.XSharp.targets" />
     <None Include="Targets\XSharp.CurrentVersion.targets">

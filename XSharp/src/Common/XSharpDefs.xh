@@ -10,8 +10,8 @@
 //
 // Caution: do not modify this file. It will be overwritten during product updates
 //
-#ifndef XSHARPDEFS_VH
-#define XSHARPDEFS_VH
+#ifndef XSHARPDEFS_XH
+#define XSHARPDEFS_XH
 #define CRLF e"\r\n"
 
 // The following UDCs require the xBase Runtime

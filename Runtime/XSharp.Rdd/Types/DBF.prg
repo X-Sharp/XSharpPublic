@@ -864,6 +864,11 @@ BEGIN NAMESPACE XSharp.RDD
             //
             SELF:_Hot := FALSE
             SELF:_FileName := SELF:_OpenInfo:FileName
+			// Check that we have a FullPath
+            IF (Path.GetDirectoryName(SELF:_FileName):Length == 0)
+				// TODO : CHange that code to take care of DefaultPath, ...
+                SELF:_FileName := AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + SELF:_FileName
+            ENDIF
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
             SELF:_hFile    := Fopen(SELF:_FileName, SELF:_OpenInfo:FileMode)
@@ -1958,7 +1963,7 @@ BEGIN NAMESPACE XSharp.RDD
             CATCH ex AS Exception
                 SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
             END TRY
-			result := SELF:_EvalResult
+			SELF:_EvalResult := result
             RETURN result
 
             // Other

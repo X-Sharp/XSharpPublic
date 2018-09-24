@@ -36,7 +36,6 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   INTERNAL _MaxKeySize AS WORD
   INTERNAL _Ansi  AS LOGIC
   INTERNAL _HasMemo AS LOGIC
-  INTERNAL _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
   INTERNAL _fieldCount AS LONG
   //	PRIVATE _CalltraceFile AS StreamWriter
   
@@ -83,23 +82,21 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL message AS CHAR[]
     LOCAL wBufLen AS WORD
     LOCAL oError AS RddError
-    oError := RddError{}
+    IF strMessage == String.Empty
+      //
+      message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
+      wBufLen := (WORD) message:Length
+      IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
+        strMessage := STRING{message, 0, wBufLen}
+      ENDIF
+    ENDIF
+    oError := RddError{strMessage}
     oError:SubCode := iSubCode
     oError:Gencode := iGenCode
     oError:SubSystem := SELF:_Driver
     oError:Severity := iSeverity
     oError:FuncSym  := strFunction
     oError:FileName := SELF:_dbfName
-    IF strMessage == String.Empty
-      //
-      message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
-      wBufLen := (WORD) message:Length
-      IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
-        oError:Description := STRING{message, 0, wBufLen}
-      ENDIF
-    ELSE
-      oError:Description := strMessage
-    ENDIF
     THROW oError
     
     
@@ -116,7 +113,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ACE.AdsSetEpoch((WORD)RuntimeState.Epoch )
     RETURN TRUE
     
-  METHOD _CheckRDDInfo() AS VOID
+  INTERNAL METHOD _CheckRDDInfo() AS VOID
     LOCAL oRet := NULL_OBJECT AS OBJECT
     IF AX_AXSLocking()
       SELF:_LockType := ACE.ADS_PROPRIETARY_LOCKING
@@ -158,7 +155,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     #endregion
     
   #region Open and Close
-  METHOD _FieldSub() AS LOGIC
+  PRIVATE METHOD _FieldSub() AS LOGIC
     LOCAL num AS DWORD
     LOCAL sb AS CHAR[]
     LOCAL wLen AS WORD
@@ -434,7 +431,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
     // Check if a Field definition is correct :
     // Date Length must be 8, Number are long enough to store Dot and Decs (if any), ...
-  PROTECT METHOD _checkFields(info REF RddFieldInfo) AS VOID
+  PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
     // FieldName
     info:Name := info:Name:ToUpper():Trim()
     IF info:Name:Length > 10 
@@ -473,21 +470,11 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         // To be done : Support of Fox Field Types, ....
       info:FieldType := DbFieldType.Unknown
     END SWITCH
-    RETURN
+    RETURN TRUE
     
   VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
     LOCAL isOk AS LOGIC
-    // Check if the FieldName already exists
-    isok := SELF:FieldIndex(info:Name) == 0
-    IF isOk
-      IF SELF:_addFieldPos < SELF:_Fields:Length 
-        SELF:_checkFields( info )
-        SELF:_Fields[ SELF:_addFieldPos++ ] := info:Clone()
-        SELF:_RecordLength += (WORD)info:Length
-      ELSE
-        isOk := FALSE
-      ENDIF
-    ENDIF
+    isOk := SUPER:AddField(info)
     IF isOk  .AND. info:FieldType == DbFieldType.Memo
       SELF:_HasMemo := TRUE
     ENDIF
@@ -720,7 +707,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ENDIF
     RETURN SELF:RecordMovement()
     
-  VIRTUAL METHOD DeleteRecord() AS LOGIC
+  VIRTUAL METHOD Delete() AS LOGIC
     SELF:_CheckError(ACE.AdsDeleteRecord(SELF:_Table))
     RETURN TRUE
     
@@ -1199,13 +1186,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       RETURN TRUE
       
     METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
-      // Todo: Move to workarea later ?
-      // Initialize the Fields array
-      SELF:_Fields := RddFieldInfo[]{ fieldCount }
-      SELF:_addFieldPos := 0
-      SELF:_RecordLength := 1 // 1 for DELETED
       SELF:_HasMemo := FALSE
-      RETURN TRUE
+      RETURN SUPER:SetFieldExtent(fieldCount)
       
       
       /// <inheritdoc />

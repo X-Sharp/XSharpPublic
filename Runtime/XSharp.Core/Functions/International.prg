@@ -293,14 +293,15 @@ FUNCTION NVersion() AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty 
 
- 
+/// <exclude />
 FUNCTION MAKELANGID( p AS WORD, s AS WORD ) AS WORD
 	RETURN (WORD) ( ( s << 10 ) | p )
 
+/// <exclude />
 FUNCTION MAKELCID( lgid AS WORD, srtid AS WORD ) AS DWORD
 	RETURN (DWORD) ( ( ( (DWORD)(srtid) ) << 16) | ( (INT)(DWORD) lgid ) )
 
-
+/// <exclude />
 FUNCTION IsBiDi() AS LOGIC
    RETURN System.Windows.Forms.SystemInformation.MidEastEnabled   
 

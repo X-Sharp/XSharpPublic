@@ -148,12 +148,12 @@ INTERNAL STATIC CLASS TransFormHelpers
             wValueLen := cTempValue:Length
         ENDIF
         IF cFunc:Contains("D")
-            LOCAL aMDY[3,2]	AS ARRAY
-            LOCAL wTemp1	AS DWORD
-            LOCAL wTemp2	AS DWORD
+            LOCAL aMDY[3,2]	AS INT[,]
+            LOCAL wTemp1	AS INT
+            LOCAL wTemp2	AS INT
             LOCAL cDateFormat := "" AS STRING
             LOCAL cDate 	  := "" AS STRING
-            
+            aMDY  := INT[,]{3,2}
             cDateFormat:=GetDateFormat()
             aMDY[1,1] := cDateformat:IndexOf("MM")
             aMDY[1,2] :=2
@@ -269,25 +269,25 @@ INTERNAL STATIC CLASS TransFormHelpers
     STATIC METHOD UnformatL(cValue AS STRING, cSayPicture AS STRING, lNullable AS LOGIC) AS LOGIC PASCAL
         LOCAL cTempValue    := "" AS STRING
         LOCAL cChar         := "" AS STRING
-        LOCAL nValueLen     := 0  AS DWORD
-        LOCAL nValIdx       := 0  AS DWORD
+        LOCAL nValueLen     := 0  AS INT
+        LOCAL nValIdx       := 0  AS INT
         LOCAL cPic          := "" AS STRING
         LOCAL cFunc         := "" AS STRING
         LOCAL lRInsert	    := FALSE AS LOGIC
-        LOCAL nPictureLen	:= 0  AS DWORD
-        LOCAL n, nTemp		:= 0  AS DWORD
+        LOCAL nPictureLen	:= 0  AS INT
+        LOCAL n, nTemp		:= 0  AS INT
         LOCAL lRet          := FALSE AS LOGIC
         
         cTempValue := AllTrim(cValue)
-        nValueLen  := SLen(cTempValue)
+        nValueLen  := cTempValue:Length
         SplitPict(cSayPicture, OUT cPic, REF cFunc)
         lRInsert   := cFunc:Contains("R")
         
         IF Empty(cTempValue) .AND. lNullable
             lRet := .F.
         ELSE
-            LOCAL aTemp AS ARRAY
-            aTemp    := ArrayCreate(5)
+            LOCAL aTemp AS STRING[]
+            aTemp    := STRING[]{5}
             IF Instr("L", cPic) .OR. Instr("L", cFunc)
                 aTemp[1] := "TRUE"
                 aTemp[2] := ".T."
@@ -303,12 +303,12 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
             
             IF cPic == ""
-                nTemp := AScanExact( aTemp, Upper(cTempValue) )
+                nTemp := Array.IndexOf(aTemp,Upper(cTempValue) )+1
                 IF nTemp > 0
                     lRet := .T.
                 ENDIF
             ELSE
-                nPictureLen := SLen(cPic)
+                nPictureLen := cPic:Length
                 IF lRInsert
                     nValIdx := 0
                     FOR n := 1 TO nPictureLen
@@ -316,9 +316,9 @@ INTERNAL STATIC CLASS TransFormHelpers
                         IF nValIdx > nValueLen
                             EXIT
                         ENDIF
-                        IF Instr(SubStr(cPic,n,1),"YL")
-                            cChar := SubStr(cValue,nValIdx,1)
-                            nTemp := AScanExact( aTemp, Upper(cChar) )
+                        IF Instr(cPic:SubString(n-1,1),"YL")
+                            cChar := cValue:SubString(nValIdx-1,1)
+                            nTemp := Array.IndexOf(aTemp, Upper(cChar) )+1
                             IF nTemp > 0
                                 lRet := .T.
                             ENDIF
@@ -326,8 +326,8 @@ INTERNAL STATIC CLASS TransFormHelpers
                         ENDIF
                     NEXT
                 ELSE
-                    cChar := SubStr(cValue,1,1)
-                    nTemp := AScanExact( aTemp, Upper(cChar) )
+                    cChar := cValue:SubString(0,1)
+                    nTemp := Array.IndexOf( aTemp, Upper(cChar) )+1
                     IF nTemp > 0
                         lRet := .T.
                     ENDIF
@@ -638,7 +638,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 IF nValue == 0
                     cReturn := Space(cReturn:Length)
                     
-                ELSEIF lIsFloat .AND. Math.Abs(nValue:Value) < 1.0
+                ELSEIF lIsFloat .AND. Math.Abs( (REAL8) nValue) < 1.0
                     VAR x := cReturn:IndexOf('.')
                     IF x == -1
                         cReturn := Space(cReturn:Length)

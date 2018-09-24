@@ -997,41 +997,14 @@ BEGIN NAMESPACE XSharp.RDD
             // Fields
             // Set the Number of Fields the AddField Method will add
         METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
-            // Initialize the Fields array
-            SELF:_Fields := DbfRddFieldInfo[]{ fieldCount }
-            SELF:_addFieldPos := 0
-            SELF:_RecordLength := 1 // 1 for DELETED
             SELF:_HasMemo := FALSE
-            RETURN TRUE
+            RETURN SUPER:SetFieldExtent(fieldCount)
 
             // Add a Field to the _Fields List. Fields are added in the order of method call
         METHOD AddField(info AS RddFieldInfo) AS LOGIC
             LOCAL isOk AS LOGIC
             // Check if the FieldName does already exist
-            isok := TRUE
-            LOCAL nStart AS INT
-            nStart := 1
-            IF __ARRAYBASE__ == 0
-                nStart -= 1
-            ENDIF
-            FOR VAR i := nStart TO SELF:_Fields:Length - ( 1 - nStart )
-                //
-                IF ( SELF:_Fields[i] != NULL )
-                    isOk := ( String.Compare( info:Name, SELF:_Fields[i]:Name, TRUE ) != 0 )
-                    IF !isOk
-                        EXIT
-                    ENDIF
-                ENDIF
-            NEXT
-            IF isOk
-                IF ( SELF:_addFieldPos < SELF:_Fields:Length )
-                    SELF:_checkFields( info )
-                    SELF:_Fields[ SELF:_addFieldPos++ ] := DbfRddFieldInfo{ info:Name, info:FieldType, info:Length, info:Decimals }
-                    SELF:_RecordLength += (WORD)info:Length
-                ELSE
-                    isOk := FALSE
-                ENDIF
-            ENDIF
+            isok := SUPER:AddField(info)
             IF ( isOk ) .AND. info:FieldType == DbFieldType.Memo
                 SELF:_HasMemo := TRUE
             ENDIF
@@ -1039,7 +1012,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             // Check if a Field definition is correct :
             // Date Length must be 8, Number are long enough to store Dot anf Decs (if any), ...
-        PROTECT METHOD _checkFields(info REF RddFieldInfo) AS VOID
+        PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
             // FieldName
             info:Name := info:Name:ToUpper():Trim()
             IF ( info:Name:Length > 10 )
@@ -1078,48 +1051,15 @@ BEGIN NAMESPACE XSharp.RDD
                     // To be done : Support of Fox Field Types, ....
                     info:FieldType := DbFieldType.Unknown
             END SWITCH
-            RETURN
+            RETURN TRUE
 
             // Add the list of Fields ot the DBF, by calling SetFieldExtent and AddField
         METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
-            // Ok, this will set the Fields for the current object
-            // But what if the file is ALREADY opened ????
-            LOCAL fieldCount AS LONG
-            LOCAL isOk := FALSE AS LOGIC
-            fieldCount := aFields:Length
-            IF ( fieldCount > 0 )
-                isOk := SELF:SetFieldExtent( fieldCount )
-                IF isOk
-                    LOCAL nStart AS INT
-                    nStart := 1
-                    IF __ARRAYBASE__ == 0
-                        nStart -= 1
-                    ENDIF
-                    FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
-                        //
-                        isOk := SELF:AddField( aFields[i] )
-                        IF !isOk
-                            EXIT
-                        ENDIF
-                    NEXT
-                ENDIF
-            ENDIF
-            RETURN isOk
-
+            RETURN SUPER:CreateFields(aFields)
+            
             /// <inheritdoc />
         METHOD FieldIndex(fieldName AS STRING) AS LONG
-            IF ( SELF:_hFile != F_ERROR )
-                LOCAL i AS LONG
-                // FieldIndex is One-Based
-                i := 1
-                FOREACH VAR fld IN SELF:_Fields
-                    IF ( String.Compare( fld:Name, fieldName, TRUE )==0 )
-                        RETURN i
-                    ENDIF
-                    i++
-                NEXT
-            ENDIF
-            RETURN 0
+            RETURN SUPER:FieldIndex(fieldName)
 
             /// <inheritdoc />
         METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
@@ -1133,16 +1073,16 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 //
                 SWITCH nOrdinal
-                    CASE DbFieldInfo.DBS_NAME
-                        oResult := SELF:_Fields[nArrPos]:Name
-                    CASE DbFieldInfo.DBS_LEN
-                        oResult := SELF:_Fields[nArrPos]:Length
-                    CASE DbFieldInfo.DBS_DEC
-                        oResult := SELF:_Fields[nArrPos]:Decimals
-                    CASE DbFieldInfo.DBS_TYPE
-                        oResult := SELF:_Fields[nArrPos]:FieldType:ToString():Substring(0,1)
-                    CASE DbFieldInfo.DBS_ALIAS
-                        oResult := SELF:_Fields[nArrPos]:Alias
+                CASE DbFieldInfo.DBS_NAME
+                    oResult := SELF:_Fields[nArrPos]:Name
+                CASE DbFieldInfo.DBS_LEN
+                    oResult := SELF:_Fields[nArrPos]:Length
+                CASE DbFieldInfo.DBS_DEC
+                    oResult := SELF:_Fields[nArrPos]:Decimals
+                CASE DbFieldInfo.DBS_TYPE
+                    oResult := SELF:_Fields[nArrPos]:FieldType:ToString():Substring(0,1)
+                CASE DbFieldInfo.DBS_ALIAS
+                    oResult := SELF:_Fields[nArrPos]:Alias
 
                     CASE DbFieldInfo.DBS_ISNULL
                 CASE DbFieldInfo.DBS_COUNTER
@@ -2644,7 +2584,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SUPER( sName, nType, nLength, nDecimals )
                 SELF:iOffset := -1
 
-            VIRTUAL PROPERTY Offset AS LONG
+            PROPERTY Offset AS LONG
             GET
                 RETURN SELF:iOffset
             END GET

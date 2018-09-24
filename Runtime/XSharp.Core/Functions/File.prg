@@ -1029,9 +1029,7 @@ FUNCTION String2Bytes(sSource AS STRING) AS BYTE[]
 
 
 
-
-
-FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
+INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 	// determine end of line
 	// note that VO looks for CR LF. CR alone or LF alone to not count as end of line
 	LOCAL nLF AS INT

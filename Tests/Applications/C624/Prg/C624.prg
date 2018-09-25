@@ -16,7 +16,7 @@ INTERFACE ITestInterface
 	METHOD Test2() AS VOID STRICT
 END INTERFACE
 
-CLASS TestClass
+CLASS TestClass    IMPLEMENTS ITestInterface
 	METHOD Test1() AS VOID STRICT
 	METHOD Test2() AS VOID CLIPPER
 END CLASS
@@ -32,7 +32,7 @@ FUNCTION Start() AS VOID STRICT
 CLASS Parent IMPLEMENTS IProvider
 //  METHOD CreateDAO() AS VOID CLIPPER // causes the same problem, without /vo5 enabled
 //  METHOD CreateDAO() AS VOID STRICT // works correctly
-    METHOD CreateDAO() AS VOID
+    METHOD CreateDAO() AS VOID 
     	? "test"
     RETURN
 END CLASS

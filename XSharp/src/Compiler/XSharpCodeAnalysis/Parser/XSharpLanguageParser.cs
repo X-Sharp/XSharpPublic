@@ -903,10 +903,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // add the usings when they are not in the list yet
             foreach (var u in tmpUsings)
             {
-                if (u.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
-                    trans.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, true);
-                else
-                    trans.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, false);
+                var green = u.Green as UsingDirectiveSyntax;
+                trans.AddUsingWhenMissing(usingslist, green.Name, green.StaticKeyword != null, green.Alias);
             }
 
             // For each unique name add a property

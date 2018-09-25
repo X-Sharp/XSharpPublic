@@ -1418,17 +1418,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, NameSyntax usingName, bool bStatic)
+        protected internal void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, NameSyntax usingName, bool bStatic, NameEqualsSyntax alias )
         {
             bool found = false;
+
             for (int i = 0; i < usings.Count; i++)
             {
-                if (CaseInsensitiveComparison.Compare(usings[i].Name.ToString(), usingName.ToString()) == 0)
+                UsingDirectiveSyntax u = usings[i];
+                if (alias != null) 
+                {
+                    // match alias AND name
+                    if (u.Alias != null && CaseInsensitiveComparison.Compare(u.Alias.Name.ToString(), alias.Name.ToString()) == 0
+                        && CaseInsensitiveComparison.Compare(u.Name.ToString(), usingName.ToString()) == 0)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                }
+                else if (CaseInsensitiveComparison.Compare(u.Name.ToString(), usingName.ToString()) == 0)
                 {
                     found = true;
                     break;
                 }
             }
+            
             if (!found)
             {
                 SyntaxToken tokenStatic = null;
@@ -1437,16 +1451,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                     tokenStatic,
-                    null,
+                    alias,
                     usingName,
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
 
         }
-        protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, string name, bool bStatic)
+        protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, string name, bool bStatic, NameEqualsSyntax alias )
         {
             NameSyntax usingName = GenerateQualifiedName(name);
-            AddUsingWhenMissing(usings, usingName, bStatic);
+            AddUsingWhenMissing(usings, usingName, bStatic,alias);
         }
 
         protected NamespaceDeclarationSyntax GenerateNamespace(string name, SyntaxList<MemberDeclarationSyntax> members)
@@ -2159,10 +2173,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
 
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true,null);
 
             // Add: using System
-            AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
+            AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
         }
 
         public override void ExitScriptEntity([NotNull] XP.ScriptEntityContext context)
@@ -2180,9 +2194,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
                 else if (s is UsingDirectiveSyntax)
                 {
-                    NameSyntax ns = (s as UsingDirectiveSyntax).Name;
-                    bool bStatic = (s as UsingDirectiveSyntax).StaticKeyword != null;
-                    AddUsingWhenMissing(GlobalEntities.Usings, ns, bStatic);
+                    var u = s as UsingDirectiveSyntax;
+                    AddUsingWhenMissing(GlobalEntities.Usings, u.Name, u.StaticKeyword != null, u.Alias);
                 }
                 else if (s is AttributeListSyntax)
                 {
@@ -2287,10 +2300,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
 
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true, null);
 
             // Add: using System
-            AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
+            AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
         }
 
         public override void EnterSource([NotNull] XP.SourceContext context)
@@ -2317,9 +2330,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     globalTypes.Add(s as MemberDeclarationSyntax);
                 else if (s is UsingDirectiveSyntax)
                 {
-                    NameSyntax ns = (s as UsingDirectiveSyntax).Name;
-                    bool bStatic = (s as UsingDirectiveSyntax).StaticKeyword != null;
-                    AddUsingWhenMissing(GlobalEntities.Usings, ns, bStatic);
+                    var u = s as UsingDirectiveSyntax;
+                    AddUsingWhenMissing(GlobalEntities.Usings, u.Name, u.StaticKeyword != null, u.Alias);
                 }
                 else if (s is AttributeListSyntax)
                     GlobalEntities.Attributes.Add(s as AttributeListSyntax);
@@ -2347,7 +2359,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
 
-                AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false);
+                AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false, null);
             }
             else
             {
@@ -2355,10 +2367,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _pool.Free(globalTypes);
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true, null);
 
             // Add: using System
-            AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
+            AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
             //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
         }
         private string RemoveUnwantedCharacters(string input)
@@ -2379,7 +2391,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (GlobalEntities.GlobalClassMembers.Count > 0)
             {
-                AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
+                AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true, null);
                 GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, GlobalEntities.GlobalClassMembers));
                 GlobalEntities.GlobalClassMembers.Clear();
 
@@ -2390,7 +2402,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = RemoveUnwantedCharacters(filename);
                 string className = GlobalClassName + "$" + filename + "$";
-                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
+                AddUsingWhenMissing(GlobalEntities.Usings, className, true, null);
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();
             }
@@ -2456,7 +2468,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     break;
             }
-            AddUsingWhenMissing(GlobalEntities.Usings, ourname, false);
+            AddUsingWhenMissing(GlobalEntities.Usings, ourname, false, null);
         }
 
         public override void ExitEntity([NotNull] XP.EntityContext context)
@@ -4567,10 +4579,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XP.CLIPPER:
                 case XP.STRICT:
+                case XP.ASPEN:
                     conv = SystemQualifiedNames.Cdecl;
                     break;
                 case XP.PASCAL:
-                    conv = ""; // "global::System.Runtime.InteropServices.CallingConvention.StdCall";
+                case XP.WINCALL:
+                case XP.CALLBACK:
+                    conv = null; // set no attribute at all.
                     break;
                 case XP.THISCALL:
                     conv = SystemQualifiedNames.ThisCall; ;

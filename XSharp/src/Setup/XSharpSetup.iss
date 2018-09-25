@@ -17,7 +17,7 @@
 #define Version             "2.0.0.6"
 #define FileNameVersion     "2Beta6"
 #define VIVersion           "2.0.0.6"
-#define TouchDate           "2018-09-11"
+#define TouchDate           "2018-09-24"
 #define TouchTime           "02:00:06"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
@@ -342,6 +342,7 @@ Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide"; 
 
 ; Runtime in the GAC
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Rdd{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
@@ -349,12 +350,14 @@ Components: main\gac;  Source: "{#BinFolder}XSharp.Scripting.dll";              
 
 ; Runtime
 Components: not main\gac; Source: "{#BinRtFolder}XSharp.Core.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinRtFolder}XSharp.Rdd.dll";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: not main\gac; Source: "{#BinRtFolder}XSharp.VO.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: not main\gac; Source: "{#BinFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: not main\gac; Source: "{#BinFolder}XSharp.CodeAnalysis.dll";           DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 Components: not main\gac; Source: "{#BinFolder}XSharp.Scripting.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 
 Source: "{#BinRtFolder}XSharp.Core.pdb";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.Rdd.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 Source: "{#BinRtFolder}XSharp.VO.pdb";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 ; Macro compiler
 Source: "{#BinFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
@@ -367,6 +370,8 @@ Source: "{#BinFolder}System.Valuetuple.dll";                DestDir: "{app}\Redi
 #ifdef FOX
 Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
 Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
+Source: "{#BinRtDFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtDFolder}XSharp.Rdd.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
 Source: "{#BinRtDFolder}XSharp.VO.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
 Source: "{#BinRtDFolder}XSharp.VO.pdb";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
 Source: "{#BinDFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
@@ -379,6 +384,8 @@ Source: "{#BinDFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Deb
 ; Assemblies for Add References Dialog
 Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
 Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
+; Is the RDD dll needed for Add reference ? Maybe for the Ax functions from Advantage.
+Source: "{#BinRtFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
 
 Source: "{#BinPFolder}SetupCheck2017.exe";          DestDir: "{tmp}";      Flags: signonce {#StdFlags};
 

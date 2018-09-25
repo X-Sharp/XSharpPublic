@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>?, ??</title>
   <body>
     <header>
@@ -9,8 +9,6 @@
     <para styleclass="Normal">The ? and ?? statements allow to write information to the system console.</para>
     <para styleclass="Normal">The syntax for these statements is</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">qoutstmt &#160;: &#160; </text><text style="font-weight:bold; font-style:normal; color:#000000;">?</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (</text><text style="font-weight:bold; font-style:normal; color:#000000;">?</text><text style="font-weight:normal; font-style:normal; color:#000000;">)? expression (, expression)* </text><br/><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">qoutstmt &#160;: &#160; </text><text style="font-weight:bold; font-style:normal; color:#000000;">?</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (</text><text style="font-weight:bold; font-style:normal; color:#000000;">?</text><text style="font-weight:normal; font-style:normal; color:#000000;">)? expression (, expression)* </text><br/></para>
   </body>
 </topic>

@@ -121,7 +121,7 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
                         T=(FUNCTION|FUNC)   Id=identifier ParamList=parameterList (AS Type=datatype)? |
                         T=(PROCEDURE|PROC)  Id=identifier ParamList=parameterList
                       )
-                      (CallingConvention=dllcallconv) COLON
+                      (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                       (	Ordinal=REAL_CONST 
                        |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)? 

@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">BREAK</para>
     </header>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">breakstmt &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">BREAK</text><text style="font-weight:normal; font-style:normal; color:#000000;"> expression? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">breakstmt &#160; </text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">: </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">BREAK</text><text style="font-weight:normal; font-style:normal; color:#000000;"> expression? </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/></para>
   </body>
 </topic>

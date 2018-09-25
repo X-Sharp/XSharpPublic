@@ -813,6 +813,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Symbol currTypeExplicitImpl = currType.GetExplicitImplementationForInterfaceMember(interfaceMember);
                 if ((object)currTypeExplicitImpl != null)
                 {
+#if XSHARP
+                    if (interfaceMember.HasClipperCallingConvention() != currTypeExplicitImpl.HasClipperCallingConvention())
+                    {
+                        diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, currTypeExplicitImpl.Locations[0], interfaceMember, currTypeExplicitImpl, implementingType);
+                    }
+#endif
                     return currTypeExplicitImpl;
                 }
 
@@ -839,9 +845,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         currType,
                         out currTypeImplicitImpl,
                         out currTypeCloseMismatch);
-
                     if ((object)currTypeImplicitImpl != null)
                     {
+#if XSHARP
+                        if (interfaceMember.HasClipperCallingConvention() != currTypeImplicitImpl.HasClipperCallingConvention())
+                        {
+                            diagnostics.Add(ErrorCode.ERR_InterfaceImplementationDifferentCallingConvention, currTypeImplicitImpl.Locations[0], interfaceMember, currTypeImplicitImpl, implementingType);
+                        }
+#endif
                         implicitImpl = currTypeImplicitImpl;
                         break;
                     }

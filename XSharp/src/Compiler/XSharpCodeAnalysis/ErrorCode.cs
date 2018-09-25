@@ -1574,6 +1574,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_AssgReadonlyLocalCause = 9064,
         WRN_AssignmentOperatorExpected = 9065,
         WRN_FunctionsTakePrecedenceOverMethods = 9066,
+        ERR_InterfaceImplementationDifferentCallingConvention = 9067,
         #endregion X#-only messages
     }
 }

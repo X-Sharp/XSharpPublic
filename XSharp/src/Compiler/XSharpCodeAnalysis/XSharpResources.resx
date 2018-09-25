@@ -5265,4 +5265,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_PreProcessorNoPragma" xml:space="preserve">
     <value>#pragma directive is not (yet) supported, directive is ignored</value>
   </data>
+  <data name="ERR_InterfaceImplementationDifferentCallingConvention" xml:space="preserve">
+    <value>Interface method {0} and implementation {1} have different calling conventions.</value>
+  </data>
+
+
 </root>

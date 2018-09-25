@@ -5498,6 +5498,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Interface method {0} and implementation {1} have different calling conventions..
+        /// </summary>
+        internal static string ERR_InterfaceImplementationDifferentCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_InterfaceImplementationDifferentCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Conditional member &apos;{0}&apos; cannot implement interface member &apos;{1}&apos; in type &apos;{2}&apos;.
         /// </summary>
         internal static string ERR_InterfaceImplementedByConditional {
@@ -13974,7 +13983,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #pragma not (yet) supported, command is ignored.
+        ///   Looks up a localized string similar to #pragma directive is not (yet) supported, directive is ignored.
         /// </summary>
         internal static string WRN_PreProcessorNoPragma {
             get {

@@ -15,6 +15,6 @@
     <para styleclass="Normal">This warning is generated for VAR statements that use a single equals operator in stead of the assignment operator.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><br/>FUNCTION Start as VOID<br/>VAR x = SomeFunction()<br/>? x<br/>RETURN<br/></para>
+    <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> x = SomeFunction()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? x</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text></para>
   </body>
 </topic>

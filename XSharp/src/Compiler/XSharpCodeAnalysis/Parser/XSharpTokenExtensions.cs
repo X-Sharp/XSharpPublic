@@ -1524,9 +1524,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             if (!list.Any((int)SyntaxKind.VirtualKeyword))
             {
-                var token = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword);
-                token.XGenerated = true;
-                list.Add(token);
+                list.Add(makeGeneratedToken(SyntaxKind.VirtualKeyword));
             }
                 
             if (list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword))

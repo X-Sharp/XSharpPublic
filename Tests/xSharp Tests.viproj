@@ -62973,8 +62973,8 @@ FileGUID = 90EA0C80-94BD-4B8A-A2E9-56F455F24DE3
 FileType = Code
 [C620 - Problem resloving method with both instance and static overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.5
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.5
+ReferenceGAC = XSharp.Core,1,0,2.0.0.5
+ReferenceGAC = XSharp.VO,1,0,2.0.0.5
 [C620 - Problem resloving method with both instance and static overloads Resources]
 [C620 - Problem resloving method with both instance and static overloads Native Resources]
 [C620 - Problem resloving method with both instance and static overloads License files]
@@ -63139,7 +63139,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Core
@@ -63229,7 +63229,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C622 - Syntax for initializing multi-dim array
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C623 - Incorrect syntax in LOCAL with generic arguments crasshes the compiler *************
 Application = C623 - Incorrect syntax in LOCAL with generic arguments crasshes the compiler
 IDEVersion = 1.06
@@ -63327,7 +63327,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C623 - Incorrect syntax in LOCAL with generic arguments crasshes the compiler
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C624 - No compiler error on implementing interface with wrong calling convention *************
 Application = C624 - No compiler error on implementing interface with wrong calling convention
 IDEVersion = 1.06
@@ -63428,7 +63428,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C624 - No compiler error on implementing interface with wrong calling convention
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C624_helper *************
 Application = C624_helper
 IDEVersion = 1.06
@@ -63528,7 +63528,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C624_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C625 - Namespace aliases not working *************
 Application = C625 - Namespace aliases not working
 IDEVersion = 1.06
@@ -63626,7 +63626,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C625 - Namespace aliases not working
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C626 *************
 Application = C626
 IDEVersion = 1.06
@@ -63637,7 +63637,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = None
+Dialect = Core
 Folder = %ProjectPath%\Applications\C626\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 

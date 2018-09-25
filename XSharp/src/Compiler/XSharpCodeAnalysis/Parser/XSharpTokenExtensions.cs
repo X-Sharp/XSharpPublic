@@ -1490,7 +1490,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 list.Add(t);
             }
         }
+        internal static XNodeFlags SetFlag(this XNodeFlags oldFlag, XNodeFlags newFlag, bool set)
+        {
+            if (set)
+                oldFlag |= newFlag;
+            else
+                oldFlag &= ~newFlag;
+            return oldFlag;
+        }
 
+        private static SyntaxToken makeGeneratedToken(SyntaxKind kind)
+        {
+            var token = SyntaxFactory.MakeToken(kind);
+            token.XGenerated = true;
+            return token;
+        }
         public static void FixDefaultVisibility(this SyntaxListBuilder list)
         {
             for (int i = 0; i < list.Count; i++) {
@@ -1498,7 +1512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (SyntaxFacts.IsAccessibilityModifier((SyntaxKind)item.RawKind))
                     return;
             }
-            list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+            list.Add(makeGeneratedToken(SyntaxKind.PublicKeyword));
         }
 
         public static void FixDefaultVirtual(this SyntaxListBuilder list)
@@ -1509,11 +1523,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 list.Any((int)SyntaxKind.PrivateKeyword))
                 return;
             if (!list.Any((int)SyntaxKind.VirtualKeyword))
-                list.Add(SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword));
+            {
+                var token = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword);
+                token.XGenerated = true;
+                list.Add(token);
+            }
+                
             if (list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword))
                 return;
             if (!list.Any((int)SyntaxKind.OverrideKeyword))
-                list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
+            {
+                list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
+            }
         }
 
         public static void FixDefaultMethod(this SyntaxListBuilder list)
@@ -1522,7 +1543,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;*/
             if (list.Any((int)SyntaxKind.StaticKeyword) || list.Any((int)SyntaxKind.ExternKeyword) || list.Any((int)SyntaxKind.OverrideKeyword) || list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword) || list.Any((int)SyntaxKind.PrivateKeyword))
                 return;
-            list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
+            list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
         }
 
         public static int GetVisibilityLevel(this SyntaxListBuilder list)

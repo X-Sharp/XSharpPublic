@@ -49,6 +49,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XPCall = 1 << 2,
         XGenerated = 1 << 3,
         XVoIsDim = 1 << 4,
+        XPragmas = 1 << 5,
+        XDocComments = 1 << 6,
+        XNeedsProcessing = 1 << 7,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -58,42 +61,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public bool XVoDecl
         {
             get { return xflags.HasFlag(XNodeFlags.XVodecl); }
-            set { if (value) xflags |= XNodeFlags.XVodecl; else xflags &= ~XNodeFlags.XVodecl; }
+            set { xflags = xflags.SetFlag(XNodeFlags.XVodecl, value); }
         }
 
         public bool XVoIsDecl
         {
             get { return xflags.HasFlag(XNodeFlags.XVoIsDecl); }
-            set { if (value) xflags |= XNodeFlags.XVoIsDecl; else xflags &= ~XNodeFlags.XVoIsDecl; }
+            set { xflags = xflags.SetFlag(XNodeFlags.XVoIsDecl, value); }
         }
         public bool XPCall
         {
             get { return xflags.HasFlag(XNodeFlags.XPCall); }
-            set { if (value) xflags |= XNodeFlags.XPCall; else xflags &= ~XNodeFlags.XPCall; }
+            set { xflags = xflags.SetFlag(XNodeFlags.XPCall, value); }
         }
         public bool XGenerated
         {
             get { return xflags.HasFlag(XNodeFlags.XGenerated); }
-            set { if (value) xflags |= XNodeFlags.XGenerated; else xflags &= ~XNodeFlags.XGenerated; }
+            set { xflags = xflags.SetFlag(XNodeFlags.XGenerated, value); }
         }
         public bool XVoIsDim
         {
             get { return xflags.HasFlag(XNodeFlags.XVoIsDim); }
-            set { if (value) xflags |= XNodeFlags.XVoIsDim; else xflags &= ~XNodeFlags.XVoIsDim; }
+            set { xflags = xflags.SetFlag(XNodeFlags.XVoIsDim, value); }
         }
     }
 
     internal sealed partial class CompilationUnitSyntax
     {
+        private XNodeFlags xflags = XNodeFlags.None;
         public Dictionary<string, SourceText> IncludedFiles { get; internal set; } = new Dictionary<string, SourceText>();
         public ITokenStream XTokens { get; internal set; } = default(ITokenStream);
         public ITokenStream XPPTokens { get; internal set; } = default(ITokenStream);
         public IList<Tuple<int, string>> InitProcedures { get; internal set; } = new List<Tuple<int, string>>();
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
-        public bool HasPCall { get; internal set; } = false;
-        public bool NeedsProcessing { get; internal set; } = false;
-        public bool HasDocComments { get; internal set; } = false;
-        public bool HasPragmas { get; internal set; } = false;
+        public bool HasPCall
+        {
+             get { return xflags.HasFlag(XNodeFlags.XPCall); }
+            internal set { xflags = xflags.SetFlag(XNodeFlags.XPCall, value); }
+        }
+
+        public bool NeedsProcessing
+        {
+            get { return xflags.HasFlag(XNodeFlags.XNeedsProcessing); }
+            internal set { xflags = xflags = xflags.SetFlag(XNodeFlags.XNeedsProcessing, value); }
+        }
+
+        public bool HasDocComments
+        {
+            get { return xflags.HasFlag(XNodeFlags.XDocComments); }
+            internal set { xflags = xflags.SetFlag(XNodeFlags.XDocComments, value); }
+        }
+
+        public bool HasPragmas
+        {
+            get { return xflags.HasFlag(XNodeFlags.XPragmas); }
+            internal set { xflags = xflags.SetFlag(XNodeFlags.XPragmas, value); }
+        }
         public XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
         public Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
     }

@@ -672,14 +672,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
                     {
-                        Debug.Assert(isError); // Should have been reported by GetSymbolOrMethodOrPropertyGroup.
+                        diagnostics.Add(ErrorCode.ERR_InvalidExprTerm, node.Location, node.XNode.GetText());
                         expression = new BoundBadExpression(
                             syntax: node,
                             resultKind: LookupResultKind.WrongArity,
                             symbols: ImmutableArray.Create<Symbol>(symbol),
                             childBoundNodes: ImmutableArray.Create<BoundNode>(expression),
                             type: expression.Type,
-                            hasErrors: isError);
+                            hasErrors: true);
                     }
                 }
 

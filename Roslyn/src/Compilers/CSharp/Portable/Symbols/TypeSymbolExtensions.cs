@@ -1330,7 +1330,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal static bool IsCustomTaskType(this NamedTypeSymbol type, out object builderArgument)
         {
             Debug.Assert((object)type != null);
-            Debug.Assert(type.SpecialType != SpecialType.System_Void);
+            //Debug.Assert(type.SpecialType != SpecialType.System_Void);
 
             var arity = type.Arity;
             if (arity < 2)

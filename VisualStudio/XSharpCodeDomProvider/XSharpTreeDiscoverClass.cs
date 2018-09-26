@@ -934,7 +934,7 @@ namespace XSharp.CodeDom
                     if (mi.Count == 0)
                     {
                         // Member not found !? MayBe in the parent, which can be a System.Type
-                        txtype = findTypeXType(xtype.ParentName);
+                        txtype = findParentType(xtype);
                         continue;
                     }
                     //

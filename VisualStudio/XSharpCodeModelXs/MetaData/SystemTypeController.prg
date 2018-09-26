@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Concurrent
@@ -20,10 +20,10 @@ BEGIN NAMESPACE XSharpModel
 		#endregion
 
 		STATIC CONSTRUCTOR
-			assemblies := ConcurrentDictionary<STRING, AssemblyInfo>{StringComparer.OrdinalIgnoreCase} 
-			_mscorlib := null 
-			RETURN 
-			
+			assemblies := ConcurrentDictionary<STRING, AssemblyInfo>{StringComparer.OrdinalIgnoreCase}
+			_mscorlib := NULL
+			RETURN
+
 		#region properties
 		// Properties
 		STATIC PROPERTY AssemblyFileNames AS ImmutableList<STRING>
@@ -37,14 +37,14 @@ BEGIN NAMESPACE XSharpModel
 		// Methods
 		STATIC METHOD Clear() AS VOID
 			assemblies:Clear()
-			_mscorlib := null
-		
+			_mscorlib := NULL
+
 		STATIC METHOD FindAssemblyByLocation(location AS STRING) AS STRING
 			IF assemblies:ContainsKey(location)
 				RETURN assemblies:Item[location]:FullName
 			ENDIF
-			RETURN null
-		
+			RETURN NULL
+
 		STATIC METHOD FindAssemblyByName(fullName AS STRING) AS STRING
 			FOREACH VAR item IN assemblies
 				VAR asm := item:Value
@@ -52,8 +52,8 @@ BEGIN NAMESPACE XSharpModel
 					RETURN asm:FullName
 				ENDIF
 			NEXT
-			RETURN null
-		
+			RETURN NULL
+
 		STATIC METHOD FindAssemblyLocation(fullName AS STRING) AS STRING
 			LOCAL info AS AssemblyInfo
 			FOREACH VAR pair IN assemblies
@@ -62,8 +62,8 @@ BEGIN NAMESPACE XSharpModel
 					RETURN pair:Key
 				ENDIF
 			NEXT
-			RETURN null
-		
+			RETURN NULL
+
 		METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS System.Type
 			LOCAL result := NULL AS System.Type
 			TRY
@@ -89,24 +89,24 @@ BEGIN NAMESPACE XSharpModel
 					ENDIF
 				ENDIF
 				result := Lookup(typeName, assemblies)
-				IF result != null
+				IF result != NULL
 					RETURN result
 				ENDIF
-				IF usings != null
+				IF usings != NULL
 					FOREACH name AS STRING IN usings:Expanded()
 						result := Lookup(name + "." + typeName, assemblies)
-						IF result != null
+						IF result != NULL
 							RETURN result
 						ENDIF
 					NEXT
 				ENDIF
-				IF assemblies != null
+				IF assemblies != NULL
 					FOREACH VAR asm IN assemblies
-						IF asm:ImplicitNamespaces != null
+						IF asm:ImplicitNamespaces != NULL
 							FOREACH strNs AS STRING IN asm:ImplicitNamespaces
 								VAR fullname := strNs + "." + typeName
 								result := Lookup(fullName, assemblies)
-								IF result != null
+								IF result != NULL
 									RETURN result
 								ENDIF
 							NEXT
@@ -116,10 +116,10 @@ BEGIN NAMESPACE XSharpModel
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
 			FINALLY
-				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != null, result:FullName, "* not found *"))
+				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != NULL, result:FullName, "* not found *"))
 			END TRY
 			RETURN result
-		
+
 		METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS ImmutableList<STRING>
 			VAR list := List<STRING>{}
 			FOREACH VAR info IN assemblies
@@ -128,7 +128,7 @@ BEGIN NAMESPACE XSharpModel
 				NEXT
 			NEXT
 			RETURN list:ToImmutableList()
-		
+
 		STATIC METHOD LoadAssembly(cFileName AS STRING) AS AssemblyInfo
 			LOCAL info AS AssemblyInfo
 			LOCAL lastWriteTime AS System.DateTime
@@ -155,7 +155,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			RETURN info
-		
+
 		STATIC METHOD LoadAssembly(reference AS VsLangProj.Reference) AS AssemblyInfo
 			LOCAL path AS STRING
 			path := reference:Path
@@ -166,38 +166,38 @@ BEGIN NAMESPACE XSharpModel
 			VAR asm := LoadAssembly(path)
 			WriteOutputMessage(">>-- LoadAssembly(VsLangProj.Reference)")
 			RETURN asm
-		
+
 		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS System.Type
 			LOCAL sType AS System.Type
-			sType := null
+			sType := NULL
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
-				IF assembly:Types:TryGetValue(typeName, OUT sType) .and. sType != NULL
+				IF assembly:Types:TryGetValue(typeName, OUT sType) .AND. sType != NULL
 					EXIT
 				ENDIF
 				sType := assembly:GetType(typeName)
-				IF sType != null
+				IF sType != NULL
 					EXIT
 				ENDIF
 			NEXT
-			IF sType == null .AND. mscorlib != null
-                // check mscorlib 
+			IF sType == NULL .AND. mscorlib != NULL
+                // check mscorlib
 				sType := mscorlib:GetType(typeName)
 			ENDIF
 			RETURN sType
-		
+
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
 			LOCAL info AS AssemblyInfo
 			IF assemblies:ContainsKey(cFileName)
 				assemblies:TryRemove(cFileName, OUT info)
 			ENDIF
-		
+
 		STATIC METHOD UnloadUnusedAssemblies() AS VOID
 			LOCAL unused AS List<STRING>
 			unused := List<STRING>{}
             // collect list of assemblies which are no longer in use
 			FOREACH VAR asm IN assemblies
-				IF ! asm:Value:HasProjects 
+				IF ! asm:Value:HasProjects
 					unused:Add(asm:Key)
 				ENDIF
 			NEXT
@@ -207,12 +207,12 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
             // when no assemblies left, then unload mscorlib
 			IF assemblies:Count == 0
-				mscorlib := null
+				mscorlib := NULL
 			ENDIF
 			GC.Collect()
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 	END CLASS
-	
-END NAMESPACE 
+
+END NAMESPACE
 

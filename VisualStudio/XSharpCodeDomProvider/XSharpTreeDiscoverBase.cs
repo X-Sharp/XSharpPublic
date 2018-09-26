@@ -714,7 +714,7 @@ namespace XSharp.CodeDom
             {
                 var xtype = _projectNode.ResolveXType(name, _usings.ToImmutableArray());
                 if (xtype != null)
-                    return new XCodeTypeReference(xtype.FullName);
+                    return new XCodeTypeReference(xtype);
                 else
                     return new XCodeTypeReference(name);
             }
@@ -736,11 +736,15 @@ namespace XSharp.CodeDom
 
         }
 
-        protected XType findXType(string typeName)
+        protected XType findXType(string typeName, IList<string> usings = null)
         {
             if (_xtypes.ContainsKey(typeName))
                 return _xtypes[typeName];
-            var type = _projectNode.ResolveXType(typeName, _usings.ToImmutableArray());
+            if (usings == null)
+            {
+                usings = _usings;
+            }
+            var type = _projectNode.ResolveXType(typeName, usings.ToImmutableArray());
             if (type != null)
                 _xtypes.Add(typeName, type);
             return type;
@@ -755,22 +759,22 @@ namespace XSharp.CodeDom
             var type = _projectNode.ResolveReferencedType(typeName, _usings.ToImmutableArray());
             //
             if (type != null)
+            {
                 _xtypes.Add(typeName, type);
+            }
             return type;
         }
+        protected TypeXType findParentType(XType xtype)
+        {
+            var xparent = findXType(xtype.ParentName, xtype.FileUsings);
+            if (xparent != null)
+                return new TypeXType(xparent);
+            var parent  = _projectNode.ResolveType(xtype.ParentName, xtype.FileUsings.ToImmutableArray());
+            if (parent != null)
+                return new TypeXType(parent);
+            return null;
 
-        //protected EnvDTE.CodeElement findStrangerType(string typeName)
-        //{
-        //    if (_stypes.ContainsKey(typeName))
-        //    {
-        //        return _stypes[typeName];
-        //    }
-        //    var type = _projectNode.ResolveStrangerType(typeName, _usings.ToImmutableArray());
-        //    //
-        //    if (type != null)
-        //        _stypes.Add(typeName, type);
-        //    return type;
-        //}
+        }
 
         protected TypeXType findTypeXType(string typeName)
         {

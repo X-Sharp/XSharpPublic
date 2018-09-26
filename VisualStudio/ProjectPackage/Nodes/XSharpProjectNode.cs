@@ -1300,6 +1300,16 @@ namespace XSharp.Project
             base.RemoveURL(url);
         }
 
+        public override int ReopenItem(uint itemId, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame frame)
+        {
+            frame = null;
+            // suppress opening winforms in design mode when the file walk is not ready
+            // because the type lookup will not work then
+            if (physicalView == "Design" && !projectModel.FileWalkCompleted)
+                return VSConstants.E_FAIL;
+            return base.ReopenItem(itemId, ref editorType, physicalView, ref logicalView, docDataExisting, out frame);
+        }
+
 
         /// <summary>
         /// Check if fullpath points to a XSharp Project file.

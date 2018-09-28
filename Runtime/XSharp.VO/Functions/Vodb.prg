@@ -38,10 +38,21 @@ FUNCTION VODBAliasSym(nArea AS DWORD) AS SYMBOL
 FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL result AS LOGIC
-    result := _VODBBlobInfo(nOrdinal, nPos, REF oRet)
+    result := XSharp.Core.Functions.VODBBlobInfo(nOrdinal, nPos, REF oRet)
     ptrRet := oRet
     RETURN result	  
-    
+
+   /// <summary>
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="nPos"></param>
+    /// <param name="uValue"></param>
+    /// <returns>
+    /// </returns>
+FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
+    LOCAL result AS LOGIC
+    result := XSharp.Core.Functions.VODBBlobInfo(nOrdinal, nPos, (OBJECT) uValue)
+    RETURN result	 
     
     /// <summary>
     /// Evaluate a code block for each record that matches a specified scope and/or condition.
@@ -68,25 +79,35 @@ FUNCTION VODBEval(uBlock AS USUAL,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS U
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL result AS LOGIC
-    result := _VODBFieldInfo(nOrdinal, nPos, REF oRet)
+    result := XSharp.Core.Functions.VODBFieldInfo(nOrdinal, nPos, REF oRet)
     ptrRet := oRet
     RETURN result	
+
+    /// <summary>
+    /// Set field definition information about a field.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="nPos"></param>
+    /// <param name="uValue"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
+    LOCAL result AS LOGIC
+    result := XSharp.Core.Functions.VODBFieldInfo(nOrdinal, nPos, (OBJECT) uValue)
+    RETURN result	
     
+
 /// <summary>
 /// Retrieve the value of a specified database field.
 /// </summary>
 /// <param name="nPos"></param>
 /// <param name="oRet"></param>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBFieldGet(nPos AS DWORD,oRet REF USUAL) AS LOGIC
-    TRY
-        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-        oRet := oRDD:GetValue((INT) nPos)
-        RETURN TRUE
-    CATCH e AS Exception
-        RuntimeState.LastRDDError := e
-    END TRY
-    RETURN FALSE
+FUNCTION VODBFieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
+    LOCAL lResult AS LOGIC
+    LOCAL oValue := uRet AS OBJECT
+    lResult := XSharp.Core.Functions.VODBFieldGet(nPos, REF oValue)
+    uRet := oValue
+    RETURN lResult
     
     /// <summary>
     /// Set the value of a specified database field.
@@ -116,11 +137,21 @@ FUNCTION VODBGoto(uRecId AS USUAL) AS LOGIC
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL result AS LOGIC
-    result := _VODbInfo(nOrdinal, REF oRet)
+    result := XSharp.Core.Functions.VODbInfo(nOrdinal, REF oRet)
     ptrRet := oRet
     RETURN result
     
-    
+   /// <summary>
+    /// Set information about a work area.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="uValue"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
+    LOCAL result AS LOGIC
+    result := XSharp.Core.Functions.VODbInfo(nOrdinal, (OBJECT) uValue)
+    RETURN result
+
     /// <summary>
     /// Search for the first record that matches a specified condition and scope.
     /// </summary>
@@ -168,10 +199,22 @@ FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
 FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT   
     LOCAL result AS LOGIC
-    result := _VODbOrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
+    result := XSharp.Core.Functions.VODbOrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
     uRet := oRet
     RETURN result
-    
+
+    /// <summary>
+    /// Set information about index files and the orders in them.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="cBagName"></param>
+    /// <param name="uOrder"></param>
+    /// <param name="uValue"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uValue AS USUAL) AS LOGIC
+    LOCAL result AS LOGIC
+    result := XSharp.Core.Functions.VODbOrderInfo(nOrdinal, cBagName,  uOrder, (OBJECT) uValue)
+    RETURN result
     /// <summary>
     /// Open an index file and add specified orders to the order list in a work area.
     /// </summary>
@@ -202,6 +245,7 @@ FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS
     RETURN VoDbOrdSetFocus(cOrdBag, (OBJECT) uOrder, OUT cOrder)
 
     /// <summary>
+    /// Retrieve information about a RDD.
     /// </summary>
     /// <param name="nOrdinal"></param>
     /// <param name="uRet"></param>
@@ -209,18 +253,20 @@ FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS
 FUNCTION VODBRDDInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
     LOCAL oValue AS OBJECT
     oValue := uRet
-    LOCAL result := _VODBRddInfo(nOrdinal, REF oValue) AS LOGIC
+    LOCAL result := XSharp.Core.Functions.VODBRddInfo(nOrdinal, REF oValue) AS LOGIC
     uRet := oValue
     RETURN result
     
-    /// <summary>
+     /// <summary>
+    /// Set information about a RDD.
     /// </summary>
     /// <param name="nOrdinal"></param>
-    /// <param name="ptrRet"></param>
-    /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS USUAL) AS LOGIC
-    RETURN  _VODBRDDInfo(nOrdinal, oRet) 
-
+    /// <param name="uRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBRDDInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
+    LOCAL result := XSharp.Core.Functions.VODBRddInfo(nOrdinal, (OBJECT) uValue) AS LOGIC
+    RETURN result
+    
     
     /// <summary>
     /// Retrieve information about a record.
@@ -232,11 +278,23 @@ FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS USUAL) AS LOGIC
 FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL lResult AS LOGIC
-    lResult := _VODBRecordInfo(nOrdinal, (OBJECT) uRecID, REF oRet)
+    lResult := XSharp.Core.Functions.VODBRecordInfo(nOrdinal, uRecID, REF oRet)
     uRet := oRet
     RETURN lResult
     
+    /// <summary>
+    /// Set information about a record.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="uRecId"></param>
+    /// <param name="ptrRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet AS USUAL) AS LOGIC
+    LOCAL lResult AS LOGIC
+    lResult := XSharp.Core.Functions.VODBRecordInfo(nOrdinal, uRecID,  (OBJECT) uRet)
+    RETURN lResult
     
+
     /// <summary>
     /// Return the linking expression of a specified relation.
     /// </summary>

@@ -8,6 +8,7 @@ USING System.IO
 USING XSharp.RDD.Enums
 USING System.Collections.Generic
 USING System.Linq
+USING XSharp.RDD
 // The classes below are simple. No properties, but all public fields.
 
 BEGIN NAMESPACE XSharp.RDD.Support

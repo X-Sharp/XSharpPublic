@@ -201,8 +201,6 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_Ansi := SELF:_oRdd:_Ansi
                             // Key
                             SELF:_KeyExpr := SELF:_Header:Bytes:KeyExpression
-							// UGLY HACK
-							SELF:_KeyExpr := "_FIELD->" + SELF:_KeyExpr
 							TRY
 								SELF:_oRdd:Compile(SELF:_KeyExpr)
 							CATCH

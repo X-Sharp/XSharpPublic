@@ -155,6 +155,7 @@
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
+    <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\NamedArg.prg" />
     <Compile Include="Types\OleAutoObject.prg" />
     <Compile Include="Types\OleAutoObjectFromFile.prg" />

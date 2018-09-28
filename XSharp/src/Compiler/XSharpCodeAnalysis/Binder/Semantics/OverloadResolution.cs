@@ -44,21 +44,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (asm1 != asm2)
                 {
                     // prefer XSharpCore over XSharpVO, so typed versions get preference over untyped versions
-                    if (asm1.IsXSharpCore() && asm2.IsXSharpVO())
-                    {
-                        result = BetterResult.Left;
-                        return true;
-                    }
+                    //if (asm1.IsXSharpCore() && asm2.IsXSharpVO())
+                    //{
+                    //    result = BetterResult.Left;
+                    //    return true;
+                    //}
                     // prefer non runtime over runtime to allow overriding built-in functions
-                    if (asm1.IsVulcanRT() || asm1.IsXSharpRT())
+                    if (asm1.IsRT() != asm2.IsRT())
                     {
-                        result = BetterResult.Right;
-                        return true;
-                    }
-                    else if (asm2.IsVulcanRT() || asm2.IsXSharpRT())
-                    {
-                        result = BetterResult.Left;
-                        return true;
+                        if (asm1.IsRT())
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                        else if (asm2.IsRT())
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
                     }
                     // prefer functions/method in the current assembly over external methods
                     if (asm1.IsFromCompilation(Compilation))
@@ -133,15 +136,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var refRight = parRight.RefKind;
                         var arg = arguments[i];
                         bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
-                        if (parLeft.Type != parRight.Type)
+                        var argType = arg.Type;
+                        if (argCanBeByRef)
+                        {
+                            var bao = arg as BoundAddressOfOperator;
+                            argType = bao.Operand.Type;
+                        }
+
+                        if (parLeft.Type != parRight.Type || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (parLeft.Type == usualType && arg.Type != usualType && !parRight.Type.IsArray() )
+                            if (parLeft.Type == usualType && argType != usualType && !parRight.Type.IsArray() )
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (parRight.Type == usualType && arg.Type != usualType && !parLeft.Type.IsArray() )
+                            if (parRight.Type == usualType && argType != usualType && !parLeft.Type.IsArray() )
                             {
                                 result = BetterResult.Left;
                                 return true;
@@ -185,10 +195,33 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         return true;
                                     }
                                 }
-
                             }
+                            if  (refLeft != refRight)
+                            {
+                                if (parLeft.Type == argType && refLeft != RefKind.None && argCanBeByRef)
+                                {
+                                    result = BetterResult.Left;
+                                    return true;
+                                }
+                                if (parRight.Type == argType && refRight != RefKind.None && argCanBeByRef)
+                                {
+                                    result = BetterResult.Right;
+                                    return true;
+                                }
+                                if (parLeft.Type == argType && refLeft == RefKind.None && ! argCanBeByRef)
+                                {
+                                    result = BetterResult.Left;
+                                    return true;
+                                }
+                                if (parRight.Type == argType && refRight == RefKind.None && !argCanBeByRef)
+                                {
+                                    result = BetterResult.Right;
+                                    return true;
+                                }
+                            }
+                            // now fall back to original type (and not addressof type)
+                            argType = arg.Type;
                             // Handle passing Enum values to methods that have a non enum parameter
-                            TypeSymbol argType = arg.Type;
                             if (argType?.TypeKind == TypeKind.Enum)
                             {
                                 // First check if they have the enum type itself
@@ -215,12 +248,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
-                            if (argType == parLeft.Type)
+                            if (argType == parLeft.Type )
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (argType == parRight.Type)
+                            if (argType == parRight.Type )
                             {
                                 result = BetterResult.Right;
                                 return true;

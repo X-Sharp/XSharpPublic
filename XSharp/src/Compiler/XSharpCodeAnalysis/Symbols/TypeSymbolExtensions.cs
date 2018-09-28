@@ -144,6 +144,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return elementSize;
         }
 
+        public static bool IsRT(this AssemblySymbol _asm)
+        {
+            return _asm.IsVulcanRT() || _asm.IsXSharpRT();
+        }
+
         public static bool IsVulcanRT(this AssemblySymbol _asm)
         {
             // TODO (nvk): there must be a better way!

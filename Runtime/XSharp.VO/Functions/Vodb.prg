@@ -38,7 +38,7 @@ FUNCTION VODBAliasSym(nArea AS DWORD) AS SYMBOL
 FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL result AS LOGIC
-    result := VODBBlobInfo(nOrdinal, nPos, REF oRet)
+    result := _VODBBlobInfo(nOrdinal, nPos, REF oRet)
     ptrRet := oRet
     RETURN result	  
     
@@ -68,10 +68,25 @@ FUNCTION VODBEval(uBlock AS USUAL,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS U
 FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL result AS LOGIC
-    result := VODBFieldInfo(nOrdinal, nPos, REF oRet)
+    result := _VODBFieldInfo(nOrdinal, nPos, REF oRet)
     ptrRet := oRet
     RETURN result	
     
+/// <summary>
+/// Retrieve the value of a specified database field.
+/// </summary>
+/// <param name="nPos"></param>
+/// <param name="oRet"></param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBFieldGet(nPos AS DWORD,oRet REF USUAL) AS LOGIC
+    TRY
+        LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
+        oRet := oRDD:GetValue((INT) nPos)
+        RETURN TRUE
+    CATCH e AS Exception
+        RuntimeState.LastRDDError := e
+    END TRY
+    RETURN FALSE
     
     /// <summary>
     /// Set the value of a specified database field.
@@ -101,7 +116,7 @@ FUNCTION VODBGoto(uRecId AS USUAL) AS LOGIC
 FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL result AS LOGIC
-    result := VODbInfo(nOrdinal, REF oRet)
+    result := _VODbInfo(nOrdinal, REF oRet)
     ptrRet := oRet
     RETURN result
     
@@ -150,10 +165,10 @@ FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
     /// <param name="uOrder"></param>
     /// <param name="uRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS USUAL,uRet REF USUAL) AS LOGIC
+FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT   
     LOCAL result AS LOGIC
-    result := VODbOrderInfo(nOrdinal, cBagName, (OBJECT) uOrder, REF oRet)
+    result := _VODbOrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
     uRet := oRet
     RETURN result
     
@@ -185,7 +200,27 @@ FUNCTION VoDbOrdListClear(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS LOGIC
     RETURN VoDbOrdSetFocus(cOrdBag, (OBJECT) uOrder, OUT cOrder)
+
+    /// <summary>
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="uRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBRDDInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
+    LOCAL oValue AS OBJECT
+    oValue := uRet
+    LOCAL result := _VODBRddInfo(nOrdinal, REF oValue) AS LOGIC
+    uRet := oValue
+    RETURN result
     
+    /// <summary>
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="ptrRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS USUAL) AS LOGIC
+    RETURN  _VODBRDDInfo(nOrdinal, oRet) 
+
     
     /// <summary>
     /// Retrieve information about a record.
@@ -197,7 +232,7 @@ FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,cOrder OUT STRING) AS
 FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
     LOCAL lResult AS LOGIC
-    lResult := VODBRecordInfo(nOrdinal, (OBJECT) uRecID, REF oRet)
+    lResult := _VODBRecordInfo(nOrdinal, (OBJECT) uRecID, REF oRet)
     uRet := oRet
     RETURN lResult
     
@@ -222,7 +257,17 @@ FUNCTION VODBRelation(nPos AS DWORD, uRel REF USUAL) AS LOGIC
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION VODBRlock(uRecId AS USUAL) AS LOGIC
     RETURN VoDbRLock((OBJECT) uRecId)
-    
+
+
+    /// <summary>
+    /// Move to the record having the specified key value.
+    /// </summary>
+    /// <param name="xValue"></param>
+    /// <param name="lSoft"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION VODBSeek(xValue AS USUAL,lSoft AS LOGIC, lLast AS LOGIC) AS LOGIC
+    RETURN VODBSeek( (OBJECT) xValue, lSoft, lLast)
+
     /// <summary>
     /// Move to the record having the specified key value.
     /// </summary>
@@ -289,7 +334,7 @@ FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS USUAL,cKey AS STRING) AS LO
     /// <param name="fnSortNames"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBSort(nDest AS DWORD,fnNames AS DbFIELDNAMES,uCobFor AS USUAL,uCobWhile AS USUAL, nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC,fnSortNames AS DbFIELDNAMES) AS LOGIC
+FUNCTION VODBSort(nDest AS DWORD,fnNames AS _FieldNames,uCobFor AS USUAL,uCobWhile AS USUAL, nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC,fnSortNames AS _FieldNames) AS LOGIC
     RETURN VODbSort(nDest, fnNames, VoDb.ValidBlock(uCobFor), VoDb.ValidBlock(uCobWhile), (OBJECT) nNext, (OBJECT) nRecno, lRest, fnSortNames)
     
     /// <summary>
@@ -321,7 +366,7 @@ FUNCTION VODBSymSelect(symAlias AS SYMBOL) AS INT
     /// <param name="lRest"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS USUAL,uCobWhile AS USUAL, nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
+FUNCTION VODBTrans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS USUAL,uCobWhile AS USUAL, nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
     RETURN VODBTrans(nDest, fldNames, VoDb.ValidBlock(uCobFor), VoDb.ValidBlock(uCobWhile), (OBJECT) nNext, (OBJECT) nRecno, lRest)
     
     /// <summary>
@@ -347,3 +392,37 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, oRddType AS System.Type,
     LOCAL aFldInfo AS RddFieldInfo[]
     aFldInfo := Db.ArrayToFieldInfo(aStruct)
     RETURN VODBCreate(cName, aFldInfo, oRddType, lNew, cAlias, cDelim, lKeep, lJustOpen)  
+
+
+
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <param name="aStruct">Array with structure to use when creating the file.</param>
+    /// <param name="aList">structure that describes the list of arrays to use</param>
+FUNCTION VODBCreate( cName AS STRING, aStruct AS ARRAY, aList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+    LOCAL oRdd AS RegisteredRDD
+    FOREACH VAR name IN aList:atomRDDName
+        oRDD := RegisteredRDD.Find(name)
+        IF oRDD != NULL
+            oRdd:Load()
+        ELSE
+            EXIT
+        ENDIF
+    NEXT
+    IF oRDD == NULL
+        RETURN FALSE
+    ENDIF
+    LOCAL aFldInfo AS RddFieldInfo[]
+    aFldInfo := Db.ArrayToFieldInfo(aStruct)
+    RETURN VODBCreate(cName, aFldInfo, oRDD:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)  
+
+
+
+
+FUNCTION __AllocRddList(aRDDs AS ARRAY) AS _RddList
+    LOCAL aNames AS List<STRING>
+    aNames := List<STRING>{}
+    FOREACH rdd AS USUAL IN aRDDs
+        aNames:Add( (STRING) rdd)
+    NEXT
+    RETURN _RddList{aNames:ToArray()}
+    

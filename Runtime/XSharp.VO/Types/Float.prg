@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp
             RETURN equal
             
             /// <inheritdoc />
-        VIRTUAL METHOD GetHashCode() AS INT
+        OVERRIDE METHOD GetHashCode() AS INT
             RETURN SELF:_value:GetHashCode()
             
             /// <exclude />	

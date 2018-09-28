@@ -180,7 +180,7 @@ FUNCTION Found() AS LOGIC
 /// </returns>
 FUNCTION Header() AS LONG
     LOCAL oValue := NULL AS OBJECT
-	VoDbInfo(DBI_GETHEADERSIZE, REF oValue)
+	_VoDbInfo(DBI_GETHEADERSIZE, REF oValue)
     RETURN (LONG) oValue
 
 /// <summary>
@@ -337,7 +337,7 @@ FUNCTION RecCount() AS LONG
 
 FUNCTION RecSize AS LONG
     LOCAL nSize := NULL AS OBJECT
-    VODbInfo(DBInfo.DBI_GETRECSIZE, REF nSize)
+    _VODbInfo(DBInfo.DBI_GETRECSIZE, REF nSize)
     RETURN (LONG) nSize
 
 /// <summary>

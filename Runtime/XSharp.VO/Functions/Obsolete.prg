@@ -527,12 +527,6 @@ FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS IntPtr
 	RETURN IntPtr.Zero
 	
 /// <exclude/>
-[Obsolete( "'ErrorBuild()' is not supported and always returns an empty Error Object" )] ;
-FUNCTION ErrorBuild(pErrInfo AS IntPtr) AS XSharp.ERROR
-	RETURN  XSharp.Error{ES_ERROR,0}
-	
-	
-/// <exclude/>
 [Obsolete( "'ErrorExec()' is not supported and always returns NIL" )] ;
 FUNCTION ErrorExec(pErrInfo AS IntPtr) AS USUAL
 	RETURN	 NIL   

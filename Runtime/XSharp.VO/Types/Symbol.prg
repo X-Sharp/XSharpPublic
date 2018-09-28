@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp
 
         #region methods
         /// <inheritdoc />
-        VIRTUAL METHOD EQUALS(obj AS OBJECT) AS LOGIC
+        OVERRIDE METHOD @@Equals(obj AS OBJECT) AS LOGIC
             LOCAL rhs AS SYMBOL
             IF (obj == NULL)
                 RETURN FALSE
@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp
             RETURN SELF:Equals(rhs)
 
             /// <inheritdoc />
-        VIRTUAL METHOD GetHashCode() AS LONG
+        OVERRIDE METHOD GetHashCode() AS LONG
             RETURN (INT) SELF:_index
 
             /// <inheritdoc />
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp
             RETURN (INT) s:_index
 
             /// <inheritdoc />
-        VIRTUAL METHOD ToString() AS STRING
+        OVERRIDE METHOD ToString() AS STRING
             RETURN _value
 
             /// <exclude />

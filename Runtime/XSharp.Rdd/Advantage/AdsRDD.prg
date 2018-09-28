@@ -125,7 +125,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ELSE
       SELF:_CheckRights := ACE.ADS_IGNORERIGHTS
     ENDIF
-    IF VODBRDDInfo(_SET_CONNECTION_HANDLE, REF oRet) .AND. oRet != NULL_OBJECT
+    IF _VODBRDDInfo(_SET_CONNECTION_HANDLE, REF oRet) .AND. oRet != NULL_OBJECT
       IF oRet IS IntPtr
         SELF:_Connection := (intPtr) oRet
       ELSE
@@ -136,7 +136,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     ENDIF
     IF SELF:_TableType == ACE.ADS_ADT .OR. SELF:_TableType == ACE.ADS_VFP
       oRet := NULL
-      IF VODBRDDInfo(_SET_COLLATION_NAME, REF oRet) .AND. oRet != NULL
+      IF _VODBRDDInfo(_SET_COLLATION_NAME, REF oRet) .AND. oRet != NULL
         SELF:_Collation := (STRING) oRet
       ELSE
         SELF:_Collation := string.Empty

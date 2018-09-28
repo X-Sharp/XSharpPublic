@@ -8,6 +8,15 @@ USING System.Reflection
 USING System.Diagnostics
 
 
+/// <summary>
+/// Write information to the Debug Terminal Program
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION _DebOut32( s AS PSZ) AS VOID
+   System.Diagnostics.Debug.WriteLine(psz2string(s))
+   RETURN
+
 
 
 /// <summary>
@@ -45,5 +54,7 @@ FUNCTION CanBreak() AS LOGIC
 /// </returns>
 FUNCTION Version() AS STRING
 	RETURN "XSharp "+__VERSION__
+
+
 
 

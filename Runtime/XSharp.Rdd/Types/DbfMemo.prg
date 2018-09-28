@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+#ifdef COMPLETED
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 
@@ -46,3 +47,4 @@ VIRTUAL PROPERTY SysName AS STRING GET typeof(DbfMemo):ToString()
 
 END CLASS
 END NAMESPACE
+#endif

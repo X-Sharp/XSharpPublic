@@ -40,7 +40,7 @@ FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS DWORD
     // uIndexFile -- filename or NIL
     // uOrder -- order name, number, or NIL
     LOCAL oRet := NULL AS OBJECT
-    IF _VoDbOrderInfo(DBOI_GET_ACE_INDEX_HANDLE, "", uOrder, REF oRet)
+    IF VoDbOrderInfo(DBOI_GET_ACE_INDEX_HANDLE, "", uOrder, REF oRet)
         RETURN Convert.ToUint32(oRet)
     ENDIF
     RETURN 0
@@ -52,7 +52,7 @@ FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS DWORD
 /// <returns> Returns a 0 if there is a problem.</returns>
 FUNCTION AX_GetAceStmtHandle() AS DWORD
     LOCAL oHandle := NULL AS OBJECT
-    IF _VoDbInfo( DBI_GET_ACE_STMT_HANDLE , REF oHandle)
+    IF VoDbInfo( DBI_GET_ACE_STMT_HANDLE , REF oHandle)
         RETURN Convert.ToUint32(oHandle)
     ENDIF
     RETURN 0
@@ -61,7 +61,7 @@ FUNCTION AX_GetAceStmtHandle() AS DWORD
 /// <returns> Returns a 0 if there is a problem.</returns>
 FUNCTION AX_GetAceTableHandle() AS DWORD
     LOCAL oHandle := NULL AS OBJECT
-    IF _VoDbInfo( DBI_GET_ACE_TABLE_HANDLE , REF oHandle)
+    IF VoDbInfo( DBI_GET_ACE_TABLE_HANDLE , REF oHandle)
         RETURN Convert.ToUint32(oHandle)
     ENDIF
     RETURN 0
@@ -77,7 +77,7 @@ FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC //
 /// <summary>Return the percentage of keys added to a currently building index</summary>
 FUNCTION AX_PercentIndexed() AS INT 
     LOCAL oRet := NULL AS OBJECT
-    IF _VoDbOrderInfo(DBOI_AXS_PERCENT_INDEXED, NULL, NULL, REF oRet)
+    IF VoDbOrderInfo(DBOI_AXS_PERCENT_INDEXED, NULL, NULL, REF oRet)
         RETURN Convert.ToInt32(oRet)
     ENDIF
     RETURN 0
@@ -94,11 +94,11 @@ FUNCTION AX_RightsCheck( bMode AS LOGIC) AS LOGIC
 
 FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
     LOCAL oldCollation := strCollation AS OBJECT
-    _VoDbRDDINFO( _SET_COLLATION_NAME, REF oldCollation )
+    VoDbRDDINFO( _SET_COLLATION_NAME, REF oldCollation )
     RETURN (STRING) oldCollation
     
 PROCEDURE AX_SetConnectionHandle( lHandle AS DWORD ) 
-   _VoDbRddInfo( _SET_CONNECTION_HANDLE, lHandle )
+   VoDbRddInfo( _SET_CONNECTION_HANDLE, lHandle )
 RETURN 
 
 FUNCTION AX_SetExactKeyPos( ) AS LOGIC
@@ -110,7 +110,7 @@ FUNCTION AX_SetExactKeyPos( bMode AS LOGIC) AS LOGIC
 FUNCTION AX_RddHelper(iInfo AS INT, lDefault AS LOGIC) AS LOGIC
     LOCAL bRetVal := NULL AS OBJECT
     LOCAL lRetVal := lDefault AS LOGIC
-    IF _VoDbRDDINFO( (DWORD) iInfo , REF bRetVal)
+    IF VoDbRDDINFO( (DWORD) iInfo , REF bRetVal)
         IF ! bRetVal IS LOGIC
             lRetVal := TRUE
         ELSE
@@ -123,7 +123,7 @@ FUNCTION AX_RddHelper(iInfo AS INT, lDefault AS LOGIC) AS LOGIC
 FUNCTION AX_RddHelper(iInfo AS INT, lNewValue AS LOGIC, lDefault AS LOGIC) AS LOGIC
     LOCAL bRetVal AS LOGIC
     bRetVal := AX_RddHelper(iInfo, lDefault)
-    _VoDbRDDINFO( (DWORD) iInfo , lNewValue)
+    VoDbRDDINFO( (DWORD) iInfo , lNewValue)
     RETURN bRetVal
 
 
@@ -156,7 +156,7 @@ FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGI
 
 
 FUNCTION AX_SetSQLTablePasswords( aPasswords AS OBJECT ) AS VOID
-    _VoDbRddInfo( _SET_SQL_TABLE_PASSWORDS, aPasswords )
+    VoDbRddInfo( _SET_SQL_TABLE_PASSWORDS, aPasswords )
     RETURN 
 
 FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
@@ -200,7 +200,7 @@ FUNCTION AX_UsingClientServer( ) AS LOGIC
     LOCAL usServerType := 0 AS WORD
     LOCAL strFileName AS STRING
     LOCAL oFileName := NULL AS OBJECT
-    IF _VODbInfo(DBI_FULLPATH , REF oFileName)
+    IF VODbInfo(DBI_FULLPATH , REF oFileName)
         strFileName := (STRING) oFileName
         ulRetCode := ACE.AdsFindConnection(  strFileName , OUT ConnectionHandle )
         ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )

@@ -7,15 +7,15 @@ FUNCTION SetLiteral(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 
 /// <exclude />
-FUNCTION GetStringDXAX(dwRes AS DWORD) AS STRING
+FUNCTION _GetStringDXAX(dwRes AS DWORD) AS STRING
 	RETURN __CavoStr( dwRes )
 
 /// <exclude />
-FUNCTION VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
-	RETURN VO_Sprintf( __CavoStr( format ), args )
+FUNCTION _VO_Sprintf( format AS DWORD,  args PARAMS OBJECT[] ) AS STRING
+	RETURN _VO_Sprintf( __CavoStr( format ), args )
 
 /// <exclude />
-FUNCTION VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
+FUNCTION _VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
 	LOCAL ret        AS STRING
 	// The format string should start with "%Vn" to indicate a variable number
 	// n is the 1 based position in the args list
@@ -171,3 +171,4 @@ INTERNAL CLASS Messages
 		RETURN sResult
 
 END CLASS
+

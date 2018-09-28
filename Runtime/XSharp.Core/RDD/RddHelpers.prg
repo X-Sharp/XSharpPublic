@@ -110,35 +110,8 @@ BEGIN NAMESPACE XSharp.RDD
             
             END CLASS
             
-    STRUCTURE RddList
-        EXPORT atomRddName AS STRING[]
-        PROPERTY uiRDDCount AS DWORD GET (DWORD) atomRDDName:Length
-        
-        // Create RDDList from class Tree
-        CONSTRUCTOR(oRDD AS WorkArea)
-            VAR names := List<STRING>{}
-            VAR type  := oRDD:GetType()
-            DO WHILE type != typeof(WorkArea)
-                VAR name := type:Name:ToUpper()
-                // map names to VO compatible names
-                IF name == "DBF"
-                    names:Add("CAVODBF")
-                ELSE
-                    names:Add(name)
-                ENDIF
-                type := type:BaseType
-            ENDDO
-            names:Reverse()
-            atomRDDName := names:ToArray()
-            
-        CONSTRUCTOR(aNames AS STRING[])
-            atomRDDName := aNames
-            RETURN
-            
-            
-            
-    END STRUCTURE
 END NAMESPACE
+
 
 
 

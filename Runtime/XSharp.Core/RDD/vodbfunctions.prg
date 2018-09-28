@@ -36,7 +36,7 @@ INTERNAL STATIC CLASS VoDb
             NEXT
         ENDIF
         RETURN ret
-    INTERNAL STATIC METHOD BuildTrans( dbti AS DbTransInfo, lpfn AS DbFieldNames, src AS IRDD, dst AS IRDD ) AS LOGIC
+    INTERNAL STATIC METHOD BuildTrans( dbti AS DbTransInfo, lpfn AS _FieldNames, src AS IRDD, dst AS IRDD ) AS LOGIC
         LOCAL oTmp          AS OBJECT
         LOCAL srcFieldCount AS DWORD
         LOCAL dstFieldCount AS DWORD
@@ -81,7 +81,7 @@ INTERNAL STATIC CLASS VoDb
         dbti:ItemCount := j -1
         
         RETURN fMatch
-    INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS DbFieldNames,;
+    INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
     uCobFor AS ICodeBlock ,uCobWhile AS ICodeBlock ,;
     nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
         LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
@@ -191,17 +191,28 @@ FUNCTION VODBAppend(lReleaseLocks AS LOGIC) AS LOGIC
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:Append(lReleaseLocks)
     })
-    
+
     /// <summary>
     /// </summary>
     /// <param name="nOrdinal"></param>
     /// <param name="nPos"></param>
-    /// <param name="ptrRet"></param>
+    /// <param name="oRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
+FUNCTION _VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
+    RETURN VoDb.Do ({ =>
+        RETURN _VODbBlobInfo(nOrdinal, nPos, REF oRet)
+    })
+
+    /// <summary>
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="nPos"></param>
+    /// <param name="oRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION _VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-        ptrRet := oRDD:BlobInfo(nOrdinal, nPos)
+        oRet := oRDD:BlobInfo(nOrdinal, nPos)
         RETURN TRUE
     CATCH e AS Exception
         RuntimeState.LastRDDError := e
@@ -214,6 +225,7 @@ FUNCTION VODBBlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGI
     /// the current database file contains no records; otherwise, FALSE.  If there is no database file open in the
     /// current work area, VODBBOF() returns TRUE.</returns>
     /// <remarks>VODBBOF() is the same as BOF().</remarks>
+    /// <seealso cref="M:XSharp.Core.Functions.Bof" >Eof Function </seealso>
 FUNCTION VODBBof() AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
@@ -379,7 +391,7 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName A
     /// <inheritdoc cref="M:XSharp.Core.Functions.VODBCreate(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="rddList">List of RDDs to use when creating the file</param>
 
-FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS XSharp.RDD.RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+FUNCTION VODBCreate( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
     LOCAL oRdd := NULL  AS RegisteredRDD
     FOREACH VAR name IN rddList:atomRddName
         oRdd := RegisteredRDD.Find(name)
@@ -437,7 +449,6 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
         RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
         ret := FALSE
     ELSE
-        ret := RuntimeState.Workareas:SetArea(uiNewArea, oRDD)
         IF ! String.IsNullOrEmpty( cDelim )
             oRDD:Info( DBI_SETDELIMITER, cDelim ) 
         ENDIF
@@ -455,9 +466,9 @@ FUNCTION VODBCreate( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS Syst
             dboi:Shared    := FALSE
             dboi:ReadOnly  := FALSE
             dboi:Alias     := cAlias
-            dboi:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
-            oRDD:Alias := cAlias
-            ret := RuntimeState.Workareas:SetArea(uiNewArea, oRdd)
+            dboi:WorkArea  := uiNewArea
+            oRDD:Alias     := cAlias
+            ret := RuntimeState.Workareas:SetArea(uiNewArea, oRDD)
             IF lJustOpen
                 ret := oRdd:Open( dboi )
             ELSE
@@ -493,7 +504,7 @@ FUNCTION VODBDelete() AS LOGIC
     /// </summary>
     /// <returns>TRUE if the current record is marked for deletion; otherwise, FALSE.  
     /// If there is no database file in use in the current work area, VODBDeleted() returns FALSE.</returns>
-    /// <seealso cref="M:XSharp.VO.Functions.Deleted">Deleted Function</seealso>
+    /// <seealso cref="M:XSharp.Core.Functions.Deleted">Deleted Function</seealso>
 FUNCTION VODBDeleted() AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
@@ -507,7 +518,7 @@ FUNCTION VODBDeleted() AS LOGIC
     /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
     /// database file open in the current work area, VODBEOF() returns TRUE.</returns>
     /// <remarks>VODBEOF() is the same as EOF().</remarks>
-    /// <seealso cref="M:XSharp.VO.Functions.Eof" >Eof Function </seealso>
+    /// <seealso cref="M:XSharp.Core.Functions.Eof" >Eof Function </seealso>
 FUNCTION VODBEof() AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
@@ -559,31 +570,46 @@ FUNCTION VODBEval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeB
     /// Retrieve the value of a specified database field.
     /// </summary>
     /// <param name="nPos"></param>
-    /// <param name="ptrRet"></param>
+    /// <param name="oRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBFieldGet(nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
+FUNCTION _VODBFieldGet(nPos AS DWORD,oRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-        ptrRet := oRDD:GetValue((INT) nPos)
+        oRet := oRDD:GetValue((INT) nPos)
         RETURN TRUE
     CATCH e AS Exception
         RuntimeState.LastRDDError := e
     END TRY
-    RETURN FALSE  
+    RETURN FALSE
+
     /// <summary>
     /// Retrieve field definition information about a field.
     /// </summary>
     /// <param name="nOrdinal"></param>
     /// <param name="nPos"></param>
-    /// <param name="ptrRet"></param>
+    /// <param name="oRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     /// <remarks>VODBFieldInfo() is like DBFieldInfo().
     /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
     /// </remarks>
-FUNCTION VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF OBJECT) AS LOGIC
+FUNCTION _VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
+    RETURN VoDb.Do ({ =>
+     RETURN _VODBFieldInfo(nOrdinal, nPos, REF oRet)
+    }) 
+    /// <summary>
+    /// Retrieve field definition information about a field.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="nPos"></param>
+    /// <param name="oRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>VODBFieldInfo() is like DBFieldInfo().
+    /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
+    /// </remarks>
+FUNCTION _VODBFieldInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-        ptrRet := oRDD:FieldInfo((INT) nPos, (INT) nOrdinal, ptrRet)
+        oRet := oRDD:FieldInfo((INT) nPos, (INT) nOrdinal, oRet)
         RETURN TRUE
     CATCH e AS Exception
         RuntimeState.LastRDDError := e
@@ -729,20 +755,32 @@ FUNCTION VODBGoTop() AS LOGIC
     RETURN oRDD:GoTop()
     })
     
-    
+
     /// <summary>
     /// Retrieve information about a work area.
     /// </summary>
     /// <param name="nOrdinal"></param>
     /// <param name="ptrRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
+FUNCTION _VODBInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
+     RETURN VoDb.Do ({ =>
+            RETURN _VoDbInfo(nOrdinal, REF oRet)
+    })
+     
+
+    /// <summary>
+    /// Retrieve information about a work area.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="ptrRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION _VODBInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         IF (nOrdinal == DBI_RDD_OBJECT)
-            ptrRet := oRDD
+            oRet := oRDD
         ELSE
-            ptrRet := oRDD:Info((INT) nOrdinal, ptrRet)
+            oRet := oRDD:Info((INT) nOrdinal, oRet)
         ENDIF
         RETURN TRUE
     CATCH e AS Exception
@@ -756,7 +794,7 @@ FUNCTION VODBInfo(nOrdinal AS DWORD,ptrRet REF OBJECT) AS LOGIC
     /// <param name="nSelect"></param>
     /// <param name="struList"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJoinList) AS LOGIC
+FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS _JoinList) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL result := FALSE AS LOGIC
     LOCAL nCount AS LONG
@@ -766,7 +804,7 @@ FUNCTION VODBJoinAppend(nSelect AS DWORD,struList AS DbJoinList) AS LOGIC
     LOCAL oRDDSrc AS IRDD
     LOCAL oValue  AS OBJECT
     nCount := struList:Count
-    nDestSel := struList:DestSel
+    nDestSel := struList:uiDestSel
     oRDDDest := RuntimeState.Workareas.GetRDD(nDestSel)
     IF oRDDDest == NULL
         RddError.PostNoTableError(__FUNCTION__)
@@ -918,9 +956,9 @@ FUNCTION VODBOrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
     /// </remarks>
     
     
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
+FUNCTION _VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
-    RETURN VoDbOrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
+    RETURN _VoDbOrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
     })  
 	/// <summary>
     /// Return information about index files and the orders in them.
@@ -930,7 +968,7 @@ FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oVa
     /// <param name="uOrder"></param>
     /// <param name="oValue"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
+FUNCTION _VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         VAR info := DbOrderInfo{}
@@ -1080,7 +1118,7 @@ FUNCTION VODBRddCount() AS DWORD
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
      
     
-FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
+FUNCTION _VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oValue AS OBJECT
         oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
@@ -1099,7 +1137,7 @@ FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
     /// <param name="nOrdinal"></param>
     /// <param name="ptrRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
+FUNCTION _VODBRDDInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oValue AS OBJECT
     oValue := RuntimeState.GetValue<OBJECT> ((INT) nOrdinal)
@@ -1109,7 +1147,7 @@ FUNCTION VODBRDDInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
     
     
 [Obsolete( "'VODBRddList( rddList, nRddType )' is not supported, use VODBRddList() instead", TRUE )];
-FUNCTION VODBRddList(rddList AS RddList,nRddType AS DWORD) AS LOGIC
+FUNCTION VODBRddList(rddList AS _RddList,nRddType AS DWORD) AS LOGIC
     THROW  NotImplementedException{}
     
 FUNCTION VODBRddList() AS STRING[]
@@ -1174,10 +1212,10 @@ FUNCTION VODBRecall() AS LOGIC
     /// </summary>
     /// <returns>
     /// </returns>
-FUNCTION VODBRecno() AS OBJECT
+FUNCTION VODBRecno() AS DWORD
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
-    RETURN oRDD:Recno
+    RETURN (DWORD) oRDD:Recno
     })
     
     /// <summary>
@@ -1189,7 +1227,7 @@ FUNCTION VODBRecordGet() AS BYTE[]
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     RETURN oRDD:GetRec()
     }) 
-    
+
     /// <summary>
     /// Retrieve information about a record.
     /// </summary>
@@ -1197,7 +1235,19 @@ FUNCTION VODBRecordGet() AS BYTE[]
     /// <param name="oRecID"></param>
     /// <param name="oRet"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-FUNCTION VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
+FUNCTION _VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet AS OBJECT) AS LOGIC
+    RETURN VoDb.Do ({ =>
+    RETURN _VODBRecordInfo(nOrdinal, oRecID, REF oRet)
+    }) 
+
+    /// <summary>
+    /// Retrieve information about a record.
+    /// </summary>
+    /// <param name="nOrdinal"></param>
+    /// <param name="oRecID"></param>
+    /// <param name="oRet"></param>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+FUNCTION _VODBRecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
     TRY
         LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
         oRDD:RecInfo(oRecID, (INT) nOrdinal, oRet )
@@ -1478,7 +1528,7 @@ FUNCTION VODBSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC
     /// <param name="sortNames"></param>
     /// <returns>
     /// </returns>
-FUNCTION VODBSort(nDest AS DWORD,fieldNames AS DbFieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS DbFieldNames) AS LOGIC
+FUNCTION VODBSort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL info AS DbSortInfo
@@ -1524,7 +1574,7 @@ FUNCTION VODBSort(nDest AS DWORD,fieldNames AS DbFieldNames,uCobFor AS ICodeBloc
     /// <param name="nRecno"></param>
     /// <param name="lRest"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+FUNCTION VODBTrans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL info AS DbTransInfo
@@ -1538,7 +1588,7 @@ FUNCTION VODBTrans(nDest AS DWORD,fldNames AS DbFieldNames,uCobFor AS ICodeBlock
     /// <param name="nDest"></param>
     /// <param name="fldNames"></param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS DbFieldNames) AS LOGIC
+FUNCTION VODBTransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRDD := RDDHelpers.CWA(__FUNCTION__) AS IRDD
     LOCAL dbti := DbTransInfo{ fldNames:fieldCount} AS DBTRANSINFO
@@ -1606,7 +1656,7 @@ FUNCTION VODBUnlockAll() AS LOGIC
     /// <inheritdoc cref="M:XSharp.Core.Functions.VODBAppend(System.Boolean)" select="span[@id='LastError']" />
     /// </remarks>
     
-FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS XSharp.RDD.RddList,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
+FUNCTION VODBUseArea(lNew AS LOGIC,rddList AS _RddList,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
     RETURN VoDb.Do ({ =>
     LOCAL oRdd := NULL  AS RegisteredRDD
     FOREACH VAR name IN rddList:atomRddName
@@ -1749,3 +1799,5 @@ FUNCTION VODBZap() AS LOGIC
     
     
     
+FUNCTION _VODBErrInfoPtr AS Exception
+    RETURN RuntimeState.LastRDDError

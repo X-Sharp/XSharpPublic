@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.RDD
 	CLASS RddError INHERIT Error
     CONSTRUCTOR()
          RETURN
-    CONSTRUCTOR(msg AS string)
+    CONSTRUCTOR(msg AS STRING)
       SUPER(msg)
          RETURN
           

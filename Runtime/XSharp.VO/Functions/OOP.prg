@@ -371,11 +371,7 @@ INTERNAL STATIC CLASS OOPHelpers
 				VAR oTemp := <OBJECT> { uValue }
 				RETURN Activator.CreateInstance(TYPEOF(XSharp.__Usual), oTemp)
 			ENDIF
-			VAR o := (OBJECT) uValue 
-			IF toType:IsAssignableFrom(o:GetType())
-				RETURN o
-			ENDIF
-			RETURN Convert.ChangeType(o, toType)
+			RETURN Convert.ChangeType((OBJECT) uValue, toType)
 		ENDIF
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL

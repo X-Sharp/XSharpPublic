@@ -26,6 +26,16 @@ FUNCTION FRead(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
 	Marshal.Copy(bData, 0, pData, (INT) dwResult)
 	RETURN dwResult
 	
+/// <summary>
+/// Read characters from a file into a buffer variable that is passed by reference.
+/// </summary>
+/// <param name="pHandle"></param>
+/// <param name="pData"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+FUNCTION FRead3(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
+	RETURN Fread(pHandle, pData, dwCount)
 
 
 
@@ -59,7 +69,21 @@ FUNCTION FSeek(hFile ,nOffset ,nOrigin ) AS LONG CLIPPER
 		RETURN XSharp.Core.Functions.FSeek3(hFile, nOffSet, nOrigin)
 	ENDIF
 	
-
+/// <summary>
+/// Read characters from a file into a buffer variable that is passed by reference.
+/// </summary>
+/// <param name="pHandle"></param>
+/// <param name="pData"></param>
+/// <param name="dwCount"></param>
+/// <returns>
+/// </returns>
+FUNCTION FWrite3(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
+	LOCAL bData AS BYTE[]
+	LOCAL dwResult AS DWORD
+	bData := BYTE[] {(INT) dwCount}
+	Marshal.Copy(pData, bData, 0, (INT) dwCount)
+	dwResult := FWrite3(pHandle, bData, dwCount)
+	RETURN dwResult
 
 /// <summary>
 /// Write a string to an open file.

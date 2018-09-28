@@ -735,37 +735,38 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 /// </summary>
 /// <param name="oValue">Object containing the numeric value to convert.</param>
 /// <returns>The value in the form of a float. </returns>
-/// <exception>System.InvalidCastException Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
-    FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
-        LOCAL typ := oValue:GetType() AS System.Type
-        IF typ == typeof(FLOAT)
-            RETURN (FLOAT) oValue
-        ENDIF
-        LOCAL tc := System.Type.GetTypeCode(typ) AS TypeCode
-        SWITCH tc
-        CASE System.TypeCode.SByte
-            RETURN (System.SByte) oValue
-        CASE System.TypeCode.Byte
-            RETURN (System.Byte) oValue
-        CASE System.TypeCode.Double
-            RETURN (System.Double) oValue
-        CASE System.TypeCode.Single
-            RETURN (System.Single) oValue
-        CASE System.TypeCode.UInt16
-            RETURN (System.UInt16) oValue
-        CASE System.TypeCode.UInt32
-            RETURN (System.UInt32) oValue
-        CASE System.TypeCode.UInt64
-            RETURN (System.UInt64) oValue
-        CASE System.TypeCode.Int16
-            RETURN (System.Int16) oValue
-        CASE System.TypeCode.Int32
-            RETURN (System.Int32) oValue
-        CASE System.TypeCode.Int64
-            RETURN (System.Int64) oValue
-        CASE System.TypeCode.Decimal
-            RETURN (System.Decimal) oValue
-        OTHERWISE
-            THROW InvalidCastException{"Cannot convert from type "+typ:FullName+" to FLOAT"}
-        END SWITCH
+/// <exception cref='T:System.InvalidCastException'> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
+FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
+    LOCAL typ := oValue:GetType() AS System.Type
+    IF typ == typeof(FLOAT)
+        RETURN (FLOAT) oValue
+    ENDIF
+    LOCAL tc := System.Type.GetTypeCode(typ) AS TypeCode
+    SWITCH tc
+    CASE System.TypeCode.SByte
+        RETURN (System.SByte) oValue
+    CASE System.TypeCode.Byte
+        RETURN (System.Byte) oValue
+    CASE System.TypeCode.Double
+        RETURN (System.Double) oValue
+    CASE System.TypeCode.Single
+        RETURN (System.Single) oValue
+    CASE System.TypeCode.UInt16
+        RETURN (System.UInt16) oValue
+    CASE System.TypeCode.UInt32
+        RETURN (System.UInt32) oValue
+    CASE System.TypeCode.UInt64
+        RETURN (System.UInt64) oValue
+    CASE System.TypeCode.Int16
+        RETURN (System.Int16) oValue
+    CASE System.TypeCode.Int32
+        RETURN (System.Int32) oValue
+    CASE System.TypeCode.Int64
+        RETURN (System.Int64) oValue
+    CASE System.TypeCode.Decimal
+        RETURN (System.Decimal) oValue
+    OTHERWISE
+        THROW InvalidCastException{"Cannot convert from type "+typ:FullName+" to FLOAT"}
+    END SWITCH
+
 

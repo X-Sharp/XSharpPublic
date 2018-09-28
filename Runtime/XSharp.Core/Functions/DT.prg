@@ -272,23 +272,23 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	ENDIF
 	LOCAL nPos AS INT
 	LOCAL cSep AS STRING
-	nDayPos := nMonthPos := nYearPos := 0
+	nDayPos := nMonthPos := nYearPos := -1
 	cSep := "./-"
-	nPos := 0
+	nPos :=-1
 	FOREACH c AS CHAR IN cDateFormat
 		SWITCH c
 		CASE 'D'
-			IF nDayPos == 0
+			IF nDayPos == -1
 				++nPos
 				nDayPos  := nPos
 			ENDIF
 		CASE 'M'
-			IF nMonthPos == 0
+			IF nMonthPos == -1
 				++nPos
 				nMonthPos  := nPos
 			ENDIF
 		CASE 'Y'
-			IF nYearPos == 0
+			IF nYearPos == -1
 				++nPos
 				nYearPos  := nPos
 			ENDIF
@@ -298,7 +298,7 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 			ENDIF
 		END SWITCH
 	NEXT
-	IF nDayPos == 0 .OR. nMonthPos == 0 .OR. nYearPos == 0
+	IF nDayPos == -1 .OR. nMonthPos == -1 .OR. nYearPos == -1
 		RETURN dDate
 	ENDIF
 	TRY

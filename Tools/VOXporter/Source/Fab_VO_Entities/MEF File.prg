@@ -153,7 +153,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     	aList := SELF:EntityList
     	FOR LOCAL n := 1 AS DWORD UPTO ALen(aList)
     		oList:Add((FabMEFEntity)aList[n])
-    	NEXT
+    	NEXT  
     RETURN oList
 
     VIRTUAL ACCESS	EntityList AS xARRAY  
@@ -277,7 +277,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    br := BinaryReader{ SELF:oMS }
 	    wVersion := br:ReadUInt16()
 	    // Unknown Version type !!
-	    IF(  _And(wVersion, 0x0080) == 0 )
+	    IF(  _AND(wVersion, 0x0080) == 0 )
 		    SELF:Close()
 		    RETURN
 	    ENDIF
@@ -285,7 +285,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    SELF:oMS:Position := 0
 	    SELF:oMS:Position += FabRecHeader.Size  
 	    //
-	    wVersion := (WORD)_And( (DWORD)wVersion, _not(0x0080) )
+	    wVersion := (WORD)_AND( (DWORD)wVersion, _NOT(0x0080) )
 	    //
 	    IF(wVersion = 256)
 		    //
@@ -391,8 +391,8 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    br := BinaryReader{ SELF:oMS }
 				    nCurrentType := br:ReadInt16()
 				    ? nCurrentType
-				    IF nCurrentType == 16 .or. nCurrentType == 10 .or. ;
-				    	 nCurrentType == 12 .or. nCurrentType == 14
+				    IF nCurrentType == 16 .OR. nCurrentType == 10 .OR. ;
+				    	 nCurrentType == 12 .OR. nCurrentType == 14
 				    	oCurrentDesigner := Designer{cCurrentName , nCurrentType}
 				    	SELF:aDesigners:Add(oCurrentDesigner)
 				    END IF
@@ -413,7 +413,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    ? cCurrentName
 
 			    CASE SELF:oRecHeader:uiType == 0x085 // AEF_REC_DT_STATIC
-				    IF nCurrentType == 16 .and. oCurrentDesigner != NULL
+				    IF nCurrentType == 16 .AND. oCurrentDesigner != NULL
 				        SELF:oMS:Position := PosData
 				    	br := BinaryReader{ SELF:oMS }
 					    LOCAL aBytes AS BYTE[]
@@ -512,7 +512,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    SELF:lSuccess := ( SELF:iEnt == ALen( SELF:aEnt ) )
     RETURN
 
-    PROTECT METHOD	SortByName( ) AS VOID  
+    PUBLIC METHOD	SortByName( ) AS VOID  
         LOCAL lOk   AS LOGIC
         LOCAL nCpt  AS LONG
         LOCAL nMax  AS LONG
@@ -530,7 +530,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
                 //
                 oEnt1 := (FabMEFEntity)SELF:aEnt[ (DWORD)nCpt ]
                 oEnt2 := (FabMEFEntity)SELF:aEnt[ (DWORD)nCpt + 1 ]
-                IF ( oEnt1:Name < oEnt2:Name )
+                IF ( oEnt1:Name > oEnt2:Name )
                     SELF:aEnt[ (DWORD)nCpt ]   := oEnt2
                     SELF:aEnt[ (DWORD)nCpt+1 ] := oEnt1
                     lOk := FALSE

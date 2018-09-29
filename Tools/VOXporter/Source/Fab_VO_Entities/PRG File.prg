@@ -334,7 +334,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 
         RETURN
 
-    PROTECT METHOD	SortByName( ) AS VOID  
+    PUBLIC METHOD	SortByName( ) AS VOID  
         LOCAL lOk   AS LOGIC
         LOCAL nCpt  AS LONG
         LOCAL nMax  AS LONG

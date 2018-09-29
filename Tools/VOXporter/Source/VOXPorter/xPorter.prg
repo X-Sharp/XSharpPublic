@@ -34,8 +34,8 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:AllClassesPartial := FALSE
 	oOptions:IgnoreDuplicateDefines := TRUE
 	oOptions:DontGenerateEmptyFiles := TRUE
-	oOptions:AdjustCallbackFunctions := TRUE
-	
+	oOptions:AdjustCallbackFunctions := TRUE      
+	oOptions:SortEntitiesByName := TRUE
 	xPorter.Options := oOptions
 	
 	ReadIni()
@@ -123,12 +123,14 @@ FUNCTION ReadIni() AS VOID
 		IF .not. VOFolder.IsValid()
 			LOCAL vo,ver AS Microsoft.Win32.RegistryKey
 			vo := Microsoft.Win32.Registry.LocalMachine:OpenSubKey("Software\GrafX\Visual Objects")
-			FOREACH subkey AS STRING IN vo:GetSubKeyNames()
-				ver := vo:OpenSubKey(subkey)
-				IF ver:GetValue("InstallPath") != NULL
-					VOFolder.Set(ver:GetValue("InstallPath"):ToString())
-				END IF
-			NEXT
+			IF vo != NULL
+				FOREACH subkey AS STRING IN vo:GetSubKeyNames()
+					ver := vo:OpenSubKey(subkey)
+					IF ver:GetValue("InstallPath") != NULL
+						VOFolder.Set(ver:GetValue("InstallPath"):ToString())
+					END IF
+				NEXT         
+			ENDIF
 		END IF
 	END TRY
 	
@@ -220,7 +222,8 @@ STRUCTURE xPorterOptions
 	EXPORT IgnoreDuplicateDefines AS LOGIC
 	EXPORT DontGenerateEmptyFiles AS LOGIC
 	EXPORT AdjustCallbackFunctions AS LOGIC
-	EXPORT ExportOnlyDefines AS LOGIC
+	EXPORT ExportOnlyDefines AS LOGIC 
+	EXPORT SortEntitiesByName AS LOGIC 
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -779,7 +782,10 @@ CLASS ApplicationDescriptor
 		nCount := oMefList:Count
 //		xPorter.uiForm:SetProgressBarRange(nCount)
 		FOR LOCAL n := 0 AS INT UPTO oMefList:Count - 1
-			oMef := oMefList[n]
+			oMef := oMefList[n] 
+			IF oApp:xPortOptions:SortEntitiesByName
+				oMef:SortByName()
+			ENDIF
 			xPorter.Message(System.String.Format("Reading {0}, Module {1}/{2}: {3}" , cAppName , n+1 , nCount , oMef:Name))
 			LOCAL oModule := NULL AS ModuleDescriptor
 			IF oMef:IsExternal

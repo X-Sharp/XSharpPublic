@@ -459,7 +459,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF result
               IF SELF:_currentField < SELF:_Fields:Length 
                 SELF:_checkFields( info )
-                SELF:_Fields[ SELF:_currentField] := RDDFieldInfo{ info:Name, info:FieldType:ToString(), info:Length, info:Decimals}
+                SELF:_Fields[ SELF:_currentField] := info //RDDFieldInfo{ info:Name, info:FieldType:ToString(), info:Length, info:Decimals}
                 SELF:_Fields[SELF:_currentField]:Alias := info:Alias
                 // the alias could be an empty string !
                 IF !String.IsNullOrEmpty(info:Alias) 

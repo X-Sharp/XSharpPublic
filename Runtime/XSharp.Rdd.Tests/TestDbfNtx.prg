@@ -11,7 +11,7 @@ USING System.Text
 USING Xunit
 USING XSharp.RDD
 USING XSharp.Rdd.Support
-
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD.Tests
 
@@ -67,8 +67,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
-			dbInfo:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
-			RuntimeState.Workareas:SetArea(dbInfo:WorkArea, myDBF)
+			LOCAL area  := 0    AS DWORD
+			area  := RuntimeState.Workareas:FindEmptyArea(TRUE)
+			RuntimeState.Workareas:SetArea(area, myDBF)
+			RuntimeState.Workareas:CurrentWorkAreaNO := area
+			dbInfo:WorkArea := area
+
 			Assert.Equal( TRUE, myDBF:Open( dbInfo ) )
 			//
 			LOCAL ntxInfo AS DbOrderInfo
@@ -89,8 +93,11 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
-			dbInfo:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
-			RuntimeState.Workareas:SetArea(dbInfo:WorkArea, myDBF)
+			LOCAL area  := 0    AS DWORD
+			area  := RuntimeState.Workareas:FindEmptyArea(TRUE)
+			RuntimeState.Workareas:SetArea(area, myDBF)
+			RuntimeState.Workareas:CurrentWorkAreaNO := area
+			dbInfo:WorkArea := area
 			VAR success := myDBF:Open( dbInfo ) 
 			Assert.Equal( TRUE, success )
 			//
@@ -102,13 +109,16 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo, "" ) )
 			//
 			WHILE ! myDBF:EoF
+				Debug.Write( "---===---" + Environment.NewLine )
 				FOR VAR i := 1 TO myDBF:FIELDCount
 					// 
 					LOCAL oData AS OBJECT
 					oData := myDBF:GetValue( i )
 					LOCAL str AS STRING
 					str := oData:ToString()
+					Debug.Write( str +" - " )
 				NEXT
+				Debug.Write( Environment.NewLine )
 				myDBF:Skip(1)
 			ENDDO
 			//

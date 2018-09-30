@@ -8,6 +8,7 @@ USING System.IO
 USING XSharp.RDD.Enums
 USING System.Collections.Generic
 USING System.Linq
+USING XSharp.RDD
 // The classes below are simple. No properties, but all public fields.
 
 BEGIN NAMESPACE XSharp.RDD.Support
@@ -355,6 +356,7 @@ CLASS RddFieldInfo
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
+    PUBLIC Offset       AS LONG
 	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName
 		Length 		:= nLength
@@ -365,6 +367,7 @@ CLASS RddFieldInfo
 			FieldType := DBFieldType.Unknown
 		ENDIF  
 		Alias       := sName
+        Offset := -1
 		RETURN
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName                                
@@ -372,30 +375,23 @@ CLASS RddFieldInfo
 		Length 		:= nLength
 		Decimals 	:= nDecimals
 		Alias       := sName
+        Offset := -1
 		RETURN
 	METHOD Clone() AS RddFieldInfo
         VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
         info:Alias := SELF:Alias
+        info:Offset := SELF:OffSet
         RETURN info
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 END CLASS
 
-CLASS DbJoinList
-    PUBLIC DestSel AS DWORD
-    PUBLIC Fields AS DbJoinField[]
-    PUBLIC PROPERTY Count AS LONG GET Fields:Length
-    PUBLIC CONSTRUCTOR(nFields AS LONG)
-        SELF:Fields := DbJoinField[]{nFields}
-        RETURN
-END CLASS
 
-STRUCTURE DbJoinField
-    PUBLIC Area AS DWORD
-    PUBLIC Pos  AS DWORD
-END STRUCTURE
 
-CLASS DbFieldNames
+
+END NAMESPACE
+
+CLASS _FieldNames
     PUBLIC fields AS STRING[]
     PROPERTY fieldCount AS LONG GET fields:Length
     CONSTRUCTOR (aFields AS IList<STRING>)
@@ -405,9 +401,43 @@ END CLASS
 
 
 
+CLASS _JoinList
+    PUBLIC uiDestSel AS DWORD
+    PUBLIC Fields AS _JoinField[]
+    PUBLIC PROPERTY Count AS LONG GET Fields:Length
+    PUBLIC CONSTRUCTOR(nFields AS LONG)
+        SELF:Fields := _JoinField[]{nFields}
+        RETURN
+END CLASS
 
-END NAMESPACE
+STRUCTURE _JoinField
+    PUBLIC Area AS DWORD
+    PUBLIC Pos  AS DWORD
+END STRUCTURE
 
-
-
-
+STRUCTURE _RddList
+    EXPORT atomRddName AS STRING[]
+    PROPERTY uiRDDCount AS DWORD GET (DWORD) atomRDDName:Length
+        
+    // Create RDDList from class Tree
+    CONSTRUCTOR(oRDD AS WorkArea)
+        VAR names := List<STRING>{}
+        VAR type  := oRDD:GetType()
+        DO WHILE type != typeof(WorkArea)
+            VAR name := type:Name:ToUpper()
+            // map names to VO compatible names
+            IF name == "DBF"
+                names:Add("CAVODBF")
+            ELSE
+                names:Add(name)
+            ENDIF
+            type := type:BaseType
+        ENDDO
+        names:Reverse()
+        atomRDDName := names:ToArray()
+            
+    CONSTRUCTOR(aNames AS STRING[])
+        atomRDDName := aNames
+        RETURN
+            
+END STRUCTURE

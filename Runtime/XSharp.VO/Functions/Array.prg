@@ -972,20 +972,10 @@ FUNCTION ArrayNew() AS ARRAY
 /// <summary>
 /// Create an uninitialized Array with the specified number of elements and dimensions.
 /// </summary>
-/// <param name="nDim"></param>
+/// <param name="aDims"></param>
 /// <returns>
 /// </returns>
-FUNCTION ArrayNew(aDims PARAMS INT[]) AS ARRAY
-	RETURN __Array.ArrayCreate(aDims)
-
-
-/// <summary>
-/// Create an uninitialized Array with the specified number of elements and dimensions.
-/// </summary>
-/// <param name="nDim"></param>
-/// <returns>
-/// </returns>
-FUNCTION ArrayNew(aDims PARAMS DWORD[]) AS ARRAY
+FUNCTION ArrayNew(aDims PARAMS USUAL[]) AS ARRAY
 	LOCAL aDimInt AS INT[]
 	LOCAL i AS INT
 	aDimInt := INT[]{aDims:Length}

@@ -94,7 +94,7 @@ FUNCTION Bin2Logic(c AS STRING) AS LOGIC
 /// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
 /// </note>
 /// </remarks>
-/// <seealso cref='M:XSharp.Core.Functions.Bin2Ptr(System.IntPtr)' >Bin2Ptr</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.Bin2Ptr(System.String)' >Bin2Ptr</seealso>
 FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
     IF IntPtr.Size == 4
 	    RETURN L2Bin( p:ToInt32())
@@ -149,7 +149,7 @@ FUNCTION Bin2Real4(c AS STRING) AS REAL4
 /// </returns>
 /// <seealso cref='M:XSharp.Core.Functions.Real42Bin(System.Single)' >Real42Bin</seealso>
 /// <seealso cref='M:XSharp.Core.Functions.Real82Bin(System.Double)' >Real82Bin</seealso>
-FUNCTION Bin2REAL8(c AS STRING) AS REAL8
+FUNCTION Bin2Real8(c AS STRING) AS REAL8
 	LOCAL r8Result := 0 AS REAL8
 	IF c!= NULL .AND. c:Length >= 8
 		LOCAL aBytes AS BYTE[]
@@ -498,3 +498,6 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 		ENDIF
 	ENDIF
 	RETURN 0
+
+
+

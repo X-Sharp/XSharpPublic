@@ -44,7 +44,10 @@ FUNCTION CMonth(d AS DATE) AS STRING
 /// <param name="dwDay">A number representing a valid day of dwMonth.</param>
 /// <returns>The date that corresponds to the passed arguments.  If any of the arguments specified do not represent a valid year, month, or day, a NULL_DATE is returned.</returns>
 FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
-    RETURN _ConDate(dwY, dwM, dwDay) 
+    IF dwY == 0 .OR. dwM == 0 .OR. dwDay == 0
+      RETURN NULL_DATE
+    ENDIF
+    RETURN _ConDate(dwY, dwM, dwDay)
 
 /// <summary>
 /// Convert a Date string to date format.

@@ -80,9 +80,9 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DisabledWarnings>9001,162, 649</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>
     </CommandLineOption>
     <PPO>false</PPO>
@@ -146,7 +146,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Types\SDF.prg" />
-    <Compile Include="_Dummy.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ACE\" />

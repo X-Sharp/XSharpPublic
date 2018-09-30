@@ -54,3 +54,13 @@ FUNCTION ErrorBlock() AS USUAL STRICT
 	ENDIF
 	THROW oError
 	RETURN NIL
+
+/// <exclude />
+FUNCTION VO_Sprintf( format AS USUAL,  args PARAMS OBJECT[] ) AS STRING
+    IF IsString(format)
+	    RETURN _VO_Sprintf( (STRING) format, args)
+    ENDIF
+    RETURN _VO_Sprintf( (DWORD) format, args)
+
+
+

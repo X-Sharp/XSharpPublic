@@ -145,8 +145,7 @@ FUNCTION OrdScope(nScope, xVal) AS USUAL CLIPPER
 	
 /// <summary>Move the record pointer to the next or previous unique key in the controlling order.</summary>	
 FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
-    LOCAL nCount := uCount AS OBJECT
-	RETURN VODBOrderInfo ( DBOI_SKIPUNIQUE, "", NIL, REF nCount )
+	RETURN VODBOrderInfo ( DBOI_SKIPUNIQUE, "", NIL, REF uCount )
 	
 /// <summary>Return the status of the unique flag for a given order.</summary>	
 FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
@@ -174,7 +173,7 @@ FUNCTION OrdBagName(uOrder) AS STRING CLIPPER
 /// <summary>Set the condition and scope for an order.</summary>
 /// <remarks>OrdCondSet() is like VODBOrdCondSet() but untyped and the various parameters are passed individually.</remarks>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-/// <seealso cref='M:XSharp.Core.Functions.VODbOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)'>VODbOrdCondSet()</seealso>
+/// <seealso cref='M:XSharp.Core.Functions.VODBOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)'>VODbOrdCondSet()</seealso>
 FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,     ;
 		nNext, nRecno,lRest,lDescending,lAdditive,lCurrent, lCustom, lNoOptimize     ) AS LOGIC CLIPPER
 	
@@ -302,7 +301,7 @@ FUNCTION OrdFor(uOrder, cOrdBag, cFor) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION OrdKey(uOrder, cOrdBag) AS USUAL CLIPPER
-	LOCAL xKey  := NULL    AS OBJECT
+	LOCAL xKey  := NIL    AS USUAL
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
 	ENDIF
@@ -377,7 +376,7 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 	LOCAL cAlias    AS STRING
 	LOCAL lShare    AS LOGIC
 	LOCAL aRDD      AS ARRAY
-	LOCAL rdds      AS XSharp.RDD.RddList
+	LOCAL rdds      AS _RddList
 	LOCAL i         AS DWORD
 	
 	IF Used()

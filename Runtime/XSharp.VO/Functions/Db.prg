@@ -63,13 +63,13 @@ FUNCTION _Select(xValue) AS USUAL CLIPPER
     
 /// <exclude/>
 FUNCTION __FieldGetNum( fieldpos AS DWORD ) AS USUAL
-    LOCAL ret := NULL AS OBJECT
+    LOCAL ret := NIL AS USUAL
     VODBFieldGet( fieldpos, REF ret )
     RETURN ret
     
 /// <exclude/>
 FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
-    LOCAL ret := NULL AS OBJECT
+    LOCAL ret := NIL AS USUAL
     LOCAL curArea AS DWORD
     curArea := RuntimeState.CurrentWorkarea
     TRY
@@ -405,9 +405,7 @@ FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
     lRet := TRUE
     
     IF IsNumeric(uOrder)
-        LOCAL oOrder := NULL AS OBJECT
-        lRet := VODBOrderInfo(DBOI_NAME,"",uOrder, REF oOrder)
-        uOrder := oOrder
+        lRet := VODBOrderInfo(DBOI_NAME,"",uOrder, REF uOrder)
     ENDIF
     
     RETURN OrdDestroy(uOrder, cOrdBag)
@@ -431,9 +429,8 @@ FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPP
     /// <returns>
     /// </returns>
 FUNCTION DbFieldInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
-    LOCAL oNewVal := xNewVal AS OBJECT
-    _DbCallWithError(__FUNCTION__, !VODBFieldInfo(nOrdinal, nPos, REF oNewVal))
-    RETURN oNewVal
+    _DbCallWithError(__FUNCTION__, !VODBFieldInfo(nOrdinal, nPos, REF xNewVal))
+    RETURN xNewVal
     
     
     
@@ -451,9 +448,8 @@ FUNCTION DbGoto(uRecId) AS LOGIC CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
-    LOCAL oNewVal := xNewVal AS OBJECT
-    _DbCallWithError(__FUNCTION__, VODBInfo(nOrdinal, REF oNewVal))
-    RETURN oNewVal
+    _DbCallWithError(__FUNCTION__, VODBInfo(nOrdinal, REF xNewVal))
+    RETURN xNewVal
     
     
     /// <summary>
@@ -506,9 +502,7 @@ FUNCTION DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal) AS USUAL CLIPPER
         lKeyVal  := .T.
         nOrdinal := DBOI_EXPRESSION
     ENDIF
-    LOCAL oNewVal := xNewVal AS OBJECT	
-    VODBOrderInfo(nOrdinal, cBagName, uOrder, REF oNewVal)
-    xNewVal := oNewVal
+    VODBOrderInfo(nOrdinal, cBagName, uOrder, REF xNewVal)
     IF lKeyVal
         IF IsString(xNewVal)
             IF Len(xNewVal) == 0
@@ -529,9 +523,8 @@ FUNCTION DbOrderInfo(nOrdinal,cBagName, uOrder, xNewVal) AS USUAL CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION DbRecordInfo(nOrdinal, uRecId, xNewVal) AS USUAL CLIPPER
-    LOCAL oNewVal := xNewVal AS OBJECT
-    VODBRecordInfo(nOrdinal, uRecId, REF oNewVal)
-    RETURN oNewVal
+    VODBRecordInfo(nOrdinal, uRecId, REF xNewVal)
+    RETURN xNewVal
     
     
     
@@ -552,13 +545,13 @@ FUNCTION DbRLockList() AS ARRAY STRICT
     LOCAL lockList          AS DWORD[]
     LOCAL aLockList := {}   AS ARRAY
     LOCAL i                 AS DWORD
-    LOCAL oRecords  := NULL  AS OBJECT
+    LOCAL uRecords  := NIL AS USUAL
     LOCAL nRecords          AS DWORD
     nRecords := 0
     
-    IF _DbCallWithError(__FUNCTION__, VODBInfo(DBI_LOCKCOUNT, REF oRecords))
+    IF _DbCallWithError(__FUNCTION__, VODBInfo(DBI_LOCKCOUNT, REF uRecords))
         lockList := (DWORD[]) DbInfo(DBI_GETLOCKARRAY)
-        nRecords := COnvert.ToUInt32(oRecords)
+        nRecords := (DWORD) uRecords
         FOR i := 1 TO nRecords
             AAdd(aLockList, lockList[i])
         NEXT
@@ -736,7 +729,7 @@ FUNCTION DbSkip (nRecords) AS LOGIC CLIPPER
     /// </returns>
 FUNCTION DbUseArea (lNew, xDriver, cName, cAlias, lShare, lReadOnly, aStru, cDelim,aHidden ) AS LOGIC CLIPPER
     LOCAL lRetCode        AS LOGIC
-    LOCAL rddList         AS RddList
+    LOCAL rddList         AS _RddList
     LOCAL nTries          AS LONG
     LOCAL aRdds           AS ARRAY
     
@@ -785,7 +778,7 @@ FUNCTION FieldPut (wPos AS USUAL, xValue  AS USUAL) AS USUAL
     /// <returns>
     /// </returns>
 FUNCTION FieldGet(wPos) AS USUAL CLIPPER
-    LOCAL xRetVal := NIL AS OBJECT
+    LOCAL xRetVal := NIL AS USUAL
     DEFAULT( REF wPos, 1)
     _DbCallWithError(__FUNCTION__, VODBFieldGet(wPos, REF xRetVal))
     RETURN xRetVal
@@ -813,9 +806,8 @@ FUNCTION RDDCount(nType) AS DWORD CLIPPER
     /// <returns>
     /// </returns>
 FUNCTION RDDInfo(nOrdinal, xNewVal) AS USUAL CLIPPER
-    LOCAL oNewVal := xNewVal AS OBJECT
-    VODBRDDInfo(nOrdinal, REF oNewVal)
-    RETURN oNewVal
+    VODBRDDInfo(nOrdinal, REF xNewVal)
+    RETURN xNewVal
     
     
     
@@ -1091,12 +1083,12 @@ FUNCTION DbStruct() AS ARRAY PASCAL
         FOR i := 1 UPTO nFCount
             aField := {}
             
-            LOCAL oNewVal := NULL AS OBJECT
-            _DbCallWithError(__FUNCTION__, VODBFieldInfo(DBS_PROPERTIES, i, REF oNewVal))
-            nProps:= Convert.ToUint32(oNewVal)
+            LOCAL xNewVal := NIL AS USUAL
+            _DbCallWithError(__FUNCTION__, VODBFieldInfo(DBS_PROPERTIES, i, REF xNewVal))
+            nProps:= (DWORD)  xNewVal
             FOR j := 1 UPTO nProps
-                _DbCallWithError(__FUNCTION__, VODBFieldInfo(j, i, REF oNewVal))
-                AAdd(aField, oNewVal)
+                _DbCallWithError(__FUNCTION__, VODBFieldInfo(j, i, REF xNewVal))
+                AAdd(aField, xNewVal)
             NEXT
             
             AAdd(aStruct, aField)
@@ -1174,14 +1166,18 @@ INTERNAL STATIC CLASS Db
         oError:CanDefault   := .T.
         RETURN oError
         
-    INTERNAL STATIC METHOD AllocFieldNames(aStru AS ARRAY) AS DbFieldNames
+    INTERNAL STATIC METHOD AllocFieldNames(aStru AS ARRAY) AS _FieldNames
         VAR aNames := List<STRING>{}
-        FOREACH aField AS ARRAY IN aStru
-            aNames:Add(Upper(aField[DBS_NAME]))
+        FOREACH aField AS USUAL IN aStru
+            IF IsArray(aField)
+                aNames:Add(Upper(aField[DBS_NAME]))
+            ELSE
+                aNames:Add(upper(aField))
+            ENDIF
         NEXT
-        RETURN DbFieldNames{aNames}
+        RETURN _FieldNames{aNames}
         
-    INTERNAL STATIC METHOD TargetFields  (cAlias AS STRING, aNames AS ARRAY, oJoinList OUT DbJoinList) AS ARRAY 
+    INTERNAL STATIC METHOD TargetFields  (cAlias AS STRING, aNames AS ARRAY, oJoinList OUT _JoinList) AS ARRAY 
     
         LOCAL aNew      AS ARRAY
         LOCAL cName     AS STRING
@@ -1242,7 +1238,7 @@ INTERNAL STATIC CLASS Db
             ENDIF
         NEXT
         nFields := (INT)ALen(aStruct)
-        oJoinList := DbJoinList{nFields}
+        oJoinList := _JoinList{nFields}
         FOR i := 1 TO nFields
             oJoinList:Fields[i]:Area := aFldList[i,1]
             oJoinList:Fields[i]:Pos  := aFldList[i,2] - 1
@@ -1311,12 +1307,12 @@ INTERNAL STATIC CLASS Db
         ENDIF
         RETURN aRdds
         
-    INTERNAL STATIC METHOD AllocRddList(aNames AS ARRAY) AS XSharp.RDD.RddList
+    INTERNAL STATIC METHOD AllocRddList(aNames AS ARRAY) AS _RddList
         VAR aList := List<STRING>{}
         FOREACH cName AS STRING IN aNames
             aList:Add(cName)
         NEXT
-        RETURN XSharp.RDD.RddList{aList:ToArray()}
+        RETURN _RddList{aList:ToArray()}
     INTERNAL STATIC METHOD ArrayToFieldInfo(aStruct AS ARRAY) AS RddFieldInfo[]
         VAR oList := List<RddFieldInfo>{}
         FOREACH aField AS USUAL IN aStruct
@@ -1393,3 +1389,26 @@ INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS A
 	RETURN aNew
 
 END CLASS
+
+/// <exclude />
+FUNCTION __RDDList(cRddName AS STRING) AS ARRAY
+    RETURN Db.RDDList(cRddName, {})
+/// <exclude />
+FUNCTION __RDDList(cRddName AS STRING, aHidden AS ARRAY) AS ARRAY
+    RETURN Db.RDDList(cRddName, aHidden)
+
+/// <exclude />
+FUNCTION _AllocFieldNames(aStruct AS ARRAY) AS _FieldNames
+    RETURN Db.AllocFieldNames(aStruct)
+
+/// <exclude />    
+FUNCTION _FreeFieldNames(aNames AS _FieldNames) AS VOID
+    RETURN 
+
+/// <exclude />    
+FUNCTION __allocNames(aStruct AS ARRAY) AS _FieldNames
+    RETURN Db.AllocFieldNames(aStruct)
+
+
+FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list REF _JoinList ) AS ARRAY
+    RETURN Db.TargetFields(cAlias, aFields, REF list)

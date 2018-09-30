@@ -309,6 +309,10 @@ FUNCTION IsBiDi() AS LOGIC
 _DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
 
 /// <exclude />
-[Obsolete];
 FUNCTION GetNatDllHandle() AS IntPtr STRICT
-	RETURN IntPtr.Zero
+  LOCAL t AS Type
+   LOCAL m AS System.Reflection.Module
+   t := typeof( XSharp.Error )  
+   m := t:Module
+   RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE( m )
+

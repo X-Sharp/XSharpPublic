@@ -519,3 +519,9 @@ END NAMESPACE
 
 
 
+/// <exclude/>
+FUNCTION ErrorBuild(pErrInfo AS exception) AS XSharp.ERROR
+	RETURN  XSharp.Error{pErrInfo}
+
+
+

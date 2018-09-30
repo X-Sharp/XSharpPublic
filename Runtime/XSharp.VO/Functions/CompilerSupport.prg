@@ -129,7 +129,7 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     // _FIELD->Name
 FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
-    LOCAL ret := NULL AS OBJECT
+    LOCAL ret := NIL AS USUAL
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE

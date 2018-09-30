@@ -82,13 +82,15 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 	RETURN cAlias
 
 
+FUNCTION __DBFLEDIT(aStruct AS ARRAY, aFields AS ARRAY, aList AS ARRAY ) AS ARRAY
+    RETURN Db.FieldList(aStruct, aFields, aList)
+
 /// <summary>Import records from a database file.</summary>
-FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden)     AS LOGIC CLIPPER
+FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden, aStruct)     AS LOGIC CLIPPER
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL n, i          AS DWORD
-	LOCAL aStruct       AS ARRAY
-	LOCAL aMatch		  AS ARRAY
+	LOCAL aMatch		AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	LOCAL lAnsi         AS LOGIC
 	
@@ -100,8 +102,10 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		IF !Used()
 			THROW Db.DBCMDError(__FUNCTION__)
 		ENDIF
-		
-		IF Empty( aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY) )
+		IF IsNil(aStruct)
+            aStruct := DbStruct()
+        ENDIF
+		IF Empty( aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY) )
 			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
@@ -126,7 +130,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		ENDIF
 		
 		IF (siFrom > 0)
-			DBCLOSEAREA()
+			VODBCloseArea()
 		ENDIF
 		
 		VODBSetSelect(INT(siTo))
@@ -135,7 +139,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 	CATCH e AS Error
 		IF  siFrom > 0
 			VODBSetSelect(INT(siFrom))
-			DBCLOSEAREA()
+			VODBCloseArea()
 		ENDIF
 		
 		e:FuncSym := __FUNCTION__
@@ -148,12 +152,11 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 
 
 /// <summary>Import records from a delimited text file.</summary>
-FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)AS LOGIC CLIPPER
+FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest,aStruct)AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
-	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	LOCAL lAnsi         AS LOGIC
 	LOCAL lDbfAnsi      AS LOGIC
@@ -163,8 +166,10 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 	TRY
 		
 		siTo := VODBGetSelect()
-		
-		IF (Empty( aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY) ))
+        IF IsNil(aStruct)
+            aStruct := DbStruct()
+        ENDIF
+		IF (Empty( aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY) ))
 			THROW Db.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
@@ -188,7 +193,7 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
-		DBCLOSEAREA()
+		VODBCloseArea()
 		
 		VODBSetSelect(INT(siTo))
 		
@@ -205,12 +210,11 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 /// <summary>Import records from an SDF file.</summary>
 FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	uCobWhile, nNext, nRec, ;
-	lRest                   )      AS LOGIC CLIPPER
+	lRest , aStruct                  )      AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
-	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	LOCAL lAnsi         AS LOGIC
 	LOCAL lDbfAnsi      AS LOGIC
@@ -219,8 +223,11 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	
 	TRY		
 		siTo := VODBGetSelect()
+        IF IsNil(aStruct)
+            aStruct := DbStruct()
+        ENDIF
 		
-		IF (Empty( aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY) ))
+		IF (Empty( aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY) ))
 			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
@@ -244,7 +251,7 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 		
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
-		DBCLOSEAREA()
+		VODBCloseArea()
 		VODBSetSelect(INT(siTo))
 		
 	CATCH e AS Error
@@ -257,11 +264,10 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 
 
 /// <summary>Export records to a new database file.</summary>
-FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver, aHidden    )     AS LOGIC CLIPPER
+FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver, aHidden, aStruct    )     AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
-	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	LOCAL lAnsi         AS LOGIC
 	LOCAL lDbfAnsi      AS LOGIC
@@ -293,8 +299,12 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 			(DbOrderInfo(DBOI_ORDERCOUNT) = 0)
 			
 			lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cFile, DbInfo(DBI_FULLPATH) )
-		ELSE
-			IF ( Empty(aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY)) )
+        ELSE
+            IF IsNil(aStruct)
+                aStruct := DbStruct()
+            ENDIF
+            
+			IF ( Empty(aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY)) )
 				THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
 			ENDIF
 			
@@ -332,7 +342,7 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 #define BUFF_SIZE 0x00008000
 #define FO_CREATE 0x00001000
 
-INTERNAL FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS LOGIC 
+FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS LOGIC 
 	
 	LOCAL lRetCode  AS LOGIC
 	LOCAL ptrBuff   AS BYTE[]
@@ -386,12 +396,11 @@ INTERNAL FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS ST
 
 /// <summary>Export records to a new delimited text file.</summary>
 
-FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest)   AS LOGIC CLIPPER
+FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest, aStruct)   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
-	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	LOCAL lAnsi         AS LOGIC
 	LOCAL lDbfAnsi      AS LOGIC
@@ -404,8 +413,11 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 		IF !Used()
 			THROW Db.DBCMDError(__FUNCTION__)
 		ENDIF
-		
-		IF Empty(aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY))
+        IF IsNil(aStruct)
+            aStruct := DbStruct()
+        ENDIF
+  		
+		IF Empty(aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY))
 			THROW Db.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
@@ -430,7 +442,7 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
 		VODBSetSelect(INT(siTo))
-		DbCloseArea()
+		VODBCloseArea()
 		
 	CATCH e AS Error
 		e:FuncSym := __FUNCTION__
@@ -444,12 +456,11 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 
 
 /// <summary>Export records to a new SDF file.</summary>
-FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS LOGIC CLIPPER
+FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct )   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
-	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	LOCAL cAlias        AS STRING
 	LOCAL lAnsi         AS LOGIC
@@ -463,8 +474,11 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS
 		IF !Used()
 			THROW Db.DBCMDError(__FUNCTION__)
 		ENDIF
+        IF IsNil(aStruct)
+            aStruct := DbStruct()
+        ENDIF
 		
-		IF Empty(aStruct := Db.FieldList(DbStruct(), aFields, NULL_ARRAY))
+		IF Empty(aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY))
 			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
@@ -493,7 +507,7 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS
 		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		
 		VODBSetSelect(INT(siTo))
-		DBCLOSEAREA()
+		VODBCloseArea()
 		
 	CATCH e AS Error
 		e:FuncSym := __FUNCTION__
@@ -518,7 +532,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	
-	LOCAL pJoinList     AS DbJOINLIST
+	LOCAL pJoinList     AS _JOINLIST
 	
 	IF IsNil(uCobFor)
 		uCobFor := {|| .T.}
@@ -550,7 +564,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 		DbCreate( cFile, aStruct,"" , .T., "" )
 		VODBSelect(siFrom1, REF siTo)
 		
-		pJoinList:DestSel := siTo
+		pJoinList:uiDestSel := siTo
 		
 		lRetCode := DbGotop()
 		
@@ -584,7 +598,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
     FINALLY
 	    IF siTo > 0
 		    VODBSetSelect(INT(siTo))
-		    DBCLOSEAREA()
+		    VODBCloseArea()
 	    ENDIF
 	
 	    VODBSetSelect(INT(siFrom1))
@@ -597,7 +611,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DbJoinAppend(nSelect AS DWORD, list AS DbJoinList)   AS LOGIC        
+FUNCTION DbJoinAppend(nSelect AS DWORD, list AS _JoinList)   AS LOGIC        
 	RETURN _DbCallWithError(__FUNCTION__, VODBJoinAppend(nSelect, list))
 
 /// <summary>Copy records to a database file in sorted order.
@@ -608,8 +622,8 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 	LOCAL siTo          AS DWORD
 	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
-	LOCAL fnFieldNames  AS DbFieldNames
-	LOCAL fnSortNames   AS DbFieldNames
+	LOCAL fnFieldNames  AS _FieldNames
+	LOCAL fnSortNames   AS _FieldNames
 	LOCAL cRdd 			AS STRING
 	
 	
@@ -665,7 +679,7 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 /// </returns>
 FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
 	
-	LOCAL fldNames  AS DbFieldNames
+	LOCAL fldNames  AS _FieldNames
 	
 	IF !IsNil(uCobWhile)
 		lRest := .T.
@@ -698,7 +712,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	LOCAL lSomething    AS LOGIC
 	LOCAL kEval         AS USUAL
 	LOCAL lRetCode  := FALSE   AS LOGIC
-	LOCAL fldNames      AS DbFieldNames
+	LOCAL fldNames      AS _FieldNames
 	
 	IF IsNil(uCobWhile)
 		uCobWhile := {|| .T.}
@@ -808,7 +822,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 				VODBSetSelect(INT(siTo))
 				
 				FOR i := 1 TO n
-					FIELDPUT(aFldNum[i], aNum[i])
+					FieldPut(aFldNum[i], aNum[i])
 				NEXT
 				
 				VODBSetSelect(INT(siFrom))

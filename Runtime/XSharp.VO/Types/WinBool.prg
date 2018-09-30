@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp
             _value := IIF(lValue, 1, 0)
 
 		/// <inheritdoc />
-        VIRTUAL METHOD GetHashCode() AS INT
+        OVERRIDE METHOD GetHashCode() AS INT
             RETURN _value:GetHashCode()
             
        /// <exclude />

@@ -126,20 +126,23 @@ BEGIN NAMESPACE XSharp
 			/// <summary>Construct a date from year, month, day </summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(year AS INT, month AS INT, day AS INT)
-				TRY
-					// this may throw an exception when the combination is not valid
-					VAR lhs := System.DateTime{year, month, day}
-					_value := 0
-					_year  := (WORD) lhs:Year
-					_month := (BYTE) lhs:Month
-					_day   := (BYTE) lhs:Day
-				CATCH /*e*/ AS Exception
-					_value := 0 // null_date
-					_year  := 0
-					_month := 0
-					_day   := 0
-					// THROW e // cpc: VO allows invalid DATE literals, which are treated as NULL_DATE
-				END TRY
+				_value := 0 // null_date
+				_year  := 0
+				_month := 0
+				_day   := 0
+                IF year != 0 .AND. month != 0 .AND. day != 0
+				    TRY
+					    // this may throw an exception when the combination is not valid
+                    
+					    VAR lhs := System.DateTime{year, month, day}
+					    _value := 0
+					    _year  := (WORD) lhs:Year
+					    _month := (BYTE) lhs:Month
+					    _day   := (BYTE) lhs:Day
+				    CATCH 
+					    NOP
+                    END TRY
+                ENDIF
 				RETURN
 			
 			/// <summary>Construct a date from year, month, day </summary>

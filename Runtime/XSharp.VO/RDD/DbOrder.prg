@@ -369,9 +369,7 @@ FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListClear(cOrdBag, uOrder))
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <exclude />
 FUNCTION __OrdListClear()  AS LOGIC STRICT
 	LOCAL lRet      AS LOGIC
 	LOCAL lOpen     AS LOGIC

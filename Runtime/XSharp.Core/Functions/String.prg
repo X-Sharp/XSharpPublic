@@ -1159,8 +1159,7 @@ FUNCTION Stuff(c AS STRING,nStart AS DWORD,nToDelete AS DWORD,cIns AS STRING) AS
 	ENDIF
 	RETURN result
 
-// Note: worker function that accepts negative arguments 
-// because the untyped Substr() allows these
+/// <exclude />
 FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
 	IF c != NULL
 		IF nStart == 0

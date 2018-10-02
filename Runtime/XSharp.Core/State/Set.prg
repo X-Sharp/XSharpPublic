@@ -251,7 +251,7 @@ FUNCTION SetDefault() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetDefault(cDefault AS STRING) AS STRING
-	__SetPathArray(NULL)
+	SetPathArray(NULL)
 	SETSTATE STRING Set.Default cDefault
 	
 
@@ -496,7 +496,7 @@ FUNCTION SetPath() AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetPath(cPath AS STRING) AS STRING
-	__SetPathArray(NULL)
+	SetPathArray(NULL)
 	SETSTATE STRING Set.Path cPath
 
 
@@ -508,7 +508,7 @@ FUNCTION SetPath(cPath AS STRING) AS STRING
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION __SetPathArray() AS STRING[]
+FUNCTION SetPathArray() AS STRING[]
 	GETSTATE STRING[] Set.PathArray 
 
 /// <summary>
@@ -520,7 +520,7 @@ FUNCTION __SetPathArray() AS STRING[]
 /// <param name="aPath"></param>
 /// <returns>
 /// </returns>
-FUNCTION __SetPathArray(aPath AS STRING[]) AS STRING[]
+FUNCTION SetPathArray(aPath AS STRING[]) AS STRING[]
 	SETSTATE STRING[] Set.PathArray aPath
 
 /// <summary>

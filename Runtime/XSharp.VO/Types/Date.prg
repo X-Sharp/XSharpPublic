@@ -584,7 +584,7 @@ BEGIN NAMESPACE XSharp
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				RETURN @@Value:ToString(provider)
-			/// <inheritdoc />
+			/// <inheritdoc cref="M:System.DateTime.ToString(System.String)"/>
 			METHOD ToString(s AS STRING) AS STRING
 				IF (_value == 0)
 					RETURN RuntimeState.NullDateString

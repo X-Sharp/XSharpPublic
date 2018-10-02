@@ -44,12 +44,7 @@ FUNCTION Bof() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION DBF() AS STRING
-    LOCAL oRDD := VoDb.CWA("DBF") AS IRDD
-    IF oRDD != NULL
-        RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
-    ENDIF                            
-    RETURN String.Empty
-
+    return VoDb.DBF()
 /// <summary>
 /// </summary>
 /// <returns>
@@ -115,12 +110,7 @@ FUNCTION Flock() AS LOGIC STRICT
     /// <returns>
     /// </returns>
 FUNCTION FCount() AS DWORD
-    LOCAL oRDD := VoDb.CWA("FCount") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:FieldCount
-    ENDIF
-    RETURN 0
-    
+    return VoDb.FCount()    
     
     /// <summary>
     /// Return the name of a field as a string.
@@ -129,12 +119,7 @@ FUNCTION FCount() AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
-    LOCAL oRDD := VoDb.CWA("FieldName") AS IRDD
-    IF (oRDD != NULL)
-        RETURN oRDD:FieldName((INT) dwFieldPos)
-    ENDIF
-    RETURN String.Empty   
-    
+    return VoDb.FieldName(dwFieldPos)    
     
     
     /// <summary>
@@ -144,12 +129,8 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
     /// <returns>
     /// </returns>
 FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
-    LOCAL oRDD := VoDb.CWA("FieldPos") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:FieldIndex(sFieldName) 
-    ENDIF
-    RETURN 0   
-
+    return VoDb.FieldPos(sFieldName)
+    
 /// <summary>
 /// Return the position of a field.
 /// </summary>
@@ -189,14 +170,7 @@ FUNCTION Header() AS LONG
 /// <returns>
 /// </returns>
 FUNCTION LastRec() AS DWORD
-    LOCAL oRDD := VoDb.CWA("LastRec") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:RecCount
-    ENDIF
-    RETURN 0   
-
-
-
+    return (DWORD) VoDb.LastRec()
 
 /// <summary>
 /// </summary>
@@ -344,9 +318,7 @@ FUNCTION RecNo() AS DWORD
 
 
 FUNCTION RecSize AS LONG
-    LOCAL nSize := NULL AS OBJECT
-    VoDb.Info(DBInfo.DBI_GETRECSIZE, REF nSize)
-    RETURN (LONG) nSize
+    RETURN VoDb.RecSize()
 
 /// <summary>
 /// </summary>

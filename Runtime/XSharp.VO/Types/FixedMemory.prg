@@ -11,10 +11,9 @@ USING System.Collections.Generic
 USING System.Runtime.CompilerServices
 
 
-/// <summary>Delegate that a client needs to implement to use MemWalk.</summary
+/// <summary>Delegate that a client needs to implement to use MemWalk.</summary>
 DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
 
-/// <summary>Class that holds the Fixed Memory allocation support</summary
 INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
     PUBLIC CONST FAILURE := 65535 AS WORD
     PUBLIC CONST SUCCESS := 0 AS WORD

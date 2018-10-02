@@ -42,7 +42,7 @@ CLASS XSharp.OleDateTime
     END PROPERTY
     /// <summary>The value as a .Net DateTime type.</summary>
 	PROPERTY DateTime AS System.DateTime GET dt SET dt := VALUE
-	/// <inheritdoc />
+	/// <summary>Construct an OleDateTime object</summary>
 	CONSTRUCTOR() 
 		dt := DateTime.MinValue
     /// <inheritdoc />

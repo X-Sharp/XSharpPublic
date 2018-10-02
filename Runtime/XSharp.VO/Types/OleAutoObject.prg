@@ -30,7 +30,7 @@ CLASS XSharp.OleAutoObject
 		SELF:lDateTimeAsDate    := OleDateTimeAsDate()
 		RETURN
 			
-   /// <inheritdoc />   
+   /// <summary>Construct an OleAutoObject</summary>
 	CONSTRUCTOR(cProgId AS STRING)
 		SELF()
 		oComObject        := OleCreateObject(cProgId)

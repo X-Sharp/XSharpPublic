@@ -11,7 +11,7 @@
 /// <returns>
 /// </returns>
 FUNCTION BLOBDirectExport(nPointer, cTargetFile, nMode) AS LOGIC CLIPPER
-	RETURN _DbCallWithError(__FUNCTION__, DbInfo( BLOB_DIRECT_EXPORT, <OBJECT>{ nPointer, cTargetFile, nMode } ))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info( BLOB_DIRECT_EXPORT, <OBJECT>{ nPointer, cTargetFile, nMode } ))
 	
 	
 	
@@ -20,7 +20,7 @@ FUNCTION BLOBDirectExport(nPointer, cTargetFile, nMode) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS USUAL CLIPPER
-	RETURN DbInfo( BLOB_DIRECT_GET, <OBJECT>{nPointer, nStart, nCount} )
+	RETURN VoDb.Info( BLOB_DIRECT_GET, <OBJECT>{nPointer, nStart, nCount} )
 	
 	
 	
@@ -29,7 +29,7 @@ FUNCTION BLOBDirectGet(nPointer, nStart, nCount) AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS USUAL CLIPPER
-	RETURN DbInfo( BLOB_DIRECT_IMPORT, <OBJECT>{nOldPointer, cSourceFile} )
+	RETURN VoDb.Info( BLOB_DIRECT_IMPORT, <OBJECT>{nOldPointer, cSourceFile} )
 
 		
 /// <summary>
@@ -37,7 +37,7 @@ FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS USUAL CLIPPER
-	RETURN DbInfo( BLOB_DIRECT_PUT, <OBJECT>{nOldPointer, uBlob} )
+	RETURN VoDb.Info( BLOB_DIRECT_PUT, <OBJECT>{nOldPointer, uBlob} )
 	
 	
 	
@@ -47,14 +47,14 @@ FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS USUAL CLIPPER
 /// </returns>
 FUNCTION BLOBExport (nFieldPos, cFileName, nMode)  AS LOGIC CLIPPER
 	DbInfo( BLOB_NMODE, nMode )
-  	RETURN _DbCallWithError(__FUNCTION__, VODBFileGet( nfieldPos, cFileName ))
+  	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FileGet( nfieldPos, cFileName ))
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS USUAL CLIPPER
-	RETURN DbInfo( BLOB_GET, <OBJECT>{nFieldNo, nStart, nLen} )
+	RETURN VoDb.Info( BLOB_GET, <OBJECT>{nFieldNo, nStart, nLen} )
 	
 	
 /// <summary>
@@ -62,7 +62,7 @@ FUNCTION BLOBGet(nFieldNo, nStart, nLen)  AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBImport (nFieldPos, cFileName)  AS LOGIC CLIPPER
-	RETURN _DbCallWithError(__FUNCTION__, VODBFilePut( nFieldPos, cFileName ) )
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FilePut( nFieldPos, cFileName ) )
 	
 	
 /// <summary>
@@ -70,7 +70,7 @@ FUNCTION BLOBImport (nFieldPos, cFileName)  AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBRootGet() AS USUAL STRICT
-	RETURN DbInfo( BLOB_ROOT_GET )
+	RETURN VoDb.Info( BLOB_ROOT_GET , NIL)
 	
 	
 /// <summary>
@@ -78,14 +78,14 @@ FUNCTION BLOBRootGet() AS USUAL STRICT
 /// <returns>
 /// </returns>
 FUNCTION BLOBRootLock() AS USUAL STRICT
-	RETURN DbInfo( BLOB_ROOT_LOCK )
+	RETURN VoDb.Info( BLOB_ROOT_LOCK, NIL )
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION BLOBRootPut(xblob) AS USUAL CLIPPER
-	RETURN DbInfo( BLOB_ROOT_PUT, xBlob )
+	RETURN VoDb.Info( BLOB_ROOT_PUT, xBlob )
 	
 	
 /// <summary>
@@ -93,7 +93,7 @@ FUNCTION BLOBRootPut(xblob) AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION BLOBRootUnlock()  AS USUAL STRICT
-	RETURN DbInfo( BLOB_ROOT_UNLOCK )
+	RETURN VoDb.Info( BLOB_ROOT_UNLOCK, NIL )
 	
 
 /// <summary>
@@ -101,5 +101,5 @@ FUNCTION BLOBRootUnlock()  AS USUAL STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbBlobInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
-	_DbCallWithError(__FUNCTION__, VODBBlobInfo(nOrdinal, nPos, REF xNewVal))
+	_DbThrowErrorOnFailure(__FUNCTION__, VoDb.BlobInfo(nOrdinal, nPos, REF xNewVal))
 	RETURN xNewVal

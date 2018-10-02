@@ -10,6 +10,7 @@ USING XSharp.Rdd
 /// <returns>
 /// </returns>
 FUNCTION DBClearOrderCondition()  AS LOGIC
+    
 	RETURN OrdCondSet("", NIL, .F., NIL, NIL, 0, 0, 0, 0, .F., .F.)
 	
 /// <summary>
@@ -17,6 +18,7 @@ FUNCTION DBClearOrderCondition()  AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION DbReindex() AS LOGIC
+    // Don't call CoreDb because of error handling
 	RETURN OrdListRebuild()
 	
 
@@ -29,14 +31,14 @@ FUNCTION DbSeek(xValue, lSoft, lLast) AS LOGIC CLIPPER
 	DEFAULT(REF lSoft, SetSoftSeek())
 	
 	dbsci := DbScopeInfo{}
-	IF !IsNil(lLast)
-		dbsci:Last := lLast
+	IF IsNil(lLast)
+		lLast := FALSE
 	ENDIF
-	VODBSetScope( dbsci)
+	VoDb.SetScope( dbsci)
 	DEFAULT(REF xValue, "")
-    IF lRet := _DbCallWithError(__FUNCTION__, VODBSeek(xValue, lSoft))
-	    lRet := VODBFound()
-	    VODBSetScope(dbsci)
+    IF lRet := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Seek(xValue, lSoft, lLast))
+	    lRet := VoDb.Found()
+	    VoDb.SetScope(dbsci)
     ENDIF
 	RETURN lRet
 	
@@ -45,7 +47,7 @@ FUNCTION DbSeek(xValue, lSoft, lLast) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION DbSetFound(lFnd AS LOGIC) AS LOGIC 
-	RETURN VODBSetFound(lFnd)
+	RETURN VoDb.SetFound(lFnd)
 	
 	
 	
@@ -54,6 +56,7 @@ FUNCTION DbSetFound(lFnd AS LOGIC) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION DbSetOrderCondition(  cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart, nNext, nRecno, lRest, lDescending, lAdditive, lCurrent, lCustom, lNoOptimize) AS LOGIC CLIPPER
+    // Don't call VoDb because of error handling
 	RETURN OrdCondSet( cFor, uCobFor, lAll, uCobWhile, uCobEval, ;
 		nStep, nStart, nNext, nRecno, lRest,      ;
 		lDescending, lAdditive, lCurrent, lCustom, lNoOptimize)
@@ -63,7 +66,7 @@ FUNCTION DbSetOrderCondition(  cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, 
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
-	
+	// Don't call VoDb because of error handling
 	IF IsNil(cIndex)
 		RETURN OrdListClear()
 	ENDIF
@@ -76,7 +79,7 @@ FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 FUNCTION DbSetOrder(uOrder, cBagName) AS LOGIC CLIPPER
 	LOCAL cOrder  := "" AS STRING
 	DEFAULT( REF cBagName, "")
-	RETURN VODBOrdSetFocus(cBagName, uOrder, REF cOrder)
+	RETURN VoDb.OrdSetFocus(cBagName, uOrder, REF cOrder)
 	
 
 /// <summary>
@@ -97,7 +100,7 @@ FUNCTION IndexCount() AS DWORD
 /// <summary>Return the default index file extension for a work area as defined by its RDD.</summary>
 /// <returns>A string indicating the default index file extension for a work area as defined by its RDD</returns>
 FUNCTION IndexExt       () AS STRING STRICT
-	RETURN VODBOrdBagExt()
+	RETURN VoDb.OrdBagExt()
 	
 /// <summary>Return the key expression of a specified order.</summary>
 /// <returns>The key expression of the specified order.  If there is no corresponding order or if no database file is open, IndexKey() returns a NULL_STRING.</returns>
@@ -136,7 +139,7 @@ FUNCTION OrdSetRelation(cAlias, bKey, cKey) AS USUAL CLIPPER
 /// <summary>Set or clear the boundaries for scoping key values in the controlling order.</summary>
 FUNCTION OrdScope(nScope, xVal) AS USUAL CLIPPER
 	LOCAL n     AS DWORD
-	nScope := Db.OrdScopeNum(nScope)
+	nScope := VoDb.OrdScopeNum(nScope)
 	n := DBOI_SCOPETOP
 	IF PCount() > 1 .AND. IsNil(xVal)
 		n := DBOI_SCOPETOPCLEAR
@@ -145,11 +148,11 @@ FUNCTION OrdScope(nScope, xVal) AS USUAL CLIPPER
 	
 /// <summary>Move the record pointer to the next or previous unique key in the controlling order.</summary>	
 FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
-	RETURN VODBOrderInfo ( DBOI_SKIPUNIQUE, "", NIL, REF uCount )
+	RETURN VoDb.OrderInfo ( DBOI_SKIPUNIQUE, "", NIL, uCount )
 	
 /// <summary>Return the status of the unique flag for a given order.</summary>	
 FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
-	RETURN DbOrderInfo(DBOI_UNIQUE, cOrderBag, xOrder)
+	RETURN VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,NULL)
 	
 	
 /// <summary>
@@ -157,7 +160,7 @@ FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION OrdBagExt() AS STRING STRICT
-	RETURN VODBOrdBagExt()
+	RETURN VoDb.OrdBagExt()
 	
 	
 
@@ -173,7 +176,7 @@ FUNCTION OrdBagName(uOrder) AS STRING CLIPPER
 /// <summary>Set the condition and scope for an order.</summary>
 /// <remarks>OrdCondSet() is like VODBOrdCondSet() but untyped and the various parameters are passed individually.</remarks>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-/// <seealso cref='M:XSharp.Core.Functions.VODBOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)'>VODbOrdCondSet()</seealso>
+/// <seealso cref='M:XSharp.CoreDb.OrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)' />
 FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,     ;
 		nNext, nRecno,lRest,lDescending,lAdditive,lCurrent, lCustom, lNoOptimize     ) AS LOGIC CLIPPER
 	
@@ -220,7 +223,7 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
 	IF !IsNil(lNoOptimize)
 		dbOrdCondInfo:NoOptimize := lNoOptimize
 	ENDIF
-	RETURN _DbCallWithError(__FUNCTION__, VODBOrdCondSet( dbOrdCondInfo ))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCondSet( dbOrdCondInfo ))
 	
 	
 	
@@ -253,7 +256,7 @@ FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
 		ENDIF
 	ENDIF
 	
-    RETURN _DbCallWithError(__FUNCTION__, VODBOrdCreate(cName, cOrder, cExpr, cobExpr, lUnique, NULL))
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique, NULL))
 	
 	
 /// <summary>
@@ -265,7 +268,7 @@ FUNCTION OrdDescend(xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
 		lDescend := NIL
 	ENDIF
 	
-	RETURN DbOrderInfo(DBOI_ISDESC, cOrdBag, xOrder, lDescend)
+	RETURN VoDb.OrderInfo(DBOI_ISDESC, cOrdBag, xOrder, lDescend)
 	
 /// <summary>
 /// </summary>
@@ -278,7 +281,7 @@ FUNCTION OrdDestroy(uOrder, cOrdBag) AS LOGIC CLIPPER
         RddError.PostArgumentError(__FUNCTION__, EDB_ORDDESTROY, nameof(uOrder), 1, {uOrder})
         RETURN FALSE
     ENDIF
-    RETURN _DbCallWithError(__FUNCTION__, VODBOrdDestroy(cOrdBag, uOrder))
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdDestroy(cOrdBag, uOrder))
 	
 	
 /// <summary>
@@ -292,7 +295,7 @@ FUNCTION OrdFor(uOrder, cOrdBag, cFor) AS LOGIC CLIPPER
 	IF !IsString(cFor)
 		cFor := NIL
 	ENDIF
-	RETURN DbOrderInfo(DBOI_CONDITION, cOrdBag, uOrder, cFor)
+	RETURN VoDb.OrderInfo(DBOI_CONDITION, cOrdBag, uOrder, cFor)
 	
 	
 	
@@ -312,12 +315,12 @@ FUNCTION OrdKey(uOrder, cOrdBag) AS USUAL CLIPPER
     
 /// <summary>Add a key to a custom built order.</summary>	
 FUNCTION OrdKeyAdd(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
-	RETURN DbOrderInfo(DBOI_KEYADD, cOrdBag, xOrder, xVal)
+	RETURN VoDb.OrderInfo(DBOI_KEYADD, cOrdBag, xOrder, xVal)
 	
 
 /// <summary>Delete a key from a custom built order.</summary>	
 FUNCTION OrdKeyDel(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
-	RETURN DbOrderInfo( DBOI_KEYDELETE, cOrdBag, xOrder, NIL)
+	RETURN VoDb.OrderInfo( DBOI_KEYDELETE, cOrdBag, xOrder, NIL)
 	
 /// <summary>Move to a record specified by its logical record number in the controlling order.</summary>	
 FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
@@ -334,17 +337,17 @@ FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	
 /// <summary>Return the number of keys in an order.</summary>	
 FUNCTION OrdKeyCount(xOrder, cOrdBag) AS USUAL CLIPPER
-	RETURN DbOrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, NIL)
+	RETURN VoDb.OrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, NIL)
 	
 
 /// <summary>Get the logical record number of the current record.</summary>
 FUNCTION OrdKeyNo(xOrder, cOrdBag) 	AS USUAL CLIPPER
-	RETURN DbOrderInfo( DBOI_POSITION, cOrdBag, xOrder, NIL)
+	RETURN VoDb.OrderInfo( DBOI_POSITION, cOrdBag, xOrder, NIL)
 	
 	
 /// <summary>Get the key value of the current record from the controlling order.</summary>	
 FUNCTION OrdKeyVal() AS USUAL STRICT
-	RETURN DbOrderInfo( DBOI_KEYVAL, NIL ,NIL, NIL)
+	RETURN VoDb.OrderInfo( DBOI_KEYVAL, NIL ,NIL, NIL)
 	
 	
 	
@@ -352,7 +355,7 @@ FUNCTION OrdKeyVal() AS USUAL STRICT
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
-	RETURN _DbCallWithError(__FUNCTION__, VODBOrdListAdd(cOrdBag, uOrder))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListAdd(cOrdBag, uOrder))
 
 
 
@@ -363,7 +366,7 @@ FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
 	IF IsNil(cOrdBag)
 		cOrdBag := ""
     ENDIF
-    RETURN _DbCallWithError(__FUNCTION__, VODBOrdListClear(cOrdBag, uOrder))
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListClear(cOrdBag, uOrder))
 	
 	
 /// <summary>
@@ -405,7 +408,7 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 /// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION OrdListRebuild ()  AS LOGIC STRICT
-    RETURN _DbCallWithError(__FUNCTION__, VODBOrdListRebuild())
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListRebuild())
 
 /// <summary>
 /// </summary>
@@ -417,7 +420,7 @@ FUNCTION OrdName(uOrder, cOrdBag) AS LOGIC CLIPPER
 		cOrdBag := ""
 	ENDIF
 	
-	RETURN DbOrderInfo(DBOI_NAME, cOrdBag, uOrder)
+	RETURN VoDb.OrderInfo(DBOI_NAME, cOrdBag, uOrder, NULL)
 	
 	
 	
@@ -431,7 +434,7 @@ FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 		cOrdBag := ""
 	ENDIF
 	
-	RETURN DbOrderInfo(DBOI_NUMBER, cOrdBag, uOrder)
+	RETURN VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,NULL)
 	
 	
 	
@@ -443,6 +446,6 @@ FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
 	LOCAL cOrder := ""   AS   STRING
 	DEFAULT( REF cOrdBag, "")
-	VODBOrdSetFocus(cOrdBag, uOrder, REF cOrder)
+	VoDb.OrdSetFocus(cOrdBag, uOrder, REF cOrder)
 	RETURN cOrder
 	

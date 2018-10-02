@@ -14,20 +14,12 @@ FUNCTION _Break(uError AS USUAL) AS USUAL
 RETURN 	NIL   
 
 
-
 /// <summary>
-/// Return and optionally change the code block that is executed when a runtime error occurs.
+/// Return the code block that is executed when a runtime error occurs.
 /// </summary>
 /// <param name="cobError"></param>
 /// <returns>
 /// </returns>
-FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
-	LOCAL cbOld AS CODEBLOCK
-	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
-	XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cobError)
-	RETURN cbOld
-
-/// <inheritdoc />   
 FUNCTION ErrorBlock() AS USUAL STRICT
 	LOCAL cbOld AS CODEBLOCK
 	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
@@ -36,6 +28,19 @@ FUNCTION ErrorBlock() AS USUAL STRICT
 		XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cbOld)
 	ENDIF
 	RETURN cbOld
+
+
+
+
+/// <inheritdoc cref="M:XSharp.VO.Functions.ErrorBlock(XSharp.CodeBlock)/>
+/// <summary>Return and optionally change the code block that is executed when a runtime error occurs.</summary>
+FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL
+	LOCAL cbOld AS CODEBLOCK
+	cbOld := XSharp.RuntimeState.GetValue<CODEBLOCK>(Set.ErrorBlock)
+	XSharp.RuntimeState.SetValue<CODEBLOCK>(Set.ErrorBlock, cobError)
+	RETURN cbOld
+
+
 
  
  INTERNAL FUNCTION DefError(oError AS Error) AS USUAL

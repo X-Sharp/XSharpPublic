@@ -517,7 +517,7 @@ INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
 	/// </returns>
 FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n, iLen, iDec)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n, iLen, iDec)
     ENDIF
 	LOCAL cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) AS STRING
 	RETURN _PadZero(cValue)
@@ -531,7 +531,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 /// </returns>
 FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n, iLen)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n, iLen)
 	ENDIF
 	LOCAL cValue := Str2(n, (DWORD) iLen) AS STRING
 	RETURN _padZero(cValue)
@@ -545,7 +545,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 /// </returns>
 FUNCTION StrZero(n AS USUAL) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n)
     ENDIF
 	LOCAL cValue := Str1(n) AS STRING
 	RETURN _PadZero(cValue)

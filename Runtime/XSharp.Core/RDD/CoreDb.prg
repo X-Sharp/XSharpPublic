@@ -506,7 +506,13 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN ret
         })
-        
+        STATIC METHOD Dbf as STRING
+            LOCAL oRDD := CoreDb.CWA("DBF") AS IRDD
+            IF oRDD != NULL
+                RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
+            ENDIF                            
+            RETURN String.Empty
+            
         /// <summary>
         /// Mark the current record for deletion.
         /// </summary>
@@ -601,7 +607,15 @@ CLASS XSharp.CoreDb
         oInfo:ScopeInfo:RecId      := nRecno
         oInfo:ScopeInfo:Rest       := lRest
         RETURN oRDD:DbEval(oInfo)
-        })    
+        })
+
+    STATIC METHOD FCount() as DWORD
+        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+        IF (oRDD != NULL)
+            RETURN (DWORD) oRDD:FieldCount
+        ENDIF
+        RETURN 0
+
         /// <summary>
         /// Retrieve the value of a specified database field.
         /// </summary>
@@ -635,7 +649,8 @@ CLASS XSharp.CoreDb
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.FieldInfo(nOrdinal, nPos, REF oRet)
-        }) 
+        })
+        
     /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)" />
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
         TRY
@@ -646,6 +661,33 @@ CLASS XSharp.CoreDb
             RuntimeState.LastRDDError := e
         END TRY
         RETURN FALSE
+        
+    /// <summary>
+    /// Return the name of a field as a string.
+    /// </summary>
+    /// <param name="dwFieldPos"></param>
+    /// <returns>
+    /// </returns>
+
+    STATIC METHOD FieldName(dwFieldPos AS DWORD) AS STRING
+        LOCAL oRDD := CoreDb.CWA("FieldName") AS IRDD
+        IF (oRDD != NULL)
+            RETURN oRDD:FieldName((INT) dwFieldPos)
+        ENDIF
+        RETURN String.Empty   
+        /// <summary>
+        /// Return the position of a field.
+        /// </summary>
+        /// <param name="sFieldName"></param>
+        /// <returns>
+        /// </returns>
+    STATIC METHOD FieldPos(sFieldName AS STRING) AS DWORD
+        LOCAL oRDD := CoreDb.CWA("FieldPos") AS IRDD
+        IF (oRDD != NULL)
+            RETURN (DWORD) oRDD:FieldIndex(sFieldName) 
+        ENDIF
+        RETURN 0   
+
         /// <summary>
         /// Set the value of a specified database field.
         /// </summary>
@@ -655,7 +697,6 @@ CLASS XSharp.CoreDb
         /// <remarks>
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
-        
     STATIC METHOD FieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -669,7 +710,6 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBFileGet().
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbFileGet() and CoreDb.FileGet() are aliases</note></remarks>
-        
     STATIC METHOD FileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -1237,7 +1277,13 @@ CLASS XSharp.CoreDb
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         RETURN oRDD:Recall()
         })
-        
+
+
+        STATIC METHOD RecSize AS LONG
+            LOCAL nSize := NULL AS OBJECT
+            CoreDb.Info(DBInfo.DBI_GETRECSIZE, REF nSize)
+            RETURN (LONG) nSize
+
         /// <summary>
         /// Return the current record number.
         /// </summary>

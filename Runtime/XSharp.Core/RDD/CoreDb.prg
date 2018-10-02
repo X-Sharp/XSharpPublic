@@ -15,7 +15,7 @@ USING System.Linq
 USING System.Text
 
 /// <summary>
-/// The CoreDb class contains the methods / functions to manipulate workareas. <br/>
+/// The CoreDb class contains the methods to manipulate workareas. <br/>
 /// The class is stateless. The workarea state is stored in the runtimestate.
 /// </summary>
 CLASS XSharp.CoreDb
@@ -210,7 +210,7 @@ CLASS XSharp.CoreDb
         /// <br/>This function, however, does not call the error
         /// handler and will therefore not produce a runtime error message or create an error object if it fails.<br/>
         /// Thus, it may be important to check the return value to determine if the function succeeded.<br/>
-        /// The <see cref='P:XSharp.RuntimeState.LastRddError'>LastRddError property in the runtimestate</see>  will contain needed information
+        /// The <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtimestate</see>  will contain needed information
         /// regarding any error that occurs.</span>
         /// <note type="tip">VoDbAppend() and CoreDb.Append() are aliases</note>
         /// </remarks>
@@ -220,23 +220,21 @@ CLASS XSharp.CoreDb
         RETURN oRDD:Append(lReleaseLocks)
         })
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Retrieve information about a memo column.</summary>
         /// <param name="nOrdinal"></param>
         /// <param name="nPos"></param>
         /// <param name="oRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <seealso cref="O:XSharp.VO.Functions.VoDbBlobInfo" >VoDbBlobInfo overloads </seealso>
+        /// <seealso cref="O:XSharp.VoDb.BlobInfo" >BlobInfo overloads in VoDb</seealso>
+        /// <seealso cref="O:XSharp.CoreDb.BlobInfo" >BlobInfo overloads in CoreDb</seealso>
+        
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.BlobInfo(nOrdinal, nPos, REF oRet)
         })
         
-        /// <summary>
-        /// </summary>
-        /// <param name="nOrdinal"></param>
-        /// <param name="nPos"></param>
-        /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <inheritdoc cref="M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object)" />
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -256,7 +254,6 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbBof() and CoreDb.Bof() are aliases</note></remarks>
         /// <seealso cref="M:XSharp.VO.Functions.Bof" >Bof Function </seealso>
         /// <seealso cref="M:XSharp.VO.Functions.VoDbBof" >VoDbBof Function in XSharp.VO</seealso>
-        /// <seealso cref="M:CoreDb.Bof" />
     STATIC METHOD Bof() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -267,7 +264,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBBuffRefresh().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbBuffRefresh() and CoreDb.BuffRefresh() are aliases</note></remarks>
     STATIC METHOD BuffRefresh() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -280,7 +277,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearFilter().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbClearFilter() and CoreDb.ClearFilter() are aliases</note></remarks>
         
     STATIC METHOD ClearFilter() AS LOGIC
@@ -294,7 +291,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearLocate().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbClearLocate() and CoreDb.ClearLocate() are aliases</note></remarks>
     STATIC METHOD ClearLocate() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -302,12 +299,10 @@ CLASS XSharp.CoreDb
         RETURN oRDD:ClearScope()
         })
         
-        /// <summary>
-        /// Clear any active relations.
-        /// </summary>
+        /// <summary>Clear any active relations.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearRelation().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbClearRelation() and CoreDb.ClearRelation() are aliases</note></remarks>
         
     STATIC METHOD ClearRelation() AS LOGIC
@@ -316,11 +311,10 @@ CLASS XSharp.CoreDb
         RETURN oRDD:ClearRel()
         })
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Clear the active locate condition.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearScope().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbClearScope() and CoreDb.ClearScope() are aliases</note></remarks>
     STATIC METHOD ClearScope() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -332,7 +326,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBCloseAll().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbCloseAll() and CoreDb.CloseAll() are aliases</note></remarks>
     STATIC METHOD CloseAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -343,7 +337,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBCloseArea().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -356,7 +350,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBCommit().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbCommit() and CoreDb.Commit() are aliases</note></remarks>
     STATIC METHOD Commit() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -369,7 +363,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBCommitAll().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbCommitAll() and CoreDb.CommitAll() are aliases</note></remarks>
         
     STATIC METHOD CommitAll() AS LOGIC
@@ -381,7 +375,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBContinue().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbContinue() and CoreDb.Continue() are aliases</note></remarks>
         
     STATIC METHOD Continue() AS LOGIC
@@ -390,6 +384,33 @@ CLASS XSharp.CoreDb
         RETURN oRDD:Continue()
         })
         
+    /// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <param name="cRddName">Name of RDD to use</param>
+    
+    STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+        RETURN CoreDb.Do ({ =>
+        LOCAL rddType AS Type
+        IF ( rddType := CoreDb.RddNameToType( cRddName ) ) == NULL
+            RddError.PostArgumentError( __FUNCTION__, EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
+            RETURN FALSE
+        ELSE
+            RETURN CoreDb.Create( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
+        ENDIF
+        })
+        
+    /// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+    /// <param name="rddList">List of RDDs to use when creating the file</param>
+    STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
+        LOCAL oRdd := NULL  AS RegisteredRDD
+        FOREACH VAR name IN rddList:atomRddName
+            oRdd := RegisteredRDD.Find(name)
+            oRdd:Load()
+        NEXT
+        IF oRdd != NULL_OBJECT
+            RETURN CoreDb.Create(cName, aStruct:ToArray(), oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
+        ENDIF
+        RETURN FALSE 
+     
         /// <overloads>
         /// <summary>
         /// Create new file through the specified RDDs
@@ -400,49 +421,17 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <param name="cName">Name of the file to create. When no extension is specified then the default extension for the RDD will be used.</param>
         /// <param name="aStruct">Structure to use when creating the file.</param>
-        /// <param name="cRddName">Name of RDD to use when opening the file.</param>
+        /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
         /// <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  lNew is useful only when lOpen has a value of TRUE. The default is FALSE.</param>
         /// <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single thread, X# will not accept duplicate aliases.  cAlias is useful only when lOpen has a value of TRUE.  The default alias is the filename without extension</param>
         /// <param name="cDelim">The delimiter for fields within a delimited database file. The default is a NULL string </param>
         /// <param name="lKeep">TRUE specifies that the file should remain open after creating. FALSE closes the file.</param>
         /// <param name="lJustOpen">TRUE specifies that an existing database file be opened. FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, an empty aStruct should be used.</param>
         /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
-        /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">DBCreate function</seealso>
-        /// <seealso cref="O:CoreDb.Create">CoreDbCreate overloads in XSharp.VO</seealso>
-        /// <seealso cref="O:CoreDb.Create">CoreDbCreate overloads in XSharp.Core</seealso>
-        
-    STATIC METHOD Create( cName AS STRING, aStruct AS IList<RddFieldInfo>, cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-        RETURN CoreDb.Do ({ =>
-        LOCAL rddType AS Type
-        IF ( rddType := CoreDb.RddNameToType( cRddName ) ) == NULL
-            RddError.PostArgumentError( __FUNCTION__, EDB_RDDNOTFOUND, nameof(cRddName), 3, <OBJECT>{ cRddName } )
-            RETURN FALSE
-        ELSE
-            RETURN CoreDb.Create( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
-        ENDIF
-        })
-        /// <inheritdoc cref="M:CoreDb.Create(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
-        /// <param name="rddList">List of RDDs to use when creating the file</param>
-        
-    STATIC METHOD Create( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-        LOCAL oRdd := NULL  AS RegisteredRDD
-        FOREACH VAR name IN rddList:atomRddName
-            oRdd := RegisteredRDD.Find(name)
-            oRdd:Load()
-        NEXT
-        IF oRdd != NULL_OBJECT
-            RETURN CoreDb.Create(cName, aStruct, oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-        ENDIF
-        RETURN FALSE 
-        /// <inheritdoc cref="M:CoreDb.Create(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
-        /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
-        
-    STATIC METHOD Create( cName AS STRING, aStruct AS IList<RddFieldInfo>, rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
-        RETURN CoreDb.Create(cName, aStruct:ToArray(), rddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
-        /// <inheritdoc cref="M:CoreDb.Create(System.String,System.Collections.Generic.IList{XSharp.RDD.Support.RddFieldInfo},System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
-        /// <param name="aStruct">Structure to use when creating the file.</param>
-        /// <param name="rddType">Type of the class that must be used to work with the RDD.</param>
-        
+        /// <seealso cref="M:XSharp.VO.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
+        /// <seealso cref="O:XSharp.VO.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
+        /// <seealso cref="O:XSharp.CoreDb.Create" >Create overloads in CoreDb</seealso>
+    
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL uiOldArea := 0 AS DWORD
@@ -523,7 +512,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBDelete().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbDelete() and CoreDb.Delete() are aliases</note></remarks>
         
         /// <seealso cref="M:XSharp.VO.Functions.DbDelete">DbDelete Function</seealso>
@@ -557,8 +546,6 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbEof() and CoreDb.Eof() are aliases</note></remarks>
         /// <seealso cref="M:XSharp.VO.Functions.Eof" >Eof Function </seealso>
         /// <seealso cref="M:XSharp.VO.Functions.VoDbEof" >VoDbEof Function in XSharp.VO</seealso>
-        /// <seealso cref="M:CoreDb.Eof" />
-        
     STATIC METHOD Eof() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -568,13 +555,22 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Evaluate a code block for each record that matches a specified scope and/or condition.
         /// </summary>
-        /// <param name="uBlock"></param>
-        /// <param name="uCobFor"></param>
-        /// <param name="uCobWhile"></param>
-        /// <param name="uNext"></param>
-        /// <param name="nRecno"></param>
-        /// <param name="lRest"></param>
+        /// <param name="uBlock">The code block to execute for each record that matches the scope and conditions. </param>
+        /// <param name="uCobFor">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
+        /// <param name="uCobWhile">A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, <paramref name="cbWhileCondition"/> changes the default scope to <paramref name="lRest"/>.</param>
+        /// <param name="uNext">The number of records to process, starting at the current record.</param>
+        /// <param name="nRecno">The number of the record to process.</param>
+        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <remarks>
+        /// By default, Eval() operates on the currently selected work area.
+        /// It will operate on an unselected work area if you specify it as part of an aliased expression.
+        /// On each iteration, Eval() evaluates the specified code block.
+        /// All records within the scope or matching the condition are processed until end-of-file is reached.
+        /// Eval() can be used as a primitive for the construction of commands that process database files.
+        /// In fact, many of the database processing commands are created using Eval().
+        /// </remarks>
+        
     STATIC METHOD Eval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL nNext AS LONG
@@ -630,22 +626,17 @@ CLASS XSharp.CoreDb
         /// <param name="oRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFieldInfo().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
+        /// <seealso cref='O:XSharp.VO.Functions.VoDbFieldInfo' >VoDbFieldInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.VoDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
+        /// <seealso cref='O:XSharp.CoreDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
+        
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.FieldInfo(nOrdinal, nPos, REF oRet)
         }) 
-        /// <summary>
-        /// Retrieve field definition information about a field.
-        /// </summary>
-        /// <param name="nOrdinal"></param>
-        /// <param name="nPos"></param>
-        /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBFieldInfo().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
-        /// </remarks>
+    /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)" />
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -662,7 +653,7 @@ CLASS XSharp.CoreDb
         /// <param name="xValue"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD FieldPut(nPos AS DWORD,xValue AS OBJECT) AS LOGIC
@@ -671,13 +662,12 @@ CLASS XSharp.CoreDb
         RETURN oRDD:PutValue((INT) nPos, xValue)
         })    
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Import contents from file into Memo field </summary>
         /// <param name="nPos"></param>
         /// <param name="cFile"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFileGet().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbFileGet() and CoreDb.FileGet() are aliases</note></remarks>
         
     STATIC METHOD FileGet(nPos AS DWORD,cFile AS STRING) AS LOGIC
@@ -686,8 +676,7 @@ CLASS XSharp.CoreDb
         RETURN oRDD:GetValueFile((INT) nPos, cFile)
         })
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Export field contents from Memo field to file</summary>
         /// <param name="nPos"></param>
         /// <param name="cFile"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
@@ -704,7 +693,7 @@ CLASS XSharp.CoreDb
         /// <returns>
         /// </returns>
         /// <remarks>This function is like DBFilter().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbFilter() and CoreDb.Filter() are aliases</note></remarks>
         
     STATIC METHOD Filter() AS STRING
@@ -718,7 +707,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFlock().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbFlock() and CoreDb.Flock() are aliases</note></remarks>
     STATIC METHOD Flock() AS LOGIC
         RETURN CoreDb.Do ({ =>    
@@ -736,7 +725,7 @@ CLASS XSharp.CoreDb
         /// <returns>
         /// </returns>
         /// <remarks>This function is like Found().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbFound() and CoreDb.Found() are aliases</note></remarks>
         
     STATIC METHOD Found() AS LOGIC
@@ -753,7 +742,7 @@ CLASS XSharp.CoreDb
         /// <returns>
         /// </returns>
         /// <remarks>This function is like DBGetSelect().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbGetSelect() and CoreDb.GetSelect() are aliases</note></remarks>
         
     STATIC METHOD GetSelect() AS DWORD
@@ -767,7 +756,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBGoBottom().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbGoBottom() and CoreDb.GoBottom() are aliases</note></remarks>
         
         
@@ -792,7 +781,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBGoTop().  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbGoTop() and CoreDb.GoTop() are aliases</note></remarks>
         
         
@@ -809,18 +798,17 @@ CLASS XSharp.CoreDb
         /// <param name="nOrdinal"></param>
         /// <param name="ptrRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <seealso cref='O:XSharp.VO.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.VoDb.Info' >Info overloads in VoDb</seealso>
+        /// <seealso cref='O:XSharp.CoreDb.Info' >Info overloads in CoreDb</seealso>
+        
     STATIC METHOD Info(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.Info(nOrdinal, REF oRet)
         })
         
         
-        /// <summary>
-        /// Retrieve information about a work area.
-        /// </summary>
-        /// <param name="nOrdinal"></param>
-        /// <param name="ptrRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)" />
     STATIC METHOD Info(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -836,8 +824,7 @@ CLASS XSharp.CoreDb
         
         RETURN FALSE   
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Write values to destination workarea in a JOIN operation</summary>
         /// <param name="nSelect"></param>
         /// <param name="struList"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
@@ -894,7 +881,7 @@ CLASS XSharp.CoreDb
         /// <param name="lRest"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBLocate() but strongly typed.  
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
     STATIC METHOD Locate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -911,8 +898,7 @@ CLASS XSharp.CoreDb
         RETURN FALSE
         })  
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Return Memo File extension</summary>
         /// <param name="cDriver"></param>
         /// <returns>
         /// </returns>
@@ -941,7 +927,7 @@ CLASS XSharp.CoreDb
         /// <param name="ordCondInfo">An object defining the condition and scope information. </param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like OrdCondSet() but strongly typed and the condition information is passed in an object.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
     STATIC METHOD OrdCondSet(ordCondInfo AS DbOrderCondInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -959,7 +945,7 @@ CLASS XSharp.CoreDb
         /// <param name="ordCondInfo">An object defining the condition and scope information. </param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbCreateOrder() but strongly typed and the condition information is passed in an object.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
         
@@ -982,7 +968,7 @@ CLASS XSharp.CoreDb
         /// <param name="oOrder"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbDeleteOrder() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
         
@@ -1003,22 +989,19 @@ CLASS XSharp.CoreDb
         /// <param name="oValue"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbOrderInfo() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
-        
+        /// <seealso cref='O:XSharp.VO.Functions.VoDbOrderInfo' >VoDbOrderInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.VoDb.OrderInfo' >OrderInfo overloads in VoDb</seealso>
+        /// <seealso cref='O:XSharp.CoreDb.OrderInfo' >OrderInfo overloads in CoreDb</seealso>
+    
         
     STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.OrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
-        })  
-        /// <summary>
-        /// Return information about index files and the orders in them.
-        /// </summary>
-        /// <param name="nOrdinal"></param>
-        /// <param name="cBagName"></param>
-        /// <param name="uOrder"></param>
-        /// <param name="oValue"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        })
+        
+    /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />
     STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -1041,7 +1024,7 @@ CLASS XSharp.CoreDb
         /// <param name="oOrder"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetIndex() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
     STATIC METHOD OrdListAdd(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -1064,7 +1047,7 @@ CLASS XSharp.CoreDb
         /// <param name="oOrder"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearIndex() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
         
@@ -1090,7 +1073,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like OrdListRebuild().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
         
@@ -1108,7 +1091,7 @@ CLASS XSharp.CoreDb
         /// <param name="strPreviousOrder"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetOrder() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
     STATIC METHOD OrdSetFocus(cBagName AS STRING,oOrder AS OBJECT, strPreviousOrder OUT STRING) AS LOGIC
         strPreviousOrder := ""
@@ -1134,7 +1117,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbPack(). 
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbPack() and CoreDb.Pack() are aliases</note></remarks>
     STATIC METHOD Pack() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -1154,12 +1137,13 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         RETURN (DWORD) CoreDb.RddList():Length
         })
-        /// <summary>
-        /// </summary>
+        /// <summary>Return and optionally change settings controlled directly by the RDD.</summary>
         /// <param name="nOrdinal"></param>
         /// <param name="ptrRet"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        
+        /// <seealso cref='O:XSharp.VO.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
+        /// <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
+        /// <seealso cref='O:XSharp.CoreDb.RddInfo' >RddInfo overloads in CoreDb</seealso>
         
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
         TRY
@@ -1175,11 +1159,7 @@ CLASS XSharp.CoreDb
         END TRY
         RETURN FALSE
         
-        /// <summary>
-        /// </summary>
-        /// <param name="nOrdinal"></param>
-        /// <param name="ptrRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+    /// <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)" />
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oValue AS OBJECT
@@ -1248,7 +1228,7 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRecall().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         
         /// <note type="tip">VoDbRecall() and CoreDb.Recall() are aliases</note></remarks>
         
@@ -1271,8 +1251,7 @@ CLASS XSharp.CoreDb
         RETURN (DWORD) oRDD:Recno
         })
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Get the contents of the current record as an array of bytes</summary>
         /// <returns>
         /// </returns>
         /// <remarks><note type="tip">VoDbRecordGet() and CoreDb.RecordGet() are aliases</note></remarks>
@@ -1289,19 +1268,17 @@ CLASS XSharp.CoreDb
         /// <param name="nOrdinal"></param>
         /// <param name="oRecID"></param>
         /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <seealso cref='O:XSharp.VO.Functions.VoDbRecordInfo'  >VoDbRecordInfo overloads</seealso>
+        /// <seealso cref='O:XSharp.VoDb.RecordInfo'  >RecordInfo overloads in VoDb</seealso>
+        /// <seealso cref='O:XSharp.CoreDb.RecordInfo'  >RecordInfo overloads in CoreDb</seealso>
+        
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.RecordInfo(nOrdinal, oRecID, REF oRet)
         }) 
         
-        /// <summary>
-        /// Retrieve information about a record.
-        /// </summary>
-        /// <param name="nOrdinal"></param>
-        /// <param name="oRecID"></param>
-        /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+    /// <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)" />
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -1313,8 +1290,7 @@ CLASS XSharp.CoreDb
         
         RETURN FALSE       
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Update the current record from an array of bytes</summary>
         /// <param name="aRecord"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbRecordPut() and CoreDb.RecordPut() are aliases</note></remarks>
@@ -1332,7 +1308,7 @@ CLASS XSharp.CoreDb
         /// <param name="pszRel"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetRelation().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD Relation(nPos AS DWORD,sRel REF STRING) AS LOGIC
@@ -1352,7 +1328,7 @@ CLASS XSharp.CoreDb
         /// <param name="uRecId"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRlock() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD RLock(uRecId AS OBJECT) AS LOGIC
@@ -1370,7 +1346,7 @@ CLASS XSharp.CoreDb
         /// <param name="nPos"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRSelect() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbRSelect() and CoreDb.RSelect() are aliases</note></remarks>
         
         
@@ -1386,7 +1362,7 @@ CLASS XSharp.CoreDb
         /// <param name="lSoftSeek"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSeek() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD Seek(oValue AS OBJECT,lSoftSeek AS LOGIC, lLast as LOGIC) AS LOGIC
@@ -1407,7 +1383,7 @@ CLASS XSharp.CoreDb
         /// <param name="nOld"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSelect() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbSelect() and CoreDb.Select() are aliases</note></remarks>
         
     STATIC METHOD Select(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
@@ -1437,7 +1413,7 @@ CLASS XSharp.CoreDb
         /// <param name="cFilter"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetFilter() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD SetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
@@ -1470,7 +1446,7 @@ CLASS XSharp.CoreDb
         /// <param name="oBlock"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetLocate() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD SetLocate(oBlock AS ICodeBlock) AS LOGIC
@@ -1490,7 +1466,7 @@ CLASS XSharp.CoreDb
         /// <param name="cKey"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetRelation() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeBlock,cKey AS STRING) AS LOGIC
@@ -1514,8 +1490,7 @@ CLASS XSharp.CoreDb
         })
         
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Set the locate condition.</summary>
         /// <param name="scope"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbSetFound() and CoreDb.SetFound() are aliases</note></remarks>
@@ -1531,7 +1506,7 @@ CLASS XSharp.CoreDb
         /// <param name="siNew">The number of the new work area. 0 indicates the first available free workarea. -1 indicates the last available free workarea.</param>
         /// <returns>The newly selected work area.</returns>
         /// <remarks>This function is like DBSetSelect() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbSetSelect() and CoreDb.SetSelect() are aliases</note></remarks>
         
     STATIC METHOD SetSelect(siNew AS INT) AS DWORD
@@ -1555,7 +1530,7 @@ CLASS XSharp.CoreDb
         /// <param name="nRecords">The number of logical records to move, relative to the current record.  A positive value means to skip forward, and a negative value means to skip backward. </param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSkip() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbSkip() and CoreDb.Skip() are aliases</note></remarks>
         
         
@@ -1565,8 +1540,7 @@ CLASS XSharp.CoreDb
         RETURN oRDD:Skip(nRecords)
         })
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Position the cursor relative to its current position within the current scope.</summary>
         /// <param name="nRecords"></param>
         /// <param name="scope"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
@@ -1645,8 +1619,7 @@ CLASS XSharp.CoreDb
             ENDIF
         ENDIF
         RETURN (INT) ret
-        /// <summary>
-        /// </summary>
+        /// <summary>Copy one or more rows from one work area to another.</summary>
         /// <param name="nDest"></param>
         /// <param name="fldNames"></param>
         /// <param name="uCobFor"></param>
@@ -1664,8 +1637,7 @@ CLASS XSharp.CoreDb
         RETURN oRDD:Trans( info )
         
         })
-        /// <summary>
-        /// </summary>
+        /// <summary>Copy a single row from one work area to another.</summary>
         /// <param name="nDest"></param>
         /// <param name="fldNames"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
@@ -1703,7 +1675,7 @@ CLASS XSharp.CoreDb
         /// This unlocks all locked records or the whole file. </param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBUnlock().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
     STATIC METHOD Unlock(uRecno AS OBJECT) AS LOGIC
@@ -1716,7 +1688,7 @@ CLASS XSharp.CoreDb
         /// <summary>Release all locks for all work areas.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBUnlockAll().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbUnlockAll() and CoreDb.UnlockAll() are aliases</note></remarks>
     STATIC METHOD UnlockAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -1735,7 +1707,7 @@ CLASS XSharp.CoreDb
         /// <param name="lReadOnly"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
         /// <remarks>This function is like DBUseArea() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbUseArea() and CoreDb.UseArea() are aliases</note></remarks>
         
     STATIC METHOD UseArea(lNew AS LOGIC,rddList AS _RddList,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
@@ -1762,7 +1734,7 @@ CLASS XSharp.CoreDb
         /// <param name="lReadOnly"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBUseArea() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbUseArea() and CoreDb.UseArea() are aliases</note></remarks>
         
         
@@ -1789,7 +1761,7 @@ CLASS XSharp.CoreDb
         /// <param name="lReadOnly"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBUseArea() but strongly typed.
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbUseArea() and CoreDb.UseArea() are aliases</note></remarks>
         
     STATIC METHOD UseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
@@ -1867,7 +1839,7 @@ CLASS XSharp.CoreDb
         /// <summary>Remove all records from the current workarea.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
         /// <remarks>This function is like DBZap().
-        /// <inheritdoc cref="M:CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
+        /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// <note type="tip">VoDbZap() and CoreDb.Zap() are aliases</note></remarks>
         
     STATIC METHOD Zap() AS LOGIC

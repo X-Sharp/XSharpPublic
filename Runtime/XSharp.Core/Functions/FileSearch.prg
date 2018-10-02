@@ -311,7 +311,7 @@ INTERNAL FUNCTION __GetSearchPaths() AS STRING[]
 // Not found, now use the path settings from SetDefault and SetPath()
 // if SetPath() is empty then we look through the Environment variable Path
 LOCAL aDefault AS STRING[]
-aDefault := __SetPathArray()
+aDefault := SetPathArray()
 IF aDefault != NULL
     RETURN aDefault
 ENDIF
@@ -330,5 +330,5 @@ IF !String.IsNullOrEmpty(cPath)
     aPaths:AddRange(aElements)
 ENDIF
 aDefault := aPaths:ToArray()
-__SetPathArray(aDefault)
+SetPathArray(aDefault)
 RETURN aDefault

@@ -137,11 +137,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="pszSource"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 	LOCAL bp AS BYTE PTR
 	bp := pszSource

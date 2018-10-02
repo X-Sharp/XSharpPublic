@@ -10,7 +10,7 @@ CLASS XSharp.NamedArg
    PROPERTY ArgName AS STRING AUTO
     /// <summary>Argument value.</summary>
    PROPERTY @@Value AS USUAL AUTO
-   /// <inheritdoc />
+   /// <summary>Construct a NamedArg object</summary>
    CONSTRUCTOR( symArgName AS STRING, uValue AS USUAL )
       SELF:ArgName	:= symArgName
       SELF:Value	:= uValue

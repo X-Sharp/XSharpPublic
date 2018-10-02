@@ -58,7 +58,7 @@ FUNCTION _VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
 	ENDIF
 
 	RETURN ret
-
+/// <exclude />
 FUNCTION __CavoStr( resid AS DWORD ) AS STRING
 	// Strings are stored in a Managed resource with a name
 	// the name matches the enum names

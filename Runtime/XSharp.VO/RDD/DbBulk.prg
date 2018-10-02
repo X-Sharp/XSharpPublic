@@ -36,12 +36,7 @@ FUNCTION __DBAvg(siValue AS LONG) AS LONG
 	RETURN siRet
 
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING       
 	
 	LOCAL cAlias    AS STRING
@@ -81,7 +76,7 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 	
 	RETURN cAlias
 
-
+/// <exclude />
 FUNCTION __DBFLEDIT(aStruct AS ARRAY, aFields AS ARRAY, aList AS ARRAY ) AS ARRAY
     RETURN VoDb.FieldList(aStruct, aFields, aList)
 

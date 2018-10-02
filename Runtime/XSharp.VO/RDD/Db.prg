@@ -320,7 +320,9 @@ FUNCTION DbClearIndex(uOrder, cOrdBag) AS LOGIC CLIPPER
     RETURN OrdListClear(cOrdBag, uOrder)
 
 
-/// <inheritdoc cref="M:XSharp.VO.Functions.VoDbCreate(System.String,XSharp.__Array,System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+/// <inheritdoc cref="M:XSharp.CoreDb.Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
+/// <param name="aStruct">Array with structure to use when creating the file.</param>
+/// <param name="aHidden">A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality.</param>
 FUNCTION DbCreate (   cName,  aStruct, cRddName , lNew,  cAlias, cDelim, lJustOpen, aHidden ) AS LOGIC CLIPPER
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC
@@ -371,35 +373,27 @@ FUNCTION DbCreate (   cName,  aStruct, cRddName , lNew,  cAlias, cDelim, lJustOp
     RETURN lRetCode
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+    /// <summary>Create an index file and add an order to it.</summary>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbCreateIndex(cName, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
     RETURN OrdCreate(cName, NIL, cExpr, cobExpr, lUnique)
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <summary>Create or replace an order in an index file.</summary>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbCreateOrder  (uOrder, cName, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
     RETURN OrdCreate(cName, uOrder, cExpr, cobExpr, lUnique)
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+    /// <summary>Mark the current record for deletion.</summary>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbDelete () AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Delete() )
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+    /// <summary>Remove an order from an open index file.</summary>
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
 FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
     LOCAL lRet   AS LOGIC
     
@@ -413,10 +407,10 @@ FUNCTION DbDeleteOrder(uOrder, cOrdBag) AS LOGIC CLIPPER
     
     
     
-    /// <summary>
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <inheritdoc cref="M:XSharp.CoreDb.Eval(XSharp.ICodeBlock,XSharp.ICodeBlock,XSharp.ICodeBlock,System.Object,System.Object,System.Boolean)"  />
+/// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Eval(XSharp.ICodeBlock,XSharp.ICodeBlock,XSharp.ICodeBlock,System.Object,System.Object,System.Boolean)"/>
+/// <br/> <note type="tip">The difference between VoDbEval and CoreDb.Eval is that DbEval takes USUAL parameters and has optional parameters.</note></remarks>
+/// <seealso cref="M:XSharp.CoreDb.Eval(XSharp.ICodeBlock,XSharp.ICodeBlock,XSharp.ICodeBlock,System.Object,System.Object,System.Boolean)"  />
 FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
     IF IsNil(lRest)
         lRest := .F.
@@ -1158,6 +1152,6 @@ FUNCTION _FreeFieldNames(aNames AS _FieldNames) AS VOID
 FUNCTION __allocNames(aStruct AS ARRAY) AS _FieldNames
     RETURN VoDb.AllocFieldNames(aStruct)
 
-
+/// <exclude />
 FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list REF _JoinList ) AS ARRAY
     RETURN VoDb.TargetFields(cAlias, aFields, REF list)

@@ -463,7 +463,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD ToString() AS STRING
             RETURN Str1(SELF)
             
-            /// <inheritdoc />
+        /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
             

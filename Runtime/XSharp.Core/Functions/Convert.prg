@@ -90,7 +90,7 @@ FUNCTION Bin2Logic(c AS STRING) AS LOGIC
 /// Convert a intptr to a string
 /// </summary>
 /// <remarks>
-/// <note type='warning'>
+/// <note type="warning">
 /// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
 /// </note>
 /// </remarks>
@@ -106,7 +106,7 @@ FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
 /// </summary>
 /// <param name="cPointer"></param>
 /// <remarks>
-/// <note type='warning'>
+/// <note type="warning">
 /// This is a compatibility function that only works in x86 mode. The function will throw an exception when running in x64 mode.
 /// </note>
 /// </remarks>

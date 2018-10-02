@@ -501,7 +501,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN 0
 			
-			/// <inheritdoc />
+			/// <exclude/>
 		PROTECTED METHOD _FieldIndexValidate(nFldPos AS LONG) AS LOGIC
 			LOCAL nMax AS INT
 			// Note that nFldPos is 1 based

@@ -7,28 +7,6 @@ USING XSharp
 USING System.Collections.Generic
 USING System.Reflection
 BEGIN NAMESPACE XSharp.RDD
-    STATIC CLASS RDDHelpers
-    
-        STATIC METHOD CWA(cFunction AS STRING, lThrow := TRUE AS LOGIC) AS IRDD 
-            LOCAL oResult AS IRDD
-            RuntimeState.LastRddError := NULL
-            oResult := RuntimeState.Workareas:CurrentWorkArea
-            IF oResult != NULL_OBJECT
-                RETURN oResult
-            ENDIF
-            IF lThrow
-                RddError.PostNoTableError(cFunction)
-            ENDIF
-            RETURN NULL
-            
-        STATIC METHOD CWANum(cFunction AS STRING)  AS DWORD
-            VAR oWA := RuntimeState.Workareas:CurrentWorkArea
-            IF oWA != NULL
-                RETURN oWA:Area
-            ENDIF
-            RddError.PostNoTableError(cFunction)
-            RETURN 0
-            END CLASS
             
     CLASS RegisteredRDD
         PROPERTY AssemblyName   AS STRING AUTO 

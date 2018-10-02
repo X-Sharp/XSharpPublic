@@ -116,13 +116,9 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
-    <Compile Include="Functions\Blob.prg" />
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
-    <Compile Include="Functions\Db.prg" />
-    <Compile Include="Functions\DbBulk.prg" />
-    <Compile Include="Functions\DbOrder.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
     <Compile Include="Functions\Error.prg" />
@@ -147,8 +143,14 @@
     <Compile Include="Functions\Terminal.prg" />
     <Compile Include="Functions\Transform.prg" />
     <Compile Include="Functions\Usual.prg" />
-    <Compile Include="Functions\Vodb.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="RDD\Blob.prg" />
+    <Compile Include="RDD\Db.prg" />
+    <Compile Include="RDD\DbBulk.prg" />
+    <Compile Include="RDD\Dbfunctions.prg" />
+    <Compile Include="RDD\DbOrder.prg" />
+    <Compile Include="RDD\Vodb.prg" />
+    <Compile Include="RDD\VoDbFunctions.prg" />
     <Compile Include="Types\Array.prg" />
     <Compile Include="Types\CodeBlock.prg" />
     <Compile Include="Types\ArrayBase.prg" />
@@ -169,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Functions" />
+    <Folder Include="RDD" />
     <Folder Include="Properties\" />
     <Folder Include="Types\" />
   </ItemGroup>

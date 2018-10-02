@@ -383,7 +383,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-				THROW Error.VOError( EG_NOMETHOD, "Send", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
+				THROW Error.VOError( EG_NOMETHOD, __ENTITY__, NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
 			ENDIF
 		ENDIF
 		RETURN result
@@ -421,7 +421,7 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	ELSEIF IsInstanceOf(oObject, symClassName)
 		RETURN TRUE
 	ENDIF
-	LOCAL oError := Error.VOError(EG_WRONGCLASS, "CHECKINSTANCEOF", NAMEOF(oObject),1, NULL) AS Error
+	LOCAL oError := Error.VOError(EG_WRONGCLASS, __FUNCTION__, NAMEOF(oObject),1, NULL) AS Error
 	oError:Description := symClassName + " <-> " + oObject:GetType():Name
 	THROW oError
 	
@@ -477,15 +477,15 @@ FUNCTION ClassTree(o AS OBJECT) AS ARRAY
 /// <summary>Create a new instance of a named class</summary>	
 FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	IF ! ( cClassName:IsSymbol || cClassName:IsString )
-		THROW Error.DataTypeError( "CreateInstance", NAMEOF(cClassName), 1, cClassName)
+		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(cClassName), 1, cClassName)
 	ENDIF    	
 	VAR t := OOPHelpers.FindClass(cClassName)
 	IF t == NULL
-		 THROW Error.VOError( EG_NOCLASS, "CreateInstance", NAMEOF(cClassName), 1,  cClassName  )
+		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  cClassName  )
 	ENDIF
 	VAR constructors := t:getConstructors() 
 	IF constructors:Length > 1
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD, "CreateInstance", NAMEOF(cClassName), 0 , NULL)
+		THROW Error.VOError( EG_AMBIGUOUSMETHOD, __FUNCTION__, NAMEOF(cClassName), 0 , NULL)
 	ENDIF
 	LOCAL ctor := constructors[1] AS ConstructorInfo
 	LOCAL nPCount AS INT
@@ -517,7 +517,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 		ENDIF
 		oRet := ctor:Invoke( oArgs)	
 	CATCH
-		THROW Error.VOError( EG_NOMETHOD, "CreateInstance", "Constructor", 0 , NULL)
+		THROW Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
 		oRet := NULL_OBJECT
 	END TRY
 	RETURN oRet
@@ -638,10 +638,10 @@ FUNCTION IsInstanceOfUsual(oX AS USUAL,cName AS STRING) AS LOGIC
 /// </returns>
 FUNCTION IVarGet(o AS OBJECT,cIvar AS STRING) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(o, cIVar, FALSE)
 	
@@ -705,10 +705,10 @@ FUNCTION IsMethodClass( c AS STRING, cName AS STRING ) AS LOGIC
 /// </returns>
 FUNCTION IVarGetSelf(o AS OBJECT,cIVar AS STRING) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(o, cIVar, TRUE)
 	
@@ -753,10 +753,10 @@ FUNCTION IVarPutInfo(o AS OBJECT,cIVar AS SYMBOL) AS DWORD
 /// </returns>
 FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	OOPHelpers.IVarPut(o, cIVar, uValue, FALSE)
 	RETURN uValue
@@ -771,10 +771,10 @@ FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 /// </returns>
 FUNCTION IVarPutSelf(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	OOPHelpers.IVarPut(o, cIVar, uValue,TRUE) 
 	RETURN uValue
@@ -883,10 +883,10 @@ FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
 /// <returns>Return value of the method call. </returns>
 FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL 
 	IF !o:IsObject
-	     THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(o), 1, <OBJECT>{ o}  )
+	     THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(o), 1, <OBJECT>{ o}  )
 	ENDIF
 	IF ! uMethod:IsString  && ! uMethod:IsSymbol
-		THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
+		THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
 	ENDIF
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING

@@ -356,7 +356,6 @@ CLASS RddFieldInfo
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
-    PUBLIC Offset       AS LONG
 	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName
 		Length 		:= nLength
@@ -367,7 +366,6 @@ CLASS RddFieldInfo
 			FieldType := DBFieldType.Unknown
 		ENDIF  
 		Alias       := sName
-        Offset := -1
 		RETURN
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName                                
@@ -375,12 +373,10 @@ CLASS RddFieldInfo
 		Length 		:= nLength
 		Decimals 	:= nDecimals
 		Alias       := sName
-        Offset := -1
 		RETURN
 	METHOD Clone() AS RddFieldInfo
         VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
         info:Alias := SELF:Alias
-        info:Offset := SELF:OffSet
         RETURN info
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals

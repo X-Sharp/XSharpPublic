@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -118,7 +118,7 @@ FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
 		RETURN IIF ((STRING) u1 > (STRING) u2, u1, u2)
 
 	ELSE
-        THROW Error.ArgumentError( __ENTITY__, NAMEOF(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
 	RETURN u1
 
@@ -152,7 +152,7 @@ FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
 	ELSEIF u1:IsString .AND. u2:IsString
 		RETURN IIF ((STRING) u1 <(STRING) u2, u1, u2)
 	ELSE
-        THROW Error.ArgumentError( __ENTITY__, NAMEOF(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")
 	ENDIF
 	RETURN u1
 

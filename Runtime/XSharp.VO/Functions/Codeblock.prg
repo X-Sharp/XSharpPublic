@@ -32,7 +32,7 @@ FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 		result := block:EvalBlock(oArgs)
 	ENDIF
 	RETURN result
-/// <sumary>Evaluate a code block or an objects Eval() method.</summary>	
+/// <summary>Evaluate a code block or an objects Eval() method.</summary>	
 FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	IF uCodeBlock:IsNil
@@ -43,7 +43,7 @@ FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 		result := Eval( (CODEBLOCK) uCodeBlock, args )
 	ENDIF
 	RETURN result
-/// <sumary>Evaluate a code block or an object's Eval() method.</summary>	
+/// <summary>Evaluate a code block or an object's Eval() method.</summary>	
 FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	

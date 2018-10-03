@@ -30,7 +30,7 @@ CLASS XSharp.OleAutoObject
 		SELF:lDateTimeAsDate    := OleDateTimeAsDate()
 		RETURN
 			
-   /// <inheritdoc />   
+   /// <summary>Construct an OleAutoObject</summary>
 	CONSTRUCTOR(cProgId AS STRING)
 		SELF()
 		oComObject        := OleCreateObject(cProgId)
@@ -41,7 +41,7 @@ CLASS XSharp.OleAutoObject
 			
 		RETURN
 			
-   /// <inheritdoc />   
+   /// <summary>Construct an OleAutoObject</summary>
 	CONSTRUCTOR(cProgId AS STRING, fRotCheck AS LOGIC)
 		SELF()
 		IF fRotCheck
@@ -58,7 +58,7 @@ CLASS XSharp.OleAutoObject
 			
 			
 	// Builds an OleAutoObject on Any OBJECT (including another AutoObject)
-   /// <inheritdoc />   
+   /// <summary>Construct an OleAutoObject</summary> 
 	CONSTRUCTOR(oObject AS OBJECT)
 		SELF()
 		oComObject :=  OleUnWrapObject(oObject)
@@ -70,7 +70,7 @@ CLASS XSharp.OleAutoObject
 		RETURN
 			
 		// Builds an OleAutoObject on Any OBJECT (including another AutoObject). Type already known
-   /// <inheritdoc />   
+   /// <summary>Construct an OleAutoObject</summary> 
 	CONSTRUCTOR(oObject AS OBJECT, _type AS System.Type)
 		SELF()
 		oComObject	:=  OleUnWrapObject(oObject)

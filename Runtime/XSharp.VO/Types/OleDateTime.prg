@@ -42,14 +42,14 @@ CLASS XSharp.OleDateTime
     END PROPERTY
     /// <summary>The value as a .Net DateTime type.</summary>
 	PROPERTY DateTime AS System.DateTime GET dt SET dt := VALUE
-	/// <inheritdoc />
+	/// <summary>Construct an OleDateTime object</summary>
 	CONSTRUCTOR() 
 		dt := DateTime.MinValue
-    /// <inheritdoc />
+    /// <summary>Construct an OleDateTime object</summary>
     /// <param name='val'>Initial value as System.DateTime.</param>
 	CONSTRUCTOR(val  AS System.DateTime)
 		dt := val
-    /// <inheritdoc />
+    /// <summary>Construct an OleDateTime object</summary>
     /// <param name='uDate'>This can be a Number, Date or String. A Number will be seen as a REAL8 value in OADate form, Date = Date part and String = TimePart.</param>
 	CONSTRUCTOR(uDate AS USUAL) 
 		IF IsNumeric(uDate)
@@ -86,14 +86,14 @@ CLASS XSharp.OleDateTime
 		    RETURN 
         END SET
     END PROPERTY
-    /// <inheritdoc />
+    /// <inheritdoc cref="M:System.DateTime.ToString(System.IFormatProvider)">
 	VIRTUAL METHOD ToString( provider AS IFormatProvider ) AS STRING
 		RETURN dt:ToString( provider )
-	/// <inheritdoc />	
+	/// <inheritdoc cref="M:System.DateTime.ToString(System.String,System.IFormatProvider)">	
 	VIRTUAL METHOD ToString( s AS STRING, fp AS IFormatProvider ) AS STRING
 		RETURN dt:ToString( s, fp )
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="M:System.DateTime.ToString(System.String)">	
 	VIRTUAL METHOD ToString() AS STRING
 		RETURN dt:ToString()
     /// <exclude/>

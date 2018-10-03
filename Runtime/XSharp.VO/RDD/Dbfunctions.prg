@@ -14,7 +14,7 @@ USING System.Linq
 USING System.Text
 
 /// <exclude />
-FUNCTION _DbCallWithError(funcName AS STRING, resultToCheck AS LOGIC) AS LOGIC
+FUNCTION _DbThrowErrorOnFailure(funcName AS STRING, resultToCheck AS LOGIC) AS LOGIC
     IF !resultToCheck
         resultToCheck := (LOGIC) DoError(funcName)
     ENDIF
@@ -22,7 +22,7 @@ FUNCTION _DbCallWithError(funcName AS STRING, resultToCheck AS LOGIC) AS LOGIC
 
 
 FUNCTION Alias0() AS STRING
-   LOCAL oRDD := RDDHelpers.CWA("Alias0") AS IRDD
+   LOCAL oRDD := VoDb.CWA("Alias0") AS IRDD
     IF oRDD != NULL
         RETURN oRDD:Alias
     ENDIF                            
@@ -34,9 +34,9 @@ FUNCTION Alias0() AS STRING
     /// <returns>TRUE after an attempt to skip backward beyond the first logical record in a database file or if
     /// the current database file contains no records; otherwise, FALSE.  If there is no database file open in the
     /// current work area, BOF() returns TRUE.</returns>
-    /// <remarks>BOF() is the same as VODBBOF().</remarks>
+    /// <remarks>BOF() is the same as CoreDbBOF().</remarks>
 FUNCTION Bof() AS LOGIC    
-   RETURN VODBBof()
+   RETURN VoDb.Bof()
 
 /// <summary>
 /// Return the full path of the file
@@ -44,37 +44,32 @@ FUNCTION Bof() AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION DBF() AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("DBF") AS IRDD
-    IF oRDD != NULL
-        RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
-    ENDIF                            
-    RETURN String.Empty
-
+    return VoDb.DBF()
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbPack() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODBPack())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Pack())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbRecall() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODbRecall())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbUnLock() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODBUnlock(NULL_OBJECT))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(NULL_OBJECT))
 
 /// <summary>Remove all records from the current workarea./// </summary>
 /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
 FUNCTION DbZap() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODBZap())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Zap())
 
 
 /// <summary>Release all locks for all work areas.</summary>
@@ -82,14 +77,14 @@ FUNCTION DbZap() AS LOGIC STRICT
 /// <remarks>DBUnlockAll() releases any record or file locks obtained by the current process for any work area.
 /// DBUnlockAll() is only meaningful on a shared database.  It is equivalent to calling DBUnlock() on every occupied work area.</remarks>
 FUNCTION DbUnlockAll() AS LOGIC STRICT
-	RETURN VODBUnlockAll()
+	RETURN VoDb.UnlockAll()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION Deleted() AS LOGIC STRICT
-	RETURN VODBDeleted()
+	RETURN VoDb.Deleted()
 
      /// <summary>
     /// Determine when end-of-file is encountered.
@@ -97,16 +92,16 @@ FUNCTION Deleted() AS LOGIC STRICT
     /// <returns>TRUE when an attempt is made to move the record pointer beyond the last logical record in a
     /// database file or if the current database file contains no records; otherwise, FALSE.  If there is no
     /// database file open in the current work area, EOF() returns TRUE.</returns>
-    /// <remarks>EOF() is the same as VODBEOF().</remarks>
+    /// <remarks>EOF() is the same as CoreDbEOF().</remarks>
 FUNCTION Eof() AS LOGIC
-   RETURN VODBEof()
+   RETURN VoDb.Eof()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION Flock() AS LOGIC STRICT
-	RETURN VODBFlock()
+	RETURN VoDb.Flock()
 
 
     /// <summary>
@@ -115,12 +110,7 @@ FUNCTION Flock() AS LOGIC STRICT
     /// <returns>
     /// </returns>
 FUNCTION FCount() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("FCount") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:FieldCount
-    ENDIF
-    RETURN 0
-    
+    return VoDb.FCount()    
     
     /// <summary>
     /// Return the name of a field as a string.
@@ -129,12 +119,7 @@ FUNCTION FCount() AS DWORD
     /// <returns>
     /// </returns>
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
-    LOCAL oRDD := RDDHelpers.CWA("FieldName") AS IRDD
-    IF (oRDD != NULL)
-        RETURN oRDD:FieldName((INT) dwFieldPos)
-    ENDIF
-    RETURN String.Empty   
-    
+    return VoDb.FieldName(dwFieldPos)    
     
     
     /// <summary>
@@ -144,12 +129,8 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
     /// <returns>
     /// </returns>
 FUNCTION FieldPos(sFieldName AS STRING) AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("FieldPos") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:FieldIndex(sFieldName) 
-    ENDIF
-    RETURN 0   
-
+    return VoDb.FieldPos(sFieldName)
+    
 /// <summary>
 /// Return the position of a field.
 /// </summary>
@@ -171,7 +152,7 @@ FUNCTION FieldPos(sFieldName AS STRING, nArea AS DWORD) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION Found() AS LOGIC 
-	RETURN VODBFound()
+	RETURN VoDb.Found()
 
 
 /// <summary>
@@ -180,7 +161,7 @@ FUNCTION Found() AS LOGIC
 /// </returns>
 FUNCTION Header() AS LONG
     LOCAL oValue := NULL AS OBJECT
-	VoDbInfo(DBI_GETHEADERSIZE, REF oValue)
+	VoDb.Info(DBI_GETHEADERSIZE, REF oValue)
     RETURN (LONG) oValue
 
 /// <summary>
@@ -189,66 +170,59 @@ FUNCTION Header() AS LONG
 /// <returns>
 /// </returns>
 FUNCTION LastRec() AS DWORD
-    LOCAL oRDD := RDDHelpers.CWA("LastRec") AS IRDD
-    IF (oRDD != NULL)
-        RETURN (DWORD) oRDD:RecCount
-    ENDIF
-    RETURN 0   
+    return (DWORD) VoDb.LastRec()
 
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION DbBuffRefresh() AS LOGIC STRICT
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.BuffRefresh())
 
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION DbClearFilter() AS LOGIC STRICT
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.ClearFilter())
+
+/// <summary>
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION DbClearRelation() AS LOGIC STRICT
+	RETURN VoDb.ClearRelation()
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBBuffRefresh() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODBBuffRefresh())
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION DBClearFilter() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODBClearFilter())
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION DBClearRelation() AS LOGIC STRICT
-	RETURN VODBClearRelation()
+FUNCTION DbCloseAll() AS LOGIC STRICT
+	RETURN VoDb.CloseAll()
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCloseAll() AS LOGIC STRICT
-	RETURN VODBCloseAll()
+FUNCTION DbCloseArea () AS LOGIC STRICT
+	RETURN VoDb.CloseArea()
 
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCloseArea () AS LOGIC STRICT
-	RETURN VODBCloseArea()
-
-
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION DBCommit() AS LOGIC STRICT
-	RETURN VODBCommit()
+FUNCTION DbCommit() AS LOGIC STRICT
+	RETURN VoDb.Commit()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION DBCommitAll() AS LOGIC STRICT
-	RETURN VODBCommitAll()
+FUNCTION DbCommitAll() AS LOGIC STRICT
+	RETURN VoDb.CommitAll()
 
 
 /// <summary>
@@ -256,14 +230,14 @@ FUNCTION DBCommitAll() AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbContinue() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODbContinue())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Continue())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbDriver() AS STRING STRICT
-	RETURN RDDNAME()
+	RETURN RddName()
 
 
 
@@ -272,14 +246,14 @@ FUNCTION DbDriver() AS STRING STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbFilter() AS STRING STRICT
-	RETURN VODBFilter()
+	RETURN VoDb.Filter()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION DbGetSelect() AS DWORD STRICT
-	RETURN VODBGetSelect()
+	RETURN VoDb.GetSelect()
 
 
 /// <summary>
@@ -287,7 +261,7 @@ FUNCTION DbGetSelect() AS DWORD STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbGoBottom() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODbGoBottom())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoBottom())
 
 
 /// <summary>
@@ -295,16 +269,16 @@ FUNCTION DbGoBottom() AS LOGIC STRICT
 /// <returns>
 /// </returns>
 FUNCTION DbGoTop() AS LOGIC STRICT
-	RETURN _DbCallWithError(__FUNCTION__, VODbGoTop())
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoTop())
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION RDDName        () AS STRING STRICT
+FUNCTION RddName        () AS STRING STRICT
 	LOCAL cRet      AS STRING
 	IF Used()
-		cRet := VODBRddName()
+		cRet := VoDb.RddName()
 	ELSE
 		cRet := RddSetDefault()
 	ENDIF
@@ -331,21 +305,27 @@ FUNCTION RddSetDefault  (cDriver AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION RecCount() AS LONG
-    RETURN VODBLastRec()
+    RETURN VoDb.LastRec()
 
+
+/// <summary>
+/// Return the number of records
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION RecNo() AS DWORD
+    RETURN VoDb.Recno()
 
 
 FUNCTION RecSize AS LONG
-    LOCAL nSize := NULL AS OBJECT
-    VODbInfo(DBInfo.DBI_GETRECSIZE, REF nSize)
-    RETURN (LONG) nSize
+    RETURN VoDb.RecSize()
 
 /// <summary>
 /// </summary>
 /// <returns>
 /// </returns>
 FUNCTION RLock() AS LOGIC STRICT
-	RETURN VODBRlock(NULL)
+	RETURN VoDb.Rlock(NULL)
 
 /// <summary>
 /// Determine whether a database file is open.

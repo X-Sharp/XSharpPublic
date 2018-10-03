@@ -36,12 +36,7 @@ FUNCTION __DBAvg(siValue AS LONG) AS LONG
 	RETURN siRet
 
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING       
 	
 	LOCAL cAlias    AS STRING
@@ -81,9 +76,9 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 	
 	RETURN cAlias
 
-
+/// <exclude />
 FUNCTION __DBFLEDIT(aStruct AS ARRAY, aFields AS ARRAY, aList AS ARRAY ) AS ARRAY
-    RETURN Db.FieldList(aStruct, aFields, aList)
+    RETURN VoDb.FieldList(aStruct, aFields, aList)
 
 /// <summary>Import records from a database file.</summary>
 FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden, aStruct)     AS LOGIC CLIPPER
@@ -100,13 +95,13 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 	TRY	
 		siTo := VODBGetSelect()
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
 		IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-		IF Empty( aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY) )
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
+		IF Empty( aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) )
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
 		DbUseArea(TRUE, cDriver, cFile, __UniqueAlias(cFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, aHidden)
@@ -125,7 +120,7 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 			SetAnsi(.T.)
 		ENDIF
 		
-		IF !Empty(aStruct := Db.FieldList(aStruct, aFields, aMatch))
+		IF !Empty(aStruct := VoDb.FieldList(aStruct, aFields, aMatch))
 			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		ENDIF
 		
@@ -169,12 +164,12 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-		IF (Empty( aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY) ))
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 3)
+		IF (Empty( aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) ))
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
 		IF Empty(cFile)
-			THROW Db.ParamError(__FUNCTION__, STRING, 1)
+			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
 			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
@@ -227,12 +222,12 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
             aStruct := DbStruct()
         ENDIF
 		
-		IF (Empty( aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY) ))
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
+		IF (Empty( aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) ))
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
 		IF Empty(cFile)
-			THROW Db.ParamError(__FUNCTION__, STRING, 1)
+			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
 			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
@@ -281,7 +276,7 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 	TRY
 		
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
@@ -304,8 +299,8 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
                 aStruct := DbStruct()
             ENDIF
             
-			IF ( Empty(aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY)) )
-				THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
+			IF ( Empty(aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)) )
+				THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 			ENDIF
 			
 			DbCreate( cFile, aStruct, cDriver,, __UniqueAlias(cFile),,,aHidden)
@@ -411,18 +406,18 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 	TRY
 		
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
   		
-		IF Empty(aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY))
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 3)
+		IF Empty(aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY))
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
 		IF Empty(cFile)
-			THROW Db.ParamError(__FUNCTION__, STRING, 1)
+			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
 			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
@@ -472,18 +467,18 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStru
 	TRY
 		
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
 		
-		IF Empty(aStruct := Db.FieldList(aStruct, aFields, NULL_ARRAY))
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
+		IF Empty(aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY))
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
 		IF Empty(cFile)
-			THROW Db.ParamError(__FUNCTION__, STRING, 1)
+			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
 			IF Empty(siPos := At(".", cFile ) )
 				cFile := cFile + ".TXT"
@@ -547,14 +542,14 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 		
 		
 		IF siFrom2 = 0
-			THROW Db.ParamError(__FUNCTION__, STRING, 1)
+			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ENDIF
 		
 		VODBSetSelect(INT(siFrom1))
 
         
-		IF Empty( aStruct := Db.TargetFields(cAlias, aFields, OUT pJoinList) )
-			VAR oError := Db.DbCmdError(__FUNCTION__)
+		IF Empty( aStruct := VoDb.TargetFields(cAlias, aFields, OUT pJoinList) )
+			VAR oError := VoDb.DbCmdError(__FUNCTION__)
 			oError:SubCode      := EDB_NOFIELDS
 			oError:CanDefault    := .F.
 			oError:CanRetry      := .F.
@@ -612,7 +607,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION DbJoinAppend(nSelect AS DWORD, list AS _JoinList)   AS LOGIC        
-	RETURN _DbCallWithError(__FUNCTION__, VODBJoinAppend(nSelect, list))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBJoinAppend(nSelect, list))
 
 /// <summary>Copy records to a database file in sorted order.
 /// </summary>
@@ -634,7 +629,7 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 	TRY
 		
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
 		
 		aStruct := DbStruct()
@@ -642,13 +637,13 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 		//	UH 09/23/1997
 		cRdd := RDDNAME()
 		
-		fnFieldNames := Db.allocFieldNames(aStruct)
+		fnFieldNames := VoDb.allocFieldNames(aStruct)
 		
 		IF Empty(AFields)
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 2)
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
-		fnSortNames := Db.AllocFieldNames(AFields)
+		fnSortNames := VoDb.AllocFieldNames(AFields)
 		
 		DbCreate(cFile, aStruct, cRdd, .T.)
 		VODBSelect(siFrom, REF siTo)
@@ -689,9 +684,9 @@ FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC 
 		lRest := .F.
 	ENDIF
 	
-	fldNames := Db.AllocFieldNames(aStru)
+	fldNames := VoDb.AllocFieldNames(aStru)
 	
-	RETURN _DbCallWithError(__FUNCTION__, VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest))
 
 
 
@@ -759,7 +754,7 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	TRY
 		
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
 		
 		aStruct := DbStruct()
@@ -777,10 +772,10 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 		NEXT
 		
 		IF Empty(aStruct) 
-			THROW Db.ParamError(__FUNCTION__, ARRAY, 3)
+			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
-		fldNames := Db.allocFieldNames(aStruct)
+		fldNames := VoDb.allocFieldNames(aStruct)
 		
 		//	DbCreate( cFile, aStruct, "", .T.)
 		IF IsNil(xDriver)
@@ -870,7 +865,7 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 		
 		
 		IF !Used()
-			THROW Db.DBCMDError(__FUNCTION__)
+			THROW VoDb.DBCMDError(__FUNCTION__)
 		ENDIF
 		
 		

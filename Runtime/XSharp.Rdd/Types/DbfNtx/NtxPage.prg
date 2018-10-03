@@ -37,13 +37,14 @@ BEGIN NAMESPACE XSharp.RDD
     INTERNAL CLASS NtxPage
     
         PROTECTED _Order    AS NtxOrder
-        PROTECTED _Number   AS LONG
+        PROTECTED _Offset   AS LONG
         PROTECTED _Hot      AS LOGIC
         
         PROTECTED _Bytes AS BYTE[]
         
         // Current Page Number
-        PROPERTY PageNo AS LONG GET SELF:_Number SET SELF:_Number := VALUE
+        //PROPERTY PageNo AS LONG GET SELF:_Number SET SELF:_Number := VALUE
+		PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
         
         PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
         
@@ -87,10 +88,10 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
             //
             SELF:_Order := order
-            SELF:_Number := pageNumber
+            SELF:_Offset := pageNumber
             SELF:_Bytes := BYTE[]{NtxHeader.NTXOFFSETS.SIZE}
             SELF:_Hot := FALSE
-            IF ( SELF:_Number != 0 )
+            IF ( SELF:_Offset != 0 )
                 SELF:Read()
             ENDIF
             RETURN
@@ -107,7 +108,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF isOk
                 TRY
                     // Move to top of Page
-                    FSeek3( SELF:_Order:_hFile, SELF:_Number * NtxHeader.NTXOFFSETS.SIZE, SeekOrigin.Begin )
+                    FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
                     isOk := ( FRead3(SELF:_Order:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
                 CATCH e AS Exception
@@ -125,12 +126,12 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN isOk
             ENDIF
             // Should it be <= ?
-            IF ( SELF:_Number < 0 )
+            IF ( SELF:_Offset < 0 )
                 RETURN FALSE
             ENDIF
             TRY
                 // Move to top of Page
-                FSeek3( SELF:_Order:_hFile, SELF:_Number * NtxHeader.NTXOFFSETS.SIZE, SeekOrigin.Begin )
+                FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
                 // Write Buffer
                 isOk := ( FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
                 SELF:_Hot := FALSE

@@ -63725,8 +63725,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C626
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C627 Static inherits from non static results in strange reference *************
-Application = C627 Static inherits from non static results in strange reference
+; ************** APPLICATION C627 - Static inherits from non static results in strange reference *************
+Application = C627 - Static inherits from non static results in strange reference
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -63757,17 +63757,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C627 Static inherits from non static results in strange reference FileGroups]
-[C627 Static inherits from non static results in strange reference Files]
+[C627 - Static inherits from non static results in strange reference FileGroups]
+[C627 - Static inherits from non static results in strange reference Files]
 File = %AppPath%\Prg\C627.prg
 FileGUID = 41ABCAD9-9147-486B-8D01-34848915D3F3
 FileType = Code
-[C627 Static inherits from non static results in strange reference References]
+[C627 - Static inherits from non static results in strange reference References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C627 Static inherits from non static results in strange reference Resources]
-[C627 Static inherits from non static results in strange reference Native Resources]
-[C627 Static inherits from non static results in strange reference License files]
-[C627 Static inherits from non static results in strange reference General Options]
+[C627 - Static inherits from non static results in strange reference Resources]
+[C627 - Static inherits from non static results in strange reference Native Resources]
+[C627 - Static inherits from non static results in strange reference License files]
+[C627 - Static inherits from non static results in strange reference General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -63793,7 +63793,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C627 Static inherits from non static results in strange reference Configurations]
+[C627 - Static inherits from non static results in strange reference Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -63820,7 +63820,207 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=1
   ForceConsole=0
   ForceX86=0
-ENDApplication = C627 Static inherits from non static results in strange reference
+ENDApplication = C627 - Static inherits from non static results in strange reference
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime *************
+Application = C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C628\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C628
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = D92841E4-1957-4A40-983B-235BA4BC48DF
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime FileGroups]
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Files]
+File = %AppPath%\Prg\C628.prg
+FileGUID = 9574227C-486B-4BF4-A0D6-E96F1FE0F878
+FileType = Code
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.6
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.6
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Resources]
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Native Resources]
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime License files]
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=1
+VO3=1
+VO4=1
+VO5=1
+VO6=1
+VO7=1
+VO8=1
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C629 - Incorrect PSZ returned from function returning PSZ *************
+Application = C629 - Incorrect PSZ returned from function returning PSZ
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C629\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C629
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = EDC80578-21CD-4570-8CDF-49D8BFCE1FD5
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C629 - Incorrect PSZ returned from function returning PSZ FileGroups]
+[C629 - Incorrect PSZ returned from function returning PSZ Files]
+File = %AppPath%\Prg\C629.prg
+FileGUID = F2FA5D31-7A6B-44FC-947D-17F56E890DE7
+FileType = Code
+[C629 - Incorrect PSZ returned from function returning PSZ References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C629 - Incorrect PSZ returned from function returning PSZ Resources]
+[C629 - Incorrect PSZ returned from function returning PSZ Native Resources]
+[C629 - Incorrect PSZ returned from function returning PSZ License files]
+[C629 - Incorrect PSZ returned from function returning PSZ General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C629 - Incorrect PSZ returned from function returning PSZ Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C629 - Incorrect PSZ returned from function returning PSZ
 [EndApplications]
 
 [Configurations]

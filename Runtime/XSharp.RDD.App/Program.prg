@@ -10,36 +10,36 @@ BEGIN NAMESPACE XSharp.RDD.App
     FUNCTION Start() AS VOID
         LOCAL myTest := TestDBF{} AS TestDBF
         //
-        VODbUseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
-        ? Dbf()
-        ? "Fields", FCount(), "Records", RecCount(), "RecSize", RecSize()
+        CoreDb.UseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
+        ? CoreDb.Dbf()
+        ? "Fields", CoreDb.FCount(), "Records", CoreDb.LastRec(), "RecSize", CoreDb.RecSize()
         LOCAL i AS DWORD
-        FOR i := 1 TO FCount()
+        FOR i := 1 TO CoreDb.FCount()
             LOCAL oValue := NULL AS OBJECT
-            IF VoDbFieldGet(i, REF oValue)
-                ? i, FieldName(i), oValue
+            IF CoreDb.FieldGet(i, REF oValue)
+                ? i, CoreDb.FieldName(i), oValue
             ELSE
-                ? i, FieldName(i), "** Error **"
+                ? i, CoreDb.FieldName(i), "** Error **"
             ENDIF
         NEXT
-        VoDbSkip(1)
-        FOR i := 1 TO FCount()
+        CoreDb.Skip(1)
+        FOR i := 1 TO CoreDb.FCount()
             LOCAL oValue := NULL AS OBJECT
-            IF VoDbFieldGet(i, REF oValue)
-                ? i, FieldName(i), oValue
+            IF CoreDb.FieldGet(i, REF oValue)
+                ? i, CoreDb.FieldName(i), oValue
             ELSE
-                ? i, FieldName(i), "** Error **"
+                ? i, CoreDb.FieldName(i), "** Error **"
             ENDIF
         NEXT
-        VoDbGoTop()
-        ? "GoTop Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
-        VoDbSkip(-1)
-        ? "After skip -1 Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
-        VoDbGoBottom()
-        ? "GoBottom Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
-        VoDbSkip(1)
-        ? "Skip 1 Recno" , VoDbRecno(), "EOF", EOF(), "BOF", BOF()
-        VoDbCloseArea()
+        CoreDb.GoTop()
+        ? "GoTop Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.Skip(-1)
+        ? "After skip -1 Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.GoBottom()
+        ? "GoBottom Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.Skip(1)
+        ? "Skip 1 Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.CloseArea()
         Console.Read()
         myTest:OpenDBF()
         myTest:OpenDBFErr()

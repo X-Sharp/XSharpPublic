@@ -77,7 +77,7 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC)
 	LOCAL IsCopied := TRUE AS LOGIC
 	TRY
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
-		CATCH 
+	CATCH 
 		FError((DWORD)Marshal.GetLastWin32Error())
 		IsCopied := FALSE
 	END TRY

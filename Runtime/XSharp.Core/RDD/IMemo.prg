@@ -39,6 +39,7 @@ INTERFACE XSharp.RDD.IMemo
 	/// <param name="info">object describing the file to open.</param>
 	METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC   
 
-
+    /// <summary>Physically remove all memos from the memofile.</summary>
+    METHOD Zap() AS LOGIC
 			
 END INTERFACE	

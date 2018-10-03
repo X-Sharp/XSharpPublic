@@ -277,7 +277,7 @@ STRUCTURE DbSeekInfo
 	/// <summary>A flag that is TRUE if a soft seek is to be performed. </summary>
 	PUBLIC SoftSeek AS LOGIC
 	/// <summary>An object containing the key value to find.</summary>
-	PUBLIC VALUE	AS OBJECT
+	PUBLIC @@Value AS OBJECT
 END STRUCTURE
 
 /// <summary>Helper class to store information needed to perform a physical sort. </summary> 
@@ -387,7 +387,8 @@ END CLASS
 
 END NAMESPACE
 
-CLASS _FieldNames
+/// <summary>Helper class for VoDbTrans and VoDbSort()</summary>
+CLASS XSharp._FieldNames
     PUBLIC fields AS STRING[]
     PROPERTY fieldCount AS LONG GET fields:Length
     CONSTRUCTOR (aFields AS IList<STRING>)
@@ -397,7 +398,7 @@ END CLASS
 
 
 
-CLASS _JoinList
+CLASS XSharp._JoinList
     PUBLIC uiDestSel AS DWORD
     PUBLIC Fields AS _JoinField[]
     PUBLIC PROPERTY Count AS LONG GET Fields:Length
@@ -406,12 +407,12 @@ CLASS _JoinList
         RETURN
 END CLASS
 
-STRUCTURE _JoinField
+STRUCTURE XSharp._JoinField
     PUBLIC Area AS DWORD
     PUBLIC Pos  AS DWORD
 END STRUCTURE
 
-STRUCTURE _RddList
+STRUCTURE XSharp._RddList
     EXPORT atomRddName AS STRING[]
     PROPERTY uiRDDCount AS DWORD GET (DWORD) atomRDDName:Length
         

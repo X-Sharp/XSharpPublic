@@ -5,17 +5,18 @@
 //
 // functions used by the compiler
 
-/// <summary>
-/// Compare 2 strings. This function is used by the compiler for string comparisons
-/// </summary>
-/// <param name="strLHS">The first string .</param>
-/// <param name="strRHS">The second string.</param>
-/// <returns>
-/// -1 strLHS precedes strRHS in the sort order. 
-///  0 strLHS occurs in the same position as strRHS in the sort order. 
-///  1 strLHS follows strRHS in the sort order. 
-/// Note this this function respects SetCollation() and SetExact()
-/// </returns>
+// <summary>
+// Compare 2 strings. This function is used by the compiler for string comparisons
+// </summary>
+// <param name="strLHS">The first string .</param>
+// <param name="strRHS">The second string.</param>
+// <returns>
+// -1 strLHS precedes strRHS in the sort order. 
+//  0 strLHS occurs in the same position as strRHS in the sort order. 
+//  1 strLHS follows strRHS in the sort order. 
+// Note this this function respects SetCollation() and SetExact()
+// </returns>
+/// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     LOCAL ret AS INT
     IF Object.ReferenceEquals(strLHS, strRHS)
@@ -133,7 +134,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE
-        VODBFieldGet( fieldpos, REF ret )
+        VoDb.FieldGet( fieldpos, REF ret )
     ENDIF
     RETURN ret
     
@@ -163,7 +164,7 @@ FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE
-        _DbCallWithError(__FUNCTION__, VODBFieldPut( fieldpos, uValue))
+        _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut( fieldpos, uValue))
     ENDIF
     // We return the original value to allow chained expressions
     RETURN uValue

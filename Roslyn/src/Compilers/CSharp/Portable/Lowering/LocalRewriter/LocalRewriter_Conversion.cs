@@ -23,6 +23,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             _inExpressionLambda = _inExpressionLambda || (node.ConversionKind == ConversionKind.AnonymousFunction && !wasInExpressionLambda && rewrittenType.IsExpressionTree());
             var rewrittenOperand = VisitExpression(node.Operand);
             _inExpressionLambda = wasInExpressionLambda;
+#if XSHARP
+            if (rewrittenType == _compilation.PszType())
+            {
+                return this.MakePsz(rewrittenOperand);
+            }
+#endif
 
             var result = MakeConversionNode(node, node.Syntax, rewrittenOperand, node.Conversion, node.Checked, node.ExplicitCastInCode, node.ConstantValue, rewrittenType);
 

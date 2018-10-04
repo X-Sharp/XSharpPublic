@@ -27,6 +27,33 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
     {
+
+        public BoundExpression MakePsz(BoundExpression value)
+        {
+            if (value.Type.SpecialType == SpecialType.System_String)
+            {
+                return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.StringAlloc, value);
+            }
+            var type = _compilation.PszType();
+            var ctors = type.Constructors;
+            // not a string, so find the constructor that takes an intptr
+            foreach (var ctor in ctors)
+            {
+                if (ctor.ParameterCount == 1)
+                {
+                    var partype = ctor.GetParameterTypes()[0];
+                    if (partype.SpecialType == SpecialType.System_IntPtr)
+                    {
+                        if (value.Type.SpecialType != SpecialType.System_IntPtr)
+                        {
+                            value = new BoundConversion(value.Syntax, value, Conversion.Identity, false, false, null, partype, false);
+                        }
+                        return new BoundObjectCreationExpression(value.Syntax, ctor, value);
+                    }
+                }
+            }
+            return value;
+        }
         static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
         {
             Func<string, bool> predicate = n => StringComparer.Ordinal.Equals(name, n);

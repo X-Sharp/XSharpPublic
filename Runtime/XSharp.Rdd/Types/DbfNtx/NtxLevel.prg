@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL num AS SHORT
             LOCAL i AS LONG
             //
-            SELF:Write( SELF:PageNo)
+            SELF:Write( SELF:PageOffset)
             num := (SHORT)((uiMaxEntry + 2) * 2)
             //Init
             i := 0
@@ -100,12 +100,12 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:liExtraKeys := 0
             
             
-        PUBLIC METHOD Write(lPage AS LONG ) AS LOGIC
+        PUBLIC METHOD Write( offset AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
             //
-            SELF:PageNo := lPage
+            SELF:PageOffset := offset
             result := SELF:Write()
-            SELF:PageNo := 0L
+            SELF:PageOffset := 0
             RETURN result
             
             

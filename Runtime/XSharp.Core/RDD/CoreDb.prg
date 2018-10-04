@@ -830,7 +830,12 @@ CLASS XSharp.CoreDb
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         RETURN oRDD:GoTop()
         })
-        
+
+
+    STATIC METHOD  Header() AS LONG
+        LOCAL oValue := NULL AS OBJECT
+	    CoreDb.Info(DBI_GETHEADERSIZE, REF oValue)
+        RETURN (LONG) oValue
         
         /// <summary>
         /// Retrieve information about a work area.
@@ -841,7 +846,7 @@ CLASS XSharp.CoreDb
         /// <seealso cref='O:XSharp.VO.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.Info' >Info overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.Info' >Info overloads in CoreDb</seealso>
-        
+    
     STATIC METHOD Info(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.Info(nOrdinal, REF oRet)

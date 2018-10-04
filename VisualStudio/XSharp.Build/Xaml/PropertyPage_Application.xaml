@@ -46,10 +46,10 @@
         <EnumValue Name="Core"      DisplayName="Core" />
         <EnumValue Name="VO"        DisplayName="Visual Objects" />
         <EnumValue Name="Vulcan"    DisplayName="Vulcan.NET" />
-        <EnumValue Name="Harbour"   DisplayName="(x)Harbour" />
+        <EnumValue Name="Harbour"   DisplayName="Harbour" />
         <EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
         <EnumValue Name="dBase"     DisplayName="dBase" />
-        <EnumValue Name="XBasepp"   DisplayName="Alaska Xbase++" />
+        <EnumValue Name="XBasepp"   DisplayName="Xbase++" />
         <!--<EnumProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </EnumProperty.DataSource>-->

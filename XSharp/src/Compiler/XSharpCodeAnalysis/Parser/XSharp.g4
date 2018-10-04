@@ -373,7 +373,7 @@ accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | 
 expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
 
-propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
+propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END GET?
                       | Key=SET end=eos StmtBlk=statementBlock END SET? )
                       end=eos

@@ -75,6 +75,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return true;
                     }
                 }
+                if (m1.Member.HasClipperCallingConvention() != m2.Member.HasClipperCallingConvention())
+                {
+                    if (m1.Member.HasClipperCallingConvention())
+                        result = BetterResult.Right;
+                    else
+                        result = BetterResult.Left;
+                    return true;
+                }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
                     // In case of 2 methods with the same # of parameters 

@@ -145,16 +145,7 @@ FUNCTION SplitPath(cPath AS STRING,cDrive REF STRING,cDir REF STRING,cName REF S
 	RETURN
 
 
-/// <summary>
-/// Break a path name into its components.
-/// </summary>
-/// <param name="pszPath"></param>
-/// <param name="pszDrive"></param>
-/// <param name="pszDir"></param>
-/// <param name="pszName"></param>
-/// <param name="pszExt"></param>
-/// <returns>
-/// </returns>
+[Obsolete("'SplitPath()' with PSZ arguments is no longer supported. Please use SplitPath() or _SplitPath() (both with STRING arguments) in stead",FALSE)];
 FUNCTION SplitPath(pszPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,pszExt AS PSZ) AS VOID
    LOCAL cDrive AS STRING
    LOCAL cDir   AS STRING
@@ -175,6 +166,6 @@ FUNCTION SplitPath(pszPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,p
 	IF pszExt != NULL_PSZ
 		MemCopyString(pszExt, cExt, (DWORD) Slen(cExt)+1)
 	ENDIF
+    RETURN 
 
 
-//	return

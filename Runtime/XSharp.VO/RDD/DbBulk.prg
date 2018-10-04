@@ -100,7 +100,8 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-		IF Empty( aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) )
+        aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) 
+		IF Empty( aStruct)
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
@@ -119,8 +120,8 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
 			SetAnsi(.T.)
 		ENDIF
-		
-		IF !Empty(aStruct := VoDb.FieldList(aStruct, aFields, aMatch))
+		aStruct := VoDb.FieldList(aStruct, aFields, aMatch)
+		IF !Empty(aStruct)
 			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
 		ENDIF
 		
@@ -164,14 +165,16 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-		IF (Empty( aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) ))
+        aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) 
+		IF Empty( aStruct)
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
 		IF Empty(cFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
-		ELSE
-			IF Empty(siPos := At(".", cFile ) )
+        ELSE
+            siPos := At(".", cFile ) 
+			IF siPos == 0
 				cFile := cFile + ".TXT"
 			ENDIF
 		ENDIF
@@ -221,15 +224,16 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-		
-		IF (Empty( aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) ))
+		aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) 
+		IF (Empty( aStruct ))
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
 		IF Empty(cFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
-			IF Empty(siPos := At(".", cFile ) )
+            siPos := At(".", cFile ) 
+			IF siPos == 0
 				cFile := cFile + ".TXT"
 			ENDIF
 		ENDIF
@@ -298,8 +302,8 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
             IF IsNil(aStruct)
                 aStruct := DbStruct()
             ENDIF
-            
-			IF ( Empty(aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)) )
+            aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)
+			IF ( Empty(aStruct) )
 				THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 			ENDIF
 			
@@ -411,15 +415,16 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-  		
-		IF Empty(aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY))
+  		aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)
+		IF Empty(aStruct )
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
 		IF Empty(cFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
-			IF Empty(siPos := At(".", cFile ) )
+            siPos := At(".", cFile ) 
+			IF siPos == 0
 				cFile := cFile + ".TXT"
 			ENDIF
 		ENDIF
@@ -472,15 +477,16 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStru
         IF IsNil(aStruct)
             aStruct := DbStruct()
         ENDIF
-		
-		IF Empty(aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY))
+		aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)
+		IF Empty(aStruct )
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
 		IF Empty(cFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
-			IF Empty(siPos := At(".", cFile ) )
+            siPos := At(".", cFile ) 
+			IF siPos == 0
 				cFile := cFile + ".TXT"
 			ENDIF
 		ENDIF
@@ -547,8 +553,8 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 		
 		VODBSetSelect(INT(siFrom1))
 
-        
-		IF Empty( aStruct := VoDb.TargetFields(cAlias, aFields, OUT pJoinList) )
+        aStruct := VoDb.TargetFields(cAlias, aFields, OUT pJoinList)
+		IF Empty( aStruct )
 			VAR oError := VoDb.DbCmdError(__FUNCTION__)
 			oError:SubCode      := EDB_NOFIELDS
 			oError:CanDefault    := .F.

@@ -119,6 +119,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
         public Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
+        public Dictionary<String, FieldDeclarationSyntax> LiteralPSZs { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
     }
 }
 
@@ -187,6 +188,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public bool HasDocComments => internalUnit.HasDocComments;
         public bool HasPragmas => internalUnit.HasPragmas;
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
+        internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralPSZs => internalUnit.LiteralPSZs;
     }
 }
 

@@ -418,6 +418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_options.IsDialectVO)
                     {
                         result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
+                        result.LiteralPSZs = ((XSharpVOTreeTransformation)treeTransform).LiteralPSZs;
                     }
                 }
                 return result;
@@ -623,12 +624,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
             // merge accesses and assigns from different source files into one property etc.
-            // we pass the usings from the compilationunits along because the new compilation unit will
+            // we pass the usings from the compilation units along because the new compilation unit will
             // have to the same (combined) list of usings
             // When compiling in VO/Vulcan dialect we also collect the literal symbols from the compilation unit.
             // When we have one or more of these then we create a symbol table in the class "Xs$SymbolTable"
             var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(StringComparer.OrdinalIgnoreCase);
             var symbolTable = new Dictionary<string, InternalSyntax.FieldDeclarationSyntax>();
+            var pszTable = new Dictionary<string, InternalSyntax.FieldDeclarationSyntax>();
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
@@ -650,19 +652,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-                if (_options.IsDialectVO &&  compilationunit.LiteralSymbols.Count > 0)
+                if (_options.IsDialectVO) 
                 {
-                    foreach (var pair in compilationunit.LiteralSymbols)
+                    if (compilationunit.LiteralSymbols.Count > 0)
                     {
-                        if (!symbolTable.ContainsKey(pair.Key))
+                        foreach (var pair in compilationunit.LiteralSymbols)
                         {
-                            symbolTable.Add(pair.Key, pair.Value);
+                            if (!symbolTable.ContainsKey(pair.Key))
+                            {
+                                symbolTable.Add(pair.Key, pair.Value);
+                            }
                         }
+                        compilationunit.LiteralSymbols.Clear();
                     }
-                    compilationunit.LiteralSymbols.Clear();
+                    if (compilationunit.LiteralPSZs.Count > 0)
+                    {
+                        foreach (var pair in compilationunit.LiteralPSZs)
+                        {
+                            if (!pszTable.ContainsKey(pair.Key))
+                            {
+                                pszTable.Add(pair.Key, pair.Value);
+                            }
+                        }
+                        compilationunit.LiteralSymbols.Clear();
+                    }
                 }
             }
-            if (partialClasses.Count > 0 || symbolTable.Count > 0)
+            if (partialClasses.Count > 0 || symbolTable.Count > 0 || pszTable.Count > 0)
             {
                 // Create a new tree which shall have the generated constructors and properties
                 // and return this tree to the caller.
@@ -825,25 +841,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (symbolTable.Count > 0)
                 {
                     // build internal static symbol table class 
-                    // the fields have been created in the code inside VOTreeTransform
-                    clsmembers.Clear();
-                    foreach (var symbol in symbolTable)
-                    {
-                        clsmembers.Add(symbol.Value);
-                    }
-                    var decl = _syntaxFactory.ClassDeclaration(
-                                    default(SyntaxList<AttributeListSyntax>),
-                                    trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
-                                    SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                                    SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
-                                    default(TypeParameterListSyntax),
-                                    default(BaseListSyntax),
-                                    default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                                    clsmembers,
-                                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                                    null);
-                    members.Add(decl);
+                    members.Add(_generateSpecialClass(XSharpSpecialNames.SymbolTable, symbolTable, trans));
+                }
+                if (pszTable.Count > 0)
+                {
+                    // build internal static psz table class 
+                    members.Add(_generateSpecialClass(XSharpSpecialNames.PSZTable, pszTable, trans));
                 }
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 var result = _syntaxFactory.CompilationUnit(
@@ -861,6 +864,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return tree;
             }
             return null;
+        }
+
+        private ClassDeclarationSyntax _generateSpecialClass(string name, Dictionary<string, InternalSyntax.FieldDeclarationSyntax> fields ,XSharpTreeTransformation trans)
+        {
+            var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach (var field in fields)
+            {
+                clsmembers.Add(field.Value);
+            }
+            var decl = _syntaxFactory.ClassDeclaration(
+                                default(SyntaxList<AttributeListSyntax>),
+                                trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
+                                SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                                SyntaxFactory.MakeIdentifier(name),
+                                default(TypeParameterListSyntax),
+                                default(BaseListSyntax),
+                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                clsmembers,
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                                null);
+            return decl;
         }
 
         private List<MemberDeclarationSyntax> GeneratePartialProperties (List<PartialPropertyElement> classes, 

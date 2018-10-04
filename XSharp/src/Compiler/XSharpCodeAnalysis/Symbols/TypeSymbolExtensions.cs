@@ -40,7 +40,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
 
         }
- 
+
+        public static bool IsPsz(this TypeSymbol _type)
+        {
+            if (_type == null)
+                return false;
+            return _type.Name == OurTypeNames.PszType;
+        }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!

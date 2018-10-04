@@ -57,7 +57,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ArrayTypeSyntax arrayOfString = null;
         private bool voStructHasDim;
 
-        private Dictionary<String, FieldDeclarationSyntax> _literalSymbols;
+        private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
+        private Dictionary<string, FieldDeclarationSyntax> _literalPSZs;
         #endregion
 
         #region Static Fields
@@ -114,6 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
             _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
+            _literalPSZs = new Dictionary<string, FieldDeclarationSyntax>();
             // calculate the global class name;
             GlobalClassName = GetGlobalClassName(_options.TargetDLL);
 
@@ -122,6 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         internal Dictionary<string, FieldDeclarationSyntax> LiteralSymbols => _literalSymbols;
+        internal Dictionary<string, FieldDeclarationSyntax> LiteralPSZs => _literalPSZs;
         internal static SyntaxList<AttributeListSyntax> VOClassAttribs { get { return _voClassAttribs; } }
 
         public override string GetGlobalClassName(XSharpTargetDLL targetDLL)
@@ -174,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         name: GenerateQualifiedName(SystemQualifiedNames.StructLayout),
                                         argumentList: MakeAttributeArgumentList(MakeSeparatedList(attargs.ToArrayAndFree()))
                                         );
-                        attlist.Add(MakeAttributeList(null, MakeSeparatedList<AttributeSyntax>(attrib)));
+                        attlist.Add(MakeAttributeList(null, MakeSeparatedList(attrib)));
                         _voClassAttribs = attlist.ToList();
                         _pool.Free(attlist);
                     }
@@ -2298,7 +2301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         var attribute = _syntaxFactory.Attribute(
                                         name: GenerateQualifiedName(_actualType),argumentList: MakeAttributeArgumentList(arguments));
-                        var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
+                        var attributes = MakeSeparatedList(attribute);
 
                         _actualArgs = MakeAttributeList(
                             target: null,
@@ -2489,7 +2492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var fielddecl = _syntaxFactory.FieldDeclaration(
                                             default(SyntaxList<AttributeListSyntax>),
                                             TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword, SyntaxKind.ReadOnlyKeyword),
-                                            _syntaxFactory.VariableDeclaration(_symbolType, MakeSeparatedList<VariableDeclaratorSyntax>(vars)), 
+                                            _syntaxFactory.VariableDeclaration(_symbolType, MakeSeparatedList(vars)), 
                                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 _literalSymbols.Add(lsym, fielddecl);
             }
@@ -2497,6 +2500,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return name;
         }
 
+        private ExpressionSyntax GenerateLiteralPsz(string psz)
+        {
+            //remove the quotes from the string
+            psz = psz.Substring(1, psz.Length - 2);
+            var args = MakeArgumentList(MakeArgument(GenerateLiteral(psz)));
+            var expr = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.StringAlloc : VulcanQualifiedFunctionNames.StringAlloc , args); 
+            if (_options.MacroScript)
+                return expr;
+            string fieldname;
+            fieldname = "_"+ psz.Replace(' ',  '\xffff').Replace('\t', '\xfffe'); 
+            if (!_literalPSZs.ContainsKey(fieldname))
+            {
+                // create field declarator with inline assignment
+                // INTERNAL STATIC INITONLY _psz := StringAlloc("value") AS __PSZ
+                var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);
+                var vars = _syntaxFactory.VariableDeclarator(SyntaxFactory.MakeIdentifier(fieldname), EmptyBracketedArgumentList(), init);
+                var fielddecl = _syntaxFactory.FieldDeclaration(
+                                            default(SyntaxList<AttributeListSyntax>),
+                                            TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword, SyntaxKind.ReadOnlyKeyword),
+                                            _syntaxFactory.VariableDeclaration(_pszType, variables: MakeSeparatedList(vars)),
+                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                _literalPSZs.Add(fieldname, fielddecl);
+            }
+            return MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.PSZTable), GenerateSimpleName(fieldname));
+        }
+
+   
         private bool GeneratePCall(XP.MethodCallContext context)
         {
             // Return type and parameters should match the method prototype that the first parameter
@@ -2709,7 +2739,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         identifier: SyntaxFactory.Identifier(XSharpSpecialNames.ClipperArgs),
                                         @default: null);
                         _clipperParams = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            MakeSeparatedList<ParameterSyntax>(par),
+                            MakeSeparatedList(par),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                         _pool.Free(attrs);
                         _pool.Free(modifiers);
@@ -2777,7 +2807,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier(name),
                            _syntaxFactory.TypeArgumentList(
                                SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
-                               MakeSeparatedList<TypeSyntax>(type),
+                               MakeSeparatedList(type),
                                SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
                                ));
         }
@@ -2944,7 +2974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void _GenerateString2Psz(XSharpParserRuleContext context, ExpressionSyntax expr)
+        private ExpressionSyntax _GenerateString2Psz(XSharpParserRuleContext context, ExpressionSyntax expr)
         {
             if (CurrentEntity != null )
             {
@@ -2956,8 +2986,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     argList,true);
                 var args = MakeArgumentList(MakeArgument(expr));
                 expr = CreateObject(this._pszType, args);
-                context.Put(expr);
+                return expr;
             }
+            return null;
         }
 
         private bool GenerateString2Psz(XP.MethodCallContext context, string name)
@@ -2985,7 +3016,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    _GenerateString2Psz(context, argList.Arguments[0].Expression);
+                    var result = _GenerateString2Psz(context, argList.Arguments[0].Expression);
+                    context.Put(result);
                 }
                 return true;
             }
@@ -3003,21 +3035,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var primary = context as XP.PrimaryExpressionContext;
                 if (primary.Expr is XP.LiteralExpressionContext)
                 {
-                    // PSZ(_CAST, <Literal>)
+                    // PSZ(_CAST, NULL ) ?
                     var literal = primary.Expr as XP.LiteralExpressionContext;
                     var token = literal.Literal.Token;
-                    if (token.IsStringConst())
-                    {
-                        var arg = MakeArgument(expr);
-                        expr = CreateObject(_pszType, MakeArgumentList(arg));
-                    }
                     if (token.IsNull())
                     {
                         expr = GenerateLiteral(0);
+                        return CreateObject(_pszType, MakeArgumentList(MakeArgument(expr)));
+                    }
+                    if (token.Type == XSharpLexer.STRING_CONST)
+                    {
+                        return GenerateLiteralPsz(token.Text);
+                    }
+                    else
+                    {
+
                     }
                 }
             }
-            return expr;
+            return null;
         }
         private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr)
         {
@@ -3570,19 +3606,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 
             // Special case for PSZ(..) 
-            // PSZ(_CAST, "String") becomes String2Psz("String")
+            // PSZ("String") becomes String2Psz("String")
             if (context.XType != null)
             {
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    var token = context.Expr.GetLiteralToken();
-                    if (token != null && token.Type == XP.STRING_CONST)
+                    var expr = GetPszConstructor(context.Expr);
+                    if (expr != null)
                     {
-                        _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                        context.Put(expr);
                         return;
                     }
-
                 }
             }
 
@@ -3602,7 +3637,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (context.Expr.IsLiteralString())
                     {
-                        _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                        var result = _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                        context.Put(result);
                         return;
                     }
                 }
@@ -3620,15 +3656,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    if (context.Expr.IsLiteralString())
+                    var expr = GetPszConstructor(context.Expr);
+                    if (expr != null)
                     {
-                        _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                        context.Put(expr);
+                        return;
                     }
-                    else
-                    {
-                        context.Put(GetPszConstructor(context.Expr));
-                    }
-                    return;
                 }
             }
             base.ExitVoCastExpression(context);

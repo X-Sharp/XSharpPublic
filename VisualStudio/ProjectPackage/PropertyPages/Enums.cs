@@ -91,10 +91,10 @@ namespace XSharp.Project
         Core,
         VO,
         Vulcan,
-        //Harbour,
-        //FoxPro,
-        //dBase,
-        //Xbasepp,
+        Harbour,
+        FoxPro,
+        dBase,
+        Xbasepp,
     }
 
     public class DialectConverter : EnumConverter
@@ -123,13 +123,10 @@ namespace XSharp.Project
                 if (String.Compare(str, "vo", true) == 0) return Dialect.VO;
                 if (String.Compare(str, "vulcan.net", true) == 0) return Dialect.Vulcan;
                 if (String.Compare(str, "vulcan", true) == 0) return Dialect.Vulcan;
-                //if (String.Compare(str, "harbour", true) == 0) return Dialect.Harbour;
-                //if (String.Compare(str, "xharbour", true) == 0) return Dialect.Harbour;
-                //if (String.Compare(str, "foxpro", true) == 0) return Dialect.FoxPro;
-                //if (String.Compare(str, "dbase", true) == 0) return Dialect.dBase;
-                //if (String.Compare(str, "xbasepp", true) == 0) return Dialect.Xbasepp;
-                //if (String.Compare(str, "xbase++", true) == 0) return Dialect.Xbasepp;
-                //if (String.Compare(str, "alaska xbase++", true) == 0) return Dialect.Xbasepp;
+                if (String.Compare(str, "harbour", true) == 0) return Dialect.Harbour;
+                if (String.Compare(str, "foxpro", true) == 0) return Dialect.FoxPro;
+                if (String.Compare(str, "dbase", true) == 0) return Dialect.dBase;
+                if (String.Compare(str, "xbase++", true) == 0) return Dialect.Xbasepp;
 
             }
             return Dialect.Core;
@@ -155,18 +152,18 @@ namespace XSharp.Project
                         case Dialect.Vulcan:
                             result = "Vulcan.NET";
                             break;
-                        //case Dialect.Harbour:
-                        //    result = "(x)Harbour";
-                        //    break;
-                        //case Dialect.FoxPro:
-                        //    result = "Microsoft FoxPro";
-                        //    break;
-                        //case Dialect.dBase:
-                        //    result = "dBase";
-                        //    break;
-                        //case Dialect.Xbasepp:
-                        //    result = "Alaska Xbase++";
-                        //    break;
+                        case Dialect.Harbour:
+                            result = "Harbour";
+                            break;
+                        case Dialect.FoxPro:
+                            result = "FoxPro";
+                            break;
+                        case Dialect.dBase:
+                            result = "dBase";
+                            break;
+                        case Dialect.Xbasepp:
+                            result = "Xbase++";
+                            break;
                         default:
                             result = ((Dialect)value).ToString();
                             break;
@@ -190,8 +187,8 @@ namespace XSharp.Project
 
         public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan });
-                // , Dialect.Harbour, Dialect.FoxPro, Dialect.dBase, Dialect.Xbasepp });
+            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour});
+            // , Dialect.Xbasepp , Dialect.FoxPro, Dialect.dBase });
         }
     }
 

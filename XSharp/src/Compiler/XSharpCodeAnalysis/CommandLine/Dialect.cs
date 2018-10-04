@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-                case XSharpDialect.Vulcan:
+                //case XSharpDialect.Vulcan:
                     return false;
                 default:
                     return true;
@@ -117,4 +117,3 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
-    

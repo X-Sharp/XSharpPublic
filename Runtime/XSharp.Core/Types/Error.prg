@@ -206,9 +206,8 @@ BEGIN NAMESPACE XSharp
       
       
     /// <summary></summary>
-    METHOD @@Throw AS VOID STRICT
-    // must override in subclass
-    RETURN
+    VIRTUAL METHOD @@Throw AS VOID STRICT
+        THROW SELF
     
     #region STATIC methods TO construct an error
     /// <exclude/>	

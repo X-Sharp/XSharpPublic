@@ -17,8 +17,14 @@ FUNCTION AllTrim(c AS STRING) AS STRING
 	RETURN c:Trim(trimChars)
 
 
+/// <summary>
+/// Convert a character to its ASCII value using default Windows codepage
+/// </summary>
+/// <param name="c"></param>
+/// <returns>
+/// </returns>
 
-INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
+FUNCTION Asc(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
 	IF ( !String.IsNullOrEmpty(c) ) 
@@ -26,11 +32,7 @@ INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
 			LOCAL encoding AS Encoding
-			IF lAnsi
-				encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
-			ELSE
-				encoding := Encoding.GetEncoding(RuntimeState.DOSCodePage) 
-			ENDIF
+			encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
 			LOCAL buffer AS BYTE[]
 			VAR chars := <CHAR> {chValue}
 			IF encoding:IsSingleByte
@@ -55,16 +57,6 @@ INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
 	RETURN ascValue
 
 /// <summary>
-/// Convert a character to its ASCII value using DOS codepage
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION Asc(c AS STRING) AS DWORD
-	RETURN _Asc(c, FALSE)
-
-
-/// <summary>
 /// Convert a character to its Unicode ASCII value.
 /// </summary>
 /// <param name="c"></param>
@@ -80,14 +72,7 @@ FUNCTION AscW(c AS STRING) AS DWORD
 	RETURN ascValue
 
 
-/// <summary>
-/// Convert a character to its ASCII value using default Windows codepage
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION AscA(c AS STRING) AS DWORD
-	RETURN _Asc(c, TRUE)
+
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -348,17 +333,6 @@ FUNCTION CharPos(c AS STRING, nStart AS DWORD) AS STRING
 
 
 
-/// <summary>
-/// Convert an ASCII code to a character value.
-/// </summary>
-/// <param name="dwChar"></param>
-/// <returns>
-/// </returns>
-FUNCTION CHR(dwChar AS DWORD) AS STRING
-	VAR buffer := BYTE[]{1} 
-	buffer[0] := (BYTE) dwChar
-	RETURN System.Text.Encoding:ASCII:GetString(buffer)
-
 
 /// <summary>
 /// Convert an ASCII code to a character value.
@@ -366,7 +340,7 @@ FUNCTION CHR(dwChar AS DWORD) AS STRING
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-FUNCTION ChrA(c AS DWORD) AS STRING
+FUNCTION Chr(c AS DWORD) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
    b := (BYTE)( c & 0xFF )  // VO ignores the high 24 bits
@@ -376,7 +350,7 @@ FUNCTION ChrA(c AS DWORD) AS STRING
    ELSE
       LOCAL encoding AS Encoding
 
-      encoding := Encoding.Default
+      encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
 
       LOCAL chars := CHAR[]{ 1 } AS CHAR[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]

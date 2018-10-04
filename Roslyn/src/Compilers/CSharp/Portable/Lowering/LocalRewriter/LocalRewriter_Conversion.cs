@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rewrittenOperand = VisitExpression(node.Operand);
             _inExpressionLambda = wasInExpressionLambda;
 #if XSHARP
-            if (rewrittenType == _compilation.PszType())
+            if (rewrittenType.IsPsz())
             {
                 return this.MakePsz(rewrittenOperand);
             }

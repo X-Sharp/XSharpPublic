@@ -18,10 +18,10 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _Pages AS List<NtxPage>
         PROTECT _Order AS NtxOrder
         
-        PRIVATE METHOD _FindPage(pageNo AS LONG ) AS NtxPage
+        PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
-            ntxPage := SELF:_Pages:Find( { p => p:PageNo == pageNo } )
+            ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
             RETURN ntxPage
             
             
@@ -40,13 +40,13 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN ntxPage
             
             
-        METHOD Append(pageNo AS LONG ) AS NtxPage
+        METHOD Append( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
-            ntxPage := SELF:_FindPage(pageNo)
+            ntxPage := SELF:_FindPage(offset)
             IF (ntxPage == NULL)
                 ntxPage := NtxPage{SELF:_Order, 0L}
-                ntxPage:PageNo := pageNo
+                ntxPage:PageOffset := offset
                 SELF:_Pages:Add(ntxPage)
             ENDIF
             ntxPage:Hot := TRUE

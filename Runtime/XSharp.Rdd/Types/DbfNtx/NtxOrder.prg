@@ -1009,11 +1009,11 @@ BEGIN NAMESPACE XSharp.RDD
 					lpLevels := SELF:_levels
 					FOREACH nLevel AS NtxLevel IN lpLevels 
 						IF (nLevel != NULL)
-							IF (nLevel:PageNo == 0)
-								nLevel:PageNo := SELF:_outPageNo * NtxConst.BUFF_SIZE
+							IF (nLevel:PageOffset == 0)
+								nLevel:PageOffset := SELF:_outPageNo * NtxConst.BUFF_SIZE
 								SELF:_outPageNo++
 							ENDIF
-							nLevel:Write(nLevel:PageNo)
+							nLevel:Write(nLevel:PageOffset)
 						ENDIF
 					NEXT
 					FSeek3( SELF:_hFile, 0, FS_END )
@@ -1253,7 +1253,7 @@ BEGIN NAMESPACE XSharp.RDD
 						node:PageNo := SELF:_oneItem:PageNo
 						num2 := SELF:_outPageNo * NtxConst.BUFF_SIZE
 						SELF:_oneItem:PageNo := num2
-						nLevel:PageNo := num2
+						nLevel:PageOffset := num2
 						SELF:_outPageNo++
 						num++
 						nLevel := SELF:_levels[num]
@@ -1289,7 +1289,7 @@ BEGIN NAMESPACE XSharp.RDD
 					num := (SHORT)SELF:_entrySize
 					IF (SELF:_TopStack == 0)
 						ntxPage := SELF:AllocPage()
-						pageNo := ntxPage:PageNo
+						pageNo := ntxPage:PageOffset
 						num2 := (SHORT)((SELF:_MaxEntry + 2) * 2)
 						//Init
 						i := 0
@@ -1325,7 +1325,7 @@ BEGIN NAMESPACE XSharp.RDD
 						ENDDO
 						node2 := ntxPage[0]
 						node2:PageNo := SELF:_midItem:PageNo
-						SELF:_midItem:PageNo := ntxPage:PageNo
+						SELF:_midItem:PageNo := ntxPage:PageOffset
 						SELF:_TopStack--
 						SELF:_AddKey()
 						RETURN FALSE
@@ -1674,7 +1674,7 @@ BEGIN NAMESPACE XSharp.RDD
 					LOCAL nLevel AS NtxLevel
 					//
 					nLevel := SELF:_levels[uiLevel]
-					nLevel:Write(nLevel:PageNo)
+					nLevel:Write(nLevel:PageOffset)
 					nLevel:NodeCount := 0
 					nLevel:BaseKeys := lKeys / uiBOrder
 					nLevel:ExtraKeys := lKeys - nLevel:BaseKeys * uiBOrder
@@ -1693,7 +1693,7 @@ BEGIN NAMESPACE XSharp.RDD
 					LOCAL nLevel AS NtxLevel
 					//
 					nLevel := SELF:_levels[uiLevel]
-					nLevel:Write(nLevel:PageNo)
+					nLevel:Write(nLevel:PageOffset)
 					nLevel:NodeCount := 0
 					IF (nLevel:ExtraKeys > 0)
 						nLevel:ExtraKeys--

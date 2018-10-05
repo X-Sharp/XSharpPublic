@@ -143,7 +143,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         PUBLIC METHOD GetRef( pos AS LONG ) AS SHORT
             TRY
-                RETURN BitConverter.ToInt16(SELF:_bytes, pos * 2)
+                RETURN BitConverter.ToInt16(SELF:_bytes, (pos+1) * 2)
             CATCH //Exception
                 RETURN 0
             END TRY

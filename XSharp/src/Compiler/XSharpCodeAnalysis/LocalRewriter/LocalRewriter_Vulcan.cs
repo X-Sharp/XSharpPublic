@@ -30,24 +30,33 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression MakePsz(BoundExpression value)
         {
-            if (value.Type.SpecialType == SpecialType.System_String)
-            {
-                return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.StringAlloc, value);
-            }
             var type = _compilation.PszType();
+            if (value.Type == type)
+                return value;
+            bool isString;
+            isString = value.Type.SpecialType == SpecialType.System_String;
             var ctors = type.Constructors;
-            // not a string, so find the constructor that takes an intptr
             foreach (var ctor in ctors)
             {
-                if (ctor.ParameterCount == 1)
+                if (ctor.ParameterCount == 1) // there should only be constructors with one or zero parameters.
                 {
+                    bool found = false;
                     var partype = ctor.GetParameterTypes()[0];
-                    if (partype.SpecialType == SpecialType.System_IntPtr)
+                    if (isString && partype.SpecialType == SpecialType.System_String)
                     {
+                        found = true;
+                    }
+                    if (! isString && partype.SpecialType == SpecialType.System_IntPtr)
+                    {
+                        found = true;
                         if (value.Type.SpecialType != SpecialType.System_IntPtr)
                         {
                             value = new BoundConversion(value.Syntax, value, Conversion.Identity, false, false, null, partype, false);
                         }
+                        
+                    }
+                    if (found)
+                    {
                         return new BoundObjectCreationExpression(value.Syntax, ctor, value);
                     }
                 }

@@ -1606,5 +1606,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var token = expr.GetLiteralToken();
             return token != null;
         }
+        public static bool IsLiteralExpression(this IParseTree expr)
+        {
+            var e = expr as XSharpParser.ExpressionContext;
+            if (e == null)
+                return false;
+            if (e is XSharpParser.PrefixExpressionContext)
+            {
+                return ((XSharpParser.PrefixExpressionContext)e).Expr.IsLiteralExpression();
+           }
+           if (e is XSharpParser.PrimaryExpressionContext)
+           {
+                var pr = ((XSharpParser.PrimaryExpressionContext)e).Expr as XSharpParser.PrimaryContext;
+                if (pr is XSharpParser.VoConversionExpressionContext)
+                {
+                    return ((XSharpParser.VoConversionExpressionContext)pr).Expr.IsLiteralExpression();
+                }
+                if (pr is XSharpParser.VoCastExpressionContext)
+                {
+                    return ((XSharpParser.VoCastExpressionContext)pr).Expr.IsLiteralExpression();
+                }
+            }
+            return expr.IsLiteral();
+        }
+
     }
 }

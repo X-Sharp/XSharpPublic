@@ -12,6 +12,7 @@ USING Xunit
 USING XSharp.RDD
 USING XSharp.Rdd.Support
 USING System.Diagnostics
+USING Xsharp.Core
 
 BEGIN NAMESPACE XSharp.RDD.Tests
 
@@ -101,12 +102,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR success := myDBF:Open( dbInfo ) 
 			Assert.Equal( TRUE, success )
 			//
+			//FieldPos( "ID" )
 			LOCAL ntxInfo AS DbOrderInfo
 			ntxInfo := DbOrderInfo{}
 			ntxInfo:BagName := "TestNTX2"
 			ntxInfo:Order := "TestNTX2"
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
 			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo, "" ) )
+			myDBF:GoTop()
 			//
 			WHILE ! myDBF:EoF
 				Debug.Write( "---===---" + Environment.NewLine )

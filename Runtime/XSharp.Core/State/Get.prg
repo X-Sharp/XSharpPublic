@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -26,8 +26,7 @@ FUNCTION GetAnsi() AS LOGIC
 	/// THROW NotImplementedException{}
 	//RETURN FALSE   
 	
-	/// <summary>
-	/// </summary>
+	/// <summary>This function is not implemented yet</summary>
 	/// <param name="b1"></param>
 	/// <param name="b2"></param>
 	/// <param name="b3"></param>
@@ -35,7 +34,7 @@ FUNCTION GetAnsi() AS LOGIC
 	/// <returns>
 	/// </returns>
 FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	RETURN String.Empty   
 	
 	/// <summary>
@@ -64,7 +63,7 @@ FUNCTION GetDefaultDir() AS STRING
 	getstate STRING Set.Default 
 	
 	
-
+/// <summary>This function is not implemented yet</summary>
 FUNCTION GetMimType(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   

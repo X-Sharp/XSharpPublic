@@ -201,8 +201,7 @@ FUNCTION ATLine(cSearch AS STRING,c AS STRING) AS DWORD
 FUNCTION ATLine2(cSearch AS STRING,c AS STRING) AS DWORD
 	RETURN ATLine(cSearch, c)
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
@@ -210,8 +209,7 @@ FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="cIn"></param>
 /// <returns>
 /// </returns>
@@ -375,10 +373,11 @@ FUNCTION ChrW(c AS DWORD) AS STRING
       THROW Error.ArgumentError( __ENTITY__, "dwChar", "Number too High")
    ENDIF
    RETURN Convert.ToChar( (INT) ( c & 0xFFFF ) ):ToString()
- 
-/// <summary>
-/// Encrypt or decrypt a string.
-/// </summary>
+
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Encrypt or decrypt a string.
+// </summary>
 /// <param name="cSource"></param>
 /// <param name="cKey"></param>
 /// <returns>
@@ -387,9 +386,10 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
+// </summary>
 /// <param name="cSource"></param>
 /// <param name="cKey"></param>
 /// <returns>
@@ -1087,14 +1087,15 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 
 
 
-/// <summary>
-/// Allows text substitution in strings entered at runtime.
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Allows text substitution in strings entered at runtime.
+// </summary>
 /// <param name="s"></param>
 /// <returns>
 /// </returns>
 FUNCTION StrEvaluate(s AS STRING) AS STRING
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	RETURN String.Empty   
 
 
@@ -1227,8 +1228,7 @@ FUNCTION UpperA(cSource REF STRING) AS STRING
 	ENDIF
 	RETURN cSource
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="cLine"></param>
 /// <param name="hfOut"></param>
 /// <returns>
@@ -1237,8 +1237,7 @@ UNSAFE FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
 	THROW NotImplementedException{}
 RETURN 0   
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
@@ -1246,8 +1245,7 @@ FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>

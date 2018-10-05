@@ -244,7 +244,7 @@ FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
 	RETURN dwLocaleID
 
 
-/// <summary>
+/// <summary>This function is not implemented yet</summary>
 /// </summary>
 /// <param name="pFunc"></param>
 /// <returns>
@@ -254,7 +254,7 @@ FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
 	RETURN IntPtr.Zero
 
 
-
+/// <summary>This function is not implemented yet</summary>
 /// <summary>
 /// </summary>
 /// <param name="n"></param>
@@ -264,6 +264,7 @@ FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
 	THROW NotImplementedException{}
 	RETURN 0   
 
+/// <summary>This function is not implemented yet</summary>
 /// <summary>
 /// </summary>
 /// <param name="pFunc"></param>
@@ -284,9 +285,10 @@ FUNCTION NationExit() AS INT
 	RETURN 0   
 
 
-/// <summary>
-/// Identify a character set by its nation driver.
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Identify a character set by its nation driver.
+// </summary>
 /// <returns>
 /// </returns>
 FUNCTION NVersion() AS STRING

@@ -47,9 +47,9 @@ FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
         VAR mode := RuntimeState.CollationMode 
         SWITCH mode
         CASE CollationMode.Windows
-            ret := XSharp.StringCompareHelpers.CompareWindows(strLHS, strRHS) 
+            ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS) 
         CASE CollationMode.Clipper
-            ret := XSharp.StringCompareHelpers.CompareClipper(strLHS, strRHS)
+            ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS)
         CASE CollationMode.Unicode
             ret := String.Compare(strLHS, strRHS)
         OTHERWISE

@@ -2595,8 +2595,7 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN SELF:iOffset
 			END GET
 			
-			// Should be INTERNAL
-			SET
+			INTERNAL SET
 				SELF:iOffset := VALUE
 			END SET
 		END PROPERTY

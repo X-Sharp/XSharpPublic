@@ -72,5 +72,5 @@ FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
 /// <returns>
 /// </returns>
 FUNCTION UnRegisterAxit(oSource AS OBJECT) AS LOGIC
-	GC.SuppressFinalize( o )
+	GC.SuppressFinalize( oSource )
 	RETURN FALSE   

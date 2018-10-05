@@ -7,13 +7,17 @@
 USING System.Globalization
 // StringComparer class that takes care of Windows and Clipper string comparisons
 /// <exclude />
-STATIC CLASS XSharp.StringCompareHelpers
+STATIC CLASS XSharp.StringHelpers
 	PRIVATE STATIC collationTable AS BYTE[]
 	PRIVATE STATIC encDos	AS System.Text.Encoding
     PRIVATE STATIC encWin	AS System.Text.Encoding
 	PRIVATE STATIC bLHS		AS BYTE[]       // cache byte array to avoid having to allocate bytes for every comparison
 	PRIVATE STATIC bRHS		AS BYTE[]
 	PRIVATE STATIC gate		AS OBJECT
+
+    public static property WinEncoding as System.Text.Encoding GET encWin
+    public static property DosEncoding as System.Text.Encoding GET encDos
+
     /// <exclude />
 	STATIC CONSTRUCTOR
 		// Register event Handlers, so we can reread tye DOS and Windows codepages
@@ -32,8 +36,8 @@ STATIC CLASS XSharp.StringCompareHelpers
     /// <exclude />
 	STATIC METHOD GetValues() AS VOID
 		collationTable	:= RuntimeState.CollationTable
-		encDos			:= System.Text.Encoding.GetEncoding(runtimestate.DosCodePage)
-        encWin			:= System.Text.Encoding.GetEncoding(runtimestate.WinCodePage)
+		encDos			:= RuntimeState.DosEncoding
+        encWin			:= RuntimeState.WinEncoding
 		RETURN
 		
     /// <exclude />

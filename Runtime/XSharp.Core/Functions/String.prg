@@ -32,7 +32,7 @@ FUNCTION Asc(c AS STRING) AS DWORD
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
 			LOCAL encoding AS Encoding
-			encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
+			encoding := StringHelpers.WinEncoding
 			LOCAL buffer AS BYTE[]
 			VAR chars := <CHAR> {chValue}
 			IF encoding:IsSingleByte
@@ -350,7 +350,7 @@ FUNCTION Chr(c AS DWORD) AS STRING
    ELSE
       LOCAL encoding AS Encoding
 
-      encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
+      encoding := StringHelpers.WinEncoding
 
       LOCAL chars := CHAR[]{ 1 } AS CHAR[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]

@@ -629,8 +629,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // When compiling in VO/Vulcan dialect we also collect the literal symbols from the compilation unit.
             // When we have one or more of these then we create a symbol table in the class "Xs$SymbolTable"
             var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(StringComparer.OrdinalIgnoreCase);
-            var symbolTable = new Dictionary<string, InternalSyntax.FieldDeclarationSyntax>();
-            var pszTable = new Dictionary<string, InternalSyntax.FieldDeclarationSyntax>();
+            var symbolTable = new Dictionary<string, FieldDeclarationSyntax>();
+            var pszTable = new Dictionary<string, Tuple <string, FieldDeclarationSyntax>>();
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
@@ -841,12 +841,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (symbolTable.Count > 0)
                 {
                     // build internal static symbol table class 
-                    members.Add(_generateSpecialClass(XSharpSpecialNames.SymbolTable, symbolTable, trans));
+                    members.Add(_generateSymbolsClass(symbolTable, trans));
                 }
                 if (pszTable.Count > 0)
                 {
                     // build internal static psz table class 
-                    members.Add(_generateSpecialClass(XSharpSpecialNames.PSZTable, pszTable, trans));
+                    members.Add(_generatePszClass(pszTable, trans));
                 }
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 var result = _syntaxFactory.CompilationUnit(
@@ -866,7 +866,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
-        private ClassDeclarationSyntax _generateSpecialClass(string name, Dictionary<string, InternalSyntax.FieldDeclarationSyntax> fields ,XSharpTreeTransformation trans)
+        private ClassDeclarationSyntax _generateSymbolsClass(Dictionary<string, FieldDeclarationSyntax> fields ,XSharpTreeTransformation trans)
         {
             var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
             foreach (var field in fields)
@@ -877,7 +877,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 default(SyntaxList<AttributeListSyntax>),
                                 trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                                 SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                                SyntaxFactory.MakeIdentifier(name),
+                                SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
                                 default(TypeParameterListSyntax),
                                 default(BaseListSyntax),
                                 default(SyntaxList<TypeParameterConstraintClauseSyntax>),
@@ -885,6 +885,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 clsmembers,
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                                 null);
+            fields.Clear();
+            return decl;
+        }
+
+        private ClassDeclarationSyntax _generatePszClass(Dictionary<string, Tuple<string, FieldDeclarationSyntax>> fields, XSharpTreeTransformation trans)
+        {
+            var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach (var field in fields)
+            {
+                var fieldDecl = field.Value.Item2;
+                clsmembers.Add(fieldDecl);
+            }
+            var decl = _syntaxFactory.ClassDeclaration(
+                                default(SyntaxList<AttributeListSyntax>),
+                                trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
+                                SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                                SyntaxFactory.MakeIdentifier(XSharpSpecialNames.PSZTable),
+                                default(TypeParameterListSyntax),
+                                default(BaseListSyntax),
+                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                clsmembers,
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                                null);
+            fields.Clear();
             return decl;
         }
 

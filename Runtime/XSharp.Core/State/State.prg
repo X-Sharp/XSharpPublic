@@ -377,6 +377,12 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
+    STATIC PROPERTY WinEncoding as System.Text.Encoding ;
+        GET System.Text.Encoding.GetEncoding(WinCodePage)
+        
+    STATIC PROPERTY DosEncoding as System.Text.Encoding ;
+        GET System.Text.Encoding.GetEncoding(DosCodePage)
+
 
 	/// <summary>The name of the method that was called in the last late bound method call.</summary>
     STATIC PROPERTY NoMethod AS STRING ;

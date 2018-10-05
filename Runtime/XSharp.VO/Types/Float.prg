@@ -396,7 +396,7 @@ BEGIN NAMESPACE XSharp
         #region IConvertable
         /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
-            THROW NotImplementedException{}
+            RETURN _value ==  0.0
             
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE

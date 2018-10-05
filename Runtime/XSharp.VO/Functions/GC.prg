@@ -5,12 +5,8 @@
 //
 
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+[Obsolete( "'AllowCollectThread()' is not supported" )] ;
 FUNCTION AllowCollectThread() AS VOID
-	/// THROW NotImplementedException{}
 	RETURN  
 
 
@@ -19,8 +15,8 @@ FUNCTION AllowCollectThread() AS VOID
 /// </summary>
 /// <returns>
 /// </returns>
+[Obsolete( "'Collect()' is not supported" )] ;
 FUNCTION Collect() AS VOID
-	/// THROW NotImplementedException{}
 	RETURN  
 
 
@@ -29,17 +25,17 @@ FUNCTION Collect() AS VOID
 /// </summary>
 /// <returns>
 /// </returns>
+[Obsolete( "'CollectCount()' is not supported" )] ;
 FUNCTION CollectCount() AS DWORD
-	/// THROW NotImplementedException{}
-	RETURN 0   
+	return 0
 
 /// <summary>
 /// Call the garbage collector.
 /// </summary>
 /// <returns>
 /// </returns>
+[Obsolete( "'CollectForced()' is not supported" )] ;
 FUNCTION CollectForced() AS VOID
-	/// THROW NotImplementedException{}
 	RETURN  
 
 /// <exclude/>
@@ -52,8 +48,8 @@ RETURN FALSE
 /// </summary>
 /// <returns>
 /// </returns>
+[Obsolete( "'InCollect()' is not supported" )] ;
 FUNCTION InCollect() AS LOGIC
-	/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 
@@ -64,8 +60,8 @@ FUNCTION InCollect() AS LOGIC
 /// <param name="oSource"></param>
 /// <returns>
 /// </returns>
+[Obsolete( "'RegisterAxit()' is not supported and has no effect.")];
 FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
-	/// THROW NotImplementedException{}
 	RETURN 
 
 
@@ -76,5 +72,5 @@ FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
 /// <returns>
 /// </returns>
 FUNCTION UnRegisterAxit(oSource AS OBJECT) AS LOGIC
-	/// THROW NotImplementedException{}
+	GC.SuppressFinalize( oSource )
 	RETURN FALSE   

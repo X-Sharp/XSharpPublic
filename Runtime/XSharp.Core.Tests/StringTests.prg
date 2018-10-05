@@ -33,22 +33,6 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AscTest() AS VOID
-		LOCAL VALUE := " 123" AS STRING
-		Assert.Equal((DWORD)32,Asc(VALUE))
-		LOCAL nOld AS LONG
-		nOld := RuntimeState.DosCodePage 
-		RuntimeState.DosCodePage := 737 // Greek
-		Assert.Equal((DWORD)150,Asc("Ψ"))  
-		RuntimeState.DosCodePage := 437 // US
-		Assert.Equal((DWORD)63,Asc("Ψ"))  // ? because not defined for the codepage
-		RuntimeState.DosCodePage := nOld
-		Assert.Equal((DWORD)32,Asc(" "))
-		Assert.Equal((DWORD)63,Asc(((CHAR) 512):ToString())) // ?
-		Assert.Equal((DWORD)0,Asc(NULL))
-	RETURN
-
-	[Fact, Trait("Category", "String")];
 	METHOD AscWTest() AS VOID
 		LOCAL VALUE := " 123" AS STRING
 		Assert.Equal((DWORD)32,AscW(VALUE))
@@ -60,18 +44,18 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	RETURN
 
 	[Fact, Trait("Category", "String")];
-	METHOD AscATest() AS VOID
+	METHOD AscTest() AS VOID
 		LOCAL VALUE := " 123" AS STRING
-		Assert.Equal((DWORD)32,AscA(VALUE))
-		Assert.Equal((DWORD)32,AscA(" "))
+		Assert.Equal((DWORD)32,Asc(VALUE))
+		Assert.Equal((DWORD)32,Asc(" "))
 		LOCAL nOld AS LONG
 		nOld := RuntimeState.WinCodePage 
 		RuntimeState.WinCodePage := 1253 // Greek
-		Assert.Equal((DWORD)235,AscA("λ"))
+		Assert.Equal((DWORD)235,Asc("λ"))
 		RuntimeState.WinCodePage  := 1252 // Western Europea
 		Assert.Equal((DWORD)63,Asc("λ"))	// ? because not defined for the codepage
 		RuntimeState.WinCodePage  := nOld
-		Assert.Equal((DWORD)0,AscA(NULL))
+		Assert.Equal((DWORD)0,Asc(NULL))
 	RETURN
 
 	[Fact, Trait("Category", "String")];

@@ -63,11 +63,8 @@ FUNCTION FErase(fileName AS STRING) AS LOGIC
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 	RETURN FCopy(cSourceFile, cTargetFile, TRUE)
 	
-	/// <summary>Copy a file to a new file or to a device.</summary>
-	/// <param name="cSourceFile">The name of the source file to copy, including an optional drive, directory, and extension.</param>
-	/// <param name="cTargetFile">The name of the target file, including an optional drive, directory, and extension.</param>
+    /// <inheritdoc cref="M:XSharp.Core.Functions.FCopy(System.String,System.String)" />"
 	/// <param name="lOverWrite">Should the target file be overwritten.</param>
-	/// <returns>TRUE if successful; otherwise, FALSE.</returns>
 	/// <remarks>
 	/// FCopy() is the functional form of the COPY FILE command.
 	/// If cSourceFile does not exist, a runtime error is raised.  

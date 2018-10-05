@@ -13,17 +13,6 @@ USING System.Diagnostics
 /// </summary>
 /// <returns>
 /// </returns>
-FUNCTION _DebOut32( s AS PSZ) AS VOID
-   System.Diagnostics.Debug.WriteLine(psz2string(s))
-   RETURN
-
-
-
-/// <summary>
-/// Write information to the Debug Terminal Program
-/// </summary>
-/// <returns>
-/// </returns>
 FUNCTION	DebOut()	AS	VOID CLIPPER
 	LOCAL C AS STRING
 	LOCAL X AS DWORD

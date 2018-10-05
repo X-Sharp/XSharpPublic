@@ -152,7 +152,7 @@ FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 FUNCTION String2Mem(s AS STRING) AS IntPtr
 	LOCAL result := 0 AS IntPtr
 	IF s != NULL
-		VAR encoding := System.Text.Encoding.Default
+		VAR encoding := StringHelpers.WinEncoding
 		VAR bytes    := encoding:GetBytes(s)
 		VAR len      := bytes:Length
 		result	     := MemAlloc((DWORD) (len+1))
@@ -164,7 +164,7 @@ UNSAFE FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
 	IF pString == IntPtr.Zero .OR. nLen == 0
 		RETURN String.Empty
 	ENDIF
-	VAR encoding := System.Text.Encoding.Default
+	VAR encoding := StringHelpers.WinEncoding
 	VAR numchars := encoding:GetCharCount( (BYTE PTR) pString, (INT) nLen)
 	VAR buffer   := (CHAR PTR) MemAlloc( (DWORD) (numchars * SIZEOF(CHAR)) )
 	numchars     := encoding:GetChars((BYTE PTR) pString, (INT) nLen, buffer, numchars)

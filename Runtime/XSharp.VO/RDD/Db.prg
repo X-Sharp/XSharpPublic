@@ -943,8 +943,8 @@ FUNCTION AFields(aNames, aTypes, aLens, aDecs)  AS DWORD CLIPPER
     LOCAL lTypesOk  := .F.  AS LOGIC
     LOCAL lLensOk   := .F.  AS LOGIC
     LOCAL lDecsOk   := .F.  AS LOGIC
-    
-    IF (Empty(aStruct := DbStruct() ))
+    aStruct := DbStruct() 
+    IF (Empty(aStruct))
         RETURN (0)
     ENDIF
     

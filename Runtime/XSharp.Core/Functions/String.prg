@@ -17,8 +17,14 @@ FUNCTION AllTrim(c AS STRING) AS STRING
 	RETURN c:Trim(trimChars)
 
 
+/// <summary>
+/// Convert a character to its ASCII value using default Windows codepage
+/// </summary>
+/// <param name="c"></param>
+/// <returns>
+/// </returns>
 
-INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
+FUNCTION Asc(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
 	IF ( !String.IsNullOrEmpty(c) ) 
@@ -26,11 +32,7 @@ INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
 			LOCAL encoding AS Encoding
-			IF lAnsi
-				encoding := Encoding.GetEncoding(RuntimeState.WinCodePage) 
-			ELSE
-				encoding := Encoding.GetEncoding(RuntimeState.DOSCodePage) 
-			ENDIF
+			encoding := StringHelpers.WinEncoding
 			LOCAL buffer AS BYTE[]
 			VAR chars := <CHAR> {chValue}
 			IF encoding:IsSingleByte
@@ -55,16 +57,6 @@ INTERNAL FUNCTION _Asc(c AS STRING, lAnsi AS LOGIC) AS DWORD
 	RETURN ascValue
 
 /// <summary>
-/// Convert a character to its ASCII value using DOS codepage
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION Asc(c AS STRING) AS DWORD
-	RETURN _Asc(c, FALSE)
-
-
-/// <summary>
 /// Convert a character to its Unicode ASCII value.
 /// </summary>
 /// <param name="c"></param>
@@ -80,14 +72,7 @@ FUNCTION AscW(c AS STRING) AS DWORD
 	RETURN ascValue
 
 
-/// <summary>
-/// Convert a character to its ASCII value using default Windows codepage
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION AscA(c AS STRING) AS DWORD
-	RETURN _Asc(c, TRUE)
+
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string.
@@ -216,8 +201,7 @@ FUNCTION ATLine(cSearch AS STRING,c AS STRING) AS DWORD
 FUNCTION ATLine2(cSearch AS STRING,c AS STRING) AS DWORD
 	RETURN ATLine(cSearch, c)
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
@@ -225,8 +209,7 @@ FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="cIn"></param>
 /// <returns>
 /// </returns>
@@ -348,17 +331,6 @@ FUNCTION CharPos(c AS STRING, nStart AS DWORD) AS STRING
 
 
 
-/// <summary>
-/// Convert an ASCII code to a character value.
-/// </summary>
-/// <param name="dwChar"></param>
-/// <returns>
-/// </returns>
-FUNCTION CHR(dwChar AS DWORD) AS STRING
-	VAR buffer := BYTE[]{1} 
-	buffer[0] := (BYTE) dwChar
-	RETURN System.Text.Encoding:ASCII:GetString(buffer)
-
 
 /// <summary>
 /// Convert an ASCII code to a character value.
@@ -366,7 +338,7 @@ FUNCTION CHR(dwChar AS DWORD) AS STRING
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-FUNCTION ChrA(c AS DWORD) AS STRING
+FUNCTION Chr(c AS DWORD) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
    b := (BYTE)( c & 0xFF )  // VO ignores the high 24 bits
@@ -376,7 +348,7 @@ FUNCTION ChrA(c AS DWORD) AS STRING
    ELSE
       LOCAL encoding AS Encoding
 
-      encoding := Encoding.Default
+      encoding := StringHelpers.WinEncoding
 
       LOCAL chars := CHAR[]{ 1 } AS CHAR[]
       LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
@@ -401,10 +373,11 @@ FUNCTION ChrW(c AS DWORD) AS STRING
       THROW Error.ArgumentError( __ENTITY__, "dwChar", "Number too High")
    ENDIF
    RETURN Convert.ToChar( (INT) ( c & 0xFFFF ) ):ToString()
- 
-/// <summary>
-/// Encrypt or decrypt a string.
-/// </summary>
+
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Encrypt or decrypt a string.
+// </summary>
 /// <param name="cSource"></param>
 /// <param name="cKey"></param>
 /// <returns>
@@ -413,9 +386,10 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
+// </summary>
 /// <param name="cSource"></param>
 /// <param name="cKey"></param>
 /// <returns>
@@ -1113,14 +1087,15 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 
 
 
-/// <summary>
-/// Allows text substitution in strings entered at runtime.
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Allows text substitution in strings entered at runtime.
+// </summary>
 /// <param name="s"></param>
 /// <returns>
 /// </returns>
 FUNCTION StrEvaluate(s AS STRING) AS STRING
-	/// THROW NotImplementedException{}
+	THROW NotImplementedException{}
 	RETURN String.Empty   
 
 
@@ -1253,8 +1228,7 @@ FUNCTION UpperA(cSource REF STRING) AS STRING
 	ENDIF
 	RETURN cSource
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="cLine"></param>
 /// <param name="hfOut"></param>
 /// <returns>
@@ -1263,8 +1237,7 @@ UNSAFE FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
 	THROW NotImplementedException{}
 RETURN 0   
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>
@@ -1272,8 +1245,7 @@ FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 
-/// <summary>
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
 /// <returns>
 /// </returns>

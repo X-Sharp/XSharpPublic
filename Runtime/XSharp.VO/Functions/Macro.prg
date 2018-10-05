@@ -122,7 +122,7 @@ FUNCTION MExec(cb AS CODEBLOCK) AS USUAL
 	/// <item><term>UI</term> <description>Error indeterminate</description></item>
 	/// </list>
 	/// </returns>
-FUNCTION TYPE(cExpression AS STRING) AS STRING
+FUNCTION Type(cExpression AS STRING) AS STRING
 	LOCAL uValue AS USUAL
 	LOCAL cRet	 AS STRING
 	IF String.IsNullOrEmpty(cExpression)	

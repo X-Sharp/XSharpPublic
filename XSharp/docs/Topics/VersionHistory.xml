@@ -10,7 +10,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Normal">ss</para>
-    <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="List"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading1">Changes in 2.0.0.6 (Bandol Beta 6)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -24,6 +24,11 @@
       <li styleclass="List">The namespace alias for using statements was not working in all cases.</li>
       <li styleclass="List">The compiler will now generate an error for code that incorrectly uses the VIRTUAL and OVERRIDE modifiers.</li>
       <li styleclass="List">The compiler was throwing an exception for a specific kind of incorrect local variable initializer with generic arguments. This has been fixed.</li>
+      <li styleclass="List">Visibility modifiers on GET or SET accessors for properties were not working correctly (INTERNAL, PRIVATE etc). This has been fixed.</li>
+      <li styleclass="List">The compiler now handles PSZ(_CAST,...) and PSZ(..) differently. When the argument is a literal string, then the PSZ will only be allocated once and stored in a &quot;PSZ Table&quot; in your assembly. The lifetime of this PSZ is then the lifetime of your app.<br/>When the argument is a string stored in a local or global (or define) then the compiler can&apos;t know the lifetime of the PSZ. It will therefore allocate the memory for the PSZ with the StringAlloc() function. This ensures that the PSZ will not go out of scope and be freed. If you use this a lot in your application then you may be repeatedly allocating memory. We recommend that you avoid the use of the cast and conversion operators for PSZs and take control of the lifetime of the PSZ variables by allocating and freeing the PSZ manually. PSZ casts on non strings (numerics or pointers) simply call the PSZ constructor that takes an intptr (this is used on several spots in the Win32API library for &apos;special&apos; PSZ values).</li>
+      <li styleclass="List">Named arguments are now also supported in the Vulcan dialect. This may lead to compiler errors if your code looks like the code below, because the compiler will think that aValue is a named argument of the Empty() function.<br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Empty(aValue := SomeExpression())</text><br/></li>
+      <li styleclass="List"><text styleclass="Normal">If you were inheriting a static class from another class then you would get a compiler warning before. This is now a compiler error, because this had a side effect where the resulting assembly contained a corrupted reference.</text></li>
+      <li styleclass="List"><text styleclass="Normal">The overload resolution code now chooses a type method/function over a method/function with clipper calling convention.</text></li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -33,14 +38,28 @@
       <li styleclass="List">Fixed a problem when un-commenting code in the editor</li>
       <li styleclass="List">Improved load time performance for large solutions with many dependencies.</li>
       <li styleclass="List">Fixed a problem where the intellisense engine could lock a DLL that was used by a project reference or assembly reference.</li>
+      <li styleclass="List">Added an option to select the Harbour dialect on the project properties page.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">First version of the RDD system. DBF-DBT is ready now. Other RDDs will follow in the next builds. Also most of the RDD related functions are woring in this build.</li>
-      <li styleclass="List">First version of the Advantage RDD</li>
       <li styleclass="List">The SetCentury setting was incorrect after calling SetInternational(#Windows). This has been fixed.</li>
       <li styleclass="List">The Descend function for dates now returns a number just like in VO</li>
-      <li styleclass="List">Some optimizations in Math functions</li>
+      <li styleclass="List">The functions ChrA and AscA have been renamed to Chr() and Asc() and the original functions Chr() and Asc() have been removed. The original functions were using the DOS (Oem) codepage and this is not compatible with Visual Objects.</li>
+      <li styleclass="List">On several places in the runtime characters were converted from 8 bit to 16 bit using the System.Encoding.Default codepage. This has been changed. We use the codepage that matches the WinCodePage in the Runtimestate now. So by setting the Windows codepage in the runtime state you now also control the conversions from Unicode to Ansi and back</li>
+      <li styleclass="List">The Oem2Ansi conversion was incorrect for some low level file functions.</li>
+    </list>
+    <para styleclass="List"></para>
+    <para styleclass="Heading2">The RDD system</para>
+    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">This build includes the first version of the RDD system. DBF-DBT is ready now. Other RDDs will follow in the next builds. Also most of the RDD related functions are working in this build.</li>
+      <li styleclass="List">This build also includes the first version of the Advantage RDD. With this RDD you can access DBF/DBT/NTX files , DBF/FPT/CDX files and ADT/ADM/ADI files. The RDD names are the same as the RDD names for Vulcan. (AXDBFCDX, AXDBFNTX, ADSADT). We also support the AXDBFVFP format and the AXSQLCDX, AXSQLNTX, AXSQLVFP. For more information about the differences and possibilities of these RDD look in the Advantage documentation.<br/>We have coded the Advantage RDD on top of the Advantage Client Engine. Our RDD system detects if you are running in x86 or x64 mode and calls functions in Ace32 or Ace64 accordingly. <br/>To use Advantage you copy the support DLLs from an Advantage Vulcan RDD to the folder of your application. Look at the Advantage docs for Vulcan to see the list of the DLLs. The Advantage RDD is part of the standard XSharp.RDD.DLL which therefore replaces the AdvantageRDD.Dll for Vulcan.</li>
+      <li styleclass="List">The XSharp.Core DLL now also has RDD support. We have chosen NOT to implement this in functions, but as static methods inside the CoreDb class. Old code that uses the VoDb..() functions can be simply ported by changing &quot;VoDb&quot; to &quot;CoreDb.&quot; <br/>The parameters and return values that are USUAL in VO and Vulcan are implemented as OBJECT in the CoreDb class. <br/>The ..Info() methods have 2 overloads. One that takes an Object and one that takes a reference to an object. <br/>The methods inside CoreDb return success or failure with a logical value like the VODB..() functions in VO. If you want to know what the error was during the last operation then you can access that with the method CoreDb._ErrInfoPtr() . This returns the last exception that occurred in a RDD operation.</li>
+      <li styleclass="List">At this moment the CoreDb class only has a FieldGet() that returns an object. We will add some extra methods that return values in a specified type in the next build (such as FieldGetString(), FieldGetBytes() etc). We will also add overloads for FieldPut() that take different parameter types.</li>
+      <li styleclass="List">The XSharp.VO DLL has the VoDb..() functions and the higher level functions such as DbAppend(), EOF(), DbSkip() etc. <br/>The VoDb..() functions return success or failure with a logical value. If you want to know what the error was during the last operation then you can access that with the method _VoDbErrInfoPtr() . This returns the last exception that occurred in a RDD operation.</li>
+      <li styleclass="List">You can mix calls to the VoDb..() functions and CoreDb...() methods. Under the hood the VoDb..() functions also call the CoreDb methods.</li>
+      <li styleclass="List">The higher level functions may throw an exception just like in VO. For example when you call them on a workarea where no table is opened. Some functions simply return an empty value (like Dbf(), Recno()). Others will throw an exception. When you have registered an error handler with ErrorBlock() then this error handler will be called with the error object. Otherwise the system will throw an exception.</li>
+      <li styleclass="List">Date values are returned by the RDD system in a DbDate structure, Float values are returned in a DbFloat structure. These structures have no implicit conversion methods. They do however implement IDate and IFloat and they can and will be converted to the Date and Float types when they are stored in a USUAL inside the XSharp.VO DLL. The DbDate structure is simply a combination of a year, month and date. The DbFloat structure holds the value of fields in a Real8, combined with length and the number of decimals.</li>
+      <li styleclass="List">More documentation about the RDD system will follow later. Of course you can also look at the help file and source code on GitHub.</li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.0.5 (Bandol Beta 5)</para>
     <para styleclass="Heading2">Compiler</para>

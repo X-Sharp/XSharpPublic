@@ -437,6 +437,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
             SELF:_Fields        := RddFieldInfo[]{ fieldCount }
+			SELF:_fieldNames	:= Dictionary<STRING, INT>{Stringcomparer.OrdinalIgnoreCase}
             SELF:_RecordLength  := 1 // 1 for DELETED
             SELF:_currentField  := 0
             RETURN TRUE

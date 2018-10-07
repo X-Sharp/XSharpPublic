@@ -105,6 +105,7 @@ BEGIN NAMESPACE XSharp.RDD
 					IF ( SELF:_Shared .AND. nRec > SELF:RecCount )
 						SELF:_RecCount := SELF:_calculateRecCount()
 					ENDIF
+					//
 					IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
 						// virtual pos
 						SELF:_RecNo := nRec
@@ -113,18 +114,18 @@ BEGIN NAMESPACE XSharp.RDD
 						SELF:_Found :=TRUE
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := TRUE
-					ELSEIF nRec <= 0
+					ELSEIF nRec < 0
 						SELF:_RecNo := 1
 						SELF:_EOF := FALSE
 						SELF:_Bof := TRUE
-						SELF:_Found :=TRUE
+						SELF:_Found :=FALSE
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := FALSE
 					ELSE
 						// File empty, or trying to go outside ?
 						SELF:_RecNo := SELF:RecCount + 1
 						SELF:_EOF := TRUE
-						SELF:_Bof := FALSE
+						SELF:_Bof := TRUE
 						SELF:_Found := FALSE
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := FALSE
@@ -1010,7 +1011,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD AddField(info AS RddFieldInfo) AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Check if the FieldName does already exist
-			isok := SUPER:AddField(info)
+			isok := SUPER:AddField( DbfRddFieldInfo{info} )
 			IF ( isOk ) .AND. info:FieldType == DbFieldType.Memo
 				SELF:_HasMemo := TRUE
 			ENDIF
@@ -2582,6 +2583,9 @@ BEGIN NAMESPACE XSharp.RDD
 		CLASS DbfRddFieldInfo INHERIT RddFieldInfo
 			PROTECTED iOffset AS LONG
 			
+			CONSTRUCTOR( info AS RddFIeldInfo )
+				SELF( info:Name, info:FieldType, info:Length, info:Decimals )
+
 			CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
 				SUPER( sName, sType, nLength, nDecimals )
 				SELF:iOffset := -1
@@ -2595,7 +2599,8 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN SELF:iOffset
 			END GET
 			
-			INTERNAL SET
+			//INTERNAL SET
+			SET
 				SELF:iOffset := VALUE
 			END SET
 		END PROPERTY

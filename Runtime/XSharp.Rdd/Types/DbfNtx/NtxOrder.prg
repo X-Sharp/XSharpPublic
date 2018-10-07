@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC Count AS LONG
 		
 		PUBLIC METHOD Clear() AS VOID
-			SELF:Page := 0L
+			SELF:Page := 0
 			SELF:Count := 0
 			SELF:Pos := 0
 			
@@ -755,16 +755,20 @@ BEGIN NAMESPACE XSharp.RDD
 							LOCAL cdeBlock AS ICodeblock
 							LOCAL anyOf AS CHAR[]
 							LOCAL nPos AS INT
-							
+							LOCAL sysType AS System.Type
+							LOCAL strType AS STRING
+							//
+							sysType := toConvert:GetType()
+							strType := sysType:ToString()
 							// Compatibility ??
-							BEGIN SWITCH toConvert:GetType():ToString()
+							BEGIN SWITCH strType
 							CASE "Vulcan.__VODate"
 								tCode := TypeCode.DateTime
 							CASE "Vulcan.__VOFloat"
 								tCode := TypeCode.Double
 							OTHERWISE
 								//
-								tCode := Type.GetTypeCode(toConvert:GetType())
+								tCode := Type.GetTypeCode(sysType)
 							END SWITCH
 						//
 						BEGIN SWITCH tCode
@@ -1005,7 +1009,7 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:_oneItem:PageNo := 0
 					SELF:_placeItem(SELF:_oneItem)
 					SELF:_firstPageOffset := (DWORD)SELF:_oneItem:PageNo
-					SELF:_nextUnusedPageOffset := 0L
+					SELF:_nextUnusedPageOffset := 0
 					lpLevels := SELF:_levels
 					FOREACH nLevel AS NtxLevel IN lpLevels 
 						IF (nLevel != NULL)
@@ -2084,7 +2088,7 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL originalCount AS INT
 				LOCAL result AS LOGIC
 				//
-				recno := 0u
+				recno := 0
 				isBof := FALSE
 				isEof := FALSE
 				changedBof := FALSE
@@ -2098,11 +2102,11 @@ BEGIN NAMESPACE XSharp.RDD
 						RETURN FALSE
 					ENDIF
 					IF (!SELF:_oRdd:_isValid)
-						IF ((LONG)lCount < 0L)
+						IF ((LONG)lCount < 0)
 							recno := SELF:_locateKey(NULL, 0, NtxSearchMode.Bottom)
 							lCount++
 						ELSE
-							recno := 0u
+							recno := 0
 							lCount := 0
 						ENDIF
 					ELSE
@@ -2179,7 +2183,7 @@ BEGIN NAMESPACE XSharp.RDD
 							SELF:_oRdd:_dbfError( SubCodes.ERDD_RECNO_MISSING, GenCode.EG_CORRUPTION,SELF:fileName)
 							result := FALSE
 						ENDIF
-						SELF:_TopStack := 0u
+						SELF:_TopStack := 0
 					ENDIF
 				ENDIF
 				RETURN result

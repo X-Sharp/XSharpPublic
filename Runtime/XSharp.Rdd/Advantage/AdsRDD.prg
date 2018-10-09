@@ -412,7 +412,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       alias := string.Empty
     ENDIF
     SELF:_CheckError(ACE.AdsCreateTable90(SELF:_Connection, info:FileName, alias, SELF:_TableType, charset, SELF:_LockType, SELF:_CheckRights, 0, strFieldDef, 0u, SELF:_Collation, OUT SELF:_Table))
-    SELF:_Encoding := IIF (charset== ACE.ADS_ANSI, StringHelpers.WinEncoding, StringHelpers.DosEncoding))
+    SELF:_Encoding := IIF (charset== ACE.ADS_ANSI, StringHelpers.WinEncoding, StringHelpers.DosEncoding)
     length := MAX_PATH
     LOCAL fileName AS CHAR[]
     fileName := CHAR[]{length}

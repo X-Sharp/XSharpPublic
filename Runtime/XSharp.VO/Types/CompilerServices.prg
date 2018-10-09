@@ -31,16 +31,11 @@ STATIC CLASS XSharp.Internal.CompilerServices
 		LOCAL pResult AS IntPtr
         LOCAL len as LONG
 		IF s == NULL || s:Length == 0
-			pResult := Marshal.AllocHGlobal(1)
-            len := 0
-		ELSE
-			VAR encoding := System.Text.Encoding.Default
-			VAR bytes    := encoding:GetBytes(s)
-			len      := bytes:Length
-			pResult := Marshal.AllocHGlobal(len+1)
-			Marshal.Copy(bytes, 0, pResult, len)
+			pResult := MemAlloc(1)
+            Marshal.WriteByte(pResult, 0, 0)	 // end of string
+        ELSE
+            pResult := String2Mem(s)
 		ENDIF
-        Marshal.WriteByte(pResult, len, 0)	 // end of string
 		pszList:Add(pResult)
 		RETURN pResult
 	
@@ -50,7 +45,7 @@ STATIC CLASS XSharp.Internal.CompilerServices
 	STATIC METHOD String2PszRelease(pszList AS List<IntPtr>) AS VOID
 		FOREACH VAR p IN pszList
 			TRY
-				Marshal.FreeHGlobal(p)
+				MemFree(p)
 			END TRY
 		NEXT
 		RETURN

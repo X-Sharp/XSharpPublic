@@ -46,12 +46,8 @@ namespace XSharp.Project
 
             // Private means local copy; we want to know if it is already set to not override the default
             string privateValue = this.ItemNode.GetMetadata(ProjectFileConstants.Private);
+            string originalHintPath = this.ItemNode.GetMetadata(ProjectFileConstants.HintPath);
 
-            // Remove the HintPath, we will re-add it below if it is needed
-            if (!String.IsNullOrEmpty(this.AssemblyPath))
-            {
-                this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, null);
-            }
 
             this.ResolvedAssembly = AssemblyName.GetAssemblyName(this.AssemblyPath);
             resolvedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -62,14 +58,16 @@ namespace XSharp.Project
             prjitem = iteminstance;
 
             string hintPath = iteminstance.GetMetadataValue(ProjectFileConstants.HintPath);
-            if (!String.IsNullOrEmpty(hintPath))
+            if (hintPath != originalHintPath)
             {
                 if (Path.IsPathRooted(hintPath))
                 {
                     hintPath = PackageUtilities.GetPathDistance(this.ProjectMgr.BaseURI.Uri, new Uri(hintPath));
                 }
-
-                this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, hintPath);
+                if (hintPath != originalHintPath)
+                {
+                    this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, hintPath);
+                }
                 // If this is not already set, we default to true
                 if (String.IsNullOrEmpty(privateValue))
                 {

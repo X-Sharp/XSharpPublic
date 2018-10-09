@@ -158,16 +158,16 @@ CLASS AssemblyInfo
 			END TRY
 			RETURN FALSE
 
-		INTERNAL METHOD LoadAssembly() AS VOID
+		INTERNAL METHOD LoadAssembly()  AS VOID
 			WriteOutputMessage("--> LoadAssembly : "+SELF:FileName)
 			IF String.IsNullOrEmpty(SELF:FileName) .AND. SELF:_reference != NULL
 				SELF:FileName := SELF:_reference:Path
 			ENDIF
-			IF System.IO.File.Exists(SELF:FileName)
+			IF SELF:Exists
 				SELF:_assembly := AssemblyInfo.LoadAssemblyFromFile(SELF:FileName)
 				IF SELF:_assembly != NULL
 					SELF:_fullName  := SELF:_assembly:FullName
-					SELF:Modified   := System.IO.File.GetLastWriteTime(SELF:FileName)
+					SELF:Modified   := SELF:LastWriteTime
 				ENDIF
 				SELF:_clearInfo()
 			ENDIF
@@ -291,11 +291,13 @@ CLASS AssemblyInfo
 			ENDIF
 
 		METHOD Refresh() AS VOID
-			VAR currentDT  := System.IO.File.GetLastWriteTime(SELF:FileName)
-			IF currentDT != SELF:Modified
-				WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
-				SELF:UpdateAssembly()
-			ENDIF
+            IF SELF:Exists
+			    VAR currentDT := SELF:LastWriteTime
+			    IF currentDT != SELF:Modified
+				    WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
+				    SELF:UpdateAssembly()
+			    ENDIF
+            ENDIF
 
 		INTERNAL METHOD UpdateAssembly() AS VOID
 			LOCAL aTypes AS Dictionary<STRING, System.Type>
@@ -305,6 +307,10 @@ CLASS AssemblyInfo
 			LOCAL message AS STRING
 			LOCAL types := NULL AS System.Type[]
 			LOCAL index AS LONG
+            IF ! SELF:Exists
+				WriteOutputMessage("****** AssemblyInfo.UpdateAssembly: assembly "+SELF:FileName +" does not exist")
+                RETURN
+            ENDIF
 			TRY
 				WriteOutputMessage("-->AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
 				aTypes		 := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
@@ -475,30 +481,30 @@ CLASS AssemblyInfo
 			END GET
 		END PROPERTY
 
-		PROPERTY FileName AS STRING AUTO
+        INTERNAL STATIC METHOD _SafeExists(cFileName as STRING) AS LOGIC
+            local lExists := FALSE as LOGIC
+            TRY
+                IF !String.IsNullOrEmpty(cFileName)
+                    IF System.IO.File.Exists(cFileName)
+                        lExists := TRUE
+                    ENDIF
+                ENDIF
+            CATCH
+                lExists := FALSE
+            END TRY
+            RETURN lExists
 
-		PROPERTY FullName AS STRING GET SELF:_fullName
-		PROPERTY GlobalClassName AS STRING GET SELF:_globalClassName
-
-		PROPERTY HasProjects AS LOGIC GET SELF:_projects:Count > 0
-
+        PROPERTY Exists             AS LOGIC GET _SafeExists(SELF:FileName)
+		PROPERTY FileName           AS STRING AUTO
+		PROPERTY FullName           AS STRING GET SELF:_fullName
+		PROPERTY GlobalClassName    AS STRING GET SELF:_globalClassName
+		PROPERTY HasProjects        AS LOGIC GET SELF:_projects:Count > 0
 		PROPERTY ImplicitNamespaces AS IList<STRING> GET SELF:_implicitNamespaces
-
-		PROPERTY IsModifiedOnDisk AS LOGIC
-			GET
-				IF String.IsNullOrEmpty(SELF:fileName)
-					RETURN FALSE
-				ENDIF
-				IF ! System.IO.File.Exists(SELF:fileName)
-					RETURN FALSE
-				ENDIF
-				RETURN (System.IO.File.GetLastWriteTime(SELF:fileName) != SELF:Modified)
-			END GET
-		END PROPERTY
-
-		PROPERTY Modified AS System.DateTime GET SELF:_Modified SET SELF:_Modified := VALUE
-		PROPERTY Namespaces AS IList<STRING> GET SELF:_nameSpaceTexts
-		PROPERTY RuntimeVersion AS STRING
+		PROPERTY IsModifiedOnDisk   AS LOGIC GET SELF:LastWriteTime != SELF:Modified
+        PROPERTY LastWriteTime      AS DateTime GET IIF(Self:Exists, System.IO.File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
+		PROPERTY Modified           AS DateTime GET IIF(SELF:Exists, SELF:_Modified, DateTime.MinValue) SET SELF:_Modified := VALUE
+		PROPERTY Namespaces         AS IList<STRING> GET SELF:_nameSpaceTexts
+		PROPERTY RuntimeVersion     AS STRING
 			GET
 				SELF:UpdateAssembly()
 				IF SELF:_assembly != NULL
@@ -507,7 +513,7 @@ CLASS AssemblyInfo
 				RETURN ""
 			END GET
 		END PROPERTY
-		PROPERTY Types AS IDictionary<STRING, System.Type> GET SELF:_aTypes
+		PROPERTY Types              AS IDictionary<STRING, System.Type> GET SELF:_aTypes
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID

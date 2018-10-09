@@ -71,7 +71,7 @@ BEGIN NAMESPACE XSharp
 			IF _value == p:_value
 				ret := TRUE
 			ELSEIF _value != NULL && p:_value != NULL
-				ret := String.CompareOrdinal( ToString(), p:ToString() ) == 0
+				ret := __StringCompare( ToString(), p:ToString() ) == 0
 			ENDIF
 			RETURN ret   
 		
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp
 			IF _value == p:_value
 				ret := FALSE
 			ELSEIF _value != NULL && p:_value != NULL
-				ret := String.CompareOrdinal( ToString(), p:ToString() ) < 0
+				ret := __StringCompare( ToString(), p:ToString() ) < 0
 			ENDIF
 			RETURN ret       
 
@@ -91,13 +91,13 @@ BEGIN NAMESPACE XSharp
 			IF _value == p:_value
 				ret := FALSE
 			ELSEIF _value != NULL && p:_value != NULL
-				ret := String.CompareOrdinal( ToString(), p:ToString() ) > 0
+				ret := __StringCompare( ToString(), p:ToString() ) > 0
 			ENDIF
 			RETURN ret     
 		
 		
 			/// <exclude/>
-            OVERRIDE METHOD EQUALS( o AS OBJECT ) AS LOGIC
+         OVERRIDE METHOD @@Equals( o AS OBJECT ) AS LOGIC
 			LOCAL ret := FALSE AS LOGIC
 			
 			IF o IS PSZ

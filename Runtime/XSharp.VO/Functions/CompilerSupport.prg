@@ -19,6 +19,9 @@
 /// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     LOCAL ret AS INT
+    IF !RuntimeState.CompilerOptionVO13
+        RETURN String.Compare( strLHS,  strRHS)
+    ENDIF                            
     IF Object.ReferenceEquals(strLHS, strRHS)
         ret := 0
     ELSEIF strLHS == NULL

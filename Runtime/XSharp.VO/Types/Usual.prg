@@ -431,16 +431,10 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Logic		; RETURN SELF:_logicValue:CompareTo(rhs:_logicValue)
                     CASE __UsualType.Long		; RETURN SELF:_intValue:CompareTo(rhs:_intValue)
                     CASE __UsualType.Ptr		; RETURN SELF:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
-                        // Uses String Comparison rules
-                        // Vulcan does a case insensitive comparison ?
-//                    CASE __UsualType.String		; RETURN String.Compare( _stringValue,  rhs:_stringValue)
+                    // Uses String Comparison rules
                     CASE __UsualType.String
-                        IF RuntimeState.CompilerOptionVO13
-                            RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
-                        ELSE
-                            RETURN String.Compare( SELF:_stringValue,  rhs:_stringValue)
-                        ENDIF                            
-                    CASE __UsualType.Symbol		; RETURN String.Compare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
+                        RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
+                    CASE __UsualType.Symbol		; RETURN __StringCompare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
                     OTHERWISE					; RETURN 0
                     END SWITCH
             ELSE
@@ -565,11 +559,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        IF RuntimeState.CompilerOptionVO13
-                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) > 0
-                        ELSE
-                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) > 0
-                        ENDIF                            
+                        RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) > 0
                     ELSE
                         NOP // error below
                     ENDIF
@@ -642,11 +632,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        IF RuntimeState.CompilerOptionVO13
-                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) >= 0
-                        ELSE
-                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) >= 0
-                        ENDIF                            
+                        RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) >= 0
                     ELSE
                         NOP // error below
                     ENDIF
@@ -719,11 +705,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        IF RuntimeState.CompilerOptionVO13
-                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) < 0
-                        ELSE
-                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) < 0
-                        ENDIF                            
+                        RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) < 0
                     ELSE
                         NOP // error below
                     ENDIF
@@ -796,11 +778,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.String
                     IF rhs:_usualType == __UsualType.String
-                        IF RuntimeState.CompilerOptionVO13
-                            RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) <= 0
-                        ELSE
-                            RETURN String.Compare( lhs:_stringValue,  rhs:_stringValue) <= 0
-                        ENDIF                            
+                        RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) <= 0
                     ELSE
                         NOP // error below
                     ENDIF

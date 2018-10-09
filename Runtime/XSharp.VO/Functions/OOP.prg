@@ -278,14 +278,14 @@ INTERNAL STATIC CLASS OOPHelpers
 		VAR fldInfo := FindField(t, cIVar,FALSE)
 		//Todo: optimization
 		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-			oValue := MyConvert(oValue, fldInfo:FieldType)
+			oValue := VOConvert(oValue, fldInfo:FieldType)
 			fldInfo:SetValue(oObject, oValue)
 			RETURN
 		ENDIF
 		LOCAL propInfo AS PropertyInfo
 		propInfo := FindProperty(t, cIVar, lSelf)
 		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite
-			oValue := MyConvert(oValue, propInfo:PropertyType)
+			oValue := VOConvert(oValue, propInfo:PropertyType)
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
@@ -316,7 +316,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		LOCAL oArgs AS OBJECT[]
 		IF lClipper
-			oArgs := <OBJECT> {uArgs}
+			oArgs := <OBJECT>{uArgs}
 		ELSEIF paramInfo:Length > 0
 			oArgs := OBJECT[]{ paramInfo:Length }
 			LOCAL nPar AS INT
@@ -326,21 +326,21 @@ INTERNAL STATIC CLASS OOPHelpers
 					LOCAL arg := uArgs[nPar] AS USUAL
 					IF pi:ParameterType == TYPEOF(USUAL)
 						// We need to box a usual here 
-						oArgs[nPar] := Myconvert(arg, TYPEOF(__USUAL))
+						oArgs[nPar] := __CastClass(OBJECT, arg)
 					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
-						oArgs[nPar] := uArgs[nPar]
+						oArgs[nPar] := arg
 					ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
 						// Parameter array of certain type
 						// -> convert remaining elements from uArgs to an array and assign that to oArgs[i] 
 						LOCAL elementType := pi:ParameterType:GetElementType() AS System.Type
-						LOCAL aVarArgs := System.Array.CreateInstance(elementType, uArgs:Length - nPar +1) AS System.Array
+						LOCAL aVarArgs    := System.Array.CreateInstance(elementType, uArgs:Length - nPar +1) AS System.Array
 						LOCAL nArg AS INT
 						FOR nArg := nPar TO uArgs:Length
 							TRY
 								IF elementType:IsAssignableFrom(uArgs[nArg]:SystemType)
 									aVarArgs:SetValue(uArgs[nArg], nArg-nPar)
 								ELSE
-									aVarArgs:SetValue(MyConvert(uArgs[nArg], elementType), nArg-nPar)
+									aVarArgs:SetValue(VOConvert(uArgs[nArg], elementType), nArg-nPar)
 								ENDIF
 							CATCH
 								aVarArgs:SetValue(NULL, nArg-nPar)
@@ -349,29 +349,39 @@ INTERNAL STATIC CLASS OOPHelpers
 						oArgs[nPar] := aVarArgs
 						EXIT	// parameter loop
 					ELSE	// try to convert to the expected type
-						oArgs[nPar]  := MyConvert(uArgs[nPar], pi:ParameterType)
+						oArgs[nPar]  := VOConvert(uArgs[nPar], pi:ParameterType)
 					ENDIF
 				ENDIF 
 			NEXT
 		ELSE
 			oArgs := NULL
 		ENDIF
-		IF mi != NULL
-			result := mi:Invoke(oObject, oArgs)
+		IF mi != NULL   
+			IF mi:ReturnType == typeof(USUAL)
+                result := mi:Invoke(oObject, oArgs)
+            ELSE
+                LOCAL oResult AS OBJECT
+                oResult := mi:Invoke(oObject, oArgs)
+                result := oResult
+            ENDIF
+			
 		ENDIF
 		RETURN TRUE
 		
-	STATIC METHOD MyConvert(uValue AS USUAL,toType AS System.type) AS OBJECT
+	STATIC METHOD VOConvert(uValue AS USUAL,toType AS System.type) AS OBJECT
 		IF toType == TYPEOF(FLOAT)
 			RETURN (FLOAT) uValue
 		ELSE
 			IF toType == TYPEOF(USUAL)
-				// todo: better mechanism for boxing
 				// box the usual
-				VAR oTemp := <OBJECT> { uValue }
-				RETURN Activator.CreateInstance(TYPEOF(XSharp.__Usual), oTemp)
-			ENDIF
-			RETURN Convert.ChangeType((OBJECT) uValue, toType)
+                RETURN __CastClass(OBJECT, uValue)
+            ELSEIF IsArray(uValue) .and. totype == typeof(ARRAY)
+                RETURN (ARRAY) uValue
+            ELSEIF IsObject(uValue) 
+                RETURN (OBJECT) uValue
+            ENDIF
+      
+			RETURN Convert.ChangeType(uValue, toType)
 		ENDIF
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
@@ -479,7 +489,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	IF ! ( cClassName:IsSymbol || cClassName:IsString )
 		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(cClassName), 1, cClassName)
 	ENDIF    	
-	VAR t := OOPHelpers.FindClass(cClassName)
+	VAR t := OOPHelpers.FindClass((STRING) cClassName)
 	IF t == NULL
 		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  cClassName  )
 	ENDIF

@@ -786,11 +786,7 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbGetSelect() and CoreDb.GetSelect() are aliases</note></remarks>
         
     STATIC METHOD GetSelect() AS DWORD
-        RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        RETURN oRDD:Area
-        })
-        
+        return RuntimeState.Workareas:CurrentWorkareaNo  
         /// <summary>
         /// Move to the last logical record.
         /// </summary>

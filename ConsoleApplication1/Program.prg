@@ -1,6 +1,14 @@
 ﻿USING System.Globalization
 
-FUNCTION Start AS VOID
+function start as void
+    local p as psz
+    p := String2Psz("abc")
+    p := StringAlloc("def")
+    MemFree(p)
+	wait
+  
+
+FUNCTION Startx1 AS VOID
     setinternational ( #windows )
 ? "setinternational ( #windows )"
 ?

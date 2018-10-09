@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -192,6 +192,16 @@ FUNCTION DiskFree(nDrive AS INT) AS INT64
 	LOCAL cDrive AS STRING
 	cDrive := DiskNo2DiskName(nDrive)
 	RETURN DiskFree(cDrive)
+
+
+/// <summary>
+/// Return the current Windows drive.
+/// </summary>
+/// <returns>
+/// Return the letter of the current drive without colon
+/// </returns>
+FUNCTION DiskName() AS STRING
+	RETURN CurDrive()
 
 
 /// <summary>

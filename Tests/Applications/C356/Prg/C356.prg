@@ -33,6 +33,11 @@ FUNCTION __SplitPath() AS VOID
 	? Psz2String(PSZ(_CAST, @abDir[1]))
 	? Psz2String(PSZ(_CAST, @abName[1]))
 	? Psz2String(PSZ(_CAST, @abExt[1]))
+	
+	xAssertEquals( Psz2String(PSZ(_CAST, @abDrive[1])) , "C:")
+	xAssertEquals( Psz2String(PSZ(_CAST, @abDir[1]))   , "\Test\")
+	xAssertEquals( Psz2String(PSZ(_CAST, @abName[1]))  , "Testing")
+	xAssertEquals( Psz2String(PSZ(_CAST, @abExt[1]))   , ".dat")
 RETURN
 
 
@@ -70,5 +75,16 @@ FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STR
 	pBuffer := String2Psz(cBuffer)
 
 	? AsString(PSZ(_CAST, pBuffer + dwPos - 1))
+	
+	xAssertEquals(AsString(PSZ(_CAST, pBuffer + dwPos - 1)) , "bcde")
 RETURN NULL
+
+
+
+PROC xAssertEquals(o1 AS STRING, o2 AS STRING)
+IF o1 == o2
+	? "Assertion passed"
+ELSE
+	THROW Exception{String.Format("Incorrect result, expected {0}, returned {1}" , o2 , o1)}
+END IF
 

@@ -1,10 +1,10 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
-
+#ifdef COMPLETED
+USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DELIM RDD. For reading and writing delimited files.</summary>
 CLASS DELIM INHERIT Workarea  
@@ -13,7 +13,6 @@ CLASS DELIM INHERIT Workarea
 		SELF:_hFile         := IntPtr.Zero
 		SELF:_TransRec 		:= TRUE
 		SELF:_RecordLength 	:= 0
-		SELF:_BufferSize 	:= 0
 		SELF:_Delimiter		:= e"\""
 		SELF:_Separator		:= ","    
 //	METHOD DbEval(info AS DbEvalInfo) AS LOGIC
@@ -173,3 +172,4 @@ VIRTUAL PROPERTY SysName AS STRING GET typeof(Delim):ToString()
 
 END CLASS
 END NAMESPACE
+#endif

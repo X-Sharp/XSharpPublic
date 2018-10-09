@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
 /// <summary>Definition for the interface that each RDD must implement</summary>
 /// <seealso cref="T:XSharp.RDD.Workarea"/>
 INTERFACE XSharp.RDD.IRdd
@@ -93,7 +94,9 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 	/// <summary>Retrieve a column name based on its ONE based column number.</summary>
 	/// <param name="nFldPos">The ONE based number of the column whose name you want to obtain.</param>
-	METHOD FieldName(nFldPos AS LONG)		AS STRING 
+	METHOD FieldName(nFldPos AS LONG)		AS STRING
+
+    METHOD GetField(nFldPos AS LONG) AS RDDFieldInfo
 	// Read & Write		
 	/// <summary>Get a value for the specified column.</summary>	
 	/// <param name="nFldPos">1 based column number for which the value should be retrieved.</param>
@@ -245,7 +248,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Compile an expression.</summary>
 	/// <param name="sBlock">The expression to compile.</param>
 
-	METHOD Compile(sBlock AS STRING)				AS LOGIC
+	METHOD Compile(sBlock AS STRING)				AS ICodeBlock
 	/// <summary>Evaluate a code block.</summary>
 	/// <param name="sBlock">The code block to evaluate.</param>
 	METHOD EvalBlock(oBlock AS ICodeBlock)			AS OBJECT	
@@ -258,9 +261,9 @@ INTERFACE XSharp.RDD.IRdd
 
 	// Properties
 	/// <summary>Retrieve the alias name.</summary>
-	PROPERTY Alias 		AS STRING	GET
+	PROPERTY Alias 		AS STRING	GET SET
 	/// <summary>Retrieve the workarea number.</summary>
-	PROPERTY Area		AS LONG		GET 
+	PROPERTY Area		AS DWORD	GET SET
 	/// <summary>Is the table at the logical beginning-of-file.</summary>
 	PROPERTY BoF 		AS LOGIC	GET
 	/// <summary>Is the current row deleted?</summary>

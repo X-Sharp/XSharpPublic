@@ -14,14 +14,14 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>
     /// The NtxPageList class.
     /// </summary>
-    CLASS NtxPageList
+    INTERNAL CLASS NtxPageList
         PROTECT _Pages AS List<NtxPage>
         PROTECT _Order AS NtxOrder
         
-        PRIVATE METHOD _FindPage(pageNo AS LONG ) AS NtxPage
+        PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
-            ntxPage := SELF:_Pages:Find( { p => p:Number == pageNo } )
+            ntxPage := SELF:_Pages:Find( { p => p:PageOffset == offset } )
             RETURN ntxPage
             
             
@@ -34,19 +34,19 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:Read(pageNo)
-            IF ( ntxPage != null )
+            IF ( ntxPage != NULL )
                 ntxPage:Hot := TRUE
             ENDIF
             RETURN ntxPage
             
             
-        METHOD Append(pageNo AS LONG ) AS NtxPage
+        METHOD Append( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
-            ntxPage := SELF:_FindPage(pageNo)
+            ntxPage := SELF:_FindPage(offset)
             IF (ntxPage == NULL)
-                ntxPage := NtxPage{SELF:m_Order, 0L}
-                ntxPage:PageNo := pageNo
+                ntxPage := NtxPage{SELF:_Order, 0L}
+                ntxPage:PageOffset := offset
                 SELF:_Pages:Add(ntxPage)
             ENDIF
             ntxPage:Hot := TRUE
@@ -76,9 +76,9 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 NEXT
                 IF (isOk)
-                    SELF:_Order:Flush()
+					FFlush( SELF:_Order:_hFile )
                 ENDIF
-            CATCH Exception
+            CATCH AS Exception
                 isOk := FALSE
             END TRY
             IF ((isOk) .AND. (!keepData))

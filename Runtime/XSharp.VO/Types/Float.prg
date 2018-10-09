@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp
             RETURN equal
             
             /// <inheritdoc />
-        VIRTUAL METHOD GetHashCode() AS INT
+        OVERRIDE METHOD GetHashCode() AS INT
             RETURN SELF:_value:GetHashCode()
             
             /// <exclude />	
@@ -396,7 +396,7 @@ BEGIN NAMESPACE XSharp
         #region IConvertable
         /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
-            THROW NotImplementedException{}
+            RETURN _value ==  0.0
             
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE
@@ -463,7 +463,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD ToString() AS STRING
             RETURN Str1(SELF)
             
-            /// <inheritdoc />
+        /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
             

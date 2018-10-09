@@ -7,14 +7,17 @@
 USING System.Globalization
 // StringComparer class that takes care of Windows and Clipper string comparisons
 /// <exclude />
-STATIC CLASS XSharp.StringCompareHelpers
+STATIC CLASS XSharp.StringHelpers
 	PRIVATE STATIC collationTable AS BYTE[]
 	PRIVATE STATIC encDos	AS System.Text.Encoding
     PRIVATE STATIC encWin	AS System.Text.Encoding
-	PRIVATE STATIC nCPWin	AS LONG
 	PRIVATE STATIC bLHS		AS BYTE[]       // cache byte array to avoid having to allocate bytes for every comparison
 	PRIVATE STATIC bRHS		AS BYTE[]
 	PRIVATE STATIC gate		AS OBJECT
+
+    public static property WinEncoding as System.Text.Encoding GET encWin
+    public static property DosEncoding as System.Text.Encoding GET encDos
+
     /// <exclude />
 	STATIC CONSTRUCTOR
 		// Register event Handlers, so we can reread tye DOS and Windows codepages
@@ -32,17 +35,28 @@ STATIC CLASS XSharp.StringCompareHelpers
 
     /// <exclude />
 	STATIC METHOD GetValues() AS VOID
-		nCPWin			:= runtimestate.WinCodePage
 		collationTable	:= RuntimeState.CollationTable
-		encDos			:= System.Text.Encoding.GetEncoding(runtimestate.DosCodePage)
-        encWin			:= System.Text.Encoding.GetEncoding(nCPWin)
+		encDos			:= RuntimeState.DosEncoding
+        encWin			:= RuntimeState.WinEncoding
 		RETURN
 		
     /// <exclude />
 	STATIC METHOD CompareWindows(strLHS AS STRING, strRHS AS STRING) AS INT
 		LOCAL nLen	AS INT
         LOCAL result AS INT
-		nLen := Math.Min(strLHS:Length, strRHS:Length)
+        LOCAL lhsLen AS INT
+        LOCAL rhsLen AS INT
+        LOCAL adjust AS INT
+        lhsLen := strLHS:Length
+        rhsLen := strRHS:Length
+        IF lhsLen >= rhsLen
+            nLen := rhsLen
+            adjust := 0
+        ELSE
+            nLen := lhsLen
+            adjust := 1
+        ENDIF
+		// Lock because we are using the same byte array for each comparison
         BEGIN LOCK gate
 			IF nLen > bLHS:Length
 				bLHS := BYTE[]{nLen}
@@ -50,7 +64,17 @@ STATIC CLASS XSharp.StringCompareHelpers
 			ENDIF
 			encWin:GetBytes(strLHS, 0, nLen, bLHS, 0)
 			encWin:GetBytes(strRHS, 0, nLen, bRHS, 0)
-            result := Win32.CompareStringAnsi(nCPWin, Win32.SORT_STRINGSORT,bLHS, strLHS:Length, bRHS, strRHS:Length) -2
+            result := Win32.CompareStringAnsi(CultureInfo.CurrentCulture:LCID, Win32.SORT_STRINGSORT,bLHS, nLen, bRHS, nLen)
+            IF result != 0  // 0 = error, 1 = less, 2 = equal, 3 = greater
+                result -= 2
+                IF result == 0          // when equal: if lhs shorter than rhs then return -1
+                    result -= adjust    
+                ENDIF
+            ELSE
+                // what to do ?
+                VAR error := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+                NOP
+            ENDIF
         END LOCK
         RETURN result
         

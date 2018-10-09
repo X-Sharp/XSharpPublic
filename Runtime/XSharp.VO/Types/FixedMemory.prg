@@ -11,13 +11,10 @@ USING System.Collections.Generic
 USING System.Runtime.CompilerServices
 
 
-/// <summary>Class that holds the Fixed Memory allocation support</summary>
-///
-
+/// <summary>Delegate that a client needs to implement to use MemWalk.</summary>
 DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
 
-
-STATIC UNSAFE CLASS XSharp.FixedMemory
+INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
     PUBLIC CONST FAILURE := 65535 AS WORD
     PUBLIC CONST SUCCESS := 0 AS WORD
     INTERNAL INITONLY STATIC Is32Bits AS LOGIC
@@ -293,12 +290,18 @@ END CLASS
 /// <summary>Guard Block preceding MemAlloc return value</summary>
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockStart
+    /// <summary>Checksum</summary>
     [FieldOffSet(00)] EXPORT dwMagic AS DWORD	// Checksum
+    /// <summary>Cargo slot</summary>
     [FieldOffSet(04)] EXPORT dwCargo AS DWORD    // Can be used by them
+    /// <summary>Group number</summary>
     [FieldOffSet(08)] EXPORT dwGroup AS DWORD    // Group Number
+    /// <summary>Size</summary>
     [FieldOffSet(12)] EXPORT dwSize  AS DWORD	// Size of Data Block excluding Guard Blocks
+    /// <exclude />
     CONST MAGIC  := 0x21522358 AS DWORD  // !R#X
     
+    /// <exclude />
    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize(nGroup AS DWORD, nSize AS DWORD) AS VOID
         dwMagic := MAGIC
@@ -306,7 +309,8 @@ STRUCTURE	 XSharp.FixedMemBlockStart
         dwGroup := nGroup
         dwSize  := nSize
 
-   [MethodImpl(MethodImplOptions.AggressiveInlining)];
+    /// <exclude />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC
         
@@ -316,16 +320,21 @@ END         STRUCTURE
 /// <summary>Guard Block following MemAlloc return value</summary>
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockEnd
+    /// <summary>Zero terminator</summary>
     [FieldOffSet(00)] EXPORT dwZero  AS DWORD			// Give them 1 extra DWORD to protect against overflows
-    [FieldOffSet(04)] EXPORT dwMagic AS DWORD			// Checksum
+    /// <summary>Checksum</summary>
+    [FieldOffSet(04)] EXPORT dwMagic AS DWORD			// 
+    /// <exclude />
     CONST MAGIC  := 0x524E4643 AS DWORD  // Chris, Fabrice, Nikos, Robert 
     
     
-   [MethodImpl(MethodImplOptions.AggressiveInlining)];
+    /// <exclude/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize() AS VOID
         dwMagic := MAGIC
 		dwZero := 0        
-   [MethodImpl(MethodImplOptions.AggressiveInlining)];
+    /// <exclude/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC
         RETURN SELF:dwMagic == MAGIC
         

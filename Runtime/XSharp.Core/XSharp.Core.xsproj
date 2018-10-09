@@ -59,7 +59,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
+    <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>162</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="Defines.prg" />
     <Compile Include="ErrorEnum.prg" />
+    <Compile Include="Functions\AssemblyLoader.prg" />
     <Compile Include="Functions\Convert.prg" />
     <Compile Include="Functions\Debug.prg" />
     <Compile Include="Functions\Error.prg" />
@@ -139,6 +140,7 @@
     <Compile Include="Functions\File.prg" />
     <Compile Include="Functions\FileIO.prg" />
     <Compile Include="Functions\International.prg" />
+    <Compile Include="Functions\Macro.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Numeric.prg" />
     <Compile Include="Functions\OS.prg" />
@@ -146,7 +148,6 @@
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\StringCompare.prg" />
     <Compile Include="Functions\unsafe.prg" />
-    <Compile Include="Functions\vodb.prg" />
     <Compile Include="Functions\Win32.prg" />
     <Compile Include="Messages.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
@@ -161,6 +162,7 @@
     <Compile Include="RDD\RddError.prg" />
     <Compile Include="RDD\RddHelpers.prg" />
     <Compile Include="RDD\RDDSupport.prg" />
+    <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
     <Compile Include="State\Get.prg" />
@@ -303,7 +305,7 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>168;1591;9001;162</DisabledWarnings>
+    <DisabledWarnings>168;9001;162</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>

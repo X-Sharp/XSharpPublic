@@ -50,19 +50,19 @@ FUNCTION MLCount(cMemo ,nWidth ,nTabsize ,lWrap ) AS DWORD CLIPPER
 	IF nWidth == NIL
 		nWidth := MemoHelpers.STD_MEMO_WIDTH
 	ELSEIF !nWidth:IsNumeric
-		BREAK Error.DataTypeError( "MLCount", NAMEOF(nWidth), 2, <OBJECT>{ nWidth } )
+		THROW Error.DataTypeError( "MLCount", NAMEOF(nWidth), 2, <OBJECT>{ nWidth } )
 	ENDIF
 	
 	IF nTabSize == NIL
 		nTabSize := MemoHelpers.STD_TAB_WIDTH
 	ELSEIF !nTabSize:IsNumeric
-		BREAK Error.DataTypeError( "MLCount", NAMEOF(nTabSize), 3, <OBJECT>{ nTabSize } )
+		THROW Error.DataTypeError( "MLCount", NAMEOF(nTabSize), 3, <OBJECT>{ nTabSize } )
 	ENDIF
 	
 	IF lWrap == NIL
 		lWrap := TRUE
 	ELSEIF !lWrap:IsLogic
-		BREAK Error.DataTypeError( "MLCount", NAMEOF(lWrap), 4, <OBJECT>{ lWrap } )
+		THROW Error.DataTypeError( "MLCount", NAMEOF(lWrap), 4, <OBJECT>{ lWrap } )
 	ENDIF
 	RETURN MemoHelpers.MLCount(cMemo, nWidth, nTabsize, lWrap)
 	
@@ -88,31 +88,31 @@ FUNCTION MLcToPos( cMemo, nLineLen, nLineNum, nColumn, nTabSize, lWrap ) AS DWOR
 	IF nLineLen == NIL
 		nLineLen := MemoHelpers.STD_MEMO_WIDTH
 	ELSEIF !nLineLen:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nLineLen), 2, <OBJECT>{ nLineLen } )
+		THROW Error.DataTypeError( "MLcToPos", NAMEOF(nLineLen), 2, <OBJECT>{ nLineLen } )
 	ENDIF
 	
 	IF nLineNum == NIL
 		nLineNum := 1
 	ELSEIF !nLineNum:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nLineNum), 3, <OBJECT>{ nLineNum } )
+		THROW Error.DataTypeError( "MLcToPos", NAMEOF(nLineNum), 3, <OBJECT>{ nLineNum } )
 	ENDIF
 	
 	IF nColumn == NIL
 		nColumn := 0
 	ELSEIF !nColumn:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nColumn), 4, <OBJECT>{ nColumn } )
+		THROW Error.DataTypeError( "MLcToPos", NAMEOF(nColumn), 4, <OBJECT>{ nColumn } )
 	ENDIF
 	
 	IF nTabSize == NIL
 		nTabSize := MemoHelpers.STD_TAB_WIDTH
 	ELSEIF !nTabSize:IsNumeric
-		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(nTabSize), 5, <OBJECT>{ nTabSize } )
+		THROW Error.DataTypeError( "MLcToPos", NAMEOF(nTabSize), 5, <OBJECT>{ nTabSize } )
 	ENDIF
 	
 	IF lWrap == NIL
 		lWrap := TRUE
 	ELSEIF !lWrap:IsLogic
-		BREAK Error.DataTypeError( "MLcToPos", NAMEOF(lWrap), 6, <OBJECT>{ lWrap } )
+		THROW Error.DataTypeError( "MLcToPos", NAMEOF(lWrap), 6, <OBJECT>{ lWrap } )
 	ENDIF
 	RETURN MemoHelpers.MLcToPos(cMemo, nLineLen, nLineNum, nColumn, nTabSize, lWrap)   
 	

@@ -41,7 +41,6 @@ ABSTRACT CLASS XSharp.CodeBlock IMPLEMENTS ICodeBlock
 	/// Eval method that can be called from code that does not "know" about the USUAL type.
 	/// </summary>
 	PUBLIC VIRTUAL METHOD EvalBlock(args PARAMS OBJECT[] ) AS OBJECT
-		VAR num := args:Length
 		VAR uArgs := __ObjectArrayToUsualArray(args)
 		RETURN SELF:Eval(uArgs)
 		

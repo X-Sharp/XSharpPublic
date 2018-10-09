@@ -155,14 +155,17 @@ BEGIN NAMESPACE XSharp.IO
 			SELF:Stream     := oStream
 			RETURN
 	END CLASS
-	
-	STATIC CLASS File
-		PUBLIC STATIC errorCode	:= 0 AS DWORD
+	/// <exclude />
+	INTERNAL STATIC CLASS File
+        /// <exclude />
+        PUBLIC STATIC errorCode	:= 0 AS DWORD
+        /// <exclude />
 		PUBLIC STATIC LastFound AS STRING
 		PRIVATE STATIC streams AS Dictionary<IntPtr, FileCacheElement >
 		PRIVATE STATIC random AS Random
 		
-		STATIC CONSTRUCTOR
+	    /// <exclude />
+        STATIC CONSTRUCTOR
 			streams := Dictionary<IntPtr, FileCacheElement >{}
 			random := Random{}
 		
@@ -248,19 +251,19 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			RETURN FALSE
 		
-		INTERNAL STATIC METHOD read(pHandle AS Intptr, refC OUT STRING, iCount AS INT, lOem2Ansi AS LOGIC) AS INT
-			LOCAL aBuffer := XSharp.IO.File.getBuffer(pHandle, iCount) AS BYTE[]
-			iCount := (INT) ReadBuff(pHandle, aBuffer, iCount, lOem2Ansi)
+		INTERNAL STATIC METHOD read(pFile AS Intptr, refC OUT STRING, iCount AS INT, lOem2Ansi AS LOGIC) AS INT
+			LOCAL aBuffer := XSharp.IO.File.getBuffer(pFile, iCount) AS BYTE[]
+			iCount := (INT) ReadBuff(pFile, aBuffer, iCount, lOem2Ansi)
 			refC := Bytes2String(aBuffer, iCount)
 			RETURN iCount
 		
-		INTERNAL STATIC METHOD readBuff(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lOem2Ansi AS LOGIC) AS INT64
+		INTERNAL STATIC METHOD readBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lAnsi AS LOGIC) AS INT64
 			LOCAL iResult := 0 AS INT64
-			VAR oStream := XSharp.IO.File.findStream(pHandle)
+			VAR oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
-					IF lOem2Ansi
+					IF !lAnsi
 						pBuffer := Oem2Ansi(pBuffer)
 					ENDIF
 				CATCH
@@ -291,10 +294,10 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			RETURN cResult
 		
-		INTERNAL STATIC METHOD seek(pHandle AS IntPtr,lOffset AS INT64,dwOrigin AS DWORD) AS INT64
+		INTERNAL STATIC METHOD seek(pFile AS IntPtr,lOffset AS INT64,dwOrigin AS DWORD) AS INT64
 			LOCAL oStream AS FileStream
 			LOCAL iResult AS INT64
-			oStream := XSharp.IO.File.findStream(pHandle)
+			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				iResult := -1
 				TRY
@@ -315,17 +318,17 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			RETURN -1
 		
-		INTERNAL STATIC METHOD write( pHandle AS IntPtr, c AS STRING, nLength AS INT ) AS INT
+		INTERNAL STATIC METHOD write( pFile AS IntPtr, c AS STRING, nLength AS INT ) AS INT
 			LOCAL aBytes := String2Bytes(c) AS BYTE[]
-			RETURN writeBuff(pHandle, aBytes, nLength, FALSE)			
+			RETURN writeBuff(pFile, aBytes, nLength, FALSE)			
 		
-		INTERNAL STATIC METHOD writeBuff(pHandle AS IntPtr,pBuffer AS BYTE[],iCount AS INT, lAnsi2Oem AS LOGIC) AS INT
+		INTERNAL STATIC METHOD writeBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT, lAnsi AS LOGIC) AS INT
 			LOCAL oStream	AS FileStream
 			LOCAL iWritten := 0 AS INT
-			oStream := XSharp.IO.File.findStream(pHandle)
+			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
-					IF lAnsi2Oem
+					IF !lAnsi
 						pBuffer := Ansi2Oem(pBuffer)
 					ENDIF
 					oStream:Write(pBuffer, 0, iCount)
@@ -338,15 +341,15 @@ BEGIN NAMESPACE XSharp.IO
 			
 			RETURN iWritten
 		
-		INTERNAL STATIC METHOD writeLine(pHandle AS IntPtr,c AS STRING, nLen AS INT) AS INT
+		INTERNAL STATIC METHOD writeLine(pFile AS IntPtr,c AS STRING, nLen AS INT) AS INT
 			IF c:Length > nLen
 				c := c:Substring(0, nLen)
 			ENDIF
-			RETURN Write(pHandle, c + e"\r\n",nLen+2)
+			RETURN Write(pFile, c + e"\r\n",nLen+2)
 		
 		
-		INTERNAL STATIC METHOD lock(phandle AS IntPtr,iOffset AS INT64,iLength AS INT64, lLock AS LOGIC) AS LOGIC
-			LOCAL oStream := findStream(pHandle) AS FileStream
+		INTERNAL STATIC METHOD lock(pFile AS IntPtr,iOffset AS INT64,iLength AS INT64, lLock AS LOGIC) AS LOGIC
+			LOCAL oStream := findStream(pFile) AS FileStream
 			LOCAL lResult := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
@@ -364,8 +367,8 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF	
 			RETURN lResult   		
 		
-		INTERNAL STATIC METHOD flush(phandle AS IntPtr, lCommit AS LOGIC) AS LOGIC
-			LOCAL oStream := XSharp.IO.File.findStream(pHandle) AS FileStream
+		INTERNAL STATIC METHOD flush(pFile AS IntPtr, lCommit AS LOGIC) AS LOGIC
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
 			LOCAL lOk := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
@@ -381,8 +384,8 @@ BEGIN NAMESPACE XSharp.IO
 				END TRY
 			ENDIF	
 			RETURN lOk
-		INTERNAL STATIC METHOD ChSize(pHandle AS IntPtr,nValue AS DWORD) AS LOGIC
-			LOCAL oStream := XSharp.IO.File.findStream(pHandle) AS FileStream
+		INTERNAL STATIC METHOD ChSize(pFile AS IntPtr,nValue AS DWORD) AS LOGIC
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
 			LOCAL lOk := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
@@ -395,17 +398,17 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF	
 			RETURN lOk
 		
-		INTERNAL STATIC METHOD Eof(pHandle AS IntPtr) AS LOGIC
-			LOCAL oStream := XSharp.IO.File.findStream(pHandle) AS FileStream
+		INTERNAL STATIC METHOD Eof(pFile AS IntPtr) AS LOGIC
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
 			LOCAL lResult := TRUE AS LOGIC
 			IF oStream != NULL_OBJECT
 				lResult := oStream:Position == oStream:Length
 			ENDIF	 
 			RETURN lResult
 		
-		INTERNAL STATIC METHOD Tell(pHandle AS IntPtr) AS INT64
+		INTERNAL STATIC METHOD Tell(pFile AS IntPtr) AS INT64
 			LOCAL oStream AS FileStream
-			oStream := XSharp.IO.File.findStream(pHandle)
+			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
 					RETURN oStream:Position
@@ -424,8 +427,7 @@ END NAMESPACE
 /// Set the error code for a file operation.
 /// </summary>
 /// <param name="nSet"></param>
-/// <returns>
-/// </returns>
+/// <returns>The previous errorcode from the last file operation.</returns>
 FUNCTION FError(nErrorCode AS DWORD) AS DWORD
 	LOCAL nOldError AS DWORD
 	nOldError := XSharp.IO.File.errorCode
@@ -436,8 +438,7 @@ FUNCTION FError(nErrorCode AS DWORD) AS DWORD
 /// <summary>
 /// Get the error code for a file operation.
 /// </summary>
-/// <returns>
-/// </returns>
+/// <returns>The error from the last file operation or the last user-specified setting.  If there was no error, FError() returns 0.</returns>
 FUNCTION FError() AS DWORD
 	LOCAL nOldError AS DWORD
 	nOldError := XSharp.IO.File.errorCode
@@ -447,211 +448,160 @@ FUNCTION FError() AS DWORD
 /// <summary>
 /// Change the size of a file opened with a low-level file function.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="nOffset"></param>
-/// <returns>
-/// </returns>
-FUNCTION FChSize(pHandle AS IntPtr,nValue AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.Chsize(pHandle, nValue)
+/// <param name="pFile">The handle of the file.</param>
+/// <param name="nSize">The new length to which the file should be set. </param>
+/// <returns>The new length of the file if successful; otherwise, F_ERROR.  FError() can be used to determine the specific error.</returns>
+FUNCTION FChSize(pFile AS IntPtr,nSize AS DWORD) AS LOGIC
+	RETURN XSharp.IO.File.Chsize(pFile, nSize)
 
 /// <summary>
 /// Close an open file and write the buffers to disk.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
+/// <param name="pFile">The handle of an open file.</param>
+/// <returns>FALSE if an error occurs while writing; otherwise, TRUE.</returns>
 FUNCTION FClose(pFile AS IntPtr) AS LOGIC
 	RETURN XSharp.IO.File.Close(pFile)
 
 /// <summary>
 /// Flush file buffers.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
-FUNCTION FCommit(pHandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pHandle, TRUE)
+/// <param name="pFile">The handle of an open file.</param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION FCommit(pFile AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.flush(pFile, TRUE)
 
 /// <summary>
 /// Determine if the file pointer is positioned at the end-of-file.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
-FUNCTION FEof(pHandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.eof(pHandle) 
+/// <param name="pFile">The handle of an open file.</param>
+/// <returns>TRUE if the file pointer is at end-of-file; otherwise, FALSE.</returns>
+FUNCTION FEof(pFile AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.eof(pFile) 
 
 
 /// <summary>
 /// Lock a portion of an open file.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="dwOffset"></param>
-/// <param name="dwLength"></param>
-/// <returns>
-/// </returns>
-FUNCTION FFLock(phandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(pHandle, (INT64) dwOffset, (INT64) dwLength, TRUE)
+/// <param name="pFile">The handle of an open file.</param>
+/// <param name="dwOffset">The file offset at which to start locking.  A value of zero corresponds to the first byte of the file. </param>
+/// <param name="dwLength">The number of bytes to lock. </param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION FFLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	RETURN XSharp.IO.File.lock(pFile, (INT64) dwOffset, (INT64) dwLength, TRUE)
 
 
 /// <summary>
 /// Flush to disk a file opened with a low-level file function.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
-FUNCTION FFlush(phandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pHandle, FALSE)
+/// <param name="pFile">The handle of the file.</param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION FFlush(pFile AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.flush(pFile, FALSE)
 
 
 /// <summary>
-/// Unlock a portion of an opened file.
+/// UnLock a portion of an open file.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="dwOffset"></param>
-/// <param name="dwLength"></param>
-/// <returns>
-/// </returns>
-FUNCTION FFUnLock(phandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(pHandle, (INT64) dwOffset, (INT64) dwLength, FALSE)
+/// <param name="pFile">The handle of an open file.</param>
+/// <param name="dwOffset">The file offset at which to start unlocking.  A value of zero corresponds to the first byte of the file. </param>
+/// <param name="dwLength">The number of bytes to unlock. </param>
+/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+FUNCTION FFUnLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	RETURN XSharp.IO.File.lock(pFile, (INT64) dwOffset, (INT64) dwLength, FALSE)
 
 
-/// <summary>
-/// Read a line from an open file, specifying two strongly typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
-FUNCTION FGetS(pHandle AS IntPtr) AS STRING
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
+FUNCTION FGetS(pFile AS IntPtr) AS STRING
 	// According to the VO docs the dedault value for the buffer length = 256
-	RETURN XSharp.IO.File.readLine(pHandle,256)
+	RETURN XSharp.IO.File.readLine(pFile,256)
 
 
-/// <summary>
-/// Read a line from an open file, specifying two strongly typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="nBuffLen"></param>
-/// <returns>
-/// </returns>
-FUNCTION FGetS2(pHandle AS IntPtr,nBuffLen AS DWORD) AS STRING
-	RETURN XSharp.IO.File.readLine(pHandle, (INT) nBuffLen)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
+FUNCTION FGetS2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
+	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
 
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION FPutS(pHandle AS IntPtr,c AS STRING) AS DWORD
-	RETURN FWriteLine(pHandle, c, (DWORD) c:Length)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
+FUNCTION FPutS(pFile AS IntPtr,c AS STRING) AS DWORD
+	RETURN FWriteLine(pFile, c, (DWORD) c:Length)
 
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FPutS(pHandle AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
-	RETURN FWriteLine(pHandle, c, nCount)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
+FUNCTION FPutS(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
+	RETURN FWriteLine(pFile, c, nCount)
 
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FPutS3(pHandle AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
-	RETURN FWriteLine(pHandle, c, nCount)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
+FUNCTION FPutS3(pFile AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
+	RETURN FWriteLine(pFile, c, nCount)
 
 
 /// <summary>
 /// Read characters from a file into an allocated buffer.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="pBuffer"> Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FRead3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pHandle, pBuffer, (INT) dwCount, FALSE)
+/// <param name="pFile">The handle of the file.</param>
+/// <param name="pBuffer">An array of bytes to store the data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+/// <param name="dwCount">The number of bytes to read into the buffer.</param>
+/// <returns>The number of bytes successfully read.  A return value less than the number of bytes requested indicates end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
+FUNCTION FRead3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, FALSE)
 
 /// <summary>
-/// Read characters from a file into an allocated buffer.
+/// Read characters from a file into an allocated buffer with optional OEM to Ansi conversion.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="pBuffer"> Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <param name="lAnsi"></param>
-/// <returns>
-/// </returns>
-FUNCTION FRead4(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pHandle, pBuffer, (INT) dwCount, lAnsi)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+/// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
+FUNCTION FRead4(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, lAnsi)
 
 
 /// <summary>
 /// Read a line from an open file, specifying two strongly-typed arguments.
 /// </summary>
-/// <param name="pFile"></param>
-/// <param name="nBuffLen"></param>
-/// <returns>
-/// </returns>
-FUNCTION FReadLine(pFile AS IntPtr,nBuffLen AS DWORD) AS STRING
-	RETURN XSharp.IO.File.readLine(pFile, (INT) nBuffLen)
+/// <param name="pFile">The handle of the file to read from. </param>
+/// <param name="nLineLen">The maximum number of characters to read per line.</param>
+/// <returns>The line read.  When the end-of-file is reached while attempting to read, the function returns a NULL_STRING and FError() is set to 257.</returns>
+/// <remarks>This function is assumed to handle raw binary data and are not dependent upon the status of SetAnsi().
+/// FReadText() and FRead4(), on the other hand, are dependent upon SetAnsi().
+/// </remarks>
+FUNCTION FReadLine(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
+	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
 
-/// <summary>
-/// Read a line from an open file, specifying two strongly-typed arguments.
-/// </summary>
-/// <param name="pFile"></param>
-/// <param name="nBuffLen"></param>
-/// <returns>
-/// </returns>
-FUNCTION FReadLine2(pFile AS IntPtr,nBuffLen AS DWORD) AS STRING	
-	RETURN XSharp.IO.File.readLine(pFile, (INT) nBuffLen)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FreadLine(System.IntPtr,System.UInt32)" />"
+FUNCTION FReadLine2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING	
+	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
 
 
+/// <inheritdoc cref="M:XSharp.Core.Functions.FreadLine(System.IntPtr, System.UInt32)" />
 /// <summary>
 /// Read characters from a file.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FReadStr(pHandle AS IntPtr,iCount AS DWORD) AS STRING
+/// <param name="dwCount">The number of bytes to read, beginning at the current DOS file pointer position.  Characters are read up to this number or until end-of-file is encountered.
+/// The file pointer is then moved forward.  If the number is greater than the number of bytes from the pointer position to the end of the file, the file pointer is positioned at the last byte in the file.
+/// </param>
+FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 	LOCAL cResult AS STRING
-	XSharp.IO.File.read(pHandle, OUT cResult, (INT) iCount, FALSE)
+	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, FALSE)
 	RETURN cResult
 
-
+/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <summary>
 /// Read characters from a file into a buffer variable that is passed by reference.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
 /// <param name="strValue"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FReadText(pHandle AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.read(pHandle, OUT strValue, (INT) dwCount, !XSharp.RuntimeState.Ansi)
+/// <returns></returns>
+FUNCTION FReadText(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
 
 /// <summary>
 /// Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
+/// <param name="pFile">The handle of the file.</param>
 /// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 /// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FReadText3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pHandle, pBuffer, (INT) dwCount, ! GetAnsi())	
+/// <returns><inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" /></returns>
+FUNCTION FReadText3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, XSharp.RuntimeState.Ansi)	
 
 /// <summary>
 /// Set the file pointer at the top of an open file.
@@ -659,131 +609,118 @@ FUNCTION FReadText3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWO
 /// <param name="pFile"></param>
 /// <returns>
 /// </returns>
-FUNCTION FRewind(pHandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.Seek(pHandle, 0, FS_SET) == 0
+FUNCTION FRewind(pFile AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.Seek(pFile, 0, FS_SET) == 0
 
 
 /// <summary>
 /// Set the file pointer to a new position, specifying three strongly-typed arguments.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="lOffset"></param>
-/// <param name="dwOrigin"></param>
-/// <returns>
-/// </returns>
-FUNCTION FSeek3(pHandle AS IntPtr,lOffset AS LONG, dwOrigin AS DWORD) AS LONG
-	RETURN (LONG) XSharp.IO.File.Seek(pHandle, (INT64) lOffset, dwOrigin)
+/// <param name="pFile">The handle of the open file.</param>
+/// <param name="lOffset">The number of bytes to move the file pointer, from the position defined in the next parameter.It can be a positive or negative number.
+/// A positive number moves the pointer forward in the file, and a negative number moves the pointer backward.
+/// If the origin is the end-of-file, then this must be 0 or negative.</param>
+/// <param name="dwOrigin">One of the following constants indicating the starting location of the file pointer, telling where to start searching the file:</param>
+/// <returns>The new position of the file pointer, relative to the beginning of the file (position 0).  (The original position of the file pointer does not matter.)</returns>
+/// <remarks>
+/// The possible values for the origin are:
+/// <list type="table">
+/// <listheader>
+/// <term>Constant</term>           <description>Seeks from</description>
+/// </listheader>
+///	<item><term>FS_END</term>       <description>End-of-file   </description></item>  
+/// <item><term>FS_RELATIVE</term>  <description>Current pointer position  </description></item>  
+/// <item><term>FS_SET</term>       <description>Beginning-of-file </description></item>
+/// </list>
+/// </remarks>
+FUNCTION FSeek3(pFile AS IntPtr,lOffset AS LONG, dwOrigin AS DWORD) AS LONG
+	RETURN (LONG) XSharp.IO.File.Seek(pFile, (INT64) lOffset, dwOrigin)
 
 /// <summary>
 /// Return the current position of the file pointer.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
-FUNCTION FTell(pHandle AS IntPtr) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.Tell(pHandle)
+/// <param name="pFile">The handle of an open file.</param>
+/// <returns>The current position of the file pointer, relative to the beginning of the file.</returns>
+FUNCTION FTell(pFile AS IntPtr) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.Tell(pFile)
 
 
-/// <summary>
-/// Return the current position of the file pointer.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <returns>
-/// </returns>
-FUNCTION FTell64(pHandle AS IntPtr) AS INT64
-	RETURN XSharp.IO.File.Tell(pHandle)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FTell(System.IntPtr)" />
+FUNCTION FTell64(pFile AS IntPtr) AS INT64
+	RETURN XSharp.IO.File.Tell(pFile)
 
 
 /// <summary>
 /// Write a string to an open file
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWrite( pHandle AS IntPtr, c AS STRING ) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write( pHandle, c,  c:Length )
+/// <param name="pFile">The handle of the file.</param>
+/// <param name="c"> The string to write. </param>
+/// <returns>The number of bytes written.  If the value returned is equal to the length of the string, the operation was successful.
+/// If the return value is less than this or 0, this means that the the disk is full, or another error has occurred.
+/// FError() can be used to determine the specific error. </returns>
+FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.write( pFile, c,  c:Length )
 
 
 
 /// <summary>
 /// Write a string to an open file
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>	   
-FUNCTION FWrite( pHandle AS IntPtr, c AS STRING, nLength AS DWORD ) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(pHandle, c, (INT) nLength)
+/// <param name="pFile">The handle of the file.</param>
+/// <param name="c"> The string to write. </param>
+/// <param name="nCount">The number of characters from the string to write, beginning at the current file pointer position.</param>
+/// <returns>The number of bytes written.  If the value returned is equal to nCount, the operation was successful.
+/// If the return value is less than the nCount or 0, this means that the length of the buffer/string is less than number of bytes,
+/// or the disk is full, or another error has occurred.  FError() can be used to determine the specific error. </returns>
+FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD ) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.write(pFile, c, (INT) nCount)
 
 
-/// <summary>
-/// Write the contents of a buffer to an open file.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
 /// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWrite3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pHandle, pBuffer, (INT) dwCount, FALSE)
+FUNCTION FWrite3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile, pBuffer, (INT) nCount, TRUE)
 
 
 /// <summary>
 /// Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <param name="lAnsi"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWrite4(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pHandle,pBuffer , (INT) dwCount ,lAnsi )
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite3(System.IntPtr,System.String,System.UInt32)" />
+/// <param name="lAnsi">If FALSE , an ANSI to OEM conversion is made.</param>
+/// <returns></returns>
+FUNCTION FWrite4(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD,lAnsi AS LOGIC) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile,pBuffer , (INT) nCount ,lAnsi )
 
 
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWriteLine(pHandle AS IntPtr,c AS STRING) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(pHandle, c + e"\r\n",c:Length+2)
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" />
+/// <returns>The number of bytes written.  If the value returned is equal to the length of the string +2, the operation was successful.
+/// If the return value is less 0, this means the disk is full, or another error has occurred.</returns>
+FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.write(pFile, c + e"\r\n",c:Length+2)
 
 /// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
+/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying strongly-typed arguments.
 /// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWriteLine(pHandle AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeLine(pHandle, c, (INT) nCount)
+/// <param name="pFile">The handle of the file.</param>
+/// <param name="c">The string to write.</param>
+/// <param name="nCount">The number of bytes in the string to write, beginning at the current file pointer position.</param>
+/// <returns>The number of bytes written.  If the value returned is equal to the nCount + 2, the operation was successful.
+/// If the return value is less than nCount + 2 or 0, this means that the length of  the string was less than nCount,
+/// or the disk is full, or another error has occurred.</returns>
+FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeLine(pFile, c, (INT) nCount)
 
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying two strongly-typed arguments.
-/// </summary>
-/// <param name="pHandle">The handle of the file.</param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWriteLine3(pHandle AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeLine(pHandle, c, (INT) nCount )
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
+FUNCTION FWriteLine3(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeLine(pFile, c, (INT) nCount )
 
 /// <summary>
 /// Write the contents of a buffer to an open file, with SetAnsi() dependency.
 /// </summary>
-/// <param name="pHandle">The handle of the file to read from.</param>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" /> 
 /// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWriteText3(pHandle AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pHandle ,pBuffer ,(INT) dwCount ,!GetAnsi()) 
+FUNCTION FWriteText3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile ,pBuffer ,(INT) nCount, XSharp.RuntimeState.Ansi) 
 
 /// <summary>
 /// Remove spaces from a file name specified as a string.
@@ -819,86 +756,93 @@ FUNCTION AdjustFNameA(cName REF STRING) AS STRING
 /// <summary>
 /// Create a file or open and truncate an existing file, specifying two strongly typed arguments.
 /// </summary>
-/// <param name="cFile"></param>
-/// <param name="dwAttr"></param>
-/// <returns>
-/// </returns>
-FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS IntPtr
+/// <param name="cFile">The name of the file to create, including an optional drive, directory, and extension.
+/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and
+/// directory as part of the file name.  No extension is assumed.  If the file already exists, its length is truncated to 0 without warning.</param>
+/// <param name="kAttributes"> A number that indicates the attribute to be set when creating the file. See the remarks section for a list of possible values.</param>
+/// <remarks>
+/// The possible values for the file attributes are:
+/// <list type="table">
+/// <listheader>
+/// <term>Constant</term> <description>Description</description>
+/// </listheader>
+///	<item><term>FC_ARCHIVED</term><description>Archived file </description></item>  
+/// <item><term>FC_HIDDEN</term> <description>Hidden File</description></item>  
+/// <item><term>FC_NORMAL</term> <description>Normal Read/write file</description></item>   
+/// <item><term>FC_READONLY</term> <description>Readonly file</description></item>   
+/// <item><term>FC_SYSTEM</term> <description>System file</description></item> 
+/// </list>
+/// </remarks> 
+/// <returns>The file handle of the new file.  If an error occurs, the function returns  F_ERROR.  FError() can be used to determine the specific error.</returns>
+FUNCTION FCreate2(cFile AS STRING,kAttributes AS DWORD) AS IntPtr
 	LOCAL oFileMode AS VOFileMode
-	oFileMode := VOFileMode{ FO_CREATE, dwAttr }
+	oFileMode := VOFileMode{ FO_CREATE, kAttributes }
 	RETURN XSharp.IO.File.CreateFile(cFile, oFileMode)
 
 
-
 /// <summary>
-/// Create a file or open and truncate an existing file, specifying the filename
+/// Create a file or open and truncate an existing file
 /// </summary>
-/// <param name="cFile"></param>
-/// <returns>
-/// </returns>
-FUNCTION FCreate2(cFile AS STRING) AS IntPtr
-	RETURN FCreate(cFile, FC_NORMAL)
-
-
-/// <summary>
-/// Create a file or open and truncate an existing file.
-/// </summary>
-/// <param name="cFile"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" /> 
+/// <remarks>This creates the file with a FC_NORMAL attribute </remarks>
 FUNCTION FCreate(cFile AS STRING ) AS IntPtr
 	RETURN FCreate2(cFile, FC_NORMAL)
 
-
-
-/// <summary>
-/// Create a file or open and truncate an existing file.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="dwFileAttr"></param>
-/// <returns>
-/// </returns>
-FUNCTION FCreate(cFile AS STRING ,dwFileAttr AS DWORD) AS IntPtr
-	RETURN FCreate2(cFile, dwFileAttr)
-
+/// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" />
+FUNCTION FCreate(cFile AS STRING ,kAttributes AS DWORD) AS IntPtr
+	RETURN FCreate2(cFile, kAttributes)
 
 
 
 /// <summary>
-/// Open a file, specifying one strongly-typed arguments.
+/// Open a file.
 /// </summary>
-/// <param name="cFile"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" />
+/// <remarks>This opens the file with FO_READ and FO_EXCLUSIVE mode </remarks> 
 FUNCTION FOpen(cFile AS STRING) AS IntPtr
 	RETURN FOpen2(cFile, FC_NORMAL)
 
 /// <summary>
 /// Open a file, specifying two strongly-typed arguments.
 /// </summary>
-/// <param name="cFile"></param>
-/// <param name="dwMode"></param>
-/// <returns>
-/// </returns>
+/// <param name="cFile">The file name, including an optional drive, directory, and extension.
+/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory
+/// as part of the file name.  No extension is assumed</param>
+/// <param name="dwMode">The open mode, which determines the accessibility of the file.  The open mode is composed of elements from the two types of modes:
+/// Access mode + Sharing mode.  Specifying an access mode constant indicates how the opened file is to be accessed. The sharing mode determines how other
+/// processes can access the file. See the table in the remarks section for possible values.</param>
+/// <remarks>
+/// The possible values for the file open modes are:
+/// <list type="table">
+/// <listheader>
+/// <term>Access Modes</term>           <description>Operation</description>
+/// </listheader>
+///	<item><term>FO_READ</term>          <description>Open for reading (default)   </description></item>  
+/// <item><term>FO_READWRITE</term>     <description>Open for reading and/or writing </description></item>  
+/// <item><term>FO_WRITE</term>         <description>Open for writing </description></item>
+/// <item><term> </term>                <description> </description></item>
+/// </list>
+/// <list type="table">
+/// <listheader>
+/// <term>Sharing Modes</term>          <description>Operation</description>
+/// </listheader>  
+/// <item><term>FO_COMPAT</term>        <description>Compatibility mode (default) </description></item>   
+/// <item><term>FO_DENYNONE</term>      <description>Allow others to read or write </description></item>
+/// <item><term>FO_DENYREAD</term>      <description>Prevent others from reading </description></item>
+/// <item><term>FO_DENYWRITE</term>     <description>Prevent others from writing </description></item>
+/// <item><term>FO_EXCLUSIVE</term>     <description>Exclusive use </description></item>
+/// <item><term>FO_SHARED</term>        <description>Same as FO_DENYNONE </description></item> 
+/// </list>
+/// </remarks> 
+/// <returns>The file handle of the new file.  If an error occurs, the function returns F_ERROR.  FError() can be used to determine the specific error.</returns>
 FUNCTION FOpen(cFile AS STRING,dwMode AS DWORD) AS IntPtr
 	RETURN FOpen2(cFile, dwMode)
 
-/// <summary>
-/// Open a file, specifying two strongly-typed arguments.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="dwMode"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" /> 
 FUNCTION FOpen2(cFile AS STRING,dwMode AS DWORD) AS IntPtr
 	LOCAL oFileMode AS VOFileMode
 	oFileMode := VOFileMode{dwMode, 0}
 	RETURN XSharp.IO.File.CreateFile(cFile, oFileMode)
-
-
-
-
-
 
 
 
@@ -1006,16 +950,18 @@ FUNCTION FAttr2String(dwAttributes AS DWORD) AS STRING
 
 
 
+/// <exclude/>	
 FUNCTION Bytes2String(aBytes AS BYTE[], nBuffLen AS INT) AS STRING
 	LOCAL aChars := CHAR[]{nBuffLen} AS CHAR[]
-	LOCAL encoding := Encoding.Default AS Encoding
+	LOCAL encoding := StringHelpers.WinEncoding AS Encoding
 	encoding:GetChars(aBytes, 0, nBuffLen, aChars, 0)
 	RETURN STRING{aChars, 0, nBuffLen}
 
+/// <exclude/>	
 FUNCTION String2Bytes(sSource AS STRING) AS BYTE[]
 	LOCAL ret AS BYTE[]
 	IF sSource != NULL
-		LOCAL encoding := Encoding.Default AS Encoding  
+		LOCAL encoding := StringHelpers.WinEncoding AS Encoding  
 		ret := encoding:GetBytes( sSource ) 
 	ELSE
 		ret := BYTE[]{0}
@@ -1024,9 +970,7 @@ FUNCTION String2Bytes(sSource AS STRING) AS BYTE[]
 
 
 
-
-
-FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
+INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 	// determine end of line
 	// note that VO looks for CR LF. CR alone or LF alone to not count as end of line
 	LOCAL nLF AS INT
@@ -1052,7 +996,7 @@ FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 	// when we have found a CRLF then nLF is the length of the string before the CR
 	// otherwise the length of the source string
 	LOCAL aChars := CHAR[]{nLF} AS CHAR[]
-	LOCAL encoding := Encoding.Default AS Encoding
+	LOCAL encoding := StringHelpers.WinEncoding AS Encoding
 	encoding:GetChars(aBytes, 0, nLF, aChars, 0)
 	IF lFoundCRLF
 		nBuffLen := nLF+2

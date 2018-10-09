@@ -6,1445 +6,1461 @@
 
 USING System
 USING System.Runtime.InteropServices
+USING System.Text
 
 BEGIN NAMESPACE XSharp.ADS
 INTERNAL STATIC CLASS ACE64
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsAddCustomKey(hIndex as IntPtr ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsAddCustomKey(hIndex AS IntPtr ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsAppendRecord(hTable as IntPtr ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsAppendRecord(hTable AS IntPtr ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsApplicationExit() as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsApplicationExit() AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsAtBOF(hTable as IntPtr , pbBof out WORD ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsAtBOF(hTable AS IntPtr , pbBof OUT WORD ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsAtEOF(hTable as IntPtr , pbEof out WORD ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsAtEOF(hTable AS IntPtr , pbEof OUT WORD ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsBeginTransaction(hConnect as IntPtr) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsBeginTransaction(hConnect AS IntPtr) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsBinaryToFile(hTable as IntPtr , pucFldName as string , pucFileName as string ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsBinaryToFile(hTable AS IntPtr , pucFldName AS STRING , pucFileName AS STRING ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsBinaryToFile(hTable as IntPtr , lFieldOrdinal as DWORD, pucFileName as string ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsBinaryToFile(hTable AS IntPtr , lFieldOrdinal AS DWORD, pucFileName AS STRING ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsCacheOpenCursors(usOpen as WORD) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsCacheOpenCursors(usOpen AS WORD) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsCacheOpenTables(usOpen as WORD) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsCacheOpenTables(usOpen AS WORD) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsCacheRecords(hTable as IntPtr , usNumRecords as WORD ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsCacheRecords(hTable AS IntPtr , usNumRecords AS WORD ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsCancelUpdate(hTable as IntPtr ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsCancelUpdate(hTable AS IntPtr ) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsCancelUpdate90(hTable as IntPtr , ulOptions as DWORD) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsCancelUpdate90(hTable AS IntPtr , ulOptions AS DWORD) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsCheckExistence(hConnect as IntPtr, pucFileName as string , pusOnDisk out WORD) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsCheckExistence(hConnect AS IntPtr, pucFileName AS STRING , pusOnDisk OUT WORD) AS DWORD 
 
 	[DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-	internal static extern METHOD AdsClearAllScopes(hTable as IntPtr ) as DWORD 
+	INTERNAL STATIC EXTERN METHOD AdsClearAllScopes(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearDefault() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearDefault() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearFilter(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearFilter(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearRelation(hTableParent as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearRelation(hTableParent AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearScope(hIndex as IntPtr , usScopeOption as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearScope(hIndex AS IntPtr , usScopeOption AS WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloneTable(hTable as IntPtr , phClone out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloneTable(hTable AS IntPtr , phClone OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloseAllIndexes(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloseAllIndexes(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloseAllTables() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloseAllTables() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloseIndex(hIndex as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloseIndex(hIndex AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloseTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloseTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloseCachedTables(hConnection as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloseCachedTables(hConnection AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCommitTransaction(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCommitTransaction(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsConnect(pucServerName as string , phConnect out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsConnect(pucServerName AS STRING , phConnect OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsConnect26(pucServerName as string , usServerTypes as WORD, phConnect out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsConnect26(pucServerName AS STRING , usServerTypes AS WORD, phConnect OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsConnect60(pucServerPath as string , usServerTypes as WORD, pucUserName as string , pucPassword as string , ulOptions as DWORD, phConnect out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsConnectionAlive(hConnect as IntPtr, pbConnectionIsAlive out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsConnectionAlive(hConnect AS IntPtr, pbConnectionIsAlive OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsContinue(hTable as IntPtr , pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsContinue(hTable AS IntPtr , pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsConvertTable(hObj as IntPtr ,  usFilterOption as WORD, pucFile as string , usTableType as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsConvertTable(hObj AS IntPtr ,  usFilterOption AS WORD, pucFile AS STRING , usTableType AS WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCopyTable(hObj as IntPtr , usFilterOption as WORD , pucFile as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCopyTable(hObj AS IntPtr , usFilterOption AS WORD , pucFile AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCopyTableContents(hObjFrom as IntPtr , hTableTo as IntPtr , usFilterOption as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCopyTableContents(hObjFrom AS IntPtr , hTableTo AS IntPtr , usFilterOption AS WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCopyTableStructure(hTable as IntPtr , pucFile as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCopyTableStructure(hTable AS IntPtr , pucFile AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateIndex(hObj as IntPtr , pucFileName as string , pucTag as string , pucExpr as string , pucCondition as string , pucWhile as string , ulOptions as DWORD, phIndex out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateIndex(hObj AS IntPtr , pucFileName AS STRING , pucTag AS STRING , pucExpr AS STRING , pucCondition AS STRING , pucWhile AS STRING , ulOptions AS DWORD, phIndex OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateIndex61(hObj as IntPtr , pucFileName as string , pucTag as string , pucExpr as string , pucCondition as string , pucWhile as string , ulOptions as DWORD, ulPageSize as DWORD , phIndex out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateIndex61(hObj AS IntPtr , pucFileName AS STRING , pucTag AS STRING , pucExpr AS STRING , pucCondition AS STRING , pucWhile AS STRING , ulOptions AS DWORD, ulPageSize AS DWORD , phIndex OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateIndex90(hObj as IntPtr , pucFileName as string , pucTag as string , pucExpr as string , pucCondition as string , pucWhile as string , ulOptions as DWORD, ulPageSize as DWORD , pucCollation as string , phIndex out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateIndex90(hObj AS IntPtr , pucFileName AS STRING , pucTag AS STRING , pucExpr AS STRING , pucCondition AS STRING , pucWhile AS STRING , ulOptions AS DWORD, ulPageSize AS DWORD , pucCollation AS STRING , phIndex OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateFTSIndex(hTable as IntPtr , pucFileName as string , pucTag as string , pucField as string , ulPageSize as DWORD , ulMinWordLen as DWORD , ulMaxWordLen as DWORD , usUseDefaultDelim as WORD , pucDelimiters as string , usUseDefaultNoise as WORD , pucNoiseWords as string , usUseDefaultDrop as WORD , pucDropChars as string , usUseDefaultConditionals as WORD , pucConditionalChars as string , pucReserved1 as string , pucReserved2 as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateFTSIndex(hTable AS IntPtr , pucFileName AS STRING , pucTag AS STRING , pucField AS STRING , ulPageSize AS DWORD , ulMinWordLen AS DWORD , ulMaxWordLen AS DWORD , usUseDefaultDelim AS WORD , pucDelimiters AS STRING , usUseDefaultNoise AS WORD , pucNoiseWords AS STRING , usUseDefaultDrop AS WORD , pucDropChars AS STRING , usUseDefaultConditionals AS WORD , pucConditionalChars AS STRING , pucReserved1 AS STRING , pucReserved2 AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateTable(hConnect as IntPtr, pucName as string , pucAlias as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , usMemoSize as WORD , pucFields as string , phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateTable(hConnect AS IntPtr, pucName AS STRING , pucAlias AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , usMemoSize AS WORD , pucFields AS STRING , phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateTable71(hConnect as IntPtr, pucName as string , pucDBObjName as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , usMemoSize as WORD , pucFields as string , ulOptions as DWORD, phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateTable71(hConnect AS IntPtr, pucName AS STRING , pucDBObjName AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , usMemoSize AS WORD , pucFields AS STRING , ulOptions AS DWORD, phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateTable90(hConnect as IntPtr, pucName as string , pucDBObjName as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , usMemoSize as WORD , pucFields as string , ulOptions as DWORD, pucCollation as string , phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateTable90(hConnect AS IntPtr, pucName AS STRING , pucDBObjName AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , usMemoSize AS WORD , pucFields AS STRING , ulOptions AS DWORD, pucCollation AS STRING , phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreate(pucDictionaryPath as string , usEncrypt as WORD, pucDescription as string , phDictionary out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreate(pucDictionaryPath AS STRING , usEncrypt AS WORD, pucDescription AS STRING , phDictionary OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateRefIntegrity(hDictionary AS IntPtr , pucRIName as string , pucFailTable as string , pucParentTableName as string , pucParentTagName as string , pucChildTableName as string , pucChildTagName as string , usUpdateRule as WORD , usDeleteRule as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateRefIntegrity(hDictionary AS IntPtr , pucRIName AS STRING , pucFailTable AS STRING , pucParentTableName AS STRING , pucParentTagName AS STRING , pucChildTableName AS STRING , pucChildTagName AS STRING , usUpdateRule AS WORD , usDeleteRule AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateRefIntegrity62(hDictionary AS IntPtr , pucRIName as string , pucFailTable as string , pucParentTableName as string , pucParentTagName as string , pucChildTableName as string , pucChildTagName as string , usUpdateRule as WORD , usDeleteRule as WORD , pucNoPrimaryError as string , pucCascadeError as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateRefIntegrity62(hDictionary AS IntPtr , pucRIName AS STRING , pucFailTable AS STRING , pucParentTableName AS STRING , pucParentTagName AS STRING , pucChildTableName AS STRING , pucChildTagName AS STRING , usUpdateRule AS WORD , usDeleteRule AS WORD , pucNoPrimaryError AS STRING , pucCascadeError AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveRefIntegrity(hDictionary AS IntPtr , pucRIName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveRefIntegrity(hDictionary AS IntPtr , pucRIName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetDatabaseProperty(hObject as IntPtr, usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetDatabaseProperty(hObject as IntPtr, usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetDatabaseProperty(hObject as IntPtr, usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetFieldProperty(hObject as IntPtr, pucTableName as string , pucFieldName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetFieldProperty(hObject AS IntPtr, pucTableName AS STRING , pucFieldName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetFieldProperty(hObject as IntPtr, pucTableName as string , pucFieldName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetFieldProperty(hObject AS IntPtr, pucTableName AS STRING , pucFieldName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetFieldProperty(hObject as IntPtr, pucTableName as string , pucFieldName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetFieldProperty(hObject AS IntPtr, pucTableName AS STRING , pucFieldName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetIndexFileProperty(hObject as IntPtr, pucTableName as string , pucIndexFileName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, pucTableName AS STRING , pucIndexFileName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetIndexFileProperty(hObject as IntPtr, pucTableName as string , pucIndexFileName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, pucTableName AS STRING , pucIndexFileName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetIndexFileProperty(hObject as IntPtr, pucTableName as string , pucIndexFileName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, pucTableName AS STRING , pucIndexFileName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetIndexProperty(hObject as IntPtr, pucTableName as string , pucIndexName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetIndexProperty(hObject AS IntPtr, pucTableName AS STRING , pucIndexName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetIndexProperty(hObject as IntPtr, pucTableName as string , pucIndexName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetIndexProperty(hObject AS IntPtr, pucTableName AS STRING , pucIndexName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetIndexProperty(hObject as IntPtr, pucTableName as string , pucIndexName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetIndexProperty(hObject AS IntPtr, pucTableName AS STRING , pucIndexName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetLinkProperty(hConnect as IntPtr, pucLinkName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, pucLinkName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetLinkProperty(hConnect as IntPtr, pucLinkName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, pucLinkName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetLinkProperty(hConnect as IntPtr, pucLinkName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, pucLinkName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetTableProperty(hObject as IntPtr, pucTableName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetTableProperty(hObject AS IntPtr, pucTableName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetTableProperty(hObject as IntPtr, pucTableName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetTableProperty(hObject AS IntPtr, pucTableName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetTableProperty(hObject as IntPtr, pucTableName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetTableProperty(hObject AS IntPtr, pucTableName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetUserGroupProperty(hObject as IntPtr, pucUserGroupName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, pucUserGroupName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetUserGroupProperty(hObject as IntPtr, pucUserGroupName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, pucUserGroupName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetUserGroupProperty(hObject as IntPtr, pucUserGroupName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, pucUserGroupName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetUserProperty(hObject as IntPtr, pucUserName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetUserProperty(hObject AS IntPtr, pucUserName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetUserProperty(hObject as IntPtr, pucUserName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetUserProperty(hObject AS IntPtr, pucUserName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetUserProperty(hObject as IntPtr, pucUserName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetUserProperty(hObject AS IntPtr, pucUserName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetViewProperty(hObject as IntPtr, pucViewName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetViewProperty(hObject AS IntPtr, pucViewName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetViewProperty(hObject as IntPtr, pucViewName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetViewProperty(hObject AS IntPtr, pucViewName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetViewProperty(hObject as IntPtr, pucViewName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetViewProperty(hObject AS IntPtr, pucViewName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetTriggerProperty(hObject as IntPtr, pucTriggerName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, pucTriggerName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetTriggerProperty(hObject as IntPtr, pucTriggerName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, pucTriggerName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetTriggerProperty(hObject as IntPtr, pucTriggerName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, pucTriggerName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetProcedureProperty(hObject as IntPtr, pucProcName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, pucProcName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetProcedureProperty(hObject as IntPtr, pucProcName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, pucProcName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetProcedureProperty(hObject as IntPtr, pucProcName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, pucProcName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetRefIntegrityProperty(hObject as IntPtr, pucRIName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetRefIntegrityProperty(hObject AS IntPtr, pucRIName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetPermissions(hDBConn as IntPtr , pucGrantee as string , usObjectType as WORD, pucObjectName as string , pucParentName as string , usGetInherited as WORD , pulPermissions out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetPermissions(hDBConn AS IntPtr , pucGrantee AS STRING , usObjectType AS WORD, pucObjectName AS STRING , pucParentName AS STRING , usGetInherited AS WORD , pulPermissions OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGrantPermission(hAdminConn as IntPtr , usObjectType as WORD, pucObjectName as string , pucParentName as string , pucGrantee as string , ulPermissions as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGrantPermission(hAdminConn AS IntPtr , usObjectType AS WORD, pucObjectName AS STRING , pucParentName AS STRING , pucGrantee AS STRING , ulPermissions AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRevokePermission(hAdminConn as IntPtr , usObjectType as WORD, pucObjectName as string , pucParentName as string , pucGrantee as string , ulPermissions as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRevokePermission(hAdminConn AS IntPtr , usObjectType AS WORD, pucObjectName AS STRING , pucParentName AS STRING , pucGrantee AS STRING , ulPermissions AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr , pucTableName as string , pucFieldName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD , usValidateOption as WORD , pucFailTable as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr , pucTableName AS STRING , pucFieldName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD , usValidateOption AS WORD , pucFailTable AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr , pucTableName as string , pucFieldName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD , usValidateOption as WORD , pucFailTable as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr , pucTableName AS STRING , pucFieldName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD , usValidateOption AS WORD , pucFailTable AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr , pucTableName as string , pucFieldName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD , usValidateOption as WORD , pucFailTable as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr , pucTableName AS STRING , pucFieldName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD , usValidateOption AS WORD , pucFailTable AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr , pucProcedureName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr , pucProcedureName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr , pucProcedureName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr , pucProcedureName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr , pucProcedureName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr , pucProcedureName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetTableProperty(hDictionary AS IntPtr , pucTableName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD , usValidateOption as WORD , pucFailTable as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetTableProperty(hDictionary AS IntPtr , pucTableName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD , usValidateOption AS WORD , pucFailTable AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetTableProperty(hDictionary AS IntPtr , pucTableName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD , usValidateOption as WORD , pucFailTable as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetTableProperty(hDictionary AS IntPtr , pucTableName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD , usValidateOption AS WORD , pucFailTable AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetTableProperty(hDictionary AS IntPtr , pucTableName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD , usValidateOption as WORD , pucFailTable as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetTableProperty(hDictionary AS IntPtr , pucTableName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD , usValidateOption AS WORD , pucFailTable AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr , pucUserGroupName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr , pucUserGroupName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr , pucUserGroupName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr , pucUserGroupName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr , pucUserGroupName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr , pucUserGroupName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetUserProperty(hDictionary AS IntPtr , pucUserName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetUserProperty(hDictionary AS IntPtr , pucUserName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetUserProperty(hDictionary AS IntPtr , pucUserName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetUserProperty(hDictionary AS IntPtr , pucUserName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetUserProperty(hDictionary AS IntPtr , pucUserName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetUserProperty(hDictionary AS IntPtr , pucUserName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetViewProperty(hDictionary AS IntPtr , pucViewName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetViewProperty(hDictionary AS IntPtr , pucViewName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetViewProperty(hDictionary AS IntPtr , pucViewName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetViewProperty(hDictionary AS IntPtr , pucViewName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetViewProperty(hDictionary AS IntPtr , pucViewName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetViewProperty(hDictionary AS IntPtr , pucViewName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetObjectAccessRights(hDictionary AS IntPtr , pucObjectName as string , pucAccessorName as string , pucAllowedAccess as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetObjectAccessRights(hDictionary AS IntPtr , pucObjectName AS STRING , pucAccessorName AS STRING , pucAllowedAccess AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDAddProcedure(hDictionary AS IntPtr , pucName as string , pucContainer as string , pucProcName as string , ulInvokeOption as DWORD , pucInParams as string , pucOutParams as string , pucComments as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDAddProcedure(hDictionary AS IntPtr , pucName AS STRING , pucContainer AS STRING , pucProcName AS STRING , ulInvokeOption AS DWORD , pucInParams AS STRING , pucOutParams AS STRING , pucComments AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDAddTable(hDictionary AS IntPtr , pucTableName as string , pucTablePath as string , usTableType as WORD, usCharType as WORD , pucIndexFiles as string , pucComments as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDAddTable(hDictionary AS IntPtr , pucTableName AS STRING , pucTablePath AS STRING , usTableType AS WORD, usCharType AS WORD , pucIndexFiles AS STRING , pucComments AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDAddTable90(hDictionary AS IntPtr , pucTableName as string , pucTablePath as string , usTableType as WORD, usCharType as WORD , pucIndexFiles as string , pucComments as string , pucCollation as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDAddTable90(hDictionary AS IntPtr , pucTableName AS STRING , pucTablePath AS STRING , usTableType AS WORD, usCharType AS WORD , pucIndexFiles AS STRING , pucComments AS STRING , pucCollation AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDAddView(hDictionary AS IntPtr , pucName as string , pucComments as string , pucSQL as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDAddView(hDictionary AS IntPtr , pucName AS STRING , pucComments AS STRING , pucSQL AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateTrigger(hDictionary AS IntPtr , pucName as string , pucTableName as string ,  ulTriggerType as DWORD, ulEventTypes as DWORD , ulContainerType as DWORD , pucContainer as string , pucFunctionName as string , ulPriority as DWORD , pucComments as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateTrigger(hDictionary AS IntPtr , pucName AS STRING , pucTableName AS STRING ,  ulTriggerType AS DWORD, ulEventTypes AS DWORD , ulContainerType AS DWORD , pucContainer AS STRING , pucFunctionName AS STRING , ulPriority AS DWORD , pucComments AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveTrigger(hDictionary AS IntPtr , pucName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveTrigger(hDictionary AS IntPtr , pucName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDAddIndexFile(hDictionary AS IntPtr , pucTableName as string , pucIndexFilePath as string , pucComment as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDAddIndexFile(hDictionary AS IntPtr , pucTableName AS STRING , pucIndexFilePath AS STRING , pucComment AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateUser(hDictionary AS IntPtr , pucGroupName as string , pucUserName as string , pucPassword as string , pucDescription as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateUser(hDictionary AS IntPtr , pucGroupName AS STRING , pucUserName AS STRING , pucPassword AS STRING , pucDescription AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDAddUserToGroup(hDictionary AS IntPtr , pucGroupName as string , pucUserName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDAddUserToGroup(hDictionary AS IntPtr , pucGroupName AS STRING , pucUserName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveUserFromGroup(hDictionary AS IntPtr , pucGroupName as string , pucUserName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveUserFromGroup(hDictionary AS IntPtr , pucGroupName AS STRING , pucUserName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeleteUser(hDictionary AS IntPtr , pucUserName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeleteUser(hDictionary AS IntPtr , pucUserName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateUserGroup(hDictionary AS IntPtr , pucGroupName as string , pucDescription as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateUserGroup(hDictionary AS IntPtr , pucGroupName AS STRING , pucDescription AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeleteUserGroup(hDictionary AS IntPtr , pucGroupName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeleteUserGroup(hDictionary AS IntPtr , pucGroupName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeleteIndex(hDictionary AS IntPtr , pucTableName as string , pucIndexName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeleteIndex(hDictionary AS IntPtr , pucTableName AS STRING , pucIndexName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveIndexFile(hDictionary AS IntPtr , pucTableName as string , pucIndexFileName as string , usDeleteFile as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveIndexFile(hDictionary AS IntPtr , pucTableName AS STRING , pucIndexFileName AS STRING , usDeleteFile AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveProcedure(hDictionary AS IntPtr , pucName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveProcedure(hDictionary AS IntPtr , pucName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveTable(hObject as IntPtr, pucTableName as string , usDeleteFiles as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveTable(hObject AS IntPtr, pucTableName AS STRING , usDeleteFiles AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRemoveView(hDictionary AS IntPtr , pucName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRemoveView(hDictionary AS IntPtr , pucName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDRenameObject(hDictionary AS IntPtr , pucObjectName as string , pucNewObjectName as string , usObjectType as WORD, ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDRenameObject(hDictionary AS IntPtr , pucObjectName AS STRING , pucNewObjectName AS STRING , usObjectType AS WORD, ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDMoveObjectFile(hDictionary AS IntPtr , usObjectType as WORD, pucObjectName as string , pucNewPath as string , pucIndexFiles as string , pucParent as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDMoveObjectFile(hDictionary AS IntPtr , usObjectType AS WORD, pucObjectName AS STRING , pucNewPath AS STRING , pucIndexFiles AS STRING , pucParent AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDFindFirstObject(hObject as IntPtr, usFindObjectType as WORD , pucParentName as string , [In] [Out] pucObjectName as char[] , pusObjectNameLen ref WORD , phFindHandle out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDFindFirstObject(hObject AS IntPtr, usFindObjectType AS WORD , pucParentName AS STRING , [IN] [OUT] pucObjectName AS CHAR[] , pusObjectNameLen REF WORD , phFindHandle OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDFindNextObject(hObject as IntPtr, hFindHandle as IntPtr , [In] [Out] pucObjectName as char[] , pusObjectNameLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDFindNextObject(hObject AS IntPtr, hFindHandle AS IntPtr , [IN] [OUT] pucObjectName AS CHAR[] , pusObjectNameLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDFindClose(hObject as IntPtr, hFindHandle as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDFindClose(hObject AS IntPtr, hFindHandle AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateLink(hDBConn as IntPtr , pucLinkAlias as string , pucLinkedDDPath as string , pucUserName as string , pucPassword as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateLink(hDBConn AS IntPtr , pucLinkAlias AS STRING , pucLinkedDDPath AS STRING , pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDModifyLink(hDBConn as IntPtr , pucLinkAlias as string , pucLinkedDDPath as string , pucUserName as string , pucPassword as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDModifyLink(hDBConn AS IntPtr , pucLinkAlias AS STRING , pucLinkedDDPath AS STRING , pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDropLink(hDBConn as IntPtr , pucLinkedDD as string , usDropGlobal as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDropLink(hDBConn AS IntPtr , pucLinkedDD AS STRING , usDropGlobal AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreatePublication(hDictionary AS IntPtr , pucPublicationName as string , pucComments as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreatePublication(hDictionary AS IntPtr , pucPublicationName AS STRING , pucComments AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetPublicationProperty(hObject as IntPtr, pucPublicationName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, pucPublicationName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetPublicationProperty(hObject as IntPtr, pucPublicationName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, pucPublicationName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetPublicationProperty(hObject as IntPtr, pucPublicationName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, pucPublicationName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr , pucPublicationName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr , pucPublicationName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr , pucPublicationName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr , pucPublicationName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr , pucPublicationName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr , pucPublicationName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeletePublication(hDictionary AS IntPtr , pucPublicationName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeletePublication(hDictionary AS IntPtr , pucPublicationName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateArticle(hDictionary AS IntPtr , pucPublicationName as string , pucObjectName as string , pucRowIdentColumns as string , pucFilter as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateArticle(hDictionary AS IntPtr , pucPublicationName AS STRING , pucObjectName AS STRING , pucRowIdentColumns AS STRING , pucFilter AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetArticleProperty(hObject as IntPtr, pucPublicationName as string , pucObjectName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetArticleProperty(hObject AS IntPtr, pucPublicationName AS STRING , pucObjectName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetArticleProperty(hObject as IntPtr, pucPublicationName as string , pucObjectName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetArticleProperty(hObject AS IntPtr, pucPublicationName AS STRING , pucObjectName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetArticleProperty(hObject as IntPtr, pucPublicationName as string , pucObjectName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetArticleProperty(hObject AS IntPtr, pucPublicationName AS STRING , pucObjectName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr , pucPublicationName as string , pucObjectName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr , pucPublicationName AS STRING , pucObjectName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr , pucPublicationName as string , pucObjectName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr , pucPublicationName AS STRING , pucObjectName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr , pucPublicationName as string , pucObjectName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr , pucPublicationName AS STRING , pucObjectName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeleteArticle(hDictionary AS IntPtr , pucPublicationName as string , pucObjectName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeleteArticle(hDictionary AS IntPtr , pucPublicationName AS STRING , pucObjectName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDCreateSubscription(hDictionary AS IntPtr , pucSubscriptionName as string , pucPublicationName as string , pucTarget as string , pucUser as string , pucPassword as string , pucReplicationQueue as string , usForward as WORD , pucComments as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDCreateSubscription(hDictionary AS IntPtr , pucSubscriptionName AS STRING , pucPublicationName AS STRING , pucTarget AS STRING , pucUser AS STRING , pucPassword AS STRING , pucReplicationQueue AS STRING , usForward AS WORD , pucComments AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetSubscriptionProperty(hObject as IntPtr, pucSubscriptionName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, pucSubscriptionName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetSubscriptionProperty(hObject as IntPtr, pucSubscriptionName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, pucSubscriptionName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDGetSubscriptionProperty(hObject as IntPtr, pucSubscriptionName as string , usPropertyID as WORD, pusProperty ref WORD , pusPropertyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, pucSubscriptionName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr , pucSubscriptionName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr , pucSubscriptionName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr , pucSubscriptionName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr , pucSubscriptionName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr , pucSubscriptionName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr , pucSubscriptionName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeleteSubscription(hDictionary AS IntPtr , pucSubscriptionName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeleteSubscription(hDictionary AS IntPtr , pucSubscriptionName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDecryptRecord(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDecryptRecord(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDecryptTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDecryptTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDeleteCustomKey(hIndex as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDeleteCustomKey(hIndex AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDeleteIndex(hIndex as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDeleteIndex(hIndex AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDeleteRecord(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDeleteRecord(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetKeyColumn(hCursor as IntPtr , [In] [Out] pucKeyColumn as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetKeyColumn(hCursor AS IntPtr , [IN] [OUT] pucKeyColumn AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDisableEncryption(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDisableEncryption(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDisableLocalConnections() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDisableLocalConnections() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDisconnect(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDisconnect(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEnableEncryption(hTable as IntPtr , pucPassword as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEnableEncryption(hTable AS IntPtr , pucPassword AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEncryptRecord(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEncryptRecord(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEncryptTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEncryptTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEvalLogicalExpr(hTable as IntPtr , pucExpr as string , pbResult out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEvalLogicalExpr(hTable AS IntPtr , pucExpr AS STRING , pbResult OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEvalNumericExpr(hTable as IntPtr , pucExpr as string , pdResult out double ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEvalNumericExpr(hTable AS IntPtr , pucExpr AS STRING , pdResult OUT double ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEvalStringExpr(hTable as IntPtr , pucExpr as string , [In] [Out] pucResult as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEvalStringExpr(hTable AS IntPtr , pucExpr AS STRING , [IN] [OUT] pucResult AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEvalTestExpr(hTable as IntPtr , pucExpr as string , pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEvalTestExpr(hTable AS IntPtr , pucExpr AS STRING , pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsExtractKey(hIndex as IntPtr , [In] [Out] pucKey as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsExtractKey(hIndex AS IntPtr , [IN] [OUT] pucKey AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFailedTransactionRecovery(pucServer as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFailedTransactionRecovery(pucServer AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFileToBinary(hTable as IntPtr , pucFldName as string , usBinaryType as WORD , pucFileName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFileToBinary(hTable AS IntPtr , pucFldName AS STRING , usBinaryType AS WORD , pucFileName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFileToBinary(hTable as IntPtr , lFieldOrdinal as DWORD, usBinaryType as WORD , pucFileName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFileToBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, usBinaryType AS WORD , pucFileName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindConnection(pucServerName as string , phConnect out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindConnection(pucServerName AS STRING , phConnect OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindConnection25(pucFullPath as string , phConnect out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindConnection25(pucFullPath AS STRING , phConnect OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindClose(hConnect as IntPtr, lHandle as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindClose(hConnect AS IntPtr, lHandle AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindFirstTable(hConnect as IntPtr, pucFileMask as string , [In] [Out] pucFirstFile as char[] , pusFileLen ref WORD , plHandle out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindFirstTable(hConnect AS IntPtr, pucFileMask AS STRING , [IN] [OUT] pucFirstFile AS CHAR[] , pusFileLen REF WORD , plHandle OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindNextTable(hConnect as IntPtr, lHandle as IntPtr , [In] [Out] pucFileName as char[] , pusFileLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindNextTable(hConnect AS IntPtr, lHandle AS IntPtr , [IN] [OUT] pucFileName AS CHAR[] , pusFileLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindFirstTable62(hConnect as IntPtr, pucFileMask as string , [In] [Out] pucFirstDD as char[] , pusDDLen ref WORD , [In] [Out] pucFirstFile as char[] , pusFileLen ref WORD , plHandle out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindFirstTable62(hConnect AS IntPtr, pucFileMask AS STRING , [IN] [OUT] pucFirstDD AS CHAR[] , pusDDLen REF WORD , [IN] [OUT] pucFirstFile AS CHAR[] , pusFileLen REF WORD , plHandle OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFindNextTable62(hConnect as IntPtr, lHandle as IntPtr , [In] [Out] pucDDName as char[] , pusDDLen ref WORD , [In] [Out] pucFileName as char[] , pusFileLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFindNextTable62(hConnect AS IntPtr, lHandle AS IntPtr , [IN] [OUT] pucDDName AS CHAR[] , pusDDLen REF WORD , [IN] [OUT] pucFileName AS CHAR[] , pusFileLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetAllIndexes(hTable as IntPtr , [In] [Out] ahIndex as IntPtr[] , pusArrayLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetAllIndexes(hTable AS IntPtr , [IN] [OUT] ahIndex AS IntPtr[] , pusArrayLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFTSIndexes(hTable as IntPtr , [In] [Out] ahIndex as IntPtr[] , pusArrayLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFTSIndexes(hTable AS IntPtr , [IN] [OUT] ahIndex AS IntPtr[] , pusArrayLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetAllLocks(hTable as IntPtr , [In] [Out] aulLocks as DWORD[] , pusArrayLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetAllLocks(hTable AS IntPtr , [IN] [OUT] aulLocks AS DWORD[] , pusArrayLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetAllTables([In] [Out] ahTable as IntPtr[] , pusArrayLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetAllTables([IN] [OUT] ahTable AS IntPtr[] , pusArrayLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBinary(hTable as IntPtr , pucFldName as string , ulOffset as DWORD , [In] [Out] pucBuf as byte[] , pulLen ref DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBinary(hTable AS IntPtr , pucFldName AS STRING , ulOffset AS DWORD , [IN] [OUT] pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBinary(hTable as IntPtr , lFieldOrdinal as DWORD, ulOffset as DWORD , [In] [Out] pucBuf as byte[] , pulLen ref DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, ulOffset AS DWORD , [IN] [OUT] pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBinaryLength(hTable as IntPtr , pucFldName as string , pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBinaryLength(hTable AS IntPtr , pucFldName AS STRING , pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBinaryLength(hTable as IntPtr , lFieldOrdinal as DWORD, pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBinaryLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBookmark(hTable as IntPtr , phBookmark out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBookmark(hTable AS IntPtr , phBookmark OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBookmark60(hObj as IntPtr , [In] [Out] pucBookmark as char[] , pulLength ref DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBookmark60(hObj AS IntPtr , [IN] [OUT] pucBookmark AS CHAR[] , pulLength REF DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetBookmarkLength(hObj as IntPtr , pulLength ref DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetBookmarkLength(hObj AS IntPtr , pulLength REF DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCompareBookmarks(pucBookmark1 as string , pucBookmark2 as string , plResult out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCompareBookmarks(pucBookmark1 AS STRING , pucBookmark2 AS STRING , plResult OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetCollationLang([In] [Out] pucLang as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetCollationLang([IN] [OUT] pucLang AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetCollation(hConnect as IntPtr, [In] [Out] pucCollation as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetCollation(hConnect AS IntPtr, [IN] [OUT] pucCollation AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetConnectionType(hConnect as IntPtr, pusConnectType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetConnectionType(hConnect AS IntPtr, pusConnectType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetConnectionPath(hConnect as IntPtr, [In] [Out] pucConnectionPath as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetConnectionPath(hConnect AS IntPtr, [IN] [OUT] pucConnectionPath AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetConnectionProperty(hConnect as IntPtr, usPropertyID as WORD, [In] [Out] pvProperty as byte[] , pulPropertyLen ref DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetConnectionProperty(hConnect AS IntPtr, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , pulPropertyLen REF DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDate(hTable as IntPtr , pucFldName as string , [In] [Out] pucBuf as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDate(hTable AS IntPtr , pucFldName AS STRING , [IN] [OUT] pucBuf AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDate(hTable as IntPtr , lFieldOrdinal as DWORD, [In] [Out] pucBuf as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDate(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] pucBuf AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDateFormat([In] [Out] pucFormat as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDateFormat([IN] [OUT] pucFormat AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDateFormat60(hConnect as IntPtr, [In] [Out] pucFormat as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDateFormat60(hConnect AS IntPtr, [IN] [OUT] pucFormat AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDecimals(pusDecimals out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDecimals(pusDecimals OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDefault([In] [Out] pucDefault as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDefault([IN] [OUT] pucDefault AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDeleted(pbUseDeleted out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDeleted(pbUseDeleted OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDouble(hTable as IntPtr , pucFldName as string , pdValue out double ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDouble(hTable AS IntPtr , pucFldName AS STRING , pdValue OUT double ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDouble(hTable as IntPtr , lFieldOrdinal as DWORD, pdValue out double ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDouble(hTable AS IntPtr , lFieldOrdinal AS DWORD, pdValue OUT double ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetEpoch(pusCentury out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetEpoch(pusCentury OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetErrorString(ulErrCode as DWORD , [In] [Out] pucBuf as char[] , pusBufLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetErrorString(ulErrCode AS DWORD , [IN] [OUT] pucBuf AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetExact(pbExact out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetExact(pbExact OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetExact22(hObj as IntPtr , pbExact out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetExact22(hObj AS IntPtr , pbExact OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetField(hTable as IntPtr , pucFldName as string , [In] [Out] pucBuf as char[] , pulLen ref DWORD , usOption as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetField(hTable AS IntPtr , pucFldName AS STRING , [IN] [OUT] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetField(hTable as IntPtr , lFieldOrdinal as DWORD, [In] [Out] pucBuf as char[] , pulLen ref DWORD , usOption as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetField(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetField(hTable as IntPtr , pucFldName as string , [In] [Out] abBuf as byte[] , pulLen ref DWORD , usOption as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetField(hTable AS IntPtr , pucFldName AS STRING , [IN] [OUT] abBuf AS BYTE[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetField(hTable as IntPtr , lFieldOrdinal as DWORD, [In] [Out] abBuf as byte[] , pulLen ref DWORD , usOption as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetField(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] abBuf AS BYTE[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldDecimals(hTable as IntPtr , pucFldName as string , pusDecimals out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldDecimals(hTable AS IntPtr , pucFldName AS STRING , pusDecimals OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldDecimals(hTable as IntPtr , lFieldOrdinal as DWORD, pusDecimals out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldDecimals(hTable AS IntPtr , lFieldOrdinal AS DWORD, pusDecimals OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldLength(hTable as IntPtr , pucFldName as string , pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldLength(hTable AS IntPtr , pucFldName AS STRING , pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldLength(hTable as IntPtr , lFieldOrdinal as DWORD, pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldName(hTable as IntPtr , usFld as WORD , [In] [Out] pucName as char[] , pusBufLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldName(hTable AS IntPtr , usFld AS WORD , [IN] [OUT] pucName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldNum(hTable as IntPtr , pucFldName as string , pusNum out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldNum(hTable AS IntPtr , pucFldName AS STRING , pusNum OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldNum(hTable as IntPtr , lFieldOrdinal as DWORD, pusNum out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldNum(hTable AS IntPtr , lFieldOrdinal AS DWORD, pusNum OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldOffset(hTable as IntPtr , pucFldName as string , pulOffset out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldOffset(hTable AS IntPtr , pucFldName AS STRING , pulOffset OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldOffset(hTable as IntPtr , lFieldOrdinal as DWORD, pulOffset out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldOffset(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulOffset OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldType(hTable as IntPtr , pucFldName as string , pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldType(hTable AS IntPtr , pucFldName AS STRING , pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFieldType(hTable as IntPtr , lFieldOrdinal as DWORD, pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFieldType(hTable AS IntPtr , lFieldOrdinal AS DWORD, pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetFilter(hTable as IntPtr , [In] [Out] pucFilter as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetFilter(hTable AS IntPtr , [IN] [OUT] pucFilter AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetHandleINT64(hObj as IntPtr , pulVal out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetHandleINT64(hObj AS IntPtr , pulVal OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetHandleType(hObj as IntPtr , pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetHandleType(hObj AS IntPtr , pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexCondition(hIndex as IntPtr , [In] [Out] pucExpr as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexCondition(hIndex AS IntPtr , [IN] [OUT] pucExpr AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexExpr(hIndex as IntPtr , [In] [Out] pucExpr as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexExpr(hIndex AS IntPtr , [IN] [OUT] pucExpr AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexFilename(hIndex as IntPtr , usOption as WORD , [In] [Out] pucName as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexFilename(hIndex AS IntPtr , usOption AS WORD , [IN] [OUT] pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexHandle(hTable as IntPtr , pucIndexOrder as string , phIndex out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexHandle(hTable AS IntPtr , pucIndexOrder AS STRING , phIndex OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexHandleByOrder(hTable as IntPtr , usOrderNum as WORD , phIndex out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexHandleByOrder(hTable AS IntPtr , usOrderNum AS WORD , phIndex OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexHandleByExpr(hTable as IntPtr , pucExpr as string , ulDescending as DWORD , phIndex out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexHandleByExpr(hTable AS IntPtr , pucExpr AS STRING , ulDescending AS DWORD , phIndex OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexName(hIndex as IntPtr , [In] [Out] pucName as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexName(hIndex AS IntPtr , [IN] [OUT] pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexOrderByHandle(hIndex as IntPtr , pusIndexOrder out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexOrderByHandle(hIndex AS IntPtr , pusIndexOrder OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetJulian(hTable as IntPtr , pucFldName as string , plDate out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetJulian(hTable AS IntPtr , pucFldName AS STRING , plDate OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetJulian(hTable as IntPtr , lFieldOrdinal as DWORD, plDate out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetJulian(hTable AS IntPtr , lFieldOrdinal AS DWORD, plDate OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetKeyCount(hIndex as IntPtr , usFilterOption as WORD, pulCount out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetKeyCount(hIndex AS IntPtr , usFilterOption AS WORD, pulCount OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetKeyNum(hIndex as IntPtr , usFilterOption as WORD, pulKey out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetKeyNum(hIndex AS IntPtr , usFilterOption AS WORD, pulKey OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetKeyLength(hIndex as IntPtr , pusKeyLength out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetKeyLength(hIndex AS IntPtr , pusKeyLength OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetKeyType(hIndex as IntPtr , usKeyType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetKeyType(hIndex AS IntPtr , usKeyType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetLastError(pulErrCode out DWORD , [In] [Out] pucBuf as char[] , pusBufLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetLastError(pulErrCode OUT DWORD , [IN] [OUT] pucBuf AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetLastTableUpdate(hTable as IntPtr , [In] [Out] pucDate as char[] , pusDateLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetLastTableUpdate(hTable AS IntPtr , [IN] [OUT] pucDate AS CHAR[] , pusDateLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetLogical(hTable as IntPtr , pucFldName as string , pbValue out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetLogical(hTable AS IntPtr , pucFldName AS STRING , pbValue OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetLogical(hTable as IntPtr , lFieldOrdinal as DWORD, pbValue out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetLogical(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbValue OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetINT64(hTable as IntPtr , pucFldName as string , plValue out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetINT64(hTable AS IntPtr , pucFldName AS STRING , plValue OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetINT64(hTable as IntPtr , lFieldOrdinal as DWORD, plValue out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetINT64(hTable AS IntPtr , lFieldOrdinal AS DWORD, plValue OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetINT64INT64(hTable as IntPtr , pucFldName as string , pqValue out INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetINT64INT64(hTable AS IntPtr , pucFldName AS STRING , pqValue OUT INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetINT64INT64(hTable as IntPtr , lFieldOrdinal as DWORD, pqValue out INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetINT64INT64(hTable AS IntPtr , lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMemoBlockSize(hTable as IntPtr , pusBlockSize out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMemoBlockSize(hTable AS IntPtr , pusBlockSize OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMemoLength(hTable as IntPtr , pucFldName as string , pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMemoLength(hTable AS IntPtr , pucFldName AS STRING , pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMemoLength(hTable as IntPtr , lFieldOrdinal as DWORD, pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMemoLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMemoDataType(hTable as IntPtr , pucFldName as string , pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMemoDataType(hTable AS IntPtr , pucFldName AS STRING , pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMemoDataType(hTable as IntPtr , lFieldOrdinal as DWORD, pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMemoDataType(hTable AS IntPtr , lFieldOrdinal AS DWORD, pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMilliseconds(hTable as IntPtr , pucFldName as string , plTime out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMilliseconds(hTable AS IntPtr , pucFldName AS STRING , plTime OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMilliseconds(hTable as IntPtr , lFieldOrdinal as DWORD, plTime out int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMilliseconds(hTable AS IntPtr , lFieldOrdinal AS DWORD, plTime OUT INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMoney(hTbl as IntPtr , pucFldName as string , pqValue out INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMoney(hTbl AS IntPtr , pucFldName AS STRING , pqValue OUT INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetMoney(hTbl as IntPtr , lFieldOrdinal as DWORD, pqValue out INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetMoney(hTbl AS IntPtr , lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetActiveLinkInfo(hDBConn as IntPtr , usLinkNum as WORD , [In] [Out] pucLinkInfo as char[] , pusBufferLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetActiveLinkInfo(hDBConn AS IntPtr , usLinkNum AS WORD , [IN] [OUT] pucLinkInfo AS CHAR[] , pusBufferLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumActiveLinks(hDBConn as IntPtr , pusNumLinks out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumActiveLinks(hDBConn AS IntPtr , pusNumLinks OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumFields(hTable as IntPtr , pusCount out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumFields(hTable AS IntPtr , pusCount OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumIndexes(hTable as IntPtr , pusNum out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumIndexes(hTable AS IntPtr , pusNum OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumFTSIndexes(hTable as IntPtr , pusNum out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumFTSIndexes(hTable AS IntPtr , pusNum OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumLocks(hTable as IntPtr , pusNum out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumLocks(hTable AS IntPtr , pusNum OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumOpenTables(pusNum out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumOpenTables(pusNum OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetRecord(hTable as IntPtr , [In] [Out] pucRec as byte[] , pulLen ref DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetRecord(hTable AS IntPtr , [IN] [OUT] pucRec AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetRecordCount(hTable as IntPtr , usFilterOption as WORD, pulCount out DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetRecordCount(hTable AS IntPtr , usFilterOption AS WORD, pulCount OUT DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetRecordNum(hTable as IntPtr , usFilterOption as WORD, pulRec out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetRecordNum(hTable AS IntPtr , usFilterOption AS WORD, pulRec OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetRecordLength(hTable as IntPtr , pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetRecordLength(hTable AS IntPtr , pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetRecordCRC(hTable as IntPtr , pulCRC out DWORD , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetRecordCRC(hTable AS IntPtr , pulCRC OUT DWORD , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetRelKeyPos(hIndex as IntPtr , pdPos out double ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetRelKeyPos(hIndex AS IntPtr , pdPos OUT double ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetScope(hIndex as IntPtr , usScopeOption as WORD, [In] [Out] pucScope as char[] , pusBufLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetScope(hIndex AS IntPtr , usScopeOption AS WORD, [IN] [OUT] pucScope AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetSearchPath([In] [Out] pucPath as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetSearchPath([IN] [OUT] pucPath AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetServerName(hConnect as IntPtr, pucName as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetServerName(hConnect AS IntPtr, pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetServerTime(hConnect as IntPtr,  pucDateBuf as char[], pusDateBufLen ref WORD , plTime out int , [In] [Out] pucTimeBuf as char[] , pusTimeBufLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetServerTime(hConnect AS IntPtr,  pucDateBuf AS CHAR[], pusDateBufLen REF WORD , plTime OUT INT , [IN] [OUT] pucTimeBuf AS CHAR[] , pusTimeBufLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetShort(hTable as IntPtr , pucFldName as string , psValue out short ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetShort(hTable AS IntPtr , pucFldName AS STRING , psValue OUT SHORT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetShort(hTable as IntPtr , lFieldOrdinal as DWORD, psValue out short ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetShort(hTable AS IntPtr , lFieldOrdinal AS DWORD, psValue OUT SHORT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetString(hTable as IntPtr , pucFldName as string , [In] [Out] pucBuf as char[] , pulLen ref DWORD , usOption as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetString(hTable AS IntPtr , pucFldName AS STRING , [IN] [OUT] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetString(hTable as IntPtr , lFieldOrdinal as DWORD, [In] [Out] pucBuf as char[] , pulLen ref DWORD , usOption as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetString(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
 
+[DllImport("ace64.dll", CharSet := CharSet.Unicode)];
+INTERNAL STATIC EXTERN METHOD AdsGetStringW(hTable AS IntPtr , [MarshalAs(UnmanagedType.LPStr)] pucFldName AS STRING , [IN] [OUT] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+
+[DllImport("ace64.dll", CharSet := CharSet.Unicode)];
+INTERNAL STATIC EXTERN METHOD AdsGetStringW(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] pucBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
+
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableAlias(hTable as IntPtr , [In] [Out] pucAlias as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableAlias(hTable AS IntPtr , [IN] [OUT] pucAlias AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableCharType(hTable as IntPtr , pusCharType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableCharType(hTable AS IntPtr , pusCharType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableConnection(hTable as IntPtr , phConnect out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableConnection(hTable AS IntPtr , phConnect OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableFilename(hTable as IntPtr , usOption as WORD , [In] [Out] pucName as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableFilename(hTable AS IntPtr , usOption AS WORD , [IN] [OUT] pucName AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableHandle(pucName as string , phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableHandle(pucName AS STRING , phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableHandle25(hConnect as IntPtr, pucName as string , phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableHandle25(hConnect AS IntPtr, pucName AS STRING , phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableLockType(hTable as IntPtr , pusLockType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableLockType(hTable AS IntPtr , pusLockType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableMemoSize(hTable as IntPtr , pusMemoSize out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableMemoSize(hTable AS IntPtr , pusMemoSize OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableOpenOptions(hTable as IntPtr , pulOptions out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableOpenOptions(hTable AS IntPtr , pulOptions OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableRights(hTable as IntPtr , pusRights out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableRights(hTable AS IntPtr , pusRights OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableType(hTable as IntPtr , pusType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableType(hTable AS IntPtr , pusType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTime(hTable as IntPtr , pucFldName as string , [In] [Out] pucBuf as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTime(hTable AS IntPtr , pucFldName AS STRING , [IN] [OUT] pucBuf AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTime(hTable as IntPtr , lFieldOrdinal as DWORD, [In] [Out] pucBuf as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTime(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] pucBuf AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetVersion(pulMajor out DWORD , pulMinor out DWORD , pucLetter as string , [In] [Out] pucDesc as char[] , pusDescLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetVersion(pulMajor OUT DWORD , pulMinor OUT DWORD , pucLetter AS STRING , [IN] [OUT] pucDesc AS CHAR[] , pusDescLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGotoBookmark(hTable as IntPtr , hBookmark as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGotoBookmark(hTable AS IntPtr , hBookmark AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGotoBookmark60(hObj as IntPtr , pucBookmark as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGotoBookmark60(hObj AS IntPtr , pucBookmark AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGotoBottom(hObj as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGotoBottom(hObj AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGotoRecord(hTable as IntPtr , ulRec as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGotoRecord(hTable AS IntPtr , ulRec AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGotoTop(hObj as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGotoTop(hObj AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsImageToClipboard(hTable as IntPtr , pucFldName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsImageToClipboard(hTable AS IntPtr , pucFldName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsInTransaction(hConnect as IntPtr, pbInTrans out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsInTransaction(hConnect AS IntPtr, pbInTrans OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsEmpty(hTable as IntPtr , pucFldName as string , pbEmpty out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsEmpty(hTable AS IntPtr , pucFldName AS STRING , pbEmpty OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsEmpty(hTable as IntPtr , lFieldOrdinal as DWORD, pbEmpty out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsEmpty(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbEmpty OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsExprValid(hTable as IntPtr , pucExpr as string , pbValid out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsExprValid(hTable AS IntPtr , pucExpr AS STRING , pbValid OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsFound(hObj as IntPtr , pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsFound(hObj AS IntPtr , pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexCompound(hIndex as IntPtr , pbCompound out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexCompound(hIndex AS IntPtr , pbCompound OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexCandidate(hIndex as IntPtr , pbCandidate out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexCandidate(hIndex AS IntPtr , pbCandidate OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexNullable(hIndex as IntPtr , pbNullable out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexNullable(hIndex AS IntPtr , pbNullable OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexCustom(hIndex as IntPtr , pbCustom out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexCustom(hIndex AS IntPtr , pbCustom OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexDescending(hIndex as IntPtr , pbDescending out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexDescending(hIndex AS IntPtr , pbDescending OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexPrimaryKey(hIndex as IntPtr , pbPrimaryKey out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexPrimaryKey(hIndex AS IntPtr , pbPrimaryKey OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexFTS(hIndex as IntPtr , pbFTS out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexFTS(hIndex AS IntPtr , pbFTS OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexUnique(hIndex as IntPtr , pbUnique out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexUnique(hIndex AS IntPtr , pbUnique OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsRecordDeleted(hTable as IntPtr , pbDeleted out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsRecordDeleted(hTable AS IntPtr , pbDeleted OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsRecordEncrypted(hTable as IntPtr , pbEncrypted out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsRecordEncrypted(hTable AS IntPtr , pbEncrypted OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsRecordLocked(hTable as IntPtr , ulRec as DWORD , pbLocked out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsRecordLocked(hTable AS IntPtr , ulRec AS DWORD , pbLocked OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsRecordVisible(hObj as IntPtr , pbVisible out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsRecordVisible(hObj AS IntPtr , pbVisible OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsServerLoaded(pucServer as string , pbLoaded out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsServerLoaded(pucServer AS STRING , pbLoaded OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsTableEncrypted(hTable as IntPtr , pbEncrypted out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsTableEncrypted(hTable AS IntPtr , pbEncrypted OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsTableLocked(hTable as IntPtr , pbLocked out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsTableLocked(hTable AS IntPtr , pbLocked OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsLocate(hTable as IntPtr , pucExpr as string , bForward as WORD , pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsLocate(hTable AS IntPtr , pucExpr AS STRING , bForward AS WORD , pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsLockRecord(hTable as IntPtr , ulRec as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsLockRecord(hTable AS IntPtr , ulRec AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsLockTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsLockTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsLookupKey(hIndex as IntPtr , pucKey as string , usKeyLen AS WORD, usDataType as WORD, pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsLookupKey(hIndex AS IntPtr , pucKey AS STRING , usKeyLen AS WORD, usDataType AS WORD, pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsMgConnect(pucServerName as string , pucUserName as string , pucPassword as string , phMgmtHandle out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsMgConnect(pucServerName AS STRING , pucUserName AS STRING , pucPassword AS STRING , phMgmtHandle OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsMgDisconnect(hMgmtHandle as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsMgDisconnect(hMgmtHandle AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsMgResetCommStats(hMgmtHandle as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsMgResetCommStats(hMgmtHandle AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsMgDumpInternalTables(hMgmtHandle as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsMgDumpInternalTables(hMgmtHandle AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsMgGetServerType(hMgmtHandle as IntPtr , pusServerType out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsMgGetServerType(hMgmtHandle AS IntPtr , pusServerType OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsMgKillUser(hMgmtHandle as IntPtr , pucUserName as string , usConnNumber as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsMgKillUser(hMgmtHandle AS IntPtr , pucUserName AS STRING , usConnNumber AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsNullTerminateStrings(bNullTerminate as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsNullTerminateStrings(bNullTerminate AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsOpenIndex(hTable as IntPtr , pucName as string , [In] [Out] ahIndex as IntPtr[] , pusArrayLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsOpenIndex(hTable AS IntPtr , pucName AS STRING , [IN] [OUT] ahIndex AS IntPtr[] , pusArrayLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsOpenTable(hConnect as IntPtr, pucName as string , pucAlias as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , ulOptions as DWORD, phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsOpenTable(hConnect AS IntPtr, pucName AS STRING , pucAlias AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , ulOptions AS DWORD, phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsOpenTable90(hConnect as IntPtr, pucName as string , pucAlias as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , ulOptions as DWORD, pucCollation as string , phTable out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsOpenTable90(hConnect AS IntPtr, pucName AS STRING , pucAlias AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , ulOptions AS DWORD, pucCollation AS STRING , phTable OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsPackTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsPackTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRecallRecord(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRecallRecord(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRecallAllRecords(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRecallAllRecords(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRefreshRecord(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRefreshRecord(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearProgressCallback() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearProgressCallback() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRegisterCallbackFunction(pfn as CallbackFn , ulCallBackID as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRegisterCallbackFunction(pfn AS CallbackFn , ulCallBackID AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearCallbackFunction() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearCallbackFunction() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsReindex(hObject as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsReindex(hObject AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsReindex61(hObject as IntPtr, ulPageSize as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsReindex61(hObject AS IntPtr, ulPageSize AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsReindexFTS(hObject as IntPtr, ulPageSize as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsReindexFTS(hObject AS IntPtr, ulPageSize AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsResetConnection(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsResetConnection(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRollbackTransaction(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRollbackTransaction(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSeek(hIndex as IntPtr , pucKey as string , usKeyLen AS WORD, usDataType as WORD, usSeekType as WORD, pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSeek(hIndex AS IntPtr , pucKey AS STRING , usKeyLen AS WORD, usDataType AS WORD, usSeekType AS WORD, pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSeek(hIndex as IntPtr , abKey as byte[] , usKeyLen AS WORD, usDataType as WORD, usSeekType as WORD, pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSeek(hIndex AS IntPtr , abKey AS BYTE[] , usKeyLen AS WORD, usDataType AS WORD, usSeekType AS WORD, pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSeekLast(hIndex as IntPtr , pucKey as string , usKeyLen AS WORD, usDataType as WORD, pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSeekLast(hIndex AS IntPtr , pucKey AS STRING , usKeyLen AS WORD, usDataType AS WORD, pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSeekLast(hIndex as IntPtr , abKey as byte[] , usKeyLen AS WORD, usDataType as WORD, pbFound out WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSeekLast(hIndex AS IntPtr , abKey AS BYTE[] , usKeyLen AS WORD, usDataType AS WORD, pbFound OUT WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetBinary(hTable as IntPtr , pucFldName as string , usBinaryType as WORD , ulTotalLength as DWORD , ulOffset as DWORD , pucBuf as byte[] , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetBinary(hTable AS IntPtr , pucFldName AS STRING , usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetBinary(hTable as IntPtr , lFieldOrdinal as DWORD, usBinaryType as WORD , ulTotalLength as DWORD , ulOffset as DWORD , pucBuf as byte[] , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetCollationLang(pucLang as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetCollationLang(pucLang AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetCollation(hConnect as IntPtr, pucCollation as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetCollation(hConnect AS IntPtr, pucCollation AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDate(hObj as IntPtr , pucFldName as string , pucValue as string , usLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDate(hObj AS IntPtr , pucFldName AS STRING , pucValue AS STRING , usLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDate(hObj as IntPtr , lFieldOrdinal as DWORD, pucValue as string , usLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDate(hObj AS IntPtr , lFieldOrdinal AS DWORD, pucValue AS STRING , usLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDateFormat(pucFormat as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDateFormat(pucFormat AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDateFormat60(hConnect as IntPtr, pucFormat as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDateFormat60(hConnect AS IntPtr, pucFormat AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDecimals(usDecimals as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDecimals(usDecimals AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDefault(pucDefault as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDefault(pucDefault AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsShowDeleted(bShowDeleted as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsShowDeleted(bShowDeleted AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDouble(hObj as IntPtr , pucFldName as string , dValue as Real8) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDouble(hObj AS IntPtr , pucFldName AS STRING , dValue AS REAL8) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetDouble(hObj as IntPtr , lFieldOrdinal as DWORD, dValue as real8) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetDouble(hObj AS IntPtr , lFieldOrdinal AS DWORD, dValue AS REAL8) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetEmpty(hObj as IntPtr , pucFldName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetEmpty(hObj AS IntPtr , pucFldName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetEmpty(hObj as IntPtr , lFieldOrdinal as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetEmpty(hObj AS IntPtr , lFieldOrdinal AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetEpoch(usCentury as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetEpoch(usCentury AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetExact(bExact as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetExact(bExact AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetExact22(hObj as IntPtr , bExact as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetExact22(hObj AS IntPtr , bExact AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetField(hObj as IntPtr , pucFldName as string , pucBuf as string , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetField(hObj AS IntPtr , pucFldName AS STRING , pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetField(hObj as IntPtr , lFieldOrdinal as DWORD, pucBuf as string , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetField(hObj AS IntPtr , lFieldOrdinal AS DWORD, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetField(hObj as IntPtr , pucFldName as string , abBuf as byte[] , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetField(hObj AS IntPtr , pucFldName AS STRING , abBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetField(hObj as IntPtr , lFieldOrdinal as DWORD, abBuf as byte[] , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetField(hObj AS IntPtr , lFieldOrdinal AS DWORD, abBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetFilter(hTable as IntPtr , pucFilter as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetFilter(hTable AS IntPtr , pucFilter AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetHandleINT64(hObj as IntPtr , ulVal as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetHandleINT64(hObj AS IntPtr , ulVal AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetJulian(hObj as IntPtr , pucFldName as string , lDate as int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetJulian(hObj AS IntPtr , pucFldName AS STRING , lDate AS INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetJulian(hObj as IntPtr , lFieldOrdinal as DWORD, lDate as int) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetJulian(hObj AS IntPtr , lFieldOrdinal AS DWORD, lDate AS INT) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetLogical(hObj as IntPtr , pucFldName as string , bValue as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetLogical(hObj AS IntPtr , pucFldName AS STRING , bValue AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetLogical(hObj as IntPtr , lFieldOrdinal as DWORD, bValue as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetLogical(hObj AS IntPtr , lFieldOrdinal AS DWORD, bValue AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetINT64(hObj as IntPtr , pucFldName as string , lValue as int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetINT64(hObj AS IntPtr , pucFldName AS STRING , lValue AS INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetINT64(hObj as IntPtr , lFieldOrdinal as DWORD, lValue as int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetINT64(hObj AS IntPtr , lFieldOrdinal AS DWORD, lValue AS INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetINT64INT64(hObj as IntPtr , pucFldName as string , qValue as INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetINT64INT64(hObj AS IntPtr , pucFldName AS STRING , qValue AS INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetINT64INT64(hObj as IntPtr , lFieldOrdinal as DWORD, qValue as INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetINT64INT64(hObj AS IntPtr , lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetMilliseconds(hObj as IntPtr , pucFldName as string , lTime as int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetMilliseconds(hObj AS IntPtr , pucFldName AS STRING , lTime AS INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetMilliseconds(hObj as IntPtr , lFieldOrdinal as DWORD, lTime as int ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetMilliseconds(hObj AS IntPtr , lFieldOrdinal AS DWORD, lTime AS INT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetMoney(hObj as IntPtr , pucFldName as string , qValue as INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetMoney(hObj AS IntPtr , pucFldName AS STRING , qValue AS INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetMoney(hObj as IntPtr , lFieldOrdinal as DWORD, qValue as INT64 ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetMoney(hObj AS IntPtr , lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetRecord(hObj as IntPtr , pucRec as byte[] , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetRecord(hObj AS IntPtr , pucRec AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetRelation(hTableParent as IntPtr , hIndexChild as IntPtr , pucExpr as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetRelation(hTableParent AS IntPtr , hIndexChild AS IntPtr , pucExpr AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetRelKeyPos(hIndex as IntPtr , dPos as Real8) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetRelKeyPos(hIndex AS IntPtr , dPos AS REAL8) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetScope(hIndex as IntPtr , usScopeOption as WORD, pucScope as string , usScopeLen as WORD , usDataType as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetScope(hIndex AS IntPtr , usScopeOption AS WORD, pucScope AS STRING , usScopeLen AS WORD , usDataType AS WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetScope(hIndex as IntPtr , usScopeOption as WORD, abScope as byte[] , usScopeLen as WORD , usDataType as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetScope(hIndex AS IntPtr , usScopeOption AS WORD, abScope AS BYTE[] , usScopeLen AS WORD , usDataType AS WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetScopedRelation(hTableParent as IntPtr , hIndexChild as IntPtr , pucExpr as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetScopedRelation(hTableParent AS IntPtr , hIndexChild AS IntPtr , pucExpr AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetSearchPath(pucPath as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetSearchPath(pucPath AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetServerType(usServerOptions as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetServerType(usServerOptions AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetShort(hObj as IntPtr , pucFldName as string , sValue as short ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetShort(hObj AS IntPtr , pucFldName AS STRING , sValue AS SHORT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetShort(hObj as IntPtr , lFieldOrdinal as DWORD, sValue as short ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetShort(hObj AS IntPtr , lFieldOrdinal AS DWORD, sValue AS SHORT ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetString(hObj as IntPtr , pucFldName as string , pucBuf as string , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetString(hObj AS IntPtr , pucFldName AS STRING , pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetString(hObj as IntPtr , lFieldOrdinal as DWORD, pucBuf as string , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetString(hObj AS IntPtr , lFieldOrdinal AS DWORD, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 
+[DllImport("ace64.dll", CharSet := CharSet.Unicode)];
+INTERNAL STATIC EXTERN METHOD AdsSetStringW(hObj AS IntPtr , [MarshalAs(UnmanagedType.LPStr)] pucFldName AS STRING , pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+
+[DllImport("ace64.dll", CharSet := CharSet.Unicode)];
+INTERNAL STATIC EXTERN METHOD AdsSetStringW(hObj AS IntPtr , lFieldOrdinal AS DWORD, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetTime(hObj as IntPtr , pucFldName as string , pucValue as string , usLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetTime(hObj AS IntPtr , pucFldName AS STRING , pucValue AS STRING , usLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetTime(hObj as IntPtr , lFieldOrdinal as DWORD, pucValue as string , usLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetTime(hObj AS IntPtr , lFieldOrdinal AS DWORD, pucValue AS STRING , usLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsShowError(pucTitle as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsShowError(pucTitle AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSkip(hObj as IntPtr , lRecs as int) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSkip(hObj AS IntPtr , lRecs AS INT) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSkipUnique(hIndex as IntPtr , lRecs as int) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSkipUnique(hIndex AS IntPtr , lRecs AS INT) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsThreadExit() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsThreadExit() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsUnlockRecord(hTable as IntPtr , ulRec as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsUnlockRecord(hTable AS IntPtr , ulRec AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsUnlockTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsUnlockTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsVerifyPassword(hTable as IntPtr , pusEnabled out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsVerifyPassword(hTable AS IntPtr , pusEnabled OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsEncryptionEnabled(hTable as IntPtr , pusEnabled out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsEncryptionEnabled(hTable AS IntPtr , pusEnabled OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsWriteAllRecords() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsWriteAllRecords() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsWriteRecord(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsWriteRecord(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsZapTable(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsZapTable(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetAOF(hTable as IntPtr , pucFilter as string , usOptions as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetAOF(hTable AS IntPtr , pucFilter AS STRING , usOptions AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEvalAOF(hTable as IntPtr , pucFilter as string , pusOptLevel out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEvalAOF(hTable AS IntPtr , pucFilter AS STRING , pusOptLevel OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearAOF(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearAOF(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRefreshAOF(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRefreshAOF(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetAOF(hTable as IntPtr , [In] [Out] pucFilter as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetAOF(hTable AS IntPtr , [IN] [OUT] pucFilter AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetAOFOptLevel(hTable as IntPtr , pusOptLevel out WORD , [In] [Out] pucNonOpt as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetAOFOptLevel(hTable AS IntPtr , pusOptLevel OUT WORD , [IN] [OUT] pucNonOpt AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsRecordInAOF(hTable as IntPtr , ulRecordNum as DWORD , pusIsInAOF out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsRecordInAOF(hTable AS IntPtr , ulRecordNum AS DWORD , pusIsInAOF OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCustomizeAOF(hTable as IntPtr , ulNumRecords as DWORD , pulRecords out DWORD , usOption as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCustomizeAOF(hTable AS IntPtr , ulNumRecords AS DWORD , pulRecords OUT DWORD , usOption AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsInitRawKey(hIndex as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsInitRawKey(hIndex AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsBuildRawKey(hIndex as IntPtr , [In] [Out] pucKey as byte[] , pusKeyLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsBuildRawKey(hIndex AS IntPtr , [IN] [OUT] pucKey AS BYTE[] , pusKeyLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateSQLStatement(hConnect as IntPtr, phStatement out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateSQLStatement(hConnect AS IntPtr, phStatement OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsPrepareSQL(hStatement as IntPtr , pucSQL as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsPrepareSQL(hStatement AS IntPtr , pucSQL AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsExecuteSQL(hStatement as IntPtr , phCursor out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsExecuteSQL(hStatement AS IntPtr , phCursor OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsExecuteSQLDirect(hStatement as IntPtr , pucSQL as string , phCursor out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsExecuteSQLDirect(hStatement AS IntPtr , pucSQL AS STRING , phCursor OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCloseSQLStatement(hStatement as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCloseSQLStatement(hStatement AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTableRights(hStatement as IntPtr , usCheckRights as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTableRights(hStatement AS IntPtr , usCheckRights AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTableReadOnly(hStatement as IntPtr , usReadOnly as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTableReadOnly(hStatement AS IntPtr , usReadOnly AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTableLockType(hStatement as IntPtr , usLockType as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTableLockType(hStatement AS IntPtr , usLockType AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTableCharType(hStatement as IntPtr , usCharType as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTableCharType(hStatement AS IntPtr , usCharType AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTableType(hStatement as IntPtr , usTableType as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTableType(hStatement AS IntPtr , usTableType AS WORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTableCollation(hStatement as IntPtr , pucCollation as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTableCollation(hStatement AS IntPtr , pucCollation AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtConstrainUpdates(hStatement as IntPtr , usConstrain as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtConstrainUpdates(hStatement AS IntPtr , usConstrain AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtEnableEncryption(hStatement as IntPtr , pucPassword as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtEnableEncryption(hStatement AS IntPtr , pucPassword AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtDisableEncryption(hStatement as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtDisableEncryption(hStatement AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtSetTablePassword(hStatement as IntPtr , pucTableName as string , pucPassword as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtSetTablePassword(hStatement AS IntPtr , pucTableName AS STRING , pucPassword AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtClearTablePasswords(hStatement as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtClearTablePasswords(hStatement AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsStmtReadAllColumns(hStatement as IntPtr , usReadColumns as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsStmtReadAllColumns(hStatement AS IntPtr , usReadColumns AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearSQLParams(hStatement as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearSQLParams(hStatement AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetTimeStamp(hObj as IntPtr , pucFldName as string , pucBuf as string , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetTimeStamp(hObj AS IntPtr , pucFldName AS STRING , pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetTimeStamp(hObj as IntPtr , lFieldOrdinal as DWORD, pucBuf as string , ulLen as DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetTimeStamp(hObj AS IntPtr , lFieldOrdinal AS DWORD, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsClearSQLAbortFunc() as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsClearSQLAbortFunc() AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetNumParams(hStatement as IntPtr , pusNumParams out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetNumParams(hStatement AS IntPtr , pusNumParams OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetLastAutoinc(hObj as IntPtr , pulAutoIncVal out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetLastAutoinc(hObj AS IntPtr , pulAutoIncVal OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsIndexUserDefined(hIndex as IntPtr , pbUserDefined out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsIndexUserDefined(hIndex AS IntPtr , pbUserDefined OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRestructureTable(hObj as IntPtr , pucName as string , pucPassword as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , pucAddFields as string , pucDeleteFields as string , pucChangeFields as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRestructureTable(hObj AS IntPtr , pucName AS STRING , pucPassword AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , pucAddFields AS STRING , pucDeleteFields AS STRING , pucChangeFields AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRestructureTable90(hObj as IntPtr , pucName as string , pucPassword as string , usTableType as WORD, usCharType as WORD , usLockType as WORD , usCheckRights as WORD , pucAddFields as string , pucDeleteFields as string , pucChangeFields as string , pucCollation as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRestructureTable90(hObj AS IntPtr , pucName AS STRING , pucPassword AS STRING , usTableType AS WORD, usCharType AS WORD , usLockType AS WORD , usCheckRights AS WORD , pucAddFields AS STRING , pucDeleteFields AS STRING , pucChangeFields AS STRING , pucCollation AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetSQLStatementHandle(hCursor as IntPtr , phStmt out IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetSQLStatementHandle(hCursor AS IntPtr , phStmt OUT IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetSQLStatement(hStmt as IntPtr , [In] [Out] pucSQL as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetSQLStatement(hStmt AS IntPtr , [IN] [OUT] pucSQL AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsFlushFileBuffers(hTable as IntPtr ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsFlushFileBuffers(hTable AS IntPtr ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDDeployDatabase(pucDestination as string , pucDestinationPassword as string , pucSource as string , pucSourcePassword as string , usServerTypes as WORD, usValidateOption as WORD , usBackupFiles as WORD , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDDeployDatabase(pucDestination AS STRING , pucDestinationPassword AS STRING , pucSource AS STRING , pucSourcePassword AS STRING , usServerTypes AS WORD, usValidateOption AS WORD , usBackupFiles AS WORD , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsVerifySQL(hStatement as IntPtr , pucSQL as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsVerifySQL(hStatement AS IntPtr , pucSQL AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDisableUniqueEnforcement(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDisableUniqueEnforcement(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEnableUniqueEnforcement(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEnableUniqueEnforcement(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDisableRI(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDisableRI(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEnableRI(hConnect as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEnableRI(hConnect AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDisableAutoIncEnforcement(hConnection as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDisableAutoIncEnforcement(hConnection AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsEnableAutoIncEnforcement(hConnection as IntPtr) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsEnableAutoIncEnforcement(hConnection AS IntPtr) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsRollbackTransaction80(hConnect as IntPtr, pucSavepoint as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsRollbackTransaction80(hConnect AS IntPtr, pucSavepoint AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsCreateSavepoint(hConnect as IntPtr, pucSavepoint as string , ulOptions as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsCreateSavepoint(hConnect AS IntPtr, pucSavepoint AS STRING , ulOptions AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDFreeTable(pucTableName as string , pucPassword as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDFreeTable(pucTableName AS STRING , pucPassword AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetIndexProperty(hAdminConn as IntPtr , pucTableName as string , pucIndexName as string , usPropertyID as WORD, [In] [Out] pvProperty as byte[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr , pucTableName AS STRING , pucIndexName AS STRING , usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetIndexProperty(hAdminConn as IntPtr , pucTableName as string , pucIndexName as string , usPropertyID as WORD, [In] [Out] pucProperty as char[] , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr , pucTableName AS STRING , pucIndexName AS STRING , usPropertyID AS WORD, [IN] [OUT] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsDDSetIndexProperty(hAdminConn as IntPtr , pucTableName as string , pucIndexName as string , usPropertyID as WORD, pusProperty ref WORD , usPropertyLen as WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr , pucTableName AS STRING , pucIndexName AS STRING , usPropertyID AS WORD, pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsFieldBinary(hTable as IntPtr , pucFldName as string , pbBinary out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsFieldBinary(hTable AS IntPtr , pucFldName AS STRING , pbBinary OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsFieldBinary(hTable as IntPtr , lFieldOrdinal as DWORD, pbBinary out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsFieldBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbBinary OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsNull(hTable as IntPtr , pucFldName as string , pbNull out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsNull(hTable AS IntPtr , pucFldName AS STRING , pbNull OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsNull(hTable as IntPtr , lFieldOrdinal as DWORD, pbNull out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsNull(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbNull OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsNullable(hTable as IntPtr , pucFldName as string , pbNullable out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsNullable(hTable AS IntPtr , pucFldName AS STRING , pbNullable OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsIsNullable(hTable as IntPtr , lFieldOrdinal as DWORD, pbNullable out WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsIsNullable(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbNullable OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetNull(hTable as IntPtr , pucFldName as string ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetNull(hTable AS IntPtr , pucFldName AS STRING ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetNull(hTable as IntPtr , lFieldOrdinal as DWORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetNull(hTable AS IntPtr , lFieldOrdinal AS DWORD) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetTableCollation(hTbl as IntPtr , [In] [Out] pucCollation as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetTableCollation(hTbl AS IntPtr , [IN] [OUT] pucCollation AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetIndexCollation(hIndex as IntPtr , [In] [Out] pucCollation as char[] , pusLen ref WORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetIndexCollation(hIndex AS IntPtr , [IN] [OUT] pucCollation AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDataLength(hTable as IntPtr , pucFldName as string , ulOptions as DWORD, pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDataLength(hTable AS IntPtr , pucFldName AS STRING , ulOptions AS DWORD, pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsGetDataLength(hTable as IntPtr , lFieldOrdinal as DWORD, ulOptions as DWORD, pulLength out DWORD ) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsGetDataLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, ulOptions AS DWORD, pulLength OUT DWORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-internal static extern METHOD AdsSetIndexDirection(hIndex as IntPtr ,  usReverseDirection as WORD) as DWORD 
+INTERNAL STATIC EXTERN METHOD AdsSetIndexDirection(hIndex AS IntPtr ,  usReverseDirection AS WORD) AS DWORD 
+
+[DllImport("ace64.dll", CharSet := CharSet.Ansi, EntryPoint := "AdsSetProperty90")];
+INTERNAL STATIC EXTERN METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS WORD , uqValue REF DWORD ) AS DWORD
 
 END CLASS
 END NAMESPACE

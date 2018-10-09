@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -18,7 +18,7 @@ USING System.IO
 /// </returns>
 FUNCTION ADir(cPath ,aFNAME ,aFSIZE ,aFDATE ,aFTIME ,aFATTR ) AS DWORD CLIPPER
 	IF ! IsString(cPath)
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cPath), 2,<OBJECT>{cPath})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cPath), 2,<OBJECT>{cPath})
 	ENDIF
 	LOCAL aFiles	AS ARRAY
 	LOCAL lHasArg   := FALSE AS LOGIC
@@ -93,7 +93,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	ELSEIF IsString(xAttr)
 		nAttr := String2FAttr((STRING) xAttr)
 	ELSE
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(xAttr), 2,<OBJECT>{xAttr})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(xAttr), 2,<OBJECT>{xAttr})
 	ENDIF
 	aReturn := {}
 	IF (nAttr & FA_VOLUME ) != 0

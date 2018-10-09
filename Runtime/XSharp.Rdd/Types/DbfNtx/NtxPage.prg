@@ -34,17 +34,23 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>
     /// The NtxPage class.
     /// </summary>
-    CLASS NtxPage
-        PROTECTED _hFile    AS IntPtr
-        PROTECTED _Number   AS LONG
+    INTERNAL CLASS NtxPage
+    
+        PROTECTED _Order    AS NtxOrder
+        PROTECTED _Offset   AS LONG
         PROTECTED _Hot      AS LOGIC
         
         PROTECTED _Bytes AS BYTE[]
         
         // Current Page Number
-        PROPERTY Number AS LONG GET SELF:_Number
+        //PROPERTY PageNo AS LONG GET SELF:_Number SET SELF:_Number := VALUE
+		PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
         
-        PROPERTY ItemCount AS WORD
+        PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
+        
+        PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
+        
+        PROPERTY NodeCount AS WORD
             GET
                 LOCAL nCount := 0 AS WORD
                 TRY
@@ -54,15 +60,24 @@ BEGIN NAMESPACE XSharp.RDD
                 END TRY
                 RETURN nCount
             END GET
+            
+            SET
+                LOCAL nCount := VALUE AS WORD
+                TRY
+                    Array.Copy(BitConverter.GetBytes( nCount), 0, SELF:_bytes, 0, 2)
+                CATCH e AS Exception
+                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                END TRY
+                
+            END SET
         END PROPERTY
         
         PROPERTY SELF[ index AS LONG ] AS NtxItem
             GET
-                LOCAL nOffset := 0 AS WORD
-                LOCAL item := null AS NtxItem
+                LOCAL item := NULL AS NtxItem
                 TRY
-                    nOffset := BitConverter.ToUInt16( SELF:_Bytes, index * 2 )
-                    item := NtxItem{ SELF, nOffset }
+                    item := NtxItem{ SELF:_Order:_keySize , SELF:_Order:_oRdd }
+                    item:Fill( index, SELF )
                 CATCH e AS Exception
                     Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -70,13 +85,13 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         END PROPERTY
         
-        CONSTRUCTOR( fileHandle AS IntPtr, pageNumber AS LONG )
+        CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
             //
-            SELF:_hFile := fileHandle
-            SELF:_Number := pageNumber
+            SELF:_Order := order
+            SELF:_Offset := pageNumber
             SELF:_Bytes := BYTE[]{NtxHeader.NTXOFFSETS.SIZE}
             SELF:_Hot := FALSE
-            IF ( SELF:_Number != 0 )
+            IF ( SELF:_Offset != 0 )
                 SELF:Read()
             ENDIF
             RETURN
@@ -93,9 +108,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF isOk
                 TRY
                     // Move to top of Page
-                    FSeek3( SELF:_hFile, SELF:_Number * NtxHeader.NTXOFFSETS.SIZE, SeekOrigin.Begin )
+                    FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
-                    isOk := ( FRead3(SELF:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
+                    isOk := ( FRead3(SELF:_Order:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
                 CATCH e AS Exception
                     isOk := FALSE
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -111,14 +126,14 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN isOk
             ENDIF
             // Should it be <= ?
-            IF ( SELF:_Number < 0 )
+            IF ( SELF:_Offset < 0 )
                 RETURN FALSE
             ENDIF
             TRY
                 // Move to top of Page
-                FSeek3( SELF:_hFile, SELF:_Number * NtxHeader.NTXOFFSETS.SIZE, SeekOrigin.Begin )
+                FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
                 // Write Buffer
-                isOk := ( FWrite3(SELF:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
+                isOk := ( FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
                 SELF:_Hot := FALSE
             CATCH e AS Exception
                 isOk := FALSE
@@ -126,5 +141,18 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             RETURN isOk
             
+        PUBLIC METHOD GetRef( pos AS LONG ) AS SHORT
+            TRY
+                RETURN BitConverter.ToInt16(SELF:_bytes, (pos+1) * 2)
+            CATCH //Exception
+                RETURN 0
+            END TRY
+            
+            
+        PUBLIC METHOD SetRef(pos AS LONG , newValue AS SHORT ) AS VOID
+            Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
+            SELF:Hot := TRUE
+            
     END CLASS
+    
 END NAMESPACE 

@@ -244,7 +244,7 @@ FUNCTION SetAppLocaleID(dwLocaleId AS DWORD) AS DWORD
 	RETURN dwLocaleID
 
 
-/// <summary>
+/// <summary>This function is not implemented yet</summary>
 /// </summary>
 /// <param name="pFunc"></param>
 /// <returns>
@@ -254,7 +254,7 @@ FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
 	RETURN IntPtr.Zero
 
 
-
+/// <summary>This function is not implemented yet</summary>
 /// <summary>
 /// </summary>
 /// <param name="n"></param>
@@ -264,6 +264,7 @@ FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
 	THROW NotImplementedException{}
 	RETURN 0   
 
+/// <summary>This function is not implemented yet</summary>
 /// <summary>
 /// </summary>
 /// <param name="pFunc"></param>
@@ -273,39 +274,47 @@ FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
 	THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
+/// <exclude />
 [Obsolete];
 FUNCTION NationInit(dwInst AS DWORD) AS INT
 	RETURN 0   
 
+/// <exclude />
 [Obsolete];
 FUNCTION NationExit() AS INT
 	RETURN 0   
 
 
-/// <summary>
-/// Identify a character set by its nation driver.
-/// </summary>
+/// <summary>This function is not implemented yet</summary>
+// <summary>
+// Identify a character set by its nation driver.
+// </summary>
 /// <returns>
 /// </returns>
 FUNCTION NVersion() AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty 
 
-
+/// <exclude />
 FUNCTION MAKELANGID( p AS WORD, s AS WORD ) AS WORD
 	RETURN (WORD) ( ( s << 10 ) | p )
 
+/// <exclude />
 FUNCTION MAKELCID( lgid AS WORD, srtid AS WORD ) AS DWORD
 	RETURN (DWORD) ( ( ( (DWORD)(srtid) ) << 16) | ( (INT)(DWORD) lgid ) )
 
-
+/// <exclude />
 FUNCTION IsBiDi() AS LOGIC
    RETURN System.Windows.Forms.SystemInformation.MidEastEnabled   
 
-
+/// <exclude />
 _DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
 
-
-[Obsolete];
+/// <exclude />
 FUNCTION GetNatDllHandle() AS IntPtr STRICT
-	RETURN IntPtr.Zero
+  LOCAL t AS Type
+   LOCAL m AS System.Reflection.Module
+   t := typeof( XSharp.Error )  
+   m := t:Module
+   RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE( m )
+

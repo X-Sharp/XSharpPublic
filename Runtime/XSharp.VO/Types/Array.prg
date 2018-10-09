@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN arrayNew
 
-
+        /// <exclude/>
         STATIC METHOD __ArrayNew( dimensions PARAMS INT[] ) AS __Array
             LOCAL newArray AS ARRAY
             IF dimensions:Length != 0
@@ -218,7 +218,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
             NEXT
             RETURN aResult:ToArray()
-
+        /// <exclude/>
         STATIC OPERATOR IMPLICIT ( a AS OBJECT[]) AS __Array
             RETURN __Array{a}
 

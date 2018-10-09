@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+USING XSharp.RDD.Support
 /// <summary>This interface defines the mimimum methods that a RDD that supports indexes should implement.</summary>	
 INTERFACE XSharp.RDD.IOrder
 	/// <summary>Set the condition for the next Index Creation</summary>

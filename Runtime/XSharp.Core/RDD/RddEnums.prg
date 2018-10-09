@@ -1,11 +1,12 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
-	/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
+	
 BEGIN NAMESPACE XSharp
+    /// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
 	ENUM CollationMode
 		MEMBER @@Windows
 		MEMBER @@Clipper
@@ -356,7 +357,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	/// </note>
 	///</summary>
 
-	ENUM DbOrderInfo
+	ENUM DbOrder_Info
 		MEMBER DBOI_CONDITION 	:= 1     // String: The order's conditional expression     
 		MEMBER DBOI_EXPRESSION 	:= 2 	// String: The order's key expression             
 		MEMBER DBOI_POSITION 	:= 3  	// Number: The current key position in scope and filter  

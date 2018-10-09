@@ -756,6 +756,7 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			SELF:_Hot := FALSE
 			SELF:_FileName := SELF:_OpenInfo:FileName
+			SELF:_Alias := SELF:_OpenInfo:Alias
 			SELF:_Shared := SELF:_OpenInfo:Shared
 			SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
 			//
@@ -870,6 +871,7 @@ BEGIN NAMESPACE XSharp.RDD
 				//TODO: Change that code to take care of DefaultPath, ...
 				SELF:_FileName := AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + SELF:_FileName
 			ENDIF
+			SELF:_Alias := SELF:_OpenInfo:Alias
 			SELF:_Shared := SELF:_OpenInfo:Shared
 			SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
 			SELF:_hFile    := Fopen(SELF:_FileName, SELF:_OpenInfo:FileMode)

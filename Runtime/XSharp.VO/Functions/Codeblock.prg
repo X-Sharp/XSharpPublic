@@ -8,7 +8,7 @@ USING System.Runtime.InteropServices
 USING System.Reflection
 
 /// <summary>
-/// Evaluate a code block or an object's Eval() method.
+/// Evaluate a code block or an objects Eval() method.
 /// </summary>
 /// <param name="block"></param>
 /// <param name="args"></param>
@@ -32,7 +32,7 @@ FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 		result := block:EvalBlock(oArgs)
 	ENDIF
 	RETURN result
-	
+/// <summary>Evaluate a code block or an objects Eval() method.</summary>	
 FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	IF uCodeBlock:IsNil
@@ -43,7 +43,7 @@ FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 		result := Eval( (CODEBLOCK) uCodeBlock, args )
 	ENDIF
 	RETURN result
-	
+/// <summary>Evaluate a code block or an object's Eval() method.</summary>	
 FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	
@@ -82,7 +82,7 @@ FUNCTION CParamCount(oCodeBlock AS CODEBLOCK) AS DWORD
 	ENDIF
 	RETURN (DWORD) oCodeBlock:PCount()
 
-
+/// <exclude/>
 FUNCTION __CanEval(uValue AS USUAL) AS LOGIC 
 	IF uValue:isCodeBlock .AND. uValue != NULL_CODEBLOCK
 		RETURN TRUE

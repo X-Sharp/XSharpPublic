@@ -3,9 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-DEFINE VO_APPS			:= "Software\ComputerAssociates\CA-Visual Objects Applications"
-DEFINE VO_LOCALMACHINE	:= "HKEY_LOCAL_MACHINE\"+VO_APPS 
-DEFINE VO_CURRENTUSER	:= "HKEY_CURRENT_USER\"+VO_APPS 
+INTERNAL DEFINE VO_APPS			:= "Software\ComputerAssociates\CA-Visual Objects Applications"
+INTERNAL DEFINE VO_LOCALMACHINE	:= "HKEY_LOCAL_MACHINE\"+VO_APPS 
+INTERNAL DEFINE VO_CURRENTUSER	:= "HKEY_CURRENT_USER\"+VO_APPS 
 USING Microsoft.Win32
 /// <summary>
 /// Save a numeric value to the Registry.

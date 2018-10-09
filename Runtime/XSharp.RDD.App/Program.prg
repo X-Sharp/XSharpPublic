@@ -2,12 +2,45 @@
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING XSharp.Rdd.Support
+
 USING STATIC XSharp.Core.Functions
 BEGIN NAMESPACE XSharp.RDD.App
 
     FUNCTION Start() AS VOID
         LOCAL myTest := TestDBF{} AS TestDBF
         //
+        CoreDb.UseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
+        ? CoreDb.Dbf()
+        ? "Fields", CoreDb.FCount(), "Records", CoreDb.LastRec(), "RecSize", CoreDb.RecSize()
+        LOCAL i AS DWORD
+        FOR i := 1 TO CoreDb.FCount()
+            LOCAL oValue := NULL AS OBJECT
+            IF CoreDb.FieldGet(i, REF oValue)
+                ? i, CoreDb.FieldName(i), oValue
+            ELSE
+                ? i, CoreDb.FieldName(i), "** Error **"
+            ENDIF
+        NEXT
+        CoreDb.Skip(1)
+        FOR i := 1 TO CoreDb.FCount()
+            LOCAL oValue := NULL AS OBJECT
+            IF CoreDb.FieldGet(i, REF oValue)
+                ? i, CoreDb.FieldName(i), oValue
+            ELSE
+                ? i, CoreDb.FieldName(i), "** Error **"
+            ENDIF
+        NEXT
+        CoreDb.GoTop()
+        ? "GoTop Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.Skip(-1)
+        ? "After skip -1 Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.GoBottom()
+        ? "GoBottom Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.Skip(1)
+        ? "Skip 1 Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
+        CoreDb.CloseArea()
+        Console.Read()
         myTest:OpenDBF()
         myTest:OpenDBFErr()
         myTest:OpenDBFShowFields()

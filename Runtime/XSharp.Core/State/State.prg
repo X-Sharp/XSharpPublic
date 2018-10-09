@@ -71,7 +71,7 @@ CLASS XSharp.RuntimeState
 
 		ENDIF
 		RETURN
-
+    /// <exclude />
 	DESTRUCTOR()
 		// What do we need to clean ?
 		IF oSettings != NULL
@@ -142,7 +142,19 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.OPTIONVO11);
         SET SetValue<LOGIC>(Set.OPTIONVO11, VALUE)
 
-	/// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
+	/// <summary>The current compiler setting for the VO13 compiler option as defined when compiling the main application.
+	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
+	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
+        GET GetValue<LOGIC>(Set.OPTIONVO13);
+        SET SetValue<LOGIC>(Set.OPTIONVO13, VALUE)
+
+
+	/// <summary>Gets / Sets the current workarea number for the current thread</summary>
+    STATIC PROPERTY CurrentWorkArea AS DWORD ;
+        GET Workareas:CurrentWorkAreaNO ;
+        SET Workareas:CurrentWorkAreaNO  := VALUE
+
+    /// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.
 	/// This value gets assigned in the startup code for applications in the VO or Vulcan dialect.</summary>
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIONOVF);
@@ -215,16 +227,25 @@ CLASS XSharp.RuntimeState
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(VALUE)
 
+	STATIC PROPERTY NullDateString AS STRING GET GetValue<STRING>(Set.DateFormatEmpty)
+
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
 
     STATIC PROPERTY Decimals AS DWORD ;
         GET GetValue<DWORD>(Set.DECIMALS);
         SET SetValue<DWORD>(Set.DECIMALS, VALUE)
 
+
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals</summary>
     STATIC PROPERTY DecimalSep AS DWORD ;
         GET GetValue<DWORD>(Set.DecimalSep);
         SET SetValue<DWORD>(Set.DecimalSep, VALUE)
+
+	/// <summary>The default RDD</summary>
+    STATIC PROPERTY DefaultRDD AS STRING ;
+        GET GetValue<STRING>(Set.DEFAULTRDD);
+        SET SetValue<STRING>(Set.DEFAULTRDD, VALUE)
+
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
     STATIC PROPERTY Deleted AS LOGIC ;
@@ -291,10 +312,25 @@ CLASS XSharp.RuntimeState
         GET GetValue<CollationMode>(Set.Intl);
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
+	/// <summary>Last error that occurred in the RDD subsystem.</summary>
+    STATIC PROPERTY LastRddError AS Exception ;
+        GET GetValue<Exception>(Set.LastRddError);
+        SET SetValue<Exception>(Set.LastRddError, VALUE)
+
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     STATIC PROPERTY LockTries AS DWORD ;
         GET GetValue<DWORD>(Set.LOCKTRIES);
         SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
+
+    /// <summary>The setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files</summary>
+    STATIC PROPERTY HPLocking AS LOGIC ;
+        GET GetValue<LOGIC>(Set.HPLOCKING);
+        SET SetValue<LOGIC>(Set.HPLOCKING, VALUE)
+    /// <summary>The setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.</summary>
+    STATIC PROPERTY NewIndexLock AS LOGIC ;
+        GET GetValue<LOGIC>(Set.NEWINDEXLOCK);
+        SET SetValue<LOGIC>(Set.NEWINDEXLOCK, VALUE)
+
 
 	/// <summary>The current default MemoBlock size.</summary>
     STATIC PROPERTY MemoBlockSize AS DWORD;
@@ -341,6 +377,12 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
+    STATIC PROPERTY WinEncoding as System.Text.Encoding ;
+        GET System.Text.Encoding.GetEncoding(WinCodePage)
+        
+    STATIC PROPERTY DosEncoding as System.Text.Encoding ;
+        GET System.Text.Encoding.GetEncoding(DosCodePage)
+
 
 	/// <summary>The name of the method that was called in the last late bound method call.</summary>
     STATIC PROPERTY NoMethod AS STRING ;
@@ -383,11 +425,11 @@ CLASS XSharp.RuntimeState
 		DO WHILE dateformat.IndexOf("dd") != -1
 			dateformat		:= dateformat:Replace("dd", "d")
 		ENDDO
-		// change dates to dd and mm
+		// change dates to dd and mm and then everything to upper case
 		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-		_SetThreadValue(Set.Century, dateformat:IndexOf("yyyy") != -1)
-		_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
-		_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
+		SELF:_SetThreadValue(Set.Century, dateformat:IndexOf("YYYY",StringComparison.OrdinalIgnoreCase) != -1)
+		SELF:_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		SELF:_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
 		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
 		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
@@ -397,7 +439,6 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.EPOCH, (DWORD) 1910)
 		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
 		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
-
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
 		RETURN
 
@@ -474,15 +515,25 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
-	PUBLIC PROPERTY Workareas AS WorkAreas
+	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
 	GET
-		IF _workareas == NULL_OBJECT
-			_workareas := WorkAreas{}
+       LOCAL inst AS RuntimeState
+        inst := GetInstance()
+		IF inst:_workareas == NULL_OBJECT
+			inst:_workareas := WorkAreas{}
 		ENDIF
-		RETURN _workareas
+		RETURN inst:_workareas
 	END GET
-	END PROPERTY
+    END PROPERTY
+    /// <exclude />
+    STATIC METHOD PushCurrentWorkarea(dwArea AS DWORD) AS VOID
+        RuntimeState.WorkAreas:PushCurrentWorkArea(dwArea)
+    /// <exclude />    
+    STATIC METHOD PopCurrentWorkarea() AS DWORD
+        RETURN RuntimeState.WorkAreas:PopCurrentWorkArea()
+
 	PRIVATE _collationTable AS BYTE[]
+    /// <summary>Current collation table.</summary>
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]
@@ -502,10 +553,52 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-	STATIC PRIVATE _macrocompiler AS System.Type
-	PUBLIC STATIC PROPERTY MacroCompiler AS System.Type GET _macrocompiler SET _macrocompiler := VALUE
+	STATIC INTERNAL _macrocompilerType   AS System.Type
+    STATIC INTERNAL _macrocompiler       AS IMacroCompiler
+    /// <summary>Active Macro compiler</summary>
+	PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
+        GET
+            IF _macrocompiler == NULL 
+                _LoadMacroCompiler()
+            ENDIF
+            RETURN _macrocompiler
+        END GET
+        SET
+            _macrocompiler := VALUE
+        END SET
+    END PROPERTY
+	/// <summary></summary>	
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
+	/// <summary></summary>	
 	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
+
+    PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
+        IF _macroCompilerType == NULL_OBJECT
+            VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
+		    IF oMacroAsm != NULL_OBJECT
+			    LOCAL oType AS System.Type
+			    oType := oMacroAsm:GetType("XSharp.MacroCompiler",FALSE,TRUE)
+			    IF oType != NULL_OBJECT
+				    // create instance of this type
+				    IF TYPEOF(IMacroCompiler):IsAssignableFrom(oType)
+					    _macroCompilerType := oType
+				    ELSE
+					    THROW Error{EG_CORRUPTION, "", "Could not create the macro compiler from the type "+ otype:Fullname+" in the assembly "+oMacroAsm:Location}
+				    ENDIF
+			    ELSE
+				    THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler class in the assembly "+oMacroAsm:Location}
+                ENDIF
+            ELSE
+                // AssemblyHelper.Load will throw an exception
+                NOP 
+		    ENDIF
+        ENDIF
+        IF _macroCompilerType != NULL_OBJECT
+			_macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+		ENDIF
+		RETURN 
+
+
 END CLASS
 
 

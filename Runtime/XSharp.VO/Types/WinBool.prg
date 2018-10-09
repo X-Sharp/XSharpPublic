@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp
             _value := IIF(lValue, 1, 0)
 
 		/// <inheritdoc />
-        VIRTUAL METHOD GetHashCode() AS INT
+        OVERRIDE METHOD GetHashCode() AS INT
             RETURN _value:GetHashCode()
             
        /// <exclude />
@@ -67,7 +67,8 @@ BEGIN NAMESPACE XSharp
         OPERATOR != (lhs AS LOGIC, rhs AS __WinBool) AS LOGIC
             RETURN IIF (lhs, rhs:_value == 0, rhs:_value != 0)
             
-        PUBLIC METHOD EQUALS(obj AS OBJECT) AS LOGIC
+        /// <exclude/>
+        PUBLIC METHOD Equals(obj AS OBJECT) AS LOGIC
             IF obj IS __WinBool
                 RETURN SELF:_value == ((__WinBool) obj):_value
             ENDIF

@@ -263,7 +263,7 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 	LOCAL nResult AS DWORD
 	nResult := RuntimeState.LockTries
 	RuntimeState.LockTries := nValue
-	RETURN nValue
+	RETURN nResult
 
 
 
@@ -400,6 +400,7 @@ FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL
 
     RETURN cPath
 
+/// <exclude/>	
 FUNCTION _ExecName() AS STRING
     RETURN System.Reflection.Assembly.GetExecutingAssembly():Location
 

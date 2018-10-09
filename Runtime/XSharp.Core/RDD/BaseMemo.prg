@@ -1,9 +1,9 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+USING XSharp.RDD.Support
 /// <summary>Base Memo class. Does not implement anything. </summary>
 /// <seealso cref="T:XSharp.RDD.IMemo"/>
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
@@ -53,7 +53,8 @@ CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
         /// <inheritdoc />
     VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
         THROW NotImplementedException{}
-        
+
+    /// <inheritdoc />        
     VIRTUAL METHOD Zap() AS LOGIC
         THROW NotImplementedException{}
         

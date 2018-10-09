@@ -30,6 +30,7 @@ CLASS XSharp.OleAutoObject
 		SELF:lDateTimeAsDate    := OleDateTimeAsDate()
 		RETURN
 			
+   /// <summary>Construct an OleAutoObject</summary>
 	CONSTRUCTOR(cProgId AS STRING)
 		SELF()
 		oComObject        := OleCreateObject(cProgId)
@@ -40,6 +41,7 @@ CLASS XSharp.OleAutoObject
 			
 		RETURN
 			
+   /// <summary>Construct an OleAutoObject</summary>
 	CONSTRUCTOR(cProgId AS STRING, fRotCheck AS LOGIC)
 		SELF()
 		IF fRotCheck
@@ -56,6 +58,7 @@ CLASS XSharp.OleAutoObject
 			
 			
 	// Builds an OleAutoObject on Any OBJECT (including another AutoObject)
+   /// <summary>Construct an OleAutoObject</summary> 
 	CONSTRUCTOR(oObject AS OBJECT)
 		SELF()
 		oComObject :=  OleUnWrapObject(oObject)
@@ -67,6 +70,7 @@ CLASS XSharp.OleAutoObject
 		RETURN
 			
 		// Builds an OleAutoObject on Any OBJECT (including another AutoObject). Type already known
+   /// <summary>Construct an OleAutoObject</summary> 
 	CONSTRUCTOR(oObject AS OBJECT, _type AS System.Type)
 		SELF()
 		oComObject	:=  OleUnWrapObject(oObject)
@@ -79,16 +83,19 @@ CLASS XSharp.OleAutoObject
 	#region No..() EntryPoints
 			
 	// ? oObject:Property
-	METHOD NoIVarGet(cName ) AS USUAL CLIPPER
+	    /// <exclude />   
+    METHOD NoIVarGet(cName ) AS USUAL CLIPPER
 		LOCAL oRet AS OBJECT
 		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, NULL)
 		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 			
 		// oObject:Property := Value
+	    /// <exclude />   
 	METHOD NoIvarPut(cName, uValue) AS VOID CLIPPER
 		OleAutoObject.__OleIVarPut(oComObject, oType, cName , uValue, NULL)
 		RETURN 
 			
+	    /// <exclude />   
 	METHOD NoMethod( ) AS USUAL CLIPPER
 		LOCAL cName AS STRING
 		LOCAL args  AS USUAL[]
@@ -111,6 +118,7 @@ CLASS XSharp.OleAutoObject
 			
 	// ? oObject:Property[dims]
 	// The compiler needs to be changed to look for this method
+	    /// <exclude />   
 	METHOD NoIVarGetCollection(cName AS STRING, dims AS USUAL[]) AS USUAL
 		LOCAL oRet AS OBJECT
 		oRet := OleAutoObject.OleIvarGet(oComObject, cName, dims)
@@ -119,12 +127,14 @@ CLASS XSharp.OleAutoObject
 			
 	// ? oObject:Property[dims] := Value
 	// The compiler needs to be changed to look for this method
+	    /// <exclude />   
 	METHOD NoIVarPutCollection(cName AS STRING, uValue AS USUAL, dims AS USUAL[]) AS VOID  
 		OleAutoObject.OleIVarPut(oComObject, cName, uValue , dims )
 		RETURN  
 	#endregion
 		
 	#region VO Compatibility Accesses
+	    /// <exclude />   
 		
 	ACCESS dwFuncs  AS LONG
 		IF (lOk)
@@ -141,6 +151,7 @@ CLASS XSharp.OleAutoObject
 		SELF:_liFuncs := dwNew
 		RETURN
 			
+	    /// <exclude />   
 	ACCESS dwVars   AS LONG
 		IF (lOk)
 			LOCAL t AS System.Type
@@ -152,6 +163,7 @@ CLASS XSharp.OleAutoObject
 		ENDIF
 		RETURN 0
 			
+	    /// <exclude />   
 	ACCESS fInit    AS LOGIC
 		RETURN lOk
 			
@@ -160,12 +172,15 @@ CLASS XSharp.OleAutoObject
 	#region	INTERNAL Properties
 			
 	// Access to OBJECT inside AutoObject
-	ACCESS __ComObject AS OBJECT
+    /// <exclude />   
+
+    ACCESS __ComObject AS OBJECT
 		RETURN SELF:oComObject
 			
 	#endregion
 		
 	#region STATIC Methods
+	    /// <exclude />   
 	STATIC METHOD OleCreateObject(cProgId AS STRING) AS OBJECT
 		LOCAL oComObject := NULL AS OBJECT
 		LOCAL objecttype AS System.Type
@@ -180,6 +195,7 @@ CLASS XSharp.OleAutoObject
 		RETURN oComObject
 			
 			
+    /// <exclude />   
 	STATIC METHOD  OleGetObject(cProgId AS STRING) AS OBJECT
 		LOCAL oComObject AS OBJECT
 		TRY
@@ -190,7 +206,8 @@ CLASS XSharp.OleAutoObject
 		RETURN oComObject
 			
 	#region Wrapping Objects
-	STATIC METHOD  OleWrapObject(oObject AS OBJECT,lDateTimeAsDate AS LOGIC) AS USUAL
+    /// <exclude />   
+    STATIC METHOD  OleWrapObject(oObject AS OBJECT,lDateTimeAsDate AS LOGIC) AS USUAL
 		LOCAL t  AS System.Type 
 		LOCAL tc  AS System.TypeCode
 		LOCAL oDt AS OleDateTime
@@ -217,6 +234,7 @@ CLASS XSharp.OleAutoObject
 		ENDIF 
 		RETURN uResult
 				
+    /// <exclude />   
 	STATIC METHOD  OleUnWrapObject(oObject AS OBJECT) AS OBJECT
 		LOCAL oAuto AS OleAutoObject
 		IF oObject != NULL
@@ -231,12 +249,15 @@ CLASS XSharp.OleAutoObject
 			
 	#region OBJECT Properties
 			
+    /// <exclude />   
 	STATIC METHOD  OleIvarGet(oObject AS OBJECT,strName AS STRING) AS OBJECT
 		RETURN OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), strName, NULL)
 				
+    /// <exclude />   
 	STATIC METHOD  OleIvarGet(oObject AS OBJECT, symName AS STRING, dims  AS USUAL[]) AS OBJECT
 		RETURN OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), symName, dims)
 				
+    /// <exclude />   
 	STATIC METHOD  OleIvarGet(oObject AS OBJECT, symName AS STRING, index  AS USUAL) AS OBJECT
 		LOCAL dims AS USUAL[]
 		dims := USUAL[]{1}
@@ -244,14 +265,17 @@ CLASS XSharp.OleAutoObject
 		RETURN OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), symName, dims)
 				
 				
+    /// <exclude />   
 	STATIC METHOD  OleIVarPut(oObject AS OBJECT, symName AS STRING, uValue AS USUAL) AS VOID
 		OleAutoObject.__OleIVarPut(oObject, oObject:GetType(), symName, uValue, NULL)
 		RETURN
 				
+    /// <exclude />   
 	STATIC METHOD  OleIVarPut(oObject AS OBJECT, symName AS STRING, uValue AS USUAL, dims AS USUAL[]) AS VOID
 		OleAutoObject.__OleIVarPut(oObject, oObject:GetType(), symName, uValue, dims)
 		RETURN
 				
+    /// <exclude />   
 	STATIC METHOD  OleIVarPut(oObject AS OBJECT, symName AS STRING, uValue AS USUAL, index AS USUAL) AS VOID
 		LOCAL dims AS USUAL[]
 		dims := USUAL[]{1}
@@ -264,6 +288,7 @@ CLASS XSharp.OleAutoObject
 			
 	#region Worker Functions
 			
+    /// <exclude />   
 	STATIC METHOD  __OleIvarGet(oComObject AS OBJECT, oType AS System.Type, cName AS STRING, dims AS USUAL[]) AS OBJECT
 		LOCAL fi       AS FieldInfo
 		LOCAL oRet     AS OBJECT
@@ -310,6 +335,7 @@ CLASS XSharp.OleAutoObject
 			
 #region Putting OBJECT Properties
 			
+    /// <exclude />   
 STATIC METHOD  __OleIVarPut(oComObject AS OBJECT, oType AS System.Type, cName AS STRING, uValue AS USUAL, dims AS USUAL[]) AS VOID
 	LOCAL t        AS System.Type
 	LOCAL fi       AS FieldInfo
@@ -360,6 +386,7 @@ STATIC METHOD  __OleIVarPut(oComObject AS OBJECT, oType AS System.Type, cName AS
 	RETURN 
 				
 	#endregion
+    /// <exclude />   
 		
 STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRING, args AS USUAL[]) AS OBJECT
 	LOCAL mi       AS MethodInfo

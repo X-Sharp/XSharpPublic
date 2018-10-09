@@ -1,9 +1,9 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+USING XSharp.RDD.Support
 /// <summary>This interface defines the mimimum methods that a RDD that supports memos should implement.</summary>	
 INTERFACE XSharp.RDD.IMemo
 	
@@ -39,6 +39,7 @@ INTERFACE XSharp.RDD.IMemo
 	/// <param name="info">object describing the file to open.</param>
 	METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC   
 
-
+    /// <summary>Physically remove all memos from the memofile.</summary>
+    METHOD Zap() AS LOGIC
 			
 END INTERFACE	

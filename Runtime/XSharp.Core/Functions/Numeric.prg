@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -160,11 +160,23 @@ FUNCTION SwapQWord( qw AS UINT64 ) AS UINT64
 
 
 
- FUNCTION MakeDWord( wLow AS WORD, wHigh AS WORD ) AS DWORD
-   RETURN DWORD( ( wHigh << 16 ) | wLow )
+FUNCTION MakeDWord( wLow AS WORD, wHigh AS WORD ) AS DWORD
+	RETURN DWORD( ( DWORD(wHigh) << 16 ) | wLow )
 
 FUNCTION MakeLong( wLow AS WORD, wHigh AS WORD ) AS INT
-   RETURN (INT)( ( wHigh << 16 ) | wLow )
+	RETURN INT( ( DWORD(wHigh) << 16 ) | wLow )
 
 FUNCTION MakeWord( bLow AS BYTE, bHigh AS BYTE ) AS WORD
 	RETURN WORD( ( WORD(bHigh) << 8 ) | bLow )
+
+/// <summary>
+/// Get a particular Windows color.
+/// </summary>
+/// <param name="bR"></param>
+/// <param name="bG"></param>
+/// <param name="bB"></param>
+/// <returns>
+/// </returns>
+FUNCTION RGB(bR AS BYTE,bG AS BYTE,bB AS BYTE) AS DWORD
+	RETURN (DWORD(bB) << 16) + (DWORD(bG) << 8) + DWORD(bR)
+

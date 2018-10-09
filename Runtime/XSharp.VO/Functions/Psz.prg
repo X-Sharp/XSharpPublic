@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -114,7 +114,8 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <returns>
 	/// </returns>
 	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
-		RETURN PSZ{cSource}
+		local pMem := String2Mem(cSource) as IntPtr
+        return Psz{pMem}
 
 
 
@@ -137,11 +138,7 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="pszSource"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 	LOCAL bp AS BYTE PTR
 	bp := pszSource
@@ -152,23 +149,25 @@ FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 		bp++
 	ENDDO
 	RETURN pszSource
-
+/// <exclude/>
 FUNCTION String2Mem(s AS STRING) AS IntPtr
 	LOCAL result := 0 AS IntPtr
 	IF s != NULL
-		VAR encoding := System.Text.Encoding.Default
+		VAR encoding := StringHelpers.WinEncoding
 		VAR bytes    := encoding:GetBytes(s)
 		VAR len      := bytes:Length
 		result	     := MemAlloc((DWORD) (len+1))
 		Marshal.Copy(bytes,0,result, len)
+        Marshal.WriteByte(result, len, 0)	 // end of string
 	ENDIF
 	RETURN result
-
-UNSAFE FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
+    
+/// <exclude/>
+FUNCTION Mem2String(pString AS IntPtr, nLen AS DWORD) AS STRING
 	IF pString == IntPtr.Zero .OR. nLen == 0
 		RETURN String.Empty
 	ENDIF
-	VAR encoding := System.Text.Encoding.Default
+	VAR encoding := StringHelpers.WinEncoding
 	VAR numchars := encoding:GetCharCount( (BYTE PTR) pString, (INT) nLen)
 	VAR buffer   := (CHAR PTR) MemAlloc( (DWORD) (numchars * SIZEOF(CHAR)) )
 	numchars     := encoding:GetChars((BYTE PTR) pString, (INT) nLen, buffer, numchars)
@@ -180,6 +179,7 @@ RETURN result
 
 
 // The following functions are used by Crypt
+/// <exclude/>
 FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
    LOCAL ret AS BYTE PTR
    LOCAL x   AS INT
@@ -195,6 +195,7 @@ FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
 
    RETURN PSZ{ ret }
 
+/// <exclude/>
 FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
    LOCAL sb AS StringBuilder
    LOCAL x  AS DWORD
@@ -214,6 +215,7 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
 
 
 // parameters are 0 based
+/// <exclude/>
 FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
    LOCAL ret := 0 AS DWORD
    IF p != NULL_PSZ
@@ -222,6 +224,7 @@ FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
    RETURN ret
 
 // parameters are 0 based
+/// <exclude/>
 FUNCTION _NPut( p AS PSZ, dwOffset AS DWORD, b AS BYTE ) AS VOID
    IF p != NULL_PSZ
       ((BYTE PTR)p)[dwOffset+1] := b
@@ -229,32 +232,38 @@ FUNCTION _NPut( p AS PSZ, dwOffset AS DWORD, b AS BYTE ) AS VOID
    RETURN
 
 
+/*
 
-/// <summary>Determine if the leftmost character in a string is alphanumeric.</summary>
+These functions are not needed. There is an implicit conversion from PSZ to STRING
+
+/// <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
 FUNCTION IsAlNum(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsAlNum(cSource)
 
-/// <summary>Determine if the leftmost character in a string is alphabetic.</summary>
+/// <summary>Determine if the leftmost character in a PSZ is alphabetic.</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character is alphabetic.</returns>
 FUNCTION IsAlpha(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsAlpha(cSource)
 
+/// <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
+/// <param name="pszSource">The string to examine.</param>
+/// <returns>TRUE if the first character is alphanumeric.</returns>
 FUNCTION IsAlphaNum(pszSource AS PSZ) AS LOGIC
 	RETURN XSharp.VO.Functions.IsAlNum(pszSource)
 
-/// <summary>Determine if the leftmost character in a string is a binary digit  (0 or 1)).</summary>
+/// <summary>Determine if the leftmost character in a PSZ is a binary digit  (0 or 1)).</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
 FUNCTION IsBDigit(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsBDigit(cSource)
 
-/// <summary>Determine if the leftmost character in a string is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
+/// <summary>Determine if the leftmost character in a PSZ is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character is hex otherwise FALSE.</returns>
 FUNCTION IsXDigit(pszSource AS PSZ) AS LOGIC
@@ -262,23 +271,24 @@ FUNCTION IsXDigit(pszSource AS PSZ) AS LOGIC
 	RETURN XSharp.Core.Functions.IsXDigit(cSource)
 
 
-/// <summary>Determine if the leftmost character in a string is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
+/// <summary>Determine if the leftmost character in a PSZ is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
 FUNCTION IsSpace(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsSpace(cSource)
 
-/// <summary>Determine if the leftmost character in a string is uppercase.</summary>
+/// <summary>Determine if the leftmost character in a PSZ is uppercase.</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
 FUNCTION IsUpper(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsUpper(cSource)
 
-/// <summary>Determine if the leftmost character in a string is lower.</summary>
+/// <summary>Determine if the leftmost character in a PSZ is lower.</summary>
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
 FUNCTION IsLower(pszSource AS PSZ) AS LOGIC
     VAR cSource := Psz2String(pszSource)
 	RETURN XSharp.Core.Functions.IsLower(cSource)
+*/

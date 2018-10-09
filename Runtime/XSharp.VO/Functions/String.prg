@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -16,20 +16,20 @@ USING System.Text
 /// </returns>
 FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
 	IF ! cSource:IsString .OR. String.IsNullOrEmpty(cSource)
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
+		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
 	ENDIF
 	IF ! block:IsCodeBlock .OR. block == NULL_CODEBLOCK
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(block), 2, <OBJECT>{ block} )
+		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(block), 2, <OBJECT>{ block} )
 	ENDIF
 	IF nStart == NIL
 		nStart := 1
 	ELSEIF ! IsNumeric(nStart)
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
+		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nStart), 3, <OBJECT>{ nStart} )
 	ENDIF
 	IF nCount == NIL
 		nCount := SLen(cSource) - nStart + 1
 	ELSEIF ! IsNumeric(nCount)
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
+		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nCount), 4, <OBJECT>{ nCount} )
 	ENDIF
 	RETURN SEvalWorker(cSource, block, nStart, nCount)
 
@@ -118,7 +118,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    LOCAL iRepl            AS INT
 
    IF ! uTarget:IsString
-      THROW Error.ArgumentError( __ENTITY__, NAMEOF(uTarget), 1 , <OBJECT>{uTarget})
+      THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uTarget), 1 , <OBJECT>{uTarget})
    ELSE
       cSource := uTarget
 
@@ -128,7 +128,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ENDIF
 
    IF ! uSearch:IsString
-      THROW Error.ArgumentError( __ENTITY__, NAMEOF(uSearch), 2 ,  <OBJECT>{uSearch})
+      THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uSearch), 2 ,  <OBJECT>{uSearch})
    ELSE
       cSearch := uSearch
       IF cSearch == ""
@@ -141,7 +141,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
    ELSEIF uReplace:IsNil
       cReplace := ""
    ELSE
-      THROW  Error.ArgumentError( __ENTITY__, NAMEOF(uReplace), 3 , <OBJECT>{uReplace})
+      THROW  Error.ArgumentError( __FUNCTION__, NAMEOF(uReplace), 3 , <OBJECT>{uReplace})
    ENDIF
 
    IF PCount() > 3
@@ -150,7 +150,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
       ELSEIF uStart:IsNil
          nStart := 0
       ELSE
-         THROW Error.ArgumentError( __ENTITY__, NAMEOF(uStart), 4 ,  <OBJECT>{uStart})
+         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uStart), 4 ,  <OBJECT>{uStart})
       ENDIF
 
       IF PCount() > 4
@@ -159,7 +159,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
          ELSEIF uCount:IsNil
             iCount := 0
          ELSE
-            THROW Error.ArgumentError( __ENTITY__, NAMEOF(uCount), 5 , <OBJECT>{uCount})
+            THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uCount), 5 , <OBJECT>{uCount})
          ENDIF
       ENDIF
    ENDIF
@@ -308,12 +308,12 @@ FUNCTION SubS(c ,iStart ,wLen ) AS STRING CLIPPER
 /// </returns>
 FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
 	IF ! c:IsString
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(c), 1, <OBJECT>{c})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(c), 1, <OBJECT>{c})
 	ENDIF
 	IF uStart:IsNil
 		uStart := 1
 	ELSEIF ! uStart:IsNumeric
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(uStart), 2, <OBJECT>{uStart})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(uStart), 2, <OBJECT>{uStart})
 	ENDIF
 	VAR start := (INT) uStart 
 	VAR strValue := (STRING) c 
@@ -334,7 +334,7 @@ FUNCTION SubStr(c ,uStart ,uLen ) AS STRING CLIPPER
 	ELSEIF uLen:IsNumeric
 		RETURN __SubStr(strValue, start, (INT) uLen)
 	ELSE
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(uLen), 3, <OBJECT>{uLen})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(uLen), 3, <OBJECT>{uLen})
 	ENDIF
 
 FUNCTION EmptyString (s AS STRING) AS LOGIC

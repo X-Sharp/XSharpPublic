@@ -8,8 +8,6 @@ USING System.Reflection
 USING System.Diagnostics
 
 
-
-
 /// <summary>
 /// Write information to the Debug Terminal Program
 /// </summary>
@@ -45,5 +43,7 @@ FUNCTION CanBreak() AS LOGIC
 /// </returns>
 FUNCTION Version() AS STRING
 	RETURN "XSharp "+__VERSION__
+
+
 
 

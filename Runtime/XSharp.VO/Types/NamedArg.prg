@@ -6,14 +6,16 @@
 
 /// <summary>VO Compatible type to allow name/value pairs for Ole Automation parameters</summary>
 CLASS XSharp.NamedArg
+    /// <summary>Argument name.</summary>
    PROPERTY ArgName AS STRING AUTO
-   PROPERTY VALUE   AS USUAL AUTO
-   
+    /// <summary>Argument value.</summary>
+   PROPERTY @@Value AS USUAL AUTO
+   /// <summary>Construct a NamedArg object</summary>
    CONSTRUCTOR( symArgName AS STRING, uValue AS USUAL )
       SELF:ArgName	:= symArgName
       SELF:Value	:= uValue
       RETURN
-      
+   /// <inheritdoc />   
    METHOD ToString() AS STRING
       RETURN  "NamedArg{ " + ArgName + ": " + SELF:Value:ToString() + " }"
    

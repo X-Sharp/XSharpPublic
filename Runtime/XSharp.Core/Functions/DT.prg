@@ -183,10 +183,11 @@ FUNCTION Time24() AS STRING
    RETURN _TimeString((DWORD) d:Hour,(DWORD) d:Minute,(DWORD) d:Second,FALSE,"","")
 
 
-
+/// <summary>Convert a specified number of seconds to a time string.</summary>
 FUNCTION TString(fSeconds AS REAL8) AS STRING
    RETURN TString( (DWORD) Math.Round( fSeconds, MidpointRounding.ToEven ) )   
 
+/// <summary>Convert a specified number of seconds to a time string.</summary>
 FUNCTION TString(dwSeconds AS DWORD) AS STRING
    LOCAL dwHours AS DWORD
    LOCAL dwMinutes AS DWORD
@@ -241,3 +242,123 @@ INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGI
    
    RETURN String.Format( "{0:00}{3}{1:00}{3}{2:00}{4}", h, m, s, cTimeSep, IIF( lAMPM, IIF( lAfternoon, cPM, cAM ), "" ) )
 
+
+
+/// <summary>
+/// Format a set of numbers representing a year, month, and day as a Date.
+/// </summary>
+/// <param name="dwY">A valid year.  If the century digits are not specified, the century is determined by the rules of SetEpoch(). </param>
+/// <param name="dwM">A number from 1 through 12 representing a valid month. </param>
+/// <param name="dwDay">A number representing a valid day of dwMonth.</param>
+/// <returns>The date that corresponds to the passed arguments.  If any of the arguments specified do not represent a valid year, month, or day, a NULL_DATE is returned.</returns>
+FUNCTION _ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DateTime
+	IF dwY < 100
+		LOCAL lAfter AS LOGIC
+		lAfter := dwY > XSharp.RuntimeState.EpochYear
+		dwY += XSharp.RuntimeState.EpochCent
+		IF lAfter
+			dwY -= 100
+		ENDIF
+	ENDIF
+	RETURN DateTime{(INT) dwY,(INT) dwM,(INT) dwDay}   
+
+FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
+	LOCAL dDate AS DateTime
+	LOCAL nDay, nMonth, nYear AS DWORD
+	LOCAL nDayPos, nMonthPos, nYearPos AS INT
+	dDate := DateTime.MinValue
+	IF string.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat)
+		RETURN dDate
+	ENDIF
+	LOCAL nPos AS INT
+	LOCAL cSep AS STRING
+	nDayPos := nMonthPos := nYearPos := -1
+	cSep := "./-"
+	nPos :=-1
+	FOREACH c AS CHAR IN cDateFormat
+		SWITCH c
+		CASE 'D'
+			IF nDayPos == -1
+				++nPos
+				nDayPos  := nPos
+			ENDIF
+		CASE 'M'
+			IF nMonthPos == -1
+				++nPos
+				nMonthPos  := nPos
+			ENDIF
+		CASE 'Y'
+			IF nYearPos == -1
+				++nPos
+				nYearPos  := nPos
+			ENDIF
+		OTHERWISE
+			IF cSep:IndexOf(c) == -1
+				cSep += c:ToString()
+			ENDIF
+		END SWITCH
+	NEXT
+	IF nDayPos == -1 .OR. nMonthPos == -1 .OR. nYearPos == -1
+		RETURN dDate
+	ENDIF
+	TRY
+		// we now know the seperators and the positions in the string
+		LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
+		nDay   := Uint32.Parse(aNums[nDayPos])
+		nMonth := Uint32.Parse(aNums[nMonthPos])
+		nYear  := Uint32.Parse(aNums[nYearPos])
+		IF aNums[nYearPos]:Length < 4
+			// Century missing ?
+			dDate := _ConDate(nYear, nMonth, nDay)
+		ELSE
+			dDate := DateTime{(INT)nYear, (INT)nMonth, (INT)nDay}
+		ENDIF
+	CATCH 
+		dDate := DateTime.MinValue
+	END TRY
+	RETURN dDate
+  
+/// <summary>
+/// Convert an ANSI date string to date format.
+/// </summary>
+/// <param name="cDate">A string in the ANSI form yyyy.mm.dd, where yy, mm, and dd represent year, month, and day respectively.  
+/// The year, month, and day can be separated by any character other than a number. 
+/// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().  
+/// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
+/// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If cDate is not a valid ANSI date, CToDAnsi() returns a NULL_DATE.
+/// </returns>
+FUNCTION _CToDAnsi(cDate AS STRING) AS DateTime
+	RETURN _CToD(cDate, "YYYY.MM.DD")
+
+
+/// <summary>
+/// Convert a Date to a string.
+/// </summary>
+/// <param name="d">The Date to be converted.</param>
+/// <returns>
+/// A string representation of the given Date, formatted in the current Date format.
+/// </returns>
+FUNCTION _DToC(d AS DateTime) AS STRING
+	LOCAL result:="" AS STRING		
+	LOCAL cFormat := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet) AS STRING
+	IF d != DateTime.Minvalue
+		LOCAL dt := d AS Datetime
+		result := d:ToString(cFormat)
+	ELSE
+		result := RuntimeState.NullDateString
+	ENDIF
+	RETURN result 
+
+/// <summary>
+/// Convert a Date value to a string formatted as string in ANSI format
+/// </summary>
+/// <param name="dDate">The Date to be converted</param>
+/// <returns>
+/// An 8-character string in the format yyyymmdd.  If dDate is a NULL_DATE, a string of eight spaces is returned.  The return value is not affected by the current date format.
+/// </returns>
+FUNCTION _DToS(dDate AS DateTime) AS STRING
+	LOCAL result:="        " AS STRING		
+	IF dDate != DateTime.MinValue
+		result := dDate:ToString("yyyyMMdd")
+	ENDIF
+	RETURN result 

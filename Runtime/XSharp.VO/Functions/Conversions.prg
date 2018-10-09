@@ -191,7 +191,7 @@ FUNCTION Descend(uValue AS USUAL) AS USUAL
 	ELSEIF uValue:IsFloat
 		RETURN 0 - (FLOAT) uValue
 	ELSEIF uValue:IsDate
-		RETURN (DATE) (6364425 - (DWORD)(DATE) uValue )
+		RETURN 5231808 - (DWORD)(DATE) uValue 
 	ENDIF
 	RETURN uValue
 
@@ -489,12 +489,15 @@ FUNCTION _Str(n ,uLen ,uDec ) AS STRING CLIPPER
 // The following three functions are undocumented in Vulcan but sometimes used in user code
 // They are the equivalent of the STR() functions but always return with digit decimal separator
 // We route all three to the _Str() function that takes care of this already
+/// <exclude/>
 FUNCTION __Str(n AS USUAL) AS STRING
 	RETURN _Str( n)
 
+/// <exclude/>
 FUNCTION __Str(n AS USUAL,nLen AS USUAL) AS STRING
 	RETURN _Str( n, nLen)
 
+/// <exclude/>
 FUNCTION __Str(n AS USUAL,nLen AS USUAL, nDec AS USUAL) AS STRING
 	RETURN _Str( n, nLen, nDec)
 
@@ -514,7 +517,7 @@ INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
 	/// </returns>
 FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n, iLen, iDec)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n, iLen, iDec)
     ENDIF
 	LOCAL cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) AS STRING
 	RETURN _PadZero(cValue)
@@ -528,7 +531,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
 /// </returns>
 FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n, iLen)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n, iLen)
 	ENDIF
 	LOCAL cValue := Str2(n, (DWORD) iLen) AS STRING
 	RETURN _padZero(cValue)
@@ -542,7 +545,7 @@ FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
 /// </returns>
 FUNCTION StrZero(n AS USUAL) AS STRING
 	IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __ENTITY__, NAMEOF(n),1,n)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n)
     ENDIF
 	LOCAL cValue := Str1(n) AS STRING
 	RETURN _PadZero(cValue)
@@ -658,6 +661,7 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
 FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 	RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
 
+/// <exclude/>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
 
@@ -723,110 +727,7 @@ RETURN result
 /// <returns>
 /// </returns>
 FUNCTION Val(cNumber AS STRING) AS USUAL
-	cNumber := cNumber:Trim():ToUpper()
-	IF String.IsNullOrEmpty(cNumber)
-		RETURN 0
-	ENDIF
-	// find non numeric characters in cNumber and trim the field to that length
-	VAR pos := 0
-	VAR done := FALSE
-	VAR hex  := FALSE
-	VAR hasdec := FALSE
-	VAR hasexp := FALSE
-	VAR cDec := (CHAR) RuntimeState.DecimalSep
-    VAR cThous := (CHAR) RuntimeState.ThousandSep
-    cNumber := cNumber:Replace(cThous:ToString(),"")
-	IF cDec != '.'
-		cNumber := cNumber:Replace(cDec, '.')
-	ENDIF
-	FOREACH VAR c IN cNumber
-		SWITCH c
-		CASE '0'
-		CASE '1'
-		CASE '2'
-		CASE '3'
-		CASE '4'
-		CASE '5'
-		CASE '6'
-		CASE '7'
-		CASE '8'
-		CASE '9'
-		CASE '-'
-		CASE '+'
-			NOP
-		CASE '.'
-		CASE ','
-			IF hasdec
-				done := TRUE
-			ELSE
-				hasdec := TRUE
-			ENDIF
-		CASE 'A'
-		CASE 'B'
-		CASE 'C'
-		CASE 'D'
-		CASE 'F'
-			IF !hex
-				done := TRUE
-			ENDIF
-		CASE 'E'
-			// exponentional notation only allowed if decimal separator was there
-			IF hasdec
-				hasexp := TRUE
-			ELSE
-				IF !hex
-					done := TRUE
-				ENDIF
-			ENDIF
-		CASE 'L'	// LONG result
-		CASE 'U'	// DWORD result
-			done := TRUE
-		CASE 'X'
-			IF pos == 1
-				hex := TRUE
-			ELSE
-				done := TRUE
-			ENDIF
-		OTHERWISE
-			done := TRUE
-		END SWITCH
-		IF done
-			EXIT
-		ENDIF
-		pos += 1
-	NEXT
-	IF pos < cNumber:Length
-		cNumber := cNumber:SubString(0, pos)
-	ENDIF
-	IF cNumber:IndexOfAny(<CHAR> {'.'}) > -1
-		LOCAL r8Result := 0 AS REAL8
-		IF cDec != '.'
-			cNumber := cNumber:Replace(cDec, '.')
-		ENDIF
-		VAR style := NumberStyles.Number
-		IF hasexp
-			style |= NumberStyles.AllowExponent
-		ENDIF
-		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
-			RETURN r8Result
-		ENDIF
-	ELSE
-		LOCAL iResult := 0 AS INT64
-		LOCAL style AS NumberStyles
-		IF hex
-			cNumber := cNumber:Substring(2)
-			style := NumberStyles.HexNumber
-		ELSE
-			style := NumberStyles.Integer
-		ENDIF
-		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
-			IF iResult < Int32.MaxValue .AND. iResult > int32.MinValue
-				RETURN (INT) iResult
-			ENDIF
-			RETURN iResult
-		ENDIF
-	ENDIF
-	RETURN 0
+	RETURN _Val(cNumber)
 
 
 /// <summary>
@@ -834,37 +735,38 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
 /// </summary>
 /// <param name="oValue">Object containing the numeric value to convert.</param>
 /// <returns>The value in the form of a float. </returns>
-/// <exception>System.InvalidCastException Thrown when the parameter <paramref name="oValue"/> cannot be converted to a FLOAT.</exception>
-    FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
-        LOCAL typ := oValue:GetType() AS System.Type
-        IF typ == typeof(FLOAT)
-            RETURN (FLOAT) oValue
-        ENDIF
-        LOCAL tc := System.Type.GetTypeCode(typ) AS TypeCode
-        SWITCH tc
-        CASE System.TypeCode.SByte
-            RETURN (System.SByte) oValue
-        CASE System.TypeCode.Byte
-            RETURN (System.Byte) oValue
-        CASE System.TypeCode.Double
-            RETURN (System.Double) oValue
-        CASE System.TypeCode.Single
-            RETURN (System.Single) oValue
-        CASE System.TypeCode.UInt16
-            RETURN (System.UInt16) oValue
-        CASE System.TypeCode.UInt32
-            RETURN (System.UInt32) oValue
-        CASE System.TypeCode.UInt64
-            RETURN (System.UInt64) oValue
-        CASE System.TypeCode.Int16
-            RETURN (System.Int16) oValue
-        CASE System.TypeCode.Int32
-            RETURN (System.Int32) oValue
-        CASE System.TypeCode.Int64
-            RETURN (System.Int64) oValue
-        CASE System.TypeCode.Decimal
-            RETURN (System.Decimal) oValue
-        OTHERWISE
-            THROW InvalidCastException{"Cannot convert from type "+typ:FullName+" to FLOAT"}
-        END SWITCH
+/// <exception cref='T:System.InvalidCastException'> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
+FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
+    LOCAL typ := oValue:GetType() AS System.Type
+    IF typ == typeof(FLOAT)
+        RETURN (FLOAT) oValue
+    ENDIF
+    LOCAL tc := System.Type.GetTypeCode(typ) AS TypeCode
+    SWITCH tc
+    CASE System.TypeCode.SByte
+        RETURN (System.SByte) oValue
+    CASE System.TypeCode.Byte
+        RETURN (System.Byte) oValue
+    CASE System.TypeCode.Double
+        RETURN (System.Double) oValue
+    CASE System.TypeCode.Single
+        RETURN (System.Single) oValue
+    CASE System.TypeCode.UInt16
+        RETURN (System.UInt16) oValue
+    CASE System.TypeCode.UInt32
+        RETURN (System.UInt32) oValue
+    CASE System.TypeCode.UInt64
+        RETURN (System.UInt64) oValue
+    CASE System.TypeCode.Int16
+        RETURN (System.Int16) oValue
+    CASE System.TypeCode.Int32
+        RETURN (System.Int32) oValue
+    CASE System.TypeCode.Int64
+        RETURN (System.Int64) oValue
+    CASE System.TypeCode.Decimal
+        RETURN (System.Decimal) oValue
+    OTHERWISE
+        THROW InvalidCastException{"Cannot convert from type "+typ:FullName+" to FLOAT"}
+    END SWITCH
+
 

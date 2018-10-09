@@ -1,0 +1,38 @@
+****
+*  memvar.xh
+*  X# Memvar commands
+*
+*  IMPORTANT:  Functions beginning with an underscore
+*  character are reserved, version-dependent functions.
+*  These functions should not be called directly.
+*
+
+***
+*  MEMVAR variables
+*
+#command CLEAR MEMORY                   => __MClear()
+#command RELEASE <vars,...>             => __MXRelease( <"vars"> )
+#command RELEASE ALL                    => __MRelease("*", .t.)
+#command RELEASE ALL LIKE <skel>        => __MRelease( #<skel>, .t. )
+#command RELEASE ALL EXCEPT <skel>      => __MRelease( #<skel>, .f. )
+
+#command RESTORE [FROM <(file)>] [<add: ADDITIVE>]                      ;
+      => __MRestore( <(file)>, <.add.> )
+
+#command SAVE ALL LIKE <skel> TO <(file)>                               ;
+      => __MSave( <(file)>, <(skel)>, .t. )
+
+#command SAVE TO <(file)> ALL LIKE <skel>                               ;
+      => __MSave( <(file)>, <(skel)>, .t. )
+
+#command SAVE ALL EXCEPT <skel> TO <(file)>                             ;
+      => __MSave( <(file)>, <(skel)>, .f. )
+
+#command SAVE TO <(file)> ALL EXCEPT <skel>                             ;
+      => __MSave( <(file)>, <(skel)>, .f. )
+
+#command SAVE [TO <(file)>] [ALL]                                       ;
+      => __MSave( <(file)>, "*", .t. )
+
+
+** EOF

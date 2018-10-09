@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -140,7 +140,6 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		
 		VAR aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
-		VAR nLen    := aFields:Length
 		VAR list := List<STRING>{}
 		FOREACH fi AS FieldInfo IN aFields
 			IF fi:IsPublic || fi:IsFamily 
@@ -279,14 +278,14 @@ INTERNAL STATIC CLASS OOPHelpers
 		VAR fldInfo := FindField(t, cIVar,FALSE)
 		//Todo: optimization
 		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-			oValue := MyConvert(oValue, fldInfo:FieldType)
+			oValue := VOConvert(oValue, fldInfo:FieldType)
 			fldInfo:SetValue(oObject, oValue)
 			RETURN
 		ENDIF
 		LOCAL propInfo AS PropertyInfo
 		propInfo := FindProperty(t, cIVar, lSelf)
 		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite
-			oValue := MyConvert(oValue, propInfo:PropertyType)
+			oValue := VOConvert(oValue, propInfo:PropertyType)
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
@@ -317,7 +316,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		LOCAL oArgs AS OBJECT[]
 		IF lClipper
-			oArgs := <OBJECT> {uArgs}
+			oArgs := <OBJECT>{uArgs}
 		ELSEIF paramInfo:Length > 0
 			oArgs := OBJECT[]{ paramInfo:Length }
 			LOCAL nPar AS INT
@@ -327,21 +326,21 @@ INTERNAL STATIC CLASS OOPHelpers
 					LOCAL arg := uArgs[nPar] AS USUAL
 					IF pi:ParameterType == TYPEOF(USUAL)
 						// We need to box a usual here 
-						oArgs[nPar] := Myconvert(arg, TYPEOF(__USUAL))
+						oArgs[nPar] := __CastClass(OBJECT, arg)
 					ELSEIF pi:ParameterType:IsAssignableFrom(arg:SystemType) .OR. arg == NULL
-						oArgs[nPar] := uArgs[nPar]
+						oArgs[nPar] := arg
 					ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
 						// Parameter array of certain type
 						// -> convert remaining elements from uArgs to an array and assign that to oArgs[i] 
 						LOCAL elementType := pi:ParameterType:GetElementType() AS System.Type
-						LOCAL aVarArgs := System.Array.CreateInstance(elementType, uArgs:Length - nPar +1) AS System.Array
+						LOCAL aVarArgs    := System.Array.CreateInstance(elementType, uArgs:Length - nPar +1) AS System.Array
 						LOCAL nArg AS INT
 						FOR nArg := nPar TO uArgs:Length
 							TRY
 								IF elementType:IsAssignableFrom(uArgs[nArg]:SystemType)
 									aVarArgs:SetValue(uArgs[nArg], nArg-nPar)
 								ELSE
-									aVarArgs:SetValue(MyConvert(uArgs[nArg], elementType), nArg-nPar)
+									aVarArgs:SetValue(VOConvert(uArgs[nArg], elementType), nArg-nPar)
 								ENDIF
 							CATCH
 								aVarArgs:SetValue(NULL, nArg-nPar)
@@ -350,33 +349,39 @@ INTERNAL STATIC CLASS OOPHelpers
 						oArgs[nPar] := aVarArgs
 						EXIT	// parameter loop
 					ELSE	// try to convert to the expected type
-						oArgs[nPar]  := MyConvert(uArgs[nPar], pi:ParameterType)
+						oArgs[nPar]  := VOConvert(uArgs[nPar], pi:ParameterType)
 					ENDIF
 				ENDIF 
 			NEXT
 		ELSE
 			oArgs := NULL
 		ENDIF
-		IF mi != NULL
-			result := mi:Invoke(oObject, oArgs)
+		IF mi != NULL   
+			IF mi:ReturnType == typeof(USUAL)
+                result := mi:Invoke(oObject, oArgs)
+            ELSE
+                LOCAL oResult AS OBJECT
+                oResult := mi:Invoke(oObject, oArgs)
+                result := oResult
+            ENDIF
+			
 		ENDIF
 		RETURN TRUE
 		
-	STATIC METHOD MyConvert(uValue AS USUAL,toType AS System.type) AS OBJECT
+	STATIC METHOD VOConvert(uValue AS USUAL,toType AS System.type) AS OBJECT
 		IF toType == TYPEOF(FLOAT)
 			RETURN (FLOAT) uValue
 		ELSE
 			IF toType == TYPEOF(USUAL)
-				// todo: better mechanism for boxing
 				// box the usual
-				VAR oTemp := <OBJECT> { uValue }
-				RETURN Activator.CreateInstance(TYPEOF(XSharp.__Usual), oTemp)
-			ENDIF
-			VAR o := (OBJECT) uValue 
-			IF toType:IsAssignableFrom(o:GetType())
-				RETURN o
-			ENDIF
-			RETURN Convert.ChangeType(o, toType)
+                RETURN __CastClass(OBJECT, uValue)
+            ELSEIF IsArray(uValue) .and. totype == typeof(ARRAY)
+                RETURN (ARRAY) uValue
+            ELSEIF IsObject(uValue) 
+                RETURN (OBJECT) uValue
+            ENDIF
+      
+			RETURN Convert.ChangeType(uValue, toType)
 		ENDIF
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
@@ -388,7 +393,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			noMethodArgs[__ARRAYBASE__] := cMethod
 			Array.Copy( args, 0, noMethodArgs, 1, args:Length )
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
-				THROW Error.VOError( EG_NOMETHOD, "Send", NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
+				THROW Error.VOError( EG_NOMETHOD, __ENTITY__, NAMEOF(cMethod), 2, <OBJECT>{cMethod} )
 			ENDIF
 		ENDIF
 		RETURN result
@@ -426,7 +431,7 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	ELSEIF IsInstanceOf(oObject, symClassName)
 		RETURN TRUE
 	ENDIF
-	LOCAL oError := Error.VOError(EG_WRONGCLASS, "CHECKINSTANCEOF", NAMEOF(oObject),1, NULL) AS Error
+	LOCAL oError := Error.VOError(EG_WRONGCLASS, __FUNCTION__, NAMEOF(oObject),1, NULL) AS Error
 	oError:Description := symClassName + " <-> " + oObject:GetType():Name
 	THROW oError
 	
@@ -479,18 +484,18 @@ FUNCTION ClassName(o AS OBJECT) AS STRING
 FUNCTION ClassTree(o AS OBJECT) AS ARRAY
 	RETURN OOPHelpers.ClassTree(o?:GetType())
 	
-	
+/// <summary>Create a new instance of a named class</summary>	
 FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	IF ! ( cClassName:IsSymbol || cClassName:IsString )
-		THROW Error.DataTypeError( "CreateInstance", NAMEOF(cClassName), 1, cClassName)
+		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(cClassName), 1, cClassName)
 	ENDIF    	
-	VAR t := OOPHelpers.FindClass(cClassName)
+	VAR t := OOPHelpers.FindClass((STRING) cClassName)
 	IF t == NULL
-		 THROW Error.VOError( EG_NOCLASS, "CreateInstance", NAMEOF(cClassName), 1,  cClassName  )
+		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  cClassName  )
 	ENDIF
 	VAR constructors := t:getConstructors() 
 	IF constructors:Length > 1
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD, "CreateInstance", NAMEOF(cClassName), 0 , NULL)
+		THROW Error.VOError( EG_AMBIGUOUSMETHOD, __FUNCTION__, NAMEOF(cClassName), 0 , NULL)
 	ENDIF
 	LOCAL ctor := constructors[1] AS ConstructorInfo
 	LOCAL nPCount AS INT
@@ -522,7 +527,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 		ENDIF
 		oRet := ctor:Invoke( oArgs)	
 	CATCH
-		THROW Error.VOError( EG_NOMETHOD, "CreateInstance", "Constructor", 0 , NULL)
+		THROW Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
 		oRet := NULL_OBJECT
 	END TRY
 	RETURN oRet
@@ -643,10 +648,10 @@ FUNCTION IsInstanceOfUsual(oX AS USUAL,cName AS STRING) AS LOGIC
 /// </returns>
 FUNCTION IVarGet(o AS OBJECT,cIvar AS STRING) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(o, cIVar, FALSE)
 	
@@ -710,10 +715,10 @@ FUNCTION IsMethodClass( c AS STRING, cName AS STRING ) AS LOGIC
 /// </returns>
 FUNCTION IVarGetSelf(o AS OBJECT,cIVar AS STRING) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(o, cIVar, TRUE)
 	
@@ -758,10 +763,10 @@ FUNCTION IVarPutInfo(o AS OBJECT,cIVar AS SYMBOL) AS DWORD
 /// </returns>
 FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	OOPHelpers.IVarPut(o, cIVar, uValue, FALSE)
 	RETURN uValue
@@ -776,10 +781,10 @@ FUNCTION IVarPut(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 /// </returns>
 FUNCTION IVarPutSelf(o AS OBJECT,cIVar AS STRING,uValue AS USUAL) AS USUAL
 	IF o == NULL_OBJECT
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(o),1)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(o),1)
 	ENDIF
 	IF String.IsNullOrEmpty(cIVar)
-		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(cIVar),2)
+		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(cIVar),2)
 	ENDIF
 	OOPHelpers.IVarPut(o, cIVar, uValue,TRUE) 
 	RETURN uValue
@@ -888,10 +893,10 @@ FUNCTION OOPTreeClass(cClass AS STRING) AS ARRAY
 /// <returns>Return value of the method call. </returns>
 FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL 
 	IF !o:IsObject
-	     THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(o), 1, <OBJECT>{ o}  )
+	     THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(o), 1, <OBJECT>{ o}  )
 	ENDIF
 	IF ! uMethod:IsString  && ! uMethod:IsSymbol
-		THROW Error.VOError( EG_DATATYPE, "Send", NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
+		THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(uMethod) , 2, <OBJECT>{ uMethod } )
 	ENDIF
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
@@ -916,10 +921,11 @@ FUNCTION CSend(o AS OBJECT,symMethod AS STRING, args PARAMS USUAL[]) AS USUAL
 	// CLIPPER calling convention for compatiblity with VO.
 	// Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
 	//       The compiler expects that
+/// <esclude />
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OopHelpers.DoSend(oObject, cMethod, args)
 
-/// <summary>Helper function to convert ARRAY to USUAL[]</summary>	
+
 INTERNAL FUNCTION __ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
@@ -975,7 +981,7 @@ INTERNAL FUNCTION __ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	NEXT
 	RETURN uArgs
 	
-	
+/// <exclude/>	
 	// identical to CSend and __InternalSend but with a normal array of args
 FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY ) AS USUAL
 	LOCAL uArgs AS USUAL[]

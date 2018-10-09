@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING Xunit
 USING XSharp.RDD
+USING XSharp.Rdd.Support
 
 BEGIN NAMESPACE XSharp.RDD.Tests
 
@@ -130,9 +131,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 //
                 FOR VAR i := 1 TO myDBF:FIELDCount
                     // 
-                    LOCAL oData AS OBJECT
-                    oData := myDBF:GetValue( i )
-                    Assert.Equal( values[i], oData )
+                    LOCAL tmp AS STRING
+                    tmp := (STRING)myDBF:GetValue( i )
+                    Assert.Equal( values[i], tmp:Trim() )
                 NEXT
                 //
                 myDBF:Close()
@@ -390,9 +391,11 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             myDBF:Open( dbInfo )
             FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
                 // 
+				LOCAL tmp AS STRING
                 LOCAL elt := data[i]:Split( ',' ) AS STRING[]
                 Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), myDBF:GetValue(1) )
-                Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
+				tmp := (STRING)myDBF:GetValue(2)
+                Assert.Equal( elt[__ARRAYBASE__+1], tmp:Trim() )
                 Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
                 LOCAL o AS OBJECT
                 LOCAL dt AS DateTime
@@ -559,7 +562,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
                 // 
                 LOCAL elt := data[i]:Split( ',' ) AS STRING[]
                 Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), myDBF:GetValue(1) )
-                Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
+				LOCAL tmp AS STRING
+				tmp := (STRING)myDBF:GetValue(2)
+                Assert.Equal( elt[__ARRAYBASE__+1], tmp:Trim() )
                 Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
                 LOCAL o AS OBJECT
                 LOCAL dt AS DateTime

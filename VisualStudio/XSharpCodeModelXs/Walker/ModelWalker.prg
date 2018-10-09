@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -25,29 +25,29 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PRIVATE _walker AS ModelWalker
 		PRIVATE _WalkerThread AS System.Threading.Thread
 		STATIC PRIVATE suspendLevel  AS LONG
-		
+
 		// Methods
-		
+
 		STATIC CONSTRUCTOR
 			suspendLevel := 0
-		
+
 		PRIVATE  CONSTRUCTOR()
 			SUPER()
-		
-		
+
+
 		INTERNAL METHOD AddProject(xProject AS XProject) AS VOID
 			//
 			WriteOutputMessage("-->> AddProject() "+xProject:Name)
 			BEGIN LOCK SELF
 				//
-				VAR lAdd2Queue := true
+				VAR lAdd2Queue := TRUE
 				FOREACH project AS XProject IN SELF:_projects
 					//
 					IF (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
 						//
-						lAdd2Queue := false
+						lAdd2Queue := FALSE
 						EXIT
-						
+
 					ENDIF
 				NEXT
 				IF (lAdd2Queue)
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			END LOCK
 			WriteOutputMessage("<<-- AddProject()")
-		
+
 		INTERNAL METHOD FileWalk(file AS XFile) AS VOID
 			VAR lastWriteTime := System.IO.File.GetLastWriteTime(file:SourcePath)
 			IF lastWriteTime > file:LastWritten
@@ -69,44 +69,44 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						//
 						VAR lines := System.IO.File.ReadAllLines(file:SourcePath)
-						VAR xTree := walker:Parse(lines, false)
+						VAR xTree := walker:Parse(lines, FALSE)
 						walker:BuildModel(xTree)
 						file:LastWritten := lastWriteTime
-						IF file:Project != null
+						IF file:Project != NULL
 							//
-							IF file:Project:FileWalkComplete != null
+							IF file:Project:FileWalkComplete != NULL
 								//
 								file:Project:FileWalkComplete?:Invoke(file)
 							ENDIF
 						ENDIF
 						RETURN
-						
+
 					CATCH e AS Exception
-						XSolution.WriteException(e)	
+						XSolution.WriteException(e)
 					FINALLY
-						IF walker != null
+						IF walker != NULL
 							//
 							walker:Dispose()
 						ENDIF
 					END TRY
 				END USING
 			ENDIF
-		
+
 		STATIC METHOD GetWalker() AS ModelWalker
 			//
-			IF (ModelWalker._walker == null)
+			IF (ModelWalker._walker == NULL)
 				//
 				ModelWalker._walker := ModelWalker{}
 			ENDIF
 			RETURN ModelWalker._walker
-		
+
 		STATIC METHOD Resume() AS VOID
 			//
 			ModelWalker.suspendLevel--
-		
+
 		INTERNAL METHOD StopThread() AS VOID
 			TRY
-				IF (SELF:_WalkerThread == null)
+				IF (SELF:_WalkerThread == NULL)
 					RETURN
 				ENDIF
 				IF (SELF:_WalkerThread:IsAlive)
@@ -116,12 +116,12 @@ BEGIN NAMESPACE XSharpModel
 				WriteOutputMessage("Cannot stop Background walker Thread : ")
 				XSolution.WriteException(exception)
 			END TRY
-			SELF:_WalkerThread := null
-		
+			SELF:_WalkerThread := NULL
+
 		STATIC METHOD Suspend() AS VOID
 			//
 			ModelWalker.suspendLevel++
-		
+
 		METHOD Walk() AS VOID
 			LOCAL start AS System.Threading.ThreadStart
 			IF (ModelWalker.suspendLevel <= 0)
@@ -129,14 +129,14 @@ BEGIN NAMESPACE XSharpModel
 					SELF:StopThread()
 					start := System.Threading.ThreadStart{ SELF, @Walker() }
 					SELF:_WalkerThread := System.Threading.Thread{start}
-					SELF:_WalkerThread:IsBackground := true
+					SELF:_WalkerThread:IsBackground := TRUE
 					SELF:_WalkerThread:Priority := System.Threading.ThreadPriority.Highest
 					SELF:_WalkerThread:Name := "ModelWalker"
 					SELF:_WalkerThread:Start()
 				CATCH exception AS System.Exception
 					WriteOutputMessage("Cannot start Background walker Thread : ")
 					XSolution.WriteException(exception)
-					
+
 				END TRY
 			ENDIF
 
@@ -145,11 +145,11 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE METHOD Walker() AS VOID
 			LOCAL project AS XProject
 			LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
-			project := null
+			project := NULL
 			IF ((SELF:_projects:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projects):ProjectNode:IsVsBuilding)
-				DO WHILE (true)
+				DO WHILE (TRUE)
 					IF (ModelWalker.suspendLevel > 0)
-						IF (project != null)
+						IF (project != NULL)
 							SELF:_projects:Enqueue(project)
 						ENDIF
 						EXIT
@@ -167,27 +167,28 @@ BEGIN NAMESPACE XSharpModel
 					IF (System.Environment.ProcessorCount > 1)
 						parallelOptions:MaxDegreeOfParallelism := ((System.Environment.ProcessorCount * 3) / 4)
 					ENDIF
-					project:ProjectNode:SetStatusBarAnimation(true, 0)
+					project:ProjectNode:SetStatusBarAnimation(TRUE, 0)
 					Parallel.ForEach(aFiles, walkOneFile)
 					BEGIN LOCK SELF
 						_projectsForTypeResolution:Enqueue(project)
 					END LOCK
 					project:ProjectNode:SetStatusBarText("")
-					project:ProjectNode:SetStatusBarAnimation(false, 0)
+					project:ProjectNode:SetStatusBarAnimation(FALSE, 0)
 					WriteOutputMessage("<<-- Walker("+project.Name+")")
+                    project:FileWalkCompleted := TRUE
 				ENDDO
 
 
 			ENDIF
 			IF ((SELF:_projectsForTypeResolution:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projectsForTypeResolution):ProjectNode:IsVsBuilding)
-				DO WHILE (true)
+				DO WHILE (TRUE)
 					IF (ModelWalker.suspendLevel > 0)
-						IF (project != null)
+						IF (project != NULL)
 							SELF:_projectsForTypeResolution:Enqueue(project)
 						ENDIF
 						EXIT
 					ENDIF
-					
+
 					BEGIN LOCK SELF
 						IF ((SELF:_projectsForTypeResolution:Count == 0) .OR. ! SELF:_projectsForTypeResolution:TryDequeue( OUT project))
 							EXIT
@@ -199,7 +200,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDDO
 
 			ENDIF
-		
+
 		PRIVATE METHOD walkOneFile(file AS XFile) AS VOID
 			VAR project := file:Project
 			IF (project:Loaded)
@@ -221,17 +222,17 @@ BEGIN NAMESPACE XSharpModel
 				RETURN (SELF:_projects:Count > 0)
 			END GET
 		END PROPERTY
-		
+
 		STATIC PROPERTY IsSuspended AS LOGIC
 			GET
 				RETURN ModelWalker.suspendLevel > 0
 			END GET
 		END PROPERTY
-		
+
 		PROPERTY IsWalkerRunning AS LOGIC
 			GET
 				TRY
-					IF SELF:_WalkerThread != null
+					IF SELF:_WalkerThread != NULL
 						RETURN SELF:_WalkerThread:IsAlive
 					ENDIF
 				CATCH exception AS System.Exception
@@ -239,14 +240,14 @@ BEGIN NAMESPACE XSharpModel
 					WriteOutputMessage("Cannot check Background walker Thread : ")
 					XSolution.WriteException(exception)
 				END TRY
-				RETURN false
+				RETURN FALSE
 			END GET
 		END PROPERTY
-		
+
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Walker "+message)
-		
+
 	END CLASS
-	
-END NAMESPACE 
+
+END NAMESPACE
 

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 //#define WRITE2LOGFILE
@@ -104,7 +104,7 @@ namespace XSharp.CodeDom
         static void dumpUserData(IDictionary userData)
         {
             if (userData.Count > 0)
-            { 
+            {
                 writeLine(Delimiter);
                 writeLine("UserData");
                 foreach (DictionaryEntry value in userData)
@@ -121,7 +121,7 @@ namespace XSharp.CodeDom
             writer = new StreamWriter(FileName, append, System.Text.Encoding.UTF8);
             try
             {
-                
+
                 String Line = new String('=', 25);
                 _indent = 0;
                 //
@@ -169,7 +169,7 @@ namespace XSharp.CodeDom
                 }
             }
             finally
-            { 
+            {
                 writer.Close();
             }
         }
@@ -331,7 +331,7 @@ namespace XSharp.CodeDom
             {
                 CodeFieldReferenceExpression exp = (CodeFieldReferenceExpression)e;
                 dumpExpression(exp.TargetObject);
-                writeLineIndent("F: "+exp.FieldName); 
+                writeLineIndent("F: "+exp.FieldName);
             }
             else if (e is CodeObjectCreateExpression)
             {
@@ -387,7 +387,7 @@ namespace XSharp.CodeDom
             {
                 writeLineIndent("SUPER");
             }
-            else 
+            else
             {
                 writeLineIndent(e.GetType().FullName);
             }

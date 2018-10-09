@@ -214,7 +214,7 @@ BEGIN NAMESPACE XSharp
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(FALSE)
                     IF oProp != NULL
-                        oProp:SetValue(oElement, OOPHelpers.MyConvert(VALUE, oProp:PropertyType), <OBJECT>{sPropertyName} )
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{sPropertyName} )
                         RETURN
                     ENDIF
 					oProp	 := __GetProperty( sPropertyName)
@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharp
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(TRUE)
                     IF oProp != NULL
-                        VAR oIndex := OOPHelpers.MyConvert(index2, oProp:GetIndexParameters()[1]:ParameterType)
+                        VAR oIndex := OOPHelpers.VOConvert(index2, oProp:GetIndexParameters()[1]:ParameterType)
                         RETURN oProp:GetValue(oElement, <OBJECT>{oIndex})
                     ENDIF
                     THROW ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}
@@ -258,8 +258,8 @@ BEGIN NAMESPACE XSharp
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(TRUE)
                     IF oProp != NULL
-                        VAR oIndex := OOPHelpers.MyConvert(index2, oProp:GetIndexParameters()[1]:ParameterType)
-                        oProp:SetValue(oElement, OOPHelpers.MyConvert(VALUE, oProp:PropertyType), <OBJECT>{oIndex})
+                        VAR oIndex := OOPHelpers.VOConvert(index2, oProp:GetIndexParameters()[1]:ParameterType)
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{oIndex})
                         RETURN
                     ENDIF
                     THROW ArgumentException{"Numeric indexed property missing for type: "+oElement:GetType():FullName}

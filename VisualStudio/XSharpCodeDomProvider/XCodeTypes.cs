@@ -1,10 +1,11 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.CodeDom;
 using System.Diagnostics;
+using XSharpModel;
 
 namespace XSharp.CodeDom
 {
@@ -16,15 +17,25 @@ namespace XSharp.CodeDom
     {
 
         internal System.Type Type { get; set; }
+        internal XType XType { get; set; }
         internal string _typeName;
         internal XCodeTypeReference(string typeName) : base(typeName)
         {
             _typeName = typeName;
+            Type = null;
+            XType = null;
+        }
+        internal XCodeTypeReference(XType type) : base(type.Name)
+        {
+            XType = type;
+            Type = null;
+            _typeName = type.FullName;
         }
 
         internal XCodeTypeReference(System.Type type) : base(type)
         {
             Type = type;
+            XType = null;
             _typeName = type.FullName;
         }
 

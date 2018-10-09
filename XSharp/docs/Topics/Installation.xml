@@ -160,6 +160,7 @@
       <li styleclass="Normal">HKCR\.ppo</li>
       <li styleclass="Normal">HKCR\.prg</li>
       <li styleclass="Normal">HKCR\.prgx</li>
+      <li styleclass="Normal">HKCR\.vh</li>
       <li styleclass="Normal">HKCR\.xh</li>
       <li styleclass="Normal">HKCR\.xs</li>
       <li styleclass="Normal">HKCR\.xsproj</li>

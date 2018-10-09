@@ -118,19 +118,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else // System.Decimals, Objects and reference types, but not String
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject , rewrittenOperand);
-                        if (rewrittenType.IsObjectType())
+                        // special case for __CastClass
+                        var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
+                        if (xnode != null && xnode.IsCastClass())
                         {
-                            conversionKind = ConversionKind.Identity;
-                        }
-                        else if (rewrittenType.IsReferenceType)
-                        {
-                            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-                            conversionKind = ConversionKind.ImplicitReference;
+                            conversionKind = ConversionKind.Boxing;
                         }
                         else
                         {
-                            conversionKind = ConversionKind.Unboxing;
+                            rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, rewrittenOperand);
+                            if (rewrittenType.IsObjectType())
+                            {
+                                conversionKind = ConversionKind.Identity;
+                            }
+                            else if (rewrittenType.IsReferenceType)
+                            {
+                                rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+                                conversionKind = ConversionKind.ImplicitReference;
+                            }
+                            else
+                            {
+                                conversionKind = ConversionKind.Unboxing;
+                            }
                         }
                     }
                 }

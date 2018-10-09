@@ -21,16 +21,16 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		PROPERTY SysName AS STRING GET TYPEOF(DbfNtx):ToString()	
 		
-
-			
-			#REGION Order Support 
+		
+		
+		#REGION Order Support 
 		VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC
 			RETURN SELF:_ntxList:Create(orderInfo)
-
+			
 		VIRTUAL METHOD OrderDestroy(orderInfo AS DBORDERINFO ) AS LOGIC
 			RETURN SUPER:OrderDestroy(orderInfo)
-
-
+			
+			
 		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo, fullPath AS STRING) AS LOGIC
 			//
 			BEGIN LOCK SELF
@@ -164,9 +164,51 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 			END LOCK
 			
+		#ENDREGION
+			
+		#REGION GoCold, GoHot, Flush
+		PUBLIC OVERRIDE METHOD GoCold() AS LOGIC
+			LOCAL isOk AS LOGIC
+			//
+			isOk := TRUE
+			BEGIN LOCK SELF
+				IF ( !SELF:IsHot )
+					RETURN isOk
+				ENDIF
+				isOk := SELF:_ntxList:GoCold()
+				IF (!isOk)
+					RETURN isOk
+				ENDIF
+				RETURN SUPER:GoCold()
+			END LOCK
+
+		PUBLIC OVERRIDE METHOD GoHot() AS LOGIC
+			LOCAL isOk AS LOGIC
+			//
+			isOk := TRUE
+			BEGIN LOCK SELF
+				isOk := SUPER:GoHot()
+				IF (!isOk)
+					RETURN isOk
+				ENDIF
+				RETURN SELF:_ntxList:GoHot()
+			END LOCK
+
+		PUBLIC OVERRIDE METHOD Flush() AS LOGIC
+			LOCAL isOk AS LOGIC
+			//
+			isOk := TRUE
+			BEGIN LOCK SELF
+				isOk := SUPER:Flush()
+				RETURN SELF:_ntxList:Flush()
+			END LOCK
+
+		#ENDREGION
 			
 			
-			#ENDREGION
+			
+			
+			
 			
 	END CLASS
 	

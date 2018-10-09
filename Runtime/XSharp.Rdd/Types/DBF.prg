@@ -105,6 +105,7 @@ BEGIN NAMESPACE XSharp.RDD
 					IF ( SELF:_Shared .AND. nRec > SELF:RecCount )
 						SELF:_RecCount := SELF:_calculateRecCount()
 					ENDIF
+					//
 					IF ( nRec <= SELF:RecCount ) .AND. ( nRec > 0 )
 						// virtual pos
 						SELF:_RecNo := nRec
@@ -113,18 +114,18 @@ BEGIN NAMESPACE XSharp.RDD
 						SELF:_Found :=TRUE
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := TRUE
-					ELSEIF nRec <= 0
+					ELSEIF nRec < 0
 						SELF:_RecNo := 1
 						SELF:_EOF := FALSE
 						SELF:_Bof := TRUE
-						SELF:_Found :=TRUE
+						SELF:_Found :=FALSE
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := FALSE
 					ELSE
 						// File empty, or trying to go outside ?
 						SELF:_RecNo := SELF:RecCount + 1
 						SELF:_EOF := TRUE
-						SELF:_Bof := FALSE
+						SELF:_Bof := TRUE
 						SELF:_Found := FALSE
 						SELF:_BufferValid := FALSE
 						SELF:_isValid := FALSE
@@ -866,7 +867,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_FileName := SELF:_OpenInfo:FileName
 			// Check that we have a FullPath
 			IF (Path.GetDirectoryName(SELF:_FileName):Length == 0)
-				// TODO : CHange that code to take care of DefaultPath, ...
+				//TODO: Change that code to take care of DefaultPath, ...
 				SELF:_FileName := AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + SELF:_FileName
 			ENDIF
 			SELF:_Shared := SELF:_OpenInfo:Shared
@@ -1010,7 +1011,7 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD AddField(info AS RddFieldInfo) AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Check if the FieldName does already exist
-			isok := SUPER:AddField(info)
+			isok := SUPER:AddField( DbfRddFieldInfo{info} )
 			IF ( isOk ) .AND. info:FieldType == DbFieldType.Memo
 				SELF:_HasMemo := TRUE
 			ENDIF
@@ -1230,15 +1231,20 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN result
 			
 			// Convert the data stored in the buffer (BYTE[]) to an .NET Object. The convertion is drived by fieldType
-		INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], fieldType AS DbFieldType, nDec AS LONG) AS OBJECT
-			LOCAL str AS STRING
+		INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], fieldType AS DbFieldType, length AS LONG, nDec AS LONG, defValue AS LOGIC) AS OBJECT
+			LOCAL str := NULL AS STRING
 			LOCAL data AS OBJECT
-			LOCAL encoding AS ASCIIEncoding
-			// Read actual Data
-			encoding := ASCIIEncoding{}
-			str :=  encoding:GetString(buffer)
+			//			LOCAL encoding AS ASCIIEncoding
+			//			// Read actual Data
+			//			encoding := ASCIIEncoding{}
+			IF buffer != NULL
+				str :=  SELF:_Encoding:GetString(buffer)
+			ENDIF
 			IF ( str == NULL )
-				str := String.Empty
+				// Sorry, give us a value
+				IF !defValue
+					str := String.Empty
+				ENDIF
 			ENDIF
 			// !!! WARNING !!! Space char can be significant (specially in Memo!)
 			// str := str:Trim()
@@ -1256,20 +1262,35 @@ BEGIN NAMESPACE XSharp.RDD
 						ELSE
 							data := System.Convert.ToDouble(str)
 						ENDIF
+					ELSE
+						IF defValue
+							data := 0.0
+						ENDIF
 					ENDIF
 					//					IF ((DbFieldType:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//						//
 					//						data := 0.0
 					//					ENDIF
 				CASE DbFieldType.Character
-					//
-					str := str:Trim()
-					data := str
+					// Keep the size ??
+					//str := str:Trim()
+					IF (!String.IsNullOrWhiteSpace(str))
+						//
+						data := str
+					ELSE
+						IF defValue
+							data := STRING{ ' ', length }
+						ENDIF
+					ENDIF
 				CASE DbFieldType.Date
 					//
-					IF (! String.IsNullOrWhiteSpace(str))
+					IF (!String.IsNullOrWhiteSpace(str))
 						//
 						data := System.DateTime.ParseExact(str, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+					ELSE
+						IF defValue
+							data := System.DateTime.MinValue
+						ENDIF
 					ENDIF
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//                        //
@@ -1281,6 +1302,10 @@ BEGIN NAMESPACE XSharp.RDD
 					IF (! String.IsNullOrWhiteSpace(str))
 						//
 						data := System.BitConverter.ToInt32(buffer, 0)
+					ELSE
+						IF defValue
+							data := 0
+						ENDIF
 					ENDIF
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//                        //
@@ -1291,6 +1316,10 @@ BEGIN NAMESPACE XSharp.RDD
 					IF (! String.IsNullOrWhiteSpace(str))
 						//
 						data := ( ( String.Compare( str, "T", TRUE ) == 0 ) .OR. ( String.Compare( str, "Y", TRUE ) == 0 ) )
+					ELSE
+						IF defValue
+							data := FALSE
+						ENDIF
 					ENDIF
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//                        //
@@ -1301,6 +1330,10 @@ BEGIN NAMESPACE XSharp.RDD
 					IF (! (String.IsNullOrWhiteSpace(str) .OR. (System.BitConverter.ToInt64(buffer, 0) == 0)))
 						//
 						data := _julianToDateTime(System.BitConverter.ToInt64(buffer, 0))
+					ELSE
+						IF defValue
+							data := System.DateTime.MinValue
+						ENDIF
 					ENDIF
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//                        //
@@ -1309,6 +1342,10 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbFieldType.Currency
 					IF (!String.IsNullOrWhiteSpace(str))
 						data := System.Convert.ToDecimal(str)
+					ELSE
+						IF defValue
+							data := 0.0
+						ENDIF
 						//                    ELSE
 						//                        IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) == DBFFieldFlags.AllowNullValues)
 						//                            //
@@ -1541,6 +1578,10 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		METHOD GetValue(nFldPos AS LONG) AS OBJECT
 			LOCAL ret := NULL AS OBJECT
+			LOCAL nArrPos := nFldPos AS LONG
+			IF __ARRAYBASE__ == 0
+				nArrPos -= 1
+			ENDIF
 			// Read Record to Buffer
 			IF SELF:_readRecord()
 				//
@@ -1552,24 +1593,19 @@ BEGIN NAMESPACE XSharp.RDD
 						RETURN SUPER:GetValue(nFldPos)
 					ENDIF
 				ELSE
-					//                    IF ( fieldType == DbFieldType.Number )
-					//                        IF (SELF:_Fields[nArrPos]:Decimals == 0 )
-					//                            fieldType := DbFieldType.Integer
-					//                        ENDIF
-					//                    ENDIF
-					LOCAL nArrPos := nFldPos AS LONG
-					IF __ARRAYBASE__ == 0
-						nArrPos -= 1
-					ENDIF
 					LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
-					//
 					VAR destArray := BYTE[]{SELF:_Fields[nArrPos]:Length}
 					Array.Copy( SELF:_RecordBuffer, iOffset, destArray, 0, SELF:_Fields[nArrPos]:Length)
-					// We ned the Decimals number to return an Integer or a Float
-					ret := SELF:_convertDataToField( destArray, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Decimals )
+					// We need the Decimals number to return an Integer or a Float
+					ret := SELF:_convertDataToField( destArray, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Length, SELF:_Fields[nArrPos]:Decimals, FALSE )
 				ENDIF
 			ELSE
-				SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
+				IF SELF:EoF
+					// Give us the default value
+					ret := SELF:_convertDataToField( NULL, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Length, SELF:_Fields[nArrPos]:Decimals, TRUE )
+				ELSE
+					SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
+				ENDIF
 			ENDIF
 			RETURN ret
 			
@@ -1831,7 +1867,7 @@ BEGIN NAMESPACE XSharp.RDD
 				IF isOk .AND. !((DBF)currentRelation:Parent):_Eof
 					TRY
 						gotoRec := Convert.ToUInt32( SELF:_EvalResult )
-				CATCH AS InvalidCastException
+					CATCH AS InvalidCastException
 					END TRY
 				ENDIF
 				isOk := SELF:Goto( (INT)gotoRec )
@@ -1918,7 +1954,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL oResult AS OBJECT
 			oResult := NULL
 			SWITCH nOrdinal
-				CASE DbInfo.DBI_ISDBF
+			CASE DbInfo.DBI_ISDBF
 				CASE DbInfo.DBI_CANPUTREC
 					oResult := TRUE
 				CASE DbInfo.DBI_GETRECSIZE
@@ -1965,7 +2001,7 @@ BEGIN NAMESPACE XSharp.RDD
 					
 				OTHERWISE
 					oResult := SUPER:Info(nOrdinal, oNewValue)
-			END SWITCH
+				END SWITCH
 			RETURN oResult
 			
 			
@@ -1989,8 +2025,8 @@ BEGIN NAMESPACE XSharp.RDD
 			IF isOk
 				//
 				SWITCH nOrdinal
-				CASE DBRI_DELETED
-					CASE DBRI_ENCRYPTED
+					CASE DBRI_DELETED
+				CASE DBRI_ENCRYPTED
 					CASE DBRI_RAWRECORD
 					CASE DBRI_RAWMEMOS
 					CASE DBRI_RAWDATA
@@ -2015,8 +2051,8 @@ BEGIN NAMESPACE XSharp.RDD
 						oNewValue := SELF:RecNo
 					CASE DBRI_RECSIZE
 						oNewValue := SELF:_RecordLength
-					CASE DBRI_RAWRECORD
-				CASE DBRI_RAWMEMOS
+				CASE DBRI_RAWRECORD
+					CASE DBRI_RAWMEMOS
 					CASE DBRI_ENCRYPTED
 					OTHERWISE
 						oNewValue := SUPER:Info(nOrdinal, oNewValue)
@@ -2393,7 +2429,7 @@ BEGIN NAMESPACE XSharp.RDD
 						
 						
 						
-					END STRUCTURE
+						END STRUCTURE
 				/// <summary>DBF Field.</summary>
 				STRUCTURE DbfField
 					PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
@@ -2582,6 +2618,9 @@ BEGIN NAMESPACE XSharp.RDD
 		CLASS DbfRddFieldInfo INHERIT RddFieldInfo
 			PROTECTED iOffset AS LONG
 			
+			CONSTRUCTOR( info AS RddFIeldInfo )
+				SELF( info:Name, info:FieldType, info:Length, info:Decimals )
+				
 			CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
 				SUPER( sName, sType, nLength, nDecimals )
 				SELF:iOffset := -1
@@ -2595,7 +2634,8 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN SELF:iOffset
 			END GET
 			
-			INTERNAL SET
+			//INTERNAL SET
+			SET
 				SELF:iOffset := VALUE
 			END SET
 		END PROPERTY

@@ -374,7 +374,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
             // Now, Add some Data
             //"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
-            LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
+			LOCAL datas := "5,Diablo,T;2,Wolverine,T;4,Cyclops,T;3,Tornade,F;1,Professor Xavier,T" AS STRING
+            //LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
             LOCAL data := datas:Split( ';' ) AS STRING[]
             //
             FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)

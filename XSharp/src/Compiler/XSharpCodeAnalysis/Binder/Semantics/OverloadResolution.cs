@@ -87,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // In case of 2 methods with the same # of parameters 
                     // we have different / extended rules compared to C#
-                    var parsLeft  = m1.Member.GetParameters();
+                    var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
                     var usualType = Compilation.UsualType();
                     var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
@@ -126,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     // Only exit here when one of the two is better than the other
-                    if (equalLeft && ! equalRight)
+                    if (equalLeft && !equalRight)
                     {
                         result = BetterResult.Left;
                         return true;
@@ -154,23 +154,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (parLeft.Type != parRight.Type || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (parLeft.Type == usualType && argType != usualType && !parRight.Type.IsArray() )
+                            if (parLeft.Type == usualType && argType != usualType && !parRight.Type.IsArray())
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (parRight.Type == usualType && argType != usualType && !parLeft.Type.IsArray() )
+                            if (parRight.Type == usualType && argType != usualType && !parLeft.Type.IsArray())
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
                             // Prefer the method with Object type over the one with Object[] type
-                            if (parLeft.Type == objectType && parRight.Type.IsArray() && ((ArrayTypeSymbol) parRight.Type).ElementType == objectType)
+                            if (parLeft.Type == objectType && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType == objectType)
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (parRight.Type == objectType && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType == objectType )
+                            if (parRight.Type == objectType && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType == objectType)
                             {
                                 result = BetterResult.Right;
                                 return true;
@@ -197,14 +197,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         result = BetterResult.Left;
                                         return true;
                                     }
-                                    if (refRight == RefKind.Ref )
+                                    if (refRight == RefKind.Ref)
                                     {
                                         result = BetterResult.Right;
                                         return true;
                                     }
                                 }
                             }
-                            if  (refLeft != refRight)
+                            if (refLeft != refRight)
                             {
                                 if (parLeft.Type == argType && refLeft != RefKind.None && argCanBeByRef)
                                 {
@@ -216,7 +216,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     result = BetterResult.Right;
                                     return true;
                                 }
-                                if (parLeft.Type == argType && refLeft == RefKind.None && ! argCanBeByRef)
+                                if (parLeft.Type == argType && refLeft == RefKind.None && !argCanBeByRef)
                                 {
                                     result = BetterResult.Left;
                                     return true;
@@ -256,12 +256,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
-                            if (argType == parLeft.Type )
+                            if (argType == parLeft.Type)
                             {
                                 result = BetterResult.Left;
                                 return true;
                             }
-                            if (argType == parRight.Type )
+                            if (argType == parRight.Type)
                             {
                                 result = BetterResult.Right;
                                 return true;
@@ -270,7 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (argType == Compilation.FloatType())
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
-                                if (parLeft.Type == doubleType )
+                                if (parLeft.Type == doubleType)
                                 {
                                     result = BetterResult.Left;
                                     return true;
@@ -281,7 +281,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
-                         }
+                        }
 
                     }
                 }
@@ -289,7 +289,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // pick the first one in the references list
                 if (asm1 != asm2
                     && string.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase) )
+                    && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {
@@ -333,7 +333,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // generate warning that function takes precedence over static method
             var func1 = m1.Member.ContainingType.Name.EndsWith("Functions");
             var func2 = m2.Member.ContainingType.Name.EndsWith("Functions");
-            if (func1 && ! func2)
+            if (func1 && !func2)
             {
                 result = BetterResult.Left;
                 var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
@@ -367,7 +367,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // When the binary operators are equal we inspect the types
             if ((op1.Kind & BinaryOperatorKind.OpMask) == (op2.Kind & BinaryOperatorKind.OpMask))
             {
-                if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Float && 
+                if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Float &&
                     (op2.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double)
                 {
                     // Lhs = real4, rhs = real8, choose real8
@@ -424,8 +424,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (Compilation.Options.VOSignedUnsignedConversion)
                     {
                         #region Integral Binary Operators
-                        if (left.Type.IsIntegralType()  && right.Type.IsIntegralType()
-                            && op1.Kind.IsIntegral() && op2.Kind.IsIntegral() )
+                        if (left.Type.IsIntegralType() && right.Type.IsIntegralType()
+                            && op1.Kind.IsIntegral() && op2.Kind.IsIntegral())
                         {
                             // when both operands have integral types, choose the one that match the sign and or size 
                             // we check the lhs of the expression first
@@ -436,14 +436,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                             int op1Size = op1.LeftType.SpecialType.SizeInBytes();
                             int op2Size = op2.LeftType.SpecialType.SizeInBytes();
                             // op1 matches sign and size and op2 does not
-                            if ((exprSigned  == op1Signed && exprSize == op1Size)
+                            if ((exprSigned == op1Signed && exprSize == op1Size)
                                 && (exprSigned != op2Signed || exprSize != op2Size))
                             {
                                 return BetterResult.Left;
                             }
                             // op2 matches sign and size and op1 does not
                             if ((exprSigned != op1Signed || exprSize != op1Size)
-                                && (exprSigned == op2Signed  && exprSize == op2Size))
+                                && (exprSigned == op2Signed && exprSize == op2Size))
                             {
                                 return BetterResult.Right;
                             }
@@ -471,7 +471,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             op1Signed = op1.LeftType.SpecialType.IsSignedIntegralType();
                             op2Signed = op2.LeftType.SpecialType.IsSignedIntegralType();
                             // op1 matches sign and op2 does not
-                            if (exprSigned == op1Signed  && exprSigned != op2Signed )
+                            if (exprSigned == op1Signed && exprSigned != op2Signed)
                             {
                                 return BetterResult.Left;
                             }
@@ -497,7 +497,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         #endregion
                     }
 
-                    if ( (left.Type.IsIntegralType() && right.Type.IsPointerType()) 
+                    if ((left.Type.IsIntegralType() && right.Type.IsPointerType())
                         || left.Type.IsPointerType() && right.Type.IsIntegralType())
                     {
                         if (op1.LeftType.IsVoidPointer() && op1.RightType.IsVoidPointer())
@@ -522,7 +522,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return BetterResult.Left;
                     }
-}
+                }
                 else // not integral, so most likely floating point
                 {
                     return BetterResult.Left;
@@ -612,6 +612,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
         }
-
+        internal static bool IsCastClass(this XSharpParserRuleContext node)
+        {
+            return node.Start.Type == XSharpLexer.CASTCLASS;
+        }
     }
 }

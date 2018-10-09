@@ -7,32 +7,32 @@
       <para styleclass="Heading1">BSD</para>
     </header>
     <para styleclass="Body Text">The Antlr source that we have used in our product is published under the BSD license. The full text of this license is:</para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">[The &quot;BSD license&quot;]</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">Copyright (c) 2015 Terence Parr, Sam Harwell</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">All rights reserved.</text></para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">Redistribution and use in source and binary forms, with or without</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">modification, are permitted provided that the following conditions</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">are met:</text></para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> 1. Redistributions of source code must retain the above copyright</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> notice, this list of conditions and the following disclaimer.</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> 2. Redistributions in binary form must reproduce the above copyright</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> notice, this list of conditions and the following disclaimer in the</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> documentation and/or other materials provided with the distribution.</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> 3. The name of the author may not be used to endorse or promote products</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;"> derived from this software without specific prior written permission.</text></para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS&apos;&apos; AND ANY EXPRESS OR</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF</text></para>
-    <para styleclass="Code Example"><text style="font-size:10pt;">THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">[The &quot;BSD license&quot;]</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">Copyright (c) 2015 Terence Parr, Sam Harwell</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">All rights reserved.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">Redistribution and use in source and binary forms, with or without</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">modification, are permitted provided that the following conditions</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">are met:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> 1. Redistributions of source code must retain the above copyright</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> notice, this list of conditions and the following disclaimer.</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> 2. Redistributions in binary form must reproduce the above copyright</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> notice, this list of conditions and the following disclaimer in the</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> documentation and/or other materials provided with the distribution.</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> 3. The name of the author may not be used to endorse or promote products</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry"> derived from this software without specific prior written permission.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS&apos;&apos; AND ANY EXPRESS OR</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF</text></para>
+    <para styleclass="Normal"><text styleclass="T_Entry">THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. </text></para>
   </body>
 </topic>

@@ -1389,6 +1389,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			        { "ABSTRACT", ABSTRACT},
                     { "ANSI", ANSI},
                     { "AUTO", AUTO},
+                    { "__CASTCLASS", CASTCLASS},
                     { "CATCH", CATCH},
                     { "CHAR", CHAR},
                     { "CONSTRUCTOR", CONSTRUCTOR},

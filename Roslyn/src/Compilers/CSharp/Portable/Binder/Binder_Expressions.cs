@@ -1839,7 +1839,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
             if (pe?.Expr is XSharpParser.VoCastExpressionContext)
             {
-                if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType)
+                if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType && !pe.IsCastClass())
                 {
                     diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
                 }

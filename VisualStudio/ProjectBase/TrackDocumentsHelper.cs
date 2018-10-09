@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -128,9 +128,12 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal void OnItemRemoved(string file, VSREMOVEFILEFLAGS flag)
         {
-            if((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
+            if (!string.IsNullOrEmpty(file))
             {
-                ErrorHandler.ThrowOnFailure(this.GetIVsTrackProjectDocuments2().OnAfterRemoveFiles(this.projectMgr , 1, new string[1] { file }, new VSREMOVEFILEFLAGS[1] { flag }));
+                if ((this.projectMgr.EventTriggeringFlag & ProjectNode.EventTriggering.DoNotTriggerTrackerEvents) == 0)
+                {
+                    ErrorHandler.ThrowOnFailure(this.GetIVsTrackProjectDocuments2().OnAfterRemoveFiles(this.projectMgr, 1, new string[1] { file }, new VSREMOVEFILEFLAGS[1] { flag }));
+                }
             }
         }
 

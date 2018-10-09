@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -19,7 +19,7 @@ USING System.Linq
 ////	cFileName := "C:\VIDE\Projects\XIDE\VIDE\PIDE.prg"
 //cFileName := "c:\temp\InventoryRepILst.prg"
 //Parser.ParseAndDisplay(File.ReadAllLines(cFileName))
-//return	
+//return
 //
 BEGIN NAMESPACE XSharpModel
 	CLASS Parser
@@ -34,19 +34,19 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PROTECT aOperators AS CHAR[]
 		STATIC PROTECT aEndKeywords AS STRING[]
 		STATIC PROTECT aTypes AS STRING[]
-		
+
 		// instance fields
-		PRIVATE aEntities AS List<EntityObject> 
-		PRIVATE aLocals   AS List<EntityObject> 
-		PRIVATE aResult   AS List<EntityObject> 
-		PRIVATE aLinesWithSpecialStuff AS List<LineObject> 
-		PRIVATE aLines    AS List<LineObject> 
+		PRIVATE aEntities AS List<EntityObject>
+		PRIVATE aLocals   AS List<EntityObject>
+		PRIVATE aResult   AS List<EntityObject>
+		PRIVATE aLinesWithSpecialStuff AS List<LineObject>
+		PRIVATE aLines    AS List<LineObject>
 		PRIVATE aSourceLines    AS IList<STRING>
 		PRIVATE aTypeStack AS Stack<EntityObject>
 		PRIVATE oGlobalObject AS EntityObject
 		PRIVATE _nLength  AS INT
         PRIVATE iClassOrStruct AS INT
-				
+
 		CONSTRUCTOR()
 			SELF:aEntities				:= List<EntityObject>{}
 			SELF:aLocals				:= List<EntityObject>{}
@@ -56,35 +56,35 @@ BEGIN NAMESPACE XSharpModel
 			SELF:aTypeStack					:= Stack<EntityObject>{}
 			SELF:oGlobalObject				:= EntityObject{EntityType._Class}
 			SELF:oGlobalObject:cName		:= XELement.GlobalName
-			SELF:oGlobalObject:lStatic		:= true
-			SELF:oGlobalObject:lPartial		:= true
+			SELF:oGlobalObject:lStatic		:= TRUE
+			SELF:oGlobalObject:lPartial		:= TRUE
 			SELF:oGlobalObject:nStartLine	:= 1
 			SELF:oGlobalObject:nCol			:= 1
             SELF:iClassOrStruct             := 0
-		
-		
+
+
 		STATIC CONSTRUCTOR()
 			oEntityMarkers := Dictionary<STRING , STRING>{}
 			oEntityVisibility := Dictionary<STRING , STRING>{}
 			oDirectives := Dictionary<STRING , STRING>{}
 			hBrk := Dictionary<CHAR,CHAR>{}
-			aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH"} 
-			aTokenInOut := <STRING>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" } 
+			aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH"}
+			aTokenInOut := <STRING>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" }
 			aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL"}
-			aEntityWords := <STRING>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"} 
+			aEntityWords := <STRING>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"}
 			aOperators := <CHAR>{'+','-','*','/','%','&','|','>','<','=','!','~'}
 			aEndKeyWords := <STRING>{"CLASS","STRUCTURE","STRUCT","INTERFACE","ENUM"}
 			aTypes := <STRING>{"CLASS","STRUCTURE","STRUCT","INTERFACE","DELEGATE","ENUM","VOSTRUCT","UNION"}
 			LOCAL aWords AS STRING[]
-			
+
 			aWords := <STRING>{;
 								"CLASS","METHOD","FUNCTION","PROCEDURE","FUNC","PROC","ACCESS","ASSIGN","OPERATOR","DELEGATE",;
 								"GLOBAL","CONSTRUCTOR","DESTRUCTOR","STRUCTURE","STRUCT","VOSTRUCT","UNION","ENUM","INTERFACE","PROPERTY","DEFINE"}
 			FOREACH cWord AS STRING IN aWords
 				oEntityMarkers:Add(cWord:ToUpper() , cWord)
 			NEXT
-			
-			
+
+
 			aWords := <STRING>{;
 								"VIRTUAL", "PARTIAL", "_DLL", "ABSTRACT", "SEALED", ;
 								"INTERNAL", "HIDDEN", "STATIC", "PROTECTED", "INSTANCE", ;
@@ -93,14 +93,14 @@ BEGIN NAMESPACE XSharpModel
 			FOREACH cWord AS STRING IN aWords
 				oEntityVisibility:Add(cWord:ToUpper() , cWord)
 			NEXT
-			
+
 			aWords := <STRING>{;
 								"ifdef","ifndef","endif","else","define","undef","command","translate",;
 								"region","endregion","using","include","line","pragma","error","warning"}
 			FOREACH cWord AS STRING IN aWords
 				oDirectives:Add(cWord:ToUpper() , cWord)
 			NEXT
-			
+
 			LOCAL cBreak AS STRING
 			LOCAL n AS INT
 			cBreak := e",./;:[]<>?{}`~!@#$%^&*()-=\\+|'\""
@@ -108,19 +108,19 @@ BEGIN NAMESPACE XSharpModel
 			FOR n := 0 UPTO cBreak:Length - 1
 				hBrk:Add(cBreak[n] , cBreak[n])
 			NEXT
-			
+
 			RETURN
-		
+
 		INTERNAL METHOD _SetLineType(oLine AS LineObject, eLineType AS LineType) AS VOID
 			oLine:eType := eLineType
 			IF ! SELF:aLinesWithSpecialStuff:Contains(oLine)
 				SELF:aLinesWithSpecialStuff:Add(oLine)
 			ENDIF
-		
-		PROPERTY Entities		AS IList<EntityObject>	GET aEntities				
+
+		PROPERTY Entities		AS IList<EntityObject>	GET aEntities
 		PROPERTY Types		    AS IList<EntityObject>	GET aResult
 		PROPERTY Locals		    AS IList<EntityObject>	GET aLocals
-		PROPERTY SpecialLines	AS IList<LineObject>	GET aLinesWithSpecialStuff 
+		PROPERTY SpecialLines	AS IList<LineObject>	GET aLinesWithSpecialStuff
 		PROPERTY SourceLength   AS INT					GET _nLength -2 // exclude last CRLF
 		PROPERTY LineCount      AS INT					GET aSourceLines:Count
 
@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
             ENDIF
             RETURN oParent
-			
+
 
 
 		METHOD Parse(aLineCollection AS IList<STRING>, lIncludeLocals AS LOGIC) AS ParseResult
@@ -197,7 +197,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL cBracketOpen , cBracketClose AS CHAR
 			LOCAL lPartial AS LOGIC
 			LOCAL n,n1,n2 AS INT
-			
+
 			LOCAL lMustLoop AS LOGIC
 			LOCAL cCharBeforeWord AS CHAR
 			LOCAL lInAttribute AS LOGIC
@@ -206,21 +206,21 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL nEntityStartOffset AS INT
 			LOCAL nEntityStartCol AS INT
 			LOCAL nAt AS INT
-			
+
 			LOCAL eWordStatus AS WordStatus
 			LOCAL eWordSubStatus AS WordSubStatus
 			LOCAL eCharStatus AS WordStatus
 			LOCAL eCharSubStatus AS WordSubStatus
-			
+
 			LOCAL cShortClassName AS STRING
 			LOCAL cTypedClassName AS STRING
 			LOCAL cClassNameSpace AS STRING
 			LOCAL cClassType AS STRING
 			LOCAL cBaseNameSpace AS STRING
 			LOCAL aNameSpaces AS List<STRING>
-			
+
 			LOCAL hVis , hEnt AS Dictionary<STRING,STRING>
-			
+
 			LOCAL lInProperty AS LOGIC
 			LOCAL nAfterColonEquals AS INT
 			aSourceLines := aLineCollection
@@ -232,15 +232,15 @@ BEGIN NAMESPACE XSharpModel
 			cClassType := ""
 			cBaseNameSpace := ""
 			aNameSpaces := List<STRING>{}
-			
+
 			hEnt := oEntityMarkers
 			hVis := oEntityVisibility
-			
+
 			sWord := StringBuilder{20}
 			sFoundType := StringBuilder{20}
-			
+
 			state:Reset()
-			
+
 			nLine := 0
 			_nLength := 0
 			FOREACH cLine AS STRING IN aLineCollection
@@ -248,7 +248,7 @@ BEGIN NAMESPACE XSharpModel
 				oLine := LineObject{nLine, _nLength}
 				aLines:Add(oLine)
 				_nLength += cLine:Length + 2
-				
+
 				// Line parsing
 				nChar := 0
 				cChar := ' '
@@ -258,17 +258,17 @@ BEGIN NAMESPACE XSharpModel
 				cRealChar := ' '
 				nLineLen := cLine:Length
 				sWord:Length := 0
-				lEscapedWord := false
-				
+				lEscapedWord := FALSE
+
 				IF lContinueNextLine
-					lContinueNextLine := false
+					lContinueNextLine := FALSE
 				ELSE
 					state:Reset()
 					nBracketCount := 0
-					lPartial := false
-					lStatic := false
-					lFindingType := false
-					lFindingName := false
+					lPartial := FALSE
+					lStatic := FALSE
+					lFindingType := FALSE
+					lFindingName := FALSE
 					sFoundType:Length := 0
 					eAccessLevel := AccessLevel.Public
 					eModifiers := EntityModifiers._None
@@ -277,10 +277,10 @@ BEGIN NAMESPACE XSharpModel
 					aLineLocals:Clear()
 					sWord:Length := 0
 					cRealChar := ' '
-					lEscapedWord := false
-					lInAttribute := false
-					lAllowAttribute := true
-					oInfo := null
+					lEscapedWord := FALSE
+					lInAttribute := FALSE
+					lAllowAttribute := TRUE
+					oInfo := NULL
 					nEntityStartLine := 0
 					nEntityStartOffset := 0
 					nEntityStartCol := 0
@@ -289,45 +289,45 @@ BEGIN NAMESPACE XSharpModel
 				IF eLexer != LexerStep.BlockComment
 					eLexer := LexerStep.None
 				END IF
-				
+
 				DO WHILE nChar <= nLineLen // one more than chars in line
-					
+
 					// Lexing
 					IF sWord:Length == 0
 						cCharBeforeWord := cRealChar
 					END IF
 					cOldOldChar := cOldChar
 					cOldChar := cChar
-					IF cOldOldChar == '@' .and. cOldChar == '@'
-						lEscapedWord := true
+					IF cOldOldChar == '@' .AND. cOldChar == '@'
+						lEscapedWord := TRUE
 					ELSE
 						IF sWord:Length == 0
-							lEscapedWord := false
+							lEscapedWord := FALSE
 						END IF
 					END IF
-					IF cOldChar == ';' .and. eLexer == LexerStep.None .and. (.not. state:lDirective .or. eStep == ParseStep.AfterUsing)
-						lNewCommandInLine := false
-						lContinueNextLine := true
+					IF cOldChar == ';' .AND. eLexer == LexerStep.None .AND. (.NOT. state:lDirective .OR. eStep == ParseStep.AfterUsing)
+						lNewCommandInLine := FALSE
+						lContinueNextLine := TRUE
 						IF nChar < nLineLen
 							FOR n := nChar UPTO nLineLen - 1
 								cTestChar := cLine[n]
-								IF cTestChar != ' ' .and. cTestChar != '\t'
+								IF cTestChar != ' ' .AND. cTestChar != '\t'
 									IF cTestChar != '/'  // non-commented code follows
-										lNewCommandInLine := true
-										lContinueNextLine := false
+										lNewCommandInLine := TRUE
+										lContinueNextLine := FALSE
 									END IF
 									EXIT
 								END IF
 							NEXT
 						ENDIF
 						IF lNewCommandInLine
-							lNewCommandInLine := false
+							lNewCommandInLine := FALSE
 							state:Reset()
 							nBracketCount := 0
-							lPartial := false
-							lStatic := false
-							lFindingType := false
-							lFindingName := false
+							lPartial := FALSE
+							lStatic := FALSE
+							lFindingType := FALSE
+							lFindingName := FALSE
 							sFoundType:Length := 0
 							eAccessLevel := AccessLevel.Public
 							eModifiers := EntityModifiers._None
@@ -337,10 +337,10 @@ BEGIN NAMESPACE XSharpModel
 							aLineLocals:Clear()
 							sWord:Length := 0
 							cRealChar := ' '
-							lEscapedWord := false
-							lInAttribute := false
-							lAllowAttribute := true
-							oInfo := null
+							lEscapedWord := FALSE
+							lInAttribute := FALSE
+							lAllowAttribute := TRUE
+							oInfo := NULL
 							nEntityStartLine := 0
 							nEntityStartOffset := 0
 							nEntityStartCol := 0
@@ -348,12 +348,12 @@ BEGIN NAMESPACE XSharpModel
 							cOldChar := ' '
 						END IF
 					ENDIF
-					
-					IF nBracketCount == 0 .and. .not. lFindingType
-						IF cOldChar == '{' .or. cOldChar == '['
-							
+
+					IF nBracketCount == 0 .AND. .NOT. lFindingType
+						IF cOldChar == '{' .OR. cOldChar == '['
+
 							// indexed PROPERTY
-							IF .not. (cOldChar == '[' .and. state:lEntityFound .and. oInfo != null .and. oInfo:eType == EntityType._Property)
+							IF .NOT. (cOldChar == '[' .AND. state:lEntityFound .AND. oInfo != NULL .AND. oInfo:eType == EntityType._Property)
 								SWITCH cOldChar
 									CASE '{'
 										cBracketOpen := '{'
@@ -366,8 +366,8 @@ BEGIN NAMESPACE XSharpModel
 							END IF
 						END IF
 					END IF
-					
-					
+
+
 					IF nChar == nLineLen
 						cChar := ' '
 					ELSE
@@ -375,27 +375,27 @@ BEGIN NAMESPACE XSharpModel
 					ENDIF
 					cRealChar := cChar
 					nChar ++
-					
+
 					IF state:lFirstChar
-						IF cOldChar != ' ' .and. cOldChar != '\t'
-							state:lFirstChar := false
+						IF cOldChar != ' ' .AND. cOldChar != '\t'
+							state:lFirstChar := FALSE
 						END IF
 					END IF
-					
-					lBeforeLexerChange := false
-					lMustLoop := false
+
+					lBeforeLexerChange := FALSE
+					lMustLoop := FALSE
 					eWordStatus := WordStatus.Text
 					eWordSubStatus := WordSubStatus.Text
 					eCharStatus := WordStatus.Text
 					eCharSubStatus := WordSubStatus.Text
 					DO CASE
-						CASE state:lDirective .and. eLexer == LexerStep.None .and. .not. (cRealChar == '\'' .or. cRealChar == '"' .or. (cRealChar == '*' .and. cOldChar == '/') .or. (cRealChar == '/' .and. cOldChar == '/') )
+						CASE state:lDirective .AND. eLexer == LexerStep.None .AND. .NOT. (cRealChar == '\'' .OR. cRealChar == '"' .OR. (cRealChar == '*' .AND. cOldChar == '/') .OR. (cRealChar == '/' .AND. cOldChar == '/') )
 							eWordStatus := WordStatus.Text
 							eWordSubStatus := WordSubStatus.Text
-							IF cChar == '/' .and. nChar < cLine:Length .and. cLine[nChar] == '*'
+							IF cChar == '/' .AND. nChar < cLine:Length .AND. cLine[nChar] == '*'
 								eCharStatus := WordStatus.Comment
 								eCharSubStatus := WordSubStatus.CommentBlock
-							ELSEIF cChar == '/' .and. nChar < cLine:Length .and. cLine[nChar] == '/'
+							ELSEIF cChar == '/' .AND. nChar < cLine:Length .AND. cLine[nChar] == '/'
 								eCharStatus := WordStatus.Comment
 								eCharSubStatus := WordSubStatus.CommentLine
 							ELSE
@@ -408,7 +408,7 @@ BEGIN NAMESPACE XSharpModel
 							eCharStatus := WordStatus.Comment
 							eCharSubStatus := WordSubStatus.CommentLine
 						CASE eLexer == LexerStep.BlockComment
-							IF cChar == '/' .and. cOldChar == '*'
+							IF cChar == '/' .AND. cOldChar == '*'
 								eLexer := LexerStep.None
 								cChar := ' ' // if next char is '*', we shouldn't go to BlockComment mode again
 							ENDIF
@@ -416,21 +416,21 @@ BEGIN NAMESPACE XSharpModel
 							eWordSubStatus := WordSubStatus.CommentBlock
 							eCharStatus := WordStatus.Comment
 							eCharSubStatus := WordSubStatus.CommentBlock
-							lMustLoop := true
-						CASE cChar == '"' .and. eLexer != LexerStep.Quote .and. .not. (eLexer == LexerStep.DoubleQuote .and. lEscapedString .and. lEscapedChar)
+							lMustLoop := TRUE
+						CASE cChar == '"' .AND. eLexer != LexerStep.Quote .AND. .NOT. (eLexer == LexerStep.DoubleQuote .AND. lEscapedString .AND. lEscapedChar)
 							IF eLexer == LexerStep.DoubleQuote
 								eLexer := LexerStep.None
 								eWordStatus := WordStatus.Literal
 								eWordSubStatus := WordSubStatus.LiteralString
 								eCharStatus := WordStatus.Literal
 								eCharSubStatus := WordSubStatus.LiteralString
-								lMustLoop := true
+								lMustLoop := TRUE
 							ELSE
 								eLexer := LexerStep.DoubleQuote
-								lEscapedChar := false
-								lEscapedString := cOldChar == 'e' .and. sWord:Length == 1
-								IF .not. lEscapedString
-									lEscapedString := (cOldChar == 'e' .or. cOldChar == 'i') .and. sWord:Length == 2 .and. (sWord:ToString() == "ei" .or. sWord:ToString() == "ie")
+								lEscapedChar := FALSE
+								lEscapedString := cOldChar == 'e' .AND. sWord:Length == 1
+								IF .NOT. lEscapedString
+									lEscapedString := (cOldChar == 'e' .OR. cOldChar == 'i') .AND. sWord:Length == 2 .AND. (sWord:ToString() == "ei" .OR. sWord:ToString() == "ie")
 								END IF
 								IF lEscapedString
 									eWordStatus := WordStatus.Literal
@@ -438,31 +438,31 @@ BEGIN NAMESPACE XSharpModel
 								ELSE
 									eWordStatus := WordStatus.Text
 									eWordSubStatus := WordSubStatus.Text
-									IF cOldChar == 'i' .and. sWord:Length == 1
+									IF cOldChar == 'i' .AND. sWord:Length == 1
 										eWordStatus := WordStatus.Literal
 										eWordSubStatus := WordSubStatus.LiteralString
 									END IF
 								END IF
 								eCharStatus := WordStatus.Literal
 								eCharSubStatus := WordSubStatus.LiteralString
-								lBeforeLexerChange := true
+								lBeforeLexerChange := TRUE
 								cChar := ' '
 							END IF
-						CASE cChar == '\'' .and. eLexer != LexerStep.DoubleQuote .and. .not. (eLexer == LexerStep.Quote .and. cOldChar == '\\' .and. lEscapedChar)
+						CASE cChar == '\'' .AND. eLexer != LexerStep.DoubleQuote .AND. .NOT. (eLexer == LexerStep.Quote .AND. cOldChar == '\\' .AND. lEscapedChar)
 							IF eLexer == LexerStep.Quote
 								eLexer := LexerStep.None
 								eWordStatus := WordStatus.Literal
 								eWordSubStatus := WordSubStatus.LiteralChar
 								eCharStatus := WordStatus.Literal
 								eCharSubStatus := WordSubStatus.LiteralChar
-								lMustLoop := true
+								lMustLoop := TRUE
 							ELSE
 								eLexer := LexerStep.Quote
 								eWordStatus := WordStatus.Text
 								eWordSubStatus := WordSubStatus.Text
 								eCharStatus := WordStatus.Literal
 								eCharSubStatus := WordSubStatus.LiteralChar
-								lBeforeLexerChange := true
+								lBeforeLexerChange := TRUE
 								cChar := ' '
 							END IF
 						CASE eLexer == LexerStep.DoubleQuote
@@ -471,47 +471,47 @@ BEGIN NAMESPACE XSharpModel
 							eCharStatus := WordStatus.Literal
 							eCharSubStatus := WordSubStatus.LiteralString
 							IF lEscapedChar
-								lEscapedChar := false
+								lEscapedChar := FALSE
 							ELSE
-								lEscapedChar := lEscapedString .and. cChar == '\\'
+								lEscapedChar := lEscapedString .AND. cChar == '\\'
 							END IF
-							lMustLoop := true
+							lMustLoop := TRUE
 						CASE eLexer == LexerStep.Quote
 							eWordStatus := WordStatus.Literal
 							eWordSubStatus := WordSubStatus.LiteralChar
 							eCharStatus := WordStatus.Literal
 							eCharSubStatus := WordSubStatus.LiteralChar
 							IF lEscapedChar
-								lEscapedChar := false
+								lEscapedChar := FALSE
 							ELSE
 								lEscapedChar := cChar == '\\'
 							END IF
-							lMustLoop := true
-						CASE (cChar == '/' .and. cOldChar == '/') .or. (state:lFirstChar .and. cChar = '*')
+							lMustLoop := TRUE
+						CASE (cChar == '/' .AND. cOldChar == '/') .OR. (state:lFirstChar .AND. cChar = '*')
 							eLexer := LexerStep.Comment
 							eWordStatus := WordStatus.Text
 							eWordSubStatus := WordSubStatus.Text
 							eCharStatus := WordStatus.Comment
 							eCharSubStatus := WordSubStatus.CommentLine
-							IF .not. lContinueNextLine
-								state:lIgnore := true
+							IF .NOT. lContinueNextLine
+								state:lIgnore := TRUE
 							END IF
-						CASE cChar == '*' .and. cOldChar == '/'
+						CASE cChar == '*' .AND. cOldChar == '/'
 							eLexer := LexerStep.BlockComment
 							cChar := ' ' // if next char is '/', we shouldn't go out of BlockComment mode again
 							eWordStatus := WordStatus.Text
 							eWordSubStatus := WordSubStatus.Text
 							eCharStatus := WordStatus.Comment
 							eCharSubStatus := WordSubStatus.CommentBlock
-							lMustLoop := true
+							lMustLoop := TRUE
 						CASE cChar == '/'
-							IF nChar < nLineLen .and. (cLine[nChar] == '/' .or. cLine[nChar] == '*') // about to go into comment mode
-								lBeforeLexerChange := true
+							IF nChar < nLineLen .AND. (cLine[nChar] == '/' .OR. cLine[nChar] == '*') // about to go into comment mode
+								lBeforeLexerChange := TRUE
 								IF cLine[nChar] == '/'
 									eCharStatus := WordStatus.Comment
 									eCharSubStatus := WordSubStatus.CommentLine
 								ELSE
-									state:lDirective := false
+									state:lDirective := FALSE
 									eCharStatus := WordStatus.Comment
 									eCharSubStatus := WordSubStatus.CommentBlock
 								END IF
@@ -519,9 +519,9 @@ BEGIN NAMESPACE XSharpModel
 								eWordSubStatus := WordSubStatus.Text
 							END IF
 					END CASE
-					
+
 					IF nBracketCount == 0
-						 lInAttribute := lAllowAttribute .and. cRealChar == '[' .and. sWord:Length == 0
+						 lInAttribute := lAllowAttribute .AND. cRealChar == '[' .AND. sWord:Length == 0
 					ELSE
 						IF cChar == cBracketOpen
 							nBracketCount ++
@@ -529,32 +529,32 @@ BEGIN NAMESPACE XSharpModel
 							nBracketCount --
 						END IF
 					ENDIF
-					
+
 					#warning need TO check this
 									/*IF lMustLoop
 					LOOP
 					END IF*/
-					
-					lIsSpaceChar := cChar == ' ' .or. cChar == '\t'
-					IF .not. lIsSpaceChar
-						lAllowAttribute := cRealChar == '(' .or. cRealChar == ',' .or. (state:lFirstWord .and. (cRealChar == ']' .or. cRealChar == ';') )
+
+					lIsSpaceChar := cChar == ' ' .OR. cChar == '\t'
+					IF .NOT. lIsSpaceChar
+						lAllowAttribute := cRealChar == '(' .OR. cRealChar == ',' .OR. (state:lFirstWord .AND. (cRealChar == ']' .OR. cRealChar == ';') )
 					END IF
-					IF .not. lIsSpaceChar .and. nEntityStartLine == 0
+					IF .NOT. lIsSpaceChar .AND. nEntityStartLine == 0
 						nEntityStartLine := nLine
 						nEntityStartOffset := oLine:OffSet
 						nEntityStartCol := nChar - 1
 					END IF
 					IF lIsSpaceChar
 						IF sWord:Length == 0
-							IF .not. (cRealChar == ' ' .or. cRealChar == '\t') 
+							IF .NOT. (cRealChar == ' ' .OR. cRealChar == '\t')
 								LOOP
 							END IF
 						END IF
-						lIsBreakChar := false
+						lIsBreakChar := FALSE
 					ELSE
 						lIsBreakChar := hBrk:ContainsKey(cChar)
-						IF lIsBreakChar .and. state:lEntityFound
-							IF oInfo != null .and. oInfo:eType == EntityType._Operator
+						IF lIsBreakChar .AND. state:lEntityFound
+							IF oInfo != NULL .AND. oInfo:eType == EntityType._Operator
 								IF System.Array.IndexOf(aOperators , cRealChar) != -1
 									sWord:Append(cRealChar)
 									LOOP
@@ -562,7 +562,7 @@ BEGIN NAMESPACE XSharpModel
 							END IF
 						END IF
 					END IF
-					
+
 					IF eLexer == LexerStep.None
 						IF cRealChar == '#'
 							eLexer := LexerStep.Sharp
@@ -572,7 +572,7 @@ BEGIN NAMESPACE XSharpModel
 							eCharSubStatus := WordSubStatus.LiteralSymbol
 						END IF
 					ELSEIF eLexer == LexerStep.Sharp
-						IF lIsBreakChar .or. lIsSpaceChar
+						IF lIsBreakChar .OR. lIsSpaceChar
 							eLexer := LexerStep.None
 						ENDIF
 						eWordStatus := WordStatus.Literal
@@ -580,18 +580,18 @@ BEGIN NAMESPACE XSharpModel
 						eCharStatus := WordStatus.Text
 						eCharSubStatus := WordSubStatus.Text
 					ENDIF
-					
-					IF cChar == '=' .and. cOldChar == ':'
+
+					IF cChar == '=' .AND. cOldChar == ':'
 						nAfterColonEquals := nChar
 					END IF
-					
-					IF .not. (lIsBreakChar .or. lIsSpaceChar)
+
+					IF .NOT. (lIsBreakChar .OR. lIsSpaceChar)
 						sWord:Append(cRealChar)
 						LOOP
 					ENDIF
 					// End of lexing
-					
-					
+
+
 					// Parsing
 					IF sWord:Length == 0
 						cWord := ""
@@ -600,21 +600,21 @@ BEGIN NAMESPACE XSharpModel
 						cWord := sWord:ToString()
 						cUpperWord := cWord:ToUpper()
 					END IF
-					
-					IF eWordSubStatus == WordSubStatus.LiteralSymbol .and. sWord:Length != 0
-						IF state:lFirstWord .and. oDirectives:ContainsKey(cUpperWord)
+
+					IF eWordSubStatus == WordSubStatus.LiteralSymbol .AND. sWord:Length != 0
+						IF state:lFirstWord .AND. oDirectives:ContainsKey(cUpperWord)
 							eWordStatus := WordStatus.Text
 							eWordSubStatus := WordSubStatus.TextDirective
-							state:lDirective := true
-							state:lIgnore := true
+							state:lDirective := TRUE
+							state:lIgnore := TRUE
 							oStatementLine:cArgument :=cWord
 							SWITCH cUpperWord
 								CASE "REGION"
 									_SetLineType(oStatementLine, LineType.RegionIn)
 								CASE "ENDREGION"
 									_SetLineType(oStatementLine, LineType.RegionOut)
-								CASE "IFDEF" 
-								CASE "IFNDEF" 
+								CASE "IFDEF"
+								CASE "IFNDEF"
 								CASE "ELSE"
 									_SetLineType(oStatementLine, LineType.IfdefIn)
 								CASE "ENDIF"
@@ -637,20 +637,20 @@ BEGIN NAMESPACE XSharpModel
 							eWordSubStatus := WordSubStatus.LiteralSymbol
 						ENDIF
 					END IF
-					
-					
+
+
 					LOCAL lAllowEntityParse AS LOGIC
-					lAllowEntityParse := .not. state:lIgnore
-					
+					lAllowEntityParse := .NOT. state:lIgnore
+
 					DO CASE
 						CASE eLexer == LexerStep.BlockComment
 							sWord:Length := 0
-							lEscapedWord := false
+							lEscapedWord := FALSE
 							LOOP
-						
-						CASE eStep == ParseStep.WaitImplements .and. .not. (cUpperWord == "IMPLEMENTS" .and. .not. lEscapedWord)
+
+						CASE eStep == ParseStep.WaitImplements .AND. .NOT. (cUpperWord == "IMPLEMENTS" .AND. .NOT. lEscapedWord)
 							eStep := ParseStep.None
-							state:lIgnore := true
+							state:lIgnore := TRUE
 						CASE eStep == ParseStep.WaitCommaImplements
 							IF cWord:Trim():Length == 0
 								IF cRealChar == ','
@@ -659,78 +659,78 @@ BEGIN NAMESPACE XSharpModel
 									n1 := 0;n2 := 0
 								ELSE
 									eStep := ParseStep.None
-									state:lIgnore := true
+									state:lIgnore := TRUE
 								ENDIF
 							ELSE
 								eStep := ParseStep.None
-								state:lIgnore := true
+								state:lIgnore := TRUE
 							END IF
-						
-						CASE state:lLocal .and. state:lImpliedLocal .and. .not. lEscapedWord .and. cUpperWord == "IN"
+
+						CASE state:lLocal .AND. state:lImpliedLocal .AND. .NOT. lEscapedWord .AND. cUpperWord == "IN"
 							nAfterColonEquals := -nChar // FOREACH
-						
-						CASE state:lLocal .and. state:lImpliedLocal .and. nAfterColonEquals != 0
+
+						CASE state:lLocal .AND. state:lImpliedLocal .AND. nAfterColonEquals != 0
 							// LOCAL IMPLIED type recognition code here
-							state:lLocal := false
-							state:lIgnore := true
-						
+							state:lLocal := FALSE
+							state:lIgnore := TRUE
+
 						CASE eStep == ParseStep.AfterUsing
-							IF eWordStatus == WordStatus.Text .and. .not. eWordSubStatus == WordSubStatus.TextDirective
+							IF eWordStatus == WordStatus.Text .AND. .NOT. eWordSubStatus == WordSubStatus.TextDirective
 								oStatementLine:cArgument += cWord
 							END IF
-							IF .not. lIsSpaceChar .and. cRealChar != ';' .and. eCharSubStatus == WordSubStatus.Text
+							IF .NOT. lIsSpaceChar .AND. cRealChar != ';' .AND. eCharSubStatus == WordSubStatus.Text
 								oStatementLine:cArgument += cRealChar:ToString()
-							ELSEIF cRealChar == '.' .and. eCharSubStatus == WordSubStatus.TextOperator
+							ELSEIF cRealChar == '.' .AND. eCharSubStatus == WordSubStatus.TextOperator
 								oStatementLine:cArgument += cRealChar:ToString()
 							END IF
-						
+
 						CASE eStep == ParseStep.AfterInclude
 							IF eWordSubStatus == WordSubStatus.LiteralString
 								oStatementLine:cArgument += cWord
 							END IF
-							IF eCharSubStatus == WordSubStatus.LiteralString .and. cRealChar != '"'
+							IF eCharSubStatus == WordSubStatus.LiteralString .AND. cRealChar != '"'
 								oStatementLine:cArgument += cRealChar:ToString()
 							END IF
-						
-						CASE eWordStatus == WordStatus.Literal .or. eWordStatus == WordStatus.Comment .or. eWordSubStatus == WordSubStatus.TextDirective
-						
-						CASE (lIsSpaceChar .or. cChar == ';') .and. sWord:Length == 0
-							lEscapedWord := false
+
+						CASE eWordStatus == WordStatus.Literal .OR. eWordStatus == WordStatus.Comment .OR. eWordSubStatus == WordSubStatus.TextDirective
+
+						CASE (lIsSpaceChar .OR. cChar == ';') .AND. sWord:Length == 0
+							lEscapedWord := FALSE
 							LOOP
-						CASE (state:lFirstChar .and. eWordStatus == WordStatus.Text .and. eCharStatus == WordStatus.Comment) .and. sWord:Length == 0
-							lEscapedWord := false
+						CASE (state:lFirstChar .AND. eWordStatus == WordStatus.Text .AND. eCharStatus == WordStatus.Comment) .AND. sWord:Length == 0
+							lEscapedWord := FALSE
 							LOOP
 						CASE lInAttribute
 							sWord:Length := 0
-							lEscapedWord := false
+							lEscapedWord := FALSE
 							LOOP
-						CASE state:lFirstWord .and. cUpperWord == "RETURN" .and. .not. lEscapedWord
+						CASE state:lFirstWord .AND. cUpperWord == "RETURN" .AND. .NOT. lEscapedWord
 							_SetLineType(oStatementLine, LineType.Return)
-							oStatementLine:cArgument := null
-							state:lIgnore := true
-						CASE lAllowEntityParse .and. cChar == ',' .and. (state:lField .or. state:lLocal) .and. state:lNameFound .and. eStep != ParseStep.AfterAs .and. eStep != ParseStep.AfterRef
+							oStatementLine:cArgument := NULL
+							state:lIgnore := TRUE
+						CASE lAllowEntityParse .AND. cChar == ',' .AND. (state:lField .OR. state:lLocal) .AND. state:lNameFound .AND. eStep != ParseStep.AfterAs .AND. eStep != ParseStep.AfterRef
 							IF nBracketCount == 0
-								state:lNameFound := false
-								state:lEntityFound := false
+								state:lNameFound := FALSE
+								state:lEntityFound := FALSE
 							END IF
-						CASE lAllowEntityParse .and. .not. state:lFirstWord .and. sWord:Length == 0 .and. .not. state:lInParams .and. .not. lFindingType .and. .not. lFindingName
+						CASE lAllowEntityParse .AND. .NOT. state:lFirstWord .AND. sWord:Length == 0 .AND. .NOT. state:lInParams .AND. .NOT. lFindingType .AND. .NOT. lFindingName
 							IF cChar == '('
-								IF state:lNameFound .and. oInfo:aParams == null
-									state:lInParams := true
+								IF state:lNameFound .AND. oInfo:aParams == NULL
+									state:lInParams := TRUE
 								END IF
 							END IF
-						CASE lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. ;
-							((hVis:ContainsKey(cUpperWord) .and. eStep != ParseStep.AfterBegin) .or. cUpperWord == "EVENT" .or. ;
-							((cUpperWord == "LOCAL" .or. cUpperWord == "CATCH" .or. cUpperWord == "FOREACH")) )
+						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. ;
+							((hVis:ContainsKey(cUpperWord) .AND. eStep != ParseStep.AfterBegin) .OR. cUpperWord == "EVENT" .OR. ;
+							((cUpperWord == "LOCAL" .OR. cUpperWord == "CATCH" .OR. cUpperWord == "FOREACH")) )
 							// Checking eStep beause UNSAFE could be UNSAFE FUNCTION or BEGIN UNSAFE
-							state:lVisFound := true
+							state:lVisFound := TRUE
 							SWITCH cUpperWord
-								CASE "PROTECT" 
-								CASE "PROTECTED" 
+								CASE "PROTECT"
+								CASE "PROTECTED"
 								CASE "INSTANCE"
 									eAccessLevel := AccessLevel.Protected
 									eModifiers := eModifiers | EntityModifiers._Protected
-								CASE "HIDDEN" 
+								CASE "HIDDEN"
 								CASE "PRIVATE"
 									eAccessLevel := AccessLevel.Hidden
 									eModifiers := eModifiers | EntityModifiers._Private
@@ -740,13 +740,13 @@ BEGIN NAMESPACE XSharpModel
 								CASE "PUBLIC"
 									eAccessLevel := AccessLevel.Public
 								CASE "STATIC"
-									lStatic := true
+									lStatic := TRUE
 									eModifiers := eModifiers | EntityModifiers._Static
 								CASE "CONST"
-									lStatic := true
+									lStatic := TRUE
 								CASE "PARTIAL"
 									eModifiers := eModifiers | EntityModifiers._Partial
-									lPartial := true
+									lPartial := TRUE
 								CASE "VIRTUAL"
 									eModifiers := eModifiers | EntityModifiers._Virtual
 								CASE "NEW"
@@ -758,47 +758,47 @@ BEGIN NAMESPACE XSharpModel
 							END SWITCH
 							IF System.Array.IndexOf(aEntityWords , cUpperWord) != -1
 								// Allow multiple names in same line
-								state:lField := true
+								state:lField := TRUE
 								IF cUpperWord == "EVENT"
-									state:lEvent := true
+									state:lEvent := TRUE
 								END IF
 							END IF
-							IF cUpperWord == "LOCAL" .or. cUpperWord == "CATCH" .or. cUpperWord == "FOREACH"
-								state:lLocal := true
-								state:lImpliedLocal := false
-							
+							IF cUpperWord == "LOCAL" .OR. cUpperWord == "CATCH" .OR. cUpperWord == "FOREACH"
+								state:lLocal := TRUE
+								state:lImpliedLocal := FALSE
+
 							    IF cUpperWord == "FOREACH"
     								_SetLineType(oStatementLine, LineType.TokenIn)
                                 ELSEIF cUpperWord == "CATCH"
                                     _SetLineType(oStatementLine, LineType.TokenInOut)
 							    ENDIF
                             END IF
-						CASE lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. (cUpperWord == "VAR" .and. state:lFirstWord)
-							state:lVisFound := true
+						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. (cUpperWord == "VAR" .AND. state:lFirstWord)
+							state:lVisFound := TRUE
 							IF cUpperWord == "VAR"
-								state:lLocal := true
-								state:lImpliedLocal := true
+								state:lLocal := TRUE
+								state:lImpliedLocal := TRUE
 								nAfterColonEquals := 0
 							END IF
-						CASE lAllowEntityParse .and. .not. lEscapedWord .and. state:lFirstWord .and. cUpperWord == "USING"
+						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. state:lFirstWord .AND. cUpperWord == "USING"
 							_SetLineType(oStatementLine, LineType.Using)
 							eStep := ParseStep.AfterUsing
 							oStatementLine:cArgument := ""
-						CASE state:lVisFound .and. lInProperty .and. (cUpperWord == "SET" .or. cUpperWord == "GET") .and. .not. lEscapedWord
+						CASE state:lVisFound .AND. lInProperty .AND. (cUpperWord == "SET" .OR. cUpperWord == "GET") .AND. .NOT. lEscapedWord
 							_SetLineType(oStatementLine, LineType.TokenIn)
 							oStatementLine:cArgument := cUpperWord
-							state:lIgnore := true
-						CASE lAllowEntityParse .and. .not. lEscapedWord .and. cChar != '.' .and. cCharBeforeWord != '.' .and. hEnt:ContainsKey(cUpperWord)
+							state:lIgnore := TRUE
+						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. hEnt:ContainsKey(cUpperWord)
 							lInEnum := FALSE
-							state:lField := false
-							state:lLocal := false
-							state:lEvent := false
+							state:lField := FALSE
+							state:lLocal := FALSE
+							state:lEvent := FALSE
 							IF state:lEntityFound
-								state:lIgnore := true
+								state:lIgnore := TRUE
 							ENDIF
-							state:lEntityFound := true
+							state:lEntityFound := TRUE
 							state:lEntityIsType := System.Array.IndexOf(aTypes , cUpperWord) != -1
-							IF eStep == ParseStep.AfterEnd .and. state:lEntityIsType
+							IF eStep == ParseStep.AfterEnd .AND. state:lEntityIsType
 								_SetLineType(oStatementLine, LineType.EndClass)
 								IF aTypeStack:Count > 0
 									VAR oPrevInfo := aTypeStack:Pop()
@@ -806,27 +806,27 @@ BEGIN NAMESPACE XSharpModel
                                         iClassOrStruct --
                                     ENDIF
 								ENDIF
-								state:lEntityFound := false
-								state:lEntityIsType := false
-								state:lIgnore := true
+								state:lEntityFound := FALSE
+								state:lEntityIsType := FALSE
+								state:lIgnore := TRUE
 								lInEnum := FALSE
 								cShortClassName := ""
 								cTypedClassName := ""
 								cClassNameSpace := ""
 								cClassType := ""
-								lInProperty := false
-							ELSEIF eStep == ParseStep.AfterEnd .and. cUpperWord == "PROPERTY"
+								lInProperty := FALSE
+							ELSEIF eStep == ParseStep.AfterEnd .AND. cUpperWord == "PROPERTY"
 								_SetLineType(oStatementLine, LineType.EndProperty)
-								state:lEntityFound := false
-								state:lEntityIsType := false
-								state:lIgnore := true
+								state:lEntityFound := FALSE
+								state:lEntityIsType := FALSE
+								state:lIgnore := TRUE
 								lInEnum := FALSE
-								lInProperty := false
+								lInProperty := FALSE
 							ELSE
 								lInEnum := cUpperWord == "ENUM"
 								oInfo := EntityObject{GetEntityType(cUpperWord)}
 								IF oInfo:eType:IsType()
-									IF !oInfo:eType:SupportNestedType() 
+									IF !oInfo:eType:SupportNestedType()
 										DO WHILE aTypeStack:Count > 0
 											aTypeStack:Pop()
 										ENDDO
@@ -843,7 +843,7 @@ BEGIN NAMESPACE XSharpModel
 								ELSEIF oInfo:eType:IsClassMember()
 								    IF aTypeStack:Count > 0
                                         VAR oParent := getParentType()
-                                        IF ( oParent != null )
+                                        IF ( oParent != NULL )
 										    oParent:AddChild(oInfo)
                                         ENDIF
 									ENDIF
@@ -863,7 +863,7 @@ BEGIN NAMESPACE XSharpModel
 										CASE "CLASS"
 											oInfo:cInherit := ""
 											oInfo:cImplements := ""
-										CASE "STRUCTURE" 
+										CASE "STRUCTURE"
 										CASE "STRUCT"
 											oInfo:cInherit := ""
 											oInfo:cImplements := ""
@@ -882,10 +882,10 @@ BEGIN NAMESPACE XSharpModel
 									END SWITCH
 								ELSE
 									SWITCH oInfo:eType
-										CASE EntityType._Method 
-										CASE EntityType._Access 
-										CASE EntityType._Property 
-										CASE EntityType._Function 
+										CASE EntityType._Method
+										CASE EntityType._Access
+										CASE EntityType._Property
+										CASE EntityType._Function
 										CASE EntityType._Global
 											oInfo:cRetType := "USUAL" // Default
 										OTHERWISE
@@ -895,8 +895,8 @@ BEGIN NAMESPACE XSharpModel
 								oInfo:lStatic := lStatic
 								oInfo:eAccessLevel := eAccessLevel
 								oInfo:eModifiers := eModifiers
-								IF oInfo:eType == EntityType._Constructor .or. oInfo:eType == EntityType._Destructor
-									state:lNameFound := true // Dont't wait for a name, add it to the list now
+								IF oInfo:eType == EntityType._Constructor .OR. oInfo:eType == EntityType._Destructor
+									state:lNameFound := TRUE // Dont't wait for a name, add it to the list now
 									oInfo:nStartLine := nEntityStartLine
 									oInfo:nOffSet	:= nEntityStartOffSet
 									oInfo:nCol		:= nEntityStartCol
@@ -907,25 +907,25 @@ BEGIN NAMESPACE XSharpModel
 									oInfo:cClassType := cClassType
 									AddEntity(oInfo, oLine)
 									IF cChar == '('
-										state:lInParams := true
+										state:lInParams := TRUE
 									END IF
 								END IF
 							END IF
-						CASE lAllowEntityParse .and. (state:lEntityFound .or. eStep == ParseStep.AfterBeginNamespace .or. eStep == ParseStep.WaitImplements)
+						CASE lAllowEntityParse .AND. (state:lEntityFound .OR. eStep == ParseStep.AfterBeginNamespace .OR. eStep == ParseStep.WaitImplements)
 							DO CASE
-								CASE cUpperWord == "INHERIT" .and. .not. lEscapedWord
+								CASE cUpperWord == "INHERIT" .AND. .NOT. lEscapedWord
 									eStep := ParseStep.AfterInherit
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
-								CASE cUpperWord == "IMPLEMENTS" .and. .not. lEscapedWord
+								CASE cUpperWord == "IMPLEMENTS" .AND. .NOT. lEscapedWord
 									eStep := ParseStep.AfterImplements
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
-								CASE cUpperWord == "AS" .and. .not. lEscapedWord
+								CASE cUpperWord == "AS" .AND. .NOT. lEscapedWord
 									eStep := ParseStep.AfterAs
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
-								CASE state:lInParams .and. (cUpperWord == "REF" .or. cUpperWord == "OUT" .or. cUpperWord == "PARAMS") .and. .not. lEscapedWord
+								CASE state:lInParams .AND. (cUpperWord == "REF" .OR. cUpperWord == "OUT" .OR. cUpperWord == "PARAMS") .AND. .NOT. lEscapedWord
 									eStep := ParseStep.AfterRef
 									SWITCH cUpperWord
 										CASE "REF"
@@ -940,28 +940,28 @@ BEGIN NAMESPACE XSharpModel
 
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
-								CASE eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterImplements .or. ;
-									eStep == ParseStep.AfterAs .or. eStep == ParseStep.AfterRef .or. ;
-									eStep == ParseStep.AfterBeginNamespace .or. ;
-									.not. state:lNameFound
-									
-									IF eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterImplements .or. eStep == ParseStep.AfterAs .or. eStep == ParseStep.AfterRef
+								CASE eStep == ParseStep.AfterInherit .OR. eStep == ParseStep.AfterImplements .OR. ;
+									eStep == ParseStep.AfterAs .OR. eStep == ParseStep.AfterRef .OR. ;
+									eStep == ParseStep.AfterBeginNamespace .OR. ;
+									.NOT. state:lNameFound
+
+									IF eStep == ParseStep.AfterInherit .OR. eStep == ParseStep.AfterImplements .OR. eStep == ParseStep.AfterAs .OR. eStep == ParseStep.AfterRef
 										// Waiting for type that may be generic, array
-										lFindingType := true
+										lFindingType := TRUE
 										sFoundType:Append(sWord:ToString())
 										sWord:Length := 0
-										
-										DO WHILE nChar < nLineLen .and. (cChar == ' ' .or. cChar == '\t')
+
+										DO WHILE nChar < nLineLen .AND. (cChar == ' ' .OR. cChar == '\t')
 											cOldOldChar := cOldChar
 											cOldChar := cChar
 											cChar := cLine[nChar]
-											IF cChar != ' ' .and. cChar != '\t' .and. cChar != '[' .and. cChar != '<'
+											IF cChar != ' ' .AND. cChar != '\t' .AND. cChar != '[' .AND. cChar != '<'
 												cChar := ' '
 												EXIT
 											END IF
 											nChar ++
 										END DO
-										
+
 										SWITCH cChar
 											CASE '.'
 												sFoundType:Append('.')
@@ -986,38 +986,38 @@ BEGIN NAMESPACE XSharpModel
 											CASE ';'
 												NOP
 											OTHERWISE
-												IF (n1 != 0 .or. n2 != 0) 
+												IF (n1 != 0 .OR. n2 != 0)
 													sFoundType:Append(cChar)
 												ENDIF
 										END SWITCH
-										IF cChar == '.' .or. n1 != 0 .or. n2 != 0 .or. (cChar == ']' .and. nChar < nLineLen .and. cLine[nChar] == '[') // more dims
+										IF cChar == '.' .OR. n1 != 0 .OR. n2 != 0 .OR. (cChar == ']' .AND. nChar < nLineLen .AND. cLine[nChar] == '[') // more dims
 											LOOP
 										END IF
 										cWord := sFoundType:ToString()
 										sFoundType:Length := 0
-										
-										lFindingType := false
-										
+
+										lFindingType := FALSE
+
 									ELSE // eStep == ParseStep.AfterBeginNamespace .or. .not. state:lNameFound
-										
+
 										// Waiting for simple type or method name that may contain dots
 										sFoundType:Append(sWord:ToString())
 										IF cChar == '.'
 											sFoundType:Append('.')
 											sWord:Length := 0
-											lFindingName := true
+											lFindingName := TRUE
 											LOOP
 										END IF
 										cWord := sFoundType:ToString()
 										sFoundType:Length := 0
-										lFindingName := false
-										
+										lFindingName := FALSE
+
 									END IF
-									
-									IF state:lEntityIsType .and. .not. state:lNameFound
+
+									IF state:lEntityIsType .AND. .NOT. state:lNameFound
 										cTypedClassName := cWord
 										nAt := cWord:LastIndexOf('.')
-										IF nAt <= 0 .or. nAt >= cWord:Length - 1
+										IF nAt <= 0 .OR. nAt >= cWord:Length - 1
 											cShortClassName := cWord
 											cClassNameSpace := ""
 											//								cClassType := cWord
@@ -1026,7 +1026,7 @@ BEGIN NAMESPACE XSharpModel
 											cClassNameSpace := cWord:Substring(0 , nAt)
 											//								cClassType := cWord:Substring(nAt + 1)
 										END IF
-										IF .not. String.IsNullOrEmpty(cBaseNameSpace)
+										IF .NOT. String.IsNullOrEmpty(cBaseNameSpace)
 											IF cClassNameSpace == ""
 												cClassNameSpace := cBaseNameSpace
 											ELSE
@@ -1034,7 +1034,7 @@ BEGIN NAMESPACE XSharpModel
 											END IF
 										END IF
 									ENDIF
-									
+
 									DO CASE
 										CASE state:lInParams
 											oInfo:SetParamType(cWord, nParamType)
@@ -1055,12 +1055,12 @@ BEGIN NAMESPACE XSharpModel
 													eStep := ParseStep.AfterImplements
 													sFoundType:Length := 0
 													n1 := 0;n2 := 0
-												CASE ' ' 
+												CASE ' '
 												CASE '\t'
 													eStep := ParseStep.WaitCommaImplements
 												OTHERWISE
 													eStep := ParseStep.None
-													state:lIgnore := true
+													state:lIgnore := TRUE
 											END SWITCH
 										CASE eStep == ParseStep.AfterAs
 											LOCAL cRetType AS STRING
@@ -1082,16 +1082,16 @@ BEGIN NAMESPACE XSharpModel
 												NEXT
 											END IF
 											eStep := ParseStep.None
-											state:lIgnore := true
+											state:lIgnore := TRUE
 										CASE eStep == ParseStep.AfterBeginNamespace
 											eStep := ParseStep.None
 											aNameSpaces:Add(cWord)
 											cBaseNameSpace := GetNameSpace(aNameSpaces)
 											_SetLineType(oStatementLine, LineType.BeginNamespace)
 											oStatementLine:cArgument := cWord
-											state:lIgnore := true
-										CASE .not. state:lNameFound
-											state:lNameFound := true
+											state:lIgnore := TRUE
+										CASE .NOT. state:lNameFound
+											state:lNameFound := TRUE
 											oInfo:nStartLine := nEntityStartLine
 											oInfo:nCol	:= nEntityStartCol
 											oInfo:nOffSet := nEntityStartOffSet
@@ -1107,49 +1107,49 @@ BEGIN NAMESPACE XSharpModel
 												oInfo:cClassNameSpace := cClassNameSpace
 												oInfo:cClassType := cClassType
 											END IF
-											IF oInfo:eType == EntityType._Class .and. lPartial
-												oInfo:lPartial := true
+											IF oInfo:eType == EntityType._Class .AND. lPartial
+												oInfo:lPartial := TRUE
 											END IF
 											AddEntity(oInfo, oLine)
-											
-											lPartial := false
+
+											lPartial := FALSE
 									END CASE
-								
+
 							END CASE
 							IF state:lInParams
 								IF cChar == ','
-									IF .not. state:lParam
+									IF .NOT. state:lParam
 										VAR oParam := oInfo:AddParam(cWord)
 										oParam:nCol := nChar - cWord:Length
-										
+
 									END IF
-									state:lParam := false
-								ELSEIF .not. state:lParam .and. sWord:Length != 0
-									IF .not. cWord == "SELF"
+									state:lParam := FALSE
+								ELSEIF .NOT. state:lParam .AND. sWord:Length != 0
+									IF .NOT. cWord == "SELF"
 										VAR oParam := oInfo:AddParam(cWord)
 										oParam:nCol := nChar - cWord:Length
-										state:lParam := true
+										state:lParam := TRUE
 									ELSE
-										oCurrentMethod:lExtension := true
+										oCurrentMethod:lExtension := TRUE
 									END IF
 								END IF
 							ENDIF
-							
+
 							IF cChar == '('
-								state:lInParams := true
-							ELSEIF cChar == '[' .and. oInfo != null .and. oInfo:eType == EntityType._Property .and. .not. state:lInParams
-								state:lInParams := true
-							ELSEIF state:lInParams .and. cChar == ')'
-								state:lInParams := false
-							ELSEIF state:lInParams .and. cChar == ']' .and. oInfo:eType == EntityType._Property
-								state:lInParams := false
+								state:lInParams := TRUE
+							ELSEIF cChar == '[' .AND. oInfo != NULL .AND. oInfo:eType == EntityType._Property .AND. .NOT. state:lInParams
+								state:lInParams := TRUE
+							ELSEIF state:lInParams .AND. cChar == ')'
+								state:lInParams := FALSE
+							ELSEIF state:lInParams .AND. cChar == ']' .AND. oInfo:eType == EntityType._Property
+								state:lInParams := FALSE
 							END IF
 						//					lIgnore := TRUE
-						CASE state:lFirstWord .and. cUpperWord == "BEGIN"
-							lInEnum := false
+						CASE state:lFirstWord .AND. cUpperWord == "BEGIN"
+							lInEnum := FALSE
 							eStep := ParseStep.AfterBegin
 						CASE eStep == ParseStep.AfterBegin
-							lInEnum := false
+							lInEnum := FALSE
 							IF cUpperWord == "NAMESPACE"
 								eStep := ParseStep.AfterBeginNamespace
 							ELSE
@@ -1163,23 +1163,23 @@ BEGIN NAMESPACE XSharpModel
 									CASE "SCOPE"
 										_SetLineType(oStatementLine, LineType.TokenIn)
 										oStatementLine:cArgument := "BEGIN"
-									CASE "CHECKED" 
-									CASE  "UNCHECKED" 
-									CASE "UNSAFE" 
-									CASE "USING" 
+									CASE "CHECKED"
+									CASE  "UNCHECKED"
+									CASE "UNSAFE"
+									CASE "USING"
 									CASE "FIXED"
 										_SetLineType(oStatementLine, LineType.TokenIn)
 										oStatementLine:cArgument := "BEGIN"
 								END SWITCH
 							END IF
-						CASE state:lFirstWord .and. cUpperWord == "END"
-							lInEnum := false
+						CASE state:lFirstWord .AND. cUpperWord == "END"
+							lInEnum := FALSE
 							eStep := ParseStep.AfterEnd
 							_SetLineType(oStatementLine, LineType.TokenOut)
 							oStatementLine:cArgument := cUpperWord
 						CASE eStep == ParseStep.AfterEnd
-							state:lIgnore := true
-							lInEnum := false
+							state:lIgnore := TRUE
+							lInEnum := FALSE
 							IF System.Array.IndexOf(aEndKeywords , cUpperWord) != -1
 								_SetLineType(oStatementLine, LineType.EndClass)
 								cShortClassName := ""
@@ -1195,31 +1195,31 @@ BEGIN NAMESPACE XSharpModel
 									END IF
 								END IF
 							ENDIF
-						
-						CASE state:lFirstWord .and. cUpperWord == "USING"
-							lInEnum := false
+
+						CASE state:lFirstWord .AND. cUpperWord == "USING"
+							lInEnum := FALSE
 							eStep := ParseStep.AfterUsing
 							_SetLineType(oStatementLine, LineType.Using)
-						
-						CASE lAllowEntityParse .and. ;  // 2nd .not. is for IF(logic) CASE(something) etc syntax (paren after IF/CASE etc)
-							.not. (.not. lEscapedWord .and. cRealChar == '(' .and. System.Array.IndexOf(<STRING>{"IF", "ELSEIF", "WHILE", "CASE", "FOR"} , cUpperWord) != -1) .and. ;
-							.not. (lIsSpaceChar .or. cRealChar == ';' .or. lBeforeLexerChange .or. lContinueNextLine) .and. .not. (state:lField .or. state:lLocal)
-							state:lIgnore := true
-						CASE state:lLocal .and. .not. lEscapedWord .and. cUpperWord == "IMPLIED"
-							state:lImpliedLocal := true
+
+						CASE lAllowEntityParse .AND. ;  // 2nd .not. is for IF(logic) CASE(something) etc syntax (paren after IF/CASE etc)
+							.NOT. (.NOT. lEscapedWord .AND. cRealChar == '(' .AND. System.Array.IndexOf(<STRING>{"IF", "ELSEIF", "WHILE", "CASE", "FOR"} , cUpperWord) != -1) .AND. ;
+							.NOT. (lIsSpaceChar .OR. cRealChar == ';' .OR. lBeforeLexerChange .OR. lContinueNextLine) .AND. .NOT. (state:lField .OR. state:lLocal)
+							state:lIgnore := TRUE
+						CASE state:lLocal .AND. .NOT. lEscapedWord .AND. cUpperWord == "IMPLIED"
+							state:lImpliedLocal := TRUE
 							nAfterColonEquals := 0
-						CASE lAllowEntityParse .and. (state:lField .or. state:lLocal .or. lInEnum) .and. .not. state:lNameFound .and. cWord == "DIM" .and. .not. lEscapedWord
-							state:lDimDeclaration := true
-						CASE lAllowEntityParse .and. (state:lField .or. state:lLocal .or. lInEnum) .and. .not. state:lNameFound
-							state:lNameFound := true
-							state:lEntityFound := true
+						CASE lAllowEntityParse .AND. (state:lField .OR. state:lLocal .OR. lInEnum) .AND. .NOT. state:lNameFound .AND. cWord == "DIM" .AND. .NOT. lEscapedWord
+							state:lDimDeclaration := TRUE
+						CASE lAllowEntityParse .AND. (state:lField .OR. state:lLocal .OR. lInEnum) .AND. .NOT. state:lNameFound
+							state:lNameFound := TRUE
+							state:lEntityFound := TRUE
 							oInfo := EntityObject{}
 							oInfo:SetNamespaces(aNameSpaces)
 							oInfo:nCol := nChar - cWord:Length
 							IF state:lLocal
 								oInfo:eType := EntityType._Local
 							ELSEIF state:lEvent
-								oInfo:eType := EntityType._Event                            
+								oInfo:eType := EntityType._Event
 							ELSE
                                 IF lInEnum
 								    oInfo:eType := EntityType._EnumMember
@@ -1228,7 +1228,7 @@ BEGIN NAMESPACE XSharpModel
                                 ENDIF
 								IF aTypeStack:Count > 0
                                     VAR oParent := getParentType()
-                                    IF ( oParent != null )
+                                    IF ( oParent != NULL )
 										oParent:AddChild(oInfo)
                                     ENDIF
 								ENDIF
@@ -1249,8 +1249,8 @@ BEGIN NAMESPACE XSharpModel
 									aLineFields:Add(oInfo)
 								END IF
 								IF cChar == ','
-									state:lNameFound := false
-									state:lEntityFound := false
+									state:lNameFound := FALSE
+									state:lEntityFound := FALSE
 								END IF
 							ENDIF
 							oInfo:nStartLine := nLine
@@ -1261,11 +1261,11 @@ BEGIN NAMESPACE XSharpModel
 							oInfo:cClassType := cClassType
 							IF state:lField
 								AddEntity(oInfo, oLine)
-							END IF 
-							IF state:lLocal .and. lIncludeLocals
+							END IF
+							IF state:lLocal .AND. lIncludeLocals
 								aLocals:Add(oInfo)
 							END IF
-						CASE state:lFirstWord .or. state:lFirstChar
+						CASE state:lFirstWord .OR. state:lFirstChar
 							IF System.Array.IndexOf(aTokenInOut, cUpperWord) != -1
 								_SetLineType(oStatementLine, LineType.TokenInOut)
 								oStatementLine:cArgument := cUpperWord
@@ -1275,33 +1275,33 @@ BEGIN NAMESPACE XSharpModel
 							ELSEIF System.Array.IndexOf(aTokenOut , cUpperWord) != -1
 								_SetLineType(oStatementLine, LineType.TokenOut)
 								oStatementLine:cArgument := cUpperWord
-							ELSEIF cUpperWord == "GET" .or. cUpperWord == "SET"
+							ELSEIF cUpperWord == "GET" .OR. cUpperWord == "SET"
 								IF lInProperty
 									_SetLineType(oStatementLine, LineType.TokenIn)
 									oStatementLine:cArgument := cUpperWord
 								ENDIF
 								ELSE
-								IF .not. lContinueNextLine
-									IF .not. cUpperWord == "FOR" // Allow LOCAL after FOR
-										state:lIgnore := true
+								IF .NOT. lContinueNextLine
+									IF .NOT. cUpperWord == "FOR" // Allow LOCAL after FOR
+										state:lIgnore := TRUE
 									ENDIF
 								END IF
 							END IF
-						
+
 					END CASE
-					
+
 					IF cUpperWord == "FROM"
-						state:lLinqSelect := true
+						state:lLinqSelect := TRUE
 					ENDIF
-					
-					
-					IF (cChar != '#' .or. sWord:Length != 0) .and. .not. lInAttribute
-						state:lFirstWord := false
+
+
+					IF (cChar != '#' .OR. sWord:Length != 0) .AND. .NOT. lInAttribute
+						state:lFirstWord := FALSE
 					END IF
 					sWord:Length := 0
-					lEscapedWord := false
+					lEscapedWord := FALSE
 					// End of parsing
-					
+
 				END DO
 			NEXT
 			// Finish and add types to aTypes
@@ -1310,18 +1310,18 @@ BEGIN NAMESPACE XSharpModel
 			FOREACH oEnt AS EntityObject IN aEntities
 				IF oEnt:eType:IsType()
 					aResult:Add(oEnt)
-				ELSEIF oEnt:oParent == null
+				ELSEIF oEnt:oParent == NULL
 					aResult:Add(oEnt)
 				ENDIF
 			NEXT
 			RETURN ParseResult{SELF}
-		
-		
+
+
 		PROTECTED STATIC METHOD GetNameSpace(aNameSpaces AS List<STRING>) AS STRING
 			LOCAL oEnumerator AS IEnumerator
 			LOCAL cRet AS STRING
 			cRet := ""
-			IF aNameSpaces == null
+			IF aNameSpaces == NULL
 				RETURN cRet
 			END IF
 			oEnumerator := aNameSpaces:GetEnumerator()
@@ -1333,7 +1333,7 @@ BEGIN NAMESPACE XSharpModel
 				END IF
 			END DO
 			RETURN cRet
-		
+
 		PROTECTED STATIC METHOD GetEntityType(cWord AS STRING) AS EntityType
 			LOCAL eType AS EntityType
 			SWITCH cWord
@@ -1351,15 +1351,15 @@ BEGIN NAMESPACE XSharpModel
 					eType := EntityType._Access
 				CASE "ASSIGN"
 					eType := EntityType._Assign
-				CASE "FUNCTION" 
+				CASE "FUNCTION"
 				CASE "FUNC"
 					eType := EntityType._Function
-				CASE "PROCEDURE" 
+				CASE "PROCEDURE"
 				CASE "PROC"
 					eType := EntityType._Procedure
 				CASE  "ENUM"
 					eType := EntityType._Enum
-				CASE "STRUCTURE" 
+				CASE "STRUCTURE"
 				CASE "STRUCT"
 					eType := EntityType._Structure
 				CASE  "VOSTRUCT"
@@ -1380,7 +1380,7 @@ BEGIN NAMESPACE XSharpModel
 					eType := EntityType._Define
 			END SWITCH
 			RETURN eType
-		
+
 		STATIC METHOD IsType(SELF e AS ENtityType) AS LOGIC
 			SWITCH e
 				CASE EntityType._Class
@@ -1390,7 +1390,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Enum
 				CASE EntityType._Union
 				CASE EntityType._VOStruct
-					RETURN true
+					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
 
@@ -1398,7 +1398,7 @@ BEGIN NAMESPACE XSharpModel
 			SWITCH e
 				CASE EntityType._Class
 				CASE EntityType._Structure
-					RETURN true
+					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
 
@@ -1410,7 +1410,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Global
 				CASE EntityType._Resource
 				CASE EntityType._Structure
-					RETURN true
+					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
 
@@ -1426,9 +1426,9 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Operator
 				CASE EntityType._Event
 				CASE EntityType._EnumMember
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
+			RETURN FALSE
 		STATIC METHOD HasBody(SELF e AS EntityType) AS LOGIC
 			SWITCH e
 				CASE EntityType._Property
@@ -1441,9 +1441,9 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Event
 				CASE EntityType._Function
 				CASE EntityType._Procedure
-					RETURN true
+					RETURN TRUE
 				END SWITCH
-				RETURN false
+				RETURN FALSE
 
 		STATIC METHOD NeedsEndKeyword(SELF e AS EntityType) AS LOGIC
 			SWITCH e
@@ -1451,12 +1451,12 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Structure
 				CASE EntityType._Interface
 				CASE EntityType._Enum
-					RETURN true
+					RETURN TRUE
 				END SWITCH
-				RETURN false
-		
+				RETURN FALSE
+
 	END CLASS
-	
+
 	[DebuggerDIsplay("{Line} {eType}")];
 		CLASS LineObject
 		PROTECT _nLine AS INT
@@ -1464,36 +1464,36 @@ BEGIN NAMESPACE XSharpModel
 		PROTECT _nCol AS INT
 		PROTECT _eType AS LineType
 		PROTECT _cArgument AS STRING
-		
-		
-		
+
+
+
 		INTERNAL CONSTRUCTOR(nLine AS INT)
 			SELF(nLine , 0)
 			RETURN
-		
+
 		INTERNAL CONSTRUCTOR(nLine AS INT, nOffSet AS INT)
 			SELF:_nLine := nLine
 			SELF:_nOffSet := nOffSet
 			RETURN
-		
+
 		PRIVATE CONSTRUCTOR(nLine AS INT, nOffSet AS INT, nCol AS INT)
 			SELF:_nLine := nLine
 			SELF:_nOffSet := nOffSet
 			SELF:_nCol  := nCol
-			RETURN		
-		
+			RETURN
+
 		INTERNAL METHOD AddSubLine(nColStart AS INT) AS LineObject
 			RETURN LineObject{SELF:_nLine , SELF:_nOffSet+nColStart, nColStart}
-		
+
 		PROPERTY Line AS INT GET SELF:_nLine
 		PROPERTY OffSet AS INT GET SELF:_nOffSet
 		PROPERTY eType AS LineType GET SELF:_eType SET SELF:_eType := VALUE
-		
+
 		PROPERTY cArgument AS STRING GET SELF:_cArgument SET SELF:_cArgument := VALUE
-		
-		
+
+
 	END CLASS
-	
+
 	[DebuggerDIsplay("{eType} {cName,nq}")];
 	CLASS EntityObject
 		PROPERTY eType AS EntityType AUTO
@@ -1510,7 +1510,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY nStartLine AS INT  AUTO
 		PROPERTY nOffSet AS INT AUTO
 		PROPERTY nCol AS INT  AUTO
-		PROPERTY aNameSpaces AS List<STRING> AUTO 
+		PROPERTY aNameSpaces AS List<STRING> AUTO
 		PROPERTY lStatic AS LOGIC AUTO
 		PROPERTY lPartial AS LOGIC AUTO
 		PROPERTY cClassType AS STRING AUTO
@@ -1519,7 +1519,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY aChildren AS IList<EntityObject> AUTO
 		PROPERTY oNext AS EntityObject AUTO
 		PROPERTY oCargo AS OBJECT AUTO
-		
+
 		INTERNAL CONSTRUCTOR()
 			SUPER()
 			SELF:cInherit := ""
@@ -1527,37 +1527,37 @@ BEGIN NAMESPACE XSharpModel
 			SELF:cRetType := ""
 			SELF:cClassType := ""
 			SELF:aChildren := List<EntityObject>{}
-			SELF:oParent := null
+			SELF:oParent := NULL
 			RETURN
 		INTERNAL CONSTRUCTOR(nType AS EntityType)
 			SELF()
 			SELF:eType := nType
-		
+
 		INTERNAL METHOD AddChild(oChild AS EntityObject) AS VOID
 			SELF:aChildren:Add(oChild)
 			oChild:oParent := SELF
 			RETURN
-		
+
 		INTERNAL ACCESS IsFuncProcGlobal AS LOGIC
-			RETURN SELF:eType == EntityType._Function .or. SELF:eType == EntityType._Procedure .or. SELF:eType == EntityType._Global
-		
+			RETURN SELF:eType == EntityType._Function .OR. SELF:eType == EntityType._Procedure .OR. SELF:eType == EntityType._Global
+
 		INTERNAL METHOD NamespacesEqual(_aNameSpaces AS List<STRING>) AS LOGIC
 			LOCAL n AS INT
-			IF SELF:aNameSpaces == null .or. SELF:aNameSpaces:Count != _aNameSpaces:Count
-				RETURN false
+			IF SELF:aNameSpaces == NULL .OR. SELF:aNameSpaces:Count != _aNameSpaces:Count
+				RETURN FALSE
 			END IF
 			FOR n := 0 UPTO SELF:aNameSpaces:Count - 1
 				IF SELF:aNameSpaces[n] != _aNameSpaces[n]
-					RETURN false
+					RETURN FALSE
 				END IF
 			NEXT
-			RETURN true
+			RETURN TRUE
 		INTERNAL METHOD SetNamespaces(_aNameSpaces AS List<STRING>) AS VOID
 			LOCAL n AS INT
 			IF SELF:NamespacesEqual(_aNameSpaces)
 				RETURN
-			END IF 
-			IF SELF:aNameSpaces == null
+			END IF
+			IF SELF:aNameSpaces == NULL
 				SELF:aNameSpaces := List<STRING>{_aNameSpaces:Count}
 			END IF
 			FOR n := 0 UPTO _aNameSpaces:Count - 1
@@ -1567,19 +1567,19 @@ BEGIN NAMESPACE XSharpModel
 
 		INTERNAL METHOD AddParam(cParam AS STRING) AS EntityParamsObject
 			RETURN SELF:AddParam(cParam, "")
-		
+
 		INTERNAL METHOD AddParam(cParam AS STRING , cType AS STRING) AS EntityParamsObject
-			IF SELF:aParams == null
+			IF SELF:aParams == NULL
 				SELF:aParams := List<EntityParamsObject>{}
 			END IF
 			LOCAL oParam AS EntityParamsObject
 			oParam := EntityParamsObject{cParam , cType}
 			SELF:aParams:Add(oParam)
 			RETURN oParam
-		
+
 		INTERNAL METHOD SetParamType(cType AS STRING, nParamType AS ParamType) AS VOID
 			LOCAL oParam AS EntityParamsObject
-			IF SELF:aParams == null .or. SELF:aParams:Count == 0 .or. String.IsNullOrEmpty(cType)
+			IF SELF:aParams == NULL .OR. SELF:aParams:Count == 0 .OR. String.IsNullOrEmpty(cType)
 				RETURN
 			END IF
 			oParam := SELF:aParams[SELF:aParams:Count - 1]
@@ -1587,7 +1587,7 @@ BEGIN NAMESPACE XSharpModel
 			oParam:nParamType := nParamType
 			RETURN
 	END CLASS
-	
+
 	[DebuggerDIsplay("{cName,nq} {cType,nq}")];
 		CLASS EntityParamsObject
 		PROPERTY cName AS STRING AUTO
@@ -1600,7 +1600,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:cType := _cType
 			RETURN
 	END CLASS
-	
+
 	INTERNAL ENUM LexerStep
 		MEMBER None
 		MEMBER Quote
@@ -1610,7 +1610,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER BlockComment
 		MEMBER Sharp
 	END ENUM
-	
+
 	INTERNAL ENUM ParseStep
 		MEMBER None
 		MEMBER AfterAs
@@ -1626,13 +1626,13 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER AfterImplements
 		MEMBER WaitImplements
 		MEMBER WaitCommaImplements
-		
+
 		// for VO only:
 		//	MEMBER WaitClassClause
 		MEMBER AfterClassClause
 		MEMBER AfterExportClause
 	END ENUM
-	
+
 	[Flags];
 	ENUM EntityModifiers AS Int32
 		// roslyn values in the comments, should we keep in sync ?
@@ -1655,36 +1655,36 @@ BEGIN NAMESPACE XSharpModel
 		// unsafe			0x2000
 		// async			0x8000
 	END ENUM
-	
-	ENUM EntityType AS Int32 
+
+	ENUM EntityType AS Int32
 		MEMBER _None
 		MEMBER _Constructor
-		MEMBER _Destructor	
-		MEMBER _Method		
-		MEMBER _Access		
-		MEMBER _Assign		
-		MEMBER _Class		
-		MEMBER _Function	
-		MEMBER _Procedure	
-		MEMBER _Enum		
-		MEMBER _VOStruct	
-		MEMBER _Global		
-		MEMBER _Structure	
-		MEMBER _Interface	
-		MEMBER _Delegate	
-		MEMBER _Event		
-		MEMBER @@_Field		
-		MEMBER _Union		
-		MEMBER _Operator	
-		MEMBER _Local		
-		MEMBER _Property	
-		MEMBER _Define		
-		MEMBER _Resource	
-		MEMBER _TextBlock	
+		MEMBER _Destructor
+		MEMBER _Method
+		MEMBER _Access
+		MEMBER _Assign
+		MEMBER _Class
+		MEMBER _Function
+		MEMBER _Procedure
+		MEMBER _Enum
+		MEMBER _VOStruct
+		MEMBER _Global
+		MEMBER _Structure
+		MEMBER _Interface
+		MEMBER _Delegate
+		MEMBER _Event
+		MEMBER @@_Field
+		MEMBER _Union
+		MEMBER _Operator
+		MEMBER _Local
+		MEMBER _Property
+		MEMBER _Define
+		MEMBER _Resource
+		MEMBER _TextBlock
         MEMBER _EnumMember
 	END ENUM
-	
-	
+
+
 	[Flags];
 	ENUM AccessLevel
 		MEMBER @@Public := 0
@@ -1692,13 +1692,13 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@Hidden := 2
 		MEMBER @@Internal := 4
 	END ENUM
-	
+
 	ENUM WordStatus
 		MEMBER Text
 		MEMBER Literal
 		MEMBER Comment
 	END ENUM
-	
+
 	ENUM WordSubStatus
 		MEMBER Text
 		MEMBER TextReserved
@@ -1718,14 +1718,14 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER CommentLine
 		MEMBER CommentRegion
 	END ENUM
-	
+
 	[Flags];
 		ENUM WordStyle AS INT
 		MEMBER None := 0
 		MEMBER EscapedLiteral := 1
 		MEMBER InAttribute := 2
 	END ENUM
-	
+
 	ENUM LineType AS INT
 		//ENUM LineType AS BYTE
 		MEMBER None
@@ -1747,8 +1747,8 @@ BEGIN NAMESPACE XSharpModel
 		//	MEMBER BeginProperty
 		MEMBER OtherDirective
 	END ENUM
-	
-	INTERNAL STRUCTURE ParseState				   
+
+	INTERNAL STRUCTURE ParseState
 		INTERNAL PROPERTY  lVisFound AS LOGIC			   AUTO
 		INTERNAL PROPERTY  lEntityFound AS LOGIC			   AUTO
 		INTERNAL PROPERTY  lEntityIsType AS LOGIC		   AUTO
@@ -1767,28 +1767,28 @@ BEGIN NAMESPACE XSharpModel
 		INTERNAL PROPERTY  lLinqSelect AS LOGIC			   AUTO
 		INTERNAL PROPERTY  lDimDeclaration AS LOGIC		   AUTO
 		METHOD Reset() AS VOID
-			lVisFound := false
-			lEntityFound := false
-			lEntityIsType := false
-			lFirstChar := true
-			lFirstWord := true
-			lInParams := false
-			lNameFound := false
-			lField := false
-			lLocal := false
-			lEvent := false
-			lParam := false
-			lDirective := false
-			lIgnore := false
-			lExpectName := false
-			lLinqSelect := false
-			lDimDeclaration := false
+			lVisFound := FALSE
+			lEntityFound := FALSE
+			lEntityIsType := FALSE
+			lFirstChar := TRUE
+			lFirstWord := TRUE
+			lInParams := FALSE
+			lNameFound := FALSE
+			lField := FALSE
+			lLocal := FALSE
+			lEvent := FALSE
+			lParam := FALSE
+			lDirective := FALSE
+			lIgnore := FALSE
+			lExpectName := FALSE
+			lLinqSelect := FALSE
+			lDimDeclaration := FALSE
 			RETURN
 	END STRUCTURE
 
 
 
-	
+
 END NAMESPACE
 
 

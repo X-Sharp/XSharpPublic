@@ -361,9 +361,9 @@ namespace XSharp.Project
     [ComVisible(true)]
     public class XSharpAssemblyReferenceNodeProperties : XSharpReferenceNodeProperties
     {
-        private AssemblyReferenceNode _node;
+        private XSharpAssemblyReferenceNode _node;
         #region ctors
-        public XSharpAssemblyReferenceNodeProperties(AssemblyReferenceNode node)
+        internal XSharpAssemblyReferenceNodeProperties(XSharpAssemblyReferenceNode node)
             : base(node)
         {
             _node = node;

@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _SourceFilesDict						AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _TypeDict								AS ConcurrentDictionary<STRING, List<STRING>>
         PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, System.Type>
-
+        PROPERTY FileWalkCompleted                      AS LOGIC AUTO
 
         CONSTRUCTOR(project AS IXSharpProject)
             SUPER()
@@ -55,6 +55,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_TypeDict := ConcurrentDictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
             SELF:_ExternalTypeCache := ConcurrentDictionary<STRING, System.Type > {StringComparer.OrdinalIgnoreCase}
             SELF:Loaded := TRUE
+            SELF:FileWalkCompleted := FALSE
 
         PRIVATE METHOD _clearTypeCache() AS VOID
             SELF:_ExternalTypeCache:Clear()
@@ -547,6 +548,9 @@ BEGIN NAMESPACE XSharpModel
 
         METHOD WalkFile(file AS XFile) AS VOID
             ModelWalker.GetWalker():FileWalk(file)
+            IF FileWalkComplete != NULL
+                FileWalkComplete(file)
+            ENDIF
 
         PUBLIC DELEGATE OnFileWalkComplete(xFile AS XFile) AS VOID
 
@@ -650,7 +654,7 @@ BEGIN NAMESPACE XSharpModel
             VAR fileName := xType:File:FullPath
             IF xType:File:IsXaml
                 fileName := xType:File:XamlCodeBehindFile
-            endif
+            ENDIF
             BEGIN LOCK _TypeDict
                 IF SELF:_TypeDict:ContainsKey(typeName)
                     IF SELF:_typeDict[typeName]:Contains(fileName)

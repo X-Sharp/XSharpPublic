@@ -93,7 +93,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 
         RETURN
 
-        PROTECT VIRTUAL METHOD SortByName( ) AS VOID  
+        PUBLIC VIRTUAL METHOD SortByName( ) AS VOID  
 
         RETURN
         

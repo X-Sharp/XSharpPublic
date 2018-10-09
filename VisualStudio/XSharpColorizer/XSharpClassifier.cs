@@ -377,7 +377,7 @@ namespace XSharpColorizer
                         }
                         else
                         {
-                            if (oElement.oParent.cName != XElement.GlobalName)
+                            if (oElement.oParent?.cName != XElement.GlobalName)
                             {
                                 // find the endclass line after this element
                                 foreach (var oLine in info.SpecialLines)

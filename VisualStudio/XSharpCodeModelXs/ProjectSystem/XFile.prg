@@ -62,6 +62,9 @@ BEGIN NAMESPACE XSharpModel
 			// perform binary search to speed up things
 			VAR current := 0
 			VAR bottom := 0
+            IF (_entityList == NULL_OBJECT)
+                RETURN NULL_OBJECT
+            ENDIF
 			VAR top := _entityList:Count
 			oLast := _entityList:FirstOrDefault()
 			DO WHILE top - bottom > 1

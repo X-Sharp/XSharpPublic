@@ -105,7 +105,11 @@ CLASS DbOpenInfo
 	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, dwWorkArea AS DWORD, lShared AS LOGIC, lReadOnly AS LOGIC)
 		FileName 	:= sFileName
         Extension   := Path.GetExtension(sFileName)
-		Alias	 	:= sAlias
+		IF String.IsNullOrEmpty( sAlias )
+			Alias := Path.GetFileNameWithoutExtension( sFileName )
+		ELSE
+			Alias	 	:= sAlias
+		ENDIF
 		WorkArea	:= dwWorkArea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly

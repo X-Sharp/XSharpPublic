@@ -83,7 +83,9 @@ BEGIN NAMESPACE XSharp.RDD
 							ntxIndex:GoTop()
 							RETURN isOk
 							
-						CATCH //Exception
+						CATCH e AS Exception
+							LOCAL dummy AS STRING
+							dummy := e:Message
 							RETURN FALSE
 						END TRY
 						

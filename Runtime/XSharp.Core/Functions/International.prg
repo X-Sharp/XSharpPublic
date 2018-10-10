@@ -1,4 +1,4 @@
-ï»¿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -8,16 +8,16 @@ USING System.Threading
 USING System.Security.Permissions
 
 /// <summary>
-/// Remove leading and trailing spacesÂ â€”Â including double-byte spacesÂ â€”Â from a string.
+/// Remove leading and trailing spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMBString">The string to trim</param>
 /// <returns>A trimmed string, with leading and trailing spaces removed.</returns>
 /// <remarks>This function is the same as AllTrim() since .Net has unicode strings</remarks>
 FUNCTION MBAllTrim(cMBString AS STRING) AS STRING
-	RETURN Alltrim(cMBString)
+	RETURN AllTrim(cMBString)
 
 /// <summary>
-/// Return the position of the first occurrence of a substring within a stringÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBAt3().)</param>
@@ -27,7 +27,7 @@ FUNCTION MBAt(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	RETURN At( cSearch, cTarget ) 
 
 /// <summary>
-/// Return the position of the first occurrence of a substring within a stringÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBAt3().)</param>
@@ -37,7 +37,7 @@ FUNCTION MBAt2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	RETURN At2( cSearch, cTarget )
 
 /// <summary>
-/// Return the position of the first occurrence of a substring within a string, starting at a specific positionÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
@@ -48,7 +48,7 @@ FUNCTION MBAt3(cSearch AS STRING,cTarget AS STRING,wOffset AS DWORD) AS DWORD
 	RETURN At3( cSearch, cTarget, wOffset ) 
 
 /// <summary>
-/// Return the position of the first occurrence of a sub string within a string, without regard for caseÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
@@ -58,7 +58,7 @@ FUNCTION MBAtC(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	RETURN AtC(cSearch, cTarget)   
 
 /// <summary>
-/// Return the position of the first occurrence of a substring within a string, without regard for caseÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
@@ -68,7 +68,7 @@ FUNCTION MBAtC2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	RETURN AtC2(cSearch, cTarget)   
 
 /// <summary>
-/// Return the line number of the first occurrence of a substring within a multiple line stringÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
@@ -78,7 +78,7 @@ FUNCTION MBAtLine(cSearch AS STRING,cTarget AS STRING) AS LONGINT
 	RETURN (LONG) AtLine(cSearch, cTarget)   
 
 /// <summary>
-/// Return the line number of the first occurrence of a substring within a multiple line stringÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring to search for.</param>
 /// <param name="cTarget">The string in which to search.</param>
@@ -92,7 +92,7 @@ FUNCTION MBAtLine2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 /// </summary>
 /// <param name="c">The string from which to extract characters. </param>
 /// <param name="wLen">The number of characters to extract.</param>
-/// <returns>The leftmost wCount characters of cMBString â€” each character counts as one character.  If wCount is zero, MBLeft() returns a NULL_STRING.  If wCount is larger than the length of the string, MBLeft() returns the entire string.</returns>
+/// <returns>The leftmost wCount characters of cMBString — each character counts as one character.  If wCount is zero, MBLeft() returns a NULL_STRING.  If wCount is larger than the length of the string, MBLeft() returns the entire string.</returns>
 /// <remarks>This function is the same as Left() since .Net has unicode strings</remarks>
 FUNCTION MBLEFT(c AS STRING,wLen AS DWORD) AS STRING
 	RETURN Left(c, wLen)   
@@ -107,7 +107,7 @@ FUNCTION MBLEN(cMBString AS STRING) AS DWORD
 	RETURN SLen(cMBString)
 
 /// <summary>
-/// Remove leading spacesÂ â€”Â including double-byte spacesÂ â€”Â from a string.
+/// Remove leading spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMBString"></param>
 /// <returns>cMBString with the leading spaces removed.  If cMBString is a NULL_STRING or all spaces, MBLTrim() returns a NULL_STRING.</returns>
@@ -116,27 +116,27 @@ FUNCTION MBLTrim(cMBString AS STRING) AS STRING
 	RETURN LTrim(cMBString)
 
 /// <summary>
-/// Return the position of the last occurrence of a substring within a stringÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBRAt3().)</param>
 /// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat() since .Net has unicode strings</remarks>
 FUNCTION MBRat(cSearch AS STRING,cTarget AS STRING) AS LONGINT
-	RETURN (LONG) Rat(cSearch, cTarget)
+	RETURN (LONG) RAt(cSearch, cTarget)
 
 /// <summary>
-/// Return the position of the last occurrence of a substring within a stringÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBRAt3().)</param>
 /// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat2() since .Net has unicode strings</remarks>
 FUNCTION MBRat2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	RETURN Rat2(cSearch, cTarget)
+	RETURN RAt2(cSearch, cTarget)
 
 /// <summary>
-/// Return the position of the last occurrence of a substring within a string, starting at a specific positionÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cSearch">The substring for which to search.</param>
 /// <param name="cTarget">The string in which to search.  (To start at a specific offset, use MBRAt3().)</param>
@@ -144,7 +144,7 @@ FUNCTION MBRat2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 /// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat3() since .Net has unicode strings</remarks>
 FUNCTION MBRat3(cSearch AS STRING,cTarget AS STRING,wOffset AS DWORD) AS DWORD
-	RETURN Rat3(cSearch, cTarget, wOffSet)
+	RETURN RAt3(cSearch, cTarget, wOffSet)
 
 /// <summary>
 /// Return a substring beginning with the last character of a string containing double-byte characters.
@@ -157,7 +157,7 @@ FUNCTION MBRight(cMbString AS STRING,wLen AS DWORD) AS STRING
 	RETURN Right(cMbString, wLen)
 
 /// <summary>
-/// Remove trailing spacesÂ â€”Â including double-byte spacesÂ â€”Â from a string.
+/// Remove trailing spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMbString">The string to trim.</param>
 /// <returns>cMBString with the trailing spaces removed.  If cMBString is a NULL_STRING or all spaces, MBRTrim() returns a NULL_STRING.</returns>
@@ -175,7 +175,7 @@ FUNCTION MBSLen(cMbString AS STRING) AS DWORD
 	RETURN SLen(cMbString)
 
 /// <summary>
-/// Insert a string into another string, optionally deleting a specified number of characters from the original stringÂ â€”Â both strings can contain double-byte characters.
+/// Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
 /// </summary>
 /// <param name="cMBTarget">The string into which characters are inserted and deleted. </param>
 /// <param name="wStart">The position in cMBTarget where the insertion/deletion occurs.</param>
@@ -189,28 +189,28 @@ FUNCTION MBStuff(cMBTarget AS STRING,wStart AS DWORD,wDel AS DWORD,cIns AS STRIN
 
 
 /// <summary>
-/// Extract a substring from a string, using strong typing and only two argumentsÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cMbString">The string from which to extract a substring.</param>
 /// <param name="wStart">The starting position relative to the leftmost character in cMBTarget. </param>
 /// <returns>MBSubstr2() is a typed version of MBSubstr().</returns>
 /// <remarks>This function is the same as Substr2() since .Net has unicode strings</remarks>
 FUNCTION MBSubstr2(cMbString AS STRING,wStart AS DWORD) AS STRING
-	RETURN Substr2(cMbString, wStart)
+	RETURN SubStr2(cMbString, wStart)
 
 /// <summary>
-/// Extract a substring from a string, using strong typing and three required argumentsÂ â€”Â both the substring and the string can contain double-byte characters.
+/// Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="cMbString">The string from which to extract a substring.</param>
 /// <param name="wStart">The starting position relative to the leftmost character in cMBTarget. </param>
-/// <param name="wLen">The number of characters to extract â€” double-byte characters count as one character.  If wCount is greater than the number of characters from wStart to the end of cMBTarget, the extra is ignored.</param>
+/// <param name="wLen">The number of characters to extract — double-byte characters count as one character.  If wCount is greater than the number of characters from wStart to the end of cMBTarget, the extra is ignored.</param>
 /// <returns>The substring.  If the substring is not present, or if you specify wStart as zero, MBSubstr3() returns a NULL_STRING.</returns>
 /// <remarks>This function is the same as Substr3() since .Net has unicode strings</remarks>
 FUNCTION MBSubstr3(cMbString AS STRING,wStart AS DWORD,wLen AS DWORD) AS STRING
-	RETURN Substr3(cMbString, wStart, wLen)
+	RETURN SubStr3(cMbString, wStart, wLen)
 
 /// <summary>
-/// Remove trailing spacesÂ â€”Â including double-byte spacesÂ â€”Â from a string.
+/// Remove trailing spaces — including double-byte spaces — from a string.
 /// </summary>
 /// <param name="cMBString">The string to trim.</param>
 /// <returns>cMBString with the trailing spaces removed.  If cMBString is a NULL_STRING or all spaces, MBTrim() returns a NULL_STRING.</returns>
@@ -309,6 +309,19 @@ FUNCTION IsBiDi() AS LOGIC
 
 /// <exclude />
 _DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
+
+/// <exclude />
+FUNCTION W2String(p AS IntPtr) AS STRING
+	LOCAL IMPLIED cRet := System.Text.StringBuilder{}
+	LOCAL nIndex AS INT
+	LOCAL pChar AS WORD PTR
+	nIndex := 1
+	pChar := (WORD PTR)p
+	DO WHILE pChar[nIndex] != 0
+		cRet:Append(Convert.ToChar(pChar[nIndex]))
+		nIndex ++
+	END DO
+RETURN cRet:ToString()
 
 /// <exclude />
 FUNCTION GetNatDllHandle() AS IntPtr STRICT

@@ -286,7 +286,7 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 FUNCTION DirChange(cDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-		IF !Directory.Exists(cDir)
+		IF Directory.Exists(cDir)
 			Directory.SetCurrentDirectory(cDir)
 			result := 0
 		ELSE

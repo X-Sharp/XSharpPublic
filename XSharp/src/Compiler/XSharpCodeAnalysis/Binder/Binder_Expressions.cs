@@ -428,16 +428,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expr;
 
         }
-        private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination)
+        private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
         {
+            TypeSymbol psz = Compilation.PszType();
             if (source.Type != null && source.Type.SpecialType == SpecialType.System_String &&
                 Compilation.Options.IsDialectVO &&
-                (destination == Compilation.PszType()
-                || destination.IsVoidPointer()))
+                (destination == psz || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.
-                // The allocated pointer inside the PSZ is never freed by Vulcan !
-                TypeSymbol psz = Compilation.PszType();
+                // The allocated pointer inside the PSZ is never freed by Vulcan and X# !
                 MethodSymbol stringctor = null;
                 var ctors = psz.GetMembers(".ctor");
                 foreach (MethodSymbol ctor in ctors)
@@ -451,6 +450,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (stringctor != null)
                 {
+                    diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
                     source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
                     return true;
                 }

@@ -2500,18 +2500,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return name;
         }
 
-        private ExpressionSyntax GenerateLiteralPsz(XP.ExpressionContext context)
+        private bool GenerateLiteralPsz(XP.ExpressionContext context, out ExpressionSyntax expr)
         {
             //remove the quotes from the string
-            var expr = context.Get<ExpressionSyntax>();
+            expr = null;
             if (!context.IsLiteralExpression())
-                return expr;
+                return false;
+            expr = context.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(expr));
             expr = CreateObject(_pszType, args);
             expr.XGenerated = true;
             expr.XNode = context;
             if (_options.MacroScript)
-                return expr;
+                return false;
             var str = context.GetText();
             string fieldname = null;
             foreach (var pair in _literalPSZs)
@@ -2527,7 +2528,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 fieldname = "_$psz_" + UniqueNameSuffix;
                 // create field declarator with inline assignment
                 // INTERNAL STATIC INITONLY _psz := Psz{"value"} AS __PSZ
-
                 var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr);
                 init.XGenerated = true;
                 init.XNode = context;
@@ -2544,7 +2544,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 fielddecl.XGenerated = true;
                 _literalPSZs.Add(fieldname, new Tuple<string, FieldDeclarationSyntax>(str, fielddecl));
             }
-            return MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.PSZTable), GenerateSimpleName(fieldname));
+            expr = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.PSZTable), GenerateSimpleName(fieldname));
+            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak));
+            return true;
         }
 
    
@@ -3605,9 +3607,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    var expr = GenerateLiteralPsz(context.Expr);
-                    context.Put(expr);
-                    return;
+                    ExpressionSyntax expr;
+                    if (GenerateLiteralPsz(context.Expr, out expr))
+                    {
+                        context.Put(expr);
+                        return;
+                    }
                 }
             }
 
@@ -3646,9 +3651,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    var expr = GenerateLiteralPsz(context.Expr);
-                    context.Put(expr);
-                    return;
+                    ExpressionSyntax expr;
+                    if (GenerateLiteralPsz(context.Expr, out expr))
+                    {
+                        context.Put(expr);
+                        return;
+                    }
                 }
             }
             base.ExitVoCastExpression(context);

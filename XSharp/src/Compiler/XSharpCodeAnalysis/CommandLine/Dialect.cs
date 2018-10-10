@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
 				case XSharpDialect.XBasePP:
-                //case XSharpDialect.Vulcan:
+                case XSharpDialect.Vulcan:
                     return false;
                 default:
                     return true;

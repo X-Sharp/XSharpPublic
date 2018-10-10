@@ -36,6 +36,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:DontGenerateEmptyFiles := TRUE
 	oOptions:AdjustCallbackFunctions := TRUE      
 	oOptions:SortEntitiesByName := TRUE
+	oOptions:UseXSharpRuntime := FALSE
 	xPorter.Options := oOptions
 	
 	ReadIni()
@@ -224,6 +225,7 @@ STRUCTURE xPorterOptions
 	EXPORT AdjustCallbackFunctions AS LOGIC
 	EXPORT ExportOnlyDefines AS LOGIC 
 	EXPORT SortEntitiesByName AS LOGIC 
+	EXPORT UseXSharpRuntime AS LOGIC 
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -420,7 +422,7 @@ CLASS VOProjectDescriptor
 		Directory.CreateDirectory(cOutputFolder)
 		IF File.Exists(SDKDefines_FileName)
 			SELF:_cSolution_SDKDefines_Filename := cOutputFolder + "\" + GetFilename(SDKDefines_FileName)
-			IF .not. File.Exists(SELF:_cSolution_SDKDefines_Filename)
+			IF .not. File.Exists(SELF:_cSolution_SDKDefines_Filename) .and. .not. xPorter.Options:UseXSharpRuntime
 				File.Copy(SDKDefines_FileName , SELF:_cSolution_SDKDefines_Filename)
 			END IF
 		END IF
@@ -578,8 +580,13 @@ CLASS ApplicationDescriptor
 //		SELF:_cAppFile_XIDE := SELF:AppFolder + "\" + SELF:Name + ".viapp"
 //		SELF:_cAppFile_VS := SELF:AppFolder + "\" + SELF:Name + ".xsproj"
 
-		SELF:AddRuntimeReference("VulcanRT")
-		SELF:AddRuntimeReference("VulcanRTFuncs")
+		IF xPorter.Options:UseXSharpRuntime
+			SELF:AddRuntimeReference("XSharp.Core")
+			SELF:AddRuntimeReference("XSharp.VO")
+		ELSE
+			SELF:AddRuntimeReference("VulcanRT")
+			SELF:AddRuntimeReference("VulcanRTFuncs")
+		END IF
 		
 	RETURN
 	
@@ -732,24 +739,24 @@ CLASS ApplicationDescriptor
 			LOCAL cGAC := NULL AS STRING
 			SWITCH cLibrary
 			CASE "Console Classes"
-				cGAC := "VulcanVOConsoleClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOConsoleClasses", "VulcanVOConsoleClasses")
 			CASE "Terminal Lite"
-				cGAC := "VulcanVOConsoleClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOConsoleClasses", "VulcanVOConsoleClasses")
 			CASE "GUI Classes"
-				cGAC := "VulcanVOGUIClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOGUIClasses", "VulcanVOGUIClasses")
 //				lGUI := TRUE
 			CASE "Internet"
-				cGAC := "VulcanVOInternetClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOInternetClasses", "VulcanVOInternetClasses")
 			CASE "RDD Classes"
-				cGAC := "VulcanVORDDClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VORDDClasses", "VulcanVORDDClasses")
 			CASE "Report Classes"
-				cGAC := "VulcanVOReportClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOReportClasses", "VulcanVOReportClasses")
 			CASE "SQL Classes"
-				cGAC := "VulcanVOSQLClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOSQLClasses", "VulcanVOSQLClasses")
 			CASE "System Classes"
-				cGAC := "VulcanVOSystemClasses"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOSystemClasses", "VulcanVOSystemClasses")
 			CASE "Win32 API Library"
-				cGAC := "VulcanVOWin32APILibrary"
+				cGAC := iif(xPorter.Options:UseXSharpRuntime, "VOWin32APILibrary", "VulcanVOWin32APILibrary")
 				lWin32API := TRUE
 			OTHERWISE
 				oApp:ProjectReferences:Add(cLibrary)
@@ -764,7 +771,7 @@ CLASS ApplicationDescriptor
 //		IF lGUI .and. .not. lWin32API
 //		IF lAnySDK .and. .not. lWin32API
 			IF .not. lWin32API
-			oApp:AddRuntimeReference("VulcanVOWin32APILibrary")
+			oApp:AddRuntimeReference(iif(xPorter.Options:UseXSharpRuntime, "VOWin32APILibrary", "VulcanVOWin32APILibrary"))
 			ENDIF
 //		END IF
 		
@@ -772,7 +779,9 @@ CLASS ApplicationDescriptor
 /*			IF .not. String.IsNullOrWhiteSpace(SDKDefines_FileName) .and. File.Exists(SDKDefines_FileName)
 				oApp:BrowseReferences:Add(SDKDefines_FileName)
 			END IF*/
-			oApp:BrowseReferences:Add("%SDKDefinesFilename%")
+			IF .not. xPorter.Options:UseXSharpRuntime
+				oApp:BrowseReferences:Add("%SDKDefinesFilename%")
+			ENDIF
 //		END IF
 
 		oSource := System.Text.StringBuilder{}

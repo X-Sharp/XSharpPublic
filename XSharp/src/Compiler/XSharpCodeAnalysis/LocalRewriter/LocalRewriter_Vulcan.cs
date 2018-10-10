@@ -34,6 +34,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (value.Type == type)
                 return value;
             bool isString;
+            if (value.Type == _compilation.UsualType())
+            {
+                var op = getImplicitOperator(value.Type, type);
+                var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);
+                result.WasCompilerGenerated = true;
+                this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
+                return result;
+            }
             isString = value.Type.SpecialType == SpecialType.System_String;
             var ctors = type.Constructors;
             foreach (var ctor in ctors)

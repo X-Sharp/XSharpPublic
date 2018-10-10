@@ -12483,6 +12483,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The compiler generated an automatic conversion from PSZ. This will create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and memory the lifetime of the PSZ yourself..
+        /// </summary>
+        internal static string WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak {
+            get {
+                return ResourceManager.GetString("WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compiler Option {0} ({1}) is recognized by the compiler but not yet implemented.
         /// </summary>
         internal static string WRN_CompilerOptionNotImplementedYet {

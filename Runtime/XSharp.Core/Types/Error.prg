@@ -1,4 +1,4 @@
-﻿
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -110,6 +110,15 @@ BEGIN NAMESPACE XSharp
     SELF:FuncSym		:= ProcName(2)
     SELF:OSCode			:= 0
     SELF:Description    := SELF:Message
+    
+    SELF:Arg 			:= ""
+    SELF:CallFuncSym 	:= ""
+    SELF:Description 	:= ""
+    SELF:FileName 		:= ""
+    SELF:FuncSym 		:= ""
+    SELF:Operation 		:= ""
+    SELF:SubCodeText 	:= ""
+    SELF:SubSystem 		:= ""
     
     /// <summary></summary>
     CONSTRUCTOR()

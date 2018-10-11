@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD
 	/// <summary>DBF RDD. Usually not used 'stand alone'</summary>
 	CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 		PROTECT _Header			AS DbfHeader
-		//PROTECT _HeaderLength	AS WORD  	// Size of header
+		PROTECT _HeaderLength	AS LONG  	// Size of header
 		PROTECT _BufferValid	AS LOGIC	// Current Record is Valid
 		INTERNAL _isValid        AS LOGIC    // Current Position is Valid
 		PROTECT _HasMemo		AS LOGIC
@@ -388,7 +388,7 @@ BEGIN NAMESPACE XSharp.RDD
 			IF ( SELF:_lockScheme:Direction < 0 )
 				iOffset -= (INT64)recordNbr
 			ELSEIF( SELF:_lockScheme:Direction == 2 )
-				iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_Header:RecordLen + SELF:_Header:HeaderLen )
+				iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_RecordLength + SELF:_HeaderLength )
 			ELSE
 				iOffset += (INT64)recordNbr
 			ENDIF
@@ -475,7 +475,7 @@ BEGIN NAMESPACE XSharp.RDD
 			IF ( SELF:_lockScheme:Direction < 0 )
 				iOffset -= (INT64)recordNbr
 			ELSEIF( SELF:_lockScheme:Direction == 2 )
-				iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_Header:RecordLen + SELF:_Header:HeaderLen )
+				iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_RecordLength + SELF:_HeaderLength )
 			ELSE
 				iOffset += (INT64)recordNbr
 			ENDIF
@@ -725,7 +725,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PRIVATE METHOD _putEndOfFileMarker() AS LOGIC
 			// According to DBASE.com Knowledge base :
 			// The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
-			LOCAL lOffset := SELF:_Header:HeaderLen + SELF:_RecCount * SELF:_Header:RecordLen AS LONG
+			LOCAL lOffset := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS LONG
 			LOCAL isOk := ( FSeek3( SELF:_hFile, lOffset, FS_SET ) == lOffset ) AS LOGIC
 			LOCAL eofMarker := <BYTE>{ 26 } AS BYTE[]
 			IF ( isOk )
@@ -791,8 +791,10 @@ BEGIN NAMESPACE XSharp.RDD
 				// This will fill the Date and RecCount
 				isOK := SELF:_writeHeader()
 				IF ( isOK )
+					SELF:_HeaderLength := SELF:_Header:HeaderLen
 					isOk := SELF:_writeFieldsHeader()
 					IF ( isOk )
+						SELF:_RecordLength := SELF:_Header:RecordLen
 						IF ( SELF:_HasMemo )
 							isOk := SELF:CreateMemFile( info )
 						ENDIF
@@ -903,7 +905,9 @@ BEGIN NAMESPACE XSharp.RDD
 			isOk := ( FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE )
 			//
 			IF ( isOk )
-				LOCAL fieldCount := (( SELF:_Header:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
+				SELF:_HeaderLength := SELF:_Header:HeaderLen
+				//
+				LOCAL fieldCount := (( SELF:_HeaderLength - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
 				// Something wrong in Size...
 				IF ( fieldCount <= 0 )
 					RETURN FALSE
@@ -920,7 +924,7 @@ BEGIN NAMESPACE XSharp.RDD
 			// Read the Fields Header, filling the _Fields List with RddFieldInfo
 		PRIVATE METHOD _readFieldsHeader() AS LOGIC
 			LOCAL isOk AS LOGIC
-			LOCAL fieldCount := (( SELF:_Header:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
+			LOCAL fieldCount := (( SELF:_HeaderLength - DbfHeader.SIZE) / DbfField.SIZE ) AS INT
 			LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 			//
 			// Read full Fields Header
@@ -1140,11 +1144,11 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			IF ( isOk )
 				// Record pos is One-Based
-				LOCAL lOffset := SELF:_Header:HeaderLen + ( SELF:_RecNo - 1 ) * SELF:_Header:RecordLen AS LONG
+				LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
 				isOk := ( FSeek3( SELF:_hFile, lOffset, FS_SET ) == lOffset )
 				IF ( isOk )
 					// Read Record
-					isOk := ( FRead3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_Header:RecordLen ) == (DWORD)SELF:_Header:RecordLen )
+					isOk := ( FRead3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_RecordLength ) == (DWORD)SELF:_RecordLength )
 					IF ( isOk )
 						SELF:_BufferValid := TRUE
 						SELF:_isValid := TRUE
@@ -1169,12 +1173,14 @@ BEGIN NAMESPACE XSharp.RDD
 				ELSE
 					// Write Current Data Buffer
 					// Record pos is One-Based
-					LOCAL recordPos := SELF:_Header:HeaderLen + ( SELF:_RecNo - 1 ) * SELF:_Header:RecordLen AS LONG
+					LOCAL recordPos AS LONG
+					//
+					recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
 					isOk := ( FSeek3( SELF:_hFile, recordPos, FS_SET ) == recordPos )
 					IF (isOk)
 						// Write Record
 						TRY
-							FWrite3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_Header:RecordLen )
+							FWrite3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_RecordLength )
 							// Don't forget to Update Header
 							SELF:_Header:isHot := TRUE
 							IF ( SELF:_Shared )
@@ -2244,7 +2250,7 @@ BEGIN NAMESPACE XSharp.RDD
 				VAR fSize := FSeek3( SELF:_hFile, 0, FS_END )
 				FSeek3( SELF:_hFile, (LONG)current, FS_SET )
 				IF ( fSize != 0 ) // Just create file ?
-					reccount := ( fSize - SELF:_Header:HeaderLen ) / SELF:_Header:RecordLen
+					reccount := ( fSize - SELF:_HeaderLength ) / SELF:_RecordLength
 				ENDIF
 			ENDIF
 			RETURN reccount

@@ -7,26 +7,26 @@ BEGIN NAMESPACE XSharp
   /// <summary>XSharp Runtime base Error class</summary>
   CLASS Error INHERIT Exception
     /// <summary>A string representing the name of the subsystem generating the error.</summary>
-    PROPERTY SubSystem AS STRING AUTO
+    PROPERTY SubSystem AS STRING AUTO := String.Empty
     /// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
     /// <Seealso cref="T:XSharp.Gencode"/>
-    PROPERTY Gencode AS DWORD AUTO
+    PROPERTY Gencode AS DWORD AUTO := 0
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
-    PROPERTY SubCode AS DWORD AUTO
+    PROPERTY SubCode AS DWORD AUTO := 0
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
-    PROPERTY FuncSym AS STRING AUTO
+    PROPERTY FuncSym AS STRING AUTO := String.Empty
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
-    PROPERTY FileName AS STRING AUTO
+    PROPERTY FileName AS STRING AUTO := String.Empty
     /// <summary>A constant indicating the severity of the error condition.</summary>
     /// <Seealso cref="T:XSharp.Severity"/>
-    PROPERTY Severity AS DWORD AUTO
+    PROPERTY Severity AS DWORD AUTO := 0
     /// <summary>A string that describes the error condition.</summary>
-    PROPERTY Description		AS STRING AUTO
+    PROPERTY Description		AS STRING AUTO := String.Empty
     /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
-    PROPERTY Arg				AS STRING AUTO
-    PRIVATE  _ArgType			AS DWORD
+    PROPERTY Arg				AS STRING AUTO := String.Empty
+    PRIVATE  _ArgType			:= 0 AS DWORD 
     /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
-    PROPERTY ArgType			AS DWORD 
+    PROPERTY ArgType			AS DWORD  
       GET 
         RETURN _ArgType 
       END GET
@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp
         _ArgTypeType := UsualTypeToType(VALUE)
       END SET
     END PROPERTY
-    PRIVATE  _ArgTypeType 		AS System.Type
+    PRIVATE  _ArgTypeType 		:= NULL AS System.Type 
     /// <summary>The system type representing the data type of the argument that raised the error.</summary>
     PROPERTY ArgTypeType		AS System.Type 
       GET 
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     
-    PRIVATE _ArgTypeReq			AS DWORD
+    PRIVATE _ArgTypeReq		:= 0	AS DWORD 
     /// <summary>A numeric value representing the expected type of the argument that raised the error.</summary>
     PROPERTY ArgTypeReq			AS DWORD 
       GET 
@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp
         _ArgTypeReqType := UsualTypeToType(VALUE)
       END SET
     END PROPERTY
-    PRIVATE  _ArgTypeReqType 		AS System.Type
+    PRIVATE  _ArgTypeReqType := NULL	AS System.Type 
     /// <summary>The system type representing the expected type of the argument that raised the error.</summary>
     PROPERTY ArgTypeReqType		AS System.Type 
       GET 
@@ -70,33 +70,33 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     /// <summary></summary>
-    PROPERTY SubstituteType     AS DWORD AUTO
+    PROPERTY SubstituteType     AS DWORD AUTO := 0
     /// <summary></summary>
-    PROPERTY ArgNum				AS DWORD AUTO
+    PROPERTY ArgNum				AS DWORD AUTO := 0
     /// <summary></summary>
-    PROPERTY MethodSelf			AS OBJECT AUTO
+    PROPERTY MethodSelf			AS OBJECT AUTO := 0
     /// <summary></summary>
-    PROPERTY CallFuncSym		AS STRING AUTO
+    PROPERTY CallFuncSym		AS STRING AUTO := String.Empty
     /// <summary></summary>
     PROPERTY Args				AS OBJECT[] AUTO
     /// <summary></summary>
-    PROPERTY Tries				AS INT AUTO
+    PROPERTY Tries				AS INT AUTO := 0
     /// <summary></summary>
-    PROPERTY CanDefault         AS LOGIC AUTO
+    PROPERTY CanDefault         AS LOGIC AUTO := FALSE
     /// <summary></summary>
-    PROPERTY CanRetry           AS LOGIC AUTO
+    PROPERTY CanRetry           AS LOGIC AUTO := FALSE
     /// <summary></summary>
-    PROPERTY CanSubstitute      AS LOGIC AUTO
+    PROPERTY CanSubstitute      AS LOGIC AUTO := FALSE
+    /// <summary></summary> 
+    PROPERTY Operation          AS STRING AUTO := String.Empty
     /// <summary></summary>
-    PROPERTY Operation          AS STRING AUTO
+    PROPERTY SubCodeText        AS STRING AUTO := String.Empty
     /// <summary></summary>
-    PROPERTY SubCodeText        AS STRING AUTO
+    PROPERTY OSCode				AS DWORD AUTO := 0
     /// <summary></summary>
-    PROPERTY OSCode				AS DWORD AUTO
+    PROPERTY FileHandle         AS DWORD AUTO := 0
     /// <summary></summary>
-    PROPERTY FileHandle         AS DWORD AUTO
-    /// <summary></summary>
-    PROPERTY MaxSize			AS DWORD AUTO
+    PROPERTY MaxSize			AS DWORD AUTO := 0
     
     PRIVATE METHOD setDefaultValues() AS VOID
     SELF:Gencode		:= EG_UNKNOWN

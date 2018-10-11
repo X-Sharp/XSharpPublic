@@ -63,9 +63,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (INT64) u)
 			u := UInt64.MaxValue
-			Assert.Throws(TYPEOF(Error), { => l := (INT64) u})	// Overflow Error
+			l := u	// NO Overflow Error
 			u := "a text"
-			Assert.Throws(TYPEOF(Error), { => l := (INT64) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => l := u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -125,9 +125,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(d,1U)
 			Assert.Equal(d,  (UINT64) u)
 			u := -1
-			Assert.Throws(TYPEOF(Error), { => d := (UINT64) u})	// Overflow Error
+			d := u	// NO Overflow Error
+            Assert.Equal(d,  UInt64.MaxValue)
 			u := "a text"
-			Assert.Throws(TYPEOF(Error), { => d := (UINT64) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => d :=  u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -140,9 +141,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(d,1U)
 			Assert.Equal(d,  (DWORD) u)
 			u := -1
-			Assert.Throws(TYPEOF(Error), { => d := (DWORD) u})	// Overflow Error
+			d := u	// USUAL -> DWORD gives NO overflow error
+            Assert.Equal(d,  UInt32.MaxValue)
 			u := "a text"
-			Assert.Throws(TYPEOF(Error), { => d := (DWORD) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => d :=  u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -155,9 +157,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(w,1)
 			Assert.Equal(w,  (WORD) u)
 			u := -1
-			Assert.Throws(TYPEOF(Error), { => w := (WORD) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => w := u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(TYPEOF(Error), { => w := (WORD) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => w := u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -171,9 +173,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(b,1U)
 			Assert.Equal(b,  (BYTE) u)
 			u :=  -1
-			Assert.Throws(TYPEOF(Error), { => b := (BYTE) u})	// Overflow Error
+			Assert.Throws(TYPEOF(Error), { => b :=  u})	// Overflow Error
 			u := "a text"
-			Assert.Throws(TYPEOF(Error), { => b := (BYTE) u})	// Conversion Error
+			Assert.Throws(TYPEOF(Error), { => b :=  u})	// Conversion Error
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];

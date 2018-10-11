@@ -49,8 +49,8 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.AutoOrder , TRUE)
 			SELF:_SetThreadValue(Set.Optimize , TRUE)
 			SELF:_SetThreadValue(Set.AutoShare, AutoShareMode.Auto)
-			SELF:_SetThreadValue(Set.LOCKTRIES , 1)
-			SELF:_SetThreadValue(Set.MemoBlockSize , 32)
+			SELF:_SetThreadValue(Set.LOCKTRIES , 1U)
+			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)
 			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
 			SELF:_SetThreadValue(Set.Exclusive , TRUE)
 			// Console Settings

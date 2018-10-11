@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -86,7 +86,9 @@ FUNCTION AscW(c AS STRING) AS DWORD
 FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL position := 0 AS DWORD
 	IF ( c != NULL .AND. cSearch != NULL )
-		position := (DWORD) c:IndexOf(cSearch, StringComparison.Ordinal) +1
+		IF c:Length != 0 .and. cSearch:Length != 0
+			position := (DWORD) c:IndexOf(cSearch, StringComparison.Ordinal) +1
+		END IF
 	ENDIF
 	RETURN position
 
@@ -117,7 +119,9 @@ FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 	LOCAL position := 0 AS DWORD
 	// note dwOffset is ZERO based in VO
 	IF ( c != NULL .AND. cSearch != NULL .AND. dwOff <= c:Length )
-		position := (DWORD) c:IndexOf(cSearch,(INT)dwOff) +1
+		IF c:Length != 0 .and. cSearch:Length != 0
+			position := (DWORD) c:IndexOf(cSearch,(INT)dwOff) +1
+		ENDIF
 	ENDIF
 	RETURN position
 
@@ -131,7 +135,9 @@ FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL position := 0 AS DWORD
 	IF ( c != NULL .AND. cSearch != NULL )
-		position := (DWORD) c:IndexOf(cSearch, StringComparison.OrdinalIgnoreCase) +1
+		IF c:Length != 0 .and. cSearch:Length != 0
+			position := (DWORD) c:IndexOf(cSearch, StringComparison.OrdinalIgnoreCase) +1
+		ENDIF
 	ENDIF
 	RETURN position
 
@@ -199,7 +205,7 @@ FUNCTION ATLine(cSearch AS STRING,c AS STRING) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION ATLine2(cSearch AS STRING,c AS STRING) AS DWORD
-	RETURN ATLine(cSearch, c)
+	RETURN AtLine(cSearch, c)
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -426,10 +432,10 @@ FUNCTION EncodeBase64(hFileIn AS IntPtr,hFileOut AS IntPtr) AS INT
 	LOCAL nRead AS DWORD
 	// determine file size
 	FSeek3(hFileIn, 0, FS_END)
-	nSize := Ftell(hFileIn)
+	nSize := FTell(hFileIn)
 	FSeek3(hFileIn, 0, FS_SET)
 	VAR aBuffer := BYTE[]{ (INT) nSize}
-	nRead := Fread3(hFileIn, aBuffer, nSize)
+	nRead := FRead3(hFileIn, aBuffer, nSize)
 	IF nRead != nSize
 		RETURN 0
 	ENDIF
@@ -490,7 +496,7 @@ FUNCTION Hex2C(c AS STRING) AS STRING
 		VAR b1 := _nibble(c[i])
 		VAR b2 := _nibble(c[i+1])
 		VAR b  := (b1 << 4) + b2
-		sb:Append( chr( b))
+		sb:Append( Chr( b))
 		i += 2
 	ENDDO
 	RETURN sb:ToString()
@@ -847,7 +853,9 @@ FUNCTION QPEncString(cIn AS STRING) AS STRING
 FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL rightMost := 0 AS DWORD
 	IF cSearch != NULL .AND. c != NULL
-		rightMost:= (DWORD) c:LastIndexOf(cSearch, StringComparison.Ordinal) + 1
+		IF c:Length != 0 .and. cSearch:Length != 0
+			rightMost:= (DWORD) c:LastIndexOf(cSearch, StringComparison.Ordinal) + 1
+		ENDIF
 	ENDIF
 	RETURN rightMost
 
@@ -874,13 +882,15 @@ FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
 FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
 	IF cSearch != NULL .AND. c != NULL
-		IF dwOffSet > (DWORD) c:Length 
-			dwOffSet := 0U
-		ENDIF
-		VAR cTemp := c:Substring((INT) dwOffSet)
-		nResult := RAt(cSearch, cTemp)
-		IF nResult > 0U
-			nResult := nResult+dwOffSet
+		IF c:Length != 0 .and. cSearch:Length != 0
+			IF dwOffSet > (DWORD) c:Length 
+				dwOffSet := 0U
+			ENDIF
+			VAR cTemp := c:Substring((INT) dwOffSet)
+			nResult := RAt(cSearch, cTemp)
+			IF nResult > 0U
+				nResult := nResult+dwOffSet
+			ENDIF
 		ENDIF
 	ENDIF
 	RETURN nResult
@@ -894,7 +904,7 @@ FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 /// </returns>
 FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
 	LOCAL nPos AS DWORD
-	IF cSearch == NULL .OR. c == NULL
+	IF cSearch == NULL .OR. c == NULL .or. cSearch:Length == 0 .or. c:Length == 0
 		RETURN 0
 	ENDIF
 	nPos := RAt(cSearch,c)
@@ -912,7 +922,7 @@ FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
 /// <returns>
 /// </returns>
 FUNCTION RATLine2(cSearch AS STRING,c AS STRING) AS DWORD
-	RETURN RatLine(cSearch, c)
+	RETURN RAtLine(cSearch, c)
 
 /// <summary>
 /// Repeat a string a specified number of times.

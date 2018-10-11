@@ -30,7 +30,53 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		
 	/// <inheritdoc />
 	VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
-		THROW NotImplementedException{}
+		switch nOrdinal
+        case DBOI_NUMBER
+        CASE DBOI_KEYNO
+        // CASE DBOI_POSITION alias for KEYNO
+        // CASE DBOI_KEYGOTO  alias for KEYNO	 	
+		CASE DBOI_RECNO 	
+		CASE DBOI_ORDERCOUNT
+		CASE DBOI_OPTLEVEL 	
+		CASE DBOI_KEYSIZE 	
+		CASE DBOI_KEYCOUNT 	
+		CASE DBOI_KEYTYPE 	
+		CASE DBOI_KEYSINCLUDED  
+        CASE DBOI_KEYNORAW
+       	//CASE DBOI_KEYGOTORAW 	alias for KEYNORAW
+		CASE DBOI_KEYCOUNTRAW 
+		CASE DBOI_KEYDEC 	
+		CASE DBOI_LOCKOFFSET 
+            return 0
+		CASE DBOI_CONDITION 
+        CASE DBOI_EXPRESSION
+		CASE DBOI_NAME 		
+		CASE DBOI_BAGNAME 	
+		//CASE DBOI_INDEXNAME  alias for BAGNAME
+		CASE DBOI_BAGEXT 	
+		//CASE DBOI_INDEXEXT  alias for BAGEXT
+		CASE DBOI_FULLPATH 	
+            return ""
+        CASE DBOI_FILEHANDLE
+            return Intptr.Zero
+		CASE DBOI_ISCOND 	
+		CASE DBOI_ISDESC 	
+        CASE DBOI_UNIQUE
+		CASE DBOI_CUSTOM 		
+		CASE DBOI_HPLOCKING 
+            return FALSE
+		CASE DBOI_KEYADD 	
+		CASE DBOI_KEYDELETE 
+		CASE DBOI_KEYVAL 	
+		CASE DBOI_SCOPETOP 	
+		CASE DBOI_SCOPEBOTTOM   
+		CASE DBOI_SCOPETOPCLEAR 
+		CASE DBOI_SCOPEBOTTOMCLEAR
+		CASE DBOI_SETCODEBLOCK
+		CASE DBOI_SKIPUNIQUE 	
+            return null		
+        end switch
+        return null		
 		
 	/// <inheritdoc />
 	VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC

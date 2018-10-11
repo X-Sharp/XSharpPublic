@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -195,6 +195,16 @@ FUNCTION DiskFree(nDrive AS INT) AS INT64
 
 
 /// <summary>
+/// Return the current Windows drive.
+/// </summary>
+/// <returns>
+/// Return the letter of the current drive without colon
+/// </returns>
+FUNCTION DiskName() AS STRING
+	RETURN CurDrive()
+
+
+/// <summary>
 /// Return the capacity of the current disk.
 /// </summary>
 /// <returns>
@@ -276,7 +286,7 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 FUNCTION DirChange(cDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-		IF !Directory.Exists(cDir)
+		IF Directory.Exists(cDir)
 			Directory.SetCurrentDirectory(cDir)
 			result := 0
 		ELSE

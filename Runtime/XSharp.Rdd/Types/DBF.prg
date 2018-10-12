@@ -776,7 +776,7 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:_Ansi := FALSE
 					codePage := XSharp.RuntimeState.DosCodePage
 				ENDIF
-				SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
+				SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
 				// Init Header, should it be a parameter ?
 				SELF:_Header:Version := DBFVersion.FoxBaseDBase3NoMemo
 				IF ( SELF:_HasMemo )
@@ -886,7 +886,7 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:GoTop()
 					//
 					SELF:_Ansi := SELF:_Header:IsAnsi
-					SELF:_Encoding := System.Text.Encoding.GetEncoding( SELF:_Header:CodePage )
+					SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
 				ELSE
 					SELF:_DbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_CORRUPTION )
 				ENDIF
@@ -1371,11 +1371,12 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL VIRTUAL METHOD _convertFieldToData( oValue AS OBJECT, buffer AS BYTE[], fieldType AS DbFieldType, dec AS LONG) AS LOGIC
 			LOCAL objType AS System.Type
 			LOCAL objTypeCode AS System.TypeCode
-			LOCAL encoding AS ASCIIEncoding
+			LOCAL encoding AS Encoding //ASCIIEncoding
 			LOCAL isOk := FALSE AS LOGIC
 			LOCAL str AS STRING
 			//
-			encoding := ASCIIEncoding{}
+			//encoding := ASCIIEncoding{}
+			encoding := SELF:_Encoding
 			objType := oValue:GetType()
 			objTypeCode := Type.GetTypeCode( objType )
 			//
@@ -1565,9 +1566,9 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 					LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
 					//
-					LOCAL encoding AS ASCIIEncoding
+					LOCAL encoding AS Encoding //ASCIIEncoding
 					// Read actual Data
-					encoding := ASCIIEncoding{}
+					encoding := SELF:_Encoding //ASCIIEncoding{}
 					VAR str :=  encoding:GetString( SELF:_RecordBuffer, iOffset, SELF:_Fields[nArrPos]:Length)
 					IF ( str == NULL )
 						str := String.Empty

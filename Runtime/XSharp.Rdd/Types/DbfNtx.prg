@@ -31,11 +31,16 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN SUPER:OrderDestroy(orderInfo)
 			
 			
-		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo, fullPath AS STRING) AS LOGIC
+		VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
 			//
 			BEGIN LOCK SELF
 				//
 				SELF:GoCold()
+                local fullPath as string
+                fullPath := orderInfo:BagName
+                if String.IsNullOrEmpty(System.IO.Path.GetDirectoryName(fullPath))
+                    fullPath := System.IO.Path.Combine(SYstem.IO.Path.GetDirectoryName(self:_FileName), fullPath)
+                endif
 				RETURN SELF:_ntxList:Add(orderInfo, fullPath)
 			END LOCK
 			

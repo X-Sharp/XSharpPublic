@@ -7,24 +7,24 @@ BEGIN NAMESPACE XSharp
   /// <summary>XSharp Runtime base Error class</summary>
   CLASS Error INHERIT Exception
     /// <summary>A string representing the name of the subsystem generating the error.</summary>
-    PROPERTY SubSystem AS STRING AUTO := String.Empty
+    PROPERTY SubSystem AS STRING AUTO 
     /// <summary>An integer numeric value representing a Visual Objects generic error code.</summary>
     /// <Seealso cref="T:XSharp.Gencode"/>
-    PROPERTY Gencode AS DWORD AUTO := 0
+    PROPERTY Gencode AS DWORD AUTO 
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
-    PROPERTY SubCode AS DWORD AUTO := 0
+    PROPERTY SubCode AS DWORD AUTO 
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
-    PROPERTY FuncSym AS STRING AUTO := String.Empty
+    PROPERTY FuncSym AS STRING AUTO 
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
-    PROPERTY FileName AS STRING AUTO := String.Empty
+    PROPERTY FileName AS STRING AUTO 
     /// <summary>A constant indicating the severity of the error condition.</summary>
     /// <Seealso cref="T:XSharp.Severity"/>
-    PROPERTY Severity AS DWORD AUTO := 0
+    PROPERTY Severity AS DWORD AUTO 
     /// <summary>A string that describes the error condition.</summary>
-    PROPERTY Description		AS STRING AUTO := String.Empty
+    PROPERTY Description		AS STRING  AUTO
     /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
-    PROPERTY Arg				AS STRING AUTO := String.Empty
-    PRIVATE  _ArgType			:= 0 AS DWORD 
+    PROPERTY Arg				AS STRING AUTO
+    PRIVATE  _ArgType			AS DWORD 
     /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
     PROPERTY ArgType			AS DWORD  
       GET 
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     
-    PRIVATE _ArgTypeReq		:= 0	AS DWORD 
+    PRIVATE _ArgTypeReq		AS DWORD 
     /// <summary>A numeric value representing the expected type of the argument that raised the error.</summary>
     PROPERTY ArgTypeReq			AS DWORD 
       GET 
@@ -70,35 +70,43 @@ BEGIN NAMESPACE XSharp
       END SET
     END PROPERTY
     /// <summary></summary>
-    PROPERTY SubstituteType     AS DWORD AUTO := 0
+    PROPERTY SubstituteType     AS DWORD AUTO 
     /// <summary></summary>
-    PROPERTY ArgNum				AS DWORD AUTO := 0
+    PROPERTY ArgNum				AS DWORD AUTO 
     /// <summary></summary>
-    PROPERTY MethodSelf			AS OBJECT AUTO := 0
+    PROPERTY MethodSelf			AS OBJECT AUTO 
     /// <summary></summary>
-    PROPERTY CallFuncSym		AS STRING AUTO := String.Empty
+    PROPERTY CallFuncSym		AS STRING AUTO 
     /// <summary></summary>
     PROPERTY Args				AS OBJECT[] AUTO
     /// <summary></summary>
-    PROPERTY Tries				AS INT AUTO := 0
+    PROPERTY Tries				AS INT AUTO 
     /// <summary></summary>
-    PROPERTY CanDefault         AS LOGIC AUTO := FALSE
+    PROPERTY CanDefault         AS LOGIC AUTO 
     /// <summary></summary>
-    PROPERTY CanRetry           AS LOGIC AUTO := FALSE
+    PROPERTY CanRetry           AS LOGIC AUTO 
     /// <summary></summary>
-    PROPERTY CanSubstitute      AS LOGIC AUTO := FALSE
+    PROPERTY CanSubstitute      AS LOGIC AUTO 
     /// <summary></summary> 
-    PROPERTY Operation          AS STRING AUTO := String.Empty
+    PROPERTY Operation          AS STRING AUTO 
     /// <summary></summary>
-    PROPERTY SubCodeText        AS STRING AUTO := String.Empty
+    PROPERTY SubCodeText        AS STRING AUTO 
     /// <summary></summary>
-    PROPERTY OSCode				AS DWORD AUTO := 0
+    PROPERTY OSCode				AS DWORD AUTO
     /// <summary></summary>
-    PROPERTY FileHandle         AS DWORD AUTO := 0
+    PROPERTY FileHandle         AS DWORD AUTO 
     /// <summary></summary>
-    PROPERTY MaxSize			AS DWORD AUTO := 0
+    PROPERTY MaxSize			AS DWORD AUTO 
     
     PRIVATE METHOD setDefaultValues() AS VOID
+    SELF:Arg 			:= ""
+    SELF:CallFuncSym 	:= ""
+    SELF:Description    := ""
+    SELF:FileName 		:= ""
+    SELF:FuncSym 		:= ""
+    SELF:Operation 		:= ""
+    SELF:SubCodeText 	:= ""
+    SELF:SubSystem 		:= ""
     SELF:Gencode		:= EG_UNKNOWN
     SELF:Subcode		:= 0
     SELF:Subsystem		:= "BASE"
@@ -109,7 +117,6 @@ BEGIN NAMESPACE XSharp
     SELF:Tries			:= 0
     SELF:FuncSym		:= ProcName(2)
     SELF:OSCode			:= 0
-    SELF:Description    := SELF:Message
     
     /// <summary></summary>
     CONSTRUCTOR()
@@ -127,8 +134,18 @@ BEGIN NAMESPACE XSharp
     CONSTRUCTOR (ex AS Exception)
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
-    SELF:Description := ex:Message
-    SELF:GenCode     := EG_EXCEPTION
+    if ex is Error
+        local e := (Error) ex as Error
+        var props := typeof(error):GetProperties()
+        FOREACH oProp as PropertyInfo in props
+            if oProp:CanWrite
+                oProp:SetValue(SELF, oProp:GetValue(e))
+            ENDIF
+        NEXT
+    else
+        SELF:Description := ex:Message
+        SELF:GenCode     := EG_EXCEPTION
+    endif
 
     /// <summary></summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
@@ -236,7 +253,7 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD WrapRawException( ex AS Exception ) AS Error
     LOCAL e AS Error
     e			  := Error{ ex }
-    e:Description := ErrString( EG_EXCEPTION )
+    //e:Description := ErrString( EG_EXCEPTION )
     RETURN e
     
     /// <exclude/>	

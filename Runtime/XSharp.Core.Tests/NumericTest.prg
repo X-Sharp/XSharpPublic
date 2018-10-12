@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -39,14 +39,14 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Fact, Trait("Category", "Numeric")];
 		METHOD MakeDWordTests() AS VOID
-			Assert.Equal(65537,MakeDWord(1, 1))
-			Assert.Equal(    1,MakeDWord(1, 0))
-			Assert.Equal(65536,MakeDWord(0, 1))
-			Assert.Equal(    0,MakeDWord(0, 0))
+			Assert.Equal(65537U,MakeDWord(1, 1))
+			Assert.Equal(    1U,MakeDWord(1, 0))
+			Assert.Equal(65536U,MakeDWord(0, 1))
+			Assert.Equal(    0U,MakeDWord(0, 0))
 
             Assert.Equal(2^24 + 257     , MakeDWord(257, 256))
             Assert.Equal(UInt32.MaxValue, MakeDWord(65535, 65535))
-			Assert.Equal(Int32.MaxValue , MakeDWord(65535, 32767))
+			Assert.Equal((DWORD) Int32.MaxValue , MakeDWord(65535, 32767))
 		RETURN
 
 		[Fact, Trait("Category", "Numeric")];
@@ -60,11 +60,11 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Fact, Trait("Category", "Numeric")];
 		METHOD RGBTests() AS VOID
-			Assert.Equal(65793,RGB(1,1,1))
-			Assert.Equal(65792,RGB(0,1,1))
-			Assert.Equal(65537,RGB(1,0,1))
-			Assert.Equal(  257,RGB(1,1,0))
-			Assert.Equal(    0,RGB(0,0,0))
+			Assert.Equal(65793U,RGB(1,1,1))
+			Assert.Equal(65792U,RGB(0,1,1))
+			Assert.Equal(65537U,RGB(1,0,1))
+			Assert.Equal(  257U,RGB(1,1,0))
+			Assert.Equal(    0U,RGB(0,0,0))
 
 			Assert.Equal(2^24-1 , RGB(255,255,255))
 		RETURN

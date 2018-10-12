@@ -2451,6 +2451,21 @@
   <data name="RT_MSG_ERR_54" xml:space="preserve">
     <value>DynAlloc: PTR to DynData</value>
   </data>
+  <data name="RT_MSG_ERR_55" xml:space="preserve">
+    <value>Type is inaccessible</value>
+  </data>
+  <data name="RT_MSG_ERR_56" xml:space="preserve">
+    <value>Method is overloaded, Send() is not supported for overloaded methods</value>
+  </data>
+  <data name="RT_MSG_ERR_57" xml:space="preserve">
+    <value>Not enough arguments passed to target method</value>
+  </data>
+  <data name="RT_MSG_ERR_58" xml:space="preserve">
+    <value>Too many arguments passed to target method</value>
+  </data>
+  <data name="RT_MSG_ERR_59" xml:space="preserve">
+    <value>Exception raised by CLR or external code</value>
+  </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Unknown error</value>
   </data>

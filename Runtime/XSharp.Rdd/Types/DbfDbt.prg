@@ -23,9 +23,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
-                LOCAL encoding AS ASCIIEncoding
+                LOCAL encoding AS Encoding //ASCIIEncoding
                 LOCAL str AS STRING
-                encoding := ASCIIEncoding{}
+                encoding := SELF:_Encoding // ASCIIEncoding{}
                 str :=  encoding:GetString(buffer)
                 // Convert to String and return
                 RETURN str
@@ -51,6 +51,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _blockSize  AS SHORT
         PROTECT _defExt     AS STRING
         PROTECT _lockScheme AS DbfLocking
+		INTERNAL _Encoding      AS Encoding
         
         PROPERTY DefExt AS STRING
             GET
@@ -82,6 +83,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_hFile := F_ERROR
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
+			SELF:_Encoding := SELF:_oRdd:_Encoding
             SELF:DefExt := DBT_MEMOEXT
             // We should read the MEMOBLOCK setting here : 512 Per default
             SELF:_blockSize := 0
@@ -201,9 +203,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF ( str == NULL )
                 memoBlock := (BYTE[])oValue
             ELSE
-                LOCAL encoding AS ASCIIEncoding
+                LOCAL encoding AS Encoding //ASCIIEncoding
                 memoBlock := BYTE[]{str:Length}
-                encoding := ASCIIEncoding{}
+                encoding := SELF:_Encoding //ASCIIEncoding{}
                 encoding:GetBytes( str, 0, str:Length, memoBlock, 0 )
             ENDIF
             // Now, calculate where we will write the Datas

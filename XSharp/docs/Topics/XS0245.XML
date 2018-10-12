@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0245</para>
+    <para styleclass="Heading1">Error XS0245</para>
   </header>
   <para styleclass="Normal">Destructors and object.Finalize cannot be called directly. Consider calling IDisposable.Dispose if available.</para>
   <para styleclass="Normal"></para>

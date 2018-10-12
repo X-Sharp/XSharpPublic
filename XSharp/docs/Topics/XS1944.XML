@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1944</para>
+    <para styleclass="Heading1">Error XS1944</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain an unsafe pointer operation</para>
   <para styleclass="Normal"></para>

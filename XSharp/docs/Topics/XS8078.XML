@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8078</para>
+    <para styleclass="Heading1">Error XS8078</para>
   </header>
   <para styleclass="Normal">An expression is too long or complex to compile</para>
   <para styleclass="Normal"></para>

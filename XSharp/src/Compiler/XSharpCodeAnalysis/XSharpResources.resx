@@ -5189,6 +5189,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_VulcanAmbiguous" xml:space="preserve">
     <value>{3} '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the first one.</value>
   </data>
+  <data name="WRN_FunctionsTakePrecedenceOverMethods" xml:space="preserve">
+    <value>{3} '{0}' is ambiguous. Could be '{1}' or '{2}'. Using the function because in X# functions take precedence over static methods. To call the method use the fully qualified name.</value>
+  </data>
   <data name="ERR_ImplicitlyTypedVariableCannotBeStatic" xml:space="preserve">
     <value>Implicitly-typed variables cannot be STATIC.</value>
   </data>
@@ -5253,5 +5256,20 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_NullPointerForRefParameter" xml:space="preserve">
     <value>Passing a NULL pointer to a REF variable is allowed (with /vo7) but strongly discouraged. You MUST make sure that the function being called does a check for NULL pointers for the REF parameter.</value>
   </data>
-  
+  <data name="WRN_AssgReadonlyLocalCause" xml:space="preserve">
+    <value>Cannot assign to '{0}' because it is a '{1}'</value>
+  </data>
+  <data name="WRN_AssignmentOperatorExpected" xml:space="preserve">
+    <value>Assignment operator ':=' expected.</value>
+  </data>
+  <data name="WRN_PreProcessorNoPragma" xml:space="preserve">
+    <value>#pragma directive is not (yet) supported, directive is ignored</value>
+  </data>
+  <data name="ERR_InterfaceImplementationDifferentCallingConvention" xml:space="preserve">
+    <value>Interface method {0} and implementation {1} have different calling conventions.</value>
+  </data>
+  <data name="WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak" xml:space="preserve">
+    <value>The compiler generated an automatic conversion to PSZ. This will create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself.</value>
+  </data>
+
 </root>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0221</para>
+    <para styleclass="Heading1">Error XS0221</para>
   </header>
   <para styleclass="Normal">Constant value &apos;{0}&apos; cannot be converted to a &apos;{1}&apos; (use &apos;unchecked&apos; syntax to override)</para>
   <para styleclass="Normal"></para>

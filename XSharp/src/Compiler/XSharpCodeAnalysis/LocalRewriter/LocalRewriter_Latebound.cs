@@ -64,10 +64,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                    convArgs.Add(MakeConversionNode(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.Send,
+            // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.InternalSend,
                     MakeConversionNode(loweredReceiver, usualType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);
+
         }
 
         public BoundExpression MakeASend(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)

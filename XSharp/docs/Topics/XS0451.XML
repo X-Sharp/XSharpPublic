@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0451</para>
+    <para styleclass="Heading1">Error XS0451</para>
   </header>
   <para styleclass="Normal">The &apos;new()&apos; constraint cannot be used with the &apos;struct&apos; constraint</para>
   <para styleclass="Normal"></para>

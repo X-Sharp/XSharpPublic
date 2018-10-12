@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1666</para>
+    <para styleclass="Heading1">Error XS1666</para>
   </header>
   <para styleclass="Normal">You cannot use fixed size buffers contained in unfixed expressions. Try using the fixed statement.</para>
   <para styleclass="Normal"></para>

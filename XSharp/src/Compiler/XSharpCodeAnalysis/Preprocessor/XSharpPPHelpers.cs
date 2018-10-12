@@ -294,13 +294,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         class PPUsedRule
         {
             PPRule _rule;
-            List<XSharpToken> _tokens;
-            internal PPUsedRule(PPRule rule, List<XSharpToken> tokens)
+            IList<XSharpToken> _tokens;
+            internal PPUsedRule(PPRule rule, IList<XSharpToken> tokens)
             {
                 _rule = rule;
                 _tokens = tokens;
             }
-            internal bool isDuplicate(PPRule rule, List<XSharpToken> tokens)
+            internal bool isDuplicate(PPRule rule, IList<XSharpToken> tokens)
             {
                 if (_rule == rule && _tokens.Count == tokens.Count)
                 {
@@ -333,19 +333,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         /// <param name="rule"></param>
         /// <param name="tokens"></param>
         /// <returns>True when the rule with the same tokens list is found in the list</returns>
-        internal bool HasRecursion(PPRule rule, List<XSharpToken> tokens)
+        internal bool HasRecursion(PPRule rule, IList<XSharpToken> tokens)
         {
             // check to see if this is already there
             if (_list.Count == _maxDepth)
             {
-                _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                _pp.addParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
                 return true;
             }
             foreach (var item in _list)
             {
                 if (item.isDuplicate(rule, tokens))
                 {
-                    _pp.AddParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                    _pp.addParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
                     return true;
                 }
             }

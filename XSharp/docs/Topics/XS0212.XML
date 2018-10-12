@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0212</para>
+    <para styleclass="Heading1">Error XS0212</para>
   </header>
   <para styleclass="Normal">You can only take the address of an unfixed expression inside of a fixed statement initializer</para>
   <para styleclass="Normal"></para>

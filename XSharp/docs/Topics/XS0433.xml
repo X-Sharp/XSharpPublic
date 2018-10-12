@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0433</para>
+      <para styleclass="Heading1">Error XS0433</para>
     </header>
     <para styleclass="Normal">The type TypeName1 exists in both TypeName2 and TypeName3</para>
     <para styleclass="Normal"></para>

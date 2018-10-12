@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0765</para>
+    <para styleclass="Heading1">Error XS0765</para>
   </header>
   <para styleclass="Normal">Partial methods with only a defining declaration or removed conditional methods cannot be used in expression trees</para>
   <para styleclass="Normal"></para>

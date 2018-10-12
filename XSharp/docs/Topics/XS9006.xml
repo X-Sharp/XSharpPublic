@@ -1,21 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9006</title>
   <keywords>
     <keyword>XS9006</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9006</para>
+      <para styleclass="Heading1">Warning XS9006</para>
     </header>
-    <para styleclass="Normal">Warning directive: {0}</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This warning is generated with you include a #warning preprocessor direcive in your code</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example">#ifdef DEBUG__</para>
-    <para styleclass="Code Example">#warning Compiling in DEBUG mode</para>
-    <para styleclass="Code Example">#endif</para>
+    <para styleclass="Body Text">#pragma directive is not (yet) supported, directive is ignored</para>
   </body>
 </topic>

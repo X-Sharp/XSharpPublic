@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0537</para>
+    <para styleclass="Heading1">Error XS0537</para>
   </header>
   <para styleclass="Normal">The class System.Object cannot have a base class or implement an interface</para>
   <para styleclass="Normal"></para>

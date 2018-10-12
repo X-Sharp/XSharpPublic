@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0508</para>
+    <para styleclass="Heading1">Error XS0508</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: return type must be &apos;{2}&apos; to match overridden member &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

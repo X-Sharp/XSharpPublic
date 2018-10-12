@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0576</para>
+    <para styleclass="Heading1">Error XS0576</para>
   </header>
   <para styleclass="Normal">Namespace &apos;{1}&apos; contains a definition conflicting with alias &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

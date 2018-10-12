@@ -3,7 +3,7 @@
 
 BEGIN NAMESPACE Xide
 
-CLASS XSharpBuffer INHERIT VulcanBuffer
+CLASS XSharpBuffer INHERIT BaseBuffer
 
 	METHOD GetStringLines() AS List<STRING>
 		LOCAL aNew AS List<STRING>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0835</para>
+    <para styleclass="Heading1">Error XS0835</para>
   </header>
   <para styleclass="Normal">Cannot convert lambda to an expression tree whose type argument &apos;{0}&apos; is not a delegate type</para>
   <para styleclass="Normal"></para>

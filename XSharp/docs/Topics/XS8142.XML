@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8142</para>
+    <para styleclass="Heading1">Error XS8142</para>
   </header>
   <para styleclass="Normal">Both partial method declarations, &apos;{0}&apos; and &apos;{1}&apos;, must use the same tuple element names.</para>
   <para styleclass="Normal"></para>

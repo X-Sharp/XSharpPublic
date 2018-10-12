@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1906</para>
+    <para styleclass="Heading1">Error XS1906</para>
   </header>
   <para styleclass="Normal">Invalid option &apos;{0}&apos;; Resource visibility must be either &apos;public&apos; or &apos;private&apos;</para>
   <para styleclass="Normal"></para>

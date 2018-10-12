@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0273</para>
+    <para styleclass="Heading1">Error XS0273</para>
   </header>
   <para styleclass="Normal">The accessibility modifier of the &apos;{0}&apos; accessor must be more restrictive than the property or indexer &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

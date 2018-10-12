@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0230</para>
+    <para styleclass="Heading1">Error XS0230</para>
   </header>
   <para styleclass="Normal">Type and identifier are both required in a foreach statement</para>
   <para styleclass="Normal"></para>

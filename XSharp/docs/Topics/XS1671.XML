@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1671</para>
+    <para styleclass="Heading1">Error XS1671</para>
   </header>
   <para styleclass="Normal">A namespace declaration cannot have modifiers or attributes</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1110</para>
+    <para styleclass="Heading1">Error XS1110</para>
   </header>
   <para styleclass="Normal">Cannot define a new extension method because the compiler required type &apos;{0}&apos; cannot be found. Are you missing a reference to System.Core.dll?</para>
   <para styleclass="Normal"></para>

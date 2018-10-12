@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0316</para>
+    <para styleclass="Heading1">Error XS0316</para>
   </header>
   <para styleclass="Normal">The parameter name &apos;{0}&apos; conflicts with an automatically-generated parameter name</para>
   <para styleclass="Normal"></para>

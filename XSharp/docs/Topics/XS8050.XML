@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8050</para>
+    <para styleclass="Heading1">Error XS8050</para>
   </header>
   <para styleclass="Normal">Only auto-implemented properties can have initializers.</para>
   <para styleclass="Normal"></para>

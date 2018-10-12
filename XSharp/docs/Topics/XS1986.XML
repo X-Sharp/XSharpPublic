@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1986</para>
+    <para styleclass="Heading1">Error XS1986</para>
   </header>
   <para styleclass="Normal">&apos;await&apos; requires that the type {0} have a suitable GetAwaiter method</para>
   <para styleclass="Normal"></para>

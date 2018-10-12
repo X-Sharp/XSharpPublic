@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0764</para>
+    <para styleclass="Heading1">Error XS0764</para>
   </header>
   <para styleclass="Normal">Both partial method declarations must be unsafe or neither may be unsafe</para>
   <para styleclass="Normal"></para>

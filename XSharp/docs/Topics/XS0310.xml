@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0310</para>
+      <para styleclass="Heading1">Error XS0310</para>
     </header>
     <para styleclass="Normal">The type &apos;typename&apos; must be a non-abstract type with a public parameterless constructor in order to use it as parameter &apos;parameter&apos; in the generic type or method &apos;generic&apos;</para>
     <para styleclass="Normal"></para>

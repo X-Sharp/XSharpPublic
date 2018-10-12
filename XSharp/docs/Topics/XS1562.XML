@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1562</para>
+    <para styleclass="Heading1">Error XS1562</para>
   </header>
   <para styleclass="Normal">Outputs without source must have the /out option specified</para>
   <para styleclass="Normal"></para>

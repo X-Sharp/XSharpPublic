@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0734</para>
+    <para styleclass="Heading1">Error XS0734</para>
   </header>
   <para styleclass="Normal">The /moduleassemblyname option may only be specified when building a target type of &apos;module&apos;</para>
   <para styleclass="Normal"></para>

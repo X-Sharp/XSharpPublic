@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS7022</title>
-<keywords>
-<keyword>XS7022</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS7022</para>
-  </header>
-  <para styleclass="Normal">The entry point of the program is global script code; ignoring &apos;{0}&apos; entry point.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS7022</title>
+  <keywords>
+    <keyword>XS7022</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS7022</para>
+    </header>
+    <para styleclass="Normal">The entry point of the program is global script code; ignoring &apos;{0}&apos; entry point.</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4003</para>
+    <para styleclass="Heading1">Error XS4003</para>
   </header>
   <para styleclass="Normal">&apos;await&apos; cannot be used as an identifier within an async method or lambda expression</para>
   <para styleclass="Normal"></para>

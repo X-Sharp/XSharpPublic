@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0503</para>
+    <para styleclass="Heading1">Error XS0503</para>
   </header>
   <para styleclass="Normal">The abstract method &apos;{0}&apos; cannot be marked virtual</para>
   <para styleclass="Normal"></para>

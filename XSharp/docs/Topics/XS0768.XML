@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0768</para>
+    <para styleclass="Heading1">Error XS0768</para>
   </header>
   <para styleclass="Normal">Constructor &apos;{0}&apos; cannot call itself through another constructor</para>
   <para styleclass="Normal"></para>

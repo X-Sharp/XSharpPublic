@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0681</para>
+    <para styleclass="Heading1">Error XS0681</para>
   </header>
   <para styleclass="Normal">The modifier &apos;abstract&apos; is not valid on fields. Try using a property instead.</para>
   <para styleclass="Normal"></para>

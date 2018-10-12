@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8011</para>
+    <para styleclass="Heading1">Error XS8011</para>
   </header>
   <para styleclass="Normal">Assembly and module &apos;{0}&apos; cannot target different processors.</para>
   <para styleclass="Normal"></para>

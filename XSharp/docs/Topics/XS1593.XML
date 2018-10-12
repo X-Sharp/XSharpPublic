@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1593</para>
+    <para styleclass="Heading1">Error XS1593</para>
   </header>
   <para styleclass="Normal">Delegate &apos;{0}&apos; does not take {1} arguments</para>
   <para styleclass="Normal"></para>

@@ -37,8 +37,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public SyntaxTriviaList GetLeadingTrivia(CompilationUnitSyntax cu)
         {
             var list = new SyntaxTriviaList();
-            if (cu == null)
+            if (cu == null || !cu.HasDocComments)
+            {
                 return list;
+            }
             XSharpToken start = this.Start as XSharpToken;
             var tokens = ((BufferedTokenStream) cu.XTokens).GetTokens();
             // find offset of first token in the tokenlist
@@ -62,6 +64,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                     startindex--;
                 }
+                // when compiling the runtime we generate blank xml comments for enum members, defines and double underscores without xml comments
+                if (sb.Length == 0 && ((CSharpParseOptions)cu.SyntaxTree.Options).TargetDLL != XSharpTargetDLL.Other)
+                {
+                    if (this is XSharpParser.EnummemberContext ||
+                        this is XSharpParser.VodefineContext ||
+                        (this is XSharpParser.IEntityContext
+                            && ((XSharpParser.IEntityContext) this).ShortName.StartsWith("__")))
+                    {
+                        sb.Append("/// <summary></summary>");
+                    }
+                }
                 if (sb.Length > 0)
                 {
                     string text = sb.ToString();
@@ -70,6 +83,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     list = lexer.LexSyntaxLeadingTrivia();
                     lexer.Dispose();
                 }
+                 
             }
             return list;
         }

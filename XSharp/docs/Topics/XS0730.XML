@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0730</para>
+    <para styleclass="Heading1">Error XS0730</para>
   </header>
   <para styleclass="Normal">Cannot forward type &apos;{0}&apos; because it is a nested type of &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

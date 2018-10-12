@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8154</para>
+    <para styleclass="Heading1">Error XS8154</para>
   </header>
   <para styleclass="Normal">The body of &apos;{0}&apos; cannot be an iterator block because &apos;{0}&apos; returns by reference</para>
   <para styleclass="Normal"></para>

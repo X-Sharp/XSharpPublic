@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1945</para>
+    <para styleclass="Heading1">Error XS1945</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain an anonymous method expression</para>
   <para styleclass="Normal"></para>

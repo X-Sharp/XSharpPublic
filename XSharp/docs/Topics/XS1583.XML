@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1583</para>
+    <para styleclass="Heading1">Error XS1583</para>
   </header>
   <para styleclass="Normal">Error reading Win32 resources -- {0}</para>
   <para styleclass="Normal"></para>

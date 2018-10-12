@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7029</para>
+    <para styleclass="Heading1">Error XS7029</para>
   </header>
   <para styleclass="Normal">Friend access was granted by &apos;{0}&apos;, but the strong name signing state of the output assembly does not match that of the granting assembly.</para>
   <para styleclass="Normal"></para>

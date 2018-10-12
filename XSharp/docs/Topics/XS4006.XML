@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4006</para>
+    <para styleclass="Heading1">Error XS4006</para>
   </header>
   <para styleclass="Normal">__arglist is not allowed in the parameter list of async methods</para>
   <para styleclass="Normal"></para>

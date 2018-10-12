@@ -616,9 +616,29 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         public TypeSymbol VOGetType(BoundExpression expr)
         {
-            if (expr.Kind == BoundKind.Literal)
+            if (expr.Kind == BoundKind.Literal )
             {
                 var lit = expr as BoundLiteral;
+                var xnode = lit?.Syntax.XNode as XSharpParser.PrimaryExpressionContext;
+                var type = xnode?.Start?.Type;
+                if (type == XSharpParser.INT_CONST || type == XSharpParser.REAL_CONST)
+                {
+                    string text = xnode.Start.Text;
+                    char last = text[text.Length - 1];
+                    switch (last)
+                    {
+                        case 'L':
+                            return Compilation.GetSpecialType(SpecialType.System_Int32);
+                        case 'U':
+                            return Compilation.GetSpecialType(SpecialType.System_UInt32);
+                        case 'M':
+                            return Compilation.GetSpecialType(SpecialType.System_Decimal);
+                        case 'S':
+                            return Compilation.GetSpecialType(SpecialType.System_Single);
+                        case 'D':
+                            return Compilation.GetSpecialType(SpecialType.System_Double);
+                    }
+                }
                 if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
                 {
                     var val = lit.ConstantValue.Int32Value;

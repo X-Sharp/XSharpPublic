@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0523</para>
+      <para styleclass="Heading1">Error XS0523</para>
     </header>
     <para styleclass="Normal">Struct member &apos;struct2 field&apos; of type &apos;struct1&apos; causes a cycle in the struct layout</para>
     <para styleclass="Normal"></para>

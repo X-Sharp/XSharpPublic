@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2037</para>
+    <para styleclass="Heading1">Error XS2037</para>
   </header>
   <para styleclass="Normal">An expression tree lambda may not contain a COM call with ref omitted on arguments</para>
   <para styleclass="Normal"></para>

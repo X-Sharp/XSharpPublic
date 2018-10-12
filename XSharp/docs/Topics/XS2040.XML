@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2040</para>
+    <para styleclass="Heading1">Error XS2040</para>
   </header>
   <para styleclass="Normal">Command-line syntax error: Missing Guid for option &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

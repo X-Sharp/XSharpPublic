@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1655</para>
+    <para styleclass="Heading1">Error XS1655</para>
   </header>
   <para styleclass="Normal">Cannot pass fields of &apos;{0}&apos; as a ref or out argument because it is a &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

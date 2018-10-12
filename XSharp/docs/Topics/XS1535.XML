@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1535</para>
+    <para styleclass="Heading1">Error XS1535</para>
   </header>
   <para styleclass="Normal">Overloaded unary operator &apos;{0}&apos; takes one parameter</para>
   <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Parameters and others</title>
   <keywords>
     <keyword>Attributes</keyword>
@@ -9,8 +9,7 @@
     <header>
       <para styleclass="Heading1">Parameters and others</para>
     </header>
-    <para styleclass="Code Example">Several language elements are used on different spots, such as </para>
-    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text">Several language elements are used on different spots, such as </para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:top;">

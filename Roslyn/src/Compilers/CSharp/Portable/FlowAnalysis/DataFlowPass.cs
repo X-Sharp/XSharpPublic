@@ -516,6 +516,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return;
 
                     case BoundKind.Local:
+
                         NoteRead(((BoundLocal)n).LocalSymbol);
                         return;
 
@@ -616,8 +617,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return !init.Constructor.IsImplicitlyDeclared || init.InitializerExpressionOpt != null;
                 case BoundKind.ConvertedTupleLiteral:
                     return false;
+#if XSHARP
+                case BoundKind.FieldAccess:
+                    return false;
+                case BoundKind.PropertyAccess:
+                    return false;
+                case BoundKind.Local:
+                    return false;
                 default:
                     return true;
+#else
+                default:
+                    return true;
+
+#endif
             }
         }
 
@@ -926,30 +939,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 RecordReadInLocalFunction(slot);
                 return;
             }
-
-            if (slot >= _alreadyReported.Capacity) _alreadyReported.EnsureCapacity(nextVariableSlot);
 #if XSHARP
-            if (symbol.Kind == SymbolKind.Local)
+            if (symbol.IsXsCompilerGenerated())
             {
-                if (symbol.Name.IndexOf("Xs$") > -1)
-                {
-                    _alreadyReported[slot] = true;
-                }
-                else
-                {
-                    var syntaxref = symbol.DeclaringSyntaxReferences[0] as SyntaxReference;
-                    if (syntaxref != null)
-                    {
-                        CSharpSyntaxNode syntaxnode = syntaxref.GetSyntax() as CSharpSyntaxNode;
-                        if (syntaxnode.XGenerated)
-                        {
-                            _alreadyReported[slot] = true;
-                        }
-                    }
-                }
-
+                    return;
             }
 #endif
+            if (slot >= _alreadyReported.Capacity) _alreadyReported.EnsureCapacity(nextVariableSlot);
+
 
             if (skipIfUseBeforeDeclaration &&
                 symbol.Kind == SymbolKind.Local &&
@@ -1700,6 +1697,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void ReportIfUnused(LocalSymbol symbol, bool assigned)
         {
+#if XSHARP
+            if (symbol.IsXsCompilerGenerated())
+            {
+                return;
+            }
+#endif
             if (!_usedVariables.Contains(symbol))
             {
                 if (symbol.DeclarationKind != LocalDeclarationKind.PatternVariable && !string.IsNullOrEmpty(symbol.Name)) // avoid diagnostics for parser-inserted names

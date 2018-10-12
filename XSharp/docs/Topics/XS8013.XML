@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8013</para>
+    <para styleclass="Heading1">Error XS8013</para>
   </header>
   <para styleclass="Normal">Cryptographic failure while creating hashes.</para>
   <para styleclass="Normal"></para>

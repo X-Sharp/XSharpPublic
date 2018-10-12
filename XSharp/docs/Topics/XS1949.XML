@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1949</para>
+    <para styleclass="Heading1">Error XS1949</para>
   </header>
   <para styleclass="Normal">The contextual keyword &apos;var&apos; cannot be used in a range variable declaration</para>
   <para styleclass="Normal"></para>

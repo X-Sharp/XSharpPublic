@@ -182,9 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
             var sourceText = _text.ToString();
-                var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
-                lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
-                _lexerTokenStream = lexer.GetTokenStream();
+            var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
+            lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
+            _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
@@ -204,7 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
                 foreach (var pragmaToken in pragmaTokens)
                 {
-                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
+                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorNoPragma, "#pragma not (yet) supported, command is ignored"));
                 }
             }
             XSharpPreprocessor pp = null;
@@ -216,45 +216,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             #region Determine if we really need the preprocessor
             bool mustPreprocess = true;
-                if (_options.MacroScript)
+            if (_options.MacroScript)
+            {
+                mustPreprocess = false;
+            }
+            else
+            {
+                if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
+                {
+                    mustPreprocess = true;
+                }
+                else
                 {
                     mustPreprocess = false;
-                }
-                else
-                {
-                    if (lexer.HasPreprocessorTokens || !_options.NoStdDef)
-                    {
-                        mustPreprocess = true;
-                    }
-                    else
-                    {
-                        mustPreprocess = false;
 
-                    }
                 }
-                #endregion
-                if (mustPreprocess)
+            }
+            #endregion
+            if (mustPreprocess)
+            {
+                var ppTokens = pp.PreProcess();
+                ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+            }
+            else
+            {
+                // No Standard Defs and no preprocessor tokens in the lexer
+                // so we bypass the preprocessor and use the lexer tokenstream
+                // but if a .ppo is required we must use the preprocessor to
+                // write the source text to the .ppo file
+                if (_options.PreprocessorOutput && pp != null)
                 {
-                    var ppTokens = pp.PreProcess();
-                    ppStream = new CommonTokenStream(new ListTokenSource(ppTokens));
+                    pp.writeToPPO(sourceText, false);
                 }
-                else
-                {
-                    // No Standard Defs and no preprocessor tokens in the lexer
-                    // so we bypass the preprocessor and use the lexer tokenstream
-                    // but if a .ppo is required we must use the preprocessor to
-                    // write the source text to the .ppo file
-                    if (_options.PreprocessorOutput && pp != null)
-                    {
-                        pp.writeToPPO(sourceText, false, false);
-                    }
-                    BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
-                    var tokens = ts.GetTokens();
-                    // commontokenstream filters on tokens on the default channel. All other tokens are ignored
-                    ppStream = new CommonTokenStream(new ListTokenSource(tokens));
-                }
-                ppStream.Fill();
-                _preprocessorTokenStream = ppStream;
+                BufferedTokenStream ts = (BufferedTokenStream)_lexerTokenStream;
+                var tokens = ts.GetTokens();
+                // commontokenstream filters on tokens on the default channel. All other tokens are ignored
+                ppStream = new CommonTokenStream(new ListTokenSource(tokens));
+            }
+            ppStream.Fill();
+            _preprocessorTokenStream = ppStream;
             var parser = new XSharpParser(ppStream);
             parser.IsScript = _options.Kind == SourceCodeKind.Script;
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
@@ -283,6 +283,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // When this fails, then we try again with LL mode and then we record errors
                 parser.RemoveErrorListeners();
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
+                // some options to have FAST parsing
+                parser.Interpreter.tail_call_preserves_sll = false;
+                parser.Interpreter.treat_sllk1_conflict_as_ambiguity = true;
                 parser.ErrorHandler = new BailErrorStrategy();
                 try
                 {
@@ -298,6 +301,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var errorListener = new XSharpErrorListener(_fileName, parseErrors);
                     parser.AddErrorListener(errorListener);
                     parser.ErrorHandler = new XSharpErrorStrategy();
+                    // we need to set force_global_context to get proper error messages. This makes parsing slower
+                    // but gives better messages
+                    parser.Interpreter.treat_sllk1_conflict_as_ambiguity = false;
+                    parser.Interpreter.force_global_context = true;
+                    parser.Interpreter.enable_global_context_dfa = true;
                     parser.Interpreter.PredictionMode = PredictionMode.Ll;
                     ppStream.Reset();
                     if (_options.Verbose && pp != null)
@@ -319,7 +327,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (_options.Verbose)
                         {
                             string msg = _GetInnerExceptionMessage(e1);
-                            _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg );
+                            _options.ConsoleOutput.WriteLine("Antlr: LL parsing also failed with failure: " + msg);
                         }
                     }
 
@@ -359,52 +367,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
-
-            if ( _options.ParseLevel < ParseLevel.Complete||
-                parser.NumberOfSyntaxErrors != 0 || 
-                (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
-            {
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
-                if (tree != null)
-                {
-                    eof.XNode = new XTerminalNodeImpl(tree.Stop);
-                }
-                else
-                {
-                    eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
-                }
-                var result = _syntaxFactory.CompilationUnit(
-                    treeTransform.GlobalEntities.Externs,
-                    treeTransform.GlobalEntities.Usings,
-                    treeTransform.GlobalEntities.Attributes,
-                    treeTransform.GlobalEntities.Members,
-                    eof);
-                result.XNode = tree;
-                result.XTokens = _lexerTokenStream;
-                result.XPPTokens = _preprocessorTokenStream;
-                result.IncludedFiles = pp.IncludedFiles;
-                return result;
-            }
-//#endif
+            bool hasErrors = false;
+            SyntaxToken eof = null;
             try
             {
-                walker.Walk(treeTransform, tree);
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                if (!parseErrors.IsEmpty())
+
+                if ( _options.ParseLevel < ParseLevel.Complete|| 
+                    parser.NumberOfSyntaxErrors != 0 || 
+                    (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
                 {
+                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                     eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    if (tree != null)
+                    {
+                        eof.XNode = new XTerminalNodeImpl(tree.Stop);
+                    }
+                    else
+                    {
+                        eof.XNode = new XTerminalNodeImpl(_lexerTokenStream.Get(_lexerTokenStream.Size - 1));
+                    }
+                    hasErrors = true;
+                }
+           
+                if (! hasErrors)
+                {
+                    walker.Walk(treeTransform, tree);
+                    eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                    if (!parseErrors.IsEmpty())
+                    {
+                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    }
                 }
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs, 
                     treeTransform.GlobalEntities.Usings,
                     treeTransform.GlobalEntities.Attributes, 
                     treeTransform.GlobalEntities.Members, eof);
-                // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = tree;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
-                if (!_options.MacroScript )
+                result.HasDocComments = lexer.HasDocComments;
+                result.HasPragmas = lexer.HasPragmas;
+                if (!_options.MacroScript  && ! hasErrors)
                 {
                     result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                     result.Globals = treeTransform.GlobalEntities.Globals;
@@ -414,6 +418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_options.IsDialectVO)
                     {
                         result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
+                        result.LiteralPSZs = ((XSharpVOTreeTransformation)treeTransform).LiteralPSZs;
                     }
                 }
                 return result;
@@ -619,12 +624,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // this method gives us the ability to check all the generated syntax trees,
             // add generated constructors to partial classes when none of the parts has a constructor
             // merge accesses and assigns from different source files into one property etc.
-            // we pass the usings from the compilationunits along because the new compilation unit will
+            // we pass the usings from the compilation units along because the new compilation unit will
             // have to the same (combined) list of usings
             // When compiling in VO/Vulcan dialect we also collect the literal symbols from the compilation unit.
             // When we have one or more of these then we create a symbol table in the class "Xs$SymbolTable"
             var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(StringComparer.OrdinalIgnoreCase);
-            var symbolTable = new Dictionary<string, InternalSyntax.FieldDeclarationSyntax>();
+            var symbolTable = new Dictionary<string, FieldDeclarationSyntax>();
+            var pszTable = new Dictionary<string, Tuple <string, FieldDeclarationSyntax>>();
             foreach (var tree in trees)
             {
                 var compilationunit = tree.GetRoot() as Syntax.CompilationUnitSyntax;
@@ -646,19 +652,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-                if (_options.IsDialectVO &&  compilationunit.LiteralSymbols.Count > 0)
+                if (_options.IsDialectVO) 
                 {
-                    foreach (var pair in compilationunit.LiteralSymbols)
+                    if (compilationunit.LiteralSymbols.Count > 0)
                     {
-                        if (!symbolTable.ContainsKey(pair.Key))
+                        foreach (var pair in compilationunit.LiteralSymbols)
                         {
-                            symbolTable.Add(pair.Key, pair.Value);
+                            if (!symbolTable.ContainsKey(pair.Key))
+                            {
+                                symbolTable.Add(pair.Key, pair.Value);
+                            }
                         }
+                        compilationunit.LiteralSymbols.Clear();
                     }
-                    compilationunit.LiteralSymbols.Clear();
+                    if (compilationunit.LiteralPSZs.Count > 0)
+                    {
+                        foreach (var pair in compilationunit.LiteralPSZs)
+                        {
+                            if (!pszTable.ContainsKey(pair.Key))
+                            {
+                                pszTable.Add(pair.Key, pair.Value);
+                            }
+                        }
+                        compilationunit.LiteralSymbols.Clear();
+                    }
                 }
             }
-            if (partialClasses.Count > 0 || symbolTable.Count > 0)
+            if (partialClasses.Count > 0 || symbolTable.Count > 0 || pszTable.Count > 0)
             {
                 // Create a new tree which shall have the generated constructors and properties
                 // and return this tree to the caller.
@@ -821,25 +841,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (symbolTable.Count > 0)
                 {
                     // build internal static symbol table class 
-                    // the fields have been created in the code inside VOTreeTransform
-                    clsmembers.Clear();
-                    foreach (var symbol in symbolTable)
-                    {
-                        clsmembers.Add(symbol.Value);
-                    }
-                    var decl = _syntaxFactory.ClassDeclaration(
-                                    default(SyntaxList<AttributeListSyntax>),
-                                    trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
-                                    SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                                    SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
-                                    default(TypeParameterListSyntax),
-                                    default(BaseListSyntax),
-                                    default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                                    clsmembers,
-                                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                                    null);
-                    members.Add(decl);
+                    members.Add(_generateSymbolsClass(symbolTable, trans));
+                }
+                if (pszTable.Count > 0)
+                {
+                    // build internal static psz table class 
+                    members.Add(_generatePszClass(pszTable, trans));
                 }
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 var result = _syntaxFactory.CompilationUnit(
@@ -857,6 +864,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return tree;
             }
             return null;
+        }
+
+        private ClassDeclarationSyntax _generateSymbolsClass(Dictionary<string, FieldDeclarationSyntax> fields ,XSharpTreeTransformation trans)
+        {
+            var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach (var field in fields)
+            {
+                clsmembers.Add(field.Value);
+            }
+            var decl = _syntaxFactory.ClassDeclaration(
+                                default(SyntaxList<AttributeListSyntax>),
+                                trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
+                                SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                                SyntaxFactory.MakeIdentifier(XSharpSpecialNames.SymbolTable),
+                                default(TypeParameterListSyntax),
+                                default(BaseListSyntax),
+                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                clsmembers,
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                                null);
+            fields.Clear();
+            return decl;
+        }
+
+        private ClassDeclarationSyntax _generatePszClass(Dictionary<string, Tuple<string, FieldDeclarationSyntax>> fields, XSharpTreeTransformation trans)
+        {
+            var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach (var field in fields)
+            {
+                var fieldDecl = field.Value.Item2;
+                clsmembers.Add(fieldDecl);
+            }
+            var decl = _syntaxFactory.ClassDeclaration(
+                                default(SyntaxList<AttributeListSyntax>),
+                                trans.TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
+                                SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                                SyntaxFactory.MakeIdentifier(XSharpSpecialNames.PSZTable),
+                                default(TypeParameterListSyntax),
+                                default(BaseListSyntax),
+                                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                clsmembers,
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                                null);
+            fields.Clear();
+            return decl;
         }
 
         private List<MemberDeclarationSyntax> GeneratePartialProperties (List<PartialPropertyElement> classes, 
@@ -899,10 +953,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // add the usings when they are not in the list yet
             foreach (var u in tmpUsings)
             {
-                if (u.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
-                    trans.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, true);
-                else
-                    trans.AddUsingWhenMissing(usingslist, (NameSyntax)u.Name.Green, false);
+                var green = u.Green as UsingDirectiveSyntax;
+                trans.AddUsingWhenMissing(usingslist, green.Name, green.StaticKeyword != null, green.Alias);
             }
 
             // For each unique name add a property

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1939</para>
+    <para styleclass="Heading1">Error XS1939</para>
   </header>
   <para styleclass="Normal">Cannot pass the range variable &apos;{0}&apos; as an out or ref parameter</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8058</para>
+    <para styleclass="Heading1">Error XS8058</para>
   </header>
   <para styleclass="Normal">Feature &apos;{0}&apos; is only available in &apos;experimental&apos; language version.</para>
   <para styleclass="Normal"></para>

@@ -22,14 +22,13 @@ using System;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Roslyn.Utilities;
 using Microsoft.CodeAnalysis;
 #if !TEST
 using MCT = Microsoft.CodeAnalysis.Text;
 #endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
-    public partial class XSharpParser 
+    public partial class XSharpParser
     {
         bool _ClsFunc = true;
         public bool AllowFunctionInsideClass
@@ -60,14 +59,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
                 throw new ParseCanceledException("Missing token'" + token + "'");
-            NotifyErrorListeners("Missing token'"+token+"'");
+            NotifyErrorListeners("Missing token'" + token + "'");
         }
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
-                throw new ParseCanceledException("Unexpected '"+token+"'token");
+                throw new ParseCanceledException("Unexpected '" + token + "'token");
 
-            NotifyErrorListeners("Unexpected '"+token+"' token");
+            NotifyErrorListeners("Unexpected '" + token + "' token");
         }
         void eosExpected(IToken token)
         {
@@ -135,78 +134,89 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasDimVar = 1 << 12,        // Member property
         }
 
+
         public class EntityData
         {
+            EntityFlags setFlag(EntityFlags oldFlag, EntityFlags newFlag, bool set)
+            {
+                if (set)
+                    oldFlag |= newFlag;
+                else
+                    oldFlag &= ~newFlag;
+                return oldFlag;
+            }
+
+
             EntityFlags flags;
 
             public bool HasClipperCallingConvention
             {
                 get { return flags.HasFlag(EntityFlags.ClipperCallingConvention); }
-                set { if (value) flags |= EntityFlags.ClipperCallingConvention; else flags &= ~EntityFlags.ClipperCallingConvention; }
+                set { flags = setFlag(flags, EntityFlags.ClipperCallingConvention, value); }
             }
 
             public bool HasMissingReturnType
             {
                 get { return flags.HasFlag(EntityFlags.MissingReturnType); }
-                set { if (value) flags |= EntityFlags.MissingReturnType; else flags &= ~EntityFlags.MissingReturnType; }
+                set { flags = setFlag(flags, EntityFlags.MissingReturnType, value); }
             }
             public bool HasTypedParameter
             {
                 get { return flags.HasFlag(EntityFlags.HasTypedParameter); }
-                set { if (value) flags |= EntityFlags.HasTypedParameter; else flags &= ~EntityFlags.HasTypedParameter; }
+                set { flags = setFlag(flags, EntityFlags.HasTypedParameter, value); }
             }
             public bool UsesPSZ
             {
                 get { return flags.HasFlag(EntityFlags.UsesPSZ); }
-                set { if (value) flags |= EntityFlags.UsesPSZ; else flags &= ~EntityFlags.UsesPSZ; }
+                set { flags = setFlag(flags, EntityFlags.UsesPSZ, value); }
             }
             public bool MustBeUnsafe
             {
                 get { return flags.HasFlag(EntityFlags.MustBeUnsafe); }
-                set { if (value) flags |= EntityFlags.MustBeUnsafe; else flags &= ~EntityFlags.MustBeUnsafe; }
+                set { flags = setFlag(flags, EntityFlags.MustBeUnsafe, value); }
             }
 
             public bool UsesPCount
             {
                 get { return flags.HasFlag(EntityFlags.UsesPCount); }
-                set { if (value) flags |= EntityFlags.UsesPCount; else flags &= ~EntityFlags.UsesPCount; }
+                set { flags = setFlag(flags, EntityFlags.UsesPCount, value); }
             }
             public bool UsesGetMParam
             {
                 get { return flags.HasFlag(EntityFlags.UsesGetMParam); }
-                set { if (value) flags |= EntityFlags.UsesGetMParam; else flags &= ~EntityFlags.UsesGetMParam; }
+                set { flags = setFlag(flags, EntityFlags.UsesGetMParam, value); }
             }
 
             public bool MustBeVoid            // Assign, SET, Event Accessor
             {
                 get { return flags.HasFlag(EntityFlags.MustBeVoid); }
-                set { if (value) flags |= EntityFlags.MustBeVoid; else flags &= ~EntityFlags.MustBeVoid; }
+                set { flags = setFlag(flags, EntityFlags.MustBeVoid, value); }
             }
             public bool IsInitAxit            // init or axit with /vo1
             {
                 get { return flags.HasFlag(EntityFlags.IsInitAxit); }
-                set { if (value) flags |= EntityFlags.IsInitAxit; else flags &= ~EntityFlags.IsInitAxit; }
+                set { flags = setFlag(flags, EntityFlags.IsInitAxit, value); }
             }
 
             public bool HasInstanceCtor
             {
                 get { return flags.HasFlag(EntityFlags.HasInstanceCtor); }
-                set { if (value) flags |= EntityFlags.HasInstanceCtor; else flags &= ~EntityFlags.HasInstanceCtor; }
+                set { flags = setFlag(flags, EntityFlags.HasInstanceCtor, value); }
             }
             public bool Partial
             {
                 get { return flags.HasFlag(EntityFlags.Partial); }
-                set { if (value) flags |= EntityFlags.Partial; else flags &= ~EntityFlags.Partial; }
+                set { flags = setFlag(flags, EntityFlags.Partial, value); }
             }
             public bool PartialProps
             {
                 get { return flags.HasFlag(EntityFlags.PartialProps); }
-                set { if (value) flags |= EntityFlags.PartialProps; else flags &= ~EntityFlags.PartialProps; }
+                set { flags = setFlag(flags, EntityFlags.PartialProps, value); }
             }
             public bool HasDimVar
             {
                 get { return flags.HasFlag(EntityFlags.HasDimVar); }
-                set { if (value) flags |= EntityFlags.HasDimVar; else flags &= ~EntityFlags.HasDimVar; }
+                set { flags = setFlag(flags, EntityFlags.HasDimVar, value); }
             }
 
             private List<MemVarFieldInfo> Fields;
@@ -597,8 +607,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var ts = new MCT.TextSpan(token.StartIndex, this.FullWidth);
             var lp1 = new MCT.LinePosition(token.Line - 1, token.Column);
             var lp2 = new MCT.LinePosition(token.Line - 1, token.Column + this.FullWidth - 1);
+            // prevent error  at EOF
+            if (lp2 < lp1)
+            {
+                lp2 = lp1;
+            }
             var ls = new MCT.LinePositionSpan(lp1, lp2);
             return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
+
 
         }
 #endif

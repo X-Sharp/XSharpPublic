@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1740</para>
+    <para styleclass="Heading1">Error XS1740</para>
   </header>
   <para styleclass="Normal">Named argument &apos;{0}&apos; cannot be specified multiple times</para>
   <para styleclass="Normal"></para>

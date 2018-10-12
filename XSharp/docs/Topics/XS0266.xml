@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0266</para>
+      <para styleclass="Heading1">Error XS0266</para>
     </header>
     <para styleclass="Normal">Cannot implicitly convert type &apos;type1&apos; to &apos;type2&apos;. An explicit conversion exists (are you missing a cast?)</para>
     <para styleclass="Normal"></para>

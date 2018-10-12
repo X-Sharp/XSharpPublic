@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1537</para>
+    <para styleclass="Heading1">Error XS1537</para>
   </header>
   <para styleclass="Normal">The using alias &apos;{0}&apos; appeared previously in this namespace</para>
   <para styleclass="Normal"></para>

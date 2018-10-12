@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0217</para>
+    <para styleclass="Heading1">Error XS0217</para>
   </header>
   <para styleclass="Normal">In order to be applicable as a short circuit operator a user-defined logical operator (&apos;{0}&apos;) must have the same return type and parameter types</para>
   <para styleclass="Normal"></para>

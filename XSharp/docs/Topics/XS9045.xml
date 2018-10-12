@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9045</para>
+      <para styleclass="Heading1">Error XS9045</para>
     </header>
     <para styleclass="Normal">Cannot use static local &apos;{0}&apos; in a codeblock.</para>
   </body>

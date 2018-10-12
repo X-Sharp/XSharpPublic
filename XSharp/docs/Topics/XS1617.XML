@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1617</para>
+    <para styleclass="Heading1">Error XS1617</para>
   </header>
   <para styleclass="Normal">Invalid option &apos;{0}&apos; for /langversion; must be ISO-1, ISO-2, Default or an integer in range 1 to 6.</para>
   <para styleclass="Normal"></para>

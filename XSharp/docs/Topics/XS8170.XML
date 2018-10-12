@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8170</para>
+    <para styleclass="Heading1">Error XS8170</para>
   </header>
   <para styleclass="Normal">Struct members cannot return &apos;this&apos; or other instance members by reference</para>
   <para styleclass="Normal"></para>

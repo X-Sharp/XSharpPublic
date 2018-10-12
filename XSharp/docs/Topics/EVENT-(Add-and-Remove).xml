@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>EVENT (Add and Remove)</title>
   <keywords>
     <keyword>ADD</keyword>
@@ -15,25 +15,13 @@
     <para styleclass="Heading2">Old style syntax (compatible with Vulcan)</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160;// Old Style</para>
-    <para styleclass="Code Example"></para>
     <para styleclass="Heading2">Single Line syntax with explicit expressions</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; [ADD &lt;ExpressionList] [REMOVE &lt;ExpressionList] &#160; &#160; &#160; &#160;// Single Line</para>
-    <para styleclass="Code Example"></para>
     <para styleclass="Heading2">Multi line syntax with explicit expressions</para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160; // Multi line</para>
-    <para styleclass="Code Example">ADD</para>
-    <para styleclass="Code Example"> &#160; &#160;&lt;Statements&gt;</para>
-    <para styleclass="Code Example">END [ADD]</para>
-    <para styleclass="Code Example">REMOVE</para>
-    <para styleclass="Code Example"> &#160; &#160;&lt;Statements&gt;</para>
-    <para styleclass="Code Example">END [REMOVE]</para>
-    <para styleclass="Code Example">END [EVENT]</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160; // Multi line<br/><br/>ADD<br/> &#160; &#160;&lt;Statements&gt;<br/>END [ADD]<br/>REMOVE<br/> &#160; &#160;&lt;Statements&gt;<br/>END [REMOVE]<br/>END [EVENT]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Example </para>
-    <para styleclass="Code Example"><br/></para>
     <para styleclass="Code Example"><snippet src="EVENT-Example" inline="false"/></para>
   </body>
 </topic>

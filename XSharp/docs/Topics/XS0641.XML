@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0641</para>
+    <para styleclass="Heading1">Error XS0641</para>
   </header>
   <para styleclass="Normal">Attribute &apos;{0}&apos; is only valid on classes derived from System.Attribute</para>
   <para styleclass="Normal"></para>

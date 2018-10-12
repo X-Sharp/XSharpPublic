@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0457</para>
+    <para styleclass="Heading1">Error XS0457</para>
   </header>
   <para styleclass="Normal">Ambiguous user defined conversions &apos;{0}&apos; and &apos;{1}&apos; when converting from &apos;{2}&apos; to &apos;{3}&apos;</para>
   <para styleclass="Normal"></para>

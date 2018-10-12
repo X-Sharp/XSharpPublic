@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0620</para>
+    <para styleclass="Heading1">Error XS0620</para>
   </header>
   <para styleclass="Normal">Indexers cannot have void type</para>
   <para styleclass="Normal"></para>

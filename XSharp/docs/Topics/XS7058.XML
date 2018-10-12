@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7058</para>
+    <para styleclass="Heading1">Error XS7058</para>
   </header>
   <para styleclass="Normal">The specified version string does not conform to the required format - major.minor.build.revision</para>
   <para styleclass="Normal"></para>

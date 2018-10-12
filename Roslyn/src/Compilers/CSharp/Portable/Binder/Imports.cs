@@ -212,7 +212,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                         if (compilation.IsSubmission && !usingDirective.UsingKeyword.HasTrailingTrivia)
                             continue;
-                        if (HandleVulcanImport(usingDirective,usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
+                        if (HandleXSharpImport(usingDirective,usingsBinder, usings, uniqueUsings, basesBeingResolved, compilation))
                             continue;
 #endif
                         var declarationBinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
@@ -225,11 +225,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             else if (uniqueUsings.Contains(imported))
                             {
+
 #if XSHARP
-                                // No warnings for generated code 
-                                if (!declarationSyntax.XGenerated)
+                                // No warnings for duplicate usings in XSharp VO Dialect or for generated code
+                                if (!declarationSyntax.XGenerated && !compilation.Options.IsDialectVO)
 #endif
-                                diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, imported);
+                                    // No warnings for duplicate usings in XSharp
+                                    diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, imported);
+
                             }
                             else
                             {
@@ -249,8 +252,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (uniqueUsings.Contains(importedType) )
                                 {
 #if XSHARP
-                                    // No warnings for generated code 
-                                    if (!declarationSyntax.XGenerated)
+                                    // No warnings for duplicate usings in XSharp VO Dialect or for generated code
+                                    if (!declarationSyntax.XGenerated && !compilation.Options.IsDialectVO) 
 #endif
                                         diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, importedType);
                                 }

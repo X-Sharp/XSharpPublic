@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1529</para>
+    <para styleclass="Heading1">Error XS1529</para>
   </header>
   <para styleclass="Normal">A using clause must precede all other elements defined in the namespace except extern alias declarations</para>
   <para styleclass="Normal"></para>

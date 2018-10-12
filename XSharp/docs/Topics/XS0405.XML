@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0405</para>
+    <para styleclass="Heading1">Error XS0405</para>
   </header>
   <para styleclass="Normal">Duplicate constraint &apos;{0}&apos; for type parameter &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

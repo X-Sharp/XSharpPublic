@@ -40,7 +40,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
 
         }
- 
+
+        public static bool IsPsz(this TypeSymbol _type)
+        {
+            if (_type == null)
+                return false;
+            return _type.Name == OurTypeNames.PszType;
+        }
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
@@ -144,6 +150,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return elementSize;
         }
 
+        public static bool IsRT(this AssemblySymbol _asm)
+        {
+            return _asm.IsVulcanRT() || _asm.IsXSharpRT();
+        }
+
         public static bool IsVulcanRT(this AssemblySymbol _asm)
         {
             // TODO (nvk): there must be a better way!
@@ -153,11 +164,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         public static bool IsXSharpRT(this AssemblySymbol _asm)
         {
-            // TODO (nvk): there must be a better way!
-            return
-                (object)_asm != null &&
-                (_asm.Name.ToLower() == OurAssemblyNames.XSharpCore || _asm.Name.ToLower() == OurAssemblyNames.XSharpVO);
+            return _asm.IsXSharpCore() || _asm.IsXSharpVO();
         }
+        public static bool IsXSharpCore(this AssemblySymbol _asm)
+        {
+            // TODO (nvk): there must be a better way!
+            return (object)_asm != null && _asm.Name.ToLower() == OurAssemblyNames.XSharpCore ;
+        }
+        public static bool IsXSharpVO(this AssemblySymbol _asm)
+        {
+            // TODO (nvk): there must be a better way!
+            return (object)_asm != null && _asm.Name.ToLower() == OurAssemblyNames.XSharpVO;
+        }
+
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
         {
@@ -189,11 +208,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         var arg = attr.CommonConstructorArguments[0];
                         switch (desc)
                         {
-                            case 0: 
+                            case 0:
                                 // normal .Net Object
                                 // return value  or null
                                 if (arg.Type != null && arg.Value != null)
-                                    return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                {
+                                    if (arg.Type.SpecialType == SpecialType.None)
+                                    {
+                                        // Enum type? can be casted to Int32
+                                        return ConstantValue.Create(arg.Value, SpecialType.System_Int32);
+                                    }
+                                    else
+                                        return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                }
                                 else
                                     return ConstantValue.Null;
                             case 1:

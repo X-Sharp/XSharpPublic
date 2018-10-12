@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9050</para>
+      <para styleclass="Heading1">Error XS9050</para>
     </header>
     <para styleclass="Normal">Expecting &apos;end of statement&apos;, found &apos;{0}&apos;</para>
   </body>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1104</para>
+    <para styleclass="Heading1">Error XS1104</para>
   </header>
   <para styleclass="Normal">A parameter array cannot be used with &apos;SELF&apos; modifier on an extension method</para>
   <para styleclass="Normal"></para>

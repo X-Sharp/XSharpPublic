@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2001</para>
+    <para styleclass="Heading1">Error XS2001</para>
   </header>
   <para styleclass="Normal">Source file &apos;{0}&apos; could not be found.</para>
   <para styleclass="Normal"></para>

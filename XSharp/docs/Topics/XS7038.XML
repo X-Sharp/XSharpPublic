@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7038</para>
+    <para styleclass="Heading1">Error XS7038</para>
   </header>
   <para styleclass="Normal">Failed to emit module &apos;{0}&apos;.</para>
   <para styleclass="Normal"></para>

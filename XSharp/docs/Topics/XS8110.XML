@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8110</para>
+    <para styleclass="Heading1">Error XS8110</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain a reference to a local function</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0724</para>
+    <para styleclass="Heading1">Error XS0724</para>
   </header>
   <para styleclass="Normal">A throw statement with no arguments is not allowed in a finally clause that is nested inside the nearest enclosing catch clause</para>
   <para styleclass="Normal"></para>

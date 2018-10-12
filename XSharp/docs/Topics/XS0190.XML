@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0190</title>
-<keywords>
-<keyword>XS0190</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0190</para>
-  </header>
-  <para styleclass="Normal">The __arglist construct is valid only within a variable argument method</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0190</title>
+  <keywords>
+    <keyword>XS0190</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0190</para>
+    </header>
+    <para styleclass="Normal">The __arglist construct is valid only within a variable argument method</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

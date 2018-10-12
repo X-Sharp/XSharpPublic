@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8055</para>
+    <para styleclass="Heading1">Error XS8055</para>
   </header>
   <para styleclass="Normal">Cannot emit debug information for a source text without encoding.</para>
   <para styleclass="Normal"></para>

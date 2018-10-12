@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8030</para>
+    <para styleclass="Heading1">Error XS8030</para>
   </header>
   <para styleclass="Normal">Anonymous function converted to a void returning delegate cannot return a value</para>
   <para styleclass="Normal"></para>

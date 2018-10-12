@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1100</para>
+    <para styleclass="Heading1">Error XS1100</para>
   </header>
   <para styleclass="Normal">Method &apos;{0}&apos; has a parameter modifier &apos;SELF&apos; which is not on the first parameter</para>
   <para styleclass="Normal"></para>

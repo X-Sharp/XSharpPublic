@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1746</para>
+    <para styleclass="Heading1">Error XS1746</para>
   </header>
   <para styleclass="Normal">The delegate &apos;{0}&apos; does not have a parameter named &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

@@ -40,6 +40,18 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj">
+      <Project>{9508f118-f62e-4c16-a6f4-7c3b56e166ad}</Project>
+      <Name>CSCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\csc\csc.csproj">
+      <Project>{4b45ca0c-03a0-400f-b454-3d4bcb16af38}</Project>
+      <Name>csc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj">
+      <Project>{7b774abc-83a0-4fd8-91fb-1dbe8829765b}</Project>
+      <Name>CSharpCodeAnalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj">
       <Project>{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}</Project>
       <Name>XSCompiler</Name>

@@ -87,7 +87,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 builder.Append(',');
                             }
-                            Visit(type.ElementType, builder);
+                            if (type != null)
+                            {
+                                Visit(type.ElementType, builder);
+                            }
                             comma = true;
                         }
                         builder.Append(")");

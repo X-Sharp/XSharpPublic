@@ -8,7 +8,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0234</para>
+      <para styleclass="Heading1">Error XS0234</para>
     </header>
     <para styleclass="Normal">The type or namespace name &apos;name&apos; does not exist in the namespace &apos;namespace&apos; (are you missing an assembly reference?)</para>
     <para styleclass="Normal"></para>

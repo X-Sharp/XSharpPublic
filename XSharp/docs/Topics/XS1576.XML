@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1576</para>
+    <para styleclass="Heading1">Error XS1576</para>
   </header>
   <para styleclass="Normal">The line number specified for #line directive is missing or invalid</para>
   <para styleclass="Normal"></para>

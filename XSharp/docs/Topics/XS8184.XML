@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8184</para>
+    <para styleclass="Heading1">Error XS8184</para>
   </header>
   <para styleclass="Normal">A deconstruction cannot mix declarations and expressions on the left-hand-side.</para>
   <para styleclass="Normal"></para>

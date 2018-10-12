@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0543</para>
+    <para styleclass="Heading1">Error XS0543</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: the enumerator value is too large to fit in its type</para>
   <para styleclass="Normal"></para>

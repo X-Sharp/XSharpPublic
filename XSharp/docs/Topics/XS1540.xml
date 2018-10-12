@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1540</para>
+      <para styleclass="Heading1">Error XS1540</para>
     </header>
     <para styleclass="Normal">Cannot access protected member &apos;member&apos; via a qualifier of type &apos;type1&apos;; the qualifier must be of type &apos;type2&apos; (or derived from it)</para>
     <para styleclass="Normal"></para>

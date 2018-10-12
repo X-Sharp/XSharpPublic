@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1950</para>
+    <para styleclass="Heading1">Error XS1950</para>
   </header>
   <para styleclass="Normal">The best overloaded Add method &apos;{0}&apos; for the collection initializer has some invalid arguments</para>
   <para styleclass="Normal"></para>

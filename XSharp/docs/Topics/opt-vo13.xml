@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/vo13</title>
   <keywords>
     <keyword>/vo13</keyword>
@@ -12,7 +12,6 @@
     <para styleclass="Normal">The /vo13 option enables VO compatible string comparisons</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">/vo13[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
@@ -23,19 +22,26 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When collation=#WINDOWS, string comparisons make use of services provided by Windows that automatically handle foreign character sets. These string comparisons are implemented with a call to CompareStringA() function in kernel32.dll.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When collation = #CLIPPER, comparisons are performed byte by byte, using a weight table for each char. As in VO, a different table can be selected with the SetNatDll() function. <br/>When compiled in BYOR mode we are using the Vulcan.NET runtime. In this runtime the nation DLLs are not physically implemented as separate files; the weighting tables are embedded as resources inside VulcanRTFuncs.dll.</para>
+    <para styleclass="Normal">When collation = #CLIPPER, comparisons are performed byte by byte, using a weight table for each char. As in VO, a different table can be selected with the SetNatDll() function. <br/>In .Net we are using the runtime DLL for the weight tables. In the runtime the nation DLLs are not physically implemented as separate files; the weighting tables are embedded as resources inside XSharp.Core.dll.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When collation = #Unicode then the comparisons will be done with the normal String.Compare() routine that uses the current culture.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When collation = #Ordinal then the comparisons will be done with the normal String.Compare() routine using an ordinal comparison (this is the fastest)</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When /v013 is not enabled string comparisons are performed using String.Compare(), where the comparison makes use of culture-sensitive sort rules according to the current culture selected.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The setting for /vo13 is registered with the runtime by the main application at startup. <text styleclass="List">If you library is compiled with /vo13+ but the main app isn&apos;t, then the string comparisons called from the library will follow the same rules as the main app because the main app registers /vo13 setting with the runtime and the stringcomparison routines in the runtime now detect that the main app does not want to do VO compatible string comparisons. </text><br/><text styleclass="List">We therefore recommend that 3rd party products always enable /vo13.</text></para>
     <para styleclass="Heading2">Compatibility Note: </para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal">When using /vo13 string comparisons involve converting unicode strings to ansi for compatibility and consequently are slower than with String.Compare().</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">&#32;<text styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="132" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Compatible string comparions&quot; property. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Compatible string comparisons&quot; property. </li>
     </list>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"></para>
   </body>
 </topic>

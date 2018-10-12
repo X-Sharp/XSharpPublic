@@ -771,7 +771,7 @@ namespace Microsoft.CodeAnalysis
                         }
                     }
 #if XSHARP
-                    Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions.FixResources(Arguments);
+                    Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions.FixResources(Arguments, compilation);
 #endif
                     var compileAndEmitDiagnostics = diagnosticBag.ToReadOnly();
                     if (ReportErrors(compileAndEmitDiagnostics, consoleOutput, errorLogger))

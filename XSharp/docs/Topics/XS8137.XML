@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8137</para>
+    <para styleclass="Heading1">Error XS8137</para>
   </header>
   <para styleclass="Normal">Cannot define a class or member that utilizes tuples because the compiler required type &apos;{0}&apos; cannot be found. Are you missing a reference?</para>
   <para styleclass="Normal"></para>

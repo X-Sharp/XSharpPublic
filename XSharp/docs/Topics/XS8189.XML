@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8189</para>
+    <para styleclass="Heading1">Error XS8189</para>
   </header>
   <para styleclass="Normal">Ref mismatch between &apos;{0}&apos; and delegate &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

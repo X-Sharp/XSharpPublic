@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1991</para>
+    <para styleclass="Heading1">Error XS1991</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot implement &apos;{1}&apos; because &apos;{2}&apos; is a Windows Runtime event and &apos;{3}&apos; is a regular .NET event.</para>
   <para styleclass="Normal"></para>

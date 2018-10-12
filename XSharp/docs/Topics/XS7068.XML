@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7068</para>
+    <para styleclass="Heading1">Error XS7068</para>
   </header>
   <para styleclass="Normal">Reference to type &apos;{0}&apos; claims it is defined in this assembly, but it is not defined in source or any added modules</para>
   <para styleclass="Normal"></para>

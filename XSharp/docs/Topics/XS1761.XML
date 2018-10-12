@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1761</para>
+    <para styleclass="Heading1">Error XS1761</para>
   </header>
   <para styleclass="Normal">Embedding the interop type &apos;{0}&apos; from assembly &apos;{1}&apos; causes a name clash in the current assembly. Consider setting the &apos;Embed Interop Types&apos; property to false.</para>
   <para styleclass="Normal"></para>

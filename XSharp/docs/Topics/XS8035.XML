@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8035</para>
+    <para styleclass="Heading1">Error XS8035</para>
   </header>
   <para styleclass="Normal">Error reading ruleset file {0} - {1}</para>
   <para styleclass="Normal"></para>

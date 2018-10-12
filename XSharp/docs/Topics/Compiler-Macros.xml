@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Compiler Macros</title>
   <keywords>
     <keyword>__ARRAYBASE__</keyword>
@@ -17,6 +17,7 @@
     <keyword>__DIALECT_VULCAN__</keyword>
     <keyword>__ENTITY__</keyword>
     <keyword>__FILE__</keyword>
+    <keyword>__FUNCTION__</keyword>
     <keyword>__LINE__</keyword>
     <keyword>__MODULE__</keyword>
     <keyword>__SIG__</keyword>
@@ -49,7 +50,7 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="28" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="30" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -80,7 +81,7 @@
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
+          <para styleclass="Normal">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -91,7 +92,7 @@
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
+          <para styleclass="Normal">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -102,7 +103,7 @@
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR2____CLRVERSION__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option)</para>
+          <para styleclass="Normal"> &quot;2&quot; or &quot;4&quot;depending on the version. (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -184,6 +185,17 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal">__DIALECT_XBASEPP__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Defined with TRUE when XBase++ dialect is selected</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal">__DEBUG__</para>
         </td>
         <td>
@@ -213,6 +225,17 @@
         </td>
         <td>
           <para styleclass="Normal">Current source file name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__FUNCTION__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current function/method name without class prefix and in original case</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -359,5 +382,9 @@
         </td>
       </tr>
     </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Note</para>
+    <para styleclass="Normal">The CLR2 and CLR4 version is determined by the X# compiler by looking at the version of either system.dll or mscorlib.dll</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

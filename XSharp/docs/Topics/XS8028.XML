@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8028</para>
+    <para styleclass="Heading1">Error XS8028</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: a class with the ComImport attribute cannot specify field initializers.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0711</para>
+    <para styleclass="Heading1">Error XS0711</para>
   </header>
   <para styleclass="Normal">Static classes cannot contain destructors</para>
   <para styleclass="Normal"></para>

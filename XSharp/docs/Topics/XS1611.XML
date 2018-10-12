@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1611</para>
+    <para styleclass="Heading1">Error XS1611</para>
   </header>
   <para styleclass="Normal">The params parameter cannot be declared as ref or out</para>
   <para styleclass="Normal"></para>

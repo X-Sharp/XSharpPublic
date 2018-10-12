@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0514</para>
+    <para styleclass="Heading1">Error XS0514</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: static constructor cannot have an explicit &apos;SELF&apos; or &apos;SUPER&apos; constructor call</para>
   <para styleclass="Normal"></para>

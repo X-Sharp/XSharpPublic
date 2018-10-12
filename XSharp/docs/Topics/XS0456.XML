@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0456</para>
+    <para styleclass="Heading1">Error XS0456</para>
   </header>
   <para styleclass="Normal">Type parameter &apos;{1}&apos; has the &apos;struct&apos; constraint so &apos;{1}&apos; cannot be used as a constraint for &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

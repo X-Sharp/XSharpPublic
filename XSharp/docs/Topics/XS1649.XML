@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1649</para>
+    <para styleclass="Heading1">Error XS1649</para>
   </header>
   <para styleclass="Normal">Members of readonly field &apos;{0}&apos; cannot be passed ref or out (except in a constructor)</para>
   <para styleclass="Normal"></para>

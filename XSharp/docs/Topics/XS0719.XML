@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0719</para>
+    <para styleclass="Heading1">Error XS0719</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: array elements cannot be of static type</para>
   <para styleclass="Normal"></para>

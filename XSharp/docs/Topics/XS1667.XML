@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1667</para>
+    <para styleclass="Heading1">Error XS1667</para>
   </header>
   <para styleclass="Normal">Attribute &apos;{0}&apos; is not valid on property or event accessors. It is only valid on &apos;{1}&apos; declarations.</para>
   <para styleclass="Normal"></para>

@@ -5,20 +5,36 @@ USING System.Text
 
 
 FUNCTION Start() AS VOID
-	local cb1 as codeblock
-	XSharp.MacroCompiler.Initialize()
-	LOCAL i as INT
-	FOR i := 1 to 100
-	cb1 := MCompile("{|| 1+2 }")
-	? eval(cb1)
-	cb1 := MCompile("{||'Hello world'}")
-	? eval(cb1)
-	cb1 := MCompile("{||ToDay()}")
-	? eval(cb1)
-	cb1 := MCompile("{||MyToDay()}")
-	? eval(cb1)
-	NEXT
-
+	LOCAL cb1 AS USUAL
+	LOCAL i AS INT      
+	LOCAL nSecs AS FLOAT
+    cb1 := MCompile("{|| 1+2 }")
+    ? Time()         
+    nSecs := Seconds()
+	FOR i := 1 TO 1
+	    cb1 := MCompile("{|| 1+ 2 }")
+	    cb1 := MCompile("{||'Hello world'}")
+	    cb1 := MCompile("{||ToDay()}")
+	    cb1 := MCompile("{||MyToDay()}")
+        cb1 := MCompile("{||_FIELD->LASTNAME + _FIELD->FIRSTNAME}")
+	NEXT 
+	? Seconds() - nSecs
+    ? Time()
+	cb1 := &("{|| 1+2 }")
+    ? Eval(cb1)
+    nSecs := Seconds()
+	FOR i := 1 TO 50000 
+        Eval(cb1)
+    NEXT
+	? Seconds() - nSecs
+    ? Time()
+	cb1 := &("{||'Hello world'}")
+    ? Eval(cb1)
+	cb1 := &("{||ToDay()}")
+    ? Eval(cb1)
+	cb1 := &("{||MyToDay()}")
+	? Eval(cb1)      
+    wait
 	
-Function MyToday() as USUAL STRICT
+FUNCTION MyToday() AS USUAL STRICT
 RETURN Today()

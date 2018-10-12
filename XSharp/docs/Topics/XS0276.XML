@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0276</para>
+    <para styleclass="Heading1">Error XS0276</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: accessibility modifiers on accessors may only be used if the property or indexer has both a get and a set accessor</para>
   <para styleclass="Normal"></para>

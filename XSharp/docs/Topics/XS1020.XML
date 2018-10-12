@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1020</para>
+    <para styleclass="Heading1">Error XS1020</para>
   </header>
   <para styleclass="Normal">Overloadable binary operator expected</para>
   <para styleclass="Normal"></para>

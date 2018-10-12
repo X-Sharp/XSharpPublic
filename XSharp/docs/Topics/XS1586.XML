@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1586</para>
+    <para styleclass="Heading1">Error XS1586</para>
   </header>
   <para styleclass="Normal">Array creation must have array size or array initializer</para>
   <para styleclass="Normal"></para>

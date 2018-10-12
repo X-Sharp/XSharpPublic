@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0723</para>
+    <para styleclass="Heading1">Error XS0723</para>
   </header>
   <para styleclass="Normal">Cannot declare a variable of static type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

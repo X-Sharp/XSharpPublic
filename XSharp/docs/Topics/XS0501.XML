@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0501</para>
+    <para styleclass="Heading1">Error XS0501</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; must declare a body because it is not marked abstract, extern, or partial</para>
   <para styleclass="Normal"></para>

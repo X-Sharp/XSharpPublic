@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0836</para>
+    <para styleclass="Heading1">Error XS0836</para>
   </header>
   <para styleclass="Normal">Cannot use anonymous type in a constant expression</para>
   <para styleclass="Normal"></para>

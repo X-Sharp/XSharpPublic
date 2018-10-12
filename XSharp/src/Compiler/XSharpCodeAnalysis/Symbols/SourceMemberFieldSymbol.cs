@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
                 var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
                 var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
-                if (initializerOpt != null)
+                if (initializerOpt != null && !type.IsPsz())
                 {
                     if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())
                     {

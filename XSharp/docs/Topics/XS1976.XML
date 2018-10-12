@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1976</para>
+    <para styleclass="Heading1">Error XS1976</para>
   </header>
   <para styleclass="Normal">Cannot use a method group as an argument to a dynamically dispatched operation. Did you intend to invoke the method?</para>
   <para styleclass="Normal"></para>

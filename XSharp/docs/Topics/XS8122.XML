@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8122</para>
+    <para styleclass="Heading1">Error XS8122</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain an &apos;is&apos; pattern-matching operator.</para>
   <para styleclass="Normal"></para>

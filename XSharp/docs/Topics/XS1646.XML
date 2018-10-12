@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1646</para>
+    <para styleclass="Heading1">Error XS1646</para>
   </header>
   <para styleclass="Normal">Keyword, identifier, or string expected after verbatim specifier: @</para>
   <para styleclass="Normal"></para>

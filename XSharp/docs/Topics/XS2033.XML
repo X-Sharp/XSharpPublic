@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2033</para>
+    <para styleclass="Heading1">Error XS2033</para>
   </header>
   <para styleclass="Normal">Cannot create short filename &apos;{0}&apos; when a long filename with the same short filename already exists</para>
   <para styleclass="Normal"></para>

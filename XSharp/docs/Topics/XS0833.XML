@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0833</para>
+    <para styleclass="Heading1">Error XS0833</para>
   </header>
   <para styleclass="Normal">An anonymous type cannot have multiple properties with the same name</para>
   <para styleclass="Normal"></para>

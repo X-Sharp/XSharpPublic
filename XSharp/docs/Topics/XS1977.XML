@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1977</para>
+    <para styleclass="Heading1">Error XS1977</para>
   </header>
   <para styleclass="Normal">Cannot use a lambda expression as an argument to a dynamically dispatched operation without first casting it to a delegate or expression tree type.</para>
   <para styleclass="Normal"></para>

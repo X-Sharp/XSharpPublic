@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1626</para>
+    <para styleclass="Heading1">Error XS1626</para>
   </header>
   <para styleclass="Normal">Cannot yield a value in the body of a try block with a catch clause</para>
   <para styleclass="Normal"></para>

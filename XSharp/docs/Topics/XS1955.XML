@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1955</para>
+    <para styleclass="Heading1">Error XS1955</para>
   </header>
   <para styleclass="Normal">Non-invocable member &apos;{0}&apos; cannot be used like a method.</para>
   <para styleclass="Normal"></para>

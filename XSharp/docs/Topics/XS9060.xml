@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9060</para>
+      <para styleclass="Heading1">Error XS9060</para>
     </header>
     <para styleclass="Normal">Cannot cast type '{0}' to '{1}'</para>
   </body>

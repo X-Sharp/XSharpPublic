@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0750</para>
+    <para styleclass="Heading1">Error XS0750</para>
   </header>
   <para styleclass="Normal">A partial method cannot have access modifiers or the virtual, abstract, override, new, sealed, or extern modifiers</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2016</para>
+    <para styleclass="Heading1">Error XS2016</para>
   </header>
   <para styleclass="Normal">Code page &apos;{0}&apos; is invalid or not installed</para>
   <para styleclass="Normal"></para>

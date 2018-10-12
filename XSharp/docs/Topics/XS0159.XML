@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0159</title>
-<keywords>
-<keyword>XS0159</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0159</para>
-  </header>
-  <para styleclass="Normal">No such label &apos;{0}&apos; within the scope of the goto statement</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0159</title>
+  <keywords>
+    <keyword>XS0159</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0159</para>
+    </header>
+    <para styleclass="Normal">No such label &apos;{0}&apos; within the scope of the goto statement</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

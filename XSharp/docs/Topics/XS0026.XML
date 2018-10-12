@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0026</title>
-<keywords>
-<keyword>XS0026</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0026</para>
-  </header>
-  <para styleclass="Normal">Keyword &apos;SELF&apos; is not valid in a static property, static method, or static field initializer</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0026</title>
+  <keywords>
+    <keyword>XS0026</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0026</para>
+    </header>
+    <para styleclass="Normal">Keyword &apos;SELF&apos; is not valid in a static property, static method, or static field initializer</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

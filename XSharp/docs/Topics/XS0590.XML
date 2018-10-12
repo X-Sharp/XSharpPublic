@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0590</para>
+    <para styleclass="Heading1">Error XS0590</para>
   </header>
   <para styleclass="Normal">User-defined operators cannot return void</para>
   <para styleclass="Normal"></para>

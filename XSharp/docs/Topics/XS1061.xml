@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1061</para>
+      <para styleclass="Heading1">Error XS1061</para>
     </header>
     <para styleclass="Normal">&apos;type&apos; does not contain a definition for &apos;member&apos; and no extension method &apos;name&apos; accepting a first argument of type &apos;type&apos; could be found (are you missing a using directive or an assembly reference?).</para>
     <para styleclass="Normal"></para>

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0115</title>
   <keywords>
     <keyword>XS0115</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0115</para>
+      <para styleclass="Heading1">Error XS0115</para>
     </header>
     <para styleclass="Normal">&apos;function&apos; : no suitable method found to override</para>
     <para styleclass="Normal"></para>
@@ -16,13 +16,13 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following sample generates XS0115. You can resolve XS0115 in one of two ways:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Remove the <text styleclass="Code Example">override</text> keyword from the method in <text styleclass="Code Example">MyClass2</text>.</li>
       <li styleclass="Normal" style="margin-left:13px;">Use <text styleclass="Code Example">MyClass1</text> as a base class for <text styleclass="Code Example">MyClass2</text>.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0115.prg  <br/></para>
+    <para styleclass="Code with box">// XS0115.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

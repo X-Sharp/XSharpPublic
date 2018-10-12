@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0151</title>
   <keywords>
     <keyword>XS0151</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0151</para>
+      <para styleclass="Heading1">Error XS0151</para>
     </header>
     <para styleclass="Normal">A value of an integral type expected</para>
     <para styleclass="Normal"></para>
@@ -17,7 +17,7 @@
     <para styleclass="Normal">This error can occur when there is no conversion or if the available implicit conversions result in an ambiguous situation. The following sample generates XS0151.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0151.prg  <br/></para>
+    <para styleclass="Code with box">// XS0151.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"></para>
   </body>

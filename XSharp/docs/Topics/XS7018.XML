@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7018</para>
+    <para styleclass="Heading1">Error XS7018</para>
   </header>
   <para styleclass="Normal">Expected a script (.csx file) but none specified</para>
   <para styleclass="Normal"></para>

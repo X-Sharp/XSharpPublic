@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0748</para>
+    <para styleclass="Heading1">Error XS0748</para>
   </header>
   <para styleclass="Normal">Inconsistent lambda parameter usage; parameter types must be all explicit or all implicit</para>
   <para styleclass="Normal"></para>

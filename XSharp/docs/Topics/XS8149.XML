@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8149</para>
+    <para styleclass="Heading1">Error XS8149</para>
   </header>
   <para styleclass="Normal">By-reference returns may only be used in methods that return by reference</para>
   <para styleclass="Normal"></para>

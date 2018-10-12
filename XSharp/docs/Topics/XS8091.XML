@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8091</para>
+    <para styleclass="Heading1">Error XS8091</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; cannot be extern and have a constructor initializer</para>
   <para styleclass="Normal"></para>

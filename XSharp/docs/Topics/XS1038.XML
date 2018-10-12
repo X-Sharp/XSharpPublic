@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1038</para>
+    <para styleclass="Heading1">Error XS1038</para>
   </header>
   <para styleclass="Normal">#endregion directive expected</para>
   <para styleclass="Normal"></para>

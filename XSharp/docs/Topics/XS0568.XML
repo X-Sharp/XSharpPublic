@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0568</para>
+    <para styleclass="Heading1">Error XS0568</para>
   </header>
   <para styleclass="Normal">Structs cannot contain explicit parameterless constructors</para>
   <para styleclass="Normal"></para>

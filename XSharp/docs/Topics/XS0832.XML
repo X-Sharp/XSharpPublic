@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0832</para>
+    <para styleclass="Heading1">Error XS0832</para>
   </header>
   <para styleclass="Normal">An expression tree may not contain an assignment operator</para>
   <para styleclass="Normal"></para>

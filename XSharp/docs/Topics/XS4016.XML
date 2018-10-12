@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4016</para>
+    <para styleclass="Heading1">Error XS4016</para>
   </header>
   <para styleclass="Normal">Since this is an async method, the return expression must be of type &apos;{0}&apos; rather than &apos;Task&lt;{0}&gt;&apos;</para>
   <para styleclass="Normal"></para>

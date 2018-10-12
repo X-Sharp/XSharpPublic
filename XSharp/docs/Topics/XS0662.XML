@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0662</para>
+    <para styleclass="Heading1">Error XS0662</para>
   </header>
   <para styleclass="Normal">Cannot specify only Out attribute on a ref parameter. Use both In and Out attributes, or neither.</para>
   <para styleclass="Normal"></para>

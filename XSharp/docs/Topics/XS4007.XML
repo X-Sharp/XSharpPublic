@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4007</para>
+    <para styleclass="Heading1">Error XS4007</para>
   </header>
   <para styleclass="Normal">&apos;await&apos; cannot be used in an expression containing the type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

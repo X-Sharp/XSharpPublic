@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1614</para>
+      <para styleclass="Heading1">Error XS1614</para>
     </header>
     <para styleclass="Normal">&apos;name&apos; is ambiguous; between &apos;attribute1&apos; and &apos;attribute2&apos;. use either &apos;@attribute&apos; or &apos;attributeAttribute&apos;</para>
     <para styleclass="Normal"></para>

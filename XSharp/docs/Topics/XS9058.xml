@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9058</para>
+      <para styleclass="Heading1">Warning XS9058</para>
     </header>
     <para styleclass="Normal">Lamda Expression should not contain pipe (&apos;|&apos;) characters around the parameters.</para>
   </body>

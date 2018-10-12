@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0822</para>
+    <para styleclass="Heading1">Error XS0822</para>
   </header>
   <para styleclass="Normal">Implicitly-typed variables cannot be constant</para>
   <para styleclass="Normal"></para>

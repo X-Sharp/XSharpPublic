@@ -1,11 +1,41 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Integer Literals</title>
   <body>
     <header>
       <para styleclass="Heading1">Integer Literals</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">Literal INT values may be specified in decimal, hexadecimal or binary notation:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">12345</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">0x1234ABCD</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">0b010010101</text></para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Normal">Integer literals may have one of the following suffixes:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Suffix</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">L or l</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Signed 32 bits integer </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">U or u</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Unsigned integer </para>
+        </td>
+      </tr>
+    </table></para>
   </body>
 </topic>

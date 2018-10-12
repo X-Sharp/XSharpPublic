@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4011</para>
+    <para styleclass="Heading1">Error XS4011</para>
   </header>
   <para styleclass="Normal">&apos;await&apos; requires that the return type &apos;{0}&apos; of &apos;{1}.GetAwaiter()&apos; have suitable IsCompleted, OnCompleted, and GetResult members, and implement INotifyCompletion or ICriticalNotifyCompletion</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0637</para>
+    <para styleclass="Heading1">Error XS0637</para>
   </header>
   <para styleclass="Normal">The FieldOffset attribute is not allowed on static or const fields</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7101</para>
+    <para styleclass="Heading1">Error XS7101</para>
   </header>
   <para styleclass="Normal">Member &apos;{0}&apos; added during the current debug session can only be accessed from within its declaring assembly &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

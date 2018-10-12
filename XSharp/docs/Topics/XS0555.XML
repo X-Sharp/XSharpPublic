@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0555</para>
+    <para styleclass="Heading1">Error XS0555</para>
   </header>
   <para styleclass="Normal">User-defined operator cannot take an object of the enclosing type and convert to an object of the enclosing type</para>
   <para styleclass="Normal"></para>

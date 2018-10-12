@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0304</para>
+      <para styleclass="Heading1">Error XS0304</para>
     </header>
     <para styleclass="Normal">Cannot create an instance of the variable type &apos;type&apos; because it does not have the new() constraint</para>
     <para styleclass="Normal"></para>

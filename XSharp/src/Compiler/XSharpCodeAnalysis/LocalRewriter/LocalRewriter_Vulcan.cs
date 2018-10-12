@@ -27,6 +27,50 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
     {
+
+        public BoundExpression MakePsz(BoundExpression value)
+        {
+            var type = _compilation.PszType();
+            if (value.Type == type)
+                return value;
+            bool isString;
+            if (value.Type == _compilation.UsualType())
+            {
+                var op = getImplicitOperator(value.Type, type);
+                var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);
+                result.WasCompilerGenerated = true;
+                this._diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, value.Syntax.Location);
+                return result;
+            }
+            isString = value.Type.SpecialType == SpecialType.System_String;
+            var ctors = type.Constructors;
+            foreach (var ctor in ctors)
+            {
+                if (ctor.ParameterCount == 1) // there should only be constructors with one or zero parameters.
+                {
+                    bool found = false;
+                    var partype = ctor.GetParameterTypes()[0];
+                    if (isString && partype.SpecialType == SpecialType.System_String)
+                    {
+                        found = true;
+                    }
+                    if (! isString && partype.SpecialType == SpecialType.System_IntPtr)
+                    {
+                        found = true;
+                        if (value.Type.SpecialType != SpecialType.System_IntPtr)
+                        {
+                            value = new BoundConversion(value.Syntax, value, Conversion.Identity, false, false, null, partype, false);
+                        }
+                        
+                    }
+                    if (found)
+                    {
+                        return new BoundObjectCreationExpression(value.Syntax, ctor, value);
+                    }
+                }
+            }
+            return value;
+        }
         static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
         {
             Func<string, bool> predicate = n => StringComparer.Ordinal.Equals(name, n);
@@ -150,7 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return newbody;
         }
 
-        private static BoundExpressionStatement runtimeStateAssign(SyntaxNode syntax, FieldSymbol field, bool value, TypeSymbol type)
+        private static BoundExpressionStatement vulcanruntimeStateAssign(SyntaxNode syntax, FieldSymbol field, bool value, TypeSymbol type)
         {
             var bfa = new BoundFieldAccess(syntax, null, field, ConstantValue.NotAvailable) { WasCompilerGenerated = true };
             var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
@@ -158,6 +202,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
             return stmt;
         }
+        private static BoundExpressionStatement xsharpruntimeStateAssign(SyntaxNode syntax, PropertySymbol prop, bool value, TypeSymbol type)
+        {
+            var bpa = new BoundPropertyAccess(syntax, null, prop, LookupResultKind.Viable,type) { WasCompilerGenerated = true };
+            var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
+            var ass = new BoundAssignmentOperator(syntax, bpa, lit, RefKind.None, lit.Type) { WasCompilerGenerated = true };
+            var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
+            return stmt;
+        }
+
         public static BoundStatement RewriteAppInit(
             MethodSymbol method,
             BoundStatement statement,
@@ -183,23 +236,55 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var type = vulcanrt.GetTypeByMetadataName("Vulcan.Runtime.State");
                 if (type != null)
                 {
+                    var logic = comp.GetSpecialType(SpecialType.System_Boolean);
                     var mem = type.GetMembers("CompilerOptionFOvf");
                     if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
                     {
-                        newstatements.Add(runtimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, comp.GetSpecialType(SpecialType.System_Boolean)));
+                        newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, logic));
                     }
                     mem = type.GetMembers("CompilerOptionOvf");
                     if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
                     {
-                        newstatements.Add(runtimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, comp.GetSpecialType(SpecialType.System_Boolean)));
+                        newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.CheckOverflow, logic));
                     }
                     mem = type.GetMembers("CompilerOptionVO11");
                     if (mem.Length > 0 && mem[0].Kind == SymbolKind.Field)
                     {
-                        newstatements.Add(runtimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.vo11, comp.GetSpecialType(SpecialType.System_Boolean)));
+                        newstatements.Add(vulcanruntimeStateAssign(oldbody.Syntax, mem[0] as FieldSymbol, comp.Options.vo11, logic));
                     }
                 }
             }
+            var xc = comp.GetBoundReferenceManager().GetReferencedAssemblies().Where(x => x.Value.Name == "XSharp.Core");
+            if (xc.Count() != 0)
+            {
+                var xsrt = xc.First().Value;
+                var type = xsrt.GetTypeByMetadataName("XSharp.RuntimeState");
+                if (type != null)
+                {
+                    var logic = comp.GetSpecialType(SpecialType.System_Boolean);
+                    var mem = type.GetMembers("CompilerOptionFOvf");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
+                    {
+                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.CheckOverflow, logic));
+                    }
+                    mem = type.GetMembers("CompilerOptionOvf");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
+                    {
+                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.CheckOverflow, logic));
+                    }
+                    mem = type.GetMembers("CompilerOptionVO11");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
+                    {
+                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.vo11, logic));
+                    }
+                    mem = type.GetMembers("CompilerOptionVO13");
+                    if (mem.Length > 0 && mem[0].Kind == SymbolKind.Property)
+                    {
+                        newstatements.Add(xsharpruntimeStateAssign(oldbody.Syntax, mem[0] as PropertySymbol, comp.Options.vo13, logic));
+                    }
+                }
+            }
+
             var initstmts = GetInitStatements(method.DeclaringCompilation, statement,false);
             newstatements.AddRange(initstmts);
             tryblock = tryblock.Update(tryblock.Locals, ImmutableArray<LocalFunctionSymbol>.Empty, newstatements.ToImmutableArray<BoundStatement>());

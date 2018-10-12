@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8095</para>
+    <para styleclass="Heading1">Error XS8095</para>
   </header>
   <para styleclass="Normal">Length of String constant exceeds current memory limit. Try splitting the string into multiple constants.</para>
   <para styleclass="Normal"></para>

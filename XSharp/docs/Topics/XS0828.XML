@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0828</para>
+    <para styleclass="Heading1">Error XS0828</para>
   </header>
   <para styleclass="Normal">Cannot assign {0} to anonymous type property</para>
   <para styleclass="Normal"></para>

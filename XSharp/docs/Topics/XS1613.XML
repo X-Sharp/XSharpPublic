@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1613</para>
+    <para styleclass="Heading1">Error XS1613</para>
   </header>
   <para styleclass="Normal">The managed coclass wrapper class &apos;{0}&apos; for interface &apos;{1}&apos; cannot be found (are you missing an assembly reference?)</para>
   <para styleclass="Normal"></para>

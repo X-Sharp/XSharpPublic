@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0281</para>
+    <para styleclass="Heading1">Error XS0281</para>
   </header>
   <para styleclass="Normal">Friend access was granted by &apos;{0}&apos;, but the public key of the output assembly does not match that specified by the attribute in the granting assembly.</para>
   <para styleclass="Normal"></para>

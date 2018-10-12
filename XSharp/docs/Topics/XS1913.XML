@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1913</para>
+    <para styleclass="Heading1">Error XS1913</para>
   </header>
   <para styleclass="Normal">Member &apos;{0}&apos; cannot be initialized. It is not a field or property.</para>
   <para styleclass="Normal"></para>

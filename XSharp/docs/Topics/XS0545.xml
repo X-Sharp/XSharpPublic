@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0545</para>
+      <para styleclass="Heading1">Error XS0545</para>
     </header>
     <para styleclass="Normal">&apos;function&apos; : cannot override because &apos;property&apos; does not have an overridable get accessor</para>
     <para styleclass="Normal"></para>

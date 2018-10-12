@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4029</para>
+    <para styleclass="Heading1">Error XS4029</para>
   </header>
   <para styleclass="Normal">Cannot return an expression of type &apos;void&apos;</para>
   <para styleclass="Normal"></para>

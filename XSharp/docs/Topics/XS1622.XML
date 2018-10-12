@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1622</para>
+    <para styleclass="Heading1">Error XS1622</para>
   </header>
   <para styleclass="Normal">Cannot return a value from an iterator. Use the yield return statement to return a value, or yield break to end the iteration.</para>
   <para styleclass="Normal"></para>

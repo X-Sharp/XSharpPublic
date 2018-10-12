@@ -86,6 +86,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool HasPPMessages { get; private set; }
         public bool HasPPUDCs { get; private set; }
         public bool HasPPMacros { get; private set; }
+        public bool HasDocComments { get; private set; }
         public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes || HasPPMacros || HasPPIfdefs;
 
         internal IList<ParseErrorData> LexErrors => _lexErrors;
@@ -737,29 +738,38 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 else
                 {
                     t = base.NextToken() as XSharpToken;
-                    if (t.Type == ML_COMMENT)
+                    switch (t.Type)
                     {
-                        if (!t.Text.EndsWith("*/"))
-                        {
-                            _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
-                        }
-                    }
-                    if (t.Type == SYMBOL_CONST)
-                    {
-                        var text = t.Text.Substring(1);
-                        if (KwIds.ContainsKey(text))
-                        {
-                            var kwid = KwIds[text];
-                            if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                        case ML_COMMENT:
+
+                            if (!t.Text.EndsWith("*/"))
                             {
-                                // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
-                                t.Text = "#";
-                                t.Type = NEQ2;
-                                t.StopIndex = t.StartIndex;
-                                InputStream.Seek(t.StartIndex + 1);
+                                _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_OpenEndedComment));
                             }
-                        }
+                            break;
+                        case DOC_COMMENT:
+                            HasDocComments = true;
+                            break;
+                        case PRAGMA:
+                            HasPragmas = true;
+                            break;
+                        case SYMBOL_CONST:
+                            var text = t.Text.Substring(1);
+                            if (KwIds.ContainsKey(text))
+                            {
+                                var kwid = KwIds[text];
+                                if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                                {
+                                    // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
+                                    t.Text = "#";
+                                    t.Type = NEQ2;
+                                    t.StopIndex = t.StartIndex;
+                                    InputStream.Seek(t.StartIndex + 1);
+                                }
+                            }
+                            break;
                     }
+                
                 }
             }
             var type = t.Type;
@@ -911,8 +921,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
+
             switch (keyword)
             {
+                // Some keywords are impossible to use as ID
+                case SELF:
+                case SUPER:
+                case STATIC:
+                case DIM:
+                case CONST:
+                case AS:
+                    return keyword;
                 case EXPLICIT:
                 case IMPLICIT:
                     if (lastToken != OPERATOR)
@@ -975,6 +994,48 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
+                default:
+                    switch (lastToken)
+                    {
+                        // After these keywords we expect an ID
+                        // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
+                        case METHOD:
+                        case PROCEDURE:
+                        case PROC:
+                        case FUNCTION:
+                        case FUNC:
+                        case ACCESS:
+                        case ASSIGN:
+                        case CLASS:
+                        case INTERFACE:
+                        case STRUCTURE:
+                        case VOSTRUCT:
+                        case UNION:
+                        case DELEGATE:
+                        case PROPERTY:
+                        case EVENT:
+                        case DEFINE:
+                        case ENUM:
+                        case MEMBER:
+                        case DIM:
+                        case LOCAL:
+                        case VAR:
+                        case IMPLIED:
+                        // Linq
+                        case FROM:
+                        case LET:
+                        case JOIN:
+                        case INTO:
+                            return ID;
+                        case USING:
+                            // BEGIN USING can/will be followed by a Variable Declaration
+                            if (keyword != LOCAL && keyword != VAR)
+                                return ID;
+                            break;
+
+
+                    }
+                    break;
             }
             return keyword;
         }
@@ -1004,7 +1065,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return false;
         }
-        internal List<XSharpToken> ReclassifyTokens(List<XSharpToken> tokens)
+        internal IList<XSharpToken> ReclassifyTokens(IList<XSharpToken> tokens)
         {
             int lastType = EOS;
             XSharpToken last = null;
@@ -1285,8 +1346,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                     {"_SIZEOF", SIZEOF},
                     {"_TYPEOF", TYPEOF},
-                    {"IF", IF},
-                    {"IIF", IIF},
                     {"CLASS", CLASS},  // For Anonymous types
                     {"DELEGATE", DELEGATE},  // For Delegate expressions
 
@@ -1330,6 +1389,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			        { "ABSTRACT", ABSTRACT},
                     { "ANSI", ANSI},
                     { "AUTO", AUTO},
+                    { "__CASTCLASS", CASTCLASS},
                     { "CATCH", CATCH},
                     { "CHAR", CHAR},
                     { "CONSTRUCTOR", CONSTRUCTOR},
@@ -1352,6 +1412,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "LOCK", LOCK},
                     { "NAMESPACE", NAMESPACE},
                     { "NEW", NEW},
+                    { "OF", OF},
                     { "ON", ON},
                     { "OPERATOR", OPERATOR},
                     { "OUT", OUT},
@@ -1430,6 +1491,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__DIALECT_HARBOUR__", MACRO},
                     { "__ENTITY__", MACRO},
                     { "__FILE__", MACRO},
+                    { "__FUNCTION__", MACRO},
                     { "__FUNCTIONS__", MACRO},
                     { "__LINE__", MACRO},
                     { "__MODULE__", MACRO},
@@ -1465,7 +1527,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             foreach (var text in keywords.Keys)
             {
                 var token = keywords[text];
-                ids.Add(text, token);
+                // Better safe than sorry
+                if (! ids.ContainsKey(text))
+                    ids.Add(text, token);
             }
             return ids.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0551</para>
+    <para styleclass="Heading1">Error XS0551</para>
   </header>
   <para styleclass="Normal">Explicit interface implementation &apos;{0}&apos; is missing accessor &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

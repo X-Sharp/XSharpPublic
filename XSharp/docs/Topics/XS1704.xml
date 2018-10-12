@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1704</para>
+      <para styleclass="Heading1">Error XS1704</para>
     </header>
     <para styleclass="Normal">An assembly with the same simple name &apos;Assembly Name&apos; has already been imported. Try removing one of the references or sign them to enable side-by-side.</para>
     <para styleclass="Normal"></para>

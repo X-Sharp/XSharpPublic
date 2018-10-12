@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0173</title>
   <keywords>
     <keyword>XS0173</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0173</para>
+      <para styleclass="Heading1">Error XS0173</para>
     </header>
     <para styleclass="Normal">Type of conditional expression cannot be determined because there is no implicit conversion between &apos;class1&apos; and &apos;class2&apos;</para>
     <para styleclass="Normal"></para>
@@ -19,7 +19,7 @@
     <para styleclass="Normal">The following sample generates XS0173:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0173.prg  <br/></para>
+    <para styleclass="Code with box">// XS0173.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"></para>
   </body>

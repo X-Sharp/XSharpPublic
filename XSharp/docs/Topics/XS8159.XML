@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8159</para>
+    <para styleclass="Heading1">Error XS8159</para>
   </header>
   <para styleclass="Normal">Cannot return the range variable &apos;{0}&apos; by reference</para>
   <para styleclass="Normal"></para>

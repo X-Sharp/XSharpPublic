@@ -1839,13 +1839,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
             if (pe?.Expr is XSharpParser.VoCastExpressionContext)
             {
-                if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType)
+                if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType && !pe.IsCastClass())
                 {
                     diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
                 }
             }
             BoundExpression expression;
-            if (BindVulcanPointerDereference(node, targetType, operand, diagnostics, out expression))
+            if (BindVOPointerDereference(node, targetType, operand, diagnostics, out expression))
             {
                 return expression;
             }
@@ -6361,7 +6361,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindIndexedPropertyAccess(node, propertyGroup.ReceiverOpt, propertyGroup.Properties, analyzedArguments, diagnostics);
                 }
 #if XSHARP
-                receiver = CheckVulcanIndexedValue(receiver, BindValueKind.RValue, diagnostics);
+                receiver = CheckVOIndexedValue(receiver, BindValueKind.RValue, diagnostics);
 #else
                 receiver = CheckValue(receiver, BindValueKind.RValue, diagnostics);
 #endif
@@ -6435,7 +6435,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case TypeKind.Class:
                 case TypeKind.Struct:
 #if XSHARP
-                    return BindIndexerOrVulcanArrayAccess(node, expr, arguments, diagnostics);
+                    return BindIndexerOrVOArrayAccess(node, expr, arguments, diagnostics);
 
 #endif
                 case TypeKind.Interface:

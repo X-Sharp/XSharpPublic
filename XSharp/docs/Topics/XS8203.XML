@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8203</para>
+    <para styleclass="Heading1">Error XS8203</para>
   </header>
   <para styleclass="Normal">Invalid assembly name: {0}</para>
   <para styleclass="Normal"></para>

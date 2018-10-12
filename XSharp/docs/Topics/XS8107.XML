@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8107</para>
+    <para styleclass="Heading1">Error XS8107</para>
   </header>
   <para styleclass="Normal">Feature &apos;{0}&apos; is not available in X# 7.  Please use language version {1} or greater.</para>
   <para styleclass="Normal"></para>

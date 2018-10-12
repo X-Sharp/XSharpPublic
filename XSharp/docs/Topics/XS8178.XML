@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8178</para>
+    <para styleclass="Heading1">Error XS8178</para>
   </header>
   <para styleclass="Normal">&apos;await&apos; cannot be used in an expression containing a call to &apos;{0}&apos; because it returns by reference</para>
   <para styleclass="Normal"></para>

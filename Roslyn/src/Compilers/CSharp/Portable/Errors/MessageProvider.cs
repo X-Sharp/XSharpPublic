@@ -111,8 +111,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return symbol.ToString();
             }
-
+#if XSHARP
+            return SymbolDisplay.ToDisplayString(symbol, SymbolDisplayFormat.CSharpErrorMessageFormat);
+            
+#else
             return SymbolDisplay.ToDisplayString(symbol, SymbolDisplayFormat.CSharpShortErrorMessageFormat);
+#endif
         }
 
         public override ReportDiagnostic GetDiagnosticReport(DiagnosticInfo diagnosticInfo, CompilationOptions options)

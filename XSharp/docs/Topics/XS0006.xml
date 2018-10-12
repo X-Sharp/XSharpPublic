@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0006</para>
+      <para styleclass="Heading1">Error XS0006</para>
     </header>
     <para styleclass="Normal">Metadata file &apos;dll_name&apos; could not be found </para>
     <para styleclass="Normal"></para>

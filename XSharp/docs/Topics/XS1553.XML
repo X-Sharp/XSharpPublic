@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1553</para>
+    <para styleclass="Heading1">Error XS1553</para>
   </header>
   <para styleclass="Normal">Declaration is not valid; use &apos;{0} operator <dest-type> (...&apos; instead</para>
   <para styleclass="Normal"></para>

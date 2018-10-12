@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0446</para>
+      <para styleclass="Heading1">Error XS0446</para>
     </header>
     <para styleclass="Normal">Foreach cannot operate on a &apos;Method or Delegate&apos;. Did you intend to invoke the &apos;Method or Delegate&apos;?</para>
     <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2021</para>
+    <para styleclass="Heading1">Error XS2021</para>
   </header>
   <para styleclass="Normal">File name &apos;{0}&apos; is empty, contains invalid characters, has a drive specification without an absolute path, or is too long</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0527</para>
+    <para styleclass="Heading1">Error XS0527</para>
   </header>
   <para styleclass="Normal">Type &apos;{0}&apos; in interface list is not an interface</para>
   <para styleclass="Normal"></para>

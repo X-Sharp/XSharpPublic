@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1628</para>
+    <para styleclass="Heading1">Error XS1628</para>
   </header>
   <para styleclass="Normal">Cannot use ref or out parameter &apos;{0}&apos; inside an anonymous method, lambda expression, or query expression</para>
   <para styleclass="Normal"></para>

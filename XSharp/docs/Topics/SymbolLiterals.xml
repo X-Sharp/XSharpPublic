@@ -1,11 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Symbol Literals</title>
   <body>
     <header>
       <para styleclass="Heading1">Symbol Literals</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">Symbol literals consist of the &apos;#&apos; character followed by one of more alphanumeric characters</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">#XSharp</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">#AnExample</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Even though the examples above are written in mixed case, the compiler will treat them as all uppercase.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Symbol literals are compiled only once by the X# compiler for performance reasons. </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Each .Net assembly created by the X# compiler will have a special, compiler generated, class that contains all the literal symbols found in that assembly. </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">These literals are initialized at startup and stored in the symbol table in the runtime. </text></para>
   </body>
 </topic>

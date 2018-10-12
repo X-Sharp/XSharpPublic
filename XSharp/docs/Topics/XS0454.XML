@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0454</para>
+    <para styleclass="Heading1">Error XS0454</para>
   </header>
   <para styleclass="Normal">Circular constraint dependency involving &apos;{0}&apos; and &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

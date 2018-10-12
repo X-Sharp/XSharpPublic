@@ -1,0 +1,3115 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight]
+"Recent"="Custom Highlighter"
+"ActiveSyn"="TSynCppSyn,TSynCSSyn,TSynHTMLSyn,TSynPasSyn,TSynPHPSyn,TSynVBSyn,TSynGeneralSyn,"
+"UseSoftLinebreaks"="1"
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAsmSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Internal Function]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00408080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynAWKSyn\System Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000080FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Directive]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBaanSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn\Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynBatSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Class]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Direction]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Embedded SQL]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Embedded Text]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Function]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Indirect]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Label]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Macro]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCacheSyn\User Functions]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Operator]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCACSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Area A Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Boolean value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Debugging Lines]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Indicator Area]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Sequence Number Area]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCobolSyn\Tag Area]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Special Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\SQL Keyword]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\System Functions and Variables]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000080FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCPMSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Assembler]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Character]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Float]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Hexadecimal]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Octal]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCppSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Color Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Property]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Text]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Undefined Property]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCssSyn\Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF8000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Assembler]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynCSSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDfmSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Block]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Form]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Function]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Qualifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Special Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDmlSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000003
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\ArrowHead]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Attribute]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Directions]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:0000FFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Shape]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynDOTSyn\Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Basic Types]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Lace]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Operator And Symbols]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Predefined]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Result Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynEiffelSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFortranSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynFoxproSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn]
+"KeyWords"="#end	#galaxy	a	anonymous	autounload	b	battleprotocol	c	cap	cargo	col	compress	d	drive	e	emp	f	fleet	fleettables	g	galaxytv	gplus	groupforecast	h	i	j	l	m	machinereport	mat	n	namecase	no	o	options	p	planetforecast	prodtable	produce	q	r	routesforecast	s	send	shields	shiptypeforecast	sortgroups	t	twocol	u	underscores	v	w	war	weapons	x	y	z"
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn\Message]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGalaxySyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn]
+"KeyWords"="ACCESS	ARRAY	AS	ASCENDING	ASSIGN	ASYNC	AWAIT	BEGIN	BREAK	BY	CASE	CATCH	CHAR	CHECKED	CLASS	CLIPPER	DATE	DATETIME	DEFINE	DELEGATE	DESCENDING	DIM	DO	DOWNTO	DWORD	DYNAMIC	ELSE	ELSEIF	END	ENDCASE	ENDDO	ENDIF	ENUM	EVENT	EXIT	EXPLICIT	EXPORT	FINALLY	FIXED	FLOAT	FOR	FOREACH	FROM	FUNCTION	GET	GROUP	HIDDEN	IF	IMPLEMENTS	IMPLICIT	IN	INHERIT	INSTANCE	INT	INTERFACE	INTERNAL	IS	JOIN	LOCAL	LOCK	LONG	LOOP	MEMBER	METHOD	NAMESPACE	NEW	NEXT	NULL	OPERATOR	ORDERBY	OTHERWISE	OVERRIDE	PARAMS	PARTIAL	PRIVATE	PROCEDURE	PROPERTY	PROTECTED	PTR	PUBLIC	REAL4	REAL8	RECOVER	REF	RETURN	SCOPE	SEALED	SELECT	SELF	SEQUENCE	SET	STATIC	STRICT	STRING	STRUCT	STRUCTURE	SUPER	SYMBOL	TO	TRY	UNCHECKED	UNSAFE	UPTO	USING	USUAL	VAR	VIRTUAL	VOID	VOSTRUCT	WHERE	WHILE"
+"IdentChars"="_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+"StringDelim"="""
+"Comments"=dword:00000020
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00669933
+"Style"=dword:00000003
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2]
+"KeyWords"=""
+"IdentChars"="_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+"StringDelim"="'"
+"Comments"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn2\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3]
+"KeyWords"=""
+"IdentChars"="_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+"StringDelim"="'"
+"Comments"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGeneralSyn3\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynGWScriptSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHaskellSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHC11Syn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn]
+"AsmKeyWordList"="EXIT4
+EXIT1
+UPNC1
+UP3
+EXITC3
+SKENC
+RTN
+UPNC8
+EXITNC3
+RTNCC
+UP8
+GOVLNG
+EXIT
+UPC1
+RTNNC
+EXIT8
+UP6
+EXITC6
+EXITNC6
+UPC6
+UPNC5
+UP5
+SKIP
+SKIPYES
+EXIT5
+!RPL
+EXITC7
+UP2
+EXIT2
+UPC7
+UPNC2
+}
+RTNSC
+UP1
+EXITC1
+UPC8
+EXITNC7
+EXITNC4
+EXITNC1
+RTI
+GOLONG
+EXITC4
+GOTO
+UP4
+UPC2
+UPNC6
+SKNC
+RTNC
+UP
+->
+SKELSE
+EXIT6
+UPC4
+SKC
+SKLSE
+EXIT3
+EXITNC8
+ENDCODE
+EXITC8
+EXITC5
+GOSUB
+UPNC3
+EXITNC
+SKUBL
+RTNSXM
+UPC3
+EXITNC2
+UPC5
+UPC
+GOTOL
+EXITNC5
+GOSUBL
+EXITC
+UP7
+EXITC2
+{
+UPNC7
+UPNC
+EXIT7
+SKUB
+GOSBVL
+SKEC
+UPNC4"
+"RplKeyWordList"="NOTcase2drop
+zerdercase
+CODEM
+#>ITE
+caseDROP
+C%0=case
+NOTcase
+#<ITE
+accNLIBcase
+#>33case
+NcaseTYPEERR
+namelscase
+DUP#0=ITE
+MEQ+case
+MEQ1stcase
+DO#EXIT
+j#1=case
+#<case
+MEQINVcase
+NOTcaseFALSE
+j%1=case
+num0=case
+MEQ^case
+EQUALcasedrp
+REALcase
+dIDNTNcase
+delimcase
+C%1=case
+dREALNcase
+NAMELESS
+MEQ-case
+REQcasedrop
+caseDEADKEY
+?SEMI
+?SEMI
+NOTBAKcase
+jZ0=case
+caseDoBadKey
+SEMI
+EQcase
+ASSEMBLE
+tNAMECOLA
+COLARPITE
+EQUALcase
+snnSYMRPITE
+ssnSYMRPITE
+wildcase
+EQcasedrop
+MEQCHScase
+NOTROMPcase
+caseFALSE
+UNxSYMRPITE
+NOT_IT
+dLISTcase
+ANDNOTcase
+COLAITE
+#<>case
+caseSIZEERR
+jZ-1=case
+#0=ITE
+NOT?SEMI
+num2=case
+2'RCOLARPITE
+parrightIT
+#>case
+j#-1=case
+%1=case
+ORcase
+j#0=case
+num1=case
+$_EXIT
+num#-1=case
+cxcasecheck
+%2=case
+ANDcase
+caseout
+RPIT
+}
+dZINTNcase
+POINTEXIT
+::
+EQITE
+NOTcase2DROP
+casedrop
+num0case
+DA2aOK?NOTIT
+AEQopscase
+EnvNGcase
+COLAcase
+MEQopscase
+jZ1=case
+LOCALLABEL
+UserITE
+LOCALNAME
+NOTLIBcase
+idntcase
+nonopcase
+GSPLIT
+j%0=case
+EQUALNOTcase
+caseDrpBadKy
+#=casedrop
+snsSYMRPITE
+GCDHEULPEXIT
+NOTTYPEcase
+need'case
+RPITE
+DO%EXIT
+EQIT
+NOTSECOcase
+Z0=case
+xROMID
+C%2=case
+case2drop
+xNAME
+ITE
+ITE
+ITE
+NOTcaseDROP
+sssSYMRPITE
+LOOP
+C%-1=case
+DA2bOK?NOTIT
+MEQFCNcase
+NOTLISTcase
+dREALcase
+DA3OK?NOTIT
+%-1=case
+%0=case
+M-1stcasechs
+ASSEMBLEM
+EQUALcasedrop
+NULLargcase
+Mid1stcase
+MEQSQcase
+estcase
+num#0=case
+num-1=case
+j%-1=case
+case
+case
+ngsizecase
+EQcaseDROP
+Z-1=case
+caseERRJMP
+casedrptru
+#=case
+#=case
+DUP#0=case
+MEQ*case
+tok=casedrop
+ANDITE
+OVER#=case
+#=casedrpfls
+accNBAKcase
+LABEL
+NOTcaseTRUE
+caseTRUE
+idntlamcase
+#1=case
+nonrmcase
+'
+'
+MEQ/case
+dARRYcase
+negrealcase
+rebuildcase
+IT
+IT
+jEQcase
+SysITE
+POLYARIT
+case2drpfls
+;
+COLANOTcase
+NOTMATRIXcase
+{
+LOCAL
+#>2case
+DOHXSEXIT
+DA1OK?NOTIT
+numb1stcase
+NOTcasedrop
+NcaseSIZEERR
+Z1=case
+AEQ1stcase
+case2DROP
+casedrpfls
+NULLNAME
+#=ITE
+NoEdit?case
+CODE
+parleftIT
+UNTIL
+#0=case
+num#1=case
+REQcase
+DO$EXIT
+DUP#0=IT
+dMATRIXcase"
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Asm]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Asm Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Asm Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Null]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Rpl]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Rpl Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\Rpl Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\SASM]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\SASM Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHP48Syn\SASM Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Escape Ampersand]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:0000FF00
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Text]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Unknown Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynHTMLSyn\Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF8000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Data Type]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIdlSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Section]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynIniSyn\Text]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Directive]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000003
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Section]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynInnoSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Documentation]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Invalid Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJavaSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Event]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Non-reserved Keyword]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynJScriptSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Miscellaneous]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynKixSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Color Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\FirstTri]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00496FCE
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\FourthTri]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000C6336
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Line]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\OpLine]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Quad]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\SecondTri]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000C6336
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\ThirdTri]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00496FCE
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynLDRSyn\Triangle]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Key]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynM3Syn\Syntax Error]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Directive]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynModelicaSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynMsgSyn\Terminator]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Assembler]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Character]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Float]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Hexadecimal]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPasSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Operator]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Pragma]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPerlSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPHPSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Data Type]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00C0C0C0
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Event]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Include]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Non-reserved Keyword]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynProgressSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Documentation]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Float]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Hexadecimal]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Non-reserved Keyword]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Octal]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\Syntax Error]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynPythonSyn\System Functions and Variables]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Preprocessor]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRCSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Second Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynRubySyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Data Type]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSDDSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Character]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Operator]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSMLSyn\Syntax Error]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Conditional Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Data Type]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Default Packages]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Delimited Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Exception]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Function]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\PL/SQL Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\SQL*Plus Command]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Table Name]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSQLSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Assembler]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynSTSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn]
+"KeyWords"="after	append	array	bell	bgerror	binary	bind	bindidproc	bindproc	bindtags	bitmap	break	button	canvas	catch	cd	checkbutton	clipboard	clock	close	concat	continue	destroy	else	entry	eof	error	eval	event	exec	exit	expr	fblocked	fconfigure	fcopy	file	fileevent	filename	flush	focus	font	for	foreach	format	frame	gets	glob	global	grab	grid	history	http	if	image	incr	info	interp	join	label	lappend	library	lindex	linsert	list	listbox	llength	load	loadtk	lower	lrange	lreplace	lsearch	lsort	menu	message	namespace	namespupd	open	option	options	pack	package	photo	pid	pkg_mkindex	place	proc	puts	pwd	radiobutton	raise	read	regexp	registry	regsub	rename	resource	return	rgb	safebase	scale	scan	seek	selection	send	sendout	set	socket	source	split	string	subst	switch	tcl	tclvars	tell	text	then	time	tk	tk_bisque	tk_choosecolor	tk_dialog	tk_focusfollowsmouse	tk_focusnext	tk_focusprev	tk_getopenfile	tk_getsavefile	tk_messagebox	tk_optionmenu	tk_popup	tk_setpalette	tkerror	tkvars	tkwait	toplevel	trace	unknown	unset	update	uplevel	upvar	variable	vwait	while	winfo	wm"
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Second Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTclTkSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\Math Mode]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\Round Bracket]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\Space]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\Square Bracket]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\TeX Command]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynTeXSyn\Text]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Second Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUNIXShellScriptSyn\Variable]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Directive]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Illegal Char]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Second Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Single Quoted String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:FF000005
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynUnrealSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynURISyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynURISyn\URI]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000004
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynURISyn\Visited URI]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000004
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBScriptSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\Comment]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\Identifier]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\Reserved Word]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\Space]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\String]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVBSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Comment]
+"Background"=dword:00808080
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Event]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Identifier]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Non-reserved Keyword]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Number]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Reserved Word]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Space]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\String]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Symbol]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Appearance]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Attribute]
+"Background"=dword:00808080
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Definition]
+"Background"=dword:000000FF
+"Foreground"=dword:00800000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Event]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Grouping]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Interpolator]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:0000FF00
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Light]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00808000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Node]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000003
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Parameter]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00F0CAA6
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Proto]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Sensor]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Shape]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Shape_Hint]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00800080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Time_dependent]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_Viewpoint]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00008000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\Vrml_WorldInfo]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\X3DDocType]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynVrml97Syn\X3DHeader]
+"Background"=dword:00FFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn]
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Attribute Name]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Attribute Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00800000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\CDATA Section]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00008080
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Comment]
+"Background"=dword:00C0C0C0
+"Foreground"=dword:00808080
+"Style"=dword:00000003
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\DOCTYPE Section]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000002
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Element Name]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000080
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Entity Reference]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Namespace Attribute Name]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Namespace Attribute Value]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:000000FF
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Processing Instruction]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Symbol]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00FF0000
+"Style"=dword:00000000
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Text]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:00000000
+"Style"=dword:00000001
+
+[HKEY_CURRENT_USER\\SOFTWARE\ECSOFTWARE\Help & Manual 7\SyntaxHighlight\TSynXMLSyn\Whitespace]
+"Background"=dword:1FFFFFFF
+"Foreground"=dword:1FFFFFFF
+"Style"=dword:00000000

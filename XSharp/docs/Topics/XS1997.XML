@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1997</para>
+    <para styleclass="Heading1">Error XS1997</para>
   </header>
   <para styleclass="Normal">Since &apos;{0}&apos; is an async method that returns &apos;Task&apos;, a return keyword must not be followed by an object expression. Did you intend to return &apos;Task<T>&apos;?</para>
   <para styleclass="Normal"></para>

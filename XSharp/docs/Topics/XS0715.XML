@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0715</para>
+    <para styleclass="Heading1">Error XS0715</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: static classes cannot contain user-defined operators</para>
   <para styleclass="Normal"></para>

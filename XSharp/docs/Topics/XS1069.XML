@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1069</para>
+    <para styleclass="Heading1">Error XS1069</para>
   </header>
   <para styleclass="Normal">The type name &apos;{0}&apos; could not be found in the namespace &apos;{1}&apos;. This type has been forwarded to assembly &apos;{2}&apos; Consider adding a reference to that assembly.</para>
   <para styleclass="Normal"></para>

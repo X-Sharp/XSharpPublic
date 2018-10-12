@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4028</para>
+    <para styleclass="Heading1">Error XS4028</para>
   </header>
   <para styleclass="Normal">&apos;await&apos; requires that the type &apos;{0}&apos; have a suitable GetAwaiter method. Are you missing a using directive for &apos;System&apos;?</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9011</para>
+      <para styleclass="Heading1">Error XS9011</para>
     </header>
     <para styleclass="Normal">Ambiguous case between &apos;{0}&apos; and &apos;{1}&apos;</para>
   </body>

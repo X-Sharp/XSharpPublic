@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0248</para>
+    <para styleclass="Heading1">Error XS0248</para>
   </header>
   <para styleclass="Normal">Cannot create an array with a negative size</para>
   <para styleclass="Normal"></para>

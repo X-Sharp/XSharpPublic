@@ -64,7 +64,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     nts = nts.ConstructedFrom;
                 }
-
+                // Ticket C575: Assign Interface to USUAL
+                // Marked as Boxing in Conversions.cs
+                // Implementation here
+                if (nts != null && nts.IsInterface && rewrittenType == usualType)
+                {
+                    var members = usualType.GetMembers("op_Implicit");
+                    foreach (var m in members)
+                    {
+                        var pt = m.GetParameterTypes()[0] as TypeSymbol;
+                        if (pt == _compilation.GetSpecialType(SpecialType.System_Object))
+                        { 
+                            rewrittenOperand = _factory.StaticCall(rewrittenType, (MethodSymbol) m, rewrittenOperand);
+                            rewrittenOperand.WasCompilerGenerated = true;
+                            return ConversionKind.Identity;
+                        }
+                    }
+                }
 
                 if (nts == usualType)
                 {
@@ -102,19 +118,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else // System.Decimals, Objects and reference types, but not String
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject , rewrittenOperand);
-                        if (rewrittenType.IsObjectType())
+                        // special case for __CastClass
+                        var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
+                        if (xnode != null && xnode.IsCastClass())
                         {
-                            conversionKind = ConversionKind.Identity;
-                        }
-                        else if (rewrittenType.IsReferenceType)
-                        {
-                            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-                            conversionKind = ConversionKind.ImplicitReference;
+                            conversionKind = ConversionKind.Boxing;
                         }
                         else
                         {
-                            conversionKind = ConversionKind.Unboxing;
+                            rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, rewrittenOperand);
+                            if (rewrittenType.IsObjectType())
+                            {
+                                conversionKind = ConversionKind.Identity;
+                            }
+                            else if (rewrittenType.IsReferenceType)
+                            {
+                                rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+                                conversionKind = ConversionKind.ImplicitReference;
+                            }
+                            else
+                            {
+                                conversionKind = ConversionKind.Unboxing;
+                            }
                         }
                     }
                 }

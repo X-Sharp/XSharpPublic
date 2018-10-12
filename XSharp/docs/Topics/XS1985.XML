@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1985</para>
+    <para styleclass="Heading1">Error XS1985</para>
   </header>
   <para styleclass="Normal">Cannot await in a catch clause</para>
   <para styleclass="Normal"></para>

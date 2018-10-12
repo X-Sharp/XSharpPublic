@@ -1,0 +1,4 @@
+INTERFACE IProvider
+    METHOD CreateDAO() AS VOID
+END INTERFACE
+

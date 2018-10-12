@@ -329,13 +329,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
 #if XSHARP
                     /*if (this.IsVirtual)*/ {
-                        if ((object)overriddenMethod != null) {
+                        var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
+                        var mods = flags.DeclarationModifiers;
+                        if ((object)overriddenMethod != null) 
+                        {
                             if (this.Name != overriddenMethod.Name)
+                            {
                                 this._name = overriddenMethod.Name;
-                            flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Virtual, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                            }
+                            // remove generated Virtual Modifiers
+                            foreach (var token in node.Modifiers)
+                            {
+                                if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                                {
+                                    mods = mods & ~DeclarationModifiers.Virtual;
+                                }
+                            }
+
+                            flags = new Flags(flags.MethodKind, mods, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
                         }
                         else
-                            flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                        {
+                            // remove generated Override Modifiers
+                            foreach (var token  in node.Modifiers)
+                            {
+                                if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
+                                {
+                                    mods = mods & ~DeclarationModifiers.Override;
+                                }
+                            }
+                            flags = new Flags(flags.MethodKind, mods , flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                        }
                     }
 #endif
                 }

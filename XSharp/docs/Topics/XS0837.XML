@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0837</para>
+    <para styleclass="Heading1">Error XS0837</para>
   </header>
   <para styleclass="Normal">The first operand of an &apos;is&apos; or &apos;as&apos; operator may not be a lambda expression, anonymous method, or method group.</para>
   <para styleclass="Normal"></para>

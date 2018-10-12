@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1919</para>
+      <para styleclass="Heading1">Error XS1919</para>
     </header>
     <para styleclass="Normal">Unsafe type &apos;type name&apos; cannot be used in object creation.</para>
     <para styleclass="Normal"></para>

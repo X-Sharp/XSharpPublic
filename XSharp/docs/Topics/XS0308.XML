@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0308</para>
+    <para styleclass="Heading1">Error XS0308</para>
   </header>
   <para styleclass="Normal">The non-generic {1} &apos;{0}&apos; cannot be used with type arguments</para>
   <para styleclass="Normal"></para>

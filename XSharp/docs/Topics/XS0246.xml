@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS0246</para>
+      <para styleclass="Heading1">Error XS0246</para>
     </header>
     <para styleclass="Normal">The type or namespace name &apos;type/namespace&apos; could not be found (are you missing a using directive or an assembly reference?)</para>
     <para styleclass="Normal"></para>

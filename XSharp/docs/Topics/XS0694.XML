@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0694</para>
+    <para styleclass="Heading1">Error XS0694</para>
   </header>
   <para styleclass="Normal">Type parameter &apos;{0}&apos; has the same name as the containing type, or method</para>
   <para styleclass="Normal"></para>

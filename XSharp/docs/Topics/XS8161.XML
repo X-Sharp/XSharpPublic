@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8161</para>
+    <para styleclass="Heading1">Error XS8161</para>
   </header>
   <para styleclass="Normal">A static readonly field cannot be returned by reference</para>
   <para styleclass="Normal"></para>

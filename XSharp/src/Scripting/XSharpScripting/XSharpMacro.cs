@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Scripting.Hosting;
 
 namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
-    public static class XSharpMacro
+    public static class XSharpMacro 
     {
         /// <summary>
         /// Create a new C# script.

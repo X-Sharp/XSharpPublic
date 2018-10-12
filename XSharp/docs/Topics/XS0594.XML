@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0594</para>
+    <para styleclass="Heading1">Error XS0594</para>
   </header>
   <para styleclass="Normal">Floating-point constant is outside the range of type &apos;{0}&apos;</para>
   <para styleclass="Normal"></para>

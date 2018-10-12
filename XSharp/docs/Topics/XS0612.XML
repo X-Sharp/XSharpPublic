@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS0612</title>
-<keywords>
-<keyword>XS0612</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">XS0612</para>
-  </header>
-  <para styleclass="Normal">&apos;{0}&apos; is obsolete</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0612</title>
+  <keywords>
+    <keyword>XS0612</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0612</para>
+    </header>
+    <para styleclass="Normal">&apos;{0}&apos; is obsolete</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

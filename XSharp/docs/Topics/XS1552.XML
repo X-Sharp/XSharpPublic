@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1552</para>
+    <para styleclass="Heading1">Error XS1552</para>
   </header>
   <para styleclass="Normal">Array type specifier, [], must appear before parameter name</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1608</para>
+    <para styleclass="Heading1">Error XS1608</para>
   </header>
   <para styleclass="Normal">The RequiredAttribute attribute is not permitted on X# types</para>
   <para styleclass="Normal"></para>

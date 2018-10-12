@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8075</para>
+    <para styleclass="Heading1">Error XS8075</para>
   </header>
   <para styleclass="Normal">An extension Add method is not supported for a collection initializer in an expression lambda.</para>
   <para styleclass="Normal"></para>

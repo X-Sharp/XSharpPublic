@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1039</para>
+    <para styleclass="Heading1">Error XS1039</para>
   </header>
   <para styleclass="Normal">Unterminated string literal</para>
   <para styleclass="Normal"></para>

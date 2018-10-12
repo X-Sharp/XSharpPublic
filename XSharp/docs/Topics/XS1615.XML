@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1615</para>
+    <para styleclass="Heading1">Error XS1615</para>
   </header>
   <para styleclass="Normal">Argument {0} should not be passed with the &apos;{1}&apos; keyword</para>
   <para styleclass="Normal"></para>

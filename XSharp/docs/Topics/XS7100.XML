@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7100</para>
+    <para styleclass="Heading1">Error XS7100</para>
   </header>
   <para styleclass="Normal">Assembly culture strings may not contain embedded NUL characters.</para>
   <para styleclass="Normal"></para>

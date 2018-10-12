@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9052</para>
+      <para styleclass="Heading1">Error XS9052</para>
     </header>
     <para styleclass="Normal">In .Net you cannot take the address of a method or a function. For callback functions you need to use a delegate instead.</para>
   </body>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8026</para>
+    <para styleclass="Heading1">Error XS8026</para>
   </header>
   <para styleclass="Normal">Feature &apos;{0}&apos; is not available in X# 5.  </para>
   <para styleclass="Normal"></para>

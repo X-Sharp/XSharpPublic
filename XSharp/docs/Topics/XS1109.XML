@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1109</para>
+    <para styleclass="Heading1">Error XS1109</para>
   </header>
   <para styleclass="Normal">Extension methods must be defined in a top level static class; {0} is a nested class</para>
   <para styleclass="Normal"></para>

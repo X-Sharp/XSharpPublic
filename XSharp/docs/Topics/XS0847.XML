@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0847</para>
+    <para styleclass="Heading1">Error XS0847</para>
   </header>
   <para styleclass="Normal">An array initializer of length &apos;{0}&apos; is expected</para>
   <para styleclass="Normal"></para>

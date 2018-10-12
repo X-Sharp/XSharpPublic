@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1112</para>
+      <para styleclass="Heading1">Error XS1112</para>
     </header>
     <para styleclass="Normal">Do not use &apos;System.Runtime.CompilerServices.ExtensionAttribute&apos;. Use the &apos;this&apos; keyword instead.</para>
     <para styleclass="Normal"></para>

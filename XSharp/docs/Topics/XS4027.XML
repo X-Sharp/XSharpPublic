@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4027</para>
+    <para styleclass="Heading1">Error XS4027</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; does not implement &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

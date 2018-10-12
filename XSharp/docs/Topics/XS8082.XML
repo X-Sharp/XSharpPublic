@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8082</para>
+    <para styleclass="Heading1">Error XS8082</para>
   </header>
   <para styleclass="Normal">Sub-expression cannot be used in an argument to nameof.</para>
   <para styleclass="Normal"></para>

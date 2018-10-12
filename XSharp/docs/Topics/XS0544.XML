@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0544</para>
+    <para styleclass="Heading1">Error XS0544</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: cannot override because &apos;{1}&apos; is not a property</para>
   <para styleclass="Normal"></para>

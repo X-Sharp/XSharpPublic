@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1921</para>
+      <para styleclass="Heading1">Error XS1921</para>
     </header>
     <para styleclass="Normal">The best overloaded method match for &apos;method&apos; has wrong signature for the initializer element. The initializable Add must be an accessible instance method.</para>
     <para styleclass="Normal"></para>

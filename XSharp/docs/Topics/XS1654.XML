@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1654</para>
+    <para styleclass="Heading1">Error XS1654</para>
   </header>
   <para styleclass="Normal">Cannot modify members of &apos;{0}&apos; because it is a &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

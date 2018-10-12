@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8006</para>
+    <para styleclass="Heading1">Error XS8006</para>
   </header>
   <para styleclass="Normal">Forwarded type &apos;{0}&apos; conflicts with type declared in primary module of this assembly.</para>
   <para styleclass="Normal"></para>

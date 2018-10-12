@@ -38,18 +38,17 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_SizeofUnsafe = 233,
     XS_WRN:ERR_SealedNonOverride = 238,
     XS_WRN:ERR_UseDefViolationOut = 269,
+    XS_WRN:ERR_InvalidPropertyAccessMod = 273,
     XS_WRN:ERR_MemberNameSameAsType = 542,
     XS_WRN:ERR_NewVirtualInSealed = 549,
     XS_WRN:ERR_CantCallSpecialMethod = 571,
     XS_WRN:ERR_ProtectedInStruct = 666,
     XS_WRN:ERR_ExplicitParamArray = 674,
-    XS_WRN:ERR_StaticDerivedFromNonObject = 713,
     XS_WRN:ERR_ProtectedInStatic = 1057,
     XS_WRN:ERR_UseDefViolationProperty = 8079,
     XS_WRN:ERR_ConversionWithBase = 553,
     XS_WRN:ERR_ConversionWithDerived = 554,
     XS_WRN:ERR_ExplicitExtension = 1112,
-    XS_WRN:ERR_AssgReadonlyLocalCause = 1656
     */
 
     internal enum ErrorCode
@@ -1513,7 +1512,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_PreProcessorError = 9003,
         WRN_PreProcessorWarning = 9004,
         ERR_PreProcessorRecursiveRule = 9005,
-        //reserved = 9006,
+        WRN_PreProcessorNoPragma = 9006,
         ERR_FeatureNotAvailableInDialect = 9007,
         ERR_UntypedArrayNotAvailableInDialect = 9008,
         ERR_TypedParametersWithClipperCallingConvention = 9009,
@@ -1570,7 +1569,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_NoExplicitCast = 9060,
         ERR_PtrCastNotAllowed = 9061,
         ERR_TypeNameMatchesGlobalNamespace = 9062,
-        WRN_NullPointerForRefParameter = 9063
+        WRN_NullPointerForRefParameter = 9063,
+        WRN_AssgReadonlyLocalCause = 9064,
+        WRN_AssignmentOperatorExpected = 9065,
+        WRN_FunctionsTakePrecedenceOverMethods = 9066,
+        ERR_InterfaceImplementationDifferentCallingConvention = 9067,
+        WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak = 9068,
         #endregion X#-only messages
     }
 }

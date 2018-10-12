@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0685</para>
+    <para styleclass="Heading1">Error XS0685</para>
   </header>
   <para styleclass="Normal">Conditional member &apos;{0}&apos; cannot have an out parameter</para>
   <para styleclass="Normal"></para>

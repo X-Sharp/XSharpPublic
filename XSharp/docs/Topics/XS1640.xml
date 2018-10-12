@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1640</para>
+      <para styleclass="Heading1">Error XS1640</para>
     </header>
     <para styleclass="Normal">foreach statement cannot operate on variables of type &apos;type&apos; because it implements multiple instantiations of &apos;interface&apos;, try casting to a specific interface instantiation</para>
     <para styleclass="Normal"></para>

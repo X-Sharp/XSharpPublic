@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0669</para>
+    <para styleclass="Heading1">Error XS0669</para>
   </header>
   <para styleclass="Normal">A class with the ComImport attribute cannot have a user-defined constructor</para>
   <para styleclass="Normal"></para>

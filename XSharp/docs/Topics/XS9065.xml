@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9065</title>
+  <keywords>
+    <keyword>Assignment operator</keyword>
+    <keyword>VAR</keyword>
+    <keyword>XS9065</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9065</para>
+    </header>
+    <para styleclass="Normal">Assignment operator &apos;:=&apos; expected.</para>
+    <para styleclass="Normal">This warning is generated for VAR statements that use a single equals operator in stead of the assignment operator.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> x = SomeFunction()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? x</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text></para>
+  </body>
+</topic>

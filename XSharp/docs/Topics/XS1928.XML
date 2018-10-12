@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1928</para>
+    <para styleclass="Heading1">Error XS1928</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; does not contain a definition for &apos;{1}&apos; and the best extension method overload &apos;{2}&apos; has some invalid arguments</para>
   <para styleclass="Normal"></para>

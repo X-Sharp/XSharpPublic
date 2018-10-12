@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1726</para>
+      <para styleclass="Heading1">Error XS1726</para>
     </header>
     <para styleclass="Normal">Friend assembly reference &apos;reference&apos; is invalid. Strong-name signed assemblies must specify a public key in their InternalsVisibleTo declarations.</para>
     <para styleclass="Normal"></para>

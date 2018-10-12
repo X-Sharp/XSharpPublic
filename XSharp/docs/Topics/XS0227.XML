@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0227</para>
+    <para styleclass="Heading1">Error XS0227</para>
   </header>
   <para styleclass="Normal">Unsafe code may only appear if compiling with /unsafe</para>
   <para styleclass="Normal"></para>

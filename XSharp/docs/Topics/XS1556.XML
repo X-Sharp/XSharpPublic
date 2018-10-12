@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1556</para>
+    <para styleclass="Heading1">Error XS1556</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos; specified for Start method must be a valid non-generic class or struct</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2043</para>
+    <para styleclass="Heading1">Error XS2043</para>
   </header>
   <para styleclass="Normal">&apos;id#&apos; syntax is no longer supported. Use &apos;$id&apos; instead.</para>
   <para styleclass="Normal"></para>

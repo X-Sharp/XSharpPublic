@@ -73,6 +73,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return true;
                     }
+                    //else if (destination == _binder.Compilation.PszType())
+                    //{
+                    //    result = true;
+                    //}
                     else
                     {
                         // do not box symbol, psz, vofloat, vodate
@@ -90,10 +94,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         result = true;
                     }
-
                 }
             }
-
+            // Ticket C575: Assign Interface to USUAL
+            // Implementation in LocalRewriter_Conversion.cs
+            if (destination == Compilation.UsualType())
+            {
+                if (source.IsInterfaceType())
+                {
+                    result = true;
+                }
+            }
             return result;
         }
 

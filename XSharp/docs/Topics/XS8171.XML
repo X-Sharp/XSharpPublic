@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8171</para>
+    <para styleclass="Heading1">Error XS8171</para>
   </header>
   <para styleclass="Normal">Cannot initialize a by-value variable with a reference</para>
   <para styleclass="Normal"></para>

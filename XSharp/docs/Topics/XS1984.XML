@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1984</para>
+    <para styleclass="Heading1">Error XS1984</para>
   </header>
   <para styleclass="Normal">Cannot await in the body of a finally clause</para>
   <para styleclass="Normal"></para>

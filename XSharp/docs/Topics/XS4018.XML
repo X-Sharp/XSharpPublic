@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS4018</para>
+    <para styleclass="Heading1">Error XS4018</para>
   </header>
   <para styleclass="Normal">CallerFilePathAttribute cannot be applied because there are no standard conversions from type &apos;{0}&apos; to type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

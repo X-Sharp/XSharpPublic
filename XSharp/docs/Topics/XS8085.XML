@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8085</para>
+    <para styleclass="Heading1">Error XS8085</para>
   </header>
   <para styleclass="Normal">A &apos;using static&apos; directive cannot be used to declare an alias</para>
   <para styleclass="Normal"></para>

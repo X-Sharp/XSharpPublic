@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0621</para>
+    <para styleclass="Heading1">Error XS0621</para>
   </header>
   <para styleclass="Normal">&apos;{0}&apos;: virtual or abstract members cannot be private</para>
   <para styleclass="Normal"></para>

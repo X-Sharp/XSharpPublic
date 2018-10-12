@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7013</para>
+    <para styleclass="Heading1">Error XS7013</para>
   </header>
   <para styleclass="Normal">Name &apos;{0}&apos; exceeds the maximum length allowed in metadata.</para>
   <para styleclass="Normal"></para>

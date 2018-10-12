@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1643</para>
+    <para styleclass="Heading1">Error XS1643</para>
   </header>
   <para styleclass="Normal">Not all code paths return a value in {0} of type &apos;{1}&apos;</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8003</para>
+    <para styleclass="Heading1">Error XS8003</para>
   </header>
   <para styleclass="Normal">Invalid signature public key specified in AssemblySignatureKeyAttribute.</para>
   <para styleclass="Normal"></para>

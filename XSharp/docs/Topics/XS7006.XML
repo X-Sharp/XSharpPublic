@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS7006</para>
+    <para styleclass="Heading1">Error XS7006</para>
   </header>
   <para styleclass="Normal">Expressions and statements can only occur in a method body</para>
   <para styleclass="Normal"></para>

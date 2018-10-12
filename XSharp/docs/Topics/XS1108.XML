@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1108</para>
+    <para styleclass="Heading1">Error XS1108</para>
   </header>
   <para styleclass="Normal">A parameter cannot have all the specified modifiers; there are too many modifiers on the parameter</para>
   <para styleclass="Normal"></para>

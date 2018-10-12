@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XBase Types</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XBase Types</para>
+    </header>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">The table below shows the type mapping between XBase types in X#.</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:10pt; color:#000000;">All types in the namespace XSharp are implemented in XSharp.VO.DLL and are only supported when NOT compiling in the Core dialect</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="28" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XBase Type</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Implemented in type</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">ARRAY</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Array-Type">XSharp.__Array</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">ARRAY OF &lt;t&gt;</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Array-Of-Type">XSharp.__ArrayBase &lt;T&gt;</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">BYTE</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Byte</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CHAR</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Char</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CODEBLOCK</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp.CodeBlock</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">_CODEBLOCK</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XSharp._CodeBlock</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DATE</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Date-Type">XSharp.__VODate</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DATETIME</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.DateTime</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Decimal</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DWORD</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.UInt32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DYNAMIC</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Dynamic</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Float-Type">XSharp.__VOFloat</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">INT / LONG / LONGINT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Int32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Int64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">LOGIC</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Logic-Ttype">System.Boolean or 
+XSharp.__WinBool</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">OBJECT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Object</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">PSZ</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PSZ-Type">XSharp.__Psz</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">PTR</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.IntPtr</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">REAL4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Float</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">REAL8</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Double</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">SHORT / SHORTINT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Int16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">STRING</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.String</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">SYMBOL</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Symbol-Type">XSharp.__Symbol</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">UINT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.UInt64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">USUAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Usual-Type">XSharp.__Usual</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOID</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.Void</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">WORD</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System.UInt16</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

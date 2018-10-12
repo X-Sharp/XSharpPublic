@@ -60,6 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
+				case XSharpDialect.XBasePP:
                 case XSharpDialect.Vulcan:
                     return false;
                 default:
@@ -72,6 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
+				case XSharpDialect.XBasePP:
                     return true;
                 default:
                     return false;
@@ -87,6 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
+				case XSharpDialect.XBasePP:
                     return true;
                 default:
                     return false;
@@ -99,6 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
+				case XSharpDialect.XBasePP:
                     return true;
                 default:
                     return false;
@@ -110,6 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
+				case XSharpDialect.XBasePP:
                     return true;
                 default:
                     return false;
@@ -117,4 +122,3 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
-    

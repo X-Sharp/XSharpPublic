@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS1690</para>
+      <para styleclass="Heading1">Error XS1690</para>
     </header>
     <para styleclass="Normal">Accessing a member on &apos;member&apos; may cause a runtime exception because it is a field of a marshal-by-reference class</para>
     <para styleclass="Normal"></para>

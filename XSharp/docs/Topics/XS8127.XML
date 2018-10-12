@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8127</para>
+    <para styleclass="Heading1">Error XS8127</para>
   </header>
   <para styleclass="Normal">Tuple element names must be unique.</para>
   <para styleclass="Normal"></para>

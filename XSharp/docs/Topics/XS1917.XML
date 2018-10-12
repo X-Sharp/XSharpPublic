@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1917</para>
+    <para styleclass="Heading1">Error XS1917</para>
   </header>
   <para styleclass="Normal">Members of readonly field &apos;{0}&apos; of type &apos;{1}&apos; cannot be assigned with an object initializer because it is of a value type</para>
   <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOOP</title>
   <keywords>
     <keyword>LOOP</keyword>
@@ -10,7 +10,6 @@
       <para styleclass="Heading1">LOOP</para>
     </header>
     <para styleclass="Body Text">The Loop statement jumps back to the beginning of the current DO WHILE, FOR NEXT, FOREACH NEXT or REPEAT UNTIL block</para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">loopstmt &#160; : </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#3366ff;">LOOP</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">eos</link><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">loopstmt &#160; : </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">LOOP</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Helpers" style="font-weight:normal; font-style:normal; color:#000000;">eos</link><br/></para>
   </body>
 </topic>

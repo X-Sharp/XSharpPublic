@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8084</para>
+    <para styleclass="Heading1">Error XS8084</para>
   </header>
   <para styleclass="Normal">Type parameters are not allowed on a method group as an argument to &apos;nameof&apos;.</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS0577</para>
+    <para styleclass="Heading1">Error XS0577</para>
   </header>
   <para styleclass="Normal">The Conditional attribute is not valid on &apos;{0}&apos; because it is a constructor, destructor, operator, or explicit interface implementation</para>
   <para styleclass="Normal"></para>

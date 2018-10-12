@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS8135</para>
+    <para styleclass="Heading1">Error XS8135</para>
   </header>
   <para styleclass="Normal">Tuple with {0} elements cannot be converted to type &apos;{1}&apos;.</para>
   <para styleclass="Normal"></para>

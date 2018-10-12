@@ -5498,6 +5498,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Interface method {0} and implementation {1} have different calling conventions..
+        /// </summary>
+        internal static string ERR_InterfaceImplementationDifferentCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_InterfaceImplementationDifferentCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Conditional member &apos;{0}&apos; cannot implement interface member &apos;{1}&apos; in type &apos;{2}&apos;.
         /// </summary>
         internal static string ERR_InterfaceImplementedByConditional {
@@ -11367,6 +11376,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
+        /// </summary>
+        internal static string WRN_AssgReadonlyLocalCause {
+            get {
+                return ResourceManager.GetString("WRN_AssgReadonlyLocalCause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assignment operator &apos;:=&apos; expected..
+        /// </summary>
+        internal static string WRN_AssignmentOperatorExpected {
+            get {
+                return ResourceManager.GetString("WRN_AssignmentOperatorExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Possibly incorrect assignment to local &apos;{0}&apos; which is the argument to a using or lock statement. The Dispose call or unlocking will happen on the original value of the local..
         /// </summary>
         internal static string WRN_AssignmentToLockOrDispose {
@@ -12456,6 +12483,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The compiler generated an automatic conversion from PSZ. This will create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and memory the lifetime of the PSZ yourself..
+        /// </summary>
+        internal static string WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak {
+            get {
+                return ResourceManager.GetString("WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compiler Option {0} ({1}) is recognized by the compiler but not yet implemented.
         /// </summary>
         internal static string WRN_CompilerOptionNotImplementedYet {
@@ -13030,6 +13066,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_FinalizeMethod_Title {
             get {
                 return ResourceManager.GetString("WRN_FinalizeMethod_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {3} &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. Using the function because in X# functions take precedence over static methods. To call the method use the fully qualified name..
+        /// </summary>
+        internal static string WRN_FunctionsTakePrecedenceOverMethods {
+            get {
+                return ResourceManager.GetString("WRN_FunctionsTakePrecedenceOverMethods", resourceCulture);
             }
         }
         
@@ -13943,6 +13988,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_PossibleMistakenNullStatement_Title {
             get {
                 return ResourceManager.GetString("WRN_PossibleMistakenNullStatement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #pragma directive is not (yet) supported, directive is ignored.
+        /// </summary>
+        internal static string WRN_PreProcessorNoPragma {
+            get {
+                return ResourceManager.GetString("WRN_PreProcessorNoPragma", resourceCulture);
             }
         }
         

@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1752</para>
+    <para styleclass="Heading1">Error XS1752</para>
   </header>
   <para styleclass="Normal">Interop type &apos;{0}&apos; cannot be embedded. Use the applicable interface instead.</para>
   <para styleclass="Normal"></para>

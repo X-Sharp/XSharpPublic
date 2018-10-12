@@ -1123,6 +1123,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
         {
             Debug.Assert(!typeArguments.IsEmpty);
+#if XSHARP
+            if (type.TypeArguments.Length == 0)
+            {
+                diagnostics.Add(ErrorCode.ERR_TypeArgsNotAllowed, typeSyntax.Location, type.Kind.ToString(),  type.Name);
+                return type;
+            }
+#endif
             type = type.Construct(typeArguments);
 
             if (ShouldCheckConstraints)

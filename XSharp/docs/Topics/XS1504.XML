@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS1504</para>
+    <para styleclass="Heading1">Error XS1504</para>
   </header>
   <para styleclass="Normal">Source file &apos;{0}&apos; could not be opened -- {1}</para>
   <para styleclass="Normal"></para>

@@ -107,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             // This is a last resort to convert to PSZ. Should normally never be called
-            if (BindStringToPsz((CSharpSyntaxNode)syntax, ref source, destination))
+            if (BindStringToPsz((CSharpSyntaxNode)syntax, ref source, destination,diagnostics))
             { 
                 constantValue = null;
                 wasCompilerGenerated = true;

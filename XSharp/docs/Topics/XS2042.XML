@@ -7,7 +7,7 @@
 </keywords>
 <body>
   <header>
-    <para styleclass="Heading1">XS2042</para>
+    <para styleclass="Heading1">Error XS2042</para>
   </header>
   <para styleclass="Normal">Invalid debug information format: {0}</para>
   <para styleclass="Normal"></para>

@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">XS9037</para>
+      <para styleclass="Heading1">Error XS9037</para>
     </header>
     <para styleclass="Normal">The &apos;{0}&apos; pseudo function uses a typed pointer to the function &apos;{1}&apos; which cannot be found.</para>
   </body>

@@ -910,6 +910,9 @@ BEGIN NAMESPACE XSharp.RDD
 								RETURN FALSE
 							END SWITCH
 					ENDIF
+                    IF sLen > text:Length
+                        sLen := text:Length
+                    ENDIF
 					SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
 					IF (chkDigits)
 						SELF:_checkDigits(buffer, SELF:_keySize, SELF:_keyDecimals )
@@ -2288,7 +2291,7 @@ BEGIN NAMESPACE XSharp.RDD
 							padLen := len
 						ENDIF
 						recno := SELF:_locateKey(abNewKey, padLen, IIF(seekInfo:SoftSeek , NtxSearchMode.LeftFound , NtxSearchMode.Left))
-						SELF:_oRdd:GoToId(recno)
+						result := SELF:_oRdd:GoToId(recno)
 						IF ((deletedState) .OR. (SELF:_oRdd:_FilterInfo:Active))
 							SELF:_oRdd:SkipFilter(1)
 							recno := SELF:Recno

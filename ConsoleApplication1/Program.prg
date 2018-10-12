@@ -1,11 +1,15 @@
 ﻿USING System.Globalization
 
-function start as void
-    local p as psz
-    p := String2Psz("abc")
-    p := StringAlloc("def")
-    MemFree(p)
-	wait
+
+CLASS TestClass
+    EXPORT sym  AS SYMBOL
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL u AS USUAL
+    u := TestClass{}
+    u:sym := #asd
+RETURN 
   
 
 FUNCTION Startx1 AS VOID

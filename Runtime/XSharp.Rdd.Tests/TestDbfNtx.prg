@@ -42,12 +42,11 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			myDBF := DbfNtx{}
 			myDBF:SetFieldExtent( fields:Length )
 			myDBF:CreateFields( rddInfo )
+			// Now Check
+			Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
 			dbInfo:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
 			RuntimeState.Workareas:SetArea(dbInfo:WorkArea, myDBF)
-			// Now Check
-			Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
-			
 			//
 			LOCAL ntxInfo AS DbOrderCreateInfo
 			ntxInfo := DbOrderCreateInfo{}
@@ -57,7 +56,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			Assert.Equal( TRUE, myDBF:OrderCreate( ntxInfo ) )
 			//
-			myDBF:Close()
+			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
 			RETURN
 			
 		[Fact, Trait("DbfNtx", "Open")];
@@ -67,14 +66,13 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
+			Assert.Equal( TRUE, myDBF:Open( dbInfo ) )
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
 			LOCAL area  := 0    AS DWORD
 			area  := RuntimeState.Workareas:FindEmptyArea(TRUE)
 			RuntimeState.Workareas:SetArea(area, myDBF)
 			RuntimeState.Workareas:CurrentWorkAreaNO := area
 			dbInfo:WorkArea := area
-			
-			Assert.Equal( TRUE, myDBF:Open( dbInfo ) )
 			//
 			LOCAL ntxInfo AS DbOrderInfo
 			ntxInfo := DbOrderInfo{}
@@ -83,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
 			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo, "" ) )
 			//
-			myDBF:Close()
+			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
 			RETURN
 			
 		[Fact, Trait("DbfNtx", "Read")];
@@ -119,7 +117,6 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
 			dbInfo:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
 			RuntimeState.Workareas:SetArea(dbInfo:WorkArea, myDBF)
-			
 			//
 			LOCAL ntxInfo AS DbOrderCreateInfo
 			ntxInfo := DbOrderCreateInfo{}
@@ -141,6 +138,61 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
 				myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
 				myDBF:PutValue( 3, String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0 )
+				myDBF:PutValue( 4, DateTime.Now )
+			NEXT
+			//myDBF:Close()
+			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
+			// Now, Verify
+			SELF:CheckOrder( "XMenTest" )
+			RETURN
+			
+		[Fact, Trait("DbfNtx", "BigCreateAppend")];
+		METHOD BigCreateAppend() AS VOID
+			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
+			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
+			//
+			LOCAL myDBF AS DbfNtx
+			LOCAL fieldInfo AS STRING[]
+			LOCAL rddInfo AS RddFieldInfo[]
+			rddInfo := RddFieldInfo[]{fields:Length}
+			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
+				// 
+				LOCAL currentField AS RddFieldInfo
+				fieldInfo := fields[i]:Split( ',' )
+				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
+				rddInfo[i] := currentField
+			NEXT
+			//
+			myDBF := DbfNtx{}
+			myDBF:SetFieldExtent( fields:Length )
+			myDBF:CreateFields( rddInfo )
+			// Now Check
+			Assert.Equal( TRUE, myDBF:Create( dbInfo ) )
+			// WE HAVE TO SET THE WORKAREA INFO !!!!
+			dbInfo:WorkArea  := RuntimeState.Workareas:FindEmptyArea(TRUE)
+			RuntimeState.Workareas:SetArea(dbInfo:WorkArea, myDBF)
+			//
+			LOCAL ntxInfo AS DbOrderCreateInfo
+			ntxInfo := DbOrderCreateInfo{}
+			ntxInfo:BagName := "XMenTest"
+			ntxInfo:Order := "XMenTest"
+			ntxInfo:Expression := "ID"
+			//
+			Assert.Equal( TRUE, myDBF:OrderCreate( ntxInfo ) )
+			//
+			// Now, Add some Data
+			LOCAL rnd AS Random
+			//
+			rnd := Random{ (LONG)DateTime.Now.Ticks }
+			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
+			// 3000 samples
+			FOR VAR i := 1 TO 3000
+				// 
+				myDBF:Append( FALSE )
+				myDBF:PutValue( 1,  rnd:@@NEXT( 1, 5000 ))
+				myDBF:PutValue( 2,  LoremIpsum(20) )
+				myDBF:PutValue( 3,  rnd:@@NEXT(0,2) == 1 )
 				myDBF:PutValue( 4, DateTime.Now )
 			NEXT
 			//myDBF:Close()

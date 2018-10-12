@@ -358,9 +358,9 @@ BEGIN NAMESPACE XSharp
 				IF conversionType == TYPEOF(__Symbol)
 					RETURN SELF
 				ELSEIF conversionType == TYPEOF(System.String)
-					RETURN SELF:ToString()
+					RETURN _value
 				ENDIF
-				RETURN ((IConvertible)SELF:ToString()):ToType(conversionType, provider)
+				RETURN ((IConvertible)_value):ToType(conversionType, provider)
         
             /// <inheritdoc />
                 METHOD IConvertible.ToUInt16( provider AS IFormatProvider ) AS UInt16

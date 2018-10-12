@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Reflection;
+using System.Reflection.Emit;
+
+namespace XSharp.MacroCompiler
+{
+    internal abstract partial class Symbol
+    {
+        internal virtual void EmitGet(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void EmitSet(ILGenerator ilg) { throw new NotImplementedException(); }
+    }
+    internal abstract partial class TypedSymbol : Symbol
+    {
+    }
+    internal partial class SymbolList : Symbol
+    {
+    }
+    internal partial class ContainerSymbol : Symbol
+    {
+    }
+    internal partial class NamespaceSymbol : ContainerSymbol
+    {
+    }
+    internal partial class TypeSymbol : ContainerSymbol
+    {
+    }
+    internal partial class LocalSymbol : TypedSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldloc, Index); }
+        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Stloc, Index); }
+        internal void Declare(ILGenerator ilg)
+        {
+            var lb = ilg.DeclareLocal(Type.Type);
+            Index = lb.LocalIndex;
+        }
+    }
+    internal partial class ParameterSymbol : LocalSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldarg, Index); }
+        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Starg, Index); }
+    }
+    internal partial class MemberSymbol : TypedSymbol
+    {
+    }
+    internal partial class MethodBaseSymbol : MemberSymbol
+    {
+    }
+    internal partial class MethodSymbol : MethodBaseSymbol
+    {
+    }
+    internal partial class FieldSymbol : MemberSymbol
+    {
+    }
+    internal partial class EventSymbol : MemberSymbol
+    {
+    }
+    internal partial class PropertySymbol : MemberSymbol
+    {
+    }
+    internal partial class ConstructorSymbol : MethodBaseSymbol
+    {
+    }
+}

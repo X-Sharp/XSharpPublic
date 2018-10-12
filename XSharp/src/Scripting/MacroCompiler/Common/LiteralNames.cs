@@ -182,5 +182,6 @@
         internal const string Exponent = "op_Exponent";
         internal const string IntegerDivision = "op_IntegerDivision";
         internal const string Like = "op_Like";
+        internal const string __UsualExponent = "__Pow";
     }
 }

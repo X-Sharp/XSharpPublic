@@ -8,11 +8,15 @@ using System.Reflection;
 
 namespace XSharp.MacroCompiler
 {
-    internal abstract class Symbol
+    internal abstract partial class Symbol
     {
         internal abstract Symbol Lookup(string name);
     }
-    internal class SymbolList : Symbol
+    internal abstract partial class TypedSymbol : Symbol
+    {
+        abstract internal TypeSymbol Type { get; }
+    }
+    internal partial class SymbolList : Symbol
     {
         internal MemberTypes SymbolTypes;
         internal List<Symbol> Symbols;
@@ -30,19 +34,19 @@ namespace XSharp.MacroCompiler
             return null;
         }
     }
-    internal class ContainerSymbol : Symbol
+    internal partial class ContainerSymbol : Symbol
     {
         internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(StringComparer.OrdinalIgnoreCase);
         internal ContainerSymbol() { }
         internal override Symbol Lookup(string name) { Symbol s; Members.TryGetValue(name, out s); return s; }
     }
-    internal class NamespaceSymbol : ContainerSymbol
+    internal partial class NamespaceSymbol : ContainerSymbol
     {
         internal string Name;
         internal NamespaceSymbol(string name) { Name = name; }
         internal NamespaceSymbol() { Name = null; }
     }
-    internal class TypeSymbol : ContainerSymbol
+    internal partial class TypeSymbol : ContainerSymbol
     {
         bool Cached = false;
         internal Type Type;
@@ -97,17 +101,22 @@ namespace XSharp.MacroCompiler
             }
         }
     }
-    internal class LocalSymbol : Symbol
+    internal partial class LocalSymbol : TypedSymbol
     {
         internal string Name;
-        internal TypeSymbol Type;
+        internal override TypeSymbol Type { get; }
+        internal int Index = -1;
         internal LocalSymbol(string name, TypeSymbol type) { Name = name; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
     }
-    internal class MemberSymbol : Symbol
+    internal partial class ParameterSymbol : LocalSymbol
+    {
+        internal ParameterSymbol(string name, TypeSymbol type, int index) : base(name, type) { Index = index; }
+    }
+    internal partial class MemberSymbol : TypedSymbol
     {
         internal MemberInfo Member;
-        internal TypeSymbol Type;
+        internal override TypeSymbol Type { get; }
         internal MemberSymbol(MemberInfo member, TypeSymbol type) { Member = member; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
         internal static MemberSymbol Create(MemberInfo member)
@@ -117,23 +126,48 @@ namespace XSharp.MacroCompiler
                 case MemberTypes.Method:
                     return new MethodSymbol((MethodInfo)member);
                 case MemberTypes.Field:
-                    return new MemberSymbol(member, Binder.FindType((member as FieldInfo).FieldType));
+                    return new FieldSymbol((FieldInfo)member);
                 case MemberTypes.Event:
-                    return new MemberSymbol(member, Binder.FindType((member as EventInfo).EventHandlerType));
+                    return new EventSymbol((EventInfo)member);
                 case MemberTypes.Property:
-                    return new MemberSymbol(member, Binder.FindType((member as PropertyInfo).PropertyType));
+                    return new PropertySymbol((PropertyInfo)member);
                 case MemberTypes.Constructor:
-                    return new MemberSymbol(member, Binder.FindType((member as ConstructorInfo).DeclaringType));
+                    return new ConstructorSymbol((ConstructorInfo)member);
                 default:
                     return new MemberSymbol(member, null);
             }
         }
     }
-    internal class MethodSymbol : MemberSymbol
+    internal partial class MethodBaseSymbol : MemberSymbol
     {
-        internal MethodInfo Method { get { return (MethodInfo)base.Member; } }
+        internal MethodBase MethodBase { get { return (MethodBase)base.Member; } }
         //internal ParameterInfo[] Parameters { get { Interlocked.CompareExchange(ref _parameters, Method.GetParameters(), null); return _parameters; } }
         //ParameterInfo[] _parameters;
+        internal MethodBaseSymbol(MethodBase method, TypeSymbol type) : base(method, type) { }
+    }
+    internal partial class MethodSymbol : MethodBaseSymbol
+    {
+        internal MethodInfo Method { get { return (MethodInfo)base.Member; } }
         internal MethodSymbol(MethodInfo method) : base(method, Binder.FindType(method.ReturnType)) { }
+    }
+    internal partial class FieldSymbol : MemberSymbol
+    {
+        internal FieldInfo Field { get { return (FieldInfo)base.Member; } }
+        internal FieldSymbol(FieldInfo field) : base(field, Binder.FindType(field.FieldType)) { }
+    }
+    internal partial class EventSymbol : MemberSymbol
+    {
+        internal EventInfo Event { get { return (EventInfo)base.Member; } }
+        internal EventSymbol(EventInfo evt) : base(evt, Binder.FindType(evt.EventHandlerType)) { }
+    }
+    internal partial class PropertySymbol : MemberSymbol
+    {
+        internal PropertyInfo Property { get { return (PropertyInfo)base.Member; } }
+        internal PropertySymbol(PropertyInfo property) : base(property, Binder.FindType(property.PropertyType)) { }
+    }
+    internal partial class ConstructorSymbol : MethodBaseSymbol
+    {
+        internal ConstructorInfo Constructor { get { return (ConstructorInfo)base.Member; } }
+        internal ConstructorSymbol(ConstructorInfo ctor) : base(ctor, Binder.FindType(ctor.DeclaringType)) { }
     }
 }

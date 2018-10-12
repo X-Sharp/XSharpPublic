@@ -17,6 +17,7 @@ namespace XSharp.MacroCompiler
             {
                 switch (t.NativeType)
                 {
+                    case NativeType.Boolean:
                     case NativeType.Byte:
                     case NativeType.Char:
                     case NativeType.Int16:
@@ -58,52 +59,99 @@ namespace XSharp.MacroCompiler
         {
             switch (c.Type.NativeType)
             {
-                case NativeType.Byte:
-                case NativeType.Char:
+                case NativeType.Boolean:
+                    if (c.Boolean == true)
+                        ilg.Emit(OpCodes.Ldc_I4_M1);
+                    else
+                        ilg.Emit(OpCodes.Ldc_I4_0);
+                    break;
+                case NativeType.SByte:
                 case NativeType.Int16:
                 case NativeType.Int32:
-                case NativeType.SByte:
+                    {
+                        int? ordinal = c.Int;
+                        switch (ordinal)
+                        {
+                            case -1:
+                                ilg.Emit(OpCodes.Ldc_I4_M1);
+                                break;
+                            case 0:
+                                ilg.Emit(OpCodes.Ldc_I4_0);
+                                break;
+                            case 1:
+                                ilg.Emit(OpCodes.Ldc_I4_1);
+                                break;
+                            case 2:
+                                ilg.Emit(OpCodes.Ldc_I4_2);
+                                break;
+                            case 3:
+                                ilg.Emit(OpCodes.Ldc_I4_3);
+                                break;
+                            case 4:
+                                ilg.Emit(OpCodes.Ldc_I4_4);
+                                break;
+                            case 5:
+                                ilg.Emit(OpCodes.Ldc_I4_5);
+                                break;
+                            case 6:
+                                ilg.Emit(OpCodes.Ldc_I4_6);
+                                break;
+                            case 7:
+                                ilg.Emit(OpCodes.Ldc_I4_7);
+                                break;
+                            case 8:
+                                ilg.Emit(OpCodes.Ldc_I4_8);
+                                break;
+                            default:
+                                ilg.Emit(OpCodes.Ldc_I4, ordinal.Value);
+                                break;
+                        }
+                    }
+                    break;
+                case NativeType.Byte:
+                case NativeType.Char:
                 case NativeType.UInt16:
                 case NativeType.UInt32:
-                    int? ordinal = c.Int;
-                    switch (ordinal)
                     {
-                        case -1:
-                            ilg.Emit(OpCodes.Ldc_I4_M1);
-                            break;
-                        case 0:
-                            ilg.Emit(OpCodes.Ldc_I4_0);
-                            break;
-                        case 1:
-                            ilg.Emit(OpCodes.Ldc_I4_1);
-                            break;
-                        case 2:
-                            ilg.Emit(OpCodes.Ldc_I4_2);
-                            break;
-                        case 3:
-                            ilg.Emit(OpCodes.Ldc_I4_3);
-                            break;
-                        case 4:
-                            ilg.Emit(OpCodes.Ldc_I4_4);
-                            break;
-                        case 5:
-                            ilg.Emit(OpCodes.Ldc_I4_5);
-                            break;
-                        case 6:
-                            ilg.Emit(OpCodes.Ldc_I4_6);
-                            break;
-                        case 7:
-                            ilg.Emit(OpCodes.Ldc_I4_7);
-                            break;
-                        case 8:
-                            ilg.Emit(OpCodes.Ldc_I4_8);
-                            break;
-                        default:
-                            ilg.Emit(OpCodes.Ldc_I4, ordinal.Value);
-                            break;
+                        uint? ordinal = c.UInt;
+                        switch (ordinal)
+                        {
+                            case 0:
+                                ilg.Emit(OpCodes.Ldc_I4_0);
+                                break;
+                            case 1:
+                                ilg.Emit(OpCodes.Ldc_I4_1);
+                                break;
+                            case 2:
+                                ilg.Emit(OpCodes.Ldc_I4_2);
+                                break;
+                            case 3:
+                                ilg.Emit(OpCodes.Ldc_I4_3);
+                                break;
+                            case 4:
+                                ilg.Emit(OpCodes.Ldc_I4_4);
+                                break;
+                            case 5:
+                                ilg.Emit(OpCodes.Ldc_I4_5);
+                                break;
+                            case 6:
+                                ilg.Emit(OpCodes.Ldc_I4_6);
+                                break;
+                            case 7:
+                                ilg.Emit(OpCodes.Ldc_I4_7);
+                                break;
+                            case 8:
+                                ilg.Emit(OpCodes.Ldc_I4_8);
+                                break;
+                            default:
+                                ilg.Emit(OpCodes.Ldc_I4, ordinal.Value);
+                                break;
+                        }
                     }
                     break;
                 case NativeType.UInt64:
+                    ilg.Emit(OpCodes.Ldc_I8, c.ULong.Value);
+                    break;
                 case NativeType.Int64:
                     ilg.Emit(OpCodes.Ldc_I8, c.Long.Value);
                     break;
@@ -125,6 +173,44 @@ namespace XSharp.MacroCompiler
                     break;
                 default:
                     throw new Exception("Unexpected literal kind");
+            }
+        }
+
+        internal static void EmitConstant_1(ILGenerator ilg, NativeType t)
+        {
+            switch (t)
+            {
+                case NativeType.Byte:
+                case NativeType.Char:
+                case NativeType.Int16:
+                case NativeType.Int32:
+                case NativeType.SByte:
+                case NativeType.UInt16:
+                case NativeType.UInt32:
+                    ilg.Emit(OpCodes.Ldc_I4_1);
+                    break;
+                case NativeType.UInt64:
+                case NativeType.Int64:
+                    ilg.Emit(OpCodes.Ldc_I8, (long)1);
+                    break;
+                case NativeType.Single:
+                    ilg.Emit(OpCodes.Ldc_R4, (float)1);
+                    break;
+                case NativeType.Double:
+                    ilg.Emit(OpCodes.Ldc_R8, (double)1);
+                    break;
+                case NativeType.String:
+                    throw new Exception("Unsupported");
+                case NativeType.DateTime:
+                    throw new Exception("Unsupported");
+                case NativeType.Decimal:
+                    ilg.Emit(OpCodes.Ldc_I4_1);
+                    ilg.Emit(OpCodes.Newobj, typeof(decimal).GetConstructor(new[] { typeof(int) })); // TODO use Compilation.GetMember
+                    break;
+                case NativeType.Object:
+                    throw new Exception("Unsupported");
+                default:
+                    throw new Exception("Unsupported");
             }
         }
 
@@ -446,8 +532,115 @@ namespace XSharp.MacroCompiler
                     break;*/
 
                 default:
-                    //throw ExceptionUtilities.UnexpectedValue(toType);
-                    throw new Exception("Unexpected value");
+                    throw new CompileFailure(ErrorCode.UnexpectedValue);
+            }
+        }
+
+        internal static void EmitBinaryOperator(ILGenerator ilg, BinaryOperatorSymbol op, TypeSymbol type)
+        {
+            switch (op.Kind)
+            {
+                case BinaryOperatorKind.Addition:
+                    ilg.Emit(OpCodes.Add);
+                    break;
+                case BinaryOperatorKind.Subtraction:
+                    ilg.Emit(OpCodes.Sub);
+                    break;
+                case BinaryOperatorKind.Multiplication:
+                    ilg.Emit(OpCodes.Mul);
+                    break;
+                case BinaryOperatorKind.Division:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Div_Un);
+                    else
+                        ilg.Emit(OpCodes.Div);
+                    break;
+                case BinaryOperatorKind.Remainder:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Rem_Un);
+                    else
+                        ilg.Emit(OpCodes.Rem);
+                    break;
+                case BinaryOperatorKind.LeftShift:
+                    ilg.Emit(OpCodes.Shl);
+                    break;
+                case BinaryOperatorKind.RightShift:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Shr_Un);
+                    else
+                        ilg.Emit(OpCodes.Shr);
+                    break;
+                case BinaryOperatorKind.And:
+                    ilg.Emit(OpCodes.And);
+                    break;
+                case BinaryOperatorKind.Xor:
+                    ilg.Emit(OpCodes.Xor);
+                    break;
+                case BinaryOperatorKind.Or:
+                    ilg.Emit(OpCodes.Or);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        internal static void EmitCheckedBinaryOperator(ILGenerator ilg, BinaryOperatorSymbol op, TypeSymbol type)
+        {
+            switch (op.Kind)
+            {
+                case BinaryOperatorKind.Addition:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Add_Ovf_Un);
+                    else
+                        ilg.Emit(OpCodes.Add_Ovf);
+                    break;
+                case BinaryOperatorKind.Subtraction:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Sub_Ovf_Un);
+                    else
+                        ilg.Emit(OpCodes.Sub_Ovf);
+                    break;
+                case BinaryOperatorKind.Multiplication:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Mul_Ovf_Un);
+                    else
+                        ilg.Emit(OpCodes.Mul_Ovf);
+                    break;
+                default:
+                    EmitBinaryOperator(ilg, op, type);
+                    break;
+            }
+        }
+
+        internal static void EmitUnaryOperator(ILGenerator ilg, UnaryOperatorSymbol op, TypeSymbol type)
+        {
+            switch (op.Kind)
+            {
+                case UnaryOperatorKind.Increment:
+                    EmitConstant_1(ilg, type.NativeType);
+                    ilg.Emit(OpCodes.Add);
+                    break;
+                case UnaryOperatorKind.Decrement:
+                    EmitConstant_1(ilg, type.NativeType);
+                    ilg.Emit(OpCodes.Sub);
+                    break;
+                case UnaryOperatorKind.UnaryPlus:
+                    break;
+                case UnaryOperatorKind.UnaryMinus:
+                    ilg.Emit(OpCodes.Neg);
+                    break;
+                case UnaryOperatorKind.LogicalNegation:
+                    ilg.Emit(OpCodes.Not);
+                    break;
+                case UnaryOperatorKind.BitwiseComplement:
+                    ilg.Emit(OpCodes.Not);
+                    break;
+                case UnaryOperatorKind.True:
+                    break;
+                case UnaryOperatorKind.False:
+                    break;
+                default:
+                    throw new CompileFailure(ErrorCode.UnexpectedValue);
             }
         }
     }

@@ -28,9 +28,23 @@ begin namespace MacroCompilerTest
         //var test_source := "Console.WriteLine(123)";
         //var test_source := "Test(12345)";
         //var test_source := "Test(U(12345)-1)";
-        var test_source := "Test(123+45)";
+        //var test_source := "Test(123+45)";
         //var test_source := "TestR(123)";
         //var test_source := "TestI(123.456)";
+        //var test_source := "{|a,b,c|a := b := 1343}";
+        //var test_source := "{|a,b,c|}";
+        //var test_source := "{|a,b,c|1234}";
+        //var test_source := "U(1234)";
+        //var test_source := "1234";
+        //var test_source := "";
+        //var test_source := "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}";
+        //var test_source := "{|a|a := 1343, a += 1}";
+        //var test_source := "{|a|a := -1343, a := -a}";
+        //var test_source := "{|a|a := 8, a := 8**a}";
+        //var test_source := "{|a|a := 8, ++a, ++a}";
+        //var test_source := "{|a| a:= 8, ++a, a++, a++}";
+        //var test_source := "{|a| ++a, a++, a++}";
+        var test_source := "{|a| a++, Console.WriteLine(123), a++}";
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
@@ -38,8 +52,10 @@ begin namespace MacroCompilerTest
         begin scope
             Console.WriteLine("Executing macro ...")
             var cb := mc:Compile(test_source)
-            cb:EvalBlock()
-            Console.WriteLine()
+            var res := cb:EvalBlock(8)
+            Console.WriteLine("res = {0}",res)
+wait
+//return
         end scope
 
         TestMacroCompiler(mc, test_source, 15, true, false)
@@ -120,10 +136,12 @@ begin namespace XSharp.Runtime
 
 	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as Vulcan.Runtime.ICodeBlock
 		    lIsBlock := cMacro:StartsWith("{|")
-    	    return RuntimeCodeblock{compiler:Compile(cMacro),0}
+            var m := compiler:Compile(cMacro)
+    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
 
 	    public method Compile (cMacro as string) as Vulcan.Runtime.ICodeBlock
-    	    return RuntimeCodeblock{compiler:Compile(cMacro),0}
+            var m := compiler:Compile(cMacro)
+    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
     end class
 
 end namespace

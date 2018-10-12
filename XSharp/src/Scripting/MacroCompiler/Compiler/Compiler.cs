@@ -30,19 +30,25 @@ namespace XSharp.MacroCompiler
 
     public partial class Compilation<T,R> where R: class
     {
-        Binder<T, R> binder;
+        public struct CompilationResult
+        {
+            public R Macro;
+            public int ParamCount;
+            internal CompilationResult(R macro, int paramCount) { Macro = macro; ParamCount = paramCount; }
+        }
+
         Compilation.Options options;
 
         internal Compilation(Compilation.Options o)
         {
             options = o;
-            binder = Binder.Create<T, R>();
         }
 
-        public R Compile(string source)
+        public CompilationResult Compile(string source)
         {
+            Binder<T, R> binder = Binder.Create<T, R>();
             var ast = binder.Bind(Parse(source));
-            return binder.Emit(ast);
+            return new CompilationResult(binder.Emit(ast), binder.ParamCount);
         }
 
         internal Syntax.Codeblock Parse(string source)

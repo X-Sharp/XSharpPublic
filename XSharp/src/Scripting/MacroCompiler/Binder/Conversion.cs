@@ -46,18 +46,19 @@ namespace XSharp.MacroCompiler
         ExplicitUsual,
     }
 
-    internal class ConversionSymbol : Symbol
+    internal partial class ConversionSymbol : Symbol
     {
         internal readonly ConversionKind Kind;
 
-        internal bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
-        internal bool IsImplicit { get { return (convCost[(int)Kind] & Implicit) != 0; } }
-        internal int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
+        internal virtual bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
+        internal virtual bool IsImplicit { get { return (convCost[(int)Kind] & Implicit) != 0; } }
+        internal virtual int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
 
         internal ConversionSymbol(ConversionKind kind) { Kind = kind; }
 
         internal static ConversionSymbol Create(ConversionKind kind) { return simpleConv[(int)kind]; }
         internal static ConversionSymbolWithMethod Create(ConversionKind kind, MethodSymbol method) { return new ConversionSymbolWithMethod(kind, method); }
+        internal static ConversionChain Create(ConversionSymbol conv, ConversionSymbol prev) { return new ConversionChain(conv, prev); }
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
@@ -118,6 +119,18 @@ namespace XSharp.MacroCompiler
         internal MethodSymbol Method;
 
         internal ConversionSymbolWithMethod(ConversionKind kind, MethodSymbol method) : base(kind) { Method = method; }
+    }
+
+    internal partial class ConversionChain : ConversionSymbol
+    {
+        internal ConversionSymbol Conversion;
+        internal ConversionSymbol Previous;
+
+        internal ConversionChain(ConversionSymbol conv, ConversionSymbol prev) : base(conv.Kind) { Conversion = conv; Previous = prev; }
+
+        internal override bool IsExplicit { get { return Previous.IsExplicit || Conversion.IsExplicit; } }
+        internal override bool IsImplicit { get { return Previous.IsImplicit || Conversion.IsImplicit; } }
+        internal override int Cost { get { return Previous.Cost + Conversion.Cost; } }
     }
 
     internal static class ConversionEasyOut

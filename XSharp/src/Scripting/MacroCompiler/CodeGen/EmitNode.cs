@@ -11,12 +11,32 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class Node
     {
-        internal virtual void Emit(ILGenerator ilg) { }
+        internal virtual void Emit(ILGenerator ilg) { throw new NotImplementedException(); }
     }
     internal partial class Expr : Node
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
+    }
+    internal partial class StoreTemp : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg);
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            Local.Declare(ilg);
+            Local.EmitSet(ilg);
+        }
+    }
+    internal partial class LoadTemp : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr?.Emit(ilg, false);
+            if (preserve)
+                Temp.Local.EmitGet(ilg);
+        }
     }
     internal partial class TypeExpr : Expr
     {
@@ -29,6 +49,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IdExpr : NameExpr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                Symbol.EmitGet(ilg);
+        }
     }
     internal partial class MemberAccessExpr : Expr
     {
@@ -37,50 +62,59 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-
+            Symbol.EmitGet(ilg);
+        }
+    }
+    internal partial class AssignExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Right.Emit(ilg);
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            Left.Symbol.EmitSet(ilg);
+        }
+    }
+    internal partial class AssignOpExpr : AssignExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Right.Emit(ilg);
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            Left.Symbol.EmitSet(ilg);
         }
     }
     internal partial class BinaryExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (Symbol is BinaryOperatorSymbolWithMethod)
+            if (Symbol is BinaryOperatorSymbol)
             {
-                var op = (BinaryOperatorSymbolWithMethod)Symbol;
                 Left.Emit(ilg);
                 Right.Emit(ilg);
+                (Symbol as BinaryOperatorSymbol).Emit(this, Datatype, ilg);
+            }
+            else
+                throw new NotImplementedException();
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
+    internal partial class UnaryExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg);
+            if (Symbol is UnaryOperatorSymbolWithMethod)
+            {
+                var op = (UnaryOperatorSymbolWithMethod)Symbol;
                 ilg.Emit(OpCodes.Call, op.Method.Method);
             }
-            else if (Symbol is BinaryOperatorSymbol) {
-                var op = (BinaryOperatorSymbol)Symbol;
-                Left.Emit(ilg);
-                Right.Emit(ilg);
-                switch (op.Kind)
-                {
-                    case BinaryOperatorKind.Addition:
-                        ilg.Emit(OpCodes.Add);
-                        break;
-                    case BinaryOperatorKind.Subtraction:
-                        ilg.Emit(OpCodes.Sub);
-                        break;
-                    case BinaryOperatorKind.Multiplication:
-                        ilg.Emit(OpCodes.Mul);
-                        break;
-                    case BinaryOperatorKind.Division:
-                        if (Datatype.NativeType.IsUnsigned())
-                            ilg.Emit(OpCodes.Div_Un);
-                        else
-                            ilg.Emit(OpCodes.Div);
-                        break;
-                    case BinaryOperatorKind.Remainder:
-                        if (Datatype.NativeType.IsUnsigned())
-                            ilg.Emit(OpCodes.Rem_Un);
-                        else
-                            ilg.Emit(OpCodes.Rem);
-                        break;
-                    default:
-                        throw new NotImplementedException();
-                }
+            else if (Symbol is UnaryOperatorSymbol)
+            {
+                var op = (UnaryOperatorSymbol)Symbol;
+                EmitUnaryOperator(ilg, op, Datatype); // TODO nkok: handle checked/unchecked
             }
             else
             {
@@ -92,9 +126,25 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class PrefixExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg);
+            ilg.Emit(OpCodes.Dup);
+            Left.Symbol.EmitSet(ilg);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
     }
     internal partial class PostfixExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg);
+            Left.Symbol.EmitSet(ilg);
+            Temp.Emit(ilg);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
     }
     internal partial class LiteralExpr : Expr
     {
@@ -108,9 +158,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class SelfExpr : Expr
     {
+        // Not supported
     }
     internal partial class SuperExpr : Expr
     {
+        // Not supported
     }
     internal partial class CheckedExpr : Expr
     {
@@ -134,28 +186,7 @@ namespace XSharp.MacroCompiler.Syntax
             Expr.Emit(ilg, preserve);
             if (preserve)
             {
-                switch (((ConversionSymbol)Symbol).Kind)
-                {
-                    case ConversionKind.ImplicitNumeric:
-                    case ConversionKind.ExplicitNumeric:
-                        EmitNumericConversion(ilg, Expr.Datatype.NativeType, Datatype.NativeType, false);
-                        break;
-                    case ConversionKind.ImplicitUserDefined:
-                    case ConversionKind.ExplicitUserDefined:
-                        ilg.Emit(OpCodes.Call, ((ConversionSymbolWithMethod)Symbol).Method.Method);
-                        break;
-                    case ConversionKind.Boxing:
-                        ilg.Emit(OpCodes.Box, Datatype.Type);
-                        break;
-                    case ConversionKind.Unboxing:
-                        ilg.Emit(OpCodes.Unbox, Datatype.Type);
-                        break;
-                    case ConversionKind.ImplicitReference:
-                    case ConversionKind.ExplicitReference:
-                        break;
-                    default:
-                        throw new NotImplementedException();
-                }
+                ((ConversionSymbol)Symbol).Emit(Expr,Datatype,ilg);
             }
         }
     }
@@ -173,12 +204,10 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Args.Emit(ilg);
-            var m = ((MethodSymbol)Symbol).Method;
-            ilg.Emit(OpCodes.Call, m);
-            if (!preserve && m.ReflectedType != typeof(void))
-            {
+            var m = (MethodSymbol)Symbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve && Datatype.NativeType != NativeType.Void)
                 ilg.Emit(OpCodes.Pop);
-            }
         }
     }
     internal partial class CtorCallExpr : MethodCallExpr
@@ -226,6 +255,26 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 foreach (var p in Params)
                 {
+                    LocalSymbol ls = (LocalSymbol)p.Symbol;
+                    ls.Declare(ilg);
+
+                    var idx = Constant.Create(ls.Index);
+                    var skip = ilg.DefineLabel();
+                    var lidx = Constant.Create(ls.Index);
+
+                    ParamArray.EmitGet(ilg);
+                    ilg.Emit(OpCodes.Ldlen);
+                    ilg.Emit(OpCodes.Conv_I4);
+                    EmitLiteral(ilg, lidx);
+                    ilg.Emit(OpCodes.Cgt);
+                    ilg.Emit(OpCodes.Brfalse_S, skip);
+
+                    ParamArray.EmitGet(ilg);
+                    EmitLiteral(ilg, lidx);
+                    ilg.Emit(OpCodes.Ldelem_Ref);
+                    ls.EmitSet(ilg);
+
+                    ilg.MarkLabel(skip);
                 }
             }
             bool isVoid = true;

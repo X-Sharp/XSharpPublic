@@ -10,9 +10,36 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal partial class Node
     {
+        internal bool CompilerGenerated = false;
     }
     internal partial class Expr : Node
     {
+    }
+    internal partial class StoreTemp : Expr
+    {
+        internal Expr Expr;
+        internal StoreTemp(Expr e)
+        {
+            CompilerGenerated = true;
+            Expr = e;
+        }
+    }
+    internal partial class LoadTemp : Expr
+    {
+        internal Expr Expr;
+        internal StoreTemp Temp;
+        internal LoadTemp(Expr e, StoreTemp t)
+        {
+            CompilerGenerated = true;
+            Expr = e;
+            Temp = t;
+        }
+        internal LoadTemp(StoreTemp t)
+        {
+            CompilerGenerated = true;
+            Expr = null;
+            Temp = t;
+        }
     }
     internal partial class TypeExpr : Expr
     {
@@ -51,6 +78,18 @@ namespace XSharp.MacroCompiler.Syntax
         internal QualifiedNameExpr(NameExpr e, NameExpr n) { Expr = e; Member = n; }
         public override string ToString() { return "(" + Expr.ToString() + '.' + Member.ToString() + ")"; }
     }
+    internal partial class AssignExpr : Expr
+    {
+        internal Expr Left;
+        internal TokenType Kind;
+        internal Expr Right;
+        internal AssignExpr(Expr l, TokenType o, Expr r) { Left = l; Kind = o; Right = r; }
+        public override string ToString() { return "(" + Left.ToString() + TokenText(Kind) + Right.ToString() + ")"; }
+    }
+    internal partial class AssignOpExpr : AssignExpr
+    {
+        internal AssignOpExpr(Expr l, TokenType o, Expr r) : base(l, o, r) { }
+    }
     internal partial class BinaryExpr : Expr
     {
         internal Expr Left;
@@ -58,6 +97,13 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr Right;
         internal BinaryExpr(Expr l, TokenType o, Expr r) { Left = l; Kind = o; Right = r; }
         public override string ToString() { return "(" + Left.ToString() + TokenText(Kind) + Right.ToString() + ")"; }
+    }
+    internal partial class UnaryExpr : Expr
+    {
+        internal Expr Expr;
+        internal TokenType Kind;
+        internal UnaryExpr(Expr e, TokenType o) { Expr = e; Kind = o; }
+        public override string ToString() { return "(" + TokenText(Kind) + Expr.ToString() + ")"; }
     }
     internal partial class PrefixExpr : Expr
     {

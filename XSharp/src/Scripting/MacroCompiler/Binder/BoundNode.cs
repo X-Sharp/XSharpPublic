@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using static System.Diagnostics.Debug;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -12,11 +13,34 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class Node
     {
         internal Symbol Symbol = null;
-        internal virtual Node Bind(Binder b) { return null; }
+        internal virtual Node Bind(Binder b) { throw new NotImplementedException(); }
     }
-    internal partial class Expr: Node
+    internal partial class Expr : Node
     {
         internal TypeSymbol Datatype = null;
+    }
+    internal partial class StoreTemp : Expr
+    {
+        internal LocalSymbol Local;
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            Local = b.AddLocal(Expr.Datatype);
+            Symbol = Expr.Symbol;
+            Datatype = Expr.Datatype;
+            return null;
+        }
+    }
+    internal partial class LoadTemp : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            Assert(Temp.Symbol != null);
+            b.Bind(ref Expr);
+            Symbol = Temp.Symbol;
+            Datatype = Temp.Datatype;
+            return null;
+        }
     }
     internal partial class TypeExpr : Expr
     {
@@ -109,7 +133,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.Lookup(null, Name);
-            Datatype = (Symbol as MemberSymbol)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }
@@ -119,6 +143,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }
@@ -128,6 +153,35 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
+            Datatype = (Symbol as TypedSymbol)?.Type;
+            return null;
+        }
+    }
+    internal partial class AssignExpr : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Left);
+            b.Bind(ref Right);
+            Binder.Convert(ref Right, Left.Datatype);
+            Symbol = Left.Symbol;
+            Datatype = Left.Datatype;
+            return null;
+        }
+    }
+    internal partial class AssignOpExpr : AssignExpr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Left);
+            b.Bind(ref Right);
+            var r = new BinaryExpr(Left, Kind, Right);
+            r.Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref r.Left, ref r.Right);
+            r.Datatype = (r.Symbol as BinaryOperatorSymbol)?.Type;
+            Right = r;
+            Binder.Convert(ref Right, Left.Datatype);
+            Symbol = Left.Symbol;
+            Datatype = Left.Datatype;
             return null;
         }
     }
@@ -142,11 +196,51 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
+    internal partial class UnaryExpr : Expr
+    {
+        internal Expr Left;
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            Left = Expr;
+            Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
+            Datatype = (Symbol as UnaryOperatorSymbol)?.Type;
+            return null;
+        }
+    }
     internal partial class PrefixExpr : Expr
     {
+        Expr Left;
+        internal override Node Bind(Binder b)
+        {
+            var u = new UnaryExpr(Expr, Kind);
+            Expr = u;
+            b.Bind(ref Expr);
+            Left = u.Left;
+            Binder.Convert(ref Expr, (Expr as UnaryExpr).Left.Datatype);
+            Symbol = Expr.Symbol;
+            Datatype = Expr.Datatype;
+            return null;
+        }
     }
     internal partial class PostfixExpr : Expr
     {
+        Expr Left;
+        LoadTemp Temp;
+        internal override Node Bind(Binder b)
+        {
+            var t = new StoreTemp(Expr);
+            Expr = t;
+            Temp = new LoadTemp(t);
+            var u = new UnaryExpr(Expr, Kind);
+            Expr = u;
+            b.Bind(ref Expr);
+            Left = u.Left;
+            Binder.Convert(ref Expr, (Expr as UnaryExpr).Left.Datatype);
+            Symbol = Expr.Symbol;
+            Datatype = Expr.Datatype;
+            return null;
+        }
     }
     internal partial class LiteralExpr : Expr
     {
@@ -343,14 +437,14 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            throw new Exception("SELF not supported");
+            throw new CompileFailure(ErrorCode.NotSupported, "SELF keyword");
         }
     }
     internal partial class SuperExpr : Expr
     {
         internal override Node Bind(Binder b)
         {
-            throw new Exception("SUPER not supported");
+            throw new CompileFailure(ErrorCode.NotSupported, "SELF keyword");
         }
     }
     internal partial class CheckedExpr : Expr
@@ -416,6 +510,10 @@ namespace XSharp.MacroCompiler.Syntax
                 Symbol = e.Symbol;
                 Datatype = e.Datatype;
             }
+            else
+            {
+                Datatype = Compilation.GetNativeType(NativeType.Void);
+            }
             return null;
         }
     }
@@ -432,17 +530,28 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Codeblock : Node
     {
+        ParameterSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
             if (Params != null)
             {
+                ParamArray = b.AddParam(Binder.ArrayOf(b.ObjectType));
                 foreach (var p in Params)
                 {
-                    b.Locals.Add(p.LookupName, new LocalSymbol(p.LookupName, b.ObjectType));
+                    b.AddLocal(p.LookupName, b.ObjectType);
+                    p.Bind(b);
                 }
             }
             if (Body != null)
+            {
                 b.Bind(ref Body);
+                if (Body.Datatype.NativeType != NativeType.Void)
+                {
+                    Expr e = Body.Exprs.Last();
+                    Binder.Convert(ref e, b.ObjectType);
+                    Body.Exprs[Body.Exprs.Count - 1] = e;
+                }
+            }
             Symbol = b.ObjectType;
             return null;
         }

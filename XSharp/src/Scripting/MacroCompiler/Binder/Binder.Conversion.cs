@@ -24,7 +24,7 @@ namespace XSharp.MacroCompiler
                 e = TypeConversion.Bound(e, type, conv);
         }
 
-        internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type)
+        internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, bool allowDynamic = true)
         {
             var conversion = ConversionEasyOut.ClassifyConversion(expr.Datatype, type);
 
@@ -45,6 +45,17 @@ namespace XSharp.MacroCompiler
 
             if (converter != null)
                 return ConversionSymbol.Create(ConversionKind.ExplicitUserDefined, converter);
+
+            conversion = ResolveUsualConversion(expr, type);
+            if (conversion != ConversionKind.NoConversion)
+                return ConversionSymbol.Create(conversion);
+
+            if (allowDynamic)
+            {
+                var conv = ResolveDynamicConversion(expr, type);
+                if (conv != null)
+                    return conv;
+            }
 
             return ConversionSymbol.Create(ConversionKind.NoConversion);
         }
@@ -88,6 +99,27 @@ namespace XSharp.MacroCompiler
             if (!TypesMatch(FindType(parameters[0].ParameterType), expr.Datatype))
                 return false;
             return true;
+        }
+
+        internal static ConversionKind ResolveUsualConversion(Expr expr, TypeSymbol type)
+        {
+            if (expr.Datatype.NativeType == NativeType.__Usual && type.NativeType == NativeType.Object)
+                return ConversionKind.Boxing;
+            return ConversionKind.NoConversion;
+        }
+
+        internal static ConversionSymbol ResolveDynamicConversion(Expr expr, TypeSymbol type)
+        {
+            if (expr.Datatype.NativeType == NativeType.Object)
+            {
+                var inner = Conversion(expr, Compilation.GetNativeType(NativeType.__Usual));
+                var outer = Conversion(TypeConversion.Bound(expr, Compilation.GetNativeType(NativeType.__Usual), inner), type);
+                if (outer.Kind != ConversionKind.NoConversion)
+                {
+                    return ConversionSymbol.Create(outer, inner);
+                }
+            }
+            return null;
         }
     }
 }

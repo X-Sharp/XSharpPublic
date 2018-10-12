@@ -15,7 +15,11 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
-        internal Dictionary<string, LocalSymbol> Locals = new Dictionary<string, LocalSymbol>();
+        internal bool DynamicUsual = true;
+
+        internal Dictionary<string, LocalSymbol> LocalCache = new Dictionary<string, LocalSymbol>();
+        internal List<LocalSymbol> Locals = new List<LocalSymbol>();
+        internal List<ParameterSymbol> Params = new List<ParameterSymbol>();
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
 
@@ -146,6 +150,14 @@ namespace XSharp.MacroCompiler
             return FindType(nt);
         }
 
+        internal static TypeSymbol ArrayOf(TypeSymbol t)
+        {
+            if (t == null)
+                return null;
+            var nt = t.Type.MakeArrayType();
+            return FindType(nt);
+        }
+
         internal Symbol Lookup(Symbol decl, string name)
         {
             if (decl != null)
@@ -156,7 +168,7 @@ namespace XSharp.MacroCompiler
             {
                 {
                     LocalSymbol v;
-                    Locals.TryGetValue(name, out v);
+                    LocalCache.TryGetValue(name, out v);
                     if (v != null)
                         return v;
                 }
@@ -190,6 +202,34 @@ namespace XSharp.MacroCompiler
             }
             return null;
         }
+
+        internal LocalSymbol AddLocal(TypeSymbol type)
+        {
+            return AddLocal(null, type);
+        }
+
+        internal ParameterSymbol AddParam(TypeSymbol type)
+        {
+            return AddParam(null, type);
+        }
+
+        internal LocalSymbol AddLocal(string name, TypeSymbol type)
+        {
+            var local = new LocalSymbol(name, type);
+            Locals.Add(local);
+            if (!string.IsNullOrEmpty(name))
+                LocalCache.Add(name, local);
+            return local;
+        }
+
+        internal ParameterSymbol AddParam(string name, TypeSymbol type)
+        {
+            var param = new ParameterSymbol(name, type, Params.Count);
+            Params.Add(param);
+            if (!string.IsNullOrEmpty(name))
+                LocalCache.Add(name, param);
+            return param;
+        }
     }
 
     internal class Binder<T,R> : Binder where R: class
@@ -200,6 +240,18 @@ namespace XSharp.MacroCompiler
         {
             Bind(ref macro);
             return macro;
+        }
+
+        internal int ParamCount
+        {
+            get
+            {
+                int c = 0;
+                foreach (var loc in LocalCache)
+                    if (loc.Value is ParameterSymbol)
+                        c++;
+                return c;
+            }
         }
     }
 }

@@ -224,6 +224,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "showincludes":
                     options.ShowIncludes = positive;
                     break;
+                case "tocs":
+                    options.SaveAsCSharp = positive;
+                    break;
                 case "verbose":
                     options.Verbose = true;
                     options.ShowIncludes = true;

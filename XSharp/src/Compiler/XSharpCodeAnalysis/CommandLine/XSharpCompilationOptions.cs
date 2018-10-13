@@ -63,6 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string NameSpace { get; set; } = "";
         public ParseLevel ParseLevel { get;  set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
+        public bool SaveAsCSharp { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;

@@ -42,7 +42,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
                 {
                     var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
-                    if (n == null || n == node)
+					// also exit for variabledeclation because the order of our declaration is quite different
+                    if (n == null || n == node || n is VariableDeclarationSyntax)
                         break;
                     node = n;
                 }
@@ -206,6 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var s = text.Lines.GetLinePosition(span.Start);
             var e = text.Lines.GetLinePosition(span.End);
+            //System.Diagnostics.Debug.WriteLine($" {span.Start} {file} {s.Line}");
             return new FileLinePositionSpan(file, s, e);
         }
     }

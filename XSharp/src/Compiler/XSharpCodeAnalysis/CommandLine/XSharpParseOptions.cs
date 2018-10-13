@@ -71,6 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
+        public bool SaveAsCSharp { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
@@ -160,6 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ConsoleOutput = opt.ConsoleOutput;
                 ParseLevel = opt.ParseLevel;
                 AllowNamedArguments = opt.AllowNamedArguments;
+                SaveAsCSharp = opt.SaveAsCSharp;
             }
         }
 
@@ -191,6 +193,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             NoClipCall = opt.NoClipCall;
             PreprocessorOutput = opt.PreprocessorOutput;
             ParseLevel = opt.ParseLevel;
+            SaveAsCSharp = opt.SaveAsCSharp;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1

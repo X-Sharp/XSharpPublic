@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>/namedargs</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">/namedargs</para>
+    </header>
+    <para styleclass="Body Text">Specifies whether to allow named arguments in the parser or not.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">/namedargs [+ | -] &#160;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just /namedargs, directs the compiler to allow namedarguments. Specifying - directs the compiler to NOT use named arguments</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Body Text">The default = + for the Core dialect and - for all other dialects. So /namedargs- only is useful in combination with the Core dialect.</para>
+    <para styleclass="Body Text">Note If you enable this option then quite often existing code such as the code below will produce compiler errors&gt;<br/>That is why we have disabled named arguments for most dialects.</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> a </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ARRAY</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// When named arguments are enabled then the compiler will complain that there is no parameter named &quot;a&quot; for the Empty function</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> !Empty( a := SomeFunctionThatReturnsAnArray()) &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// do something</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+  </body>
+</topic>

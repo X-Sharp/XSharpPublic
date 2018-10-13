@@ -176,14 +176,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             (token as CommonToken).Type = XSharpParser.ID;
             var r = token.Text.StartsWith("@@") ? SyntaxFactory.Identifier(token.Text.Substring(2))
                 : isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, token.Text, token.Text, null)
-                : SyntaxFactory.Identifier(token.Text);
+                : SyntaxFactory.MakeIdentifier(token.Text);
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
 
         public static SyntaxToken SyntaxKeywordIdentifier(this IToken token)
         {
-            var r = SyntaxFactory.Identifier(token.Text.ToLower());
+            var r = SyntaxFactory.MakeIdentifier(token.Text.ToLower());
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }

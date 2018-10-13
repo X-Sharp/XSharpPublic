@@ -1184,12 +1184,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected LocalDeclarationStatementSyntax GenerateLocalDecl(string name, TypeSyntax type, ExpressionSyntax initexpr = null)
         {
-            var result =
-                    _syntaxFactory.LocalDeclarationStatement(
-                        TokenList(),
-                        _syntaxFactory.VariableDeclaration(type,
-                        MakeSeparatedList<VariableDeclaratorSyntax>(GenerateVariable(name, initexpr))),
+            var decl = _syntaxFactory.VariableDeclaration(type,
+                        MakeSeparatedList<VariableDeclaratorSyntax>(GenerateVariable(name, initexpr)));
+            decl.XGenerated = true;
+            var result = _syntaxFactory.LocalDeclarationStatement(
+                        TokenList(),decl,
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            result.XGenerated = true;
             return result;
         }
 
@@ -1375,10 +1376,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected BlockSyntax MakeBlock(SyntaxList<StatementSyntax> statements)
         {
-            return _syntaxFactory.Block(
+            var block= _syntaxFactory.Block(
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         statements,
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            block.XGenerated = true;
+            return block;
         }
 
         protected ExpressionSyntax MakeDefault(TypeSyntax type)

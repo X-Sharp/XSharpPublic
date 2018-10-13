@@ -54,19 +54,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        public static bool AllowNamedArgs(this XSharpDialect dialect)
-        {
-            switch (dialect)
-            {
-                case XSharpDialect.VO:
-                case XSharpDialect.Harbour:
-				case XSharpDialect.XBasePP:
-                case XSharpDialect.Vulcan:
-                    return false;
-                default:
-                    return true;
-            }
-        }
         public static bool AllowXBaseVariables(this XSharpDialect dialect)
         {
             switch (dialect)

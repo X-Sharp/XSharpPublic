@@ -99,6 +99,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "lb":
                     options.LateBinding = positive;
                     break;
+
+                case "namedarguments":
+                    options.AllowNamedArguments = positive;
+                    options.NamedArgsHasBeenSet = true;
+                    break;
+
                 case "noclipcall":
                     options.NoClipCall = positive; 
                     break;
@@ -375,6 +381,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void ValidateXSharpSettings(List<Diagnostic> diagnostics) {
             bool isVo = false;
             var newDialect = options.Dialect;
+            if (options.Dialect == XSharpDialect.Core)
+            {
+                if (!options.NamedArgsHasBeenSet)
+                    options.AllowNamedArguments = true;
+            }
+            else
+            {
+                if (!options.NamedArgsHasBeenSet)
+                    options.AllowNamedArguments = false;
+            }
             if (options.Dialect.IsDialectVO()) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;

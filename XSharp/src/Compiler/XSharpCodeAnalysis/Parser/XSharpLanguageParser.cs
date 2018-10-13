@@ -261,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // for info about optimization flags such as the next line
 
             parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
-            parser.AllowNamedArgs = _options.Dialect.AllowNamedArgs();
+            parser.AllowNamedArgs = _options.AllowNamedArguments;
             parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
 
 

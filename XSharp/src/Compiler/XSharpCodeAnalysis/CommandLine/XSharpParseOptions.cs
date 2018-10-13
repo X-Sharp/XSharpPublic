@@ -69,6 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ShowIncludes { get; private set; }
         public bool NoClipCall { get; internal set; } 
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
+        public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -158,6 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
                 ParseLevel = opt.ParseLevel;
+                AllowNamedArguments = opt.AllowNamedArguments;
             }
         }
 
@@ -190,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             PreprocessorOutput = opt.PreprocessorOutput;
             ParseLevel = opt.ParseLevel;
             Verbose = opt.Verbose;
-
+            AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
             VONullStrings = opt.VONullStrings; // vo2
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3

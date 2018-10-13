@@ -151,7 +151,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         int iBPLength = -1;
         int iBpStart = -1;
-        public bool IsHidden { get { return iBPLength == -1; } }
+        public bool IsHidden => false;
         public int Position
         {
             get

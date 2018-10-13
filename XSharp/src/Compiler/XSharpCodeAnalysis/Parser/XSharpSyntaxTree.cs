@@ -25,6 +25,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         readonly static internal SyntaxTrivia WS = Whitespace(" ");
 
+        internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
+        {
+            return Token(kind);
+        }
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
             return Token(WS, kind, WS);

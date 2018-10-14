@@ -777,7 +777,9 @@ BEGIN NAMESPACE XSharp.RDD
 					codePage := XSharp.RuntimeState.DosCodePage
 				ENDIF
 				SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
-				// Init Header, should it be a parameter ?
+				// Convert the Windows CodePage to a DBF CodePage
+				SELF:_Header:CodePage := CodePageExtensions.ToHeaderCodePage( codePage ) 
+				// Init Header version, should it be a parameter ?
 				SELF:_Header:Version := DBFVersion.FoxBaseDBase3NoMemo
 				IF ( SELF:_HasMemo )
 					IF ( SELF:_Header:Version == DBFVersion.dBase4 )

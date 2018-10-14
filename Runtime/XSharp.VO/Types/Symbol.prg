@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp
         PRIVATE STATIC _PszDict			AS Dictionary<DWORD, PSZ>
         #endregion
 
-        #region constr�ctors
+        #region constrúctors
         /// <summary>Construct the type and create the SymbolTable.</summary>
         STATIC CONSTRUCTOR
             SymbolTable.Initialize()
@@ -355,11 +355,13 @@ BEGIN NAMESPACE XSharp
 
             /// <inheritdoc />
                 METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
-					IF conversionType == TYPEOF(SYMBOL)
-						RETURN SELF
-					ENDIF
-                RETURN ((IConvertible)_value):ToType( conversionType, provider )
-
+				IF conversionType == TYPEOF(__Symbol)
+					RETURN SELF
+				ELSEIF conversionType == TYPEOF(System.String)
+					RETURN _value
+				ENDIF
+				RETURN ((IConvertible)_value):ToType(conversionType, provider)
+        
             /// <inheritdoc />
                 METHOD IConvertible.ToUInt16( provider AS IFormatProvider ) AS UInt16
                 RETURN ((IConvertible)_value):ToUInt16( provider )

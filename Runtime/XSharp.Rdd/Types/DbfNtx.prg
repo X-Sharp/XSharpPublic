@@ -36,11 +36,11 @@ BEGIN NAMESPACE XSharp.RDD
 			BEGIN LOCK SELF
 				//
 				SELF:GoCold()
-                local fullPath as string
+                LOCAL fullPath AS STRING
                 fullPath := orderInfo:BagName
-                if String.IsNullOrEmpty(System.IO.Path.GetDirectoryName(fullPath))
-                    fullPath := System.IO.Path.Combine(SYstem.IO.Path.GetDirectoryName(self:_FileName), fullPath)
-                endif
+                IF String.IsNullOrEmpty(System.IO.Path.GetDirectoryName(fullPath))
+                    fullPath := System.IO.Path.Combine(SYstem.IO.Path.GetDirectoryName(SELF:_FileName), fullPath)
+                ENDIF
 				RETURN SELF:_ntxList:Add(orderInfo, fullPath)
 			END LOCK
 			

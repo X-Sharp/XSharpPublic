@@ -424,7 +424,7 @@ FUNCTION VoDbRecordPut(aRecord AS BYTE[]) AS LOGIC
 /// <br/> <note type="tip">The difference between VoDbRelation and CoreDb.Relation is that VoDbRelation takes a USUAL parameter</note></remarks>
 /// <seealso cref="M:XSharp.CoreDb.Relation(System.UInt32,System.String@)"  />
 
-FUNCTION VoDbRelation(nPos AS DWORD, uRel REF USUAL) AS LOGIC
+FUNCTION VoDbRelation(nPos AS DWORD, uRel REF STRING) AS LOGIC
     RETURN VoDb.Relation(nPos, REF uRel)
 
 

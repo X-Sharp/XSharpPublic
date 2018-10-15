@@ -394,10 +394,10 @@ FUNCTION W2Bin(n AS WORD) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION _Val(cNumber AS STRING) AS OBJECT
+    IF String.IsNullOrEmpty(cNumber)
+      return 0
+    endif
 	cNumber := cNumber:Trim():ToUpper()
-	IF String.IsNullOrEmpty(cNumber)
-		RETURN 0
-	ENDIF
 	// find non numeric characters in cNumber and trim the field to that length
 	VAR pos := 0
 	VAR done := FALSE

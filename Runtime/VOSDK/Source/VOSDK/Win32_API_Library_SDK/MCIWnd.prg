@@ -1,0 +1,317 @@
+_DLL FUNC MCIWndCreate(hwndParent AS PTR, hInstance AS PTR, dwStyle AS DWORD, szFile AS PSZ) AS PTR PASCAL:MSVFW32.MCIWndCreateA
+_DLL FUNC MCIWndRegisterClass() AS VOID PASCAL:MSVFW32.MCIWndRegisterClass
+
+// Flags for the MCIWndOpen command
+FUNCTION  MCIWndCanRecord(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd,MCIWNDM_CAN_RECORD,0,0))
+FUNCTION  MCIWndCanSave(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd,MCIWNDM_CAN_SAVE,0,0))
+FUNCTION  MCIWndCanWindow(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd,MCIWNDM_CAN_WINDOW,0,0))
+FUNCTION  MCIWndCanEject(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd,MCIWNDM_CAN_EJECT,0,0))
+FUNCTION  MCIWndCanConfig(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd,MCIWNDM_CAN_CONFIG,0,0))
+FUNCTION  MCIWndPaletteKick(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd,MCIWNDM_PALETTEKICK,0,0))
+
+FUNCTION  MCIWndGetDeviceID(hwnd AS PTR) AS DWORD
+	RETURN DWORD(_CAST, SendMessage(hwnd, MCIWNDM_GETDEVICEID, 0, 0))
+
+FUNCTION  MCIWndGetAlias(hwnd AS PTR) AS DWORD
+	RETURN DWORD(_CAST, SendMessage(hwnd, MCIWNDM_GETALIAS, 0, 0))
+
+FUNCTION  MCIWndDestroy(hwnd AS PTR) AS VOID
+	SendMessage(hwnd, WM_CLOSE, 0, 0)
+   RETURN
+
+FUNCTION  MCIWndGetZoom(hwnd AS PTR) AS DWORD
+	RETURN DWORD(_CAST, SendMessage(hwnd, MCIWNDM_GETZOOM, 0, 0))
+
+FUNCTION  MCIWndValidateMedia(hwnd AS PTR) AS VOID
+	SendMessage(hwnd, MCIWNDM_VALIDATEMEDIA, 0, 0)
+   RETURN
+
+FUNCTION  MCIWndGetRepeat(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd, MCIWNDM_GETREPEAT, 0, 0))
+
+FUNCTION  MCIWndSetActiveTimer(hwnd AS PTR, active AS DWORD) AS VOID
+	SendMessage(hwnd, MCIWNDM_SETACTIVETIMER, active, 0L)
+   RETURN
+
+FUNCTION  MCIWndSetInactiveTimer(hwnd AS PTR, inactive AS DWORD) AS VOID
+	SendMessage(hwnd, MCIWNDM_SETINACTIVETIMER,  inactive, 0L)
+   RETURN
+
+FUNCTION  MCIWndGetActiveTimer(hwnd AS PTR) AS DWORD
+	RETURN DWORD(_CAST, SendMessage(hwnd, MCIWNDM_GETACTIVETIMER,  0, 0L))
+
+FUNCTION  MCIWndGetInactiveTimer(hwnd AS PTR) AS DWORD
+	RETURN DWORD(_CAST, SendMessage(hwnd, MCIWNDM_GETINACTIVETIMER, 0, 0L))
+
+FUNCTION  MCIWndGetPalette(hwnd AS PTR) AS PTR
+	RETURN PTR(_CAST, SendMessage(hwnd, MCIWNDM_GETPALETTE, 0, 0))
+
+FUNCTION  MCIWndGetStyles(hwnd AS PTR) AS DWORD
+	RETURN DWORD(_CAST, SendMessage(hwnd, MCIWNDM_GETSTYLES, 0, 0L))
+
+FUNCTION MCIWndCanPlay(hwnd AS PTR) AS LOGIC
+	RETURN LOGIC(_CAST, SendMessage(hwnd, MCIWNDM_CAN_PLAY ,0 ,0))
+FUNCTION  MCIWndSave(hwnd AS PTR, szFile AS PSZ) AS LONGINT
+	RETURN  SendMessage(hwnd, MCI_SAVE, 0, LONGINT(_CAST, szFile))
+FUNCTION  MCIWndSaveDialog(hwnd AS PTR) AS LONGINT
+	RETURN MCIWndSave(hwnd, PSZ(_CAST, -1L))
+
+	// if you dont give a device it will use the current device....
+FUNCTION  MCIWndNew(hwnd AS PTR, lp AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_NEW, 0, LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndRecord(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_RECORD, 0, 0)
+
+FUNCTION  MCIWndOpen(hwnd AS PTR, sz AS PSZ, f AS DWORD) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_OPEN, DWORD(_CAST, f), LONGINT(_CAST, sz))
+
+FUNCTION  MCIWndOpenDialog(hwnd AS PTR) AS LONGINT
+	RETURN MCIWndOpen(hwnd, PSZ(_CAST, -1L), 0)
+
+FUNCTION  MCIWndClose(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_CLOSE, 0, 0)
+
+FUNCTION  MCIWndPlay(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_PLAY, 0, 0)
+
+FUNCTION  MCIWndStop(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_STOP, 0, 0)
+
+FUNCTION  MCIWndPause(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_PAUSE, 0, 0)
+
+FUNCTION  MCIWndResume(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_RESUME, 0, 0)
+
+FUNCTION  MCIWndSeek(hwnd AS PTR, lPos AS LONGINT) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_SEEK, 0, LONGINT(_CAST, lPos))
+
+FUNCTION  MCIWndEject(hwnd AS PTR)  AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_EJECT, 0, 0)
+
+FUNCTION  MCIWndHome(hwnd AS PTR) AS LONGINT
+	RETURN MCIWndSeek(hwnd, MCIWND_START)
+
+FUNCTION  MCIWndEnd(hwnd AS PTR) AS LONGINT
+	RETURN MCIWndSeek(hwnd, MCIWND_END)
+
+FUNCTION  MCIWndGetSource(hwnd AS PTR, prc AS _winRECT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GET_SOURCE, 0, LONGINT(_CAST, prc))
+
+FUNCTION  MCIWndPutSource(hwnd AS PTR, prc AS _winRECT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_PUT_SOURCE, 0, LONGINT(_CAST, prc))
+
+FUNCTION  MCIWndGetDest(hwnd AS PTR, prc AS _winRECT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GET_DEST, 0, LONGINT(_CAST, prc))
+FUNCTION  MCIWndPutDest(hwnd AS PTR, prc AS _winRECT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_PUT_DEST, 0, LONGINT(_CAST, prc))
+
+FUNCTION  MCIWndPlayReverse(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_PLAYREVERSE, 0, 0)
+
+FUNCTION  MCIWndPlayFrom(hwnd AS PTR, lPos AS LONGINT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_PLAYFROM, 0, LONGINT(_CAST, lPos))
+
+FUNCTION  MCIWndPlayTo(hwnd AS PTR, lPos AS LONGINT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_PLAYTO,   0, LONGINT(_CAST, lPos))
+
+FUNCTION  MCIWndPlayFromTo(hwnd AS PTR, lStart AS LONGINT, lEnd AS LONGINT) AS LONGINT
+	MCIWndSeek(hwnd, lStart)
+	RETURN  MCIWndPlayTo(hwnd, lEnd)
+
+FUNCTION  MCIWndGetMode(hwnd AS PTR, lp AS PSZ, len AS DWORD) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETMODE, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndGetPosition(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETPOSITION, 0, 0)
+
+FUNCTION  MCIWndGetPositionString(hwnd AS PTR, lp AS PSZ, len AS DWORD) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETPOSITION, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndGetStart(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETSTART, 0, 0)
+
+FUNCTION  MCIWndGetLength(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETLENGTH, 0, 0)
+
+FUNCTION  MCIWndGetEnd(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETEND, 0, 0)
+
+FUNCTION  MCIWndStep(hwnd AS PTR, n AS LONGINT) AS LONGINT
+	RETURN SendMessage(hwnd, MCI_STEP, 0, LONGINT(_CAST, n))
+
+FUNCTION  MCIWndSetZoom(hwnd AS PTR, iZoom AS INT) AS VOID
+	SendMessage(hwnd, MCIWNDM_SETZOOM, 0, LONGINT(_CAST, iZoom))
+   RETURN
+
+FUNCTION  MCIWndSetVolume(hwnd AS PTR, iVol AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_SETVOLUME, 0, LONGINT(_CAST, iVol))
+
+FUNCTION  MCIWndGetVolume(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETVOLUME, 0, 0)
+
+FUNCTION  MCIWndSetSpeed(hwnd AS PTR, iSpeed AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_SETSPEED, 0, LONGINT(_CAST, iSpeed))
+
+FUNCTION  MCIWndGetSpeed(hwnd AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETSPEED, 0, 0)
+
+FUNCTION  MCIWndSetTimeFormat(hwnd AS PTR, lp AS PSZ) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_SETTIMEFORMAT, 0, LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndGetTimeFormat(hwnd AS PTR, lp AS PSZ, len AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETTIMEFORMAT, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndSetRepeat(hwnd AS PTR, f AS LOGIC) AS VOID
+	SendMessage(hwnd, MCIWNDM_SETREPEAT, 0, LONGINT(_CAST, f))
+   RETURN
+
+FUNCTION  MCIWndUseFrames(hwnd AS PTR) AS LONGINT
+	RETURN MCIWndSetTimeFormat(hwnd, PSZ(_CAST, "frames"))
+
+FUNCTION  MCIWndUseTime(hwnd AS PTR) AS LONGINT
+	RETURN MCIWndSetTimeFormat(hwnd, PSZ(_CAST, "ms"))
+
+FUNCTION  MCIWndSetTimers(hwnd AS PTR, active AS DWORD, inactive AS DWORD) AS VOID
+	SendMessage(hwnd, MCIWNDM_SETTIMERS, DWORD(_CAST, active), LONGINT(_CAST, inactive))
+   RETURN
+
+FUNCTION  MCIWndRealize(hwnd AS PTR, fBkgnd AS LOGIC) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_REALIZE, DWORD(_CAST, fBkgnd), 0)
+
+FUNCTION  MCIWndSendString(hwnd AS PTR, sz AS PSZ) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_SENDSTRING, 0, LONGINT(_CAST, sz))
+
+FUNCTION  MCIWndReturnString(hwnd AS PTR, lp AS PSZ, len AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_RETURNSTRING, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndGetError(hwnd AS PTR, lp AS PSZ, len AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETERROR, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+	//define MCIWndActivate(hwnd as ptr, f as logic)     (void)MCIWndSM(hwnd, WM_ACTIVATE, dword(_cast, (BOOL)(f), 0)
+
+FUNCTION  MCIWndSetPalette(hwnd AS PTR, hpal AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_SETPALETTE, DWORD(_CAST, hpal), 0)
+
+FUNCTION  MCIWndGetFileName(hwnd AS PTR, lp AS PTR, len AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETFILENAME, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndGetDevice(hwnd AS PTR, lp AS PTR, len AS DWORD) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_GETDEVICE, DWORD(_CAST, len), LONGINT(_CAST, lp))
+
+FUNCTION  MCIWndChangeStyles(hwnd AS PTR, mask AS DWORD, value AS INT) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_CHANGESTYLES, DWORD(_CAST, mask), LONGINT(_CAST, value))
+
+FUNCTION  MCIWndOpenInterface(hwnd AS PTR, pUnk AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_OPENINTERFACE, 0, LONGINT(_CAST, pUnk))
+
+FUNCTION  MCIWndSetOwner(hwnd AS PTR, hwndP AS PTR) AS LONGINT
+	RETURN SendMessage(hwnd, MCIWNDM_SETOWNER, DWORD(_CAST, hwndP), 0)
+
+	// Messages an app will send to MCIWND
+
+	// all the text-related messages are defined out of order above (they need
+	// to be defined before the MCIWndOpen() macros
+
+
+
+#region defines
+DEFINE MCIWNDOPENF_NEW            :=  0x0001  // open a new file
+// window styles
+DEFINE MCIWNDF_NOAUTOSIZEWINDOW    := 0x0001  // when movie size changes
+DEFINE MCIWNDF_NOPLAYBAR           := 0x0002  // no toolbar
+DEFINE MCIWNDF_NOAUTOSIZEMOVIE     := 0x0004  // when window size changes
+DEFINE MCIWNDF_NOMENU              := 0x0008  // no popup menu from RBUTTONDOWN
+DEFINE MCIWNDF_SHOWNAME            := 0x0010  // show name in caption
+DEFINE MCIWNDF_SHOWPOS             := 0x0020  // show position in caption
+DEFINE MCIWNDF_SHOWMODE            := 0x0040  // show mode in caption
+DEFINE MCIWNDF_SHOWALL             := 0x0070  // show all
+DEFINE MCIWNDF_NOTIFYMODE         := 0x0100  // tell parent of mode change
+DEFINE MCIWNDF_NOTIFYPOS          := 0x0200  // tell parent of pos change
+DEFINE MCIWNDF_NOTIFYSIZE         := 0x0400  // tell parent of size change
+DEFINE MCIWNDF_NOTIFYERROR        := 0x1000  // tell parent of an error
+DEFINE MCIWNDF_NOTIFYALL          := 0x1F00  // tell all
+DEFINE MCIWNDF_NOTIFYANSI     := 0x0080
+// The MEDIA notification includes a text string.
+// To receive notifications in ANSI instead of unicode set the
+// MCIWNDF_NOTIFYANSI style bit. The macro below includes this bit
+// by default unless you define UNICODE in your application.
+DEFINE MCIWNDF_NOTIFYMEDIA       := 0x0880  // tell parent of media change
+DEFINE MCIWNDF_RECORD              := 0x2000  // Give a record button
+DEFINE MCIWNDF_NOERRORDLG          := 0x4000  // Show Error Dlgs for MCI cmds?
+DEFINE MCIWNDF_NOOPEN        := 0x8000  // Don't allow user to open things
+// can macros
+DEFINE MCIWNDM_GETDEVICEID := (WM_USER + 100)
+DEFINE MCIWNDM_GETSTART  := (WM_USER + 103)
+DEFINE MCIWNDM_GETLENGTH := (WM_USER + 104)
+DEFINE MCIWNDM_GETEND    := (WM_USER + 105)
+DEFINE MCIWNDM_EJECT   := (WM_USER + 107)
+DEFINE MCIWNDM_SETZOOM   := (WM_USER + 108)
+DEFINE MCIWNDM_GETZOOM         := (WM_USER + 109)
+DEFINE MCIWNDM_SETVOLUME := (WM_USER + 110)
+DEFINE MCIWNDM_GETVOLUME := (WM_USER + 111)
+DEFINE MCIWNDM_SETSPEED  := (WM_USER + 112)
+DEFINE MCIWNDM_GETSPEED  := (WM_USER + 113)
+DEFINE MCIWNDM_SETREPEAT := (WM_USER + 114)
+DEFINE MCIWNDM_GETREPEAT := (WM_USER + 115)
+DEFINE MCIWNDM_REALIZE         := (WM_USER + 118)
+DEFINE MCIWNDM_VALIDATEMEDIA   := (WM_USER + 121)
+DEFINE MCIWNDM_PLAYFROM  := (WM_USER + 122)
+DEFINE MCIWNDM_PLAYTO          := (WM_USER + 123)
+DEFINE MCIWNDM_GETPALETTE      := (WM_USER + 126)
+DEFINE MCIWNDM_SETPALETTE      := (WM_USER + 127)
+DEFINE MCIWNDM_SETTIMERS := (WM_USER + 129)
+DEFINE MCIWNDM_SETACTIVETIMER  := (WM_USER + 130)
+DEFINE MCIWNDM_SETINACTIVETIMER := (WM_USER + 131)
+DEFINE MCIWNDM_GETACTIVETIMER  := (WM_USER + 132)
+DEFINE MCIWNDM_GETINACTIVETIMER := (WM_USER + 133)
+DEFINE MCIWNDM_CHANGESTYLES  := (WM_USER + 135)
+DEFINE MCIWNDM_GETSTYLES := (WM_USER + 136)
+DEFINE MCIWNDM_GETALIAS  := (WM_USER + 137)
+DEFINE MCIWNDM_PLAYREVERSE := (WM_USER + 139)
+DEFINE MCIWNDM_GET_SOURCE      := (WM_USER + 140)
+DEFINE MCIWNDM_PUT_SOURCE      := (WM_USER + 141)
+DEFINE MCIWNDM_GET_DEST        := (WM_USER + 142)
+DEFINE MCIWNDM_PUT_DEST        := (WM_USER + 143)
+DEFINE MCIWNDM_CAN_PLAY        := (WM_USER + 144)
+DEFINE MCIWNDM_CAN_WINDOW      := (WM_USER + 145)
+DEFINE MCIWNDM_CAN_RECORD      := (WM_USER + 146)
+DEFINE MCIWNDM_CAN_SAVE        := (WM_USER + 147)
+DEFINE MCIWNDM_CAN_EJECT       := (WM_USER + 148)
+DEFINE MCIWNDM_CAN_CONFIG      := (WM_USER + 149)
+DEFINE MCIWNDM_PALETTEKICK     := (WM_USER + 150)
+DEFINE MCIWNDM_OPENINTERFACE := (WM_USER + 151)
+DEFINE MCIWNDM_SETOWNER  := (WM_USER + 152)
+//define both A and W messages
+DEFINE MCIWNDM_SENDSTRING := (WM_USER + 101)
+DEFINE MCIWNDM_GETPOSITION  := (WM_USER + 102)
+DEFINE MCIWNDM_GETMODE  := (WM_USER + 106)
+DEFINE MCIWNDM_SETTIMEFORMAT  := (WM_USER + 119)
+DEFINE MCIWNDM_GETTIMEFORMAT  := (WM_USER + 120)
+DEFINE MCIWNDM_GETFILENAME    := (WM_USER + 124)
+DEFINE MCIWNDM_GETDEVICE      := (WM_USER + 125)
+DEFINE MCIWNDM_GETERROR       := (WM_USER + 128)
+DEFINE MCIWNDM_NEW    := (WM_USER + 134)
+DEFINE MCIWNDM_RETURNSTRING := (WM_USER + 138)
+DEFINE MCIWNDM_OPEN   := (WM_USER + 153)
+// note that the source text for MCIWND will thus contain
+// support for eg MCIWNDM_SENDSTRING (both the 16-bit entrypoint and
+// in win32 mapped to MCIWNDM_SENDSTRINGW), and MCIWNDM_SENDSTRINGA (the
+// win32 ansi thunk).
+// Messages MCIWND will send to an app
+DEFINE MCIWNDM_NOTIFYMODE      := (WM_USER + 200)  // wp = hwnd, lp = mode
+DEFINE MCIWNDM_NOTIFYPOS := (WM_USER + 201)  // wp = hwnd, lp = pos
+DEFINE MCIWNDM_NOTIFYSIZE  := (WM_USER + 202)  // wp = hwnd
+DEFINE MCIWNDM_NOTIFYMEDIA     := (WM_USER + 203)  // wp = hwnd, lp = fn
+DEFINE MCIWNDM_NOTIFYERROR     := (WM_USER + 205)  // wp = hwnd, lp = error
+// special seek values for START and END
+DEFINE MCIWND_START            :=    -1
+DEFINE MCIWND_END              :=    -2
+#endregion

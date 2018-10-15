@@ -1,0 +1,981 @@
+VOSTRUCT _winSELECTEDFLD
+	MEMBER lpNext AS _winSELECTEDFLD
+	MEMBER lpPrev AS _winSELECTEDFLD
+	MEMBER lpFld AS _winFIELDINFO
+	MEMBER lpUserData AS PTR
+	MEMBER wUserBytes AS DWORD
+
+
+
+VOSTRUCT _winRECORDCORE
+	MEMBER lpNext AS _winRECORDCORE
+	MEMBER lpPrev AS _winRECORDCORE
+	MEMBER lpszText AS PSZ
+	MEMBER lpszName AS PSZ
+	MEMBER lpszIcon AS PSZ
+	MEMBER flRecAttr AS DWORD
+	MEMBER lpRecData AS PTR
+	MEMBER dwRecSize AS DWORD
+	MEMBER ptIconOrg IS _winPOINT
+	MEMBER hIcon AS PTR
+	MEMBER hMiniIcon AS PTR
+	MEMBER hBmp AS PTR
+	MEMBER hMiniBmp AS PTR
+	MEMBER lpUserData AS PTR
+	MEMBER wUserBytes AS DWORD
+	MEMBER bClrRecText AS LOGIC
+	MEMBER crRecText AS DWORD
+	MEMBER bClrRecBk AS LOGIC
+	MEMBER crRecBk AS DWORD
+	MEMBER lpSelFldHead AS _winSELECTEDFLD
+	MEMBER lpSelFldTail AS _winSELECTEDFLD
+
+
+
+
+VOSTRUCT _winCNTINFO
+	MEMBER    dwCntInfoLen AS DWORD
+	MEMBER    flCntAttr AS DWORD
+	MEMBER    fViewAttr AS DWORD
+	MEMBER    hAuxWnd AS PTR
+	MEMBER    hFont AS PTR
+	MEMBER    hFontTitle AS PTR
+	MEMBER    hFontColTitle AS PTR
+	MEMBER    hCursor AS PTR
+	MEMBER    hCurTtl AS PTR
+	MEMBER    hCurFldTtl AS PTR
+	MEMBER    hCurTtlBtn AS PTR
+	MEMBER    hCurFldTtlBtn AS PTR
+	MEMBER    hCurFldSizing AS PTR
+	MEMBER    hCurFldMoving AS PTR
+	MEMBER    lpUserData AS PTR
+	MEMBER    wUserBytes AS DWORD
+	MEMBER    ptOrigin IS _winPOINT
+	MEMBER    wLineSpacing AS DWORD
+	MEMBER    lpszTitle AS PSZ
+	MEMBER    flTitleAlign AS DWORD
+	MEMBER    wTitleLines AS DWORD
+	MEMBER    wColTitleLines AS DWORD
+	MEMBER    wRowLines AS DWORD
+	MEMBER    cyTitleArea AS INT
+	MEMBER    cyColTitleArea AS INT
+	MEMBER    nMaxWidth AS INT
+	MEMBER    hBmpTtl AS PTR
+	MEMBER    xOffTtlBmp AS INT
+	MEMBER    yOffTtlBmp AS INT
+	MEMBER    xTPxlTtlBmp AS INT
+	MEMBER    yTPxlTtlBmp AS INT
+	MEMBER    flTtlBmpAlign AS DWORD
+	MEMBER    nTtlBtnWidth AS INT
+	MEMBER    bTtlBtnAlignRt AS LOGIC
+	MEMBER    DIM szTtlBtnTxt[MAX_BTNTXT_LEN] AS BYTE
+	MEMBER    flTtlBtnTxtAlign AS DWORD
+	MEMBER    hBmpTtlBtn AS PTR
+	MEMBER    flTtlBtnBmpAlign AS DWORD
+	MEMBER    xOffTtlBtnBmp AS INT
+	MEMBER    yOffTtlBtnBmp AS INT
+	MEMBER    xTPxlTtlBtnBmp AS INT
+	MEMBER    yTPxlTtlBtnBmp AS INT
+	MEMBER    cxCharTtl AS INT
+	MEMBER    cxCharTtl2 AS INT
+	MEMBER    cyCharTtl AS INT
+	MEMBER    cyCharTtl2 AS INT
+	MEMBER    cyCharTtl4 AS INT
+	MEMBER    cxCharFldTtl AS INT
+	MEMBER    cxCharFldTtl2 AS INT
+	MEMBER    cyCharFldTtl AS INT
+	MEMBER    cyCharFldTtl2 AS INT
+	MEMBER    cyCharFldTtl4 AS INT
+	MEMBER    cxChar AS INT
+	MEMBER    cxChar2 AS INT
+	MEMBER    cxChar4 AS INT
+	MEMBER    cyChar AS INT
+	MEMBER    cyChar2 AS INT
+	MEMBER    cyLineSpace AS INT
+	MEMBER    cyRow AS INT
+	MEMBER    cyRow2 AS INT
+	MEMBER    cyRow4 AS INT
+	MEMBER    nDelta AS INT
+	MEMBER    nDeltaPos AS INT
+	MEMBER    ptBmpOrIcon IS _winPOINT
+	MEMBER    nFieldNbr AS INT
+	MEMBER    nRecsDisplayed AS INT
+	MEMBER    dwRecordNbr AS DWORD
+	MEMBER    wCurNotify AS DWORD
+	MEMBER    wCurAnsiChar AS DWORD
+	MEMBER    hWndCurCNSender AS PTR
+	MEMBER    nCurCNInc AS INT
+	MEMBER    bCurCNShiftKey AS LOGIC
+	MEMBER    bCurCNCtrlKey AS LOGIC
+	MEMBER    bFocusRecLocked AS LOGIC
+	MEMBER    bFocusFldLocked AS LOGIC
+	MEMBER    bSimCtrlKey AS LOGIC
+	MEMBER    bSimShiftKey AS LOGIC
+	MEMBER    bSendFocusMsg AS LOGIC
+	MEMBER    bSendKBEvents AS LOGIC
+	MEMBER    bSendMouseEvents AS LOGIC
+	MEMBER    bDrawFocusRect AS LOGIC
+	MEMBER    lpCurCNUser AS PTR
+	MEMBER    lpCurCNRec AS _winRECORDCORE
+	MEMBER    lpCurCNFld AS _winFIELDINFO
+	MEMBER    lpFieldHead AS  _winFIELDINFO
+	MEMBER    lpFieldTail AS  _winFIELDINFO
+	MEMBER    lpFieldObj AS  _winFIELDINFO
+	MEMBER    lpRecHead AS  _winRECORDCORE
+	MEMBER    lpRecTail AS  _winRECORDCORE
+	MEMBER    lpTopRec AS   _winRECORDCORE
+	MEMBER    lpSelRec AS _winRECORDCORE
+	MEMBER    lpFocusRec AS _winRECORDCORE
+	MEMBER    lpFocusFld AS _winFIELDINFO
+
+
+
+
+
+VOSTRUCT _winCDATE
+	MEMBER     byDay AS BYTE
+	MEMBER   byMonth AS BYTE
+	MEMBER    wYear AS DWORD
+
+
+VOSTRUCT _winCTIME
+	MEMBER   byHour AS BYTE
+	MEMBER     byMin AS BYTE
+	MEMBER     bySec AS BYTE
+
+
+
+VOSTRUCT _winFIELDINFO
+	MEMBER lpNext AS _winFIELDINFO
+	MEMBER lpPrev AS _winFIELDINFO
+	MEMBER dwFieldInfoLen AS DWORD
+	MEMBER flColAttr AS DWORD
+	MEMBER wColType AS DWORD
+	MEMBER wIndex AS DWORD
+	MEMBER cxWidth AS DWORD
+	MEMBER cxPxlWidth AS DWORD
+	MEMBER lpFTitle AS PTR
+	MEMBER wTitleLen AS DWORD
+	MEMBER wFTitleLines AS DWORD
+	MEMBER flFTitleAlign AS DWORD
+	MEMBER flFDataAlign AS DWORD
+	MEMBER hBmpFldTtl AS PTR
+	MEMBER flFTBmpAlign AS DWORD
+	MEMBER xOffFldTtlBmp AS INT
+	MEMBER yOffFldTtlBmp AS INT
+	MEMBER xTPxlFldTtlBmp AS INT
+	MEMBER yTPxlFldTtlBmp AS INT
+	MEMBER nFldBtnWidth AS INT
+	MEMBER bFldBtnAlignRt AS LOGIC
+	MEMBER DIM szFldBtnTxt[MAX_BTNTXT_LEN] AS BYTE
+	MEMBER flFldBtnTxtAlign AS DWORD
+	MEMBER hBmpFldBtn AS PTR
+	MEMBER flFldBtnBmpAlign AS DWORD
+	MEMBER xOffFldBtnBmp AS INT
+	MEMBER yOffFldBtnBmp AS INT
+	MEMBER xTPxlFldBtnBmp AS INT
+	MEMBER yTPxlFldBtnBmp AS INT
+	MEMBER xEditWidth AS DWORD
+	MEMBER yEditLines AS DWORD
+	MEMBER wOffStruct AS DWORD
+	MEMBER wDataBytes AS DWORD
+	MEMBER lpUserData AS PTR
+	MEMBER wUserBytes AS DWORD
+	MEMBER lpDescriptor AS PTR
+	MEMBER wDescBytes AS DWORD
+	MEMBER bDescEnabled AS LOGIC
+	MEMBER lpfnCvtToStr AS PTR
+	MEMBER lpfnDrawData AS PTR
+	MEMBER bClrFldText AS LOGIC
+	MEMBER crFldText AS DWORD
+	MEMBER bClrFldBk AS LOGIC
+	MEMBER crFldBk AS DWORD
+	MEMBER bClrFldTtlText AS LOGIC
+	MEMBER crFldTtlText AS DWORD
+	MEMBER bClrFldTtlBk AS LOGIC
+	MEMBER crFldTtlBk AS DWORD
+	MEMBER bClrFldBtnText AS LOGIC
+	MEMBER crFldBtnText AS DWORD
+	MEMBER bClrFldBtnBk AS LOGIC
+	MEMBER crFldBtnBk AS DWORD
+
+
+
+
+_DLL FUNCTION CntInfoGet(hWnd AS PTR) AS _winCNTINFO PASCAL:cato3cnt.CntInfoGet
+
+_DLL FUNCTION CntGetVersion() AS WORD PASCAL:cato3cnt.CntGetVersion
+
+_DLL FUNCTION CntAssociateSet(hWnd AS PTR, hWndAssociate AS PTR) AS PTR PASCAL:cato3cnt.CntAssociateSet
+
+
+_DLL FUNCTION CntAssociateGet(hWnd AS PTR) AS PTR PASCAL:cato3cnt.CntAssociateGet
+
+_DLL FUNCTION CntAuxWndSet(hWnd AS PTR, hAuxWnd AS PTR) AS PTR PASCAL:cato3cnt.CntAuxWndSet
+
+
+_DLL FUNCTION CntAuxWndGet(hWnd AS PTR) AS PTR PASCAL:cato3cnt.CntAuxWndGet
+
+_DLL FUNCTION CntRangeExSet(hWnd AS PTR, lMin AS LONG, lMax AS LONG) AS LOGIC PASCAL:cato3cnt.CntRangeExSet
+
+
+_DLL FUNCTION CntRangeSet(hWnd AS PTR, iMin AS DWORD, iMax AS DWORD) AS DWORD PASCAL:cato3cnt.CntRangeSet
+
+_DLL FUNCTION CntRangeMinGet(hWnd AS PTR) AS LONG PASCAL:cato3cnt.CntRangeMinGet
+
+_DLL FUNCTION CntRangeMaxGet(hWnd AS PTR) AS LONG PASCAL:cato3cnt.CntRangeMaxGet
+
+_DLL FUNCTION CntRangeGet(hWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntRangeGet
+
+_DLL FUNCTION CntRangeInc(hWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntRangeInc
+
+_DLL FUNCTION CntRangeDec(hWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntRangeDec
+
+_DLL FUNCTION CntCurrentPosExSet(hWnd AS PTR, lPos AS LONG) AS LONG PASCAL:cato3cnt.CntCurrentPosExSet
+
+_DLL FUNCTION CntCurrentPosExGet(hWnd AS PTR) AS LONG PASCAL:cato3cnt.CntCurrentPosExGet
+
+_DLL FUNCTION CntCurrentPosSet(hWnd AS PTR, iPos AS INT) AS INT PASCAL:cato3cnt.CntCurrentPosSet
+
+_DLL FUNCTION CntCurrentPosGet(hWnd AS PTR) AS INT PASCAL:cato3cnt.CntCurrentPosGet
+
+_DLL FUNCTION CntColorSet(hWnd AS PTR, iColor AS DWORD, cr AS DWORD) AS DWORD PASCAL:cato3cnt.CntColorSet
+
+_DLL FUNCTION CntColorGet(hWnd AS PTR, iColor AS DWORD) AS DWORD PASCAL:cato3cnt.CntColorGet
+
+_DLL FUNCTION CntFldColorSet(hWnd AS PTR, lpFld AS _winFIELDINFO, iColor AS DWORD, cr AS DWORD) AS DWORD PASCAL:cato3cnt.CntFldColorSet
+
+_DLL FUNCTION CntFldColorGet(hWnd AS PTR, lpFld AS _winFIELDINFO, iColor AS DWORD) AS DWORD PASCAL:cato3cnt.CntFldColorGet
+
+_DLL FUNCTION CntRecColorSet(hWnd AS PTR, lpRec AS _winRECORDCORE, iColor AS DWORD, cr AS DWORD) AS DWORD PASCAL:cato3cnt.CntRecColorSet    
+
+_DLL FUNCTION CntRecColorGet(hWnd AS PTR, lpRec AS _winRECORDCORE, iColor AS DWORD) AS DWORD PASCAL:cato3cnt.CntRecColorGet    
+
+_DLL FUNCTION CntTtlSet(hWnd AS PTR, lpszTitle AS PSZ) AS LOGIC PASCAL:cato3cnt.CntTtlSet    
+
+_DLL FUNCTION CntTtlGet(hWnd AS PTR) AS PSZ PASCAL:cato3cnt.CntTtlGet
+
+_DLL FUNCTION CntTtlAlignSet(hWnd AS PTR, dwAlign AS DWORD) AS VOID PASCAL:cato3cnt.CntTtlAlignSet
+
+_DLL FUNCTION CntFldTtlAlnSet(hWnd AS PTR, lpFld AS _winFIELDINFO, dwAlign AS DWORD) AS VOID PASCAL:cato3cnt.CntFldTtlAlnSet
+
+_DLL FUNCTION CntFldDataAlnSet(hWnd AS PTR, lpFld AS _winFIELDINFO, dwAlign AS DWORD) AS VOID PASCAL:cato3cnt.CntFldDataAlnSet
+
+_DLL FUNCTION CntTtlSepSet(hWnd AS PTR) AS VOID PASCAL:cato3cnt.CntTtlSepSet
+
+_DLL FUNCTION CntFldTtlSepSet(hWnd AS PTR) AS VOID PASCAL:cato3cnt.CntFldTtlSepSet
+
+_DLL FUNCTION CntFldTtlSet(hWnd AS PTR, lpFld AS _winFIELDINFO, lpszColTitle AS PSZ, wTitleLen AS DWORD) AS LOGIC PASCAL:cato3cnt.CntFldTtlSet
+
+_DLL FUNCTION CntFldTtlGet(hWnd AS PTR, lpFld AS _winFIELDINFO) AS PSZ PASCAL:cato3cnt.CntFldTtlGet
+
+_DLL FUNCTION CntCursorSet(hWnd AS PTR, hCursor AS PTR, iArea AS DWORD) AS LOGIC PASCAL:cato3cnt.CntCursorSet
+
+_DLL FUNCTION CntFontSet(hWnd AS PTR, hFont AS PTR, iFont AS DWORD) AS LOGIC PASCAL:cato3cnt.CntFontSet
+
+_DLL FUNCTION CntFontGet(hWnd AS PTR, iFont AS DWORD) AS PTR PASCAL:cato3cnt.CntFontGet
+
+_DLL FUNCTION CntViewSet(hWnd AS PTR, iView AS DWORD) AS DWORD PASCAL:cato3cnt.CntViewSet
+
+_DLL FUNCTION CntViewGet(hWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntViewGet
+
+_DLL FUNCTION CntDeferPaint(hWnd AS PTR) AS VOID PASCAL:cato3cnt.CntDeferPaint
+
+_DLL FUNCTION CntEndDeferPaint(hWnd AS PTR, bUpdate AS LOGIC) AS VOID PASCAL:cato3cnt.CntEndDeferPaint
+
+_DLL FUNCTION CntDeferPaintEx(hWnd AS PTR) AS INT PASCAL:cato3cnt.CntDeferPaintEx
+
+_DLL FUNCTION CntEndDeferPaintEx(hWnd AS PTR, bUpdate AS LOGIC) AS INT PASCAL:cato3cnt.CntEndDeferPaintEx
+
+_DLL FUNCTION CntFrameWndGet(hWnd AS PTR) AS PTR PASCAL:cato3cnt.CntFrameWndGet
+
+_DLL FUNCTION CntSpltChildWndGet(hWnd AS PTR, uPane AS DWORD) AS PTR PASCAL:cato3cnt.CntSpltChildWndGet
+
+_DLL FUNCTION CntSpltBarCreate(hCntWnd AS PTR, wMode AS DWORD, xCoord AS INT) AS VOID PASCAL:cato3cnt.CntSpltBarCreate
+
+_DLL FUNCTION CntSpltBarDelete(hCntWnd AS PTR, wMode AS DWORD, xCoord AS INT) AS VOID PASCAL:cato3cnt.CntSpltBarDelete
+
+_DLL FUNCTION CntAttribSet(hWnd AS PTR, dwAttrib AS DWORD) AS VOID PASCAL:cato3cnt.CntAttribSet
+
+_DLL FUNCTION CntAttribClear(hWnd AS PTR, dwAttrib AS DWORD) AS VOID PASCAL:cato3cnt.CntAttribClear
+
+_DLL FUNCTION CntFldAttrSet(lpFld AS _winFIELDINFO, dwAttrib AS DWORD) AS VOID PASCAL:cato3cnt.CntFldAttrSet
+
+_DLL FUNCTION CntFldAttrClear(lpFld AS _winFIELDINFO, dwAttrib AS DWORD) AS VOID PASCAL:cato3cnt.CntFldAttrClear
+
+_DLL FUNCTION CntFldAttrGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS DWORD PASCAL:cato3cnt.CntFldAttrGet
+
+_DLL FUNCTION CntRecAttrSet(lpRec AS _winRECORDCORE, dwAttrib AS DWORD) AS VOID PASCAL:cato3cnt.CntRecAttrSet
+
+_DLL FUNCTION CntRecAttrGet(lpRec AS _winRECORDCORE) AS DWORD PASCAL:cato3cnt.CntRecAttrGet
+
+_DLL FUNCTION CntRecAttrClear(lpRec AS _winRECORDCORE, dwAttrib AS DWORD) AS VOID PASCAL:cato3cnt.CntRecAttrClear
+
+_DLL FUNCTION CntTotalRecsGet(hCntWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntTotalRecsGet
+
+_DLL FUNCTION CntLineSpaceGet(hCntWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntLineSpaceGet
+
+_DLL FUNCTION CntStyleSet(hWnd AS PTR, dwStyle AS DWORD) AS VOID PASCAL:cato3cnt.CntStyleSet
+
+_DLL FUNCTION CntStyleGet(hWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntStyleGet
+
+_DLL FUNCTION CntStyleClear(hWnd AS PTR, dwStyle AS DWORD) AS VOID PASCAL:cato3cnt.CntStyleClear
+
+_DLL FUNCTION CntSizeCheck(hWnd AS PTR, cxWidth AS INT, cyHeight AS INT,;
+	cxMaxWidth AS PTR, lpcxUnused AS INT PTR,;
+	lpcyPartial AS INT PTR, lpbHscroll AS INT PTR,;
+	lpbVscroll AS INT PTR) AS VOID PASCAL:cato3cnt.CntSizeCheck
+
+_DLL FUNCTION CntRetainBaseHt(hWnd AS PTR, bRetain AS LOGIC) AS VOID PASCAL:cato3cnt.CntRetainBaseHt
+
+_DLL FUNCTION CntUserDataSet(hCntWnd AS PTR, lpUserData AS PTR, wUserBytes AS DWORD);
+	AS PTR PASCAL:cato3cnt.CntUserDataSet
+
+_DLL FUNCTION CntUserDataGet(hCntWnd AS PTR) AS PTR PASCAL:cato3cnt.CntUserDataGet
+
+_DLL FUNCTION CntNotifyMsgGet(hWnd AS PTR, lParam AS LONGINT) AS DWORD PASCAL:cato3cnt.CntNotifyMsgGet
+
+_DLL FUNCTION CntNotifyMsgDone(hWnd AS PTR, lParam AS LONGINT) AS VOID PASCAL:cato3cnt.CntNotifyMsgDone
+
+_DLL FUNCTION CntNotifyAssocEx(hWnd AS PTR, wEvent AS DWORD, wOemCharVal AS DWORD,;
+	lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO,;
+	lInc AS LONG, bShiftKey AS LOGIC, bCtrlKey AS LOGIC,;
+	lpUserData AS PTR) AS VOID PASCAL:cato3cnt.CntNotifyAssocEx
+
+_DLL FUNCTION CntNotifyAssoc(hWnd AS PTR, wEvent AS DWORD, wOemCharVal AS DWORD,;
+	lpRec AS _winRECORDCORE, lpFld AS _WinFIELDINFO, nInc AS INT,;
+	bShiftKey AS LOGIC, bCtrlKey AS LOGIC, lpUserData AS PTR);
+	AS VOID PASCAL:cato3cnt.CntNotifyAssoc
+
+_DLL FUNCTION CntCNChildWndGet(hCntWnd AS PTR, lParam AS LONGINT) AS PTR PASCAL:cato3cnt.CntCNChildWndGet
+
+_DLL FUNCTION CntCNCharGet(hCntWnd AS PTR, lParam AS LONGINT) AS DWORD PASCAL:cato3cnt.CntCNCharGet
+
+_DLL FUNCTION CntCNIncExGet(hCntWnd AS PTR, lParam AS LONGINT) AS LONG PASCAL:cato3cnt.CntCNIncExGet
+
+_DLL FUNCTION CntCNIncGet(hCntWnd AS PTR, lParam AS LONGINT) AS INT PASCAL:cato3cnt.CntCNIncGet
+
+
+_DLL FUNCTION CntCNThumbTrkGet(hCntWnd AS PTR, lParam AS LONGINT) AS INT PASCAL:cato3cnt.CntCNThumbTrkGet
+
+_DLL FUNCTION CntCNRecGet(hCntWnd AS PTR, lParam AS LONGINT) AS _winRECORDCORE PASCAL:cato3cnt.CntCNRecGet
+
+_DLL FUNCTION CntCNFldGet(hCntWnd AS PTR, lParam AS LONGINT) AS _winFIELDINFO PASCAL:cato3cnt.CntCNFldGet
+
+_DLL FUNCTION CntCNUserDataGet(hCntWnd AS PTR, lParam AS LONGINT) AS PTR PASCAL:cato3cnt.CntCNUserDataGet
+
+_DLL FUNCTION CntCNShiftKeyGet(hCntWnd AS PTR, lParam AS LONG) AS LOGIC PASCAL:cato3cnt.CntCNShiftKeyGet
+
+_DLL FUNCTION CntCNCtrlKeyGet(hCntWnd AS PTR, lParam AS LONGINT) AS LOGIC PASCAL:cato3cnt.CntCNCtrlKeyGet
+
+_DLL FUNCTION CntCNSplitBarGet(hCntWnd AS PTR, lParam AS LONGINT) AS INT PASCAL:cato3cnt.CntCNSplitBarGet
+
+_DLL FUNCTION CntFldDefine(lpFld AS _winFIELDINFO, wFldType AS DWORD, flColAttr AS DWORD,;
+	wFTitleLines AS DWORD, flFTitleAlign AS DWORD,;
+	flFDataAlign AS DWORD, xWidth AS DWORD, xEditWidth AS DWORD,;
+	yEditLines AS DWORD, wOffStruct AS DWORD, wDataBytes AS DWORD);
+	AS LOGIC PASCAL:cato3cnt.CntFldDefine
+
+_DLL FUNCTION CntFldUserSet(lpFld AS _winFIELDINFO, lpUserData AS PTR,;
+	wUserBytes AS DWORD) AS LOGIC PASCAL:cato3cnt.CntFldUserSet
+
+_DLL FUNCTION CntFldUserGet(lpFld AS _winFIELDINFO) AS PTR PASCAL:cato3cnt.CntFldUserGet
+
+_DLL FUNCTION CntFldDataSet(lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO,;
+	wBufSize AS DWORD, lpBuf AS PTR) AS LOGIC PASCAL:cato3cnt.CntFldDataSet
+
+_DLL FUNCTION CntFldDataGet(lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO,;
+	wBufSize AS DWORD, lpBuf AS PTR) AS LOGIC PASCAL:cato3cnt.CntFldDataGet
+
+_DLL FUNCTION CntTtlBmpSet(hCntWnd AS PTR, hBmpTtl AS PTR, flBmpAlign AS DWORD,;
+	xOffBmp AS INT, yOffBmp AS INT, xTransPxl AS INT,;
+	yTransPxl AS INT, bTransparent AS LOGIC) AS LOGIC PASCAL:cato3cnt.CntTtlBmpSet
+
+
+_DLL FUNCTION CntFldTtlBmpSet(lpFld AS _winFIELDINFO, hBmpFldTtl AS PTR,;
+	flFTBmpAlign AS DWORD, xOffBmp AS INT, yOffBmp AS INT,;
+	xTransPxl AS INT, yTransPxl AS INT, bTransparent AS LOGIC);
+	AS LOGIC PASCAL:cato3cnt.CntFldTtlBmpSet
+
+_DLL FUNCTION CntTtlBtnSet(hCntWnd AS PTR, nBtnWidth AS INT, nBtnPlacement AS INT,;
+	lpszText AS PSZ, flTxtAlign AS DWORD, hBitmap AS PTR,;
+	flBmpAlign AS DWORD, xOffBmp AS INT, yOffBmp AS INT,;
+	xTransPxl AS INT, yTransPxl AS INT, bTransparent AS LOGIC);
+	AS LOGIC PASCAL:cato3cnt.CntTtlBtnSet
+
+_DLL FUNCTION CntFldTtlBtnSet(lpFld AS _winFIELDINFO, nBtnWidth AS INT, nBtnPlacement AS INT,;
+	lpszText AS PSZ, flTxtAlign AS DWORD, hBitmap AS PTR,;
+	flBmpAlign AS DWORD, xOffBmp AS INT, yOffBmp AS INT,;
+	xTransPxl AS INT, yTransPxl AS INT, bTransparent AS LOGIC) AS LOGIC PASCAL:cato3cnt.CntFldTtlBtnSet
+
+_DLL FUNCTION CntRecDataSet(lpRec AS _winRECORDCORE, lpData AS PTR) AS LOGIC PASCAL:cato3cnt.CntRecDataSet
+
+_DLL FUNCTION CntRecDataGet(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpBuf AS PTR);
+	AS PTR PASCAL:cato3cnt.CntRecDataGet
+
+_DLL FUNCTION CntRecUserSet(lpRec AS _winRECORDCORE, lpUserData AS PTR, wUserBytes AS DWORD);
+	AS LOGIC PASCAL:cato3cnt.CntRecUserSet
+
+_DLL FUNCTION CntRecUserGet(lpRec AS _winRECORDCORE) AS PTR PASCAL:cato3cnt.CntRecUserGet
+
+_DLL FUNCTION CntFreeFldInfo(lpFld AS _winFIELDINFO) AS LOGIC PASCAL:cato3cnt.CntFreeFldInfo
+
+_DLL FUNCTION CntFreeRecCore(lpRec AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntFreeRecCore
+
+_DLL FUNCTION CntAddFldTail(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS LOGIC PASCAL:cato3cnt.CntAddFldTail
+
+_DLL FUNCTION CntAddRecTail(hCntWnd AS PTR, lpNew  AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntAddRecTail
+
+_DLL FUNCTION CntAddFldHead(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS LOGIC PASCAL:cato3cnt.CntAddFldHead
+
+_DLL FUNCTION CntAddRecHead(hCntWnd AS PTR, lpNew  AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntAddRecHead
+
+_DLL FUNCTION CntInsFldAfter(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lpNew AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntInsFldAfter
+
+_DLL FUNCTION CntInsRecAfter(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpNew AS _winRECORDCORE);
+	AS LOGIC PASCAL:cato3cnt.CntInsRecAfter
+
+_DLL FUNCTION CntInsFldBefore(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lpNew AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntInsFldBefore
+
+_DLL FUNCTION CntInsRecBefore(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpNew AS _winRECORDCORE);
+	AS LOGIC PASCAL:cato3cnt.CntInsRecBefore
+
+_DLL FUNCTION CntMoveRecAfter(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpNew AS _winRECORDCORE);
+	AS LOGIC PASCAL:cato3cnt.CntMoveRecAfter
+
+_DLL FUNCTION CntKillFldList(hCntWnd AS PTR) AS LOGIC PASCAL:cato3cnt.CntKillFldList
+
+_DLL FUNCTION CntKillRecList(hCntWnd AS PTR) AS LOGIC PASCAL:cato3cnt.CntKillRecList
+
+_DLL FUNCTION CntFldHeadGet(hCntWnd AS PTR) AS _winFIELDINFO PASCAL:cato3cnt.CntFldHeadGet
+
+_DLL FUNCTION CntRecHeadGet(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntRecHeadGet
+
+_DLL FUNCTION CntFldTailGet(hCntWnd AS PTR) AS _winFIELDINFO PASCAL:cato3cnt.CntFldTailGet
+
+_DLL FUNCTION CntRecTailGet(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntRecTailGet
+
+_DLL FUNCTION CntNewFldInfo() AS _winFIELDINFO PASCAL:cato3cnt.CntNewFldInfo
+
+_DLL FUNCTION CntNewRecCore(dwRecSize AS DWORD) AS _winRECORDCORE PASCAL:cato3cnt.CntNewRecCore
+
+_DLL FUNCTION CntRemoveFldHead(hCntWnd AS PTR) AS _winFIELDINFO PASCAL:cato3cnt.CntRemoveFldHead
+
+_DLL FUNCTION CntRemoveRecHead(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntRemoveRecHead
+
+_DLL FUNCTION CntRemoveFldTail(hCntWnd AS PTR) AS _winFIELDINFO PASCAL:cato3cnt.CntRemoveFldTail
+
+_DLL FUNCTION CntRemoveRecTail(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntRemoveRecTail
+
+_DLL FUNCTION CntRemoveFld(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS _winFIELDINFO PASCAL:cato3cnt.CntRemoveFld
+
+_DLL FUNCTION CntRemoveRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS _winRECORDCORE PASCAL:cato3cnt.CntRemoveRec
+
+_DLL FUNCTION CntScrollFldList(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lDelta AS LONG);
+	AS _winFIELDINFO PASCAL:cato3cnt.CntScrollFldList
+
+_DLL FUNCTION CntScrollRecList(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lDelta AS LONG);
+	AS _winRECORDCORE PASCAL:cato3cnt.CntScrollRecList
+
+_DLL FUNCTION CntNextFld(lpFld AS _winFIELDINFO) AS _winFIELDINFO PASCAL:cato3cnt.CntNextFld
+
+_DLL FUNCTION CntNextRec(lpRec AS _winRECORDCORE) AS _winRECORDCORE PASCAL:cato3cnt.CntNextRec
+
+_DLL FUNCTION CntPrevFld(lpFld AS _winFIELDINFO) AS _winFIELDINFO PASCAL:cato3cnt.CntPrevFld
+
+_DLL FUNCTION CntPrevRec(lpRec AS _winRECORDCORE) AS _winRECORDCORE PASCAL:cato3cnt.CntPrevRec
+
+_DLL FUNCTION CntTopRecGet(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntTopRecGet
+
+_DLL FUNCTION CntTopRecSet(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntTopRecSet
+
+_DLL FUNCTION CntBotRecGet(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntBotRecGet
+
+_DLL FUNCTION CntRecsDispGet(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntRecsDispGet
+
+_DLL FUNCTION CntScrollRecAreaEx(hCntWnd AS PTR, lIncrement AS LONG) AS _winRECORDCORE PASCAL:cato3cnt.CntScrollRecAreaEx
+
+_DLL FUNCTION CntScrollRecArea(hCntWnd AS PTR, nIncrement AS INT) AS _winRECORDCORE PASCAL:cato3cnt.CntScrollRecArea
+
+_DLL FUNCTION CntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONG) AS VOID PASCAL:cato3cnt.CntVScrollPosExSet
+
+_DLL FUNCTION CntVScrollPosSet(hCntWnd AS PTR, nPosition AS SHORT) AS VOID PASCAL:cato3cnt.CntVScrollPosSet
+
+_DLL FUNCTION CntScrollFldArea(hCntWnd AS PTR, nIncrement AS INT) AS VOID PASCAL:cato3cnt.CntScrollFldArea
+
+_DLL FUNCTION CntSelRecGet(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntSelRecGet
+
+_DLL FUNCTION CntSelectRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntSelectRec
+
+_DLL FUNCTION CntUnSelectRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntUnSelectRec
+
+_DLL FUNCTION CntIsRecSelected(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntIsRecSelected
+
+_DLL FUNCTION CntSelectFld(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntSelectFld
+
+_DLL FUNCTION CntUnSelectFld(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntUnSelectFld
+
+_DLL FUNCTION CntIsFldSelected(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntIsFldSelected
+
+_DLL FUNCTION CntFldAtPtGet(hCntWnd AS PTR, lpPt AS _winPOINT) AS _winFIELDINFO PASCAL:cato3cnt.CntFldAtPtGet
+
+_DLL FUNCTION CntRecAtPtGet(hCntWnd AS PTR, lpPt AS _winPOINT) AS _winRECORDCORE PASCAL:cato3cnt.CntRecAtPtGet
+
+_DLL FUNCTION CntKeyBdEnable(hCntWnd AS PTR, bEnable AS LOGIC) AS VOID PASCAL:cato3cnt.CntKeyBdEnable
+
+_DLL FUNCTION CntMouseEnable(hCntWnd AS PTR, bEnable AS LOGIC) AS VOID PASCAL:cato3cnt.CntMouseEnable
+
+_DLL FUNCTION CntFocusMove(hCntWnd AS PTR, wDir AS DWORD) AS LOGIC PASCAL:cato3cnt.CntFocusMove
+
+_DLL FUNCTION CntIsFocusCellRO(hCntWnd AS PTR) AS LOGIC PASCAL:cato3cnt.CntIsFocusCellRO
+
+_DLL FUNCTION CntFocusSet(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntFocusSet
+
+_DLL FUNCTION CntTopFocusSet(hCntWnd AS PTR) AS LOGIC PASCAL:cato3cnt.CntTopFocusSet
+
+_DLL FUNCTION CntBotFocusSet(hCntWnd AS PTR) AS LOGIC PASCAL:cato3cnt.CntBotFocusSet
+
+_DLL FUNCTION CntFocRectEnable(hCntWnd AS PTR, bEnable AS LOGIC) AS VOID PASCAL:cato3cnt.CntFocRectEnable
+
+_DLL FUNCTION CntFocMsgEnable(hCntWnd AS PTR, bEnable AS LOGIC) AS VOID PASCAL:cato3cnt.CntFocMsgEnable
+
+_DLL FUNCTION CntFocusScrollEnable(hCntWnd AS PTR, bEnable AS LOGIC) AS VOID PASCAL:cato3cnt.CntFocusScrollEnable
+
+_DLL FUNCTION CntFocusRecGet(hCntWnd AS PTR) AS _winRECORDCORE PASCAL:cato3cnt.CntFocusRecGet
+
+_DLL FUNCTION CntFocusFldGet(hCntWnd AS PTR) AS _winFIELDINFO PASCAL:cato3cnt.CntFocusFldGet
+
+_DLL FUNCTION CntFocusFldLock(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntFocusFldLock
+
+_DLL FUNCTION CntFocusRecLock(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntFocusRecLock
+
+_DLL FUNCTION CntFocusFldUnlck(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntFocusFldUnlck
+
+_DLL FUNCTION CntFocusRecUnlck(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntFocusRecUnlck
+
+
+_DLL FUNCTION CntFocusOrgExGet(hCntWnd AS PTR, lpnXorg AS INT PTR, lpnYorg AS INT PTR,;
+	bScreen AS LOGIC) AS LOGIC PASCAL:cato3cnt.CntFocusOrgExGet
+
+_DLL FUNCTION CntFocusOrgGet(hCntWnd AS PTR, bScreen AS LOGIC) AS DWORD PASCAL:cato3cnt.CntFocusOrgGet
+
+_DLL FUNCTION CntFocusExtExGet(hCntWnd AS PTR, lpnXext AS INT PTR, lpnYext AS INT  PTR);
+	AS LOGIC PASCAL:cato3cnt.CntFocusExtExGet
+
+_DLL FUNCTION CntFocusExtGet(hCntWnd AS PTR) AS DWORD PASCAL:cato3cnt.CntFocusExtGet
+
+_DLL FUNCTION CntFldTtlOrgExGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lpnXorg AS INT PTR, lpnYorg AS INT PTR, bScreen AS  LOGIC) AS LOGIC PASCAL:cato3cnt.CntFldTtlOrgExGet
+
+
+_DLL FUNCTION CntFldTtlOrgGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, bScreen AS LOGIC);
+	AS DWORD PASCAL:cato3cnt.CntFldTtlOrgGet
+
+_DLL FUNCTION CntFldEditExtExGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lpnXext AS INT PTR,;
+	lpnYext AS INT PTR) AS LOGIC PASCAL:cato3cnt.CntFldEditExtExGet
+
+_DLL FUNCTION CntFldEditExtGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS DWORD PASCAL:cato3cnt.CntFldEditExtGet
+
+_DLL FUNCTION CntFldBytesExGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lpuBytes AS DWORD PTR,;
+	lpuOffset AS DWORD PTR) AS LOGIC PASCAL:cato3cnt.CntFldBytesExGet
+
+_DLL FUNCTION CntFldBytesGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS DWORD PASCAL:cato3cnt.CntFldBytesGet
+
+_DLL FUNCTION CntEndRecEdit(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO);
+	AS LOGIC PASCAL:cato3cnt.CntEndRecEdit
+
+_DLL FUNCTION CntUpdateRecArea(hCntWnd AS PTR, lpRec AS _winRECORDCORE,;
+	lpFld AS _winFIELDINFO) AS VOID PASCAL:cato3cnt.CntUpdateRecArea
+
+_DLL FUNCTION CntDeltaExSet(hCntWnd AS PTR, lDelta AS LONG) AS VOID PASCAL:cato3cnt.CntDeltaExSet
+
+_DLL FUNCTION CntDeltaExGet(hCntWnd AS PTR) AS LONG PASCAL:cato3cnt.CntDeltaExGet
+
+_DLL FUNCTION CntDeltaSet(hCntWnd AS PTR, nDelta AS INT) AS VOID PASCAL:cato3cnt.CntDeltaSet
+
+_DLL FUNCTION CntDeltaGet(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntDeltaGet
+
+_DLL FUNCTION CntDeltaPosExSet(hCntWnd AS PTR, lDeltaPos AS LONG) AS VOID PASCAL:cato3cnt.CntDeltaPosExSet
+
+_DLL FUNCTION CntDeltaPosExGet(hCntWnd AS PTR) AS LONG PASCAL:cato3cnt.CntDeltaPosExGet
+
+_DLL FUNCTION CntDeltaPosSet(hCntWnd AS PTR, nDeltaPos AS INT) AS VOID PASCAL:cato3cnt.CntDeltaPosSet
+
+_DLL FUNCTION CntDeltaPosGet(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntDeltaPosGet
+
+_DLL FUNCTION CntFldTypeGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS DWORD PASCAL:cato3cnt.CntFldTypeGet
+
+_DLL FUNCTION CntFldCvtProcSet(lpFld AS _winFIELDINFO, lpfnCvtProc AS PTR) AS LOGIC PASCAL:cato3cnt.CntFldCvtProcSet
+
+_DLL FUNCTION CntFldDescSet(lpFld AS _winFIELDINFO, lpDesc AS PTR, wDescBytes AS DWORD) AS LOGIC PASCAL:cato3cnt.CntFldDescSet
+
+_DLL FUNCTION CntFldDescEnable(lpFld AS _winFIELDINFO, bEnable AS LOGIC) AS VOID PASCAL:cato3cnt.CntFldDescEnable
+
+_DLL FUNCTION CntFldDrwProcSet(lpFld AS _winFIELDINFO, lpfnDrawProc AS PTR) AS LOGIC PASCAL:cato3cnt.CntFldDrwProcSet
+
+_DLL FUNCTION CntFldWidthGet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, bPixels AS LOGIC);
+	AS INT PASCAL:cato3cnt.CntFldWidthGet
+
+_DLL FUNCTION CntFldWidthSet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, nWidth AS DWORD);
+	AS SHORT PASCAL:cato3cnt.CntFldWidthSet
+
+_DLL FUNCTION CntLastFldExpand(hCntWnd AS PTR, nExtra AS INT) AS DWORD PASCAL:cato3cnt.CntLastFldExpand
+
+_DLL FUNCTION CntFldAutoSize(hCntWnd AS PTR, lpFld AS _winFIELDINFO, uMethod AS DWORD,;
+	nExtra AS INT, nMinFldWidth AS INT, nMaxFldWidth AS INT);
+	AS INT PASCAL:cato3cnt.CntFldAutoSize
+
+_DLL FUNCTION CntRowHtSet(hCntWnd AS PTR, nHeight AS INT, wLineSpace AS DWORD);
+	AS INT PASCAL:cato3cnt.CntRowHtSet
+
+_DLL FUNCTION CntRowHtGet(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntRowHtGet
+
+_DLL FUNCTION CntTtlHtSet(hCntWnd AS PTR, nHeight AS INT) AS INT PASCAL:cato3cnt.CntTtlHtSet
+
+_DLL FUNCTION CntTtlHtGet(hCntWnd AS PTR) AS INT PASCAL:cato3cnt.CntTtlHtGet
+
+_DLL FUNCTION CntFldTtlHtSet(hCntWnd AS PTR, nHeight AS INT) AS INT PASCAL:cato3cnt.CntFldTtlHtSet
+
+_DLL FUNCTION CntFldTtlHtGet(hCntWnd AS INT) AS INT PASCAL:cato3cnt.CntFldTtlHtGet
+
+_DLL FUNCTION CntFldByIndexGet(hCntWnd AS PTR, wIndex AS DWORD) AS _winFIELDINFO PASCAL:cato3cnt.CntFldByIndexGet
+
+_DLL FUNCTION CntFldIndexSet(lpFld AS _winFIELDINFO, wIndex AS DWORD) AS VOID PASCAL:cato3cnt.CntFldIndexSet
+
+_DLL FUNCTION CntFldIndexGet(lpFld AS _winFIELDINFO) AS DWORD PASCAL:cato3cnt.CntFldIndexGet
+
+_DLL FUNCTION CntPaintProcSet(hCntWnd AS PTR, lpfnPaintProc AS PTR) AS LOGIC PASCAL:cato3cnt.CntPaintProcSet
+
+_DLL FUNCTION CntNewSelFld() AS _winSELECTEDFLD PASCAL:cato3cnt.CntNewSelFld
+
+_DLL FUNCTION CntFreeSelFld(lpSelField AS _winSELECTEDFLD) AS LOGIC PASCAL:cato3cnt.CntFreeSelFld
+
+
+_DLL FUNCTION CntSelFldHeadGet(lpRec AS _winRECORDCORE) AS _winSELECTEDFLD PASCAL:cato3cnt.CntSelFldHeadGet
+
+_DLL FUNCTION CntSelFldTailGet(lpRec AS _winRECORDCORE) AS _winSELECTEDFLD PASCAL:cato3cnt.CntSelFldTailGet
+
+_DLL FUNCTION CntAddSelFldHead(lpRec AS _winRECORDCORE, lpNew AS _winSELECTEDFLD) AS LOGIC PASCAL:cato3cnt.CntAddSelFldHead
+
+_DLL FUNCTION CntAddSelFldTail(lpRec AS _winRECORDCORE, lpNew AS _winSELECTEDFLD) AS LOGIC PASCAL:cato3cnt.CntAddSelFldTail
+
+_DLL FUNCTION CntRemSelFldHead(lpRec AS _winRECORDCORE) AS _winSELECTEDFLD PASCAL:cato3cnt.CntRemSelFldHead
+
+_DLL FUNCTION CntRemSelFldTail(lpRec AS _winRECORDCORE) AS _winSELECTEDFLD PASCAL:cato3cnt.CntRemSelFldHead
+
+_DLL FUNCTION CntRemSelFld(lpRec AS _winRECORDCORE, lpSelField AS _winSELECTEDFLD) AS _winSELECTEDFLD PASCAL:cato3cnt.CntRemSelFld
+
+_DLL FUNCTION CntInsSelFldBfor(lpRec AS _winRECORDCORE, lpSelField AS _winSELECTEDFLD, lpNew AS _winSELECTEDFLD) AS LOGIC PASCAL:cato3cnt.CntInsSelFldBfor
+
+_DLL FUNCTION CntInsSelFldAftr(lpRec AS _winRECORDCORE, lpSelField AS _winSELECTEDFLD, lpNew AS _winSELECTEDFLD) AS LOGIC PASCAL:cato3cnt.CntInsSelFldAftr
+
+_DLL FUNCTION CntKillSelFldLst(lpRec AS _winRECORDCORE) AS LOGIC PASCAL:cato3cnt.CntKillSelFldLst
+
+_DLL FUNCTION CntNextSelFld(lpSelField AS _winSELECTEDFLD) AS _winSELECTEDFLD PASCAL:cato3cnt.CntNextSelFld
+
+_DLL FUNCTION CntPrevSelFld(lpSelField AS _winSELECTEDFLD) AS _winSELECTEDFLD PASCAL:cato3cnt.CntPrevSelFld
+
+_DLL FUNCTION CntFindSelFld(lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO) AS _winSELECTEDFLD PASCAL:cato3cnt.CntFindSelFld
+
+_DLL FUNCTION CntSelFldUserSet(lpSF AS _winSELECTEDFLD, lpUserData AS PTR, wUserBytes AS DWORD);
+	AS LOGIC PASCAL:cato3cnt.CntSelFldUserSet
+
+_DLL FUNCTION CntSelFldUserGet(lpSelFld AS _winSELECTEDFLD) AS PTR PASCAL:cato3cnt.CntRowHtGet
+
+#region defines
+DEFINE CTS_READONLY         := 0x00000100
+DEFINE CTS_SINGLESEL        := 0x00000200
+DEFINE CTS_MULTIPLESEL      := 0x00000400
+DEFINE CTS_EXTENDEDSEL      := 0x00000800
+DEFINE CTS_BLOCKSEL         := 0x00001000
+DEFINE CTS_SPLITBAR         := 0x00002000
+DEFINE CTS_VERTSCROLL       := 0x00004000
+DEFINE CTS_HORZSCROLL       := 0x00008000
+DEFINE CTS_INTEGRALWIDTH    := 0x00000001
+DEFINE CTS_INTEGRALHEIGHT   := 0x00000002
+DEFINE CTS_EXPANDLASTFLD    := 0x00000004
+DEFINE CTS_ASYNCNOTIFY      := 0x00000080
+DEFINE CN_ASSOCIATEGAIN     := 501
+DEFINE CN_ASSOCIATELOSS     := 502
+DEFINE CN_RANGECHANGE       := 503
+DEFINE CN_BEGTTLEDIT        := 504
+DEFINE CN_ENDTTLEDIT        := 505
+DEFINE CN_BEGFLDTTLEDIT     := 506
+DEFINE CN_ENDFLDTTLEDIT     := 507
+DEFINE CN_BEGRECEDIT        := 508
+DEFINE CN_ENDRECEDIT        := 509
+DEFINE CN_BEGFLDEDIT        := 510
+DEFINE CN_ENDFLDEDIT        := 511
+DEFINE CN_EMPHASIS          := 512
+DEFINE CN_SETFOCUS          := 513
+DEFINE CN_KILLFOCUS         := 514
+DEFINE CN_QUERYDELTA        := 515
+DEFINE CN_ENTER             := 516
+DEFINE CN_INSERT            := 517
+DEFINE CN_DELETE            := 518
+DEFINE CN_ESCAPE            := 519
+DEFINE CN_TAB               := 520
+DEFINE CN_RECSELECTED       := 521
+DEFINE CN_RECUNSELECTED     := 522
+DEFINE CN_CHARHIT           := 523
+DEFINE CN_ROTTLDBLCLK       := 524
+DEFINE CN_ROFLDTTLDBLCLK    := 525
+DEFINE CN_ROFLDDBLCLK       := 526
+DEFINE CN_NEWFOCUS          := 527
+DEFINE CN_NEWFOCUSREC       := 528
+DEFINE CN_NEWFOCUSFLD       := 529
+DEFINE CN_QUERYFOCUS        := 530
+DEFINE CN_F1                := 531
+DEFINE CN_F2                := 532
+DEFINE CN_F3                := 533
+DEFINE CN_F4                := 534
+DEFINE CN_F5                := 535
+DEFINE CN_F6                := 536
+DEFINE CN_F7                := 537
+DEFINE CN_F8                := 538
+DEFINE CN_F9                := 539
+DEFINE CN_F10               := 540
+DEFINE CN_F11               := 541
+DEFINE CN_F12               := 542
+DEFINE CN_F13               := 543
+DEFINE CN_F14               := 544
+DEFINE CN_F15               := 545
+DEFINE CN_F16               := 546
+DEFINE CN_F17               := 547
+DEFINE CN_F18               := 548
+DEFINE CN_F19               := 549
+DEFINE CN_F20               := 550
+DEFINE CN_F21               := 551
+DEFINE CN_F22               := 552
+DEFINE CN_F23               := 553
+DEFINE CN_F24               := 554
+DEFINE CN_TTLBTNCLK         := 555
+DEFINE CN_FLDTTLBTNCLK      := 556
+DEFINE CN_VSCROLL_TOP       := 557
+DEFINE CN_VSCROLL_BOTTOM    := 558
+DEFINE CN_VSCROLL_PAGEUP    := 559
+DEFINE CN_VSCROLL_PAGEDOWN  := 560
+DEFINE CN_VSCROLL_LINEUP    := 561
+DEFINE CN_VSCROLL_LINEDOWN  := 562
+DEFINE CN_VSCROLL_THUMBPOS  := 563
+DEFINE CN_HSCROLL_PAGEUP    := 564
+DEFINE CN_HSCROLL_PAGEDOWN  := 565
+DEFINE CN_HSCROLL_LINEUP    := 566
+DEFINE CN_HSCROLL_LINEDOWN  := 567
+DEFINE CN_HSCROLL_THUMBPOS  := 568
+DEFINE CN_FLDSIZED          := 569
+DEFINE CN_FLDMOVED          := 570
+DEFINE CN_FLDSELECTED       := 571
+DEFINE CN_FLDUNSELECTED     := 572
+DEFINE CN_SPLITBAR_CREATED  := 573
+DEFINE CN_SPLITBAR_MOVED    := 574
+DEFINE CN_SPLITBAR_DELETED  := 575
+DEFINE CN_NEWRECSELECTLIST  := 576
+DEFINE CN_BGNRECSELECTION   := 577
+DEFINE CN_ENDRECSELECTION   := 578
+DEFINE CN_NEWFLDSELECTLIST  := 579
+DEFINE CN_BGNFLDSELECTION   := 580
+DEFINE CN_ENDFLDSELECTION   := 581
+DEFINE CN_LK_ARROW_UP       := 582
+DEFINE CN_LK_ARROW_DOWN     := 583
+DEFINE CN_LK_ARROW_LEFT     := 584
+DEFINE CN_LK_ARROW_RIGHT    := 585
+DEFINE CN_LK_HOME           := 586
+DEFINE CN_LK_END            := 587
+DEFINE CN_LK_PAGEUP         := 588
+DEFINE CN_LK_PAGEDOWN       := 589
+DEFINE CN_LK_NEWFOCUS       := 590
+DEFINE CN_LK_NEWFOCUSREC    := 591
+DEFINE CN_LK_NEWFOCUSFLD    := 592
+DEFINE CN_LK_VS_TOP         := 593
+DEFINE CN_LK_VS_BOTTOM      := 594
+DEFINE CN_LK_VS_PAGEUP      := 595
+DEFINE CN_LK_VS_PAGEDOWN    := 596
+DEFINE CN_LK_VS_LINEUP      := 597
+DEFINE CN_LK_VS_LINEDOWN    := 598
+DEFINE CN_LK_VS_THUMBPOS    := 599
+DEFINE CN_LK_HS_PAGEUP      := 600
+DEFINE CN_LK_HS_PAGEDOWN    := 601
+DEFINE CN_LK_HS_LINEUP      := 602
+DEFINE CN_LK_HS_LINEDOWN    := 603
+DEFINE CN_LK_HS_THUMBPOS    := 604
+DEFINE CN_OWNERSETFOCUSTOP  := 605
+DEFINE CN_OWNERSETFOCUSBOT  := 606
+DEFINE CN_CUT               := 607
+DEFINE CN_COPY              := 608
+DEFINE CN_PASTE             := 609
+DEFINE CN_CLEAR             := 610
+DEFINE CN_UNDO              := 611
+DEFINE CN_RBTNCLK           := 612
+DEFINE CN_VSCROLL_THUMBTRK  := 613
+DEFINE CN_FLDSIZECHANGED    := 614
+DEFINE CN_SIZECHANGED       := 615
+DEFINE LAST_CN_MSG          := 3000
+DEFINE CNTCOLOR_TITLE      :=  0
+DEFINE CNTCOLOR_FLDTITLES  :=  1
+DEFINE CNTCOLOR_TEXT       :=  2
+DEFINE CNTCOLOR_GRID       :=  3
+DEFINE CNTCOLOR_CNTBKGD    :=  4
+DEFINE CNTCOLOR_HIGHLIGHT  :=  5
+DEFINE CNTCOLOR_HITEXT     :=  6
+DEFINE CNTCOLOR_TTLBKGD    :=  7
+DEFINE CNTCOLOR_FLDTTLBKGD :=  8
+DEFINE CNTCOLOR_FLDBKGD    :=  9
+DEFINE CNTCOLOR_3DHIGH     :=  10
+DEFINE CNTCOLOR_3DSHADOW   :=  11
+DEFINE CNTCOLOR_TTLBTNTXT  :=  12
+DEFINE CNTCOLOR_TTLBTNBKGD :=  13
+DEFINE CNTCOLOR_FLDBTNTXT  :=  14
+DEFINE CNTCOLOR_FLDBTNBKGD :=  15
+DEFINE CNTCOLOR_UNUSEDBKGD :=  16
+DEFINE CNTCOLOR_INUSE      :=  17
+DEFINE CNTCOLORS           :=  18
+DEFINE CF_GENERAL           := 0
+DEFINE CF_TITLE             := 1
+DEFINE CF_FLDTITLE          := 2
+DEFINE CC_GENERAL           := 0
+DEFINE CC_TITLE             := 1
+DEFINE CC_FLDTITLE          := 2
+DEFINE CFM_LEFT             := 0
+DEFINE CFM_RIGHT            := 1
+DEFINE CFM_UP               := 2
+DEFINE CFM_DOWN             := 3
+DEFINE CFM_PAGEUP           := 4
+DEFINE CFM_PAGEDOWN         := 5
+DEFINE CFM_FIRSTFLD         := 6
+DEFINE CFM_LASTFLD          := 7
+DEFINE CFM_HOME             := 8
+DEFINE CFM_END              := 9
+DEFINE CFM_NEXTSPLITWND     := 10
+DEFINE CB_LEFT              := 0
+DEFINE CB_RIGHT             := 1
+DEFINE AS_AVGCHAR           := 1
+DEFINE AS_MAXCHAR           := 2
+DEFINE AS_PIXELS            := 3
+DEFINE BK_GENERAL           := 0
+DEFINE BK_UNUSED            := 1
+DEFINE BK_TITLE             := 2
+DEFINE BK_FLDTITLE          := 3
+DEFINE BK_FLD               := 4
+DEFINE CSB_SHOW             := 0
+DEFINE CSB_LEFT             := 1
+DEFINE CSB_MIDDLE           := 2
+DEFINE CSB_RIGHT            := 3
+DEFINE CSB_XCOORD           := 4
+DEFINE CSB_FIRST            := 5
+DEFINE CSB_LAST             := 6
+DEFINE CSB_NEXT             := 7
+DEFINE CSB_PREV             := 8
+DEFINE CA_LS_NONE           := 0
+DEFINE CA_LS_NARROW         := 1
+DEFINE CA_LS_MEDIUM         := 2
+DEFINE CA_LS_WIDE           := 3
+DEFINE CA_LS_DOUBLE         := 4
+DEFINE CE_ID_EDIT1          := 1001
+DEFINE CE_ID_EDIT2          := 1002
+DEFINE CE_ID_EDIT3          := 1003
+DEFINE CE_ID_EDIT4          := 1004
+DEFINE CE_ID_EDIT5          := 1005
+DEFINE CE_ID_EDIT6          := 1006
+DEFINE CE_ID_EDIT7          := 1007
+DEFINE CE_ID_EDIT8          := 1008
+DEFINE CE_ID_EDIT9          := 1009
+DEFINE CE_ID_EDIT10         := 1010
+DEFINE CE_ID_EDIT11         := 1011
+DEFINE CE_ID_EDIT12         := 1012
+DEFINE CV_ICON              := 0x0001
+DEFINE CV_NAME              := 0x0002
+DEFINE CV_TEXT              := 0x0004
+DEFINE CV_DETAIL            := 0x0008
+DEFINE CV_MINI              := 0x0010
+DEFINE CV_FLOW              := 0x0020
+DEFINE CA_TA_TOP            := 0x00000001
+DEFINE CA_TA_VCENTER        := 0x00000002
+DEFINE CA_TA_BOTTOM         := 0x00000004
+DEFINE CA_TA_LEFT           := 0x00000008
+DEFINE CA_TA_HCENTER        := 0x00000010
+DEFINE CA_TA_RIGHT          := 0x00000020
+DEFINE CA_TTLREADONLY       := 0x00000001
+DEFINE CA_TITLE             := 0x00000002
+DEFINE CA_FLDTITLES         := 0x00000004
+DEFINE CA_OWNERPNTBK        := 0x00000008
+DEFINE CA_OWNERPNTUNBK      := 0x00000010
+DEFINE CA_TTLSEPARATOR      := 0x00000020
+DEFINE CA_FLDSEPARATOR      := 0x00000040
+DEFINE CA_RECSEPARATOR      := 0x00000080
+DEFINE CA_DRAWBMP           := 0x00000100
+DEFINE CA_DRAWICON          := 0x00000200
+DEFINE CA_TTLBTNPRESSED     := 0x00000400
+DEFINE CA_TITLE3D           := 0x00000800
+DEFINE CA_FLDTTL3D          := 0x00001000
+DEFINE CA_VERTFLDSEP        := 0x00002000
+DEFINE CA_TRANTTLBMP        := 0x00004000
+DEFINE CA_TRANTTLBTNBMP     := 0x00008000
+DEFINE CA_OWNERVSCROLL      := 0x00010000
+DEFINE CA_SIZEABLEFLDS      := 0x00020000
+DEFINE CA_MOVEABLEFLDS      := 0x00040000
+DEFINE CA_APPSPLITABLE      := 0x00080000
+DEFINE CA_OWNERPNTTTLBK     := 0x00100000
+DEFINE CA_WIDEFOCUSRECT     := 0x00200000
+DEFINE CA_HSCROLLBYCHAR     := 0x00400000
+DEFINE CA_WANTVTHUMBTRK     := 0x00800000
+DEFINE CA_DYNAMICVSCROLL    := 0x01000000
+DEFINE CFA_FLDREADONLY      := 0x00000001
+DEFINE CFA_FLDTTLREADONLY   := 0x00000002
+DEFINE CFA_HORZSEPARATOR    := 0x00000004
+DEFINE CFA_VERTSEPARATOR    := 0x00000008
+DEFINE CFA_CURSORED         := 0x00000010
+DEFINE CFA_FLDTTL3D         := 0x00000020
+DEFINE CFA_TRANFLDTTLBMP    := 0x00000040
+DEFINE CFA_OWNERDRAW        := 0x00000080
+DEFINE CFA_HEX              := 0x00000100
+DEFINE CFA_OCTAL            := 0x00000200
+DEFINE CFA_BINARY           := 0x00000400
+DEFINE CFA_SCIENTIFIC       := 0x00000800
+DEFINE CFA_TRANFLDBTNBMP    := 0x00001000
+DEFINE CFA_FLDBTNPRESSED    := 0x00002000
+DEFINE CFA_SIZEABLEFLD      := 0x00004000
+DEFINE CFA_MOVEABLEFLD      := 0x00008000
+DEFINE CFA_NONSIZEABLEFLD   := 0x00010000
+DEFINE CFA_NONMOVEABLEFLD   := 0x00020000
+DEFINE CFA_OWNERPNTFTBK     := 0x00040000
+DEFINE CFA_OWNERPNTFLDBK    := 0x00080000
+DEFINE CFT_STRING           := 0
+DEFINE CFT_LPSTRING         := 1
+DEFINE CFT_WORD             := 2
+DEFINE CFT_UINT             := 3
+DEFINE CFT_INT              := 4
+DEFINE CFT_DWORD            := 5
+DEFINE CFT_LONG             := 6
+DEFINE CFT_FLOAT            := 7
+DEFINE CFT_DOUBLE           := 8
+DEFINE CFT_BCD              := 9
+DEFINE CFT_DATE             := 10
+DEFINE CFT_TIME             := 11
+DEFINE CFT_BMP              := 12
+DEFINE CFT_ICON             := 13
+DEFINE CFT_CAMASK           := 14
+DEFINE CFT_CANUMBER         := 15
+DEFINE CFT_CADATE           := 16
+DEFINE CFT_CATIME           := 17
+DEFINE CFT_CUSTOM           := 18
+DEFINE CFT_CHAR             := 19
+DEFINE CFT_CANUMBERUNSGN    := 20
+DEFINE CRA_RECREADONLY      := 0x00000001
+DEFINE CRA_CURSORED         := 0x00000002
+DEFINE CRA_DROPONABLE       := 0x00000004
+DEFINE CRA_FILTERED         := 0x00000008
+DEFINE CRA_FLDSELECTED      := 0x00000010
+DEFINE CRA_SELECTED         := 0x00000020
+DEFINE CRA_TARGET           := 0x00000040
+DEFINE CRA_FIRSTREC         := 0x00000080
+DEFINE CRA_LASTREC          := 0x00000100
+DEFINE CRA_INUSE            := 0x00000200
+DEFINE MAX_BTNTXT_LEN      := 64
+DEFINE MAX_SPLITBARS    :=20
+#endregion

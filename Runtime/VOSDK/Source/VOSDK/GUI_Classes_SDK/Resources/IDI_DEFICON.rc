@@ -1,0 +1,3 @@
+#include "VOGUIClasses.vh"
+#include "VOWin32APILibrary.vh"
+IDI_DEFICON ICON "Resources\\WINS.ICO"

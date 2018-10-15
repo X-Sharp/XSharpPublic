@@ -1,0 +1,8 @@
+#include "VOGUIClasses.vh"
+#include "VOWin32APILibrary.vh"
+CursorHelp ACCELERATORS
+	BEGIN
+		VK_F1, ID_WCHELP, VIRTKEY
+		VK_ESCAPE, ID_WCHELPOFF, VIRTKEY
+	END
+

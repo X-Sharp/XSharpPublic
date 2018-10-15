@@ -18,22 +18,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD        
 
-	INTERNAL CLASS NtxScanInfo
-		INTERNAL lPos AS LONG
-		INTERNAL lRecno AS LONG
-		INTERNAL fFound AS LOGIC
-		INTERNAL ntxStack AS NtxStack[]
-		INTERNAL uiTop AS DWORD
 		
-		INTERNAL CONSTRUCTOR()
-			SELF:lPos := 0
-			SELF:lRecno := 0
-			SELF:fFound := FALSE
-			SELF:uiTop := 0u
-			SELF:ntxStack := NtxStack[]{ 20 }
-			
-			END CLASS
-			
 	INTERNAL CLASS NtxStack
 		PUBLIC Page AS LONG
 		PUBLIC Pos AS LONG

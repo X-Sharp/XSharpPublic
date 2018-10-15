@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			ntxInfo:BagName := "TestNTX2"
 			ntxInfo:Order := "TestNTX2"
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
-			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo, "" ) )
+			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo ) )
 			//
 			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
 			RETURN
@@ -224,7 +224,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			ntxInfo:BagName := baseFileName
 			ntxInfo:Order := baseFileName
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
-			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo, "" ) )
+			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo ) )
 			myDBF:GoTop()
 			//
 			LOCAL idList AS List<INT>

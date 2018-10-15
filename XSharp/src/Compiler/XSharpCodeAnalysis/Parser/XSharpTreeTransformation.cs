@@ -5814,9 +5814,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
             List<StatementSyntax> statements = new List<StatementSyntax>();
+            if (context._Stmts.Count > 0)
+            {
+                context.SetSequencePoint(context._Stmts[0].Stop);
+            }
             foreach (var stmtCtx in context._Stmts)
             {
-
                 // Sometimes we generate more than 1 C# statement for a xBase statement
                 if (stmtCtx.CsNode is SyntaxList<StatementSyntax>)
                 {

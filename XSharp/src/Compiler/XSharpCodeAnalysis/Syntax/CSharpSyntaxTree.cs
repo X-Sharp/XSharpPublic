@@ -64,9 +64,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (eof == null)
             {
                 var node = GetNode(root, position);
-                if (node != null && node.XNode != null && node.XNode.IsHidden)
-                {
-                    return LineVisibility.Hidden;
+                if (node != null)
+                { 
+                    if (node.XNode != null && node.XNode.IsHidden)
+                        return LineVisibility.Hidden;
+                    if (node.XGenerated)
+                        return LineVisibility.Hidden;
                 }
             }
             return LineVisibility.Visible;
@@ -172,6 +175,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var start = 0;
                 var length = 0;
                 string fn = file;
+                // correct several incorrect breakpoint positions due to different order of things
+                if (snode.Parent is VariableDeclarationSyntax)
+                {
+                    snode = snode.Parent;
+                }
+                else if (snode.Parent is AssignmentExpressionSyntax)
+                {
+                    snode = snode.Parent;
+                }
                 if (snode.XNode != null)
                 {
                     var xNode = snode.XNode as XSharpParserRuleContext;

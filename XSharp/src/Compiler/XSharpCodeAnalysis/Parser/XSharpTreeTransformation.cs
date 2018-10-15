@@ -3591,7 +3591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int iAttr = 0; iAttr < al.Attributes.Count; iAttr++)
                 {
                     var attr = al.Attributes[iAttr];
-                    var name = attr.Name.ToFullString();
+                    var name = attr.Name.ToFullString().Trim();
                     var pos = name.LastIndexOf(".");
                     if (pos > 0)
                     {

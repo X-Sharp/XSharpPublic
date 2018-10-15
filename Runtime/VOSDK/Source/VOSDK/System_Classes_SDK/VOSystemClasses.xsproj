@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\VOSDK.Targets" />
+  <PropertyGroup>
+    <ProjectGuid>AC2AEBFF-69FF-405D-B7D9-6E5CB1DB914C</ProjectGuid>
+    <AssemblyName>VOSystemClasses</AssemblyName>
+    <Name>VOSystemClasses</Name>
+    <OutputName>VOSystemClasses</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings />
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>c:\xsharp\devrt\runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths />
+    <DefineConstants>DEBUG;TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="Class Def.prg" />
+    <Compile Include="DataField.prg" />
+    <Compile Include="DataServer.prg" />
+    <Compile Include="DBError.prg" />
+    <Compile Include="FieldSpec.prg" />
+    <Compile Include="FileSpec.prg" />
+    <Compile Include="Hyperlabel.prg" />
+    <Compile Include="ObjCodeBlock.prg" />
+    <Compile Include="SystemLangDef.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties" />
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

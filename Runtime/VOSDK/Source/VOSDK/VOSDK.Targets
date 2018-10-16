@@ -24,19 +24,19 @@
     <INS>true</INS>
     <NS>true</NS>
     <VO1>false</VO1>
-    <VO2>false</VO2>
+    <VO2>true</VO2>
     <VO3>true</VO3>
     <VO4>true</VO4>
     <VO5>true</VO5>
     <VO6>true</VO6>
     <VO7>true</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
+    <VO8>true</VO8>
+    <VO9>true</VO9>
     <VO10>true</VO10>
-    <VO11>false</VO11>
+    <VO11>true</VO11>
     <VO12>false</VO12>
     <VO13>false</VO13>
-    <VO14>false</VO14>
+    <VO14>true</VO14>
     <vo15>true</vo15>
     <VO16>false</VO16>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>

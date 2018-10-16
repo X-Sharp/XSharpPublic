@@ -59,11 +59,20 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
+	<DisabledWarnings>165,9032,170,618,9068,108</DisabledWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
+	<DisabledWarnings>165,9032,170,618,9068,108</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
+	<DisabledWarnings>165,9032,170,618,9068,108</DisabledWarnings>
   </PropertyGroup>
 </Project>

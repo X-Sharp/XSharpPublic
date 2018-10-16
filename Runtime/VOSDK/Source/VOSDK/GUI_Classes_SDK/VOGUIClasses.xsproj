@@ -172,15 +172,33 @@
     <NativeResource Include="Resources\VersionResource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\VoRedist\CaPaint.dll" />
-    <None Include="..\..\..\..\VoRedist\CATO3CNT.DLL" />
-    <None Include="..\..\..\..\VoRedist\CATO3DAT.DLL" />
-    <None Include="..\..\..\..\VoRedist\CATO3MSK.DLL" />
-    <None Include="..\..\..\..\VoRedist\CATO3NBR.DLL" />
-    <None Include="..\..\..\..\VoRedist\CATO3SBR.DLL" />
-    <None Include="..\..\..\..\VoRedist\CATO3SPL.DLL" />
-    <None Include="..\..\..\..\VoRedist\Cato3tbr.dll" />
-    <None Include="..\..\..\..\VoRedist\CATO3TIM.DLL" />
+    <None Include="..\..\..\..\VoRedist\CaPaint.dll">
+      <Link>CaPaint.dll</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3CNT.DLL">
+      <Link>CATO3CNT.DLL</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3DAT.DLL">
+      <Link>CATO3DAT.DLL</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3MSK.DLL">
+      <Link>CATO3MSK.DLL</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3NBR.DLL">
+      <Link>CATO3NBR.DLL</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3SBR.DLL">
+      <Link>CATO3SBR.DLL</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3SPL.DLL">
+      <Link>CATO3SPL.DLL</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\Cato3tbr.dll">
+      <Link>Cato3tbr.dll</Link>
+    </None>
+    <None Include="..\..\..\..\VoRedist\CATO3TIM.DLL">
+      <Link>CATO3TIM.DLL</Link>
+    </None>
     <None Include="NativeResources.RES" />
     <None Include="Resources\CAVOTB.BMP" />
     <None Include="Resources\HAND.CUR" />

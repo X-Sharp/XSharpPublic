@@ -8,12 +8,12 @@
     <Name>VOInternetClasses</Name>
     <OutputName>VOInternetClasses</OutputName>
     <Dialect>VO</Dialect>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
-
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
@@ -77,4 +77,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+ 
 </Project>

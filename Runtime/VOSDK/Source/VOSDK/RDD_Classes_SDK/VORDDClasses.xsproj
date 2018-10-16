@@ -7,12 +7,12 @@
     <AssemblyName>VORDDClasses</AssemblyName>
     <Name>VORDDClasses</Name>
     <OutputName>VORDDClasses</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
-  
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.prg" />
@@ -64,4 +64,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+
 </Project>

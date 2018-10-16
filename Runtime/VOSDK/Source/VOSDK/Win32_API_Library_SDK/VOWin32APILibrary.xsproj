@@ -7,6 +7,7 @@
     <AssemblyName>VOWin32APILibrary</AssemblyName>
     <Name>VOWin32APILibrary</Name>
     <AssemblyName>VOWin32APILibrary</AssemblyName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
   </PropertyGroup>

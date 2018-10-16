@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VOConsoleClasses</name>
+  </assembly>
+  <members>
+    <member name="T:VO.Console">
+      <summary>
+        <para>Encapsulate a Win32 console application.</para>
+      </summary>
+    </member>
+    <member name="T:VO.ConsoleCoord">
+      <summary>
+        <para>A helper class encapsulating a console window's coordinates.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.#ctor(XSharp.__Usual[])">
+      <summary>
+        <para>Instantiate a new Console object.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.Clear(XSharp.__Usual[])">
+      <summary>
+        <para>Clear the console window.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.Destroy(XSharp.__Usual[])">
+      <summary>
+        <para>Provide a method to de-instantiate a console object.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.Read(XSharp.__Usual[])">
+      <summary>
+        <para>Use this to read the console input buffer.</para>
+      </summary>
+      <returns>
+        <para>A string containing the input characters.</para>
+      </returns>
+    </member>
+    <member name="M:VO.Console.Wait(XSharp.__Usual[])">
+      <summary>
+        <para>Waits for a key press or mouse click on the console window.</para>
+      </summary>
+      <returns>
+        <para>A character representation of the key pressed or mouse button clicked. In general this return value should not be used.</para>
+      </returns>
+    </member>
+    <member name="M:VO.Console.Write(XSharp.__Usual[])">
+      <summary>
+        <para>Write a string to the console window.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.WriteLine(XSharp.__Usual[])">
+      <summary>
+        <para>Write a string to the console window and start a new line.</para>
+      </summary>
+    </member>
+    <member name="P:VO.Console.CursorPos">
+      <summary>
+        <para>The current cursor position as a ConsoleCoord object.</para>
+      </summary>
+    </member>
+    <member name="P:VO.Console.CursorSize">
+      <summary>
+        <para>An integer specifying the current cursor size.</para>
+      </summary>
+    </member>
+    <member name="P:VO.Console.CursorVisible">
+      <summary>
+        <para>A logic controlling the cursor's visibility.</para>
+      </summary>
+    </member>
+    <member name="P:VO.Console.Size">
+      <summary>
+        <para>The size of the console as a ConsoleCoord object.</para>
+      </summary>
+    </member>
+    <member name="P:VO.Console.TextAttribute">
+      <summary>
+        <para>A word specifying the current text attributes.</para>
+      </summary>
+      <remarks>
+        <para>Any combination of the following constants can be used using _Or():</para>
+        <list type="table">
+          <item>
+            <term>FOREGROUND_BLUE</term>
+            <description></description>
+          </item>
+          <item>
+            <term>FOREGROUND_GREEN</term>
+            <description></description>
+          </item>
+          <item>
+            <term>FOREGROUND_RED</term>
+            <description></description>
+          </item>
+          <item>
+            <term>FOREGROUND_INTENSITY</term>
+            <description></description>
+          </item>
+          <item>
+            <term>BACKGROUND_BLUE</term>
+            <description></description>
+          </item>
+          <item>
+            <term>BACKGROUND_GREEN</term>
+            <description></description>
+          </item>
+          <item>
+            <term>BACKGROUND_RED</term>
+            <description></description>
+          </item>
+          <item>
+            <term>BACKGROUND_INTENSITY</term>
+            <description></description>
+          </item>
+        </list>
+      </remarks>
+    </member>
+    <member name="P:VO.Console.Title">
+      <summary>
+        <para>A string specifying the console application's caption.</para>
+      </summary>
+    </member>
+    <member name="M:VO.ConsoleCoord.#ctor(XSharp.__Usual[])">
+      <summary>
+        <para>Instantiate a ConsoleCoord object.</para>
+      </summary>
+    </member>    
+  </members>
+</doc>

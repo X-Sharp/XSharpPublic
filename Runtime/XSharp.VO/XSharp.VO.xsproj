@@ -210,16 +210,15 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>162,171,553</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
+    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <PPO>false</PPO>
     <NoStdDef>true</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
     <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>

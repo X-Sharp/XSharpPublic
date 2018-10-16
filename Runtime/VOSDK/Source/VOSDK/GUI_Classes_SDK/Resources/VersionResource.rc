@@ -19,10 +19,10 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Grafx Database Systems, Inc."
+            VALUE "CompanyName", COMPANY_NAME
             VALUE "FileDescription", FILE_DESCRIPTION
             VALUE "FileVersion", FILEVERSION_NUMBER_STR
-            VALUE "InternalName", "Vulcan.NET"
+            VALUE "InternalName", PRODUCT_NAME
             VALUE "LegalCopyright", COPYRIGHT_STR
             VALUE "OriginalFilename", "VulcanVOGUIClasses.dll"
             VALUE "ProductName", PRODUCT_NAME

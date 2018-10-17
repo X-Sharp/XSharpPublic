@@ -158,7 +158,6 @@
     <Compile Include="XP Theme Support.prg" />
   </ItemGroup>
   <ItemGroup>
-    <NativeResource Include="NativeResources.rc" />
     <NativeResource Include="Resources\CurHand.rc" />
     <NativeResource Include="Resources\CursorHelp.rc" />
     <NativeResource Include="Resources\DragMultip.rc" />
@@ -199,7 +198,6 @@
     <None Include="..\..\..\..\VoRedist\CATO3TIM.DLL">
       <Link>CATO3TIM.DLL</Link>
     </None>
-    <None Include="NativeResources.RES" />
     <None Include="Resources\CAVOTB.BMP" />
     <None Include="Resources\HAND.CUR" />
     <None Include="Resources\HELP.CUR" />

@@ -1,8 +1,6 @@
 // VOWinFormApp.prg
 
-#using System.Collections
-
-#include "VOWin32APILibrary.vh"
+USING System.Collections
 
 CLASS Vulcan.VOWinFormApp INHERIT App
     PRIVATE winForms := HashTable{} AS HashTable

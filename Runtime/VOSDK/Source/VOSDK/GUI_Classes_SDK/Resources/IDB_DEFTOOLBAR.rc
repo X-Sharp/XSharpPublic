@@ -1,3 +1,1 @@
-#include "VOGUIClasses.vh"
-#include "VOWin32APILibrary.vh"
 IDB_DEFTOOLBAR BITMAP "Resources\\CAVOTB.BMP"

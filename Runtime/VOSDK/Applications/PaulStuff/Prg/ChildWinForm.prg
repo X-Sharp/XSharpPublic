@@ -1,5 +1,4 @@
 // ChildWinForm.prg
-#include "VOWin32APILibrary.vh"
 
 CLASS Vulcan.ChildWinForm INHERIT ChildAppWindow
     PRIVATE form AS System.Windows.Forms.Form
@@ -35,7 +34,7 @@ CLASS Vulcan.ChildWinForm INHERIT ChildAppWindow
 	    oldOrigin := SELF:origin
 	    oldSize := SELF:size
 
-	    SELF:size := Dimension{form:ClientSize:Width+self:size:width-self:canvasarea:width,form:ClientSize:Height+self:size:height-self:canvasarea:height}
+	    SELF:size := Dimension{form:ClientSize:Width+SELF:size:width-SELF:canvasarea:width,form:ClientSize:Height+SELF:size:height-SELF:canvasarea:height}
 	    SELF:Origin := Point{oldOrigin:x,oldOrigin:y+oldSize:height-SELF:size:Height}
 
         form:Show()

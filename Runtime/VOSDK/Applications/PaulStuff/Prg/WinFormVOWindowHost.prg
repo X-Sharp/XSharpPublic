@@ -1,8 +1,6 @@
 // WinFormVOWindowHost.prg
-#include "VOGUIClasses.vh"
-#include "VOWin32APILibrary.vh"
 
-#using System.ComponentModel
+USING System.ComponentModel
 
 CLASS Vulcan.WinFormVOWindowHost INHERIT Component
     PRIVATE components := NULL AS System.ComponentModel.IContainer

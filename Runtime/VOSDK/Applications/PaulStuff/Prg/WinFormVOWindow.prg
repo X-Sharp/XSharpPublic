@@ -1,5 +1,4 @@
 // WinFormVOWindow.prg
-#include "VOGUIClasses.vh"
 
 CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
     PRIVATE winFormVOWindowHost AS Vulcan.WinFormVOWindowHost
@@ -39,8 +38,8 @@ CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
     ACCESS VOWindowHost AS WinFormVOWindowHost
         RETURN winFormVOWindowHost
         
-    ASSIGN VOWindowHost(new AS Vulcan.WinFormVOWindowHost)
-        winFormVOWindowHost := new
+    ASSIGN VOWindowHost(NEW AS Vulcan.WinFormVOWindowHost)
+        winFormVOWindowHost := NEW
         RETURN
         
     PROTECTED METHOD OnActivated(e AS System.EventArgs) AS VOID
@@ -87,19 +86,19 @@ CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
         RETURN
 
     PROTECTED VIRTUAL METHOD ProcessDialogKey( keyData AS System.Windows.Forms.Keys ) AS LOGIC
-        LOCAL keyProcessed := false AS LOGIC
+        LOCAL keyProcessed := FALSE AS LOGIC
     
         IF ! SELF:winFormVOWindowHost == NULL
             // see if this control is held by a datawindow or directly the hosted window
             // note: datawindows are made up of multiple windows (varies with view mode), that's why we need to look at parents
-            LOCAL isWanted := true AS LOGIC
+            LOCAL isWanted := TRUE AS LOGIC
             LOCAL i AS INT
             LOCAL p AS PTR
             p := GetFocus()
             FOR i := 1 UPTO 3  // in a datawindow in form view, the number of layers above the focused control is 3
                 p := GetParent(p)
                 IF WindowStyle.ClassName(p) == __WCWndAppWindowClass .or. p == SELF:winFormVOWindowHost:VOWindow:handle()
-                    isWanted := true
+                    isWanted := TRUE
                     EXIT
                 ENDIF
             NEXT

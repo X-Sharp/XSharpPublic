@@ -31,7 +31,28 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			bMacro := MCompile(cMacro)
 			uValue := Eval(bMacro)
 			Assert.Equal (5, (INT) uValue)
-		RETURN
+			cMacro := e"{|aaa,bbb| \"aaa\" + \"bbb\" }"
+			bMacro := MCompile(cMacro)
+			uValue := Eval(bMacro,20,22)
+			Assert.Equal ("aaabbb", (STRING) uValue)
+			cMacro := "{|aaa,bbb| aaa + bbb }"
+			bMacro := MCompile(cMacro)
+			uValue := Eval(bMacro,20,22)
+			Assert.Equal (42, (INT) uValue)
+
+            cMacro := "{| a, b, c |  'a' $ 'a|b|c|d' }"
+            bMacro := MCompile(cMacro,TRUE)
+			uValue := Eval(bMacro,1,2,3)
+            Assert.Equal (TRUE, (LOGIC) uValue)
+			cMacro := "{|aaa , bbb| aaa + bbb }"
+			bMacro := MCompile(cMacro)
+			uValue := Eval(bMacro,20,22)
+			Assert.Equal (42, (INT) uValue)
+		    cMacro := "{|aaa , bbb| aaa + bbb + ccc }"
+			bMacro := MCompile(cMacro)
+	        Assert.ThrowsAny<Exception>( { => Eval(bMacro,20,22) })
+
+            RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

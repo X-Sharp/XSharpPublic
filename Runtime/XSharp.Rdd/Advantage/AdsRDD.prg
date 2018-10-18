@@ -1520,10 +1520,6 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       RETURN FALSE
       
       /// <summary>This method is not supported by the AdsRDD class </summary>
-    VIRTUAL METHOD ScopeInfo(nOrdinal AS INT) AS OBJECT
-      SELF:Unsupported("ScopeInfo")
-      RETURN NULL
-      /// <summary>This method is not supported by the AdsRDD class </summary>
     VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
       RETURN SELF:Unsupported("Sort")
       /// <summary>This method is not supported by the AdsRDD class </summary>

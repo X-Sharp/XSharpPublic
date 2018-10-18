@@ -408,11 +408,11 @@ BEGIN NAMESPACE XSharp
         /// <exclude />
         PROPERTY @@Value AS OBJECT
             GET
-                if (_UsualType == __UsualType.Void)
+                IF (_UsualType == __UsualType.Void)
                     RETURN "NIL"
-                else
-                    return __Usual.ToObject(SELF)
-                endif
+                ELSE
+                    RETURN __Usual.ToObject(SELF)
+                ENDIF
             END GET
         END PROPERTY
 
@@ -2092,7 +2092,7 @@ BEGIN NAMESPACE XSharp
                 ELSEIF o IS IConvertible
                     RETURN ((IConvertible) o):Totype(conversionType, provider)
                 ELSE
-                    return o
+                    RETURN o
                 ENDIF
             ENDIF
 
@@ -2128,7 +2128,7 @@ BEGIN NAMESPACE XSharp
             OTHERWISE
                  Debug.Fail( "Unhandled data type in Usual:GetTypeCode()" )
             END SWITCH
-            return TypeCode.Empty
+            RETURN TypeCode.Empty
             #endregion
 
         #region Error METHOD

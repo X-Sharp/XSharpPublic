@@ -134,18 +134,18 @@ BEGIN NAMESPACE XSharp
     CONSTRUCTOR (ex AS Exception)
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
-    if ex is Error
-        local e := (Error) ex as Error
-        var props := typeof(error):GetProperties()
-        FOREACH oProp as PropertyInfo in props
-            if oProp:CanWrite
+    IF ex IS Error
+        LOCAL e := (Error) ex AS Error
+        VAR props := typeof(error):GetProperties()
+        FOREACH oProp AS PropertyInfo IN props
+            IF oProp:CanWrite
                 oProp:SetValue(SELF, oProp:GetValue(e))
             ENDIF
         NEXT
-    else
+    ELSE
         SELF:Description := ex:Message
         SELF:GenCode     := EG_EXCEPTION
-    endif
+    ENDIF
 
     /// <summary></summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])

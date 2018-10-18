@@ -108,7 +108,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PRIVATE _outPageNo AS LONG
 		PROTECT _parkPlace AS LONG
 		
-		PROTECT _lockScheme     AS DbfLocking
+		INTERNAL _lockScheme     AS DbfLocking
 		
 		PUBLIC PROPERTY Expression AS STRING GET _KeyExpr
 		

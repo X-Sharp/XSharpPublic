@@ -2645,8 +2645,7 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN SELF:iOffset
 			END GET
 			
-			//INTERNAL SET
-			SET
+			INTERNAL SET
 				SELF:iOffset := VALUE
 			END SET
 		END PROPERTY
@@ -2661,10 +2660,10 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL PROPERTY Recno AS DWORD GET _Recno
 		
 		INTERNAL CONSTRUCTOR(data AS BYTE[] , uiRecno AS DWORD )
-			SELF:_data := (BYTE[])data:Clone()
+			SELF:_data  := (BYTE[])data:Clone()
 			SELF:_Recno := uiRecno
 			
-			END CLASS
+	END CLASS
 			
 			
 			

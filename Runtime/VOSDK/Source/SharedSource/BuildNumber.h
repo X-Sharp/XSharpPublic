@@ -15,7 +15,7 @@
 // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
 
 #define COMPANY_NAME "XSharp B.V."
-#define COPYRIGHT_STR ""
+#define COPYRIGHT_STR "Copyright © 1993-2018 Computer Associates & XSharp BV, All rights reserved"
 #ifdef __DEBUG__
 	#define ASSEMBLY_CONFIGURATION "Debug"
 #else

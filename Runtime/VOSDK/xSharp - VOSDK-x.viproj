@@ -1,13 +1,13 @@
 [General]
 PROJECT = VOSDK - XSharp runtime
-IDEVersion = 1.14
+IDEVersion = 1.06
 OutputFolder = c:\XSharp\DevRt\Binaries\
 Description = 
 GUID = 139C7204-6DC4-42C3-8F0B-5CC8BE7FE881
 StartUpApp = 14794647-F7B5-44FC-A238-0354C1438F6B
 PrgEncoding = Default
 SupportCF = 0
-NoAppFileCreate = 0
+NoAppFileCreate = 1
 CopyAssembliesToFolder = 
 
 [ProjectExportOptions]
@@ -33,7 +33,7 @@ DefaultPropertiesGuid = E72EDFBD-6AF6-4BEA-901B-15E0BC36C7AF
 
 ; ************** APPLICATION VOWin32APILibrary *************
 Application = VOWin32APILibrary
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -260,7 +260,7 @@ ENDApplication = VOWin32APILibrary
 
 ; ************** APPLICATION VOInternetClasses *************
 Application = VOInternetClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -414,7 +414,7 @@ ENDApplication = VOInternetClasses
 
 ; ************** APPLICATION VOSystemClasses *************
 Application = VOSystemClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -541,7 +541,7 @@ ENDApplication = VOSystemClasses
 
 ; ************** APPLICATION VOGUIClasses *************
 Application = VOGUIClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -552,7 +552,7 @@ Runtime = CLR4
 Dialect = VO
 Folder = %ProjectPath%\Source\VOSDK\GUI_Classes_SDK\
 PrgSubFolder = 
-ResourcesSubFolder = 
+ResourcesSubFolder = Resources\
 Description = 
 NameSpace = VO
 Assembly = VOGUIClasses
@@ -1030,7 +1030,7 @@ ENDApplication = VOGUIClasses
 
 ; ************** APPLICATION VOConsoleClasses *************
 Application = VOConsoleClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1136,7 +1136,7 @@ ENDApplication = VOConsoleClasses
 
 ; ************** APPLICATION VORDDClasses *************
 Application = VORDDClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1268,7 +1268,7 @@ ENDApplication = VORDDClasses
 
 ; ************** APPLICATION VOReportClasses *************
 Application = VOReportClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1385,7 +1385,7 @@ ENDApplication = VOReportClasses
 
 ; ************** APPLICATION VOSQLClasses *************
 Application = VOSQLClasses
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1573,7 +1573,7 @@ ENDApplication = VOSQLClasses
 
 ; ************** APPLICATION ResourceCreator *************
 Application = ResourceCreator
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1670,7 +1670,7 @@ ENDApplication = ResourceCreator
 
 ; ************** APPLICATION SDKCreator *************
 Application = SDKCreator
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1771,7 +1771,7 @@ ENDApplication = SDKCreator
 
 ; ************** APPLICATION PaulStuff *************
 Application = PaulStuff
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1887,7 +1887,7 @@ ENDApplication = PaulStuff
 
 ; ************** APPLICATION _TesterMdi *************
 Application = _TesterMdi
-IDEVersion = 1.14
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

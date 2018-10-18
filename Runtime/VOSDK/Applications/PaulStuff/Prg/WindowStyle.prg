@@ -1,7 +1,5 @@
 // WindowStyle.prg
 
-#include "VOWin32APILibrary.vh"
-
 INTERNAL CLASS WindowStyle
 
     STATIC METHOD SetStyle(hWnd AS PTR, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID

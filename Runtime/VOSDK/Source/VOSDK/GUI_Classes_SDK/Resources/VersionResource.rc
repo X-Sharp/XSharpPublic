@@ -1,6 +1,6 @@
 #include "..\..\SharedSource\BuildNumber.h"
 
-#define FILE_DESCRIPTION "Vulcan.NET VO-Compatible GUI Classes Library"
+#define FILE_DESCRIPTION "VO-Compatible GUI Classes Library"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION FILEVERSION_NUMBER
@@ -24,12 +24,9 @@ BEGIN
             VALUE "FileVersion", FILEVERSION_NUMBER_STR
             VALUE "InternalName", PRODUCT_NAME
             VALUE "LegalCopyright", COPYRIGHT_STR
-            VALUE "OriginalFilename", "VulcanVOGUIClasses.dll"
+            VALUE "OriginalFilename", "VOGUIClasses.dll"
             VALUE "ProductName", PRODUCT_NAME
             VALUE "ProductVersion", VERSION_NUMBER_STR
-            #ifdef SPECIAL_BUILD_STR
-            VALUE "SpecialBuild", SPECIAL_BUILD_STR
-            #endif
         END
     END
     BLOCK "VarFileInfo"

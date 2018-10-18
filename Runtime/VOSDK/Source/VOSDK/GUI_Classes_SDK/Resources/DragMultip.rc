@@ -1,3 +1,1 @@
-#include "VOGUIClasses.vh"
-#include "VOWin32APILibrary.vh"
 DragMultip CURSOR "Resources\\MULTI.CUR" 

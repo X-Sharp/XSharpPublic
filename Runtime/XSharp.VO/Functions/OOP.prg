@@ -375,7 +375,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF toType == TYPEOF(USUAL)
 				// box the usual
                 RETURN __CastClass(OBJECT, uValue)
-            ELSEIF IsArray(uValue) .and. totype == typeof(ARRAY)
+            ELSEIF IsArray(uValue) .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
             ELSEIF IsObject(uValue) 
                 RETURN (OBJECT) uValue

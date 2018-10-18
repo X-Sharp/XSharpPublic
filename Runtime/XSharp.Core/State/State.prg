@@ -377,10 +377,10 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-    STATIC PROPERTY WinEncoding as System.Text.Encoding ;
+    STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
         
-    STATIC PROPERTY DosEncoding as System.Text.Encoding ;
+    STATIC PROPERTY DosEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(DosCodePage)
 
 
@@ -594,7 +594,8 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
-			_macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+			VAR macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+            _macroCompiler := MacroPreCompiler{macroCompiler}
 		ENDIF
 		RETURN 
 

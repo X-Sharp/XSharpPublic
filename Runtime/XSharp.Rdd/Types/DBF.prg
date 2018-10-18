@@ -1005,7 +1005,6 @@ BEGIN NAMESPACE XSharp.RDD
 			//	METHOD ClearScope() 	AS LOGIC
 			//	METHOD Continue()		AS LOGIC
 			//	METHOD GetScope()		AS DbScopeInfo
-			//	METHOD ScopeInfo(nOrdinal AS LONG) AS OBJECT
 			//	METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 			//	METHOD SetScope(info AS DbScopeInfo) AS LOGIC
 			
@@ -1952,7 +1951,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
 			LOCAL result := NULL AS OBJECT
 			TRY
-				result := cbBlock:EvalBlock()
+				result := SUPER:EvalBlock(cbBlock)
 			CATCH ex AS Exception
 				SELF:_dbfError(SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBF.EvalBlock", ex:Message)
 			END TRY
@@ -2090,8 +2089,9 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			recordNumber := 0
 			trInfo := info:TransInfo
+            trInfo:Scope:Compile(SELF)
 			hasWhile := trInfo:Scope:WhileBlock != NULL
-			hasFor := trInfo:Scope:ForBlock != NULL
+			hasFor   := trInfo:Scope:ForBlock != NULL
 			sort := RddSortHelper{info, (DWORD)SELF:RecCount}
 			// 
 			i := 0
@@ -2139,10 +2139,10 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			WHILE ( isOk .AND. !SELF:_Eof .AND. readMore)
 				IF hasWhile
-					readMore := (LOGIC)trInfo:Scope:WhileBlock:EvalBlock()
+					readMore := (LOGIC) SELF:EvalBlock(trInfo:Scope:WhileBlock)
 				ENDIF
 				IF readMore .AND. hasFor
-					isQualified := (LOGIC)trInfo:Scope:ForBlock:EvalBlock()
+					isQualified := (LOGIC) SELF:EvalBlock(trInfo:Scope:ForBlock)
 				ELSE
 					isQualified := readMore
 				ENDIF
@@ -2748,5 +2748,6 @@ BEGIN NAMESPACE XSharp.RDD
 	
 	
 END NAMESPACE
+
 
 

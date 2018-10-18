@@ -75,7 +75,6 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 //	METHOD ClearScope() 	AS LOGIC 
 //	METHOD Continue()		AS LOGIC     
 //	METHOD GetScope()		AS DbScopeInfo 
-//	METHOD ScopeInfo(nOrdinal AS LONG) AS OBJECT
 //	METHOD SetFilter(info AS DbFilterInfo) AS LOGIC 
 //	METHOD SetScope(info AS DbScopeInfo) AS LOGIC
 	// Fields

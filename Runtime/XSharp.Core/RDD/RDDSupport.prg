@@ -64,6 +64,11 @@ CLASS DbFilterInfo
     CONSTRUCTOR
         SELF:Clear()
         RETURN
+
+	METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:FilterBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:FilterText)
+            SELF:FilterBlock := oRDD:Compile(SELF:FilterText)
+        ENDIF
 END CLASS 
 
 /// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>                 
@@ -172,7 +177,18 @@ CLASS DbOrderCondInfo
 	/// <summary>A flag that is TRUE if only rows in the controlling order are to be included in the order.</summary>
 	PUBLIC UseCurrent		AS LOGIC
 	/// <summary>A code block defining the while condition to use for the creation of the order.  An empty value indicates that no while condition is being imposed.</summary>
-	PUBLIC WhileBlock		AS ICodeBlock 	
+	PUBLIC WhileBlock		AS ICodeBlock
+	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
+	PUBLIC WhileExpression	AS STRING    
+
+METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
+            SELF:WhileBlock := oRDD:Compile(SELF:WhileExpression)
+        ENDIF
+        IF SELF:ForBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:ForExpression)
+            SELF:ForBlock := oRDD:Compile(SELF:ForExpression)
+        ENDIF
+    
 END CLASS
 
 /// <summary>Helper class to store information needed to create a new order.</summary> 
@@ -189,6 +205,14 @@ CLASS DbOrderCreateInfo
 	PUBLIC Block		AS ICodeBlock
 	/// <summary>A DbOrderCondInfo object containing information about the condition (if any) for the order. </summary>
 	PUBLIC OrdCondInfo	AS DbOrderCondInfo
+
+    METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:Block == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Expression)
+            SELF:Block := oRDD:Compile(SELF:Expression)
+        ENDIF
+        IF SELF:OrdCondInfo != NULL
+            SELF:OrdCondInfo:Compile(oRDD)
+        ENDIF
 END CLASS
 
 /// <summary>Helper class to store information needed to open/address an order.</summary> 
@@ -215,6 +239,12 @@ CLASS DbRelInfo
 	PUBLIC Child		AS IRDD	
 	/// <summary>A reference to the parent RDD for the relation.</summary>
 	PUBLIC Parent		AS IRDD
+
+    METHOD Compile() AS VOID
+        IF SELF:Block == NULL .AND. SELF:Parent != NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Key)
+            SELF:Block := SELF:Parent:Compile(SELF:Key)
+        ENDIF
+    
 END CLASS
 
 /// <summary>Helper class to store references to all of the scope clause expressions. </summary> 
@@ -275,7 +305,13 @@ CLASS DbScopeInfo
 		oClone:WhileBlock		    := SELF:WhileBlock		
 		oClone:WhileExpression      := SELF:WhileExpression  
 		RETURN oClone
-		
+	METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
+            SELF:WhileBlock := oRDD:Compile(SELF:WhileExpression)
+        ENDIF
+        IF SELF:ForBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:ForExpression)
+            SELF:ForBlock := oRDD:Compile(SELF:ForExpression)
+        ENDIF
 END CLASS
 
 /// <summary>Helper structure to store information needed to perform a seek operation </summary> 

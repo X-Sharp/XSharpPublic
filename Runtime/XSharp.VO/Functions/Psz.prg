@@ -114,8 +114,8 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <returns>
 	/// </returns>
 	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
-		local pMem := String2Mem(cSource) as IntPtr
-        return Psz{pMem}
+		LOCAL pMem := String2Mem(cSource) AS IntPtr
+        RETURN PSZ{pMem}
 
 
 

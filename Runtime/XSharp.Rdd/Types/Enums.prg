@@ -81,12 +81,17 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF Field flags.</summary>                            
     [Flags];
     ENUM DBFFieldFlags AS BYTE
-        MEMBER None:=0
-        MEMBER System:=1
-        MEMBER AllowNullValues:=2
-        MEMBER Binary:=4
-        MEMBER AutoIncrementing:=12
+        MEMBER None             := 0x00
+        MEMBER System           := 0x01
+        MEMBER Nullable         := 0x02
+        MEMBER Binary           := 0x04
+        MEMBER AutoIncrementing := 0x08
+        MEMBER Compressed       := 0x10
+        MEMBER Encrypted        := 0x20
+        MEMBER Unicode          := 0x40
+        
     END ENUM
+    
     /// <summary>DBF Locking model.</summary>                            
     ENUM DbfLockingModel
         MEMBER Clipper52    // Clipper 5.2 locking scheme
@@ -133,106 +138,83 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER Unknown:=0
     END ENUM
     
-        /// <summary>Offsets in the Field structure</summary>        
-        PUBLIC ENUM FLDOFFSETS
-            MEMBER NAME			:= 0
-            MEMBER NAME_SIZE    := 11
-            MEMBER TYPE			:= 11
-            MEMBER OFFSET	    := 12
-            MEMBER LEN          := 16
-            MEMBER DEC          := 17
-            MEMBER FLAGS        := 18
-            MEMBER COUNTER      := 19
-            MEMBER INCSTEP      := 23
-            MEMBER RESERVED1    := 24
-            MEMBER RESERVED2    := 25
-            MEMBER RESERVED3    := 26
-            MEMBER RESERVED4    := 27
-            MEMBER RESERVED5    := 28
-            MEMBER RESERVED6	:= 29
-            MEMBER RESERVED7    := 30
-            MEMBER HASTAG       := 31
-            MEMBER SIZE         := 32
-        END ENUM
-        /// <summary>Offsets in the header of a DBF.</summary>
-
-
+ 
     STATIC CLASS CodePageExtensions
         STATIC METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS OsCodePage
             SWITCH headerCodePage
             CASE DbfHeaderCodepage.CP_DBF_DOS_US        ; RETURN OsCodepage.CP_INI_DOS_US        
-                CASE DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA   ; RETURN OsCodepage.CP_INI_DOS_MAZOVIA   
-                CASE DbfHeaderCodepage.CP_DBF_DOS_GREEK     ; RETURN OsCodepage.CP_INI_DOS_GREEK     
-                CASE DbfHeaderCodepage.CP_DBF_DOS_INTL      ; RETURN OsCodepage.CP_INI_DOS_INTL      
-                CASE DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN ; RETURN OsCodepage.CP_INI_DOS_EEUROPEAN 
-                CASE DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC ; RETURN OsCodepage.CP_INI_DOS_ICELANDIC 
-                CASE DbfHeaderCodepage.CP_DBF_DOS_NORDIC    ; RETURN OsCodepage.CP_INI_DOS_NORDIC    
-                CASE DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN   ; RETURN OsCodepage.CP_INI_DOS_RUSSIAN   
-                CASE DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY ; RETURN OsCodepage.CP_INI_DOS_KAMENICKY 
-                CASE DbfHeaderCodepage.CP_DBF_DOS_TURKISH   ; RETURN OsCodepage.CP_INI_DOS_TURKISH   
-                CASE DbfHeaderCodepage.CP_DBF_DOS_CANADIAN  ; RETURN OsCodepage.CP_INI_DOS_CANADIAN  
-                CASE DbfHeaderCodepage.CP_DBF_WIN_THAI      ; RETURN OsCodepage.CP_INI_WIN_THAI	    
-                CASE DbfHeaderCodepage.CP_DBF_WIN_JAPANESE  ; RETURN OsCodepage.CP_INI_WIN_JAPANESE  
-                CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_1 ; RETURN OsCodepage.CP_INI_WIN_CHINESE1  
-                CASE DbfHeaderCodepage.CP_DBF_WIN_KOREAN    ; RETURN OsCodepage.CP_INI_WIN_KOREAN	
-                CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_2 ; RETURN OsCodepage.CP_INI_WIN_CHINESE2  
+            CASE DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA   ; RETURN OsCodepage.CP_INI_DOS_MAZOVIA   
+            CASE DbfHeaderCodepage.CP_DBF_DOS_GREEK     ; RETURN OsCodepage.CP_INI_DOS_GREEK     
+            CASE DbfHeaderCodepage.CP_DBF_DOS_INTL      ; RETURN OsCodepage.CP_INI_DOS_INTL      
+            CASE DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN ; RETURN OsCodepage.CP_INI_DOS_EEUROPEAN 
+            CASE DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC ; RETURN OsCodepage.CP_INI_DOS_ICELANDIC 
+            CASE DbfHeaderCodepage.CP_DBF_DOS_NORDIC    ; RETURN OsCodepage.CP_INI_DOS_NORDIC    
+            CASE DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN   ; RETURN OsCodepage.CP_INI_DOS_RUSSIAN   
+            CASE DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY ; RETURN OsCodepage.CP_INI_DOS_KAMENICKY 
+            CASE DbfHeaderCodepage.CP_DBF_DOS_TURKISH   ; RETURN OsCodepage.CP_INI_DOS_TURKISH   
+            CASE DbfHeaderCodepage.CP_DBF_DOS_CANADIAN  ; RETURN OsCodepage.CP_INI_DOS_CANADIAN  
+            CASE DbfHeaderCodepage.CP_DBF_WIN_THAI      ; RETURN OsCodepage.CP_INI_WIN_THAI	    
+            CASE DbfHeaderCodepage.CP_DBF_WIN_JAPANESE  ; RETURN OsCodepage.CP_INI_WIN_JAPANESE  
+            CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_1 ; RETURN OsCodepage.CP_INI_WIN_CHINESE1  
+            CASE DbfHeaderCodepage.CP_DBF_WIN_KOREAN    ; RETURN OsCodepage.CP_INI_WIN_KOREAN	
+            CASE DbfHeaderCodepage.CP_DBF_WIN_CHINESE_2 ; RETURN OsCodepage.CP_INI_WIN_CHINESE2  
                 
-                CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN ; RETURN OsCodepage.CP_INI_WIN_EEUROPEAN  
-                CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN   ; RETURN OsCodepage.CP_INI_WIN_RUSSIAN    
-                CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI      ; RETURN OsCodepage.CP_INI_WIN_ANSI       
-                CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK     ; RETURN OsCodepage.CP_INI_WIN_GREEK      
-                CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH   ; RETURN OsCodepage.CP_INI_WIN_TURKISH    
-                CASE DbfHeaderCodepage.CP_DBF_WIN_HEBREW    ; RETURN OsCodepage.CP_INI_WIN_HEBREW     
-                CASE DbfHeaderCodepage.CP_DBF_WIN_ARABIC    ; RETURN OsCodepage.CP_INI_WIN_ARABIC     
+            CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN ; RETURN OsCodepage.CP_INI_WIN_EEUROPEAN  
+            CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN   ; RETURN OsCodepage.CP_INI_WIN_RUSSIAN    
+            CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI      ; RETURN OsCodepage.CP_INI_WIN_ANSI       
+            CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK     ; RETURN OsCodepage.CP_INI_WIN_GREEK      
+            CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH   ; RETURN OsCodepage.CP_INI_WIN_TURKISH    
+            CASE DbfHeaderCodepage.CP_DBF_WIN_HEBREW    ; RETURN OsCodepage.CP_INI_WIN_HEBREW     
+            CASE DbfHeaderCodepage.CP_DBF_WIN_ARABIC    ; RETURN OsCodepage.CP_INI_WIN_ARABIC     
                 
-                CASE DbfHeaderCodepage.CP_DBF_MAC_STANDARD  ; RETURN OsCodepage.CP_INI_MAC_STANDARD   
-                CASE DbfHeaderCodepage.CP_DBF_MAC_GREEK     ; RETURN OsCodepage.CP_INI_MAC_GREEK      
-                CASE DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN   ; RETURN OsCodepage.CP_INI_MAC_RUSSIAN    
-                CASE DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN ; RETURN OsCodepage.CP_INI_MAC_EEUROPEAN
-                OTHERWISE
-                    RETURN 0
+            CASE DbfHeaderCodepage.CP_DBF_MAC_STANDARD  ; RETURN OsCodepage.CP_INI_MAC_STANDARD   
+            CASE DbfHeaderCodepage.CP_DBF_MAC_GREEK     ; RETURN OsCodepage.CP_INI_MAC_GREEK      
+            CASE DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN   ; RETURN OsCodepage.CP_INI_MAC_RUSSIAN    
+            CASE DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN ; RETURN OsCodepage.CP_INI_MAC_EEUROPEAN
+            OTHERWISE
+                RETURN 0
                     
-                END SWITCH
+            END SWITCH
                 
         STATIC METHOD ToHeaderCodePage(SELF codePage AS OsCodePage) AS DbfHeaderCodePage
             SWITCH codePage
             CASE OsCodepage.CP_INI_DOS_US       ; RETURN DbfHeaderCodepage.CP_DBF_DOS_US         
-                CASE OsCodepage.CP_INI_DOS_MAZOVIA  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA    
-                CASE OsCodepage.CP_INI_DOS_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_DOS_GREEK      
-                CASE OsCodepage.CP_INI_DOS_INTL     ; RETURN DbfHeaderCodepage.CP_DBF_DOS_INTL       
-                CASE OsCodepage.CP_INI_DOS_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN  
-                CASE OsCodepage.CP_INI_DOS_ICELANDIC; RETURN DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC  
-                CASE OsCodepage.CP_INI_DOS_NORDIC   ; RETURN DbfHeaderCodepage.CP_DBF_DOS_NORDIC     
-                CASE OsCodepage.CP_INI_DOS_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN    
-                CASE OsCodepage.CP_INI_DOS_KAMENICKY; RETURN DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY  
-                CASE OsCodepage.CP_INI_DOS_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_TURKISH    
-                CASE OsCodepage.CP_INI_DOS_CANADIAN ; RETURN DbfHeaderCodepage.CP_DBF_DOS_CANADIAN   
+            CASE OsCodepage.CP_INI_DOS_MAZOVIA  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA    
+            CASE OsCodepage.CP_INI_DOS_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_DOS_GREEK      
+            CASE OsCodepage.CP_INI_DOS_INTL     ; RETURN DbfHeaderCodepage.CP_DBF_DOS_INTL       
+            CASE OsCodepage.CP_INI_DOS_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_DOS_EEUROPEAN  
+            CASE OsCodepage.CP_INI_DOS_ICELANDIC; RETURN DbfHeaderCodepage.CP_DBF_DOS_ICELANDIC  
+            CASE OsCodepage.CP_INI_DOS_NORDIC   ; RETURN DbfHeaderCodepage.CP_DBF_DOS_NORDIC     
+            CASE OsCodepage.CP_INI_DOS_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_RUSSIAN    
+            CASE OsCodepage.CP_INI_DOS_KAMENICKY; RETURN DbfHeaderCodepage.CP_DBF_DOS_KAMENICKY  
+            CASE OsCodepage.CP_INI_DOS_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_TURKISH    
+            CASE OsCodepage.CP_INI_DOS_CANADIAN ; RETURN DbfHeaderCodepage.CP_DBF_DOS_CANADIAN   
                 
-                CASE OsCodepage.CP_INI_WIN_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN  
-                CASE OsCodepage.CP_INI_WIN_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN    
-                CASE OsCodepage.CP_INI_WIN_ANSI     ; RETURN DbfHeaderCodepage.CP_DBF_WIN_ANSI       
-                CASE OsCodepage.CP_INI_WIN_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_WIN_GREEK      
-                CASE OsCodepage.CP_INI_WIN_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_TURKISH    
+            CASE OsCodepage.CP_INI_WIN_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN  
+            CASE OsCodepage.CP_INI_WIN_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN    
+            CASE OsCodepage.CP_INI_WIN_ANSI     ; RETURN DbfHeaderCodepage.CP_DBF_WIN_ANSI       
+            CASE OsCodepage.CP_INI_WIN_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_WIN_GREEK      
+            CASE OsCodepage.CP_INI_WIN_TURKISH  ; RETURN DbfHeaderCodepage.CP_DBF_WIN_TURKISH    
                 
-                CASE OsCodepage.CP_INI_MAC_STANDARD ; RETURN DbfHeaderCodepage.CP_DBF_MAC_STANDARD   
-                CASE OsCodepage.CP_INI_MAC_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_MAC_GREEK      
-                CASE OsCodepage.CP_INI_MAC_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN    
-                CASE OsCodepage.CP_INI_MAC_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN  
+            CASE OsCodepage.CP_INI_MAC_STANDARD ; RETURN DbfHeaderCodepage.CP_DBF_MAC_STANDARD   
+            CASE OsCodepage.CP_INI_MAC_GREEK    ; RETURN DbfHeaderCodepage.CP_DBF_MAC_GREEK      
+            CASE OsCodepage.CP_INI_MAC_RUSSIAN  ; RETURN DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN    
+            CASE OsCodepage.CP_INI_MAC_EEUROPEAN; RETURN DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN  
                 
-                OTHERWISE
-                    RETURN DbfHeaderCodepage.CP_DBF_DOS_US 
-            END SWITCH
+            OTHERWISE
+                RETURN DbfHeaderCodepage.CP_DBF_DOS_US 
+        END SWITCH
 
-            STATIC METHOD IsAnsi (SELF codePage AS DBFHeaderCodePage) AS LOGIC
-                SWITCH codePage
-                CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN
-                CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN
-                CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI
-                CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK
-                CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH
-                    RETURN TRUE
-                END SWITCH
-                RETURN FALSE
+        STATIC METHOD IsAnsi (SELF codePage AS DBFHeaderCodePage) AS LOGIC
+            SWITCH codePage
+            CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN
+            CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN
+            CASE DbfHeaderCodepage.CP_DBF_WIN_ANSI
+            CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK
+            CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH
+                RETURN TRUE
+            END SWITCH
+            RETURN FALSE
  
     END CLASS    
     

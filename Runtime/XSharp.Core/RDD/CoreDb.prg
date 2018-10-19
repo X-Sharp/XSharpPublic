@@ -1049,7 +1049,8 @@ CLASS XSharp.CoreDb
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
             info:Order   := oOrder
-            oValue :=  oRDD:OrderInfo(nOrdinal, info)
+			oRDD:OrderInfo(nOrdinal, info)
+            oValue :=  info:Result
             RETURN TRUE
         CATCH e AS Exception
             RuntimeState.LastRDDError := e

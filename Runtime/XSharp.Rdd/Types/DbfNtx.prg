@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN SELF:_ntxList:Rebuild()
 			END LOCK
 			
-		VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
+		OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
 			LOCAL isOk AS LOGIC
 			LOCAL result AS DWORD
 			LOCAL workOrder AS NtxOrder

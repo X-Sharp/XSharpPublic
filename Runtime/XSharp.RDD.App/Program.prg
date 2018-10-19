@@ -52,6 +52,9 @@ BEGIN NAMESPACE XSharp.RDD.App
         myTest:CheckAppendData()
         myTest:CheckCreateDBF()
         myTest:CheckCreateAppendDBF()
+		//
+		LOCAL myNTXTest := NtxTests{} AS NtxTests
+		myNTXTest:CreateAppendSkipZero()
         //
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")

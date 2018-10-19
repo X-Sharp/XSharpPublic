@@ -2085,8 +2085,8 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL locked AS LOGIC
 				LOCAL originalCount AS INT
 				LOCAL result AS LOGIC
-				//
-				recno := 0
+				// Default Position = Current Record
+				recno := SELF:Recno
 				isBof := FALSE
 				isEof := FALSE
 				changedBof := FALSE

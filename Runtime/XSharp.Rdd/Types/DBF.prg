@@ -1263,19 +1263,21 @@ BEGIN NAMESPACE XSharp.RDD
 			CASE DbFieldType.Float
 				CASE DbFieldType.Number
 				CASE DbFieldType.Double
+					LOCAL r8 AS REAL8
 					//
 					IF (! String.IsNullOrWhiteSpace(str))
 						//
 						IF ( fieldType == DbFieldType.Number ) .AND. (nDec == 0 )
-							data := System.Convert.ToInt32(str)
+							r8 := System.Convert.ToInt32(str)
 						ELSE
-							data := System.Convert.ToDouble(str)
+							r8 := System.Convert.ToDouble(str)
 						ENDIF
 					ELSE
 						IF defValue
-							data := 0.0
+							r8 := 0.0
 						ENDIF
 					ENDIF
+					data := DbFloat{r8, length, nDec} 
 					//					IF ((DbFieldType:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//						//
 					//						data := 0.0
@@ -1294,11 +1296,24 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbFieldType.Date
 					//
 					IF (!String.IsNullOrWhiteSpace(str))
+						// WARNING !!! An empty DATE will be {0,0,0,0,0,0,0,0}
+						LOCAL emptyDate := TRUE AS LOGIC
+						FOR VAR i := 0 TO 7
+							IF ( buffer[i] != 0 )
+								emptyDate := FALSE
+								EXIT
+							ENDIF
+						NEXT
 						//
-						data := System.DateTime.ParseExact(str, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+						IF (!emptyDate )
+							VAR dt := System.DateTime.ParseExact(str, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+							data := DbDate{dt:Year, dt:Month, dt:Day}
+						ELSE
+							data := DbDate{0,0,0}
+						ENDIF
 					ELSE
 						IF defValue
-							data := System.DateTime.MinValue
+							data := DbDate{0,0,0}
 						ENDIF
 					ENDIF
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
@@ -1307,15 +1322,17 @@ BEGIN NAMESPACE XSharp.RDD
 					//                    ENDIF
 					
 				CASE DbFieldType.Integer
+					LOCAL r8 AS REAL8
 					//
 					IF (! String.IsNullOrWhiteSpace(str))
 						//
-						data := System.BitConverter.ToInt32(buffer, 0)
+						r8 := System.BitConverter.ToInt32(buffer, 0)
 					ELSE
 						IF defValue
-							data := 0
+							r8 := 0
 						ENDIF
 					ENDIF
+					data := DbFloat{r8, length, nDec} 
 					//                    IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) != DBFFieldFlags.AllowNullValues)
 					//                        //
 					//                        data := 0
@@ -1349,11 +1366,12 @@ BEGIN NAMESPACE XSharp.RDD
 					//                        data := System.DateTime.MinValue
 					//                    ENDIF
 				CASE DbFieldType.Currency
+					LOCAL r8 AS REAL8
 					IF (!String.IsNullOrWhiteSpace(str))
-						data := System.Convert.ToDecimal(str)
+						r8 := System.Convert.ToDouble(str) //System.Convert.ToDecimal(str)
 					ELSE
 						IF defValue
-							data := 0.0
+							r8 := 0.0
 						ENDIF
 						//                    ELSE
 						//                        IF ((FIELD:Flags & DBFFieldFlags.AllowNullValues) == DBFFieldFlags.AllowNullValues)
@@ -1363,6 +1381,7 @@ BEGIN NAMESPACE XSharp.RDD
 						//                            data := 0.0
 						//                        ENDIF
 					ENDIF
+					data := DbFloat{r8, length, nDec} 
 				OTHERWISE
 					data := buffer
 				END SWITCH

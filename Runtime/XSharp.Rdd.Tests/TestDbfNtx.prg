@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	/// <summary>
 	/// The TestDbfNtx class.
 	/// </summary>
-	CLASS TestDbfNtx
+	PUBLIC CLASS TestDbfNtx
 	
 		[Fact, Trait("DbfNtx", "Create")];
 		METHOD CreateDBFNtx() AS VOID

@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _blockSize  AS SHORT
         PROTECT _defExt     AS STRING
         PROTECT _lockScheme AS DbfLocking
-		INTERNAL _Encoding      AS Encoding
+		
         
         PROPERTY DefExt AS STRING
             GET

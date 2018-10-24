@@ -1,4 +1,4 @@
-ï»¿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharp.RDD
 				SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries)
 			ELSE
 				TRY
-					SELF:_HeaderLocked := FFUnLock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
+					SELF:_HeaderLocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
 				CATCH
 					SELF:_HeaderLocked := FALSE
 				END TRY
@@ -373,7 +373,7 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			//
 			TRY
-				unlocked := FFUnLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
+				unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
 			CATCH
 				unlocked := FALSE
 			END TRY
@@ -394,7 +394,7 @@ BEGIN NAMESPACE XSharp.RDD
 			ENDIF
 			//
 			TRY
-				unlocked := FFUnLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
+				unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
 			CATCH
 				unlocked := FALSE
 			END TRY
@@ -882,7 +882,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Alias := SELF:_OpenInfo:Alias
 			SELF:_Shared := SELF:_OpenInfo:Shared
 			SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
-			SELF:_hFile    := Fopen(SELF:_FileName, SELF:_OpenInfo:FileMode)
+			SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
 			IF ( SELF:_hFile != F_ERROR )
 				isOk := SELF:_ReadHeader()
 				IF ( isOk )
@@ -1487,9 +1487,9 @@ BEGIN NAMESPACE XSharp.RDD
 			oError:Gencode := iGenCode
 			oError:SubSystem := SELF:SysName
 			oError:Severity := iSeverity
-			oError:FuncSym  := strFunction
+			oError:FuncSym  := iif(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
 			oError:FileName := SELF:_FileName
-			oError:Description := strMessage
+			oError:Description := iif(strMessage == NULL , "", strMessage)
 			//
 			THROW oError
 			
@@ -2408,8 +2408,8 @@ BEGIN NAMESPACE XSharp.RDD
 						For example, the value 0x03 indicates the table has a structural .cdx and a
 						Memo field.
 						29 	Code page mark
-						30 â€“ 31 	Reserved, contains 0x00
-						32 â€“ n 	Field subrecords
+						30 – 31 	Reserved, contains 0x00
+						32 – n 	Field subrecords
 						The number of fields determines the number of field subrecords.
 						One field subrecord exists for each field in the table.
 						n+1 			Header record terminator (0x0D)

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -55,6 +55,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
 		LOCAL aAssemblies AS IEnumerable<Assembly>
+		
+		IF String.IsNullOrWhiteSpace(cName)
+			// otherwise asm:GetType() will throw an exception with empty name
+			RETURN ret
+		END IF
 
 		IF lOurAssembliesOnly
 			aAssemblies := FindOurAssemblies()

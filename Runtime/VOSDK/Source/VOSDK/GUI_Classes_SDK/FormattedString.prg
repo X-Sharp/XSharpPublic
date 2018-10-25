@@ -489,7 +489,11 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 			sFuncChar := CharPos(sPicture, i)
 			iFuncPos := At2(sFuncChar, "BCDERXZ(!A")
 			IF (iFuncPos > 0)
-				LOGIC(pLogic + iFuncPos - 1) := TRUE
+				#warning incompatibility with VO_Sprintf
+				// In X#, LOGIC PTR uses increments of 1 bytes, but each LOGIC field in the strucPictureFuncFlags
+				// takes 4 bytes, so we need the * 4 below:
+				LOGIC(pLogic + (iFuncPos - 1) * 4) := TRUE
+//				LOGIC(pLogic + iFuncPos - 1) := TRUE
 			ENDIF
 		NEXT
 	ENDIF

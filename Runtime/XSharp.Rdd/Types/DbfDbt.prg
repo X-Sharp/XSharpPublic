@@ -23,12 +23,17 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
-                LOCAL encoding AS Encoding //ASCIIEncoding
-                LOCAL str AS STRING
-                encoding := SELF:_Encoding // ASCIIEncoding{}
-                str :=  encoding:GetString(buffer)
-                // Convert to String and return
-                RETURN str
+				IF ( buffer != NULL )
+					LOCAL encoding AS Encoding //ASCIIEncoding
+	                LOCAL str AS STRING
+					encoding := SELF:_Encoding // ASCIIEncoding{}
+					str :=  encoding:GetString(buffer)
+					// Convert to String and return
+					RETURN str
+				ELSE
+					// No Memo ?!, Empty String
+					RETURN String.Empty
+				ENDIF
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
             

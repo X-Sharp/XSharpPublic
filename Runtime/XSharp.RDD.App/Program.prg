@@ -6,10 +6,12 @@ USING XSharp.Rdd
 USING XSharp.Rdd.Support
 
 USING STATIC XSharp.Core.Functions
+
+USING XSharp.RDD.Tests
+
 BEGIN NAMESPACE XSharp.RDD.App
 
 	FUNCTION Start() AS VOID
-		LOCAL myTest := TestDBF{} AS TestDBF
 		//
 		CoreDb.UseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
 		? CoreDb.Dbf()
@@ -42,6 +44,8 @@ BEGIN NAMESPACE XSharp.RDD.App
 		? "Skip 1 Recno" , CoreDb.Recno(), "EOF", CoreDb.EOF(), "BOF", CoreDb.BOF()
 		CoreDb.CloseArea()
 		Console.Read()
+		//
+		LOCAL myTest := TestDBF_Console{} AS TestDBF_Console
 		myTest:OpenDBF()
 		myTest:OpenDBFErr()
 		myTest:OpenDBFShowFields()
@@ -53,30 +57,11 @@ BEGIN NAMESPACE XSharp.RDD.App
 		myTest:CheckAppendData()
 		myTest:CheckCreateDBF()
 		myTest:CheckCreateAppendDBF()
+		myTest:CheckMemo()
 		//
-		LOCAL myNTXTest := NtxTests{} AS NtxTests
+		LOCAL myNTXTest AS TestDbfNtx
+		myNTXTest := TestDbfNtx{}
 		myNTXTest:CreateAppendSkipZero()
-		//
-		VAR dbInfo := DbOpenInfo{ "datetest.DBF", "datetest", 1, FALSE, FALSE }
-		//
-		VAR myDBF := DBF{}
-		IF myDBF:Open( dbInfo ) 
-			//
-			myDBF:GoTop()
-			WHILE !myDBF:EOF
-				FOR i := 1 TO myDBF:FIELDCount
-					// 
-					LOCAL oData AS OBJECT
-					oData := myDBF:GetValue( (INT)i )
-					Console.WriteLine( myDBF:FieldInfo( (INT)i, DBS_NAME, NIL ) + " == " + oData:ToString() )
-					Console.WriteLine( "Type == " + oData:GetType():ToString() )
-					Console.WriteLine( "---------" )
-				NEXT
-				myDBF:Skip(1)
-			ENDDO
-			//
-			myDBF:Close()
-		ENDIF
 		//
 		Console.WriteLine("Hello World!")
 		Console.WriteLine("Press any key to continue...")
@@ -88,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			RETURN
 			END CLASS
 			
-	CLASS TestDBF
+	CLASS TestDBF_Console
 	
 		METHOD OpenDBF() AS VOID
 			// CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
@@ -446,6 +431,19 @@ BEGIN NAMESPACE XSharp.RDD.App
 			//
 			myDBF:Close()
 			RETURN
+
+		METHOD CheckMemo() AS VOID
+			// Now Modify in the same space
+			VAR dbInfo := DbOpenInfo{ "CustNtx.DBF", "CustNtx", 1, FALSE, FALSE }
+			LOCAL myDBF := DBFDBT{} AS DBFDBT
+			VAR Memos := List<STRING>{} 
+			// Now, Modify the Memo
+			myDBF:Open( dbInfo )
+			//
+			LOCAL oData AS OBJECT
+			oData := myDBF:GetValue( 14 )
+			//
+			myDBF:Close()
 			
 		METHOD CheckCreateAppendDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING

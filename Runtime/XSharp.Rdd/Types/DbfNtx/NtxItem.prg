@@ -13,6 +13,11 @@ BEGIN NAMESPACE XSharp.RDD
 
     /// <summary>
     /// The NtxItem class. (Should it be called NtxNode ?)
+	/// The size of each item is: 8 + Key Size ( the last item doesn't contain a key value, only a pointer to a sub-tree.)
+    /// The structure of an Item is 
+    /// long page_offset - file offset (within ntx file) where sub-tree is. if there's no subtree, a 0 is stored.
+    /// long recno       - record number for this key value (in the dbf file)
+    /// char key_value[key_size]
     /// </summary>
     INTERNAL CLASS NtxItem
         PRIVATE _oRDD       AS DBFNTX
@@ -20,16 +25,18 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE _pageNum     AS LONG
         PRIVATE _recno      AS DWORD
         PRIVATE _bytesKey      AS BYTE[]
-        PROTECTED _Page     AS NtxPage
+        PROTECTED _Page     AS NtxPage			// Page that olds the Item
 
         PRIVATE _hasPage    AS LOGIC
-        PRIVATE _Offset     AS LONG
-        PRIVATE _Pos        AS LONG
+        PRIVATE _Offset     AS LONG				// Item offset from start of Page
+        PRIVATE _Pos        AS LONG				// Index of the Item in the page array of Offsets
         
+		// Retrieve the Key as String
         PUBLIC PROPERTY Key AS STRING GET _oRDD:_Encoding:GetString(KeyBytes, 0, _lenKey)
 
         PUBLIC PROPERTY Pos AS LONG GET _Pos
         
+		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         PUBLIC PROPERTY KeyBytes AS BYTE[]
             GET
                 LOCAL sourceIndex AS LONG
@@ -54,6 +61,9 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
+		// Retrieve/set the PageNo/PageOffset of the Item
+		// It is on top of the Item's bytes
+		// it is the Record offset from start of page 
         PUBLIC PROPERTY PageNo AS LONG
             GET
                 LOCAL pageOffSet AS LONG
@@ -81,6 +91,8 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
+		// Retrieve/set the Recno of the Item
+		// It is after the page_offset, which is a long, so 4 bytes after
         PUBLIC PROPERTY Recno AS DWORD
             GET
                 TRY
@@ -117,7 +129,8 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oRDD := area
             
             
-        PUBLIC METHOD Fill( pos AS LONG , page AS NtxPage ) AS VOID
+        // Set the informations for the current Item
+		PUBLIC METHOD Fill( pos AS LONG , page AS NtxPage ) AS VOID
             SELF:Clear()
             SELF:_Page := page
             SELF:_hasPage := (SELF:_Page != NULL)
@@ -125,8 +138,8 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Pos := pos
             
         PUBLIC METHOD Clear() AS VOID
-            SELF:_recno := 0u
-            SELF:_pageNum := 0L
+            SELF:_recno := 0
+            SELF:_pageNum := 0
             SELF:_bytesKey := BYTE[]{ 257 }
             SELF:_Offset := -1
             SELF:_Page := NULL

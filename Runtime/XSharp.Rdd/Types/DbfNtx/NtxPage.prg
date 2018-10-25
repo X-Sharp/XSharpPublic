@@ -33,6 +33,7 @@ BEGIN NAMESPACE XSharp.RDD
     
     /// <summary>
     /// The NtxPage class.
+	/// This is a collection of Items
     /// </summary>
     INTERNAL CLASS NtxPage
     
@@ -42,14 +43,15 @@ BEGIN NAMESPACE XSharp.RDD
         
         PROTECTED _Bytes AS BYTE[]
         
-        // Current Page Number
-        //PROPERTY PageNo AS LONG GET SELF:_Number SET SELF:_Number := VALUE
+        // Current Page Number / Page Offset
 		PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
         
+		// Bytes of the Page (1024)
         PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
         
         PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
         
+		// Item Count - how many items this particular page holds : a WORD stored at Offset 0x00
         PROPERTY NodeCount AS WORD
             GET
                 LOCAL nCount := 0 AS WORD
@@ -72,6 +74,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
+		// Retrieve a NtxItem in the current Page, at the specified position
         PROPERTY SELF[ index AS LONG ] AS NtxItem
             GET
                 LOCAL item := NULL AS NtxItem
@@ -85,6 +88,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         END PROPERTY
         
+		// Initialize the NtxPage; The pageNumber is in fact the offset of the page in the File
         CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
             //
             SELF:_Order := order
@@ -96,6 +100,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN
             
+		// Read/Fill a Page
+		// Move the Offset, then read 1024 bytes
         METHOD Read() AS LOGIC
             LOCAL isOk AS LOGIC
             //
@@ -117,7 +123,9 @@ BEGIN NAMESPACE XSharp.RDD
                 END TRY
             ENDIF
             RETURN isOk
-            
+
+		// Write a Page
+		// Move the Offset, then write 1024 bytes            
         METHOD Write() AS LOGIC
             LOCAL isOk AS LOGIC
             //
@@ -141,6 +149,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             RETURN isOk
             
+		// Retrieve the Record/Item offset from start of Page
         PUBLIC METHOD GetRef( pos AS LONG ) AS SHORT
             TRY
                 RETURN BitConverter.ToInt16(SELF:_bytes, (pos+1) * 2)
@@ -148,7 +157,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN 0
             END TRY
             
-            
+        // Set the Record/Item offset from start of Page
         PUBLIC METHOD SetRef(pos AS LONG , newValue AS SHORT ) AS VOID
             Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
             SELF:Hot := TRUE

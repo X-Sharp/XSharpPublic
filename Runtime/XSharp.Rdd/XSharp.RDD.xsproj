@@ -124,6 +124,8 @@
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
     <Compile Include="Types\DbfCdx.prg" />
+    <Compile Include="Types\DbfCdx\CdxBlock.prg" />
+    <Compile Include="Types\DbfCdx\CdxHeader.prg" />
     <Compile Include="Types\DbfDbt.prg" />
     <Compile Include="Types\DbfFpt.prg" />
     <Compile Include="Types\DbfMemo.prg" />
@@ -153,6 +155,7 @@
     <Folder Include="Types" />
     <Folder Include="Properties\" />
     <Folder Include="Types\DbfNtx\" />
+    <Folder Include="Types\DbfCdx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

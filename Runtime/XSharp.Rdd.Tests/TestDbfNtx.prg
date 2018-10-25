@@ -287,7 +287,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				LOCAL oData AS OBJECT
 				// Field 1 == ID
 				oData := myDBF:GetValue( 1 )
-				idList:Add( (INT)oData )
+				idList:Add( Convert.ToInt32(oData))
 				myDBF:Skip(1)
 			ENDDO
 			// Check that the ID are sorted by value

@@ -174,8 +174,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//"CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
 				myDBF:PutValue( 1, 5 )
 				myDBF:PutValue( 2, "Fabrice" )
-				Assert.Equal( 5, Convert.ToInt32(myDBF:GetValue( 1 )) )
-				Assert.Equal( "Fabrice", myDBF:GetValue( 2 ) )
+				Assert.Equal( 5, Convert.ToInt32(myDBF:GetValue( 1 ) ))
+				Assert.Equal( "Fabrice", Convert.ToString(myDBF:GetValue( 2 )):Trim() )
 				//
 				myDBF:Close()
 			ENDIF

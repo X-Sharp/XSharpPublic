@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/ns</title>
   <keywords>
     <keyword>/ns</keyword>
@@ -19,7 +19,6 @@
     <para styleclass="Normal">The /ns option explicitly specifies the default namespace for all types that do not have an explicit namespace in their name.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">/ns[: ]namespaceName</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
@@ -30,7 +29,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The /ns option will work on the following types:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Classes </li>
       <li styleclass="Normal" style="margin-left:13px;">Interfaces </li>
       <li styleclass="Normal" style="margin-left:13px;">Structures </li>
@@ -44,7 +43,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="5" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the General tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Application section, modify the Default Namespace property. </li>
@@ -55,7 +54,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When the following code is compiled without /ns compiler option the following types will be produced:</para>
     <para styleclass="Normal"></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Customer </li>
       <li styleclass="Normal" style="margin-left:13px;">Point </li>
       <li styleclass="Normal" style="margin-left:13px;">MyProject.Customer </li>
@@ -67,7 +66,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you compile the same code with a /ns:MyNameSpace option the following types will be produced:</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">MyNameSpace.Customer </li>
       <li styleclass="Normal" style="margin-left:13px;">MyNameSpace.Point </li>
       <li styleclass="Normal" style="margin-left:13px;">MyProject.Customer </li>

@@ -9,7 +9,6 @@
     <para styleclass="Body Text">Specifies whether to allow named arguments in the parser or not.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">/namedargs [+ | -] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>

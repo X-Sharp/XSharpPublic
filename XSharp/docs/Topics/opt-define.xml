@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/define</title>
   <keywords>
     <keyword>/define</keyword>
@@ -13,7 +13,6 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">/define:name[;name2] &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab />The name of one or more symbols that you want to define.</para>
@@ -32,7 +31,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The X# compiler defines a couple of symbols automatically. See the <link displaytype="text" defaultstyle="true" type="topiclink" href="Compiler-Macros">Macros </link>topic elsewhere in this documentation.</para>
     <para styleclass="Normal"><br/><text styleclass="Heading3">To set this compiler option in the Visual Studio development environment</text></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">On the Build tab, type the symbol that is to be defined in the Conditional compilation symbols box. For example, if you are using the code example that follows, just type xx into the text box.</li>
     </list>

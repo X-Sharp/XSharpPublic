@@ -22,7 +22,8 @@ call rebuildrt.cmd
 Echo build XML for documentation
 msbuild runtime.sln /p:Configuration=Documentation /t:Build /m /v:m /nologo
 Echo build reference documentation
-msbuild docs.shfbproj /p:Configuration=Documentation /t:Build /m /v:m /nologo
+msbuild docs.shfbproj /p:Configuration=Debug /t:Build /m /v:m /nologo
+msbuild vodocs.shfbproj /p:Configuration=Debug /t:Build /m /v:m /nologo
 Echo Build VSIntegration
 cd \xsharp\devpublic
 call rebuild.cmd

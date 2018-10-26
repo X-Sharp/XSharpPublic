@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/codepage</title>
   <keywords>
     <keyword>/codepage</keyword>
@@ -13,7 +13,6 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">/codepage:id &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="List">id<tab />The id of the code page to use for all source code files in the compilation.</para>

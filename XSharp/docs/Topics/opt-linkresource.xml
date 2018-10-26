@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/linkresource</title>
   <keywords>
     <keyword>/linkresource</keyword>
@@ -13,7 +13,6 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">/linkresource:filename[,identifier[,accessibility-modifier]] &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="List">filename<tab />The .NET Framework resource file to which you want to link from the assembly.</para>
     <para styleclass="List">identifier (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</para>

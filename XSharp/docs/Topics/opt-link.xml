@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/link</title>
   <keywords>
     <keyword>/link</keyword>
@@ -12,9 +12,7 @@
     <para styleclass="Normal">Causes the compiler to make COM type information in the specified assemblies available to the project that you are currently compiling.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">/link:fileList &#160;<br/>// -or- &#160;<br/>/l:fileList &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example">fileList</text><tab />Required. Comma-delimited list of assembly file names. If the file name contains a space, enclose the name in quotation marks.</para>
@@ -30,7 +28,7 @@
     <para styleclass="Normal">To set the <text styleclass="Code Example">/link</text> option in Visual Studio, add an assembly reference and set the Embed Interop Types property to true. The default for the Embed Interop Types property is false.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you link to a COM assembly (Assembly A) which itself references another COM assembly (Assembly B), you also have to link to Assembly B if either of the following is true:</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">A type from Assembly A inherits from a type or implements an interface from Assembly B.</li>
       <li styleclass="Normal" style="margin-left:13px;">A field, property, event, or method that has a return type or parameter type from Assembly B is invoked.</li>
     </list>

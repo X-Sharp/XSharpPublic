@@ -96,6 +96,10 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <Reference Include="System">
+      <Name>System</Name>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -126,6 +130,12 @@
     <Compile Include="Types\DbfCdx.prg" />
     <Compile Include="Types\DbfCdx\CdxBlock.prg" />
     <Compile Include="Types\DbfCdx\CdxHeader.prg" />
+    <Compile Include="Types\DbfCdx\CdxOrder.prg" />
+    <Compile Include="Types\DbfCdx\CdxOrderBag.prg" />
+    <Compile Include="Types\DbfCdx\CdxLeaf.prg" />
+    <Compile Include="Types\DbfCdx\CdxPage.prg" />
+    <Compile Include="Types\DbfCdx\CdxPageBase.prg" />
+    <Compile Include="Types\DbfCdx\CdxOrderBagList.prg" />
     <Compile Include="Types\DbfDbt.prg" />
     <Compile Include="Types\DbfFpt.prg" />
     <Compile Include="Types\DbfMemo.prg" />

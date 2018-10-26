@@ -1,8 +1,8 @@
-﻿// NtxPage.prg
-// Created by    : fabri
-// Creation Date : 6/21/2018 5:31:55 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
@@ -11,7 +11,7 @@ USING System.Text
 USING System.IO
 USING System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.NTX
 
     // the ntx file consists of pages of 1k. A Page contains Items (also called Nodes in some docs)
     // The first page is the Header => See NtxHeader Class

@@ -10,51 +10,47 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
 	/// The CdxBlock class.
 	/// </summary>
-	CLASS CdxBlock
-		PROTECTED _hFile AS IntPtr
-		PUBLIC Bytes AS DbfCdxBlock
+	INTERNAL CLASS CdxBlock
+		PRIVATE _hFile AS IntPtr
+
+		PRIVATE Buffer   AS BYTE[]
+		// Hot ?  => Header has changed ?
+		INTERNAL isHot	AS LOGIC
 		
 		
-		METHOD Read() AS LOGIC
+		
+		INTERNAL METHOD Read() AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Move to top
 			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
 			// Read Buffer
-			isOk := ( FRead3(SELF:_hFile, SELF:Bytes:Buffer, CDXBLKOFFSETS.SIZE) == CDXBLKOFFSETS.SIZE )
+			isOk := ( FRead3(SELF:_hFile, SELF:Buffer, CDXBLOCK_SIZE) == CDXBLOCK_SIZE )
 			//
 			RETURN isOk
 			
-		METHOD Write() AS LOGIC
+		INTERNAL METHOD Write() AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Move to top
 			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
 			// Write Buffer
-			isOk := ( FWrite3(SELF:_hFile, SELF:Bytes:Buffer, CDXBLKOFFSETS.SIZE) == CDXBLKOFFSETS.SIZE )
+			isOk := ( FWrite3(SELF:_hFile, SELF:Buffer, CDXBLOCK_SIZE) == CDXBLOCK_SIZE )
 			//
 			RETURN isOk
 			
 			
 			
-		CONSTRUCTOR( fileHandle AS IntPtr )
+		INTERNAL CONSTRUCTOR( fileHandle AS IntPtr )
 			//
 			SELF:_hFile := fileHandle
-			SELF:Bytes := DbfCdxBlock{}
-			SELF:Bytes:initialize();
+			SELF:Buffer := BYTE[]{CDXBLOCK_SIZE}
+			SELF:isHot  := FALSE
 			
 			RETURN
-			
-			
-			/// <summary>CDX Block.</summary>        
-		STRUCTURE DbfCdxBlock                     
-
-			PUBLIC Buffer   AS BYTE[]
-			// Hot ?  => Header has changed ?
-			PUBLIC isHot	AS LOGIC
 			
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PRIVATE METHOD _GetWord(nOffSet AS INT) AS WORD
@@ -74,79 +70,70 @@ BEGIN NAMESPACE XSharp.RDD
 				Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
 				isHot := TRUE
 				
-			PROPERTY NodeAttribute  AS WORD	;
-			GET _GetWord(CDXBLKOFFSETS.NODEATTR);
-			SET _SetWord(CDXBLKOFFSETS.NODEATTR, VALUE), isHot := TRUE
+			INTERNAL PROPERTY NodeAttribute  AS WORD	;
+			GET _GetWord(CDXBLKOFFSET_NODEATTR);
+			SET _SetWord(CDXBLKOFFSET_NODEATTR, VALUE), isHot := TRUE
 
-			PROPERTY Entry  AS WORD	;
-			GET _GetWord(CDXBLKOFFSETS.ENTRY);
-			SET _SetWord(CDXBLKOFFSETS.ENTRY, VALUE), isHot := TRUE
+			INTERNAL PROPERTY Entry  AS WORD	;
+			GET _GetWord(CDXBLKOFFSET_ENTRY);
+			SET _SetWord(CDXBLKOFFSET_ENTRY, VALUE), isHot := TRUE
 
-			PROPERTY LeftPtr		AS DWORD			;
-			GET _GetDWord(CDXBLKOFFSETS.LEFTPTR);
-			SET _SetDWord(CDXBLKOFFSETS.LEFTPTR, VALUE), isHot := TRUE
+			INTERNAL PROPERTY LeftPtr		AS DWORD			;
+			GET _GetDWord(CDXBLKOFFSET_LEFTPTR);
+			SET _SetDWord(CDXBLKOFFSET_LEFTPTR, VALUE), isHot := TRUE
 
-			PROPERTY RightPtr		AS DWORD			;
-			GET _GetDWord(CDXBLKOFFSETS.RIGHTPTR);
-			SET _SetDWord(CDXBLKOFFSETS.RIGHTPTR, VALUE), isHot := TRUE
+			INTERNAL PROPERTY RightPtr		AS DWORD			;
+			GET _GetDWord(CDXBLKOFFSET_RIGHTPTR);
+			SET _SetDWord(CDXBLKOFFSET_RIGHTPTR, VALUE), isHot := TRUE
 			
-			PROPERTY Freespace		AS WORD			;
-			GET _GetWord(CDXBLKOFFSETS.FREESPACE);
-			SET _SetWord(CDXBLKOFFSETS.FREESPACE, VALUE), isHot := TRUE
+			INTERNAL PROPERTY Freespace		AS WORD			;
+			GET _GetWord(CDXBLKOFFSET_FREESPACE);
+			SET _SetWord(CDXBLKOFFSET_FREESPACE, VALUE), isHot := TRUE
 			
-			PROPERTY Recnum		AS DWORD			;
-			GET _GetDWord(CDXBLKOFFSETS.RECNUM);
-			SET _SetDWord(CDXBLKOFFSETS.RECNUM, VALUE), isHot := TRUE
+			INTERNAL PROPERTY Recnum		AS DWORD			;
+			GET _GetDWord(CDXBLKOFFSET_RECNUM);
+			SET _SetDWord(CDXBLKOFFSET_RECNUM, VALUE), isHot := TRUE
 			
-			PROPERTY DuplicateCount	AS BYTE			;
-			GET Buffer[CDXBLKOFFSETS.DUPCOUNT];
-			SET Buffer[CDXBLKOFFSETS.DUPCOUNT] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY DuplicateCount	AS BYTE			;
+			GET Buffer[CDXBLKOFFSET_DUPCOUNT];
+			SET Buffer[CDXBLKOFFSET_DUPCOUNT] := VALUE, isHot := TRUE
 
-			PROPERTY TrailingCount	AS BYTE			;
-			GET Buffer[CDXBLKOFFSETS.TRAILINGCOUNT];
-			SET Buffer[CDXBLKOFFSETS.TRAILINGCOUNT] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY TrailingCount	AS BYTE			;
+			GET Buffer[CDXBLKOFFSET_TRAILINGCOUNT];
+			SET Buffer[CDXBLKOFFSET_TRAILINGCOUNT] := VALUE, isHot := TRUE
 			
-			PROPERTY RecordBits	AS BYTE			;
-			GET Buffer[CDXBLKOFFSETS.RECNUMBITS];
-			SET Buffer[CDXBLKOFFSETS.RECNUMBITS] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY RecordBits	AS BYTE			;
+			GET Buffer[CDXBLKOFFSET_RECNUMBITS];
+			SET Buffer[CDXBLKOFFSET_RECNUMBITS] := VALUE, isHot := TRUE
 			
-			PROPERTY DuplicateBits	AS BYTE			;
-			GET Buffer[CDXBLKOFFSETS.DUPCOUNTBITS];
-			SET Buffer[CDXBLKOFFSETS.DUPCOUNTBITS] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY DuplicateBits	AS BYTE			;
+			GET Buffer[CDXBLKOFFSET_DUPCOUNTBITS];
+			SET Buffer[CDXBLKOFFSET_DUPCOUNTBITS] := VALUE, isHot := TRUE
 			
-			PROPERTY TrailingBits	AS BYTE			;
-			GET Buffer[CDXBLKOFFSETS.TRAILINGBITS];
-			SET Buffer[CDXBLKOFFSETS.TRAILINGBITS] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY TrailingBits	AS BYTE			;
+			GET Buffer[CDXBLKOFFSET_TRAILINGBITS];
+			SET Buffer[CDXBLKOFFSET_TRAILINGBITS] := VALUE, isHot := TRUE
 			
-			PROPERTY ShortBytes	AS BYTE			;
-			GET Buffer[CDXBLKOFFSETS.SHORTBYTES];
-			SET Buffer[CDXBLKOFFSETS.SHORTBYTES] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY ShortBytes	AS BYTE			;
+			GET Buffer[CDXBLKOFFSET_SHORTBYTES];
+			SET Buffer[CDXBLKOFFSET_SHORTBYTES] := VALUE, isHot := TRUE
 			
-			METHOD initialize() AS VOID STRICT
-				Buffer := BYTE[]{CDXBLKOFFSETS.SIZE}
-				isHot  := FALSE
-				RETURN
 				
-				END STRUCTURE
-				
-		PUBLIC ENUM CDXBLKOFFSETS
-			MEMBER NODEATTR		:= 0	// WORD
-			MEMBER ENTRY		:= 2	// WORD
-			MEMBER LEFTPTR		:= 4	// LONGINT
-			MEMBER RIGHTPTR 	:= 8	// LONGINT
-
-			MEMBER FREESPACE	:= 12	// WORD		: Free space in this key
-			MEMBER RECNUM		:= 14	// LONGINT	: Bit mask for record number
-			MEMBER DUPCOUNT		:= 18	// Bit mask for duplicate byte count
-			MEMBER TRAILINGCOUNT:= 19	// Bit mask for trailing byte count
-			MEMBER RECNUMBITS	:= 20	// Num bits used for record number
-			MEMBER DUPCOUNTBITS := 21	// Number of bits used for duplicate count
-			MEMBER TRAILINGBITS := 22	// Number of bits used for trailing count
-			MEMBER SHORTBYTES	:= 23	// Bytes needed for recno+dups+trailing
+		PRIVATE CONST CDXBLKOFFSET_NODEATTR		:= 0	AS WORD // WORD
+		PRIVATE CONST CDXBLKOFFSET_ENTRY		:= 2	AS WORD // WORD
+		PRIVATE CONST CDXBLKOFFSET_LEFTPTR		:= 4	AS WORD // LONGINT
+		PRIVATE CONST CDXBLKOFFSET_RIGHTPTR 	:= 8	AS WORD // LONGINT
+		PRIVATE CONST CDXBLKOFFSET_FREESPACE	:= 12	AS WORD // WORD		: Free space in this key
+		PRIVATE CONST CDXBLKOFFSET_RECNUM		:= 14	AS WORD // LONGINT	: Bit mask for record number
+		PRIVATE CONST CDXBLKOFFSET_DUPCOUNT		:= 18	AS WORD // Bit mask for duplicate byte count
+		PRIVATE CONST CDXBLKOFFSET_TRAILINGCOUNT:= 19	AS WORD // Bit mask for trailing byte count
+		PRIVATE CONST CDXBLKOFFSET_RECNUMBITS	:= 20	AS WORD // Num bits used for record number
+		PRIVATE CONST CDXBLKOFFSET_DUPCOUNTBITS := 21	AS WORD // Number of bits used for duplicate count
+		PRIVATE CONST CDXBLKOFFSET_TRAILINGBITS := 22	AS WORD // Number of bits used for trailing count
+		PRIVATE CONST CDXBLKOFFSET_SHORTBYTES	:= 23	AS WORD // Bytes needed for recno+dups+trailing
 			
-			MEMBER SIZE         := 512
+		PRIVATE CONST CDXBLOCK_SIZE         := 512 AS WORD
 			
-		END ENUM
 		
 	END CLASS
 END NAMESPACE 

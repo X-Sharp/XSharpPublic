@@ -1,15 +1,15 @@
-﻿// NtxPageList.prg
-// Created by    : fabri
-// Creation Date : 7/12/2018 5:54:15 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.NTX
 
     /// <summary>
     /// The NtxPageList class.

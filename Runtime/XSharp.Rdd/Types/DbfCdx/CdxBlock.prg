@@ -11,10 +11,15 @@ USING System.IO
 USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.RDD.CDX
-
+	// Fixed Buffer of 512 bytes
+	// https://www.clicketyclick.dk/databases/xbase/format/cdx.html#CDX_STRUCT
+	// Read/Write to/from the Stream with the Buffer 
+	// and access individual values using the other fields
 	/// <summary>
 	/// The CdxBlock class.
 	/// </summary>
+    // Note that the start of a page has counters pointers and more. The end of the page has the actual keys.
+    // 
 	INTERNAL CLASS CdxBlock
 		PRIVATE _hFile AS IntPtr
 
@@ -69,9 +74,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			PRIVATE METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
 				Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
 				isHot := TRUE
-				
-			INTERNAL PROPERTY NodeAttribute  AS WORD	;
-			GET _GetWord(CDXBLKOFFSET_NODEATTR);
+                
+			INTERNAL PROPERTY NodeAttribute  AS CdxNodeAttribute	;
+			GET (CdxNodeAttribute) _GetWord(CDXBLKOFFSET_NODEATTR);
 			SET _SetWord(CDXBLKOFFSET_NODEATTR, VALUE), isHot := TRUE
 
 			INTERNAL PROPERTY Entry  AS WORD	;
@@ -127,13 +132,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXBLKOFFSET_RECNUM		:= 14	AS WORD // LONGINT	: Bit mask for record number
 		PRIVATE CONST CDXBLKOFFSET_DUPCOUNT		:= 18	AS WORD // Bit mask for duplicate byte count
 		PRIVATE CONST CDXBLKOFFSET_TRAILINGCOUNT:= 19	AS WORD // Bit mask for trailing byte count
-		PRIVATE CONST CDXBLKOFFSET_RECNUMBITS	:= 20	AS WORD // Num bits used for record number
+		PRIVATE CONST CDXBLKOFFSET_RECNUMBITS	:= 20	AS WORD // Number of bits used for record number
 		PRIVATE CONST CDXBLKOFFSET_DUPCOUNTBITS := 21	AS WORD // Number of bits used for duplicate count
 		PRIVATE CONST CDXBLKOFFSET_TRAILINGBITS := 22	AS WORD // Number of bits used for trailing count
-		PRIVATE CONST CDXBLKOFFSET_SHORTBYTES	:= 23	AS WORD // Bytes needed for recno+dups+trailing
+		PRIVATE CONST CDXBLKOFFSET_SHORTBYTES	:= 23	AS WORD // Bytes needed for recno+dups+trailing (sum of 20,21 & 22)
 			
 		PRIVATE CONST CDXBLOCK_SIZE         := 512 AS WORD
 			
 		
-	END CLASS
+    END CLASS
+    INTERNAL ENUM CdxNodeAttribute AS WORD
+        MEMBER Branch := 0
+        MEMBER Root   := 1
+        MEMBER Leaf   := 2
+    END ENUM
 END NAMESPACE 

@@ -955,8 +955,8 @@ BEGIN NAMESPACE XSharp.RDD
 				FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 					//
 					Array.Copy( fieldsBuffer, i*DbfField.SIZE, currentField:Buffer, 0, DbfField.SIZE )
-					LOCAL info AS DbfRddFieldInfo
-					info := DbfRddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
+					LOCAL info AS RddFieldInfo
+					info := RddFieldInfo{ currentField:Name, currentField:Type, currentField:Len, currentField:Dec }
 					//SELF:_Fields[ i ] := info
 					// DON'T FORGET TO FILL THE _fieldNames DICTIONNARY !!!!
 					//SELF:_fieldNames:Add(info:Name:Trim(), i)
@@ -1026,11 +1026,10 @@ BEGIN NAMESPACE XSharp.RDD
 			// Add a Field to the _Fields List. Fields are added in the order of method call
 		METHOD AddField(info AS RddFieldInfo) AS LOGIC
 			LOCAL isOk AS LOGIC
-			// Check if the FieldName does already exist
-			isok := SUPER:AddField( DbfRddFieldInfo{info} )
+ 			isok := SUPER:AddField( info )
 			IF ( isOk ) .AND. info:FieldType == DbFieldType.Memo
 				SELF:_HasMemo := TRUE
-			ENDIF
+            ENDIF
 			RETURN isOk
 			
 			// Check if a Field definition is correct :
@@ -1482,31 +1481,6 @@ BEGIN NAMESPACE XSharp.RDD
 			//
 			THROW oError
 			
-			// Calculate the position of the Field in the BYTE[] that holds the Data
-		// Offset is Zero-Based
-		INTERNAL METHOD _getFieldOffset( nFldPos AS LONG ) AS LONG
-			// 1 To Skip Deleted field
-			LOCAL iOffset := 1 AS INT
-			LOCAL fld AS DbfRddFieldInfo
-			//
-			LOCAL nArrPos := nFldPos AS LONG
-			LOCAL nStart := 1 AS LONG
-			LOCAL i AS LONG
-			IF __ARRAYBASE__ == 0
-				nArrPos -= 1
-				nStart -= 1
-			ENDIF
-			fld := SELF:_Fields[ nArrPos ] ASTYPE DbfRddFieldInfo
-			IF ( fld:Offset == -1 )
-				FOR i := nStart TO (nArrPos-1)
-					iOffset += SELF:_Fields[i]:Length
-				NEXT
-				fld:Offset := iOffset
-				ELSE
-				iOffset := fld:Offset
-			ENDIF
-			RETURN iOffset
-			
 		// Like FiedName, but on DbFieldType
 		INTERNAL VIRTUAL METHOD _FieldType( nFldPos AS LONG ) AS DbFieldType
 			LOCAL nArrPos := nFldPos AS LONG
@@ -1537,12 +1511,10 @@ BEGIN NAMESPACE XSharp.RDD
 					IF __ARRAYBASE__ == 0
 						nArrPos -= 1
 					ENDIF
-					LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
-					//
 					LOCAL encoding AS Encoding //ASCIIEncoding
 					// Read actual Data
 					encoding := SELF:_Encoding //ASCIIEncoding{}
-					VAR str :=  encoding:GetString( SELF:_RecordBuffer, iOffset, SELF:_Fields[nArrPos]:Length)
+					VAR str :=  encoding:GetString( SELF:_RecordBuffer, SELF:_Fields[nArrPos]:OffSet, SELF:_Fields[nArrPos]:Length)
 					IF ( str == NULL )
 						str := String.Empty
 					ENDIF
@@ -1565,7 +1537,7 @@ BEGIN NAMESPACE XSharp.RDD
 				nArrPos -= 1
 			ENDIF
 			// Read Record to Buffer
-			LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
+			LOCAL iOffset := SELF:_Fields[nArrPos]:OffSet AS LONG
             IF SELF:_readRecord()
 				//
 				IF SELF:_isMemoField( nFldPos )
@@ -1672,11 +1644,11 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		/// <inheritdoc />
 		METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
-			LOCAL offSet := SELF:_getFieldOffset(nFldPos) AS LONG
 			LOCAL nArrPos := nFldPos AS LONG
 			IF __ARRAYBASE__ == 0
 				nArrPos -= 1
 			ENDIF
+			LOCAL offSet := SELF:_Fields[nArrPos]:OffSet AS LONG
             LOCAL length  := SELF:_Fields[nArrPos]:Length AS LONG
 			IF SELF:_isMemoField( nFldPos )
 				IF _oMemo != NULL
@@ -2062,8 +2034,8 @@ BEGIN NAMESPACE XSharp.RDD
 					isNum := 2
 					info:Items[i]:Flags |= isNum
 				ENDIF
-				info:Items[i]:OffSet := SELF:_getFieldOffset(fieldPos)
-				info:Items[i]:Length := (LONG)SELF:_Fields[fieldPos]:Length
+				info:Items[i]:OffSet := SELF:_Fields[fieldPos]:OffSet
+				info:Items[i]:Length := SELF:_Fields[fieldPos]:Length
 				//Next Field
 				i++
 			ENDDO
@@ -2240,6 +2212,9 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		INTERNAL METHOD StringCompare( leftStr AS BYTE[], rightStr AS BYTE[], len AS LONG ) AS LONG
 			// Should be based on current RuntimeState
+            IF rightStr == NULL .OR. leftStr == NULL
+                RETURN 0
+            ENDIF
 			VAR lStr := SELF:_Encoding:GetString( leftStr )
 			VAR rStr := SELF:_Encoding:GetString( rightStr )
 			
@@ -2586,30 +2561,6 @@ BEGIN NAMESPACE XSharp.RDD
 			END STRUCTURE
 			
 			
-		CLASS DbfRddFieldInfo INHERIT RddFieldInfo
-			PROTECTED iOffset AS LONG
-			
-			CONSTRUCTOR( info AS RddFIeldInfo )
-				SELF( info:Name, info:FieldType, info:Length, info:Decimals )
-				
-			CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
-				SUPER( sName, sType, nLength, nDecimals )
-				SELF:iOffset := -1
-				
-			CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
-				SUPER( sName, nType, nLength, nDecimals )
-				SELF:iOffset := -1
-				
-			PROPERTY Offset AS LONG
-			GET
-				RETURN SELF:iOffset
-			END GET
-			
-			INTERNAL SET
-				SELF:iOffset := VALUE
-			END SET
-		END PROPERTY
-	END CLASS
 	
 	INTERNAL CLASS DBFSortRecord
 		PRIVATE _data AS BYTE[]

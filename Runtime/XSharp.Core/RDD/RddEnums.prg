@@ -595,5 +595,20 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER RDDI_QUERY              :=  68   /* last executed query */
 		
 	END ENUM
-	
+
+    [Flags];
+    ENUM DbSortFlags
+	    /// <summary>An ascending sort (default)   </summary>
+	    MEMBER Default := 0 
+	    /// <summary> A case-insensitive sort        </summary>
+	    MEMBER Case	:= 1 
+	    /// <summary>A sort with printable numerics        </summary>
+	    MEMBER Numeric := 2 
+	    /// <summary>A sort for ASCII (not nation-dependent)</summary>
+	    MEMBER Ascii	 := 4 
+	    /// <summary>A sort with long integer values        </summary>
+	    MEMBER Long	   := 0x80 
+	    /// <summary>A descending sort        </summary>
+	    MEMBER Descending := 0x100 
+    END ENUM
 END NAMESPACE

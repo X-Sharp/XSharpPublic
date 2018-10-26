@@ -1,11 +1,26 @@
 ﻿USING System.Globalization
-
+using SYstem.XML
+using SYstem.XML.Linq
+using System.Linq
+using System.Collections.Generic
+function start as void
+    local cFile as USUAL
+    cFile := ""
+    if (NULL_STRING != cFile)
+        ? "not a null string"
+    else
+        ? "a null string"
+    endif
+    Console.Read()
+    return
+    
+  
 
 CLASS TestClass
     EXPORT sym  AS SYMBOL
 END CLASS
 
-FUNCTION Start() AS VOID
+FUNCTION Startzzz() AS VOID
     LOCAL u AS USUAL
     u := TestClass{}
     u:sym := #asd

@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 		myTest:CheckAppendData()
 		myTest:CheckCreateDBF()
 		myTest:CheckCreateAppendDBF()
-		myTest:CheckMemo()
+		//myTest:CheckMemo()
 		//
 		LOCAL myNTXTest AS TestDbfNtx
 		myNTXTest := TestDbfNtx{}

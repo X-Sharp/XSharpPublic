@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _Header			AS DbfHeader
 		PROTECT _HeaderLength	AS LONG  	// Size of header
 		PROTECT _BufferValid	AS LOGIC	// Current Record is Valid
+        PROTECT _BlankBuffer    AS BYTE[]
 		INTERNAL _isValid        AS LOGIC    // Current Position is Valid
 		PROTECT _HasMemo		AS LOGIC
 		PROTECT _HasTags		AS LOGIC
@@ -59,6 +60,14 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL _LastCodeBlock AS ICodeblock
 		INTERNAL _Encoding      AS Encoding
 		//
+
+        PRIVATE METHOD _AllocateBuffers() AS VOID
+            SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
+            SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
+            FOR VAR  i := __ARRAYBASE__ TO SELF:_RecordLength - (1 -__ARRAYBASE__)
+                SELF:_BlankBuffer[i] := 0x20 // space
+            NEXT
+
 		
 		CONSTRUCTOR()
 			SELF:_hFile := F_ERROR
@@ -225,16 +234,7 @@ BEGIN NAMESPACE XSharp.RDD
 							SELF:_HeaderLocked := FALSE
 						ENDIF
 						IF ( isOk )
-							// First, fill the Record Buffer with spaces
-							LOCAL i AS INT
-							LOCAL nStart AS INT
-							nStart := 1
-							IF __ARRAYBASE__ == 0
-								nStart -= 1
-							ENDIF
-							FOR i := nStart TO SELF:_RecordLength - ( 1 - nStart )
-								SELF:_RecordBuffer[ i ] := (BYTE)' '
-							NEXT
+                            System.Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
 							// Now, update state
 							SELF:_RecCount++
 							SELF:_RecNo := SELF:RecCount
@@ -804,9 +804,7 @@ BEGIN NAMESPACE XSharp.RDD
 						IF ( SELF:_HasMemo )
 							isOk := SELF:CreateMemFile( info )
 						ENDIF
-						// Don't forget to allocate memory for Records
-						SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
-						//
+						SELF:_AllocateBuffers()
 					ENDIF
 				ENDIF
 				IF ( !isok )
@@ -877,7 +875,9 @@ BEGIN NAMESPACE XSharp.RDD
 			// Check that we have a FullPath
 			IF (Path.GetDirectoryName(SELF:_FileName):Length == 0)
 				//TODO: Change that code to take care of DefaultPath, ...
-				SELF:_FileName := AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + SELF:_FileName
+                IF File(SELF:_FileName)
+				    SELF:_FileName := FPathName()
+                ENDIF
 			ENDIF
 			SELF:_Alias := SELF:_OpenInfo:Alias
 			SELF:_Shared := SELF:_OpenInfo:Shared
@@ -969,7 +969,8 @@ BEGIN NAMESPACE XSharp.RDD
 				NEXT
 				// Allocate the Buffer to read Records
 				SELF:_RecordLength := (WORD)SELF:_Header:RecordLen
-				SELF:_RecordBuffer := BYTE[]{ SELF:_RecordLength}
+                SELF:_AllocateBuffers()
+                
 			ENDIF
 			RETURN isOk
 			
@@ -1248,22 +1249,15 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN result
 			
 			// Convert the data stored in the buffer (BYTE[]) to an .NET Object. The convertion is drived by fieldType
-		INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], fieldType AS DbFieldType, length AS LONG, nDec AS LONG) AS OBJECT
+		INTERNAL VIRTUAL METHOD _convertDataToField( buffer AS BYTE[], offSet AS INT, fieldType AS DbFieldType, length AS LONG, nDec AS LONG) AS OBJECT
 			LOCAL str := NULL AS STRING
 			LOCAL data AS OBJECT
 			//			LOCAL encoding AS ASCIIEncoding
 			//			// Read actual Data
 			//			encoding := ASCIIEncoding{}
-			IF buffer != NULL
-				str :=  SELF:_Encoding:GetString(buffer)
-			ENDIF
-			IF ( str == NULL )
-				// Sorry, give us a value
-				str := String.Empty
-			ENDIF
+			str :=  SELF:_Encoding:GetString(buffer,offSet, length)
 			// !!! WARNING !!! Space char can be significant (specially in Memo!)
 			// str := str:Trim()
-			//
 			data := NULL
 			SWITCH fieldType
 				CASE DbFieldType.Float
@@ -1302,16 +1296,18 @@ BEGIN NAMESPACE XSharp.RDD
 					IF (!String.IsNullOrWhiteSpace(str))
 						// WARNING !!! Only digits in DATE Field, unless return an EmptyDate
 						LOCAL emptyDate := FALSE AS LOGIC
-						FOR VAR i := 0 TO 7
-							IF !Char.IsDigit( buffer[i] )
+						FOREACH VAR ch IN str
+							IF !Char.IsDigit( ch )
 								emptyDate := TRUE
 								EXIT
 							ENDIF
 						NEXT
 						//
 						IF (!emptyDate )
-							VAR dt := System.DateTime.ParseExact(str, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-							data := DbDate{dt:Year, dt:Month, dt:Day}
+                            VAR year  := Int32.Parse(str:Substring(0,4))
+							VAR month := Int32.Parse(str:Substring(4,2))
+                            VAR day   := Int32.Parse(str:Substring(6,2))
+							data := DbDate{Year, Month, Day}
 						ELSE
 							data := DbDate{0,0,0}
 						ENDIF
@@ -1352,59 +1348,53 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN Data
 			
 			// Convert the value (OBJECT) to the corresponding DBF Type (fieldType), and put the result in binary form (buffer)
-		INTERNAL VIRTUAL METHOD _convertFieldToData( oValue AS OBJECT, buffer AS BYTE[], fieldType AS DbFieldType, dec AS LONG) AS LOGIC
+		INTERNAL VIRTUAL METHOD _convertFieldToData( oValue AS OBJECT, buffer AS BYTE[], offset AS LONG, length AS LONG, fieldType AS DbFieldType, dec AS LONG) AS LOGIC
 			LOCAL objType AS System.Type
 			LOCAL objTypeCode AS System.TypeCode
 			LOCAL encoding AS Encoding //ASCIIEncoding
 			LOCAL isOk := FALSE AS LOGIC
 			LOCAL str AS STRING
 			//
-			//encoding := ASCIIEncoding{}
 			encoding := SELF:_Encoding
 			objType := oValue:GetType()
 			objTypeCode := Type.GetTypeCode( objType )
 			//
 			SWITCH objTypeCode
 			CASE TypeCode.String
-				CASE TypeCode.Char
-					IF ( fieldType == DbFieldType.Character )
-						IF ( objTypeCode == TypeCode.Char )
-							str := STRING{ (CHAR)oValue, 1 }
-						ELSE
-							str := oValue ASTYPE STRING
-						ENDIF
-						// Get the smallest size
-						LOCAL len, i AS LONG
-						len := Math.Min( str:Length, buffer:Length )
-						encoding:GetBytes( str, 0, len, buffer, 0 )
-						// Pad with spaces (Is it a good idea ???)
-						FOR i := len TO buffer:Length -1
-							buffer[i] := (BYTE)' '
-						NEXT
-						//
-						isOk := TRUE
+			CASE TypeCode.Char
+				IF ( fieldType == DbFieldType.Character )
+					IF ( objTypeCode == TypeCode.Char )
+						str := STRING{ (CHAR)oValue, 1 }
 					ELSE
-						// Type Error !
-						isOk := FALSE
-					ENDIF
+						str := oValue ASTYPE STRING
+                    ENDIF
+                    IF str:Length < length
+                        str := str:PadRight(length,' ')
+                    ENDIF
+					encoding:GetBytes( str, 0, length, buffer, offset )
+					isOk := TRUE
+				ELSE
+					// Type Error !
+					isOk := FALSE
+				ENDIF
 					
-				CASE TypeCode.Decimal
-				CASE TypeCode.Double
-				CASE TypeCode.Single
+			CASE TypeCode.Decimal
+			CASE TypeCode.Double
+			CASE TypeCode.Single
 				
 			CASE TypeCode.Byte
-				CASE TypeCode.SByte
-				CASE TypeCode.Int16
-				CASE TypeCode.Int32
-				CASE TypeCode.Int64
-				CASE TypeCode.UInt16
-				CASE TypeCode.UInt32
-				CASE TypeCode.UInt64
+			CASE TypeCode.SByte
+			CASE TypeCode.Int16
+			CASE TypeCode.Int32
+			CASE TypeCode.Int64
+			CASE TypeCode.UInt16
+			CASE TypeCode.UInt32
+			CASE TypeCode.UInt64
 				
 					IF ( fieldType == DbFieldType.Number ) .OR. ;
-					( fieldType == DbFieldType.Float ) .OR. ;
-					( fieldType == DbFieldType.Double ) .OR. ;
-					( fieldType == DbFieldType.Integer )
+					    ( fieldType == DbFieldType.Float ) .OR. ;
+					    ( fieldType == DbFieldType.Double ) .OR. ;
+					    ( fieldType == DbFieldType.Integer )
 						LOCAL format AS NumberFormatInfo
 						//
 						format := NumberFormatInfo{}
@@ -1412,14 +1402,13 @@ BEGIN NAMESPACE XSharp.RDD
 						format:NumberDecimalDigits := dec
 						//
 						str := Convert.ToString( oValue, format )
-						IF ( str:Length > buffer:Length )
-							// Oversize Error !
-							isOk := FALSE
+						IF ( str:Length > length )
+							str := STRING{'*', length}
 						ELSE
-							str := str:PadLeft(buffer:Length)
-							encoding:GetBytes( str, 0, buffer:Length, buffer, 0 )
-							isOk := TRUE
+							str := str:PadLeft(length)
 						ENDIF
+   						encoding:GetBytes( str, 0, length, buffer, offset )
+						isOk := TRUE
 					ELSE
 						// Type Error !
 						isOk := FALSE
@@ -1427,7 +1416,7 @@ BEGIN NAMESPACE XSharp.RDD
 					
 				CASE TypeCode.Boolean
 					IF ( fieldType == DbFieldType.Logic )
-						buffer[0] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
+						buffer[offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
 						isOk := TRUE
 					ELSE
 						// Type Error !
@@ -1440,7 +1429,7 @@ BEGIN NAMESPACE XSharp.RDD
 						dt := (DateTime)oValue
 						//
 						str := dt:ToString( "yyyyMMdd" )
-						encoding:GetBytes( str, 0, buffer:Length, buffer, 0 )
+						encoding:GetBytes( str, 0, length, buffer, offset )
 						isOk := TRUE
 					ELSEIF ( fieldType == DbFieldType.DateTime )
 						LOCAL dat AS LONG
@@ -1454,8 +1443,8 @@ BEGIN NAMESPACE XSharp.RDD
 						LOCAL datBytes := System.BitConverter.GetBytes( (UINT32)dat ) AS BYTE[]
 						LOCAL timBytes := System.BitConverter.GetBytes( (UINT32)tim ) AS BYTE[]
 						//
-						Array.Copy( datBytes, 0, buffer, 0, 4 )
-						Array.Copy( timBytes, 0, buffer, 4, 4 )
+						Array.Copy( datBytes, 0, buffer, offset, 4 )
+						Array.Copy( timBytes, 0, buffer, offset+4, 4 )
 						isOk := TRUE
 					ELSE
 						// Type Error !
@@ -1487,9 +1476,9 @@ BEGIN NAMESPACE XSharp.RDD
 			oError:Gencode := iGenCode
 			oError:SubSystem := SELF:SysName
 			oError:Severity := iSeverity
-			oError:FuncSym  := iif(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
+			oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
 			oError:FileName := SELF:_FileName
-			oError:Description := iif(strMessage == NULL , "", strMessage)
+			oError:Description := IIF(strMessage == NULL , "", strMessage)
 			//
 			THROW oError
 			
@@ -1576,7 +1565,8 @@ BEGIN NAMESPACE XSharp.RDD
 				nArrPos -= 1
 			ENDIF
 			// Read Record to Buffer
-			IF SELF:_readRecord()
+			LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
+            IF SELF:_readRecord()
 				//
 				IF SELF:_isMemoField( nFldPos )
 					IF _oMemo != NULL
@@ -1586,16 +1576,13 @@ BEGIN NAMESPACE XSharp.RDD
 						RETURN SUPER:GetValue(nFldPos)
 					ENDIF
 				ELSE
-					LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
-					VAR destArray := BYTE[]{SELF:_Fields[nArrPos]:Length}
-					Array.Copy( SELF:_RecordBuffer, iOffset, destArray, 0, SELF:_Fields[nArrPos]:Length)
 					// We need the Decimals number to return an Integer or a Float
-					ret := SELF:_convertDataToField( destArray, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Length, SELF:_Fields[nArrPos]:Decimals )
+					ret := SELF:_convertDataToField( SELF:_RecordBuffer, iOffset, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Length, SELF:_Fields[nArrPos]:Decimals )
 				ENDIF
 			ELSE
 				IF SELF:EoF
 					// Give us the default value
-					ret := SELF:_convertDataToField( NULL, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Length, SELF:_Fields[nArrPos]:Decimals )
+					ret := SELF:_convertDataToField( SELF:_BlankBuffer, iOffset, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Length, SELF:_Fields[nArrPos]:Decimals )
 				ELSE
 					SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
 				ENDIF
@@ -1685,35 +1672,25 @@ BEGIN NAMESPACE XSharp.RDD
 		
 		/// <inheritdoc />
 		METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
-			LOCAL iOffset := SELF:_getFieldOffset(nFldPos) AS LONG
+			LOCAL offSet := SELF:_getFieldOffset(nFldPos) AS LONG
 			LOCAL nArrPos := nFldPos AS LONG
 			IF __ARRAYBASE__ == 0
 				nArrPos -= 1
 			ENDIF
-			// Ok, so the Data position in the RecordBuffer is iOffset,
-			// its Length is SELF:_Fields[nArrPos]:Length
+            LOCAL length  := SELF:_Fields[nArrPos]:Length AS LONG
 			IF SELF:_isMemoField( nFldPos )
 				IF _oMemo != NULL
 					IF _oMemo:PutValue(nFldPos, oValue)
 						// Update the Field Info with the new MemoBlock Position
-						// Create a Destination buffer for the conversion
-						VAR destArray := BYTE[]{10}
-						SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, destArray, DbFieldType.Integer, 0 )
-						// Put back into RecordBuffer
-						Array.Copy( destArray, 0, SELF:_RecordBuffer, iOffset, 10 )
+						SELF:_convertFieldToData( SELF:_oMemo:LastWrittenBlockNumber, SELF:_RecordBuffer, offSet,  length, DbFieldType.Integer, 0 )
 						//
 						SELF:GoHot()
 					ENDIF
 				ELSE
 					RETURN SUPER:PutValue(nFldPos, oValue)
 				ENDIF
-				ELSE
-					// Create a Destination buffer for the conversion
-					VAR destArray := BYTE[]{SELF:_Fields[nArrPos]:Length}
-					SELF:_convertFieldToData( oValue, destArray, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Decimals )
-					// Put back into RecordBuffer
-					Array.Copy( destArray, 0, SELF:_RecordBuffer, iOffset, SELF:_Fields[nArrPos]:Length)
-					//
+			ELSE
+				SELF:_convertFieldToData( oValue, SELF:_RecordBuffer, offSet,  length, SELF:_Fields[nArrPos]:FieldType, SELF:_Fields[nArrPos]:Decimals )
 				SELF:GoHot()
 			ENDIF
 			RETURN TRUE
@@ -2301,175 +2278,175 @@ BEGIN NAMESPACE XSharp.RDD
 			GET (DBFVersion) Buffer[OFFSET_SIG] ;
 			SET Buffer[OFFSET_SIG] := (BYTE) VALUE
 			
-				PROPERTY Year		AS BYTE			;
-				GET Buffer[OFFSET_YEAR]	;
-				SET Buffer[OFFSET_YEAR] := VALUE, isHot := TRUE
+			PROPERTY Year		AS LONG			;
+			GET Buffer[OFFSET_YEAR]+1900	;
+			SET Buffer[OFFSET_YEAR] := (BYTE) VALUE-1900, isHot := TRUE
 				
-					PROPERTY Month		AS BYTE			;
-					GET Buffer[OFFSET_MONTH]	;
-					SET Buffer[OFFSET_MONTH] := VALUE, isHot := TRUE
+			PROPERTY Month		AS BYTE			;
+			GET Buffer[OFFSET_MONTH]	;
+			SET Buffer[OFFSET_MONTH] := VALUE, isHot := TRUE
 					
-					PROPERTY Day		AS BYTE			;
-					GET Buffer[OFFSET_DAY]	;
-					SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
+			PROPERTY Day		AS BYTE			;
+			GET Buffer[OFFSET_DAY]	;
+			SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
 					
-					PROPERTY RecCount	AS LONG			;
-					GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
+			PROPERTY RecCount	AS LONG			;
+			GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
 					
-					PROPERTY HeaderLen	AS SHORT		;
-					GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
+			PROPERTY HeaderLen	AS SHORT		;
+			GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
 					
-					// Length of one data record, including deleted flag
-					PROPERTY RecordLen	AS SHORT		;
-					GET BitConverter.ToInt16(Buffer, OFFSET_RECSIZE);
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(SHORT)), isHot := TRUE
+			// Length of one data record, including deleted flag
+			PROPERTY RecordLen	AS SHORT		;
+			GET BitConverter.ToInt16(Buffer, OFFSET_RECSIZE);
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(SHORT)), isHot := TRUE
 					
-					PROPERTY Reserved1	AS SHORT		;
-					GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
+			PROPERTY Reserved1	AS SHORT		;
+			GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
 					
-					PROPERTY Transaction AS BYTE		;
-					GET Buffer[OFFSET_TRANSACTION];
-					SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
+			PROPERTY Transaction AS BYTE		;
+			GET Buffer[OFFSET_TRANSACTION];
+			SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
 					
-					PROPERTY Encrypted	AS BYTE			;
-					GET Buffer[OFFSET_ENCRYPTED];
-					SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
+			PROPERTY Encrypted	AS BYTE			;
+			GET Buffer[OFFSET_ENCRYPTED];
+			SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
 					
-					PROPERTY DbaseLan	AS LONG			;
-					GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
+			PROPERTY DbaseLan	AS LONG			;
+			GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
 					
-					PROPERTY MultiUser	AS LONG			;
-					GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
+			PROPERTY MultiUser	AS LONG			;
+			GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
 					
-					PROPERTY Reserved2	AS LONG			;
-					GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
+			PROPERTY Reserved2	AS LONG			;
+			GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
 					
-					PROPERTY HasTags	AS DBFTableFlags ;
-					GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
-					SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
+			PROPERTY HasTags	AS DBFTableFlags ;
+			GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
+			SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
 					
-					PROPERTY CodePage	AS DbfHeaderCodepage			 ;
-					GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
-					SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
+			PROPERTY CodePage	AS DbfHeaderCodepage			 ;
+			GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
+			SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
 					
-					PROPERTY Reserved3	AS SHORT         ;
-					GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
-					SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
+			PROPERTY Reserved3	AS SHORT         ;
+			GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
+			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
 					
-					PROPERTY LastUpdate AS DateTime      ;
-					GET DateTime{1900+Year, Month, Day} ;
-					SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
+			PROPERTY LastUpdate AS DateTime      ;
+			GET DateTime{1900+Year, Month, Day} ;
+			SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
 					
-					PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
+			PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
 					
 					
 					
-					METHOD initialize() AS VOID STRICT
-						Buffer := BYTE[]{DbfHeader.SIZE}
-						isHot  := FALSE
-						RETURN
-						// Dbase (7?) Extends this with
-							// [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
-						// [FieldOffSet(63)] PUBLIC Reserved6 AS LONG
-						/*
-						0x02   FoxBASE
-						0x03   FoxBASE+/Dbase III plus, no memo
-						0x04   dBase 4
-						0x05   dBase 5
-						0x07   VO/Vulcan Ansi encoding
-						0x13   FLagship dbv
-						0x23   Flagship 2/4/8
-						0x30   Visual FoxPro
-						0x31   Visual FoxPro, autoincrement enabled
-						0x33   Flagship 2/4/8 + dbv
-						0x43   dBASE IV SQL table files, no memo
-						0x63   dBASE IV SQL system files, no memo
-						0x7B   dBASE IV, with memo
-						0x83   FoxBASE+/dBASE III PLUS, with memo
-						0x87   VO/Vulcan Ansi encoding with memo
-						0x8B   dBASE IV with memo
-						0xCB   dBASE IV SQL table files, with memo
-						0xE5   Clipper SIX driver, with SMT memo
-						0xF5   FoxPro 2.x (or earlier) with memo
-						0xFB   FoxBASE
+			METHOD initialize() AS VOID STRICT
+				Buffer := BYTE[]{DbfHeader.SIZE}
+				isHot  := FALSE
+				RETURN
+				// Dbase (7?) Extends this with
+					// [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
+				// [FieldOffSet(63)] PUBLIC Reserved6 AS LONG
+				/*
+				0x02   FoxBASE
+				0x03   FoxBASE+/Dbase III plus, no memo
+				0x04   dBase 4
+				0x05   dBase 5
+				0x07   VO/Vulcan Ansi encoding
+				0x13   FLagship dbv
+				0x23   Flagship 2/4/8
+				0x30   Visual FoxPro
+				0x31   Visual FoxPro, autoincrement enabled
+				0x33   Flagship 2/4/8 + dbv
+				0x43   dBASE IV SQL table files, no memo
+				0x63   dBASE IV SQL system files, no memo
+				0x7B   dBASE IV, with memo
+				0x83   FoxBASE+/dBASE III PLUS, with memo
+				0x87   VO/Vulcan Ansi encoding with memo
+				0x8B   dBASE IV with memo
+				0xCB   dBASE IV SQL table files, with memo
+				0xE5   Clipper SIX driver, with SMT memo
+				0xF5   FoxPro 2.x (or earlier) with memo
+				0xFB   FoxBASE
 						
-						FoxPro additional Table structure:
-						28 	Table flags:
-						0x01   file has a structural .cdx
-						0x02   file has a Memo field
-						0x04   file is a database (.dbc)
-						This byte can contain the sum of any of the above values.
-						For example, the value 0x03 indicates the table has a structural .cdx and a
-						Memo field.
-						29 	Code page mark
-						30 – 31 	Reserved, contains 0x00
-						32 – n 	Field subrecords
-						The number of fields determines the number of field subrecords.
-						One field subrecord exists for each field in the table.
-						n+1 			Header record terminator (0x0D)
-						n+2 to n+264 	A 263-byte range that contains the backlink, which is the
-						relative path of an associated database (.dbc) file, information.
-						If the first byte is 0x00, the file is not associated with a database.
-						Therefore, database files always contain 0x00.
-						see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
+				FoxPro additional Table structure:
+				28 	Table flags:
+				0x01   file has a structural .cdx
+				0x02   file has a Memo field
+				0x04   file is a database (.dbc)
+				This byte can contain the sum of any of the above values.
+				For example, the value 0x03 indicates the table has a structural .cdx and a
+				Memo field.
+				29 	Code page mark
+				30 â€“ 31 	Reserved, contains 0x00
+				32 â€“ n 	Field subrecords
+				The number of fields determines the number of field subrecords.
+				One field subrecord exists for each field in the table.
+				n+1 			Header record terminator (0x0D)
+				n+2 to n+264 	A 263-byte range that contains the backlink, which is the
+				relative path of an associated database (.dbc) file, information.
+				If the first byte is 0x00, the file is not associated with a database.
+				Therefore, database files always contain 0x00.
+				see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
 						
-						*/
+				*/
 						
 						
 						
-					END STRUCTURE
-				/// <summary>DBF Field.</summary>
-				STRUCTURE DbfField
-					PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
-					PRIVATE CONST OFFSET_TYPE		   := 11   AS BYTE
-					PRIVATE CONST OFFSET_OFFSET	       := 12   AS BYTE
-					PRIVATE CONST OFFSET_LEN          := 16   AS BYTE
-					PRIVATE CONST OFFSET_DEC          := 17   AS BYTE
-					PRIVATE CONST OFFSET_FLAGS        := 18   AS BYTE
-					PRIVATE CONST OFFSET_COUNTER      := 19   AS BYTE
-					PRIVATE CONST OFFSET_INCSTEP      := 23   AS BYTE
-					PRIVATE CONST OFFSET_RESERVED1    := 24   AS BYTE
-					PRIVATE CONST OFFSET_RESERVED2    := 25   AS BYTE
-					PRIVATE CONST OFFSET_RESERVED3    := 26   AS BYTE
-					PRIVATE CONST OFFSET_RESERVED4    := 27   AS BYTE
-					PRIVATE CONST OFFSET_RESERVED5    := 28   AS BYTE
-					PRIVATE CONST OFFSET_RESERVED6	   := 29  AS BYTE
-					PRIVATE CONST OFFSET_RESERVED7    := 30   AS BYTE
-					PRIVATE CONST OFFSET_HASTAG       := 31   AS BYTE
-					INTERNAL CONST NAME_SIZE           := 11  AS BYTE
-					INTERNAL CONST SIZE                := 32  AS BYTE
+			END STRUCTURE
+			/// <summary>DBF Field.</summary>
+			STRUCTURE DbfField
+				PRIVATE CONST OFFSET_NAME		   := 0    AS BYTE
+				PRIVATE CONST OFFSET_TYPE		   := 11   AS BYTE
+				PRIVATE CONST OFFSET_OFFSET	       := 12   AS BYTE
+				PRIVATE CONST OFFSET_LEN          := 16   AS BYTE
+				PRIVATE CONST OFFSET_DEC          := 17   AS BYTE
+				PRIVATE CONST OFFSET_FLAGS        := 18   AS BYTE
+				PRIVATE CONST OFFSET_COUNTER      := 19   AS BYTE
+				PRIVATE CONST OFFSET_INCSTEP      := 23   AS BYTE
+				PRIVATE CONST OFFSET_RESERVED1    := 24   AS BYTE
+				PRIVATE CONST OFFSET_RESERVED2    := 25   AS BYTE
+				PRIVATE CONST OFFSET_RESERVED3    := 26   AS BYTE
+				PRIVATE CONST OFFSET_RESERVED4    := 27   AS BYTE
+				PRIVATE CONST OFFSET_RESERVED5    := 28   AS BYTE
+				PRIVATE CONST OFFSET_RESERVED6	   := 29  AS BYTE
+				PRIVATE CONST OFFSET_RESERVED7    := 30   AS BYTE
+				PRIVATE CONST OFFSET_HASTAG       := 31   AS BYTE
+				INTERNAL CONST NAME_SIZE           := 11  AS BYTE
+				INTERNAL CONST SIZE                := 32  AS BYTE
 					
-					// Fixed Buffer of 32 bytes
-						// Matches the DBF layout
-						// Read/Write to/from the Stream with the Buffer
-					// and access individual values using the other fields
-					METHOD initialize() AS VOID
-						SELF:Buffer := BYTE[]{SIZE}
+				// Fixed Buffer of 32 bytes
+					// Matches the DBF layout
+					// Read/Write to/from the Stream with the Buffer
+				// and access individual values using the other fields
+				METHOD initialize() AS VOID
+					SELF:Buffer := BYTE[]{SIZE}
 						
-					PUBLIC Buffer		 AS BYTE[]
+				PUBLIC Buffer		 AS BYTE[]
 					
-					PROPERTY Name		 AS STRING
-					GET
-						LOCAL fieldName := BYTE[]{DbfField.NAME_SIZE} AS BYTE[]
-						Array.Copy( Buffer, OFFSET_NAME, fieldName, 0, DbfField.NAME_SIZE )
-						LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
-						IF count == -1
-							count := DbfField.NAME_SIZE
-						ENDIF
-						LOCAL str := System.Text.Encoding.ASCII:GetString( fieldName,0, count ) AS STRING
-						IF ( str == NULL )
-							str := String.Empty
-						ENDIF
-						str := str:Trim()
-						RETURN str
-					END GET
-					SET
+				PROPERTY Name		 AS STRING
+				    GET
+					    LOCAL fieldName := BYTE[]{DbfField.NAME_SIZE} AS BYTE[]
+					    Array.Copy( Buffer, OFFSET_NAME, fieldName, 0, DbfField.NAME_SIZE )
+					    LOCAL count := Array.FindIndex<BYTE>( fieldName, 0, { sz => sz == 0 } ) AS INT
+					    IF count == -1
+						    count := DbfField.NAME_SIZE
+					    ENDIF
+					    LOCAL str := System.Text.Encoding.ASCII:GetString( fieldName,0, count ) AS STRING
+					    IF ( str == NULL )
+						    str := String.Empty
+					    ENDIF
+					    str := str:Trim()
+					    RETURN str
+				    END GET
+				    SET
 						// Be sure to fill the Buffer with 0
 						Array.Clear( Buffer, OFFSET_NAME, DbfField.NAME_SIZE )
 						System.Text.Encoding.ASCII:GetBytes( VALUE, 0, Math.Min(DbfField.NAME_SIZE,VALUE:Length), Buffer, OFFSET_NAME )
@@ -2668,7 +2645,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL diff AS LONG
 			LOCAL i AS LONG
 			LOCAL iLen AS LONG
-			LOCAL flags AS LONG
+			LOCAL flags AS DbSortFlags
 			LOCAL start AS LONG
 			LOCAL dataX AS BYTE[]
 			LOCAL dataY AS BYTE[]
@@ -2690,33 +2667,32 @@ BEGIN NAMESPACE XSharp.RDD
 				iLen := SELF:_sortInfo:Items[i]:Length
 				flags := SELF:_sortInfo:Items[i]:Flags
 				// Long Value ?
-				IF ((flags & DbSortItem.SF_Long) != 0)
+				IF flags:HasFlag(DbSortFlags.Long)
 					longValue1 := BitConverter.ToInt32(dataBuffer, start)
 					longValue2 := BitConverter.ToInt32(dataBuffer2, start)
 					diff := longValue1 - longValue2
 				ELSE
 					// String Value ?
-					IF ((flags & DbSortItem.SF_Ascii) != 0)
+					IF flags:HasFlag(DbSortFlags.Ascii)
+						// String ASCII : Use Runtime comparer
+						dataX := BYTE[]{ iLen }
+						dataY := BYTE[]{ iLen }
+						Array.Copy(dataBuffer, start, dataX, 0, iLen)
+						Array.Copy(dataBuffer2, start, dataY, 0, iLen)
+						diff := SELF:_oRDD:StringCompare(dataX, dataY, iLen)
 						//
+                    ELSE
 						i := 0
 						WHILE i < iLen
 							diff := dataBuffer[i + start] - dataBuffer2[i + start]
 							IF (diff != 0)
 								EXIT
 							ENDIF
-							//
 							i++
 						ENDDO
-					ELSE
-						// String not ASCII : User Runtime comparer
-						dataX := BYTE[]{ iLen }
-						dataY := BYTE[]{ iLen }
-						Array.Copy(dataBuffer, start, dataX, 0, iLen)
-						Array.Copy(dataBuffer2, start, dataY, 0, iLen)
-						diff := SELF:_oRDD:StringCompare(dataX, dataY, iLen)
 					ENDIF
 				ENDIF
-				IF ((flags & DbSortItem.SF_Descending) != 0)
+				IF flags:HasFlag(DbSortFlags.Descending)
 					diff *= -1
 				ENDIF
 				i++

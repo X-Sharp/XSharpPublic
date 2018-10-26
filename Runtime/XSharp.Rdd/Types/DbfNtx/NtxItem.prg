@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD
     /// long recno       - record number for this key value (in the dbf file)
     /// char key_value[key_size]
     /// </summary>
-    INTERNAL CLASS NtxItem
+    INTERNAL SEALED CLASS NtxItem
         PRIVATE _oRDD       AS DBFNTX
         PRIVATE _lenKey   AS LONG
         PRIVATE _pageNum     AS LONG
@@ -32,12 +32,12 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE _Pos        AS LONG				// Index of the Item in the page array of Offsets
         
 		// Retrieve the Key as String
-        PUBLIC PROPERTY Key AS STRING GET _oRDD:_Encoding:GetString(KeyBytes, 0, _lenKey)
+        INTERNAL PROPERTY Key AS STRING GET _oRDD:_Encoding:GetString(KeyBytes, 0, _lenKey)
 
-        PUBLIC PROPERTY Pos AS LONG GET _Pos
+        INTERNAL PROPERTY Pos AS LONG GET _Pos
         
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
-        PUBLIC PROPERTY KeyBytes AS BYTE[]
+        INTERNAL PROPERTY KeyBytes AS BYTE[]
             GET
                 LOCAL sourceIndex AS LONG
                 //
@@ -64,7 +64,7 @@ BEGIN NAMESPACE XSharp.RDD
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes
 		// it is the Record offset from start of page 
-        PUBLIC PROPERTY PageNo AS LONG
+        INTERNAL PROPERTY PageNo AS LONG
             GET
                 LOCAL pageOffSet AS LONG
                 //
@@ -93,7 +93,7 @@ BEGIN NAMESPACE XSharp.RDD
         
 		// Retrieve/set the Recno of the Item
 		// It is after the page_offset, which is a long, so 4 bytes after
-        PUBLIC PROPERTY Recno AS DWORD
+        INTERNAL PROPERTY Recno AS DWORD
             GET
                 TRY
                     IF (_recno == 0)
@@ -123,21 +123,21 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PUBLIC CONSTRUCTOR( keylen AS LONG , area AS DBFNTX )
+        INTERNAL CONSTRUCTOR( keylen AS LONG , area AS DBFNTX )
             SELF:Clear()
             SELF:_lenKey := keylen
             SELF:_oRDD := area
             
             
         // Set the informations for the current Item
-		PUBLIC METHOD Fill( pos AS LONG , page AS NtxPage ) AS VOID
+		INTERNAL METHOD Fill( pos AS LONG , page AS NtxPage ) AS VOID
             SELF:Clear()
             SELF:_Page := page
             SELF:_hasPage := (SELF:_Page != NULL)
             SELF:_Offset := SELF:_Page:GetRef( pos )
             SELF:_Pos := pos
             
-        PUBLIC METHOD Clear() AS VOID
+        INTERNAL METHOD Clear() AS VOID
             SELF:_recno := 0
             SELF:_pageNum := 0
             SELF:_bytesKey := BYTE[]{ 257 }

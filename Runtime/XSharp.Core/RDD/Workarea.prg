@@ -505,8 +505,15 @@ BEGIN NAMESPACE XSharp.RDD
             IF result
               IF SELF:_currentField < SELF:_Fields:Length 
                 SELF:_checkFields( info )
-                SELF:_Fields[ SELF:_currentField] := info //RDDFieldInfo{ info:Name, info:FieldType:ToString(), info:Length, info:Decimals}
-                SELF:_Fields[SELF:_currentField]:Alias := info:Alias
+                IF _currentField > 0
+                    LOCAL lastField AS RddFieldInfo
+                    lastField := SELF:_Fields[_currentField -1]
+                    info:OffSet := lastField:Offset + lastField:Length
+                ELSE
+                    info:Offset := 1
+                ENDIF
+                SELF:_Fields[ SELF:_currentField] := info 
+
                 // the alias could be an empty string !
                 IF !String.IsNullOrEmpty(info:Alias) 
                     SELF:_fieldNames:Add(info:Alias:Trim(), SELF:_currentField)

@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD
 	/// This is a collection of Items
     /// </summary>
     INTERNAL CLASS NtxPage
-    
+        PRIVATE CONST NTXPAGE_SIZE             := 1024 AS WORD
         PROTECTED _Order    AS NtxOrder
         PROTECTED _Offset   AS LONG
         PROTECTED _Hot      AS LOGIC
@@ -44,15 +44,15 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECTED _Bytes AS BYTE[]
         
         // Current Page Number / Page Offset
-		PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
+		INTERNAL PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
         
 		// Bytes of the Page (1024)
-        PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
+        INTERNAL PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
         
-        PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
+        INTERNAL PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
         
 		// Item Count - how many items this particular page holds : a WORD stored at Offset 0x00
-        PROPERTY NodeCount AS WORD
+        INTERNAL PROPERTY NodeCount AS WORD
             GET
                 LOCAL nCount := 0 AS WORD
                 TRY
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharp.RDD
         END PROPERTY
         
 		// Retrieve a NtxItem in the current Page, at the specified position
-        PROPERTY SELF[ index AS LONG ] AS NtxItem
+        INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxItem
             GET
                 LOCAL item := NULL AS NtxItem
                 TRY
@@ -89,11 +89,11 @@ BEGIN NAMESPACE XSharp.RDD
         END PROPERTY
         
 		// Initialize the NtxPage; The pageNumber is in fact the offset of the page in the File
-        CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
+        INTERNAL CONSTRUCTOR( order AS NtxOrder, pageNumber AS LONG )
             //
             SELF:_Order := order
             SELF:_Offset := pageNumber
-            SELF:_Bytes := BYTE[]{NtxHeader.NTXOFFSETS.SIZE}
+            SELF:_Bytes := BYTE[]{NTXPAGE_SIZE}
             SELF:_Hot := FALSE
             IF ( SELF:_Offset != 0 )
                 SELF:Read()
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharp.RDD
             
 		// Read/Fill a Page
 		// Move the Offset, then read 1024 bytes
-        METHOD Read() AS LOGIC
+        INTERNAL METHOD Read() AS LOGIC
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharp.RDD
                     // Move to top of Page
                     FSeek3( SELF:_Order:_hFile, SELF:_Offset /*  * NtxHeader.NTXOFFSETS.SIZE    */, SeekOrigin.Begin )
                     // Read Buffer
-                    isOk := ( FRead3(SELF:_Order:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
+                    isOk := ( FRead3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE )
                 CATCH e AS Exception
                     isOk := FALSE
                     Debug.WriteLine( "Ntx Error : " + e:Message )
@@ -126,7 +126,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 		// Write a Page
 		// Move the Offset, then write 1024 bytes            
-        METHOD Write() AS LOGIC
+        INTERNAL METHOD Write() AS LOGIC
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD
                 // Move to top of Page
                 FSeek3( SELF:_Order:_hFile, SELF:_Offset  /* * NtxHeader.NTXOFFSETS.SIZE    */ , SeekOrigin.Begin )
                 // Write Buffer
-                isOk := ( FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NtxHeader.NTXOFFSETS.SIZE) == NtxHeader.NTXOFFSETS.SIZE )
+                isOk := ( FWrite3(SELF:_Order:_hFile, SELF:_Bytes, NTXPAGE_SIZE) == NTXPAGE_SIZE )
                 SELF:_Hot := FALSE
             CATCH e AS Exception
                 isOk := FALSE
@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
             
 		// Retrieve the Record/Item offset from start of Page
-        PUBLIC METHOD GetRef( pos AS LONG ) AS SHORT
+        INTERNAL  METHOD GetRef( pos AS LONG ) AS SHORT
             TRY
                 RETURN BitConverter.ToInt16(SELF:_bytes, (pos+1) * 2)
             CATCH //Exception
@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             
         // Set the Record/Item offset from start of Page
-        PUBLIC METHOD SetRef(pos AS LONG , newValue AS SHORT ) AS VOID
+        INTERNAL  METHOD SetRef(pos AS LONG , newValue AS SHORT ) AS VOID
             Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
             SELF:Hot := TRUE
             

@@ -392,6 +392,8 @@ CLASS RddFieldInfo
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
+	PROTECTED iOffset   AS LONG
+    
      /// <summary>Construct a RddFieldInfo object.</summary>
 	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName
@@ -403,6 +405,7 @@ CLASS RddFieldInfo
 			FieldType := DBFieldType.Unknown
 		ENDIF  
 		Alias       := sName
+		SELF:iOffset := -1
 		RETURN
     /// <summary>Construct a RddFieldInfo object.</summary>        
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
@@ -411,7 +414,9 @@ CLASS RddFieldInfo
 		Length 		:= nLength
 		Decimals 	:= nDecimals
 		Alias       := sName
+		SELF:iOffset := -1
 		RETURN
+
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
         VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
@@ -420,6 +425,15 @@ CLASS RddFieldInfo
     /// <summary>Check if two fields match in type, length and decimals.</summary>        
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
+    PROPERTY Offset AS LONG
+		GET
+			RETURN SELF:iOffset
+		END GET
+		INTERNAL SET
+			SELF:iOffset := VALUE
+		END SET
+	END PROPERTY
+        
 END CLASS
 
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/moduleassemblyname</title>
   <keywords>
     <keyword>/moduleassemblyname</keyword>
@@ -12,9 +12,7 @@
     <para styleclass="Normal">Specifies an assembly whose non-public types a .netmodule can access.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">/moduleassemblyname:assembly_name &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example">assembly_name</text><tab />The name of the assembly whose non-public types the .netmodule can access.</para>
@@ -22,7 +20,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">/moduleassemblyname should be used when building a .netmodule, and where the following conditions are true:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">The .netmodule needs access to non-public types in an existing assembly.</li>
       <li styleclass="Normal" style="margin-left:13px;">You know the name of the assembly into which the .netmodule will be built.</li>
       <li styleclass="Normal" style="margin-left:13px;">The existing assembly has granted friend assembly access to the assembly into which the .netmodule will be built.</li>

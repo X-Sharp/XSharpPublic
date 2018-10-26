@@ -108,8 +108,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			GET _GetWord(CDXOFFSET_KEYLENGTH);
 			SET _SetWord(CDXOFFSET_KEYLENGTH, VALUE), isHot := TRUE
 			
-			INTERNAL PROPERTY Options	AS CDXOPTIONS			;
-			GET (CDXOPTIONS)Buffer[CDXOFFSET_OPTIONS];
+			INTERNAL PROPERTY Options	AS CdxOptions			;
+			GET (CdxOptions)Buffer[CDXOFFSET_OPTIONS];
 			SET Buffer[CDXOFFSET_OPTIONS] := VALUE, isHot := TRUE
 			
 			INTERNAL PROPERTY Descending	AS LOGIC  ;
@@ -119,13 +119,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			
 				
 		
-		PRIVATE CONST CDXOFFSET_ROOT			:= 0	AS WORD		// Byte offset to Root
-		PRIVATE CONST CDXOFFSET_FREELIST		:= 4	AS WORD		// Byte offset to next free block
-		PRIVATE CONST CDXOFFSET_VERSION		:= 8	AS WORD		// to increment on modification
-		PRIVATE CONST CDXOFFSET_KEYLENGTH	    := 12	AS WORD		// Length of key
-		PRIVATE CONST CDXOFFSET_OPTIONS		:= 14	AS WORD		// CDXOPTIONS : bit field
-		PRIVATE CONST CDXOFFSET_Sig			:= 15   AS WORD
-		PRIVATE CONST CDXOFFSET_DESCENDING	    := 502	AS WORD		// 0 = Ascending, 1 = Descending
+		PRIVATE CONST CDXOFFSET_ROOT		   := 0	AS WORD		// Byte offset to Root
+		PRIVATE CONST CDXOFFSET_FREELIST	   := 4	AS WORD		// Byte offset to next free block
+		PRIVATE CONST CDXOFFSET_VERSION		   := 8	AS WORD		// to increment on modification
+		PRIVATE CONST CDXOFFSET_KEYLENGTH	   := 12	AS WORD		// Length of key
+		PRIVATE CONST CDXOFFSET_OPTIONS		   := 14	AS WORD		// CdxOptions : bit field
+		PRIVATE CONST CDXOFFSET_Sig			   := 15   AS WORD
+        // bytes 16 - 501 are all reserved
+		PRIVATE CONST CDXOFFSET_DESCENDING	   := 502	AS WORD		// 0 = Ascending, 1 = Descending
 		PRIVATE CONST CDXOFFSET_FOREXPRPOS     := 504	AS WORD		// Offset of Filter expression
 		PRIVATE CONST CDXOFFSET_FOREXPRLEN     := 506	AS WORD		// Length of filter expression
 		PRIVATE CONST CDXOFFSET_KEYEXPRPOS     := 508	AS WORD		// Offset of Key expression
@@ -137,7 +138,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 		// Index options represented as the sum of the following values:
         [Flags];
-		INTERNAL ENUM CDXOPTIONS AS BYTE
+		INTERNAL ENUM CdxOptions AS BYTE
 			MEMBER IsUnique			:= 0x01		// Unique
 			MEMBER IsWhile   		:= 0x02		// WHILE, ...
 			MEMBER IsCustom			:= 0x04		// is a custom built Index
@@ -145,7 +146,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			MEMBER BitVector		:= 0x10		// Bit vector (SoftC)
 			MEMBER IsCompact		:= 0x20		// Compact index format
 			MEMBER IsTag			:= 0x40		// Tag inside CDX (Compounding index header)
-			MEMBER IsHeader			:= 0x80		// CDX Header
+			MEMBER IsHeader			:= 0x80		// CDX Header (contains the names of the tags)
 			
 		END ENUM
 		

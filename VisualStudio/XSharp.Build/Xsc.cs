@@ -47,6 +47,11 @@ namespace XSharp.Build
             set { base.Bag[nameof(PPO)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(PPO), false); }
         }
+        public Boolean NamedArgs
+        {
+            set { base.Bag[nameof(NamedArgs)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(NamedArgs), false); }
+        }
         public Boolean NS
         {
             set { base.Bag[nameof(NS)] = value; }
@@ -639,6 +644,7 @@ namespace XSharp.Build
             //commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
+            commandline.AppendPlusOrMinusSwitch("/namedarguments", base.Bag, nameof(NamedArgs));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
             commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
@@ -683,7 +689,7 @@ namespace XSharp.Build
             {
                 // no 32 bit preference for libraries
                 string platform = this.Platform?.ToLower();
-                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu")) 
+                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu"))
                     && this.Prefer32Bit
                     && TargetType.ToLower().Contains("exe"))
                 {
@@ -949,7 +955,7 @@ namespace XSharp.Build
             AddAdditionalFilesToCommandLine(commandLine);
 
             // Append the sources.
-            
+
             commandLine.AppendFileNamesIfNotNull(Sources, useCRLF ? "\n " : " " );
             commandLine.AppendNewLine();
 

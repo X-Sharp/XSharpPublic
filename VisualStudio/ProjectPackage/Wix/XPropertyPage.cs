@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -114,7 +114,7 @@ namespace XSharp.Project
         /// </summary>
         internal System.IServiceProvider Site
         {
-            get 
+            get
             {
                 if (this.project != null)
                 {
@@ -284,7 +284,7 @@ namespace XSharp.Project
         /// String under the HelpDir key in the property page's CLSID information in the registry.
         /// If HelpDir does not exist, this will be the path found in the InProcServer32 entry
         /// minus the server file name. (Note that LocalServer32 is not checked in the current
-        /// implementation, since local property pages are not currently supported). 
+        /// implementation, since local property pages are not currently supported).
         /// </param>
         void IPropertyPage.Help(string pszHelpDir)
         {
@@ -297,7 +297,7 @@ namespace XSharp.Project
         /// String under the HelpDir key in the property page's CLSID information in the registry.
         /// If HelpDir does not exist, this will be the path found in the InProcServer32 entry
         /// minus the server file name. (Note that LocalServer32 is not checked in the current
-        /// implementation, since local property pages are not currently supported). 
+        /// implementation, since local property pages are not currently supported).
         /// </param>
         void IPropertyPage2.Help(string pszHelpDir)
         {
@@ -396,6 +396,7 @@ namespace XSharp.Project
                     {
                         this.project = config.ProjectMgr as XProjectNode;
                         //this.project.OutputTypeChanged += this.HandleOutputTypeChanged;
+
                     }
 
                     configs.Add(config);
@@ -457,6 +458,13 @@ namespace XSharp.Project
                 this.IsDirty = false;
             }
         }
+
+        internal virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        {
+
+        }
+
+
 
         /// <summary>
         /// The environment calls this to set the currently selected objects that the property page should show.
@@ -708,7 +716,7 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// Handles the help event by displaying the property pages 
+        /// Handles the help event by displaying the property pages
         /// </summary>
         /// <param name="sender">The control sending the event.</param>
         /// <param name="hlpevent">Event parameters.</param>

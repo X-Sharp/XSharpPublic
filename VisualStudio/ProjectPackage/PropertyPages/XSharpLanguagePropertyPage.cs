@@ -65,6 +65,7 @@ namespace XSharp.Project
         internal const string CSCaption = "Case Sensitive";
         internal const string INSCaption = "Enable Implicit Namespace lookup";
         internal const string LBCaption = "Allow Late Binding";
+        internal const string NamedArgCaption = "Allow Named Arguments";
         internal const string NSCaption = "Prefix classes with default Namespace";
         internal const string OVFCaption = "Overflow Exceptions";
         internal const string UnsafeCaption = "Allow Unsafe Code";
@@ -72,6 +73,7 @@ namespace XSharp.Project
         internal const string AZDescription = "Use Zero Based Arrays (/az)";
         internal const string INSDescription = "Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)";
         internal const string LBDescription = "Allow property access and method calls on expressions of type OBJECT and USUAL (/lb)";
+        internal const string NamedArgDescription = "Allow named arguments (Default = FALSE for the Core dialect and TRUE for the other dialects). Changing the dialect may also automatically change this setting. (/namedargs)";
         internal const string NSDescription = "Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:<Namespace>)";
         internal const string OVFDescription = "Check for Overflow and Underflow for numeric expressions, like the CHECKED keyword. (/ovf)";
         internal const string UnsafeDescription = "Allow Unsafe code inside this assembly (/unsafe)";
@@ -87,6 +89,7 @@ namespace XSharp.Project
         private bool cs;
         private bool ins;
         private bool lb;
+        private bool namedargs;
         private bool ns;
         private bool ovf;
         private bool vo1;
@@ -155,6 +158,12 @@ namespace XSharp.Project
             set { this.lb = value; this.IsDirty = true; }
         }
 
+        [Category(CatGeneral), DisplayName(NamedArgCaption), Description(NamedArgDescription)]
+        public bool NamedArgs
+        {
+            get { return this.namedargs; }
+            set { this.namedargs = value; this.IsDirty = true; }
+        }
         [Category(CatNamespaces), DisplayName(INSCaption), Description(INSDescription)]
         public bool INS
         {
@@ -286,8 +295,30 @@ namespace XSharp.Project
             return this.GetType().FullName;
         }
 
+        internal override void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        {
+            if (e.PropertyName.ToLower() == nameof(NamedArgs).ToLower() )
+            {
+                BindNamedArgs();
+                Grid.Refresh();
+            }
+        }
 
 
+        private void BindNamedArgs()
+        {
+            string tmp = getPrjString(nameof(NamedArgs));
+            if (string.IsNullOrEmpty(tmp))
+            {
+                tmp = getPrjString("Dialect");
+                namedargs = string.Compare(tmp, "Core", true) == 0;
+            }
+            else
+            {
+                namedargs = getPrjLogic(nameof(NamedArgs), false);
+            }
+
+        }
         /// <summary>
         /// Bind properties.
         /// </summary>
@@ -325,6 +356,7 @@ namespace XSharp.Project
             vo14 = getPrjLogic(nameof(VO14), false);
             vo15 = getPrjLogic(nameof(VO15), true);
             vo16 = getPrjLogic(nameof(VO16), false);
+            BindNamedArgs();
         }
 
         /// <summary>
@@ -342,9 +374,10 @@ namespace XSharp.Project
 
             this.ProjectMgr.SetProjectProperty(nameof(CS), this.cs.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(LB), this.lb.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(NamedArgs), this.namedargs.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(OVF), this.ovf.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(Unsafe), this.@unsafe.ToString().ToLower());
-            
+
 
             this.ProjectMgr.SetProjectProperty(nameof(INS), this.ins.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(NS), this.ns.ToString().ToLower());

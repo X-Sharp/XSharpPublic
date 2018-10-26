@@ -1,8 +1,8 @@
-﻿// NtxSort.prg
-// Created by    : fabri
-// Creation Date : 9/4/2018 6:42:42 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
@@ -10,7 +10,7 @@ USING System.Collections
 USING System.Text
 USING XSharp.Rdd.Support
 USING XSharp.RDD.Enums
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL CLASS NTXSortRecord
         PRIVATE _data AS BYTE[]

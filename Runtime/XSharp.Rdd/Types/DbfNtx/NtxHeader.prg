@@ -1,8 +1,8 @@
-﻿// NtxHeader.prg
-// Created by    : fabri
-// Creation Date : 6/20/2018 5:04:18 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
@@ -11,7 +11,7 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.NTX
 
 	/// <summary>
 	/// The NtxHeader class.

@@ -1,8 +1,8 @@
-﻿// CodeFile1.prg
-// Created by    : fabri
-// Creation Date : 8/27/2018 7:26:37 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 USING System
 USING System.Collections
@@ -16,7 +16,7 @@ USING System.Threading
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
-BEGIN NAMESPACE XSharp.RDD        
+BEGIN NAMESPACE XSharp.RDD.NTX
 
     // Ntx Stack item
     // Keep informations 

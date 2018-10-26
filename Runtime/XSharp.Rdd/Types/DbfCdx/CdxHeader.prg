@@ -1,8 +1,8 @@
-﻿// CdxHeader.prg
-// Created by    : fabri
-// Creation Date : 10/14/2018 10:44:22 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 USING System
 USING System.Collections.Generic
@@ -10,55 +10,51 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
 	/// The CdxHeader class.
 	/// </summary>
-	CLASS CdxHeader
-		PROTECTED _hFile AS IntPtr
+	INTERNAL CLASS CdxHeader
+		// Fixed Buffer of 512 bytes
+		// https://www.clicketyclick.dk/databases/xbase/format/cdx.html#CDX_STRUCT
+		// Read/Write to/from the Stream with the Buffer 
+		// and access individual values using the other fields
+		PRIVATE _hFile AS IntPtr
+		PRIVATE Buffer   AS BYTE[]
+		// Hot ?  => Header has changed ?
+		INTERNAL isHot	AS LOGIC
 		
-		PUBLIC Bytes AS DbfCdxHeader
 		
 		
-		METHOD Read() AS LOGIC
+		INTERNAL METHOD Read() AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Move to top
 			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
 			// Read Buffer
-			isOk := ( FRead3(SELF:_hFile, SELF:Bytes:Buffer, CDXOFFSETS.SIZE) == CDXOFFSETS.SIZE )
+			isOk := ( FRead3(SELF:_hFile, SELF:Buffer, CDX_HEADERSIZE) == CDX_HEADERSIZE )
 			//
 			RETURN isOk
 			
-		METHOD Write() AS LOGIC
+		INTERNAL METHOD Write() AS LOGIC
 			LOCAL isOk AS LOGIC
 			// Move to top
 			FSeek3( SELF:_hFile, 0, SeekOrigin.Begin )
 			// Write Buffer
-			isOk := ( FWrite3(SELF:_hFile, SELF:Bytes:Buffer, CDXOFFSETS.SIZE) == CDXOFFSETS.SIZE )
+			isOk := ( FWrite3(SELF:_hFile, SELF:Buffer, CDX_HEADERSIZE) == CDX_HEADERSIZE )
 			//
 			RETURN isOk
 			
 			
 			
-		CONSTRUCTOR( fileHandle AS IntPtr )
+		INTERNAL CONSTRUCTOR( fileHandle AS IntPtr )
 			//
 			SELF:_hFile := fileHandle
-			SELF:Bytes := DbfCdxHeader{}
-			SELF:Bytes:initialize();
-			
+			SELF:Buffer := BYTE[]{CDX_HEADERSIZE}
+			SELF:isHot  := FALSE
 			RETURN
 			
 			
-			/// <summary>CDX Header.</summary>        
-		STRUCTURE DbfCdxHeader                     
-			// Fixed Buffer of 512 bytes
-			// https://www.clicketyclick.dk/databases/xbase/format/cdx.html#CDX_STRUCT
-			// Read/Write to/from the Stream with the Buffer 
-			// and access individual values using the other fields
-			PUBLIC Buffer   AS BYTE[]
-			// Hot ?  => Header has changed ?
-			PUBLIC isHot	AS LOGIC
 			
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PRIVATE METHOD _GetString(nOffSet AS INT, nSize AS INT) AS STRING
@@ -100,56 +96,48 @@ BEGIN NAMESPACE XSharp.RDD
 				Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
 				isHot := TRUE
 				
-			PROPERTY Signature  AS BYTE	;
-			GET Buffer[CDXOFFSETS.SIG] ;
-			SET Buffer[CDXOFFSETS.SIG] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY Signature  AS BYTE	;
+			GET Buffer[CDXOFFSET_SIG] ;
+			SET Buffer[CDXOFFSET_SIG] := VALUE, isHot := TRUE
 			
-			PROPERTY IndexingVersion		AS DWORD			;
-			GET _GetDWord(CDXOFFSETS.VERSION);
-			SET _SetDWord(CDXOFFSETS.VERSION, VALUE), isHot := TRUE
+			INTERNAL PROPERTY IndexingVersion		AS DWORD			;
+			GET _GetDWord(CDXOFFSET_VERSION);
+			SET _SetDWord(CDXOFFSET_VERSION, VALUE), isHot := TRUE
 			
-			PROPERTY KeySize		AS WORD			;
-			GET _GetWord(CDXOFFSETS.KEYLENGTH);
-			SET _SetWord(CDXOFFSETS.KEYLENGTH, VALUE), isHot := TRUE
+			INTERNAL PROPERTY KeySize		AS WORD			;
+			GET _GetWord(CDXOFFSET_KEYLENGTH);
+			SET _SetWord(CDXOFFSET_KEYLENGTH, VALUE), isHot := TRUE
 			
-			PROPERTY Options	AS CDXOPTIONS			;
-			GET (CDXOPTIONS)Buffer[CDXOFFSETS.OPTIONS];
-			SET Buffer[CDXOFFSETS.OPTIONS] := VALUE, isHot := TRUE
+			INTERNAL PROPERTY Options	AS CDXOPTIONS			;
+			GET (CDXOPTIONS)Buffer[CDXOFFSET_OPTIONS];
+			SET Buffer[CDXOFFSET_OPTIONS] := VALUE, isHot := TRUE
 			
-			PROPERTY Descending	AS LOGIC  ;
-			GET _GetWord( CDXOFFSETS.DESCENDING ) != 0 ;
-			SET _SetWord( CDXOFFSETS.DESCENDING, IIF(VALUE,1,0) ), isHot := TRUE
+			INTERNAL PROPERTY Descending	AS LOGIC  ;
+			GET _GetWord( CDXOFFSET_DESCENDING ) != 0 ;
+			SET _SetWord( CDXOFFSET_DESCENDING, IIF(VALUE,1,0) ), isHot := TRUE
 			
 			
-			METHOD initialize() AS VOID STRICT
-				Buffer := BYTE[]{CDXOFFSETS.SIZE}
-				isHot  := FALSE
-				RETURN
 				
-				END STRUCTURE
-				
-		PUBLIC ENUM CDXOFFSETS
-			MEMBER ROOT			:= 0			// Byte offset to Root
-			MEMBER FREELIST		:= 4			// Byte offset to next free block
-			MEMBER VERSION		:= 8			// to increment on modification
-			MEMBER KEYLENGTH	:= 12			// Length of key
-			MEMBER OPTIONS		:= 14			// CDXOPTIONS : bit field
-			MEMBER Sig			:= 15
-			MEMBER DESCENDING	:= 502			// 0 = Ascending, 1 = Descending
-			MEMBER FOREXPRPOS   := 504			// Offset of Filter expression
-			MEMBER FOREXPRLEN   := 506			// Length of filter expression
-			MEMBER KEYEXPRPOS   := 508			// Offset of Key expression
-			MEMBER KEYEXPRLEN   := 510			// Length of key expression
-			MEMBER KEYFOREXPR   := 512			// Key first with null terminator, then FOR expression.
+		
+		PRIVATE CONST CDXOFFSET_ROOT			:= 0	AS WORD		// Byte offset to Root
+		PRIVATE CONST CDXOFFSET_FREELIST		:= 4	AS WORD		// Byte offset to next free block
+		PRIVATE CONST CDXOFFSET_VERSION		:= 8	AS WORD		// to increment on modification
+		PRIVATE CONST CDXOFFSET_KEYLENGTH	    := 12	AS WORD		// Length of key
+		PRIVATE CONST CDXOFFSET_OPTIONS		:= 14	AS WORD		// CDXOPTIONS : bit field
+		PRIVATE CONST CDXOFFSET_Sig			:= 15   AS WORD
+		PRIVATE CONST CDXOFFSET_DESCENDING	    := 502	AS WORD		// 0 = Ascending, 1 = Descending
+		PRIVATE CONST CDXOFFSET_FOREXPRPOS     := 504	AS WORD		// Offset of Filter expression
+		PRIVATE CONST CDXOFFSET_FOREXPRLEN     := 506	AS WORD		// Length of filter expression
+		PRIVATE CONST CDXOFFSET_KEYEXPRPOS     := 508	AS WORD		// Offset of Key expression
+		PRIVATE CONST CDXOFFSET_KEYEXPRLEN     := 510	AS WORD		// Length of key expression
+		PRIVATE CONST CDXOFFSET_KEYFOREXPR     := 512	AS WORD		// Key first with null terminator, then FOR expression.
 			
-			MEMBER KEYFORSIZE   := SIZE - 512
-			MEMBER SIZE         := 1024
-			
-		END ENUM
+		PRIVATE CONST CDX_KEYFORSIZE           := CDX_HEADERSIZE - 512 AS WORD
+		PRIVATE CONST CDX_HEADERSIZE           := 1024 AS WORD
 
 		// Index options represented as the sum of the following values:
         [Flags];
-		PUBLIC ENUM CDXOPTIONS AS BYTE
+		INTERNAL ENUM CDXOPTIONS AS BYTE
 			MEMBER IsUnique			:= 0x01		// Unique
 			MEMBER IsWhile   		:= 0x02		// WHILE, ...
 			MEMBER IsCustom			:= 0x04		// is a custom built Index
@@ -160,8 +148,6 @@ BEGIN NAMESPACE XSharp.RDD
 			MEMBER IsHeader			:= 0x80		// CDX Header
 			
 		END ENUM
-
-
 		
 	END CLASS
 END NAMESPACE 

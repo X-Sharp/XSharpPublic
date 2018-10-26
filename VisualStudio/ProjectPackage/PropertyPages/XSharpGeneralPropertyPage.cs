@@ -39,7 +39,8 @@ namespace XSharp.Project
         #region Constants
         internal const string captVulcanCompatibleResouces = "Vulcan Compatible Managed Resources";
         internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#))";
-
+        internal const string captDialect = "Dialect";
+        internal const string descDialect = "Select the compiler dialect to use when compiling this project. Changing the dialect may also change the 'Allow NamedArguments' setting on the Language page.";
         #endregion
 
         #region Constructors
@@ -80,13 +81,18 @@ namespace XSharp.Project
         }
 
         [ResourcesCategory(Resources.Application)]
-        [LocDisplayName("Dialect")]
-        [ResourcesDescription("Select the compiler dialect to use when compiling this project")]
+        [DisplayName(captDialect)]
+        [Description(descDialect)]
         [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
         public Dialect Dialect
         {
             get { return this.dialect; }
-            set { this.dialect = value; this.IsDirty = true; }
+            set {
+                this.dialect = value;
+                this.IsDirty = true;
+                this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
+                this.ProjectMgr.SetProjectProperty("NamedArgs", "");
+            }
         }
 
 

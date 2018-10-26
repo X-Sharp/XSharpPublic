@@ -83,6 +83,9 @@ namespace XSharpLanguage
                     case VSConstants.VSStd2KCmdID.CANCEL:
                         handled = Cancel();
                         break;
+					default:
+						// check for other commit keys
+						break;
                 }
             }
 
@@ -99,6 +102,7 @@ namespace XSharpLanguage
                             char ch = GetTypeChar(pvaIn);
                             if (ch == ' ')
                                 StartSession();
+							// check for commit char ?
                             else if (_currentSession != null)
                                 Filter();
                             break;

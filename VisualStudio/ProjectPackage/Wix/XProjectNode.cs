@@ -343,7 +343,7 @@ namespace XSharp.Project
         }
         /// <summary>
         /// Gets the current project configuration.
-        /// </summary> 
+        /// </summary>
         public XProjectConfig CurrentConfig
         {
             get
@@ -605,6 +605,7 @@ namespace XSharp.Project
                 this.SetCurrentConfiguration();
                 this.SetProjectFileDirty(true);
             }
+            this.RaiseProjectPropertyChanged(propertyName, oldValue, propertyValue);
         }
 
         /// <summary>

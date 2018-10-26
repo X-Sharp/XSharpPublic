@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -364,7 +364,12 @@ namespace Microsoft.VisualStudio.Project
 
                         if(this.project == null || (this.project != (punk[0] as ProjectConfig).ProjectMgr))
                         {
+                            if (this.project != null)
+                            {
+                                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
+                            }
                             this.project = config.ProjectMgr;
+                            this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
                         }
 
                         configs.Add(config);
@@ -376,7 +381,12 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (this.project == null || (this.project != (punk[0] as NodeProperties).Node.ProjectMgr))
                     {
+                        if (this.project != null)
+                        {
+                            this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
+                        }
                         this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
+                        this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
                     }
 
                     Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
@@ -425,6 +435,10 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        internal virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        {
+
+        }
 
         public virtual void SetPageSite(IPropertyPageSite theSite)
         {
@@ -500,9 +514,15 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void Dispose()
         {
+            if (this.project != null)
+            {
+                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
+                this.project = null;
+            }
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
+
 
         #endregion
 
@@ -516,7 +536,6 @@ namespace Microsoft.VisualStudio.Project
                     {
                         this.panel.Dispose();
                     }
-
                     this.isDisposed = true;
                 }
             }

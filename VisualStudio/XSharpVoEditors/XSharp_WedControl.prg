@@ -1,6 +1,5 @@
 ﻿USING System.Drawing
 USING System.IO
-USING XSharp.VOEditors
 USING System.Windows.Forms
 USING XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
@@ -22,9 +21,9 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
         VOWEDControl.InitializeToolbox()
         VOWEDControl.ToolBox:SelectPointer()
 		SUPER:StatusBarMessage := ShowStatusBarMessage
-        
+
         SELF:oOptions:oGridSize := Size{VOWindowEditorTemplate.GridX , VOWindowEditorTemplate.GridY}
-        
+
     	SELF:oWed := XSharp_VOWindowEditor{SELF , SELF:oOptions , VOWEDControl.Grid , VOWEDControl.ToolBox}
     	SELF:oEditor := SELF:oWed
         IF .not. SELF:oWed:Open(cFileName)
@@ -105,7 +104,7 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 
 	METHOD Action(nType AS Actions) AS VOID
 		DoAction( (DesignerActionType) (INT) nType)
-	
+
 	METHOD ShowStatusBarMessage(cMessage AS STRING) AS VOID
 		IF (SELF:StatusMessage != NULL)
 			StatusMessage(cMessage)

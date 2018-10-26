@@ -348,19 +348,8 @@ STRUCTURE DbSortItem
 	/// <summary>The length of the field in the workarea buffer.</summary>
 	PUBLIC Length	AS LONG
 	/// <summary>One or more constants that function as sort optimization and control flags.  They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
-	PUBLIC Flags	AS LONG  
-	/// <summary>An ascending sort (default)   </summary>
-	PUBLIC CONST SF_Default := 0 AS LONG
-	/// <summary> A case-insensitive sort        </summary>
-	PUBLIC CONST SF_Case	:= 1 AS LONG
-	/// <summary>A sort with printable numerics        </summary>
-	PUBLIC CONST SF_Numeric := 2 AS LONG
-	/// <summary>A sort for ASCII (not nation-dependent)</summary>
-	PUBLIC CONST SF_Ascii	 := 4 AS LONG       
-	/// <summary>A sort with long integer values        </summary>
-	PUBLIC CONST SF_Long	   := 0x80 AS LONG
-	/// <summary>A descending sort        </summary>
-	PUBLIC CONST SF_Descending := 0x100 AS LONG
+	PUBLIC Flags	AS  DbSortFlags  
+
 END STRUCTURE
 
 /// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary> 

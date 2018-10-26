@@ -1628,16 +1628,16 @@ CLASS XSharp.CoreDb
             IF parts:Length > 1
                 VAR part := parts[1]
                 IF part:IndexOf('A') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Default
+                    info:Items[nFld]:Flags |= DbSortFlags.Default
                 ENDIF
                 IF part:IndexOf('C') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Case
+                    info:Items[nFld]:Flags |= DbSortFlags.Case
                 ENDIF
                 IF part:IndexOf('D') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Descending
+                    info:Items[nFld]:Flags |= DbSortFlags.Descending
                 ENDIF
                 IF part:IndexOf('B') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Ascii
+                    info:Items[nFld]:Flags |= DbSortFlags.Ascii
                 ENDIF
             ENDIF
             LOCAL iField AS INT

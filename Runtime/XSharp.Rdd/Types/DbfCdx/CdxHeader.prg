@@ -148,6 +148,7 @@ BEGIN NAMESPACE XSharp.RDD
 		END ENUM
 
 		// Index options represented as the sum of the following values:
+        [Flags];
 		PUBLIC ENUM CDXOPTIONS AS BYTE
 			MEMBER IsUnique			:= 0x01		// Unique
 			MEMBER IsWhile   		:= 0x02		// WHILE, ...

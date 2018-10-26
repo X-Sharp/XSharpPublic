@@ -948,9 +948,9 @@ BEGIN NAMESPACE XSharp.RDD
 					sorting := RddSortHelper{sortInfo, (DWORD)lRecCount}
 					sortInfo:Items[0]:Length := SELF:_keySize
 					IF (SELF:_KeyExprType == TypeCode.String)
-						sortInfo:Items[0]:Flags := 0
+						sortInfo:Items[0]:Flags := DbSortFlags.Ascii
 					ELSE
-						sortInfo:Items[0]:Flags := 4
+						sortInfo:Items[0]:Flags := DbSortFlags.Default
 					ENDIF
 					sortInfo:Items[0]:OffSet := 0
 					SELF:_oRdd:GoTo(1)

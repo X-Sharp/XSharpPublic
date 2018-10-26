@@ -231,3 +231,4 @@ Tools/Converter/PrjConvert.exe
 /Binaries/VOHelp/VOInternetClasses.xml
 /Binaries/VOHelp/VOGUIClasses.xml
 /Binaries/VOHelp/VOConsoleClasses.xml
+/Binaries/VOHelp/*.chw

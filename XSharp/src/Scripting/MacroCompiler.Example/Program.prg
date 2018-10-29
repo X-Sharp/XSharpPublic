@@ -129,59 +129,37 @@ end namespace
 
 begin namespace XSharp.Runtime
     using XSharp.MacroCompiler
-    using Vulcan.Runtime
+    //using Vulcan.Runtime
+    using XSharp
 
-    public class MacroCompiler implements Vulcan.Runtime.IMacroCompiler
-        internal compiler := Compilation.Create<object,RuntimeCodeblockDelegate>() as Compilation<object,RuntimeCodeblockDelegate>
+    delegate RuntimeCodeblockDelegate(args params dynamic[]) as dynamic
 
-	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as Vulcan.Runtime.ICodeBlock
-		    lIsBlock := cMacro:StartsWith("{|")
-            var m := compiler:Compile(cMacro)
-    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
+    public class RuntimeCodeblock implements ICodeBlock
+        private _eval as RuntimeCodeblockDelegate
+        private _pcount as int
 
-	    public method Compile (cMacro as string) as Vulcan.Runtime.ICodeBlock
-            var m := compiler:Compile(cMacro)
-    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
-    end class
-
-end namespace
-
-/*
-begin namespace XSharp.Runtime
-    using XSharp.MacroCompiler
-
-    delegate MacroDelegate(args params dynamic[]) as dynamic
-
-    public class RuntimeCodeblock implements Vulcan.Runtime.ICodeBlock
-        private _eval as MacroDelegate
-
-        public method Eval(args params dynamic[]) as dynamic
+        public method EvalBlock(args params dynamic[]) as dynamic
             return _eval(args)
 
-        public constructor(evalMethod as MacroDelegate)
+        public method PCount() as int
+            return _pcount
+
+        public constructor(evalMethod as RuntimeCodeblockDelegate, pCount as int)
             _eval := evalMethod
+            _pcount := pCount
     end class
 
-    public class MacroCompiler implements Vulcan.Runtime.IMacroCompiler
-        internal compiler := Compilation.Create<dynamic,MacroDelegate>() as Compilation<dynamic,MacroDelegate>
+    public class MacroCompiler implements IMacroCompiler
+        internal compiler := Compilation.Create<object,RuntimeCodeblockDelegate>() as Compilation<object,RuntimeCodeblockDelegate>
 
-	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as Vulcan.Runtime.ICodeBlock
+	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as ICodeBlock
 		    lIsBlock := cMacro:StartsWith("{|")
-    	    return RuntimeCodeblock{compiler.Compile(cMacro)}
+            var m := compiler:Compile(cMacro)
+    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
 
-	    public method Compile (cMacro as string) as Vulcan.Runtime.ICodeBlock
-    	    return RuntimeCodeblock{compiler.Compile(cMacro)}
+	    public method Compile (cMacro as string) as ICodeBlock
+            var m := compiler:Compile(cMacro)
+    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
     end class
 
 end namespace
-
-begin namespace Vulcan.Runtime
-    interface ICodeBlock
-        public method Eval(args params dynamic[]) as dynamic
-    end interface
-
-    interface IMacroCompiler
-	    method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as ICodeBlock
-    end interface
-end namespace
-*/

@@ -3,4 +3,6 @@ cd \xsharp\dev\xsharp\binaries\help
 makecab xsharp.mshc xsharp.cab /V1
 cd \xsharp\devrt\binaries\help
 makecab xsruntime.mshc xsruntime.cab /V1
+cd \xsharp\devrt\binaries\Vohelp
+makecab XsVoSdk.mshc XsVoSdk.cab /V1
 cd c:\XSharp\Dev\XSharp\src\Setup

@@ -5269,7 +5269,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Interface method {0} and implementation {1} have different calling conventions.</value>
   </data>
   <data name="WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak" xml:space="preserve">
-    <value>The compiler generated an automatic conversion to PSZ. This will create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself.</value>
+    <value>The compiler generated an automatic conversion to PSZ. This may create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself.</value>
   </data>
 
 </root>

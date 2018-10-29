@@ -25,6 +25,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         readonly static internal SyntaxTrivia WS = Whitespace(" ");
 
+        internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
+        {
+            return Token(kind);
+        }
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
             return Token(WS, kind, WS);
@@ -60,29 +64,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private XNodeFlags xflags = XNodeFlags.None;
         public bool XVoDecl
         {
-            get { return xflags.HasFlag(XNodeFlags.XVodecl); }
-            set { xflags = xflags.SetFlag(XNodeFlags.XVodecl, value); }
+            get => xflags.HasFlag(XNodeFlags.XVodecl);
+            set => xflags = xflags.SetFlag(XNodeFlags.XVodecl, value);
         }
 
         public bool XVoIsDecl
         {
-            get { return xflags.HasFlag(XNodeFlags.XVoIsDecl); }
-            set { xflags = xflags.SetFlag(XNodeFlags.XVoIsDecl, value); }
+            get => xflags.HasFlag(XNodeFlags.XVoIsDecl);
+            set => xflags = xflags.SetFlag(XNodeFlags.XVoIsDecl, value);
         }
         public bool XPCall
         {
-            get { return xflags.HasFlag(XNodeFlags.XPCall); }
-            set { xflags = xflags.SetFlag(XNodeFlags.XPCall, value); }
+            get => xflags.HasFlag(XNodeFlags.XPCall);
+            set => xflags = xflags.SetFlag(XNodeFlags.XPCall, value);
         }
         public bool XGenerated
         {
-            get { return xflags.HasFlag(XNodeFlags.XGenerated); }
-            set { xflags = xflags.SetFlag(XNodeFlags.XGenerated, value); }
+            get => xflags.HasFlag(XNodeFlags.XGenerated);
+            set => xflags = xflags.SetFlag(XNodeFlags.XGenerated, value);
         }
         public bool XVoIsDim
         {
-            get { return xflags.HasFlag(XNodeFlags.XVoIsDim); }
-            set { xflags = xflags.SetFlag(XNodeFlags.XVoIsDim, value); }
+            get => xflags.HasFlag(XNodeFlags.XVoIsDim);
+            set => xflags = xflags.SetFlag(XNodeFlags.XVoIsDim, value);
         }
     }
 
@@ -96,20 +100,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
         public bool HasPCall
         {
-             get { return xflags.HasFlag(XNodeFlags.XPCall); }
-            internal set { xflags = xflags.SetFlag(XNodeFlags.XPCall, value); }
+            get => xflags.HasFlag(XNodeFlags.XPCall);
+            internal set => xflags = xflags.SetFlag(XNodeFlags.XPCall, value);
         }
 
         public bool NeedsProcessing
         {
-            get { return xflags.HasFlag(XNodeFlags.XNeedsProcessing); }
-            internal set { xflags = xflags = xflags.SetFlag(XNodeFlags.XNeedsProcessing, value); }
+            get => xflags.HasFlag(XNodeFlags.XNeedsProcessing);
+            internal set => xflags = xflags = xflags.SetFlag(XNodeFlags.XNeedsProcessing, value);
         }
 
         public bool HasDocComments
         {
-            get { return xflags.HasFlag(XNodeFlags.XDocComments); }
-            internal set { xflags = xflags.SetFlag(XNodeFlags.XDocComments, value); }
+            get => xflags.HasFlag(XNodeFlags.XDocComments);
+            internal set => xflags = xflags.SetFlag(XNodeFlags.XDocComments, value);
         }
 
         public bool HasPragmas
@@ -128,11 +132,11 @@ namespace Microsoft.CodeAnalysis.CSharp
     using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
     public abstract partial class CSharpSyntaxNode
     {
-        internal bool XVoDecl { get { return (CsGreen).XVoDecl; } }
-        internal bool XVoIsDecl { get { return (CsGreen).XVoIsDecl; } }
-        internal bool XPCall { get { return (CsGreen).XPCall; } }
-        internal bool XGenerated { get { return (CsGreen).XGenerated; } }
-        internal bool XVoIsDim { get { return (CsGreen).XVoIsDim; } }
+        internal bool XVoDecl => CsGreen.XVoDecl;
+        internal bool XVoIsDecl => CsGreen.XVoIsDecl;
+        internal bool XPCall => CsGreen.XPCall;
+        internal bool XGenerated => CsGreen.XGenerated;
+        internal bool XVoIsDim => CsGreen.XVoIsDim;
 
     }
 }
@@ -142,7 +146,8 @@ namespace Microsoft.CodeAnalysis
     
     public abstract partial class SyntaxNode
     {
-        internal IXParseTree XNode { get { return ((CSharp.CSharpSyntaxNode)this).CsGreen.XNode ?? ((CSharp.CSharpSyntaxNode)this).Parent?.XNode; } }
+        internal CSharp.CSharpSyntaxNode CsNode => (CSharp.CSharpSyntaxNode)this;
+        internal IXParseTree XNode => CsNode.CsGreen.XNode ?? CsNode.Parent?.XNode;
         internal bool XIsMissingArgument
         {
             get
@@ -178,8 +183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 
     public sealed partial class CompilationUnitSyntax
     {
-        private InternalSyntax.CompilationUnitSyntax internalUnit => 
-            (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
+        private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
         public XSharpParser.SourceContext XSource => internalUnit.XSource;
         public ITokenStream XTokens => internalUnit.XTokens;
         public ITokenStream XPPTokens => internalUnit.XPPTokens;

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/platform</title>
   <keywords>
     <keyword>/platform</keyword>
@@ -12,19 +12,17 @@
     <para styleclass="Normal">Specifies which version of the common language runtime (CLR) can run the assembly.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box">/platform:string &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Arguments</text></para>
     <para styleclass="List"><text styleclass="Code Example">string</text><tab />anycpu (default), anycpu32bitpreferred, ARM, x64, x86, or Itanium.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">anycpu (default) compiles your assembly to run on any platform. Your application runs as a 64-bit process whenever possible and falls back to 32-bit when only that mode is available.</li>
       <li styleclass="Normal" style="margin-left:13px;">anycpu32bitpreferred compiles your assembly to run on any platform. Your application runs in 32-bit mode on systems that support both 64-bit and 32-bit applications. You can specify this option only for projects that target the .NET Framework 4.5.</li>
     </list>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">ARM compiles your assembly to run on a computer that has an Advanced RISC Machine (ARM) processor.</li>
       <li styleclass="Normal" style="margin-left:13px;">x64 compiles your assembly to be run by the 64-bit common language runtime on a computer that supports the AMD64 or EM64T instruction set.</li>
       <li styleclass="Normal" style="margin-left:13px;">x86 compiles your assembly to be run by the 32-bit, x86-compatible common language runtime.</li>
@@ -33,7 +31,7 @@
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">On a 64-bit Windows operating system:</para>
     <para styleclass="Normal"></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Assemblies compiled with /platform:x86 execute on the 32-bit CLR running under WOW64.</li>
       <li styleclass="Normal" style="margin-left:13px;">A DLL compiled with the /platform:anycpu executes on the same CLR as the process into which it is loaded.</li>
       <li styleclass="Normal" style="margin-left:13px;">Executables that are compiled with the /platform:anycpu execute on the 64-bit CLR.</li>
@@ -43,7 +41,7 @@
     <para styleclass="Normal">The anycpu32bitpreferred setting is valid only for executable (.EXE) files, and it requires the .NET Framework 4.5.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="7" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the General property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the Platform target property and, for projects that target the .NET Framework 4.5, select or clear the Prefer 32-bit check box.</li>

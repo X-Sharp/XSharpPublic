@@ -32,7 +32,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">VO/Vulcan Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="32" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="33" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -95,6 +95,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies that the compiler should generate late bound calls when necessary </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">/namedargs</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Specifies whether to allow named arguments in the parser or not.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -56,11 +56,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string IncludePaths { get; internal set; } = "";
         public bool ImplicitNameSpace { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
+        public bool AllowNamedArguments { get; internal set; } = false;
+        public bool NamedArgsHasBeenSet { get; internal set; } = false;
         public bool NoClipCall { get; internal set; } = false;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
         public ParseLevel ParseLevel { get;  set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
+        public bool SaveAsCSharp { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
@@ -89,6 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool OverflowHasBeenSet { get; internal set; } = false;
+        
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
     }

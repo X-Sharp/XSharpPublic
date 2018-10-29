@@ -42,7 +42,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
                 {
                     var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
-                    if (n == null || n == node)
+					// also exit for variabledeclation because the order of our declaration is quite different
+                    if (n == null || n == node || n is VariableDeclarationSyntax)
                         break;
                     node = n;
                 }
@@ -63,9 +64,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (eof == null)
             {
                 var node = GetNode(root, position);
-                if (node != null && node.XNode != null && node.XNode.IsHidden)
-                {
-                    return LineVisibility.Hidden;
+                if (node != null)
+                { 
+                    if (node.XNode != null && node.XNode.IsHidden)
+                        return LineVisibility.Hidden;
+                    if (node.XGenerated)
+                        return LineVisibility.Hidden;
                 }
             }
             return LineVisibility.Visible;
@@ -171,6 +175,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var start = 0;
                 var length = 0;
                 string fn = file;
+                // correct several incorrect breakpoint positions due to different order of things
+                if (snode.Parent is VariableDeclarationSyntax)
+                {
+                    snode = snode.Parent;
+                }
+                else if (snode.Parent is AssignmentExpressionSyntax)
+                {
+                    snode = snode.Parent;
+                }
                 if (snode.XNode != null)
                 {
                     var xNode = snode.XNode as XSharpParserRuleContext;
@@ -206,6 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var s = text.Lines.GetLinePosition(span.Start);
             var e = text.Lines.GetLinePosition(span.End);
+            //System.Diagnostics.Debug.WriteLine($" {span.Start} {file} {s.Line}");
             return new FileLinePositionSpan(file, s, e);
         }
     }

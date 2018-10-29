@@ -1184,12 +1184,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected LocalDeclarationStatementSyntax GenerateLocalDecl(string name, TypeSyntax type, ExpressionSyntax initexpr = null)
         {
-            var result =
-                    _syntaxFactory.LocalDeclarationStatement(
-                        TokenList(),
-                        _syntaxFactory.VariableDeclaration(type,
-                        MakeSeparatedList<VariableDeclaratorSyntax>(GenerateVariable(name, initexpr))),
+            var decl = _syntaxFactory.VariableDeclaration(type,
+                        MakeSeparatedList<VariableDeclaratorSyntax>(GenerateVariable(name, initexpr)));
+            decl.XGenerated = true;
+            var result = _syntaxFactory.LocalDeclarationStatement(
+                        TokenList(),decl,
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            result.XGenerated = true;
             return result;
         }
 
@@ -1200,7 +1201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected IdentifierNameSyntax GenerateSimpleName(string name)
         {
-            return _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(name));
+            return _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(name));
         }
         protected ExpressionSyntax GenerateSelf()
         {
@@ -1234,19 +1235,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (string.Compare(alias, "global", StringComparison.OrdinalIgnoreCase) == 0)
                     r = _syntaxFactory.AliasQualifiedName(
                         _syntaxFactory.IdentifierName(SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, alias)),
-                        SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
+                        SyntaxFactory.MakeTokenNoWs(SyntaxKind.ColonColonToken),
                         (SimpleNameSyntax)r);
                 else
                     r = _syntaxFactory.AliasQualifiedName(
                         GenerateSimpleName(alias),
-                        SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
+                        SyntaxFactory.MakeTokenNoWs(SyntaxKind.ColonColonToken),
                         (SimpleNameSyntax)r);
             }
             for (int i = 1; i < ids.Length; i++)
             {
                 r = _syntaxFactory.QualifiedName(
                     r,
-                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    SyntaxFactory.MakeTokenNoWs(SyntaxKind.DotToken),
                     GenerateSimpleName(ids[i]));
             }
             return r;
@@ -1293,13 +1294,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             NameSyntax r = GenerateSimpleName(name);
             r = _syntaxFactory.AliasQualifiedName(
                 _syntaxFactory.IdentifierName(SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, "global")),
-                SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
+                SyntaxFactory.MakeTokenNoWs(SyntaxKind.ColonColonToken),
                 (SimpleNameSyntax)r);
             foreach (var dotName in dotNames)
             {
                 r = _syntaxFactory.QualifiedName(
                     r,
-                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    SyntaxFactory.MakeTokenNoWs(SyntaxKind.DotToken),
                     GenerateSimpleName(dotName));
             }
             return r;
@@ -1375,10 +1376,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected BlockSyntax MakeBlock(SyntaxList<StatementSyntax> statements)
         {
-            return _syntaxFactory.Block(
+            var block= _syntaxFactory.Block(
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         statements,
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            block.XGenerated = true;
+            return block;
         }
 
         protected ExpressionSyntax MakeDefault(TypeSyntax type)
@@ -3588,7 +3591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int iAttr = 0; iAttr < al.Attributes.Count; iAttr++)
                 {
                     var attr = al.Attributes[iAttr];
-                    var name = attr.Name.ToFullString();
+                    var name = attr.Name.ToFullString().Trim();
                     var pos = name.LastIndexOf(".");
                     if (pos > 0)
                     {
@@ -5811,9 +5814,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
             List<StatementSyntax> statements = new List<StatementSyntax>();
+            if (context._Stmts.Count > 0)
+            {
+                context.SetSequencePoint(context._Stmts[0].Stop);
+            }
             foreach (var stmtCtx in context._Stmts)
             {
-
                 // Sometimes we generate more than 1 C# statement for a xBase statement
                 if (stmtCtx.CsNode is SyntaxList<StatementSyntax>)
                 {
@@ -6066,6 +6072,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitExpressionStmt([NotNull] XP.ExpressionStmtContext context)
         {
             var statements = _pool.Allocate<StatementSyntax>();
+            context.SetSequencePoint(context._Exprs[0].Start, context._Exprs[0].Stop);
             foreach (var exprCtx in context._Exprs)
             {
                 // check because there may already be statements in here, such as the IF statement generated for AltD()
@@ -6076,14 +6083,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.SetSequencePoint(context._Exprs[0].Start, context._Exprs[0].Stop);
                     var stmt = GenerateExpressionStatement(exprCtx.Get<ExpressionSyntax>());
                     stmt.XNode = exprCtx;
                     statements.Add(stmt);
                 }
             }
 
-            if (statements.Count == 0)
+            if (statements.Count == 1)
             {
                 context.Put(statements[0]);
             }

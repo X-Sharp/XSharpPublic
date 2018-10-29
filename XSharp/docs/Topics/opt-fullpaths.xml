@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>/fullpaths</title>
   <keywords>
     <keyword>/fullpaths</keyword>
@@ -13,7 +13,6 @@
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">/fullpaths &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">By default, errors and warnings that result from compilation specify the name of the file in which an error was found. The /fullpaths option causes the compiler to specify the full path to the file.</para>

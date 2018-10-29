@@ -134,7 +134,7 @@ namespace XSharp.MacroCompiler
             var e = expr;
 
             if (e.Datatype.NativeType == NativeType.Object)
-                Convert(ref e, Compilation.GetNativeType(NativeType.__Usual));
+                Convert(ref e, Compilation.GetNativeType(NativeType.Usual));
 
             var op = UserDefinedUnaryOperator(kind, ref e);
 

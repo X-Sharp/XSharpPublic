@@ -58,7 +58,7 @@ namespace XSharp.MacroCompiler
             }
 
             if (kind == BinaryOperatorKind.Exponent &&
-                (left.Datatype.NativeType == NativeType.__Usual || right.Datatype.NativeType == NativeType.__Usual))
+                (left.Datatype.NativeType == NativeType.Usual || right.Datatype.NativeType == NativeType.Usual))
             {
                 name = OperatorNames.__UsualExponent;
                 if (name != null)
@@ -167,10 +167,10 @@ namespace XSharp.MacroCompiler
             var r = right;
 
             if (l.Datatype.NativeType == NativeType.Object)
-                Convert(ref l, Compilation.GetNativeType(NativeType.__Usual));
+                Convert(ref l, Compilation.GetNativeType(NativeType.Usual));
 
             if (r.Datatype.NativeType == NativeType.Object)
-                Convert(ref r, Compilation.GetNativeType(NativeType.__Usual));
+                Convert(ref r, Compilation.GetNativeType(NativeType.Usual));
 
             var op = UserDefinedBinaryOperator(kind, ref l, ref r);
 

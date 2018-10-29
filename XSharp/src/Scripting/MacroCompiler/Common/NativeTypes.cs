@@ -34,7 +34,7 @@ namespace XSharp.MacroCompiler
         Void = 19,
         IntPtr = 20,
         UIntPtr = 21,
-        __Usual = 22,
+        Usual = 22,
     }
 
     public static class NativeTypeInfo
@@ -75,7 +75,7 @@ namespace XSharp.MacroCompiler
             "System.Void",
             "System.IntPtr",
             "System.UIntPtr",
-            VulcanQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Usual,
         };
 
         static TypeSymbol[] NativeTypeSymbols;
@@ -89,8 +89,17 @@ namespace XSharp.MacroCompiler
                 var name = NativeTypeNames[(int)m];
                 if (!string.IsNullOrEmpty(name))
                 {
-                    Debug.Assert(name.Substring(name.LastIndexOf('.')+1) == m.ToString());
+                    Debug.Assert(name.Substring(name.LastIndexOf('.')+1).Replace("__","") == m.ToString());
                     var t = Binder.Lookup(name) as TypeSymbol;
+                    if (t == null)
+                    {
+                        switch (name)
+                        {
+                            case XSharpQualifiedTypeNames.Usual:
+                                t = Binder.Lookup(VulcanQualifiedTypeNames.Usual) as TypeSymbol;
+                                break;
+                        }
+                    }
                     if (t != null)
                     {
                         t.NativeType = m;
@@ -109,7 +118,10 @@ namespace XSharp.MacroCompiler
         internal static TypeSymbol GetNativeType(NativeType kind)
         {
             Debug.Assert(NativeTypeSymbols != null);
-            return NativeTypeSymbols[(int)kind];
+            var result = NativeTypeSymbols[(int)kind];
+            if (result == null)
+                CompileFailure.Throw(ErrorCode.TypeNotFound,kind);
+            return result;
         }
     }
 }

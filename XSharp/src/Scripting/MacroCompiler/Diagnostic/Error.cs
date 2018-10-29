@@ -13,6 +13,7 @@ namespace XSharp.MacroCompiler
         NotSupported,
         UnexpectedValue,
         NoConversion,
+        TypeNotFound,
     }
 
     internal class ErrorString
@@ -23,6 +24,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NotSupported, "Not supported: {0}" },
             { ErrorCode.UnexpectedValue, "Unexpected value" },
             { ErrorCode.NoConversion, "No conversion from {0} to {1}" },
+            { ErrorCode.TypeNotFound, "Type not found: {0}" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }
@@ -47,5 +49,6 @@ namespace XSharp.MacroCompiler
     {
         public readonly ErrorCode Code;
         public CompileFailure(ErrorCode e, params object[] args): base(ErrorString.Format(e, args)) { Code = e; }
+        public static void Throw(ErrorCode e, params object[] args) { throw new CompileFailure(e, args); }
     }
 }

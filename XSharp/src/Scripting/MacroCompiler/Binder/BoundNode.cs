@@ -60,7 +60,7 @@ namespace XSharp.MacroCompiler.Syntax
                     // TODO nvk: create special types
                     break;
                 case TokenType.USUAL:
-                    Symbol = Compilation.GetNativeType(NativeType.__Usual);
+                    Symbol = Compilation.GetNativeType(NativeType.Usual);
                     break;
                 case TokenType.BYTE:
                     Symbol = Compilation.GetNativeType(NativeType.Byte);

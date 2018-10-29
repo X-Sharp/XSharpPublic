@@ -103,7 +103,7 @@ namespace XSharp.MacroCompiler
 
         internal static ConversionKind ResolveUsualConversion(Expr expr, TypeSymbol type)
         {
-            if (expr.Datatype.NativeType == NativeType.__Usual && type.NativeType == NativeType.Object)
+            if (expr.Datatype.NativeType == NativeType.Usual && type.NativeType == NativeType.Object)
                 return ConversionKind.Boxing;
             return ConversionKind.NoConversion;
         }
@@ -112,8 +112,8 @@ namespace XSharp.MacroCompiler
         {
             if (expr.Datatype.NativeType == NativeType.Object)
             {
-                var inner = Conversion(expr, Compilation.GetNativeType(NativeType.__Usual));
-                var outer = Conversion(TypeConversion.Bound(expr, Compilation.GetNativeType(NativeType.__Usual), inner), type);
+                var inner = Conversion(expr, Compilation.GetNativeType(NativeType.Usual));
+                var outer = Conversion(TypeConversion.Bound(expr, Compilation.GetNativeType(NativeType.Usual), inner), type);
                 if (outer.Kind != ConversionKind.NoConversion)
                 {
                     return ConversionSymbol.Create(outer, inner);

@@ -15,7 +15,8 @@ PROCEDURE DoTest() PASCAL
 
 	p := Test2()
 	? Psz2String(p)
-	xAssertEquals(Psz2String(p) , "test2") // error
+	// same as in VO, PSZ is freed when exiting function Test2()
+//	xAssertEquals(Psz2String(p) , "test2") // error
 RETURN
 
 FUNCTION Test1() AS PSZ PASCAL

@@ -7440,7 +7440,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C108 - Conflict between same named class and local
 
-ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C109 *************
 Application = C109
 IDEVersion = 1.06
@@ -63822,7 +63822,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C627 - Static inherits from non static results in strange reference
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime *************
 Application = C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime
 IDEVersion = 1.06
@@ -63922,7 +63922,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C629 - Incorrect PSZ returned from function returning PSZ *************
 Application = C629 - Incorrect PSZ returned from function returning PSZ
 IDEVersion = 1.06
@@ -64022,7 +64022,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C629 - Incorrect PSZ returned from function returning PSZ
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C630 - Problem calling function with PSZ(_CAST) param *************
 Application = C630 - Problem calling function with PSZ(_CAST) param
 IDEVersion = 1.06
@@ -64320,6 +64320,206 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled)
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C633 - Various "the call is ambiguous" errors when calling X# runtime funcs *************
+Application = C633 - Various "the call is ambiguous" errors when calling X# runtime funcs
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C633\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C633
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 0635D3CE-40CA-40D6-8886-DFB99BDFF75A
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs FileGroups]
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Files]
+File = %AppPath%\Prg\C633.prg
+FileGUID = A2003895-0D35-481B-BB6F-6D66A73B404C
+FileType = Code
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.6
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.6
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=1
+VO3=1
+VO4=1
+VO5=1
+VO6=1
+VO7=1
+VO8=1
+VO9=1
+VO10=1
+VO11=1
+VO12=1
+VO13=1
+VO14=1
+VO16=1
+LateBound=1
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C633 - Various "the call is ambiguous" errors when calling X# runtime funcs
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled *************
+Application = C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C634\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C634
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 1CC03749-B63F-4BC1-A16E-E4C755FC2D9F
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled FileGroups]
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled Files]
+File = %AppPath%\Prg\C634.prg
+FileGUID = 92234387-7A5D-4F59-8C5D-9FED57165F24
+FileType = Code
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled Resources]
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled Native Resources]
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled License files]
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=1
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled
 [EndApplications]
 
 [Configurations]

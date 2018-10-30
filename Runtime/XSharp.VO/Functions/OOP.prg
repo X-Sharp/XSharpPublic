@@ -1088,4 +1088,18 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	RETURN  NIL   
 
 
+/// <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>
+/// <param name="cLibFileName">The full path of the library to load.</param>
+/// <returns>The Assembly object of the loaded library.</returns>
+FUNCTION XSharpLoadLibrary(cLibFileName AS STRING) AS Assembly
+	LOCAL oAssembly AS Assembly
+	oAssembly := Assembly.LoadFrom(cLibFileName)
+	LOCAL oModule AS Module
+	oModule := oAssembly:GetModules()[1]
+	LOCAL oMethod AS MethodInfo
+	oMethod := oModule:GetMethod("RunInitProcs")
+	IF oMethod != NULL
+		oMethod:Invoke(NULL, NULL)
+	END IF
+RETURN oAssembly
 

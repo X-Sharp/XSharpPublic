@@ -728,6 +728,17 @@ FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 /// <summary>
 /// Convert an array of bytes from OEM to ANSI .
 /// </summary>
+FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
+	LOCAL bDest AS BYTE[]
+	bDest := Oem2Ansi(bSource, bSource:Length)
+	FOR LOCAL n := 1 AS INT UPTO bSource:Length
+		bSource[n] := bDest[n]
+	NEXT
+	
+
+/// <summary>
+/// Convert an array of bytes from OEM to ANSI .
+/// </summary>
 FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}

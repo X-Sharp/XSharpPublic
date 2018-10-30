@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp.IO
 				TRY
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
 					IF !lAnsi
-						pBuffer := Oem2Ansi(pBuffer)
+						Oem2AnsiA(pBuffer)
 					ENDIF
 				CATCH
 					FError((DWORD)Marshal.GetLastWin32Error())

@@ -1887,8 +1887,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (swBlock.Key.Type != XP.CASE)
                         hasdefault = true;
                 }
-                if (!hasdefault)
-                    return true;
+                if (!hasdefault)                    return true;
                 return false;           // all branches end with a return statement
             }
 
@@ -1951,12 +1950,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var qns = returnType as QualifiedNameSyntax;
                     // System.Void
-                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString(), StringComparison.OrdinalIgnoreCase))
+                    var sName  = qns.ToFullString().Replace(" ", "");
+                    var v1 = GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString().Replace(" ", "");
+                    var v2 = GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString().Replace(" ", "");
+                    if (sName.Equals(v1, StringComparison.OrdinalIgnoreCase))
                     {
                         return null;
                     }
                     // global::System.Void
-                    if (qns.ToFullString().Equals(GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString(), StringComparison.OrdinalIgnoreCase))
+                    if (sName.Equals(v2, StringComparison.OrdinalIgnoreCase))
                     {
                         return null;
                     }

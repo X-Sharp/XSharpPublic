@@ -49,6 +49,7 @@
     <para styleclass="Heading2">VOXporter</para>
     <list id="55" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">We have added an option to sort the entities in alphabetical order in the output file.</li>
+      <li styleclass="List">We have added an option so you can choose to add the X# Runtime as reference to your application (otherwise the Vulcan runtime is used)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

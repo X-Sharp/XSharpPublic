@@ -19,7 +19,7 @@
 #define Version             "2.0.0.6"
 #define FileNameVersion     "2Beta6"
 #define VIVersion           "2.0.0.6"
-#define TouchDate           "2018-10-16"
+#define TouchDate           "2018-10-28"
 #define TouchTime           "02:00:06"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"

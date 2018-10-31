@@ -1,4 +1,4 @@
-CLASS Vulcan.ChildWinForm INHERIT ChildAppWindow
+﻿CLASS XSharp.ChildWinForm INHERIT ChildAppWindow
     PRIVATE form AS System.Windows.Forms.Form
     PRIVATE currentControl AS System.Windows.Forms.Control
     
@@ -55,7 +55,7 @@ CLASS Vulcan.ChildWinForm INHERIT ChildAppWindow
     METHOD Resize(o)
         SUPER:Resize(o)
         
-        IF SELF:IsVisible() .and. ! SELF:form == NULL
+        IF SELF:IsVisible() .AND. ! SELF:form == NULL
             SELF:form:Width := SELF:canvasarea:width
             SELF:form:Height := SELF:canvasarea:Height
         ENDIF

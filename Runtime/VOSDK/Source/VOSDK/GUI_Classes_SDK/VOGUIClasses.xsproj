@@ -17,6 +17,7 @@
   <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="Resources\" />
+    <Folder Include="VOWinForm\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
@@ -146,6 +147,13 @@
     <Compile Include="ToolBar.prg" />
     <Compile Include="TopAppWindow.prg" />
     <Compile Include="TreeView.prg" />
+    <Compile Include="VOWinForm\ChildWinForm.prg" />
+    <Compile Include="VOWinForm\VOWinFormApp.prg" />
+    <Compile Include="VOWinForm\WindowStyle.prg" />
+    <Compile Include="VOWinForm\WinFormVOWindow.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VOWinForm\WinFormVOWindowHost.prg" />
     <Compile Include="WCDefine.prg" />
     <Compile Include="WCError.prg" />
     <Compile Include="WCFunc.prg" />
@@ -204,6 +212,23 @@
     <None Include="Resources\MULTI.CUR" />
     <None Include="Resources\SINGLE.CUR" />
     <None Include="Resources\WINS.ICO" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System</Name>
+      <AssemblyName>System.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Drawing</Name>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

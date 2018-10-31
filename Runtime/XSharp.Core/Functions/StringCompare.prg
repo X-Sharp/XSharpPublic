@@ -15,8 +15,8 @@ STATIC CLASS XSharp.StringHelpers
 	PRIVATE STATIC bRHS		AS BYTE[]
 	PRIVATE STATIC gate		AS OBJECT
 
-    public static property WinEncoding as System.Text.Encoding GET encWin
-    public static property DosEncoding as System.Text.Encoding GET encDos
+    PUBLIC STATIC PROPERTY WinEncoding AS System.Text.Encoding GET encWin
+    PUBLIC STATIC PROPERTY DosEncoding AS System.Text.Encoding GET encDos
 
     /// <exclude />
 	STATIC CONSTRUCTOR

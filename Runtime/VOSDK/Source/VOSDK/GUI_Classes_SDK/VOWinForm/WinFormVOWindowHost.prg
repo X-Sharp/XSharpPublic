@@ -1,6 +1,6 @@
-#using System.ComponentModel
+﻿#using System.ComponentModel
 
-CLASS Vulcan.WinFormVOWindowHost INHERIT Component
+CLASS XSharp.WinFormVOWindowHost INHERIT Component
     PRIVATE components := NULL AS System.ComponentModel.IContainer
     PRIVATE window AS Window
     PRIVATE windowClassName AS STRING
@@ -63,7 +63,7 @@ CLASS Vulcan.WinFormVOWindowHost INHERIT Component
                 END TRY
             ENDIF
             
-            IF ! window == NULL .and. ! hostControl == NULL
+            IF ! window == NULL .AND. ! hostControl == NULL
             
                 IF SELF:IsHostingDataWindow()
                     ((DataWindow)window):EnableBorder(WINDOWNONSIZINGBORDER)
@@ -203,7 +203,7 @@ CLASS Vulcan.WinFormVOWindowHost INHERIT Component
                 ELSE
                     win := GetParent(GetFocus())
                     control := GetObjectByHandle(win)
-                    DO WHILE !IsInstanceOf(control,#Window) .and. (win != NULL)
+                    DO WHILE !IsInstanceOf(control,#Window) .AND. (win != NULL)
                        win := GetParent(win)
                        control := GetObjectByHandle(win)
                     ENDDO
@@ -218,7 +218,7 @@ CLASS Vulcan.WinFormVOWindowHost INHERIT Component
                 ELSE
                     win := GetParent(GetFocus())
                     control := GetObjectByHandle(win)
-                    DO WHILE !IsInstanceOf(control,#Window) .and. (win != NULL)
+                    DO WHILE !IsInstanceOf(control,#Window) .AND. (win != NULL)
                        win := GetParent(win)
                        control := GetObjectByHandle(win)
                     ENDDO

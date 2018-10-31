@@ -1,4 +1,4 @@
-INTERNAL CLASS WindowStyle
+﻿INTERNAL CLASS WindowStyle
 
     STATIC METHOD SetStyle(hWnd AS PTR, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID
         LOCAL dwStyle AS DWORD

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -17,10 +17,11 @@ CLASS SolutionConverter
     PROTECT aOthers   AS List<STRING>
 	PROTECT cPath	  AS STRING                
 	PROTECT oProgress AS IProgress
-    protect lAdjustReferences as LOGIC
+    PROTECT lAdjustReferences AS LOGIC
+    PROTECT lUseXsRt  AS LOGIC
 	PROPERTY Target AS STRING GET cTarget
 	PROPERTY Source AS STRING GET cSource
-	CONSTRUCTOR(cName AS STRING, loProgress AS IProgress, lAdjust as LOGIC)
+	CONSTRUCTOR(cName AS STRING, loProgress AS IProgress, lAdjust AS LOGIC, lXsRt AS LOGIC)
 		cSource := cName
 		cPath     := System.IO.Path.GetDirectoryName(cSource)  
 		IF ! cPath:EndsWith("\")
@@ -32,6 +33,7 @@ CLASS SolutionConverter
 		aGuids := Dictionary<STRING, STRING>{}
 		oProgress := loProgress
         lAdjustReferences := lAdjust
+        lUseXsRt    := lXsRt
 	METHOD Start() AS LOGIC
 		LOCAL oReader AS System.IO.TextReader
 		LOCAL oWriter AS System.IO.TextWriter
@@ -68,10 +70,10 @@ CLASS SolutionConverter
     				IF aElements[2]:ToUpper() == "{5891B814-A2E0-4E64-9A2F-2C2ECAB940FE}"
 						LOCAL cNewFile AS STRING
 						LOCAL oPrjConverter AS ProjectConverter
-						oPrjConverter := ProjectConverter{oProgress}
+						oPrjConverter := ProjectConverter{oProgress, SELF:lUseXsRt}
 						aElements[2] := "{AA6C8D78-22FF-423A-9C7C-5F2393824E04}"	// XS Guid
 						cNewFile := System.IO.Path.ChangeExtension(aElements[6], "."+EXTENSION)
-						oPrjConverter:ConvertProjectFile(cPath+aElements[6], cPath+cNewFile)     
+						oPrjConverter:ConvertProjectFile(cPath+aElements[6], cPath+cNewFile, lUseXsRt)     
 						aFiles:Add(cPath+cNewFile)
                         // add old file to the list too
                         IF SELF:lAdjustReferences
@@ -103,7 +105,7 @@ CLASS SolutionConverter
 			ELSE
 				FOREACH VAR item IN aGuids
                     lChanged := FALSE 
-                    cLine := Replace(cLine , Item:Key, Item:Value, ref lChanged)
+                    cLine := Replace(cLine , Item:Key, Item:Value, REF lChanged)
 				NEXT				
 			ENDIF
 			oWriter:WriteLine(cLine)
@@ -113,46 +115,46 @@ CLASS SolutionConverter
 		// Now read the file again and replace all 'forward' references
 		VAR sContents := System.IO.File.ReadAllText(cTarget)
 		FOREACH VAR sItem IN aGuids
-            sContents := Replace(sContents, sItem:Key, sItem:Value, ref lChanged)
+            sContents := Replace(sContents, sItem:Key, sItem:Value, REF lChanged)
 		NEXT                    
-		if lChanged
+		IF lChanged
 			System.IO.File.WriteAllText(cTarget, sContents)
-		endif
+		ENDIF
 
 		// Now update project references in all xsprj files
 		FOREACH VAR sFile IN aFiles
 			lChanged := FALSE 
-			if System.IO.File.Exists(sFile)
+			IF System.IO.File.Exists(sFile)
 				sContents := System.IO.File.ReadAllText(sFile)
 				FOREACH VAR sItem IN aGuids
-                    sContents := Replace(sContents, sItem:Key, sItem:Value, ref lChanged)
+                    sContents := Replace(sContents, sItem:Key, sItem:Value, REF lChanged)
 				NEXT                    
 				IF lChanged
 					System.IO.File.WriteAllText(sFile, sContents)
 				ENDIF
 			ENDIF
 		NEXT
-        if self:lAdjustReferences
+        IF SELF:lAdjustReferences
 		    FOREACH VAR sFile IN aOthers
 			    lChanged := FALSE 
-			    if System.IO.File.Exists(sFile)
+			    IF System.IO.File.Exists(sFile)
 				    sContents := System.IO.File.ReadAllText(sFile)
 				    FOREACH VAR sItem IN aGuids
-                        sContents := Replace(sContents, sItem:Key, sItem:Value, ref lChanged)
+                        sContents := Replace(sContents, sItem:Key, sItem:Value, REF lChanged)
 				    NEXT                    
 				    IF lChanged
                         oProgress:WriteLine("Adjusted "+sFile)
-                        System.IO.File.Copy(sFile, sFile+".BAK",true)
+                        System.IO.File.Copy(sFile, sFile+".BAK",TRUE)
 					    System.IO.File.WriteAllText(sFile, sContents)
 				    ENDIF
 			    ENDIF
 		    NEXT
-        endif
+        ENDIF
 		RETURN TRUE		
 		
-STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress, lAdjustReferences as LOGIC) AS VOID
+STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress, lAdjustReferences AS LOGIC, lUseXsRt AS LOGIC) AS VOID
 	LOCAL oSolutionConverter AS SolutionConverter
-	oSolutionConverter := SolutionConverter{cFile, oProgress, lAdjustReferences}
+	oSolutionConverter := SolutionConverter{cFile, oProgress, lAdjustReferences,lUseXsRt}
 	IF oSolutionConverter:Start()
 		oProgress:WriteLine( "Created " +oSolutionConverter:Target)
 		oProgress:WriteLine( "Done")
@@ -161,12 +163,12 @@ STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress, lAdjustReferences
 	ENDIF  
 
 
-STATIC METHOD Replace(sSource as STRING, sKey as STRING, sValue as STRING, lChanged REF LOGIC) AS STRING
+STATIC METHOD Replace(sSource AS STRING, sKey AS STRING, sValue AS STRING, lChanged REF LOGIC) AS STRING
     sKey := sKey:ToLower()
     VAR pos := sSource:ToLower():IndexOf(sKey)
     DO WHILE pos >= 0
         VAR sLeft := sSource:Substring(0, pos)
-        var sRight := sSource:Substring(pos+sKey:Length)
+        VAR sRight := sSource:Substring(pos+sKey:Length)
         sSource := sLeft + sValue+sRight
         lChanged := TRUE
         pos := sSource:ToLower():IndexOf(sKey)

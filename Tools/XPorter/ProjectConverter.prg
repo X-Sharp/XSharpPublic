@@ -1,4 +1,4 @@
-
+﻿
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -16,27 +16,29 @@ CLASS ProjectConverter
 	PROTECT nGroup  AS LONG
 	PROTECT cSchema AS STRING  
 	PROTECT cGuid   AS STRING
-	PROTECT cPath	AS STRING   
+	PROTECT cPath	AS STRING
+    PROTECT lUseXsRuntime AS LOGIC
 	PROTECT oProgress AS IProgress         
-	PROTECT lVulcanRtWritten AS LOGIC
-	PROTECT oProjectNode as XmlElement
-	PROTECT lHasProjectExtensions as LOGIC
+	PROTECT lRuntimeAdded AS LOGIC
+	PROTECT oProjectNode AS XmlElement
+	PROTECT lHasProjectExtensions AS LOGIC
 	PROPERTY Guid AS STRING GET cGuid
-	CONSTRUCTOR(oProg AS IProgress)
+	CONSTRUCTOR(oProg AS IProgress, lUseXsRT AS LOGIC)
 		cSchema := "http://schemas.microsoft.com/developer/msbuild/2003"
 		nGroup  := 0
         cGuid   := System.Guid.NewGuid().ToString("B"):ToUpper()
-        lVulcanRtWritten := FALSE
+        lRuntimeAdded := FALSE
         SELF:oProgress := oProg
+        SELF:lUseXsRuntime := lUseXsRT
         
-METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING) AS LOGIC      
+METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, useXsRuntime AS LOGIC) AS LOGIC      
 	oProgress:WriteLine("Creating ... "+System.IO.Path.GetFileName(cTarget))
 	cPath := System.IO.Path.GetDirectoryName(cSource)+"\"
 	IF ! SELF:LoadFile(cSource)
 		RETURN FALSE
 	ENDIF                            
 	SELF:WalkNode(oDoc)   
-	if (!lHasProjectExtensions ) .and. oProjectNode != NULL_OBJECT
+	IF (!lHasProjectExtensions ) .AND. oProjectNode != NULL_OBJECT
 		VAR oExt := oDoc:CreateElement("ProjectExtensions",cSchema)
 		VAR oCap := oDoc:CreateElement("ProjectCapabilities",cSchema)
 		oExt:AppendChild(oCap)
@@ -105,17 +107,17 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			VAR cItem := oElement:GetAttribute("Include")
 			cItem := cPath+cItem
 			VAR oChild1 := oElement:FirstChild
-			IF oChild1 != NULL .and. oChild1:Name:ToLowerInvariant() == "dependentupon"
+			IF oChild1 != NULL .AND. oChild1:Name:ToLowerInvariant() == "dependentupon"
 				VAR  cInnerText := oChild1:InnerText
 				IF cInnerText:Contains("\")
 					// check to see if parent node is in the same folder as the child node.
-					if System.IO.File.Exists(cItem) .and. System.IO.File.Exists(cPath+cInnerText)
-						if System.IO.Path.GetFullPath(cItem) == System.IO.Path.GetFullPath(cPath+cInnerText)
+					IF System.IO.File.Exists(cItem) .AND. System.IO.File.Exists(cPath+cInnerText)
+						IF System.IO.Path.GetFullPath(cItem) == System.IO.Path.GetFullPath(cPath+cInnerText)
 							// paths are equal, only write filename
 							cInnerText := System.IO.Path.GetFileName(cInnerText)
 							oChild1:InnerText := cInnerText
 						ENDIF
-					endif
+					ENDIF
 				ENDIF
 			ENDIF
 
@@ -127,7 +129,7 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			ENDIF
 		CASE "project"
 			// Only for main project node, not for project node inside projectreference
-			if (oParent is XMLDocument)
+			IF (oParent IS XMLDocument)
 				// Import the schema
 				SELF:oProjectNode := oElement
 			ENDIF
@@ -171,12 +173,12 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				// <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
 				IF oCondition != NULL
 					VAR  cInnerText := oCondition:InnerText
-					if ! cInnerText:ToLower():Contains("platform")
-						if cInnerText:ToLower():Contains("release")
+					IF ! cInnerText:ToLower():Contains("platform")
+						IF cInnerText:ToLower():Contains("release")
 							oCondition:InnerText := "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'"
-						else
+						ELSE
 							oCondition:InnerText := "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"
-						endif
+						ENDIF
 					ENDIF
 				ENDIF
 			ENDIF
@@ -187,39 +189,64 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			oElement:AppendChild(oChild)
 			lHasProjectExtensions := TRUE
 		CASE "reference"                               
-			// Add VulcanRT assemblies after 1st reference
-			IF !SELF:lVulcanRtWritten
-				oChild := oDoc:CreateElement("Reference",cSchema)    
-				oAttribute := oDoc:CreateAttribute("Include")
-				oAttribute:Value := "VulcanRT"
-				oChild:Attributes:Append(oAttribute)   
-				VAR oSub := oDoc:CreateElement("Name",cSchema)
-				oSub:InnerText := "VulcanRT"
-				oChild:AppendChild(oSub)                         
-				oSub := oDoc:CreateElement("AssemblyName",cSchema)
-				oSub:InnerText := "VulcanRT.DLL"
-				oChild:AppendChild(oSub)                         
-				oElement:ParentNode:AppendChild(oChild)				
-				oChild := oDoc:CreateElement("Reference",cSchema)
-				oAttribute := oDoc:CreateAttribute("Include")
-				oAttribute:Value := "VulcanRTFuncs"
-				oChild:Attributes:Append(oAttribute)
-				oSub := oDoc:CreateElement("Name",cSchema)
-				oSub:InnerText := "VulcanRTFuncs"
-				oChild:AppendChild(oSub)                         
-				oSub := oDoc:CreateElement("AssemblyName",cSchema)
-				oSub:InnerText := "VulcanRTFuncs.DLL"
-				oChild:AppendChild(oSub)                         
-				oElement:ParentNode:AppendChild(oChild)				
-				SELF:lVulcanRtWritten := TRUE
+			// Add RT assemblies after 1st reference
+            VAR cAttribute := oElement:GetAttribute("Include")
+            IF cAttribute != NULL
+                SWITCH cAttribute:Tolower()
+                CASE "vulcanvowin32apilibrary"
+                CASE "vulcanvosystemclasses"
+                CASE "vulcanvorddclasses"
+                CASE "vulcanvosqlclasses"
+                CASE "vulcanvoguiclasses"
+                CASE "vulcanvointernetclasses"
+                CASE "vulcanvoconsoleclasses"
+                    cAttribute := cAttribute:Substring(6)
+                    oElement:SetAttribute("Include", cAttribute)
+                    // remove all version info in the children of the oElement
+                    DO WHILE oElement:FirstChild != NULL
+                        oElement:RemoveChild(oElement:FirstChild)
+                    ENDDO
+                    SELF:AddReferenceSubNodes(oElement, cAttribute)
+                OTHERWISE
+                    NOP
+                END SWITCH
+            ENDIF
+			IF !SELF:lRuntimeAdded
+                LOCAL cRt1, cRt2 AS STRING
+                IF SELF:lUseXsRuntime
+                    cRT1 := "XSharp.Core"
+                    cRT2 := "XSharp.VO"
+                ELSE
+                    cRT1 := "VulcanRT"
+                    cRT2 := "VulcanRTFuncs"
+                ENDIF
+                SELF:AddReference(oElement, cRT1)
+                SELF:AddReference(oElement, cRT2)
+				SELF:lRuntimeAdded := TRUE
 			ENDIF
 		OTHERWISE   
 			// All other elements should not be changed
 			NOP
 		END SWITCH
 	ENDIF                                   
-	RETURN	
-	
+	RETURN
+
+METHOD AddReference(oElement AS XMLNode, cReference AS STRING) AS VOID
+    VAR oChild := oDoc:CreateElement("Reference",cSchema)    
+    oElement:ParentNode:AppendChild(oChild)				
+	VAR oAttribute := oDoc:CreateAttribute("Include")
+	oAttribute:Value := cReference
+	oChild:Attributes:Append(oAttribute)
+    SELF:AddReferenceSubNodes(oChild, cReference)
+    
+METHOD AddReferenceSubNodes(oRef AS XmlNode, cReference AS STRING) AS VOID
+    VAR oSub := oDoc:CreateElement("Name",cSchema)
+    oSub:InnerText := cReference
+    oRef:AppendChild(oSub)                         
+    oSub := oDoc:CreateElement("AssemblyName",cSchema)
+    oSub:InnerText := cReference+".DLL"
+    oRef:AppendChild(oSub)
+	RETURN   
 METHOD WalkNode(oNode AS XmlNode) AS VOID       
 	LOCAL aChildren AS List<XmlNode>
 	aChildren := List<XmlNode>{}
@@ -310,14 +337,14 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 		
 	RETURN
 
-STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress) AS VOID
+STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress, lUseXsRt AS LOGIC) AS VOID
 	LOCAL oConverter AS ProjectConverter
 	LOCAL cSource AS STRING
 	LOCAL cTarget AS STRING
-	oConverter := ProjectConverter{oProgress}
+	oConverter := ProjectConverter{oProgress,lUseXsRT}
 	cSource := cFile
 	cTarget := System.IO.Path.ChangeExtension(cSource, EXTENSION)
-	IF oConverter:ConvertProjectFile(cSource, cTarget)
+	IF oConverter:ConvertProjectFile(cSource, cTarget,lUseXsRt)
 		oProgress:WriteLine( "Converted "+System.IO.Path.GetFileName(cSource)+" to " +System.IO.Path.GetFileName(cTarget))
 	ELSE
 		oProgress:WriteLine( "An error occurred")

@@ -1,0 +1,617 @@
+VOSTRUCT _winEXCEPINFO ALIGN 2
+	MEMBER	wCode 				AS WORD
+	MEMBER	wReserved 			AS WORD
+	MEMBER	bstrSource			AS PSZ
+	MEMBER	bstrDescription 	AS PSZ
+	MEMBER	bstrHelpFile		AS PSZ
+	MEMBER	dwHelpContext 		AS DWORD
+	MEMBER	pvReserved			AS PTR
+	MEMBER	pfnDeferredFillIn AS /*DeferedFillIn*/ PTR
+	MEMBER	scode 				AS LONGINT
+
+
+
+
+
+
+VOSTRUCT _winPARAMDATA
+		MEMBER szName AS PTR
+		MEMBER vt AS WORD
+
+VOSTRUCT _winMETHODDATA
+		MEMBER szName AS PTR
+		MEMBER ppdata AS _winPARAMDATA
+		MEMBER dispid  AS LONGINT
+		MEMBER iMeth AS DWORD
+		MEMBER cc  AS DWORD
+		MEMBER cArgs AS DWORD
+		MEMBER wFlags AS WORD
+		MEMBER vtReturn AS WORD
+
+VOSTRUCT _winINTERFACEDATA
+		MEMBER pmethdata AS _winMETHODDATA
+		MEMBER cMembers AS DWORD
+
+
+
+
+
+VOSTRUCT	_winCY
+	MEMBER	Lo	AS DWORD
+	MEMBER	Hi	AS LONGINT
+
+VOSTRUCT	_winSAFEARRAYBOUND ALIGN 1
+	MEMBER	cElements AS DWORD
+	MEMBER	lLbound 	AS LONGINT
+
+VOSTRUCT	_winSAFEARRAY ALIGN 1
+	MEMBER   cDims             AS SHORTINT
+	MEMBER   fFeatures         AS SHORTINT
+	MEMBER   cbELements        AS DWORD
+	MEMBER   cLocks            AS DWORD
+	MEMBER   pvData            AS PTR
+	MEMBER	DIM rgsabound[1]	IS _winSAFEARRAYBOUND
+
+
+VOSTRUCT _winVARIANT		ALIGN 1
+	MEMBER   vt          	AS SHORTINT
+	MEMBER	wReserved1	AS WORD
+	MEMBER	wReserved2	AS WORD
+	MEMBER	wReserved3	AS WORD
+	MEMBER	uVariant	IS uVariant_win
+
+VOSTRUCT _winVARIANTARG  ALIGN 1
+	MEMBER   vt          	AS SHORTINT
+	MEMBER	wReserved1	AS WORD
+	MEMBER	wReserved2	AS WORD
+	MEMBER	wReserved3	AS WORD
+	MEMBER	uVariant	IS uVariant_win
+
+VOSTRUCT _winDISPPARAMS ALIGN 4
+	MEMBER	rgvarg		AS _winVARIANTARG
+	MEMBER   rgdispidNamedArgs AS LONGINT PTR
+	MEMBER   cArgs          AS DWORD
+	MEMBER	cNamedArgs	AS DWORD
+_DLL FUNC SysAllocString(SZ AS PTR) AS PTR PASCAL:OLEAUT32.SysAllocString
+_DLL FUNC SysReAllocString(pbstr AS PTR, sz AS PTR) AS INT PASCAL:OLEAUT32.SysReAllocString
+
+
+_DLL FUNC SysAllocStringLen(pch AS PTR, cch AS DWORD) AS PTR PASCAL:OLEAUT32.SysAllocStringLen
+
+_DLL FUNC SysReAllocStringLen(pbstr AS PTR, pch AS PTR, cch AS DWORD) AS INT PASCAL:oleaut32.SysReAllocStringLen
+
+_DLL FUNC SysFreeString(bstr AS PTR) AS VOID PASCAL:oleaut32.SysFreeString
+
+_DLL FUNC SysStringLen(bstr AS PTR) AS DWORD PASCAL:oleaut32.SysStringLen
+
+
+_DLL FUNC SysStringByteLen(bstr AS PTR) AS DWORD PASCAL:oleaut32.SysStringByteLen
+
+_DLL FUNC SysAllocStringByteLen(_psz AS PSZ, len AS DWORD) AS PTR PASCAL:oleaut32.SysAllocStringByteLen
+
+_DLL FUNC DosDateTimeToVariantTime(wDosDate AS WORD, wDosTime AS WORD, pvtime AS REAL8 PTR);
+																	 AS INT PASCAL:oleaut32.DosDateTimeToVariantTime
+
+_DLL FUNC VariantTimeToDosDateTime(vtime AS REAL8, pwdouble	AS WORD PTR, pwDosTime AS WORD PTR);
+																	 AS INT PASCAL:OLEAUT32.VariantTimeToDosDateTime
+
+
+_DLL FUNC SafeArrayAllocDescriptor(cDims AS DWORD, ppsaOut AS PTR );
+																	 AS LONG PASCAL:oleaut32.SafeArrayAllocDescriptor
+
+_DLL FUNC SafeArrayAllocData(psa AS _winSAFEARRAY) AS LONG PASCAL:oleaut32.SafeArrayAllocData
+
+
+
+_DLL FUNC SafeArrayCreate( vt AS WORD, cDims AS DWORD, rgsabound AS _winSAFEARRAYBOUND);
+	AS _winSAFEARRAY PASCAL:OLEAUT32.SafeArrayCreate
+_DLL FUNC SafeArrayDestroyDescriptor(psa AS _winSAFEARRAY) AS LONG PASCAL:oleaut32.SafeArrayDestroyDescriptor
+
+_DLL FUNC SafeArrayDestroyData( psa AS _winSAFEARRAY) AS LONG PASCAL:oleaut32.SafeArrayDestroyData
+
+_DLL FUNC SafeArrayDestroy(psa AS _winSAFEARRAY) AS LONG PASCAL:oleaut32.SafeArrayDestroy
+
+_DLL FUNC SafeArrayRedim( psa AS _winSAFEARRAY, psaboundNew AS _winSAFEARRAYBOUND);
+	AS LONG PASCAL:OLEAUT32.SafeArrayRedim
+
+_DLL FUNC SafeArrayGetDim(psa AS _winSAFEARRAY) AS DWORD PASCAL:oleaut32.SafeArrayGetDim
+
+_DLL FUNC SafeArrayGetElemsize(psa AS _winSAFEARRAY) AS DWORD PASCAL:oleaut32.SafeArrayGetElemsize
+
+_DLL FUNC SafeArrayGetUBound(psa AS _winSAFEARRAY, nDim AS DWORD, plUbound AS LONG PTR);
+	AS LONG PASCAL:OLEAUT32.SafeArrayGetUBound
+
+_DLL FUNC SafeArrayGetLBound(psa AS _winSAFEARRAY, nDim AS DWORD, plLbound AS LONG PTR);
+	AS LONG PASCAL:OLEAUT32.SafeArrayGetLBound
+
+_DLL FUNC SafeArrayLock( psa AS _winSAFEARRAY) AS LONG PASCAL:oleaut32.SafeArrayLock
+
+_DLL FUNC SafeArrayUnlock(psa AS _winSAFEARRAY) AS LONG PASCAL:oleaut32.SafeArrayUnlock
+
+_DLL FUNC SafeArrayAccessData(psa AS _winSAFEARRAY,  ppvData AS PTR) AS LONG PASCAL:oleaut32.SafeArrayAccessData
+
+
+_DLL FUNC SafeArrayGetElement(psa AS _winSAFEARRAY, rgIndices AS LONG PTR, pv AS PTR);
+	AS LONG PASCAL:oleaut32.SafeArrayGetElement
+
+_DLL FUNC SafeArrayPutElement(psa AS _winSAFEARRAY, reIndices AS LONG PTR, pv AS PTR);
+	AS LONG PASCAL:OLEAUT32.SafeArrayPutElement
+
+_DLL FUNC SafeArrayCopy( psa AS _winSAFEARRAY, ppsaOut AS _winSAFEARRAY);
+	AS LONG PASCAL:OLEAUT32.SafeArrayCopy
+
+_DLL FUNC SafeArrayPtrOfIndex(psa AS _winSAFEARRAY, rgIndices AS LONG PTR, ppvData AS PTR);
+	AS LONG PASCAL:OLEAUT32.SafeArrayPtrOfIndex
+
+
+_DLL FUNC VariantInit(pvarg AS _winVARIANTARG) AS VOID PASCAL:oleaut32.VariantInit
+
+_DLL FUNC VariantClear(pvarg AS _winVARIANTARG) AS LONG PASCAL:OLEAUT32.VariantClear
+
+_DLL FUNC VariantCopy(pvargDest AS _winVARIANTARG, pvargSrc AS	_winVARIANTARG);
+	AS LONG PASCAL:OLEAUT32.VariantCopy
+
+_DLL FUNC VariantCopyInd(pvarDest AS _winVARIANT, pvargSrc AS _winVARIANTARG);
+	AS LONG PASCAL:oleaut32.VariantCopyInd
+
+_DLL FUNC VariantChangeType(pvargDest AS _winVARIANTARG, pvarSrc AS _winVARIANTARG,;
+	wFlags AS DWORD, vt AS DWORD) AS LONG PASCAL:OLEAUT32.VariantChangeType
+
+_DLL FUNC VariantChangeTypeEx(pvarDest AS _winVARIANTARG, pvarSrc AS _winVARIANTARG,;
+	lcid AS DWORD, wFlags AS DWORD, vt AS DWORD);
+	AS LONG PASCAL:OLEAUT32.VariantChangeTypeEx
+
+_DLL FUNC VarUI1FromI2(sIn AS SHORT, pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromI2
+
+_DLL FUNC VarUI1FromI4(lIn AS LONG, pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromI4
+
+_DLL FUNC VarUI1FromR4(fltIn AS REAL4, pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromR4
+
+_DLL FUNC VarUI1FromR8(dblIn AS REAL8, pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromR8
+
+_DLL FUNC VarUI1FromCy(cyIn AS _winCY, pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromCy
+
+_DLL FUNC VarUI1FromDate(dateIn AS REAL8,  pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromDate
+
+
+_DLL FUNC VarUI1FromStr(_strIn AS WORD PTR, lcid AS DWORD, dwFlags AS DWORD,;
+	pbOut AS BYTE PTR) AS LONG PASCAL:oleaut32.VarUI1FromStr
+
+_DLL FUNC VarUI1FromDisp(pdispIn AS PTR, lcid AS DWORD, pbOut AS DWORD);
+	AS LONG PASCAL:oleaut32.VarUI1FromDisp
+
+_DLL FUNC VarUI1FromBool(boolIn AS SHORT, pbOut AS DWORD) AS LONG PASCAL:oleaut32.VarUI1FromBool
+
+_DLL FUNC VarI2FromUI1(bIn AS BYTE, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromUI1
+
+_DLL FUNC VarI2FromI4(lIn AS LONG, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromI4
+
+_DLL FUNC VarI2FromR4(fltIn AS REAL4, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromR4
+
+_DLL FUNC VarI2FromR8(dblIn AS REAL8, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromR8
+
+_DLL FUNC VarI2FromCy(cyIn AS _winCY, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromCy
+
+_DLL FUNC VarI2FromDate(dateIn AS REAL8, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromDate
+
+_DLL FUNC VarI2FromStr(_strIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, psOut AS SHORT PTR);
+											 AS LONG PASCAL:oleaut32.VarI2FromStr
+
+_DLL FUNC VarI2FromDisp(pdispIn AS PTR, lcid AS DWORD, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromDisp
+
+_DLL FUNC VarI2FromBool(boolIn AS SHORT, psOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarI2FromBool
+
+_DLL FUNC VarI4FromUI1(bIn AS BYTE, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromUI1
+
+_DLL FUNC VarI4FromI2(sIn AS SHORT, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromI2
+
+_DLL FUNC VarI4FromR4(fltIn AS REAL4, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromR4
+
+_DLL FUNC VarI4FromR8(dblIn AS REAL8, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromR8
+
+_DLL FUNC VarI4FromCy(cyIn AS _winCY, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromCy
+
+_DLL FUNC VarI4FromDate(dateIn AS REAL8, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromDate
+
+_DLL FUNC VarI4FromStr(_strIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, plOut AS LONG PTR);
+	AS LONG PASCAL:oleaut32.VarI4FromStr
+
+_DLL FUNC VarI4FromDisp(pdispIn AS PTR, lcid AS DWORD, plOut AS LONG PTR);
+	AS LONG PASCAL:oleaut32.VarI4FromDisp
+
+_DLL FUNC VarI4FromBool(boolIn AS SHORT, plOut AS LONG PTR) AS LONG PASCAL:oleaut32.VarI4FromBool
+
+_DLL FUNC VarR4FromUI1(bIn AS BYTE, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromUI1
+
+_DLL FUNC VarR4FromI2(sIn AS SHORT, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromI2
+
+_DLL FUNC VarR4FromI4(lIn AS LONG, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromI4
+
+_DLL FUNC VarR4FromR8(dblIn AS REAL8, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromR8
+
+_DLL FUNC VarR4FromCy(cyIn AS _winCY, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromCy
+
+_DLL FUNC VarR4FromDate(dateIn AS REAL8, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromDateVarR4FromDate
+
+_DLL FUNC VarR4FromStr(_strIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, pfltOut AS REAL4 PTR);
+	AS LONG PASCAL:oleaut32.VarR4FromStr
+
+_DLL FUNC VarR4FromDisp(pdispIn AS PTR, lcid AS DWORD, pfltOut AS REAL4 PTR);
+	AS LONG PASCAL:oleaut32.VarR4FromDisp
+
+_DLL FUNC VarR4FromBool(boolIn AS SHORT, pfltOut AS REAL4 PTR) AS LONG PASCAL:oleaut32.VarR4FromBool
+
+_DLL FUNC VarR8FromUI1(bIn AS BYTE, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromUI1
+
+_DLL FUNC VarR8FromI2(sIn AS SHORT, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromI2
+
+_DLL FUNC VarR8FromI4(lIn AS LONG, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromI4
+
+_DLL FUNC VarR8FromR4(fltIn AS REAL4, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromR4
+
+_DLL FUNC VarR8FromCy(cyIn AS _winCY, pdblOUt AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromCy
+
+_DLL FUNC VarR8FromDate(dateIn AS REAL8, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromDate
+
+_DLL FUNC VarR8FromStr(_strIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, pdblOut AS REAL8 PTR);
+	AS LONG PASCAL:oleaut32.VarR8FromStr
+
+_DLL FUNC VarR8FromDisp(pdispIn AS PTR, lcid AS DWORD, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromDisp
+
+_DLL FUNC VarR8FromBool(boolIn AS SHORT, pdblOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarR8FromBool
+
+_DLL FUNC VarDateFromUI1(bIn AS BYTE, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromUI1
+
+_DLL FUNC VarDateFromI2(sIn AS SHORT, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromI2
+
+_DLL FUNC VarDateFromI4(lIn AS LONG, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromI4
+
+_DLL FUNC VarDateFromR4(fltIn AS REAL4, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromR4
+
+_DLL FUNC VarDateFromR8(dblIn AS REAL8, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromR8
+
+_DLL FUNC VarDateFromCy(cyIn AS _winCY, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromCy
+
+_DLL FUNC VarDateFromStr(_strIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, pdateOut AS REAL8 PTR);
+	AS LONG PASCAL:oleaut32.VarDateFromStr
+
+_DLL FUNC VarDateFromDisp(pdispIn AS PTR, lcid AS DWORD, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromDisp
+
+_DLL FUNC VarDateFromBool(boolIn AS SHORT, pdateOut AS REAL8 PTR) AS LONG PASCAL:oleaut32.VarDateFromBool
+
+_DLL FUNC VarCyFromUI1(bIn AS BYTE, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromUI1
+
+_DLL FUNC VarCyFromI2(sIn AS SHORT, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromI2
+
+_DLL FUNC VarCyFromI4(lIn AS LONG, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromI4
+
+_DLL FUNC VarCyFromR4(fltIn AS REAL4, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromR4
+
+_DLL FUNC VarCyFromR8(dblIn AS REAL8, pcyOUt AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromR8
+
+_DLL FUNC VarCyFromDate(dateIn AS REAL8, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromDate
+
+_DLL FUNC VarCyFromStr(_strIn AS PTR, lcid AS DWORD, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromStr
+
+_DLL FUNC VarCyFromDisp(pdidpIn AS PTR, lcid AS DWORD, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromDisp
+
+_DLL FUNC VarCyFromBool(boolIn AS SHORT, pcyOut AS _winCY) AS LONG PASCAL:oleaut32.VarCyFromBool
+
+_DLL FUNC VarBstrFromUI1(bVal AS BYTE, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromUI1
+
+_DLL FUNC VarBstrFromI2(iVal AS SHORT, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromI2
+
+_DLL FUNC VarBstrFromI4(lIn AS LONG, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromI4
+
+_DLL FUNC VarBstrFromR4(fltIn AS REAL4, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromR4
+
+_DLL FUNC VarBstrFromR8(dblIn AS REAL8, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromR8
+
+_DLL FUNC VarBstrFromCy(cyIn AS _winCY, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromCy
+
+_DLL FUNC VarBstrFromDate(dateIn AS REAL8, lcid AS DWORD, dwFlags AS DWORD, pbsreOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromDate
+
+_DLL FUNC VarBstrFromDisp(pdispIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, pbstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromDisp
+
+_DLL FUNC VarBstrFromBool(boolIn AS SHORT, lcid AS DWORD, dwFlags AS DWORD, lpstrOut AS PTR);
+	AS LONG PASCAL:oleaut32.VarBstrFromBool
+
+_DLL FUNC VarBoolFromUI1(bIn AS BYTE, pboolOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromUI1
+
+_DLL FUNC VarBoolFromI2(sIn AS SHORT, pboolOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromI2
+
+_DLL FUNC VarBoolFromI4(lIn AS LONG, pboolOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromI4
+
+_DLL FUNC VarBoolFromR4(fltIn AS REAL4, pboolOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromR4
+
+_DLL FUNC VarBoolFromR8(dblIn AS REAL8, pboolOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromR8
+
+_DLL FUNC VarBoolFromDate(dateIn AS REAL8, pboolOut AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromDate
+
+_DLL FUNC VarBoolFromCy(cyIn AS _winCY, pboolOUt AS SHORT PTR) AS LONG PASCAL:oleaut32.VarBoolFromCy
+
+_DLL FUNC VarBoolFromStr(_strIn AS PTR, lcid AS DWORD, dwFlags AS DWORD, pboolOut AS SHORT PTR);
+	AS LONG PASCAL:oleaut32.VarBoolFromStr
+
+_DLL FUNC VarBoolFromDisp(pdispIN AS PTR, lcid AS DWORD, pboolOut AS SHORT PTR);
+	AS LONG PASCAL:oleaut32.VarBoolFromDisp
+
+
+_DLL FUNC LHashValOfNameSysA(sysking AS DWORD, lcid AS DWORD, szName AS PSZ);
+	AS LONG PASCAL:oleaut32.LHashValOfNameSysA
+
+_DLL FUNC LHashValOfNameSys(syskind AS DWORD, lcid AS DWORD, szName AS PTR);
+	AS LONG PASCAL:oleaut32.LHashValOfNameSys
+
+
+FUNCTION WHashValOfLHashVal(lhashval AS DWORD) AS WORD
+		RETURN (WORD(_CAST, _And(0x0000ffff,lhashval)))
+
+
+
+_DLL FUNC LoadTypeLib(szFile AS PTR, pptlib AS PTR) AS LONG PASCAL:oleaut32.LoadTypeLib
+
+
+
+_DLL FUNC LoadRegTypeLib(rguid AS _winGUID, wVerMajor AS WORD, wVerMinor AS WORD,;
+	lcid AS DWORD, pptlib AS PTR) AS LONG PASCAL:oleaut32.LoadRegTypeLib
+
+
+
+_DLL FUNC QueryPathOfRegTypeLib(guid AS _winGUID, wMaj AS WORD, wMin AS WORD,;
+	lcid AS DWORD, lpbstrPathName AS PTR);
+	AS LONG PASCAL:oleaut32.QueryPathOfRegTypeLib
+
+
+
+_DLL FUNC RegisterTypeLib(ptlib AS PTR, szFullPath AS PTR, szHelpDir AS PTR);
+	AS LONG PASCAL:oleaut32.RegisterTypeLib
+
+
+_DLL FUNCTION OleLoadPicture (IStream AS PTR, lSize AS LONG, fRunMode AS LOGIC, ;
+	riid AS PTR, ppvObj REF PTR) AS LONGINT PASCAL:OLEAUT32.OleLoadPicture
+
+
+//this function not be contained in an Dll File
+//_dll func DeregisterTypeLib(rguid AS _winGUID, wVerMajor AS WORD, wVerMinor AS WORD, lcid AS DWORD);
+//																												 as long pascal:oleaut32.DeregisterTypeLib
+
+_DLL FUNC CreateTypeLib(syskind AS DWORD, szFile AS PTR, ppctlib AS PTR) AS LONG PASCAL:oleaut32.CreateTypeLib
+
+
+_DLL FUNC DispGetParam(pdispparams AS _winDISPPARAMS, position AS DWORD, vtTarg AS WORD,;
+	pvarResult AS _winVARIANT, puArgErr AS DWORD PTR) AS LONG PASCAL:oleaut32.DispGetParam
+
+
+_DLL FUNC DispGetIDsOfNames(ptinfo AS PTR, rgszNames AS PTR, cName AS DWORD,;
+	rgdispid AS LONG PTR) AS LONG PASCAL:oleaut32.DispGetIDsOfNames
+
+
+
+
+_DLL FUNC DispInvoke(_this AS PTR, ptinfo AS PTR, dispidMember AS LONG, wFlags AS WORD,;
+	pparams AS _winDISPPARAMS, pvarResult AS _winVARIANT,;
+	pexcepinfo AS _winEXCEPINFO, puArgErr AS DWORD PTR);
+	AS LONG PASCAL:oleaut32.DispInvoke
+
+
+
+_DLL FUNC CreateDispTypeInfo(pidata AS _winINTERFACEDATA, lcid AS DWORD, pptinfo AS PTR);
+	AS LONG PASCAL:oleaut32.CreateDispTypeInfo
+
+
+
+_DLL FUNC CreateStdDispatch(punkOuter AS PTR, pvThis AS PTR, ptinfo AS PTR, ppunkStdDisp AS PTR);
+	AS LONG PASCAL:oleaut32.CreateStdDispatch
+
+
+
+
+
+
+_DLL FUNC RegisterActiveObject(punk AS PTR, rclsid AS _winGUID, dwFlags AS DWORD, pdwregister AS DWORD PTR);
+	AS LONG PASCAL:oleaut32.RegisterActiveObject
+
+_DLL FUNC RevokeActiveObject(dwRegister AS DWORD, pvReserved AS PTR) AS LONG PASCAL:oleaut32.RevokeActiveObject
+
+
+_DLL FUNC GetActiveObject(rclsid AS _winGUID, pvReserved AS PTR, ppunk AS PTR) AS LONG PASCAL:oleaut32.GetActiveObject
+
+
+_DLL FUNC SetErrorInfo(dwReserved AS DWORD, perrinfo AS PTR) AS LONG PASCAL:oleaut32.SetErrorInfo
+
+_DLL FUNC GetErrorInfo(dwReserved AS DWORD, pperrinfo AS PTR) AS LONG PASCAL:oleaut32.GetErrorInfo
+
+_DLL FUNC CreateErrorInfo(pperrinfo AS PTR) AS LONG PASCAL:oleaut32.CreateErrorInfoSetErrorInfo
+
+
+_DLL FUNC OaBuildVersion() AS DWORD PASCAL:oleaut32.OaBuildVersion
+
+
+STATIC FUNCTION DeferedFillIn(lpExcepInfo AS _winEXCEPINFO) AS LONGINT STRICT
+	RETURN(0)
+
+FUNCTION LHashValOfName(lcid AS DWORD, szName AS PTR) AS LONGINT
+		RETURN		LHashValOfNameSys( 1,  lcid, szName)
+
+
+UNION uVariant_win
+	MEMBER   lVal     AS LONGINT
+	MEMBER   bVal     AS BYTE
+	MEMBER   iVal     AS SHORTINT
+	MEMBER   fltVal   AS REAL4
+	MEMBER   dblVal   AS REAL8
+	MEMBER   bool     AS SHORTINT
+	MEMBER   scode    AS LONGINT
+	MEMBER   cyVal    IS _winCY
+	MEMBER   _date    AS REAL8
+	MEMBER	bstrVal 	AS PSZ
+	MEMBER	punkVal 	AS PTR
+	MEMBER	pdispVal	AS PTR
+	MEMBER   parray   AS _winSAFEARRAY
+
+	MEMBER   plVal    AS LONGINT  PTR
+	MEMBER   pbVal    AS BYTE  PTR
+	MEMBER   piVal    AS SHORTINT PTR
+	MEMBER	pfltVal 	AS REAL4	PTR
+	MEMBER	pdblVal 	AS REAL8	PTR
+	MEMBER   pbool    AS SHORTINT PTR
+	MEMBER   pscode   AS LONGINT  PTR
+	MEMBER   pcyVal   AS _winCY
+	MEMBER   pdate    AS REAL8 PTR
+	MEMBER	pbstrVal	AS PTR
+	MEMBER	ppunkVal	AS PTR
+	MEMBER	ppdispVal AS PTR
+	MEMBER	pparray 	AS PTR
+
+	MEMBER	byref 		AS PTR
+
+
+
+#region defines
+DEFINE IDLFLAG_NONE :=	0
+DEFINE IDLFLAG_FIN	:=	0x1
+DEFINE IDLFLAG_FOUT :=	0x2
+DEFINE IDLFLAG_FLCID  := 0x4
+DEFINE IDLFLAG_FRETVAL  := 0x08
+DEFINE DISPATCH_METHOD					:= 0x1
+DEFINE DISPATCH_PROPERTYGET 		:= 0x2
+DEFINE DISPATCH_PROPERTYPUT 		:= 0x4
+DEFINE DISPATCH_PROPERTYPUTREF	:= 0x8
+DEFINE INVOKE_METHOD						:= DISPATCH_METHOD
+DEFINE INVOKE_PROPERTYGET 			:= DISPATCH_PROPERTYGET
+DEFINE INVOKE_PROPERTYPUT 			 := DISPATCH_PROPERTYPUT
+DEFINE INVOKE_PROPERTYPUTREF		:= DISPATCH_PROPERTYPUTREF
+//RvdH 040322 Added some defines
+DEFINE FADF_AUTO			:= 0x1
+DEFINE FADF_STATIC		:= 0x2
+DEFINE FADF_EMBEDDED    := 0x4
+DEFINE FADF_FIXEDSIZE   := 0x10
+DEFINE FADF_RECORD      := 0x20
+DEFINE FADF_HAVEIID     := 0x40
+DEFINE FADF_HAVEVARTYPE := 0x80
+DEFINE FADF_BSTR        := 0x100
+DEFINE FADF_UNKNOWN     := 0x200
+DEFINE FADF_DISPATCH    := 0x400
+DEFINE FADF_VARIANT     := 0x800
+DEFINE FADF_RESERVED    := 0xf0e8
+DEFINE VARFLAG_FREADONLY         := 1
+DEFINE VARFLAG_FSOURCE           := 0x2
+DEFINE VARFLAG_FBINDABLE         := 0x4
+DEFINE VARFLAG_FREQUESTEDIT      := 0x8
+DEFINE VARFLAG_FDISPLAYBIND      := 0x10
+DEFINE VARFLAG_FDEFAULTBIND      := 0x20
+DEFINE VARFLAG_FHIDDEN           := 0x40
+DEFINE VARFLAG_FRESTRICTED       := 0x80
+DEFINE VARFLAG_FDEFAULTCOLLELEM  := 0x100
+DEFINE VARFLAG_FUIDEFAULT        := 0x200
+DEFINE VARFLAG_FNONBROWSABLE     := 0x400
+DEFINE VARFLAG_FREPLACEABLE      := 0x800
+DEFINE VARFLAG_FIMMEDIATEBIND    := 0x1000
+DEFINE TYPEFLAG_FAPPOBJECT  := 0x1
+DEFINE TYPEFLAG_FCANCREATE  := 0x2
+DEFINE TYPEFLAG_FLICENSED   := 0x4
+DEFINE TYPEFLAG_FPREDECLID  := 0x8
+DEFINE TYPEFLAG_FHIDDEN  := 0x10
+DEFINE TYPEFLAG_FCONTROL := 0x20
+DEFINE TYPEFLAG_FDUAL := 0x40
+DEFINE TYPEFLAG_FNONEXTENSIBLE := 0x80
+DEFINE TYPEFLAG_FOLEAUTOMATION := 0x100
+DEFINE TYPEFLAG_FRESTRICTED := 0x200
+DEFINE TYPEFLAG_FAGGREGATABLE  := 0x400
+DEFINE TYPEFLAG_FREPLACEABLE   := 0x800
+DEFINE TYPEFLAG_FDISPATCHABLE  := 0x1000
+DEFINE TYPEFLAG_FREVERSEBIND   := 0x2000
+DEFINE TYPEFLAG_FPROXY   := 0x4000
+DEFINE FUNCFLAG_FRESTRICTED      := 0x1
+DEFINE FUNCFLAG_FSOURCE          := 0x2
+DEFINE FUNCFLAG_FBINDABLE        := 0x4
+DEFINE FUNCFLAG_FREQUESTEDIT     := 0x8
+DEFINE FUNCFLAG_FDISPLAYBIND     := 0x10
+DEFINE FUNCFLAG_FDEFAULTBIND     := 0x20
+DEFINE FUNCFLAG_FHIDDEN          := 0x40
+DEFINE FUNCFLAG_FUSESGETLASTERROR:= 0x80
+DEFINE FUNCFLAG_FDEFAULTCOLLELEM := 0x100
+DEFINE FUNCFLAG_FUIDEFAULT       := 0x200
+DEFINE FUNCFLAG_FNONBROWSABLE    := 0x400
+DEFINE FUNCFLAG_FREPLACEABLE     := 0x800
+DEFINE FUNCFLAG_FIMMEDIATEBIND   := 0x1000
+DEFINE VT_EMPTY  := 0
+DEFINE VT_NULL	 := 1
+DEFINE VT_I2		 := 2
+DEFINE VT_I4		 := 3
+DEFINE VT_R4		 := 4
+DEFINE VT_R8		 := 5
+DEFINE VT_CY		 := 6
+DEFINE VT_DATE       := 7
+DEFINE VT_BSTR       := 8
+DEFINE VT_DISPATCH   := 9
+DEFINE VT_ERROR      := 10
+DEFINE VT_BOOL       := 11
+DEFINE VT_VARIANT    := 12
+DEFINE VT_UNKNOWN    := 13
+DEFINE VT_DECIMAL    := 14
+DEFINE VT_I1         := 16
+DEFINE VT_UI1        := 17
+DEFINE VT_UI2        := 18
+DEFINE VT_UI4        := 19
+DEFINE VT_I8         := 20
+DEFINE VT_UI8        := 21
+DEFINE VT_INT        := 22
+DEFINE VT_UINT       := 23
+DEFINE VT_VOID       := 24
+DEFINE VT_HRESULT    := 25
+DEFINE VT_PTR        := 26
+DEFINE VT_SAFEARRAY  := 27
+DEFINE VT_CARRAY     := 28
+DEFINE VT_USERDEFINED:= 29
+DEFINE VT_LPSTR      := 30
+DEFINE VT_LPWSTR     := 31
+DEFINE VT_RECORD     := 36
+DEFINE VT_INT_PTR    := 37
+DEFINE VT_UINT_PTR   := 38
+DEFINE VT_FILETIME   := 64
+DEFINE VT_BLOB       := 65
+DEFINE VT_STREAM     := 66
+DEFINE VT_STORAGE    := 67
+DEFINE VT_STREAMED_OBJECT  := 68
+DEFINE VT_STORED_OBJECT 	 := 69
+DEFINE VT_BLOB_OBJECT 		 := 70
+DEFINE VT_CF         := 71
+DEFINE VT_CLSID      := 72
+DEFINE VT_VERSIONED_STREAM  := 73
+DEFINE VT_VECTOR        := 0x1000
+DEFINE VT_ARRAY         := 0x2000
+DEFINE VT_BYREF         := 0x4000
+DEFINE VT_RESERVED      := 0x8000
+DEFINE VT_ILLEGAL       := 0xFFFF
+DEFINE VT_ILLEGALMASKED := 0xFFF
+DEFINE VT_TYPEMASK      := 0xFFF
+DEFINE	DISPID_UNKNOWN					:= ( -1 )
+DEFINE	DISPID_VALUE					:= ( 0 )
+DEFINE	DISPID_PROPERTYPUT	:= ( -3 )
+DEFINE	DISPID_NEWENUM					:= ( -4 )
+DEFINE	DISPID_EVALUATE 				:= ( -5 )
+DEFINE	DISPID_CONSTRUCTOR	:= ( -6 )
+DEFINE	DISPID_DESTRUCTOR := ( -7 )
+DEFINE	DISPID_COLLECT					:= ( -8 )
+DEFINE STDOLE_MAJORVERNUM 			:= 0x1
+DEFINE STDOLE_MINORVERNUM 			:= 0x0
+DEFINE STDOLE_LCID							:= 0x0000
+DEFINE VARIANT_NOVALUEPROP := 1
+DEFINE VARIANT_ALPHABOOL    := 0x02
+DEFINE VARIANT_NOUSEROVERRIDE := 0x04
+DEFINE VAR_TIMEVALUEONLY := 0x0001
+DEFINE VAR_DATEVALUEONLY := 0x0002
+DEFINE ID_DEFAULTINST  := -2
+DEFINE ACTIVEOBJECT_STRONG := 0x0
+DEFINE ACTIVEOBJECT_WEAK	 := 0x1
+#endregion

@@ -506,7 +506,7 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN ret
         })
-        STATIC METHOD Dbf as STRING
+        STATIC METHOD Dbf AS STRING
             LOCAL oRDD := CoreDb.CWA("DBF") AS IRDD
             IF oRDD != NULL
                 RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
@@ -609,7 +609,7 @@ CLASS XSharp.CoreDb
         RETURN oRDD:DbEval(oInfo)
         })
 
-    STATIC METHOD FCount() as DWORD
+    STATIC METHOD FCount() AS DWORD
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         IF (oRDD != NULL)
             RETURN (DWORD) oRDD:FieldCount
@@ -682,7 +682,7 @@ CLASS XSharp.CoreDb
         /// <returns>
         /// </returns>
     STATIC METHOD FieldPos(sFieldName AS STRING) AS DWORD
-        LOCAL oRDD := CoreDb.CWA("FieldPos") AS IRDD
+        LOCAL oRDD := CoreDb.CWA("FieldPos",FALSE) AS IRDD
         IF (oRDD != NULL)
             RETURN (DWORD) oRDD:FieldIndex(sFieldName) 
         ENDIF
@@ -786,7 +786,7 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbGetSelect() and CoreDb.GetSelect() are aliases</note></remarks>
         
     STATIC METHOD GetSelect() AS DWORD
-        return RuntimeState.Workareas:CurrentWorkareaNo  
+        RETURN RuntimeState.Workareas:CurrentWorkareaNo  
         /// <summary>
         /// Move to the last logical record.
         /// </summary>
@@ -927,7 +927,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD Locate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        LOCAL scopeinfo := DBSCOPEINFO{} AS DBSCOPEINFO
+        LOCAL scopeinfo := DbScopeInfo{} AS DbScopeInfo
         scopeinfo:ForBlock := uCobFor
         scopeinfo:WhileBlock := uCobWhile
         scopeinfo:Rest:= lRest
@@ -1049,7 +1049,8 @@ CLASS XSharp.CoreDb
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
             info:Order   := oOrder
-            oValue :=  oRDD:OrderInfo(nOrdinal, info)
+			oRDD:OrderInfo(nOrdinal, info)
+            oValue :=  info:Result
             RETURN TRUE
         CATCH e AS Exception
             RuntimeState.LastRDDError := e
@@ -1412,7 +1413,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD Seek(oValue AS OBJECT,lSoftSeek AS LOGIC, lLast as LOGIC) AS LOGIC
+    STATIC METHOD Seek(oValue AS OBJECT,lSoftSeek AS LOGIC, lLast AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR info 		:= DbSeekInfo{}
@@ -1627,16 +1628,16 @@ CLASS XSharp.CoreDb
             IF parts:Length > 1
                 VAR part := parts[1]
                 IF part:IndexOf('A') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Default
+                    info:Items[nFld]:Flags |= DbSortFlags.Default
                 ENDIF
                 IF part:IndexOf('C') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Case
+                    info:Items[nFld]:Flags |= DbSortFlags.Case
                 ENDIF
                 IF part:IndexOf('D') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Descending
+                    info:Items[nFld]:Flags |= DbSortFlags.Descending
                 ENDIF
                 IF part:IndexOf('B') > -1
-                    info:Items[nFld]:Flags |= DbSortItem.SF_Ascii
+                    info:Items[nFld]:Flags |= DbSortFlags.Ascii
                 ENDIF
             ENDIF
             LOCAL iField AS INT

@@ -1,16 +1,16 @@
-﻿// NtxSort.prg
-// Created by    : fabri
-// Creation Date : 9/4/2018 6:42:42 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
 USING System.Collections
 USING System.Text
 USING XSharp.Rdd.Support
-
-BEGIN NAMESPACE XSharp.RDD
+USING XSharp.RDD.Enums
+BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL CLASS NTXSortRecord
         PRIVATE _data AS BYTE[]
@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL diff AS LONG
             LOCAL i AS LONG
             LOCAL iLen AS LONG
-            LOCAL indxFlags AS LONG
+            LOCAL indxFlags AS DbSortFlags
             //
             nTXSortRecord := (NTXSortRecord)x
             nTXSortRecord2 := (NTXSortRecord)y
@@ -58,17 +58,18 @@ BEGIN NAMESPACE XSharp.RDD
             diff := 0
             iLen := SELF:_sortInfo:Items[0]:Length
             indxFlags := SELF:_sortInfo:Items[0]:Flags
-            IF ((indxFlags & DBSORTITEM.SF_ASCII) != 0)
+            IF indxFlags:HasFlag(DbSortFlags.ASCII)
+                diff := SELF:_oRdd:StringCompare(dataBuffer, dataBuffer2, iLen)
+            ELSE
+                // Binary comparison
                 FOR i := 0 TO ( iLen - 1 )
                     diff := dataBuffer[i] - dataBuffer2[i]
                     IF (diff != 0)
                         EXIT
                     ENDIF
                 NEXT
-            ELSE
-                diff := SELF:_oRdd:StringCompare(dataBuffer, dataBuffer2, iLen)
             ENDIF
-            IF ((indxFlags & DBSORTITEM.SF_Descending) != 0)
+            IF indxFlags:HasFlag(DbSortFlags.Descending) 
                 diff *= -1
             ENDIF
             IF (diff == 0)

@@ -1,0 +1,4 @@
+To generate a strong key file:
+  x open a visual studio command prompt
+  x navigate to the Source\SharedBinaries folder
+  x type sn -k VulcanStrongNameKey.snk

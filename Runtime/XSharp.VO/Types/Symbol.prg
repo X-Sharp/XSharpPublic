@@ -355,8 +355,13 @@ BEGIN NAMESPACE XSharp
 
             /// <inheritdoc />
                 METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
-                RETURN ((IConvertible)_value):ToType( conversionType, provider )
-
+				IF conversionType == TYPEOF(__Symbol)
+					RETURN SELF
+				ELSEIF conversionType == TYPEOF(System.String)
+					RETURN _value
+				ENDIF
+				RETURN ((IConvertible)_value):ToType(conversionType, provider)
+        
             /// <inheritdoc />
                 METHOD IConvertible.ToUInt16( provider AS IFormatProvider ) AS UInt16
                 RETURN ((IConvertible)_value):ToUInt16( provider )

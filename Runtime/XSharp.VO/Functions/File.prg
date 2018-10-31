@@ -8,126 +8,79 @@
 USING XSharp
 USING System.Runtime.InteropServices
 
-
-
-/// <summary>
-/// Read characters from a file into a buffer variable that is passed by reference.
-/// </summary>
-/// <param name="pHandle"></param>
-/// <param name="pData"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FRead(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
-	LOCAL bData AS BYTE[]
-	LOCAL dwResult AS DWORD
-	bData := BYTE[] {(INT) dwCount}
-	dwResult := FRead3(pHandle, bData, dwCount)
+/// <param name="pData">A block of memory to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+/// <inheritdoc cref="M:XSharp.VO.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+FUNCTION FRead(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
+    // use Buffer associated with file handle
+    VAR bData    := __FGetBuffer(pFile, (INT) dwCount)
+	VAR dwResult := FRead3(pFile, bData, dwCount)
 	Marshal.Copy(bData, 0, pData, (INT) dwResult)
 	RETURN dwResult
-	
-/// <summary>
-/// Read characters from a file into a buffer variable that is passed by reference.
-/// </summary>
-/// <param name="pHandle"></param>
-/// <param name="pData"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FRead3(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
-	RETURN Fread(pHandle, pData, dwCount)
 
+/// <inheritdoc cref="M:XSharp.VO.Functions.FRead(System.IntPtr,System.IntPtr,System.UInt32)" />
+FUNCTION FRead3(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
+	RETURN Fread(pFile, pData, dwCount)
 
 
 /// <summary>
-/// Read a line from an open file.
+/// Read characters from a file into an allocated buffer with optional OEM to Ansi conversion.
 /// </summary>
-/// <param name="pFile"></param>
-/// <param name="nBuffLen"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.VO.Functions.FRead(System.IntPtr,System.IntPtr,System.UInt32)" />
+/// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
+FUNCTION FRead4(pFile AS IntPtr, pData AS IntPtr,dwCount AS DWORD, lAnsi AS LOGIC) AS DWORD
+	// use Buffer associated with file handle
+    VAR bData := __FGetBuffer(pFile, (INT) dwCount)
+	RETURN Fread4(pFile, bData, dwCount, lAnsi)
+
+
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
 FUNCTION FReadLine(pFile ,nBuffLen) AS STRING CLIPPER
 	IF nBuffLen == NIL
-		RETURN XSharp.Core.Functions.FreadLine(pFile, 0)
+		RETURN XSharp.Core.Functions.FreadLine((IntPtr) pFile, 0U)
 	ELSE
-		RETURN XSharp.Core.Functions.FreadLine(pFile, nBuffLen)
+		RETURN XSharp.Core.Functions.FreadLine((IntPtr) pFile, (DWORD) nBuffLen)
 	ENDIF
 
 
-/// <summary>
-/// Set the file pointer to a new position.
-/// </summary>
-/// <param name="nFile"></param>
-/// <param name="nOffset"></param>
-/// <param name="nOrigin"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FSeek3(System.IntPtr,System.Int32,System.UInt32)" />
 FUNCTION FSeek(hFile ,nOffset ,nOrigin ) AS LONG CLIPPER
 	IF nOrigin == NIL
-		RETURN XSharp.Core.Functions.FSeek3(hFile, nOffSet, FS_SET)
+		RETURN XSharp.Core.Functions.FSeek3((IntPtr) hFile, (LONG) nOffSet, (DWORD) FS_SET)
 	ELSE
-		RETURN XSharp.Core.Functions.FSeek3(hFile, nOffSet, nOrigin)
+		RETURN XSharp.Core.Functions.FSeek3((IntPtr) hFile, (LONG) nOffSet, (DWORD) nOrigin)
 	ENDIF
 	
-/// <summary>
-/// Read characters from a file into a buffer variable that is passed by reference.
-/// </summary>
-/// <param name="pHandle"></param>
-/// <param name="pData"></param>
-/// <param name="dwCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWrite3(pHandle AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
-	LOCAL bData AS BYTE[]
-	LOCAL dwResult AS DWORD
-	bData := BYTE[] {(INT) dwCount}
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
+/// <param name="pData">A block of memory that holds the data to write to the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+FUNCTION FWrite3(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
+    // use Buffer associated with file handle
+    VAR bData := __FGetBuffer(pFile, (INT) dwCount)
 	Marshal.Copy(pData, bData, 0, (INT) dwCount)
-	dwResult := FWrite3(pHandle, bData, dwCount)
+	VAR dwResult := FWrite3(pFile, bData, dwCount)
 	RETURN dwResult
 
-/// <summary>
-/// Write a string to an open file.
-/// </summary>
-/// <param name="pHandle"></param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWrite(pHandle ,c ,nCount ) AS DWORD CLIPPER
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
+FUNCTION FWrite(pFile ,c ,nCount ) AS DWORD CLIPPER
 	IF nCount == NIL
-		RETURN XSharp.Core.Functions.Fwrite(pHandle, c)
+		RETURN XSharp.Core.Functions.Fwrite((IntPtr) pFile, (STRING) c, Slen(c))
 	ELSE
-		RETURN XSharp.Core.Functions.Fwrite3(pHandle, c, nCount)
+		RETURN XSharp.Core.Functions.Fwrite((IntPtr) pFile, (STRING) c, (DWORD) nCount)
 	ENDIF
 
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file.
-/// </summary>
-/// <param name="pFile"></param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" />
 FUNCTION FWriteLine(pFile ,c ,nCount) AS DWORD CLIPPER
 	IF nCount == NIL
-		RETURN XSharp.Core.Functions.FwriteLine(pFile, c)
+		RETURN XSharp.Core.Functions.FwriteLine((IntPtr) pFile, (STRING) c)
 	ELSE
-		RETURN XSharp.Core.Functions.FwriteLine3(pFile, c, nCount)
+		RETURN XSharp.Core.Functions.FwriteLine3((IntPtr) pFile, (STRING) c, (DWORD) nCount)
 	ENDIF
 
-/// <summary>
-/// Write a string to an open file, with SetAnsi() dependency.
-/// </summary>
-/// <param name="pHandle"></param>
-/// <param name="c"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION FWriteText(pHandle ,c ,nCount ) AS DWORD CLIPPER
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
+FUNCTION FWriteText(pFile ,c ,nCount ) AS DWORD CLIPPER
 	IF nCount == NIL
-		RETURN XSharp.Core.Functions.FWriteText3(pHandle, c, Slen(c))
+		RETURN XSharp.Core.Functions.FWrite((IntPtr) pFile, (STRING) c, Slen(c))
 	ELSE
-		RETURN XSharp.Core.Functions.FWriteText3(pHandle, c, nCount)
+		RETURN XSharp.Core.Functions.FWrite((IntPtr) pFile, (STRING) c, (DWORD) nCount)
 	ENDIF 
 
 /// <summary>
@@ -141,8 +94,8 @@ FUNCTION FWriteText(pHandle ,c ,nCount ) AS DWORD CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION SplitPath(cPath AS STRING,cDrive REF STRING,cDir REF STRING,cName REF STRING,cExt REF STRING) AS VOID
-   _SplitPath(cPath, OUT cDrive, OUT cDir, OUT cName, OUT cExt)
-	RETURN
+    _SplitPath(cPath, OUT cDrive, OUT cDir, OUT cName, OUT cExt)
+    RETURN
 
 
 [Obsolete("'SplitPath()' with PSZ arguments is no longer supported. Please use SplitPath() or _SplitPath() (both with STRING arguments) in stead",FALSE)];

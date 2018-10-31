@@ -11,7 +11,7 @@ USING XSharp.RDD.Support
 USING System.Text
 BEGIN NAMESPACE XSharp.RDD
 
-	/// <summary>Base class for DBF based RDDs. Holds common propertis such as the Workarea number, Alias, Fields list and various flags.</summary> 
+	/// <summary>Base class for DBF based RDDs. Holds common properties such as the Workarea number, Alias, Fields list and various flags.</summary> 
 	/// <seealso cref="T:XSharp.RDD.IRdd"/>
 	CLASS Workarea IMPLEMENTS IRdd, IDisposable 
 		// This class does NOT implement file based (DBF stuff). 
@@ -129,12 +129,12 @@ BEGIN NAMESPACE XSharp.RDD
 			// fetch locals from info
             LOCAL nRecno   := 0 AS LONG
             LOCAL isOk     := TRUE AS LOGIC
-            LOCAL lMore    := FALSE AS LOGIC
             LOCAL lLimit   := FALSE AS LOGIC
             LOCAL lRecordOk := TRUE AS LOGIC
             LOCAL cbWhile   AS ICodeBlock
             LOCAL cbFor     AS ICodeBlock
             LOCAL cbEval    AS ICodeBlock
+            info:ScopeInfo:Compile(SELF)
             cbWhile  := info:ScopeInfo:WhileBlock 
             cbFor    := info:ScopeInfo:ForBlock   
             cbEval   := info:Block  
@@ -142,38 +142,40 @@ BEGIN NAMESPACE XSharp.RDD
                 nRecno := Convert.ToInt32(info:ScopeInfo:RecId)
                 isOk   := SELF:GoTo(nRecno)
                 lLimit := TRUE
-                lMore  := FALSE
                 nRecno := 1
             ELSEIF info:ScopeInfo:NextCount != 0
                 lLimit := TRUE
                 nRecno := info:ScopeInfo:NextCount
                 IF nRecno < 1
-                  lMore := FALSE
+                  RETURN TRUE
                 ENDIF
             ELSE
-                lMore   := TRUE
                 lLimit  := FALSE
-                IF info:ScopeInfo:WhileBlock == NULL .AND. ! info:ScopeInfo:Rest
+                IF cbWhile == NULL .AND. ! info:ScopeInfo:Rest
                   isOk := SELF:GoTop()
                 ENDIF
             ENDIF
-            DO WHILE isOk .AND. ! SELF:_Eof .AND. lMore
+            DO WHILE isOk .AND. ! SELF:_Eof 
                 IF cbWhile != NULL
-                    lMore := (LOGIC) cbWhile:EvalBlock()
+                    IF ! (LOGIC) SELF:EvalBlock(cbWhile)
+                        EXIT
+                    ENDIF
                 ENDIF
-                IF lMore .AND. cbFor != NULL
-                   lRecordOk := (LOGIC) cbFor:EvalBlock()
+                IF cbFor != NULL
+                   lRecordOk := (LOGIC) SELF:EvalBlock(cbFor)
                 ELSE
-                   lRecordOk := lMore
+                   lRecordOk := TRUE
                 ENDIF
                 IF lRecordOk .AND. cbEval != NULL
-                  isOk := (LOGIC) SELF:EvalBlock(cbEval)
+                    isOk := (LOGIC) SELF:EvalBlock(cbEval)
                 ENDIF
-                IF lMore .AND. lLimit
+                IF lLimit
                     nRecno -= 1
-                    lMore := nRecno != 0
+                    IF nRecno == 0
+                        EXIT
+                    ENDIF
                 ENDIF
-                IF isOk .AND. lMore
+                IF isOk 
                     isOk := SELF:Skip(1)
                 ENDIF
             ENDDO
@@ -229,38 +231,59 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD SkipFilter(nToSkip AS INT) AS LOGIC
-			LOCAL fromBottom  := SELF:_Bottom AS LOGIC
-            LOCAL fromTop     := SELF:_Top    AS LOGIC
-            LOCAL recordOk    := FALSE AS LOGIC
-            LOCAL isOk        := TRUE AS LOGIC
-            LOCAL cbFilter    AS ICodeBlock
-            cbFilter := SELF:_FilterInfo:FilterBlock
-            DO WHILE recordOk .AND. !SELF:_Eof .AND. ! SELF:_Bof
-                IF SELF:_FilterInfo:Active
-                    recordOk := (LOGIC) cbFilter:EvalBlock()
+			LOCAL fromBottom   AS LOGIC
+            LOCAL fromTop      AS LOGIC
+            LOCAL recordHidden AS LOGIC
+            LOCAL result       AS LOGIC
+            LOCAL cbFilter     AS ICodeBlock
+            LOCAL fRtDeleted   AS LOGIC
+            fRtDeleted := RuntimeState.Deleted
+            IF SELF:_FilterInfo:Active
+                cbFilter    := SELF:_FilterInfo:FilterBlock
+            ELSE
+                cbFilter    := NULL
+            ENDIF
+            IF cbFilter == NULL .AND. ! fRtDeleted
+                // No filter and not SetDeleted(TRUE), so nothing to do.
+                RETURN TRUE
+            ENDIF
+            // Make sure we skip only one record at a time
+            nToSkip     := IIF(nToSkip < 0, -1, 1)
+			fromBottom  := SELF:_Bottom 
+            fromTop     := SELF:_Top    
+            recordHidden:= TRUE 
+            result      := TRUE 
+            
+            DO WHILE !SELF:_Eof .AND. ! SELF:_Bof
+                // Check deleted first, that is easier and has less overhead
+                IF fRtDeleted
+                    recordHidden := SELF:Deleted
                 ELSE
-                    recordOk := TRUE
+                    recordHidden := FALSE
                 ENDIF
-                IF recordOk .AND. RuntimeState.Deleted .AND. SELF:Deleted
-                    recordOk := FALSE
+
+                IF ! recordHidden .AND. cbFilter != NULL
+                    recordHidden := ! (LOGIC) SELF:EvalBlock(cbFilter)
                 ENDIF
-                IF ! recordOk .AND. ! SELF:_Bof .AND. ! SELF:_EOF
-                    isOk :=   SELF:SkipRaw(nToSkip)
+                IF recordHidden 
+                    result := SELF:SkipRaw(nToSkip)
+                ELSE
+                    EXIT
                 ENDIF
              ENDDO
-             IF isOk
+             IF result
                 IF fromTop .AND. SELF:_Eof
                     SELF:_BOF := TRUE
                 ELSEIF fromBottom .AND. SELF:_Bof
                     SELF:_EOF := TRUE
                 ELSEIF SELF:_Bof .AND. nToSkip < 0
                     // note that this will recurse!
-                    isOk := SELF:GoTop()
+                    result := SELF:GoTop()
                     SELF:_Bof := TRUE
                     SELF:_Eof := FALSE
                 ENDIF
              ENDIF
-            RETURN isOk
+            RETURN result
 
 			
 		/// <inheritdoc />
@@ -273,25 +296,37 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lContinue := TRUE AS LOGIC
             LOCAL result    := TRUE AS LOGIC
             LOCAL nextCnt := SELF:_ScopeInfo:NextCount  AS LONG
-            // Note that this assumes that 
+            LOCAL cbWhile AS ICodeBlock
+            LOCAL cbFor   AS ICodeBlock
+            _ScopeInfo:Compile(SELF)
+            cbWhile := _ScopeInfo:WhileBlock
+            cbFor   := _ScopeInfo:ForBlock
             IF SELF:_ScopeInfo:RecId != NULL
-                result := SELF:GotoId(SELF:_ScopeInfo:RecId)
-                lContinue := ! SELF:_Eof
+                result     := SELF:GotoId(SELF:_ScopeInfo:RecId)
+                lContinue  := ! SELF:_Eof
                 IF lContinue
-                    lContinue := (LOGIC) SELF:_ScopeInfo:WhileBlock:EvalBlock()
-                    IF lContinue 
-                        lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                    IF cbWhile != NULL
+                        lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
+                    ENDIF
+                    IF cbFor != NULL .AND.  lContinue 
+                        lFound := (LOGIC) SELF:EvalBlock(cbFor)
+                    ELSE
+                        lFound := TRUE
                     ENDIF
                 ENDIF
             ELSEIF nextCnt > 0
                 DO WHILE lContinue .AND. ! SELF:_Eof .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
-                    lContinue := (LOGIC) SELF:_ScopeInfo:WhileBlock:EvalBlock()
+                     IF cbWhile != NULL
+                        lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
+                    ENDIF
                     IF ! lContinue
                         result := SELF:Skip(-1)
                         EXIT
+                    ELSEIF cbFor != NULL
+                        lFound := (LOGIC) SELF:EvalBlock(cbFor)
                     ELSE
-                        lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                        lFound := TRUE
                     ENDIF
                     IF lFound
                         nToSkip -= 1
@@ -302,12 +337,18 @@ BEGIN NAMESPACE XSharp.RDD
             ELSEIF SELF:_ScopeInfo:Rest
                 DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
-                    lContinue := (LOGIC) SELF:_ScopeInfo:WhileBlock:EvalBlock()
+                    IF cbWhile != NULL
+                        lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
+                    ELSE
+                        lContinue := TRUE
+                    ENDIF
                     IF ! lContinue
                         result := SELF:Skip(-1)
                         EXIT
+                    ELSEIF cbFor != NULL
+                        lFound := (LOGIC) SELF:EvalBlock(cbFor)
                     ELSE
-                        lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                        lFound := TRUE
                     ENDIF
                     IF lFound
                         nToSkip -= 1
@@ -318,7 +359,11 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 result := SELF:GoTop()
                 DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
-                    lFound := (LOGIC) SELF:_ScopeInfo:ForBlock:EvalBlock()
+                    IF cbFor != NULL
+                        lFound := (LOGIC) SELF:EvalBlock(cbFor)
+                    ELSE
+                        lFound := TRUE
+                    ENDIF
                     IF lFound
                         nToSkip -= 1
                     ENDIF
@@ -423,15 +468,14 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN DbScopeInfo{}
 			
 			/// <inheritdoc />
-		VIRTUAL METHOD ScopeInfo(nOrdinal AS INT) AS OBJECT
-			THROW NotImplementedException{__ENTITY__}
-			
-			/// <inheritdoc />
 		VIRTUAL METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 			SELF:ClearFilter()
 			IF info != NULL_OBJECT
-				SELF:_FilterInfo := info:Clone()
-				SELF:_FilterInfo:Active := TRUE
+				SELF:_FilterInfo        := info:Clone()
+                SELF:_FilterInfo:Compile(SELF)
+                IF SELF:_FilterInfo:FilterBlock != NULL
+				    SELF:_FilterInfo:Active := TRUE
+                ENDIF
 			ENDIF
 			RETURN TRUE
 			
@@ -445,8 +489,9 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD SetScope(info AS DbScopeInfo) AS LOGIC
 			SELF:ClearScope()
-			IF (info != NULL_OBJECT)
+			IF info != NULL_OBJECT
 				SELF:_ScopeInfo := info:Clone()
+                SELF:_ScopeInfo:Compile(SELF)
 			ENDIF
 			RETURN TRUE
             
@@ -460,8 +505,15 @@ BEGIN NAMESPACE XSharp.RDD
             IF result
               IF SELF:_currentField < SELF:_Fields:Length 
                 SELF:_checkFields( info )
-                SELF:_Fields[ SELF:_currentField] := info //RDDFieldInfo{ info:Name, info:FieldType:ToString(), info:Length, info:Decimals}
-                SELF:_Fields[SELF:_currentField]:Alias := info:Alias
+                IF _currentField > 0
+                    LOCAL lastField AS RddFieldInfo
+                    lastField := SELF:_Fields[_currentField -1]
+                    info:OffSet := lastField:Offset + lastField:Length
+                ELSE
+                    info:Offset := 1
+                ENDIF
+                SELF:_Fields[ SELF:_currentField] := info 
+
                 // the alias could be an empty string !
                 IF !String.IsNullOrEmpty(info:Alias) 
                     SELF:_fieldNames:Add(info:Alias:Trim(), SELF:_currentField)
@@ -726,17 +778,9 @@ BEGIN NAMESPACE XSharp.RDD
 				RETURN areaNum
 				
 				/// <inheritdoc />
-			VIRTUAL METHOD RelEval(info AS DbRelInfo) AS LOGIC
-				LOCAL currentWk AS DWORD
-				//
-				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO
-				TRY
-					XSharp.RuntimeState.CurrentWorkArea := info:Parent:Area
-					SELF:_EvalResult := info:Block:EvalBlock()
-				FINALLY
-					XSharp.RuntimeState.Workareas:CurrentWorkAreaNO := currentWk
-				END TRY
-				RETURN ( SELF:_EvalResult != NULL )
+			VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
+                // Evaluate block in the Area of the Parent
+                RETURN relinfo:Parent:EvalBlock(relinfo:Block) != NULL
 				
 				/// <inheritdoc />
 			VIRTUAL METHOD RelText(nRelNum AS DWORD) AS STRING
@@ -750,6 +794,7 @@ BEGIN NAMESPACE XSharp.RDD
 			VIRTUAL METHOD SetRel(info AS DbRelInfo) AS LOGIC
 				IF !SELF:_Relations:Contains( info )
 					SELF:_Relations:Add( info )
+                    info:Compile()
 				ENDIF
 				RETURN info:Child:ChildStart( info )
 
@@ -777,7 +822,6 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeBlock
                 LOCAL result    := TRUE AS LOGIC
                 LOCAL lQualified:= TRUE AS LOGIC
-                LOCAL lMore     := TRUE AS LOGIC
                 LOCAL lLimit    := TRUE AS LOGIC
                 LOCAL nRecno    := 0    AS LONG
                 IF SELF:_Relations:Count > 0
@@ -786,38 +830,40 @@ BEGIN NAMESPACE XSharp.RDD
                 IF info:Scope:RecId != NULL
                     nRecno := Convert.ToInt32(info:Scope:RecId)
                     result := SELF:Goto(nRecno)
-                    lMore  := TRUE
                     lLimit := TRUE
                 ELSEIF info:Scope:NextCount != 0
                     lLimit := TRUE
                     nRecno := info:Scope:NextCount
                     IF nRecno < 1
-                        lMore := FALSE
+                        RETURN TRUE
                     ENDIF
                 ELSE
-                    lMore   := TRUE
                     lLimit  := FALSE
                     IF cbWhile == NULL .AND. ! info:Scope:Rest
                         result := SELF:GoTop()
                     ENDIF
                 ENDIF
-                DO WHILE result .AND. ! SELF:_Eof .AND. lMore
+                DO WHILE result .AND. ! SELF:_Eof 
                     IF cbWhile != NULL
-                        lMore := (LOGIC) cbWhile:EvalBlock()
+                        IF ! (LOGIC) SELF:EvalBlock(cbWhile)
+                            EXIT
+                        ENDIF
                     ENDIF
-                    IF lMore .AND. cbFor != NULL
-                        lQualified := (LOGIC) cbFor:EvalBlock()
+                    IF cbFor != NULL
+                        lQualified := (LOGIC) SELF:EvalBlock(cbFor)
                     ELSE
-                        lQualified := lMore
+                        lQualified := TRUE
                     ENDIF
                     IF result .AND. lQualified
                         result := SELF:TransRec(info)
                     ENDIF
-                    IF lMore .AND. lLimit
+                    IF lLimit
                         nRecno -= 1
-                        lMore := nRecno != 0
+                        IF nRecno == 0
+                            EXIT
+                        ENDIF
                     ENDIF
-                    IF result .AND. lMore
+                    IF result 
                         SELF:Skip(1)
                     ENDIF
                 ENDDO 
@@ -854,57 +900,17 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			THROW NotImplementedException{__ENTITY__}
 
-        PRIVATE METHOD _PrepareKey(cKey AS STRING) AS STRING
-            VAR sbResult := StringBuilder{cKey:Length * 2} 
-            VAR sbId     := StringBuilder{cKey:Length}
-            // make sure we remove the _FIELD-> from the existing key
-            cKey := cKey:Replace("_FIELD->","")
-            FOREACH cChar AS CHAR IN cKey
-                IF Char.IsLetter(cChar) .OR. cChar = '_'
-                    // add char to id
-                    sbId:Append(cChar)
-                ELSEIF Char.IsDigit(cChar)
-                    // after letter or _ then it is part of the id
-                    IF sbid:Length > 0
-                        sbId:Append(cChar)
-                    ELSE
-                        sbResult:Append(cChar)
-                    ENDIF
-                ELSEIF cChar == '(' .OR. cChar == '{'
-                    IF sbid:Length > 0
-                        // function or constructor call, no _FIELD prefix
-                        sbResult:Append(sbId:ToString())
-                        sbId:Clear()
-                    ENDIF
-                    sbResult:Append(cChar)
-                ELSE
-                    // no alpha _ or numeric, so copy Id to result
-                    // and prefix with _FIELD
-                    IF sbid:Length > 0
-                        sbResult:Append( "_FIELD->")
-                        sbResult:Append(sbId:ToString())
-                        sbId:Clear()
-                    ENDIF
-                    sbResult:Append(cChar)
-                ENDIF
-            NEXT
-            // when we end with an id then append to the end of the result
-            IF sbid:Length > 0
-                sbResult:Append("_FIELD->")
-                sbResult:Append(sbId:ToString())
-            ENDIF  
-            RETURN sbResult:ToString()      
+     
 
 			/// <inheritdoc />
 		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
 			LOCAL oBlock := NULL AS ICodeBlock
 			TRY
 				LOCAL oC AS IMacroCompiler
-				oC := XSharp.RuntimeState.MacroCompiler
+				oC          := XSharp.RuntimeState.MacroCompiler
 				LOCAL oType := typeof(Workarea) AS System.Type
 				IF oC != NULL
 					LOCAL isBlock AS LOGIC
-                    sBlock := SELF:_PrepareKey(sBlock)
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock)
 				ENDIF
 			CATCH e AS Exception
@@ -914,8 +920,23 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD EvalBlock(oBlock AS ICodeBlock) AS OBJECT
-			// Todo: Save and restore workarea 
-			RETURN oBlock:EvalBlock()
+				LOCAL currentWk AS DWORD
+                LOCAL result AS OBJECT
+				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO
+                // Only switch workarea when needed
+                IF currentWk != SELF:Area
+				    TRY
+					    XSharp.RuntimeState.CurrentWorkArea := SELF:Area
+                        SELF:_EvalResult := result := oBlock:EvalBlock()
+                    CATCH
+                        THROW
+				    FINALLY
+					    XSharp.RuntimeState.Workareas:CurrentWorkAreaNO := currentWk
+                    END TRY
+                ELSE
+                    SELF:_EvalResult := result := oBlock:EvalBlock()
+                ENDIF
+				RETURN result 
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
@@ -1042,4 +1063,5 @@ BEGIN NAMESPACE XSharp.RDD
 	END CLASS
 
 END NAMESPACE
+
 

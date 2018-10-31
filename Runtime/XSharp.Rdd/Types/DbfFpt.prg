@@ -29,9 +29,9 @@ BEGIN NAMESPACE XSharp.RDD
             // 0 : Picture (on MacOS); 1: Memo; 2 : Object
             nType := BitConverter.ToInt32( rawData, 0)
             IF SELF:_isMemoField( nFldPos ) .AND. ( nType == 1 )
-                LOCAL encoding AS ASCIIEncoding
+                LOCAL encoding AS Encoding //ASCIIEncoding
                 LOCAL str AS STRING
-                encoding := ASCIIEncoding{}
+                encoding := SELF:_Encoding //ASCIIEncoding{}
                 str :=  encoding:GetString(buffer)
                 // Convert to String and return
                 RETURN str
@@ -149,9 +149,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF ( str == NULL )
                 rawData := (BYTE[])oValue
             ELSE
-                LOCAL encoding AS ASCIIEncoding
+                LOCAL encoding AS Encoding //ASCIIEncoding
                 rawData := BYTE[]{str:Length}
-                encoding := ASCIIEncoding{}
+                encoding := SELF:_Encoding //ASCIIEncoding{}
                 encoding:GetBytes( str, 0, str:Length, rawData, 0 )
             ENDIF
             // Add the extra Info

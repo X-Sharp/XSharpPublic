@@ -21,6 +21,7 @@ CLASS DbEvalInfo
 
 	/// <summary>A DbScopeInfo structure limiting the evaluation of Block.</summary>
 	PUBLIC ScopeInfo AS DbScopeInfo
+    /// <summary>Construct a DbEvalInfo object.</summary>
     CONSTRUCTOR()
         SELF:ScopeInfo := DbScopeInfo{}
         RETURN
@@ -59,23 +60,29 @@ CLASS DbFilterInfo
 		oClone:Active	   := FALSE
 		RETURN oClone
         
+    /// <summary>Construct a DbFilterInfo object.</summary>
     CONSTRUCTOR
         SELF:Clear()
         RETURN
+
+	METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:FilterBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:FilterText)
+            SELF:FilterBlock := oRDD:Compile(SELF:FilterText)
+        ENDIF
 END CLASS 
 
 /// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>                 
-STRUCTURE DbLockInfo
+STRUCTURE DbLockInfo 
 	/// <summary>An Item indicating the ID of the row to lock.  This member is meaningful only if Method is set to EXCLUSIVE or MULTIPLE. </summary>
 	PUBLIC RecId		AS OBJECT
-	
+	 
 	/// <summary>A constant indicating the type of lock to obtain.  The possible values are of the Lockmethod enum. </summary>
 	PUBLIC @@Method		AS LockMethod
 	
 	/// <summary>A flag that is TRUE if the lock operation was successful.</summary>
 	PUBLIC Result		AS LOGIC
 	/// <summary>List of possible Locking Methods </summary>
-	ENUM LockMethod
+	ENUM LockMethod 
 		/// <summary>Lock a row, releasing currently locked rows.</summary>
 		MEMBER Exclusive := 1
 		/// <summary>Lock a row, maintaining currently locked rows.</summary>
@@ -99,13 +106,19 @@ CLASS DbOpenInfo
 	PUBLIC FileName		AS STRING
 	/// <summary>Workarea number in which the table will be opened.</summary>
 	PUBLIC WorkArea		AS DWORD    
+    /// <summary>Construct a DbOpenInfo object.</summary>
 	
 	CONSTRUCTOR()
-		
+        SUPER()		
+    /// <summary>Construct a DbOpenInfo object.</summary>
 	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, dwWorkArea AS DWORD, lShared AS LOGIC, lReadOnly AS LOGIC)
 		FileName 	:= sFileName
         Extension   := Path.GetExtension(sFileName)
-		Alias	 	:= sAlias
+		IF String.IsNullOrEmpty( sAlias )
+			Alias := Path.GetFileNameWithoutExtension( sFileName )
+		ELSE
+			Alias	 	:= sAlias
+		ENDIF
 		WorkArea	:= dwWorkArea
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
@@ -164,7 +177,18 @@ CLASS DbOrderCondInfo
 	/// <summary>A flag that is TRUE if only rows in the controlling order are to be included in the order.</summary>
 	PUBLIC UseCurrent		AS LOGIC
 	/// <summary>A code block defining the while condition to use for the creation of the order.  An empty value indicates that no while condition is being imposed.</summary>
-	PUBLIC WhileBlock		AS ICodeBlock 	
+	PUBLIC WhileBlock		AS ICodeBlock
+	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
+	PUBLIC WhileExpression	AS STRING    
+
+METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
+            SELF:WhileBlock := oRDD:Compile(SELF:WhileExpression)
+        ENDIF
+        IF SELF:ForBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:ForExpression)
+            SELF:ForBlock := oRDD:Compile(SELF:ForExpression)
+        ENDIF
+    
 END CLASS
 
 /// <summary>Helper class to store information needed to create a new order.</summary> 
@@ -181,6 +205,14 @@ CLASS DbOrderCreateInfo
 	PUBLIC Block		AS ICodeBlock
 	/// <summary>A DbOrderCondInfo object containing information about the condition (if any) for the order. </summary>
 	PUBLIC OrdCondInfo	AS DbOrderCondInfo
+
+    METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:Block == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Expression)
+            SELF:Block := oRDD:Compile(SELF:Expression)
+        ENDIF
+        IF SELF:OrdCondInfo != NULL
+            SELF:OrdCondInfo:Compile(oRDD)
+        ENDIF
 END CLASS
 
 /// <summary>Helper class to store information needed to open/address an order.</summary> 
@@ -207,6 +239,12 @@ CLASS DbRelInfo
 	PUBLIC Child		AS IRDD	
 	/// <summary>A reference to the parent RDD for the relation.</summary>
 	PUBLIC Parent		AS IRDD
+
+    METHOD Compile() AS VOID
+        IF SELF:Block == NULL .AND. SELF:Parent != NULL .AND. ! String.IsNullOrWhiteSpace(SELF:Key)
+            SELF:Block := SELF:Parent:Compile(SELF:Key)
+        ENDIF
+    
 END CLASS
 
 /// <summary>Helper class to store references to all of the scope clause expressions. </summary> 
@@ -233,7 +271,7 @@ CLASS DbScopeInfo
 	PUBLIC WhileBlock		AS ICodeBlock
 	/// <summary>A string representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC WhileExpression	AS STRING    
-	
+	/// <summary>Construct a DbScopeInfo object.</summary>
 	CONSTRUCTOR()
 		SELF:Clear()
 
@@ -267,7 +305,13 @@ CLASS DbScopeInfo
 		oClone:WhileBlock		    := SELF:WhileBlock		
 		oClone:WhileExpression      := SELF:WhileExpression  
 		RETURN oClone
-		
+	METHOD Compile(oRDD AS IRDD) AS VOID
+        IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
+            SELF:WhileBlock := oRDD:Compile(SELF:WhileExpression)
+        ENDIF
+        IF SELF:ForBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:ForExpression)
+            SELF:ForBlock := oRDD:Compile(SELF:ForExpression)
+        ENDIF
 END CLASS
 
 /// <summary>Helper structure to store information needed to perform a seek operation </summary> 
@@ -288,6 +332,7 @@ CLASS DbSortInfo
 	PUBLIC Items	  AS DbSortItem[]
 	/// <summary>Number of items in the Items array. </summary>
     PROPERTY ItemCount  AS LONG GET Items:Length
+    /// <summary>Construct a DbSortInfo object.</summary>
     CONSTRUCTOR(transItemCount AS LONG, sortItemCount AS LONG)
         SELF:TransInfo := DbTransInfo{transItemCount}
         SELF:Items     := DbSortItem[]{sortItemCount}
@@ -303,19 +348,8 @@ STRUCTURE DbSortItem
 	/// <summary>The length of the field in the workarea buffer.</summary>
 	PUBLIC Length	AS LONG
 	/// <summary>One or more constants that function as sort optimization and control flags.  They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
-	PUBLIC Flags	AS LONG  
-	/// <summary>An ascending sort (default)   </summary>
-	PUBLIC CONST SF_Default := 0 AS LONG
-	/// <summary> A case-insensitive sort        </summary>
-	PUBLIC CONST SF_Case	:= 1 AS LONG
-	/// <summary>A sort with printable numerics        </summary>
-	PUBLIC CONST SF_Numeric := 2 AS LONG
-	/// <summary>A sort for ASCII (not nation-dependent)</summary>
-	PUBLIC CONST SF_Ascii	 := 4 AS LONG       
-	/// <summary>A sort with long integer values        </summary>
-	PUBLIC CONST SF_Long	   := 0x80 AS LONG
-	/// <summary>A descending sort        </summary>
-	PUBLIC CONST SF_Descending := 0x100 AS LONG
+	PUBLIC Flags	AS  DbSortFlags  
+
 END STRUCTURE
 
 /// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary> 
@@ -334,7 +368,9 @@ CLASS DbTransInfo
 	PUBLIC CONST Match	:= 1 AS LONG
 	/// <summary>The RDD has the ability to transfer an entire row.</summary>
 	PUBLIC CONST PutRec	:= 2 AS LONG
+    /// <summary>Number of items in the Items array.</summary>
     PUBLIC PROPERTY ItemCount AS LONG AUTO
+    /// <summary>Construct a DbTransInfo object.</summary>
     CONSTRUCTOR(itemCount AS LONG)
         SELF:Items := DbTransItem[]{itemCount}
         SELF:Scope := DbScopeInfo{}
@@ -349,13 +385,16 @@ STRUCTURE DbTransItem
 	PUBLIC Destination 	AS LONG	
 END STRUCTURE
 
-/// <summary> </summary> 
+/// <summary>Helper class for the RDD system to store field information</summary> 
 CLASS RddFieldInfo
 	PUBLIC Name 		AS STRING
 	PUBLIC FieldType 	AS DBFieldType
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
+	PROTECTED iOffset   AS LONG
+    
+     /// <summary>Construct a RddFieldInfo object.</summary>
 	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName
 		Length 		:= nLength
@@ -366,20 +405,35 @@ CLASS RddFieldInfo
 			FieldType := DBFieldType.Unknown
 		ENDIF  
 		Alias       := sName
+		SELF:iOffset := -1
 		RETURN
+    /// <summary>Construct a RddFieldInfo object.</summary>        
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG)
 		Name 		:= sName                                
 		FieldType 	:= nType
 		Length 		:= nLength
 		Decimals 	:= nDecimals
 		Alias       := sName
+		SELF:iOffset := -1
 		RETURN
+
+    /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
         VAR info := RddFieldInfo{SELF:Name, SELF:FieldType, SELF:Length, SELF:Decimals}
         info:Alias := SELF:Alias
         RETURN info
+    /// <summary>Check if two fields match in type, length and decimals.</summary>        
     METHOD SameType(oFld AS RDDFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
+    PROPERTY Offset AS LONG
+		GET
+			RETURN SELF:iOffset
+		END GET
+		INTERNAL SET
+			SELF:iOffset := VALUE
+		END SET
+	END PROPERTY
+        
 END CLASS
 
 
@@ -389,34 +443,47 @@ END NAMESPACE
 
 /// <summary>Helper class for VoDbTrans and VoDbSort()</summary>
 CLASS XSharp._FieldNames
+    /// <summary>List of field names.</summary>
     PUBLIC fields AS STRING[]
+    /// <summary>Number of fields in the list.</summary>
     PROPERTY fieldCount AS LONG GET fields:Length
+    /// <summary>Construct a _FieldNames object.</summary>
     CONSTRUCTOR (aFields AS IList<STRING>)
         SELF:Fields := aFields:ToArray()
         RETURN
 END CLASS
 
 
-
+/// <summary>Helper class for DbJoin()</summary>
 CLASS XSharp._JoinList
+    /// <summary>Area number of destination workarea.</summary>
     PUBLIC uiDestSel AS DWORD
+    /// <summary>List of field areas and positions.</summary>
     PUBLIC Fields AS _JoinField[]
+    /// <summary>Number of fields in the list.</summary>
     PUBLIC PROPERTY Count AS LONG GET Fields:Length
+    /// <summary>Construct a _JoinList object.</summary>
     PUBLIC CONSTRUCTOR(nFields AS LONG)
         SELF:Fields := _JoinField[]{nFields}
         RETURN
 END CLASS
 
+/// <summary>Helper structure for DbJoin()</summary>
 STRUCTURE XSharp._JoinField
+    /// <summary>Source workarea number.</summary>
     PUBLIC Area AS DWORD
+    /// <summary>Source field position.</summary>
     PUBLIC Pos  AS DWORD
 END STRUCTURE
 
+/// <summary>Helper structure to store information for a list of RDD names for DbUseArea()</summary>
 STRUCTURE XSharp._RddList
+    /// <summary>List of RDD names.</summary>
     EXPORT atomRddName AS STRING[]
+    /// <summary>Number of names in the list.</summary>
     PROPERTY uiRDDCount AS DWORD GET (DWORD) atomRDDName:Length
         
-    // Create RDDList from class Tree
+    /// <summary>Construct _RddList from class Tree.</summary>
     CONSTRUCTOR(oRDD AS WorkArea)
         VAR names := List<STRING>{}
         VAR type  := oRDD:GetType()
@@ -432,7 +499,7 @@ STRUCTURE XSharp._RddList
         ENDDO
         names:Reverse()
         atomRDDName := names:ToArray()
-            
+    /// <summary>Construct _RddList from list of names.</summary>
     CONSTRUCTOR(aNames AS STRING[])
         atomRDDName := aNames
         RETURN

@@ -15,7 +15,7 @@
     <NS>false</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
-    <VO3>true</VO3>
+    <VO3>false</VO3>
     <VO4>false</VO4>
     <VO5>false</VO5>
     <VO6>false</VO6>
@@ -96,6 +96,10 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <Reference Include="System">
+      <Name>System</Name>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -124,6 +128,14 @@
     <Compile Include="Types\DBF.prg" />
     <Compile Include="Types\DbfBlob.prg" />
     <Compile Include="Types\DbfCdx.prg" />
+    <Compile Include="Types\DbfCdx\CdxBlock.prg" />
+    <Compile Include="Types\DbfCdx\CdxHeader.prg" />
+    <Compile Include="Types\DbfCdx\CdxOrder.prg" />
+    <Compile Include="Types\DbfCdx\CdxOrderBag.prg" />
+    <Compile Include="Types\DbfCdx\CdxLeaf.prg" />
+    <Compile Include="Types\DbfCdx\CdxPage.prg" />
+    <Compile Include="Types\DbfCdx\CdxPageBase.prg" />
+    <Compile Include="Types\DbfCdx\CdxOrderBagList.prg" />
     <Compile Include="Types\DbfDbt.prg" />
     <Compile Include="Types\DbfFpt.prg" />
     <Compile Include="Types\DbfMemo.prg" />
@@ -153,6 +165,7 @@
     <Folder Include="Types" />
     <Folder Include="Properties\" />
     <Folder Include="Types\DbfNtx\" />
+    <Folder Include="Types\DbfCdx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">

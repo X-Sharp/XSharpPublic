@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\VOSDK.Targets" />
+  <PropertyGroup>
+    <ProjectGuid>86DA1B42-FBF9-432B-A2D2-67A4F357F019</ProjectGuid>
+    <AssemblyName>VOSQLClasses</AssemblyName>
+    <Name>VOSQLClasses</Name>
+    <OutputName>VOSQLClasses</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
+      <Name>VOWin32APILibrary</Name>
+      <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="SQLCatalog.prg" />
+    <Compile Include="SQLColumn.prg" />
+    <Compile Include="SQLColumnAttributes.prg" />
+    <Compile Include="SQLConnection.prg" />
+    <Compile Include="SQLData.prg" />
+    <Compile Include="SQLDefines.prg" />
+    <Compile Include="SQLErrorInfo.prg" />
+    <Compile Include="SQLFunctions.prg" />
+    <Compile Include="SQLLangDef.prg" />
+    <Compile Include="SQLListColumnPrivileges.prg" />
+    <Compile Include="SQLListColumns.prg" />
+    <Compile Include="SQLListForeignKeys.prg" />
+    <Compile Include="SQLListPrimaryKeys.prg" />
+    <Compile Include="SQLListProcedureColumns.prg" />
+    <Compile Include="SQLListProcedures.prg" />
+    <Compile Include="SQLListSpecialColumns.prg" />
+    <Compile Include="SQLListStatistics.prg" />
+    <Compile Include="SQLListTablePrivileges.prg" />
+    <Compile Include="SQLListTables.prg" />
+    <Compile Include="SQLListTypeInfo.prg" />
+    <Compile Include="SQLParameter.prg" />
+    <Compile Include="SQLSelect1.prg" />
+    <Compile Include="SQLSelect2.prg" />
+    <Compile Include="SQLSelect3.prg" />
+    <Compile Include="SQLSelect4.prg" />
+    <Compile Include="SQLSelectA.prg" />
+    <Compile Include="SQLStatement.prg" />
+    <Compile Include="SQLTable.prg" />
+    <Compile Include="SQLValue.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties" />
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

@@ -59,7 +59,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>False</Prefer32Bit>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>true</UseSharedCompilation>
+    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>162</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -92,6 +92,30 @@
     <Prefer32Bit>False</Prefer32Bit>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings>168;9001;162;1591</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PPO>false</PPO>
+    <NoStdDef>true</NoStdDef>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <NoStandardDefs>true</NoStandardDefs>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption />
+    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
@@ -293,30 +317,5 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>False</Prefer32Bit>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>168;9001;162</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <PPO>false</PPO>
-    <NoStdDef>true</NoStdDef>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
 </Project>

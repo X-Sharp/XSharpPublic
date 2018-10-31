@@ -74,9 +74,6 @@ INTERFACE XSharp.RDD.IRdd
 	//METHOD CountScope(pOpt as PTR)		AS LONG 
 	/// <summary>Retrieve the active locate condition.</summary>
 	METHOD GetScope()						AS DbScopeInfo 
-	/// <summary>Retrieve information about a scope.</summary>
-	/// <param name="nOrdinal"> A value that determines the type of information to retrieve.</param>
-	METHOD ScopeInfo(nOrdinal AS LONG)		AS OBJECT
 	/// <summary>Set the filter condition.</summary>
 	METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC 
 	/// <summary>Set the locate condition.</summary>

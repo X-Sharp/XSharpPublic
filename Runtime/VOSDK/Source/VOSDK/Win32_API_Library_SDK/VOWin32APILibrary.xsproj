@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\VOSDK.Targets" />
+  <PropertyGroup>
+    <ProjectGuid>6C93866F-1894-4E82-9ACA-55927CAE914A</ProjectGuid>
+    <AssemblyName>VOWin32APILibrary</AssemblyName>
+    <Name>VOWin32APILibrary</Name>
+    <AssemblyName>VOWin32APILibrary</AssemblyName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.prg" />
+    <Compile Include="CA Container.prg" />
+    <Compile Include="CA Split.prg" />
+    <Compile Include="CDErr.prg" />
+    <Compile Include="COM.prg" />
+    <Compile Include="CommCtrl.prg" />
+    <Compile Include="CommDlg.prg" />
+    <Compile Include="CType.prg" />
+    <Compile Include="DDE.prg" />
+    <Compile Include="DDEML.prg" />
+    <Compile Include="Dlgs.prg" />
+    <Compile Include="HtmlHelp.prg" />
+    <Compile Include="LogFile.prg" />
+    <Compile Include="LZExpand.prg" />
+    <Compile Include="MCIWnd.prg" />
+    <Compile Include="MMSystem.prg" />
+    <Compile Include="NB32.prg" />
+    <Compile Include="OLE Automation.prg" />
+    <Compile Include="OLE Control.prg" />
+    <Compile Include="OpenGL.prg" />
+    <Compile Include="RAS.prg" />
+    <Compile Include="Richedit.prg" />
+    <Compile Include="Shell API.prg" />
+    <Compile Include="SQL.prg" />
+    <Compile Include="SQLExt.prg" />
+    <Compile Include="TAPI.prg" />
+    <Compile Include="WinBase.prg" />
+    <Compile Include="WinCon.prg" />
+    <Compile Include="WinDef.prg" />
+    <Compile Include="WinDllVersion.prg" />
+    <Compile Include="WinError.prg" />
+    <Compile Include="WinGDI.prg" />
+    <Compile Include="WININET.prg" />
+    <Compile Include="WinNetWk.prg" />
+    <Compile Include="WinNLS.prg" />
+    <Compile Include="WinNT.prg" />
+    <Compile Include="WinPerf.prg" />
+    <Compile Include="WinReg.prg" />
+    <Compile Include="WinSock.prg" />
+    <Compile Include="WinSpool.prg" />
+    <Compile Include="WINSVC.prg" />
+    <Compile Include="WinUser.prg" />
+    <Compile Include="WinVer.prg" />
+    <Compile Include="WTypes.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

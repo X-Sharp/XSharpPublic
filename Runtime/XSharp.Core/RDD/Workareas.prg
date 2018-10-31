@@ -96,7 +96,7 @@ CLASS WorkAreas
 					TRY
 						lResult := oRdd:Close()
 						IF lResult
-							Aliases:Remove(oRdd:Alias)
+							Aliases:Remove(oRdd:Alias:ToUpperInvariant())
 						ENDIF
 					CATCH e AS Exception
 						lResult			:= FALSE  

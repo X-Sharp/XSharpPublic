@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			RETURN hFile
 		
-		STATIC PRIVATE METHOD getBuffer(pStream AS IntPtr, nSize AS INT) AS BYTE[]		
+		STATIC INTERNAL METHOD GetBuffer(pStream AS IntPtr, nSize AS INT) AS BYTE[]		
 			IF hasStream(pStream)
 				LOCAL element := streams[pStream] AS FileCacheElement
 				IF element:Bytes == NULL .OR. element:Bytes:Length < nSize
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp.IO
 				TRY
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
 					IF !lAnsi
-						pBuffer := Oem2Ansi(pBuffer)
+						Oem2AnsiA(pBuffer)
 					ENDIF
 				CATCH
 					FError((DWORD)Marshal.GetLastWin32Error())
@@ -538,7 +538,7 @@ FUNCTION FPutS3(pFile AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
 /// Read characters from a file into an allocated buffer.
 /// </summary>
 /// <param name="pFile">The handle of the file.</param>
-/// <param name="pBuffer">An array of bytes to store the data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+/// <param name="pBuffer">An array of bytes to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 /// <param name="dwCount">The number of bytes to read into the buffer.</param>
 /// <returns>The number of bytes successfully read.  A return value less than the number of bytes requested indicates end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
 FUNCTION FRead3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
@@ -650,14 +650,7 @@ FUNCTION FTell64(pFile AS IntPtr) AS INT64
 	RETURN XSharp.IO.File.Tell(pFile)
 
 
-/// <summary>
-/// Write a string to an open file
-/// </summary>
-/// <param name="pFile">The handle of the file.</param>
-/// <param name="c"> The string to write. </param>
-/// <returns>The number of bytes written.  If the value returned is equal to the length of the string, the operation was successful.
-/// If the return value is less than this or 0, this means that the the disk is full, or another error has occurred.
-/// FError() can be used to determine the specific error. </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.write( pFile, c,  c:Length )
 
@@ -718,7 +711,7 @@ FUNCTION FWriteLine3(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
 /// Write the contents of a buffer to an open file, with SetAnsi() dependency.
 /// </summary>
 /// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" /> 
-/// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+/// <param name="pBuffer">Pointer to an array of bytes to write to the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 FUNCTION FWriteText3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile ,pBuffer ,(INT) nCount, XSharp.RuntimeState.Ansi) 
 
@@ -1002,3 +995,6 @@ INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 		nBuffLen := nLF+2
 	ENDIF
 	RETURN STRING{aChars, 0, nLF}
+
+FUNCTION __FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
+    RETURN XSharp.IO.File.GetBuffer(hFile, nSize)

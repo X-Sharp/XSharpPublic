@@ -114,8 +114,8 @@ FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 	/// <returns>
 	/// </returns>
 	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
-		local pMem := String2Mem(cSource) as IntPtr
-        return Psz{pMem}
+		LOCAL pMem := String2Mem(cSource) AS IntPtr
+        RETURN PSZ{pMem}
 
 
 
@@ -143,12 +143,13 @@ FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 	LOCAL bp AS BYTE PTR
 	bp := pszSource
 	DO WHILE bp[1] != 0
-		IF bp[1] >= 97 .AND. bp[1] <= 122
+		IF bp[1] >= 97 .AND. bp[1] <= 122       // between 'a' and 'z'
 			bp[1] -= 32
 		ENDIF
 		bp++
 	ENDDO
 	RETURN pszSource
+
 /// <exclude/>
 FUNCTION String2Mem(s AS STRING) AS IntPtr
 	LOCAL result := 0 AS IntPtr

@@ -223,3 +223,13 @@ Tools/Converter/PrjConvert.exe
 /Help
 /Binaries/Documentation
 /Binaries/Help
+*.chm
+/Binaries/VOHelp/VOSystemClasses.xml
+/Binaries/VOHelp/VOSQLClasses.xml
+/Binaries/VOHelp/VOReportClasses.xml
+/Binaries/VOHelp/VORDDClasses.xml
+/Binaries/VOHelp/VOInternetClasses.xml
+/Binaries/VOHelp/VOGUIClasses.xml
+/Binaries/VOHelp/VOConsoleClasses.xml
+/Binaries/VOHelp/*.chw
+/Binaries/VOHelp

@@ -754,13 +754,13 @@ FUNCTION Transform( dValue AS DATE, cPicture AS STRING ) AS STRING
 FUNCTION Transform( lValue AS LOGIC, cPicture AS STRING ) AS STRING
     RETURN TransFormHelpers.TransformL(lValue, cPicture)
     
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
-    
-/// <summary>Convert any value into a formatted string.</summary>        
-FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
+// /// <summary>Convert any value into a formatted string.</summary>        
+//FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
+//    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
+//    
+// /// <summary>Convert any value into a formatted string.</summary>        
+//FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
+//    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
     
 /// <summary>Convert any value into a formatted string.</summary>        
 FUNCTION Transform( nValue AS FLOAT, cPicture AS STRING ) AS STRING
@@ -776,25 +776,25 @@ FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
     SWITCH uValue:_UsualType
     CASE __UsualType.Float
     CASE __UsualType.Decimal
-        ret := TransformHelpers.TransformN( uValue, cPicture , FALSE)
+        ret := TransformHelpers.TransformN( (FLOAT) uValue, cPicture , FALSE)
     CASE __UsualType.Int64
     CASE __UsualType.Long
-        ret := TransformHelpers.TransformN( uValue, cPicture , TRUE)
-CASE __UsualType.Date
+        ret := TransformHelpers.TransformN( (INT64) uValue, cPicture , TRUE)
+	CASE __UsualType.Date
     CASE __UsualType.DateTime
-        ret := TransformHelpers.TransformD( uValue, cPicture )
+        ret := TransformHelpers.TransformD( (DATE) uValue, cPicture )
     CASE __UsualType.Logic
-        ret := TransformHelpers.TransformL( uValue, cPicture )
+        ret := TransformHelpers.TransformL( (LOGIC) uValue, cPicture )
     CASE __UsualType.String
     CASE __UsualType.Psz
-        ret := TransformHelpers.TransformS( uValue, cPicture )
+        ret := TransformHelpers.TransformS( (STRING) uValue,  cPicture )
     CASE __UsualType.Void
         ret := ""
     OTHERWISE
-            IF uValue:IsObject && IsMethod( uValue, #Transform )
-                ret := Send( uValue, "Transform" , cPicture )
-            ELSE
-                THROW Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)
+        IF uValue:IsObject && IsMethod( uValue, #Transform )
+            ret := Send( uValue, "Transform" , cPicture )
+        ELSE
+            THROW Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)
         ENDIF
     END SWITCH
     RETURN ret

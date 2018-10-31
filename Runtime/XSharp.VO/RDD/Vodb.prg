@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING SYstem.Linq
 
 /// <summary>The VoDb class extendes the CoreDb class with methods that take usual parameters or return usual values </summary>
-PARTIAL CLASS XSharp.VoDb inherit XSharp.CoreDb
+PARTIAL CLASS XSharp.VoDb INHERIT XSharp.CoreDb
 /// <inheritdoc cref='M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)'/>
 STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT

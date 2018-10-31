@@ -3,11 +3,14 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+USING System.Text
 USING XSharp.RDD.Support
+
 /// <summary>Base Memo class. Does not implement anything. </summary>
 /// <seealso cref="T:XSharp.RDD.IMemo"/>
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
     PRIVATE _oArea AS WorkArea
+	PUBLIC _Encoding      AS Encoding
     
     /// <summary>Create the BaseMemo object</summary>
     /// <param name="oArea">Workarea object that 'owns' this memo object </param>

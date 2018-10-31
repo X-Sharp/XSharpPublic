@@ -6,7 +6,7 @@
 
 /// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary> 
 /// <seealso cref="T:XSharp.IFloat"/>
-STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat
+STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat, IConvertible
 	/// <inheritdoc />
 	PROPERTY Value	AS REAL8 AUTO GET PRIVATE SET
 	/// <inheritdoc />
@@ -21,6 +21,63 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat
 	/// <inheritdoc />
 	OVERRIDE METHOD ToString() AS STRING
         RETURN @@VALUE:ToString()
+
+	#region IConvertible INTERFACE
+	METHOD GetTypeCode() AS TypeCode
+		RETURN TypeCode.Object
+
+	METHOD IConvertible.ToBoolean(provider AS IFormatProvider ) AS LOGIC
+		IF(	VALUE != 0.0) 
+			RETURN TRUE
+		ENDIF
+		RETURN FALSE
+
+		METHOD IConvertible.ToByte(provider AS IFormatProvider ) AS BYTE
+			RETURN Convert.ToByte(VALUE)
+
+		METHOD IConvertible.ToChar(provider AS IFormatProvider ) AS CHAR
+			RETURN Convert.ToChar(VALUE)
+
+		METHOD IConvertible.ToDateTime(provider AS IFormatProvider ) AS DateTime
+			RETURN Convert.ToDateTime(VALUE)
+
+		METHOD IConvertible.ToDecimal(provider AS IFormatProvider ) AS Decimal
+			RETURN Convert.ToDecimal(VALUE)
+
+		METHOD IConvertible.ToDouble(provider AS IFormatProvider ) AS Double
+			RETURN VALUE
+
+		METHOD IConvertible.ToInt16(provider AS IFormatProvider ) AS SHORT
+			RETURN Convert.ToInt16(VALUE)
+
+		METHOD IConvertible.ToInt32(provider AS IFormatProvider ) AS INT32
+			RETURN Convert.ToInt32(VALUE)
+
+		METHOD IConvertible.ToInt64(provider AS IFormatProvider ) AS INT64
+			RETURN Convert.ToInt64(VALUE)
+
+		METHOD IConvertible.ToSByte(provider AS IFormatProvider ) AS SByte
+			RETURN Convert.ToSByte(VALUE)
+
+		METHOD IConvertible.ToSingle(provider AS IFormatProvider ) AS SINGLE
+			RETURN Convert.ToSingle(VALUE)
+
+		METHOD IConvertible.ToString(provider AS IFormatProvider ) AS STRING
+			RETURN String.Format("{0}", VALUE)
+
+		METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
+			RETURN Convert.ChangeType(VALUE,conversionType)
+
+		METHOD IConvertible.ToUInt16(provider AS IFormatProvider ) AS WORD
+			RETURN Convert.ToUInt16(VALUE)
+
+		METHOD IConvertible.ToUInt32(provider AS IFormatProvider ) AS DWORD
+			RETURN Convert.ToUInt32(VALUE)
+
+		METHOD IConvertible.ToUInt64(provider AS IFormatProvider ) AS UINT64
+			RETURN Convert.ToUInt64(VALUE)
+
+	#endregion
 END	STRUCTURE
 		
 /// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary> 

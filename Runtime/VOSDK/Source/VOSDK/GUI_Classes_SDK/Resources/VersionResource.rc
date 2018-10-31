@@ -1,0 +1,36 @@
+#include "..\..\SharedSource\BuildNumber.h"
+
+#define FILE_DESCRIPTION "VO-Compatible GUI Classes Library"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION FILEVERSION_NUMBER
+ PRODUCTVERSION VERSION_NUMBER
+ FILEFLAGSMASK 0x37L
+#ifdef _DEBUG
+ FILEFLAGS 0x21L
+#else
+ FILEFLAGS 0x20L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", COMPANY_NAME
+            VALUE "FileDescription", FILE_DESCRIPTION
+            VALUE "FileVersion", FILEVERSION_NUMBER_STR
+            VALUE "InternalName", PRODUCT_NAME
+            VALUE "LegalCopyright", COPYRIGHT_STR
+            VALUE "OriginalFilename", "VOGUIClasses.dll"
+            VALUE "ProductName", PRODUCT_NAME
+            VALUE "ProductVersion", VERSION_NUMBER_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

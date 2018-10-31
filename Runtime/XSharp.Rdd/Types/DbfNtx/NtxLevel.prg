@@ -1,15 +1,15 @@
-﻿// NtxLevel.prg
-// Created by    : fabri
-// Creation Date : 9/2/2018 6:15:26 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.NTX
 
 
     INTERNAL CLASS NtxLevel INHERIT NtxPage
@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE liExtraKeys AS LONG
         PRIVATE liParents AS LONG
 
-        PUBLIC PROPERTY Exp AS LONG
+        INTERNAL PROPERTY Exp AS LONG
             GET
                 RETURN lExp
                 
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PUBLIC PROPERTY BaseKeys AS LONG
+        INTERNAL PROPERTY BaseKeys AS LONG
             GET
                 RETURN lBaseKeys
                 
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PUBLIC PROPERTY Keys AS LONG
+        INTERNAL PROPERTY Keys AS LONG
             GET
                 RETURN lKeys
                 
@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PUBLIC PROPERTY ExtraKeys AS LONG
+        INTERNAL PROPERTY ExtraKeys AS LONG
             GET
                 RETURN liExtraKeys
                 
@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PUBLIC PROPERTY Parents AS LONG
+        INTERNAL PROPERTY Parents AS LONG
             GET
                 RETURN liParents
                 
@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         
-        PUBLIC METHOD InitRefs(uiMaxEntry AS LONG , uiEntrySize AS LONG ) AS VOID
+        INTERNAL METHOD InitRefs(uiMaxEntry AS LONG , uiEntrySize AS LONG ) AS VOID
             LOCAL num AS SHORT
             LOCAL i AS LONG
             //
@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER:NodeCount := 0
             
             
-        PUBLIC CONSTRUCTOR(order AS NtxOrder )
+        INTERNAL CONSTRUCTOR(order AS NtxOrder )
             SUPER(order, 0L)
             SELF:lExp := 0
             SELF:lBaseKeys := 0
@@ -100,7 +100,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:liExtraKeys := 0
             
             
-        PUBLIC METHOD Write( offset AS LONG ) AS LOGIC
+        INTERNAL METHOD Write( offset AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
             //
             SELF:PageOffset := offset

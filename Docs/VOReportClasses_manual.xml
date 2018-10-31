@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VOReportClasses</name>
+  </assembly>
+  <members>
+    <member name="T:VO.ReportQueue">
+      <summary>
+        <para>Manage Report Editor reporting activities, as well as the appearance of the Report Editor window.</para>
+      </summary>
+      <remarks>
+        <para>This class manages Report Editor reporting activities, as well as the appearance of the Report Editor window.</para>
+      </remarks>
+    </member>
+    <member name="M:VO.ReportQueue.#ctor(XSharp.__Usual[])">
+      <summary>
+        <para>Construct a report queue.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Close(XSharp.__Usual[])">
+      <summary>
+        <para>Close a report.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.CloseAll(XSharp.__Usual[])">
+      <summary>
+        <para>Close all reports.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.ConnectToDB(XSharp.__Usual[])">
+      <summary>
+        <para>Connect to an ODBC data source.</para>
+        
+      </summary>
+      <returns>
+        <para>TRUE is successful; otherwise, FALSE.</para>
+        
+        <para>TRUE if successful; otherwise FALSE.</para>
+        
+      </returns>
+    </member>
+    <member name="M:VO.ReportQueue.DataUpdate(XSharp.__Usual[])">
+      <summary>
+        <para>Handle DataUpdateEvent, if one occurs. Provide this event handler in your derived ReportQueue class if you require special handling of events.</para>
+        
+        <para>
+          <b>
+            <i>Important!</i>
+          </b>
+          <i>
+            You should neither attempt to call nor provide alternative implementations to this method. Instead, you can provide extra
+            handling of events in your derived version of AppWindow:ReportNotification().
+          </i>
+        </para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Edit(XSharp.__Usual[])">
+      <summary>
+        <para>Load a report into the Report Editor for editing.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Hide(XSharp.__Usual[])">
+      <summary>
+        <para>Hide the Report Editor window and icon so that they are not visible.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.New(XSharp.__Usual[])">
+      <summary>
+        <para>Create a new report definition in the Report Editor for editing.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Open(XSharp.__Usual[])">
+      <summary>
+        <para>Open a report.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Preview(XSharp.__Usual[])">
+      <summary>
+        <para>Cause a report to be previewed on screen.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Print(XSharp.__Usual[])">
+      <summary>
+        <para>Print a report to the Report Editor's selected printer.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.ReportExit(XSharp.__Usual[])">
+      <summary>
+        <para>Exit the Report Editor.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.SaveToFile(XSharp.__Usual[])">
+      <summary>
+        <para>Save a report to the given file name.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.SetSQLFile(XSharp.__Usual[])">
+      <summary>
+        <para>Load an SQL query file as the active SQL query for the report.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.SetSQLText(XSharp.__Usual[])">
+      <summary>
+        <para>Set a text string as the active SQL query for the report.</para>
+        
+      </summary>
+    </member>
+    <member name="M:VO.ReportQueue.Show(XSharp.__Usual[])">
+      <summary>
+        <para>Minimize or maximize the Report Editor window.</para>
+        
+      </summary>
+    </member>
+    <member name="P:VO.ReportQueue.ActiveFile">
+      <summary>
+        <para>The report definition file the Report Editor server was just using. This information can be used within an AppWindow:ReportNotification() method.</para>
+        
+      </summary>
+    </member>
+    <member name="P:VO.ReportQueue.EventType">
+      <summary>
+        <para>One of the following constants representing an event:</para>
+        </summary>
+      <remarks>
+        
+        <b>Constant</b>
+        <b>Description</b>
+         REPORTCLOSEEVENT Current report has been closed.
+         REPORTCOMPLETEERROREVENT A print or export task has aborted.
+         REPORTCOMPLETEEVENT A print or export task has completed.
+         REPORTFILESAVEEVENT A report definition has been closed.
+         REPORTOPENEVENT Requested report has been opened.
+         REPORTSERVERCLOSEEVENT Report Editor has been closed.
+         REPORTVIEWCLOSEEVENT A report preview has been closed (but the report itself remains open).
+        <para>It should be used only in any AppWindow:ReportNotification() method you add to your window class that owns this ReportQueue object.</para>
+      </remarks>
+    </member>
+    <member name="P:VO.ReportQueue.Filename">
+      <summary>
+        <para>
+          The name of the .RET file that defines the report. This access is unlikely to be used within the function that opened the report — as the file
+          name string should already be local to the function. It would be useful if one method opens a report and another method needs to use that open file.
+        </para>
+        
+        <para>
+          Note that this accesses the name of the report that is open when the next command method gets around to executing on the Report Editor, as opposed to the
+          ReportQueue:ActiveFile which might be an earlier report now being processed by the Report Editor.
+        </para>
+        
+      </summary>
+    </member>
+    <member name="P:VO.ReportQueue.Origin">
+      <summary>
+        <para>
+          A point defining where the top left corner of the Report Editor window is shown, in canvas coordinates. The Report Editor is shown from this point
+          <i>downward</i>. This is in contrast to the coordinate system used by Visual Objects applications, which consider their window's origin at the bottom-left
+          corner and show windows in an upward direction.
+        </para>
+        
+      </summary>
+    </member>
+    <member name="P:VO.ReportQueue.owner">
+      <summary>
+        <para>
+          The window that owns the ReportQueue object. This access allows code using a ReportQueue to call methods of the owner (ultimately derived from
+          AppWindow).
+        </para>
+        
+      </summary>
+    </member>
+    <member name="P:VO.ReportQueue.ReportServer">
+      <summary>
+        <para>The Report Editor server currently in use by this ReportQueue. The value is set in the ReportQueue:Init() method.</para>
+        
+        <para>
+          <b>Note:</b> The only supported server is "Report Editor."
+        </para>
+        
+      </summary>
+    </member>
+    <member name="P:VO.ReportQueue.Size">
+      <summary>
+        <para>A dimension representing the current size of the Report Editor window, in canvas coordinates.</para>
+        
+      </summary>
+    </member>
+  </members>
+</doc>

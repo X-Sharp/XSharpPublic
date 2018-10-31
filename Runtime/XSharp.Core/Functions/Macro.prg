@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+USING XSharp
+USING System.Collections.Generic
+USING System.Text
 /// <summary>
 /// Get the type of the class that is used to compile macros
 /// </summary>
@@ -38,3 +40,130 @@ XSharp.RuntimeState._macroCompiler := oCompiler
 XSharp.RuntimeState._macroCompilerType := oCompiler:GetType()
 RETURN old
 
+
+
+INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
+    PRIVATE INITONLY originalCompiler AS IMacroCompiler
+    CONSTRUCTOR (oCompiler AS IMacroCompiler)
+      originalCompiler := oCompiler
+    METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
+        LOCAL newmacro AS STRING
+        newmacro := PrepareMacro(macro,lAllowSingleQuotes)
+        RETURN originalCompiler:Compile(newmacro, lAllowSingleQuotes, module, OUT isCodeblock)
+        
+    PRIVATE STATIC METHOD PrepareMacro(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS STRING
+        VAR sbResult := StringBuilder{cMacro:Length * 2} 
+        VAR sbId     := StringBuilder{cMacro:Length}
+        LOCAL   aParams AS STRING[]
+        LOCAL aElements AS STRING[]
+        cMacro := cMacro:Trim()
+        IF cMacro:StartsWith("{") .AND. cMacro:EndsWith("}")
+            // {|a,b| a+b}"  => 3 elements: "{", "a+b", "a+b}". Maybe more if there is a pipe in a string in the rhs
+            aElements := cMacro:Split(<CHAR>{'|'})
+            IF aElements:Length >= 3
+                sbResult:Append(aElements[0])  // "{"
+                sbResult:Append('|')
+                sbResult:Append(aElements[1]) // parameters if any
+                sbResult:Append('|')
+                // remove whilespace from parameters list
+                cMacro   := aElements[1]:ToUpper():Replace(" ", ""):Replace(e"\t","")
+                aParams  := cMacro:Split(<CHAR>{','},StringSplitOptions.RemoveEmptyEntries)
+                cMacro   := aElements[2]
+                // remaining pipes were most likely inside strings or syntax errors
+                FOR VAR i := 3 TO aElements:Length -1
+                    cMacro += "|"
+                    cMacro += aElements[i]
+                NEXT
+            ENDIF
+        ELSE
+            aParams   := NULL
+            aElements := <STRING>{cMacro}
+        ENDIF
+            
+        // make sure we remove the _FIELD-> from the existing key
+        cMacro := cMacro:Replace("_FIELD->","")
+        LOCAL lInString AS LOGIC
+        LOCAL delimChar AS CHAR
+        LOCAL lInComplexName AS LOGIC
+        FOREACH cChar AS CHAR IN cMacro
+#region Handle Strings inside macros            
+            IF lInString
+                sbResult:Append(cChar)
+                IF cChar == delimChar
+                    // end of string
+                    lInString := FALSE
+                ENDIF
+                LOOP
+            ENDIF
+            IF cChar == '"'
+                // start of double quoted string
+                lInComplexName := FALSE
+                lInString := TRUE
+                delimChar := cChar
+                GetIdName(sbResult, sbId, aParams)
+                sbResult:Append(cChar)
+                LOOP
+            ENDIF
+            IF cChar == '\'' .AND. lAllowSingleQuotes
+                // start of singlequoted string
+                lInComplexName := FALSE
+                lInString := TRUE
+                delimChar := cChar
+                GetIdName(sbResult, sbId, aParams)
+                sbResult:Append(cChar)
+                LOOP
+            ENDIF
+#endregion           
+            IF Char.IsLetter(cChar) .OR. cChar = '_'
+                // add char to id
+                sbId:Append(cChar)
+            ELSEIF Char.IsDigit(cChar)
+                // after letter or _ then it is part of the id
+                IF sbid:Length > 0
+                    sbId:Append(cChar)
+                ELSE
+                    sbResult:Append(cChar)
+                ENDIF
+            ELSEIF cChar == '(' .OR. cChar == '{'
+                lInComplexName := FALSE
+                IF sbid:Length > 0
+                    // function or constructor call, no _FIELD prefix
+                    sbResult:Append(sbId:ToString())
+                    sbId:Clear()
+                ENDIF
+                sbResult:Append(cChar)
+            ELSEIF cChar == '.' .OR. cChar == ':' // namespace delimiter or send operator
+                lInComplexName := TRUE
+                IF sbid:Length > 0
+                    // function or constructor call, no _FIELD prefix
+                    sbResult:Append(sbId:ToString())
+                    sbId:Clear()
+                ENDIF
+                sbResult:Append(cChar)
+            ELSEIF lInComplexName
+                sbResult:Append(sbId:ToString())
+                sbId:Clear()
+                sbResult:Append(cChar)
+                lInComplexName := FALSE
+            ELSE
+                // another non character or digit, so add name if it exists
+                GetIdName(sbResult, sbId, aParams)
+                sbResult:Append(cChar)
+            ENDIF
+        NEXT
+        // when we end with an id then append to the end of the result
+        GetIdName(sbResult, sbID, aParams)
+        RETURN sbResult:ToString()
+        
+    STATIC METHOD GetIdName(sbResult AS StringBuilder, sbId AS StringBuilder, aParams AS STRING[]) AS VOID
+        IF sbid:Length > 0
+            VAR sName := sbid:ToString():ToUpper()
+            IF aParams == NULL .OR. Array.IndexOf(aParams, sName) < 0
+                sbResult:Append("_FIELD->")
+            ENDIF
+            sbResult:Append(sbid:ToString())
+            sbId:Clear()
+        ENDIF
+        RETURN 
+        
+END CLASS

@@ -14,7 +14,7 @@ USING System.Security.Permissions
 /// <returns>A trimmed string, with leading and trailing spaces removed.</returns>
 /// <remarks>This function is the same as AllTrim() since .Net has unicode strings</remarks>
 FUNCTION MBAllTrim(cMBString AS STRING) AS STRING
-	RETURN Alltrim(cMBString)
+	RETURN AllTrim(cMBString)
 
 /// <summary>
 /// Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
@@ -123,7 +123,7 @@ FUNCTION MBLTrim(cMBString AS STRING) AS STRING
 /// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat() since .Net has unicode strings</remarks>
 FUNCTION MBRat(cSearch AS STRING,cTarget AS STRING) AS LONGINT
-	RETURN (LONG) Rat(cSearch, cTarget)
+	RETURN (LONG) RAt(cSearch, cTarget)
 
 /// <summary>
 /// Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
@@ -133,7 +133,7 @@ FUNCTION MBRat(cSearch AS STRING,cTarget AS STRING) AS LONGINT
 /// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat2() since .Net has unicode strings</remarks>
 FUNCTION MBRat2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	RETURN Rat2(cSearch, cTarget)
+	RETURN RAt2(cSearch, cTarget)
 
 /// <summary>
 /// Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
@@ -144,7 +144,7 @@ FUNCTION MBRat2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 /// <returns>The position of cMBSearch within cMBTarget.  If cMBSearch is not found, MBRAt() returns zero.</returns>
 /// <remarks>This function is the same as Rat3() since .Net has unicode strings</remarks>
 FUNCTION MBRat3(cSearch AS STRING,cTarget AS STRING,wOffset AS DWORD) AS DWORD
-	RETURN Rat3(cSearch, cTarget, wOffSet)
+	RETURN RAt3(cSearch, cTarget, wOffSet)
 
 /// <summary>
 /// Return a substring beginning with the last character of a string containing double-byte characters.
@@ -196,7 +196,7 @@ FUNCTION MBStuff(cMBTarget AS STRING,wStart AS DWORD,wDel AS DWORD,cIns AS STRIN
 /// <returns>MBSubstr2() is a typed version of MBSubstr().</returns>
 /// <remarks>This function is the same as Substr2() since .Net has unicode strings</remarks>
 FUNCTION MBSubstr2(cMbString AS STRING,wStart AS DWORD) AS STRING
-	RETURN Substr2(cMbString, wStart)
+	RETURN SubStr2(cMbString, wStart)
 
 /// <summary>
 /// Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
@@ -207,7 +207,7 @@ FUNCTION MBSubstr2(cMbString AS STRING,wStart AS DWORD) AS STRING
 /// <returns>The substring.  If the substring is not present, or if you specify wStart as zero, MBSubstr3() returns a NULL_STRING.</returns>
 /// <remarks>This function is the same as Substr3() since .Net has unicode strings</remarks>
 FUNCTION MBSubstr3(cMbString AS STRING,wStart AS DWORD,wLen AS DWORD) AS STRING
-	RETURN Substr3(cMbString, wStart, wLen)
+	RETURN SubStr3(cMbString, wStart, wLen)
 
 /// <summary>
 /// Remove trailing spaces — including double-byte spaces — from a string.
@@ -308,8 +308,19 @@ FUNCTION IsBiDi() AS LOGIC
    RETURN System.Windows.Forms.SystemInformation.MidEastEnabled   
 
 /// <exclude />
-_DLL FUNCTION String2W( sz AS STRING ) AS IntPtr PASCAL:OLEAUT32.SysAllocString
+FUNCTION String2W( sz AS STRING ) AS IntPtr
+  // The original VO Code was using SysAllocString to allocate the memory.
+  // The Marshal class does that too (it uses SysAllocStringLen)
+  // and it also takes into account null strings 
+  RETURN System.Runtime.InteropServices.Marshal.StringToBSTR(sz)
 
+/// <exclude />
+FUNCTION W2String(p AS IntPtr) AS STRING
+    // The original code was using WideCharToMultiByte to determine the length of the string inside the ptr
+    // The Marshal implementation calls SysStringLen to determine the length
+    // and then creates a managed string with PtrToStringUni() passing in the ptr and the length
+    RETURN System.Runtime.InteropServices.Marshal.PtrToStringBSTR(p)
+    
 /// <exclude />
 FUNCTION GetNatDllHandle() AS IntPtr STRICT
   LOCAL t AS Type

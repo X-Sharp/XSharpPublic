@@ -115,13 +115,23 @@ FUNCTION FCount() AS DWORD
     /// <summary>
     /// Return the name of a field as a string.
     /// </summary>
-    /// <param name="dwFieldPos"></param>
+    /// <param name="dwFieldPos">The position of the field in the database file structure.</param>
     /// <returns>
     /// </returns>
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
     return VoDb.FieldName(dwFieldPos)    
     
-    
+
+    /// <summary>
+    /// Return the name of a field as a symbol.
+    /// </summary>
+    /// <param name="dwFieldPos">The position of the field in the database file structure.</param>
+    /// <returns>
+    /// </returns>
+FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
+    return (SYMBOL) VoDb.FieldName(dwFieldPos)
+
+
     /// <summary>
     /// Return the position of a field.
     /// </summary>

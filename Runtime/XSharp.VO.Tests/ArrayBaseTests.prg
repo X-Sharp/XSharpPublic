@@ -143,12 +143,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal("CHRIS", aDevs[1,1])
             Assert.Equal("CHRIS", aDevs[1,"firstname"])
 
-        [Trait("Category", "ArrayBase")];
-        [Fact]; 
-        METHOD testAscan2 AS VOID
-            VAR aDevs := BuildArray()
-            Assert.Equal(1, (INT) AScan(aDevs, { |x| x[1] := "Chris" }))
-
+//        [Trait("Category", "ArrayBase")];
+//        [Fact]; 
+//        METHOD testAscan2 AS VOID
+//            VAR aDevs := BuildIndexedArray()
+//            Assert.Equal(1, (INT) AScan(aDevs, { |x| x[1] := "Chris" }))
+//
 
     END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -1,0 +1,42 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,DIALOGWINDOW1
+GUID=9E4529BA-F7B5-44F5-857E-B29EB031B0D0
+  Name=DIALOGWINDOW1
+  Class=FORM:DIALOGWINDOW
+  Caption=Dialog Caption
+  Order=0
+  Left=5
+  Width=400
+  Top=5
+  Height=240
+  Browseindex=0
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=3234332804
+  Exstyles=0
+  Property=HyperLabel=,Dialog Caption
+  Property=HyperLabel=DIALOGWINDOW1
+SUBCONTROLSSTART
+CONTROL=SINGLELINEEDIT
+GUID=B21A6042-5427-4AAC-A332-51C138562AD7
+  Name=SingleLineEdit1
+  Class=CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT
+  Caption=
+  Order=1000
+  Left=95
+  Width=113
+  Top=79
+  Height=33
+  Browseindex=0
+  Browsesize=17
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=SingleLineEdit1
+SUBCONTROLSEND
+DESIGNEREND = DIALOGWINDOW1
+
+

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -55,6 +55,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		// TOdo Optimize
 		LOCAL ret := NULL AS System.Type
 		LOCAL aAssemblies AS IEnumerable<Assembly>
+		
+		IF String.IsNullOrWhiteSpace(cName)
+			// otherwise asm:GetType() will throw an exception with empty name
+			RETURN ret
+		END IF
 
 		IF lOurAssembliesOnly
 			aAssemblies := FindOurAssemblies()
@@ -375,7 +380,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF toType == TYPEOF(USUAL)
 				// box the usual
                 RETURN __CastClass(OBJECT, uValue)
-            ELSEIF IsArray(uValue) .and. totype == typeof(ARRAY)
+            ELSEIF IsArray(uValue) .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
             ELSEIF IsObject(uValue) 
                 RETURN (OBJECT) uValue
@@ -1083,4 +1088,18 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	RETURN  NIL   
 
 
+/// <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>
+/// <param name="cLibFileName">The full path of the library to load.</param>
+/// <returns>The Assembly object of the loaded library.</returns>
+FUNCTION XSharpLoadLibrary(cLibFileName AS STRING) AS Assembly
+	LOCAL oAssembly AS Assembly
+	oAssembly := Assembly.LoadFrom(cLibFileName)
+	LOCAL oModule AS Module
+	oModule := oAssembly:GetModules()[1]
+	LOCAL oMethod AS MethodInfo
+	oMethod := oModule:GetMethod("RunInitProcs")
+	IF oMethod != NULL
+		oMethod:Invoke(NULL, NULL)
+	END IF
+RETURN oAssembly
 

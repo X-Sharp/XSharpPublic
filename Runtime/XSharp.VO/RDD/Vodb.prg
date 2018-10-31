@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING SYstem.Linq
 
 /// <summary>The VoDb class extendes the CoreDb class with methods that take usual parameters or return usual values </summary>
-PARTIAL CLASS XSharp.VoDb inherit XSharp.CoreDb
+PARTIAL CLASS XSharp.VoDb INHERIT XSharp.CoreDb
 /// <inheritdoc cref='M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)'/>
 STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := NULL AS OBJECT
@@ -107,16 +107,7 @@ STATIC METHOD RecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LO
 STATIC METHOD RecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet AS USUAL) AS LOGIC
     RETURN CoreDb.RecordInfo(nOrdinal, uRecID,  (OBJECT) uRet)
 
-/// <inheritdoc cref='M:XSharp.CoreDb.Relation(System.UInt32,System.String@)'/>
-/// <remarks> <inheritdoc cref='M:XSharp.CoreDb.Relation(System.UInt32,System.String@)'/>
-/// br/> <note type="tip">The difference between VoDb.Relation and CoreDb.Relation is that VoDb.Relation takes a USUAL parameter</note></remarks>
-STATIC METHOD Relation(nPos AS DWORD, uRel REF USUAL) AS LOGIC
-    LOCAL cRel := "" AS STRING
-    LOCAL lResult AS LOGIC
-    lResult := CoreDb.Relation(nPos, REF cRel)
-    uRel := cRel
-    RETURN lResult
-    
+   
 /// <inheritdoc cref='M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)'/>
 /// <br/> <note type="tip">The difference between VoDb.Select and CoreDb.Select is that VoDb.Select takes a USUAL parameter</note></remarks>

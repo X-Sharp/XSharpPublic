@@ -19,7 +19,8 @@
 /// <exclude />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     LOCAL ret AS INT
-    IF !RuntimeState.CompilerOptionVO13
+    // Only when vo13 is off and SetExact = TRUE
+    IF !RuntimeState.CompilerOptionVO13 .AND. RuntimeState.Exact
         RETURN String.Compare( strLHS,  strRHS)
     ENDIF                            
     IF Object.ReferenceEquals(strLHS, strRHS)

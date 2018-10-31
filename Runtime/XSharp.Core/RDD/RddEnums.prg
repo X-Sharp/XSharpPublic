@@ -469,25 +469,25 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER @@Logic   		:= 76  	// 'L', 1 byte
 		MEMBER @@Memo    		:= 77  	// 'M', 4 or 10 bytes see Length
 		MEMBER @@Number    		:= 78  	// 'N', uses len and dec
-		MEMBER @@VOObject		:= 79  	// 'O'
+		MEMBER @@VOObject		:= 79  	// 'O', is anybody using this ?
 		// Extended Non Clipper Types in numerical order
 		MEMBER @@AutoIncrement	:= 43	// '+' = AutoInc, 4 bytes
 		MEMBER @@Integer2		:= 50  	// '2'	2 byte int, autoInc
 		MEMBER @@Integer4		:= 52  	// '4'	4 byte int, autoInc
 		MEMBER @@Double8		:= 56	// '8'  Same as 'B'
 		MEMBER @@ModTime		:= 61	// '=' = ModTime, 8 bytes 
-		MEMBER @@TimeSpamp		:= 64   // '@' = Timestamp 8 bytes
+		MEMBER @@TimeStamp		:= 64   // '@' = Timestamp 8 bytes
 		MEMBER @@Double			:= 66  	// 'B'	FOX Type, also '8'
 		MEMBER @@Float			:= 70  	// 'F'	FOX Type, uses len and dec
 		MEMBER @@Ole			:= 71	// 'G' = Ole 4 or 10 bytes
 		MEMBER @@Integer		:= 73  	// 'I'	FOX Type , autoInc
 		MEMBER @@Picture		:= 80  	// 'P'	FOX Type, 4 or 10 bytes
-		MEMBER @@VarLength2		:= 81	// 'Q' = VarLenghth , between 1 and 255 
+		MEMBER @@VarLength		:= 81	// 'Q' = VarLenghth , between 1 and 255 
 		MEMBER @@DateTime		:= 84  	// 'T'	FOX Type can be 4 or 8 bytes
-		MEMBER @@VarLength1		:= 86	// 'V' = VarLength
+		MEMBER @@Any		    := 86	// 'V' = Any
 		MEMBER @@Blob			:= 87	// 'W' = Blob 4 or 10 bytes
 		MEMBER @@Currency		:= 89  	// 'Y'	8 byte FOX Type
-		MEMBER @@Currency2		:= 90  	// 'Z'	8 byte Currency
+		MEMBER @@CurrencyDouble	:= 90  	// 'Z'	8 byte Currency
 		MEMBER @@RowVer			:= 94	// '^' = RowVer, 8 bytes  
 	END	 ENUM
 	
@@ -595,5 +595,20 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER RDDI_QUERY              :=  68   /* last executed query */
 		
 	END ENUM
-	
+
+    [Flags];
+    ENUM DbSortFlags
+	    /// <summary>An ascending sort (default)   </summary>
+	    MEMBER Default := 0 
+	    /// <summary> A case-insensitive sort        </summary>
+	    MEMBER Case	:= 1 
+	    /// <summary>A sort with printable numerics        </summary>
+	    MEMBER Numeric := 2 
+	    /// <summary>A sort for ASCII (not nation-dependent)</summary>
+	    MEMBER Ascii	 := 4 
+	    /// <summary>A sort with long integer values        </summary>
+	    MEMBER Long	   := 0x80 
+	    /// <summary>A descending sort        </summary>
+	    MEMBER Descending := 0x100 
+    END ENUM
 END NAMESPACE

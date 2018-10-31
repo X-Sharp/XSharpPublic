@@ -1,11 +1,30 @@
 ﻿USING System.Globalization
-
+using SYstem.XML
+using SYstem.XML.Linq
+using System.Linq
+using System.Collections.Generic
 function start as void
-    local p as psz
-    p := String2Psz("abc")
-    p := StringAlloc("def")
-    MemFree(p)
-	wait
+    local cFile as USUAL
+    cFile := ""
+    if (NULL_STRING != cFile)
+        ? "not a null string"
+    else
+        ? "a null string"
+    endif
+    Console.Read()
+    return
+    
+  
+
+CLASS TestClass
+    EXPORT sym  AS SYMBOL
+END CLASS
+
+FUNCTION Startzzz() AS VOID
+    LOCAL u AS USUAL
+    u := TestClass{}
+    u:sym := #asd
+RETURN 
   
 
 FUNCTION Startx1 AS VOID

@@ -29,7 +29,7 @@ STATIC CLASS XSharp.Internal.CompilerServices
     ///</summary>
 	STATIC METHOD String2Psz(s AS STRING, pszList AS List<IntPtr>) AS IntPtr
 		LOCAL pResult AS IntPtr
-        LOCAL len as LONG
+        LOCAL len AS LONG
 		IF s == NULL || s:Length == 0
 			pResult := MemAlloc(1)
             Marshal.WriteByte(pResult, 0, 0)	 // end of string

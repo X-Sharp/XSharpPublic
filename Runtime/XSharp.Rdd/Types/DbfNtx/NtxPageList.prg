@@ -1,20 +1,20 @@
-﻿// NtxPageList.prg
-// Created by    : fabri
-// Creation Date : 7/12/2018 5:54:15 PM
-// Created for   : 
-// WorkStation   : FABPORTABLE
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 
 USING System
 USING System.Collections.Generic
 USING System.Text
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.NTX
 
     /// <summary>
     /// The NtxPageList class.
     /// </summary>
-    INTERNAL CLASS NtxPageList
+    INTERNAL SEALED CLASS NtxPageList
         PROTECT _Pages AS List<NtxPage>
         PROTECT _Order AS NtxOrder
         
@@ -25,12 +25,12 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN ntxPage
             
             
-        CONSTRUCTOR( order AS NtxOrder )
+        INTERNAL CONSTRUCTOR( order AS NtxOrder )
             SELF:_Pages := List<NtxPage>{}
             SELF:_Order := order
             
             
-        METHOD Update( pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Update( pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:Read(pageNo)
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN ntxPage
             
             
-        METHOD Append( offset AS LONG ) AS NtxPage
+        INTERNAL METHOD Append( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(offset)
@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN ntxPage
             
             
-        METHOD Read(pageNo AS LONG ) AS NtxPage
+        INTERNAL METHOD Read(pageNo AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(pageNo)
@@ -64,7 +64,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN ntxPage
             
             
-        METHOD Flush( keepData AS LOGIC ) AS LOGIC
+        INTERNAL METHOD Flush( keepData AS LOGIC ) AS LOGIC
             LOCAL isOk AS LOGIC
             //
             isOk := TRUE
@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
             
             
-        METHOD Write(pageNo AS LONG ) AS LOGIC
+        INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
             LOCAL ntxPage AS NtxPage
             //
             ntxPage := SELF:_FindPage(pageNo)

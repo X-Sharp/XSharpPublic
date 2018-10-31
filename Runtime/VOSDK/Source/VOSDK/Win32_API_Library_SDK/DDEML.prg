@@ -1,0 +1,371 @@
+VOSTRUCT _winHSZPAIR
+	MEMBER hszSvc AS PTR
+	MEMBER hszTopic AS PTR
+
+
+
+VOSTRUCT _winCONVCONTEXT
+	MEMBER  cb AS DWORD
+	MEMBER  wFlags AS DWORD
+	MEMBER  wCountryID AS DWORD
+	MEMBER  iCodePage AS INT
+	MEMBER  dwLangID AS DWORD
+	MEMBER  dwSecurity AS DWORD
+	MEMBER  qos IS _winSECURITY_QUALITY_OF_SERVICE
+
+
+
+
+VOSTRUCT _winCONVINFO
+	MEMBER  cb AS DWORD
+	MEMBER  hUser AS DWORD
+	MEMBER  hConvPartner AS PTR
+	MEMBER  hszSvcPartner AS PTR
+	MEMBER  hszServiceReq AS PTR
+	MEMBER  hszTopic AS PTR
+	MEMBER  hszItem AS PTR
+	MEMBER  wFmt AS DWORD
+	MEMBER  wType AS DWORD
+	MEMBER  wStatus AS DWORD
+	MEMBER  wConvstAS AS DWORD
+	MEMBER  wLastError AS DWORD
+	MEMBER  hConvList AS PTR
+	MEMBER  ConvCtxt IS _winCONVCONTEXT
+	MEMBER  hwnd AS PTR
+	MEMBER  hwndPartner AS PTR
+
+
+
+VOSTRUCT _WINDDEML_MSG_HOOK_DATA
+	MEMBER uiLo AS DWORD
+	MEMBER uiHi AS DWORD
+	MEMBER cbDatu AS DWORD
+	MEMBER DIM Data[8] AS DWORD
+
+
+
+VOSTRUCT _winMONMSGSTRUCT
+	MEMBER  cb AS DWORD
+	MEMBER  hwndTo AS DWORD
+	MEMBER  dwTime AS DWORD
+	MEMBER  hTask AS PTR
+	MEMBER  wMsg AS DWORD
+	MEMBER  wParam AS DWORD
+	MEMBER  lParam AS LONGINT
+	MEMBER  dmhd IS _winDDEML_MSG_HOOK_DATA
+
+VOSTRUCT _winMONCBSTRUCT
+	MEMBER cb AS DWORD
+	MEMBER dwTime AS DWORD
+	MEMBER hTask AS PTR
+	MEMBER dwRet AS DWORD
+	MEMBER wType AS DWORD
+	MEMBER wFmt AS DWORD
+	MEMBER hConv AS PTR
+	MEMBER hsz1 AS PTR
+	MEMBER hsz2 AS PTR
+	MEMBER hData AS PTR
+	MEMBER dwData1 AS DWORD
+	MEMBER dwData2 AS DWORD
+	MEMBER cc IS _winCONVCONTEXT
+	MEMBER cbData AS DWORD
+	MEMBER DIM Data[8] AS DWORD
+ 
+VOSTRUCT _winMONHSZSTRUCT    
+	MEMBER  cb AS DWORD
+	MEMBER  fsAction AS LOGIC
+	MEMBER  dwTime AS DWORD
+	MEMBER  hsz AS PTR
+	MEMBER  hTask AS PTR
+	MEMBER  DIM str[1] AS BYTE
+
+
+VOSTRUCT _winMONERRSTRUCT
+	MEMBER  cb AS DWORD
+	MEMBER  wLastError AS DWORD
+	MEMBER  dwTime AS DWORD
+	MEMBER  hTask AS PTR
+
+VOSTRUCT _winMONLINKSTRUCT
+	MEMBER  cb AS DWORD
+	MEMBER  dwTime AS DWORD
+	MEMBER  hTask AS PTR
+	MEMBER  fEstablished AS LOGIC
+	MEMBER  fNoData AS LOGIC
+	MEMBER  hszSvc AS PTR
+	MEMBER  hszTopic AS PTR
+	MEMBER  hszItem AS PTR
+	MEMBER  wFmt AS DWORD
+	MEMBER  fServer AS LOGIC
+	MEMBER  hConvServer AS PTR
+	MEMBER  hConvClient AS PTR
+
+VOSTRUCT _winMONCONVSTRUCT
+	MEMBER  cb AS DWORD
+	MEMBER fConnect AS LOGIC
+	MEMBER dwTime AS DWORD
+	MEMBER hTask AS PTR
+	MEMBER hszSvc AS PTR
+	MEMBER hszTopic AS PTR
+	MEMBER hConvClient AS PTR
+	MEMBER hConvServer AS PTR
+
+_DLL FUNC DdeInitialize( pidInst AS DWORD PTR, pfnCallback AS PTR, afCmd AS DWORD,;
+	ulRes AS DWORD) AS DWORD PASCAL:USER32.DdeInitializeA
+
+
+
+
+_DLL FUNC DdeUninitialize( idInst AS DWORD) AS LOGIC PASCAL:USER32.DdeUninitialize
+
+
+
+
+_DLL FUNC DdeConnectList (idInst AS DWORD, hszService AS PTR, hszTopic AS PTR,;
+	hConvList AS PTR, pcc AS _winCONVCONTEXT ) AS PTR PASCAL:USER32.DdeConnectList
+
+
+_DLL FUNC DdeQueryNextServer( hConvList AS PTR, hConvPrev AS PTR);
+	AS PTR PASCAL:USER32.DdeQueryNextServer
+
+
+_DLL FUNC DdeDisconnectList( hComvList AS PTR) AS LOGIC PASCAL:USER32.DdeDisconnectList
+
+
+
+
+_DLL FUNC DdeConnect( idInst AS DWORD, hszService AS PTR, hszTopic AS PTR,;
+	pcc AS _winCONVCONTEXT) AS PTR PASCAL:USER32.DdeConnect
+
+
+_DLL FUNC DdeDisconnect(hConv AS PTR) AS LOGIC PASCAL:USER32.DdeDisconnect
+
+
+_DLL FUNC DdeReconnect(hConv AS PTR) AS PTR PASCAL:USER32.DdeReconnect
+
+
+_DLL FUNC DdeQueryConvInfo( hCOnv AS PTR, idTransaction AS DWORD,;
+	pConvInfo AS _winCONVINFO) AS DWORD PASCAL:USER32.DdeQueryConvInfo
+
+
+_DLL FUNC DdeSetUserHandle( hConv AS PTR, id AS DWORD, hUser AS DWORD);
+	AS LOGIC PASCAL:USER32.DdeSetUserHandle
+
+
+_DLL FUNC DdeAbandonTransaction( idInst AS DWORD, hConv AS PTR, idTransaction AS DWORD);
+	AS LOGIC PASCAL:USER32.DdeAbandonTransaction
+
+
+
+_DLL FUNC DdePostAdvise( idInst AS DWORD, hszTopic AS PTR, hszItem AS PTR);
+	AS LOGIC PASCAL:USER32.DdePostAdvise
+
+
+_DLL FUNC DdeEnableCallback( idInst AS DWORD, hConv AS PTR, wCmd AS DWORD);
+	AS LOGIC PASCAL:USER32.DdeEnableCallback
+
+
+_DLL FUNC  DdeImpersonateClient( hConv AS PTR) AS LOGIC PASCAL:USER32.DdeImpersonateClient
+
+_DLL FUNC DdeNameService( idInst AS DWORD, hsz1 AS PTR, hsz2 AS PTR, afCmd AS DWORD);
+	AS PTR PASCAL:USER32.DdeNameService
+
+_DLL FUNC DdeClientTransaction(pData  AS BYTE PTR, cbData AS DWORD, hConv AS PTR,;
+	hszItem AS PTR, wFmt AS DWORD, wType AS DWORD,;
+	dwTimeout AS DWORD, pdwResult AS DWORD PTR);
+	AS PTR PASCAL:USER32.DdeClientTransaction
+
+
+
+
+_DLL FUNC DdeCreateDataHandle(idInst AS DWORD, pSrc AS BYTE PTR, cb AS DWORD,;
+	cbOff AS DWORD, hszItem AS PTR, wFmt AS DWORD,;
+	afCmd AS DWORD);
+	AS PTR PASCAL:USER32.DdeCreateDataHandle
+
+_DLL FUNC DdeAddData(hData AS PTR, pSrc AS BYTE PTR, cb AS DWORD, cbOff AS DWORD);
+	AS PTR PASCAL:USER32.DdeAddData
+
+
+_DLL FUNC DdeGetData( hData AS PTR, pDst AS BYTE PTR, cbMax AS DWORD, cbOff AS DWORD);
+	AS DWORD PASCAL:USER32.DdeGetData
+
+
+_DLL FUNC DdeAccessData(hData AS PTR,pcbDataSize AS DWORD PTR);
+	AS BYTE PTR PASCAL:USER32.DdeAccessData
+
+
+_DLL FUNC DdeUnaccessData(hData AS PTR) AS LOGIC PASCAL:USER32.DdeUnaccessData
+
+
+_DLL FUNC DdeFreeDataHandle( hData AS PTR) AS LOGIC PASCAL:USER32.DdeFreeDataHandle
+
+_DLL FUNC DdeGetLastError( idInst AS DWORD) AS DWORD PASCAL:USER32.DdeGetLastError
+
+_DLL FUNC DdeCreateStringHandle(idInst AS DWORD, _psz AS PSZ, iCodePage AS INT);
+	AS PTR PASCAL:USER32.DdeCreateStringHandleA
+
+
+
+
+_DLL FUNC DdeQueryString(idInst AS DWORD, hsz AS PTR, _psz AS PSZ, CCHmAX AS DWORD,;
+	iCodePage AS INT) AS DWORD PASCAL:USER32.DdeQueryStringA
+
+
+
+_DLL FUNC DdeFreeStringHandle( idInst AS DWORD, hsz AS PTR);
+	AS LOGIC PASCAL:USER32.DdeFreeStringHandle
+
+
+_DLL FUNC DdeKeepStringHandle (idInst AS DWORD, hsz AS PTR);
+	AS LOGIC PASCAL:USER32.DdeKeepStringHandle
+
+
+_DLL FUNC DdeCmpStringHandles(hsz1 AS PTR, hsz2 AS PTR);
+	AS INT PASCAL:USER32.DdeCmpStringHandles
+
+
+
+
+#region defines
+DEFINE     XST_NULL              := 0
+DEFINE     XST_INCOMPLETE        := 1
+DEFINE     XST_CONNECTED         := 2
+DEFINE     XST_INIT1             := 3
+DEFINE     XST_INIT2             := 4
+DEFINE     XST_REQSENT           := 5
+DEFINE     XST_DATARCVD          := 6
+DEFINE     XST_POKESENT          := 7
+DEFINE     XST_POKEACKRCVD       := 8
+DEFINE     XST_EXECSENT          := 9
+DEFINE     XST_EXECACKRCVD      := 10
+DEFINE     XST_ADVSENT          := 11
+DEFINE     XST_UNADVSENT        := 12
+DEFINE     XST_ADVACKRCVD       := 13
+DEFINE     XST_UNADVACKRCVD     := 14
+DEFINE     XST_ADVDATASENT      := 15
+DEFINE     XST_ADVDATAACKRCVD   := 16
+DEFINE     CADV_LATEACK         := 0xFFFF
+DEFINE     ST_CONNECTED            := 0x0001
+DEFINE     ST_ADVISE               := 0x0002
+DEFINE     ST_ISLOCAL              := 0x0004
+DEFINE     ST_BLOCKED              := 0x0008
+DEFINE     ST_CLIENT               := 0x0010
+DEFINE     ST_TERMINATED           := 0x0020
+DEFINE     ST_INLIST               := 0x0040
+DEFINE     ST_BLOCKNEXT            := 0x0080
+DEFINE     ST_ISSELF               := 0x0100
+DEFINE DDE_FACK                := 0x8000
+DEFINE DDE_FBUSY               := 0x4000
+DEFINE DDE_FDEFERUPD           := 0x4000
+DEFINE DDE_FACKREQ             := 0x8000
+DEFINE DDE_FRELEASE            := 0x2000
+DEFINE DDE_FREQUESTED          := 0x1000
+DEFINE DDE_FAPPSTATUS          := 0x00ff
+DEFINE DDE_FNOTPROCESSED       := 0x0000
+DEFINE DDE_FACKRESERVED       :=0x3F00
+DEFINE DDE_FADVRESERVED       :=0X3FFF
+DEFINE DDE_FDATRESERVED       :=0X4FFF
+DEFINE DDE_FPOKRESERVED       :=0xDFFF
+DEFINE     MSGF_DDEMGR             := 0x8001
+DEFINE CP_WINANSI      := 1004
+DEFINE CP_WINUNICODE   := 1200
+DEFINE     XTYPF_NOBLOCK            := 0x0002
+DEFINE     XTYPF_NODATA             := 0x0004
+DEFINE     XTYPF_ACKREQ             := 0x0008
+DEFINE     XCLASS_MASK              := 0xFC00
+DEFINE     XCLASS_BOOL              := 0x1000
+DEFINE     XCLASS_DATA              := 0x2000
+DEFINE     XCLASS_FLAGS             := 0x4000
+DEFINE     XCLASS_NOTIFICATION      := 0x8000
+DEFINE     XTYP_ERROR              := 0x8002
+DEFINE     XTYP_ADVDATA            := 0x4010
+DEFINE     XTYP_ADVREQ             := 0x2022
+DEFINE     XTYP_ADVSTART           := 0x1030
+DEFINE     XTYP_ADVSTOP            := 0x8040
+DEFINE     XTYP_EXECUTE            := 0x4050
+DEFINE     XTYP_CONNECT            := 0x1062
+DEFINE     XTYP_CONNECT_CONFIRM    := 0x8072
+DEFINE     XTYP_XACT_COMPLETE      := 0x8080
+DEFINE     XTYP_POKE               := 0x4090
+DEFINE     XTYP_REGISTER           := 0x80A2
+DEFINE     XTYP_REQUEST            := 0x20B0
+DEFINE     XTYP_DISCONNECT         := 0x80c2
+DEFINE     XTYP_UNREGISTER         := 0x80d2
+DEFINE     XTYP_WILDCONNECT        := 0x20e2
+DEFINE     XTYP_MASK                := 0x00F0
+DEFINE     XTYP_SHIFT               := 4
+DEFINE     TIMEOUT_ASYNC           := 0xFFFFFFFF
+DEFINE     QID_SYNC                := 0xFFFFFFFF
+DEFINE SZDDESYS_TOPIC         := "System"
+DEFINE SZDDESYS_ITEM_TOPICS   := "Topics"
+DEFINE SZDDESYS_ITEM_SYSITEMS := "SysItems"
+DEFINE SZDDESYS_ITEM_RTNMSG   := "ReturnMessage"
+DEFINE SZDDESYS_ITEM_STATUS   := "Status"
+DEFINE SZDDESYS_ITEM_FORMATS  := "Formats"
+DEFINE SZDDESYS_ITEM_HELP     := "Help"
+DEFINE SZDDE_ITEM_ITEMLIST    := "TopicItemList"
+DEFINE     CBR_BLOCK     := PTR(_CAST, 0xffffffffL)
+DEFINE     CBF_FAIL_SELFCONNECTIONS     := 0x00001000
+DEFINE     CBF_FAIL_CONNECTIONS         := 0x00002000
+DEFINE     CBF_FAIL_ADVISES             := 0x00004000
+DEFINE     CBF_FAIL_EXECUTES            := 0x00008000
+DEFINE     CBF_FAIL_POKES               := 0x00010000
+DEFINE     CBF_FAIL_REQUESTS            := 0x00020000
+DEFINE     CBF_FAIL_ALLSVRXACTIONS      := 0x0003f000
+DEFINE     CBF_SKIP_CONNECT_CONFIRMS    := 0x00040000
+DEFINE     CBF_SKIP_REGISTRATIONS       := 0x00080000
+DEFINE     CBF_SKIP_UNREGISTRATIONS     := 0x00100000
+DEFINE     CBF_SKIP_DISCONNECTS         := 0x00200000
+DEFINE     CBF_SKIP_ALLNOTIFICATIONS    := 0x003c0000
+DEFINE     APPCMD_CLIENTONLY            := 0x00000010L
+DEFINE     APPCMD_FILTERINITS           := 0x00000020L
+DEFINE     APPCMD_MASK                  := 0x00000FF0L
+DEFINE     APPCLASS_STANDARD            := 0x00000000L
+DEFINE     APPCLASS_MASK                := 0x0000000FL
+DEFINE EC_ENABLEALL            := 0
+DEFINE EC_ENABLEONE            := ST_BLOCKNEXT
+DEFINE EC_DISABLE              := ST_BLOCKED
+DEFINE EC_QUERYWAITING         := 2
+DEFINE DNS_REGISTER        := 0x0001
+DEFINE DNS_UNREGISTER      := 0x0002
+DEFINE DNS_FILTERON        := 0x0004
+DEFINE DNS_FILTEROFF       := 0x0008
+DEFINE     HDATA_APPOWNED          := 0x0001
+DEFINE     DMLERR_NO_ERROR                    := 0
+DEFINE     DMLERR_FIRST                       := 0x4000
+DEFINE     DMLERR_ADVACKTIMEOUT               := 0x4000
+DEFINE     DMLERR_BUSY                        := 0x4001
+DEFINE     DMLERR_DATAACKTIMEOUT              := 0x4002
+DEFINE     DMLERR_DLL_NOT_INITIALIZED         := 0x4003
+DEFINE     DMLERR_DLL_USAGE                   := 0x4004
+DEFINE     DMLERR_EXECACKTIMEOUT              := 0x4005
+DEFINE     DMLERR_INVALIDPARAMETER            := 0x4006
+DEFINE     DMLERR_LOW_MEMORY                  := 0x4007
+DEFINE     DMLERR_MEMORY_ERROR                := 0x4008
+DEFINE     DMLERR_NOTPROCESSED                := 0x4009
+DEFINE     DMLERR_NO_CONV_ESTABLISHED         := 0x400a
+DEFINE     DMLERR_POKEACKTIMEOUT              := 0x400b
+DEFINE     DMLERR_POSTMSG_FAILED              := 0x400c
+DEFINE     DMLERR_REENTRANCY                  := 0x400d
+DEFINE     DMLERR_SERVER_DIED                 := 0x400e
+DEFINE     DMLERR_SYS_ERROR                   := 0x400f
+DEFINE     DMLERR_UNADVACKTIMEOUT             := 0x4010
+DEFINE     DMLERR_UNFOUND_QUEUE_ID            := 0x4011
+DEFINE     DMLERR_LAST                        := 0x4011
+DEFINE MH_CREATE   := 1
+DEFINE MH_KEEP     := 2
+DEFINE MH_DELETE   := 3
+DEFINE MH_CLEANUP  := 4
+DEFINE     MAX_MONITORS            := 4
+DEFINE     APPCLASS_MONITOR        := 0x00000001L
+DEFINE     XTYP_MONITOR            := 0x000080F2L
+DEFINE     MF_HSZ_INFO                  := 0x01000000
+DEFINE     MF_SENDMSGS                  := 0x02000000
+DEFINE     MF_POSTMSGS                  := 0x04000000
+DEFINE     MF_CALLBACKS                 := 0x08000000
+DEFINE     MF_ERRORS                    := 0x10000000
+DEFINE     MF_LINKS                     := 0x20000000
+DEFINE     MF_CONV                      := 0x40000000
+DEFINE     MF_MASK                      := 0xFF000000
+#endregion

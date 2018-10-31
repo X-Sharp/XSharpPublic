@@ -321,7 +321,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       fileName := Path.ChangeExtension(fileName, ".ADT")
     ENDIF
     LOCAL result AS DWORD
-    result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, openmode, SELF:_LockType, SELF:_CheckRights, charset, SELF:_Collation, OUT SELF:_Table)
+    result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, charset, SELF:_LockType, SELF:_CheckRights, openmode,SELF:_Collation, OUT SELF:_Table)
     IF result != 0 .AND. SELF:_Connection != IntPtr.Zero
       usTableType := SELF:_TableType
       IF fileName[0] != '#'
@@ -330,7 +330,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           fileName := Path.ChangeExtension(fileName, ".ADT")
         ENDIF
       ENDIF
-      result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, openmode, SELF:_LockType, SELF:_CheckRights, charset, SELF:_Collation, OUT SELF:_Table)
+      result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, charset, SELF:_LockType, SELF:_CheckRights, openmode, SELF:_Collation, OUT SELF:_Table)
     ENDIF
     IF result != 0
       NetErr(TRUE)
@@ -725,8 +725,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL length    := 0 AS DWORD
     LOCAL isEmpty   := 0 AS WORD
     LOCAL wType     AS WORD
-    LOCAL dwField  := (DWORD) nFldPos + 1 AS DWORD
-    LOCAL fld       := SELF:_Fields[nFldPos] AS RddFieldInfo
+    LOCAL dwField  := (DWORD) nFldPos  AS DWORD
+    LOCAL fld       := SELF:_Fields[nFldPos-1] AS RddFieldInfo
     length  := (DWORD) fld:Length +1
     SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwField, OUT wType))
     SWITCH fld:FieldType
@@ -901,8 +901,8 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
   METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
     LOCAL tc AS TypeCode
-    LOCAL dwField  := (DWORD) nFldPos + 1 AS DWORD
-    LOCAL fld := SELF:_Fields[nFldPos] AS RDDFieldInfo
+    LOCAL dwField  := (DWORD) nFldPos  AS DWORD
+    LOCAL fld := SELF:_Fields[nFldPos-1] AS RDDFieldInfo
     IF ! SELF:GoHot()
       RETURN FALSE
     ENDIF
@@ -1244,7 +1244,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       LOCAL fieldType AS WORD
       LOCAL length    AS DWORD
       LOCAL result AS DWORD
-      LOCAL dwFldPos := (DWORD)(uiPos + 1)AS DWORD
+      LOCAL dwFldPos := (DWORD)(uiPos )AS DWORD
       SWITCH uiOrdinal
       CASE DBS_BLOB_TYPE
           SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT fieldType))
@@ -1256,7 +1256,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
             RETURN "?"
         END SWITCH
       CASE DBS_BLOB_LEN
-          IF SUPER:_fields[uiPos]:fieldType != DBFieldType.Memo  
+          IF SUPER:_fields[uiPos-1]:fieldType != DBFieldType.Memo  
             RETURN -1
           ELSE
             result := ACE.AdsGetMemoLength(SELF:_Table, dwFldPos , OUT length)
@@ -1519,10 +1519,6 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       SELF:Unsupported("PutValueFile")
       RETURN FALSE
       
-      /// <summary>This method is not supported by the AdsRDD class </summary>
-    VIRTUAL METHOD ScopeInfo(nOrdinal AS INT) AS OBJECT
-      SELF:Unsupported("ScopeInfo")
-      RETURN NULL
       /// <summary>This method is not supported by the AdsRDD class </summary>
     VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
       RETURN SELF:Unsupported("Sort")

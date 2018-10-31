@@ -1,6 +1,6 @@
-#using System.Collections
+﻿#using System.Collections
 
-CLASS Vulcan.VOWinFormApp INHERIT App
+CLASS XSharp.VOWinFormApp INHERIT App
     PRIVATE winForms := HashTable{} AS HashTable
 
     METHOD RegisterWinForm(form AS System.Windows.Forms.Form) AS VOID

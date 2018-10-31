@@ -1,5 +1,5 @@
-CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
-    PRIVATE winFormVOWindowHost AS Vulcan.WinFormVOWindowHost
+﻿CLASS XSharp.WinFormVOWindow INHERIT System.Windows.Forms.Form
+    PRIVATE winFormVOWindowHost AS WinFormVOWindowHost
     PROTECT currentFocusHandle AS PTR
     STATIC PROTECT oApp AS App
     
@@ -33,12 +33,7 @@ CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
 
         RETURN
 
-    ACCESS VOWindowHost AS WinFormVOWindowHost
-        RETURN winFormVOWindowHost
-        
-    ASSIGN VOWindowHost(@@new AS Vulcan.WinFormVOWindowHost)
-        winFormVOWindowHost := @@new
-        RETURN
+    PROPERTY VOWindowHost AS WinFormVOWindowHost GET winFormVOWindowHost SET winFormVOWindowHost := VALUE
         
     PROTECTED METHOD OnActivated(e AS System.EventArgs) AS VOID
         SUPER:OnActivated(e)
@@ -95,7 +90,7 @@ CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
             p := GetFocus()
             FOR i := 1 UPTO 3  // in a datawindow in form view, the number of layers above the focused control is 3
                 p := GetParent(p)
-                IF WindowStyle.ClassName(p) == __WCWndAppWindowClass .or. p == SELF:winFormVOWindowHost:VOWindow:handle()
+                IF WindowStyle.ClassName(p) == __WCWndAppWindowClass .OR. p == SELF:winFormVOWindowHost:VOWindow:handle()
                     isWanted := TRUE
                     EXIT
                 ENDIF

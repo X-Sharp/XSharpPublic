@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -86,7 +86,7 @@ FUNCTION AscW(c AS STRING) AS DWORD
 FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL position := 0 AS DWORD
 	IF ( c != NULL .AND. cSearch != NULL )
-		IF c:Length != 0 .and. cSearch:Length != 0
+		IF c:Length != 0 .AND. cSearch:Length != 0
 			position := (DWORD) c:IndexOf(cSearch, StringComparison.Ordinal) +1
 		END IF
 	ENDIF
@@ -119,7 +119,7 @@ FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 	LOCAL position := 0 AS DWORD
 	// note dwOffset is ZERO based in VO
 	IF ( c != NULL .AND. cSearch != NULL .AND. dwOff <= c:Length )
-		IF c:Length != 0 .and. cSearch:Length != 0
+		IF c:Length != 0 .AND. cSearch:Length != 0
 			position := (DWORD) c:IndexOf(cSearch,(INT)dwOff) +1
 		ENDIF
 	ENDIF
@@ -135,7 +135,7 @@ FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL position := 0 AS DWORD
 	IF ( c != NULL .AND. cSearch != NULL )
-		IF c:Length != 0 .and. cSearch:Length != 0
+		IF c:Length != 0 .AND. cSearch:Length != 0
 			position := (DWORD) c:IndexOf(cSearch, StringComparison.OrdinalIgnoreCase) +1
 		ENDIF
 	ENDIF
@@ -731,9 +731,8 @@ FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Oem2Ansi(bSource, bSource:Length)
-	FOR LOCAL n := 1 AS INT UPTO bSource:Length
-		bSource[n] := bDest[n]
-	NEXT
+	System.Array.Copy(bDest, bSource, bSource:Length)
+    RETURN
 	
 
 /// <summary>
@@ -864,7 +863,7 @@ FUNCTION QPEncString(cIn AS STRING) AS STRING
 FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
 	LOCAL rightMost := 0 AS DWORD
 	IF cSearch != NULL .AND. c != NULL
-		IF c:Length != 0 .and. cSearch:Length != 0
+		IF c:Length != 0 .AND. cSearch:Length != 0
 			rightMost:= (DWORD) c:LastIndexOf(cSearch, StringComparison.Ordinal) + 1
 		ENDIF
 	ENDIF
@@ -893,7 +892,7 @@ FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
 FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
 	IF cSearch != NULL .AND. c != NULL
-		IF c:Length != 0 .and. cSearch:Length != 0
+		IF c:Length != 0 .AND. cSearch:Length != 0
 			IF dwOffSet > (DWORD) c:Length 
 				dwOffSet := 0U
 			ENDIF
@@ -915,7 +914,7 @@ FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOffSet AS DWORD) AS DWORD
 /// </returns>
 FUNCTION RAtLine(cSearch AS STRING, c AS STRING) AS DWORD
 	LOCAL nPos AS DWORD
-	IF cSearch == NULL .OR. c == NULL .or. cSearch:Length == 0 .or. c:Length == 0
+	IF cSearch == NULL .OR. c == NULL .OR. cSearch:Length == 0 .OR. c:Length == 0
 		RETURN 0
 	ENDIF
 	nPos := RAt(cSearch,c)

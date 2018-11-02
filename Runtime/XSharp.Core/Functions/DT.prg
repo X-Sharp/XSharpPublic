@@ -267,7 +267,7 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	LOCAL nDay, nMonth, nYear AS DWORD
 	LOCAL nDayPos, nMonthPos, nYearPos AS INT
 	dDate := DateTime.MinValue
-	IF string.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat)
+	IF string.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat) .OR. cDate == RuntimeState.GetValue<STRING>(Set.DateFormatEmpty)
 		RETURN dDate
 	ENDIF
 	LOCAL nPos AS INT
@@ -304,15 +304,18 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	TRY
 		// we now know the seperators and the positions in the string
 		LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
-		nDay   := Uint32.Parse(aNums[nDayPos])
-		nMonth := Uint32.Parse(aNums[nMonthPos])
-		nYear  := Uint32.Parse(aNums[nYearPos])
-		IF aNums[nYearPos]:Length < 4
-			// Century missing ?
-			dDate := _ConDate(nYear, nMonth, nDay)
-		ELSE
-			dDate := DateTime{(INT)nYear, (INT)nMonth, (INT)nDay}
-		ENDIF
+		IF UInt32.TryParse(aNums[nDayPos], OUT nDay) .AND. ;
+    		UInt32.TryParse(aNums[nMonthPos], OUT nMonth) .AND. ;
+	    	UInt32.TryParse(aNums[nYearPos], OUT nYear)
+		    IF aNums[nYearPos]:Length < 4
+			    // Century missing ?
+			    dDate := _ConDate(nYear, nMonth, nDay)
+		    ELSE
+			    dDate := DateTime{(INT)nYear, (INT)nMonth, (INT)nDay}
+            ENDIF
+        ELSE
+            dDate := DateTime.MinValue
+        ENDIF
 	CATCH 
 		dDate := DateTime.MinValue
 	END TRY

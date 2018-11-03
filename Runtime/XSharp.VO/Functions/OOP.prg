@@ -275,6 +275,10 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
+		LOCAL result AS USUAL
+		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT result)
+			RETURN result
+		END IF
 		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar} )
 		
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
@@ -294,6 +298,10 @@ INTERNAL STATIC CLASS OOPHelpers
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
 		ENDIF
+		LOCAL dummy AS USUAL
+		IF sendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue}, OUT dummy)
+			RETURN
+		END IF
 		THROW Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{cIVar})
 		
 	STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[], result OUT USUAL) AS LOGIC

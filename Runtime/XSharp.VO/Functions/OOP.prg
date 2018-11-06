@@ -504,7 +504,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	ENDIF    	
 	VAR t := OOPHelpers.FindClass((STRING) cClassName)
 	IF t == NULL
-		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  cClassName  )
+		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
 	ENDIF
 	VAR constructors := t:getConstructors() 
 	IF constructors:Length > 1

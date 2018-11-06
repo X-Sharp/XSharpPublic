@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -9,7 +9,7 @@ USING System.Globalization
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
-/// <param name="cString">A 32-bit binary date represented as a string — least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
+/// <param name="cString">A 32-bit binary date represented as a string � least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
 /// <returns>A date value that corresponds to the date specified in cString.  If cString is not a valid binary date, Bin2Date() returns a NULL_DATE.
 /// </returns>
 FUNCTION Bin2Date(cString AS STRING) AS DATE
@@ -24,7 +24,7 @@ FUNCTION Bin2Date(cString AS STRING) AS DATE
 /// A string for the calculated day of the week.
 /// </returns>
 FUNCTION CDoW(d AS DATE) AS STRING		
-	RETURN NToCDow(Dow(d))
+	RETURN NToCDoW(DoW(d))
 
 /// <summary>
 /// Extract the name of the month from a Date.
@@ -79,7 +79,7 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 /// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If cDate is not a valid ANSI date, CToDAnsi() returns a NULL_DATE.
 /// </returns>
 FUNCTION CToDAnsi(cDate AS STRING) AS DATE
-	RETURN CToD(cDate, "YYYY.MM.DD")
+	RETURN CToD(Left(cDate,10), "YYYY.MM.DD")
 
 
 /// <summary>

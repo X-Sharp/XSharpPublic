@@ -60744,7 +60744,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C597_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C598 - Another case of no line/col info supplied in error message in ACCESS in PARTIAL CLASS *************
 Application = C598 - Another case of no line/col info supplied in error message in ACCESS in PARTIAL CLASS
 IDEVersion = 1.06
@@ -61738,7 +61738,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C607 - Incorrect ARRAY element accesed when using Enum as subscript
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C608 - Preprocessor harbour compatibility issue with different casing of identifiers *************
 Application = C608 - Preprocessor harbour compatibility issue with different casing of identifiers
 IDEVersion = 1.06
@@ -63724,7 +63724,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C626
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C627 - Static inherits from non static results in strange reference *************
 Application = C627 - Static inherits from non static results in strange reference
 IDEVersion = 1.06
@@ -64122,7 +64122,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C630 - Problem calling function with PSZ(_CAST) param
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) *************
 Application = C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled)
 IDEVersion = 1.06
@@ -64161,8 +64161,8 @@ File = %AppPath%\Prg\C631.prg
 FileGUID = 81056867-CE75-4691-956E-B63EA6F48535
 FileType = Code
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) References]
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Native Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) License files]
@@ -64221,7 +64221,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled) *************
 Application = C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled)
 IDEVersion = 1.06
@@ -64321,7 +64321,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C632 - Incorrect results with iif() and USUAL arguments (sample with /vo10 enabled)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C633 - Various "the call is ambiguous" errors when calling X# runtime funcs *************
 Application = C633 - Various "the call is ambiguous" errors when calling X# runtime funcs
 IDEVersion = 1.06
@@ -64361,8 +64361,8 @@ FileGUID = A2003895-0D35-481B-BB6F-6D66A73B404C
 FileType = Code
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = XSharp.Core,1,0,2.0.0.6
+ReferenceGAC = XSharp.VO,1,0,2.0.0.6
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
@@ -64405,7 +64405,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   SyntaxOnly=0
   WarningsErrors=0
   ForceConsole=0
-  ForceX86=0
+  ForceX86=1
 AppConfig = Release,22222222-2222-2222-2222-222222222222
   Switches=
   SwitchesCF=
@@ -64421,7 +64421,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C633 - Various "the call is ambiguous" errors when calling X# runtime funcs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled *************
 Application = C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled
 IDEVersion = 1.06
@@ -64521,7 +64521,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C634 - Bogus error about RETURN statements when typed AS System.Void and /vo8 is enabled
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD *************
 Application = C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD
 IDEVersion = 1.06
@@ -64561,8 +64561,8 @@ FileGUID = E8E65A50-6714-4213-805D-01421027D8F3
 FileType = Code
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.6
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Native Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD License files]

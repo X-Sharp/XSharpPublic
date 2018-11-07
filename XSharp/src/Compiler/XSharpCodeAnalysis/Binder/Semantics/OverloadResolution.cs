@@ -285,6 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // prefer method with "native VO" parameter type
                             if (argType == Compilation.UsualType())
                             {
+                                // no need to check if parleft or parright are usual that was checked above
                                 if (parLeft.Type != parRight.Type)
                                 {
                                     if (parLeft.Type.IsValidVOUsualType(Compilation))

@@ -556,7 +556,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpLexer.PP_COMMAND:
                 case XSharpLexer.PP_TRANSLATE:
-                    doUDCDirective(line);
+                    doUDCDirective(line, true);
                     line = null;
                     break;
                 case XSharpLexer.PP_DEFINE:
@@ -759,7 +759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        void addDefine(IList<XSharpToken> line)
+        void addDefine(IList<XSharpToken> line, IList<XSharpToken> original)
         {
             // Check to see if the define contains a LPAREN, and there is no space in between them. 
             // Then it is a pseudo function that we will store as a #xtranslate UDC
@@ -779,7 +779,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (first.Type == XSharpLexer.LPAREN
                     && first.StartIndex == def.StopIndex + 1)
                 {
-                    doUDCDirective(line);
+                    doUDCDirective(original, false);
                     return;
                 }
             }
@@ -863,10 +863,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void doUDCDirective(IList<XSharpToken> udc)
+        void doUDCDirective(IList<XSharpToken> udc, bool mustWrite)
         {
             Debug.Assert(udc?.Count > 0);
-            writeToPPO(udc, true, true);
+            if (mustWrite)
+                writeToPPO(udc, true, true);
             udc = stripWs(udc);
             if (udc.Count < 3)
             {
@@ -1200,7 +1201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (IsActive())
             {
                 writeToPPO(original, true);
-                addDefine(line);
+                addDefine(line, original);
             }
             else
             {

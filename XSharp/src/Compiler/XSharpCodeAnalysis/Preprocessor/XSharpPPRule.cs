@@ -127,7 +127,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // This is done inline since it is much simpler then for a UDC
             var matchTokens = new List<PPMatchToken>();
             var resultTokens = new List<PPResultToken>();
-            var markers = new Dictionary<string, PPMatchToken>(StringComparer.OrdinalIgnoreCase);
+            // inside a #define the tokens are case sensitive
+            var markers = new Dictionary<string, PPMatchToken>(StringComparer.Ordinal);
             bool hasSeenLParen = false;
             bool hasErrors = false;
             for (int i = 0; i < left.Length && !hasErrors; i++)

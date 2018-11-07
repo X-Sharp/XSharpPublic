@@ -192,5 +192,33 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
         }
+
+        static internal bool IsValidVOUsualType(this TypeSymbol type, CSharpCompilation compilation)
+        {
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_Int32:
+                case SpecialType.System_Int64:
+                case SpecialType.System_Boolean:
+                case SpecialType.System_String:
+                case SpecialType.System_IntPtr:
+                case SpecialType.System_Decimal:
+                case SpecialType.System_DateTime:
+                case SpecialType.System_Object:
+                    return true;
+                
+            }
+            if (type == compilation.ArrayType())
+                return true;
+            if (type == compilation.CodeBlockType())
+                return true;
+            if (type == compilation.DateType())
+                return true;
+            if (type == compilation.FloatType())
+                return true;
+            if (type == compilation.SymbolType())
+                return true;
+            return false;
+        }
     }
 }

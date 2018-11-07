@@ -281,6 +281,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
+                            // handle case where argument is usual and the method is not usual
+                            // prefer method with "native VO" parameter type
+                            if (argType == Compilation.UsualType())
+                            {
+                                if (parLeft.Type != parRight.Type)
+                                {
+                                    if (parLeft.Type.IsValidVOUsualType(Compilation))
+                                    {
+                                        result = BetterResult.Left;
+                                        return true;
+                                    }
+                                    if (parRight.Type.IsValidVOUsualType(Compilation))
+                                    {
+                                        result = BetterResult.Right;
+                                        return true;
+                                    }
+                                }
+                            }
                         }
 
                     }
@@ -330,6 +348,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+          
+
             // generate warning that function takes precedence over static method
             var func1 = m1.Member.ContainingType.Name.EndsWith("Functions");
             var func2 = m2.Member.ContainingType.Name.EndsWith("Functions");

@@ -572,7 +572,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             Debug.Assert(overridingMemberIsMethod ^ overridingMemberIsProperty ^ overridingMemberIsEvent);
 
             var overridingMemberLocation = overridingMember.Locations[0];
-
+#if XSHARP
+            // Partial properties generated after merging the types in several files
+            // do not have a proper location. Get the location of the Access/Assign that
+            // was used to create the property
+            if (string.IsNullOrEmpty(overridingMemberLocation.GetLineSpan().Path))
+            {
+                overridingMemberLocation = overridingMember.GetNonNullSyntaxNode().Location;
+            }
+#endif
             var overriddenMembers = overriddenOrHiddenMembers.OverriddenMembers;
             Debug.Assert(!overriddenMembers.IsDefault);
 

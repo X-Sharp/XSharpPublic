@@ -27,10 +27,11 @@ USING System.Runtime.ConstrainedExecution
 FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	LOCAL renamed := FALSE AS LOGIC
 	TRY
+        XSharp.IO.File.clearErrorState()
 		System.IO.File.Move(cOldFile, cNewFile)
-		renamed := TRUE
-		CATCH 
-		FError((DWORD)Marshal.GetLastWin32Error())
+	    renamed := TRUE
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN renamed
 	
@@ -43,11 +44,11 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 FUNCTION FErase(fileName AS STRING) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
+        XSharp.IO.File.clearErrorState()
 		System.IO.File.Delete(fileName)
 		isDeleted := TRUE
-		CATCH 
-		FError((DWORD)Marshal.GetLastWin32Error())
-		isDeleted := FALSE
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN isDeleted
 	
@@ -71,12 +72,13 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 	/// If cTargetFile does not exist, it is created.  If it exists it is only overwritten if lOverWrite = TRUE
 	///</remarks>
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
-	LOCAL IsCopied := TRUE AS LOGIC
+	LOCAL IsCopied := FALSE AS LOGIC
 	TRY
+        XSharp.IO.File.clearErrorState()
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
-	CATCH 
-		FError((DWORD)Marshal.GetLastWin32Error())
-		IsCopied := FALSE
+		IsCopied := TRUE
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN IsCopied
 	

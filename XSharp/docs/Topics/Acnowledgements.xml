@@ -9,7 +9,7 @@
     <para styleclass="Normal">We could not have done this project without (source code) contributions from others.<br/>Below is a list of the contributions that we used for our compiler and Visual Studio integration</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -73,6 +73,14 @@
         </td>
         <td>
           <para styleclass="Body Text">The documentation for the runtime is generated with a special version of the Sandcastle Help File Builder product. (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/EWSoftware/SHFB" target="_blank">github.com/EWSoftware/SHFB</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Paul Piko</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">For his Hybrid classes that allow to mix VO GUI with Windows Forms</para>
         </td>
       </tr>
     </table></para>

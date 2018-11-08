@@ -10,6 +10,32 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="List"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading1">Changes in 2.0.0.7 (Bandol Beta 7)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">When calling a runtime function with a USUAL parameter the compiler now automatically prefers methods or functions with &quot;traditional&apos; VO types over the ones with enhanced .Net types. For example when there are 2 overloads, one that takes a byte[] and another that takes a string, then the overload that takes a string will get preference over the overload that takes a byte[].</li>
+      <li styleclass="List">Resolved a problem with .NOT. expressions inside IIF() expressions</li>
+      <li styleclass="List">Improved debugger break point generation for Invoke expressions ( like String.Compare())</li>
+      <li styleclass="List">Fixed a pre-processor error for parameters for macros defined in a #define. These parameters must have the right case now. Parameters with a different case will not be resolved any longer.</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">We have added several missing functions, such as _GetCmdLine, Oem2AnsiA() and XSharpLoadLibrary</li>
+      <li styleclass="List">Fixed problems in CreateInstance, IVarGet, IVarPut(), CtoDAnsi() and more.</li>
+      <li styleclass="List">Added VO Compatible overload for FRead4() </li>
+      <li styleclass="List">No longer (cathed) exceptions are produced for empty dates </li>
+      <li styleclass="List">Ferror() was not always return the error of a file operation. This has been fixed</li>
+      <li styleclass="List">We have added a new FException() function that returns the last exception that occurred for a low level file operation</li>
+      <li styleclass="List">Casting a usual containing a PTR to a LONG or DWORD is now supported </li>
+    </list>
+    <para styleclass="Heading2">SDK Classes</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">We have added the Hybrid UI classes from Paul Piko </li>
+    </list>
+    <para styleclass="Heading2">Tools</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The Vulcan XPorter now also has an option to replace the runtime and SDK references with references to the X# runtime</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.0.6 (Bandol Beta 6)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

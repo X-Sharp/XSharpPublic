@@ -611,10 +611,10 @@ FUNCTION ArrayStore(a AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
 FUNCTION ArrayStore<T>(a AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD WHERE T IS NEW()
 	LOCAL i AS DWORD
 	LOCAL nLen AS DWORD
-	nLen := ALen(a)
+	nLen := a:Length
 	dwLen := Math.Min(dwLen, nLen)
-	FOR i := 1 TO dwLen
-		buff[i] := a[i]
+	FOR i := 1 TO (LONG) dwLen
+		buff[i] := a[(INT) i]
 	NEXT
 	RETURN dwLen
 	
@@ -1136,7 +1136,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCou
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
 	FOR nX := iStart TO nEnd
-		cb(aArray[ nX])
+		cb(aArray[ (INT) nX])
 	NEXT
 	RETURN aArray
 
@@ -1279,7 +1279,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,i
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
 	FOR nX := iStart TO nEnd
-		aArray[ nX] := cb(aArray[ nX])
+		aArray[ (INT) nX] := cb(aArray[(INT)  nX])
 	NEXT
 	RETURN aArray
 

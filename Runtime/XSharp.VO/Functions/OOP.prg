@@ -76,10 +76,10 @@ INTERNAL STATIC CLASS OOPHelpers
 			// If there is an Implicoit Namespace Attribute
 			// We don't know if the current assembly is compiler with /INS, but we assume it is when they
 			// use the 'old fashioned' CreateInstance().
-			VAR ins := TYPEOF( ImplicitNamespaceAttribute )
+			VAR ins := TYPEOF( ClassLibraryAttribute )
 			IF asm:IsDefined(  ins, FALSE )
-				VAR atr := (ImplicitNamespaceAttribute) (asm:GetCustomAttributes(ins,FALSE) [1])
-				VAR cFullName := atr:Namespace +"."+cName
+				VAR atr := (ClassLibraryAttribute) (asm:GetCustomAttributes(ins,FALSE) [1])
+				VAR cFullName := atr:DefaultNamespace +"."+cName
 				ret := asm:GetType( cFullName, FALSE, TRUE )
 				IF ret != NULL
 					EXIT
@@ -504,7 +504,7 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 	ENDIF    	
 	VAR t := OOPHelpers.FindClass((STRING) cClassName)
 	IF t == NULL
-		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  cClassName  )
+		 THROW Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(cClassName), 1,  <OBJECT>{cClassName}  )
 	ENDIF
 	VAR constructors := t:getConstructors() 
 	IF constructors:Length > 1
@@ -536,9 +536,9 @@ FUNCTION CreateInstance(cClassName) AS OBJECT CLIPPER
 			FOR nArg := 2 TO nPCount
 				args[nArg-1] := _GetFParam(nArg)
 			NEXT 
-			oArgs  := <OBJECT>{args}
+			oArgs  := args
 		ENDIF
-		oRet := ctor:Invoke( oArgs)	
+		oRet := ctor:Invoke( oArgs )
 	CATCH
 		THROW Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
 		oRet := NULL_OBJECT

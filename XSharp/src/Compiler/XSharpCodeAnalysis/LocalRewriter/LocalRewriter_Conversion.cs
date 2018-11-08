@@ -118,6 +118,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else // System.Decimals, Objects and reference types, but not String
                     {
+
+                        // check to see if we are casting to an interface that the usualtype supports
+                        if (rewrittenType.IsInterfaceType())
+                        {
+                            foreach (var interf in usualType.Interfaces)
+                            {
+                                if (interf == rewrittenType)
+                                {
+                                    return ConversionKind.ImplicitReference;
+                                }
+                            }
+                        }
                         // special case for __CastClass
                         var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
                         if (xnode != null && xnode.IsCastClass())

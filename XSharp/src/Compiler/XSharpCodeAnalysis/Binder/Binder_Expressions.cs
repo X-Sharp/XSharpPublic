@@ -127,7 +127,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO)
             {
                 var arrayType = Compilation.ArrayType();
-                var arrayBaseType = Compilation.ArrayBaseType();
                 var usualType = Compilation.UsualType();
                 var pszType = Compilation.PszType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
@@ -163,13 +162,41 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindIndexerAccess(node, expr, newArgs, diagnostics);
 
                 }
-                if (cf == usualType)
+                var indexerType = Compilation.IndexerType();
+                var namedIndexerType = Compilation.NamedIndexerType();
+                var indexedPropsType = Compilation.IndexedPropertiesType();
+                var arrayBaseType = Compilation.ArrayBaseType();
+                bool numericParams = false;
+                if (cf == usualType || cf == arrayBaseType)
                 {
-                    // Index operator on USUAL then we convert the usual to an array first
-                    expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
-                    cf = arrayType;
+                    // Index operator on USUAL then we convert the usual to an array or indexer first
+                    if (Compilation.Options.XSharpRuntime)
+                    {
+                        if (analyzedArguments.Arguments.Count == 2 && analyzedArguments.Arguments[1].Type.IsStringType())
+                        {
+                            cf = namedIndexerType;
+                            numericParams = true;
+                        }
+                        else if (analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].Type.IsStringType())
+                        {
+                            cf = indexedPropsType;
+                            numericParams = false;
+                        }
+                        else
+                        {
+                            cf = indexerType;
+                            numericParams = true;
+                        }
+                        expr = BindCastCore(node, expr, cf, wasCompilerGenerated: true, diagnostics: diagnostics);
+                    }
+                    else
+                    {
+                        expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
+                        cf = arrayType;
+                        numericParams = true;
+                    }
                 }
-                if (cf == arrayType || (Compilation.Options.XSharpRuntime && cf.ConstructedFrom == arrayBaseType))
+                if (cf == arrayType || numericParams ) 
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -179,13 +206,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         BoundExpression newarg;
                         bool mustBeNumeric = false;
                         ++argno;
-                        if (Compilation.Options.XSharpRuntime && cf.ConstructedFrom == arrayBaseType )
-                        {
+                        mustBeNumeric = true;
+                        if (Compilation.Options.XSharpRuntime  && cf == namedIndexerType)
+                        { 
                             mustBeNumeric = argno == 1;
-                        }
-                        else
-                        {
-                            mustBeNumeric = true;
                         }
                         if (mustBeNumeric)
                         {

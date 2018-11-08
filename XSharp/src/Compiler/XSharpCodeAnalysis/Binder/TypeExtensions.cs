@@ -113,6 +113,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        static internal NamedTypeSymbol IndexerType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+                return compilation.GetWellKnownType(WellKnownType.XSharp_IIndexer);
+            return null;
+        }
+        static internal NamedTypeSymbol NamedIndexerType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+                return compilation.GetWellKnownType(WellKnownType.XSharp_INamedIndexer);
+            return null;
+        }
+        static internal NamedTypeSymbol IndexedPropertiesType(this CSharpCompilation compilation)
+        {
+            if (compilation.Options.XSharpRuntime)
+                return compilation.GetWellKnownType(WellKnownType.XSharp_IIndexedProperties);
+            return null;
+        }
+
+
         static internal NamedTypeSymbol CodeBlockType(this CSharpCompilation compilation)
         {
             if (compilation.Options.XSharpRuntime)

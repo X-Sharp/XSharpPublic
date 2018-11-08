@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -9,6 +9,7 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 USING System.Runtime.InteropServices
+USING System.Runtime.CompilerServices
 USING System.Security
 USING Microsoft.Win32.SafeHandles
 USING System.Runtime
@@ -159,6 +160,7 @@ BEGIN NAMESPACE XSharp.IO
 	INTERNAL STATIC CLASS File
         /// <exclude />
         PUBLIC STATIC errorCode	:= 0 AS DWORD
+        PUBLIC STATIC lastException := NULL AS Exception
         /// <exclude />
 		PUBLIC STATIC LastFound AS STRING
 		PRIVATE STATIC streams AS Dictionary<IntPtr, FileCacheElement >
@@ -195,13 +197,25 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC PRIVATE METHOD createManagedFileStream(cFIle AS STRING, oMode AS VOFileMode) AS FileStream
 			LOCAL oStream := NULL AS FileSTream
 			TRY
+                clearErrorState()
 				oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 4096}
 			CATCH e AS Exception
 				System.Diagnostics.Trace.writeLine(e:Message)
-				FError((DWORD)Marshal.GetLastWin32Error())
+				setErrorState(e)
 			END TRY
 			RETURN oStream
-		
+            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];            
+        INTERNAL STATIC method clearErrorState() as VOID
+            lastException := NULL
+            errorCode := 0
+            RETURN
+            
+		INTERNAL STATIC METHOD setErrorState ( o AS Exception ) AS VOID
+            lastException := o
+            errorCode := _and ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
+            RETURN
+            
 		STATIC INTERNAL METHOD CreateFile(cFIle AS STRING, oMode AS VOFileMode) AS IntPtr
 			LOCAL hFile := F_ERROR AS IntPtr
 			LOCAL oStream AS FileStream
@@ -240,14 +254,19 @@ BEGIN NAMESPACE XSharp.IO
 				LOCAL oStream      := streams[pStream]:Stream AS FileStream
 				LOCAL dwAttributes := streams[pStream]:Attributes AS DWORD
 				removeStream(pStream)
-				oStream:Flush()
-				oStream:Close()
-				IF dwAttributes != 0
-					VAR fi := FileInfo{oStream:Name}
-					fi:Attributes := (FileAttributes) dwAttributes
-				ENDIF
-				oStream:Dispose()
+                TRY
+                    clearErrorState()
+				    oStream:Flush()
+				    oStream:Close()
+				    IF dwAttributes != 0
+					    VAR fi := FileInfo{oStream:Name}
+					    fi:Attributes := (FileAttributes) dwAttributes
+				    ENDIF
+				    oStream:Dispose()
 				RETURN TRUE
+                CATCH e as Exception
+                    setErrorState(e)
+                END TRY
 			ENDIF
 			RETURN FALSE
 		
@@ -262,12 +281,13 @@ BEGIN NAMESPACE XSharp.IO
 			VAR oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
+                    clearErrorState()
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
 					IF !lAnsi
 						Oem2AnsiA(pBuffer)
 					ENDIF
-				CATCH
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					setErrorState(e)
 				END TRY
 			ENDIF
 			RETURN iResult
@@ -283,13 +303,14 @@ BEGIN NAMESPACE XSharp.IO
 			IF oStream != NULL_OBJECT
 				TRY
 					LOCAL pBuffer := XSharp.IO.File.getBuffer(pFile, iCount) AS BYTE[]
+                    clearErrorState()
 					nPos    := oStream:Position
 					iCount := oStream:Read(pBuffer,0,(INT) iCount)
 					cResult := Bytes2Line(pBuffer, REF iCount)
 					nPos += iCount	// advance CRLF
 					oStream:Position := nPos
-				CATCH
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					setErrorState(e)
 				END TRY
 			ENDIF
 			RETURN cResult
@@ -300,7 +321,9 @@ BEGIN NAMESPACE XSharp.IO
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				iResult := -1
+                
 				TRY
+                    clearErrorState()
 					SWITCH dwOrigin
 						CASE FS_END
 							iResult := oStream:Seek(lOffSet, SeekOrigin.End)
@@ -311,8 +334,8 @@ BEGIN NAMESPACE XSharp.IO
 						OTHERWISE
 							iResult := -1					
 					END SWITCH
-				CATCH
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					setErrorState(e)
 				END TRY
 				RETURN iResult 
 			ENDIF
@@ -328,13 +351,14 @@ BEGIN NAMESPACE XSharp.IO
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
+                    clearErrorState()
 					IF !lAnsi
 						pBuffer := Ansi2Oem(pBuffer)
 					ENDIF
 					oStream:Write(pBuffer, 0, iCount)
 					iWritten := iCount
-				CATCH
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					setErrorState(e)
 				END TRY
 				
 			ENDIF
@@ -353,16 +377,17 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL lResult := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
+                    clearErrorState()
 					IF (lLock)
 						oStream:Lock(iOffset, iLength)
 					ELSE
 						oStream:UnLock(iOffset, iLength)
 					ENDIF
 					lResult := TRUE
-				CATCH 
+				CATCH e as Exception
 					// Catch and save error
+					setErrorState(e)
 					lResult := FALSE
-					FError((DWORD)Marshal.GetLastWin32Error())
 				END TRY
 			ENDIF	
 			RETURN lResult   		
@@ -372,14 +397,16 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL lOk := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
+                    clearErrorState()
 					IF lCommit
 						oStream:Flush(TRUE)
 					ELSE
 						oStream:Flush()
 					ENDIF
 					lOk := TRUE
-				CATCH 
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					// Catch and save error
+					setErrorState(e)
 					lOk := FALSE 
 				END TRY
 			ENDIF	
@@ -389,10 +416,12 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL lOk := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
+                    clearErrorState()
 					oStream:SetLength(nValue)
 					lOk := TRUE
-				CATCH 
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					// Catch and save error
+					setErrorState(e)
 					lOk := FALSE
 				END TRY
 			ENDIF	
@@ -411,9 +440,11 @@ BEGIN NAMESPACE XSharp.IO
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
+                    clearErrorState()
 					RETURN oStream:Position
-				CATCH
-					FError((DWORD)Marshal.GetLastWin32Error())
+				CATCH e as Exception
+					// Catch and save error
+					setErrorState(e)
 				END TRY
 			ENDIF
 			RETURN -1
@@ -443,6 +474,14 @@ FUNCTION FError() AS DWORD
 	LOCAL nOldError AS DWORD
 	nOldError := XSharp.IO.File.errorCode
 	RETURN nOldError
+
+
+/// <summary>
+/// Get the last exception for a file operation.
+/// </summary>
+/// <returns>The exception from the last file operation or the last user-specified setting.  If there was no exception, FException() returns null.</returns>
+FUNCTION FException() AS Exception
+	RETURN XSharp.IO.File.lastException
 
 
 /// <summary>

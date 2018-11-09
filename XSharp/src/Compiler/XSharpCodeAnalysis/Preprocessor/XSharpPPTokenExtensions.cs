@@ -146,6 +146,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var t in tokens)
                 {
                     result = result + t.Text ;
+                    if (!t.Text.EndsWith(" "))
+                        result += " ";
                 }
 
             }

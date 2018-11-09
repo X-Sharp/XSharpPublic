@@ -1231,7 +1231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = firstOptional; i < _matchtokens.Length && iSource < tokens.Count; i++)
                 {
                     var mtoken = _matchtokens[i];
-                    if (matchInfo[mtoken.Index].MatchCount == 0)
+                    if (matchInfo[mtoken.Index].MatchCount == 0 || mtoken.IsOptional)   // optional tokens may appear more than once
                     {
                         if (!matchToken(mtoken, ref iRule, _matchtokens.Length, ref iSource, tokens, matchInfo, matchedWithToken))
                         {

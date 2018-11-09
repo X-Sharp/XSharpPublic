@@ -1708,8 +1708,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                     }
-                    // recursive processing should have done everything, so exit
-                    break;
                 }
             }
             if (usedRules.Count > 0)

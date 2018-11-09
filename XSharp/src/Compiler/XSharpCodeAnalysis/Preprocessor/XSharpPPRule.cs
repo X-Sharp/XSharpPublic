@@ -26,7 +26,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal class PPRule
     {
-        PPUDCType _type;
+        readonly PPUDCType _type;
         PPMatchToken[] _matchtokens;
         PPMatchToken[] _matchTokensFlattened;
         int tokenCount = 0;
@@ -35,9 +35,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool CaseInsensitive = false;
         internal bool hasRepeats = false;
         internal bool hasOptionalResult = false;
+        private CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
-        internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages)
+        internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
+            _options = options;
             switch (udc.Type)
             {
                 case XSharpLexer.PP_COMMAND:
@@ -128,7 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var matchTokens = new List<PPMatchToken>();
             var resultTokens = new List<PPResultToken>();
             // inside a #define the tokens are case sensitive
-            var markers = new Dictionary<string, PPMatchToken>(StringComparer.Ordinal);
+            var markers = new Dictionary<string, PPMatchToken>(_options.VOPreprocessorBehaviour ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
             bool hasSeenLParen = false;
             bool hasErrors = false;
             for (int i = 0; i < left.Length && !hasErrors; i++)
@@ -175,8 +177,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (markers.ContainsKey(token.Text))
                     {
                         var mtoken = markers[token.Text];
-                        var rtoken = new PPResultToken(token, PPTokenType.ResultRegular);
-                        rtoken.MatchMarker = mtoken;
+                        var rtoken = new PPResultToken(token, PPTokenType.ResultRegular)
+                        {
+                            MatchMarker = mtoken
+                        };
                         resultTokens.Add(rtoken);
                     }
                     else
@@ -535,8 +539,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         marker = e;
                                 }
                                 string key = marker == null ? "**"+first.Key: marker.Key;
-                                element = new PPMatchToken(token, PPTokenType.MatchOptional, key);
-                                element.Children = nested;
+                                element = new PPMatchToken(token, PPTokenType.MatchOptional, key)
+                                {
+                                    Children = nested
+                                };
                                 result.Add(element);
                             }
                         }
@@ -823,8 +829,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 else
                                 {
-                                    var element = new PPResultToken(token, PPTokenType.ResultOptional, marker.Key);
-                                    element.OptionalElements = nested;
+                                    var element = new PPResultToken(token, PPTokenType.ResultOptional, marker.Key)
+                                    {
+                                        OptionalElements = nested
+                                    };
                                     result.Add(element);
                                     hasOptionalResult = true;
 
@@ -1352,8 +1360,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void tokenResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
 
-            var newToken = new XSharpToken(rule.Token);
-            newToken.SourceSymbol = tokens[0];
+            var newToken = new XSharpToken(rule.Token)
+            {
+                SourceSymbol = tokens[0]
+            };
             result.Add(newToken);
 
         }
@@ -1443,11 +1453,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (addBlockMarker)
             {
                 t = tokens[start];
-                nt = new XSharpToken(t, XSharpLexer.LCURLY, "{");
-                nt.Channel = XSharpLexer.DefaultTokenChannel;
+                nt = new XSharpToken(t, XSharpLexer.LCURLY, "{")
+                {
+                    Channel = XSharpLexer.DefaultTokenChannel
+                };
                 result.Add(nt);
-                nt = new XSharpToken(t, XSharpLexer.OR, "||");
-                nt.Channel = XSharpLexer.DefaultTokenChannel;
+                nt = new XSharpToken(t, XSharpLexer.OR, "||")
+                {
+                    Channel = XSharpLexer.DefaultTokenChannel
+                };
                 result.Add(nt);
             }
             for (int i = start; i <= end; i++)
@@ -1458,8 +1472,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (addBlockMarker)
             {
                 t = tokens[end];
-                nt = new XSharpToken(t, XSharpLexer.RCURLY, "}");
-                nt.Channel = XSharpLexer.DefaultTokenChannel;
+                nt = new XSharpToken(t, XSharpLexer.RCURLY, "}")
+                {
+                    Channel = XSharpLexer.DefaultTokenChannel
+                };
                 result.Add(nt);
             }
         }
@@ -1530,15 +1546,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             sb.Append(token.Text);
                         }
                         sb.Append('"');
-                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
-                        nt.Channel = XSharpLexer.DefaultTokenChannel;
+                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
+                        {
+                            Channel = XSharpLexer.DefaultTokenChannel
+                        };
                         result.Add(nt);
                     }
                     else
                     {
                         // no match, then dumb stringify write an empty string
-                        var nt = new XSharpToken(tokens[0], XSharpLexer.NULL_STRING, "NULL_STRING");
-                        nt.Channel = XSharpLexer.DefaultTokenChannel;
+                        var nt = new XSharpToken(tokens[0], XSharpLexer.NULL_STRING, "NULL_STRING")
+                        {
+                            Channel = XSharpLexer.DefaultTokenChannel
+                        };
                         result.Add(nt);
                     }
                     break;
@@ -1555,8 +1575,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             sb.Append(token.Text);
                         }
                         sb.Append('"');
-                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
-                        nt.Channel = XSharpLexer.DefaultTokenChannel;
+                        var nt = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
+                        {
+                            Channel = XSharpLexer.DefaultTokenChannel
+                        };
                         result.Add(nt);
                     }
                     break;
@@ -1584,9 +1606,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     result.Add(token);
                                     break;
                                 default:
-                                    newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text);
-                                    newToken.Text = "\"" + token.Text + "\"";
-                                    newToken.Channel = XSharpLexer.DefaultTokenChannel;
+                                    newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text)
+                                    {
+                                        Text = "\"" + token.Text + "\"",
+                                        Channel = XSharpLexer.DefaultTokenChannel
+                                    };
                                     result.Add(newToken);
                                     break;
                             }
@@ -1607,8 +1631,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             if (addDelimiters)
                                 sb.Append('"');
-                            newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString());
-                            newToken.Channel = XSharpLexer.DefaultTokenChannel;
+                            newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, sb.ToString())
+                            {
+                                Channel = XSharpLexer.DefaultTokenChannel
+                            };
                             result.Add(newToken);
                         }
                     }
@@ -1672,8 +1698,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     range = range.Children[offset];
                 }
                 XSharpToken t = tokens[range.Start];
-                t = new XSharpToken(t, XSharpLexer.TRUE_CONST, ".T.");
-                t.Channel = XSharpLexer.DefaultTokenChannel;
+                t = new XSharpToken(t, XSharpLexer.TRUE_CONST, ".T.")
+                {
+                    Channel = XSharpLexer.DefaultTokenChannel
+                };
                 result.Add(t);
             }
             else

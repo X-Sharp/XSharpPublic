@@ -181,12 +181,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         XSharpLexer _lexer;
-        ITokenStream _lexerStream;
+        readonly ITokenStream _lexerStream;
         CSharpParseOptions _options;
 
         Encoding _encoding;
 
-        SourceHashAlgorithm _checksumAlgorithm;
+        readonly SourceHashAlgorithm _checksumAlgorithm;
 
         IList<ParseErrorData> _parseErrors;
         bool _duplicateFile = false;
@@ -199,7 +199,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         Stack<bool> defStates = new Stack<bool>();
         Stack<XSharpToken> regions = new Stack<XSharpToken>();
-        string _fileName = null;
+        readonly string _fileName = null;
         InputState inputs;
         IToken lastToken = null;
 
@@ -208,10 +208,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool _hasCommandrules = false;
         bool _hasTransrules = false;
         int rulesApplied = 0;
-        int defsApplied = 0;
+        readonly int defsApplied = 0;
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
 
-        bool _preprocessorOutput = false;
+        readonly bool _preprocessorOutput = false;
         Stream _ppoStream;
 
         internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>(CaseInsensitiveComparison.Comparer);
@@ -698,12 +698,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 x = x.parent;
             }
-            InputState s = new InputState(input);
-            s.parent = inputs;
-            s.SourceFileName = filename;
-            s.SymbolName = symbol?.Text;
-            s.Symbol = symbol;
-            s.isSymbol = symbol != null;
+            InputState s = new InputState(input)
+            {
+                parent = inputs,
+                SourceFileName = filename,
+                SymbolName = symbol?.Text,
+                Symbol = symbol,
+                isSymbol = symbol != null
+            };
             if (s.isSymbol)
             {
                 activeSymbols.Add(s.SymbolName);
@@ -812,8 +814,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 var defText = def.Text;
                                 if (inputs.Symbol != null)
                                 {
-                                    def = new XSharpToken(inputs.Symbol);
-                                    def.SourceSymbol = null;
+                                    def = new XSharpToken(inputs.Symbol)
+                                    {
+                                        SourceSymbol = null
+                                    };
                                 }
                                 addParseError(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
                             }
@@ -876,7 +880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var cmd = udc[0];
             PPErrorMessages errorMsgs;
-            var rule = new PPRule(cmd, udc, out errorMsgs);
+            var rule = new PPRule(cmd, udc, out errorMsgs, _options);
             if (rule.Type == PPUDCType.None)
             {
                 if (errorMsgs.Count > 0)
@@ -1536,18 +1540,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             foreach (var t in deflist)
                             {
-                                var t2 = new XSharpToken(t);
-                                t2.Channel = XSharpLexer.DefaultTokenChannel;
-                                t2.SourceSymbol = token;
+                                var t2 = new XSharpToken(t)
+                                {
+                                    Channel = XSharpLexer.DefaultTokenChannel,
+                                    SourceSymbol = token
+                                };
                                 tempResult.Add(t2);
                             }
                         }
                         else
                         {
                             // add a space so error messages look proper
-                            var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ");
-                            t2.Channel = XSharpLexer.Hidden;
-                            t2.SourceSymbol = token;
+                            var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ")
+                            {
+                                Channel = XSharpLexer.Hidden,
+                                SourceSymbol = token
+                            };
                             tempResult.Add(t2);
                         }
                     }

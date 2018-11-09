@@ -34,24 +34,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         // XBase Type Names
         #region Fields
-        private TypeSyntax _usualType;
-        private TypeSyntax _floatType;
-        private TypeSyntax _arrayType;
-        private TypeSyntax _dateType;
-        private TypeSyntax _symbolType;
-        private TypeSyntax _pszType;
-        private TypeSyntax _codeblockType;
-        private TypeSyntax _stringType;
-        private TypeSyntax _intType;
-        private string _errorType;
-        private string _classLibraryType;
-        private string _wrappedExceptionType;
-        private string _compilerVersionType;
-        private string _runtimeStateType;
-        private string _defaultParameterType;
-        private string _actualType;
-        private string _clipperCallingConvention;
-        private string _winBoolType;
+        private readonly TypeSyntax _usualType;
+        private readonly TypeSyntax _floatType;
+        private readonly TypeSyntax _arrayType;
+        private readonly TypeSyntax _dateType;
+        private readonly TypeSyntax _symbolType;
+        private readonly TypeSyntax _pszType;
+        private readonly TypeSyntax _codeblockType;
+        private readonly TypeSyntax _stringType;
+        private readonly TypeSyntax _intType;
+        private readonly string _errorType;
+        private readonly string _classLibraryType;
+        private readonly string _wrappedExceptionType;
+        private readonly string _compilerVersionType;
+        private readonly string _runtimeStateType;
+        private readonly string _defaultParameterType;
+        private readonly string _actualType;
+        private readonly string _clipperCallingConvention;
+        private readonly string _winBoolType;
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
@@ -273,8 +273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var root = tree.GetRoot();
                 if (root != null)
                 {
-                    CompilationUnitSyntax unit = root.Green as CompilationUnitSyntax;
-                    if (unit != null)
+                    if (root.Green is CompilationUnitSyntax unit)
                     {
                         if (unit.InitProcedures != null)
                         {
@@ -2129,13 +2128,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (expr is XP.PrimaryExpressionContext)
             {
-                var lit = expr.GetChild(0) as XP.LiteralExpressionContext;
-                if (lit != null)
+                if (expr.GetChild(0) is XP.LiteralExpressionContext lit )
                 {
                     return lit;
                 }
-                var paren = expr.GetChild(0) as XP.ParenExpressionContext;
-                if (paren != null)
+                if (expr.GetChild(0) is XP.ParenExpressionContext paren)
                 {
                     return GetLiteralExpression(paren.Expr);
                 }

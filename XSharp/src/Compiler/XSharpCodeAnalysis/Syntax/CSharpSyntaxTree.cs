@@ -197,8 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     start = xNode.Position ;
                     length = xNode.FullWidth ;
                     fn = xNode.SourceFileName;
-                    var symbol = xNode.SourceSymbol as XSharpToken;
-                    if (symbol != null )
+                    if (xNode.SourceSymbol is XSharpToken symbol)
                     {
                         // for a define or UDC we want the location in the source and not in the #include 
                         start = symbol.StartIndex;

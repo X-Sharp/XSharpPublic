@@ -403,8 +403,8 @@
                 <caption translate="true">USUAL</caption>
               </topicref>
             </topicref>
-            <topicref type="topic" id="423890697550599" build="ALL" modified="2017-05-19T16:32:55.257Z" icon="0" href="User-defined-Types">
-              <caption translate="true">Complex Types</caption>
+            <topicref type="topic" id="423890697550599" build="ALL" modified="2018-11-09T10:14:05.188Z" icon="0" href="User-defined-Types">
+              <caption translate="true">User defined Types</caption>
               <topicref type="topic" id="423888967356687" build="ALL" modified="2016-01-19T20:56:50.106Z" icon="0" href="CLASS">
                 <caption translate="true">CLASS</caption>
               </topicref>
@@ -455,8 +455,8 @@
                 <topicref type="topic" id="426889077791030" build="ALL" modified="2016-11-14T20:47:38.725Z" icon="0" href="Property">
                   <caption translate="true">Property</caption>
                 </topicref>
-                <topicref type="topic" id="426889106010530" build="ALL" modified="2016-11-14T20:53:37.830Z" icon="0" href="Fields">
-                  <caption translate="true">Fields</caption>
+                <topicref type="topic" id="426889106010530" build="ALL" modified="2018-11-09T10:17:46.483Z" icon="0" href="Fields">
+                  <caption translate="true">ClassVars</caption>
                 </topicref>
               </topicref>
             </topicref>

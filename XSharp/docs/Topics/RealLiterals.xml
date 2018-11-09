@@ -9,7 +9,6 @@
     <para styleclass="Normal">Single or double precision literals may be used to store numeric values in your code.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">123.456</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">123.0</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">0.123</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">.123</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">123.456e+7</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">123.456e-7</text></para>
-    <para styleclass="Code Example"></para>
     <para styleclass="Normal">Real literals may have one of the following suffixes:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">

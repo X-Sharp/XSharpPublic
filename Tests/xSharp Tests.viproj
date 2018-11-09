@@ -55252,7 +55252,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C546 - Bogus (?) error message about taking the adress of a function
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C547 - Preprocessor issue with harbour code *************
 Application = C547 - Preprocessor issue with harbour code
 IDEVersion = 1.06
@@ -55302,7 +55302,7 @@ ReferenceProject = 3FD20812-F1F2-477B-9734-FE2697DED8D6,1,0,C460_helper
 [C547 - Preprocessor issue with harbour code Native Resources]
 [C547 - Preprocessor issue with harbour code License files]
 [C547 - Preprocessor issue with harbour code General Options]
-Switches=/verbose
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

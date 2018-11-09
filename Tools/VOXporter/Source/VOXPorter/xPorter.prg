@@ -886,6 +886,16 @@ CLASS ApplicationDescriptor
 				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
 			END IF
 			
+			IF xPorter.ExportXideBinaries
+				TRY
+					LOCAL cWedFile AS STRING
+					cWedFile := cFolder + "\" + oModule:PathValidName + ".prg.wed"
+					IF File.Exists(cWedFile)
+						File.Delete(cWedFile)
+					END IF
+				END TRY
+			ENDIF
+			
 			FOREACH oDesigner AS Designer IN oModule:Designers
 				IF oDesigner:MustExport
 					LOCAL cBinary AS STRING

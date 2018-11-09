@@ -1002,6 +1002,8 @@ namespace XSharp.Project
         private void ReferencesEvents_ReferenceAdded(Reference pReference)
         {
             ProjectModel.AddAssemblyReference(pReference);
+            //
+            ProjectModel.ResolveReferences();
         }
 
         private void ReferencesEvents_ReferenceChanged(Reference pReference)

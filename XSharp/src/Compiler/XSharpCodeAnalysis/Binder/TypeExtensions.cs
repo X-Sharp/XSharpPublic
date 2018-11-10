@@ -238,6 +238,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             if (type == compilation.SymbolType())
                 return true;
+            if (type == compilation.PszType())
+                return true;
             return false;
         }
     }

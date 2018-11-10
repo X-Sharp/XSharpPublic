@@ -288,14 +288,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 // no need to check if parleft or parright are usual that was checked above
                                 if (parLeft.Type != parRight.Type)
                                 {
-                                    if (parLeft.Type.IsValidVOUsualType(Compilation))
+                                    // is there an VO style conversion possible ?
+                                    var leftConvert = parLeft.Type.IsValidVOUsualType(Compilation);
+                                    var rightConvert = parRight.Type.IsValidVOUsualType(Compilation);
+                                    if (leftConvert != rightConvert)
                                     {
-                                        result = BetterResult.Left;
-                                        return true;
-                                    }
-                                    if (parRight.Type.IsValidVOUsualType(Compilation))
-                                    {
-                                        result = BetterResult.Right;
+                                        // One is a valid conversion, the other is not.
+                                        if (leftConvert)
+                                            result = BetterResult.Left;
+                                        else
+                                            result = BetterResult.Right;
                                         return true;
                                     }
                                 }

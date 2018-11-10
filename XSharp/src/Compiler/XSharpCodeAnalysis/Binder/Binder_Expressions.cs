@@ -167,27 +167,43 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var indexedPropsType = Compilation.IndexedPropertiesType();
                 var arrayBaseType = Compilation.ArrayBaseType();
                 bool numericParams = false;
-                if (cf == usualType || cf == arrayBaseType)
+                bool mustcast = false;
+                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                if (cf == usualType || cf.ConstructedFrom == arrayBaseType)
                 {
                     // Index operator on USUAL then we convert the usual to an array or indexer first
+
                     if (Compilation.Options.XSharpRuntime)
                     {
-                        if (analyzedArguments.Arguments.Count == 2 && analyzedArguments.Arguments[1].Type.IsStringType())
+                        if (analyzedArguments.Arguments.Count == 2 && analyzedArguments.Arguments[1].Type.IsStringType()
+                            && cf.ImplementsInterface(namedIndexerType, ref useSiteDiagnostics))
                         {
                             cf = namedIndexerType;
                             numericParams = true;
+                            mustcast = true;
                         }
-                        else if (analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].Type.IsStringType())
+                        else if (analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].Type.IsStringType()
+                            && cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics))
                         {
                             cf = indexedPropsType;
                             numericParams = false;
+                            mustcast = true;
                         }
-                        else
+                        else if ( cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics))
                         {
                             cf = indexerType;
                             numericParams = true;
+                            mustcast = true;
                         }
-                        expr = BindCastCore(node, expr, cf, wasCompilerGenerated: true, diagnostics: diagnostics);
+                        else
+                        {
+                            numericParams = true;
+                            mustcast = false;
+                        }
+                        if (mustcast)
+                        {
+                            expr = BindCastCore(node, expr, cf, wasCompilerGenerated: true, diagnostics: diagnostics);
+                        }
                     }
                     else
                     {

@@ -64620,6 +64620,206 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C636 - SplitPath() with /vo7- : failed to emit module *************
+Application = C636 - SplitPath() with /vo7- : failed to emit module
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C636\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C636
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3E3F9638-FE13-4379-A37C-AB2A1B3D161D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C636 - SplitPath() with /vo7- : failed to emit module FileGroups]
+[C636 - SplitPath() with /vo7- : failed to emit module Files]
+File = %AppPath%\Prg\C636.prg
+FileGUID = 7BB12918-1ABF-4B41-ADB9-C7B282FFFB2B
+FileType = Code
+[C636 - SplitPath() with /vo7- : failed to emit module References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+[C636 - SplitPath() with /vo7- : failed to emit module Resources]
+[C636 - SplitPath() with /vo7- : failed to emit module Native Resources]
+[C636 - SplitPath() with /vo7- : failed to emit module License files]
+[C636 - SplitPath() with /vo7- : failed to emit module General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C636 - SplitPath() with /vo7- : failed to emit module Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C636 - SplitPath() with /vo7- : failed to emit module
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable *************
+Application = C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C637\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C637
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 29561558-9760-4588-A6A3-586871929DD1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable FileGroups]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Files]
+File = %AppPath%\Prg\C637.prg
+FileGUID = 777295F6-F9CE-456B-B0FB-491504D7DBCF
+FileType = Code
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Resources]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Native Resources]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable License files]
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable
 [EndApplications]
 
 [Configurations]

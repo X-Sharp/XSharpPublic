@@ -2246,14 +2246,14 @@ BEGIN NAMESPACE XSharp
         #region IIndexedProperties
         PROPERTY SELF[index AS INT   ] AS USUAL
             GET
-                VAR indexer = _refData ASTYPE IIndexedProperties
+                VAR indexer := _refData ASTYPE IIndexedProperties
                 if indexer == null
                     throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 endif
                 return indexer[index]                    
             END GET
             SET
-                VAR indexer = _refData ASTYPE IIndexedProperties
+                VAR indexer := _refData ASTYPE IIndexedProperties
                 if indexer == null
                     throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 endif
@@ -2262,14 +2262,14 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
         PROPERTY SELF[name  AS STRING] AS USUAL 
             GET
-                VAR indexer = _refData ASTYPE IIndexedProperties
+                VAR indexer := _refData ASTYPE IIndexedProperties
                 if indexer == null
                     throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 endif
                 return indexer[name]                    
             END GET
             SET
-                VAR indexer = _refData ASTYPE IIndexedProperties
+                VAR indexer := _refData ASTYPE IIndexedProperties
                 if indexer == null
                     throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 endif

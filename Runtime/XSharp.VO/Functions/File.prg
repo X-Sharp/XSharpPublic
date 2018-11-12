@@ -9,7 +9,7 @@ USING XSharp
 USING System.Runtime.InteropServices
 
 /// <param name="pData">A block of memory to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <inheritdoc cref="M:XSharp.VO.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
 FUNCTION FRead(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
     // use Buffer associated with file handle
     VAR bData    := __FGetBuffer(pFile, (INT) dwCount)

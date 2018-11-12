@@ -318,7 +318,7 @@ FUNCTION DirMake(cDir AS STRING) AS INT
 		ENDIF
 	CATCH e as Exception
 		XSharp.IO.File.setErrorState(e)
-        result := XSharp.IO.File.errorCode
+        result := (INT) XSharp.IO.File.errorCode
 	END TRY
 	RETURN result
 	
@@ -340,7 +340,7 @@ FUNCTION DirRemove(cDir AS STRING) AS INT
 		ENDIF
 	CATCH e as Exception
 		XSharp.IO.File.setErrorState(e)
-        result := XSharp.IO.File.errorCode
+        result := (INT) XSharp.IO.File.errorCode
 	END TRY
 	RETURN result
 

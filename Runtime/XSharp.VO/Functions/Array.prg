@@ -7,7 +7,7 @@
 
 INTERNAL STATIC CLASS ArrayHelpers
 
-	STATIC METHOD aScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+	STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 		LOCAL nItem AS LONG
 		LOCAL nLen  AS LONG
 		nLen := (INT) aTarget:Length
@@ -15,19 +15,19 @@ INTERNAL STATIC CLASS ArrayHelpers
 			IF object.Equals(aTarget[ nItem], element)
 				RETURN (DWORD) nItem
 			ENDIF
-			nCount -= 1
+			nCount -= 1  
 			IF nCount == 0
 				EXIT
 			ENDIF
 		NEXT
 		RETURN 0
 
-	STATIC METHOD aScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+	STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 		LOCAL nItem AS LONG
 		LOCAL nLen  AS LONG
 		nLen := (INT) aTarget:Length
 		FOR nItem := nStart TO nLen
-			VAR oElement := aTarget[ nItem]
+			LOCAL oElement := aTarget[ nItem] as T
 			IF bAction(oElement)
 				RETURN  (DWORD) nItem
 			ENDIF
@@ -39,7 +39,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		RETURN 0
 
 
-	STATIC METHOD aScan( aTarget AS USUAL, x AS USUAL, uStart AS USUAL, uCount AS USUAL, lExact AS LOGIC ) AS DWORD
+	STATIC METHOD AScan( aTarget AS USUAL, x AS USUAL, uStart AS USUAL, uCount AS USUAL, lExact AS LOGIC ) AS DWORD
 		LOCAL nSize		AS DWORD
 		IF ! ArrayHelpers.ValidateArrayParams(REF aTarget, REF uStart, REF uCount, OUT nSize)
 			RETURN 0
@@ -87,7 +87,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		RETURN nRet
 
-	STATIC METHOD AscanBin(cFuncName AS STRING, a AS ARRAY, seekVal AS USUAL, lExact AS LOGIC ) AS DWORD
+	STATIC METHOD AScanBin(cFuncName AS STRING, a AS ARRAY, seekVal AS USUAL, lExact AS LOGIC ) AS DWORD
 		LOCAL dwLow        AS DWORD
 		LOCAL dwHigh       AS DWORD
 		LOCAL x            AS DWORD
@@ -170,7 +170,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		
 		
-	STATIC METHOD Aeval(aArray AS ARRAY, cbBlock AS ICODEBLOCK, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC )  AS ARRAY
+	STATIC METHOD AEval(aArray AS ARRAY, cbBlock AS ICODEBLOCK, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC )  AS ARRAY
 		LOCAL elements := ALen(aArray) AS DWORD
 		LOCAL last   AS DWORD
 		LOCAL result AS USUAL
@@ -646,33 +646,33 @@ FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS
 /// <param name="nStart">The number of the element to start with.</param>
 /// <param name="nCount">The number fo elements the scan.</param>
 /// <returns>If uSearch is a code block then the functions returns the position of the first element for which the code block returns TRUE.  Otherwise it returns the position of the first matching element.  The function returns 0 if no match is found.</returns>
-FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG,nCount AS LONG) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, SetExact()) 
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG,nCount AS LONG) AS DWORD 
+	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact()) 
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), SetExact()) 
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG) AS DWORD 
+	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, ALen(aTarget), SetExact()) 
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), SetExact()) 
 
 /// <summary>
 /// Scan an array until an exact match with a value is found or a code block returns TRUE.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS INT, nCount AS INT) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS INT) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), TRUE )
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), TRUE )
 
@@ -690,27 +690,27 @@ FUNCTION AScanBin(a AS ARRAY,x AS USUAL) AS DWORD
 /// <summary>
 /// Scan a sorted Array until there is an exact match or a code block returns 0.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanBin(XSharp.__Array,XSharp.__Usual)'/>
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScanBin(XSharp.__Array,XSharp.__Usual)'/>
 FUNCTION AScanBinExact(a AS ARRAY,x AS USUAL) AS DWORD
 	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, TRUE )
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, element AS T) AS DWORD WHERE T IS NEW()
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element,1, (INT) aTarget:Length) 
 
 /// <summary>
 /// Scan an array until an expression returns TRUE.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act,1, (INT) aTarget:Length) 
 
 
 /// <summary>
 /// Scan an array until value is found.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, (INT) aTarget:Length- nStart +1) 
 
 
@@ -718,8 +718,8 @@ FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG) AS DW
 /// Scan an array until an expression returns TRUE.
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1) 
 
 
@@ -728,16 +728,16 @@ FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
 /// Scan an array until value is found.
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, nCount) 
 
 /// <summary>
 /// Scan an array until an expression returns TRUE.
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, nCount) 
 
 	
@@ -1279,7 +1279,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,i
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
 	FOR nX := iStart TO nEnd
-		aArray[ (INT) nX] := cb(aArray[(INT)  nX])
+		aArray[ (INT) nX] := cb( aArray[(INT)  nX])
 	NEXT
 	RETURN aArray
 

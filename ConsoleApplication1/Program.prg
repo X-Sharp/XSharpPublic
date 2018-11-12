@@ -4,14 +4,17 @@ using SYstem.XML.Linq
 using System.Linq
 using System.Collections.Generic
 function start as void
-    local cFile as USUAL
-    cFile := ""
-    if (NULL_STRING != cFile)
-        ? "not a null string"
-    else
-        ? "a null string"
-    endif
-    Console.Read()
+local dDate as date
+
+dDate := CTOD("")
+if dDate == null_date
+  System.Console.WriteLine( e"CToD(\"\") is null_date" )
+else
+  System.Console.WriteLine( e"CToD(\"\") is NOT null_date" )
+  System.Console.WriteLine( e"CToD(\"\") ->" + DToC( dDate ) )
+  System.Console.WriteLine( "null_date ->" + DToC( null_date ) )
+endif
+    console.Read()
     return
     
   

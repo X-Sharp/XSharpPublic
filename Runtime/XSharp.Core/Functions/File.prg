@@ -605,13 +605,13 @@ FUNCTION FReadLine(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
 	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FreadLine(System.IntPtr,System.UInt32)" />"
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
 FUNCTION FReadLine2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING	
 	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FreadLine(System.IntPtr, System.UInt32)" />
+/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />
 /// <summary>
 /// Read characters from a file.
 /// </summary>
@@ -717,7 +717,7 @@ FUNCTION FWrite3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
 /// <summary>
 /// Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
 /// </summary>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite3(System.IntPtr,System.String,System.UInt32)" />
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite3(System.IntPtr,System.Byte[],System.UInt32)" />
 /// <param name="lAnsi">If FALSE , an ANSI to OEM conversion is made.</param>
 /// <returns></returns>
 FUNCTION FWrite4(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD,lAnsi AS LOGIC) AS DWORD

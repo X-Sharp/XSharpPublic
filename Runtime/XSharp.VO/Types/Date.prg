@@ -29,12 +29,12 @@ BEGIN NAMESPACE XSharp
 		IEquatable<__VODate>
 		// This structure uses an explicit layout to map
 		// year, month and date into 32 bits
-		// the _value field is for convenience, so we can do a single numeric comparison
+		// the _ymd field is for convenience, so we can do a single numeric comparison
 		// to determine equality or relative comparisons in stead of doing 3 comparisons
 		// for date calculation we use the Value PROPERTY which returns a System.DateTime type
 		// Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
 		#region fields
-			[FieldOffSet(00)] PRIVATE _value AS System.Int32
+			[FieldOffSet(00)] PRIVATE _ymd   AS System.Int32
 			[FieldOffSet(00)] PRIVATE _year  AS System.UInt16
 			[FieldOffSet(02)] PRIVATE _month AS System.Byte
 			[FieldOffSet(03)] PRIVATE _day   AS System.Byte
@@ -53,24 +53,21 @@ BEGIN NAMESPACE XSharp
 		#endregion
 		
 		#region datetime conversions
-			/// <exclude />
-			PROPERTY @@Value AS System.DateTime  GET SELF:_dtValue SET _dtValue := VALUE
-
-			PRIVATE PROPERTY _dtValue AS System.DateTime 
+			PUBLIC PROPERTY @@Value AS System.DateTime 
 				GET
-					IF (_value == 0)
+					IF (_ymd == 0)
 						RETURN System.DateTime.MinValue
 					ENDIF
 					RETURN System.DateTime{_year, _month, _day}
 				END GET
 				SET 
-				IF @@Value != DateTime.MinValue
-					_year  := (WORD) @@Value:Year
-					_month := (BYTE) @@Value:Month
-					_day   := (BYTE) @@Value:Day
-				ELSE
-					_value := 0
-				ENDIF					
+				    IF Value != DateTime.MinValue
+					    _year  := (WORD) Value:Year
+					    _month := (BYTE) Value:Month
+					    _day   := (BYTE) Value:Day
+				    ELSE
+					    _ymd := 0
+				    ENDIF					
 				END SET
 			END PROPERTY
 		#endregion
@@ -83,17 +80,19 @@ BEGIN NAMESPACE XSharp
 			
 			/// <summary>Construct a date from a DateTime value.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			CONSTRUCTOR(lhs AS System.DateTime)
-				_value := 0
-				_year  := (WORD) lhs:Year
-				_month := (BYTE) lhs:Month
-				_day   := (BYTE) lhs:Day
+			CONSTRUCTOR(dt AS System.DateTime)
+                if dt != DateTime.MinValue
+				    _year  := (WORD) dt:Year
+				    _month := (BYTE) dt:Month
+				    _day   := (BYTE) dt:Day
+                else
+                    _ymd := 0
+                endif
 				RETURN
 			
 			/// <summary>Construct a date from another IDate type.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-			CONSTRUCTOR(d AS iDate)
-				_value := 0
+			CONSTRUCTOR(d AS IDate)
 				_year  := (WORD) d:Year
 				_month := (BYTE) d:Month
 				_day   := (BYTE) d:Day
@@ -109,39 +108,30 @@ BEGIN NAMESPACE XSharp
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(strDate AS STRING)
 				LOCAL dValue := CToD(strDate) AS DATE
-				_value := 0
-				_year  := dValue:_year
-				_month := dValue:_month
-				_day   := dValue:_day
+				_ymd := dValue:_ymd
 
 			/// <summary>Construct a date from a string using the specified Date Format.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(strDate AS STRING, strFormat AS STRING)
 				LOCAL dValue := CToD(strDate,strFormat) AS DATE
-				_value := 0
-				_year  := dValue:_year
-				_month := dValue:_month
-				_day   := dValue:_day
+				_ymd := dValue:_ymd
 			
 			/// <summary>Construct a date from year, month, day </summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(year AS INT, month AS INT, day AS INT)
-				_value := 0 // null_date
-				_year  := 0
-				_month := 0
-				_day   := 0
                 IF year != 0 .AND. month != 0 .AND. day != 0
 				    TRY
 					    // this may throw an exception when the combination is not valid
-                    
-					    VAR lhs := System.DateTime{year, month, day}
-					    _value := 0
-					    _year  := (WORD) lhs:Year
-					    _month := (BYTE) lhs:Month
-					    _day   := (BYTE) lhs:Day
+  				        VAR dt := System.DateTime{year, month, day}
+					    _year  := (WORD) dt:Year
+					    _month := (BYTE) dt:Month
+					    _day   := (BYTE) dt:Day
 				    CATCH 
+        				_ymd := 0 // null_date
 					    NOP
-                    END TRY
+                     END TRY
+                ELSE
+				    _ymd := 0 // null_date
                 ENDIF
 				RETURN
 			
@@ -158,15 +148,15 @@ BEGIN NAMESPACE XSharp
 			/// <inheritdoc />			
 			METHOD CompareTo(o AS OBJECT) AS LONG
 				VAR rhs := (DATE)o 
-				RETURN _value:CompareTo(rhs:_value)
+				RETURN _ymd:CompareTo(rhs:_ymd)
 
 			/// <inheritdoc />			
 			METHOD CompareTo(rhs AS DATE) AS LONG
-				RETURN _value:CompareTo(rhs:_value)
+				RETURN _ymd:CompareTo(rhs:_ymd)
 
 			/// <inheritdoc />	
 			OVERRIDE METHOD GetHashCode() AS LONG
-				RETURN _value:GetHashCode()
+				RETURN _ymd:GetHashCode()
 			
 			/// <inheritdoc />	
 			METHOD GetTypeCode() AS System.TypeCode
@@ -261,7 +251,7 @@ BEGIN NAMESPACE XSharp
 			
 			/// <inheritdoc />	
 			METHOD Equals(lhs AS DATE) AS LOGIC
-				RETURN _value == lhs:_value
+				RETURN _ymd == lhs:_ymd
 			
 			/// <inheritdoc />	
 			OVERRIDE METHOD Equals(o AS OBJECT) AS LOGIC
@@ -276,11 +266,11 @@ BEGIN NAMESPACE XSharp
 			
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR ==(lhs AS DATE, rhs AS DATE) AS LOGIC
-				RETURN (lhs:_value == rhs:_value)
+				RETURN (lhs:_ymd == rhs:_ymd)
 			
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR !=(lhs AS DATE, rhs AS DATE) AS LOGIC
-				RETURN (lhs:_value != rhs:_value)
+				RETURN (lhs:_ymd != rhs:_ymd)
 			
 		#endregion
 		#region Implicit and Explicit converters
@@ -290,14 +280,14 @@ BEGIN NAMESPACE XSharp
 				// convert to julian date like vo
 				// # of days since 1-1-1901 + 2415386 
 				LOCAL nDays AS DWORD
-				nDays := (DWORD) (dValue:_dtValue - _dtCalc):Days + VO_MIN_DATE
+				nDays := (DWORD) (dValue:@@Value - _dtCalc):Days + VO_MIN_DATE
 				RETURN nDays
 
 			
 			/// <summary>This explicit converter is used in code generated by the compiler when you use a cast in your code.</summary>
 			STATIC OPERATOR EXPLICIT(dValue AS DATE) AS INT
 				LOCAL nDays AS LONG
-				nDays := (dValue:_dtValue - _dtCalc):Days + VO_MIN_DATE
+				nDays := (dValue:@@Value - _dtCalc):Days + VO_MIN_DATE
 				RETURN nDays
 			
 			/// <summary>This explicit converter is used in code generated by the compiler when you use a cast in your code.</summary>
@@ -327,7 +317,7 @@ BEGIN NAMESPACE XSharp
 
 			/// <exclude />				
 			METHOD ToDateTime() AS System.DateTime
-				RETURN SELF:_dtValue
+				RETURN SELF:@@Value
 			
 			/// <exclude />	
 			METHOD FromDateTime(dtvalue AS System.DateTime) AS DATE
@@ -337,9 +327,9 @@ BEGIN NAMESPACE XSharp
 		#region Comparison Operators
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR >(lhs AS DATE, rhs AS DATE) AS LOGIC
-				// note: cannot use _value for > comparison because that would depend
+				// note: cannot use _ymd for > comparison because that would depend
 				//       on the processor layout 
-				IF lhs:_value == rhs:_value
+				IF lhs:_ymd == rhs:_ymd
 					RETURN FALSE
 				ELSEIF lhs:_year > rhs:_year
 					RETURN TRUE
@@ -354,9 +344,9 @@ BEGIN NAMESPACE XSharp
 			
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR >=(lhs AS DATE, rhs AS DATE) AS LOGIC
-				// note: cannot use _value for > comparison because that would depend
+				// note: cannot use _ymd for > comparison because that would depend
 				//       on the processor layout 
-				IF lhs:_value == rhs:_value
+				IF lhs:_ymd == rhs:_ymd
 					RETURN TRUE
 				ELSEIF lhs:_year > rhs:_year
 					RETURN TRUE
@@ -371,13 +361,13 @@ BEGIN NAMESPACE XSharp
 			
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR IMPLICIT(v AS DATE) AS System.DateTime
-				RETURN v:_dtValue
+				RETURN v:@@Value
 			
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR <(lhs AS DATE, rhs AS DATE) AS LOGIC
-				// note: cannot use _value for < comparison because that would depend
+				// note: cannot use _ymd for < comparison because that would depend
 				//       on the processor layout 
-				IF lhs:_value == rhs:_value
+				IF lhs:_ymd == rhs:_ymd
 					RETURN FALSE
 				ELSEIF lhs:_year < rhs:_year
 					RETURN TRUE
@@ -392,9 +382,9 @@ BEGIN NAMESPACE XSharp
 			
 			/// <summary>This operator is used in code generated by the compiler when needed.</summary>
 			STATIC OPERATOR <=(lhs AS DATE, rhs AS DATE) AS LOGIC
-				// note: cannot use _value for < comparison because that would depend
+				// note: cannot use _ymd for < comparison because that would depend
 				//       on the processor layout 
-				IF lhs:_value == rhs:_value
+				IF lhs:_ymd == rhs:_ymd
 					RETURN TRUE
 				ELSEIF lhs:_year < rhs:_year
 					RETURN TRUE
@@ -421,42 +411,42 @@ BEGIN NAMESPACE XSharp
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Add(days AS REAL8) AS DATE
-				VAR res := SELF:_dtValue:AddDays(days)
+				VAR res := SELF:@@Value:AddDays(days)
 				RETURN DATE{res}
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Add(days AS LONG) AS DATE
-				VAR res := SELF:_dtValue:AddDays(days)
+				VAR res := SELF:@@Value:AddDays(days)
 				RETURN DATE{res}
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Add(days AS INT64) AS DATE
-				VAR res := SELF:_dtValue:AddDays(days)
+				VAR res := SELF:@@Value:AddDays(days)
 				RETURN DATE{res}
 			
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Add(span AS System.TimeSpan) AS DATE
-				VAR res := SELF:_dtValue:Add(span)
+				VAR res := SELF:@@Value:Add(span)
 				RETURN DATE{res}
 			
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Add(days AS DWORD) AS DATE
-				VAR res := SELF:_dtValue:AddDays(days)
+				VAR res := SELF:@@Value:AddDays(days)
 				RETURN DATE{res}
 			
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Add(days AS UINT64) AS DATE
-				VAR res := SELF:_dtValue:AddDays(days)
+				VAR res := SELF:@@Value:AddDays(days)
 				RETURN DATE{res}
 			
 			/// <exclude />	
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			METHOD Subtract(lhs AS DATE) AS LONG
 				LOCAL span AS System.TimeSpan
-				span := (System.TimeSpan)(SELF:_dtValue - lhs:_dtValue) 
+				span := (System.TimeSpan)(SELF:@@Value - lhs:@@Value) 
 				RETURN span:Days
 			
 			/// <exclude />	
@@ -553,7 +543,7 @@ BEGIN NAMESPACE XSharp
 				IF conversionType == TYPEOF(DATE)
 					RETURN SELF
 				ELSEIF conversionType == TYPEOF(System.DateTime)
-					RETURN SELF:_dtValue
+					RETURN SELF:@@Value
 				ENDIF
 				RETURN ((IConvertible)@@Value):ToType(conversionType, provider)
 			
@@ -574,25 +564,25 @@ BEGIN NAMESPACE XSharp
 			// Use DateTime ToString() methods as helpers
 			/// <inheritdoc />
 			OVERRIDE METHOD ToString() AS STRING
-				IF (_value == 0)
+				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
 			RETURN DToC(SELF)
 			/// <inheritdoc />
 			METHOD ToString(provider AS System.IFormatProvider) AS STRING
-				IF (_value == 0)
+				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				RETURN @@Value:ToString(provider)
 			/// <inheritdoc cref="M:System.DateTime.ToString(System.String)"/>
 			METHOD ToString(s AS STRING) AS STRING
-				IF (_value == 0)
+				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				RETURN @@Value:ToString(s)
 			/// <inheritdoc />
 			METHOD ToString(s AS STRING, fp AS System.IFormatProvider) AS STRING
-				IF (_value == 0)
+				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				IF (s == NULL)
@@ -605,7 +595,7 @@ BEGIN NAMESPACE XSharp
 			/// <inheritdoc />
 			PROPERTY IsEmpty AS LOGIC
 				GET
-					RETURN _value == 0
+					RETURN _ymd == 0
 				END GET
 			END PROPERTY
 			/// <inheritdoc />

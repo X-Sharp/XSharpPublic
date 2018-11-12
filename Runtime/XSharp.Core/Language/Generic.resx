@@ -3459,4 +3459,8 @@
   <data name="ARRAYBOUNDS" xml:space="preserve">
     <value>Invalid array index</value>
   </data>
+  <data name="USUALNOTINDEXED" xml:space="preserve">
+    <value>value in USUAL does not support indexed operations. The value needs to implement the interface '{0}'.</value>
+  </data>
+
 </root>

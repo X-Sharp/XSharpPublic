@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
     [DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
-    PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL>
+    PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer
 
         /// <inheritdoc />
         CONSTRUCTOR()
@@ -145,21 +145,25 @@ BEGIN NAMESPACE XSharp
             /// <summary>Access the array element using ZERO based array indexes</summary>
             ///
         PUBLIC METHOD __GetElement(index PARAMS INT[]) AS USUAL
-            LOCAL indexLength := index:Length AS INT
+            LOCAL length := index:Length AS INT
             LOCAL currentArray AS ARRAY
             LOCAL i AS INT
             currentArray := SELF
-            FOR i:= 1  UPTO indexLength  -1 // walk all but the last level
+            FOR i:= 1  UPTO length  -1 // walk all but the last level
                 LOCAL u := currentArray:_internalList[ index[i] ] AS USUAL
                 IF u:IsNil
                     RETURN u
                 ENDIF
+                if (OBJECT) u IS IIndexedProperties .and. i == length-1
+                    LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
+                    return o[index[length]]
+                endif
                 IF !u:IsArray
                     THROW InvalidOperationException{"out of range error."}
                 ENDIF
                 currentArray := (ARRAY) u
             NEXT
-            RETURN currentArray:_internalList[ index[i] ]
+            RETURN currentArray:_internalList[ index[length] ]
 
         INTERNAL METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
@@ -196,6 +200,11 @@ BEGIN NAMESPACE XSharp
                 LOCAL currentArray := SELF AS ARRAY
                 FOR VAR i := 1 UPTO length-1
                     LOCAL uArray := _internalList[index[i]] AS USUAL
+                    if (OBJECT) u IS IIndexedProperties .and. i == length-1
+                        LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
+                        o[index[length]] := u
+                        return u
+                    endif
                     IF !(uArray:IsArray)
                         THROW InvalidOperationException{"Out of range error."}
                     ENDIF

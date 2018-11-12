@@ -15,8 +15,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     /// The NtxPageList class.
     /// </summary>
     INTERNAL SEALED CLASS NtxPageList
-        PROTECT _Pages AS List<NtxPage>
-        PROTECT _Order AS NtxOrder
+        PRIVATE _Pages AS List<NtxPage>
+        PRIVATE _Order AS NtxOrder
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL ntxPage AS NtxPage

@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
-	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS IEnumerable<T> WHERE T IS NEW()
+	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS IIndexer, INamedIndexer, IEnumerable<T> WHERE T IS NEW()
 		INTERNAL _internalList AS List<T>
 		PRIVATE _islocked AS LOGIC
 		#region constructors
@@ -64,11 +64,8 @@ BEGIN NAMESPACE XSharp
 			END GET
 		END PROPERTY
 		/// <summary>Length of the array.</summary>
-		PUBLIC PROPERTY Length AS DWORD
-			GET
-				RETURN (DWORD)_internalList:Count
-			END GET
-		END PROPERTY
+		PUBLIC   PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
+        INTERNAL PROPERTY ILength AS LONG GET _internalList:Count
 		#endregion
 
 		#region Enumerators
@@ -225,47 +222,54 @@ BEGIN NAMESPACE XSharp
 
 		// Note: Zero based, compiler handles subtraction
 		/// <summary>Get/Set array elements with a ZERO based array index</summary>
-		/// <param name="index">0 based offset in the location. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
-		/// <param name="index2">Second index. The internal type must either support IIndexedProperties or have a SELF property with a numeric index</param>
+		/// <param name="index">list of indices. Please note that the compiler automatically subtracts one from the index unless the /az compiler option is used.</param>
+		/// <remarks>If the number of dimensions is 2 then the internal type must either support IIndexedProperties or have a SELF property with a numeric index</param>
 		/// <returns>The value of the property of the element stored at the indicated location in the collection.</returns>
-		PUBLIC PROPERTY SELF[index AS INT, index2 AS INT] AS USUAL
-			GET
-				LOCAL oElement AS T
-				oElement := _internalList[index ]
-                IF oElement IS IIndexedProperties
-                    VAR oIndex := (IIndexedProperties) oElement
-                    RETURN oIndex[index2 ]
-                ENDIF
+        PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL
+            GET
+                if index:Length == 1
+                    return self:_internalList[index[1]]
+                elseif index:Length == 2
+                    LOCAL oElement AS T
+					oElement := _internalList[index[1] ]
+                    IF oElement IS IIndexedProperties
+                       VAR oIndex := (IIndexedProperties) oElement
+                       RETURN oIndex[index[2] ]
+                    ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(TRUE)
                     IF oProp != NULL
-                        VAR oIndex := OOPHelpers.VOConvert(index2, oProp:GetIndexParameters()[1]:ParameterType)
+                        VAR oIndex := OOPHelpers.VOConvert(index[2], oProp:GetIndexParameters()[1]:ParameterType)
                         RETURN oProp:GetValue(oElement, <OBJECT>{oIndex})
                     ENDIF
-                    THROW ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}
-			END GET
-			SET
-				IF  index > _internalList:Count-1
-					THROW ArgumentOutOfRangeException{}
-				ENDIF
-				IF SELF:CheckLock()
-					LOCAL oElement AS T
-					oElement := _internalList[index ]
+                    THROW ArgumentException{"Numeric indexed property missing for type: "+oElement:GetType():FullName}
+                endif
+                THROW ArgumentException{"Invalid number of arguments for Indexed property"}
+            END GET
+            SET
+               if index:Length == 1
+                    self:_internalList[index[1]] := (T) (OBJECT) value
+                    RETURN
+                elseif index:Length == 2
+                    LOCAL oElement AS T
+					oElement := _internalList[index[1] ]
                     IF oElement IS IIndexedProperties
-                        VAR oIndex := (IIndexedProperties) oElement
-                        oIndex[index2 ] := VALUE
+                       VAR oIndex := (IIndexedProperties) oElement
+                       oIndex[index[2] ] := value
+                        RETURN
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(TRUE)
                     IF oProp != NULL
-                        VAR oIndex := OOPHelpers.VOConvert(index2, oProp:GetIndexParameters()[1]:ParameterType)
+                        VAR oIndex := OOPHelpers.VOConvert(index[2], oProp:GetIndexParameters()[1]:ParameterType)
                         oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{oIndex})
                         RETURN
                     ENDIF
                     THROW ArgumentException{"Numeric indexed property missing for type: "+oElement:GetType():FullName}
-                ENDIF
-			END SET
-		END PROPERTY
+               endif
+               THROW ArgumentException{"Invalid number of arguments for Indexed property"}
+            END SET
+        END PROPERTY
 
 		#endregion
 

@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _pageNum     AS LONG
         PRIVATE _recno      AS DWORD
         PRIVATE _bytesKey      AS BYTE[]
-        PROTECTED _Page     AS NtxPage			// Page that olds the Item
+        PRIVATE _Page     AS NtxPage			// Page that olds the Item
 
         PRIVATE _hasPage    AS LOGIC
         PRIVATE _Offset     AS LONG				// Item offset from start of Page

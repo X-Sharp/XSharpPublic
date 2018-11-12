@@ -611,10 +611,10 @@ FUNCTION ArrayStore(a AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
 FUNCTION ArrayStore<T>(a AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD WHERE T IS NEW()
 	LOCAL i AS DWORD
 	LOCAL nLen AS DWORD
-	nLen := ALen(a)
+	nLen := a:Length
 	dwLen := Math.Min(dwLen, nLen)
-	FOR i := 1 TO dwLen
-		buff[i] := a[i]
+	FOR i := 1 TO (LONG) dwLen
+		buff[i] := a[(INT) i]
 	NEXT
 	RETURN dwLen
 	
@@ -649,26 +649,14 @@ FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS
 FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG,nCount AS LONG) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, SetExact()) 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan(aTarget AS USUAL, uSearch AS USUAL,nStart AS LONG,nCount AS LONG) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, SetExact()) 
-
 
 /// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), SetExact()) 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan(aTarget AS USUAL, uSearch AS USUAL,nStart AS LONG) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), SetExact()) 
-
 
 /// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION Ascan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), SetExact()) 
-
-/// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION Ascan(aTarget AS USUAL, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), SetExact()) 
 
 /// <summary>
@@ -678,24 +666,14 @@ FUNCTION Ascan(aTarget AS USUAL, uSearch AS USUAL) AS DWORD
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS INT, nCount AS INT) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL, nStart AS INT, nCount AS INT) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 
 /// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS INT) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), TRUE )
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL, nStart AS INT) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), TRUE )
 
 /// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
-	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), TRUE )
-
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), TRUE )
 
 	
@@ -709,19 +687,11 @@ FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL) AS DWORD
 FUNCTION AScanBin(a AS ARRAY,x AS USUAL) AS DWORD
 	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, FALSE )
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanBin(XSharp.__Array,XSharp.__Usual)'/>
-FUNCTION AScanBin(a AS USUAL,x AS USUAL) AS DWORD
-	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, FALSE )
-
 /// <summary>
 /// Scan a sorted Array until there is an exact match or a code block returns 0.
 /// </summary>
 /// <inheritdoc cref='M:XSharp.VO.Functions.AscanBin(XSharp.__Array,XSharp.__Usual)'/>
 FUNCTION AScanBinExact(a AS ARRAY,x AS USUAL) AS DWORD
-	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, TRUE )
-
-/// <inheritdoc cref='M:XSharp.VO.Functions.AscanBinExact(XSharp.__Array,XSharp.__Usual)'/>
-FUNCTION AScanBinExact(a AS USUAL,x AS USUAL) AS DWORD
 	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, TRUE )
 
 /// <inheritdoc cref='M:XSharp.VO.Functions.Ascan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
@@ -1109,9 +1079,7 @@ END STRUCTURE
 /// <returns>
 /// </returns>
 FUNCTION ASort<T>(aArray AS __ArrayBase<T> ,startIndex AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
-
 	aArray:Sort( startIndex, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
-	
 	RETURN aArray
 
 
@@ -1168,7 +1136,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCou
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
 	FOR nX := iStart TO nEnd
-		cb(aArray[ nX])
+		cb(aArray[ (INT) nX])
 	NEXT
 	RETURN aArray
 
@@ -1311,7 +1279,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,i
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
 	FOR nX := iStart TO nEnd
-		aArray[ nX] := cb(aArray[ nX])
+		aArray[ (INT) nX] := cb(aArray[(INT)  nX])
 	NEXT
 	RETURN aArray
 

@@ -874,7 +874,6 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_FileName := SELF:_OpenInfo:FileName
 			// Check that we have a FullPath
 			IF (Path.GetDirectoryName(SELF:_FileName):Length == 0)
-				//TODO: Change that code to take care of DefaultPath, ...
                 IF File(SELF:_FileName)
 				    SELF:_FileName := FPathName()
                 ENDIF

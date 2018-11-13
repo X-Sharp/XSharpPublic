@@ -58,14 +58,11 @@ BEGIN NAMESPACE XSharp
 
 		#region properties
 		/// <summary>Is the array empty.</summary>
-		PUBLIC PROPERTY IsEmpty AS LOGIC
-			GET
-				RETURN (_internalList:Count == 0)
-			END GET
-		END PROPERTY
+		PUBLIC PROPERTY IsEmpty AS LOGIC GET _internalList:Count == 0
 		/// <summary>Length of the array.</summary>
-		PUBLIC   PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
-        INTERNAL PROPERTY ILength AS LONG GET _internalList:Count
+		PUBLIC PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
+        /// <summary>Length of the array as integer.</summary>
+        PUBLIC PROPERTY Count AS INT GET _internalList:Count
 		#endregion
 
 		#region Enumerators
@@ -322,6 +319,12 @@ BEGIN NAMESPACE XSharp
 			RETURN string.Format("[{0}]",_internalList:Count)
 
 		INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<T>) AS VOID
+            if startIndex <= 0
+                startIndex := 1
+            endif
+            if count < 0
+                count := _internalList:Count - startIndex + __ARRAYBASE__
+            endif
 			_internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
 			RETURN
 

@@ -294,9 +294,11 @@ FUNCTION DirChange(cDir AS STRING) AS INT
 			Directory.SetCurrentDirectory(cDir)
 			result := 0
 		ELSE
-			result := -1
+			result := 3 // Path not found
 		ENDIF
-		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
+        result := (INT) XSharp.IO.File.errorCode
 	END TRY
 	RETURN result
 	

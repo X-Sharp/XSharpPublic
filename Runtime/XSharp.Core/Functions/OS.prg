@@ -314,7 +314,7 @@ FUNCTION DirMake(cDir AS STRING) AS INT
 			Directory.CreateDirectory(cDir)
 			result := 0
 		ELSE
-			result := -1
+			result := 183 // ERROR_ALREADY_EXISTS 
 		ENDIF
 	CATCH e as Exception
 		XSharp.IO.File.setErrorState(e)
@@ -336,7 +336,7 @@ FUNCTION DirRemove(cDir AS STRING) AS INT
 			Directory.Delete(cDir,FALSE)
 			result := 0
 		ELSE
-			result := -1
+			result := 2 // Cannot find file 
 		ENDIF
 	CATCH e as Exception
 		XSharp.IO.File.setErrorState(e)

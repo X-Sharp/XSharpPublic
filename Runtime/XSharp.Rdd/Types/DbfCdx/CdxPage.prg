@@ -9,13 +9,166 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
+USING System.Reflection
+USING System.Reflection.Emit
+USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
-	/// The CdxPage class.
+	/// The CdxPageBase class.
 	/// </summary>
-	INTERNAL CLASS CdxPage INHERIT CdxPageBase
-		
+	INTERNAL CLASS CdxPage
+	    PROTECTED _hFile AS IntPtr
+        PROTECTED _nPage AS Int32
+		INTERNAL Buffer   AS BYTE[]
+		INTERNAL isHot	AS LOGIC        // Hot ?  => Page has changed ?
+
+	    PROTECTED INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage as Int32 )
+			//
+			SELF:_hFile := fileHandle
+            SELF:_nPage := nPage
+			SELF:Buffer := BYTE[]{CDXPAGE_SIZE}
+			SELF:isHot  := FALSE
+		RETURN
+        #region Read/Write
+		PROTECTED INTERNAL VIRTUAL METHOD Read() AS LOGIC
+			LOCAL isOk AS LOGIC
+			// Move to top
+			FSeek3( SELF:_hFile, _nPage, SeekOrigin.Begin )
+			// Read Buffer
+			isOk := ( FRead3(SELF:_hFile, SELF:Buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE )
+			//
+			RETURN isOk
+			
+		PROTECTED INTERNAL VIRTUAL METHOD Write() AS LOGIC
+			LOCAL isOk AS LOGIC
+			// Move to top
+			FSeek3( SELF:_hFile, _nPage, SeekOrigin.Begin )
+			// Write Buffer
+			isOk := ( FWrite3(SELF:_hFile, SELF:Buffer, CDXPAGE_SIZE) == CDXPAGE_SIZE )
+			//
+			RETURN isOk
+        #endregion
+        #region Helper Methods to read/write numbers are strings out of the buffer
+        
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetByte(nOffSet AS INT) AS BYTE
+				RETURN Buffer[ nOffset]
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetByte(nOffSet AS INT, bValue as BYTE) AS VOID
+				Buffer[ nOffset] := bValue
+                isHot := TRUE
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetWord(nOffSet AS INT) AS WORD
+				RETURN BitConverter.ToUInt16(Buffer, nOffset)
+				
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, wValue AS WORD) AS VOID
+				Array.Copy(BitConverter.GetBytes(wValue),0, Buffer, nOffSet, SIZEOF(WORD))
+				isHot := TRUE
+				
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetDWord(nOffSet AS INT) AS DWORD
+				RETURN BitConverter.ToUInt32(Buffer, nOffset)
+				
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
+				Array.Copy(BitConverter.GetBytes(dwValue),0, Buffer, nOffSet, SIZEOF(DWORD))
+				isHot := TRUE
+                
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
+				RETURN BitConverter.ToInt32(Buffer, nOffset)
+				
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, liValue AS Int32) AS VOID
+				Array.Copy(BitConverter.GetBytes(liValue),0, Buffer, nOffSet, SIZEOF(Int32))
+				isHot := TRUE
+
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL STATIC METHOD _GetString(buffer as byte[], nOffSet AS INT, count AS INT) AS STRING
+				LOCAL str := System.Text.Encoding.ASCII:GetString( buffer,nOffSet, count ) AS STRING
+				IF ( str == NULL )
+					str := String.Empty
+				ENDIF
+				RETURN str
+				
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+			PROTECTED INTERNAL STATIC METHOD _SetString(buffer as byte[], nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
+				// Be sure to fill the Buffer with 0
+				MemSet( Buffer, nOffSet, nSize , 0)
+				System.Text.Encoding.ASCII:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), Buffer, nOffSet)
+				
+            #endregion
+
+        #region MemSet and MemCopy
+        PRIVATE INITONLY STATIC _memSetter as  Action<IntPtr, BYTE, INT>		
+        PRIVATE INITONLY STATIC _memCopier as  Action<IntPtr, IntPtr, INT>
+        
+        STATIC CONSTRUCTOR()
+            VAR atts := MethodAttributes.Public | MethodAttributes.Static
+            VAR dm := DynamicMethod{"Memset", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(BYTE), TYPEOF(INT) }, TYPEOF(CdxPage), TRUE}
+            VAR generator	  := dm:GetILGenerator()
+            generator:Emit(OpCodes.Ldarg_0)
+            generator:Emit(OpCodes.Ldarg_1)
+            generator:Emit(OpCodes.Ldarg_2)
+            generator:Emit(OpCodes.Initblk)
+            generator:Emit(OpCodes.Ret)
+            _memSetter := (Action<IntPtr, BYTE, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, INT>))
+            dm := DynamicMethod{"Memcopy", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(IntPtr), TYPEOF(INT) }, TYPEOF(CdxPage), TRUE}
+        
+            generator := dm:GetILGenerator()
+            generator:Emit(OpCodes.Ldarg_0)
+            generator:Emit(OpCodes.Ldarg_1)
+            generator:Emit(OpCodes.Ldarg_2)
+            generator:Emit(OpCodes.Cpblk)
+            generator:Emit(OpCodes.Ret)
+            _memCopier := (Action<IntPtr, IntPtr, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, INT>))
+
+        STATIC METHOD MemSet(bytes as byte[], start as INT, length as Int, value as BYTE) as VOID
+            local h as GcHandle
+            local p as IntPtr
+            p := IntPtr.Zero
+            TRY
+                h := GCHandle.Alloc(bytes, GCHandleType.Pinned)
+                p := h:AddrOfPinnedObject() + start
+                _memSetter(p, value, length)
+            FINALLY
+                IF h:IsAllocated
+                    h:Free()
+                ENDIF
+            END TRY
+
+        STATIC METHOD MemCopy(source as byte[], target as byte[], length as Int) as VOID
+            MemCopy(source, 0, target, 0, length)
+
+        STATIC METHOD MemCopy(source as byte[], sourceoffset as int, target as byte[], targetoffset as int, length as Int) as VOID
+            local hSrc as GcHandle
+            local pSrc as IntPtr
+            local hTrg as GcHandle
+            local pTrg as IntPtr
+            pSrc := pTrg := IntPtr.Zero
+            TRY
+                hSrc := GCHandle.Alloc(source, GCHandleType.Pinned)
+                pSrc := hSrc:AddrOfPinnedObject() + sourceoffset
+                hTrg := GCHandle.Alloc(target, GCHandleType.Pinned)
+                pTrg := hTrg:AddrOfPinnedObject() + targetoffset
+                _memCopier(pTrg, pSrc, length)
+            FINALLY
+                IF hSrc:IsAllocated
+                    hSrc:Free()
+                ENDIF
+                IF hTrg:IsAllocated
+                    hTrg:Free()
+                ENDIF
+            END TRY
+        #endregion
+
+		PROTECTED CONST CDXPAGE_SIZE        := 512 AS WORD
+
 	END CLASS
 END NAMESPACE 

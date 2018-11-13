@@ -11,7 +11,15 @@ USING XSharp.RDD.Tests
 
 BEGIN NAMESPACE XSharp.RDD.App
 
-	FUNCTION Start() AS VOID
+    Function Start as VOID
+        local oDbfCdx as DbfCdx
+        VAR dbInfo := DbOpenInfo{ "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST10K", 1, FALSE, FALSE }
+        oDbfCdx := DbfCdx{}
+        oDbfCdx:Open(dbInfo)
+        RETURN
+        
+
+	FUNCTION Startx() AS VOID
 		//
 		CoreDb.UseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
 		? CoreDb.Dbf()
@@ -187,7 +195,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			
 		METHOD CheckFieldInfo() AS VOID
 			VAR fieldDefs := "CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
-			VAR fields := fieldDefs:Split( ';' )
+			VAR fields := fieldDefs:Split( c';' )
 			//
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
@@ -198,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 				Assert.Equal(fields:Length, myDBF:FieldCount)
 				FOR VAR i := 1 TO myDBF:FIELDCount
 					// Right decoding ?
-					VAR fieldInfo := fields[i]:Split( ',' )
+					VAR fieldInfo := fields[i]:Split( c',' )
 					Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_NAME, NIL ) )
 					Assert.Equal( fieldInfo[DBS_TYPE], myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
 					Assert.Equal( Convert.ToInt32(fieldInfo[DBS_LEN]), myDBF:FieldInfo( i, DBS_LEN, NIL ) )
@@ -342,7 +350,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			
 		METHOD CheckAddFields() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
-			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+			LOCAL fields := fieldDefs:Split( c';' ) AS STRING[]
 			VAR dbInfo := DbOpenInfo{ "XSharpTest.DBF", "XSharpTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
@@ -354,7 +362,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			FOR VAR i := 1 TO myDBF:FIELDCount
 				// 
 				LOCAL currentField AS RddFieldInfo
-				fieldInfo := fields[i]:Split( ',' )
+				fieldInfo := fields[i]:Split( c',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
 				myDBF:AddField( currentField )
 			NEXT
@@ -363,7 +371,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			Assert.Equal(fields:Length, myDBF:FieldCount)
 			FOR VAR i := 1 TO myDBF:FIELDCount
 				// Right decoding ?
-				fieldInfo := fields[i]:Split( ',' )
+				fieldInfo := fields[i]:Split( c',' )
 				Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_NAME, NIL ) )
 				Assert.Equal( fieldInfo[DBS_TYPE], myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
 				Assert.Equal( Convert.ToInt32(fieldInfo[DBS_LEN]), myDBF:FieldInfo( i, DBS_LEN, NIL ) )
@@ -375,7 +383,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			
 		METHOD CheckCreateFields() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
-			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+			LOCAL fields := fieldDefs:Split( c';' ) AS STRING[]
 			VAR dbInfo := DbOpenInfo{ "XSharpTest.DBF", "XSharpTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
@@ -385,7 +393,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
 				// 
 				LOCAL currentField AS RddFieldInfo
-				fieldInfo := fields[i]:Split( ',' )
+				fieldInfo := fields[i]:Split( c',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
 				rddInfo[i] := currentField
 			NEXT
@@ -397,7 +405,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			Assert.Equal(fields:Length, myDBF:FieldCount)
 			FOR VAR i := 1 TO myDBF:FIELDCount
 				// Right decoding ?
-				fieldInfo := fields[i]:Split( ',' )
+				fieldInfo := fields[i]:Split( c',' )
 				Assert.Equal( fieldInfo[DBS_NAME], myDBF:FieldInfo( i, DBS_NAME, NIL ) )
 				Assert.Equal( fieldInfo[DBS_TYPE], myDBF:FieldInfo( i, DBS_TYPE, NIL ) )
 				Assert.Equal( Convert.ToInt32(fieldInfo[DBS_LEN]), myDBF:FieldInfo( i, DBS_LEN, NIL ) )
@@ -409,7 +417,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			
 		METHOD CheckCreateDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
-			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+			LOCAL fields := fieldDefs:Split( c';' ) AS STRING[]
 			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
@@ -419,7 +427,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
 				// 
 				LOCAL currentField AS RddFieldInfo
-				fieldInfo := fields[i]:Split( ',' )
+				fieldInfo := fields[i]:Split( c',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
 				rddInfo[i] := currentField
 			NEXT
@@ -447,7 +455,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			
 		METHOD CheckCreateAppendDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
-			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
+			LOCAL fields := fieldDefs:Split( c';' ) AS STRING[]
 			VAR dbInfo := DbOpenInfo{ "XMenTest.DBF", "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
@@ -457,7 +465,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
 				// 
 				LOCAL currentField AS RddFieldInfo
-				fieldInfo := fields[i]:Split( ',' )
+				fieldInfo := fields[i]:Split( c',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
 				rddInfo[i] := currentField
 			NEXT
@@ -469,11 +477,11 @@ BEGIN NAMESPACE XSharp.RDD.App
 			// Now, Add some Data
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
-			LOCAL data := datas:Split( ';' ) AS STRING[]
+			LOCAL data := datas:Split( c';' ) AS STRING[]
 			//
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
 				// 
-				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
+				LOCAL elt := data[i]:Split( c',' ) AS STRING[]
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
 				myDBF:PutValue( 2, elt[__ARRAYBASE__+1])
@@ -485,7 +493,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			myDBF:Open( dbInfo )
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
 				// 
-				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
+				LOCAL elt := data[i]:Split( c',' ) AS STRING[]
 				Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), myDBF:GetValue(1) )
 				Assert.Equal( elt[__ARRAYBASE__+1], myDBF:GetValue(2) )
 				Assert.Equal( String.Compare(elt[__ARRAYBASE__+2],"T",TRUE)==0, myDBF:GetValue(3) )
@@ -496,7 +504,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 					dt := (DateTime)o
 				ENDIF
 				Assert.Equal( TRUE, o IS DateTime )
-				Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
+				Assert.Equal( DateTime.Now:ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
 				myDBF:Skip(1)
 			NEXT
 			//

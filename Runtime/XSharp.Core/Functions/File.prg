@@ -276,22 +276,27 @@ BEGIN NAMESPACE XSharp.IO
 			refC := Bytes2String(aBuffer, iCount)
 			RETURN iCount
 		
-		INTERNAL STATIC METHOD readBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lAnsi AS LOGIC) AS INT64
+		INTERNAL STATIC METHOD readBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT) AS INT64
 			LOCAL iResult := 0 AS INT64
 			VAR oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
                     clearErrorState()
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
-					IF !lAnsi
-						Oem2AnsiA(pBuffer)
-					ENDIF
 				CATCH e as Exception
 					setErrorState(e)
 				END TRY
 			ENDIF
 			RETURN iResult
-		
+
+		INTERNAL STATIC METHOD readBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lAnsi AS LOGIC) AS INT64
+            LOCAL iResult := 0 as Int64
+            iResult := readBuff(pFile, pBuffer, dwCount)
+            IF FError() == 0 .and. !lAnsi
+				Oem2AnsiA(pBuffer)
+			ENDIF
+			RETURN iResult
+
 		INTERNAL STATIC METHOD readLine(pFile AS IntPtr,iCount AS INT) AS STRING
 			LOCAL cResult := "" AS STRING
 			LOCAL nPos	AS INT64
@@ -344,17 +349,14 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD write( pFile AS IntPtr, c AS STRING, nLength AS INT ) AS INT
 			LOCAL aBytes := String2Bytes(c) AS BYTE[]
 			RETURN writeBuff(pFile, aBytes, nLength, FALSE)			
-		
-		INTERNAL STATIC METHOD writeBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT, lAnsi AS LOGIC) AS INT
+
+		INTERNAL STATIC METHOD writeBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT) AS INT
 			LOCAL oStream	AS FileStream
 			LOCAL iWritten := 0 AS INT
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
                     clearErrorState()
-					IF !lAnsi
-						pBuffer := Ansi2Oem(pBuffer)
-					ENDIF
 					oStream:Write(pBuffer, 0, iCount)
 					iWritten := iCount
 				CATCH e as Exception
@@ -364,6 +366,12 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			
 			RETURN iWritten
+
+		INTERNAL STATIC METHOD writeBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT, lAnsi AS LOGIC) AS INT
+			IF !lAnsi
+				pBuffer := Ansi2Oem(pBuffer)
+            ENDIF
+            RETURN writeBuff(pFile, pBuffer, iCount)
 		
 		INTERNAL STATIC METHOD writeLine(pFile AS IntPtr,c AS STRING, nLen AS INT) AS INT
 			IF c:Length > nLen
@@ -581,7 +589,7 @@ FUNCTION FPutS3(pFile AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
 /// <param name="dwCount">The number of bytes to read into the buffer.</param>
 /// <returns>The number of bytes successfully read.  A return value less than the number of bytes requested indicates end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
 FUNCTION FRead3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, FALSE)
+	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount)
 
 /// <summary>
 /// Read characters from a file into an allocated buffer with optional OEM to Ansi conversion.
@@ -711,7 +719,7 @@ FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD ) AS DWORD
 /// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
 /// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 FUNCTION FWrite3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile, pBuffer, (INT) nCount, TRUE)
+	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile, pBuffer, (INT) nCount)
 
 
 /// <summary>

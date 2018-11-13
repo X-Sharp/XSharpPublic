@@ -646,33 +646,33 @@ FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS
 /// <param name="nStart">The number of the element to start with.</param>
 /// <param name="nCount">The number fo elements the scan.</param>
 /// <returns>If uSearch is a code block then the functions returns the position of the first element for which the code block returns TRUE.  Otherwise it returns the position of the first matching element.  The function returns 0 if no match is found.</returns>
-FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG,nCount AS LONG) AS DWORD 
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := 1 AS USUAL,nCount AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact()) 
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS LONG) AS DWORD 
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, ALen(aTarget), SetExact()) 
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), SetExact()) 
 
 /// <summary>
 /// Scan an array until an exact match with a value is found or a code block returns TRUE.
 /// </summary>
-/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS INT, nCount AS INT) AS DWORD 
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := 1 AS USUAL, nCount AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS INT) AS DWORD 
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, ALen(aTarget), TRUE )
 
 
-/// <inheritdoc cref='M:XSharp.VO.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
+/// <inheritdoc cref='M:XSharp.VO.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, ALen(aTarget), TRUE )
 
@@ -729,7 +729,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
 /// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart := 1 AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, nCount) 
 
 /// <summary>
@@ -737,7 +737,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCoun
 /// </summary>
 /// <param name="act">The lambda expression to use for looking up the correct element.</param>
 /// <inheritdoc cref='M:XSharp.VO.Functions.AScan(XSharp.__Array,XSharp.__Usual,System.Int32,System.Int32)'/>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart := 1 AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, nCount) 
 
 	
@@ -1078,7 +1078,7 @@ END STRUCTURE
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION ASort<T>(aArray AS __ArrayBase<T> ,startIndex AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ASort<T>(aArray AS __ArrayBase<T> ,startIndex := 1 AS INT,nCount := -1 AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
 	aArray:Sort( startIndex, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
 	RETURN aArray
 
@@ -1131,7 +1131,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD) AS 
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart := 1 AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	LOCAL nX AS DWORD
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
@@ -1182,7 +1182,7 @@ FUNCTION AEval(aArray AS ARRAY,cb AS ICODEBLOCK ,iStart AS INT ) AS USUAL
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeBlock ,iStart AS INT ,iCount AS INT) AS USUAL 
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeBlock ,iStart := 1 AS INT ,iCount AS INT) AS USUAL 
 	LOCAL uCount AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := iCount
@@ -1232,7 +1232,7 @@ FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ) AS ARRAY
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ,iCount AS INT) AS ARRAY
+FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart := 1 AS INT ,iCount AS INT) AS ARRAY
 	LOCAL uCount AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := iCount
@@ -1274,7 +1274,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD) 
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart := 1 AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	LOCAL nX AS DWORD
 	LOCAL nEnd AS DWORD
 	nEnd := iStart + iCount -1
@@ -1293,7 +1293,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,i
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ,iCount AS INT) AS ARRAY
+FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock, iStart := 1 AS INT ,iCount AS INT) AS ARRAY
 	LOCAL uCount	AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := iCount

@@ -259,6 +259,12 @@ BEGIN NAMESPACE XSharp
             RETURN
 
         NEW INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<__USUAL>) AS VOID
+           if startIndex <= 0
+                startIndex := 1
+            endif
+            if count < 0
+                count := _internalList:Count - startIndex + __ARRAYBASE__
+            endif
             _internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
             RETURN
 
@@ -268,7 +274,7 @@ BEGIN NAMESPACE XSharp
             PUBLIC CONSTRUCTOR (a AS ARRAY)
                 _value := a
                 //[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-                PUBLIC PROPERTY Elements AS List<USUAL> GET _value:_internalList
+           PUBLIC PROPERTY Elements AS List<USUAL> GET _value:_internalList
 
 
         END CLASS

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -13,7 +13,7 @@ USING System.Linq
 USING System.Runtime.CompilerServices
 
 INTERNAL STATIC CLASS OOPHelpers
-
+    STATIC INTERNAL EnableOptimizations AS LOGIC
 	STATIC METHOD FindOurAssemblies AS IEnumerable<Assembly>
 		RETURN	FROM asm IN AppDomain.CurrentDomain:GetAssemblies() ;
 				WHERE asm:IsDefined(TYPEOF( ClassLibraryAttribute ), FALSE) ;
@@ -390,7 +390,7 @@ INTERNAL STATIC CLASS OOPHelpers
                 RETURN __CastClass(OBJECT, uValue)
             ELSEIF IsArray(uValue) .AND. totype == typeof(ARRAY)
                 RETURN (ARRAY) uValue
-            ELSEIF IsObject(uValue) 
+            ELSEIF IsObject(uValue) .or. isCodeBlock(uValue)
                 RETURN (OBJECT) uValue
             ENDIF
       
@@ -1111,3 +1111,7 @@ FUNCTION XSharpLoadLibrary(cLibFileName AS STRING) AS Assembly
 	END IF
 RETURN oAssembly
 
+FUNCTION EnableLBOptimizations(lSet as LOGIC) AS LOGIC
+    local lOld := OOPHelpers.EnableOptimizations as LOGIC
+    OOPHelpers.EnableOptimizations := lSet
+    RETURN lOld

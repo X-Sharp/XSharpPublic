@@ -5,6 +5,7 @@
 //
 USING System
 USING System.Globalization
+using System.Collections.Generic
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Text
@@ -22,9 +23,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _oRDD      as DBFCDX
         INTERNAL _root      as CdxFileHeader
         INTERNAL _tagList   as CdxTagList
+        INTERNAL _tags      as IList<CdxTag>
 
         INTERNAL PROPERTY FileName as STRING AUTO
-        
+        INTERNAL PROPERTY Tags as IList<CdxTag> GET _tags
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd := oRDD
@@ -82,8 +84,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nTagList := SELF:_root:TagList
                 _tagList := CdxTagList{_hFile, (int) nTagList, _root:KeyLength}
                 _tagList:Read()
+                _tags := _tagList:Tags
                 // Compile expressions
-                FOREACH var tag in _tagList:Tags
+                FOREACH var tag in _tags
                     LOCAL nIndex as INT
                     nIndex := _oRdd:FieldIndex(tag:KeyExpression)
                     IF  nIndex > 0

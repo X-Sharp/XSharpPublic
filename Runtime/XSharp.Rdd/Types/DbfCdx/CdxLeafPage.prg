@@ -72,13 +72,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             return _recnos[nPos ]
                 
 
-        Method GetKey(nPos as Int32) as STRING
+        Method GetKey(nPos as Int32) as BYTE[]
             Debug.Assert(nPos >= 0 .and. nPos < Self:NumKeys)
             if _keys == null
                 Self:_ExpandKeys()
             endif
             local nStart := nPos * _KeyLen as int
-            return _GetString(_keys, nStart, _KeyLen)
+            return _GetBytes(_keys, nStart, _KeyLen)
 #endregion
 
          PRIVATE METHOD _ExpandKeys()  as LOGIC

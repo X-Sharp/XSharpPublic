@@ -44,11 +44,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER(fileHandle, nPage)
 
         #region ICdxKeyValue
-        Method GetKey(nPos as Int32) as STRING
+        Method GetKey(nPos as Int32) as BYTE[]
             LOCAL nStart as int
             Debug.Assert(nPos >= 0 .and. nPos < Self:NumKeys)
             nStart := CDXBRANCH_KEY_OFFSET + nPos * (_keyLen + 8)
-            return _GetString(SELF:Buffer, nStart, _KeyLen)
+            return _GetBytes(SELF:Buffer, nStart, _KeyLen)
 
         METHOD GetRecno(nPos as Int32) as Int32
             LOCAL nStart as int

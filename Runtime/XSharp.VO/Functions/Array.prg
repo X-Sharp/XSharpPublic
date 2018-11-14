@@ -175,7 +175,9 @@ INTERNAL STATIC CLASS ArrayHelpers
 		LOCAL last   AS DWORD
 		LOCAL result AS USUAL
 		LOCAL x      AS DWORD
-		
+		IF elements == 0
+            RETURN aArray
+        ENDIF
 		IF nStart == 0
 			THROW  Error.ArgumentError( __ENTITY__, "nStart", 3, __CavoStr( VOErrors.ArgCannotBeZero ), { nStart } )
 		ENDIF
@@ -221,9 +223,9 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		RETURN aArray
 		
-	STATIC METHOD AEvalCheckArgs(aArray AS ARRAY, cb AS ICodeBlock, iStart REF USUAL, iCount REF USUAL,cFuncName AS STRING) AS LOGIC
+	STATIC METHOD AEvalCheckArgs(aArray AS ARRAY, cb AS ICodeBlock, iStart REF USUAL, iCount REF USUAL,cFuncName AS STRING) AS VOID
 		IF aArray == NULL_ARRAY
-			THROW Error.NullArgumentError( cFuncName, NAMEOF(aArray),1)
+            RETURN
 		ENDIF
 		IF cb == NULL
 			THROW Error.NullArgumentError( cFuncName, NAMEOF(cb),2)
@@ -236,7 +238,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		IF ! IsNumeric(iCount)
 			THROW Error.ArgumentError( cFuncName, NAMEOF(iCount), 4 , <OBJECT>{iCount})
 		ENDIF
-		RETURN TRUE
+		RETURN
 
 	STATIC METHOD ValidateArrayParams(aTarget REF USUAL, nStart REF USUAL,nCount REF USUAL, nSize OUT DWORD) AS LOGIC
 		nSize := 0

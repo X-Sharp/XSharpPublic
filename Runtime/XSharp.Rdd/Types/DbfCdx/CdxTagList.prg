@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System
+USING System.Collections
 USING System.Collections.Generic
 USING System.Text
 USING System.IO
@@ -26,11 +27,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Decode the keys
             FOR VAR nI := 0 to SELF:NumKeys-1
                 local nRecno    := SELF:GetRecno(nI) as Int32
-                local cName     := SELF:GetKey(nI):Trim() as STRING
-                var tag         := CdxTag{SELF:_hFile, nRecno, cName}
+                local bName     := SELF:GetKey(nI)  as byte[]
+                local cName     := System.Text.Encoding.ASCII:GetString( bName, 0, bName:Length) as STRING
+                var tag         := CdxTag{SELF:_hFile, nRecno, cName:Trim()}
                 _tagList:Add(tag)
             NEXT
+            // default sort for tags in an orderbag is on pageno. 
+            _tagList:Sort( { tagX, tagY => tagX:Page - tagY:Page} ) 
             RETURN lOk
         PROPERTY Tags as IList<cdxTag> Get _tagList
-	END CLASS
+    END CLASS
 END NAMESPACE 

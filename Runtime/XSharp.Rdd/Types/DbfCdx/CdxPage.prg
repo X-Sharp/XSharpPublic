@@ -96,7 +96,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 					str := String.Empty
 				ENDIF
 				RETURN str
-				
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
+            PROTECTED INTERNAL STATIC METHOD _GetBytes(buffer as byte[], nOffSet AS INT, count AS INT) AS BYTE[]
+                local result as byte[]
+                result := Byte[]{count}
+			    MemCopy(buffer, nOffSet, result, 0, count)
+                return result
+
+
 			[MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			PROTECTED INTERNAL STATIC METHOD _SetString(buffer as byte[], nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0

@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -140,7 +140,28 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u:FULLNAME := "Olympiacos"
 			Assert.Equal("Olympiacos", u:fullNAme)
 		RETURN
+        
+        [Fact, Trait("Category", "OOP")];
+        METHOD IConvertibleTest() as VOID
+           //Issue 1 - runtime - Object must implement IConvertible
+            LOCAL o AS AzControl
+            LOCAL x AS OBJECT
+                     
+            o := AzControl{}
+            o:cbWhen := {||TRUE}
+       
+            x := o
+       
+            x:cbWhen := {||TRUE}       
 
+            Assert.NotEqual(o:cbWhen, null)
+  
+    
+        CLASS AzControl
+       
+            EXPORT cbWhen AS CODEBLOCK
+       
+        END CLASS   
 	END CLASS
 
 

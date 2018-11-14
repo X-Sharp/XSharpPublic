@@ -73,18 +73,38 @@ INTERNAL STATIC CLASS OOPHelpers
 				EXIT 
 			ENDIF
 			// The class could be prefixed with a Namespace. 
-			// If there is an Implicoit Namespace Attribute
+			// If there is a class library attribute and we prefixed all classes with a namespace then
+            // this is visible in the ClassLibraryAttribute
 			// We don't know if the current assembly is compiler with /INS, but we assume it is when they
 			// use the 'old fashioned' CreateInstance().
 			VAR ins := TYPEOF( ClassLibraryAttribute )
 			IF asm:IsDefined(  ins, FALSE )
-				VAR atr := (ClassLibraryAttribute) (asm:GetCustomAttributes(ins,FALSE) [1])
-				VAR cFullName := atr:DefaultNamespace +"."+cName
-				ret := asm:GetType( cFullName, FALSE, TRUE )
-				IF ret != NULL
-					EXIT
-				ENDIF  
-			ENDIF
+                // there should be only one but it does not hurt to be cautious
+                FOREACH var attribute in asm:GetCustomAttributes(ins,FALSE)
+				    VAR atr := (ClassLibraryAttribute) attribute
+                    IF !String.IsNullOrEmpty(atr:DefaultNamespace)
+				        VAR cFullName := atr:DefaultNamespace +"."+cName
+				        ret := asm:GetType( cFullName, FALSE, TRUE )
+				        IF ret != NULL
+					        EXIT
+                        ENDIF
+                    ENDIF
+                NEXT
+            ENDIF
+            // If there is an Implicit Namespace Attribute
+            ins := TYPEOF( ImplicitNamespaceAttribute )
+			IF asm:IsDefined(  ins, FALSE )
+                FOREACH var attribute in asm:GetCustomAttributes(ins,FALSE)
+				    VAR atr := (ImplicitNamespaceAttribute) attribute
+                    IF !String.IsNullOrEmpty(atr:Namespace)
+				        VAR cFullName := atr:Namespace+"."+cName
+				        ret := asm:GetType( cFullName, FALSE, TRUE )
+				        IF ret != NULL
+					        EXIT
+                        ENDIF
+                    ENDIF
+                 NEXT
+             ENDIF
 		NEXT   
 		RETURN ret
 		
@@ -914,11 +934,7 @@ FUNCTION Send(o AS USUAL,uMethod AS USUAL, args PARAMS USUAL[]) AS USUAL
 	LOCAL oObject := o AS OBJECT
 	LOCAL cMethod := uMethod AS STRING
 	LOCAL uResult AS USUAL
-	TRY
-		uResult := OopHelpers.DoSend(oObject, cMethod, args)
-	CATCH
-		uResult := NIL
-	END TRY
+	uResult := OopHelpers.DoSend(oObject, cMethod, args)
 	RETURN uResult
 	
 /// <summary>Invoke a method.</summary>

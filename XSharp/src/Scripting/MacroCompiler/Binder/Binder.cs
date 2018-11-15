@@ -103,7 +103,7 @@ namespace XSharp.MacroCompiler
 
                     var ts = add_type(n, t);
 
-                    if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.CoreFunctionsClass, StringComparison.OrdinalIgnoreCase))
+                    if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.XSharpCoreFunctionsClass, StringComparison.OrdinalIgnoreCase))
                     {
                         usings.Add(ts);
                     }

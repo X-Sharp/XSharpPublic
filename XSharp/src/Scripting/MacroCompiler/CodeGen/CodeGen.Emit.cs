@@ -540,6 +540,9 @@ namespace XSharp.MacroCompiler
         {
             switch (op.Kind)
             {
+                case BinaryOperatorKind.Concat:
+                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Concat) as MethodSymbol).Method);
+                    break;
                 case BinaryOperatorKind.Addition:
                     ilg.Emit(OpCodes.Add);
                     break;
@@ -579,6 +582,69 @@ namespace XSharp.MacroCompiler
                 case BinaryOperatorKind.Or:
                     ilg.Emit(OpCodes.Or);
                     break;
+                case BinaryOperatorKind.GreaterThanAny:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Cgt_Un);
+                    else
+                        ilg.Emit(OpCodes.Cgt);
+                    break;
+                case BinaryOperatorKind.LessThanAny:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Clt_Un);
+                    else
+                        ilg.Emit(OpCodes.Clt);
+                    break;
+                case BinaryOperatorKind.GreaterThanOrEqualAny:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Clt_Un);
+                    else
+                        ilg.Emit(OpCodes.Clt);
+                    ilg.Emit(OpCodes.Ldc_I4_0);
+                    ilg.Emit(OpCodes.Ceq);
+                    break;
+                case BinaryOperatorKind.LessThanOrEqualAny:
+                    if (type.NativeType.IsUnsigned())
+                        ilg.Emit(OpCodes.Cgt_Un);
+                    else
+                        ilg.Emit(OpCodes.Cgt);
+                    ilg.Emit(OpCodes.Ldc_I4_0);
+                    ilg.Emit(OpCodes.Ceq);
+                    break;
+                case BinaryOperatorKind.ExactEqualAny:
+                case BinaryOperatorKind.EqualAny:
+                    ilg.Emit(OpCodes.Ceq);
+                    break;
+                case BinaryOperatorKind.NotEqualAny:
+                    ilg.Emit(OpCodes.Ceq);
+                    ilg.Emit(OpCodes.Ldc_I4_0);
+                    ilg.Emit(OpCodes.Ceq);
+                    break;
+                case BinaryOperatorKind.EqString:
+                case BinaryOperatorKind.EeqString:
+                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Equals) as MethodSymbol).Method);
+                    break;
+                case BinaryOperatorKind.NeqString:
+                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Equals) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Ldc_I4_0);
+                    ilg.Emit(OpCodes.Ceq);
+                    break;
+                case BinaryOperatorKind.EqObject:
+                case BinaryOperatorKind.EqStringObject:
+                case BinaryOperatorKind.EqObjectString:
+                case BinaryOperatorKind.EeqObject:
+                case BinaryOperatorKind.EeqStringObject:
+                case BinaryOperatorKind.EeqObjectString:
+                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_Object_Equals) as MethodSymbol).Method);
+                    break;
+                case BinaryOperatorKind.NeqObject:
+                case BinaryOperatorKind.NeqStringObject:
+                case BinaryOperatorKind.NeqObjectString:
+                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_Object_Equals) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Ldc_I4_0);
+                    ilg.Emit(OpCodes.Ceq);
+                    break;
+                case BinaryOperatorKind.Exponent:
+                case BinaryOperatorKind.Substr:
                 default:
                     throw new NotImplementedException();
             }

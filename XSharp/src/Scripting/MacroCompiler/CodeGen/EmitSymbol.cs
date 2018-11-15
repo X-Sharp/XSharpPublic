@@ -44,6 +44,24 @@ namespace XSharp.MacroCompiler
         internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldarg, Index); }
         internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Starg, Index); }
     }
+    internal partial class DynamicSymbol : TypedSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            var m = (Binder.Lookup(XSharpQualifiedFunctionNames.IVarGet) ?? Binder.Lookup(VulcanQualifiedFunctionNames.IVarGet)) as MethodSymbol;
+            ilg.Emit(OpCodes.Ldstr, Name);
+            ilg.Emit(OpCodes.Call, m.Method);
+        }
+        internal override void EmitSet(ILGenerator ilg)
+        {
+            var m = (Binder.Lookup(XSharpQualifiedFunctionNames.IVarPut) ?? Binder.Lookup(VulcanQualifiedFunctionNames.IVarPut)) as MethodSymbol;
+            var lb = ilg.DeclareLocal(Type.Type);
+            ilg.Emit(OpCodes.Stloc, lb.LocalIndex);
+            ilg.Emit(OpCodes.Ldstr, Name);
+            ilg.Emit(OpCodes.Ldloc, lb.LocalIndex);
+            ilg.Emit(OpCodes.Call, m.Method);
+        }
+    }
     internal partial class MemberSymbol : TypedSymbol
     {
     }

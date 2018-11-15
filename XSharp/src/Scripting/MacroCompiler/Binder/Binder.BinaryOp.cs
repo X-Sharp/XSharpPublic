@@ -17,8 +17,8 @@ namespace XSharp.MacroCompiler
             var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);
             if (sym != null)
             {
-                Convert(ref left, sym.Type);
-                Convert(ref right, sym.Type);
+                Convert(ref left, sym.TypeOfOp);
+                Convert(ref right, sym.TypeOfOp);
                 return sym;
             }
 

@@ -113,6 +113,13 @@ namespace XSharp.MacroCompiler
     {
         internal ParameterSymbol(string name, TypeSymbol type, int index) : base(name, type) { Index = index; }
     }
+    internal partial class DynamicSymbol : TypedSymbol
+    {
+        internal string Name;
+        internal override TypeSymbol Type { get { return Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object); } }
+        internal DynamicSymbol(string name) { Name = name; }
+        internal override Symbol Lookup(string name) { return null; }
+    }
     internal partial class MemberSymbol : TypedSymbol
     {
         internal MemberInfo Member;

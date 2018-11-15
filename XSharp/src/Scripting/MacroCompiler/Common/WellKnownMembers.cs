@@ -13,6 +13,11 @@ namespace XSharp.MacroCompiler
     internal enum WellKnownMembers
     {
         System_Decimal_Zero,
+        System_String_Concat,
+        System_String_Equals,
+        System_String_op_Equality,
+        System_String_op_Inequality,
+        System_Object_Equals,
     }
 
     public static partial class Compilation
@@ -20,6 +25,11 @@ namespace XSharp.MacroCompiler
         static string[] MemberNames =
         {
             "System.Decimal.Zero",
+            "System.String.Concat",
+            "System.String.Equals",
+            "System.String.op_Equality",
+            "System.String.op_Inequality",
+            "System.Object.Equals",
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;
@@ -32,7 +42,31 @@ namespace XSharp.MacroCompiler
             {
                 var name = MemberNames[(int)m];
                 Debug.Assert(name.Replace('.', '_') == m.ToString());
-                memberSymbols[(int)m] = Binder.Lookup(name) as MemberSymbol;
+                var s = Binder.Lookup(name);
+                if (s is SymbolList)
+                {
+                    switch (m)
+                    {
+                        case WellKnownMembers.System_String_Concat:
+                            s = (s as SymbolList).Symbols.Find(x => (x as MethodSymbol)?.Method.GetParameters().Length == 2 ? true : false);
+                            Debug.Assert((s as MethodSymbol)?.Method.IsStatic == true);
+                            break;
+                        case WellKnownMembers.System_String_Equals:
+                            s = (s as SymbolList).Symbols.Find(x =>
+                                (x as MethodSymbol)?.Method.IsStatic == true
+                                && (x as MethodSymbol)?.Method.GetParameters().Length == 2 
+                                && (x as MethodSymbol)?.Method.GetParameters()[1].ParameterType == typeof(string)
+                                ? true : false);
+                            Debug.Assert((s as MethodSymbol)?.Method.IsStatic == true);
+                            break;
+                        case WellKnownMembers.System_Object_Equals:
+                            s = (s as SymbolList).Symbols.Find(x => (x as MethodSymbol)?.Method.IsStatic == true ? true : false);
+                            Debug.Assert((s as MethodSymbol)?.Method.GetParameters().Length == 2);
+                            break;
+                    }
+                }
+                Debug.Assert(s == null || s is MemberSymbol);
+                memberSymbols[(int)m] = s as MemberSymbol;
                 Debug.Assert(memberSymbols[(int)m] != null);
             }
 

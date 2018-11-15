@@ -31,7 +31,7 @@ begin namespace MacroCompilerTest
         //var test_source := "Test(123+45)";
         //var test_source := "TestR(123)";
         //var test_source := "TestI(123.456)";
-        //var test_source := "{|a,b,c|a := b := 1343}";
+        //var test_source := "{|a,b,c|a := b := 1343+1}";
         //var test_source := "{|a,b,c|}";
         //var test_source := "{|a,b,c|1234}";
         //var test_source := "U(1234)";
@@ -44,7 +44,16 @@ begin namespace MacroCompilerTest
         //var test_source := "{|a|a := 8, ++a, ++a}";
         //var test_source := "{|a| a:= 8, ++a, a++, a++}";
         //var test_source := "{|a| ++a, a++, a++}";
-        var test_source := "{|a| a++, Console.WriteLine(123), a++}";
+        //var test_source := "{|a| a++, Console.WriteLine(123), a++}";
+        //var test_source := e"{|a| a := \"abc\", Console.WriteLine(\"Hello\"), a + \"def\" }";
+        //var test_source := e"{|a| \"abc\" + \"def\"}";
+        //var test_source := e"{|a| \"abc\" == \"def\"}";
+        //var test_source := e"{|a| \"abc\" = \"abc\"}";
+        //var test_source := e"{|a| \"abc\" != \"abc\"}";
+        //var test_source := e"{|a| a := \"abc\", a == \"abc\"}";
+        //var test_source := e"{|a| 0 == 0 }";
+        //var test_source := e"{|a| 0 != 0 }";
+        var test_source := e"{|a| 0 > 1 }";
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()

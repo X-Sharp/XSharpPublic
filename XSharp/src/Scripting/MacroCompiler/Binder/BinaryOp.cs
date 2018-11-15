@@ -31,13 +31,44 @@ namespace XSharp.MacroCompiler
         Or,
         Substr,
         DefaultValue, // X#
+
+        OpBase = 256,
+        OpResBase = OpBase * OpBase,
+        OpMask = OpBase - 1,
+
+        Concat = Addition | (OperandType.String * OpBase),
+
+        ExactEqualAny = ExactEqual | (OperandType.Bool * OpResBase),
+        EqualAny = Equal | (OperandType.Bool * OpResBase),
+        NotEqualAny = NotEqual | (OperandType.Bool * OpResBase),
+        GreaterThanAny = GreaterThan | (OperandType.Bool * OpResBase),
+        LessThanAny = LessThan | (OperandType.Bool * OpResBase),
+        GreaterThanOrEqualAny = GreaterThanOrEqual | (OperandType.Bool * OpResBase),
+        LessThanOrEqualAny = LessThanOrEqual | (OperandType.Bool * OpResBase),
+
+        EeqString = ExactEqual | (OperandType.String * OpBase) | (OperandType.Bool * OpResBase),
+        EeqObject = ExactEqual | (OperandType.Object * OpBase) | (OperandType.Bool * OpResBase),
+        EeqStringObject = ExactEqual | (OperandType.StringAndObject * OpBase) | (OperandType.Bool * OpResBase),
+        EeqObjectString = ExactEqual | (OperandType.ObjectAndString * OpBase) | (OperandType.Bool * OpResBase),
+
+        EqString = Equal | (OperandType.String * OpBase) | (OperandType.Bool * OpResBase),
+        EqObject = Equal | (OperandType.Object * OpBase) | (OperandType.Bool * OpResBase),
+        EqStringObject = Equal | (OperandType.StringAndObject * OpBase) | (OperandType.Bool * OpResBase),
+        EqObjectString = Equal | (OperandType.ObjectAndString * OpBase) | (OperandType.Bool * OpResBase),
+
+        NeqString = NotEqual | (OperandType.String * OpBase) | (OperandType.Bool * OpResBase),
+        NeqObject = NotEqual | (OperandType.Object * OpBase) | (OperandType.Bool * OpResBase),
+        NeqStringObject = NotEqual | (OperandType.StringAndObject * OpBase) | (OperandType.Bool * OpResBase),
+        NeqObjectString = NotEqual | (OperandType.ObjectAndString * OpBase) | (OperandType.Bool * OpResBase),
     }
 
     internal partial class BinaryOperatorSymbol : Symbol
     {
         internal readonly BinaryOperatorKind Kind;
         internal readonly OperandType OpType;
-        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType) { Kind = kind; OpType = opType; }
+        internal readonly OperandType ResType;
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType) { Kind = kind; OpType = opType; ResType = opType; }
+        internal BinaryOperatorSymbol(BinaryOperatorKind kind, OperandType opType, OperandType resType) { Kind = kind; OpType = opType; ResType = resType; }
 
         internal static BinaryOperatorSymbol Create(BinaryOperatorKind kind, OperandType opType) { return simpleOp[(int)kind, (int)opType]; }
         internal static BinaryOperatorSymbolWithMethod Create(BinaryOperatorKind kind, MethodSymbol method,
@@ -46,7 +77,9 @@ namespace XSharp.MacroCompiler
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
-        internal virtual TypeSymbol Type { get { return OpType.TypeSymbol(); } }
+        internal virtual TypeSymbol Type { get { return ResType.TypeSymbol(); } }
+
+        internal TypeSymbol TypeOfOp { get { return OpType.TypeSymbol(); } }
 
         private static readonly BinaryOperatorSymbol[,] simpleOp;
 
@@ -55,14 +88,46 @@ namespace XSharp.MacroCompiler
             var ops = (BinaryOperatorKind[])Enum.GetValues(typeof(BinaryOperatorKind));
             var opTypes = (OperandType[])Enum.GetValues(typeof(OperandType));
 
-            simpleOp = new BinaryOperatorSymbol[ops.Length, opTypes.Length];
+            int maxOp = 0;
+
+            foreach (var o in ops)
+                if (o < BinaryOperatorKind.OpBase && (int)o > maxOp)
+                    maxOp = (int)o;
+
+            simpleOp = new BinaryOperatorSymbol[maxOp + 1, opTypes.Length];
+
+            var op = new BinaryOperatorKind[maxOp + 1, opTypes.Length];
+            var opr = new OperandType[maxOp + 1, opTypes.Length];
 
             foreach (var o in ops)
             {
-                foreach (var c in opTypes)
+                if (o > BinaryOperatorKind.OpBase)
                 {
-                    if (o != BinaryOperatorKind.Error && c != OperandType.Error)
-                        simpleOp[(int)o, (int)c] = new BinaryOperatorSymbol(o, c);
+                    var ok = (int)o & (int)BinaryOperatorKind.OpMask;
+                    var ot = ((int)o / (int)BinaryOperatorKind.OpBase) & (int)BinaryOperatorKind.OpMask;
+                    var or = (OperandType)(((int)o / (int)BinaryOperatorKind.OpResBase) & (int)BinaryOperatorKind.OpMask);
+                    op[ok,ot] = o;
+                    opr[ok,ot] = or;
+                }
+            }
+
+            foreach (var o in ops)
+            {
+                if (o < BinaryOperatorKind.OpBase)
+                {
+                    foreach (var c in opTypes)
+                    {
+                        if (o != BinaryOperatorKind.Error && c != OperandType.Error)
+                        {
+                            var ti = (int)c;
+                            if (op[(int)o, ti] == BinaryOperatorKind.Error) ti = 0;
+                            var k = op[(int)o, ti];
+                            if (k == BinaryOperatorKind.Error) k = o;
+                            var r = opr[(int)o, ti];
+                            if (r == OperandType.Error) r = c;
+                            simpleOp[(int)o, (int)c] = new BinaryOperatorSymbol(k, c, r);
+                        }
+                    }
                 }
             }
 
@@ -70,7 +135,7 @@ namespace XSharp.MacroCompiler
             /*
             foreach (var o in ops)
             {
-                if (o != BinaryOperatorKind.Error)
+                if (o != BinaryOperatorKind.Error && o < BinaryOperatorKind.OpTypeBase)
                     Debug.Assert(OperatorName(o) != null);
             }
             */
@@ -358,6 +423,8 @@ namespace XSharp.MacroCompiler
                     for (int j = 0; j < 13; j++)
                     {
                         var t = x[i, j];
+                        if (k == BinaryOperatorKind.ExactEqual && i != j)
+                            t = OperandType.Error;
                         var nt = OperandTypeHelper.IsNullable(t + OperandTypeHelper.NullableDelta) ? t + OperandTypeHelper.NullableDelta : t;
                         res[i + 2, j + 2] = BinaryOperatorSymbol.Create(k, t);
                         res[i + 2 + 13, j + 2] = BinaryOperatorSymbol.Create(k, nt);
@@ -370,8 +437,8 @@ namespace XSharp.MacroCompiler
                    BinaryOperatorSymbol.Create(k, OperandType.Object)
                    : BinaryOperatorSymbol.Create(BinaryOperatorKind.Error, OperandType.Error);
                 var op_ss = (eq || add) ? BinaryOperatorSymbol.Create(k, OperandType.String) : op_o;
-                var op_so = (eq || add) ? op_ss : op_o;
-                var op_os = (eq || add) ? op_ss : op_o;
+                var op_so = (eq || add) ? BinaryOperatorSymbol.Create(k, OperandType.StringAndObject) : op_o;
+                var op_os = (eq || add) ? BinaryOperatorSymbol.Create(k, OperandType.ObjectAndString) : op_o;
                 for (int i = 0; i < 28; i++)
                 {
                     if (i == 1)

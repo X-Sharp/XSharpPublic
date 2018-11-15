@@ -227,10 +227,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                _children = new List<PPMatchRange>();
-                _children.Add(Create(Start, End));
-                _children.Add(Create(start, end));
-                _length = end - Start + 1;
+                if (start == this.End + 1)
+                {
+                    _length += (end-start)+1;
+                }
+                else
+                {
+                    _children = new List<PPMatchRange>();
+                    _children.Add(Create(Start, End));
+                    _children.Add(Create(start, end));
+                    _length = end - Start + 1;
+                }
             }
         }
         internal void SetToken(int pos)

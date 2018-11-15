@@ -402,7 +402,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         void addToDict(Dictionary<string, PPMatchToken> markers, PPMatchToken element)
         {
-            if (element.Token.IsName())
+            if (element.Token.IsName() || element.Token.Type == XSharpLexer.SYMBOL_CONST)
             {
                 string name = element.Key;
                 if (!markers.ContainsKey(name))
@@ -443,19 +443,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             addToDict(markers, element);
                             i += 2;
                         }
-                        if (i < max - 3
-                            && matchTokens[i + 3].Type == XSharpLexer.GT
-                            && matchTokens[i + 2].IsName()
-                            && matchTokens[i + 1].Type == XSharpLexer.NEQ2)
+                        if (i < max - 2
+                            && matchTokens[i + 2].Type == XSharpLexer.GT
+                            && matchTokens[i + 1].Type == XSharpLexer.SYMBOL_CONST)
                         {
+                            // Xbase++ Addition
                             // <#idMarker>
-                            name = matchTokens[i + 2];
+                            // duplicate so we can change the name
+                            name = new XSharpToken(matchTokens[i + 1]); 
+                            name.Text = name.Text.Substring(1);
                             element = new PPMatchToken(name, PPTokenType.MatchSingle);
                             result.Add(element);
                             addToDict(markers, element);
-                            i += 3;
+                            i += 2;
                         }
-                        // Xbase++ Addition
                         else if (i < max - 4
                             // <*idMarker*>
                             && matchTokens[i + 1].Type == XSharpLexer.MULT
@@ -666,6 +667,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 stoptokens.Add(token);
                         }
                         break;
+                    case PPTokenType.MatchSingle:
                     case PPTokenType.Token:
                         stoptokens.Add(next.Token);
                         finished = true;
@@ -1145,6 +1147,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         iSource = iEnd + 1;
                         iRule += 1;
                     }
+                    break;
+                case PPTokenType.MatchSingle:
+                    // XPP addition
+                    // add all normal tokens and operators until whitespace
+                    var first = tokens[iSource];
+                    var nextpos = first.Position + first.FullWidth;
+                    iEnd = iSource + 1;
+                    while (iEnd < tokens.Count )
+                    {
+                        first = tokens[iEnd];
+                        if (first.Position > nextpos)
+                        {
+                            break;
+                        }
+                        nextpos = first.Position + first.FullWidth;
+                        iEnd++;
+                    }
+                    iEnd -= 1;
+                    matchInfo[mToken.Index].SetPos(iSource, iEnd);
+                    iSource = iEnd+1;
+                    iRule += 1;
+                    found = true;                    // matches anything until the end of the list
                     break;
                 case PPTokenType.MatchWild:
                     iEnd = tokens.Count - 1;

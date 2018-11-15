@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -80,13 +80,13 @@ INTERNAL STATIC CLASS OOPHelpers
 			VAR ins := TYPEOF( ClassLibraryAttribute )
 			IF asm:IsDefined(  ins, FALSE )
                 // there should be only one but it does not hurt to be cautious
-                FOREACH var attribute in asm:GetCustomAttributes(ins,FALSE)
+                FOREACH VAR attribute IN asm:GetCustomAttributes(ins,FALSE)
 				    VAR atr := (ClassLibraryAttribute) attribute
                     IF !String.IsNullOrEmpty(atr:DefaultNamespace)
 				        VAR cFullName := atr:DefaultNamespace +"."+cName
 				        ret := asm:GetType( cFullName, FALSE, TRUE )
 				        IF ret != NULL
-					        EXIT
+					        RETURN ret
                         ENDIF
                     ENDIF
                 NEXT
@@ -94,13 +94,13 @@ INTERNAL STATIC CLASS OOPHelpers
             // If there is an Implicit Namespace Attribute
             ins := TYPEOF( ImplicitNamespaceAttribute )
 			IF asm:IsDefined(  ins, FALSE )
-                FOREACH var attribute in asm:GetCustomAttributes(ins,FALSE)
+                FOREACH VAR attribute IN asm:GetCustomAttributes(ins,FALSE)
 				    VAR atr := (ImplicitNamespaceAttribute) attribute
                     IF !String.IsNullOrEmpty(atr:Namespace)
 				        VAR cFullName := atr:Namespace+"."+cName
 				        ret := asm:GetType( cFullName, FALSE, TRUE )
 				        IF ret != NULL
-					        EXIT
+					        RETURN ret
                         ENDIF
                     ENDIF
                  NEXT
@@ -1127,7 +1127,7 @@ FUNCTION XSharpLoadLibrary(cLibFileName AS STRING) AS Assembly
 	END IF
 RETURN oAssembly
 
-FUNCTION EnableLBOptimizations(lSet as LOGIC) AS LOGIC
-    local lOld := OOPHelpers.EnableOptimizations as LOGIC
+FUNCTION EnableLBOptimizations(lSet AS LOGIC) AS LOGIC
+    LOCAL lOld := OOPHelpers.EnableOptimizations AS LOGIC
     OOPHelpers.EnableOptimizations := lSet
     RETURN lOld

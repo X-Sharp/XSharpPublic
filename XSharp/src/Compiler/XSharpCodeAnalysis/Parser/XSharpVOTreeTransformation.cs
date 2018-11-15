@@ -882,13 +882,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Helpers for Method Init and Method Axit (/vo1)
-        private ConstructorDeclarationSyntax createConstructor(
+        protected ConstructorDeclarationSyntax createConstructor(
             XP.IEntityContext context,
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.ParameterListContext paramlist,
             XP.StatementBlockContext stmtblock,
-            XSharpParserRuleContext econtext,
+            XSharpParserRuleContext errorcontext,
             IToken chain = null,
             XP.ArgumentListContext args = null,
             bool isInInterface = false)
@@ -897,13 +897,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (stmtblock?._Stmts?.Count > 0)
                 {
-                    econtext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody));
+                    errorcontext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody));
                 }
                 stmtblock = null;
             }
             if (isInInterface)
             {
-                econtext.AddError(new ParseErrorData(econtext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+                errorcontext.AddError(new ParseErrorData(errorcontext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
                 return null;
             }
             else
@@ -985,20 +985,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.StatementBlockContext stmtblock,
-            XSharpParserRuleContext econtext,
+            XSharpParserRuleContext errorcontext,
             bool isInInterface = false)
         {
             if (modifiers.Any((int)SyntaxKind.ExternKeyword))
             {
                 if (stmtblock?._Stmts?.Count > 0)
                 {
-                    econtext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody, "Destructor"));
+                    errorcontext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody, "Destructor"));
                 }
                 stmtblock = null;
             }
             if (isInInterface)
             {
-                econtext.AddError(new ParseErrorData(econtext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+                errorcontext.AddError(new ParseErrorData(errorcontext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else
             {
@@ -1209,7 +1209,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             base.ExitCallingconvention(context);
         }
-
 
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
@@ -2134,7 +2133,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (expr.GetChild(0) is XP.ParenExpressionContext paren)
                 {
-                    return GetLiteralExpression(paren.Expr);
+                    var parExpr = expr.GetChild(0) as XP.ParenExpressionContext;
+                    return GetLiteralExpression(parExpr.Expr);
                 }
             }
             return null;
@@ -2770,7 +2770,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return _clipperParams;
         }
-        private void Check4ClipperCC(XP.IEntityContext context, XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType)
+        protected void Check4ClipperCC(XP.IEntityContext context, IList<XP.ParameterContext> parameters, IToken Convention, XP.DatatypeContext returnType)
         {
             bool isEntryPoint = false;
             bool hasConvention = false;
@@ -2800,8 +2800,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 hasConvention = true;
             }
             int paramCount = 0;
-            if (parameters != null && parameters._Params != null)
-                paramCount = parameters._Params.Count;
+            if (parameters != null && parameters != null)
+                paramCount = parameters.Count;
             // Function Foo or Function Foo() without convention
             if (paramCount == 0 && !hasConvention)
             {
@@ -2810,7 +2810,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (paramCount > 0)
             {
                 bool bHasTypedParameter = false;
-                foreach (XP.ParameterContext par in parameters._Params)
+                foreach (XP.ParameterContext par in parameters)
                 {
                     if (par.Type != null || par.Self != null)
                     {
@@ -3173,7 +3173,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
             base.EnterMethod(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
             if (context.T.Token.Type != XP.METHOD)
             {
                 context.Data.HasClipperCallingConvention = false;
@@ -3197,25 +3197,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterFunction([NotNull] XP.FunctionContext context)
         {
             base.EnterFunction(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
         }
 
         public override void EnterProcedure([NotNull] XP.ProcedureContext context)
         {
             base.EnterProcedure(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, null);
         }
 
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)
         {
             base.EnterConstructor(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, null);
         }
 
         public override void EnterVodll([NotNull] XP.VodllContext context)
         {
             base.EnterVodll(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Cc, context.Type);
         }
         #endregion
         

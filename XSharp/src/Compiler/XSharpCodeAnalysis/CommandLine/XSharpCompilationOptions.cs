@@ -64,8 +64,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ParseLevel ParseLevel { get;  set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool SaveAsCSharp { get; internal set; } = false;
+        public bool DumpAST { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
+        public string StdDefs { get; internal set; } = "XSharpDefs.xh";
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;

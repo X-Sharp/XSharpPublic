@@ -158,6 +158,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     tree = parser.script();
             }
+            else if (_options.Dialect == XSharpDialect.XPP)
+                tree = parser.xppsource();
             else
                 tree = parser.source();
             return tree;
@@ -184,6 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var sourceText = _text.ToString();
             var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
             lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
+            lexer.IsXPP = _options.Dialect == XSharpDialect.XPP;
             _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
@@ -263,6 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
             parser.AllowNamedArgs = _options.AllowNamedArguments;
             parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
+            parser.AllowClassySyntax = _options.Dialect.AllowClassySyntax();
 
 
 #if DEBUG && DUMP_TIMES
@@ -340,7 +344,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             }   // _options.ParseLevel < Complete
-
+            if (_options.DumpAST && tree != null)
+            {
+                string strTree = tree.ToStringTree();
+                string file = System.IO.Path.ChangeExtension(_fileName, "ast");
+                strTree = strTree.Replace(@"\r\n)))))", @"\r\n*)))))"+ "\r\n");
+                strTree = strTree.Replace(@"\r\n))))", @"\r\n*)))" + "\r\n");
+                strTree = strTree.Replace(@"\r\n)))", @"\r\n*)))" + "\r\n");
+                strTree = strTree.Replace(@"\r\n))", @"\r\n*))" + "\r\n");
+                strTree = strTree.Replace(@"\r\n)", @"\r\n*)" + "\r\n");
+                strTree = strTree.Replace(@"\r\n*)", @"\r\n)" );
+                System.IO.File.WriteAllText(file, strTree);
+            }
             var walker = new ParseTreeWalker();
 
             foreach (var e in lexer.LexErrors)
@@ -358,15 +373,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             //
              
-            XSharpTreeTransformation treeTransform;
-            if (_options.IsDialectVO)
-            {
-                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-            }
-            else
-            {
-                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-            }
+            var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
             bool hasErrors = false;
             SyntaxToken eof = null;
             try
@@ -437,6 +444,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     pp.Close();
 
             }
+        }
+
+        internal static XSharpTreeTransformation CreateTransform(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+                    ContextAwareSyntax syntaxFactory, string fileName)
+        {
+            XSharpTreeTransformation treeTransform;
+            if (options.Dialect.AllowClassySyntax())
+            {
+                treeTransform = new XSharpXPPTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+            }
+            if (options.IsDialectVO)
+            {
+                treeTransform = new XSharpVOTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+            }
+            else
+            {
+                treeTransform = new XSharpTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+            }
+            return treeTransform;
         }
 
         internal TNode ParseWithStackGuard<TNode>(Func<TNode> parseFunc, Func<TNode> createEmptyNodeFunc) where TNode : CSharpSyntaxNode
@@ -684,15 +710,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // and return this tree to the caller.
                 // we copy the attributes, modifiers etc from one of the class instances to make sure that
                 // do not specify a conflicting modifier.
-                XSharpTreeTransformation trans = null;
-                if (_options.IsDialectVO)
-                {
-                    trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
-                }
-                else
-                {
-                    trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
-                }
+                var trans = CreateTransform(null, _options, _pool, _syntaxFactory, _fileName);
                 SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();

@@ -74,6 +74,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool AllowOldStyleComments { get; set; }
         public bool AllowSingleQuotedStrings { get; set; }
         public bool AllowXBaseVariables { get; set; }
+        public bool IsXPP { get; set; }
         public bool IsScript { get; set; }
         public bool IsMacroLexer { get; set; }
         // Properties that show what the contents of the Lexer buffer was
@@ -100,6 +101,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
         static Object kwlock = new Object();
         static IDictionary<string, int> voKwIds = null;
+        static IDictionary<string, int> xppKwIds = null;
         static IDictionary<string, int> xsKwIds = null;
         private IDictionary<string, int> _kwIds;
         static IDictionary<string, int> _symPPIds;
@@ -921,7 +923,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
-
+            /*
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID
@@ -1006,7 +1008,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case FUNC:
                         case ACCESS:
                         case ASSIGN:
-                        case CLASS:
+                        //case CLASS:           XPP Has CLASS METHOD
                         case INTERFACE:
                         case STRUCTURE:
                         case VOSTRUCT:
@@ -1036,7 +1038,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                     }
                     break;
-            }
+            }*/
             return keyword;
         }
         private bool findKeyWord(XSharpToken token, int lastToken)
@@ -1130,10 +1132,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"_CAST", CAST},
                     {"EXPORT", EXPORT},
                     {"FIELD", FIELD},
-                    {"_FIELD", FIELD_},
+                    {"_FIELD", FIELD},
                     {"IF", IF},
                     {"IIF", IIF},
                     {"IS", IS},
+                    {"MEMVAR", MEMVAR},
                     {"_NOT", VO_NOT},
                     {"_OR", VO_OR},
                     {"_XOR", VO_XOR},
@@ -1212,7 +1215,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"EXPORT", EXPORT},
                 {"FASTCALL", FASTCALL},
                 {"FIELD", FIELD},
-                {"_FIELD", FIELD_},
+                {"_FIELD", FIELD},
                 {"FOR", FOR},
                 {"FUNCTION", FUNCTION},
                 {"GLOBAL", GLOBAL},
@@ -1229,7 +1232,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"LOCAL", LOCAL},
                 {"LOOP", LOOP},
                 {"MEMBER", MEMBER},
-                {"MEMVAR", MEMVAR},
                 {"METHOD", METHOD},
                 {"NEXT", NEXT},
                 {"_NOT", VO_NOT},
@@ -1330,6 +1332,32 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
+
+            if (IsXPP)
+            {
+                // XBase++ Keywords
+                var xppKeywords = new Dictionary<string, int>
+                {
+                    {"ENDCLASS",ENDCLASS},
+                    {"DEFERRED",DEFERRED },
+                    {"FREEZE",  FREEZE},
+                    {"FINAL",   FINAL},
+                    {"SHARING", SHARING},
+                    {"SHARED",  SHARED},
+                    {"INLINE",  INLINE},
+                    {"SYNC",    SYNC},
+                    {"ASSIGNMENT",ASSIGNMENT},
+                    {"EXPORTED",EXPORTED},
+                    {"READONLY",READONLY },
+                    {"NOSAVE",  NOSAVE},
+                    {"INTRODUCE",INTRODUCE }
+                };
+                foreach (var kw in xppKeywords)
+                {
+                    ids.Add(kw.Key, kw.Value);
+                }
+            }
+
             if (AllowFourLetterAbbreviations)
             {
                 ids.Add("ANY", USUAL);
@@ -1544,6 +1572,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         if (!AllowFourLetterAbbreviations)
                             _kwIds = xsKwIds;
+                        else if (IsXPP)
+                            _kwIds = xppKwIds;
                         else
                             _kwIds = voKwIds;
                     }
@@ -1554,6 +1584,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             if (!AllowFourLetterAbbreviations)
                                 xsKwIds = _kwIds;
+                            else if (IsXPP)
+                                xppKwIds = _kwIds;
                             else
                                 voKwIds = _kwIds;
                         }

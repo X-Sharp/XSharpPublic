@@ -1005,7 +1005,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return stmt;
         }
-        MemberDeclarationSyntax CheckForGarbage(MemberDeclarationSyntax member, XSharpParserRuleContext ignored, string message)
+        protected MemberDeclarationSyntax CheckForGarbage(MemberDeclarationSyntax member, XSharpParserRuleContext ignored, string message)
         {
             if (ignored != null && !_options.Dialect.AllowGarbage())
             {
@@ -2316,32 +2316,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ClassEntities.Push(GlobalClassEntities);
         }
 
-        public override void ExitSource([NotNull] XP.SourceContext context)
+        protected void ProcessEntity(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes, XSharpParserRuleContext context)
         {
-            // globaltypes are the types that are not embedded in a namespace
-            // they will be embedded in the default namespace when the 
-            // compiler option to do so is selected
-            // GlobalEntities.Members will be added to the output without extra
-            // namespace
-            var globalTypes = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var entityCtx in context._Entities)
+            var s = context.CsNode;
+            if (s is NamespaceDeclarationSyntax)
             {
-                var s = entityCtx.CsNode;
-                if (s is NamespaceDeclarationSyntax)
-                    GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
-                else if (s is MemberDeclarationSyntax)
-                    globalTypes.Add(s as MemberDeclarationSyntax);
-                else if (s is UsingDirectiveSyntax)
-                {
-                    var u = s as UsingDirectiveSyntax;
-                    AddUsingWhenMissing(GlobalEntities.Usings, u.Name, u.StaticKeyword != null, u.Alias);
-                }
-                else if (s is AttributeListSyntax)
-                    GlobalEntities.Attributes.Add(s as AttributeListSyntax);
-                else if (s is ExternAliasDirectiveSyntax)
-                    GlobalEntities.Externs.Add(s as ExternAliasDirectiveSyntax);
+                GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
+            }
+            else if (s is MemberDeclarationSyntax)
+            {
+                globalTypes.Add(s as MemberDeclarationSyntax);
+            }
+            else if (s is UsingDirectiveSyntax)
+            {
+                var u = s as UsingDirectiveSyntax;
+                AddUsingWhenMissing(GlobalEntities.Usings, u.Name, u.StaticKeyword != null, u.Alias);
+            }
+            else if (s is AttributeListSyntax)
+            {
+                GlobalEntities.Attributes.Add(s as AttributeListSyntax);
+            }
+            else if (s is ExternAliasDirectiveSyntax)
+            {
+                GlobalEntities.Externs.Add(s as ExternAliasDirectiveSyntax);
             }
 
+        }
+        protected void finishCompilationUnit(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes)
+        {
             FinalizeGlobalEntities();
 
             var generated = ClassEntities.Pop();
@@ -2368,12 +2370,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 GlobalEntities.Members.AddRange(globalTypes);
             }
-            _pool.Free(globalTypes);
             // Add: using static Functions
             AddUsingWhenMissing(GlobalEntities.Usings, this.GlobalClassName, true, null);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
+        }
+
+        public override void ExitSource([NotNull] XP.SourceContext context)
+        {
+            // globaltypes are the types that are not embedded in a namespace
+            // they will be embedded in the default namespace when the 
+            // compiler option to do so is selected
+            // GlobalEntities.Members will be added to the output without extra
+            // namespace
+            var globalTypes = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach (var entityCtx in context._Entities)
+            {
+                ProcessEntity(globalTypes, entityCtx);
+            }
+            finishCompilationUnit(globalTypes);
+            _pool.Free(globalTypes);
+
             //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
         }
         private string RemoveUnwantedCharacters(string input)
@@ -2421,7 +2439,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
- 
 
         public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
         {
@@ -2474,6 +2491,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             AddUsingWhenMissing(GlobalEntities.Usings, ourname, false, null);
         }
 
+        protected void ProcessGlobalEntityContext(XP.IGlobalEntityContext entity)
+        {
+            var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
+            if (entity is XP.ProcedureContext)
+            {
+                var proc = (XP.ProcedureContext)entity;
+                if (proc.InitExit != null)  // Init & Exit procedures are never static
+                {
+                    modifiers = null;
+                }
+            }
+            var bStaticVisibility = false;
+            if (modifiers != null)
+                bStaticVisibility = modifiers.IsStaticVisible;
+
+            var m = entity.Get<MemberDeclarationSyntax>();
+            if (bStaticVisibility)
+            {
+                // When last entity did not go to the functions class or wasn't a static member
+                if (GlobalEntities.LastMember is XP.IGlobalEntityContext && !GlobalEntities.LastIsStatic)
+                {
+                    FinalizeGlobalEntities();
+                }
+                GlobalEntities.StaticGlobalClassMembers.Add(m);
+            }
+            else
+            {
+                // When last entity did not go to the functions class or was a static member
+                if (GlobalEntities.LastMember is XP.IGlobalEntityContext && GlobalEntities.LastIsStatic)
+                {
+                    FinalizeGlobalEntities();
+                }
+                GlobalEntities.GlobalClassMembers.Add(m);
+            }
+            GlobalEntities.LastMember = entity;
+            GlobalEntities.LastIsStatic = bStaticVisibility;
+        }
+        protected void ProcessLastGlobalEntity(XSharpParserRuleContext context, IXParseTree entity)
+        {
+            // When last entity has to go to the functions class 
+            if (GlobalEntities.LastMember is XP.IGlobalEntityContext)
+            {
+                FinalizeGlobalEntities();
+            }
+            context.Put(entity.Get<CSharpSyntaxNode>());
+            GlobalEntities.LastMember = entity;
+        }
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             var entity = context.children[0] as IXParseTree;
@@ -2483,50 +2547,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (entity is XP.IGlobalEntityContext)
             {
-                var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
-                if (entity is XP.ProcedureContext)
-                {
-                    var proc = (XP.ProcedureContext)entity;
-                    if (proc.InitExit != null)  // Init & Exit procedures are never static
-                    {
-                        modifiers = null;
-                    }
-                }
-                var bStaticVisibility = false;
-                if (modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
-
-                var m = entity.Get<MemberDeclarationSyntax>();
-                if (bStaticVisibility)
-                {
-                    // When last entity did not go to the functions class or wasn't a static member
-                    if (GlobalEntities.LastMember is XP.IGlobalEntityContext && ! GlobalEntities.LastIsStatic)
-                    {
-                        FinalizeGlobalEntities();
-                    }
-                    GlobalEntities.StaticGlobalClassMembers.Add(m);
-                }
-                else
-                {
-                    // When last entity did not go to the functions class or was a static member
-                    if (GlobalEntities.LastMember is XP.IGlobalEntityContext && GlobalEntities.LastIsStatic)
-                    {
-                        FinalizeGlobalEntities();
-                    }
-                    GlobalEntities.GlobalClassMembers.Add(m);
-                }
-                GlobalEntities.LastMember = entity;
-                GlobalEntities.LastIsStatic = bStaticVisibility;
+                ProcessGlobalEntityContext(entity as XP.IGlobalEntityContext);
             }
             else
             {
                 // When last entity has to go to the functions class 
-                if (GlobalEntities.LastMember is XP.IGlobalEntityContext)
-                {
-                    FinalizeGlobalEntities();
-                }
-                context.Put(entity.Get<CSharpSyntaxNode>());
-                GlobalEntities.LastMember = entity;
+                ProcessLastGlobalEntity(context, entity);
             }
         }
         #endregion

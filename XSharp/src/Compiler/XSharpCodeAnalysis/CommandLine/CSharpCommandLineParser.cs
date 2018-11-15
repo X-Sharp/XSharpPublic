@@ -224,8 +224,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "showincludes":
                     options.ShowIncludes = positive;
                     break;
+                case "stddefs":
+                    if (value == null)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/stddefs:");
+                    }
+                    else
+                    {
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
+                            value = value.Substring(1, value.Length - 2);
+                        options.StdDefs = value;
+                    }
+                    break;
+
+
                 case "tocs":
                     options.SaveAsCSharp = positive;
+                    break;
+                case "ast":
+                    options.DumpAST = positive;
                     break;
                 case "verbose":
                     options.Verbose = true;
@@ -373,7 +390,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 case "xbase++":
                 case "xbasepp":
-                    dialect = XSharpDialect.XBasePP;
+                case "xpp":
+                    dialect = XSharpDialect.XPP;
                     return true;
                 default:
                     dialect = XSharpDialect.Core;

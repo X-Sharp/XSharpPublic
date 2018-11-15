@@ -251,7 +251,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpDialect.Harbour:
                     macroDefines.Add("__DIALECT_HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
-                case XSharpDialect.XBasePP:
+                case XSharpDialect.XPP:
                     macroDefines.Add("__DIALECT_XBASEPP__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
                 default:
@@ -288,7 +288,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
                 // and automatically include it.
                 // read XsharpDefs.xh
-                StdDefs = "xSharpDefs.xh";
+                StdDefs = options.StdDefs;
                 ProcessIncludeFile(StdDefs, null);
             }
         }

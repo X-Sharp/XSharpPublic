@@ -68,6 +68,7 @@ entity              : namespace_
                     | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     ;
 
+
 eos                 : EOS+ 
                     ;
 
@@ -240,6 +241,10 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
                     ;
+
+
+
+
 
 // Start Extensions for Generic Classes
 typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT
@@ -658,8 +663,9 @@ xbasedecl           : T=(PRIVATE                               // PRIVATE Foo, B
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access The ? is new
-                    | Expr=expression LPAREN                       RPAREN       #methodCall             // method call, no params
+expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access
+                    | {_classySyntax}? Op=COLONCOLON  Name=simpleName           #accessMember           // XPP & Harbour SELF member access
+                    | Expr=expression LPAREN                       RPAREN       #methodCall           // method call, no params
                     | Expr=expression LPAREN ArgList=argumentList  RPAREN       #methodCall             // method call, params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
@@ -691,7 +697,6 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                             | ASSIGN_RSHIFT | ASSIGN_XOR )
                       Right=expression                                          #assignmentExpression	// expr := expr, also expr += expr etc.
                     | Expr=primary                                              #primaryExpression
-
                     ;
 
                     // Primary expressions
@@ -708,7 +713,7 @@ primary             : Key=SELF                                                  
                       ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | Type=datatype LCURLY ArgList=argumentList  RCURLY	
-                                                   Init=objectOrCollectioninitializer? #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
+                                                   Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=CHECKED LPAREN ( Expr=expression ) RPAREN              #checkedExpression		// checked( expression )
                     | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN            #checkedExpression		// unchecked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
@@ -727,14 +732,15 @@ primary             : Key=SELF                                                  
                     | Expr=iif                                                  #iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN                         #intrinsicExpression	// _Or(expr, expr, expr)
-                    | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
+                    | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
+                    | MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
-                          Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME
-                    | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr
-                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr            // (expr) -> expr
-                    | AMP LPAREN Expr=expression RPAREN                         #macro					// &( expr )
-                    | AMP Id=identifierName                                     #macro					// &id
-                    | LPAREN Expr=expression RPAREN                             #parenExpression		// ( expr )
+                          Alias=identifier ALIAS Field=identifier               #aliasedField		      // CUSTOMER->NAME
+                    | Id=identifier ALIAS Expr=expression                       #aliasedExpr          // id -> expr       // when id = 'M' then redirect to aliasedMemvar
+                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   // when expression = 'M' then redirect to aliasedMemvar
+                    | AMP LPAREN Expr=expression RPAREN                         #macro					      // &( expr )
+                    | AMP Id=identifierName                                     #macro					      // &id
+                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN   #parenExpression		  // ( expr,expr,expr )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 
@@ -923,11 +929,13 @@ queryContinuation   : INTO Id=identifier Body=queryBody
 identifier          : Token=(ID  | KWID)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
+                    | XppToken=keywordxpp
                     ;
 
 identifierString    : Token=(ID | KWID | STRING_CONST)
                     | VnToken=keywordvn
                     | XsToken=keywordxs
+                    | XppToken=keywordxpp
                     ;
 
 
@@ -1010,7 +1018,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | 
                             )
                     ;
 
-keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM 
+keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
                     | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
                     | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR  | DECIMAL | DATETIME 
                     | MEMVAR | PARAMETERS  // Added as XS keywords to allow them to be treated as IDs
@@ -1018,8 +1026,153 @@ keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASTYPE | AS
                     | DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
-                    | FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
+                    | FASTCALL | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
                     | STEP | STRICT | TO | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
-                    //| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
                     )
+                    ;
+					
+/// XBase++ Parser definities					
+					
+keywordxpp         : Token=(ENDCLASS| FREEZE| FINAL| SHARING| SHARED| INLINE| SYNC| ASSIGNMENT| EXPORTED| READONLY| NOSAVE| INTRODUCE)
+                   ;
+
+xppsource           : eos? (Entities+=xppentity )*
+                      EOF
+                    ;
+
+xppnamespace        : BEGIN NAMESPACE Name=name e=eos
+                      (Entities+=xppentity)*
+                      END NAMESPACE Ignored=name?  eos
+                    ;
+					
+xppentity           : xppnamespace
+                    | xppclass
+                    | structure_
+                    | interface_
+                    | delegate_
+                    | event_
+                    | enum_
+                    | function                  // This will become part of the 'Globals' class
+                    | procedure                 // This will become part of the 'Globals' class
+                    | xppmethod                 // Method xxx Class xxx syntax
+                    | globalAttributes          // Assembly attributes, Module attributes etc.
+                    | using_                    // Using Namespace
+                    | vodefine                  // This will become part of the 'Globals' class
+                    | voglobal                  // This will become part of the 'Globals' class
+                    | vodll                     // External method of the Globals class
+                    | vostruct                  // Compatibility (unsafe) structure
+                    | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | xppmemvar                 // global memvar outside of code 
+                    ;
+
+xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
+                      (Modifiers=xppclassModifiers)?                          // [STATIC|FREEZE|FINAL] 
+                       CLASS (Namespace=nameDot)? Id=identifier               // CLASS <ClassName>
+                       (
+                          from=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ; 
+                       )?                                                                   // [SHARING <SuperClass,...>]
+                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? // NEW Implements
+                       // No type parameters and type parameter constraints
+                      e=eos
+                      (Members+=xppclassMember)*
+                      ENDCLASS Ignored=identifier?
+                      eos
+                    ;
+
+xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL) )+
+                    ;
+
+xppclassMember      : Member=xppmethodvis                           #xppclsvisibility
+                    | Member=xppinlineMethod                        #xppclsinlinemethod
+                    | Member=xppdeclareMethod                       #xppclsdeclaremethod
+                    | Member=xppproperty                            #xppclsproperty
+                    | Member=xppclassvars                           #xppclsvars
+                    ;
+
+xppmethodvis        : Vis=xppvisibility COLON eos
+                    ;
+
+xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED)         
+                    ;
+
+xppdeclareMethod    : (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
+                      METHOD Methods+=identifier                                   // METHOD <MethodName,...> 
+                      (
+                        xppisin                                                   //  [IS <Name>] [IN <SuperClass>] 
+                        | (COMMA Methods+=identifier)*                             // or an optional comma seperated list of other names
+                      )
+                      eos
+                    ;
+
+
+xppisin             : IS Id=identifier (IN SuperClass=identifier)?                //  IS <Name> [IN <SuperClass>] 
+                    | IN SuperClass=identifier								                    //  IN <SuperClass> without IS clause
+                    ;
+
+                    
+
+xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC ) )+
+                    ;
+
+xppclassvars        : (Modifiers=xppmemberModifiers)?                            // [CLASS] 
+                      VAR Var+=identifier                                         // VAR <VarName> 
+                      (
+                        xppisin                                                   // [IS <Name>] [IN <SuperClass>] 
+                        | ((COMMA Var+=identifier)*                               // <,...> 
+                        (AS Type=datatype)?  )                                    // Optional data type
+
+                      )
+                      (Shared=SHARED)?                                            // [SHARED]
+                      (ReadOnly=READONLY)?                                        // [READONLY] 
+                      (Assignment=xppvarassignment)?                              // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
+                      (Nosave= NOSAVE)?                                           // [NOSAVE] 
+                      eos
+                    ;
+
+
+xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
+                    ;
+
+xppproperty         : (   Access=ACCESS Assign=ASSIGN?                            // ACCESS | ASSIGN  | ACCESS ASSIGN | ASSIGN ACCESS
+                        | Assign=ASSIGN Access=ACCESS?
+                      ) 
+                      xppmemberModifiers?                                         // [CLASS]
+                      METHOD Id=identifier                                        // METHOD <MethodName>
+                      (VAR VarName=identifier)?                                   // [VAR <VarName>]
+                      (AS Type=datatype)?                                         // NEW Optional data type
+                      eos
+                    ;
+
+
+xppmethod           : (Attributes=attributes)?                              // NEW Optional Attributes
+                      (MethodType=(ACCESS|ASSIGN))?                         // Optional Access or Assign
+                      (Modifiers=xppmemberModifiers)?                       // [CLASS]
+                      METHOD (ClassId=identifier COLON)? Id=identifier      // [<ClassName>:] <MethodName>
+                      // no type parameters 
+                      (ParamList=parameterList)?                            // Optional Parameters
+                      (AS Type=datatype)?                                   // NEW Optional return type
+                      // no type constraints
+                      // no calling convention
+                      end=eos
+                      StmtBlk=statementBlock
+                    ;
+
+xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
+                      INLINE  
+                      (Modifiers=xppmemberModifiers)?                        // [CLASS]
+                      METHOD  Id=identifier                                  // METHOD <MethodName>
+                      // no type parameters 
+                      (ParamList=parameterList)?                            // Optional Parameters
+                      (AS Type=datatype)?                                   // NEW Optional return type
+                      // no type constraints
+                      // no calling convention
+                      end=eos
+                      StmtBlk=statementBlock
+                    ;
+
+xppmemberModifiers  : Token=CLASS 
+                    ;
+
+xppmemvar           : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*
+                      end=eos
                     ;

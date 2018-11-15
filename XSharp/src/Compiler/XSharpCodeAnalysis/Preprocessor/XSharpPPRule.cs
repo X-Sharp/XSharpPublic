@@ -443,6 +443,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             addToDict(markers, element);
                             i += 2;
                         }
+                        if (i < max - 3
+                            && matchTokens[i + 3].Type == XSharpLexer.GT
+                            && matchTokens[i + 2].IsName()
+                            && matchTokens[i + 1].Type == XSharpLexer.NEQ2)
+                        {
+                            // <#idMarker>
+                            name = matchTokens[i + 2];
+                            element = new PPMatchToken(name, PPTokenType.MatchSingle);
+                            result.Add(element);
+                            addToDict(markers, element);
+                            i += 3;
+                        }
+                        // Xbase++ Addition
                         else if (i < max - 4
                             // <*idMarker*>
                             && matchTokens[i + 1].Type == XSharpLexer.MULT
@@ -548,9 +561,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
 
                         break;
-                    case XSharpLexer.RBRKT:
-                        addErrorMessage(token, "Closing bracket ']' found with missing '['");
-                        break;
+                    //case XSharpLexer.RBRKT:
+                    //    addErrorMessage(token, "Closing bracket ']' found with missing '['");
+                    //    break;
                     case XSharpLexer.BACKSLASH: // escape next token
                         if (i < max)
                         {

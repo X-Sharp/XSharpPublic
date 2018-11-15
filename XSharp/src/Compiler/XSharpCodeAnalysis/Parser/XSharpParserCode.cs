@@ -49,6 +49,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             set { _namedArgs = value; }
         }
 
+        bool _classySyntax = false;
+        public bool AllowClassySyntax
+        {
+            get { return _classySyntax; }
+            set { _classySyntax = value; }
+        }
         bool _isScript;
         public bool IsScript
         {
@@ -115,6 +121,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             String Name { get; }
             String ShortName { get; }
         }
+        internal interface IXPPEntityContext: IEntityContext
+        {
+            XppmemberModifiersContext Mods { get; }
+            AttributesContext Atts { get; }
+            
+            InternalSyntax.XppDeclaredMethodInfo Info { get; }
+            StatementBlockContext Statements { get; set; }
+            ParameterListContext Parameters { get; }
+        }
+
         [FlagsAttribute]
         enum EntityFlags : short
         {
@@ -240,6 +256,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
 
 
+        }
+        public partial class ParenExpressionContext
+        {
+            public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
         }
 
         public partial class RepeatStmtContext : ILoopStmtContext
@@ -493,6 +513,67 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String Name => this.Id.GetText();
             public String ShortName => this.Id.GetText();
 
+        }
+
+        public partial class XppmethodContext : IXPPEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText() +"()";
+                    return ParentName + name;
+                }
+            }
+            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+            public XppmemberModifiersContext Mods => this.Modifiers;
+            public AttributesContext Atts => this.Attributes;
+            public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
+            public ParameterListContext Parameters => this.ParamList;
+
+        }
+        public partial class XppinlineMethodContext : IXPPEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText() + "()";
+                    return ParentName + name;
+                }
+            }
+            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+            public XppmemberModifiersContext Mods => this.Modifiers;
+            public AttributesContext Atts => this.Attributes;
+            public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
+            public ParameterListContext Parameters => this.ParamList;
+
+        }
+        public partial class XpppropertyContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => this.Type;
+            public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText() ;
+                    return ParentName + name;
+                }
+            }
         }
     }
 

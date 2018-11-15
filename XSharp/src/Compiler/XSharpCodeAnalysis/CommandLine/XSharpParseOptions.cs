@@ -65,6 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; private set; }
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
+        public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
         public bool NoClipCall { get; internal set; } 
@@ -72,6 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
+        public string StdDefs { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
@@ -129,12 +131,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 DefaultNamespace = opt.NameSpace;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
+                DumpAST = opt.DumpAST;
                 WindowsDir = opt.WindowsDir;
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
                 NoClipCall = opt.NoClipCall;
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
+                StdDefs = opt.StdDefs;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;
@@ -183,6 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DebugEnabled = opt.DebugEnabled;
             DefaultIncludeDir = opt.DefaultIncludeDir;
             Dialect = opt.Dialect;
+            DumpAST = opt.DumpAST;
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             DefaultNamespace = opt.DefaultNamespace;
@@ -194,6 +199,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             PreprocessorOutput = opt.PreprocessorOutput;
             ParseLevel = opt.ParseLevel;
             SaveAsCSharp = opt.SaveAsCSharp;
+            StdDefs = opt.StdDefs;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1

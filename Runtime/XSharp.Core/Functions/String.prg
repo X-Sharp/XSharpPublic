@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -511,7 +511,7 @@ FUNCTION Hex2C(c AS STRING) AS STRING
 /// </returns>
 FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
 	LOCAL result := FALSE AS LOGIC
-	IF cSearch != NULL .AND. c != NULL
+	IF cSearch != NULL .AND. c != NULL .and. cSearch:Length != 0
 		result := c:IndexOf( cSearch, StringComparison.Ordinal ) > -1
 	ENDIF
 	RETURN result   

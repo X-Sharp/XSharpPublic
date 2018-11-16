@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -15,7 +15,7 @@ USING System.Text
 /// <returns>
 /// </returns>
 FUNCTION SEval(cSource ,block ,nStart ,nCount ) AS STRING CLIPPER
-	IF ! cSource:IsString .OR. String.IsNullOrEmpty(cSource)
+	IF ! cSource:IsString
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cSource), 1, <OBJECT>{ cSource} )
 	ENDIF
 	IF ! block:IsCodeBlock .OR. block == NULL_CODEBLOCK

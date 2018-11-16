@@ -10,6 +10,25 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="List"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading1">Changes in 2.0.0.8 (Bandol Beta 8)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fix Ansi2OEM problem with FRead3() and FWrite3()</li>
+      <li styleclass="List">Added &#160;missing functions EnableLBOptimizations() and property Array:Count</li>
+      <li styleclass="List">Fixed problem with latebound assign with CodeBlock values</li>
+      <li styleclass="List">Fixed problem with AScan() and AEval() with missing parameters</li>
+      <li styleclass="List">Changed error return codes for DirChange(), DirMake() and DirRemove()</li>
+      <li styleclass="List">Send() was &quot;swallowing&quot; errors. This has been fixed</li>
+      <li styleclass="List">Fixed a problem with assigning to multi dimensional arrays</li>
+      <li styleclass="List">Fixed a problem with creating objects with CreateInstance() where objects are not in the &quot;global&quot; namespace</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio Integration</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Tools</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">VulcanXPorter was always adjusting the referenced VO libraries and &#160;was ignoring the &quot;Use X# Runtime&quot; checkbox</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.0.7 (Bandol Beta 7)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

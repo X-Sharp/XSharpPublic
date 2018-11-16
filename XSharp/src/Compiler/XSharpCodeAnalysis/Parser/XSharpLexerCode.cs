@@ -1232,6 +1232,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"LOCAL", LOCAL},
                 {"LOOP", LOOP},
                 {"MEMBER", MEMBER},
+                {"MEMVAR", MEMVAR},
                 {"METHOD", METHOD},
                 {"NEXT", NEXT},
                 {"_NOT", VO_NOT},
@@ -1620,6 +1621,29 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (IsMacroLexer)
             {
                 symIds.Clear();
+            }
+            else
+            {
+                if (AllowFourLetterAbbreviations)
+                {
+                    var symFour = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+                    foreach (var entry in symIds)
+                    {
+                        var name = entry.Key;       // '#' name
+                        while (name.Length > 5)
+                        {
+                            name = name.Substring(0, name.Length - 1);
+                            if (!symIds.ContainsKey(name) && ! symFour.ContainsKey(name))
+                            {
+                                symFour.Add(name, entry.Value);
+                            }
+                        }
+                    }
+                    foreach (var entry in symFour)
+                    {
+                        symIds.Add(entry.Key, entry.Value);
+                    }
+                }
             }
             return symIds.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
         }

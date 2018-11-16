@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _type = PPUDCType.XCommand;
                     break;
                 case XSharpLexer.PP_TRANSLATE:
-                    if (udc.Text.ToLower() == "#translate")
+                    if (udc.Text.ToLower().StartsWith("#trans"))
                         _type = PPUDCType.Translate;
                     else
                         _type = PPUDCType.XTranslate;
@@ -1039,9 +1039,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iChild = 0;
             int iEnd;
             bool found = false;
-            while (sourceToken.Type == XSharpLexer.WS)
+            while (sourceToken.Type == XSharpLexer.WS )
             {
                 iSource += 1;
+                if (iSource == tokens.Count)
+                    return false;
                 sourceToken = tokens[iSource];
             }
             switch (mToken.RuleTokenType)

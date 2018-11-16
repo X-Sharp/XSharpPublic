@@ -13,7 +13,7 @@ namespace XSharp.MacroCompiler
             public static readonly Options Default = new Options();
 
             public bool AllowFourLetterAbbreviations = true;
-            public bool AllowOldStyleComments = true;
+            public bool AllowOldStyleComments = false;
             public bool AllowSingleQuotedStrings = true;
         }
 

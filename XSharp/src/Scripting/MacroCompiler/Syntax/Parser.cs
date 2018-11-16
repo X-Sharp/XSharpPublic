@@ -639,6 +639,8 @@ namespace XSharp.MacroCompiler
             BinaryRight,
             Prefix,
             Postfix,
+
+            BinaryLogic,
             PrefixAssign,
             PostfixAssign,
         }
@@ -664,6 +666,11 @@ namespace XSharp.MacroCompiler
                     case AssocType.BinaryRight:
                         Parse = _parse;
                         Combine = _combine_binary;
+                        break;
+                    case AssocType.BinaryLogic:
+                        this.assoc = AssocType.BinaryLeft;
+                        Parse = _parse;
+                        Combine = _combine_binary_logic;
                         break;
                     case AssocType.Postfix:
                         Parse = _parse;
@@ -728,6 +735,10 @@ namespace XSharp.MacroCompiler
             Expr _combine_binary(Expr l, Node o, Expr r)
             {
                 return new BinaryExpr(l, type, r);
+            }
+            Expr _combine_binary_logic(Expr l, Node o, Expr r)
+            {
+                return new BinaryLogicExpr(l, type, r);
             }
             public static bool operator <(Oper a, Oper b)
             {
@@ -826,13 +837,13 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.NOT] = new Oper(AssocType.Prefix, TokenType.NOT, 17);
             Opers[(int)TokenType.LOGIC_NOT] = new Oper(AssocType.Prefix, TokenType.LOGIC_NOT, 17);
 
-            Opers[(int)TokenType.AND] = new Oper(AssocType.BinaryLeft, TokenType.AND, 18);
-            Opers[(int)TokenType.LOGIC_AND] = new Oper(AssocType.BinaryLeft, TokenType.LOGIC_AND, 18);
+            Opers[(int)TokenType.AND] = new Oper(AssocType.BinaryLogic, TokenType.AND, 18);
+            Opers[(int)TokenType.LOGIC_AND] = new Oper(AssocType.BinaryLogic, TokenType.LOGIC_AND, 18);
 
             Opers[(int)TokenType.LOGIC_XOR] = new Oper(AssocType.BinaryLeft, TokenType.LOGIC_XOR, 19);
 
-            Opers[(int)TokenType.OR] = new Oper(AssocType.BinaryLeft, TokenType.OR, 20);
-            Opers[(int)TokenType.LOGIC_OR] = new Oper(AssocType.BinaryLeft, TokenType.LOGIC_OR, 20);
+            Opers[(int)TokenType.OR] = new Oper(AssocType.BinaryLogic, TokenType.OR, 20);
+            Opers[(int)TokenType.LOGIC_OR] = new Oper(AssocType.BinaryLogic, TokenType.LOGIC_OR, 20);
 
             Opers[(int)TokenType.DEFAULT] = new Oper(AssocType.BinaryLeft, TokenType.DEFAULT, 21);
 

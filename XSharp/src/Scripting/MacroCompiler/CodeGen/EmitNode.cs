@@ -101,6 +101,37 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class BinaryLogicExpr : BinaryExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (Symbol is BinaryOperatorSymbol)
+            {
+                var lb = ilg.DefineLabel();
+                var op = (Symbol as BinaryOperatorSymbol);
+                Left.Emit(ilg);
+                ilg.Emit(OpCodes.Dup);
+                switch (op.Kind)
+                {
+                    case BinaryOperatorKind.And:
+                        ilg.Emit(OpCodes.Brfalse_S, lb);
+                        break;
+                    case BinaryOperatorKind.Or:
+                        ilg.Emit(OpCodes.Brtrue_S, lb);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                ilg.Emit(OpCodes.Pop);
+                Right.Emit(ilg);
+                ilg.MarkLabel(lb);
+            }
+            else
+                throw new NotImplementedException();
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class UnaryExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

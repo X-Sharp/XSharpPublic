@@ -98,6 +98,10 @@ namespace XSharp.MacroCompiler.Syntax
         internal BinaryExpr(Expr l, TokenType o, Expr r) { Left = l; Kind = o; Right = r; }
         public override string ToString() { return "(" + Left.ToString() + TokenText(Kind) + Right.ToString() + ")"; }
     }
+    internal partial class BinaryLogicExpr : BinaryExpr
+    {
+        internal BinaryLogicExpr(Expr l, TokenType o, Expr r) : base(l,o,r) {}
+    }
     internal partial class UnaryExpr : Expr
     {
         internal Expr Expr;

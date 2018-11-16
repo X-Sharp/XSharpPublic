@@ -86,6 +86,18 @@ namespace XSharp.MacroCompiler
             }
         }
 
+        public static bool OperatorIsLogic(TokenType tokenKind)
+        {
+            switch (tokenKind)
+            {
+                case TokenType.NOT:
+                case TokenType.LOGIC_NOT:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static string OperatorName(UnaryOperatorKind kind)
         {
             switch (kind)

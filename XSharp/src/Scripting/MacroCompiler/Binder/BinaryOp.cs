@@ -187,15 +187,15 @@ namespace XSharp.MacroCompiler
                 case TokenType.PIPE:
                     return BinaryOperatorKind.Or;
                 case TokenType.AND:
-                    return BinaryOperatorKind.And; // logic
+                    return BinaryOperatorKind.And;
                 case TokenType.LOGIC_AND:
-                    return BinaryOperatorKind.And; // logic
+                    return BinaryOperatorKind.And;
                 case TokenType.LOGIC_XOR:
-                    return BinaryOperatorKind.Xor; // logic
+                    return BinaryOperatorKind.Xor;
                 case TokenType.OR:
-                    return BinaryOperatorKind.Or; // logic
+                    return BinaryOperatorKind.Or;
                 case TokenType.LOGIC_OR:
-                    return BinaryOperatorKind.Or; // logic
+                    return BinaryOperatorKind.Or;
                 case TokenType.DEFAULT:
                     return BinaryOperatorKind.DefaultValue;
                 case TokenType.ASSIGN_OP:
@@ -213,9 +213,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.ASSIGN_MOD:
                     return BinaryOperatorKind.Remainder;
                 case TokenType.ASSIGN_BITAND:
-                    return BinaryOperatorKind.And; // logic
+                    return BinaryOperatorKind.And;
                 case TokenType.ASSIGN_BITOR:
-                    return BinaryOperatorKind.Or; // logic
+                    return BinaryOperatorKind.Or;
                 case TokenType.ASSIGN_LSHIFT:
                     return BinaryOperatorKind.LeftShift;
                 case TokenType.ASSIGN_RSHIFT:
@@ -224,6 +224,21 @@ namespace XSharp.MacroCompiler
                     return BinaryOperatorKind.Xor;
                 default:
                     return BinaryOperatorKind.Error;
+            }
+        }
+
+        public static bool OperatorIsLogic(TokenType tokenKind)
+        {
+            switch (tokenKind)
+            {
+                case TokenType.AND:
+                case TokenType.LOGIC_AND:
+                case TokenType.LOGIC_XOR:
+                case TokenType.OR:
+                case TokenType.LOGIC_OR:
+                    return true;
+                default:
+                    return false;
             }
         }
 

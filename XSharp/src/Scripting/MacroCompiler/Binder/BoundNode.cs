@@ -191,6 +191,24 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
+            if (BinaryOperatorSymbol.OperatorIsLogic(Kind))
+            {
+                Binder.Convert(ref Left, Compilation.GetNativeType(NativeType.Boolean));
+                Binder.Convert(ref Right, Compilation.GetNativeType(NativeType.Boolean));
+            }
+            Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
+            Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
+            return null;
+        }
+    }
+    internal partial class BinaryLogicExpr : BinaryExpr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Left);
+            b.Bind(ref Right);
+            Binder.Convert(ref Left, Compilation.GetNativeType(NativeType.Boolean));
+            Binder.Convert(ref Right, Compilation.GetNativeType(NativeType.Boolean));
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
             Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
             return null;
@@ -203,6 +221,10 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Left = Expr;
+            if (UnaryOperatorSymbol.OperatorIsLogic(Kind))
+            {
+                Binder.Convert(ref Left, Compilation.GetNativeType(NativeType.Boolean));
+            }
             Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
             Datatype = (Symbol as UnaryOperatorSymbol)?.Type;
             return null;

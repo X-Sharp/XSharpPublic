@@ -363,10 +363,13 @@ FUNCTION DbCreate (   cName,  aStruct, cRddName , lNew,  cAlias, cDelim, lJustOp
         cDelim := ""
     ENDIF
     LOCAL oDriver := cRddName AS OBJECT
+    if oDriver == NULL_OBJECT
+        oDriver := RuntimeState.DefaultRDD
+    ENDIF
     IF oDriver IS STRING
-        lRetCode := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Create(cName, aStruct, (STRING) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen))
+        lRetCode := VoDbCreate(cName, aStruct, (STRING) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen)
     ELSEIF oDriver IS System.Type
-        lRetCode := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Create( cName, aStruct, (Type) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen ))
+        lRetCode := VoDbCreate(cName, aStruct, (Type) oDriver, lNew, cAlias, cDelim, lKeep, lJustOpen )
     ELSE
         THROW Error.DataTypeError( __FUNCTION__, nameof(cRddName ), 3, { cRddName  } )
     ENDIF

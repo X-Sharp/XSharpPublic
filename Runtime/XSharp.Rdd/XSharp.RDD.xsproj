@@ -60,7 +60,8 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>c:\xsharp\dev\xsharp\src\common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption>/parallel-</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>

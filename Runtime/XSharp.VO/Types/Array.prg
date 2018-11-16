@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -154,10 +154,10 @@ BEGIN NAMESPACE XSharp
                 IF u:IsNil
                     RETURN u
                 ENDIF
-                if (OBJECT) u IS IIndexedProperties .and. i == length-1
+                IF (OBJECT) u IS IIndexedProperties .and. i == length-1
                     LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
-                    return o[index[length]]
-                endif
+                    RETURN o[index[length]]
+                ENDIF
                 IF !u:IsArray
                     THROW InvalidOperationException{"out of range error."}
                 ENDIF
@@ -199,12 +199,12 @@ BEGIN NAMESPACE XSharp
                 LOCAL length := index:Length AS INT
                 LOCAL currentArray := SELF AS ARRAY
                 FOR VAR i := 1 UPTO length-1
-                    LOCAL uArray := _internalList[index[i]] AS USUAL
-                    if (OBJECT) u IS IIndexedProperties .and. i == length-1
+                    LOCAL uArray := currentArray:_internalList[index[i]] AS USUAL
+                    IF (OBJECT) u IS IIndexedProperties .and. i == length-1
                         LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
                         o[index[length]] := u
-                        return u
-                    endif
+                        RETURN u
+                    ENDIF
                     IF !(uArray:IsArray)
                         THROW InvalidOperationException{"Out of range error."}
                     ENDIF
@@ -259,12 +259,12 @@ BEGIN NAMESPACE XSharp
             RETURN
 
         NEW INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<__USUAL>) AS VOID
-           if startIndex <= 0
+           IF startIndex <= 0
                 startIndex := 1
-            endif
-            if count < 0
+            ENDIF
+            IF count < 0
                 count := _internalList:Count - startIndex + __ARRAYBASE__
-            endif
+            ENDIF
             _internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
             RETURN
 

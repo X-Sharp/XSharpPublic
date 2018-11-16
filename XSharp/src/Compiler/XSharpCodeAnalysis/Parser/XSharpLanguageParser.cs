@@ -185,8 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var sourceText = _text.ToString();
             var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
-            lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
-            lexer.IsXPP = _options.Dialect == XSharpDialect.XPP;
+            lexer.Options = _options;
             _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;

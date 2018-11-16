@@ -76,8 +76,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XPP:
                     return true;
+                case XSharpDialect.XPP:
                 default:
                     return false;
             }

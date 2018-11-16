@@ -517,11 +517,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitXppmemberModifiers([NotNull] XP.XppmemberModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            var m = context.Token;
-            if (m != null)
+            foreach (var m in context._Tokens)
             {
-                var kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, m.Text);
-                modifiers.AddCheckUnique(kw);
+                SyntaxToken kw = null;
+                switch (m.Type)
+                {
+                    case XP.CLASS:
+                        kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, m.Text);
+                        break;
+                    case XP.STATIC:
+                        kw = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, m.Text);
+                        break;
+                }
+                if (kw != null)
+                {
+                    modifiers.AddCheckUnique(kw);
+                }
             }
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);

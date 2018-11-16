@@ -70,11 +70,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         #region Properties and Fields
         // Properties to set the behavior of the Lexer
-        public bool AllowFourLetterAbbreviations { get; set; }
-        public bool AllowOldStyleComments { get; set; }
-        public bool AllowSingleQuotedStrings { get; set; }
-        public bool AllowXBaseVariables { get; set; }
-        public bool IsXPP { get; set; }
+        public CSharpParseOptions Options { get; set; }
+        public XSharpDialect Dialect => Options.Dialect;
+        private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
+        private bool AllowFourLetterAbbreviations => Dialect.AllowFourLetterAbbreviations();
+        private bool AllowSingleQuotedStrings => Dialect.AllowStringsWithSingleQuotes();
+        private bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
         public bool IsScript { get; set; }
         public bool IsMacroLexer { get; set; }
         // Properties that show what the contents of the Lexer buffer was
@@ -221,7 +222,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         break;
                     case '&':
-                        if (AllowOldStyleComments && InputStream.La(2) == '&')
+                        if (Dialect.AllowOldStyleComments()  && InputStream.La(2) == '&')
                             break;
                         _type = AMP;
                         _textSb.Clear();
@@ -923,7 +924,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken)
         {
-            /*
+            // after the alias operator we treat everything as ID
+            if (lastToken == XSharpLexer.ALIAS)
+                return ID;
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID
@@ -1038,7 +1041,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                     }
                     break;
-            }*/
+            }
             return keyword;
         }
         private bool findKeyWord(XSharpToken token, int lastToken)
@@ -1334,12 +1337,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
 
-            if (IsXPP)
+            if (Dialect == XSharpDialect.XPP)
             {
                 // XBase++ Keywords
                 var xppKeywords = new Dictionary<string, int>
                 {
+                    // normal keywords
+                    {"ENDSEQUENCE", END },
+                    {"ENDFOR",   NEXT },
+                    // class keywords
                     {"ENDCLASS",ENDCLASS},
+                    {"READONLY",READONLY },
                     {"DEFERRED",DEFERRED },
                     {"FREEZE",  FREEZE},
                     {"FINAL",   FINAL},
@@ -1349,15 +1357,42 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"SYNC",    SYNC},
                     {"ASSIGNMENT",ASSIGNMENT},
                     {"EXPORTED",EXPORTED},
-                    {"READONLY",READONLY },
                     {"NOSAVE",  NOSAVE},
                     {"INTRODUCE",INTRODUCE }
                 };
+                var xppKeyWordAbbrev = new Dictionary<string, int>
+                {
+                    {"RETURN ",RETURN },
+                    {"PRIVATE ",PRIVATE  },
+                    {"PUBLIC",  PUBLIC },
+                    {"FUNCTION",    FUNCTION },
+                    {"MEMVAR",      MEMVAR },
+                    {"PARAMETERS",  PARAMETERS},
+                    {"PROCEDURE",   PROCEDURE},
+                    {"OTHERWISE",   OTHERWISE },
+                    {"RECOVER",     RECOVER },
+                    {"SEQUENCE",    SEQUENCE }
+                };
                 foreach (var kw in xppKeywords)
                 {
-                    ids.Add(kw.Key, kw.Value);
+                    if (!ids.ContainsKey(kw.Key))
+                        ids.Add(kw.Key, kw.Value);
                 }
-            }
+                foreach (var kw in xppKeyWordAbbrev)
+                {
+                    var name = kw.Key;
+                    while (true)
+                    {
+                        if (! ids.ContainsKey(name))
+                        {
+                            ids.Add(name, kw.Value);
+                        }
+                        if (name.Length == 4)
+                            break;
+                        name = name.Substring(0, name.Length - 1);
+                    }
+                }
+           }
 
             if (AllowFourLetterAbbreviations)
             {
@@ -1573,7 +1608,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         if (!AllowFourLetterAbbreviations)
                             _kwIds = xsKwIds;
-                        else if (IsXPP)
+                        else if (Dialect == XSharpDialect.XPP)
                             _kwIds = xppKwIds;
                         else
                             _kwIds = voKwIds;
@@ -1585,7 +1620,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             if (!AllowFourLetterAbbreviations)
                                 xsKwIds = _kwIds;
-                            else if (IsXPP)
+                            else if (Dialect == XSharpDialect.XPP)
                                 xppKwIds = _kwIds;
                             else
                                 voKwIds = _kwIds;
@@ -1618,6 +1653,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 			    {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
 			    {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
 		    };
+            if (Dialect == XSharpDialect.XPP)
+            {
+                symIds.Add("#XTRANS", PP_TRANSLATE);
+                symIds.Add("#TRANS", PP_TRANSLATE);
+            }
             if (IsMacroLexer)
             {
                 symIds.Clear();
@@ -1674,9 +1714,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !TEST
             if (options == null)
                 options = CSharpParseOptions.Default;
-            lexer.AllowFourLetterAbbreviations = options.Dialect.AllowFourLetterAbbreviations();
-            lexer.AllowOldStyleComments = options.Dialect.AllowOldStyleComments();
-            lexer.AllowSingleQuotedStrings = options.Dialect.AllowStringsWithSingleQuotes();
+            lexer.Options = options;
             lexer.IsScript = options.Kind == Microsoft.CodeAnalysis.SourceCodeKind.Script;
             lexer.IsMacroLexer = options.MacroScript;
 #endif

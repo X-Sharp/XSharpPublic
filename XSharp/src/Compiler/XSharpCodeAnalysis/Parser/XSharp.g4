@@ -1170,7 +1170,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                       StmtBlk=statementBlock
                     ;
 
-xppmemberModifiers  : Token=CLASS 
+xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
                     ;
 
 xppmemvar           : MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)*

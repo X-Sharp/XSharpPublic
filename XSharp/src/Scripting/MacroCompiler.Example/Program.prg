@@ -53,7 +53,7 @@ begin namespace MacroCompilerTest
         //var test_source := e"{|a| a := \"abc\", a == \"abc\"}";
         //var test_source := e"{|a| 0 == 0 }";
         //var test_source := e"{|a| 0 != 0 }";
-        var test_source := e"{|a| 0 > 1 }";
+        var test_source := e"{|a| (0 > 1) || (0 < 1) }";
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()

@@ -475,7 +475,7 @@ namespace XSharp.MacroCompiler
                 if (k == BinaryOperatorKind.GreaterThan || k == BinaryOperatorKind.LessThan || k == BinaryOperatorKind.GreaterThanOrEqual
                     || k == BinaryOperatorKind.LessThanOrEqual || k == BinaryOperatorKind.And || k == BinaryOperatorKind.Xor
                     || k == BinaryOperatorKind.Or)
-                    return 0;
+                    return 4;
                 if (k == BinaryOperatorKind.Substr || k == BinaryOperatorKind.DefaultValue)
                     return -1;
                 return -1;

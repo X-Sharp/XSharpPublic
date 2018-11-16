@@ -645,6 +645,7 @@ namespace XSharp.MacroCompiler
                     break;
                 case BinaryOperatorKind.Exponent:
                 case BinaryOperatorKind.Substr:
+                case BinaryOperatorKind.DefaultValue:
                 default:
                     throw new NotImplementedException();
             }

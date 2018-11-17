@@ -373,13 +373,15 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 FUNCTION MemoRead(cFile AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
+        XSharp.IO.File.clearErrorState()
 		IF File(cFile)
 			cFile := FPathName()
 			cResult := System.IO.File.ReadAllText(cFile)
 		ELSE
 			cResult := ""
 		ENDIF
-	CATCH
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
 		cResult := ""
 	END TRY
 	RETURN cResult
@@ -396,9 +398,11 @@ FUNCTION MemoRead(cFile AS STRING) AS STRING
 FUNCTION MemoWrit(cFile AS STRING,c AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
+        XSharp.IO.File.clearErrorState()
 		System.IO.File.WriteAllText(cFile, c)
 		lOk := TRUE
-	CATCH
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
 		lOk := FALSE
 	END TRY
 	RETURN lOk

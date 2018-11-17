@@ -2089,7 +2089,7 @@ PRIVATE METHOD _Balance() AS VOID
         LOCAL changedEof AS LOGIC
         LOCAL locked AS LOGIC
         LOCAL orgToSkip AS INT
-        LOCAL result AS LOGIC
+        LOCAL result := FALSE AS LOGIC
         // Default Position = Current Record
         IF nToSkip == 0
             recno := SELF:Recno

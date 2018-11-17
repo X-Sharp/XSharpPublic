@@ -28,12 +28,15 @@ namespace XSharp.LanguageService
         public override TextSpan UncommentSpan(TextSpan span)
         {
             CommentInfo commentFormat = this.GetCommentFormat();
-            var source = GetText(span.iStartLine, span.iStartIndex, span.iStartLine, span.iStartIndex+2).Trim();
+            var source = GetText(span.iStartLine, span.iStartIndex, span.iStartLine, span.iStartIndex + 2).Trim();
             if (source == commentFormat.BlockStart)
             {
                 return this.UncommentBlock(span, commentFormat.BlockStart, commentFormat.BlockEnd);
             }
-            return base.UncommentLines(span, commentFormat.LineStart);
+            //
+            return this.xsUnCommentLines(span, commentFormat.LineStart);
+            //
+            //return base.UncommentLines(span, commentFormat.LineStart);
         }
         public override TextSpan CommentSpan(TextSpan span)
         {
@@ -91,6 +94,39 @@ namespace XSharp.LanguageService
             for (int line = span.iStartLine; line <= span.iEndLine; line++)
             {
                 SetText(line, commentpos, line, commentpos, commentStart);
+            }
+            return span;
+        }
+
+        private TextSpan xsUnCommentLines(TextSpan span, String commentStart)
+        {
+            // Empty selection ?
+            if (span.iStartLine == span.iEndLine && span.iStartIndex == span.iEndIndex)
+            {
+                int commentpos = ScanToNonWhitespaceChar(span.iStartLine);
+                String text = GetLine(span.iStartLine);
+                if (text.Substring(commentpos, 2) == commentStart)
+                {
+                    using (new CompoundAction(this, "Uncomment Selection"))
+                    {
+                        SetText(span.iStartLine, commentpos, span.iStartLine, commentpos + 2, "");
+                    }
+                }
+            }
+            else 
+            {
+                using (new CompoundAction(this, "Uncomment Selection"))
+                {
+                    for (int line = span.iStartLine; line <= span.iEndLine; line++)
+                    {
+                        int commentpos = ScanToNonWhitespaceChar(line);
+                        String text = GetLine(line);
+                        if (text.Length > 1 && (commentpos+2) < text.Length && text.Substring(commentpos, 2) == commentStart)
+                        {
+                            SetText(line, commentpos, line, commentpos + 2, "");
+                        }
+                    }
+                }
             }
             return span;
         }

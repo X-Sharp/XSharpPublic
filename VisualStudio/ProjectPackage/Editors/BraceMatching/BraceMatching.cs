@@ -150,15 +150,25 @@ namespace XSharp.Project.Editors.BraceMatching
                         {
                             length = currentChar.Snapshot.Length - offset;
                         }
-                        string text = currentChar.Snapshot.GetText(offset, length);
-                        var reporter = new ErrorIgnorer();
-                        ITokenStream tokenStream;
-                        XSharpParseOptions parseoptions;
-                        var prj = xfile.Project.ProjectNode;
-                        parseoptions = prj.ParseOptions;
-                        bool ok = XSharp.Parser.VsParser.Lex(text, xfile.FullPath, parseoptions, reporter, out tokenStream);
-                        var bstream = tokenStream as BufferedTokenStream;
-                        tokens = bstream.GetTokens();
+                        //
+                        try
+                        {
+                            string text = currentChar.Snapshot.GetText(offset, length);
+                            var reporter = new ErrorIgnorer();
+                            ITokenStream tokenStream;
+                            XSharpParseOptions parseoptions;
+                            var prj = xfile.Project.ProjectNode;
+                            parseoptions = prj.ParseOptions;
+                            bool ok = XSharp.Parser.VsParser.Lex(text, xfile.FullPath, parseoptions, reporter, out tokenStream);
+                            var bstream = tokenStream as BufferedTokenStream;
+                            tokens = bstream.GetTokens();
+                        }
+                        catch
+                        {
+                            // if it crashes, that might be because the snapshot used for the Lex/Parse is no more
+                            // so, we may have a too much difference
+                            yield break;
+                        }
                     }
                 }
                 else

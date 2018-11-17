@@ -7,18 +7,18 @@
 
 
 USING System.Collections.Generic
-USING System.Xml                           
+USING System.Xml
 DEFINE EXTENSION := "xsproj"  AS STRING
 
-	
+
 CLASS ProjectConverter
-	PROTECT oDoc 	AS XmlDocument  
+	PROTECT oDoc 	AS XmlDocument
 	PROTECT nGroup  AS LONG
-	PROTECT cSchema AS STRING  
+	PROTECT cSchema AS STRING
 	PROTECT cGuid   AS STRING
 	PROTECT cPath	AS STRING
     PROTECT lUseXsRuntime AS LOGIC
-	PROTECT oProgress AS IProgress         
+	PROTECT oProgress AS IProgress
 	PROTECT lRuntimeAdded AS LOGIC
 	PROTECT oProjectNode AS XmlElement
 	PROTECT lHasProjectExtensions AS LOGIC
@@ -30,14 +30,14 @@ CLASS ProjectConverter
         lRuntimeAdded := FALSE
         SELF:oProgress := oProg
         SELF:lUseXsRuntime := lUseXsRT
-        
-METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, useXsRuntime AS LOGIC) AS LOGIC      
+
+METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, useXsRuntime AS LOGIC) AS LOGIC
 	oProgress:WriteLine("Creating ... "+System.IO.Path.GetFileName(cTarget))
 	cPath := System.IO.Path.GetDirectoryName(cSource)+"\"
 	IF ! SELF:LoadFile(cSource)
 		RETURN FALSE
-	ENDIF                            
-	SELF:WalkNode(oDoc)   
+	ENDIF
+	SELF:WalkNode(oDoc)
 	IF (!lHasProjectExtensions ) .AND. oProjectNode != NULL_OBJECT
 		VAR oExt := oDoc:CreateElement("ProjectExtensions",cSchema)
 		VAR oCap := oDoc:CreateElement("ProjectCapabilities",cSchema)
@@ -46,9 +46,9 @@ METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, useXsRuntime AS 
 		oProjectNode:AppendChild(oExt)
 	ENDIF
 	SELF:SaveFile(cTarget)
-	RETURN TRUE	
+	RETURN TRUE
 
-  METHOD Save2String() AS STRING STRICT 
+  METHOD Save2String() AS STRING STRICT
       LOCAL cString         AS STRING
       LOCAL oWriter             AS System.Xml.XmlTextWriter
       LOCAL oStringWriter       AS System.IO.StringWriter
@@ -59,8 +59,8 @@ METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, useXsRuntime AS 
       oDoc:WriteTo(oWriter)
       cString := oStringWriter:ToString()
       RETURN cString
-   
-   METHOD SaveFile(strFileName AS STRING) AS LOGIC STRICT 
+
+   METHOD SaveFile(strFileName AS STRING) AS LOGIC STRICT
       LOCAL lRet        AS LOGIC
       LOCAL oTargetFile  AS System.IO.StreamWriter
       lRet := FALSE
@@ -75,33 +75,33 @@ METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, useXsRuntime AS 
 
 METHOD CloneNode(oNode AS XmlNode) AS XmlNode
 	LOCAL oResult AS XmlNode
-	oResult := oNode:CloneNode(FALSE)   
+	oResult := oNode:CloneNode(FALSE)
 	oResult:InnerText := oNode:InnerText
-	RETURN oResult                      
+	RETURN oResult
 
 METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 	LOCAL oChild AS XmlElement
 	LOCAL oAttribute AS XmlAttribute
 	IF aDelete:Contains(oElement:Name:ToLower())
 		// remove the node
-		oParent:RemoveChild(oElement)     
-	ELSEIF aRename:ContainsKey(oElement:Name)    
-		// Renaming Nodes is not supported. Create a new node and 
+		oParent:RemoveChild(oElement)
+	ELSEIF aRename:ContainsKey(oElement:Name)
+		// Renaming Nodes is not supported. Create a new node and
 		// Copy its attributes and children
 		// and then replace the existing node
 		oChild := oDoc:CreateElement(aRename[oElement:Name],cSchema)
 		DO WHILE oElement:HasAttributes
 			oChild:SetAttributeNode(oElement:RemoveAttributeNode(oElement:Attributes[0]))
-		ENDDO              
+		ENDDO
 		DO WHILE oElement:HasChildNodes
 			oChild:AppendChild(oElement:FirstChild)
 		ENDDO
-		oParent:ReplaceChild(oChild, oElement)				
-	ELSE    
+		oParent:ReplaceChild(oChild, oElement)
+	ELSE
 		// Some nodes that require special processing
 		SWITCH oElement:Name:ToLower()
-		CASE "compile"    
-		CASE "none"    
+		CASE "compile"
+		CASE "none"
 		CASE "vobinary"
 		CASE "nativeresource"
 			VAR cItem := oElement:GetAttribute("Include")
@@ -121,8 +121,8 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				ENDIF
 			ENDIF
 
-		CASE "import"               
-			// change import 
+		CASE "import"
+			// change import
 			oAttribute := (XmlAttribute) oElement:Attributes:GetNamedItem("Project")
 			IF oAttribute:Value:ToLower():Contains("vulcan.net")
 				oAttribute:Value := "$(MSBuildExtensionsPath)\XSharp\XSharp.targets"
@@ -134,17 +134,17 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				SELF:oProjectNode := oElement
 			ENDIF
 
-		CASE "projectguid"   
+		CASE "projectguid"
 			// new guid
 			oElement:InnerText := cGuid
-		CASE "projecttypeguids"   
+		CASE "projecttypeguids"
 			// WPF project
 			// our WPF ProjectFactory
-			// Generic WPF project 
+			// Generic WPF project
 			// Our project factory
-			oElement:InnerText := "{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}" 
+			oElement:InnerText := "{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}"
 		CASE "projectreference"
-			// update extension in project references 
+			// update extension in project references
 			oAttribute := (XmlAttribute) oElement:Attributes:GetNamedItem("Include")
 			IF oAttribute != NULL
 				oAttribute:Value := oAttribute:Value:Replace(".vnproj", "."+EXTENSION)
@@ -169,7 +169,7 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			ELSE
 				// ALl other project groups.
 				// Adjust the condition when needed
-				VAR oCondition := (XMLAttribute) oElement:Attributes:GetNamedItem("Condition") 
+				VAR oCondition := (XMLAttribute) oElement:Attributes:GetNamedItem("Condition")
 				// <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
 				IF oCondition != NULL
 					VAR  cInnerText := oCondition:InnerText
@@ -188,10 +188,10 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			oChild:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
 			oElement:AppendChild(oChild)
 			lHasProjectExtensions := TRUE
-		CASE "reference"                               
+		CASE "reference"
 			// Add RT assemblies after 1st reference
             VAR cAttribute := oElement:GetAttribute("Include")
-            IF cAttribute != NULL
+            IF cAttribute != NULL .and. SELF:lUseXsRuntime
                 SWITCH cAttribute:Tolower()
                 CASE "vulcanvowin32apilibrary"
                 CASE "vulcanvosystemclasses"
@@ -224,30 +224,30 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
                 SELF:AddReference(oElement, cRT2)
 				SELF:lRuntimeAdded := TRUE
 			ENDIF
-		OTHERWISE   
+		OTHERWISE
 			// All other elements should not be changed
 			NOP
 		END SWITCH
-	ENDIF                                   
+	ENDIF
 	RETURN
 
 METHOD AddReference(oElement AS XMLNode, cReference AS STRING) AS VOID
-    VAR oChild := oDoc:CreateElement("Reference",cSchema)    
-    oElement:ParentNode:AppendChild(oChild)				
+    VAR oChild := oDoc:CreateElement("Reference",cSchema)
+    oElement:ParentNode:AppendChild(oChild)
 	VAR oAttribute := oDoc:CreateAttribute("Include")
 	oAttribute:Value := cReference
 	oChild:Attributes:Append(oAttribute)
     SELF:AddReferenceSubNodes(oChild, cReference)
-    
+
 METHOD AddReferenceSubNodes(oRef AS XmlNode, cReference AS STRING) AS VOID
     VAR oSub := oDoc:CreateElement("Name",cSchema)
     oSub:InnerText := cReference
-    oRef:AppendChild(oSub)                         
+    oRef:AppendChild(oSub)
     oSub := oDoc:CreateElement("AssemblyName",cSchema)
     oSub:InnerText := cReference+".DLL"
     oRef:AppendChild(oSub)
-	RETURN   
-METHOD WalkNode(oNode AS XmlNode) AS VOID       
+	RETURN
+METHOD WalkNode(oNode AS XmlNode) AS VOID
 	LOCAL aChildren AS List<XmlNode>
 	aChildren := List<XmlNode>{}
 	FOREACH oChild AS XmlNode IN oNode:ChildNodes
@@ -261,7 +261,7 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 	NEXT
 	RETURN
 
-    PROTECT METHOD _LoadFileFromReader(oReader AS System.IO.TextReader) AS LOGIC STRICT 
+    PROTECT METHOD _LoadFileFromReader(oReader AS System.IO.TextReader) AS LOGIC STRICT
         LOCAL lOk AS LOGIC
         TRY
             oDoc := System.Xml.XmlDocument{}
@@ -272,7 +272,7 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
         END TRY
         RETURN lOk
 
-   METHOD LoadFile(strFileName AS STRING) AS LOGIC STRICT 
+   METHOD LoadFile(strFileName AS STRING) AS LOGIC STRICT
         LOCAL lResult := FALSE AS LOGIC
         IF System.IO.File.Exists(strFileName)
             LOCAL oReader AS System.IO.TextReader
@@ -282,17 +282,17 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
         ENDIF
         RETURN lResult
 
-   METHOD LoadFileFromString(strXMLString AS STRING) AS LOGIC STRICT 
+   METHOD LoadFileFromString(strXMLString AS STRING) AS LOGIC STRICT
         LOCAL lResult AS LOGIC
         LOCAL oReader AS System.IO.StringReader
         oReader := System.IO.StringReader{strXMLString}
         lResult := SELF:_LoadFileFromReader(oReader)
         oReader:Close()
-        RETURN lResult	
-        
+        RETURN lResult
+
 
 	STATIC PROTECT aRename AS Dictionary<STRING, STRING>
-	STATIC PROTECT aDelete AS List<STRING>	
+	STATIC PROTECT aDelete AS List<STRING>
 	STATIC CONSTRUCTOR()
 		aRename := Dictionary<STRING, STRING> {StringComparer.CurrentCultureIgnoreCase}
 		aRename:Add("ZeroBasedArrays","AZ")
@@ -316,10 +316,10 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 		aRename:Add("VOCompatibleArithmeticConversions","VO11")
 		aRename:Add("IntegerDivisionsReturnFloat","VO12")
 		aRename:Add("VOCompatibleStringComparisons","VO13")
-		aRename:Add("VOFloatLiterals","VO14")		
+		aRename:Add("VOFloatLiterals","VO14")
 		aRename:Add("AdditionalOptions","CommandLineOption")
 		// Items to delete
-		
+
 		VAR aTemp := List<STRING>{}
 		aTemp:Add("DisabledWarnings")
 		aTemp:Add("ProjectName")
@@ -327,14 +327,14 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 		aTemp:Add("ProjectDir")
 		aTemp:Add("ProjectFileName")
 		aTemp:Add("ProjectPath")
-		aTemp:Add("ProjectView")    
-		aTemp:Add("SchemaVersion")    
+		aTemp:Add("ProjectView")
+		aTemp:Add("SchemaVersion")
 		aDelete := List<STRING>{}
 		FOREACH s AS STRING IN aTemp
 			aDelete:Add(s:ToLower())
 		NEXT
-		
-		
+
+
 	RETURN
 
 STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress, lUseXsRt AS LOGIC) AS VOID
@@ -350,9 +350,9 @@ STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress, lUseXsRt AS LOGIC
 		oProgress:WriteLine( "An error occurred")
 	ENDIF
 	RETURN
-	
-        
-END CLASS        
+
+
+END CLASS
 
 
 

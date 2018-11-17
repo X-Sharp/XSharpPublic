@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -68,6 +68,8 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING) AS LOGIC
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 	LOCAL result AS LOGIC
 	TRY
+        XSharp.IO.File.clearErrorState()
+
 		IF lAppend
 			LOCAL cOldValue AS STRING
 			cOldValue := System.Environment.GetEnvironmentVariable(cVar)
@@ -78,7 +80,8 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 		ENDIF
 		System.Environment.SetEnvironmentVariable(cVar, cValue)
 		result := System.Environment.GetEnvironmentVariable(cVar) == cValue
-	CATCH
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
 		result := FALSE
 	END TRY
 	RETURN result   
@@ -286,13 +289,13 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 FUNCTION DirChange(cDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
+       XSharp.IO.File.clearErrorState()
 		IF Directory.Exists(cDir)
 			Directory.SetCurrentDirectory(cDir)
 			result := 0
 		ELSE
 			result := -1
 		ENDIF
-	CATCH 
 		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
 	END TRY
 	RETURN result
@@ -306,14 +309,16 @@ FUNCTION DirChange(cDir AS STRING) AS INT
 FUNCTION DirMake(cDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
+        XSharp.IO.File.clearErrorState()
 		IF !Directory.Exists(cDir)
 			Directory.CreateDirectory(cDir)
 			result := 0
 		ELSE
 			result := -1
 		ENDIF
-	CATCH 
-		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
+        result := XSharp.IO.File.errorCode
 	END TRY
 	RETURN result
 	
@@ -326,14 +331,16 @@ FUNCTION DirMake(cDir AS STRING) AS INT
 FUNCTION DirRemove(cDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
+        XSharp.IO.File.clearErrorState()
 		IF Directory.Exists(cDir)
 			Directory.Delete(cDir,FALSE)
 			result := 0
 		ELSE
 			result := -1
 		ENDIF
-	CATCH 
-		result := System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+	CATCH e as Exception
+		XSharp.IO.File.setErrorState(e)
+        result := XSharp.IO.File.errorCode
 	END TRY
 	RETURN result
 

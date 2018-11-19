@@ -54,7 +54,7 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
     PRIVATE STATIC METHOD PrepareMacro(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS STRING
         VAR sbResult := StringBuilder{cMacro:Length * 2} 
         VAR sbId     := StringBuilder{cMacro:Length}
-        LOCAL   aParams AS STRING[]
+        LOCAL   aParams := NULL AS STRING[]
         LOCAL aElements AS STRING[]
         cMacro := cMacro:Trim()
         IF cMacro:StartsWith("{") .AND. cMacro:EndsWith("}")
@@ -82,9 +82,9 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
             
         // make sure we remove the _FIELD-> from the existing key
         cMacro := cMacro:Replace("_FIELD->","")
-        LOCAL lInString AS LOGIC
-        LOCAL delimChar AS CHAR
-        LOCAL lInComplexName AS LOGIC
+        LOCAL lInString := FALSE AS LOGIC
+        LOCAL delimChar := '\0' AS CHAR
+        LOCAL lInComplexName := FALSE AS LOGIC
         FOREACH cChar AS CHAR IN cMacro
 #region Handle Strings inside macros            
             IF lInString

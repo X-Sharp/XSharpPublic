@@ -397,8 +397,8 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
-                    | {_ClsFunc}? Member=function                   #clsfunction      // Equivalent to static method
-                    | {_ClsFunc}? Member=procedure                  #clsprocedure     // Equivalent to static method
+                    | {AllowFunctionInsideClass}? Member=function                   #clsfunction      // Equivalent to static method
+                    | {AllowFunctionInsideClass}? Member=procedure                  #clsprocedure     // Equivalent to static method
                     ;
 
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
@@ -487,7 +487,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
                       ;
 
 statement           : Decl=localdecl                        #declarationStmt
-                    | {_xBaseVars}? xbasedecl               #xbasedeclStmt
+                    | {AllowXBaseVariables}? xbasedecl               #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
@@ -664,8 +664,10 @@ xbasedecl           : T=(PRIVATE                               // PRIVATE Foo, B
 //           ( 1)  unary                + - ++ -- ~
 
 expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access
-                    | {_classySyntax}? Op=COLONCOLON  Name=simpleName           #accessMember           // XPP & Harbour SELF member access
-                    | Expr=expression LPAREN                       RPAREN       #methodCall           // method call, no params
+                    |                 Op=COLONCOLON  Name=simpleName            #accessMember           // XPP & Harbour SELF member access
+                    | Left=expression Op=(DOT | COLON) AMP Right=expression     #accessMemberLate       // aa:&Expr  or aa:&(Expr). Expr must evaluate to a string which is the ivar name
+                                                                                                        // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
+                    | Expr=expression LPAREN                       RPAREN       #methodCall             // method call, no params
                     | Expr=expression LPAREN ArgList=argumentList  RPAREN       #methodCall             // method call, params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
@@ -733,13 +735,14 @@ primary             : Key=SELF                                                  
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN                         #intrinsicExpression	// _Or(expr, expr, expr)
                     | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
+                    | FIELD ALIAS (Alias=identifier ALIAS)? AMP Expr=expression #aliasedFieldLate     // _FIELD->CUSTOMER->&expression expression must evaluate to a string. 
+                                                                                                      // Expression can of course be a parenExpression. And can also be LHS of an assigment !
                     | MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		      // CUSTOMER->NAME
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr          // id -> expr       // when id = 'M' then redirect to aliasedMemvar
                     | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   // when expression = 'M' then redirect to aliasedMemvar
-                    | AMP LPAREN Expr=expression RPAREN                         #macro					      // &( expr )
-                    | AMP Id=identifierName                                     #macro					      // &id
+                    | AMP Expr=expression                                       #macro					      // &expr            // expr may be parenExpression
                     | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN   #parenExpression		  // ( expr,expr,expr )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
@@ -783,7 +786,7 @@ argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
 
                     // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-namedArgument       :  {_namedArgs}?  Name=identifierName ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
+namedArgument       :  {AllowNamedArgs}?  Name=identifierName ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
                     |  ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
 
@@ -1069,7 +1072,7 @@ xppclass           :  (Attributes=attributes)?                                //
                       (Modifiers=xppclassModifiers)?                          // [STATIC|FREEZE|FINAL] 
                        CLASS (Namespace=nameDot)? Id=identifier               // CLASS <ClassName>
                        (
-                          from=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ; 
+                          From=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ; 
                        )?                                                                   // [SHARING <SuperClass,...>]
                        (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? // NEW Implements
                        // No type parameters and type parameter constraints
@@ -1083,10 +1086,10 @@ xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL) )+
                     ;
 
 xppclassMember      : Member=xppmethodvis                           #xppclsvisibility
+                    | Member=xppclassvars                           #xppclsvars
                     | Member=xppinlineMethod                        #xppclsinlinemethod
                     | Member=xppdeclareMethod                       #xppclsdeclaremethod
                     | Member=xppproperty                            #xppclsproperty
-                    | Member=xppclassvars                           #xppclsvars
                     ;
 
 xppmethodvis        : Vis=xppvisibility COLON eos
@@ -1115,11 +1118,11 @@ xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLAS
                     ;
 
 xppclassvars        : (Modifiers=xppmemberModifiers)?                            // [CLASS] 
-                      VAR Var+=identifier                                         // VAR <VarName> 
+                      VAR Vars+=identifier                                         // VAR <VarName> 
                       (
-                        xppisin                                                   // [IS <Name>] [IN <SuperClass>] 
-                        | ((COMMA Var+=identifier)*                               // <,...> 
-                        (AS Type=datatype)?  )                                    // Optional data type
+                        Is=xppisin                                                   // [IS <Name>] [IN <SuperClass>] 
+                        | ((COMMA Vars+=identifier)*                              // <,...> 
+                        (AS DataType=datatype)?  )                                // Optional data type
 
                       )
                       (Shared=SHARED)?                                            // [SHARED]

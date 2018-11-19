@@ -1002,16 +1002,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 default:
                     switch (lastToken)
                     {
+                        case CLASS:
+                            if (Dialect == XSharpDialect.XPP)   // XPP uses CLASS instead of STATIC
+                                return keyword;
+                            else
+                                return ID;
+                        case ACCESS:
+                        case ASSIGN:
+                            if (Dialect == XSharpDialect.XPP)   // XPP allows ACCESS ASSIGN or ASSIGN ACCESS in class definition
+                                return keyword;
+                            else
+                                return ID;
+
                         // After these keywords we expect an ID
                         // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
+
                         case METHOD:
                         case PROCEDURE:
                         case PROC:
                         case FUNCTION:
                         case FUNC:
-                        case ACCESS:
-                        case ASSIGN:
-                        //case CLASS:           XPP Has CLASS METHOD
                         case INTERFACE:
                         case STRUCTURE:
                         case VOSTRUCT:
@@ -1037,6 +1047,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             if (keyword != LOCAL && keyword != VAR)
                                 return ID;
                             break;
+                        case MEMVAR:            // VO & XPP: followed by list of names
+                        case PARAMETERS:
+                            return ID;
 
 
                     }
@@ -1729,4 +1742,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
     }
 }
+
 

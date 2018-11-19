@@ -30,37 +30,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
     {
-        bool _ClsFunc = true;
-        public bool AllowFunctionInsideClass
-        {
-            get { return _ClsFunc; }
-            set { _ClsFunc = value; }
-        }
-        bool _xBaseVars = false;
-        public bool AllowXBaseVariables
-        {
-            get { return _xBaseVars; }
-            set { _xBaseVars = value; }
-        }
-        bool _namedArgs = false;
-        public bool AllowNamedArgs
-        {
-            get { return _namedArgs; }
-            set { _namedArgs = value; }
-        }
-
-        bool _classySyntax = false;
-        public bool AllowClassySyntax
-        {
-            get { return _classySyntax; }
-            set { _classySyntax = value; }
-        }
-        bool _isScript;
-        public bool IsScript
-        {
-            get { return _isScript; }
-            set { _isScript = value; }
-        }
+        public CSharpParseOptions Options { get; set; }
+        public XSharpDialect Dialect => Options.Dialect;
+        public bool AllowFunctionInsideClass => Dialect.AllowFunctionsInsideClass();
+        public bool AllowNamedArgs => Options.AllowNamedArguments;
+        public bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
+        public bool IsScript => Options.Kind == SourceCodeKind.Script;
+        
         void missingToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
@@ -514,8 +490,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => this.Id.GetText();
 
         }
+        public partial class XppclassContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + ShortName;
+            public String ShortName => Id.GetText();
+        }
+        public partial class XppclassvarsContext
+        {
+            public int Visibility { get; set; }
+        }
 
-        public partial class XppmethodContext : IXPPEntityContext
+          public partial class XppmethodContext : IXPPEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;

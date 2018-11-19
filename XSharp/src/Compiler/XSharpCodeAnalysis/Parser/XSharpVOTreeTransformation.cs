@@ -924,52 +924,66 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     chain = null;
                 }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                SyntaxToken parentId = null;
+                SyntaxToken typeId = null;
                 if (context is XP.MethodContext)
                 {
                     var clsm = context as XP.MethodContext;
                     if (clsm.ClassId != null)
                     {
                         // Method Init Class Foo
-                        parentId = clsm.ClassId.Get<SyntaxToken>();
+                        typeId = clsm.ClassId.Get<SyntaxToken>();
                     }
                 }
-                if (context is XP.ConstructorContext)
+                else if (context is XP.ConstructorContext)
                 {
                     var clsc = context as XP.ConstructorContext;
                     if (clsc.ClassId != null)
                     {
                         // Method Init Class Foo
-                        parentId = clsc.ClassId.Get<SyntaxToken>();
+                        typeId = clsc.ClassId.Get<SyntaxToken>();
                     }
                 }
-                if (parentId == null)
+                else if (context is XP.XppmethodContext)
+                {
+                    var clsm = context as XP.XppmethodContext;
+                    if (clsm.ClassId != null)
+                    {
+                        // Method Init Class Foo
+                        typeId = clsm.ClassId.Get<SyntaxToken>();
+                    }
+                }
+
+                if (typeId == null)
                 {
                     if (context.Parent is XP.ClsmethodContext |
                         context.Parent is XP.ClsctorContext |
-                        context.Parent is XP.ClsdtorContext)
+                        context.Parent is XP.ClsdtorContext )
                     {
                         {
-                            parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                            typeId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                                 ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
                                 ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
                         }
                     }
+                    else if (context.Parent is XP.XppclassMemberContext)
+                    {
+                        typeId = (context.Parent.Parent as XP.XppclassContext)?.Id.Get<SyntaxToken>();
+                    }
                     else
                     {
-                        parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        typeId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                             ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
                             ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
                     }
                 }
-                if (parentId == null)
+                if (typeId == null)
                 {
                     return null;
                 }
                 return _syntaxFactory.ConstructorDeclaration(
                     attributeLists: attributes,
                     modifiers: modifiers,
-                    identifier: parentId,
+                    identifier: typeId,
                     parameterList: parameters,
                     initializer: createInitializer(chain, args), 
                     body: body,
@@ -1341,7 +1355,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            if (context.Op.Type == XP.DOT)
+            if (context.Op.Type == XP.COLONCOLON)
+            {
+                context.Put(MakeSimpleMemberAccess(
+                    GenerateSelf(),
+                    context.Name.Get<SimpleNameSyntax>()));
+                return;
+
+            }
+            else if (context.Op.Type == XP.DOT)
             {
                 if (context.Expr.Get<ExpressionSyntax>() is NameSyntax)
                 {
@@ -3578,14 +3600,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
             ExpressionSyntax expr;
-            if (context.Id != null)
-            {
-                expr = context.Id.Get<IdentifierNameSyntax>();
-            }
-            else
-            {
-                expr = context.Expr.Get<ExpressionSyntax>();
-            }
+            expr = context.Expr.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(expr));
             context.SetSequencePoint();
             expr = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Evaluate : VulcanQualifiedFunctionNames.Evaluate, args, true);

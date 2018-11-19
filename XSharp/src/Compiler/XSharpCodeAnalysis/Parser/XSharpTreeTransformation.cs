@@ -2309,11 +2309,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
         }
 
-        public override void EnterSource([NotNull] XP.SourceContext context)
+        protected void _enterSource()
         {
             //System.Diagnostics.Debug.WriteLine("Enter Source " + _fileName);
             GlobalClassEntities = CreateClassEntities();
             ClassEntities.Push(GlobalClassEntities);
+        }
+        public override void EnterSource([NotNull] XP.SourceContext context)
+        {
+            _enterSource();
         }
 
         protected void ProcessEntity(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes, XSharpParserRuleContext context)
@@ -2377,7 +2381,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
         }
 
-        public override void ExitSource([NotNull] XP.SourceContext context)
+        protected void _exitSource(XSharpParserRuleContext context, IList<XSharpParserRuleContext> entities)
         {
             // globaltypes are the types that are not embedded in a namespace
             // they will be embedded in the default namespace when the 
@@ -2385,7 +2389,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // GlobalEntities.Members will be added to the output without extra
             // namespace
             var globalTypes = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var entityCtx in context._Entities)
+            foreach (var entityCtx in entities)
             {
                 ProcessEntity(globalTypes, entityCtx);
             }
@@ -2393,6 +2397,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(globalTypes);
 
             //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
+        }
+        public override void ExitSource([NotNull] XP.SourceContext context)
+        {
+            var entities = new List<XSharpParserRuleContext>();
+            entities.AddRange(context._Entities);
+
+            _exitSource(context, entities);
         }
         private string RemoveUnwantedCharacters(string input)
         {
@@ -2439,13 +2450,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
-
-        public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
+        protected void _exitNamespace(XSharpParserRuleContext context, string name, XSharpParserRuleContext ignored, IList<XSharpParserRuleContext> entities)
         {
             var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
             var usings = _pool.Allocate<UsingDirectiveSyntax>();
             var members = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var entityCtx in context._Entities)
+            foreach (var entityCtx in entities)
             {
                 var s = entityCtx.CsNode;
                 if (s is MemberDeclarationSyntax)
@@ -2459,9 +2469,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     externs.Add(s as ExternAliasDirectiveSyntax);
             }
 
-            string name = context.Name.GetText();
             MemberDeclarationSyntax ns = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
-                name: GenerateQualifiedName(context.Name.GetText()),
+                name: GenerateQualifiedName(name),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 externs: externs,
                 usings: usings,
@@ -2472,10 +2481,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(externs);
             _pool.Free(usings);
             _pool.Free(members);
-            ns = CheckForGarbage(ns, context.Ignored, "Name after END NAMESPACE");
+            ns = CheckForGarbage(ns, ignored, "Name after END NAMESPACE");
             context.Put(ns);
             // Now add our namespace to the usings list so functions etc can find members 
-            string ourname = context.Name.GetText();
+            string ourname = name;
             var parent = context.Parent;
             while (parent is XP.EntityContext)
             {
@@ -2489,6 +2498,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
             AddUsingWhenMissing(GlobalEntities.Usings, ourname, false, null);
+
+        }
+        public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
+        {
+            var entities = new List<XSharpParserRuleContext>();
+            entities.AddRange(context._Entities);
+            _exitNamespace(context, context.Name.GetText(), context.Ignored, entities);
         }
 
         protected void ProcessGlobalEntityContext(XP.IGlobalEntityContext entity)
@@ -2538,7 +2554,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(entity.Get<CSharpSyntaxNode>());
             GlobalEntities.LastMember = entity;
         }
-        public override void ExitEntity([NotNull] XP.EntityContext context)
+
+        protected void _exitEntity(XSharpParserRuleContext context)
         {
             var entity = context.children[0] as IXParseTree;
             if (_isScript)
@@ -2554,6 +2571,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // When last entity has to go to the functions class 
                 ProcessLastGlobalEntity(context, entity);
             }
+        }
+
+        public override void ExitEntity([NotNull] XP.EntityContext context)
+        {
+            _exitEntity(context);
         }
         #endregion
         #region Types
@@ -6403,9 +6425,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
-            context.Put(MakeSimpleMemberAccess(
-                context.Expr.Get<ExpressionSyntax>(),
-                context.Name.Get<SimpleNameSyntax>()));
+            if (context.Op.Type == XP.COLONCOLON)
+            {
+                context.Put(MakeSimpleMemberAccess(
+                    GenerateSelf(),
+                    context.Name.Get<SimpleNameSyntax>()));
+            }
+            else
+            {
+                context.Put(MakeSimpleMemberAccess(
+                    context.Expr.Get<ExpressionSyntax>(),
+                    context.Name.Get<SimpleNameSyntax>()));
+            }
         }
 
         #endregion

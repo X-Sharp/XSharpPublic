@@ -257,17 +257,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ppStream.Fill();
             _preprocessorTokenStream = ppStream;
-            var parser = new XSharpParser(ppStream);
-            parser.IsScript = _options.Kind == SourceCodeKind.Script;
+            var parser = new XSharpParser(ppStream) { Options = _options };
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
-
-            parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
-            parser.AllowNamedArgs = _options.AllowNamedArguments;
-            parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
-            parser.AllowClassySyntax = _options.Dialect.AllowClassySyntax();
-
-
+            
 #if DEBUG && DUMP_TIMES
            {
                 var ts = DateTime.Now - t;
@@ -449,17 +442,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ContextAwareSyntax syntaxFactory, string fileName)
         {
             XSharpTreeTransformation treeTransform;
-            if (options.Dialect.AllowClassySyntax())
+            switch (options.Dialect)
             {
+                case XSharpDialect.Core:
+                    treeTransform = new XSharpTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
+                case XSharpDialect.VO:
+                case XSharpDialect.Vulcan:
+                case XSharpDialect.Harbour:
+                    treeTransform = new XSharpVOTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
+                case XSharpDialect.XPP:
+                default:
                 treeTransform = new XSharpXPPTreeTransformation(parser, options, pool, syntaxFactory, fileName);
-            }
-            if (options.IsDialectVO)
-            {
-                treeTransform = new XSharpVOTreeTransformation(parser, options, pool, syntaxFactory, fileName);
-            }
-            else
-            {
-                treeTransform = new XSharpTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
             }
             return treeTransform;
         }

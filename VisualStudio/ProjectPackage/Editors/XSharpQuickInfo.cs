@@ -33,6 +33,8 @@ namespace XSharp.Project
         private int lastTriggerPoint = -1;
         private string lastHelp = "";
         private ITrackingSpan lastSpan = null;
+        private int lastVersion = -1;
+
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
@@ -54,7 +56,7 @@ namespace XSharp.Project
                         return;
                     }
                     ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
-                    if (subjectTriggerPoint.Value.Position == lastTriggerPoint)
+                    if ( (subjectTriggerPoint.Value.Position == lastTriggerPoint) && ( lastVersion == currentSnapshot.Version.VersionNumber ) )
                     {
                         if (!string.IsNullOrEmpty(lastHelp))
                         {
@@ -159,6 +161,7 @@ namespace XSharp.Project
                         {
                             lastHelp = (string)qiContent[0];
                             lastSpan = applicableToSpan;
+                            lastVersion = currentSnapshot.Version.VersionNumber;
                         }
                         return;
                     }

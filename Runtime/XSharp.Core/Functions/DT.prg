@@ -259,8 +259,12 @@ FUNCTION _ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DateTime
 		IF lAfter
 			dwY -= 100
 		ENDIF
-	ENDIF
-	RETURN DateTime{(INT) dwY,(INT) dwM,(INT) dwDay}   
+   ENDIF
+   TRY
+	    RETURN DateTime{(INT) dwY,(INT) dwM,(INT) dwDay}
+   CATCH
+        RETURN DateTime.MinValue
+   END TRY
 
 FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	LOCAL dDate AS DateTime

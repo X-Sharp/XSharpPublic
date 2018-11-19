@@ -244,15 +244,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpDialect.VO:
                     macroDefines.Add("__DIALECT_VO__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    macroDefines.Add("__VO__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
                 case XSharpDialect.Vulcan:
                     macroDefines.Add("__DIALECT_VULCAN__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    macroDefines.Add("__VULCAN__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
                 case XSharpDialect.Harbour:
                     macroDefines.Add("__DIALECT_HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    // Harbour always includes hbver.h . The macro is defined in that file.
+                    //macroDefines.Add("__HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
                 case XSharpDialect.XPP:
                     macroDefines.Add("__DIALECT_XBASEPP__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    macroDefines.Add("__XPP__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
                     break;
                 default:
                     break;
@@ -272,7 +277,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__WINDIR__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir + '"'));
             macroDefines.Add("__WINDRIVE__", () => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir?.Substring(0, 2) + '"'));
             macroDefines.Add("__XSHARP__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
-
+            if (options.XSharpRuntime)
+            {
+                macroDefines.Add("__XSHARP_RT__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+            }
             bool[] flags = { options.vo1,  options.vo2, options.vo3, options.vo4, options.vo5, options.vo6, options.vo7, options.vo8,
                                 options.vo9, options.vo10, options.vo11, options.vo12, options.vo13, options.vo14, options.vo15, options.vo16 };
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
@@ -1057,6 +1065,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 var stream = new AntlrInputStream(text.ToString()) { name = nfp };
                 var lexer = new XSharpLexer(stream){ TokenFactory = XSharpTokenFactory.Default };
+                lexer.Options = _options;
                 var ct = new CommonTokenStream(lexer);
                 ct.Fill();
                 foreach (var e in lexer.LexErrors)

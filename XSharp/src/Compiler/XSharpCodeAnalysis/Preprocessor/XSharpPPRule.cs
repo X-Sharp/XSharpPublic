@@ -552,7 +552,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     if (e.IsMarker)
                                         marker = e;
                                 }
-                                string key = marker == null ? "**"+first.Key: marker.Key;
+                                string key = marker == null ? "Token:"+first.Key: marker.Key;
                                 element = new PPMatchToken(token, PPTokenType.MatchOptional, key)
                                 {
                                     Children = nested
@@ -743,7 +743,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lastTokenSource = token.TokenSource;
                 switch (token.Type)
                 {
-                    case XSharpLexer.NEQ:
+                    case XSharpLexer.NEQ2:
                         /*
                         * match #<idMarker>
                         */
@@ -1183,26 +1183,55 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case PPTokenType.MatchExtended:
                     // either match a single token or a token in parentheses
-                    if (sourceToken.Type == XSharpLexer.LPAREN)
+                    int iStart = iSource;
+                    var lastType = 0;
+                    var level = 0;
+                    var done = false;
+                    var consumed = 0;
+                    while (iSource < tokens.Count && !done)
                     {
-                        if (iSource < tokens.Count - 2 &&
-                            tokens[iSource + 1].IsName() &&
-                            tokens[iSource + 2].Type == XSharpLexer.RPAREN)
+                        switch (tokens[iSource].Type)
                         {
-                            // Ok
-                            matchInfo[mToken.Index].SetPos(iSource, iSource + 2);
-                            iSource += 1;
-                            iRule += 1;
-                            found = true;
+                            case XSharpLexer.LPAREN:
+                            case XSharpLexer.LBRKT:
+                            case XSharpLexer.LCURLY:
+                                level++;
+                                break;
+                            case XSharpLexer.RPAREN:
+                            case XSharpLexer.RBRKT:
+                            case XSharpLexer.RCURLY:
+                                level--;
+                                break;
+                            default:
+                                //
+                                // we consume one token between optional params or curly braces
+                                // but we also allow ID DOT ID (OUTPUT.TXT)
+                                // So second ID is only accepted after DOT
+                                if (level == 0 && consumed > 0)
+                                {
+                                    var type = tokens[iSource].Type;
+
+                                    if (type == XSharpLexer.ID || XSharpLexer.IsKeyword(type))
+                                    {
+                                        done = lastType != XSharpLexer.DOT;
+                                    }
+                                    else if (type != XSharpLexer.DOT)
+                                    {
+                                        done = true;
+                                    }
+                                }
+                                break;
                         }
+                        lastType = tokens[iSource].Type;
+                        consumed += 1;
+                        if (!done )
+                            iSource++;
                     }
-                    else // match single token
-                    {
-                        matchInfo[mToken.Index].SetPos(iSource, iSource);
-                        iSource += 1;
-                        iRule += 1;
-                        found = true;
-                    }
+                    // we have either reached the end of the line or aborted because of a token that
+                    // is not part of the match, so therefore iSource points to the token AFTER the last match
+                    matchInfo[mToken.Index].SetPos(iStart, iSource-1);
+                    iRule += 1;
+                    found = true;
                     break;
                 case PPTokenType.MatchOptional:
                     // 
@@ -1212,16 +1241,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     int iOriginal = iSource;
                     iChild = 0;
                     var children = matchInfo[mToken.Index].Children;
+                    PPMatchRange[] copyMatchInfo = new PPMatchRange[matchInfo.Length];
+                    Array.Copy(matchInfo, copyMatchInfo, matchInfo.Length);
                     while (iChild < optional.Length && iSource < tokens.Count && optfound)
                     {
                         var mchild = optional[iChild];
-                        if (!matchToken(mchild, ref iChild, matchInfo.Length, ref iSource, tokens, matchInfo, matchedWithToken))
+                        if (!matchToken(mchild, ref iChild, matchInfo.Length, ref iSource, tokens, copyMatchInfo, matchedWithToken))
                         {
-                            optfound = false;
+                            /*
+                             Some optional tokens have optional children. In that case we can still match the optional
+                             token even when its child is not there, like the fldN in the rule below.
+                             If you have problems understanding this, please imagine how it was for me to write all of this
+                             and emulate the old Clipper, XPP and Harbour preprocessors...
+                             #command  REPLACE [<fld1> WITH <val1> [,<fldN> WITH <valN> ] ] ;
+                             [   FOR <for>] [ WHILE <whl>] [  NEXT <nxt>] [RECORD <rcd>] [ <rst: REST>] [ ALL ] =>  dbEval( {|| FIELD-><fld1> := <val1>[, ;
+                                    FIELD-><fldN> := <valN>]  }, __EBCB(<for>), __EBCB(<whl>), <nxt>, <rcd>, <.rst.>)
+
+                             **/
+                            if (!mchild.IsOptional)
+                            {
+                                optfound = false;
+                            }
+                            break;
                         }
                     }
                     if (optfound)
                     {
+                        Array.Copy(copyMatchInfo, matchInfo, matchInfo.Length);
                         found = true;
                         if (!mToken.IsRepeat)
                         {

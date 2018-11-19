@@ -108,11 +108,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		NEXT   
 		RETURN ret
 		
-	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING ) AS MethodInfo
+	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING, lSelf AS LOGIC ) AS MethodInfo
 		LOCAL oMI := NULL AS MethodInfo
 		
 		TRY
-			oMI := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public ) 
+			oMI := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf, BindingFlags.NonPublic, BindingFlags.Public) ) 
 		CATCH AS System.Reflection.AmbiguousMatchException
 			oMI := NULL
 		END TRY
@@ -120,7 +120,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		RETURN oMI
 		
 	STATIC METHOD IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
-		RETURN FindMethod(t, cName) != NULL
+		RETURN FindMethod(t, cName, TRUE) != NULL
 		
 	STATIC METHOD ClassTree( t AS Type ) AS ARRAY   
 		LOCAL aList := {} AS ARRAY
@@ -247,9 +247,9 @@ INTERNAL STATIC CLASS OOPHelpers
 		NEXT
 		RETURN aList
 
-	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC) AS PropertyInfo
+	STATIC METHOD FindProperty( t AS Type , cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC) AS PropertyInfo
 		DO WHILE t != NULL
-			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public  | BindingFlags.DeclaredOnly ) 
+			VAR oInfo := t:GetProperty( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf , BindingFlags.NonPublic , BindingFlags.Public) | BindingFlags.DeclaredOnly ) 
 			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
 				RETURN oInfo
 			ELSE
@@ -257,10 +257,20 @@ INTERNAL STATIC CLASS OOPHelpers
 			ENDIF
 		ENDDO
 		RETURN NULL
+
+	STATIC METHOD IsPropertyMethodVisible(oMethod AS MethodInfo, lSelf AS LOGIC) AS LOGIC
+		IF oMethod == NULL_OBJECT
+			RETURN FALSE
+		ELSEIF oMethod:IsPublic
+			RETURN TRUE
+		ELSEIF lSelf .AND. (oMethod:IsFamily .OR. oMethod:IsFamilyOrAssembly)
+			RETURN TRUE
+		ENDIF
+		RETURN FALSE
 		
-	STATIC METHOD FindField( t AS Type, cName AS STRING, lAccess AS LOGIC ) AS FieldInfo
+	STATIC METHOD FindField( t AS Type, cName AS STRING, lAccess AS LOGIC, lSelf AS LOGIC ) AS FieldInfo
 		DO WHILE t != NULL
-			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public  | BindingFlags.DeclaredOnly ) 
+			VAR oInfo := t:GetField( cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf, BindingFlags.NonPublic , BindingFlags.Public | BindingFlags.DeclaredOnly ) ) 
 			IF oInfo != NULL 
 				// check for readonly (initonly) fields
 				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
@@ -287,12 +297,12 @@ INTERNAL STATIC CLASS OOPHelpers
 		LOCAL t AS Type
 		t := oObject:GetType()
 		//Todo: optimization
-		VAR fldInfo := FindField(t, cIVar,TRUE)
+		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
 		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			RETURN fldInfo:GetValue(oObject)
 		ENDIF
-		VAR propInfo := FindProperty(t, cIVar,TRUE)
-		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead
+		VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf)
+		IF propInfo != NULL_OBJECT .AND. propInfo:CanRead .AND. IsPropertyMethodVisible(propInfo:GetMethod, lSelf)
 			RETURN propInfo:GetValue(oObject, NULL)
 		ENDIF
 		LOCAL result AS USUAL
@@ -304,7 +314,7 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
 		t := oObject:GetType()
-		VAR fldInfo := FindField(t, cIVar,FALSE)
+		VAR fldInfo := FindField(t, cIVar, FALSE, lSelf)
 		//Todo: optimization
 		IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
 			oValue := VOConvert(oValue, fldInfo:FieldType)
@@ -312,8 +322,8 @@ INTERNAL STATIC CLASS OOPHelpers
 			RETURN
 		ENDIF
 		LOCAL propInfo AS PropertyInfo
-		propInfo := FindProperty(t, cIVar, lSelf)
-		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite
+		propInfo := FindProperty(t, cIVar, FALSE, lSelf)
+		IF propInfo != NULL_OBJECT .AND. propInfo:CanWrite .AND. IsPropertyMethodVisible(propInfo:SetMethod, lSelf)
 			oValue := VOConvert(oValue, propInfo:PropertyType)
 			propInfo:SetValue(oObject,oValue , NULL)
 			RETURN
@@ -413,8 +423,14 @@ INTERNAL STATIC CLASS OOPHelpers
             ELSEIF IsObject(uValue) .or. isCodeBlock(uValue)
                 RETURN (OBJECT) uValue
             ENDIF
-      
-			RETURN Convert.ChangeType(uValue, toType)
+      		
+      		LOCAL oRet AS OBJECT
+      		TRY
+	      		oRet := Convert.ChangeType(uValue, toType)
+      		CATCH
+      			oRet := uValue
+      		END TRY
+			RETURN oRet
 		ENDIF
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
@@ -593,7 +609,7 @@ FUNCTION ClassTreeClass(cName AS STRING) AS ARRAY
 /// <returns>
 /// </returns>
 FUNCTION IsAccess(o AS OBJECT,cName AS STRING) AS LOGIC
-	VAR oprop := OOPHelpers.FindProperty(o?:GetType(), cName, FALSE)
+	VAR oprop := OOPHelpers.FindProperty(o?:GetType(), cName, TRUE, TRUE)
 	IF oProp != NULL_OBJECT
 		RETURN oProp:CanRead
 	ENDIF
@@ -607,7 +623,7 @@ FUNCTION IsAccess(o AS OBJECT,cName AS STRING) AS LOGIC
 /// <returns>
 /// </returns>
 FUNCTION IsAssign(o AS OBJECT,cName AS STRING) AS LOGIC
-	VAR oprop := OOPHelpers.FindProperty(o?:GetType(), cName, FALSE)
+	VAR oprop := OOPHelpers.FindProperty(o?:GetType(), cName, FALSE, TRUE)
 	IF oProp != NULL_OBJECT
 		RETURN oProp:CanWrite
 	ENDIF
@@ -1027,7 +1043,7 @@ FUNCTION MParamCount(cClass AS STRING,cMethod AS STRING) AS DWORD
 	type := OOPHelpers.FindClass(cClass)	
 	IF type != NULL
 		LOCAL met AS MethodInfo
-		met := OOPHelpers.FindMethod(type, cMethod)
+		met := OOPHelpers.FindMethod(type, cMethod, TRUE)
 		IF met != NULL
 			IF met:IsDefined(TYPEOF(ClipperCallingconventionAttribute),FALSE)
 				// calculate the # of parameters

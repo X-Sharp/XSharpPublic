@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -237,6 +237,9 @@ BEGIN NAMESPACE XSharp
                     ELSEIF vartype == TYPEOF(SYMBOL)
                         SELF:_flags				:= UsualFlags{__UsualType.Symbol}
                         SELF:_valueData:s		:=   (SYMBOL) o
+                    ELSEIF vartype == TYPEOF(IntPtr)
+                        SELF:_flags				:= UsualFlags{__UsualType.Ptr}
+                        SELF:_valueData:p		:=  (IntPtr) o
                     ELSEIF vartype == TYPEOF(System.Reflection.Pointer)
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= Intptr{System.Reflection.Pointer.UnBox(o)}
@@ -1644,11 +1647,11 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Void	; RETURN 0
                 CASE __UsualType.Ptr
                     // this strange behavior is needed to be compatible with VO. 
-                    if IntPtr.Size == 4
-                        return u:_ptrValue:ToInt32()
-                    else
+                    IF IntPtr.Size == 4
+                        RETURN u:_ptrValue:ToInt32()
+                    ELSE
                         THROW OverflowError(OverFlowException{}, "LONG", TYPEOF(LONG), u)
-                    endif
+                    ENDIF
                 OTHERWISE
                     THROW ConversionError(LONG, TYPEOF(LONG), u)
                 END SWITCH
@@ -1763,11 +1766,11 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Void     ; RETURN 0
                 CASE __UsualType.Ptr
                     // this strange behavior is needed to be compatible with VO. 
-                    if IntPtr.Size == 4
-                        return (DWORD) u:_ptrValue:ToInt32()
-                    else
+                    IF IntPtr.Size == 4
+                        RETURN (DWORD) u:_ptrValue:ToInt32()
+                    ELSE
                         THROW OverflowError(OverFlowException{}, "LONG", TYPEOF(LONG), u)
-                    endif
+                    ENDIF
  
                 OTHERWISE
                     THROW ConversionError(DWORD, TYPEOF(DWORD), u)
@@ -2224,21 +2227,21 @@ BEGIN NAMESPACE XSharp
             #endregion
 
         #region IIndexer
-        PROPERTY SELF[index as INT[]] as USUAL
+        PROPERTY SELF[index AS INT[]] AS USUAL
             GET
-              if SELF:IsArray
-                 return  self:_arrayValue:__GetElement(index)
-              elseif index:Length == 1
-                  return SELF[index[1]]
-              endif
-              return NIL  
+              IF SELF:IsArray
+                 RETURN  SELF:_arrayValue:__GetElement(index)
+              ELSEIF index:Length == 1
+                  RETURN SELF[index[1]]
+              ENDIF
+              RETURN NIL  
             END GET
             SET
-              if SELF:IsArray
-                 self:_arrayValue:__SetElement(value, index)
-              elseif index:Length == 1
-                  SELF[index[1]] := value
-              endif
+              IF SELF:IsArray
+                 SELF:_arrayValue:__SetElement(VALUE, index)
+              ELSEIF index:Length == 1
+                  SELF[index[1]] := VALUE
+              ENDIF
             END SET
         END PROPERTY
         #endregion
@@ -2247,33 +2250,33 @@ BEGIN NAMESPACE XSharp
         PROPERTY SELF[index AS INT   ] AS USUAL
             GET
                 VAR indexer := _refData ASTYPE IIndexedProperties
-                if indexer == null
-                    throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-                endif
-                return indexer[index]                    
+                IF indexer == NULL
+                    THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+                ENDIF
+                RETURN indexer[index]                    
             END GET
             SET
                 VAR indexer := _refData ASTYPE IIndexedProperties
-                if indexer == null
-                    throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-                endif
-                indexer[index] := value
+                IF indexer == NULL
+                    THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+                ENDIF
+                indexer[index] := VALUE
             END SET
         END PROPERTY
         PROPERTY SELF[name  AS STRING] AS USUAL 
             GET
                 VAR indexer := _refData ASTYPE IIndexedProperties
-                if indexer == null
-                    throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-                endif
-                return indexer[name]                    
+                IF indexer == NULL
+                    THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+                ENDIF
+                RETURN indexer[name]                    
             END GET
             SET
                 VAR indexer := _refData ASTYPE IIndexedProperties
-                if indexer == null
-                    throw InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-                endif
-                indexer[name] := value
+                IF indexer == NULL
+                    THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+                ENDIF
+                indexer[name] := VALUE
             END SET
         END PROPERTY
         #endregion

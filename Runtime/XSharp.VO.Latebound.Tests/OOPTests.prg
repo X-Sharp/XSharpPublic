@@ -193,6 +193,42 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })
 
+        [Fact, Trait("Category", "OOP")];
+        METHOD PtrAndIntPtrMethodCalls() AS VOID
+        	LOCAL o AS GeneralLBTestClass
+        	o := GeneralLBTestClass{}
+        	
+        	LOCAL pPtr AS PTR
+        	LOCAL pIntPtr AS PTR
+        	pPtr := o:MethodPtr()
+        	? pPtr
+        	pIntPtr := o:MethodPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+    
+        	pPtr := o:MethodIntPtr()
+        	? pPtr
+        	pIntPtr := o:MethodIntPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+        	
+        	LOCAL u AS USUAL
+        	u := o
+        	pPtr := u:MethodPtr()
+        	? pPtr
+        	pIntPtr := u:MethodPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
+    
+        	pPtr := u:MethodIntPtr()
+        	? pPtr
+        	pIntPtr := u:MethodIntPtr()
+        	? pIntPtr
+        	Assert.NotEqual((INT)pIntPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
     
         CLASS AzControl
        
@@ -265,4 +301,11 @@ CLASS GeneralLBTestClass
 	RETURN NIL
 	PRIVATE METHOD meth_priv(a,b,c,d)
 	RETURN NIL
+	
+	METHOD MethodPtr() AS PTR
+		LOCAL n AS INT
+	RETURN @n
+	METHOD MethodIntPtr() AS IntPtr
+		LOCAL n AS INT
+	RETURN @n
 END CLASS

@@ -1196,7 +1196,7 @@ BEGIN NAMESPACE XSharp
                             IF remainder == 0
                                 RETURN result
                             ELSE
-                                RETURN lhs:_intValue / rhs:_intValue
+                                RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_intValue
                             ENDIF
                         CASE __UsualType.Int64
                             LOCAL result AS INT64
@@ -1205,7 +1205,7 @@ BEGIN NAMESPACE XSharp
                             IF remainder == 0
                                 RETURN result
                             ELSE
-                                RETURN lhs:_intValue / rhs:_i64Value
+                                RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_i64Value
                             ENDIF
                         CASE __UsualType.Float
                             RETURN __VOFloat{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
@@ -1232,7 +1232,7 @@ BEGIN NAMESPACE XSharp
                             IF remainder == 0
                                 RETURN result
                             ELSE
-                                RETURN lhs:_i64Value / rhs:_intValue
+                                RETURN (FLOAT)lhs:_i64Value / (FLOAT)rhs:_intValue
                             ENDIF
                         CASE __UsualType.Int64
                             LOCAL result AS INT64
@@ -1241,7 +1241,7 @@ BEGIN NAMESPACE XSharp
                             IF remainder == 0
                                 RETURN result
                             ELSE
-                                RETURN lhs:_i64Value / rhs:_i64Value
+                                RETURN (FLOAT)lhs:_i64Value / (FLOAT)rhs:_i64Value
                             ENDIF
                         CASE __UsualType.Float
                             RETURN __VOFloat{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}

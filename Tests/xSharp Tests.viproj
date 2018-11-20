@@ -35420,8 +35420,8 @@ FileGUID = 6294A93D-97C1-47EB-957C-69E05812804F
 FileType = Code
 [C356 - Issues with PSZ CAST and DIM array References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C356 - Issues with PSZ CAST and DIM array Resources]
 [C356 - Issues with PSZ CAST and DIM array Native Resources]
 [C356 - Issues with PSZ CAST and DIM array License files]
@@ -56595,8 +56595,8 @@ FileGUID = ADC2A577-4C58-4CC0-89EC-4BA9ABBAFF9C
 FileType = Code
 [C560 - CreateInstance() cannot "see" classes with namespaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C560 - CreateInstance() cannot "see" classes with namespaces Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces License files]
@@ -62279,8 +62279,8 @@ FileGUID = 89BCFE16-E9A5-4A9A-9034-0E36F9ED643D
 FileType = Code
 [C613 - Ambiguous overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C613 - Ambiguous overloads Resources]
 [C613 - Ambiguous overloads Native Resources]
 [C613 - Ambiguous overloads License files]
@@ -62974,8 +62974,8 @@ FileGUID = 90EA0C80-94BD-4B8A-A2E9-56F455F24DE3
 FileType = Code
 [C620 - Problem resloving method with both instance and static overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.5
-ReferenceGAC = XSharp.VO,1,0,2.0.0.5
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C620 - Problem resloving method with both instance and static overloads Resources]
 [C620 - Problem resloving method with both instance and static overloads Native Resources]
 [C620 - Problem resloving method with both instance and static overloads License files]
@@ -63863,8 +63863,8 @@ FileGUID = 9574227C-486B-4BF4-A0D6-E96F1FE0F878
 FileType = Code
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Native Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime License files]
@@ -63963,8 +63963,8 @@ FileGUID = F2FA5D31-7A6B-44FC-947D-17F56E890DE7
 FileType = Code
 [C629 - Incorrect PSZ returned from function returning PSZ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C629 - Incorrect PSZ returned from function returning PSZ Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ Native Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ License files]
@@ -64063,8 +64063,8 @@ FileGUID = 63CF3E67-F634-423C-B999-65EE405FBA4E
 FileType = Code
 [C630 - Problem calling function with PSZ(_CAST) param References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C630 - Problem calling function with PSZ(_CAST) param Resources]
 [C630 - Problem calling function with PSZ(_CAST) param Native Resources]
 [C630 - Problem calling function with PSZ(_CAST) param License files]
@@ -64162,8 +64162,8 @@ File = %AppPath%\Prg\C631.prg
 FileGUID = 81056867-CE75-4691-956E-B63EA6F48535
 FileType = Code
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) References]
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Native Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) License files]
@@ -64362,8 +64362,8 @@ FileGUID = A2003895-0D35-481B-BB6F-6D66A73B404C
 FileType = Code
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.6
-ReferenceGAC = XSharp.VO,1,0,2.0.0.6
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
@@ -64562,8 +64562,8 @@ FileGUID = E8E65A50-6714-4213-805D-01421027D8F3
 FileType = Code
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Native Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD License files]
@@ -64921,6 +64921,206 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C638 - Problem with String2Psz() in Start() function
+
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
+; ************** APPLICATION C639 - Integer divisions with /vo12 option *************
+Application = C639 - Integer divisions with /vo12 option
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C639\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C639
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 8A2C4625-5A1B-46DB-81B4-7569D5E91450
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C639 - Integer divisions with /vo12 option FileGroups]
+[C639 - Integer divisions with /vo12 option Files]
+File = %AppPath%\Prg\C639.prg
+FileGUID = 6F48F60B-54C5-48B3-AFD6-312A9E8C64CD
+FileType = Code
+[C639 - Integer divisions with /vo12 option References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+[C639 - Integer divisions with /vo12 option Resources]
+[C639 - Integer divisions with /vo12 option Native Resources]
+[C639 - Integer divisions with /vo12 option License files]
+[C639 - Integer divisions with /vo12 option General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=1
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C639 - Integer divisions with /vo12 option Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C639 - Integer divisions with /vo12 option
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C640 - Failed to emit module error when /unsafe is missing *************
+Application = C640 - Failed to emit module error when /unsafe is missing
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C640\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C640
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 270725C6-A606-4EAC-8C63-F11407003E6D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C640 - Failed to emit module error when /unsafe is missing FileGroups]
+[C640 - Failed to emit module error when /unsafe is missing Files]
+File = %AppPath%\Prg\C640.prg
+FileGUID = E8469599-9E37-4E51-9226-23086F5E068C
+FileType = Code
+[C640 - Failed to emit module error when /unsafe is missing References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C640 - Failed to emit module error when /unsafe is missing Resources]
+[C640 - Failed to emit module error when /unsafe is missing Native Resources]
+[C640 - Failed to emit module error when /unsafe is missing License files]
+[C640 - Failed to emit module error when /unsafe is missing General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C640 - Failed to emit module error when /unsafe is missing Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C640 - Failed to emit module error when /unsafe is missing
 [EndApplications]
 
 [Configurations]

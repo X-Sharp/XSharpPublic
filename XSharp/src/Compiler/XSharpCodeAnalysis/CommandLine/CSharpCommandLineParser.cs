@@ -167,6 +167,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case "xsharp.rdd.dll":
                                 options.TargetDLL = XSharpTargetDLL.RDD;
                                 break;
+                            case "xsharp.xpp.dll":
+                                options.TargetDLL = XSharpTargetDLL.XPP;
+                                break;
                             default:
                                 options.TargetDLL = XSharpTargetDLL.Other;
                                 break;
@@ -302,6 +305,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     name = "warnaserror+";
                     handled = false;
                     break;
+                case "xpp1":       // classes inherit from XPP.Abstract
+                    options.Xpp1 = positive;
+                    break;
+                case "xpp2":       // untyped main instead of Start
+                    options.Xpp2 = positive;
+                    break;
                 default:
                     name = oldname;
                     handled = false;
@@ -325,6 +334,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case OurAssemblyNames.XSharpVO:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
+                    break;
+                case OurAssemblyNames.XSharpXPP:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
                     break;
                 case "mscorlib":
                 case "system":
@@ -417,11 +429,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok;
                     isVo = true;
                 }
-                else if (options.XSharpVOIncluded) {
+                else if (options.XSharpVOIncluded || options.XSharpXPPIncluded) {
                     // Ok;
                     isVo = true;
                 }
-                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD) {
+                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD || options.TargetDLL == XSharpTargetDLL.XPP) {
                     // Ok
                     isVo = true;
                 }

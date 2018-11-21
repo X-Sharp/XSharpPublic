@@ -86,10 +86,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo14 { get; internal set; } = false;
         public bool Vo15 { get; internal set; } = false;
         public bool Vo16 { get; internal set; } = false;
+        public bool Xpp1 { get; internal set; } = false;
+        public bool Xpp2 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpVOIncluded=> RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpCoreIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
+        public bool XSharpXPPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
         public bool ExplicitVO15 { get; internal set; } = false;
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;

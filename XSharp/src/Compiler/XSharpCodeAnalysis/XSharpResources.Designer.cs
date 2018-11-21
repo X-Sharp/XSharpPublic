@@ -14832,7 +14832,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XPP: Variables in SUPER classes are always shared in the .Net Runtime..
+        ///   Looks up a localized string similar to XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime..
         /// </summary>
         internal static string WRN_XPPSuperIVarsAlwaysShared {
             get {

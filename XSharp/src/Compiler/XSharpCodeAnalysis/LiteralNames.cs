@@ -50,6 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Error = "global::Vulcan.Error";
         internal const string ClassLibrary = "global::Vulcan.Internal.VulcanClassLibraryAttribute";
         internal const string CompilerVersion = "global::Vulcan.Internal.VulcanCompilerVersion";
+        internal const string IsVoInstance = "global::Vulcan.Internal.IsVOInstanceAttribute";
     }
 
     internal static class XSharpQualifiedTypeNames
@@ -70,6 +71,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Error = "global::XSharp.Error";
         internal const string ClassLibrary = "global::XSharp.Internal.ClassLibraryAttribute";
         internal const string CompilerVersion = "global::XSharp.Internal.CompilerVersion";
+        internal const string IsVoInstance = "global::XSharp.Internal.IsVOInstanceAttribute";
+        internal const string XppAbstract = "global::XSharp.XPP.Abstract";
     }
     internal static class XSharpSpecialNames
     {
@@ -107,10 +110,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpCoreFunctionsClass = "XSharp.Core.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
+        internal const string XSharpXPPFunctionsClass = "XSharp.XPP.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
-
-
     }
 
     internal static class XSharpFunctionNames
@@ -192,6 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VulcanRTFuncs = "vulcanrtfuncs";
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpVO = "xsharp.vo";
+        internal const string XSharpXPP = "xsharp.xpp";
     }
 
     internal static class OurNameSpaces

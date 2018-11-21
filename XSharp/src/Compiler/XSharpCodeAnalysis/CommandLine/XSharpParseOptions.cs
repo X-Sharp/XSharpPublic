@@ -27,7 +27,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         VulcanRT = 1,
         VulcanRTFuncs = 2,
         XSharpCore = 8,
-        XSharpVO = 16
+        XSharpVO = 16,
+        XSharpXPP = 32
     }
 
     [Flags]
@@ -44,7 +45,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         Other =0,
         Core = 1,
         RDD = 2,
-        VO = 3
+        VO = 3,
+        XPP = 4
     }
 
     public sealed partial class CSharpParseOptions
@@ -100,6 +102,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
+        public bool XPPInheritFromAbstract { get; private set; } = false;
+        public bool XPPUntypedmain { get; private set; } = false;
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
@@ -121,6 +125,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo14 => VOFloatConstants;
         public bool vo15 => VOUntypedAllowed;
         public bool vo16 => VOClipperConstructors;
+        public bool xpp1 => XPPInheritFromAbstract;
+        public bool xpp2 => XPPUntypedmain;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -159,7 +165,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
                 VOClipperConstructors = opt.Vo16;
-
+                XPPInheritFromAbstract = opt.Xpp1;
+                XPPUntypedmain = opt.Xpp2;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -218,6 +225,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             VOClipperConstructors = opt.VOClipperConstructors; // vo16
+            XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
+            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2 
+
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;

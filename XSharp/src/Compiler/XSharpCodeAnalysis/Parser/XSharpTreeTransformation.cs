@@ -199,6 +199,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpTargetDLL.VO:
                     className = XSharpSpecialNames.XSharpVOFunctionsClass;
                     break;
+                case XSharpTargetDLL.XPP:
+                    className = XSharpSpecialNames.XSharpXPPFunctionsClass;
+                    break;
                 default:
                     className = XSharpSpecialNames.FunctionsClass;
                     break;
@@ -3105,13 +3108,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var decl = _syntaxFactory.VariableDeclaration(
                         type: varType,
                         variables: varList);
+                var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
                 if (context.Modifiers == null)
                 {
                     context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC)  expected"));
                 }
+                else if (_options.IsDialectVO)
+                {
+
+                    bool isInstance = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.INSTANCE);
+                    if (isInstance)
+                    {
+                        var attr = _pool.Allocate<AttributeListSyntax>();
+                        attr.AddRange(attributeList);
+                        GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsVoInstance : VulcanQualifiedTypeNames.IsVoInstance);
+                        attributeList = attr.ToList();
+                        _pool.Free(attr);
+                    }
+                }
 
                 context.Put(_syntaxFactory.FieldDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    attributeLists: attributeList,
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                     declaration: decl,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));

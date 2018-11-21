@@ -4478,7 +4478,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /langversion:&lt;string&gt;         Specify language version mode: ISO-1, ISO-2, 3,
                                4, 5, 6, Default, or Latest
 
-                        - VULCAN COMPATIBILITY -
+                        - XBASE COMPATIBILITY -
  /az[+|-]                       Use Zero based arrays
  /cs[+|-]                       Case Sensitivity on/off
  /dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
@@ -4505,6 +4505,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /vo14[+|-]                     Use Float Literals
  /vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
  /vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
+ /xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
+ /xpp2[+|-]                     Use untyped Main() function instead of typed Start() function
 
                         - PREPROCESOR -
 
@@ -5277,7 +5279,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>XPP: Multiple Inheritance is not supported by the .Net Runtime.</value>
   </data>
   <data name="WRN_XPPSuperIVarsAlwaysShared" xml:space="preserve">
-    <value>XPP: Variables in SUPER classes are always shared in the .Net Runtime.</value>
+    <value>XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</value>
   </data>
   <data name="WRN_XPPFrozedNotSupported" xml:space="preserve">
     <value>The XPP: FROZEN method modifier is not supported and ignored.</value>

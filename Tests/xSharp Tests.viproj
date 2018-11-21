@@ -9,7 +9,6 @@ PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
 CopyAssembliesToFolder = 
-DebugExecutable = 
 
 [ProjectExportOptions]
 ExportResources = 0
@@ -35420,8 +35419,8 @@ FileGUID = 6294A93D-97C1-47EB-957C-69E05812804F
 FileType = Code
 [C356 - Issues with PSZ CAST and DIM array References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C356 - Issues with PSZ CAST and DIM array Resources]
 [C356 - Issues with PSZ CAST and DIM array Native Resources]
 [C356 - Issues with PSZ CAST and DIM array License files]
@@ -56595,8 +56594,8 @@ FileGUID = ADC2A577-4C58-4CC0-89EC-4BA9ABBAFF9C
 FileType = Code
 [C560 - CreateInstance() cannot "see" classes with namespaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C560 - CreateInstance() cannot "see" classes with namespaces Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces Native Resources]
 [C560 - CreateInstance() cannot "see" classes with namespaces License files]
@@ -60945,7 +60944,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C599 - Bogus error when using ++/-- in alias expression
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C600 - Problem defining DIM as OBJECT without /unsafe *************
 Application = C600 - Problem defining DIM as OBJECT without /unsafe
 IDEVersion = 1.06
@@ -61011,7 +61010,7 @@ VO13=0
 VO14=0
 VO16=0
 LateBound=0
-Unsafe=0
+Unsafe=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -61839,7 +61838,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C608 - Preprocessor harbour compatibility issue with different casing of identifiers
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C609 - Failed to emit module with @ on array element, without /unsafe *************
 Application = C609 - Failed to emit module with @ on array element, without /unsafe
 IDEVersion = 1.06
@@ -61905,7 +61904,7 @@ VO13=0
 VO14=0
 VO16=0
 LateBound=0
-Unsafe=0
+Unsafe=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -62279,8 +62278,8 @@ FileGUID = 89BCFE16-E9A5-4A9A-9034-0E36F9ED643D
 FileType = Code
 [C613 - Ambiguous overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C613 - Ambiguous overloads Resources]
 [C613 - Ambiguous overloads Native Resources]
 [C613 - Ambiguous overloads License files]
@@ -62974,8 +62973,8 @@ FileGUID = 90EA0C80-94BD-4B8A-A2E9-56F455F24DE3
 FileType = Code
 [C620 - Problem resloving method with both instance and static overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C620 - Problem resloving method with both instance and static overloads Resources]
 [C620 - Problem resloving method with both instance and static overloads Native Resources]
 [C620 - Problem resloving method with both instance and static overloads License files]
@@ -63863,8 +63862,8 @@ FileGUID = 9574227C-486B-4BF4-A0D6-E96F1FE0F878
 FileType = Code
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Native Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime License files]
@@ -63963,8 +63962,8 @@ FileGUID = F2FA5D31-7A6B-44FC-947D-17F56E890DE7
 FileType = Code
 [C629 - Incorrect PSZ returned from function returning PSZ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C629 - Incorrect PSZ returned from function returning PSZ Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ Native Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ License files]
@@ -64063,8 +64062,8 @@ FileGUID = 63CF3E67-F634-423C-B999-65EE405FBA4E
 FileType = Code
 [C630 - Problem calling function with PSZ(_CAST) param References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C630 - Problem calling function with PSZ(_CAST) param Resources]
 [C630 - Problem calling function with PSZ(_CAST) param Native Resources]
 [C630 - Problem calling function with PSZ(_CAST) param License files]
@@ -64162,8 +64161,8 @@ File = %AppPath%\Prg\C631.prg
 FileGUID = 81056867-CE75-4691-956E-B63EA6F48535
 FileType = Code
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) References]
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Native Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) License files]
@@ -64362,8 +64361,8 @@ FileGUID = A2003895-0D35-481B-BB6F-6D66A73B404C
 FileType = Code
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
@@ -64562,8 +64561,8 @@ FileGUID = E8E65A50-6714-4213-805D-01421027D8F3
 FileType = Code
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Native Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD License files]
@@ -64622,7 +64621,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C636 - SplitPath() with /vo7- : failed to emit module *************
 Application = C636 - SplitPath() with /vo7- : failed to emit module
 IDEVersion = 1.06
@@ -64662,8 +64661,8 @@ FileGUID = 7BB12918-1ABF-4B41-ADB9-C7B282FFFB2B
 FileType = Code
 [C636 - SplitPath() with /vo7- : failed to emit module References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 [C636 - SplitPath() with /vo7- : failed to emit module Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module Native Resources]
 [C636 - SplitPath() with /vo7- : failed to emit module License files]
@@ -64762,8 +64761,8 @@ FileGUID = 777295F6-F9CE-456B-B0FB-491504D7DBCF
 FileType = Code
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Resources]
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Native Resources]
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable License files]
@@ -64822,7 +64821,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C638 - Problem with String2Psz() in Start() function *************
 Application = C638 - Problem with String2Psz() in Start() function
 IDEVersion = 1.06
@@ -64862,8 +64861,8 @@ FileGUID = BED5E352-7F36-4F4C-936C-EDD93090F7B3
 FileType = Code
 [C638 - Problem with String2Psz() in Start() function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C638 - Problem with String2Psz() in Start() function Resources]
 [C638 - Problem with String2Psz() in Start() function Native Resources]
 [C638 - Problem with String2Psz() in Start() function License files]
@@ -64962,8 +64961,8 @@ FileGUID = 6F48F60B-54C5-48B3-AFD6-312A9E8C64CD
 FileType = Code
 [C639 - Integer divisions with /vo12 option References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 [C639 - Integer divisions with /vo12 option Resources]
 [C639 - Integer divisions with /vo12 option Native Resources]
 [C639 - Integer divisions with /vo12 option License files]
@@ -65022,7 +65021,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C639 - Integer divisions with /vo12 option
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C640 - Failed to emit module error when /unsafe is missing *************
 Application = C640 - Failed to emit module error when /unsafe is missing
 IDEVersion = 1.06
@@ -65122,7 +65121,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C640 - Failed to emit module error when /unsafe is missing
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C641 - Runtime error with SHORT( _CAST , usual) *************
 Application = C641 - Runtime error with SHORT( _CAST , usual)
 IDEVersion = 1.06
@@ -65162,8 +65161,8 @@ FileGUID = 7127509A-28AE-4FA8-A076-AEBE73027C9C
 FileType = Code
 [C641 - Runtime error with SHORT( _CAST , usual) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 [C641 - Runtime error with SHORT( _CAST , usual) Resources]
 [C641 - Runtime error with SHORT( _CAST , usual) Native Resources]
 [C641 - Runtime error with SHORT( _CAST , usual) License files]

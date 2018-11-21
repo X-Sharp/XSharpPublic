@@ -483,14 +483,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // At the end of the main body variables are cleared
             // And $AppExit() is called to clear the globals in referenced Vulcan Libs
             // and GC routines are called
-            // and when needed it returns with X$Return
+            // and when needed it returns with Xs$Return
             // Not that the code only checks for locals in the main body statement list
             // and not for locals hidden inside blocks inside the main body
             // When the main body has a PSZ Try - Finally then our cleanup code and init code will be inserted before and after 
             // the try finally
-            bool needsExtraReturn = false;
             bool needsReturnValue = false;
-            bool hasReturnVar = false;
             var lastStmt = (StatementSyntax) originalbody ;
             if (originalbody.Statements.Count > 0)
                 lastStmt = originalbody.Statements.Last;
@@ -514,25 +512,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Type != null && context.Type.GetText().ToLower() != "void")
             {
-                newbody.Add(GenerateReturnVar(context.Type.Get<TypeSyntax>()));
-                needsExtraReturn = true;
                 needsReturnValue = true;
-                hasReturnVar = true;
             }
             foreach (var stmt in body.Statements)
             {
                 if (stmt is ReturnStatementSyntax && stmt == body.Statements[body.Statements.Count - 1])
                 {
-                    needsExtraReturn = true;
                     var retStmt = stmt as ReturnStatementSyntax;
                     var retExpr = retStmt.Expression;
-                    if (retExpr != null && ! retExpr.XNode.IsLiteral())
+                    if (retExpr != null)
                     {
-                        if (! hasReturnVar)
-                        {
-                            newbody.Add(GenerateReturnVar(_objectType));
-                            hasReturnVar = true;
-                        }
                         needsReturnValue = true;
                         var assignStmt = GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(XSharpSpecialNames.ReturnName), retExpr), true);
                         assignStmt.XNode = lastXnode;
@@ -633,16 +622,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             newStmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true), true);
             newStmt.XNode = lastXnode;
             newbody.Add(newStmt);
-            if (needsExtraReturn)
+            if (needsReturnValue)
             {
-                if (needsReturnValue)
-                {
-                    newStmt = GenerateReturn(GenerateSimpleName(XSharpSpecialNames.ReturnName));
-                }
-                else
-                {
-                    newStmt = GenerateReturn(null);
-                }
+                var type = context.Type.Get<TypeSyntax>();
+                newbody.Insert(0, GenerateReturnVar(type, MakeDefault(type)));
+                newStmt = GenerateReturn(GenerateSimpleName(XSharpSpecialNames.ReturnName));
                 newStmt.XNode = lastXnode;
                 newbody.Add(newStmt);
 

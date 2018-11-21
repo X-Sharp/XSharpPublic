@@ -124,6 +124,19 @@ BEGIN NAMESPACE XSharp.Internal
 			_largestMemberSize := largestMemberSize
 		
 	END CLASS
+
+	/// <summary>
+	/// This class is used to describe fields that have been declared with the INSTANCE modifier
+    /// </summary>
+	[AttributeUsage(AttributeTargets.Field)];
+	SEALED CLASS IsVOInstanceAttribute INHERIT Attribute
+		
+		/// <summary></summary>	
+		CONSTRUCTOR()
+			SUPER()
+			RETURN
+		
+	END CLASS
 	
 END NAMESPACE
 

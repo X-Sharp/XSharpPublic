@@ -5858,6 +5858,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private List<StatementSyntax> CheckForLocalDimArrays(List<StatementSyntax> statements)
         {
+            if (!CurrentEntity.Data.HasAddressOf)
+                return statements;
             foreach (var stmt in statements.ToList())
             {
                 if (stmt is LocalDeclarationStatementSyntax)
@@ -6424,6 +6426,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // in VO ~is XOR for binary expressions and bitwise negation (ones complement) for unary expressions
             // in C# ^is XOR and ~is Bitwise negation (ones complement)
             // SyntaxPrefixOp() takes care of the Unary operators
+            if (context.Op.Type == XP.ADDROF)
+            {
+                CurrentEntity.Data.HasAddressOf = true;
+            }
             context.Put(_syntaxFactory.PrefixUnaryExpression(
                 context.Op.ExpressionKindPrefixOp(),
                 context.Op.SyntaxPrefixOp(),

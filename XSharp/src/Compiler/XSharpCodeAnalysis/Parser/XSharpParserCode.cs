@@ -132,6 +132,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Partial = 1 << 10,          // Class property
             PartialProps = 1 << 11,     // Class property
             HasDimVar = 1 << 12,        // Member property
+            HasAddressOf = 1 << 13,     // Member property
         }
 
 
@@ -218,6 +219,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.HasDimVar); }
                 set { flags = setFlag(flags, EntityFlags.HasDimVar, value); }
             }
+            public bool HasAddressOf
+            {
+                get { return flags.HasFlag(EntityFlags.HasAddressOf); }
+                set { flags = setFlag(flags, EntityFlags.HasAddressOf, value); }
+            }
+
 
             private List<MemVarFieldInfo> Fields;
             public void AddField(string Name, string Alias, bool Field)

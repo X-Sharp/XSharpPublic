@@ -3057,13 +3057,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var decl = _syntaxFactory.VariableDeclaration(
                         type: varType,
                         variables: varList);
+                var attributeList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
                 if (context.Modifiers == null)
                 {
                     context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC)  expected"));
                 }
+                else if (_options.IsDialectVO)
+                {
 
+                    bool isInstance = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.INSTANCE);
+                    if (isInstance)
+                    {
+                        var attr = _pool.Allocate<AttributeListSyntax>();
+                        attr.AddRange(attributeList);
+                        GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsVoInstance : VulcanQualifiedTypeNames.IsVoInstance);
+                        attributeList = attr.ToList();
+                        _pool.Free(attr);
+                    }
+                }
                 context.Put(_syntaxFactory.FieldDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    attributeLists: attributeList,
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                     declaration: decl,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -6889,27 +6902,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             TypeSyntax type;
-            int mask = 0;
+            long mask = 0;
+            var expr = context.Expr.Get<ExpressionSyntax>();
             if (context.Type != null)
             {
+                bool docast = false;
                 type = context.Type.Get<TypeSyntax>();
                 switch (context.Type.Token.Type)
                 {
                     case XP.BYTE:
                         mask = 0xff;
+                        docast = true;
                         break;
                     case XP.CHAR:
                     case XP.WORD:
                     case XP.SHORTINT:
                         mask = 0xffff;
+                        docast = true;
                         break;
+                    case XP.DWORD:
+                    case XP.INT:
+                        mask = 0xffffffff;
+                        docast = true;
+                        break;
+                    case XP.UINT64:
+                        mask = 0;
+                        docast = true;
+                        break;
+                }
+                if (docast)
+                {
+                    // get the usual as an int64 and apply the mask
+                    expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword)), expr);
+                    if (mask != 0)
+                    {
+                        expr = _syntaxFactory.BinaryExpression(
+                                    SyntaxKind.BitwiseAndExpression,
+                                    expr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                                    GenerateLiteral(mask));
+                    }
+                    expr = MakeChecked(MakeCastTo(type, expr), false);
+                    context.Put(expr);
+                    return;
                 }
             }
             else
             {
                 type = context.XType.Get<TypeSyntax>();
             }
-            var expr = context.Expr.Get<ExpressionSyntax>();
+            
             // check for cast from a logical literal to a numeric
             // in that case replace FALSE with 0 and TRUE with 1
             if (expr.Kind == SyntaxKind.TrueLiteralExpression || expr.Kind == SyntaxKind.FalseLiteralExpression)
@@ -6957,15 +6999,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = MakeChecked(expr, false);
             }
 
-            if (mask != 0)
-            {
-                expr = MakeChecked(_syntaxFactory.BinaryExpression(
-                        SyntaxKind.BitwiseAndExpression,
-                        expr,
-                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
-                        GenerateLiteral(mask)),false);
-            }
-            context.Put(MakeChecked(MakeCastTo(type, expr), false));
+              context.Put(MakeChecked(MakeCastTo(type, expr), false));
             return;
         }
 

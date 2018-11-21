@@ -50,6 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Error = "global::Vulcan.Error";
         internal const string ClassLibrary = "global::Vulcan.Internal.VulcanClassLibraryAttribute";
         internal const string CompilerVersion = "global::Vulcan.Internal.VulcanCompilerVersion";
+        internal const string IsVoInstance = "global::Vulcan.Internal.IsVOInstanceAttribute";
     }
 
     internal static class XSharpQualifiedTypeNames
@@ -70,6 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Error = "global::XSharp.Error";
         internal const string ClassLibrary = "global::XSharp.Internal.ClassLibraryAttribute";
         internal const string CompilerVersion = "global::XSharp.Internal.CompilerVersion";
+        internal const string IsVoInstance = "global::XSharp.Internal.IsVOInstanceAttribute";
     }
     internal static class XSharpSpecialNames
     {

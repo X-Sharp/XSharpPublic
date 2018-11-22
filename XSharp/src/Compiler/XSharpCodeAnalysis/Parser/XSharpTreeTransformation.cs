@@ -5918,6 +5918,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private List<StatementSyntax> CheckForLocalDimArrays(List<StatementSyntax> statements)
         {
+            if (!CurrentEntity.Data.HasAddressOf)
+                return statements;
+
             foreach (var stmt in statements.ToList())
             {
                 if (stmt is LocalDeclarationStatementSyntax)
@@ -6493,6 +6496,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // in VO ~is XOR for binary expressions and bitwise negation (ones complement) for unary expressions
             // in C# ^is XOR and ~is Bitwise negation (ones complement)
             // SyntaxPrefixOp() takes care of the Unary operators
+            if (context.Op.Type == XP.ADDROF)
+            {
+                CurrentEntity.Data.HasAddressOf = true;
+            }
             context.Put(_syntaxFactory.PrefixUnaryExpression(
                 context.Op.ExpressionKindPrefixOp(),
                 context.Op.SyntaxPrefixOp(),
@@ -6971,27 +6978,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             TypeSyntax type;
-            int mask = 0;
+            long mask = 0;
+            var expr = context.Expr.Get<ExpressionSyntax>();
             if (context.Type != null)
             {
+                bool docast = false;
                 type = context.Type.Get<TypeSyntax>();
                 switch (context.Type.Token.Type)
                 {
                     case XP.BYTE:
                         mask = 0xff;
+                        docast = true;
                         break;
                     case XP.CHAR:
                     case XP.WORD:
                     case XP.SHORTINT:
                         mask = 0xffff;
+                        docast = true;
                         break;
+                    case XP.DWORD:
+                    case XP.INT:
+                        mask = 0xffffffff;
+                        docast = true;
+                        break;
+                    case XP.UINT64:
+                        mask = 0;
+                        docast = true;
+                        break;
+                }
+                if (docast)
+                {
+                    // get the usual as an int64 and apply the mask
+                    expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword)), expr);
+                    if (mask != 0)
+                    {
+                        expr = _syntaxFactory.BinaryExpression(
+                                    SyntaxKind.BitwiseAndExpression,
+                                    expr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                                    GenerateLiteral(mask));
+                    }
+                    expr = MakeChecked(MakeCastTo(type, expr), false);
+                    context.Put(expr);
+                    return;
                 }
             }
             else
             {
                 type = context.XType.Get<TypeSyntax>();
             }
-            var expr = context.Expr.Get<ExpressionSyntax>();
+            
             // check for cast from a logical literal to a numeric
             // in that case replace FALSE with 0 and TRUE with 1
             if (expr.Kind == SyntaxKind.TrueLiteralExpression || expr.Kind == SyntaxKind.FalseLiteralExpression)
@@ -7039,15 +7075,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = MakeChecked(expr, false);
             }
 
-            if (mask != 0)
-            {
-                expr = MakeChecked(_syntaxFactory.BinaryExpression(
-                        SyntaxKind.BitwiseAndExpression,
-                        expr,
-                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
-                        GenerateLiteral(mask)),false);
-            }
-            context.Put(MakeChecked(MakeCastTo(type, expr), false));
+              context.Put(MakeChecked(MakeCastTo(type, expr), false));
             return;
         }
 

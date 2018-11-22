@@ -107,16 +107,5 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
             }
         }
-        public static bool AllowClassySyntax(this XSharpDialect dialect)
-        {
-            switch (dialect)
-            {
-                case XSharpDialect.Harbour:
-                case XSharpDialect.XPP:
-                    return true;
-                default:
-                    return false;
-            }
-        }
     }
 }

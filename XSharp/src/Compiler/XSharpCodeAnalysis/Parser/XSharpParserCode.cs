@@ -124,6 +124,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             PartialProps = 1 << 11,     // Class property
             HasDimVar = 1 << 12,        // Member property
             HasSync = 1 << 13,        // Member property
+			HasAddressOf = 1 << 14,     // Member property
+
         }
 
 
@@ -214,6 +216,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.HasSync); }
                 set { flags = setFlag(flags, EntityFlags.HasSync, value); }
+            }
+            public bool HasAddressOf
+            {
+                get { return flags.HasFlag(EntityFlags.HasAddressOf); }
+                set { flags = setFlag(flags, EntityFlags.HasAddressOf, value); }
             }
 
             private List<MemVarFieldInfo> Fields;

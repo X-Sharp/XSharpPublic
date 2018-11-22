@@ -14805,15 +14805,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The XPP: NOSAVE clause for instance variables is not supported (yet) and ignored..
-        /// </summary>
-        internal static string WRN_XPPNoSaveNotSupported {
-            get {
-                return ResourceManager.GetString("WRN_XPPNoSaveNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The XPP: READONLY clause for instance variables is not supported (yet) and ignored..
         /// </summary>
         internal static string WRN_XPPReadonlyClause {
@@ -14837,15 +14828,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_XPPSuperIVarsAlwaysShared {
             get {
                 return ResourceManager.GetString("WRN_XPPSuperIVarsAlwaysShared", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The XPP: SYNC method modifier is not supported (yet)..
-        /// </summary>
-        internal static string WRN_XPPSyncNotSupported {
-            get {
-                return ResourceManager.GetString("WRN_XPPSyncNotSupported", resourceCulture);
             }
         }
         

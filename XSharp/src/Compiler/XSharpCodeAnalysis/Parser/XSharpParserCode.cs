@@ -101,7 +101,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             XppmemberModifiersContext Mods { get; }
             AttributesContext Atts { get; }
-            
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
             StatementBlockContext Statements { get; set; }
             ParameterListContext Parameters { get; }
@@ -124,6 +123,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Partial = 1 << 10,          // Class property
             PartialProps = 1 << 11,     // Class property
             HasDimVar = 1 << 12,        // Member property
+            HasSync = 1 << 13,        // Member property
         }
 
 
@@ -209,6 +209,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.HasDimVar); }
                 set { flags = setFlag(flags, EntityFlags.HasDimVar, value); }
+            }
+            public bool HasSync
+            {
+                get { return flags.HasFlag(EntityFlags.HasSync); }
+                set { flags = setFlag(flags, EntityFlags.HasSync, value); }
             }
 
             private List<MemVarFieldInfo> Fields;

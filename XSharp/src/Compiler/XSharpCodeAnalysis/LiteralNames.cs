@@ -84,6 +84,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string EventFieldNamePrefix = "Xs$Event$";
         internal const string AccessSuffix = "$Access";
         internal const string AssignSuffix = "$Assign";
+        internal const string PropertySuffix = "$Method";
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";
@@ -233,5 +234,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Void1 = "System.Void";
         internal const string Void2 = "global::System.Void";
         internal const string CollectionsGeneric = "global::System.Collections.Generic";
+        internal const string NonSerialized = "global::System.NonSerializedAttribute";
     }
 }

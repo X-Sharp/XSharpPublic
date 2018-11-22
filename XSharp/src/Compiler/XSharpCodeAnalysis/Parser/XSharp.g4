@@ -1117,10 +1117,10 @@ xppisin             : IS Id=identifier (IN SuperClass=identifier)?              
 xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC ) )+
                     ;
 
-xppclassvars        : (Modifiers=xppmemberModifiers)?                            // [CLASS] 
-                      VAR Vars+=identifier                                         // VAR <VarName> 
+xppclassvars        : (Modifiers=xppmemberModifiers)?                             // [CLASS] 
+                      VAR Vars+=identifier                                        // VAR <VarName> 
                       (
-                        Is=xppisin                                                   // [IS <Name>] [IN <SuperClass>] 
+                        Is=xppisin                                                // [IS <Name>] [IN <SuperClass>] 
                         | ((COMMA Vars+=identifier)*                              // <,...> 
                         (AS DataType=datatype)?  )                                // Optional data type
 
@@ -1136,10 +1136,11 @@ xppclassvars        : (Modifiers=xppmemberModifiers)?                           
 xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
                     ;
 
-xppproperty         : (   Access=ACCESS Assign=ASSIGN?                            // ACCESS | ASSIGN  | ACCESS ASSIGN | ASSIGN ACCESS
+xppproperty         : (Attributes=attributes)?                                    // NEW Optional Attributes
+                      (   Access=ACCESS Assign=ASSIGN?                            // ACCESS | ASSIGN  | ACCESS ASSIGN | ASSIGN ACCESS
                         | Assign=ASSIGN Access=ACCESS?
                       ) 
-                      xppmemberModifiers?                                         // [CLASS]
+                      Modifiers=xppmemberModifiers?                               // [CLASS]
                       METHOD Id=identifier                                        // METHOD <MethodName>
                       (VAR VarName=identifier)?                                   // [VAR <VarName>]
                       (AS Type=datatype)?                                         // NEW Optional data type

@@ -2510,23 +2510,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitNamespace(context, context.Name.GetText(), context.Ignored, entities);
         }
 
-        protected void ProcessGlobalEntityContext(XP.IGlobalEntityContext entity)
+        protected void addEntity(MemberDeclarationSyntax m, bool isStatic)
         {
-            var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
-            if (entity is XP.ProcedureContext)
-            {
-                var proc = (XP.ProcedureContext)entity;
-                if (proc.InitExit != null)  // Init & Exit procedures are never static
-                {
-                    modifiers = null;
-                }
-            }
-            var bStaticVisibility = false;
-            if (modifiers != null)
-                bStaticVisibility = modifiers.IsStaticVisible;
-
-            var m = entity.Get<MemberDeclarationSyntax>();
-            if (bStaticVisibility)
+            // make sure we do not add entities twice
+            if (isStatic)
             {
                 // When last entity did not go to the functions class or wasn't a static member
                 if (GlobalEntities.LastMember is XP.IGlobalEntityContext && !GlobalEntities.LastIsStatic)
@@ -2544,8 +2531,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 GlobalEntities.GlobalClassMembers.Add(m);
             }
-            GlobalEntities.LastMember = entity;
-            GlobalEntities.LastIsStatic = bStaticVisibility;
+            GlobalEntities.LastMember = m;
+            GlobalEntities.LastIsStatic = isStatic;
+
+        }
+
+        protected void ProcessGlobalEntityContext(XP.IGlobalEntityContext entity)
+        {
+            var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
+            if (entity is XP.ProcedureContext)
+            {
+                var proc = (XP.ProcedureContext)entity;
+                if (proc.InitExit != null)  // Init & Exit procedures are never static
+                {
+                    modifiers = null;
+                }
+            }
+            var bStaticVisibility = false;
+            if (modifiers != null)
+                bStaticVisibility = modifiers.IsStaticVisible;
+
+
+            var m = entity.Get<MemberDeclarationSyntax>();
+            addEntity(m, bStaticVisibility);
         }
         protected void ProcessLastGlobalEntity(XSharpParserRuleContext context, IXParseTree entity)
         {

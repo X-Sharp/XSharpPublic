@@ -5287,9 +5287,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_XPPVarIsInNotSupported" xml:space="preserve">
     <value>The XPP: VAR .. IS .. IN ..  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
   </data>
-  <data name="WRN_XPPSyncNotSupported" xml:space="preserve">
-    <value>The XPP: SYNC method modifier is not supported (yet).</value>
-  </data>
   <data name="WRN_XPPSharedIsDefault" xml:space="preserve">
     <value>XPP: Variables are SHARED by default in .Net</value>
   </data>
@@ -5298,9 +5295,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="WRN_XPPReadonlyClause" xml:space="preserve">
     <value>The XPP: READONLY clause for instance variables is not supported (yet) and ignored.</value>
-  </data>
-  <data name="WRN_XPPNoSaveNotSupported" xml:space="preserve">
-    <value>The XPP: NOSAVE clause for instance variables is not supported (yet) and ignored.</value>
   </data>
   <data name="WRN_XPPMethodNotImplemented" xml:space="preserve">
     <value>XPP: Method {0} has been declared but has not been implemented.</value>

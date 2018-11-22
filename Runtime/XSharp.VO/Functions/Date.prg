@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -9,7 +9,7 @@ USING System.Globalization
 /// <summary>
 /// Convert a string containing a 32-bit binary Date to a Date data type.
 /// </summary>
-/// <param name="cString">A 32-bit binary date represented as a string � least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
+/// <param name="cString">A 32-bit binary date represented as a string — least significant byte first.  Only the first 4 bytes are used by the function; all others are ignored. </param>
 /// <returns>A date value that corresponds to the date specified in cString.  If cString is not a valid binary date, Bin2Date() returns a NULL_DATE.
 /// </returns>
 FUNCTION Bin2Date(cString AS STRING) AS DATE
@@ -202,7 +202,7 @@ FUNCTION Month(d AS DATE) AS DWORD
 FUNCTION SToD(cDate AS STRING) AS DATE
 	LOCAL convertedDate AS DATE
 	TRY
-		IF cDate:Length == 8 .AND. cDate[0] == '0' .AND. cDate[1] == '0'
+		IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'
 			// VO adjusts date strings like "00yyMMdd" to epoch-based year
 			LOCAL dwY AS DWORD
 			dwY := UInt32.Parse(cDate:Substring(0,4))
@@ -215,7 +215,7 @@ FUNCTION SToD(cDate AS STRING) AS DATE
 				dwY -= 100
 			ENDIF
 			
-			cDate := dwY:ToString():PadLeft(4 , '0') + cDate:Substring(4)
+			cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
 		END IF
 		convertedDate := (DATE)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
 	CATCH

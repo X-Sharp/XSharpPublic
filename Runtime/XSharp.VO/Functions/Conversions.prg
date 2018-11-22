@@ -28,11 +28,11 @@ INTERNAL STATIC CLASS ConversionHelpers
 		ENDIF
 		IF nDec != 0
 			cFormat := "0."
-			cFormat := cFormat:PadRight(nDec+2, '0')	// 2 extra for the 0 + Dot
+			cFormat := cFormat:PadRight(nDec+2, c'0')	// 2 extra for the 0 + Dot
 		ELSE
 			cFormat := "0"
 		ENDIF
-		cFormat := cFormat:PadLeft(nLen, '#')
+		cFormat := cFormat:PadLeft(nLen, c'#')
 		cFormat := "{0," + nLen:ToString()+":"+cFormat+"}"
 		formatStrings:Add(nKey, cFormat)
 		RETURN cFormat
@@ -45,16 +45,16 @@ INTERNAL STATIC CLASS ConversionHelpers
 		result := String.Format(usCulture, cFormat, n)
         IF result:EndsWith("0") .AND. nDec > 0 .AND. nLen > 15
             VAR cTemp := n:ToString("G17", usCulture)
-            VAR parts := cTemp:Split(<CHAR>{'.'}, StringSplitOptions.RemoveEmptyEntries)
+            VAR parts := cTemp:Split(<CHAR>{c'.'}, StringSplitOptions.RemoveEmptyEntries)
             IF parts:Length > 1
                 // If the G17 format contains a decimal part, fetch it.
                 VAR cDec := parts[1+ __ARRAYBASE__]
-                parts := result:Split(<CHAR>{'.'}, StringSplitOptions.RemoveEmptyEntries)
+                parts := result:Split(<CHAR>{c'.'}, StringSplitOptions.RemoveEmptyEntries)
                 VAR cOldDec := parts[1+ __ARRAYBASE__]
                 IF cDec:Length > cOldDec:Length
                     cDec := cDec:SubString(0, cOldDec:Length)
                 ELSEIF cDec:Length < cOldDec:Length
-                    cDec := cDec:PadRight(cOldDec:Length,'0')
+                    cDec := cDec:PadRight(cOldDec:Length,c'0')
                 ENDIF
                 result := parts[1] + "." + cDec
             ENDIF
@@ -79,7 +79,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		IF cString:IndexOf(".") >= 0
 			VAR wSep   := SetDecimalSep()
 			IF wSep != 46
-				cString := cString:Replace('.', (CHAR) wSep)
+				cString := cString:Replace(c'.', (CHAR) wSep)
 			ENDIF
 		ENDIF
 		RETURN cString
@@ -504,7 +504,7 @@ FUNCTION __Str(n AS USUAL,nLen AS USUAL, nDec AS USUAL) AS STRING
 
 INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
 	LOCAL iLen := 	cValue:Length AS INT
-	RETURN cValue:TrimStart():PadLeft((INT) iLen, '0')
+	RETURN cValue:TrimStart():PadLeft((INT) iLen, c'0')
 
 
 	/// <summary>
@@ -687,7 +687,7 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 
  
    IF dwDec > 0 && dwLen != UInt32.MaxValue && ( dwLen < ( dwDec + 2 ) )
-      RETURN STRING{ '*', (INT) dwLen }
+      RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
 
@@ -702,7 +702,7 @@ FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS FLOAT
 	VAR wSep   := SetDecimalSep()
 	LOCAL result AS FLOAT
 	IF wSep != 46 // .
-		c := c:Replace((CHAR) wSep, '.')
+		c := c:Replace((CHAR) wSep, c'.')
 	ENDIF
 	TRY
 		LOCAL r8 AS System.Double

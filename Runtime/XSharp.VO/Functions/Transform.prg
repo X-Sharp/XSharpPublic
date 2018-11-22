@@ -27,7 +27,7 @@ INTERNAL STATIC CLASS TransFormHelpers
     STATIC METHOD SplitPict(cSayPicture AS STRING, cPic OUT STRING, cFunc OUT STRING) AS LOGIC
         LOCAL iFuncLen  AS INT
         cPic := cFunc := ""
-        IF cSayPicture:Length > 1 .AND. cSayPicture[0]  == '@'
+        IF cSayPicture:Length > 1 .AND. cSayPicture[0]  == c'@'
             iFuncLen := cSayPicture:IndexOf(" ") -1
             IF iFuncLen < 0
                 // No space delimiter so we assume the whole length
@@ -65,7 +65,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 IF wValueIdx > wValueLen
                     EXIT
                 ENDIF
-                IF TransFormHelpers.IsPictureLiteral('C', cSayPicture[ w]) 
+                IF TransFormHelpers.IsPictureLiteral(c'C', cSayPicture[ w]) 
                     LOOP
                 ENDIF
                 sb:Append(cValue[ wValueIdx-1])
@@ -115,7 +115,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         LOCAL cFunc 				AS STRING
         LOCAL cChar 				AS CHAR
         LOCAL cNumString			:= NULL_STRING	AS STRING
-        LOCAL cDecimal				:= '\0' AS CHAR
+        LOCAL cDecimal				:= c'\0' AS CHAR
         LOCAL cTempValue			:= "" AS STRING
         LOCAL cPic					:= "" AS STRING
         LOCAL wNegSignCnt			AS DWORD
@@ -231,10 +231,10 @@ INTERNAL STATIC CLASS TransFormHelpers
                     cNumString := ""
                     lDecimalfound := TRUE
                 ENDIF
-                IF !TransFormHelpers.IsPictureLiteral('N', cPic[(INT) w-1])
+                IF !TransFormHelpers.IsPictureLiteral(c'N', cPic[(INT) w-1])
                     IF Char.IsDigit(cChar)
                         cNumString += cChar
-                    ELSEIF cChar == '-'
+                    ELSEIF cChar == c'-'
                         lNegative := TRUE
                     ENDIF
                 ENDIF
@@ -354,32 +354,32 @@ INTERNAL STATIC CLASS TransFormHelpers
             VAR templChar := cTemplate[nTempl++]
             VAR srcChar   := cValue[nSrc]
             IF IsPictureLiteral(cType, templChar)
-                IF cType == 'N' .AND. templChar == '.'
+                IF cType == c'N' .AND. templChar == c'.'
                     // Decimal separator ?
-                    result[nDest++] := IIF(lBritish, ',', (CHAR) RuntimeState.DecimalSep)
+                    result[nDest++] := IIF(lBritish, c',', (CHAR) RuntimeState.DecimalSep)
                     nSrc++
                     
-                ELSEIF cType == 'N' .AND. templChar == ',' .AND. nDest > 0
+                ELSEIF cType == c'N' .AND. templChar == c',' .AND. nDest > 0
                     // Thousand separator ?
                     LOCAL cLast := result[nDest-1] AS CHAR
                     IF Char.IsDigit(cLast)
-                        result[nDest++] := IIF(lBritish, '.', (CHAR) RuntimeState.ThousandSep)
-                    ELSEIF cLast == '-' .OR. cLast == '+'
+                        result[nDest++] := IIF(lBritish, c'.', (CHAR) RuntimeState.ThousandSep)
+                    ELSEIF cLast == c'-' .OR. cLast == c'+'
                         // overwrite the + or minus sign with a space and set the sign at the place of the comma
-                        result[nDest-1] := ' '
+                        result[nDest-1] := c' '
                         result[nDest] := cLast
                         nDest++
                     ELSE
                         result[nDest++] := cLast
                     ENDIF
-                ELSEIF cType == 'L' .AND. templChar == 'Y'
-                    result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == 'T', cType == 'Y')
+                ELSEIF cType == c'L' .AND. templChar == c'Y'
+                    result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == c'T', cType == c'Y')
                     nSrc++
                 ELSE
                     // Normal template literal. For numeric or @R pictures no change to the src pointer
                     // otherwise increase src pointer
                     result[nDest++] := templChar
-                    IF nPictures:HasFlag(TransformPictures:NonTemplate) .OR. cType == 'N'
+                    IF nPictures:HasFlag(TransformPictures:NonTemplate) .OR. cType == c'N'
                         NOP
                     ELSE
                         nSrc++
@@ -388,24 +388,24 @@ INTERNAL STATIC CLASS TransFormHelpers
                 
             ELSE
                 // Non template char
-                IF templChar == 'Y' .OR. templChar == 'y'
-                    IF srcChar == 'T'
+                IF templChar == c'Y' .OR. templChar == c'y'
+                    IF srcChar == c'T'
                         result[nDest++] := TransformHelpers.GetLogicLiteral(TRUE, TRUE)
                     ELSE
                         result[nDest++] := TransformHelpers.GetLogicLiteral(FALSE, TRUE)
                     ENDIF
                     nSrc++
-                ELSEIF srcChar == ' ' .AND. (templChar == '*' .OR. templChar == '$')
+                ELSEIF srcChar == c' ' .AND. (templChar == c'*' .OR. templChar == c'$')
                     result[nDest++] := templChar
                     nSrc++
                 ELSE
-                    IF lBritish .AND. cType == 'N' .AND. srcChar == '.'
-                        result[nDest++] := ','
+                    IF lBritish .AND. cType == c'N' .AND. srcChar == c'.'
+                        result[nDest++] := c','
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:Upper) .OR. templChar == '!'
+                    ELSEIF nPictures:HasFlag(TransformPictures:Upper) .OR. templChar == c'!'
                         result[nDest++] := Char.ToUpper(srcChar)
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransFormPictures:ZeroBlank) .AND. cType == 'N' .AND. srcChar == '0'
+                    ELSEIF nPictures:HasFlag(TransFormPictures:ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
                         LOCAL lHasDig := FALSE AS LOGIC
                         FOR VAR x := 0 TO nDest
                             IF Char.IsDigit(result[x])
@@ -416,11 +416,11 @@ INTERNAL STATIC CLASS TransFormHelpers
                         IF lHasDig
                             result[nDest++] := srcChar
                         ELSE
-                            result[nDest++] := ' '
+                            result[nDest++] := c' '
                         ENDIF
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransFormPictures:YesNo) .AND. cType == 'L'
-                        result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == 'T', TRUE)
+                    ELSEIF nPictures:HasFlag(TransFormPictures:YesNo) .AND. cType == c'L'
+                        result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == c'T', TRUE)
                         nSrc++
                     ELSE
                         result[nDest++] := srcChar
@@ -430,13 +430,13 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
         ENDDO
         // any remaining templ chars can be copied to the end of the string
-        IF nPictures:HasFlag(TransFormPictures:NonTemplate) .OR. cType == 'N'
+        IF nPictures:HasFlag(TransFormPictures:NonTemplate) .OR. cType == c'N'
             DO WHILE nTempl < nDestLen .AND. nDest <= nDestLen - __ARRAYBASE__
                 VAR templChar := cTemplate[nTempl++]
                 IF IsPictureLiteral(cType,templChar)
                     result[nDest++] := templChar
                 ELSE
-                    result[nDest++] := ' '
+                    result[nDest++] := c' '
                 ENDIF
             ENDDO
         ENDIF
@@ -448,9 +448,9 @@ INTERNAL STATIC CLASS TransFormHelpers
         LOCAL cTemplate AS STRING
         cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT nPicFunc )
         IF String.IsNullOrEmpty(cTemplate)
-            cTemplate := System.String{'#', cValue:Length}
+            cTemplate := System.String{c'#', cValue:Length}
         ENDIF
-        RETURN TransformHelpers.MergeValueAndTemplate('C', cValue, cTemplate, nPicFunc)
+        RETURN TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
         
     STATIC METHOD TransformL( lValue AS LOGIC, cPicture AS STRING ) AS STRING
         LOCAL nPicFunc AS TransformPictures
@@ -465,7 +465,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 cTemplate := "L"
             ENDIF
         ENDIF
-        RETURN TransformHelpers.MergeValueAndTemplate('L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
+        RETURN TransformHelpers.MergeValueAndTemplate(c'L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
         
         
         
@@ -500,43 +500,43 @@ INTERNAL STATIC CLASS TransFormHelpers
         ENDIF
         cTemplate := cTemplate:Replace("D","9"):Replace("M","9"):Replace("Y","9")
         cValue := DToC(dValue)
-        RETURN TransformHelpers.MergeValueAndTemplate('D', cValue, cTemplate, nPicFunc)
+        RETURN TransformHelpers.MergeValueAndTemplate(c'D', cValue, cTemplate, nPicFunc)
         
         // check if the character is a valid literal character or a template character
     STATIC METHOD IsPictureLiteral(cType AS CHAR, cChar AS CHAR) AS LOGIC 
         SWITCH Char.ToUpper(cType)
-            CASE 'D'
-            CASE 'N'
+            CASE c'D'
+            CASE c'N'
                 SWITCH Char.ToUpper(cChar)
-                CASE '9'
-                CASE '#'
-                CASE '*'
-                CASE '$' 
+                CASE c'9'
+                CASE c'#'
+                CASE c'*'
+                CASE c'$' 
                     RETURN FALSE
                 OTHERWISE
                     RETURN TRUE
             END SWITCH
-            CASE 'L'
+            CASE c'L'
                 SWITCH Char.ToUpper(cChar)
-                CASE 'L'
-                CASE '#'
-                CASE 'Y'
+                CASE c'L'
+                CASE c'#'
+                CASE c'Y'
                     RETURN FALSE
                 OTHERWISE
                     RETURN TRUE
                 END SWITCH
                 
-            CASE 'C'
+            CASE c'C'
             OTHERWISE
                 SWITCH Char.ToUpper(cChar)
-                CASE '9'
-                CASE '#'
-                CASE 'A'
-                CASE 'L'
-                CASE 'N'
-                CASE 'X'
-                CASE 'Y'
-                CASE '!'
+                CASE c'9'
+                CASE c'#'
+                CASE c'A'
+                CASE c'L'
+                CASE c'N'
+                CASE c'X'
+                CASE c'Y'
+                CASE c'!'
                     RETURN FALSE
                 OTHERWISE
                     RETURN TRUE
@@ -567,10 +567,10 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         // when no template is provided, created one the way VO does
         IF cTemplate:Length == 0
-            cTemplate := System.String{'#' , IIF(nValue < 10000000000 , 10 , 20) }
+            cTemplate := System.String{c'#' , IIF(nValue < 10000000000 , 10 , 20) }
             IF lIsFloat
                 IF nValue:Decimals != 0
-                    cTemplate += "." + System.String{'9' , nValue:Decimals}
+                    cTemplate += "." + System.String{c'9' , nValue:Decimals}
                 END IF
             END IF
         ENDIF
@@ -579,13 +579,13 @@ INTERNAL STATIC CLASS TransFormHelpers
         lWhole := TRUE
         
         FOREACH VAR cChar IN cTemplate
-            IF !IsPictureLiteral('N', cChar)
+            IF !IsPictureLiteral(c'N', cChar)
                 IF lWhole
                     nWhole ++
                 ELSE
                     nDecimal ++
                 ENDIF
-            ELSEIF cChar == '.'
+            ELSEIF cChar == c'.'
                 IF lWhole
                     lWhole := FALSE
                 ELSE
@@ -653,7 +653,7 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
         ENDIF	
         // Map result string back to the original template
-        cReturn := MergeValueAndTemplate( 'N', cReturn, cTemplate, nPicFunc)
+        cReturn := MergeValueAndTemplate( c'N', cReturn, cTemplate, nPicFunc)
         // add special functions
         IF nValue < 0
             IF  nPicFunc:HasFlag( TransformPictures.ParenLeft ) 
@@ -667,7 +667,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                     nLen --
                 END IF
                 cTemp := "(" + cTemp + ")"
-                cReturn := cTemp:PadLeft(cReturn:Length,' ')
+                cReturn := cTemp:PadLeft(cReturn:Length,c' ')
             END IF
         END IF
         
@@ -683,9 +683,9 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
         ENDIF
         
-        IF  nPicFunc:HasFlag( TransformPictures.Left )  .AND. cReturn[0] == ' '
+        IF  nPicFunc:HasFlag( TransformPictures.Left )  .AND. cReturn[0] == c' '
             nLen	:= cReturn:Length
-            cReturn := cReturn:TrimStart():PadRight( nLen,' ')
+            cReturn := cReturn:TrimStart():PadRight( nLen,c' ')
         ENDIF
         
         RETURN cReturn
@@ -695,7 +695,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         LOCAL done := FALSE AS LOGIC
         nPicFunc  := TransformPictures.None
         
-        IF cPicture:Length > 1 .AND. cPicture[0] == '@'
+        IF cPicture:Length > 1 .AND. cPicture[0] == c'@'
             VAR nIndex := cPicture:IndexOf(" ")
             IF nIndex > 0
                 cTemplate := cPicture:Substring(nIndex+1)
@@ -706,30 +706,30 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
             FOREACH cChar AS CHAR IN cPicture
                 SWITCH cChar
-        CASE 'B' ; CASE 'b'
+        CASE c'B' ; CASE c'b'
                 nPicFunc |= TransformPictures.Left
-        CASE 'C' ; CASE 'c'
+        CASE c'C' ; CASE c'c'
                 nPicFunc |= TransformPictures.Credit
-        CASE 'D' ; CASE 'd'
+        CASE c'D' ; CASE c'd'
                 nPicFunc |= TransformPictures.Date
-        CASE 'E' ; CASE 'e'
+        CASE c'E' ; CASE c'e'
                 nPicFunc |= TransformPictures.British
-        CASE 'R' ; CASE 'r'
+        CASE c'R' ; CASE c'r'
                 nPicFunc |= TransformPictures.NonTemplate
-        CASE 'X' ; CASE 'x'
+        CASE c'X' ; CASE c'x'
                 nPicFunc |= TransformPictures.Debit
-        CASE 'Z' ; CASE 'z'
+        CASE c'Z' ; CASE c'z'
                     nPicFunc |= TransformPictures.ZeroBlank
-                CASE '('
+                CASE c'('
                     nPicFunc |= TransformPictures.ParenLeft
-                CASE ')'
+                CASE c')'
                     nPicFunc |= TransformPictures.ParenRight
-                CASE '!'
+                CASE c'!'
                 nPicFunc |= TransformPictures.Upper
-        CASE 'Y'; CASE 'y'
+        CASE c'Y'; CASE c'y'
                     nPicFunc |= TransformPictures.YesNo
-                CASE ' '
-                CASE '\t'
+                CASE c' '
+                CASE c'\t'
                     done := TRUE
                 OTHERWISE
                     cTemplate += cChar:ToString()            
@@ -813,13 +813,13 @@ ENDIF
 cType		:= Upper(Left(cType, 1))
 cSayPicture := Upper( cSayPicture )
 SWITCH cType[0]
-CASE 'N'
+CASE c'N'
     uRetVal := TransFormHelpers.UnformatN(cValue, cSayPicture, lNullable)
-CASE 'C'
+CASE c'C'
     uRetVal := TransFormHelpers.UnformatC(cValue, cSayPicture, lNullable)
-CASE 'L'
+CASE c'L'
     uRetVal := TransFormHelpers.UnformatL(cValue, cSayPicture, lNullable)
-CASE 'D'
+CASE c'D'
     uRetVal := TransFormHelpers.UnformatD(cValue, cSayPicture, lNullable)
 OTHERWISE
     uRetVal := NIL

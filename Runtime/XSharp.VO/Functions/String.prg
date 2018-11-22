@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -210,7 +210,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    LOCAL sbRet AS StringBuilder
    sbRet := StringBuilder{ iSize }
-   sbRet:Append( '\0', iSize )		// fill with chr(0)
+   sbRet:Append( c'\0', iSize )		// fill with chr(0)
 
    LOCAL iSrcPos := 0 AS INT
    LOCAL iFound  := 0 AS INT
@@ -341,10 +341,10 @@ FUNCTION EmptyString (s AS STRING) AS LOGIC
 	IF !String.IsNullOrEmpty(s)
 		FOREACH c AS CHAR IN s
 			SWITCH c
-			CASE '\r'
-			CASE '\n'
-			CASE '\t'
-			CASE ' '
+			CASE c'\r'
+			CASE c'\n'
+			CASE c'\t'
+			CASE c' '
 				NOP
 			OTHERWISE
 				RETURN FALSE

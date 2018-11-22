@@ -72,5 +72,12 @@ BEGIN NAMESPACE XSharp
 		/// <returns>A compiled codeblock</returns>
 		/// <seealso cref="T:XSharp.ICodeBlock"/>
 		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
-	END INTERFACE
+    END INTERFACE
+
+	/// <summary>
+	/// This interface must be implemented by objects that register themselves for DB Notifications
+	/// </summary>
+    INTERFACE IDbNotify
+        METHOD Notify(nEvent as LONG, nNotification as LONG) AS VOID
+    END INTERFACE 
 END NAMESPACE

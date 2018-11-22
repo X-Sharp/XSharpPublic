@@ -111,6 +111,10 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING, lSelf AS LOGIC ) AS MethodInfo
 		LOCAL oMI := NULL AS MethodInfo
 		
+		IF t == NULL .or. String.IsNullOrEmpty(cName)
+			RETURN NULL
+		END IF
+		
 		TRY
 			oMI := t:GetMethod(cName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public | iif(lSelf, BindingFlags.NonPublic, BindingFlags.Public) ) 
 		CATCH AS System.Reflection.AmbiguousMatchException

@@ -155,6 +155,16 @@ namespace XSharp.Build
             set { base.Bag[nameof(VO16)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(VO16), false); }
         }
+        public Boolean XPP1
+        {
+            set { base.Bag[nameof(XPP1)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(XPP1), false); }
+        }
+        public Boolean XPP2
+        {
+            set { base.Bag[nameof(XPP2)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(XPP2), false); }
+        }
         public String CompilerPath
         {
             set { base.Bag[nameof(CompilerPath)] = value; }
@@ -663,6 +673,8 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
             commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
             commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
+            commandline.AppendPlusOrMinusSwitch("/xpp1", base.Bag, nameof(XPP1));
+            commandline.AppendPlusOrMinusSwitch("/xpp2", base.Bag, nameof(XPP2));
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
             if (!String.IsNullOrEmpty(this.CommandLineOption))

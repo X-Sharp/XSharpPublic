@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -1399,14 +1399,14 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long
                     SWITCH (rhs:_usualType)
                     CASE __UsualType.Long		; RETURN lhs:_intValue & rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN (INT64) lhs:_intValue & rhs:_i64Value
-                        OTHERWISE					; NOP // error below
-                        END SWITCH
+                    CASE __UsualType.Int64		; RETURN (INT64) lhs:_intValue & rhs:_i64Value
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
                 CASE __UsualType.Int64
                     SWITCH (rhs:_usualType)
-                        CASE __UsualType.Long		; RETURN lhs:_i64Value & (INT64) rhs:_intValue
-                    CASE __UsualType.Int64	; RETURN  lhs:_i64Value & rhs:_i64Value
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_i64Value & (INT64) rhs:_intValue
+                    CASE __UsualType.Int64	    ; RETURN  lhs:_i64Value & rhs:_i64Value
+                    OTHERWISE					; NOP // error below
                         END SWITCH
                 OTHERWISE
                     THROW BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), TRUE, lhs, rhs)

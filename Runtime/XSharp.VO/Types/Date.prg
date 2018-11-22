@@ -77,10 +77,10 @@ BEGIN NAMESPACE XSharp
 				_NULL_DATE  := DATE{}
 				_dtCalc     := DateTime{1901,1,1}
 				RETURN       
-			
 			/// <summary>Construct a date from a DateTime value.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(dt AS System.DateTime)
+                _ymd := _year := _month := _day := 0
                 if dt != DateTime.MinValue
 				    _year  := (WORD) dt:Year
 				    _month := (BYTE) dt:Month
@@ -93,6 +93,7 @@ BEGIN NAMESPACE XSharp
 			/// <summary>Construct a date from another IDate type.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(d AS IDate)
+                _ymd := 0
 				_year  := (WORD) d:Year
 				_month := (BYTE) d:Month
 				_day   := (BYTE) d:Day
@@ -108,17 +109,20 @@ BEGIN NAMESPACE XSharp
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(strDate AS STRING)
 				LOCAL dValue := CToD(strDate) AS DATE
+                _year := _month := _day := 0
 				_ymd := dValue:_ymd
 
 			/// <summary>Construct a date from a string using the specified Date Format.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(strDate AS STRING, strFormat AS STRING)
 				LOCAL dValue := CToD(strDate,strFormat) AS DATE
+                _year := _month := _day := 0
 				_ymd := dValue:_ymd
 			
 			/// <summary>Construct a date from year, month, day </summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 			CONSTRUCTOR(year AS INT, month AS INT, day AS INT)
+                _ymd := _year := _month := _day := 0
                 IF year != 0 .AND. month != 0 .AND. day != 0
 				    TRY
 					    // this may throw an exception when the combination is not valid

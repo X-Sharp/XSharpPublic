@@ -14,6 +14,7 @@
     <Rule.Categories>
       <Category Name="General"        DisplayName="General"/>
       <Category Name="Compatibility"  DisplayName="VO/Vulcan Compatibility"/>
+      <Category Name="XPPCompatibility"  DisplayName="Xbase++ Compatibility"/>
       <Category Name="NS"             DisplayName="Namespaces"/>
       <Category Name="Preprocessor"   DisplayName="Preprocessor"/>
     </Rule.Categories>
@@ -42,6 +43,8 @@
     <BoolProperty   Category="Compatibility" Name="VO13"                DisplayName="Compatible String Comparisons"               Visible="True" Description="Compatible string comparisons (respects SetExact and collation table) /vo13"  Default="False" Switch="vo13"/>
     <BoolProperty   Category="Compatibility" Name="VO14"                DisplayName="Use Float Literals"                          Visible="True" Description="Store floating point literals as FLOAT and not as System.Double (REAL8)  /vo14"  Default="False" Switch="vo14"/>
     <BoolProperty   Category="Compatibility" Name="VO15"                DisplayName="Treat missing types as USUAL"                Visible="True" Description="Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE  (/vo15)"  Default="True" Switch="vo15"/>
+    <BoolProperty   Category="Compatibility" Name="VO16"                DisplayName="Generate Clipper constructors"               Visible="True" Description="Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)"  Default="False" Switch="vo16"/>
+    <BoolProperty   Category="XPPCompatibility" Name="XPP1"             DisplayName="Inherit from Abstract class"                 Visible="True" Description="All classes without parent class inherit from the XPP Abstract class.(/xpp1)"  Default="False" Switch="xpp1"/>
     <BoolProperty   Category="Preprocessor"  Name="PPO"                 DisplayName="Generate preprocessor output"                Visible="True" Description="Save the output from the preprocessor to .ppo files  (/ppo)"  Default="False" Switch="ppo"/>
     <StringProperty Category="Preprocessor"  Name="DefineConstants"     DisplayName="Defines for the preprocessor"                Visible="True" Description="Defines for the preprocessor (/d)"  Default="" Switch="d"/>
     <StringProperty Category="Preprocessor"  Name="IncludePaths"        DisplayName="Additional Include paths"                    Visible="True" Description="Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable) (/i)"  Default="" Switch="i"/>

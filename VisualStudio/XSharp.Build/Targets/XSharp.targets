@@ -298,6 +298,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    VO14="$(VO14)"
 	    VO15="$(VO15)"
 	    VO16="$(VO16)" 
+	    XPP1="$(XPP1)" 
+	    XPP2="$(XPP2)" 
     />
 
     <ItemGroup>

@@ -47,9 +47,9 @@
         <EnumValue Name="VO"        DisplayName="Visual Objects" />
         <EnumValue Name="Vulcan"    DisplayName="Vulcan.NET" />
         <EnumValue Name="Harbour"   DisplayName="Harbour" />
-        <EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
-        <EnumValue Name="dBase"     DisplayName="dBase" />
-        <EnumValue Name="XBasepp"   DisplayName="Xbase++" />
+        <EnumValue Name="Xpp"       DisplayName="Xbase++" />
+        <!--<EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
+        <EnumValue Name="dBase"     DisplayName="dBase" />-->
         <!--<EnumProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </EnumProperty.DataSource>-->

@@ -144,15 +144,15 @@ namespace XSharp.Project.Editors.BraceMatching
                     var member = XSharpTokenTools.FindMemberAtPosition(currentChar.Position, xfile);
                     if (member != null)
                     {
-                        offset = member.Interval.Start;
-                        var length = member.Interval.Width;
-                        if (offset + length > currentChar.Snapshot.Length)
-                        {
-                            length = currentChar.Snapshot.Length - offset;
-                        }
-                        //
                         try
                         {
+                            offset = member.Interval.Start;
+                            var length = member.Interval.Width;
+                            if (offset + length > currentChar.Snapshot.Length)
+                            {
+                                length = currentChar.Snapshot.Length - offset;
+                            }
+                            //
                             string text = currentChar.Snapshot.GetText(offset, length);
                             var reporter = new ErrorIgnorer();
                             ITokenStream tokenStream;
@@ -191,8 +191,8 @@ namespace XSharp.Project.Editors.BraceMatching
             else if (m_braceList.ContainsValue(lastText))    //the value is the close brace, which is the *previous* character
             {
                 var open = from n in m_braceList
-                            where n.Value.Equals(lastText)
-                            select n.Key;
+                           where n.Value.Equals(lastText)
+                           select n.Key;
                 if (BraceMatchingTagger.FindMatchingOpenChar(lastChar, (char)open.ElementAt<char>(0), lastText, out pairSpan, tokens, offset) == true)
                 {
                     yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(lastChar, 1), new TextMarkerTag("blue"));
@@ -209,7 +209,7 @@ namespace XSharp.Project.Editors.BraceMatching
                     xsClassifier = SourceBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
                 }
 
-                if (xsClassifier != null )
+                if (xsClassifier != null)
                 {
 
                     ITextSnapshot snapshot = xsClassifier.Snapshot;
@@ -330,7 +330,7 @@ namespace XSharp.Project.Editors.BraceMatching
         private static int findtokeninList(IList<IToken> tokens, int startpos)
         {
             int min = 0;
-            int max = tokens.Count-1;
+            int max = tokens.Count - 1;
             bool found = false;
             IToken token = null;
             int tokenpos = -1;
@@ -352,7 +352,7 @@ namespace XSharp.Project.Editors.BraceMatching
                 {
                     max = tokenpos;
                 }
-                if (min == max -1)
+                if (min == max - 1)
                 {
                     token = tokens[min];
                     if (token.StartIndex <= startpos && token.StopIndex >= startpos)
@@ -373,7 +373,7 @@ namespace XSharp.Project.Editors.BraceMatching
                     break;
                 }
             }
-            if (found )
+            if (found)
                 return tokenpos;
             return -1;
         }
@@ -386,7 +386,7 @@ namespace XSharp.Project.Editors.BraceMatching
                 int startpos = startPoint.Position;
                 if (tokens != null)
                 {
-                    int tokenpos = findtokeninList(tokens, startpos-offset);
+                    int tokenpos = findtokeninList(tokens, startpos - offset);
                     if (tokenpos == -1)
                         return false;
                     IToken token = tokens[tokenpos];
@@ -394,7 +394,7 @@ namespace XSharp.Project.Editors.BraceMatching
                     if (!XSharpLexer.IsOperator(token.Type))
                         return false;
                     int openCount = 0;
-                    for (int i = tokenpos+1; i < tokens.Count; i++)
+                    for (int i = tokenpos + 1; i < tokens.Count; i++)
                     {
                         token = tokens[i];
                         if (XSharpLexer.IsOperator(token.Type))
@@ -425,7 +425,7 @@ namespace XSharp.Project.Editors.BraceMatching
             return false;
         }
 
-        private static bool FindMatchingOpenChar(SnapshotPoint startPoint, char open, char close, out SnapshotSpan pairSpan,IList<IToken> tokens, int offset)
+        private static bool FindMatchingOpenChar(SnapshotPoint startPoint, char open, char close, out SnapshotSpan pairSpan, IList<IToken> tokens, int offset)
         {
             pairSpan = new SnapshotSpan(startPoint, startPoint);
             try
@@ -456,7 +456,7 @@ namespace XSharp.Project.Editors.BraceMatching
                                     closeCount--;
                                 else
                                 {
-                                    pairSpan = new SnapshotSpan(startPoint.Snapshot, token.StartIndex+offset, 1);
+                                    pairSpan = new SnapshotSpan(startPoint.Snapshot, token.StartIndex + offset, 1);
                                     return true;
                                 }
                             }

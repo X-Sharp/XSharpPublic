@@ -132,9 +132,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // our runtime DLLs have a fixed Globals Class name
             if (targetDLL != XSharpTargetDLL.Other)
             {
-                case XSharpTargetDLL.Core:
-                case XSharpTargetDLL.VO:
-                case XSharpTargetDLL.RDD:
                     return base.GetGlobalClassName(targetDLL);
             }
             string name = _options.CommandLineArguments?.CompilationOptions.ModuleName;

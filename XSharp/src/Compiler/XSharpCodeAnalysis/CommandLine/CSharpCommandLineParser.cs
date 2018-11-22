@@ -323,19 +323,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
             {
-                case OurAssemblyNames.VulcanRTFuncs:
+                case VulcanAssemblyNames.VulcanRTFuncs:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
                     break;
-                case OurAssemblyNames.VulcanRT:
+                case VulcanAssemblyNames.VulcanRT:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
                     break;
-                case OurAssemblyNames.XSharpCore:
+                case XSharpAssemblyNames.XSharpCore:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
                     break;
-                case OurAssemblyNames.XSharpVO:
+                case XSharpAssemblyNames.XSharpVO:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
                     break;
-                case OurAssemblyNames.XSharpXPP:
+                case XSharpAssemblyNames.XSharpXPP:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
                     break;
                 case "mscorlib":
@@ -424,7 +424,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!options.NamedArgsHasBeenSet)
                     options.AllowNamedArguments = false;
             }
-            if (options.Dialect.HasRuntime()) {
+            if (newDialect == XSharpDialect.XPP && options.TargetDLL == XSharpTargetDLL.XPP)
+            { 
+                newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
+            }
+            if (newDialect.HasRuntime()) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
                     isVo = true;

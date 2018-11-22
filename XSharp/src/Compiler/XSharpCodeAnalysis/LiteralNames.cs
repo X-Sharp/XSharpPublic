@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Error = "global::Vulcan.Error";
         internal const string ClassLibrary = "global::Vulcan.Internal.VulcanClassLibraryAttribute";
         internal const string CompilerVersion = "global::Vulcan.Internal.VulcanCompilerVersion";
-        internal const string IsVoInstance = "global::Vulcan.Internal.IsVOInstanceAttribute";
+        internal const string IsInstance = "global::Vulcan.Internal.IsVOInstanceAttribute";
     }
 
     internal static class XSharpQualifiedTypeNames
@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Error = "global::XSharp.Error";
         internal const string ClassLibrary = "global::XSharp.Internal.ClassLibraryAttribute";
         internal const string CompilerVersion = "global::XSharp.Internal.CompilerVersion";
-        internal const string IsVoInstance = "global::XSharp.Internal.IsVOInstanceAttribute";
+        internal const string IsInstance = "global::XSharp.Internal.IsInstanceAttribute";
         internal const string XppAbstract = "global::XSharp.XPP.Abstract";
     }
     internal static class XSharpSpecialNames
@@ -187,11 +187,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Evaluate = "global::XSharp.VO.Functions.Evaluate";
     }
 
-    internal static class OurAssemblyNames
+    internal static class VulcanAssemblyNames
     {
         // please note that these MUST be lowercase !
         internal const string VulcanRT = "vulcanrt";
         internal const string VulcanRTFuncs = "vulcanrtfuncs";
+    }
+    internal static class XSharpAssemblyNames
+    {
+        // please note that these MUST be lowercase !
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpVO = "xsharp.vo";
         internal const string XSharpXPP = "xsharp.xpp";

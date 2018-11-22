@@ -3121,7 +3121,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var attr = _pool.Allocate<AttributeListSyntax>();
                         attr.AddRange(attributeList);
-                        GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsVoInstance : VulcanQualifiedTypeNames.IsVoInstance);
+                        GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsInstance : VulcanQualifiedTypeNames.IsInstance);
                         attributeList = attr.ToList();
                         _pool.Free(attr);
                     }

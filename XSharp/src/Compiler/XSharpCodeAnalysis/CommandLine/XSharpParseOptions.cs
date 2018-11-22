@@ -94,7 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public string DefaultNamespace { get; private set; }
-        public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
+        public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);

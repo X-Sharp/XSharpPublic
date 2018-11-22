@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoClipCall { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
 
-        public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
+        public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }

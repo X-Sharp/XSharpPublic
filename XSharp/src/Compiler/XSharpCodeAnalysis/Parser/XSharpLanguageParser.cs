@@ -414,7 +414,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.IncludedFiles = pp?.IncludedFiles;
                     result.HasPCall = treeTransform.GlobalEntities.HasPCall;
                     result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
-                    if (_options.IsDialectVO)
+                    if (_options.HasRuntime)
                     {
                         result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
                         result.LiteralPSZs = ((XSharpVOTreeTransformation)treeTransform).LiteralPSZs;
@@ -673,7 +673,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-                if (_options.IsDialectVO) 
+                if (_options.HasRuntime) 
                 {
                     if (compilationunit.LiteralSymbols.Count > 0)
                     {

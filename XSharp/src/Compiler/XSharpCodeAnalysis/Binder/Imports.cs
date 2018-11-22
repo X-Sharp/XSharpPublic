@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (opts.CommandLineArguments != null)
                 {
                     string functionsClass = null;
-                    if (compilation.Options.IsDialectVO )
+                    if (compilation.Options.HasRuntime )
                     {
                         functionsClass = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(opts);
                     }

@@ -2122,7 +2122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var membersAndInitializers = GetMembersAndInitializers();
 
 #if XSHARP
-            if ((this as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true && DeclaringCompilation.Options.IsDialectVO)
+            if ((this as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true && DeclaringCompilation.Options.HasRuntime)
             {
                 foreach (var m in membersAndInitializers.NonTypeNonIndexerMembers)
                 {

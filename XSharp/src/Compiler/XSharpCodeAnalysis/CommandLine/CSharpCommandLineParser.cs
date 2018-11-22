@@ -424,7 +424,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!options.NamedArgsHasBeenSet)
                     options.AllowNamedArguments = false;
             }
-            if (options.Dialect.IsDialectVO()) {
+            if (options.Dialect.HasRuntime()) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
                     isVo = true;

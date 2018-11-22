@@ -1075,7 +1075,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool typeHasErrors = type.IsErrorType();
 #if XSHARP
-            if (!typeHasErrors && type.IsManagedType && ! Compilation.Options.IsDialectVO)
+            if (!typeHasErrors && type.IsManagedType && ! Compilation.Options.HasRuntime)
 #else
             if (!typeHasErrors && type.IsManagedType)
 #endif
@@ -3216,7 +3216,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 #if XSHARP
             bool voDefaultCtorCall = false;
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 if ((containingType.TypeKind == TypeKind.Class) && initializerArgumentListOpt == null && !constructor.IsImplicitConstructor)
                 {

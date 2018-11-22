@@ -824,7 +824,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.DynamicMemberAccess:
                     var dynamicMemberAccess = (BoundDynamicMemberAccess)transformedExpression;
 #if XSHARP
-                    if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !dynamicMemberAccess.Receiver.HasDynamicType())
+                    if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !dynamicMemberAccess.Receiver.HasDynamicType())
                     {
                         return MakeVODynamicGetMember(dynamicMemberAccess.Receiver, dynamicMemberAccess.Name);
                     }

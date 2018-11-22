@@ -2289,7 +2289,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                     body: MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))));
             }
-            /*if (_options.IsDialectVO)
+            /*if (_options.HasRuntime)
             {
                 var decl = GenerateLocalDecl("$result", _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("CODEBLOCK")), e);
                 GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(decl));
@@ -3113,7 +3113,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC)  expected"));
                 }
-                else if (_options.IsDialectVO)
+                else if (_options.HasRuntime)
                 {
 
                     bool isInstance = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.INSTANCE);
@@ -4799,7 +4799,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.InitExit != null)
             {
-                if (_options.IsDialectVO)
+                if (_options.HasRuntime)
                 {
                     if (context?.Params?.Count > 0)
                     {
@@ -6684,7 +6684,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return true;
                 }
             }
-            if (_options.IsDialectVO)
+            if (_options.HasRuntime)
             {
                context.Put(GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList));
             }
@@ -6939,7 +6939,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Syntax then there is no need to explicitely add the Checked
             // for example C578: 
             // DEFINE d2 := unchecked ((WORD) -1)
-            if (_options.IsDialectVO  && _options.TargetDLL  == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))
+            if (_options.HasRuntime  && _options.TargetDLL  == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))
             {
                 expr = MakeChecked(expr, _options.Overflow);
             }

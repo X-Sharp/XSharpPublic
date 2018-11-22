@@ -228,7 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
                                 // No warnings for duplicate usings in XSharp VO Dialect or for generated code
-                                if (!declarationSyntax.XGenerated && !compilation.Options.IsDialectVO)
+                                if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime)
 #endif
                                     // No warnings for duplicate usings in XSharp
                                     diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, imported);
@@ -253,7 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
 #if XSHARP
                                     // No warnings for duplicate usings in XSharp VO Dialect or for generated code
-                                    if (!declarationSyntax.XGenerated && !compilation.Options.IsDialectVO) 
+                                    if (!declarationSyntax.XGenerated && !compilation.Options.HasRuntime) 
 #endif
                                         diagnostics.Add(ErrorCode.WRN_DuplicateUsing, usingDirective.Name.Location, importedType);
                                 }

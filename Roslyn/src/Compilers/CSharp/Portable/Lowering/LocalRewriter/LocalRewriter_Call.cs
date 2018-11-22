@@ -75,7 +75,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // delegate invocation
                     var loweredExpression = VisitExpression(node.Expression);
 #if XSHARP
-                    if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredExpression.HasDynamicType())
+                    if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredExpression.HasDynamicType())
                     {
                         return MakeVODynamicInvokeMember(loweredExpression, "Invoke", loweredArguments);
                     }
@@ -85,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(loweredReceiver != null);
 #if XSHARP
-            if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+            if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
             {
                 return MakeVODynamicInvokeMember(loweredReceiver, name, loweredArguments);
             }
@@ -409,7 +409,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
 #if XSHARP
-            if (!_compilation.Options.IsDialectVO)
+            if (!_compilation.Options.HasRuntime)
 #endif
             if (methodOrIndexer.GetIsVararg())
             {
@@ -430,7 +430,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             rewrittenArguments = _factory.MakeTempsForDiscardArguments(rewrittenArguments, temporariesBuilder);
 
 #if XSHARP
-            if (!_compilation.Options.IsDialectVO)
+            if (!_compilation.Options.HasRuntime)
 #endif
             if (rewrittenArguments.Length == methodOrIndexer.GetParameterCount() &&
                 argsToParamsOpt.IsDefault &&
@@ -1228,7 +1228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node.TypeArgumentsOpt.IsDefault);
             var loweredReceiver = VisitExpression(node.Receiver);
 #if XSHARP
-            if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+            if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
             {
                 return MakeVODynamicGetMember(loweredReceiver, node.Name);
             }

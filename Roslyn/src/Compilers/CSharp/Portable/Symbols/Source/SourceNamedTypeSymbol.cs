@@ -1115,7 +1115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 #if XSHARP
 
-            if (_isVoStructOrUnion && DeclaringCompilation.Options.IsDialectVO)
+            if (_isVoStructOrUnion && DeclaringCompilation.Options.HasRuntime)
             {
                 AddSynthesizedAttribute(ref attributes, GetVoStructAttributeData());
             }

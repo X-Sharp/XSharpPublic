@@ -182,7 +182,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Dynamic type will be erased in emit phase. It is considered equivalent to Object in lowered bound trees.
 #if XSHARP
             Debug.Assert(visited == null || visited.HasErrors || ReferenceEquals(visited.Type, node.Type) || visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames)
-                ||  (_compilation.Options.IsDialectVO && node?.Type == _compilation.UsualType()));
+                ||  (_compilation.Options.HasRuntime && node?.Type == _compilation.UsualType()));
 #else
             Debug.Assert(visited == null || visited.HasErrors || ReferenceEquals(visited.Type, node.Type) ||
                     visited.Type.Equals(node.Type, TypeCompareKind.IgnoreDynamicAndTupleNames));

@@ -403,7 +403,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (elementType.IsManagedType)
                         {
 #if XSHARP
-                            if ( Compilation.Options.IsDialectVO &&  Compilation.Options.AllowUnsafe)
+                            if ( Compilation.Options.HasRuntime &&  Compilation.Options.AllowUnsafe)
                             {
                                 ; // Ok, let's hope they know what they are doing....
                             }

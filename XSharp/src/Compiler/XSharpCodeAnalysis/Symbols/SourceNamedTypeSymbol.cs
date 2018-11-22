@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private void EvalVoStructMemberSizes()
         {
-            if (_isVoStructOrUnion && DeclaringCompilation.Options.IsDialectVO)
+            if (_isVoStructOrUnion && DeclaringCompilation.Options.HasRuntime)
             {
                 int voStructSize = 0;
                 int voStructElementSize = 0;

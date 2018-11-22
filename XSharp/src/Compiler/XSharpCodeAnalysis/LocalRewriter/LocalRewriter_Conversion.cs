@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var nts = rewrittenOperand?.Type as NamedTypeSymbol;
 
-            if (_compilation.Options.IsDialectVO)
+            if (_compilation.Options.HasRuntime)
             {
                 var usualType = _compilation.UsualType();
                 if (nts != null)

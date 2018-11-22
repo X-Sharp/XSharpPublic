@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool ReportUnsafeIfNotAllowed(Location location, TypeSymbol sizeOfTypeOpt, DiagnosticBag diagnostics)
         {
 #if XSHARP 
-            var diagnosticInfo = Compilation.Options.IsDialectVO && Compilation.Options.AllowUnsafe  ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
+            var diagnosticInfo = Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe  ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
 #else
             var diagnosticInfo = GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
 #endif

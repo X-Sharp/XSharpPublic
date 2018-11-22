@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     public static class DialectExtensions
     {
-        public static bool IsDialectVO (this XSharpDialect dialect)
+        public static bool HasRuntime (this XSharpDialect dialect)
         {
             return dialect != XSharpDialect.Core;
         }

@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     Conversions conv = this as Conversions;
                     bool usePointer = source.IsPointerType();
-                    if (conv.Compilation.Options.IsDialectVO && target == conv.Compilation.UsualType())
+                    if (conv.Compilation.Options.HasRuntime && target == conv.Compilation.UsualType())
                     {
                         for( int i = 0; i < u.Length; i++)
                         {

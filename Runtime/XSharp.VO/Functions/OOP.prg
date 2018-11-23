@@ -1122,6 +1122,8 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT result)
 				RETURN result
 			ENDIF
+		ELSEIF aFuncs:Length == 0
+			RETURN NIL
 		ELSE
 			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF

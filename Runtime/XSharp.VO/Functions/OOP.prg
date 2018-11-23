@@ -541,12 +541,17 @@ FUNCTION ClassList() AS ARRAY
 	LOCAL classes    := ARRAY{} AS ARRAY
 	LOCAL assemblies := System.AppDomain.CurrentDomain:GetAssemblies() AS System.Reflection.Assembly[]
 	FOREACH assembly AS System.Reflection.Assembly IN assemblies
-		LOCAL types := assembly:GetTypes() AS System.Type[]
-		FOREACH type AS System.Type IN types
-			IF type:IsPublic
-				classes:Add(String2Symbol(type:Name))
-			ENDIF
-		NEXT
+		TRY
+			LOCAL types := assembly:GetTypes() AS System.Type[]
+			FOREACH type AS System.Type IN types
+				TRY
+					IF type:IsPublic
+						classes:Add(String2Symbol(type:Name))
+					ENDIF
+				END TRY
+			NEXT
+//		CATCH oEx AS ReflectionTypeLoadException
+		END TRY
 	NEXT
 	RETURN classes
 	

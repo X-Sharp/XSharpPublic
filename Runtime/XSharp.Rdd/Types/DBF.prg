@@ -1,4 +1,4 @@
-ï»¿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -765,7 +765,7 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 				LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 				// First, just the Header
-				SELF:_Header:HeaderLen := DbfHeader.SIZE + fieldDefSize + 1
+				SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE) + fieldDefSize + 1
 				SELF:_Header:isHot := TRUE
 				//
 				LOCAL codePage AS LONG
@@ -2359,8 +2359,8 @@ BEGIN NAMESPACE XSharp.RDD
 				For example, the value 0x03 indicates the table has a structural .cdx and a
 				Memo field.
 				29 	Code page mark
-				30 â€“ 31 	Reserved, contains 0x00
-				32 â€“ n 	Field subrecords
+				30 – 31 	Reserved, contains 0x00
+				32 – n 	Field subrecords
 				The number of fields determines the number of field subrecords.
 				One field subrecord exists for each field in the table.
 				n+1 			Header record terminator (0x0D)

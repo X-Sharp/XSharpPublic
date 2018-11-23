@@ -708,7 +708,7 @@ BEGIN NAMESPACE XSharpModel
 							_SetLineType(oStatementLine, LineType.Return)
 							oStatementLine:cArgument := NULL
 							state:lIgnore := TRUE
-						CASE lAllowEntityParse .AND. cChar == ',' .AND. (state:lField .OR. state:lLocal) .AND. state:lNameFound .AND. eStep != ParseStep.AfterAs .AND. eStep != ParseStep.AfterRef
+						CASE lAllowEntityParse .AND. cChar == ',' .AND. (state:lField .OR. state:lLocal) .AND. state:lNameFound .AND. .NOT. state:lInParams .AND. eStep != ParseStep.AfterAs .AND. eStep != ParseStep.AfterRef
 							IF nBracketCount == 0
 								state:lNameFound := FALSE
 								state:lEntityFound := FALSE

@@ -702,13 +702,22 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,cName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
 		RETURN FALSE
 	ENDIF
-	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
+	// this was a smarter implemenation, but has performance issues
+	// especially when cName is not found, as we cannot cache that
+/*	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
 	IF oType == NULL
 		RETURN FALSE
 	END IF
-	RETURN oType:IsAssignableFrom(oObject:GetType())
-	
-	
+	RETURN oType:IsAssignableFrom(oObject:GetType())*/
+	LOCAL oType AS Type
+	oType := oObject:GetType()
+	DO WHILE oType != NULL
+		IF String.Compare(oType:Name, cName, TRUE) == 0
+			RETURN TRUE
+		END IF
+		oType := oType:BaseType
+	END DO
+	RETURN FALSE
 	
 /// <summary>
 /// Determine if an object inside a Usual is an instance of a class.

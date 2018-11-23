@@ -46705,7 +46705,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C464 - Problem defining literal array in GLOBAL definition
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C465 - Compiler crash with untyped FUNCTION Start() *************
 Application = C465 - Compiler crash with untyped FUNCTION Start()
 IDEVersion = 1.06

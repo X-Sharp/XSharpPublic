@@ -153,6 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax _impliedType;
         protected string _fileName;
         protected bool _isScript;
+        protected string _entryPoint;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -169,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         static TypeSyntax ulongType = null;
         static TypeSyntax longType = null;
         static TypeSyntax stringType = null;
-        static object oGate = new object();
+        static readonly object oGate = new object();
         #endregion  
 
 
@@ -231,6 +232,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
+            _entryPoint = "Start";
+            initTypes();
         }
 
 
@@ -280,7 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Parent.Parent is XP.Namespace_Context)
                 return node;
             string name = context.Name;
-            if (string.Compare(this.GlobalClassName, 0,name+".",0,name.Length+1,StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(this.GlobalClassName, 0, name + ".", 0, name.Length + 1, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeNameMatchesGlobalNamespace, typeKind, name, GlobalClassName));
             }
@@ -360,7 +363,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     name += fc.Id.GetText();
                 if (name.Contains("."))
                 {
-                    name = modName + ":" + name.Substring(name.IndexOf(".")+1);
+                    name = modName + ":" + name.Substring(name.IndexOf(".") + 1);
                 }
 
                 RetType = fc.Type;
@@ -377,7 +380,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context is XP.ConstructorContext)
             {
-                var  cc = (XP.ConstructorContext)context;
+                var cc = (XP.ConstructorContext)context;
                 if (name.Length > 0) // Remove the dot
                     name = name.Substring(0, name.Length - 1);
                 suffix = ".CTOR";
@@ -569,18 +572,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface , bool inStructure )
+        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface, bool inStructure)
         {
             var rb = _pool.Allocate();
             if (!inInterface)
             {
                 rb.FixDefaultVisibility();
                 // structures do not get virtual or override modifiers
-                if (! inStructure)
+                if (!inStructure)
                 {
                     if (_options.VirtualInstanceMethods)
                         rb.FixDefaultVirtual();
-                    else 
+                    else
                         rb.FixDefaultMethod();
                 }
             }
@@ -615,7 +618,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<T> MakeList<T>(IEnumerable<IXParseTree> t) 
+        protected SyntaxList<T> MakeList<T>(IEnumerable<IXParseTree> t)
             where T : InternalSyntax.CSharpSyntaxNode
         {
             if (t == null)
@@ -636,7 +639,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
-        protected SyntaxList<T> MakeList<T>(IEnumerable<T> t, params T[] items) 
+        protected SyntaxList<T> MakeList<T>(IEnumerable<T> t, params T[] items)
             where T : InternalSyntax.CSharpSyntaxNode
         {
             var l = _pool.Allocate<T>();
@@ -760,27 +763,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
+        protected void initTypes()
+        {
+            lock (oGate)
+            {
+                if (intType == null)
+                {
+                    intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+                    uintType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
+                    floatType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
+                    doubleType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
+                    decimalType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
+                    stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                    ulongType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword));
+                    longType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
+                }
+
+
+            }
+        }
         protected virtual TypeSyntax GetExpressionType(XP.ExpressionContext expr, ref bool isConst)
         {
 
             TypeSyntax type = null;
-            if (intType == null)
-            {
-                lock (oGate)
-                {
-                    if (intType == null)
-                    {
-                        intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
-                        uintType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
-                        floatType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
-                        doubleType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
-                        decimalType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
-                        stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-                        ulongType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword));
-                        longType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
-                    }
-                }
-            }
             var token = expr.GetLiteralToken();
             isConst = false;
             if (token != null)
@@ -1653,8 +1658,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var outerMods = _pool.Allocate();
             int getVisLvl;
             int setVisLvl;
-            var AccMet = vop.DupAccess != null ? vop.DupAccess : vop.AccessMethodCtx;
-            var AssMet = vop.DupAssign != null ? vop.DupAssign : vop.AssignMethodCtx;
+            var AccMet = vop.DupAccess ?? vop.AccessMethodCtx;
+            var AssMet = vop.DupAssign ?? vop.AssignMethodCtx;
 
             if ((AccMet == null || AssMet == null ) && !mergePartialDeclarations)
             {
@@ -1672,7 +1677,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (cls.PartialProperties == null)
                             cls.PartialProperties = new List<XSharpParser.MethodContext>();
                                                 
-                        var met = AccMet != null ? AccMet : AssMet;
+                        var met = AccMet ?? AssMet;
                         cls.PartialProperties.Add(met);
                         if (met.CsNode == null)
                             met.CsNode = ((XP.ClsmethodContext)met.Parent).CsNode;
@@ -1960,8 +1965,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (mergePartialDeclarations)
                     {
-                        var a = new List<ArgumentSyntax>();
-                        a.Add(MakeArgument(GenerateSimpleName("value")));
+                        var a = new List<ArgumentSyntax>() { MakeArgument(GenerateSimpleName("value")) };
                         if (assParamCount > 1)
                         {
                             for (int i = 1; i < assParamCount; i++)
@@ -2031,8 +2035,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
-                var node = AssMet.CsNode as CSharpSyntaxNode;
-                if (node != null && node.ContainsDiagnostics)
+                if (AssMet.CsNode is CSharpSyntaxNode node && node.ContainsDiagnostics)
                 {
                     var diag = node.GetDiagnostics();
                     accessor = accessor.WithAdditionalDiagnostics(diag);
@@ -2447,7 +2450,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitUsing_([NotNull] XP.Using_Context context)
         {
             context.Put(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                staticKeyword: context.Static == null ? null : context.Static.SyntaxKeyword(),
+                staticKeyword: context.Static?.SyntaxKeyword(),
                 alias: context.Alias == null ? null : _syntaxFactory.NameEquals(context.Alias.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken)),
                 name: context.Name.Get<NameSyntax>(),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -2510,7 +2513,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitNamespace(context, context.Name.GetText(), context.Ignored, entities);
         }
 
-        protected void addEntity(MemberDeclarationSyntax m, bool isStatic)
+        protected void addGlobalEntity(MemberDeclarationSyntax m, bool isStatic)
         {
             // make sure we do not add entities twice
             if (isStatic)
@@ -2553,9 +2556,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
             var m = entity.Get<MemberDeclarationSyntax>();
-            addEntity(m, bStaticVisibility);
+            addGlobalEntity(m, bStaticVisibility);
         }
-        protected void ProcessLastGlobalEntity(XSharpParserRuleContext context, IXParseTree entity)
+        protected void ProcessNonGlobalEntity(XSharpParserRuleContext context, IXParseTree entity)
         {
             // When last entity has to go to the functions class 
             if (GlobalEntities.LastMember is XP.IGlobalEntityContext)
@@ -2573,14 +2576,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(entity.Get<CSharpSyntaxNode>());
             }
-            else if (entity is XP.IGlobalEntityContext)
+            else if (entity is XP.IGlobalEntityContext) // procedure, function, DLL function, GLobal, Define
             {
                 ProcessGlobalEntityContext(entity as XP.IGlobalEntityContext);
             }
             else
             {
                 // When last entity has to go to the functions class 
-                ProcessLastGlobalEntity(context, entity);
+                ProcessNonGlobalEntity(context, entity);
             }
         }
 
@@ -4567,9 +4570,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             charset = _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
                              MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
                                   _syntaxFactory.IdentifierName(id)));
-            var attribs = new List<AttributeArgumentSyntax>();
-            attribs.Add(_syntaxFactory.AttributeArgument(null, null, dllExpr));
-            attribs.Add(charset);
+            var attribs = new List<AttributeArgumentSyntax>() { _syntaxFactory.AttributeArgument(null, null, dllExpr), charset };
             if (entrypointExpr != null)
                 attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr));
             attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)));
@@ -4716,10 +4717,130 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected virtual BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
+        protected bool isVoidType(TypeSyntax type)
         {
-            // Core dialect does nothing special with the entrypoint. VO/Vulcan dialect does.
-            return originalbody;
+            if (type is PredefinedTypeSyntax)
+            {
+                var pretype = type as PredefinedTypeSyntax;
+                switch (pretype.keyword.Kind)
+                {
+                    case SyntaxKind.VoidKeyword:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            else
+            {
+                if (type is QualifiedNameSyntax)
+                {
+                    var qns = type as QualifiedNameSyntax;
+                    // System.Void
+                    var sName = qns.ToFullString().Replace(" ", "");
+                    var v1 = GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString().Replace(" ", "");
+                    var v2 = GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString().Replace(" ", "");
+                    if (sName.Equals(v1, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                    // global::System.Void
+                    if (sName.Equals(v2, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+            return false;
+        }
+
+        protected virtual BlockSyntax GenerateEntryPointBody([NotNull] XP.IEntityContext context, ParameterListSyntax parList)
+        {
+            ArgumentListSyntax arguments;
+            var parameters = context.Params;
+            var returntype = context.ReturnType?.Get<TypeSyntax>() ?? _voidType;
+            if (parameters?._Params.Count > 0)
+            {
+                arguments = MakeArgumentList(MakeArgument(GenerateSimpleName(parameters._Params[0].Id.GetText())));
+            }
+            else
+            { 
+                arguments = MakeArgumentList();
+            }
+            StatementSyntax stmt;
+            var methodcall = GenerateMethodCall(this._entryPoint, arguments, true);
+            if (isVoidType(returntype))
+            {
+                stmt = GenerateExpressionStatement(methodcall);
+            }
+            else
+            { 
+                stmt = GenerateReturn(methodcall);
+            }
+            return MakeBlock(stmt);
+        }
+        protected void CreateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+            SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
+        {
+            // create _Start function that calls the user generated Start function
+            var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+            if (parList.Parameters.Count > 0)
+            {
+                var parameter = parList.Parameters[0];
+                var atype = parameter.Type as ArrayTypeSyntax;
+                if (atype != null)
+                {
+                    var stringtype = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                    if (atype.ElementType != stringtype)
+                    {
+                        // need to convert parameters to string[]
+                        var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
+                        emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+                        var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                              SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                              emptysizes,
+                              SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                       atype = _syntaxFactory.ArrayType(stringtype, emptyrank);
+                       parameter = parameter.Update(EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
+                           atype, parameter.Identifier, null);
+                       parList = _syntaxFactory.ParameterList(parList.OpenParenToken, MakeSeparatedList(parameter), parList.CloseParenToken);
+                        _pool.Free(emptysizes);
+                    }
+                }
+                else
+                {
+                    parList = EmptyParameterList();
+                    parList = parList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_NoEntryPoint));
+                }
+            }
+            var attr = _pool.Allocate<AttributeListSyntax>();
+            foreach (var att in attributeList.Nodes)
+            {
+                if (att.ToString().IndexOf("ClipperCallingConventionAttribute") == -1)
+                { 
+                    attr.Add(att);
+                }
+            }
+            GenerateAttributeList(attr, SystemQualifiedNames.CompilerGenerated);
+            attributeList = attr.ToList();
+            _pool.Free(attr);
+            var id = SyntaxFactory.Identifier(WellKnownMemberNames.EntryPointMethodName);
+            var ep = _syntaxFactory.MethodDeclaration(
+                attributeLists: attributeList,
+                modifiers: modifiers,
+                returnType: returntype,
+                explicitInterfaceSpecifier: null,
+                identifier: id,
+                typeParameterList: null,
+                parameterList: parList,
+                constraintClauses: null,
+                body: body,
+                expressionBody: null,
+                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            ep.XGenerated = true;
+            ep.XNode = context;
+            GlobalEntities.GlobalClassMembers.Add(ep);
+
         }
 
         bool hasDllImport(SyntaxList<AttributeListSyntax> attributes)
@@ -4743,7 +4864,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-          public override void ExitFunction([NotNull] XP.FunctionContext context)
+        public override void ExitFunction([NotNull] XP.FunctionContext context)
         {
             context.SetSequencePoint(context.end);
             var isInInterface = context.isInInterface();
@@ -4773,10 +4894,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
                 // Special Handling of EntryPoint
-                if (string.Equals(id.Text, WellKnownMemberNames.EntryPointMethodName, StringComparison.OrdinalIgnoreCase)
+                if (string.Equals(id.Text, _entryPoint, StringComparison.OrdinalIgnoreCase)
                     && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
                 {
-                    body = CreateEntryPoint(body, context);
+                    var epbody = GenerateEntryPointBody(context, parameters);
+                    CreateEntryPoint(modifiers, context, epbody, attributes, parameters);
+                    attributes = EmptyList<AttributeListSyntax>();
                 }
             }
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -4807,9 +4930,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.InitExit != null)
             {
-                if (_options.HasRuntime)
+                if (!_options.HasRuntime)
                 {
-                    if (context?.Params?.Count > 0)
+                    context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init/Exit procedure", _options.Dialect.ToString()));
+                }
+                else
+                { 
+                    if (context.ParamList?._Params.Count > 0)
                     {
                         context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InitProceduresCannotDefineParameters));
                     }
@@ -4834,10 +4961,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
                     }
                 }
-                else
-                {
-                    context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init procedure", _options.Dialect.ToString()));
-                }
             }
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             bool isextern = hasDllImport(attributes);
@@ -4854,18 +4977,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var hasnobody = isextern && isInInterface;
             var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
-            // no return statement needed in PROCEDURE
-            // body = AddMissingReturnStatement(body, context.StmtBlk, null);
+            var id = context.Id.Get<SyntaxToken>();
             if (!hasnobody)
             {
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                // no return statement needed in PROCEDURE
+                // body = AddMissingReturnStatement(body, context.StmtBlk, null);
+                // Special Handling of EntryPoint
+                if (string.Equals(id.Text, _entryPoint, StringComparison.OrdinalIgnoreCase)
+                    && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
+                {
+                    var epbody = GenerateEntryPointBody(context,parameters);
+                    CreateEntryPoint(modifiers, context, epbody, attributes, parameters);
+                    attributes = EmptyList<AttributeListSyntax>();
+                }
             }
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
                 modifiers: modifiers,
                 returnType: returntype,
                 explicitInterfaceSpecifier: null,
-                identifier: context.Id.Get<SyntaxToken>(),
+                identifier: id,
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: parameters,
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),

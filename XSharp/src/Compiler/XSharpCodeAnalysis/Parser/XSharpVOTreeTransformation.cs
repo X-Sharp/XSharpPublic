@@ -472,164 +472,86 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return localdecl;
 
         }
-        protected override BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
+
+        protected override BlockSyntax GenerateEntryPointBody([NotNull] XP.IEntityContext context, ParameterListSyntax paramList)
         {
-            // This method changes the body of the entry point for the VO Syntax
-            // it calls $AppInit()
-            // when there is a return statement in the main statement list then the 
-            // value of this return statement is stored in a local Xs$Return
-            // At the end of the main body variables are cleared
-            // And $AppExit() is called to clear the globals in referenced Vulcan Libs
-            // and GC routines are called
-            // and when needed it returns with Xs$Return
-            // Not that the code only checks for locals in the main body statement list
-            // and not for locals hidden inside blocks inside the main body
-            // When the main body has a PSZ Try - Finally then our cleanup code and init code will be inserted before and after 
-            // the try finally
-            bool needsReturnValue = false;
-            var lastStmt = (StatementSyntax) originalbody ;
-            if (originalbody.Statements.Count > 0)
-                lastStmt = originalbody.Statements.Last;
-            var lastXnode = lastStmt.XNode;
-            var newbody = new List<StatementSyntax>();     // contains the copied and adjusted statements
-            var endbody = new List<StatementSyntax>();     // contains the cleanup code
-            TryStatementSyntax trystmt = null;
-            StatementSyntax pszdecl = null;
-            var body = originalbody;                    //body where we check for LOCAL and RETURN statements
-            if (context.Data.UsesPSZ && originalbody.Statements.Count == 2 && originalbody.Statements[1] is TryStatementSyntax)
+            BlockSyntax epcall;
+            var stmts = new List<StatementSyntax>();
+            if (context.Data.HasClipperCallingConvention)
             {
-                // local declaration followed by try .. finally
-                pszdecl = originalbody.Statements[0];
-                trystmt = originalbody.Statements[1] as TryStatementSyntax;
-                body = trystmt.Block;
-            }
-            else
-            {
-                var call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit, true);
-                newbody.Add(GenerateExpressionStatement(call,true));
-            }
-            if (context.Type != null && context.Type.GetText().ToLower() != "void")
-            {
-                needsReturnValue = true;
-            }
-            foreach (var stmt in body.Statements)
-            {
-                if (stmt is ReturnStatementSyntax && stmt == body.Statements[body.Statements.Count - 1])
+                InitializeArrayTypes();
+                // var Xs$Array := new List<USUAL>()
+                var arrayId = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.ArrayName);
+                var arrayName = _syntaxFactory.IdentifierName(arrayId);
+                var typeparam = _syntaxFactory.TypeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+                    MakeSeparatedList(_usualType), SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
+                AddUsingWhenMissing(GlobalEntities.Usings, GenerateQualifiedName("System.Collections.Generic"),false,null);
+                
+                var genlist = _syntaxFactory.GenericName(SyntaxFactory.Identifier("List"), typeparam);
+                var createExpr = _syntaxFactory.ObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                         genlist, EmptyArgumentList(), null);
+                var init = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), createExpr);
+                var vardecl = _syntaxFactory.VariableDeclarator(arrayId, null, init);
+                var decl = _syntaxFactory.VariableDeclaration(_impliedType, MakeSeparatedList(vardecl));
+                stmts.Add(_syntaxFactory.LocalDeclarationStatement(null, decl, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                // create iterator that copies values to  the elements in the array
+                var block = new List<StatementSyntax>();
+                // iterator body : Xs$Array.Add(element)
+                var addmethod = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("Add"));
+                var methcall = _syntaxFactory.InvocationExpression(addmethod, MakeArgumentList(MakeArgument(GenerateSimpleName("element"))));
+                block.Add(GenerateExpressionStatement(methcall));
+                StatementSyntax forStmt = _syntaxFactory.ForEachStatement(SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    _impliedType,
+                    SyntaxFactory.Identifier("element"),
+                    SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
+                    GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    MakeBlock(block));
+                stmts.Add(forStmt);
+                // convert list to array
+                // Start(Xs$Array.ToArray())
+                var toarray = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("ToArray"));
+                var methodCall = _syntaxFactory.InvocationExpression(toarray, EmptyArgumentList());
+                var arguments = MakeArgumentList(MakeArgument(methodCall));
+                var methodcall = GenerateMethodCall(this._entryPoint, arguments, true);
+                var returntype = context.ReturnType.Get<TypeSyntax>() ?? _voidType;
+                if (isVoidType(returntype))
                 {
-                    var retStmt = stmt as ReturnStatementSyntax;
-                    var retExpr = retStmt.Expression;
-                    if (retExpr != null)
-                    {
-                        needsReturnValue = true;
-                        var assignStmt = GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(XSharpSpecialNames.ReturnName), retExpr), true);
-                        assignStmt.XNode = lastXnode;
-                        newbody.Add(assignStmt);
-                    }
+                    stmts.Add( GenerateExpressionStatement(methodcall));
                 }
                 else
                 {
-                    newbody.Add(stmt);
-                    if (stmt is LocalDeclarationStatementSyntax)
-                    {
-                        var locdecl = stmt as LocalDeclarationStatementSyntax;
-                        var localvar = locdecl.XNode as XP.LocalvarContext;
-                        bool useNull = true;
-                        bool mustclear = true;
-                        if (localvar != null)
-                        {
-                            var name = localvar.Id.GetText();
-                            TypeSyntax type;
-                            if (localvar.DataType == null)
-                            {
-                                type = _usualType;
-                                mustclear = true;
-                                useNull = false;
-                            }
-                            else
-                            {
-                                type = locdecl.Declaration.Type;
-
-                                if (localvar.DataType is XP.ArrayDatatypeContext ||
-                                    localvar.DataType is XP.NullableDatatypeContext ||
-                                    localvar.DataType is XP.ArrayOfTypeContext ||
-                                    localvar.DataType is XP.PtrDatatypeContext)
-                                {
-                                    useNull = true;
-                                }
-                                else
-                                {
-                                    var sdc = localvar.DataType as XP.SimpleDatatypeContext;
-                                    var tn = sdc.TypeName;
-                                    if (tn.XType != null)
-                                    {
-                                        useNull = mustclear = tn.XType.Token.MustBeCleared();
-                                        if (tn.XType.Token.Type == XP.USUAL ||
-                                            tn.XType.Token.Type == XP.PSZ)
-                                        {
-                                            useNull = false;
-                                        }
-                                    }
-                                    else if (tn.NativeType != null)
-                                    {
-                                        useNull = mustclear = tn.NativeType.Token.MustBeCleared();
-                                    }
-                                    else if (tn.Name != null)
-                                    {
-                                        useNull = false;
-                                        mustclear = true;
-                                    }
-                                }
-                            }
-                            if (mustclear)
-                            {
-                                ExpressionSyntax clearExpr = null;
-
-                                if (useNull)
-                                    clearExpr = GenerateLiteralNull();
-                                else
-                                    clearExpr = MakeDefault(type);
-                                var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
-                                var estmt = GenerateExpressionStatement(expr, true);
-                                estmt.XNode = lastXnode;
-                                endbody.Add(estmt);
-                            }
-                        }
-                    }
+                    stmts.Add(GenerateReturn(methodcall));
                 }
+                epcall = MakeBlock(stmts);
             }
-            newbody.AddRange(endbody);
-            if (trystmt != null)
+            else
             {
-                trystmt = trystmt.Update(trystmt.TryKeyword, MakeBlock(newbody), trystmt.Catches, trystmt.Finally);
-                trystmt.XGenerated = true;
-                newbody.Clear();
-                newbody.Add(pszdecl);
-                var call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit, true);
-                newbody.Add(GenerateExpressionStatement(call, true));
-                newbody.Add(trystmt);
+                epcall = base.GenerateEntryPointBody(context, paramList);
             }
-            // the next statements should all be linked to the last line of code in the start function
-            // so we do not skip back to the start line in the debugger
-            StatementSyntax newStmt = GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true), true);
-            newStmt.XNode = lastXnode;
-            newbody.Add(newStmt);
-            newStmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect, true), true);
-            newStmt.XNode = lastXnode;
-            newbody.Add(newStmt);
-
-            newStmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true), true);
-            newStmt.XNode = lastXnode;
-            newbody.Add(newStmt);
-            if (needsReturnValue)
+            ExpressionSyntax call;
+            stmts.Clear();
+            call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit, true);
+            stmts.Add(GenerateExpressionStatement(call, true));
+            foreach (var stmt in epcall.Statements)
             {
-                var type = context.Type.Get<TypeSyntax>();
-                newbody.Insert(0, GenerateReturnVar(type, MakeDefault(type)));
-                newStmt = GenerateReturn(GenerateSimpleName(XSharpSpecialNames.ReturnName));
-                newStmt.XNode = lastXnode;
-                newbody.Add(newStmt);
-
+                stmts.Add(stmt);
             }
-            return MakeBlock(newbody);
+            var tryblock = MakeBlock(stmts);
+            stmts.Clear();
+            call = GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppExit, true);
+            stmts.Add(GenerateExpressionStatement(call, true));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect, true)));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait, true)));
+            var finallyblock = MakeBlock(stmts);
+            var finallyclause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                    finallyblock);
+            var trystmt = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                 tryblock,
+                 null,
+                 finallyclause);
+            return MakeBlock(trystmt);
         }
         #endregion
 
@@ -729,11 +651,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateNIL()
         {
-            //if (_options.XSharpRuntime)
-            //    return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
-            //else
-            //    return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
-            return MakeDefault(_usualType);
+            if (_options.XSharpRuntime)
+                return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
+            else
+                return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
+            //return MakeDefault(_usualType);
         }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {
@@ -802,7 +724,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.Expression = FixPosition(new XP.ExpressionContext(context, 0), context.Stop);
                 }
-                context.Expression.Put<ExpressionSyntax>(initializer);
+                context.Expression.Put(initializer);
             }
             base.VisitLocalvar(context);
         }
@@ -1934,47 +1856,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ExpressionSyntax GetReturnExpression(TypeSyntax returnType)
         {
             ExpressionSyntax result = null;
-            if (returnType is PredefinedTypeSyntax)
+            if (isVoidType(returnType))
+            { 
+                return null;
+            }
+            if (returnType == _pszType || returnType == _symbolType)
             {
-                var pretype = returnType as PredefinedTypeSyntax;
-                switch (pretype.keyword.Kind)
-                {
-                    case SyntaxKind.VoidKeyword:
-                        return null;
-                    default:
-                        result = MakeDefault(returnType);
-                        break;
-                }
+                result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
             }
             else
             {
-                if (returnType is QualifiedNameSyntax)
-                {
-                    var qns = returnType as QualifiedNameSyntax;
-                    // System.Void
-                    var sName  = qns.ToFullString().Replace(" ", "");
-                    var v1 = GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString().Replace(" ", "");
-                    var v2 = GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString().Replace(" ", "");
-                    if (sName.Equals(v1, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                    // global::System.Void
-                    if (sName.Equals(v2, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return null;
-                    }
-                }
-                if (returnType == _pszType || returnType == _symbolType)
-                {
-                    result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
-                }
-                else
-                {
-                    // other types all return a default expression
-                    // This includes USUAL, DATE, ARRAY, STRING, FLOAT etc
-                    result = MakeDefault(returnType);
-                }
+                // other types all return a default expression
+                // This includes USUAL, DATE, ARRAY, STRING, FLOAT etc
+                result = MakeDefault(returnType);
             }
             return result;
         }
@@ -3111,7 +3005,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (CurrentEntity != null)
                 {
                     var currEnt = this.CurrentEntity;
-                    int argCount = currEnt != null ? currEnt.Params.Count : 0;
+                    int argCount = 0;
+                    if (currEnt != null && currEnt.Params != null )
+                    { 
+                        argCount = currEnt.Params._Params.Count ;
+                    }
                     expr = GenerateLiteral(argCount);
                 }
                 else
@@ -3131,7 +3029,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (_options.NoClipCall)
                 {
                     var currEnt = this.CurrentEntity;
-                    int argCount = currEnt != null ? currEnt.Params.Count : 0;
+                    int argCount = 0;
+                    if (currEnt != null && currEnt.Params != null)
+                    { 
+                        argCount = currEnt.Params._Params.Count ;
+                    }
                     expr = GenerateLiteral(argCount);
                     context.Put(expr);
                 }

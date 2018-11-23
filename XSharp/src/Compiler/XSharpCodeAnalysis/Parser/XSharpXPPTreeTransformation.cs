@@ -154,6 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _classes = new List<XppClassInfo>();
             _currentClass = null;
+            _entryPoint = "Main";
         }
         private SyntaxToken DecodeVisibility(int vis)
         { 
@@ -200,10 +201,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             XP.DatatypeContext basetype = null;
-            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)                // inline methods, properties and fields
             {
                 members.AddRange(generated.Members);
+            }
+            if (context.Modifiers != null)
+            {
+                if (context.Modifiers._Tokens.Any(t => t.Type == XP.STATIC))
+                    context.Data.HasStatic = true;
             }
             // check if all declared methods have been implemented
             // and if so, then add the methods to the members list
@@ -258,7 +263,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             m = CheckForGarbage(m, context.Ignored, "Name after END CLASS");
             context.Put(m);
             _currentClass = null;
-        }
+            
+    }
         public override void EnterXppdeclareMethod([NotNull] XP.XppdeclareMethodContext context)
         {
             // add method to list of declared methods in the class
@@ -448,6 +454,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Data.MustBeVoid = true;
                 context.Data.IsInitAxit = true;     // class constructor
+                context.Data.HasClipperCallingConvention = false;
             }
         }
         public override void EnterXppinlineMethod([NotNull] XP.XppinlineMethodContext context)
@@ -455,6 +462,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // should do the same as the 'normal' methods in VO Class
             // method init becomes constructor
             // method initClass becomes Class constructor
+            context.SetSequencePoint(context.end);
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
             var decl = new XppDeclaredMethodInfo() { Name = context.ShortName, Parent = _currentClass, Visibility = _currentClass.CurrentVisibility, Declaration = context, Entity = context , Inline = true};
@@ -492,6 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterXppmethod([NotNull] XP.XppmethodContext context)
         {
+            context.SetSequencePoint(context.end);
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
             string name ;
@@ -548,6 +557,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var classCtor = String.Compare(idName, "initclass", true) == 0;
             // find method in the declarations and find the visibility
             var mods = decodeXppMemberModifiers(context.Info.Visibility, classCtor, classCtor ? null : context.Mods?._Tokens);
+            if (mods.Any((int) SyntaxKind.StaticKeyword))
+            {
+                context.Data.HasClipperCallingConvention = false;
+            }
             var ctor = createConstructor(context, mods, context.Atts, context.Parameters, context.Statements, (XSharpParserRuleContext) context);
             if (ctor != null)
             {
@@ -645,10 +658,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         // here because their names and parameters are generated differently
         public override void ExitXppentity([NotNull] XP.XppentityContext context)
         {
-            if (context.GetChild(0) is XP.XppclassContext)
+            // classes are handled separately because we need to add the external methods to their members
+            if (context.GetChild(0) is XP.XppclassContext )
             {
-                // already added
-                return; 
+                return;
             }
             _exitEntity(context);
         }
@@ -733,6 +746,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private void bindClasses()
         {
+            // note that this runs AFTER the entities have been walked and is called from ExitXppSource
+            var classes = new List<XSharpParserRuleContext>();
             foreach (var current in _classes)
             {
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
@@ -753,7 +768,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         members.Add(member);
                     }
                 }
-                foreach (var method in current.Methods.Where (x => !x.IsProperty))
+                foreach (var method in current.Methods.Where(x => !x.IsProperty))
                 {
                     var entity = method.Entity;
                     if (entity == null)
@@ -791,23 +806,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 // update class declaration, add external methods
-                var xnode = classdecl.XNode as XP.XppclassContext;
+                var xnode = current.Entity;
                 classdecl = classdecl.Update(classdecl.AttributeLists, classdecl.Modifiers,
                     classdecl.Keyword, classdecl.Identifier, classdecl.TypeParameterList, classdecl.BaseList,
                     classdecl.ConstraintClauses, classdecl.OpenBraceToken, members, classdecl.CloseBraceToken, classdecl.SemicolonToken);
                 _pool.Free(members);
                 xnode.Put(classdecl);
+                // by binding the classdecl to the XppentityContext it will be generated later
+                var ent = xnode.Parent as XP.XppentityContext;
+                ent.Put(classdecl);
+                   
                 // check to see if this is a static class. In that case we must add it to the static global members
-                bool isStatic = false;
-                if (xnode.Modifiers != null)
+                if (xnode.Data.HasStatic)
                 {
-                    if (xnode.Modifiers._Tokens.Any( x => x.Type == XP.STATIC))
-                    {
-                        isStatic = true;
-                    }
+                    addGlobalEntity(classdecl, true);
                 }
-                addEntity(classdecl, isStatic);
             }
+            return ;
         }
         public override void ExitXppsource([NotNull] XP.XppsourceContext context)
         {

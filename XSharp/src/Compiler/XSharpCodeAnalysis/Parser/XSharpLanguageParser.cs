@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     internal class XSharpBailErrorStrategy : BailErrorStrategy
     {
-        String _fileName;
+        readonly String _fileName;
         IList<ParseErrorData> _parseErrors;
         internal XSharpBailErrorStrategy(String FileName, IList<ParseErrorData> parseErrors) : base()
         {
@@ -87,9 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
   
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
-
-            String _fileName;
-            IList<ParseErrorData> _parseErrors;
+            readonly String _fileName;
+            readonly IList<ParseErrorData> _parseErrors;
             internal XSharpErrorListener(String FileName, IList<ParseErrorData> parseErrors) : base()
             {
                 _fileName = FileName;
@@ -951,8 +950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            var list = new List<XP.MethodContext>();
-                            list.Add(m);
+                            var list = new List<XP.MethodContext>() { m };
                             dict.Add(name, list);
                         }
                     }

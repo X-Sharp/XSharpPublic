@@ -878,6 +878,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void doUDCDirective(IList<XSharpToken> udc, bool mustWrite)
         {
             Debug.Assert(udc?.Count > 0);
+            if (!IsActive())
+            {
+                writeToPPO("");
+                return;
+            }
             if (mustWrite)
                 writeToPPO(udc, true, true);
             udc = stripWs(udc);
@@ -969,8 +974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SourceText text = null;
             Exception fileReadException = null;
             PPIncludeFile includeFile = null;
-            List<String> dirs = new List<String>();
-            dirs.Add(PathUtilities.GetDirectoryName(_fileName));
+            List<string> dirs = new List<string>() { PathUtilities.GetDirectoryName(_fileName) };
             foreach (var p in includeDirs)
             {
                 dirs.Add(p);

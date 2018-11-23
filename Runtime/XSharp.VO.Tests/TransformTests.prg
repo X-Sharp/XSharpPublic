@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -387,22 +387,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.False(Empty(p))
 		z := String2Psz("test")
 		Assert.False(Empty(z))
-
-	[Fact, Trait("Category", "IsClassOf")];
-	METHOD IsClassOf_Tests() AS VOID
-		Assert.True(IsClassOf(#TestClassChild, #TestClassParent))
-		Assert.False(IsClassOf(#TestClassParent, #TestClassChild))
-		Assert.True(IsClassOf(#TestClassChild, #TestClassChild))
-		Assert.True(IsClassOf(#TestClassParent, #TestClassParent))
-		Assert.False(IsClassOf(#None, #None))
-		Assert.False(IsClassOf(#None, #TestClassChild))
-		Assert.False(IsClassOf(#TestClassChild, #None))
-
-	[Fact, Trait("Category", "IsInstanceOf")];
-	METHOD IsInstanceOf_Tests() AS VOID
-		Assert.True(IsInstanceOf(123 , "System.Int32"))
-		Assert.True(IsInstanceOf(TRUE , "System.Boolean"))
-		Assert.False(IsInstanceOf(123 , "Nothing"))
 
 	[Fact, Trait("Category", "AClone")];
 	METHOD AClone_Tests() AS VOID

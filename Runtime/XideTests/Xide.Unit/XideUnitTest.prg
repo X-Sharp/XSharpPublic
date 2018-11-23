@@ -243,6 +243,23 @@ CLASS Xide.Unit.Assert
 			cFile := System.IO.FileInfo{cFile}:Name
 		END TRY
 	RETURN cFile
+	
+	STATIC METHOD ThrowsAny<t>(o AS Action) AS VOID
+		LOCAL lExcption := FALSE AS LOGIC
+		TRY
+			o:Invoke()
+		CATCH
+			lExcption := TRUE
+		END TRY
+
+		IF lExcption
+			Passed ++
+			XideUnitTest.TestRun(TRUE , "" , "" , 0)
+		ELSE
+			Failed ++
+			? "failed in ", __ENTITY__, GetFileName(ProcFile(1)) , ProcLine(1)
+			XideUnitTest.TestRun(FALSE , "No exception occured : ", ProcFile(1) , ProcLine(1))
+		END IF
 END CLASS
 
 

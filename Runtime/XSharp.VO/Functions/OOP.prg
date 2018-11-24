@@ -14,6 +14,14 @@ USING System.Runtime.CompilerServices
 
 INTERNAL STATIC CLASS OOPHelpers
     STATIC INTERNAL EnableOptimizations AS LOGIC
+    STATIC INTERNAL cacheClassesAll AS Dictionary<STRING,Type>
+    STATIC INTERNAL cacheClassesOurAssemblies AS Dictionary<STRING,Type>
+
+    STATIC CONSTRUCTOR()
+	    cacheClassesAll := Dictionary<STRING,Type>{Stringcomparer.OrdinalIgnoreCase}
+	    cacheClassesOurAssemblies := Dictionary<STRING,Type>{Stringcomparer.OrdinalIgnoreCase}
+	RETURN
+    
 	STATIC METHOD FindOurAssemblies AS IEnumerable<Assembly>
 		RETURN	FROM asm IN AppDomain.CurrentDomain:GetAssemblies() ;
 				WHERE asm:IsDefined(TYPEOF( ClassLibraryAttribute ), FALSE) ;
@@ -62,8 +70,14 @@ INTERNAL STATIC CLASS OOPHelpers
 		END IF
 
 		IF lOurAssembliesOnly
+			IF cacheClassesOurAssemblies:ContainsKey(cName)
+				RETURN cacheClassesOurAssemblies[cName]
+			END IF
 			aAssemblies := FindOurAssemblies()
 		ELSE
+			IF cacheClassesAll:ContainsKey(cName)
+				RETURN cacheClassesAll[cName]
+			END IF
 			aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
 		END IF
 		
@@ -86,11 +100,14 @@ INTERNAL STATIC CLASS OOPHelpers
 				        VAR cFullName := atr:DefaultNamespace +"."+cName
 				        ret := asm:GetType( cFullName, FALSE, TRUE )
 				        IF ret != NULL
-					        RETURN ret
+					        EXIT
                         ENDIF
                     ENDIF
                 NEXT
             ENDIF
+            IF ret != NULL
+            	EXIT
+            END IF
             // If there is an Implicit Namespace Attribute
             ins := TYPEOF( ImplicitNamespaceAttribute )
 			IF asm:IsDefined(  ins, FALSE )
@@ -100,12 +117,28 @@ INTERNAL STATIC CLASS OOPHelpers
 				        VAR cFullName := atr:Namespace+"."+cName
 				        ret := asm:GetType( cFullName, FALSE, TRUE )
 				        IF ret != NULL
-					        RETURN ret
+					        EXIT
                         ENDIF
                     ENDIF
                  NEXT
              ENDIF
-		NEXT   
+             IF ret != NULL
+             	EXIT
+             ENDIF
+		NEXT
+		
+		IF ret != NULL
+			IF lOurAssembliesOnly
+				IF .not. cacheClassesOurAssemblies:ContainsKey(cName)
+					cacheClassesOurAssemblies:Add(cName , ret)
+				END IF
+			ELSE
+				IF .not. cacheClassesAll:ContainsKey(cName)
+					cacheClassesAll:Add(cName , ret)
+				END IF
+			END IF
+		END IF
+		
 		RETURN ret
 		
 	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING, lSelf AS LOGIC ) AS MethodInfo
@@ -508,12 +541,17 @@ FUNCTION ClassList() AS ARRAY
 	LOCAL classes    := ARRAY{} AS ARRAY
 	LOCAL assemblies := System.AppDomain.CurrentDomain:GetAssemblies() AS System.Reflection.Assembly[]
 	FOREACH assembly AS System.Reflection.Assembly IN assemblies
-		LOCAL types := assembly:GetTypes() AS System.Type[]
-		FOREACH type AS System.Type IN types
-			IF type:IsPublic
-				classes:Add(String2Symbol(type:Name))
-			ENDIF
-		NEXT
+		TRY
+			LOCAL types := assembly:GetTypes() AS System.Type[]
+			FOREACH type AS System.Type IN types
+				TRY
+					IF type:IsPublic
+						classes:Add(String2Symbol(type:Name))
+					ENDIF
+				END TRY
+			NEXT
+//		CATCH oEx AS ReflectionTypeLoadException
+		END TRY
 	NEXT
 	RETURN classes
 	
@@ -669,13 +707,22 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,cName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
 		RETURN FALSE
 	ENDIF
-	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
+	// this was a smarter implemenation, but has performance issues
+	// especially when cName is not found, as we cannot cache that
+/*	LOCAL oType := OOPHelpers.FindClass(cName, FALSE) AS System.Type
 	IF oType == NULL
 		RETURN FALSE
 	END IF
-	RETURN oType:IsAssignableFrom(oObject:GetType())
-	
-	
+	RETURN oType:IsAssignableFrom(oObject:GetType())*/
+	LOCAL oType AS Type
+	oType := oObject:GetType()
+	DO WHILE oType != NULL
+		IF String.Compare(oType:Name, cName, TRUE) == 0
+			RETURN TRUE
+		END IF
+		oType := oType:BaseType
+	END DO
+	RETURN FALSE
 	
 /// <summary>
 /// Determine if an object inside a Usual is an instance of a class.

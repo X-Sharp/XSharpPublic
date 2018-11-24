@@ -156,6 +156,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
             Assert.NotEqual(o:cbWhen, NULL)
 
+		[Fact, Trait("Category", "OOP")];
+		METHOD IsClassOf_Tests() AS VOID
+			Assert.True(IsClassOf(#TestClassChild, #TestClassParent))
+			Assert.False(IsClassOf(#TestClassParent, #TestClassChild))
+			Assert.True(IsClassOf(#TestClassChild, #TestClassChild))
+			Assert.True(IsClassOf(#TestClassParent, #TestClassParent))
+			Assert.False(IsClassOf(#None, #None))
+			Assert.False(IsClassOf(#None, #TestClassChild))
+			Assert.False(IsClassOf(#TestClassChild, #None))
+	
+		[Fact, Trait("Category", "OOP")];
+		METHOD IsInstanceOf_Tests() AS VOID
+			Assert.True(IsInstanceOf(123 , "Int32"))
+			Assert.True(IsInstanceOf(TRUE , "Boolean"))
+			Assert.False(IsInstanceOf(123 , "Nothing"))
+
         [Fact, Trait("Category", "OOP")];
         METHOD IsAccessAssignMethod_tests() AS VOID
         	LOCAL o AS GeneralLBTestClass

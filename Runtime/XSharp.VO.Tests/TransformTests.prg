@@ -488,6 +488,42 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.True(  AllTrim(FieldGet(1)) == "test" )
 		Assert.True(  DBCloseArea() )
 
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBAppend_more() AS VOID
+	LOCAL cDbf AS STRING
+		cDbf := "c:\temp\testappend.DbF"
+		RDDSetDefault( "DBFNTX" )
+		Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
+		// Appending in exclusive mode:
+		Assert.True( DBUseArea(, , cDbf , "alias1" , FALSE) )
+		Assert.True( DBAppend() )
+		Assert.True( RecCount() == 1 )
+		FieldPut(1, "test") // ok
+		Assert.True( AllTrim(FieldGet(1)) == "test" )
+		Assert.True( DBCloseArea() )
+
+		// Appending in SHARED mode:
+		Assert.True( DBUseArea(, , cDbf , "alias2" , TRUE) )
+		Assert.True( RecCount() == 1 )
+		Assert.True( DBAppend() )// returns true but does not append record
+		Assert.True( RecCount() == 2 )
+		FieldPut(1, "test2") // ok
+		Assert.True( AllTrim(FieldGet(1)) == "test2" )
+		Assert.True( DBCloseArea() )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBUseArea_same_file_twice() AS VOID
+	LOCAL cDbf AS STRING
+		RDDSetDefault( "DBFNTX" )
+		cDbf := "c:\temp\testtwice.DbF"
+		Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
+
+		// shared mode
+		Assert.True( DBUseArea(, , cDbf , , FALSE) )
+		Assert.True( DBCloseArea() )
+
+		Assert.True( DBUseArea(, , cDbf , , FALSE) )
+		Assert.True( DBCloseArea() )
 	END CLASS
 END NAMESPACE
 

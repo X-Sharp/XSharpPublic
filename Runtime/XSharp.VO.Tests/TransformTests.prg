@@ -450,6 +450,44 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		END IF
 		Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
 		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
+
+		cFileName_WithExt := cFileName_NoExt + ".none"
+		IF System.IO.File.Exists(cFileName_WithExt)
+			System.IO.File.Delete(cFileName_WithExt)
+		END IF
+		Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
+		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBAppend_Exclusive() AS VOID
+		LOCAL aFields AS ARRAY
+		LOCAL cFileName AS STRING
+		aFields := {{"TEST","C",10,0}}
+		cFileName := "C:\TEMP\testdbf"
+
+		Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
+		Assert.True(  DBUseArea(,"DBFNTX",cFileName,,FALSE) )
+		Assert.True(  RecCount() == 0 )
+		Assert.True(  DBAppend() )
+		FieldPut(1 , "test")
+		Assert.True(  AllTrim(FieldGet(1)) == "test" )
+		Assert.True(  DBCloseArea() )
+
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBAppend_Shared() AS VOID
+		LOCAL aFields AS ARRAY
+		LOCAL cFileName AS STRING
+		aFields := {{"TEST","C",10,0}}
+		cFileName := "C:\TEMP\testdbf"
+
+		Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
+		Assert.True(  DBUseArea(,"DBFNTX",cFileName,,TRUE) )
+		Assert.True(  RecCount() == 0 )
+		Assert.True(  DBAppend() )
+		FieldPut(1 , "test")
+		Assert.True(  AllTrim(FieldGet(1)) == "test" )
+		Assert.True(  DBCloseArea() )
+
 	END CLASS
 END NAMESPACE
 

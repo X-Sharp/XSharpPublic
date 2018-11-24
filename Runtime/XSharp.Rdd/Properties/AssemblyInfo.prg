@@ -13,8 +13,8 @@ using XSharp
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Rdd")]
-[assembly: AssemblyDescription("XSharp RDD DLL (depends on XSharp.Core only)")]
+[assembly: AssemblyTitle("XSharp.RDD")]
+[assembly: AssemblyDescription("XSharp RDD DLL, holds all the standard RDDs as well as the Advantage RDDs")]
 [ASSEMBLY: ImplicitNamespace("XSharp")]
 
 

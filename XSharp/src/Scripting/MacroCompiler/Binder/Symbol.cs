@@ -116,7 +116,7 @@ namespace XSharp.MacroCompiler
     internal partial class DynamicSymbol : TypedSymbol
     {
         internal string Name;
-        internal override TypeSymbol Type { get { return Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object); } }
+        internal override TypeSymbol Type { get { return (Binder.Lookup(XSharpQualifiedFunctionNames.IVarGet) as MethodSymbol)?.Type ?? Compilation.GetNativeType(NativeType.Object); } }
         internal DynamicSymbol(string name) { Name = name; }
         internal override Symbol Lookup(string name) { return null; }
     }

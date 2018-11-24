@@ -49,79 +49,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            switch (Kind)
-            {
-                case TokenType.ARRAY:
-                case TokenType.CODEBLOCK:
-                case TokenType.DATE:
-                case TokenType.FLOAT:
-                case TokenType.PSZ:
-                case TokenType.SYMBOL:
-                    // TODO nvk: create special types
-                    break;
-                case TokenType.USUAL:
-                    Symbol = Compilation.GetNativeType(NativeType.Usual);
-                    break;
-                case TokenType.BYTE:
-                    Symbol = Compilation.GetNativeType(NativeType.Byte);
-                    break;
-                case TokenType.CHAR:
-                    Symbol = Compilation.GetNativeType(NativeType.Char);
-                    break;
-                case TokenType.DATETIME:
-                    Symbol = Compilation.GetNativeType(NativeType.DateTime);
-                    break;
-                case TokenType.DECIMAL:
-                    Symbol = Compilation.GetNativeType(NativeType.Decimal);
-                    break;
-                case TokenType.DWORD:
-                    Symbol = Compilation.GetNativeType(NativeType.UInt32);
-                    break;
-                case TokenType.DYNAMIC:
-                    Symbol = Compilation.GetNativeType(NativeType.Object); // TODO nvk: special dynamic type?
-                    break;
-                case TokenType.INT:
-                    Symbol = Compilation.GetNativeType(NativeType.Int32);
-                    break;
-                case TokenType.INT64:
-                    Symbol = Compilation.GetNativeType(NativeType.Int64);
-                    break;
-                case TokenType.LOGIC:
-                    Symbol = Compilation.GetNativeType(NativeType.Boolean);
-                    break;
-                case TokenType.LONGINT:
-                    Symbol = Compilation.GetNativeType(NativeType.Int32);
-                    break;
-                case TokenType.OBJECT:
-                    Symbol = Compilation.GetNativeType(NativeType.Object);
-                    break;
-                case TokenType.PTR:
-                    Symbol = Compilation.GetNativeType(NativeType.Unknown); // TODO nvk: PTR type
-                    break;
-                case TokenType.REAL4:
-                    Symbol = Compilation.GetNativeType(NativeType.Single);
-                    break;
-                case TokenType.REAL8:
-                    Symbol = Compilation.GetNativeType(NativeType.Double);
-                    break;
-                case TokenType.SHORTINT:
-                    Symbol = Compilation.GetNativeType(NativeType.Int16);
-                    break;
-                case TokenType.STRING:
-                    Symbol = Compilation.GetNativeType(NativeType.String);
-                    break;
-                case TokenType.UINT64:
-                    Symbol = Compilation.GetNativeType(NativeType.UInt64);
-                    break;
-                case TokenType.VOID:
-                    Symbol = Compilation.GetNativeType(NativeType.Void);
-                    break;
-                case TokenType.WORD:
-                    Symbol = Compilation.GetNativeType(NativeType.UInt16);
-                    break;
-                default:
-                    break;
-            }
+            Symbol = Binder.GetNativeTypeFromToken(Kind);
             return null;
         }
     }
@@ -143,6 +71,11 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
+            if (Symbol == null)
+            {
+                Binder.Convert(ref Expr, Compilation.GetNativeType(NativeType.Object));
+                Symbol = new DynamicSymbol(Member.LookupName);
+            }
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
@@ -268,189 +201,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            switch (Kind)
-            {
-                case TokenType.TRUE_CONST:
-                    Symbol = Constant.Create(true);
-                    break;
-                case TokenType.FALSE_CONST:
-                    Symbol = Constant.Create(false);
-                    break;
-                case TokenType.CHAR_CONST:
-                    Symbol = Constant.Create(Literals.CharValue(Value));
-                    break;
-                case TokenType.STRING_CONST:
-                case TokenType.ESCAPED_STRING_CONST:
-                case TokenType.INTERPOLATED_STRING_CONST:
-                    Symbol = Constant.Create(Literals.StringValue(Value));
-                    break;
-                case TokenType.SYMBOL_CONST:
-                    Symbol = Constant.Create(Value.Substring(1).ToUpperInvariant());
-                    break;
-                case TokenType.HEX_CONST:
-                    switch (Value.Last())
-                    {
-                        case 'U':
-                        case 'u':
-                            if (Value.Length > 8 + 3)
-                                Symbol = Constant.Create(unchecked((ulong)Literals.HexValue(Value.Substring(2))));
-                            else
-                                Symbol = Constant.Create(unchecked((uint)Literals.HexValue(Value.Substring(2))));
-                            break;
-                        case 'L':
-                        case 'l':
-                            if (Value.Length > 8 + 3)
-                                Symbol = Constant.Create(Literals.HexValue(Value.Substring(2)));
-                            else
-                                Symbol = Constant.Create(unchecked((int)Literals.HexValue(Value.Substring(2))));
-                            break;
-                        default:
-                            {
-                                long l = Literals.HexValue(Value.Substring(2));
-                                if (l < 0)
-                                    Symbol = Constant.Create(unchecked((ulong)l));
-                                else if (l > uint.MaxValue)
-                                    Symbol = Constant.Create(l);
-                                else if (l > int.MaxValue)
-                                    Symbol = Constant.Create(unchecked((uint)l));
-                                else
-                                    Symbol = Constant.Create(unchecked((int)l));
-                            }
-                            break;
-                    }
-                    break;
-                case TokenType.BIN_CONST:
-                    switch (Value.Last())
-                    {
-                        case 'U':
-                        case 'u':
-                            if (Value.Length > 32 + 3)
-                                Symbol = Constant.Create(unchecked((ulong)Literals.BinValue(Value.Substring(2))));
-                            else
-                                Symbol = Constant.Create(unchecked((uint)Literals.BinValue(Value.Substring(2))));
-                            break;
-                        case 'L':
-                        case 'l':
-                            if (Value.Length > 32 + 3)
-                                Symbol = Constant.Create(Literals.BinValue(Value.Substring(2)));
-                            else
-                                Symbol = Constant.Create(unchecked((int)Literals.BinValue(Value.Substring(2))));
-                            break;
-                        default:
-                            {
-                                long l = Literals.BinValue(Value.Substring(2));
-                                if (l < 0)
-                                    Symbol = Constant.Create(unchecked((ulong)l));
-                                else if (l > uint.MaxValue)
-                                    Symbol = Constant.Create(l);
-                                else if (l > int.MaxValue)
-                                    Symbol = Constant.Create(unchecked((uint)l));
-                                else
-                                    Symbol = Constant.Create(unchecked((int)l));
-                            }
-                            break;
-                    }
-                    break;
-                case TokenType.REAL_CONST:
-                    switch (Value.Last())
-                    {
-                        case 'M':
-                        case 'm':
-                            Symbol = Constant.Create(decimal.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
-                            break;
-                        case 'S':
-                        case 's':
-                            Symbol = Constant.Create(float.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
-                            break;
-                        case 'D':
-                        case 'd':
-                            Symbol = Constant.Create(double.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
-                            break;
-                        default:
-                            Symbol = Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture));
-                            break;
-                    }
-                    break;
-                case TokenType.INT_CONST:
-                    switch (Value.Last())
-                    {
-                        case 'U':
-                        case 'u':
-                            try
-                            {
-                                ulong ul = ulong.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
-                                if (ul > uint.MaxValue)
-                                    Symbol = Constant.Create(ul);
-                                else
-                                    Symbol = Constant.Create(unchecked((uint)ul));
-                            }
-                            catch (OverflowException)
-                            {
-                                throw new Exception("Integer overflow");
-                            }
-                            break;
-                        case 'L':
-                        case 'l':
-                            try
-                            {
-                                long l = long.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
-                                if (l > int.MaxValue)
-                                    Symbol = Constant.Create(l);
-                                else
-                                    Symbol = Constant.Create(unchecked((int)l));
-                            }
-                            catch (OverflowException)
-                            {
-                                throw new Exception("Integer overflow");
-                            }
-                            break;
-                        default:
-                            try
-                            {
-                                ulong un = 0;
-                                long n = 0;
-                                if (Value.First() != '-')
-                                {
-                                    un = ulong.Parse(Value, System.Globalization.CultureInfo.InvariantCulture);
-                                    if (un <= long.MaxValue)
-                                        n = unchecked((long)un);
-                                }
-                                else
-                                {
-                                    n = long.Parse(Value, System.Globalization.CultureInfo.InvariantCulture);
-                                }
-                                if (un > long.MaxValue)
-                                    Symbol = Constant.Create(un);
-                                else if (n > uint.MaxValue)
-                                    Symbol = Constant.Create(n);
-                                else if (n > int.MaxValue)
-                                    Symbol = Constant.Create(unchecked((uint)n));
-                                else
-                                    Symbol = Constant.Create(unchecked((int)n));
-                            }
-                            catch (OverflowException)
-                            {
-                                throw new Exception("Integer overflow");
-                            }
-                            break;
-                    }
-                    break;
-                case TokenType.NULL:
-                    Symbol = Constant.Create((object)null);
-                    break;
-                case TokenType.DATE_CONST:
-                case TokenType.NIL:
-                case TokenType.NULL_ARRAY:
-                case TokenType.NULL_CODEBLOCK:
-                case TokenType.NULL_DATE:
-                case TokenType.NULL_OBJECT:
-                case TokenType.NULL_PSZ:
-                case TokenType.NULL_PTR:
-                case TokenType.NULL_STRING:
-                case TokenType.NULL_SYMBOL:
-                default:
-                    throw new Exception("Unexpected literal kind");
-            }
+            Symbol = Binder.CreateLiteral(Kind, Value);
             Datatype = (Symbol as Constant)?.Type;
             return null;
         }
@@ -480,9 +231,23 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class SizeOfExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Type);
+            Symbol = Type.Symbol;
+            Datatype = Compilation.GetNativeType(NativeType.UInt32);
+            return null;
+        }
     }
     internal partial class DefaultExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Type);
+            Symbol = Type.Symbol;
+            Datatype = Symbol as TypeSymbol;
+            return null;
+        }
     }
     internal partial class TypeCast : Expr
     {
@@ -494,9 +259,25 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IsExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            b.Bind(ref Type);
+            Symbol = Type.Symbol;
+            Datatype = Compilation.GetNativeType(NativeType.Boolean);
+            return null;
+        }
     }
     internal partial class AsTypeExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            b.Bind(ref Type);
+            Symbol = Type.Symbol;
+            Datatype = Type.Symbol as TypeSymbol;
+            return null;
+        }
     }
     internal partial class MethodCallExpr : Expr
     {

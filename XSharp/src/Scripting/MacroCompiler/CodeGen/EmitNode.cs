@@ -16,6 +16,7 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class Expr : Node
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
+        internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
     internal partial class StoreTemp : Expr
@@ -54,9 +55,29 @@ namespace XSharp.MacroCompiler.Syntax
             if (preserve)
                 Symbol.EmitGet(ilg);
         }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            Symbol.EmitSet(ilg);
+        }
     }
     internal partial class MemberAccessExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg);
+            Symbol.EmitGet(ilg);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            Expr.Emit(ilg);
+            Symbol.EmitSet(ilg);
+        }
     }
     internal partial class QualifiedNameExpr : NameExpr
     {
@@ -64,15 +85,19 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Symbol.EmitGet(ilg);
         }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            Symbol.EmitSet(ilg);
+        }
     }
     internal partial class AssignExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Right.Emit(ilg);
-            if (preserve)
-                ilg.Emit(OpCodes.Dup);
-            Left.Symbol.EmitSet(ilg);
+            Left.EmitSet(ilg, preserve);
         }
     }
     internal partial class AssignOpExpr : AssignExpr
@@ -80,9 +105,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Right.Emit(ilg);
-            if (preserve)
-                ilg.Emit(OpCodes.Dup);
-            Left.Symbol.EmitSet(ilg);
+            Left.EmitSet(ilg, preserve);
         }
     }
     internal partial class BinaryExpr : Expr
@@ -160,10 +183,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Expr.Emit(ilg);
-            ilg.Emit(OpCodes.Dup);
-            Left.Symbol.EmitSet(ilg);
-            if (!preserve)
-                ilg.Emit(OpCodes.Pop);
+            Left.EmitSet(ilg, preserve);
         }
     }
     internal partial class PostfixExpr : Expr
@@ -171,7 +191,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Expr.Emit(ilg);
-            Left.Symbol.EmitSet(ilg);
+            Left.EmitSet(ilg, false);
             Temp.Emit(ilg);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
@@ -197,18 +217,32 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class CheckedExpr : Expr
     {
+        // TODO (nvk): to be implemented
     }
     internal partial class UncheckedExpr : Expr
     {
+        // TODO (nvk): to be implemented
     }
     internal partial class TypeOfExpr : Expr
     {
+        // TODO (nvk): to be implemented
     }
     internal partial class SizeOfExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+            {
+                ilg.Emit(OpCodes.Sizeof, (Symbol as TypedSymbol).Type.Type);
+            }
+        }
     }
     internal partial class DefaultExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            EmitDefault(ilg, (TypeSymbol)Symbol);
+        }
     }
     internal partial class TypeCast : Expr
     {
@@ -226,9 +260,27 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IsExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg, preserve);
+            if (preserve)
+            {
+                ilg.Emit(OpCodes.Isinst, (Symbol as TypedSymbol).Type.Type);
+                ilg.Emit(OpCodes.Ldnull);
+                ilg.Emit(OpCodes.Cgt_Un);
+            }
+        }
     }
     internal partial class AsTypeExpr : Expr
     {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg, preserve);
+            if (preserve)
+            {
+                ilg.Emit(OpCodes.Isinst, Datatype.Type);
+            }
+        }
     }
     internal partial class MethodCallExpr : Expr
     {
@@ -243,9 +295,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class CtorCallExpr : MethodCallExpr
     {
+        // TODO (nvk): to be implemented
     }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
+        // TODO (nvk): to be implemented
     }
     internal partial class Arg : Node
     {
@@ -267,6 +321,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class LiteralArray : Expr
     {
+        // TODO (nvk): to be implemented
     }
     internal partial class ArgList : Node
     {

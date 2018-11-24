@@ -18,6 +18,8 @@ function TestI(u as int) as void
     Console.WriteLine("TestI: {0}", u)
     return
 
+global UU as usual
+
 begin namespace MacroCompilerTest
     using XSharp.Runtime
     using XSharp.MacroCompiler
@@ -53,7 +55,13 @@ begin namespace MacroCompilerTest
         //var test_source := e"{|a| a := \"abc\", a == \"abc\"}";
         //var test_source := e"{|a| 0 == 0 }";
         //var test_source := e"{|a| 0 != 0 }";
-        var test_source := e"{|a| (0 > 1) && (0 < 1) }";
+        //var test_source := e"{|a| (0 > 1) && (0 < 1) }";
+        //var test_source := e"{|a| a:ToString() }";
+        //var test_source := e"{|a| a := \"qwerty\", a:Length }";
+        //var test_source := e"{|a| a := default(int) }";
+        //var test_source := e"{|a| a := default(string) }";
+        //var test_source := e"{|a| a := U(1234+1), a }";
+        var test_source := e"{|a| UU := U(1234+1), UU }";
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()

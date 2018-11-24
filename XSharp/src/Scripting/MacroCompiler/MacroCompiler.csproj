@@ -37,6 +37,7 @@
     <Compile Include="Binder\Binder.Conversion.cs" />
     <Compile Include="Binder\Binder.cs" />
     <Compile Include="Binder\Binder.Expr.cs" />
+    <Compile Include="Binder\Binder.Literal.cs" />
     <Compile Include="Binder\Binder.Type.cs" />
     <Compile Include="Binder\Binder.UnaryOp.cs" />
     <Compile Include="Binder\BoundNode.cs" />

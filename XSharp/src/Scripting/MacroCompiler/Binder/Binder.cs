@@ -45,6 +45,8 @@ namespace XSharp.MacroCompiler
             var usings = new List<ContainerSymbol>();
             var typeCache = new Dictionary<Type, TypeSymbol>();
 
+            bool usedDefaultNs = false;
+
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
                 if (a.IsDynamic)
@@ -103,9 +105,17 @@ namespace XSharp.MacroCompiler
 
                     var ts = add_type(n, t);
 
-                    if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.XSharpCoreFunctionsClass, StringComparison.OrdinalIgnoreCase))
+                    if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase))
                     {
                         usings.Add(ts);
+                        if (!usedDefaultNs 
+                            && !string.IsNullOrEmpty(t.Namespace) 
+                            && t.Namespace.Contains(".")
+                            && t.Assembly == System.Reflection.Assembly.GetExecutingAssembly())
+                        {
+                            usings.Add(n);
+                            usedDefaultNs = true;
+                        }
                     }
                 }
             }

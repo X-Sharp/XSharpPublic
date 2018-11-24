@@ -55,10 +55,13 @@ namespace XSharp.MacroCompiler
         internal override void EmitSet(ILGenerator ilg)
         {
             var m = (Binder.Lookup(XSharpQualifiedFunctionNames.IVarPut) ?? Binder.Lookup(VulcanQualifiedFunctionNames.IVarPut)) as MethodSymbol;
-            var lb = ilg.DeclareLocal(Type.Type);
-            ilg.Emit(OpCodes.Stloc, lb.LocalIndex);
+            var lo = ilg.DeclareLocal(Compilation.GetNativeType(NativeType.Object).Type);
+            var lv = ilg.DeclareLocal(Type.Type);
+            ilg.Emit(OpCodes.Stloc, lo.LocalIndex);
+            ilg.Emit(OpCodes.Stloc, lv.LocalIndex);
+            ilg.Emit(OpCodes.Ldloc, lo.LocalIndex);
             ilg.Emit(OpCodes.Ldstr, Name);
-            ilg.Emit(OpCodes.Ldloc, lb.LocalIndex);
+            ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
             ilg.Emit(OpCodes.Call, m.Method);
         }
     }
@@ -73,6 +76,20 @@ namespace XSharp.MacroCompiler
     }
     internal partial class FieldSymbol : MemberSymbol
     {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            if (Field.IsStatic)
+                ilg.Emit(OpCodes.Ldsfld, Field);
+            else
+                ilg.Emit(OpCodes.Ldfld, Field);
+        }
+        internal override void EmitSet(ILGenerator ilg)
+        {
+            if (Field.IsStatic)
+                ilg.Emit(OpCodes.Stsfld, Field);
+            else
+                ilg.Emit(OpCodes.Stfld, Field);
+        }
     }
     internal partial class EventSymbol : MemberSymbol
     {

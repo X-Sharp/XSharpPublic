@@ -444,7 +444,7 @@ namespace XSharp.MacroCompiler
                         e = op.Combine(e,n,null);
                         op = ParseOper(out n);
                     }
-                } while (op?.assoc == AssocType.Postfix);
+                } while (op?.assoc == AssocType.Postfix || (op == null && exprs.Count > 0));
 
                 if (op == null)
                     break;

@@ -189,7 +189,7 @@ FUNCTION Descend(uValue AS USUAL) AS USUAL
 	ELSEIF uValue:IsInt64
 		RETURN 0 - (INT64) uValue
 	ELSEIF uValue:IsFloat
-		RETURN 0 - (FLOAT) uValue
+		RETURN 0 - (__Float) uValue
 	ELSEIF uValue:IsDate
 		RETURN 5231808 - (DWORD)(DATE) uValue 
 	ENDIF

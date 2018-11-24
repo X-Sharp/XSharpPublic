@@ -106,7 +106,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   INTERNAL METHOD _CheckVODeletedFlag() AS DWORD
     RETURN ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(WORD)0 ,(WORD)1 ))
     
-  INTERNAL METHOD _CheckVODateFormat() AS LOGIC
+  INTERNAL METHOD _CheckDateFormat() AS LOGIC
     ACE.AdsSetDateFormat(RuntimeState.DateFormat)
     ACE.AdsSetExact(IIF(RuntimeState.Exact,1 , 0 ))
     ACE.AdsSetDecimals((WORD)RuntimeState.Decimals )
@@ -1194,7 +1194,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS LOGIC
       LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
-      SELF:_CheckError(IIF(SELF:_CheckVODateFormat(),0,1))
+      SELF:_CheckError(IIF(SELF:_CheckDateFormat(),0,1))
       IF String.IsNullOrEmpty(fi:FilterText)
         // clear filter
         // Ignore "No filter" error
@@ -1343,7 +1343,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
           SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YY"))
           SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
           SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT julDate))
-          IF !SELF:_CheckVODateFormat()
+          IF !SELF:_CheckDateFormat()
             SELF:_CheckError(1)
           ENDIF
         RETURN (LONG)julDate

@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines Date values
 	/// </summary>
-	/// <seealso cref="T:XSharp.__VODate"/>
+	/// <seealso cref="T:XSharp.__Date"/>
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	INTERFACE IDate
 		/// <summary>Year part of the date. A number between 0 and 9999</summary>
@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines FLOAT values
 	/// </summary>
-	/// <seealso cref="T:XSharp.__VOFloat"/>
+	/// <seealso cref="T:XSharp.__Float"/>
 	/// <seealso cref="T:XSharp.RDD.DbFloat"/>
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>

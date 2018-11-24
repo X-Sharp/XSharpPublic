@@ -17,11 +17,11 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref="T:XSharp.IFloat"/>
     /// <seealso cref="T:XSharp.RDD.DbFloat"/>
     [StructLayout(LayoutKind.Explicit, Pack := 4)];
-    PUBLIC STRUCTURE __VOFloat IMPLEMENTS IFLoat, ;
+    PUBLIC STRUCTURE __Float IMPLEMENTS IFLoat, ;
         IConvertible,; 
         IFormattable, ;
-        IComparable<__VoFloat>, ;
-        IEquatable<__VoFloat>, ;
+        IComparable<__Float>, ;
+        IEquatable<__Float>, ;
         IComparable
     
         [FieldOffset(0)]  PRIVATE INITONLY _value AS REAL8

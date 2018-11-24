@@ -293,7 +293,7 @@ BEGIN NAMESPACE XSharp
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
-        PRIVATE PROPERTY _floatValue    AS FLOAT			GET __VOFloat{ _valueData:r8, _width, _decimals}
+        PRIVATE PROPERTY _floatValue    AS FLOAT			GET Float{ _valueData:r8, _width, _decimals}
         PRIVATE PROPERTY _i64Value		AS INT64			GET _valueData:i64
         PRIVATE PROPERTY _intValue		AS INT				GET _valueData:i
         PRIVATE PROPERTY _logicValue	AS LOGIC			GET _valueData:l
@@ -1068,10 +1068,10 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1135,10 +1135,10 @@ BEGIN NAMESPACE XSharp
                         END SWITCH
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1208,7 +1208,7 @@ BEGIN NAMESPACE XSharp
                                 RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_i64Value
                             ENDIF
                         CASE __UsualType.Float
-                            RETURN __VOFloat{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                            RETURN FLOAT{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
@@ -1244,7 +1244,7 @@ BEGIN NAMESPACE XSharp
                                 RETURN (FLOAT)lhs:_i64Value / (FLOAT)rhs:_i64Value
                             ENDIF
                         CASE __UsualType.Float
-                            RETURN __VOFloat{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                            RETURN FLOAT{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
@@ -1261,10 +1261,10 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1289,7 +1289,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_intValue % rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_intValue % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_intValue % rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                     END SWITCH
@@ -1298,17 +1298,17 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_i64Value % rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_i64Value % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_i64Value % rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                      END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1334,7 +1334,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_intValue * rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_intValue * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_intValue * rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                     END SWITCH
@@ -1343,17 +1343,17 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN lhs:_i64Value * rhs:_intValue
                         CASE __UsualType.Int64		; RETURN lhs:_i64Value * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN lhs:_i64Value * rhs:_decimalValue
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN __VOFloat{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN __VOFloat{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN __VOFloat{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN __VOFloat{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
+                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
@@ -1842,12 +1842,12 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN __VOFloat{(REAL8) u:_intValue}
-                CASE __UsualType.Int64	; RETURN __VOFloat{(REAL8) u:_i64Value}
+                CASE __UsualType.Long	; RETURN Float{(REAL8) u:_intValue}
+                CASE __UsualType.Int64	; RETURN Float{(REAL8) u:_i64Value}
                 CASE __UsualType.Float	; RETURN u:_floatValue
-                CASE __UsualType.Decimal; RETURN __VOFloat{(REAL8) u:_decimalValue}
-                CASE __UsualType.Logic	; RETURN __VOFloat{IIF(u:_logicValue, 1, 0)}
-                CASE __UsualType.Void	; RETURN __VOFloat{0}
+                CASE __UsualType.Decimal; RETURN Float{(REAL8) u:_decimalValue}
+                CASE __UsualType.Logic	; RETURN Float{IIF(u:_logicValue, 1, 0)}
+                CASE __UsualType.Void	; RETURN Float{0}
                 OTHERWISE
                     THROW ConversionError(FLOAT, TYPEOF(FLOAT), u)
                 END SWITCH
@@ -2338,7 +2338,7 @@ BEGIN NAMESPACE XSharp
     [StructLayout(LayoutKind.Explicit)];
     INTERNAL STRUCTURE _UsualData
         // Fields
-        [FieldOffset(0)] INTERNAL d     AS __VoDate
+        [FieldOffset(0)] INTERNAL d     AS __Date
         [FieldOffset(0)] INTERNAL r8    AS REAL8
         [FieldOffset(0)] INTERNAL i     AS LONG
         [FieldOffset(0)] INTERNAL i64   AS INT64

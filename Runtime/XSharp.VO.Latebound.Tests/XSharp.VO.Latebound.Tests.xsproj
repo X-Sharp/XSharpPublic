@@ -27,7 +27,7 @@
     <CS>false</CS>
     <LB>true</LB>
     <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
+    <Unsafe>true</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VO1>false</VO1>
@@ -46,6 +46,7 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
+    <NamedArgs>false</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -114,9 +115,14 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj">
       <Name>XSharp.VO</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

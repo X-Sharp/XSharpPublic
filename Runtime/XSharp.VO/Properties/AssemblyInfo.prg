@@ -11,7 +11,7 @@
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("XSharp.RT")]
-[assembly: AssemblyDescription("XSharp runtime DLL with xBase types and functions for all dialects")]
+[assembly: AssemblyTitle("XSharp.VO")]
+[assembly: AssemblyDescription("XSharp runtime DLL for the VO and Vulcan dialects")]
 [assembly: ImplicitNamespace("XSharp")]
 

@@ -386,9 +386,9 @@ BEGIN NAMESPACE XSharp
           RETURN __UsualType.array
         CASE "xsharp.__codeblock"
           RETURN __UsualType.codeblock
-        CASE "xsharp.__vodate"
+        CASE "xsharp.__date"
           RETURN __UsualType.date
-        CASE "xsharp.__vofloat"
+        CASE "xsharp.__float"
           RETURN __UsualType.float
         CASE "xsharp.__psz"
           RETURN __UsualType.psz
@@ -416,13 +416,13 @@ BEGIN NAMESPACE XSharp
     CASE __UsualType.codeblock
       typeName := "XSharp.__CodeBlock"
     CASE __UsualType.date
-      typeName := "XSharp.__VODate"
+      typeName := "XSharp.__Date"
     CASE __UsualType.dword
       RETURN typeof(System.UInt32)
     CASE __UsualType.int64
       RETURN typeof(System.Int64)
     CASE __UsualType.float
-      typeName := "XSharp.__VOFloat"
+      typeName := "XSharp.__Float"
     CASE __UsualType.logic
       RETURN typeof(System.Boolean)
     CASE __UsualType.long

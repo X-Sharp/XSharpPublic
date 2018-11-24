@@ -219,7 +219,7 @@ CLASS XSharp.OleAutoObject
 				IF (lDateTimeAsDate)
 					LOCAL oD AS System.DateTime
 					oD := (System.DateTime)oObject
-					uResult := XSharp.__VODate{oD}
+					uResult := XSharp.__Date{oD}
 				ELSE
 					oDt := (DateTime) oObject
 					uResult := oDT

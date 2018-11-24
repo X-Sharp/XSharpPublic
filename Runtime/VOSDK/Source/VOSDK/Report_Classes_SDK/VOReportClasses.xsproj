@@ -28,11 +28,6 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\GUI_Classes_SDK\VOGUIClasses.xsproj">
       <Name>VOGUIClasses</Name>
       <Project>{0bce49e2-3597-4e32-aa3c-c465130c05c8}</Project>

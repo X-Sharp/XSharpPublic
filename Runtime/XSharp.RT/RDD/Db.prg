@@ -1038,10 +1038,10 @@ FUNCTION DbCopyXStruct(cFile AS STRING) AS LOGIC STRICT
             
             lRetCode := DBAPPEND()
             
-            field_name  := aStruct[i, DBS_NAME]
-            field_type  := aStruct[i, DBS_TYPE]
-            field_len   := aStruct[i, DBS_LEN]
-            field_dec   := aStruct[i, DBS_DEC]
+            FieldPutSym(#field_name ,aStruct[i, DBS_NAME])
+            FieldPutSym(#field_type ,aStruct[i, DBS_TYPE])
+            FieldPutSym(#field_len  ,aStruct[i, DBS_LEN])
+            FieldPutSym(#field_dec  , aStruct[i, DBS_DEC])
             
         NEXT
         

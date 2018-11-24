@@ -6,17 +6,17 @@
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <ProjectGuid>c5d7be20-038e-4b42-a90a-b13bab83d8e5</ProjectGuid>
+    <ProjectGuid>ef8d2bf2-e81a-479a-ba4f-294c4c348b66</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.XPP</RootNamespace>
-    <AssemblyName>XSharp.XPP</AssemblyName>
+    <RootNamespace>XSharp.RT</RootNamespace>
+    <AssemblyName>XSharp.RT</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSharp.XPP</Name>
+    <Name>XSharp.RT</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
-    <OutputName>XSharp.VO</OutputName>
+    <Dialect>VO</Dialect>
+    <OutputName>XSharp.RT</OutputName>
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>False</Prefer32Bit>
@@ -117,22 +117,67 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Functions\Codeblock.prg" />
+    <Compile Include="Functions\CompilerSupport.prg" />
+    <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\Debugging.prg" />
+    <Compile Include="Functions\DiskIO.prg" />
+    <Compile Include="Functions\Error.prg" />
+    <Compile Include="Functions\File.prg" />
+    <Compile Include="Functions\Array.prg" />
+    <Compile Include="Functions\Date.prg" />
+    <Compile Include="Functions\Math.prg" />
+    <Compile Include="Functions\OS.prg" />
+    <Compile Include="Functions\Float.prg" />
+    <Compile Include="Functions\GC.prg" />
+    <Compile Include="Functions\Macro.prg" />
+    <Compile Include="Functions\Memo.prg" />
+    <Compile Include="Functions\Memory.prg" />
+    <Compile Include="Functions\MemVar.prg" />
+    <Compile Include="Functions\Misc.prg" />
+    <Compile Include="Functions\OOP.prg" />
+    <Compile Include="Functions\Psz.prg" />
+    <Compile Include="Functions\String.prg" />
+    <Compile Include="Functions\Symbol.prg" />
+    <Compile Include="Functions\Terminal.prg" />
+    <Compile Include="Functions\Transform.prg" />
+    <Compile Include="Functions\Usual.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="RDD\Blob.prg" />
+    <Compile Include="RDD\Db.prg" />
+    <Compile Include="RDD\DbBulk.prg" />
+    <Compile Include="RDD\Dbfunctions.prg" />
+    <Compile Include="RDD\DbOrder.prg" />
+    <Compile Include="RDD\Vodb.prg" />
+    <Compile Include="RDD\VoDbFunctions.prg" />
+    <Compile Include="Types\Array.prg" />
+    <Compile Include="Types\CodeBlock.prg" />
+    <Compile Include="Types\ArrayBase.prg" />
+    <Compile Include="Types\CompilerServices.prg" />
+    <Compile Include="Types\Date.prg" />
+    <Compile Include="Types\Float.prg" />
+    <Compile Include="Types\Interfaces.prg" />
+    <Compile Include="Types\NamedArg.prg" />
+    <Compile Include="Types\OleAutoObject.prg" />
+    <Compile Include="Types\OleAutoObjectFromFile.prg" />
+    <Compile Include="Types\OleDateTime.prg" />
+    <Compile Include="Types\PSZ.prg" />
+    <Compile Include="Types\FixedMemory.prg" />
+    <Compile Include="Types\Symbol.prg" />
+    <Compile Include="Types\Usual.prg" />
+    <Compile Include="Types\VObject.prg" />
+    <Compile Include="Types\WinBool.prg" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Functions" />
+    <Folder Include="RDD" />
     <Folder Include="Properties\" />
+    <Folder Include="Types\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
@@ -171,7 +216,7 @@ copy $(TargetPath) \xsharp\dev\xsharp\Runtime</PostBuildEvent>
     <NoStdDef>true</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
-    <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>

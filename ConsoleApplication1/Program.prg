@@ -3,19 +3,19 @@ using SYstem.XML
 using SYstem.XML.Linq
 using System.Linq
 using System.Collections.Generic
+using XSharp.RDD
+#include "dbcmds.vh"
 function start as void
-local dDate as date
+  local uValue as USUAL
+  local siValue as SHORT
+  uValue := -100
+  siValue := SHORT(uValue)
+  ? siValue
+  ? uValue
+ 
+wait
+return 
 
-dDate := CTOD("")
-if dDate == null_date
-  System.Console.WriteLine( e"CToD(\"\") is null_date" )
-else
-  System.Console.WriteLine( e"CToD(\"\") is NOT null_date" )
-  System.Console.WriteLine( e"CToD(\"\") ->" + DToC( dDate ) )
-  System.Console.WriteLine( "null_date ->" + DToC( null_date ) )
-endif
-    console.Read()
-    return
     
   
 

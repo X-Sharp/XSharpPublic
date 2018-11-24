@@ -756,11 +756,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             strType := sysType:ToString()
             // Compatibility ??
             BEGIN SWITCH strType
-            CASE "XSharp.__VODate"
-            CASE "Vulcan.__VODate"
+            CASE "XSharp.__Date"
                 tCode := TypeCode.DateTime
-            CASE "XSharp.__VOFloat"
-            CASE "Vulcan.__VOFloat"
+            CASE "XSharp.__Float"
                 tCode := TypeCode.Double
             OTHERWISE
                     //

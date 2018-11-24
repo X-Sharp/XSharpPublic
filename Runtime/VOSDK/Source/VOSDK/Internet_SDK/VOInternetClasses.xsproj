@@ -21,11 +21,6 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\System_Classes_SDK\VOSystemClasses.xsproj">
       <Name>VOSystemClasses</Name>
       <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
@@ -77,5 +72,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
- 
 </Project>

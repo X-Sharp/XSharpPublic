@@ -48,7 +48,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         cCondition := string.Empty
         nonAdditive := TRUE
         mustEval := FALSE
-        IF ! SELF:oRDD:_CheckVODateFormat()
+        IF ! SELF:oRDD:_CheckDateFormat()
             SELF:oRDD:_CheckError(1)
         ENDIF
         mode := 0u
@@ -392,7 +392,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         IF (SELF:oRDD:_SetPaths() != 0)
             RETURN FALSE
         ENDIF
-        SELF:oRDD:_CheckVODateFormat()
+        SELF:oRDD:_CheckDateFormat()
         SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:Table, OUT numIndexes))
         wLength := 1000
         indices := IntPtr[]{ wLength }

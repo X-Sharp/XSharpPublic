@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 3, (INT) a[4])
 			Assert.Equal( 4, (INT) a[5])
 			Assert.Equal( 0, (INT) a[6])
-			? a[1],a[2],a[3],a[4],a[5]
+			//? a[1],a[2],a[3],a[4],a[5]
 			
 			a := {}
 			ASort(a)

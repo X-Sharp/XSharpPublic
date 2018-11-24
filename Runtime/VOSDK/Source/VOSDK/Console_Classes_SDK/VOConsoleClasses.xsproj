@@ -25,11 +25,6 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
       <Name>VOWin32APILibrary</Name>
       <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
@@ -55,5 +50,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
- 
 </Project>

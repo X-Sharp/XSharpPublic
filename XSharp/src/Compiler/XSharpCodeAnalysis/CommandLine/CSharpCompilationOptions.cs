@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
 
         public RuntimeAssemblies RuntimeAssemblies ;
-        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
+        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }

@@ -27,8 +27,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         VulcanRT = 1,
         VulcanRTFuncs = 2,
         XSharpCore = 8,
-        XSharpVO = 16,
-        XSharpXPP = 32
+        XSharpRT = 16,
+        XSharpVO = 32,
+        XSharpXPP = 64
     }
 
     [Flags]
@@ -45,8 +46,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         Other =0,
         Core = 1,
         RDD = 2,
-        VO = 3,
-        XPP = 4
+        RT = 3,
+        VO = 4,
+        XPP = 5
     }
 
     public sealed partial class CSharpParseOptions
@@ -99,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
-        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
+        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
         public bool XPPInheritFromAbstract { get; private set; } = false;

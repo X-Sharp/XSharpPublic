@@ -161,6 +161,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case "xsharp.core.dll":
                                 options.TargetDLL = XSharpTargetDLL.Core;
                                 break;
+                            case "xsharp.rt.dll":
+                                options.TargetDLL = XSharpTargetDLL.RT;
+                                break;
                             case "xsharp.vo.dll":
                                 options.TargetDLL = XSharpTargetDLL.VO;
                                 break;
@@ -332,6 +335,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpAssemblyNames.XSharpCore:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
                     break;
+                case XSharpAssemblyNames.XSharpRT:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpRT;
+                    break;
                 case XSharpAssemblyNames.XSharpVO:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
                     break;
@@ -437,7 +443,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok;
                     isVo = true;
                 }
-                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD || options.TargetDLL == XSharpTargetDLL.XPP) {
+                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD || options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT) {
                     // Ok
                     isVo = true;
                 }

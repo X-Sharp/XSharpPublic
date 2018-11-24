@@ -430,6 +430,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.True(  ALen(  ACloneShallow({NULL_ARRAY,NULL_ARRAY}) ) == 2  )
 		Assert.True(  ACloneShallow({NULL_ARRAY})[1] == NULL_ARRAY  )
 
+	[Fact, Trait("Category", "DBFFuncs")];
+	METHOD DBCreate_Tests() AS VOID
+		LOCAL aFields AS ARRAY
+		aFields := {{"TEST","C",10,0}}
+
+		LOCAL cFileName_WithExt AS STRING
+		LOCAL cFileName_NoExt AS STRING
+		cFileName_NoExt := "C:\TEMP\testdbf"
+		cFileName_WithExt := cFileName_NoExt + ".dbf"
+		IF System.IO.File.Exists(cFileName_WithExt)
+			System.IO.File.Delete(cFileName_WithExt)
+		END IF
+		Assert.True(  DBCreate(cFileName_NoExt , aFields , "DBFNTX")  )
+		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
+		
+		IF System.IO.File.Exists(cFileName_WithExt)
+			System.IO.File.Delete(cFileName_WithExt)
+		END IF
+		Assert.True(  DBCreate(cFileName_WithExt , aFields , "DBFNTX")  )
+		Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 	END CLASS
 END NAMESPACE
 

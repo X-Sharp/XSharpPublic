@@ -751,8 +751,8 @@ BEGIN NAMESPACE XSharp.RDD
 			IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
 				SELF:_OpenInfo:Extension := ".DBF"
 				//
-				SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
 			ENDIF
+			SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
 			//
 			SELF:_Hot := FALSE
 			SELF:_FileName := SELF:_OpenInfo:FileName

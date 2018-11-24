@@ -546,7 +546,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var op in operators)
             {
 #if XSHARP
-                if (Compilation.Options.IsDialectVO && 
+                if (Compilation.Options.HasRuntime && 
                     (op.Kind.Operator() == BinaryOperatorKind.Addition || op.Kind.Operator() == BinaryOperatorKind.Subtraction))
                 {
                     // only include op_Addition op_Subtraction  with 2 float parameters.

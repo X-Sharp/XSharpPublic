@@ -27,7 +27,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         VulcanRT = 1,
         VulcanRTFuncs = 2,
         XSharpCore = 8,
-        XSharpVO = 16
+        XSharpRT = 16,
+        XSharpVO = 32,
+        XSharpXPP = 64
     }
 
     [Flags]
@@ -44,7 +46,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         Other =0,
         Core = 1,
         RDD = 2,
-        VO = 3
+        RT = 3,
+        VO = 4,
+        XPP = 5
     }
 
     public sealed partial class CSharpParseOptions
@@ -65,6 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; private set; }
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
+        public bool DumpAST { get; private set; }
         public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
         public bool NoClipCall { get; internal set; } 
@@ -72,6 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
+        public string StdDefs { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
@@ -90,14 +96,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public string DefaultNamespace { get; private set; }
-        public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
+        public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
-        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
+        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
+        public bool XPPInheritFromAbstract { get; private set; } = false;
+        public bool XPPUntypedmain { get; private set; } = false;
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
@@ -119,6 +127,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo14 => VOFloatConstants;
         public bool vo15 => VOUntypedAllowed;
         public bool vo16 => VOClipperConstructors;
+        public bool xpp1 => XPPInheritFromAbstract;
+        public bool xpp2 => XPPUntypedmain;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -129,12 +139,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 DefaultNamespace = opt.NameSpace;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
+                DumpAST = opt.DumpAST;
                 WindowsDir = opt.WindowsDir;
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
                 NoClipCall = opt.NoClipCall;
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
+                StdDefs = opt.StdDefs;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;
@@ -155,7 +167,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
                 VOClipperConstructors = opt.Vo16;
-
+                XPPInheritFromAbstract = opt.Xpp1;
+                XPPUntypedmain = opt.Xpp2;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -183,6 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DebugEnabled = opt.DebugEnabled;
             DefaultIncludeDir = opt.DefaultIncludeDir;
             Dialect = opt.Dialect;
+            DumpAST = opt.DumpAST;
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             DefaultNamespace = opt.DefaultNamespace;
@@ -194,6 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             PreprocessorOutput = opt.PreprocessorOutput;
             ParseLevel = opt.ParseLevel;
             SaveAsCSharp = opt.SaveAsCSharp;
+            StdDefs = opt.StdDefs;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
@@ -212,6 +227,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             VOClipperConstructors = opt.VOClipperConstructors; // vo16
+            XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
+            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2 
+
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;

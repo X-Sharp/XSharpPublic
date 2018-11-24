@@ -1812,7 +1812,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #if XSHARP
                 //Dynamic operation for VO & Latebinding -> use conversion
-                else if (Compilation.Options.IsDialectVO && 
+                else if (Compilation.Options.HasRuntime && 
                     Compilation.Options.LateBinding &&
                     op1.Type == Compilation.UsualType())
                 {
@@ -2190,7 +2190,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     diagnostics.Add(node, useSiteDiagnostics);
 
 #if XSHARP
-                    if (Compilation.Options.IsDialectVO && !isAccessible && failedThroughTypeCheck)
+                    if (Compilation.Options.HasRuntime && !isAccessible && failedThroughTypeCheck)
                     {
                         isAccessible = true;
                     }
@@ -2245,7 +2245,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     diagnostics.Add(node, useSiteDiagnostics);
 
 #if XSHARP
-                    if (Compilation.Options.IsDialectVO && !isAccessible && failedThroughTypeCheck)
+                    if (Compilation.Options.HasRuntime && !isAccessible && failedThroughTypeCheck)
                     {
                         isAccessible = true;
                     }
@@ -2440,7 +2440,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagnostics = new DiagnosticBag();
             }
 #if XSHARP
-            if (Compilation.Options.IsDialectVO && targetType == Compilation.PszType())
+            if (Compilation.Options.HasRuntime && targetType == Compilation.PszType())
             {
                 if (IsNullNode(expression))
                 {

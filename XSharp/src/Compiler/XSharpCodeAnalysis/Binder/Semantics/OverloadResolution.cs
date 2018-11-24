@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
             useSiteDiagnostics = null;
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var asm1 = m1.Member.ContainingAssembly;
                 var asm2 = m2.Member.ContainingAssembly;
@@ -569,7 +569,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BetterResult.Left;
                 }
             }
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var usualType = Compilation.UsualType();
                 if (left.Type != usualType)

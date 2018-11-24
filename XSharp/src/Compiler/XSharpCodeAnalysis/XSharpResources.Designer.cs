@@ -9935,6 +9935,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to XPP: Class {0} has been declared..
+        /// </summary>
+        internal static string ERR_XPPClassNotFound {
+            get {
+                return ResourceManager.GetString("ERR_XPPClassNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Multiple Inheritance is not supported by the .Net Runtime..
+        /// </summary>
+        internal static string ERR_XPPMultipleInheritance {
+            get {
+                return ResourceManager.GetString("ERR_XPPMultipleInheritance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The yield statement cannot be used inside an anonymous method or lambda expression.
         /// </summary>
         internal static string ERR_YieldInAnonMeth {
@@ -12483,7 +12501,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The compiler generated an automatic conversion from PSZ. This will create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and memory the lifetime of the PSZ yourself..
+        ///   Looks up a localized string similar to The compiler generated an automatic conversion to PSZ. This may create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself..
         /// </summary>
         internal static string WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak {
             get {
@@ -14748,6 +14766,78 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_XMLParseIncludeError_Title {
             get {
                 return ResourceManager.GetString("WRN_XMLParseIncludeError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: ASSIGNMENT clause for instance variables is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_XPPAssignmentClause {
+            get {
+                return ResourceManager.GetString("WRN_XPPAssignmentClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: FROZEN method modifier is not supported and ignored..
+        /// </summary>
+        internal static string WRN_XPPFrozedNotSupported {
+            get {
+                return ResourceManager.GetString("WRN_XPPFrozedNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Method {0} has NOT been declared..
+        /// </summary>
+        internal static string WRN_XPPMethodNotDeclared {
+            get {
+                return ResourceManager.GetString("WRN_XPPMethodNotDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Method {0} has been declared but has not been implemented..
+        /// </summary>
+        internal static string WRN_XPPMethodNotImplemented {
+            get {
+                return ResourceManager.GetString("WRN_XPPMethodNotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: READONLY clause for instance variables is not supported (yet) and ignored..
+        /// </summary>
+        internal static string WRN_XPPReadonlyClause {
+            get {
+                return ResourceManager.GetString("WRN_XPPReadonlyClause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: Variables are SHARED by default in .Net.
+        /// </summary>
+        internal static string WRN_XPPSharedIsDefault {
+            get {
+                return ResourceManager.GetString("WRN_XPPSharedIsDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime..
+        /// </summary>
+        internal static string WRN_XPPSuperIVarsAlwaysShared {
+            get {
+                return ResourceManager.GetString("WRN_XPPSuperIVarsAlwaysShared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The XPP: VAR .. IS .. IN ..  clause is not supported. There is no multiple inheritance, so this is no longer needed..
+        /// </summary>
+        internal static string WRN_XPPVarIsInNotSupported {
+            get {
+                return ResourceManager.GetString("WRN_XPPVarIsInNotSupported", resourceCulture);
             }
         }
         

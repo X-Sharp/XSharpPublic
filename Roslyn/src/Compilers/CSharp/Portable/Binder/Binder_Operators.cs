@@ -1112,7 +1112,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.Free();
 #if XSHARP
             // When failed, then try again if RHS is < 4 bytes. Some method in Vulcan have only overloads for Int32 and UInt32 and higher
-            if (!possiblyBest.HasValue && Compilation.Options.IsDialectVO && right.Type != null)
+            if (!possiblyBest.HasValue && Compilation.Options.HasRuntime && right.Type != null)
             {
                 var st = right.Type.SpecialType;
                 bool tryAgain = false;
@@ -1615,7 +1615,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                     // Vulcan folds literals and uses int64 buffers internally to prevent overflow errors
                     // we emulate that by using Unchecked for the VO & Vulcan dialect
-                    if (Compilation.Options.IsDialectVO)
+                    if (Compilation.Options.HasRuntime)
                         newValue = FoldUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
                     else
                         newValue = FoldCheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
@@ -2247,7 +2247,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
             if (Compilation.Options.VOImplicitCastsAndConversions)
                 allowManagedAddressOf = true;
-            if (Compilation.Options.IsDialectVO && Compilation.Options.AllowUnsafe)
+            if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
                 allowManagedAddressOf = true;
 #else
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
@@ -2269,11 +2269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (!isFixedStatementAddressOfExpression)
                         {
                             Error(diagnostics, ErrorCode.WRN_AddrOfMovable, node);
-                            if (!this.Compilation.Options.AllowUnsafe)
-                            {
-                                Error(diagnostics, ErrorCode.ERR_UnsafeNeeded, node);
-                                hasErrors = true;
-                            }
+                            hasErrors = true;
                         }
 #else
                         Error(diagnostics, isFixedStatementAddressOfExpression ? ErrorCode.ERR_FixedNotNeeded : ErrorCode.ERR_FixedNeeded, node);

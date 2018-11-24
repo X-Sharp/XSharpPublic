@@ -4478,7 +4478,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /langversion:&lt;string&gt;         Specify language version mode: ISO-1, ISO-2, 3,
                                4, 5, 6, Default, or Latest
 
-                        - VULCAN COMPATIBILITY -
+                        - XBASE COMPATIBILITY -
  /az[+|-]                       Use Zero based arrays
  /cs[+|-]                       Case Sensitivity on/off
  /dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
@@ -4505,6 +4505,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /vo14[+|-]                     Use Float Literals
  /vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
  /vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
+ /xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
+ /xpp2[+|-]                     Use untyped Main() function instead of typed Start() function
 
                         - PREPROCESOR -
 
@@ -4513,6 +4515,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /ppo[+|-]                      Generate preprocessor output
  /showincludes[+|-]             Show names from include files that are processed in the ppo file output
  /showdefs[+|-]                 Show the defines that were added from the #define commands and their usage
+ /stddefs:&lt;file&gt;                  Override the name of the standard defines file (default = XSharpDefs.xh)
 
                         - SECURITY -
  /delaysign[+|-]               Delay-sign the assembly using only the public 
@@ -5271,5 +5274,35 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak" xml:space="preserve">
     <value>The compiler generated an automatic conversion to PSZ. This may create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself.</value>
   </data>
-
+  <!--XPP dialect Error messages-->
+  <data name="ERR_XPPMultipleInheritance" xml:space="preserve">
+    <value>XPP: Multiple Inheritance is not supported by the .Net Runtime.</value>
+  </data>
+  <data name="WRN_XPPSuperIVarsAlwaysShared" xml:space="preserve">
+    <value>XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</value>
+  </data>
+  <data name="WRN_XPPFrozedNotSupported" xml:space="preserve">
+    <value>The XPP: FROZEN method modifier is not supported and ignored.</value>
+  </data>
+  <data name="WRN_XPPVarIsInNotSupported" xml:space="preserve">
+    <value>The XPP: VAR .. IS .. IN ..  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
+  </data>
+  <data name="WRN_XPPSharedIsDefault" xml:space="preserve">
+    <value>XPP: Variables are SHARED by default in .Net</value>
+  </data>
+  <data name="WRN_XPPAssignmentClause" xml:space="preserve">
+    <value>The XPP: ASSIGNMENT clause for instance variables is not supported (yet) and ignored.</value>
+  </data>
+  <data name="WRN_XPPReadonlyClause" xml:space="preserve">
+    <value>The XPP: READONLY clause for instance variables is not supported (yet) and ignored.</value>
+  </data>
+  <data name="WRN_XPPMethodNotImplemented" xml:space="preserve">
+    <value>XPP: Method {0} has been declared but has not been implemented.</value>
+  </data>
+  <data name="WRN_XPPMethodNotDeclared" xml:space="preserve">
+    <value>XPP: Method {0} has NOT been declared.</value>
+  </data>
+  <data name="ERR_XPPClassNotFound" xml:space="preserve">
+    <value>XPP: Class {0} has been declared.</value>
+  </data>
 </root>

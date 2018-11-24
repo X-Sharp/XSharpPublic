@@ -23,12 +23,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vulcan = 2,
         Harbour = 3,
         FoxPro = 4,
-        XBasePP = 5,
+        XPP = 5,
         dBase = 6,
     }
     public static class DialectExtensions
     {
-        public static bool IsDialectVO (this XSharpDialect dialect)
+        public static bool HasRuntime (this XSharpDialect dialect)
         {
             return dialect != XSharpDialect.Core;
         }
@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XBasePP:
+				case XSharpDialect.XPP:
                     return true;
                 default:
                     return false;
@@ -76,8 +76,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XBasePP:
                     return true;
+                case XSharpDialect.XPP:
                 default:
                     return false;
             }
@@ -89,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XBasePP:
+				case XSharpDialect.XPP:
                     return true;
                 default:
                     return false;
@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Harbour:
-				case XSharpDialect.XBasePP:
+				case XSharpDialect.XPP:
                     return true;
                 default:
                     return false;

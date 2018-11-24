@@ -81,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         builder.Append('(');
                         bool comma = false;
                         var type = parameters[0].Type as ArrayTypeSymbol;
-                        foreach (var par in ent.Params)
+                        foreach (var par in ent.Params._Params)
                         {
                             if (comma)
                             {

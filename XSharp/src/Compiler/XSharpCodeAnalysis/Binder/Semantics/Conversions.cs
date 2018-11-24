@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.IsDialectVO && destination != null && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && destination != null && source is NamedTypeSymbol)
             {
                 var nts = source as NamedTypeSymbol;
                 if (nts.ConstructedFrom == _binder.Compilation.UsualType())
@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv)
         {
-            if (_binder.Compilation.Options.IsDialectVO && destination is NamedTypeSymbol)
+            if (_binder.Compilation.Options.HasRuntime && destination is NamedTypeSymbol)
             {
                 var usualType = _binder.Compilation.UsualType();
                 var nts = destination as NamedTypeSymbol;
@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type);
 
-            if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.IsDialectVO)
+            if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.HasRuntime)
             {
                 if (type == Compilation.CodeBlockType() || type == Compilation.UsualType() || type.IsObjectType())
                 {
@@ -464,7 +464,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             }
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
                 return ClassifyVOImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             else
                 return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
@@ -476,7 +476,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (args is ArrayTypeSymbol)
             {
                 var ats = args as ArrayTypeSymbol;
-                if (Compilation.Options.IsDialectVO)
+                if (Compilation.Options.HasRuntime)
                 {
                     result = (ats.ElementType == Compilation.UsualType());
                 }

@@ -681,7 +681,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 SyntaxTree def = null ;
                 bool isApp = Options.OutputKind.IsApplication();
-                if (Options.IsDialectVO)
+                if (Options.HasRuntime)
                 {
                     if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
                     {

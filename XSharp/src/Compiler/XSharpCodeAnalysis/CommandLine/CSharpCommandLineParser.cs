@@ -161,11 +161,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case "xsharp.core.dll":
                                 options.TargetDLL = XSharpTargetDLL.Core;
                                 break;
+                            case "xsharp.rt.dll":
+                                options.TargetDLL = XSharpTargetDLL.RT;
+                                break;
                             case "xsharp.vo.dll":
                                 options.TargetDLL = XSharpTargetDLL.VO;
                                 break;
                             case "xsharp.rdd.dll":
                                 options.TargetDLL = XSharpTargetDLL.RDD;
+                                break;
+                            case "xsharp.xpp.dll":
+                                options.TargetDLL = XSharpTargetDLL.XPP;
                                 break;
                             default:
                                 options.TargetDLL = XSharpTargetDLL.Other;
@@ -224,8 +230,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "showincludes":
                     options.ShowIncludes = positive;
                     break;
+                case "stddefs":
+                    if (value == null)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/stddefs:");
+                    }
+                    else
+                    {
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
+                            value = value.Substring(1, value.Length - 2);
+                        options.StdDefs = value;
+                    }
+                    break;
+
+
                 case "tocs":
                     options.SaveAsCSharp = positive;
+                    break;
+                case "ast":
+                    options.DumpAST = positive;
                     break;
                 case "verbose":
                     options.Verbose = true;
@@ -285,6 +308,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     name = "warnaserror+";
                     handled = false;
                     break;
+                case "xpp1":       // classes inherit from XPP.Abstract
+                    options.Xpp1 = positive;
+                    break;
+                case "xpp2":       // untyped main instead of Start
+                    options.Xpp2 = positive;
+                    break;
                 default:
                     name = oldname;
                     handled = false;
@@ -297,17 +326,23 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
             {
-                case OurAssemblyNames.VulcanRTFuncs:
+                case VulcanAssemblyNames.VulcanRTFuncs:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
                     break;
-                case OurAssemblyNames.VulcanRT:
+                case VulcanAssemblyNames.VulcanRT:
                     options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
                     break;
-                case OurAssemblyNames.XSharpCore:
+                case XSharpAssemblyNames.XSharpCore:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
                     break;
-                case OurAssemblyNames.XSharpVO:
+                case XSharpAssemblyNames.XSharpRT:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpRT;
+                    break;
+                case XSharpAssemblyNames.XSharpVO:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
+                    break;
+                case XSharpAssemblyNames.XSharpXPP:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
                     break;
                 case "mscorlib":
                 case "system":
@@ -373,7 +408,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 case "xbase++":
                 case "xbasepp":
-                    dialect = XSharpDialect.XBasePP;
+                case "xpp":
+                    dialect = XSharpDialect.XPP;
                     return true;
                 default:
                     dialect = XSharpDialect.Core;
@@ -394,16 +430,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!options.NamedArgsHasBeenSet)
                     options.AllowNamedArguments = false;
             }
-            if (options.Dialect.IsDialectVO()) {
+            if (newDialect == XSharpDialect.XPP && options.TargetDLL == XSharpTargetDLL.XPP)
+            { 
+                newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
+            }
+            if (newDialect.HasRuntime()) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
                     isVo = true;
                 }
-                else if (options.XSharpVOIncluded) {
+                else if (options.XSharpVOIncluded || options.XSharpXPPIncluded) {
                     // Ok;
                     isVo = true;
                 }
-                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD) {
+                else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD || options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT) {
                     // Ok
                     isVo = true;
                 }

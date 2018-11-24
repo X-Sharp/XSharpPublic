@@ -156,7 +156,7 @@ namespace XSharp.Parser
             try
             {
                 var lexer = XSharpLexer.Create(sourceText, fileName, options);
-                lexer.AllowXBaseVariables = options.Dialect.AllowXBaseVariables();
+                lexer.Options = options;
                 var tokenStream = lexer.GetTokenStream();
                 tokenStream.Fill();
                 tokens = tokenStream; 

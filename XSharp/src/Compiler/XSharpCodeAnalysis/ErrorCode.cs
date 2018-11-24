@@ -1575,6 +1575,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_FunctionsTakePrecedenceOverMethods = 9066,
         ERR_InterfaceImplementationDifferentCallingConvention = 9067,
         WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak = 9068,
+        // XPP dialect Error messages
+        ERR_XPPMultipleInheritance = 9200,
+        WRN_XPPSuperIVarsAlwaysShared = 9201,
+        WRN_XPPFrozedNotSupported = 9202,
+        WRN_XPPVarIsInNotSupported = 9203,
+        WRN_XPPSharedIsDefault  = 9204,
+        WRN_XPPAssignmentClause = 9205,
+        WRN_XPPReadonlyClause = 9206,
+        WRN_XPPMethodNotImplemented = 9207,
+        WRN_XPPMethodNotDeclared = 9208,
+        ERR_XPPClassNotFound = 9209,
         #endregion X#-only messages
     }
 }

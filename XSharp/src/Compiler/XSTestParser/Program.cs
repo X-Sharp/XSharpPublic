@@ -167,12 +167,11 @@ namespace ParserTester
 		{
 			var stream = new AntlrInputStream(code.ToString());
 			var lexer = new XSharpLexer(stream);
-			lexer.AllowFourLetterAbbreviations = true;
-			lexer.AllowOldStyleComments = true;
+            lexer.Options = new CSharpParseOptions();
 			var tokens = new CommonTokenStream(lexer);
 			var parser = new XSharpParser(tokens);
-			parser.AllowXBaseVariables = true;
-			var errorListener = new XSharpErrorListener(showErrors);
+            parser.Options = lexer.Options;
+            var errorListener = new XSharpErrorListener(showErrors);
 			parser.AddErrorListener(errorListener);
 			var tree = parser.source();
 			//Console.WriteLine(tree.ToStringTree());
@@ -182,7 +181,7 @@ namespace ParserTester
 	internal class XSharpErrorListener : IAntlrErrorListener<IToken>
 	{
 		public int TotalErrors { get; private set; }
-		private bool _showErrors;
+		private readonly bool _showErrors;
 		internal XSharpErrorListener(bool ShowErrors)
 		{
 			TotalErrors = 0;

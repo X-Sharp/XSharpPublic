@@ -82,6 +82,7 @@
       <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Parser\VsParser.cs" />
+    <Compile Include="Parser\XSharpXPPTreeTransformation.cs" />
     <Compile Include="Symbols\PETypedNameSymbol.cs" />
     <Compile Include="Syntax\XSharpSourceLocation.cs" />
     <Compile Include="XSharpResources.Designer.cs">

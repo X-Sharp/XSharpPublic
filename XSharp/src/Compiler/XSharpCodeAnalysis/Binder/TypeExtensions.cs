@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp___VODate);
+                return compilation.GetWellKnownType(WellKnownType.XSharp___Date);
             }
             else
             {
@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp___VOFloat);
+                return compilation.GetWellKnownType(WellKnownType.XSharp___Float);
             }
             else
             {
@@ -171,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp_VO_Functions);
+                return compilation.GetWellKnownType(WellKnownType.XSharp_RT_Functions);
             }
             else
             {

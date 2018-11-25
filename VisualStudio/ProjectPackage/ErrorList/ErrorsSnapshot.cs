@@ -96,8 +96,8 @@ namespace XSharp.Project
                         content = ErrorRank.Lexical;
                         return true;
                     case StandardTableKeyNames.ProjectGuid:
-                        content = _projectGuid;
-                        return false;
+                        content = error.ProjectGuid; // _projectGuid;
+                        return true;
                     case StandardTableKeyNames.HelpKeyword:
                         content = "";
                         return true;
@@ -117,7 +117,7 @@ namespace XSharp.Project
                         content = new string[] {  };
                         return true;
                     case ProjectGuids:
-                        content = new Guid[] {  };
+                        content = new Guid[] { error.ProjectGuid };
                         return true;
 
                 }

@@ -51,6 +51,11 @@ namespace XSharp.Project
         /// </summary>
         string BuildTool { get; set; }
 
+        /// <summary>
+        /// ProjectGuid
+        /// </summary>
+        Guid ProjectGuid { get; set; }
+
         string Key { get; }
     }
     internal class ErrorListItem : IErrorListItem,  XSharpModel.IXErrorPosition
@@ -80,6 +85,8 @@ namespace XSharp.Project
         public string ErrorCategory { get; set; }
         public string BuildTool { get; set; }
 
+        public Guid ProjectGuid { get; set; }
+
         public string Key
         {
             get
@@ -87,6 +94,7 @@ namespace XSharp.Project
                 return Filename + Line.ToString() + Column.ToString()+ErrorCode;
             }
         }
+
     }
 
 }

@@ -32,7 +32,7 @@ namespace XSharp.Project
         internal const string VO2Caption = "Initialize strings";
         internal const string VO3Caption = "All instance methods virtual";
         internal const string VO4Caption = "Implicit signed/unsigned conversions";
-        internal const string VO5Caption = "Implicit CLIPPER calling convention";
+        internal const string VO5Caption = "Implicit Clipper calling convention";
         internal const string VO6Caption = "Implicit pointer conversions";
         internal const string VO7Caption = "Implicit casts and conversions";
         internal const string VO8Caption = "Compatible preprocessor";
@@ -44,11 +44,12 @@ namespace XSharp.Project
         internal const string VO14Caption = "Use FLOAT literals";
         internal const string VO15Caption = "Treat missing types as USUAL";
         internal const string VO16Caption = "Generate Clipper constructors";
+        internal const string XPP1Caption = "Inherit from Abstract class";
         internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
         internal const string VO4Description = "Implicit signed/unsigned integer conversions (/vo4)";
-        internal const string VO5Description = "Methods without parameters and calling convention are compiled as CLIPPER calling convention (/vo5). Please note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention (/vo7)";
+        internal const string VO5Description = "Methods without parameters and calling convention are compiled as Clipper calling convention (/vo5). Please note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention (/vo7)";
         internal const string VO6Description = "Implicit conversions between typed function PTR and PTR (/vo6)";
         internal const string VO7Description = "Compatible implicit casts and Conversions (/vo7)";
         internal const string VO8Description = "Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines (/vo8)";
@@ -60,6 +61,7 @@ namespace XSharp.Project
         internal const string VO14Description = "Store floating point literals as FLOAT and not as System.Double (REAL8)  (/vo14)";
         internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL (/vo15)";
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
+        internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
         internal const string CMDCaption = "Extra Command Line Options";
         internal const string AZCaption = "Use Zero Based Arrays";
         internal const string CSCaption = "Case Sensitive";
@@ -79,6 +81,7 @@ namespace XSharp.Project
         internal const string UnsafeDescription = "Allow Unsafe code inside this assembly (/unsafe)";
 
         internal const string CatCompatibility = "VO/Vulcan Compatibility";
+        internal const string XPPCompatibility = "Xbase++ Compatibility";
         internal const string CatGeneral = "General";
         internal const string CatNamespaces = "Namespaces";
 
@@ -108,6 +111,7 @@ namespace XSharp.Project
         private bool vo14;
         private bool vo15;
         private bool vo16;
+        private bool xpp1;
         #endregion Fields
 
         #region Constructors
@@ -283,6 +287,12 @@ namespace XSharp.Project
         {
             get { return this.vo16; }
             set { this.vo16 = value; this.IsDirty = true; }
+        }
+        [Category(XPPCompatibility), DisplayName(XPP1Caption), Description(XPP1Description)]
+        public bool XPP1
+        {
+            get { return this.xpp1; }
+            set { this.xpp1 = value; this.IsDirty = true; }
         }
 
         #endregion

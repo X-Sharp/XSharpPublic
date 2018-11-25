@@ -13,16 +13,17 @@ using System.ComponentModel;
 
 namespace XSharp.Project
 {
+
     /// <summary>
     /// This class wraps the complexity of the error list
     /// Each project gets its own copy of this class
     /// but they all share the same ErrorListProvider and IErrorList control
     /// and ITableManager manager
     /// </summary>
-    internal class ErrorListManager 
+    internal class ErrorListManager
     {
         static Dictionary<Guid, ErrorListManager> _projects;
-        static ErrorListProvider _provider  = null;
+        static ErrorListProvider _provider = null;
         static Microsoft.VisualStudio.Shell.IErrorList _errorList;
         static ITableManager _manager;
         static object _gate;
@@ -32,7 +33,7 @@ namespace XSharp.Project
         internal IList<IErrorListItem> IntellisenseErrors { get; set; }
         bool dirty;
 
-        internal ErrorListManager( XSharpProjectNode node)
+        internal ErrorListManager(XSharpProjectNode node)
         {
             Project = node;
             BuildErrors = new List<IErrorListItem>();
@@ -107,21 +108,21 @@ namespace XSharp.Project
             }
 
         }
-        internal void AddBuildError(string file, int line, int column, string errCode, 
+        internal void AddBuildError(string file, int line, int column, string errCode,
             string message, MessageSeverity sev)
         {
             this.AddError(BuildErrors, file, line, column, 1, errCode, message, Project.Caption, sev, ErrorSource.Build);
         }
 
-        internal void AddIntellisenseError(string file, int line, int column, int length, string errCode, 
-            string message,  MessageSeverity sev)
+        internal void AddIntellisenseError(string file, int line, int column, int length, string errCode,
+            string message, MessageSeverity sev)
         {
-            this.AddError(IntellisenseErrors, file, line, column, length,  errCode, message, Project.Caption, sev, ErrorSource.Other);
+            this.AddError(IntellisenseErrors, file, line, column, length, errCode, message, Project.Caption, sev, ErrorSource.Other);
         }
 
         internal void ClearBuildErrors()
         {
-            lock(this)
+            lock (this)
             {
                 // Replace collection to prevent MT errors
                 if (BuildErrors.Count != 0)
@@ -133,7 +134,7 @@ namespace XSharp.Project
             }
         }
 
-        private void AddError(IList<IErrorListItem> errors, string file, int line, int column, int length, string errCode, string message, 
+        private void AddError(IList<IErrorListItem> errors, string file, int line, int column, int length, string errCode, string message,
             string projectName, MessageSeverity sev, ErrorSource errorSource)
         {
             var item = new ErrorListItem()
@@ -141,13 +142,15 @@ namespace XSharp.Project
                 Filename = file,
                 Line = line,
                 Column = column,
-                Length = length, 
+                Length = length,
                 ErrorCode = errCode,
                 Message = message,
                 ProjectName = projectName,
                 ErrorSource = errorSource,
                 Severity = sev,
-                BuildTool = errorSource == ErrorSource.Build ? "Build" : "Live"
+                BuildTool = errorSource == ErrorSource.Build ? "Build" : "Live",
+                ProjectGuid = Project.ProjectIDGuid
+                //Manager = this
             };
             lock (this)
             {
@@ -164,7 +167,7 @@ namespace XSharp.Project
             IList<IErrorListItem> errors = new List<IErrorListItem>();
             Dictionary<string, string> keys = new Dictionary<string, string>();
 
-            if (_errorList.AreBuildErrorSourceEntriesShown )
+            if (_errorList.AreBuildErrorSourceEntriesShown)
             {
                 var buildErrors = BuildErrors;
                 foreach (var item in buildErrors)
@@ -218,7 +221,7 @@ namespace XSharp.Project
             }
         }
 
-        internal List<XSharpModel.IXErrorPosition> GetIntellisenseErrorPos( string fileName )
+        internal List<XSharpModel.IXErrorPosition> GetIntellisenseErrorPos(string fileName)
         {
             // dedupe errors based on filename, row, column, 
             List<XSharpModel.IXErrorPosition> errorPos = new List<XSharpModel.IXErrorPosition>();
@@ -244,7 +247,7 @@ namespace XSharp.Project
                         isOpen = Project.IsDocumentOpen(file);
                         filenames.Add(file, isOpen);
                     }
-                    if (isOpen && !keys.ContainsKey(key) && (file==fileName))
+                    if (isOpen && !keys.ContainsKey(key) && (file == fileName))
                     {
                         errorPos.Add(item);
                         keys.Add(key, key);
@@ -266,4 +269,5 @@ namespace XSharp.Project
         }
 
     }
+
 }

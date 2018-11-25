@@ -9,6 +9,12 @@ namespace XSharp.MacroCompiler
 {
     using Syntax;
 
+    internal enum BindAffinity
+    {
+        Access,
+        Invoke,
+    }
+
     internal partial class Binder
     {
         static NamespaceSymbol Global = null;

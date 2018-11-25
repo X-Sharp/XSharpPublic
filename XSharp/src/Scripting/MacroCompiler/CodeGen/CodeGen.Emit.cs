@@ -171,6 +171,9 @@ namespace XSharp.MacroCompiler
                 case NativeType.Object:
                     ilg.Emit(OpCodes.Ldnull);
                     break;
+                case NativeType.Usual:
+                    EmitDefault(ilg, c.Type);
+                    break;
                 default:
                     throw new Exception("Unexpected literal kind");
             }
@@ -541,6 +544,8 @@ namespace XSharp.MacroCompiler
             switch (op.Kind)
             {
                 case BinaryOperatorKind.Concat:
+                case BinaryOperatorKind.ConcatStringObject:
+                case BinaryOperatorKind.ConcatObjectString:
                     ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Concat) as MethodSymbol).Method);
                     break;
                 case BinaryOperatorKind.Addition:

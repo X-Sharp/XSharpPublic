@@ -18,6 +18,7 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class Expr : Node
     {
         internal TypeSymbol Datatype = null;
+        internal BindAffinity Affinity = BindAffinity.Access;
     }
     internal partial class StoreTemp : Expr
     {
@@ -73,7 +74,10 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
             if (Symbol == null)
             {
-                Binder.Convert(ref Expr, Compilation.GetNativeType(NativeType.Object));
+                if (Affinity == BindAffinity.Invoke)
+                    Binder.Convert(ref Expr, Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object));
+                else
+                    Binder.Convert(ref Expr, Compilation.GetNativeType(NativeType.Object));
                 Symbol = new DynamicSymbol(Member.LookupName);
             }
             Datatype = (Symbol as TypedSymbol)?.Type;
@@ -205,6 +209,13 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = (Symbol as Constant)?.Type;
             return null;
         }
+        internal static LiteralExpr Bound(Constant c)
+        {
+            var e = new LiteralExpr(TokenType.LAST, null);
+            e.Symbol = c;
+            e.Datatype = (e.Symbol as Constant)?.Type;
+            return e;
+        }
     }
     internal partial class SelfExpr : Expr
     {
@@ -284,9 +295,22 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Self = null;
         internal override Node Bind(Binder b)
         {
+            Expr.Affinity = BindAffinity.Invoke;
             b.Bind(ref Expr);
             b.Bind(ref Args);
-            Symbol = b.BindCall(Expr, Args, out Self);
+            if (Expr.Symbol is DynamicSymbol)
+            {
+                Symbol = Binder.Lookup(XSharpQualifiedFunctionNames.InternalSend) ?? Binder.Lookup(VulcanQualifiedFunctionNames.InternalSend);
+                var a = new List<Arg>(3);
+                a.Add(new Arg((Expr as MemberAccessExpr)?.Expr));
+                a.Add(new Arg(LiteralExpr.Bound(Constant.Create((Expr.Symbol as DynamicSymbol).Name))));
+                a.Add(new Arg(LiteralArray.Bound(Args.Args)));
+                Args = new ArgList(a);
+            }
+            else
+            {
+                Symbol = b.BindCall(Expr, Args, out Self);
+            }
             Datatype = ((MethodSymbol)Symbol)?.Type;
             return null;
         }
@@ -322,6 +346,35 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class LiteralArray : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Values);
+            Convert(Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object));
+            return null;
+        }
+        internal static LiteralArray Bound(IList<Expr> values)
+        {
+            return new LiteralArray(new ExprList(values));
+        }
+        internal static LiteralArray Bound(IList<Arg> args)
+        {
+            var values = new List<Expr>(args.Count);
+            foreach(var a in args) values.Add(a.Expr);
+            var e = new LiteralArray(new ExprList(values));
+            e.Convert(Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object));
+            return e;
+        }
+        private void Convert(TypeSymbol t)
+        {
+            for (int i = 0; i < Values.Exprs.Count; i++)
+            {
+                var v = Values.Exprs[i];
+                Binder.Convert(ref v, t);
+                Values.Exprs[i] = v;
+            }
+            Symbol = t;
+            Datatype = Binder.ArrayOf(t);
+        }
     }
     internal partial class ArgList : Node
     {

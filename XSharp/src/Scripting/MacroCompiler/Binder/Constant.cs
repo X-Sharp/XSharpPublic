@@ -20,6 +20,7 @@ namespace XSharp.MacroCompiler
         internal static ConstantWithValue<decimal> Create(decimal value) { return new ConstantWithValue<decimal>(value, NativeType.Decimal); }
         internal static ConstantWithValue<string> Create(string value) { return new ConstantWithValue<string>(value, NativeType.String); }
         internal static ConstantWithValue<DateTime> Create(DateTime value) { return new ConstantWithValue<DateTime>(value, NativeType.DateTime); }
+        internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
@@ -55,5 +56,11 @@ namespace XSharp.MacroCompiler
         internal override DateTime? DateTime { get { return Value as DateTime?; } }
 
         public override string ToString() { return Value.ToString(); }
+    }
+    internal class ConstantDefault : Constant
+    {
+        internal ConstantDefault(TypeSymbol type) { Type = type; }
+
+        internal override TypeSymbol Type { get; }
     }
 }

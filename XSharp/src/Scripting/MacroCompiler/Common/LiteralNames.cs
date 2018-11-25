@@ -127,6 +127,8 @@
         internal const string MemVarPut = "global::VulcanRTFuncs.Functions.__MemVarPut";
         internal const string IVarGet = "global::VulcanRTFuncs.Functions.IVarGet";
         internal const string IVarPut = "global::VulcanRTFuncs.Functions.IVarPut";
+        internal const string InternalSend = "global::VulcanRTFuncs.Functions.__InternalSend";
+        internal const string ASend = "global::VulcanRTFuncs.Functions.ASend";
         internal const string NullDate = "global::Vulcan.__VODate.NullDate";
         internal const string PszRelease = "global::Vulcan.Internal.CompilerServices.String2PszRelease";
         internal const string String2Psz = "global::Vulcan.Internal.CompilerServices.String2Psz";
@@ -165,6 +167,8 @@
         internal const string MemVarPut = "global::XSharp.VO.Functions.__MemVarPut";
         internal const string IVarGet = "global::XSharp.VO.Functions.IVarGet";
         internal const string IVarPut = "global::XSharp.VO.Functions.IVarPut";
+        internal const string InternalSend = "global::XSharp.VO.Functions.__InternalSend";
+        internal const string ASend = "global::XSharp.VO.Functions.ASend";
         internal const string NullDate = "global::XSharp.__VODate.NullDate";
         //internal const string UsualNIL = "global::XSharp.__Usual._NIL";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";

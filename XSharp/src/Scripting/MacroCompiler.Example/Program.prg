@@ -27,41 +27,44 @@ begin namespace MacroCompilerTest
 	function Start() as void
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 
-        //var test_source := "Console.WriteLine(123)";
-        //var test_source := "Test(12345)";
-        //var test_source := "Test(U(12345)-1)";
-        //var test_source := "Test(123+45)";
-        //var test_source := "TestR(123)";
-        //var test_source := "TestI(123.456)";
-        //var test_source := "{|a,b,c|a := b := 1343+1}";
-        //var test_source := "{|a,b,c|}";
-        //var test_source := "{|a,b,c|1234}";
-        //var test_source := "U(1234)";
-        //var test_source := "1234";
-        //var test_source := "";
-        //var test_source := "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}";
-        //var test_source := "{|a|a := 1343, a += 1}";
-        //var test_source := "{|a|a := -1343, a := -a}";
-        //var test_source := "{|a|a := 8, a := 8**a}";
-        //var test_source := "{|a|a := 8, ++a, ++a}";
-        //var test_source := "{|a| a:= 8, ++a, a++, a++}";
-        //var test_source := "{|a| ++a, a++, a++}";
-        //var test_source := "{|a| a++, Console.WriteLine(123), a++}";
-        //var test_source := e"{|a| a := \"abc\", Console.WriteLine(\"Hello\"), a + \"def\" }";
-        //var test_source := e"{|a| \"abc\" + \"def\"}";
-        //var test_source := e"{|a| \"abc\" == \"def\"}";
-        //var test_source := e"{|a| \"abc\" = \"abc\"}";
-        //var test_source := e"{|a| \"abc\" != \"abc\"}";
-        //var test_source := e"{|a| a := \"abc\", a == \"abc\"}";
-        //var test_source := e"{|a| 0 == 0 }";
-        //var test_source := e"{|a| 0 != 0 }";
-        //var test_source := e"{|a| (0 > 1) && (0 < 1) }";
-        //var test_source := e"{|a| a:ToString() }";
-        //var test_source := e"{|a| a := \"qwerty\", a:Length }";
-        //var test_source := e"{|a| a := default(int) }";
-        //var test_source := e"{|a| a := default(string) }";
-        //var test_source := e"{|a| a := U(1234+1), a }";
-        var test_source := e"{|a| UU := U(1234+1), UU }";
+        //var test_source := "Console.WriteLine(123)"
+        //var test_source := "Test(12345)"
+        //var test_source := "Test(U(12345)-1)"
+        //var test_source := "Test(123+45)"
+        //var test_source := "TestR(123)"
+        //var test_source := "TestI(123.456)"
+        //var test_source := "{|a,b,c|a := b := 1343+1}"
+        //var test_source := "{|a,b,c|}"
+        //var test_source := "{|a,b,c|1234}"
+        //var test_source := "U(1234)"
+        //var test_source := "1234"
+        //var test_source := ""
+        //var test_source := "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}"
+        //var test_source := "{|a|a := 1343, a += 1}"
+        //var test_source := "{|a|a := -1343, a := -a}"
+        //var test_source := "{|a|a := 8, a := 8**a}"
+        //var test_source := "{|a|a := 8, ++a, ++a}"
+        //var test_source := "{|a| a:= 8, ++a, a++, a++}"
+        //var test_source := "{|a| ++a, a++, a++}"
+        //var test_source := "{|a| a++, Console.WriteLine(123), a++}"
+        //var test_source := e"{|a| a := \"abc\", Console.WriteLine(\"Hello\"), a + \"def\" }"
+        //var test_source := e"{|a| a := \"abc\" + \"def\"}"
+        //var test_source := e"{|a| \"abc\" == \"def\"}"
+        //var test_source := e"{|a| \"abc\" = \"abc\"}"
+        //var test_source := e"{|a| \"abc\" != \"abc\"}"
+        //var test_source := e"{|a| a := \"abc\", a == \"abc\"}"
+        //var test_source := e"{|a| 0 == 0 }"
+        //var test_source := e"{|a| 0 != 0 }"
+        //var test_source := e"{|a| (0 > 1) && (0 < 1) }"
+        //var test_source := e"{|a| a := \"qwerty\", a:Length }"
+        //var test_source := e"{|a| a := default(int) }"
+        //var test_source := e"{|a| a := default(string) }"
+        //var test_source := e"{|a| a := default(usual) }"
+        //var test_source := e"{|a| a := U(1234+1), a }"
+        //var test_source := e"{|a| UU := U(1234+1), UU }"
+//        var test_source := e"{|a| a:ToString() }" // Fails because String:ToString() is overloaded!
+        //var test_source := e"{|a| a := \"abcdef\", a:ToUpperInvariant() }"
+        var test_source := e"{|a| a := NIL }"
 
         ReportMemory("initial")
         var mc := CreateMacroCompiler()

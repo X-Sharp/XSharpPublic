@@ -17,6 +17,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
         internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
+        internal virtual void EmitBase(ILGenerator ilg) { throw new NotImplementedException(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
     internal partial class StoreTemp : Expr
@@ -28,6 +29,10 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Dup);
             Local.Declare(ilg);
             Local.EmitSet(ilg);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            Expr.EmitSet(ilg, preserve);
         }
     }
     internal partial class LoadTemp : Expr
@@ -77,6 +82,10 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Dup);
             Expr.Emit(ilg);
             Symbol.EmitSet(ilg);
+        }
+        internal override void EmitBase(ILGenerator ilg)
+        {
+            Expr.Emit(ilg);
         }
     }
     internal partial class QualifiedNameExpr : NameExpr
@@ -321,7 +330,18 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class LiteralArray : Expr
     {
-        // TODO (nvk): to be implemented
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            ilg.Emit(OpCodes.Ldc_I4, Values.Exprs.Count);
+            ilg.Emit(OpCodes.Newarr, (Symbol as TypeSymbol).Type);
+            for (int i = 0; i < Values.Exprs.Count - 1; i++)
+            {
+                ilg.Emit(OpCodes.Dup);
+                ilg.Emit(OpCodes.Ldc_I4, i);
+                Values.Exprs[i].Emit(ilg, false);
+                ilg.Emit(OpCodes.Stelem, (Symbol as TypeSymbol).Type);
+            }
+        }
     }
     internal partial class ArgList : Node
     {

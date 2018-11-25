@@ -37,6 +37,8 @@ namespace XSharp.MacroCompiler
         OpMask = OpBase - 1,
 
         Concat = Addition | (OperandType.String * OpBase),
+        ConcatStringObject = Addition | (OperandType.StringAndObject * OpBase),
+        ConcatObjectString = Addition | (OperandType.ObjectAndString * OpBase),
 
         ExactEqualAny = ExactEqual | (OperandType.Bool * OpResBase),
         EqualAny = Equal | (OperandType.Bool * OpResBase),

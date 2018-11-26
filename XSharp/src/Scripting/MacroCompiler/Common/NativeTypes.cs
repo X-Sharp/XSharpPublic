@@ -75,7 +75,7 @@ namespace XSharp.MacroCompiler
             "System.Void",
             "System.IntPtr",
             "System.UIntPtr",
-            XSharpQualifiedTypeNames.Usual + "|" + XSharpQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Usual + "|" + VulcanQualifiedTypeNames.Usual,
         };
 
         static TypeSymbol[] NativeTypeSymbols;

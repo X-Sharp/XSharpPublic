@@ -48,13 +48,13 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg)
         {
-            var m = (Binder.Lookup(XSharpQualifiedFunctionNames.IVarGet) ?? Binder.Lookup(VulcanQualifiedFunctionNames.IVarGet)) as MethodSymbol;
+            var m = (Binder.LookupFullName(XSharpQualifiedFunctionNames.IVarGet) ?? Binder.LookupFullName(VulcanQualifiedFunctionNames.IVarGet)) as MethodSymbol;
             ilg.Emit(OpCodes.Ldstr, Name);
             ilg.Emit(OpCodes.Call, m.Method);
         }
         internal override void EmitSet(ILGenerator ilg)
         {
-            var m = (Binder.Lookup(XSharpQualifiedFunctionNames.IVarPut) ?? Binder.Lookup(VulcanQualifiedFunctionNames.IVarPut)) as MethodSymbol;
+            var m = (Binder.LookupFullName(XSharpQualifiedFunctionNames.IVarPut) ?? Binder.LookupFullName(VulcanQualifiedFunctionNames.IVarPut)) as MethodSymbol;
             var lo = ilg.DeclareLocal(Compilation.Get(NativeType.Object).Type);
             var lv = ilg.DeclareLocal(Type.Type);
             ilg.Emit(OpCodes.Stloc, lo.LocalIndex);

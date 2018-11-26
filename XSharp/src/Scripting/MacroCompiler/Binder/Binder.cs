@@ -189,9 +189,8 @@ namespace XSharp.MacroCompiler
                     if (v != null)
                         return v;
                 }
-                foreach (var u in Usings)
                 {
-                    Symbol v = Lookup(u, name);
+                    Symbol v = Lookup(name);
                     if (v != null)
                         return v;
                 }
@@ -199,7 +198,23 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
-        internal static Symbol Lookup(string fullname)
+        internal static Symbol Lookup(string name)
+        {
+            {
+                Symbol v = Global.Lookup(name);
+                if (v != null)
+                    return v;
+            }
+            foreach (var u in Usings)
+            {
+                Symbol v = u.Lookup(name);
+                if (v != null)
+                    return v;
+            }
+            return null;
+        }
+
+        internal static Symbol LookupFullName(string fullname)
         {
             Symbol n = Global;
             if (fullname.StartsWith("global::"))

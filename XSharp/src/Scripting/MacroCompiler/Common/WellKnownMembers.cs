@@ -47,14 +47,14 @@ namespace XSharp.MacroCompiler
                 foreach (var proto in names.Split('|'))
                 {
                     var name = proto.Replace("$", "").Split('(').First();
-                    var s = Binder.Lookup(name);
+                    var s = Binder.LookupFullName(name);
                     if (s == null)
                         continue;
                     if (s is SymbolList)
                     {
                         var isStatic = proto.Contains('$');
                         var args = proto.Replace(")", "").Split('(').Last().Split(',');
-                        var argTypes = args.Select(x => Binder.Lookup(x) as TypeSymbol).ToArray();
+                        var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
                         s = (s as SymbolList).Symbols.Find( x => (x as MethodSymbol)?.Method.GetParameters().Length == args.Length
                             && (x as MethodSymbol)?.Method.IsStatic == isStatic
                             && (x as MethodSymbol)?.Method.GetParameters().All( y => y.ParameterType == argTypes[y.Position].Type ) == true );

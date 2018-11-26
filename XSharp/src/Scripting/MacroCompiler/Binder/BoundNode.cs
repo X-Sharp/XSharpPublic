@@ -300,7 +300,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Args);
             if (Expr.Symbol is DynamicSymbol)
             {
-                Symbol = Binder.Lookup(XSharpQualifiedFunctionNames.InternalSend) ?? Binder.Lookup(VulcanQualifiedFunctionNames.InternalSend);
+                Symbol = Binder.LookupFullName(XSharpQualifiedFunctionNames.InternalSend) ?? Binder.LookupFullName(VulcanQualifiedFunctionNames.InternalSend);
                 var a = new List<Arg>(3);
                 a.Add(new Arg((Expr as MemberAccessExpr)?.Expr));
                 a.Add(new Arg(LiteralExpr.Bound(Constant.Create((Expr.Symbol as DynamicSymbol).Name))));

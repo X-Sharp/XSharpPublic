@@ -62,7 +62,7 @@ namespace XSharp.MacroCompiler
                 Debug.Assert(names.Replace('.', '_').Replace("`","_T").Split('|').First() == m.ToString());
                 foreach (var name in names.Split('|'))
                 {
-                    var s = Binder.Lookup(name);
+                    var s = Binder.LookupFullName(name);
                     if (s == null)
                         continue;
                     Debug.Assert(s is TypeSymbol);

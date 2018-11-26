@@ -93,7 +93,7 @@ namespace XSharp.MacroCompiler
                     Debug.Assert(names.Substring(names.LastIndexOf('.')+1).Replace("__","").Split('|', '(').First() == m.ToString());
                     foreach(var name in names.Split('|'))
                     {
-                        var t = Binder.Lookup(name) as TypeSymbol;
+                        var t = Binder.LookupFullName(name) as TypeSymbol;
                         if (t == null)
                             continue;
                         t.NativeType = m;

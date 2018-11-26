@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c74e7af8-2230-423c-bcae-d1ce62528be5</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Microsoft.CodeAnalysis</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binding\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGen\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CommandLine\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compilation\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Desktop\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostic\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\*.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)DiaSymReader\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DocumentationComments\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Emit\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Emit\EditAndContinue\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Emit\NoPia\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileSystem\*.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)Generated\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InternalUtilities\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interop\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MetadataReader\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MetadataReference\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativePdbWriter\*.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)Operations\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PEWriter\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReferenceManager\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RuleSet\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StrongName\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SymbolDisplay\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Symbols\Attributes\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Text\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Xml\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\Shared\DesktopShim.cs">
+      <Link>DesktopShim.cs</Link>
+    </Compile>
+    <!-- <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
+    </Compile> -->
+    <None Include="$(MSBuildThisFileDirectory)..\CodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+    <!-- <Compile Include="$(MSBuildThisFileDirectory)PEWriter\BlobBuilder.Enumerators.cs" /> -->
+    <None Include="$(MSBuildThisFileDirectory)RuleSet\RuleSetSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+</Project>

@@ -138,6 +138,7 @@ namespace XSharp.MacroCompiler
             typeCache = System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
 
             Compilation.InitializeNativeTypes();
+            Compilation.InitializeWellKnownTypes();
             Compilation.InitializeWellKnownMembers();
         }
 

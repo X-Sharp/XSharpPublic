@@ -56,6 +56,7 @@
     <Compile Include="Common\LiteralNames.cs" />
     <Compile Include="Common\NativeTypes.cs" />
     <Compile Include="Common\WellKnownMembers.cs" />
+    <Compile Include="Common\WellKnownTypes.cs" />
     <Compile Include="Compiler\Compiler.cs" />
     <Compile Include="Diagnostic\Error.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

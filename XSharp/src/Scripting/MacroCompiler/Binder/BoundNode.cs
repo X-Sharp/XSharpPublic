@@ -75,9 +75,9 @@ namespace XSharp.MacroCompiler.Syntax
             if (Symbol == null)
             {
                 if (Affinity == BindAffinity.Invoke)
-                    Binder.Convert(ref Expr, Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object));
+                    Binder.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
                 else
-                    Binder.Convert(ref Expr, Compilation.GetNativeType(NativeType.Object));
+                    Binder.Convert(ref Expr, Compilation.Get(NativeType.Object));
                 Symbol = new DynamicSymbol(Member.LookupName);
             }
             Datatype = (Symbol as TypedSymbol)?.Type;
@@ -130,8 +130,8 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             if (BinaryOperatorSymbol.OperatorIsLogic(Kind))
             {
-                Binder.Convert(ref Left, Compilation.GetNativeType(NativeType.Boolean));
-                Binder.Convert(ref Right, Compilation.GetNativeType(NativeType.Boolean));
+                Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
+                Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
             Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
@@ -144,8 +144,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Binder.Convert(ref Left, Compilation.GetNativeType(NativeType.Boolean));
-            Binder.Convert(ref Right, Compilation.GetNativeType(NativeType.Boolean));
+            Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
+            Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
             Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
             return null;
@@ -160,7 +160,7 @@ namespace XSharp.MacroCompiler.Syntax
             Left = Expr;
             if (UnaryOperatorSymbol.OperatorIsLogic(Kind))
             {
-                Binder.Convert(ref Left, Compilation.GetNativeType(NativeType.Boolean));
+                Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
             Datatype = (Symbol as UnaryOperatorSymbol)?.Type;
@@ -246,7 +246,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Type);
             Symbol = Type.Symbol;
-            Datatype = Compilation.GetNativeType(NativeType.UInt32);
+            Datatype = Compilation.Get(NativeType.UInt32);
             return null;
         }
     }
@@ -275,7 +275,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             b.Bind(ref Type);
             Symbol = Type.Symbol;
-            Datatype = Compilation.GetNativeType(NativeType.Boolean);
+            Datatype = Compilation.Get(NativeType.Boolean);
             return null;
         }
     }
@@ -339,7 +339,7 @@ namespace XSharp.MacroCompiler.Syntax
             }
             else
             {
-                Datatype = Compilation.GetNativeType(NativeType.Void);
+                Datatype = Compilation.Get(NativeType.Void);
             }
             return null;
         }
@@ -349,7 +349,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Values);
-            Convert(Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object));
+            Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
             return null;
         }
         internal static LiteralArray Bound(IList<Expr> values)
@@ -361,7 +361,7 @@ namespace XSharp.MacroCompiler.Syntax
             var values = new List<Expr>(args.Count);
             foreach(var a in args) values.Add(a.Expr);
             var e = new LiteralArray(new ExprList(values));
-            e.Convert(Compilation.GetNativeType(NativeType.Usual) ?? Compilation.GetNativeType(NativeType.Object));
+            e.Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
             return e;
         }
         private void Convert(TypeSymbol t)

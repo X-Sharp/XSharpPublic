@@ -12,18 +12,6 @@ function R(r as real8) as real8
 function I(i as int) as int
     return i
 
-function Test(u as usual) as void
-    Console.WriteLine("Test: {0}", u)
-    return
-
-function TestR(u as real8) as void
-    Console.WriteLine("TestR: {0:##.#}", u)
-    return
-
-function TestI(u as int) as void
-    Console.WriteLine("TestI: {0}", u)
-    return
-
 global UU as usual
 
 begin namespace MacroCompilerTest
@@ -68,38 +56,40 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "U(U(12345)-1)", <OBJECT>{}, 12344, typeof(usual))
         TestMacro(mc, "I(123+45)", <OBJECT>{}, 123+45, typeof(int))
         TestMacro(mc, "R(123)", <OBJECT>{}, 123, typeof(real8))
-//        TestMacro(mc, "I(123.456)", <OBJECT>{}, 123, typeof(int))
+        TestMacro(mc, "R(123.456)", <OBJECT>{}, 123.456, typeof(real8))
+        TestMacro(mc, "U(123.456)", <OBJECT>{}, 123.456, typeof(usual))
         TestMacro(mc, "{|a,b,c|a := b := 1343+1}", <OBJECT>{}, 1343+1, typeof(int))
-//        TestMacro(mc, "{|a,b,c|}", <OBJECT>{}, NIL, typeof(usual))
+        TestMacro(mc, "{|a,b,c|}", <OBJECT>{}, null, null)
         TestMacro(mc, "{|a,b,c|1234}", <OBJECT>{}, 1234, typeof(int))
         TestMacro(mc, "1234", <OBJECT>{}, 1234, typeof(int))
-//        TestMacro(mc, "", <OBJECT>{}, 1234, typeof(int))
+        TestMacro(mc, "", <OBJECT>{}, null, null)
         TestMacro(mc, "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}", <OBJECT>{}, 1343+1343-(1343+1)/2, typeof(usual))
         TestMacro(mc, "{|a|a := 1343, a += 1}", <OBJECT>{}, 1343+1, typeof(usual))
         TestMacro(mc, "{|a|a := -1343, a := -a}", <OBJECT>{}, 1343, typeof(usual))
-//        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real))
         TestMacro(mc, "{|a|a := 8, ++a, ++a}", <OBJECT>{123}, 10, typeof(usual))
         TestMacro(mc, "{|a|a := 8, ++a, a++, a++}", <OBJECT>{123}, 10, typeof(usual))
         TestMacro(mc, "{|a|++a, a++, a++}", <OBJECT>{8}, 10, typeof(usual))
         TestMacro(mc, "{|a| a++, U(a++), a++}", <OBJECT>{8}, 10, typeof(usual))
-        TestMacro(mc, e"{|a| a := \"abc\", a + \"def\"}", <OBJECT>{8}, "abcdef", typeof(string))
         TestMacro(mc, e"{|a| a := \"abc\" + \"def\"}", <OBJECT>{8}, "abcdef", typeof(string))
         TestMacro(mc, e"{|a| \"abc\" == \"def\"}", <OBJECT>{8}, false, typeof(logic))
         TestMacro(mc, e"{|a| \"abc\" = \"abc\"}", <OBJECT>{8}, true, typeof(logic))
         TestMacro(mc, e"{|a| \"abc\" != \"abc\"}", <OBJECT>{8}, false, typeof(logic))
         TestMacro(mc, e"{|a| a := \"abc\", a == \"abc\"}", <OBJECT>{8}, true, typeof(logic))
+        TestMacro(mc, e"{|a| a := \"abc\", a + \"def\"}", <OBJECT>{8}, "abcdef", typeof(string))
         TestMacro(mc, e"{|a| 0 == 0}", <OBJECT>{8}, true, typeof(logic))
         TestMacro(mc, e"{|a| 0 != 0}", <OBJECT>{8}, false, typeof(logic))
         TestMacro(mc, e"{|a| (0 > 1) && (0 < 1) }", <OBJECT>{8}, false, typeof(logic))
         TestMacro(mc, e"{|a| a := \"qwerty\", a:Length }", <OBJECT>{8}, 6, typeof(usual))
         TestMacro(mc, e"{|a| a := default(int) }", <OBJECT>{8}, 0, typeof(int))
-//        TestMacro(mc, e"{|a| a := default(string) }", <OBJECT>{8}, null, null)
+        TestMacro(mc, e"{|a| a := default(string) }", <OBJECT>{8}, null, null)
         TestMacro(mc, e"{|a| a := default(usual) }", <OBJECT>{8}, NIL, typeof(usual))
         TestMacro(mc, e"{|a| a := U(1234+1), a }", <OBJECT>{8}, 1234+1, typeof(usual))
         TestMacro(mc, e"{|a| UU := U(1234+1), UU }", <OBJECT>{8}, 1234+1, typeof(usual))
-//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // Fails because String:ToString() is overloaded!
         TestMacro(mc, e"{|a| a := \"abcdef\", a:ToUpperInvariant() }", <OBJECT>{8}, "ABCDEF", typeof(usual))
         TestMacro(mc, e"{|a| a := NIL }", <OBJECT>{8}, NIL, typeof(usual))
+//        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
+//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // Fails because String:ToString() is overloaded!
+//        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         return
@@ -116,7 +106,7 @@ begin namespace MacroCompilerTest
         Console.Write("Test: '{0}' ", src)
         var cb := mc:Compile(src)
         var res := cb:EvalBlock(args)
-        if (res = expect) .and. ((t == null) || (t == res:GetType()))
+        if (res = expect) .and. ((t == null) || (t == res?:GetType()))
             TotalSuccess += 1
             Console.WriteLine("[OK]")
             return true

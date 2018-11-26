@@ -167,10 +167,10 @@ namespace XSharp.MacroCompiler
             var r = right;
 
             if (l.Datatype.NativeType == NativeType.Object)
-                Convert(ref l, Compilation.GetNativeType(NativeType.Usual));
+                Convert(ref l, Compilation.Get(NativeType.Usual));
 
             if (r.Datatype.NativeType == NativeType.Object)
-                Convert(ref r, Compilation.GetNativeType(NativeType.Usual));
+                Convert(ref r, Compilation.Get(NativeType.Usual));
 
             var op = UserDefinedBinaryOperator(kind, ref l, ref r);
 

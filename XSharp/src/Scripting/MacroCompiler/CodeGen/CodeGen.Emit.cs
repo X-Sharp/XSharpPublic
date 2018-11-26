@@ -38,7 +38,7 @@ namespace XSharp.MacroCompiler
                         ilg.Emit(OpCodes.Ldc_R4,0);
                         break;
                     case NativeType.Decimal:
-                        ilg.Emit(OpCodes.Ldsfld, (FieldInfo)Compilation.GetMember(WellKnownMembers.System_Decimal_Zero).Member);
+                        ilg.Emit(OpCodes.Ldsfld, (FieldInfo)Compilation.Get(WellKnownMembers.System_Decimal_Zero).Member);
                         break;
                     default:
                         {
@@ -544,9 +544,11 @@ namespace XSharp.MacroCompiler
             switch (op.Kind)
             {
                 case BinaryOperatorKind.Concat:
+                    ilg.Emit(OpCodes.Call, (Compilation.Get(WellKnownMembers.System_String_Concat) as MethodSymbol).Method);
+                    break;
                 case BinaryOperatorKind.ConcatStringObject:
                 case BinaryOperatorKind.ConcatObjectString:
-                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Concat) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Call, (Compilation.Get(WellKnownMembers.System_String_Concat_Object) as MethodSymbol).Method);
                     break;
                 case BinaryOperatorKind.Addition:
                     ilg.Emit(OpCodes.Add);
@@ -626,10 +628,10 @@ namespace XSharp.MacroCompiler
                     break;
                 case BinaryOperatorKind.EqString:
                 case BinaryOperatorKind.EeqString:
-                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Equals) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Call, (Compilation.Get(WellKnownMembers.System_String_Equals) as MethodSymbol).Method);
                     break;
                 case BinaryOperatorKind.NeqString:
-                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_String_Equals) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Call, (Compilation.Get(WellKnownMembers.System_String_Equals) as MethodSymbol).Method);
                     ilg.Emit(OpCodes.Ldc_I4_0);
                     ilg.Emit(OpCodes.Ceq);
                     break;
@@ -639,12 +641,12 @@ namespace XSharp.MacroCompiler
                 case BinaryOperatorKind.EeqObject:
                 case BinaryOperatorKind.EeqStringObject:
                 case BinaryOperatorKind.EeqObjectString:
-                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_Object_Equals) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Call, (Compilation.Get(WellKnownMembers.System_Object_Equals) as MethodSymbol).Method);
                     break;
                 case BinaryOperatorKind.NeqObject:
                 case BinaryOperatorKind.NeqStringObject:
                 case BinaryOperatorKind.NeqObjectString:
-                    ilg.Emit(OpCodes.Call, (Compilation.GetMember(WellKnownMembers.System_Object_Equals) as MethodSymbol).Method);
+                    ilg.Emit(OpCodes.Call, (Compilation.Get(WellKnownMembers.System_Object_Equals) as MethodSymbol).Method);
                     ilg.Emit(OpCodes.Ldc_I4_0);
                     ilg.Emit(OpCodes.Ceq);
                     break;

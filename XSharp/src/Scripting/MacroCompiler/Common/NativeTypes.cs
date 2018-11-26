@@ -75,7 +75,7 @@ namespace XSharp.MacroCompiler
             "System.Void",
             "System.IntPtr",
             "System.UIntPtr",
-            XSharpQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Usual + "|" + XSharpQualifiedTypeNames.Usual,
         };
 
         static TypeSymbol[] NativeTypeSymbols;
@@ -86,28 +86,20 @@ namespace XSharp.MacroCompiler
 
             foreach (var m in (NativeType[])Enum.GetValues(typeof(NativeType)))
             {
-                var name = NativeTypeNames[(int)m];
-                if (!string.IsNullOrEmpty(name))
+                var names = NativeTypeNames[(int)m];
+                nativeTypeSymbols[(int)m] = null;
+                if (!string.IsNullOrEmpty(names))
                 {
-                    Debug.Assert(name.Substring(name.LastIndexOf('.')+1).Replace("__","") == m.ToString());
-                    var t = Binder.Lookup(name) as TypeSymbol;
-                    if (t == null)
+                    Debug.Assert(names.Substring(names.LastIndexOf('.')+1).Replace("__","").Split('|', '(').First() == m.ToString());
+                    foreach(var name in names.Split('|'))
                     {
-                        switch (name)
-                        {
-                            case XSharpQualifiedTypeNames.Usual:
-                                t = Binder.Lookup(VulcanQualifiedTypeNames.Usual) as TypeSymbol;
-                                break;
-                        }
-                    }
-                    if (t != null)
-                    {
+                        var t = Binder.Lookup(name) as TypeSymbol;
+                        if (t == null)
+                            continue;
                         t.NativeType = m;
+                        nativeTypeSymbols[(int)m] = t;
                     }
-                    nativeTypeSymbols[(int)m] = t;
                 }
-                else
-                    nativeTypeSymbols[(int)m] = null;
             }
 
             Interlocked.CompareExchange(ref NativeTypeSymbols, nativeTypeSymbols, null);
@@ -115,7 +107,7 @@ namespace XSharp.MacroCompiler
 
         internal static readonly int NativeTypeCount = Enum.GetValues(typeof(NativeType)).Length;
 
-        internal static TypeSymbol GetNativeType(NativeType kind)
+        internal static TypeSymbol Get(NativeType kind)
         {
             Debug.Assert(NativeTypeSymbols != null);
             var result = NativeTypeSymbols[(int)kind];

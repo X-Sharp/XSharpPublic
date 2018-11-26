@@ -86,45 +86,45 @@ namespace XSharp.MacroCompiler
             switch (OpType)
             {
                 case OperandType.Object:
-                    return Compilation.GetNativeType(NativeType.Object);
+                    return Compilation.Get(NativeType.Object);
                 case OperandType.String:
-                    return Compilation.GetNativeType(NativeType.String);
+                    return Compilation.Get(NativeType.String);
                 case OperandType.ObjectAndString:
-                    return Compilation.GetNativeType(NativeType.String);
+                    return Compilation.Get(NativeType.String);
                 case OperandType.StringAndObject:
-                    return Compilation.GetNativeType(NativeType.String);
+                    return Compilation.Get(NativeType.String);
                 case OperandType.Int:
-                    return Compilation.GetNativeType(NativeType.Int32);
+                    return Compilation.Get(NativeType.Int32);
                 case OperandType.UInt:
-                    return Compilation.GetNativeType(NativeType.UInt32);
+                    return Compilation.Get(NativeType.UInt32);
                 case OperandType.Long:
-                    return Compilation.GetNativeType(NativeType.Int64);
+                    return Compilation.Get(NativeType.Int64);
                 case OperandType.ULong:
-                    return Compilation.GetNativeType(NativeType.UInt64);
+                    return Compilation.Get(NativeType.UInt64);
                 case OperandType.Float:
-                    return Compilation.GetNativeType(NativeType.Single);
+                    return Compilation.Get(NativeType.Single);
                 case OperandType.Double:
-                    return Compilation.GetNativeType(NativeType.Double);
+                    return Compilation.Get(NativeType.Double);
                 case OperandType.Decimal:
-                    return Compilation.GetNativeType(NativeType.Decimal);
+                    return Compilation.Get(NativeType.Decimal);
                 case OperandType.Bool:
-                    return Compilation.GetNativeType(NativeType.Boolean);
+                    return Compilation.Get(NativeType.Boolean);
                 case OperandType.NullableInt:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.Int32));
+                    return Binder.NullableType(Compilation.Get(NativeType.Int32));
                 case OperandType.NullableUInt:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.UInt32));
+                    return Binder.NullableType(Compilation.Get(NativeType.UInt32));
                 case OperandType.NullableLong:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.Int64));
+                    return Binder.NullableType(Compilation.Get(NativeType.Int64));
                 case OperandType.NullableULong:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.UInt64));
+                    return Binder.NullableType(Compilation.Get(NativeType.UInt64));
                 case OperandType.NullableFloat:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.Single));
+                    return Binder.NullableType(Compilation.Get(NativeType.Single));
                 case OperandType.NullableDouble:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.Double));
+                    return Binder.NullableType(Compilation.Get(NativeType.Double));
                 case OperandType.NullableDecimal:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.Decimal));
+                    return Binder.NullableType(Compilation.Get(NativeType.Decimal));
                 case OperandType.NullableBool:
-                    return Binder.NullableType(Compilation.GetNativeType(NativeType.Boolean));
+                    return Binder.NullableType(Compilation.Get(NativeType.Boolean));
                 default:
                     return null;
             }

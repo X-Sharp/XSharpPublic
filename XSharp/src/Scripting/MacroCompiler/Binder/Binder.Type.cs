@@ -29,45 +29,45 @@ namespace XSharp.MacroCompiler
                     // TODO nvk: create special types
                     throw new NotImplementedException();
                 case TokenType.USUAL:
-                    return Compilation.GetNativeType(NativeType.Usual);
+                    return Compilation.Get(NativeType.Usual);
                 case TokenType.BYTE:
-                    return Compilation.GetNativeType(NativeType.Byte);
+                    return Compilation.Get(NativeType.Byte);
                 case TokenType.CHAR:
-                    return Compilation.GetNativeType(NativeType.Char);
+                    return Compilation.Get(NativeType.Char);
                 case TokenType.DATETIME:
-                    return Compilation.GetNativeType(NativeType.DateTime);
+                    return Compilation.Get(NativeType.DateTime);
                 case TokenType.DECIMAL:
-                    return Compilation.GetNativeType(NativeType.Decimal);
+                    return Compilation.Get(NativeType.Decimal);
                 case TokenType.DWORD:
-                    return Compilation.GetNativeType(NativeType.UInt32);
+                    return Compilation.Get(NativeType.UInt32);
                 case TokenType.DYNAMIC:
-                    return Compilation.GetNativeType(NativeType.Object); // TODO nvk: special dynamic type?
+                    return Compilation.Get(NativeType.Object); // TODO nvk: special dynamic type?
                 case TokenType.INT:
-                    return Compilation.GetNativeType(NativeType.Int32);
+                    return Compilation.Get(NativeType.Int32);
                 case TokenType.INT64:
-                    return Compilation.GetNativeType(NativeType.Int64);
+                    return Compilation.Get(NativeType.Int64);
                 case TokenType.LOGIC:
-                    return Compilation.GetNativeType(NativeType.Boolean);
+                    return Compilation.Get(NativeType.Boolean);
                 case TokenType.LONGINT:
-                    return Compilation.GetNativeType(NativeType.Int32);
+                    return Compilation.Get(NativeType.Int32);
                 case TokenType.OBJECT:
-                    return Compilation.GetNativeType(NativeType.Object);
+                    return Compilation.Get(NativeType.Object);
                 case TokenType.PTR:
-                    return Compilation.GetNativeType(NativeType.Unknown); // TODO nvk: PTR type
+                    return Compilation.Get(NativeType.Unknown); // TODO nvk: PTR type
                 case TokenType.REAL4:
-                    return Compilation.GetNativeType(NativeType.Single);
+                    return Compilation.Get(NativeType.Single);
                 case TokenType.REAL8:
-                    return Compilation.GetNativeType(NativeType.Double);
+                    return Compilation.Get(NativeType.Double);
                 case TokenType.SHORTINT:
-                    return Compilation.GetNativeType(NativeType.Int16);
+                    return Compilation.Get(NativeType.Int16);
                 case TokenType.STRING:
-                    return Compilation.GetNativeType(NativeType.String);
+                    return Compilation.Get(NativeType.String);
                 case TokenType.UINT64:
-                    return Compilation.GetNativeType(NativeType.UInt64);
+                    return Compilation.Get(NativeType.UInt64);
                 case TokenType.VOID:
-                    return Compilation.GetNativeType(NativeType.Void);
+                    return Compilation.Get(NativeType.Void);
                 case TokenType.WORD:
-                    return Compilation.GetNativeType(NativeType.UInt16);
+                    return Compilation.Get(NativeType.UInt16);
                 default:
                     throw new NotImplementedException();
             }

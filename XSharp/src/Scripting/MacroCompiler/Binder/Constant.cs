@@ -40,7 +40,7 @@ namespace XSharp.MacroCompiler
     internal class ConstantWithValue<T> : Constant
     {
         T Value;
-        internal ConstantWithValue(T value, NativeType nt) { Value = value; Type = Compilation.GetNativeType(nt); }
+        internal ConstantWithValue(T value, NativeType nt) { Value = value; Type = Compilation.Get(nt); }
 
         internal override TypeSymbol Type { get; }
 

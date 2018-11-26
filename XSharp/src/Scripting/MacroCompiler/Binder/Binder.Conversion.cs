@@ -112,8 +112,8 @@ namespace XSharp.MacroCompiler
         {
             if (expr.Datatype.NativeType == NativeType.Object)
             {
-                var inner = Conversion(expr, Compilation.GetNativeType(NativeType.Usual));
-                var outer = Conversion(TypeConversion.Bound(expr, Compilation.GetNativeType(NativeType.Usual), inner), type);
+                var inner = Conversion(expr, Compilation.Get(NativeType.Usual));
+                var outer = Conversion(TypeConversion.Bound(expr, Compilation.Get(NativeType.Usual), inner), type);
                 if (outer.Kind != ConversionKind.NoConversion)
                 {
                     return ConversionSymbol.Create(outer, inner);

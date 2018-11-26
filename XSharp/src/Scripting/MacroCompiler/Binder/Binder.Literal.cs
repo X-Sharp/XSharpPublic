@@ -161,7 +161,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL:
                     return Constant.Create((object)null);
                 case TokenType.NIL:
-                    return Constant.CreateDefault(Compilation.GetNativeType(NativeType.Usual));
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Usual));
                 case TokenType.DATE_CONST:
                 case TokenType.NULL_ARRAY:
                 case TokenType.NULL_CODEBLOCK:

@@ -55,7 +55,7 @@ namespace XSharp.MacroCompiler
         internal override void EmitSet(ILGenerator ilg)
         {
             var m = (Binder.Lookup(XSharpQualifiedFunctionNames.IVarPut) ?? Binder.Lookup(VulcanQualifiedFunctionNames.IVarPut)) as MethodSymbol;
-            var lo = ilg.DeclareLocal(Compilation.GetNativeType(NativeType.Object).Type);
+            var lo = ilg.DeclareLocal(Compilation.Get(NativeType.Object).Type);
             var lv = ilg.DeclareLocal(Type.Type);
             ilg.Emit(OpCodes.Stloc, lo.LocalIndex);
             ilg.Emit(OpCodes.Stloc, lv.LocalIndex);

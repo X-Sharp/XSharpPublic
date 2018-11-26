@@ -193,6 +193,7 @@
     }
     internal static class OurNameSpaces
     {
+        internal const string System = "System";
         internal const string Vulcan = "Vulcan";
         internal const string XSharp = "XSharp";
     }

@@ -51,7 +51,7 @@ namespace XSharp.MacroCompiler
             var usings = new List<ContainerSymbol>();
             var typeCache = new Dictionary<Type, TypeSymbol>();
 
-            bool usedDefaultNs = false;
+            var usedSymbols = new HashSet<ContainerSymbol>();
 
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -111,35 +111,94 @@ namespace XSharp.MacroCompiler
 
                     var ts = add_type(n, t);
 
-                    if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase))
+                    /*if (!t.IsNested && t.Name.Equals(XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase))
                     {
+                        usedSymbols.Add(ts);
                         usings.Add(ts);
-                        if (!usedDefaultNs 
-                            && !string.IsNullOrEmpty(t.Namespace) 
-                            && t.Namespace.Contains(".")
-                            && t.Assembly == System.Reflection.Assembly.GetExecutingAssembly())
-                        {
-                            usings.Add(n);
-                            usedDefaultNs = true;
-                        }
-                    }
+                    }*/
                 }
             }
 
-            Symbol s;
-            if (global.Members.TryGetValue("System",out s))
-            {
-                if (s is NamespaceSymbol)
-                    usings.Add((NamespaceSymbol)s);
-            }
-
             global = System.Threading.Interlocked.CompareExchange(ref Global, global, null);
-            usings = System.Threading.Interlocked.CompareExchange(ref Usings, usings, null);
             typeCache = System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
 
             Compilation.InitializeNativeTypes();
             Compilation.InitializeWellKnownTypes();
             Compilation.InitializeWellKnownMembers();
+
+            foreach (var ns in new string[]{OurNameSpaces.System, OurNameSpaces.XSharp, OurNameSpaces.Vulcan})
+            {
+                var s = LookupFullName(ns) as NamespaceSymbol;
+                if (s != null && !usedSymbols.Contains(s))
+                {
+                    usedSymbols.Add(s);
+                    usings.Add(s);
+                }
+            }
+
+            var cla = Compilation.Get(WellKnownTypes.XSharp_Internal_ClassLibraryAttribute);
+            var ina = Compilation.Get(WellKnownTypes.XSharp_ImplicitNamespaceAttribute);
+            if (cla != null && ina != null)
+            {
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    if (a.IsDynamic)
+                        continue;
+                    var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
+                    foreach (var attr in a.CustomAttributes)
+                    {
+                        if (attr.AttributeType == ina.Type)
+                        {
+                            var args = attr.ConstructorArguments;
+                            if (args != null && args.Count == 1)
+                            {
+                                // first element is the default namespace
+                                var ns = args[0].Value.ToString();
+                                if (!string.IsNullOrEmpty(ns))
+                                {
+                                    var s = LookupFullName(ns) as NamespaceSymbol;
+                                    if (s != null && !usedSymbols.Contains(s))
+                                    {
+                                        usedSymbols.Add(s);
+                                        usings.Add(s);
+                                    }
+                                }
+                            }
+                        }
+                        else if (attr.AttributeType == cla.Type)
+                        {
+                            var args = attr.ConstructorArguments;
+                            if (args != null && args.Count == 2)
+                            {
+                                // first element is the Functions class
+                                var cls = args[0].Value.ToString();
+                                if (!string.IsNullOrEmpty(cls))
+                                {
+                                    var s = LookupFullName(cls) as TypeSymbol;
+                                    if (s != null && !usedSymbols.Contains(s))
+                                    {
+                                        usedSymbols.Add(s);
+                                        usings.Add(s);
+                                    }
+                                }
+                                // second element is the default namespace
+                                var ns = args[1].Value.ToString();
+                                if (!string.IsNullOrEmpty(ns))
+                                {
+                                    var s = LookupFullName(ns) as NamespaceSymbol;
+                                    if (s != null && !usedSymbols.Contains(s))
+                                    {
+                                        usedSymbols.Add(s);
+                                        usings.Add(s);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            usings = System.Threading.Interlocked.CompareExchange(ref Usings, usings, null);
         }
 
         internal static TypeSymbol FindType(Type t)

@@ -58,7 +58,7 @@ namespace XSharp.MacroCompiler
                         s = (s as SymbolList).Symbols.Find( x => (x as MethodSymbol)?.Method.GetParameters().Length == args.Length
                             && (x as MethodSymbol)?.Method.IsStatic == isStatic
                             && (x as MethodSymbol)?.Method.GetParameters().All( y => y.ParameterType == argTypes[y.Position].Type ) == true );
-                        Debug.Assert((s as MethodSymbol)?.Method.IsStatic == true);
+                        Debug.Assert(s is MethodSymbol);
                     }
                     Debug.Assert(s is MemberSymbol);
                     memberSymbols[(int)m] = s as MemberSymbol;

@@ -31,11 +31,17 @@ namespace Microsoft.CodeAnalysis.Editor.FindUsages
         public string Message { get; private set; }
         public string SearchTitle { get; private set; }
 
-        public override void ReportMessage(string message)
-            => Message = message;
+        public override Task ReportMessageAsync(string message)
+        {
+            Message = message;
+            return Task.CompletedTask;
+        }
 
-        public override void SetSearchTitle(string title)
-            => SearchTitle = title;
+        public override Task SetSearchTitleAsync(string title)
+        {
+            SearchTitle = title;
+            return Task.CompletedTask;
+        }
 
         public ImmutableArray<DefinitionItem> GetDefinitions()
         {
@@ -60,7 +66,7 @@ namespace Microsoft.CodeAnalysis.Editor.FindUsages
                 _definitionItems.Add(definition);
             }
 
-            return SpecializedTasks.EmptyTask;
+            return Task.CompletedTask;
         }
 
         public override Task OnReferenceFoundAsync(SourceReferenceItem reference)
@@ -70,7 +76,7 @@ namespace Microsoft.CodeAnalysis.Editor.FindUsages
                 _referenceItems.Add(reference);
             }
 
-            return SpecializedTasks.EmptyTask;
+            return Task.CompletedTask;
         }
     }
 }

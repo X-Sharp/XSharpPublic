@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -189,14 +189,22 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 throw new InvalidOperationException($"Unexpected failure in Code Model while updating node keys {oldNodeKey} -> {newNodeKey}");
             }
 
+            // If we're updating this element with the same node key as an element that's already in the table,
+            // just remove the old element. The old element will continue to function (through its node key), but
+            // the new element will replace it in the cache.
+            if (_codeElementTable.ContainsKey(newNodeKey))
+            {
+                _codeElementTable.Remove(newNodeKey);
+            }
+
             _codeElementTable.Add(newNodeKey, codeElement);
         }
 
         internal void OnCodeElementCreated(SyntaxNodeKey nodeKey, EnvDTE.CodeElement element)
         {
-            // If we're creating an element with the same node key as an element that's already in the table, just remove
-            // the old element. The old element will continue to function but the new element will replace it in the cache.
-
+            // If we're updating this element with the same node key as an element that's already in the table,
+            // just remove the old element. The old element will continue to function (through its node key), but
+            // the new element will replace it in the cache.
             if (_codeElementTable.ContainsKey(nodeKey))
             {
                 _codeElementTable.Remove(nodeKey);
@@ -226,9 +234,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                         var element = ComAggregate.TryGetManagedObject<AbstractCodeElement>(codeElement);
                         if (element.IsValidNode())
                         {
-                            if (codeElement is T)
+                            if (codeElement is T tcodeElement)
                             {
-                                return (T)codeElement;
+                                return tcodeElement;
                             }
 
                             throw new InvalidOperationException($"Found a valid code element for {nodeKey}, but it is not of type, {typeof(T).ToString()}");
@@ -518,7 +526,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
         {
             var lineNumber = point.Line - 1;
             var column = point.LineCharOffset - 1;
-            var line = GetDocument().GetTextAsync(CancellationToken.None).WaitAndGetResult_CodeModel(CancellationToken.None).Lines[lineNumber];
+            var line = GetDocument().GetTextSynchronously(CancellationToken.None).Lines[lineNumber];
             var position = line.Start + column;
 
             return position;
@@ -795,7 +803,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel
                 var keyedElement = ComAggregate.GetManagedObject<AbstractKeyedCodeElement>(element);
                 if (keyedElement != null)
                 {
-                    keyedElement.ReacquireNodeKey(globalNodeKey.Path, default(CancellationToken));
+                    keyedElement.ReacquireNodeKey(globalNodeKey.Path, default);
                 }
             }
         }

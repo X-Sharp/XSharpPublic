@@ -2,11 +2,8 @@
 
 using System.IO;
 using System.Linq;
-using System.Xml;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Simplification;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
@@ -15,6 +12,7 @@ using CS = Microsoft.CodeAnalysis.CSharp;
 
 namespace Microsoft.CodeAnalysis.UnitTests
 {
+    [UseExportProvider]
     public partial class SerializationTests : TestBase
     {
         private Document CreateSolutionDocument(string sourceText)
@@ -25,7 +23,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
             var solution = new AdhocWorkspace().CurrentSolution
                     .AddProject(pid, "test", "test", LanguageNames.CSharp)
                     .AddMetadataReference(pid, TestReferences.NetFx.v4_0_30319.mscorlib)
-                    .AddDocument(did, "foo.cs", SourceText.From(sourceText));
+                    .AddDocument(did, "goo.cs", SourceText.From(sourceText));
 
             return solution.GetDocument(did);
         }
@@ -42,13 +40,13 @@ namespace Microsoft.CodeAnalysis.UnitTests
         public void VersionStamp_RoundTripText()
         {
             using (var writerStream = new MemoryStream())
-            using (var writer = new StreamObjectWriter(writerStream))
+            using (var writer = new ObjectWriter(writerStream))
             {
                 var versionStamp = VersionStamp.Create();
                 versionStamp.WriteTo(writer);
 
                 using (var readerStream = new MemoryStream(writerStream.ToArray()))
-                using (var reader = StreamObjectReader.TryGetReader(readerStream))
+                using (var reader = ObjectReader.TryGetReader(readerStream))
                 {
                     var deserializedVersionStamp = VersionStamp.ReadFrom(reader);
 

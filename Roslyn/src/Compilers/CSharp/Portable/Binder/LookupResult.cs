@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -34,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     ///    
     ///    var result = LookupResult.GetInstance();
     ///  
-    ///    scope.Lookup(result, "foo");
+    ///    scope.Lookup(result, "goo");
     ///    ... use result ...
     ///         
     ///    result.Clear();
@@ -161,6 +162,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static SingleLookupResult WrongArity(Symbol symbol, DiagnosticInfo error)
         {
             return new SingleLookupResult(LookupResultKind.WrongArity, symbol, error);
+        }
+
+        internal static SingleLookupResult Empty()
+        {
+            return new SingleLookupResult(LookupResultKind.Empty, null, null);
         }
 
         internal static SingleLookupResult NotReferencable(Symbol symbol, DiagnosticInfo error)

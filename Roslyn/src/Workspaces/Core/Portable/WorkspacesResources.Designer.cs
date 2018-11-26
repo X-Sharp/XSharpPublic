@@ -20,7 +20,7 @@ namespace Microsoft.CodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class WorkspacesResources {
@@ -446,6 +446,15 @@ namespace Microsoft.CodeAnalysis {
         internal static string Changing_compilation_options_is_not_supported {
             get {
                 return ResourceManager.GetString("Changing_compilation_options_is_not_supported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changing document properties is not supported.
+        /// </summary>
+        internal static string Changing_document_property_is_not_supported {
+            get {
+                return ResourceManager.GetString("Changing_document_property_is_not_supported", resourceCulture);
             }
         }
         
@@ -963,16 +972,6 @@ namespace Microsoft.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Option &apos;{0}&apos; has an unsupported type to use with {1}. You should specify a parsing function..
-        /// </summary>
-        internal static string Option_0_has_an_unsupported_type_to_use_with_1_You_should_specify_a_parsing_function {
-            get {
-                return ResourceManager.GetString("Option_0_has_an_unsupported_type_to_use_with_1_You_should_specify_a_parsing_funct" +
-                        "ion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Options did not come from Workspace.
         /// </summary>
         internal static string Options_did_not_come_from_Workspace {
@@ -1050,6 +1049,15 @@ namespace Microsoft.CodeAnalysis {
         internal static string Public_or_Protected_Field {
             get {
                 return ResourceManager.GetString("Public_or_Protected_Field", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactoring Only.
+        /// </summary>
+        internal static string Refactoring_Only {
+            get {
+                return ResourceManager.GetString("Refactoring_Only", resourceCulture);
             }
         }
         
@@ -1474,6 +1482,15 @@ namespace Microsoft.CodeAnalysis {
         internal static string Value_too_large_to_be_represented_as_a_30_bit_unsigned_integer {
             get {
                 return ResourceManager.GetString("Value_too_large_to_be_represented_as_a_30_bit_unsigned_integer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variables captured:.
+        /// </summary>
+        internal static string Variables_captured_colon {
+            get {
+                return ResourceManager.GetString("Variables_captured_colon", resourceCulture);
             }
         }
         

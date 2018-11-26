@@ -2,6 +2,7 @@
 
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
@@ -269,6 +270,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return objCreation.Update(constructor,
                                       ImmutableArray.Create(Of BoundExpression)(
                                           VisitExpression(origArgument), secondArgument),
+                                      defaultArguments:=Nothing,
                                       Nothing,
                                       objCreation.Type)
         End Function

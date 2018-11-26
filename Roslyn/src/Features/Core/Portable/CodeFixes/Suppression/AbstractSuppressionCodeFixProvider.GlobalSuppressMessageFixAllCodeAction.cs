@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CodeFixes.Suppression
@@ -179,7 +180,7 @@ namespace Microsoft.CodeAnalysis.CodeFixes.Suppression
                 var builder = new List<KeyValuePair<ISymbol, ImmutableArray<Diagnostic>>>();
                 foreach (var kvp in diagnosticsMapBuilder)
                 {
-                    builder.Add(KeyValuePair.Create(kvp.Key, GetUniqueDiagnostics(kvp.Value)));
+                    builder.Add(KeyValuePairUtil.Create(kvp.Key, GetUniqueDiagnostics(kvp.Value)));
                 }
 
                 return builder.OrderBy(kvp => kvp.Key.GetDocumentationCommentId() ?? string.Empty);

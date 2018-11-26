@@ -65,7 +65,13 @@ namespace Microsoft.CodeAnalysis.CommandLine
                                           string tempDirectory,
                                           IList<string> args,
                                           string keepAlive = null,
-                                          string libDirectory = null)
+                                          string libDirectory = null
+#if XSHARP
+                                        , string includeDir = null
+                                        , string winDir = null
+                                        , string systemDir = null
+#endif
+            )
         {
             Log("Creating BuildRequest");
             Log($"Working directory: {workingDirectory}");
@@ -87,7 +93,20 @@ namespace Microsoft.CodeAnalysis.CommandLine
             {
                 requestArgs.Add(new Argument(ArgumentId.LibEnvVariable, 0, libDirectory));
             }
-
+#if XSHARP
+            if (includeDir != null)
+			{
+                requestArgs.Add(new Argument(ArgumentId.IncludeDir, 0, includeDir));
+			}
+            if (winDir != null)
+			{
+                requestArgs.Add(new Argument(ArgumentId.WinDir, 0, winDir));
+			}
+            if (systemDir != null)
+			{
+                requestArgs.Add(new Argument(ArgumentId.SystemDir, 0, systemDir));
+			}
+#endif
             for (int i = 0; i < args.Count; ++i)
             {
                 var arg = args[i];
@@ -128,14 +147,14 @@ namespace Microsoft.CodeAnalysis.CommandLine
             cancellationToken.ThrowIfCancellationRequested();
 
             // Read the full request
-            var responseBuffer = new byte[length];
-            await ReadAllAsync(inStream, responseBuffer, length, cancellationToken).ConfigureAwait(false);
+            var requestBuffer = new byte[length];
+            await ReadAllAsync(inStream, requestBuffer, length, cancellationToken).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
 
             Log("Parsing request");
             // Parse the request into the Request data structure.
-            using (var reader = new BinaryReader(new MemoryStream(responseBuffer), Encoding.Unicode))
+            using (var reader = new BinaryReader(new MemoryStream(requestBuffer), Encoding.Unicode))
             {
                 var protocolVersion = reader.ReadUInt32();
                 var language = (RequestLanguage)reader.ReadUInt32();
@@ -384,10 +403,17 @@ namespace Microsoft.CodeAnalysis.CommandLine
         public readonly bool Utf8Output;
         public readonly string Output;
         public readonly string ErrorOutput;
+#if XSHARP
+        public readonly string OutputFileName;
+#endif
 
         public CompletedBuildResponse(int returnCode,
                                       bool utf8output,
-                                      string output)
+                                      string output
+#if XSHARP
+                                     , string outputFileName = ""
+#endif
+            )
         {
             ReturnCode = returnCode;
             Utf8Output = utf8output;
@@ -397,6 +423,9 @@ namespace Microsoft.CodeAnalysis.CommandLine
             // this field or Console.Error.  This field is only kept around in order to maintain the existing
             // protocol semantics.
             ErrorOutput = string.Empty;
+#if XSHARP
+            OutputFileName = outputFileName;
+#endif
         }
 
         public override ResponseType Type => ResponseType.Completed;
@@ -405,6 +434,9 @@ namespace Microsoft.CodeAnalysis.CommandLine
         {
             var returnCode = reader.ReadInt32();
             var utf8Output = reader.ReadBoolean();
+#if XSHARP
+            var outputFileName = ReadLengthPrefixedString(reader);
+#endif
             var output = ReadLengthPrefixedString(reader);
             var errorOutput = ReadLengthPrefixedString(reader);
             if (!string.IsNullOrEmpty(errorOutput))
@@ -412,13 +444,20 @@ namespace Microsoft.CodeAnalysis.CommandLine
                 throw new InvalidOperationException();
             }
 
+#if XSHARP
+            return new CompletedBuildResponse(returnCode, utf8Output, output, outputFileName);
+#else
             return new CompletedBuildResponse(returnCode, utf8Output, output);
+#endif
         }
 
         protected override void AddResponseBody(BinaryWriter writer)
         {
             writer.Write(ReturnCode);
             writer.Write(Utf8Output);
+#if XSHARP
+            WriteLengthPrefixedString(writer, OutputFileName);
+#endif
             WriteLengthPrefixedString(writer, Output);
             WriteLengthPrefixedString(writer, ErrorOutput);
         }
@@ -517,6 +556,14 @@ namespace Microsoft.CodeAnalysis.CommandLine
 
             // The directory to use for temporary operations.
             TempDirectory,
+#if XSHARP
+            // Include file directory
+            IncludeDir,
+            // Windows directory
+            WinDir,
+            // System directory
+            SystemDir
+#endif
         }
 
         /// <summary>

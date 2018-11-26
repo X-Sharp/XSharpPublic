@@ -1,24 +1,28 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using Roslyn.Utilities;
 using System;
-using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
+using System.Linq;
 using System.Resources;
-using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.PooledObjects;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
     /// <summary>
     /// A localizable resource string that may possibly be formatted differently depending on culture.
     /// </summary>
-    public sealed class LocalizableResourceString : LocalizableString, IObjectReadable, IObjectWritable
+    public sealed class LocalizableResourceString : LocalizableString, IObjectWritable
     {
         private readonly string _nameOfLocalizableResource;
         private readonly ResourceManager _resourceManager;
         private readonly Type _resourceSource;
         private readonly string[] _formatArguments;
+
+        static LocalizableResourceString()
+        {
+            ObjectBinder.RegisterTypeReader(typeof(LocalizableResourceString), reader => new LocalizableResourceString(reader));
+        }
 
         /// <summary>
         /// Creates a localizable resource string with no formatting arguments.
@@ -68,7 +72,7 @@ namespace Microsoft.CodeAnalysis
 
         private LocalizableResourceString(ObjectReader reader)
         {
-            _resourceSource = (Type)reader.ReadValue();
+            _resourceSource = reader.ReadType();
             _nameOfLocalizableResource = reader.ReadString();
             _resourceManager = new ResourceManager(_resourceSource);
 
@@ -89,14 +93,11 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        Func<ObjectReader, object> IObjectReadable.GetReader()
-        {
-            return reader => new LocalizableResourceString(reader);
-        }
+        bool IObjectWritable.ShouldReuseInSerialization => false;
 
         void IObjectWritable.WriteTo(ObjectWriter writer)
         {
-            writer.WriteValue(_resourceSource);
+            writer.WriteType(_resourceSource);
             writer.WriteString(_nameOfLocalizableResource);
             var length = _formatArguments.Length;
             writer.WriteInt32(length);

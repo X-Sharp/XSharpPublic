@@ -5,11 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.CommandHandlers;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.GoToAdjacentMember
 {
+    [UseExportProvider]
     public abstract class AbstractGoToAdjacentMemberTests
     {
         protected abstract string LanguageName { get; }
@@ -23,7 +25,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.GoToAdjacentMember
 
             foreach (var kind in kinds)
             {
-                using (var workspace = await TestWorkspace.CreateAsync(
+                using (var workspace = TestWorkspace.Create(
                     LanguageName,
                     compilationOptions: null,
                     parseOptions: DefaultParseOptions.WithKind(kind),
@@ -46,7 +48,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.GoToAdjacentMember
 
         protected async Task<int?> GetTargetPositionAsync(string code, bool next)
         {
-            using (var workspace = await TestWorkspace.CreateAsync(
+            using (var workspace = TestWorkspace.Create(
                 LanguageName,
                 compilationOptions: null,
                 parseOptions: DefaultParseOptions,

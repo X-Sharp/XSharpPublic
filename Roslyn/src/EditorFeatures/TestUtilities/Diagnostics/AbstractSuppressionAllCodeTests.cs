@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -10,15 +10,18 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes.Suppression;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.UnitTests.Diagnostics;
 using Roslyn.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 {
+    [UseExportProvider]
     public abstract class AbstractSuppressionAllCodeTests : IEqualityComparer<Diagnostic>
     {
-        protected abstract Task<TestWorkspace> CreateWorkspaceFromFileAsync(string definition, ParseOptions parseOptions);
+        protected abstract TestWorkspace CreateWorkspaceFromFile(string definition, ParseOptions parseOptions);
+
         internal abstract Tuple<Analyzer, ISuppressionFixProvider> CreateDiagnosticProviderAndFixer(Workspace workspace);
 
         protected Task TestPragmaAsync(string code, ParseOptions options, Func<string, bool> verifier)
@@ -57,7 +60,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
         protected async Task TestPragmaOrAttributeAsync(
             string code, ParseOptions options, bool pragma, Func<SyntaxNode, bool> digInto, Func<string, bool> verifier, Func<CodeAction, bool> fixChecker)
         {
-            using (var workspace = await CreateWorkspaceFromFileAsync(code, options))
+            using (var workspace = CreateWorkspaceFromFile(code, options))
             {
                 var document = workspace.CurrentSolution.Projects.Single().Documents.Single();
                 var root = document.GetSyntaxRootAsync().GetAwaiter().GetResult();
@@ -155,7 +158,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
             public override void Initialize(AnalysisContext analysisContext)
             {
                 analysisContext.RegisterSyntaxTreeAction(
-                    (context) =>
+                    context =>
                     {
                         foreach (var node in AllNodes)
                         {

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeGeneration;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Simplification;
 using Roslyn.Utilities;
@@ -190,7 +191,8 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
                     Contract.ThrowIfFalse(this.AnalyzerResult.GetVariablesToSplitOrMoveOutToCallSite(cancellationToken).Single(v => v.ReturnBehavior == ReturnBehavior.Initialization) != null);
 
                     var declarationStatement = CreateDeclarationStatement(
-                        variable, CreateCallSignature(), cancellationToken).WithAdditionalAnnotations(this.CallSiteAnnotation);
+                        variable, CreateCallSignature(), cancellationToken);
+                    declarationStatement = declarationStatement.WithAdditionalAnnotations(this.CallSiteAnnotation);
 
                     return statements.Concat(declarationStatement);
                 }
@@ -207,8 +209,9 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
 
                 foreach (var variable in variables)
                 {
-                    list.Add(CreateDeclarationStatement(
-                        variable, initialValue: null, cancellationToken: cancellationToken));
+                    var declaration = CreateDeclarationStatement(
+                        variable, initialValue: null, cancellationToken: cancellationToken);
+                    list.Add(declaration);
                 }
 
                 return list;
@@ -226,8 +229,9 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
                         continue;
                     }
 
-                    list.Add(CreateDeclarationStatement(
-                        variable, initialValue: null, cancellationToken: cancellationToken));
+                    var declaration = CreateDeclarationStatement(
+                        variable, initialValue: null, cancellationToken: cancellationToken);
+                    list.Add(declaration);
                 }
 
                 return list;
@@ -265,16 +269,16 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
                 return new HashSet<SyntaxAnnotation>(annotations.Select(t => t.Item2));
             }
 
-            protected IList<ITypeParameterSymbol> CreateMethodTypeParameters(CancellationToken cancellationToken)
+            protected ImmutableArray<ITypeParameterSymbol> CreateMethodTypeParameters(CancellationToken cancellationToken)
             {
                 if (this.AnalyzerResult.MethodTypeParametersInDeclaration.Count == 0)
                 {
-                    return SpecializedCollections.EmptyList<ITypeParameterSymbol>();
+                    return ImmutableArray<ITypeParameterSymbol>.Empty;
                 }
 
                 var set = new HashSet<ITypeParameterSymbol>(this.AnalyzerResult.MethodTypeParametersInConstraintList);
 
-                var typeParameters = new List<ITypeParameterSymbol>();
+                var typeParameters = ArrayBuilder<ITypeParameterSymbol>.GetInstance();
                 foreach (var parameter in this.AnalyzerResult.MethodTypeParametersInDeclaration)
                 {
                     if (parameter != null && set.Contains(parameter))
@@ -285,15 +289,16 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
 
                     typeParameters.Add(CodeGenerationSymbolFactory.CreateTypeParameter(
                         parameter.GetAttributes(), parameter.Variance, parameter.Name, ImmutableArray.Create<ITypeSymbol>(),
-                        parameter.HasConstructorConstraint, parameter.HasReferenceTypeConstraint, parameter.HasValueTypeConstraint, parameter.Ordinal));
+                        parameter.HasConstructorConstraint, parameter.HasReferenceTypeConstraint, parameter.HasValueTypeConstraint,
+                        parameter.HasUnmanagedTypeConstraint, parameter.Ordinal));
                 }
 
-                return typeParameters;
+                return typeParameters.ToImmutableAndFree();
             }
 
-            protected IList<IParameterSymbol> CreateMethodParameters()
+            protected ImmutableArray<IParameterSymbol> CreateMethodParameters()
             {
-                var parameters = new List<IParameterSymbol>();
+                var parameters = ArrayBuilder<IParameterSymbol>.GetInstance();
 
                 foreach (var parameter in this.AnalyzerResult.MethodParameters)
                 {
@@ -302,14 +307,14 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
 
                     parameters.Add(
                         CodeGenerationSymbolFactory.CreateParameterSymbol(
-                            attributes: SpecializedCollections.EmptyList<AttributeData>(),
+                            attributes: ImmutableArray<AttributeData>.Empty,
                             refKind: refKind,
                             isParams: false,
                             type: type,
                             name: parameter.Name));
                 }
 
-                return parameters;
+                return parameters.ToImmutableAndFree();
             }
 
             private static RefKind GetRefKind(ParameterBehavior parameterBehavior)

@@ -6,11 +6,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+#if NET46
+using System.Runtime;
+#else
+using System.Runtime.Loader;
+#endif
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.CodeAnalysis.CommandLine.CompilerServerLogger;
+
 #if XSHARP
 using Microsoft.Win32;
 #endif
@@ -43,6 +47,21 @@ namespace Microsoft.CodeAnalysis.CommandLine
         protected static bool IsRunningOnWindows => Path.DirectorySeparatorChar == '\\';
 
         /// <summary>
+        /// Returns the directory that contains mscorlib, or null when running on CoreCLR.
+        /// </summary>
+        public static string GetSystemSdkDirectory()
+        {
+            if (CoreClrShim.IsRunningOnCoreClr)
+            {
+                return null;
+            }
+            else
+            {
+                return RuntimeEnvironment.GetRuntimeDirectory();
+            }
+        }
+
+        /// <summary>
         /// Run a compilation through the compiler server and print the output
         /// to the console. If the compiler server fails, run the fallback
         /// compiler.
@@ -53,26 +72,26 @@ namespace Microsoft.CodeAnalysis.CommandLine
 
             var args = originalArguments.Select(arg => arg.Trim()).ToArray();
 
-            bool hasShared;
-            string keepAlive;
-            string errorMessage;
-            string sessionKey;
             List<string> parsedArgs;
+            bool hasShared;
+            string keepAliveOpt;
+            string sessionKeyOpt;
+            string errorMessageOpt;
             if (!CommandLineParser.TryParseClientArgs(
                     args,
                     out parsedArgs,
                     out hasShared,
-                    out keepAlive,
-                    out sessionKey,
-                    out errorMessage))
+                    out keepAliveOpt,
+                    out sessionKeyOpt,
+                    out errorMessageOpt))
             {
-                Console.Out.WriteLine(errorMessage);
+                textWriter.WriteLine(errorMessageOpt);
                 return RunCompilationResult.Failed;
             }
 
             if (hasShared)
             {
-                sessionKey = sessionKey ?? GetSessionKey(buildPaths);
+                sessionKeyOpt = sessionKeyOpt ?? GetSessionKey(buildPaths);
                 var libDirectory = Environment.GetEnvironmentVariable("LIB");
 #if XSHARP
                 var paths = LanguageService.CodeAnalysis.CSharp.CommandLine.Xsc.GetPaths();
@@ -80,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
                     libDirectory = string.Empty;
                 libDirectory = libDirectory+":::"+paths[0] +":::"+ paths[1]+ ":::" + paths[2];
 #endif
-                var serverResult = RunServerCompilation(textWriter, parsedArgs, buildPaths, libDirectory, sessionKey, keepAlive);
+                var serverResult = RunServerCompilation(textWriter, parsedArgs, buildPaths, libDirectory, sessionKeyOpt, keepAliveOpt);
                 if (serverResult.HasValue)
                 {
                     Debug.Assert(serverResult.Value.RanOnServer);
@@ -92,6 +111,37 @@ namespace Microsoft.CodeAnalysis.CommandLine
             // back to normal compilation. 
             var exitCode = RunLocalCompilation(parsedArgs.ToArray(), buildPaths, textWriter);
             return new RunCompilationResult(exitCode);
+        }
+
+        private static bool TryEnableMulticoreJitting(out string errorMessage)
+        {
+            errorMessage = null;
+            try
+            {
+                // Enable multi-core JITing
+                // https://blogs.msdn.microsoft.com/dotnet/2012/10/18/an-easy-solution-for-improving-app-launch-performance/
+                var profileRoot = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "RoslynCompiler",
+                    "ProfileOptimization");
+                var assemblyName = Assembly.GetExecutingAssembly().GetName();
+                var profileName = assemblyName.Name + assemblyName.Version + ".profile";
+                Directory.CreateDirectory(profileRoot);
+#if NET46
+                ProfileOptimization.SetProfileRoot(profileRoot);
+                ProfileOptimization.StartProfile(profileName);
+#else
+                AssemblyLoadContext.Default.SetProfileOptimizationRoot(profileRoot);
+                AssemblyLoadContext.Default.StartProfileOptimization(profileName);
+#endif
+            }
+            catch (Exception e)
+            {
+                errorMessage = string.Format(CodeAnalysisResources.ExceptionEnablingMulticoreJit, e.Message);
+                return false;
+            }
+
+            return true;
         }
 
         public Task<RunCompilationResult> RunCompilationAsync(IEnumerable<string> originalArguments, BuildPaths buildPaths, TextWriter textWriter = null)
@@ -166,7 +216,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
                     // Build could not be completed on the server.
                     return null;
                 default:
-                    // Will not happen with our server but hypothetically could be sent by a rouge server.  Should
+                    // Will not happen with our server but hypothetically could be sent by a rogue server.  Should
                     // not let that block compilation.
                     Debug.Assert(false);
                     return null;
@@ -196,6 +246,15 @@ namespace Microsoft.CodeAnalysis.CommandLine
 
             if (Type.GetType("Mono.Runtime") != null)
             {
+                return false;
+            }
+
+            if (CoreClrShim.IsRunningOnCoreClr)
+            {
+                // The native invoke ends up giving us both CoreRun and the exe file.
+                // We've decided to ignore backcompat for CoreCLR,
+                // and use the Main()-provided arguments
+                // https://github.com/dotnet/roslyn/issues/6677
                 return false;
             }
 

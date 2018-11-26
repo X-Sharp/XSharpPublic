@@ -6,10 +6,12 @@ using System.Globalization;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Emit;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -181,9 +183,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if ((_lazyCustomAttributesBag == null || !_lazyCustomAttributesBag.IsSealed) &&
                 LoadAndValidateAttributes(OneOrMany.Create(this.AttributeDeclarationSyntaxList), ref _lazyCustomAttributesBag))
             {
-                var completed = state.NotePartComplete(CompletionPart.Attributes);
-                Debug.Assert(completed);
                 DeclaringCompilation.SymbolDeclaredEvent(this);
+                var wasCompletedThisThread = state.NotePartComplete(CompletionPart.Attributes);
+                Debug.Assert(wasCompletedThisThread);
             }
 
             return _lazyCustomAttributesBag;
@@ -242,7 +244,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             CSharpAttributeData boundAttribute;
             ObsoleteAttributeData obsoleteData;
 
-            if (EarlyDecodeDeprecatedOrObsoleteAttribute(ref arguments, out boundAttribute, out obsoleteData))
+            if (EarlyDecodeDeprecatedOrExperimentalOrObsoleteAttribute(ref arguments, out boundAttribute, out obsoleteData))
             {
                 if (obsoleteData != null)
                 {
@@ -299,9 +301,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal override void AddSynthesizedAttributes(ModuleCompilationState compilationState, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
         {
-            base.AddSynthesizedAttributes(compilationState, ref attributes);
+            base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
             if (this.Type.ContainsDynamic())
             {
@@ -494,7 +496,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if (IsAbstract && IsVirtual)
             {
-                diagnostics.Add(ErrorCode.ERR_AbstractNotVirtual, location, this);
+                diagnostics.Add(ErrorCode.ERR_AbstractNotVirtual, location, this.Kind.Localize(), this);
             }
             else if (ContainingType.IsSealed && this.DeclaredAccessibility.HasProtected() && !this.IsOverride)
             {
@@ -539,6 +541,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
 #endif
             }
+
             diagnostics.Add(location, useSiteDiagnostics);
         }
 

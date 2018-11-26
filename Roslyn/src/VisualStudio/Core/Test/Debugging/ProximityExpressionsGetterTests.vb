@@ -1,23 +1,20 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Text
 Imports System.Threading
+Imports System.Threading.Tasks
 Imports System.Windows
 Imports Microsoft.CodeAnalysis
-Imports Microsoft.CodeAnalysis.Editor
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
 Imports Microsoft.CodeAnalysis.Shared.Extensions
-Imports Microsoft.CodeAnalysis.Text
+Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic
-Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-Imports Microsoft.VisualStudio.Text
-Imports Microsoft.VisualStudio.LanguageServices.Implementation.Debugging
 Imports Microsoft.VisualStudio.LanguageServices.VisualBasic.Debugging
+Imports Microsoft.VisualStudio.Text
 Imports Roslyn.Test.Utilities
 Imports Roslyn.Utilities
-Imports System.Threading.Tasks
 
 Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.UnitTests.Debugging
     Partial Public Class ProximityExpressionsGetterTests
@@ -33,7 +30,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.UnitTests.Debuggin
         ''' </summary>
         Public Async Function GenerateBaselineAsync() As Task
             Dim text = Resources.ProximityExpressionsGetterTestFile
-            Using workspace = Await TestWorkspace.CreateVisualBasicAsync(text)
+            Using workspace = TestWorkspace.CreateVisualBasic(text)
                 Dim languageDebugInfo = New VisualBasicLanguageDebugInfoService()
 
                 Dim hostdoc = workspace.Documents.First()
@@ -132,7 +129,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic.UnitTests.Debuggin
 
         Private Async Function TestProximityExpressionsGetterAsync(markup As String,
                                                    continuation As Func(Of VisualBasicProximityExpressionsService, Document, Integer, Task)) As Task
-            Using workspace = Await TestWorkspace.CreateVisualBasicAsync(markup)
+            Using workspace = TestWorkspace.CreateVisualBasic(markup)
                 Dim testDocument = workspace.Documents.Single()
                 Dim snapshot = testDocument.TextBuffer.CurrentSnapshot
                 Dim caretPosition = testDocument.CursorPosition.Value
@@ -199,7 +196,7 @@ End Module</text>.Value, "local", True)
         <Fact, Trait(Traits.Feature, Traits.Features.DebuggingProximityExpressions)>
         <WorkItem(527754, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/527754")>
         Public Async Function TestIsValidNoTypeSymbol() As Task
-            Await TestIsValidAsync("namespace Namespace$$ { }", "foo", False)
+            Await TestIsValidAsync("namespace Namespace$$ { }", "goo", False)
         End Function
 
         <Fact, Trait(Traits.Feature, Traits.Features.DebuggingProximityExpressions)>
@@ -213,7 +210,7 @@ End Module</text>.Value, "local", True)
             Dim caretPosition As Integer
             MarkupTestFile.GetPosition(input, parsedInput, caretPosition)
 
-            Using workspace = Await TestWorkspace.CreateVisualBasicAsync(parsedInput)
+            Using workspace = TestWorkspace.CreateVisualBasic(parsedInput)
                 Dim service = New VisualBasicProximityExpressionsService()
                 Dim hostdoc = workspace.Documents.First()
                 Dim snapshot = hostdoc.TextBuffer.CurrentSnapshot
@@ -282,9 +279,9 @@ Module Program
         dim k = 6
         dim m = 6
         dim n = 6
-        $$Foo(i) : Bar(j)
+        $$Goo(i) : Bar(j)
     End Sub
-End Module</text>.NormalizedValue, "Foo", "i", "n", "Bar", "j")
+End Module</text>.NormalizedValue, "Goo", "i", "n", "Bar", "j")
 
         End Function
 

@@ -7,8 +7,10 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
@@ -30,7 +32,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private string _lazyDocComment;
 
         private ThreeState _lazyIsExplicitDefinitionOfNoPiaLocalType = ThreeState.Unknown;
-
 
         protected override Location GetCorrespondingBaseListLocation(NamedTypeSymbol @base)
         {
@@ -97,7 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 
 
-#region Syntax
+        #region Syntax
 
         private static SyntaxToken GetName(CSharpSyntaxNode node)
         {
@@ -121,9 +122,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return SourceDocumentationCommentUtils.GetAndCacheDocumentationComment(this, expandIncludes, ref _lazyDocComment);
         }
 
-#endregion
+        #endregion
 
-#region Type Parameters
+        #region Type Parameters
 
         private ImmutableArray<TypeParameterSymbol> MakeTypeParameters(DiagnosticBag diagnostics)
         {
@@ -143,7 +144,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var syntaxTree = syntaxRef.SyntaxTree;
 
                 TypeParameterListSyntax tpl;
-                switch (typeDecl.Kind())
+                SyntaxKind typeKind = typeDecl.Kind();
+                switch (typeKind)
                 {
                     case SyntaxKind.ClassDeclaration:
                     case SyntaxKind.StructDeclaration:
@@ -161,11 +163,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         throw ExceptionUtilities.UnexpectedValue(typeDecl.Kind());
                 }
 
+                bool isInterfaceOrDelegate = typeKind == SyntaxKind.InterfaceDeclaration || typeKind == SyntaxKind.DelegateDeclaration;
                 var parameterBuilder = new List<TypeParameterBuilder>();
                 parameterBuilders1.Add(parameterBuilder);
                 int i = 0;
                 foreach (var tp in tpl.Parameters)
                 {
+                    if (tp.VarianceKeyword.Kind() != SyntaxKind.None &&
+                        !isInterfaceOrDelegate)
+                    {
+                        diagnostics.Add(ErrorCode.ERR_IllegalVarianceSyntax, tp.VarianceKeyword.GetLocation());
+                    }
+
                     var name = typeParameterNames[i];
                     var location = new SourceLocation(tp.Identifier);
                     var varianceKind = typeParameterVarianceKeywords[i];
@@ -409,9 +418,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#endregion
+        #endregion
 
-#region Attributes
+        #region Attributes
 
         internal ImmutableArray<SyntaxList<AttributeListSyntax>> GetAttributeDeclarations()
         {
@@ -538,6 +547,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return null;
             }
 
+            if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CodeAnalysisEmbeddedAttribute))
+            {
+                boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
+                if (!boundAttribute.HasErrors)
+                {
+                    arguments.GetOrCreateData<CommonTypeEarlyWellKnownAttributeData>().HasCodeAnalysisEmbeddedAttribute = true;
+                    if (!hasAnyDiagnostics)
+                    {
+                        return boundAttribute;
+                    }
+                }
+
+                return null;
+            }
+
             if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.ConditionalAttribute))
             {
                 boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
@@ -555,7 +579,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             ObsoleteAttributeData obsoleteData;
-            if (EarlyDecodeDeprecatedOrObsoleteAttribute(ref arguments, out boundAttribute, out obsoleteData))
+            if (EarlyDecodeDeprecatedOrExperimentalOrObsoleteAttribute(ref arguments, out boundAttribute, out obsoleteData))
             {
                 if (obsoleteData != null)
                 {
@@ -708,6 +732,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // DynamicAttribute should not be set explicitly.
                 arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitDynamicAttr, arguments.AttributeSyntaxOpt.Location);
             }
+            else if (attribute.IsTargetAttribute(this, AttributeDescription.IsReadOnlyAttribute))
+            {
+                // IsReadOnlyAttribute should not be set explicitly.
+                arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitReservedAttr, arguments.AttributeSyntaxOpt.Location, AttributeDescription.IsReadOnlyAttribute.FullName);
+            }
+            else if (attribute.IsTargetAttribute(this, AttributeDescription.IsUnmanagedAttribute))
+            {
+                // IsUnmanagedAttribute should not be set explicitly.
+                arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitReservedAttr, arguments.AttributeSyntaxOpt.Location, AttributeDescription.IsUnmanagedAttribute.FullName);
+            }
+            else if (attribute.IsTargetAttribute(this, AttributeDescription.IsByRefLikeAttribute))
+            {
+                // IsByRefLikeAttribute should not be set explicitly.
+                arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitReservedAttr, arguments.AttributeSyntaxOpt.Location, AttributeDescription.IsByRefLikeAttribute.FullName);
+            }
             else if (attribute.IsTargetAttribute(this, AttributeDescription.TupleElementNamesAttribute))
             {
                 arguments.Diagnostics.Add(ErrorCode.ERR_ExplicitTupleElementNamesAttribute, arguments.AttributeSyntaxOpt.Location);
@@ -737,7 +776,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (_lazyIsExplicitDefinitionOfNoPiaLocalType == ThreeState.Unknown)
                 {
-                    GetAttributes();
+                    CheckPresenceOfTypeIdentifierAttribute();
 
                     if (_lazyIsExplicitDefinitionOfNoPiaLocalType == ThreeState.Unknown)
                     {
@@ -747,6 +786,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 Debug.Assert(_lazyIsExplicitDefinitionOfNoPiaLocalType != ThreeState.Unknown);
                 return _lazyIsExplicitDefinitionOfNoPiaLocalType == ThreeState.True;
+            }
+        }
+
+        private void CheckPresenceOfTypeIdentifierAttribute()
+        {
+            // Have we already decoded well-known attributes?
+            if (_lazyCustomAttributesBag?.IsDecodedWellKnownAttributeDataComputed == true)
+            {
+                return;
+            }
+
+            // We want this function to be as cheap as possible, it is called for every top level type
+            // and we don't want to bind attributes attached to the declaration unless there is a chance
+            // that one of them is TypeIdentifier attribute.
+            ImmutableArray<SyntaxList<AttributeListSyntax>> attributeLists = GetAttributeDeclarations();
+
+            foreach (SyntaxList<AttributeListSyntax> list in attributeLists)
+            {
+                var syntaxTree = list.Node.SyntaxTree;
+                QuickAttributeChecker checker = this.DeclaringCompilation.GetBinderFactory(list.Node.SyntaxTree).GetBinder(list.Node).QuickAttributeChecker;
+
+                foreach (AttributeListSyntax attrList in list)
+                {
+                    foreach (AttributeSyntax attr in attrList.Attributes)
+                    {
+                        if (checker.IsPossibleMatch(attr, QuickAttributes.TypeIdentifier))
+                        {
+                            // This attribute syntax might be an application of TypeIdentifierAttribute.
+                            // Let's bind it.
+                            // For simplicity we bind all attributes.
+                            GetAttributes();
+                            return;
+                        }
+                    }
+                }
             }
         }
 
@@ -857,6 +931,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+        internal override bool HasCodeAnalysisEmbeddedAttribute
+        {
+            get
+            {
+                var data = GetEarlyDecodedWellKnownAttributeData();
+                return data != null && data.HasCodeAnalysisEmbeddedAttribute;
+            }
+        }
+
         internal sealed override bool ShouldAddWinRTMembers
         {
             get { return false; }
@@ -871,7 +954,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        internal sealed override bool IsSerializable
+        public sealed override bool IsSerializable
         {
             get
             {
@@ -1077,9 +1160,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// These won't be returned by GetAttributes on source methods, but they
         /// will be returned by GetAttributes on metadata symbols.
         /// </remarks>
-        internal override void AddSynthesizedAttributes(ModuleCompilationState compilationState, ref ArrayBuilder<SynthesizedAttributeData> attributes)
+        internal override void AddSynthesizedAttributes(PEModuleBuilder moduleBuilder, ref ArrayBuilder<SynthesizedAttributeData> attributes)
         {
-            base.AddSynthesizedAttributes(compilationState, ref attributes);
+            base.AddSynthesizedAttributes(moduleBuilder, ref attributes);
 
             CSharpCompilation compilation = this.DeclaringCompilation;
 
@@ -1088,6 +1171,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // No need to check if [Extension] attribute was explicitly set since
                 // we'll issue CS1112 error in those cases and won't generate IL.
                 AddSynthesizedAttribute(ref attributes, compilation.TrySynthesizeAttribute(WellKnownMember.System_Runtime_CompilerServices_ExtensionAttribute__ctor));
+            }
+
+            if (this.IsByRefLikeType)
+            {
+                AddSynthesizedAttribute(ref attributes, moduleBuilder.SynthesizeIsByRefLikeAttribute(this));
+
+                var obsoleteData = ObsoleteAttributeData;
+                Debug.Assert(obsoleteData != ObsoleteAttributeData.Uninitialized, "getting synthesized attributes before attributes are decoded");
+
+                // If user specified an Obsolete attribute, we cannot emit ours.
+                // NB: we do not check the kind of deprecation. 
+                //     we will not emit Obsolete even if Deprecated or Experimental was used.
+                //     we do not want to get into a scenario where different kinds of deprecation are combined together.
+                //
+                if (obsoleteData == null && !this.IsRestrictedType(ignoreSpanLikeTypes:true))
+                {
+                    AddSynthesizedAttribute(ref attributes, compilation.TrySynthesizeAttribute(WellKnownMember.System_ObsoleteAttribute__ctor,
+                        ImmutableArray.Create(
+                            new TypedConstant(compilation.GetSpecialType(SpecialType.System_String), TypedConstantKind.Primitive, PEModule.ByRefLikeMarker), // message
+                            new TypedConstant(compilation.GetSpecialType(SpecialType.System_Boolean), TypedConstantKind.Primitive, true)), // error=true
+                        isOptionalUse: true));
+                }
+            }
+
+            if (this.IsReadOnly)
+            {
+                AddSynthesizedAttribute(ref attributes, moduleBuilder.SynthesizeIsReadOnlyAttribute(this));
             }
 
             if (this.Indexers.Any())

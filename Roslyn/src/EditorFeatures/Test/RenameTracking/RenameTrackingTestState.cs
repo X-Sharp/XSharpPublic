@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Editor.Commands;
 using Microsoft.CodeAnalysis.Editor.CSharp.RenameTracking;
 using Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking;
+using Microsoft.CodeAnalysis.Editor.UnitTests.Utilities;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Editor.VisualBasic.RenameTracking;
 using Microsoft.CodeAnalysis.Notification;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
 using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.CodeAnalysis.Text.Shared.Extensions;
@@ -22,12 +21,12 @@ using Microsoft.CodeAnalysis.UnitTests.Diagnostics;
 using Microsoft.VisualStudio.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Tagging;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
-using Microsoft.CodeAnalysis.Editor.UnitTests.Utilities;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
 {
@@ -51,25 +50,25 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
         private readonly CodeFixProvider _codeFixProvider;
         private readonly RenameTrackingCancellationCommandHandler _commandHandler = new RenameTrackingCancellationCommandHandler();
 
-        public static async Task<RenameTrackingTestState> CreateAsync(
+        public static RenameTrackingTestState Create(
             string markup,
             string languageName,
             bool onBeforeGlobalSymbolRenamedReturnValue = true,
             bool onAfterGlobalSymbolRenamedReturnValue = true)
         {
-            var workspace = await CreateTestWorkspaceAsync(markup, languageName, EditorServicesUtil.CreateExportProvider());
+            var workspace = CreateTestWorkspace(markup, languageName, EditorServicesUtil.ExportProvider);
             return new RenameTrackingTestState(workspace, languageName, onBeforeGlobalSymbolRenamedReturnValue, onAfterGlobalSymbolRenamedReturnValue);
         }
 
-        public static async Task<RenameTrackingTestState> CreateFromWorkspaceXmlAsync(
+        public static RenameTrackingTestState CreateFromWorkspaceXml(
             string workspaceXml,
             string languageName,
             bool onBeforeGlobalSymbolRenamedReturnValue = true,
             bool onAfterGlobalSymbolRenamedReturnValue = true)
         {
-            var workspace = await TestWorkspace.CreateAsync(
+            var workspace = TestWorkspace.Create(
                 workspaceXml,
-                exportProvider: EditorServicesUtil.CreateExportProvider());
+                exportProvider: EditorServicesUtil.ExportProvider);
 
             return new RenameTrackingTestState(workspace, languageName, onBeforeGlobalSymbolRenamedReturnValue, onAfterGlobalSymbolRenamedReturnValue);
         }
@@ -104,7 +103,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
                 Workspace.ExportProvider.GetExport<IInlineRenameService>().Value,
                 Workspace.ExportProvider.GetExport<IDiagnosticAnalyzerService>().Value,
                 SpecializedCollections.SingletonEnumerable(_mockRefactorNotifyService),
-                Workspace.ExportProvider.GetExports<IAsynchronousOperationListener, FeatureMetadata>());
+                Workspace.ExportProvider.GetExportedValue<IAsynchronousOperationListenerProvider>());
 
             _tagger = tracker.CreateTagger<RenameTrackingTag>(_hostDocument.GetTextBuffer());
 
@@ -128,7 +127,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
             }
         }
 
-        private static Task<TestWorkspace> CreateTestWorkspaceAsync(string code, string languageName, ExportProvider exportProvider = null)
+        private static TestWorkspace CreateTestWorkspace(string code, string languageName, ExportProvider exportProvider = null)
         {
             var xml = string.Format(@"
 <Workspace>
@@ -137,12 +136,12 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
     </Project>
 </Workspace>", languageName, code);
 
-            return TestWorkspace.CreateAsync(xml, exportProvider: exportProvider);
+            return TestWorkspace.Create(xml, exportProvider: exportProvider);
         }
 
         public void SendEscape()
         {
-            _commandHandler.ExecuteCommand(new EscapeKeyCommandArgs(_view, _view.TextBuffer), () => { });
+            _commandHandler.ExecuteCommand(new EscapeKeyCommandArgs(_view, _view.TextBuffer), TestCommandExecutionContext.Create());
         }
 
         public void MoveCaret(int delta)
@@ -228,8 +227,12 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.RenameTracking
 
         private async Task WaitForAsyncOperationsAsync()
         {
-            var waiters = Workspace.ExportProvider.GetExportedValues<IAsynchronousOperationWaiter>();
-            await waiters.WaitAllAsync();
+            var provider = Workspace.ExportProvider.GetExportedValue<AsynchronousOperationListenerProvider>();
+            await provider.WaitAllDispatcherOperationAndTasksAsync(
+                FeatureAttribute.RenameTracking,
+                FeatureAttribute.SolutionCrawler,
+                FeatureAttribute.Workspace,
+                FeatureAttribute.EventHookup);
         }
 
         public void Dispose()

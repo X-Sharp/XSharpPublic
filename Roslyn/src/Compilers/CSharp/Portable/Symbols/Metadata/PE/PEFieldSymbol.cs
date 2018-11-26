@@ -444,14 +444,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 if (FilterOutDecimalConstantAttribute())
                 {
                     // filter out DecimalConstantAttribute
-                    CustomAttributeHandle ignore1;
-                    CustomAttributeHandle ignore2;
                     var attributes = containingPEModuleSymbol.GetCustomAttributesForToken(
                         _handle,
-                        out ignore1,
-                        AttributeDescription.DecimalConstantAttribute,
-                        out ignore2,
-                        default(AttributeDescription));
+                        out _,
+                        AttributeDescription.DecimalConstantAttribute);
 
                     ImmutableInterlocked.InterlockedInitialize(ref _lazyCustomAttributes, attributes);
                 }
@@ -471,7 +467,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                    value.Discriminator == ConstantValueTypeDiscriminator.Decimal;
         }
 
-        internal override IEnumerable<CSharpAttributeData> GetCustomAttributesToEmit(ModuleCompilationState compilationState)
+        internal override IEnumerable<CSharpAttributeData> GetCustomAttributesToEmit(PEModuleBuilder moduleBuilder)
         {
             foreach (CSharpAttributeData attribute in GetAttributes())
             {
@@ -508,7 +504,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         {
             get
             {
-                ObsoleteAttributeHelpers.InitializeObsoleteDataFromMetadata(ref _lazyObsoleteAttributeData, _handle, (PEModuleSymbol)(this.ContainingModule));
+                ObsoleteAttributeHelpers.InitializeObsoleteDataFromMetadata(ref _lazyObsoleteAttributeData, _handle, (PEModuleSymbol)(this.ContainingModule), ignoreByRefLikeMarker: false);
                 return _lazyObsoleteAttributeData;
             }
         }

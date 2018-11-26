@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -199,6 +200,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return VisitConditionalOperator((BoundConditionalOperator)node);
                 case BoundKind.Conversion:
                     return VisitConversion((BoundConversion)node);
+                case BoundKind.PassByCopy:
+                    return Visit(((BoundPassByCopy)node).Expression);
                 case BoundKind.DelegateCreationExpression:
                     return VisitDelegateCreationExpression((BoundDelegateCreationExpression)node);
                 case BoundKind.FieldAccess:
@@ -231,7 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.UnaryOperator:
                     return VisitUnaryOperator((BoundUnaryOperator)node);
 
-                case BoundKind.DefaultOperator:
+                case BoundKind.DefaultExpression:
                 case BoundKind.HostObjectMemberReference:
                 case BoundKind.Literal:
                 case BoundKind.Local:
@@ -343,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // error should have been reported earlier
                     // Bound.Diagnostics.Add(ErrorCode.ERR_ExpressionTreeContainsMultiDimensionalArrayInitializer, node.Syntax.Location);
-                    return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundNode>(node), ExpressionType);
+                    return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundExpression>(node), ExpressionType);
                 }
             }
             else
@@ -372,7 +375,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // should have been reported earlier.
             // Diagnostics.Add(ErrorCode.ERR_ExpressionTreeContainsBaseAccess, node.Syntax.Location);
-            return new BoundBadExpression(node.Syntax, 0, ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundNode>(node), ExpressionType);
+            return new BoundBadExpression(node.Syntax, 0, ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundExpression>(node), ExpressionType);
         }
 
         private static string GetBinaryOperatorName(BinaryOperatorKind opKind, out bool isChecked, out bool isLifted, out bool requiresLifted)
@@ -456,7 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var conversion = (BoundConversion)operand;
                 if (!conversion.ConversionKind.IsUserDefinedConversion() &&
                     conversion.ConversionKind.IsImplicitConversion() &&
-                    conversion.ConversionKind != ConversionKind.NullLiteral &&
+                    conversion.ConversionKind != ConversionKind.DefaultOrNullLiteral &&
                     conversion.Type.StrippedType().IsEnumType())
                 {
                     operand = conversion.Operand;
@@ -517,12 +520,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var e = type as NamedTypeSymbol;
             if ((object)e != null)
             {
-                if (e.TypeKind == TypeKind.Enum || e.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T && e.TypeArgumentsNoUseSiteDiagnostics[0].TypeKind == TypeKind.Enum)
+                if (e.StrippedType().TypeKind == TypeKind.Enum)
                 {
                     return Convert(node, type, isChecked);
                 }
 
-                var promotedType = e.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T ? _nullableType.Construct(PromotedType((NamedTypeSymbol)e.TypeArgumentsNoUseSiteDiagnostics[0])) : PromotedType(e);
+                var promotedType = e.IsNullableType() ? _nullableType.Construct(PromotedType(e.GetNullableUnderlyingType())) : PromotedType(e);
                 if (promotedType != type)
                 {
                     return Convert(node, type, isChecked);
@@ -643,7 +646,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var e1 = Convert(Visit(node.Operand), node.Operand.Type, intermediate, node.Checked, false);
                         return Convert(e1, intermediate, node.Type, node.Checked, false);
                     }
-                case ConversionKind.NullLiteral:
+                case ConversionKind.DefaultOrNullLiteral:
                     return Convert(Constant(_bound.Null(_objectType)), _objectType, node.Type, false, node.ExplicitCastInCode);
                 default:
                     return Convert(Visit(node.Operand), node.Operand.Type, node.Type, node.Checked, node.ExplicitCastInCode);
@@ -688,10 +691,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression VisitDelegateCreationExpression(BoundDelegateCreationExpression node)
         {
-            var mg = node.Argument as BoundMethodGroup;
-            if (mg != null)
+            if (node.Argument.Kind == BoundKind.MethodGroup)
             {
-                return DelegateCreation(mg.ReceiverOpt, node.MethodOpt, node.Type, node.MethodOpt.IsStatic && !mg.SearchExtensionMethods);
+                throw ExceptionUtilities.UnexpectedValue(BoundKind.MethodGroup);
+            }
+
+            if ((object)node.MethodOpt != null)
+            {
+                bool staticMember = node.MethodOpt.IsStatic && !node.IsExtensionMethod;
+                return DelegateCreation(node.Argument, node.MethodOpt, node.Type, staticMember);
             }
 
             var d = node.Argument.Type as NamedTypeSymbol;
@@ -974,14 +982,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // error should have been reported earlier
             // Diagnostics.Add(ErrorCode.ERR_ExpressionTreeContainsPointerOp, node.Syntax.Location);
-            return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundNode>(node), node.Type);
+            return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundExpression>(node), node.Type);
         }
 
         private static BoundExpression VisitPointerElementAccess(BoundPointerElementAccess node)
         {
             // error should have been reported earlier
             // Diagnostics.Add(ErrorCode.ERR_ExpressionTreeContainsPointerOp, node.Syntax.Location);
-            return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundNode>(node), node.Type);
+            return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundExpression>(node), node.Type);
         }
 
         private BoundExpression VisitPropertyAccess(BoundPropertyAccess node)
@@ -1013,7 +1021,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // error should have been reported earlier
             // Diagnostics.Add(ErrorCode.ERR_ExpressionTreeContainsPointerOp, node.Syntax.Location);
-            return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundNode>(node), node.Type);
+            return new BoundBadExpression(node.Syntax, default(LookupResultKind), ImmutableArray<Symbol>.Empty, ImmutableArray.Create<BoundExpression>(node), node.Type);
         }
 
         private BoundExpression VisitUnaryOperator(BoundUnaryOperator node)

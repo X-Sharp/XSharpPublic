@@ -1,7 +1,8 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,11 +90,12 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                 var result = CreateMethodBody(cancellationToken);
 
                 var methodSymbol = CodeGenerationSymbolFactory.CreateMethodSymbol(
-                    attributes: SpecializedCollections.EmptyList<AttributeData>(),
+                    attributes: ImmutableArray<AttributeData>.Empty,
                     accessibility: Accessibility.Private,
                     modifiers: CreateMethodModifiers(),
                     returnType: this.AnalyzerResult.ReturnType,
-                    explicitInterfaceSymbol: null,
+                    refKind: RefKind.None,
+                    explicitInterfaceImplementations: default,
                     name: _methodName.ToString(),
                     typeParameters: CreateMethodTypeParameters(cancellationToken),
                     parameters: CreateMethodParameters(),
@@ -134,7 +136,8 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                 // field initializer, constructor initializer, expression bodied member case
                 if (selectedNode is ConstructorInitializerSyntax ||
                     selectedNode is FieldDeclarationSyntax ||
-                    IsExpressionBodiedMember(selectedNode))
+                    IsExpressionBodiedMember(selectedNode) || 
+                    IsExpressionBodiedAccessor(selectedNode))
                 {
                     var statement = await GetStatementOrInitializerContainingInvocationToExtractedMethodAsync(this.CallSiteAnnotation, cancellationToken).ConfigureAwait(false);
                     return SpecializedCollections.SingletonEnumerable(statement);
@@ -156,9 +159,10 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
             }
 
             private bool IsExpressionBodiedMember(SyntaxNode node)
-            {
-                return node is MemberDeclarationSyntax && ((MemberDeclarationSyntax)node).GetExpressionBody() != null;
-            }
+                => node is MemberDeclarationSyntax member && member.GetExpressionBody() != null;
+
+            private bool IsExpressionBodiedAccessor(SyntaxNode node)
+                => node is AccessorDeclarationSyntax accessor && accessor.ExpressionBody != null;
 
             private SimpleNameSyntax CreateMethodNameForInvocation()
             {
@@ -216,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                                 SyntaxKind.OutKeyword : SyntaxKind.None;
             }
 
-            private OperationStatus<List<SyntaxNode>> CreateMethodBody(CancellationToken cancellationToken)
+            private OperationStatus<ImmutableArray<SyntaxNode>> CreateMethodBody(CancellationToken cancellationToken)
             {
                 var statements = GetInitialStatementsForMethodDefinitions();
 
@@ -227,7 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
 
                 // set output so that we can use it in negative preview
                 var wrapped = WrapInCheckStatementIfNeeded(statements);
-                return CheckActiveStatements(statements).With(wrapped.ToList<SyntaxNode>());
+                return CheckActiveStatements(statements).With(wrapped.ToImmutableArray<SyntaxNode>());
             }
 
             private IEnumerable<StatementSyntax> WrapInCheckStatementIfNeeded(IEnumerable<StatementSyntax> statements)
@@ -243,8 +247,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                     return SpecializedCollections.SingletonEnumerable<StatementSyntax>(SyntaxFactory.CheckedStatement(kind, SyntaxFactory.Block(statements)));
                 }
 
-                var block = statements.Single() as BlockSyntax;
-                if (block != null)
+                if (statements.Single() is BlockSyntax block)
                 {
                     return SpecializedCollections.SingletonEnumerable<StatementSyntax>(SyntaxFactory.CheckedStatement(kind, block));
                 }
@@ -275,8 +278,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
 
                 if (count == 1)
                 {
-                    var returnStatement = statements.Single() as ReturnStatementSyntax;
-                    if (returnStatement != null && returnStatement.Expression == null)
+                    if (statements.Single() is ReturnStatementSyntax returnStatement && returnStatement.Expression == null)
                     {
                         return OperationStatus.NoActiveStatement;
                     }
@@ -400,10 +402,10 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
             }
 
             /// <summary>
-            /// If the statement has an `out var` declaration expression for a variable which
-            /// needs to be removed, we need to turn it into a plain `out` parameter, so that
+            /// If the statement has an <c>out var</c> declaration expression for a variable which
+            /// needs to be removed, we need to turn it into a plain <c>out</c> parameter, so that
             /// it doesn't declare a duplicate variable.
-            /// If the statement has a pattern declaration (such as `3 is int i`) for a variable
+            /// If the statement has a pattern declaration (such as <c>3 is int i</c>) for a variable
             /// which needs to be removed, we will annotate it as a conflict, since we don't have
             /// a better refactoring.
             /// </summary>
@@ -589,7 +591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                 foreach (var argument in this.AnalyzerResult.MethodParameters)
                 {
                     var modifier = GetParameterRefSyntaxKind(argument.ParameterModifier);
-                    var refOrOut = modifier == SyntaxKind.None ? default(SyntaxToken) : SyntaxFactory.Token(modifier);
+                    var refOrOut = modifier == SyntaxKind.None ? default : SyntaxFactory.Token(modifier);
 
                     arguments.Add(SyntaxFactory.Argument(SyntaxFactory.IdentifierName(argument.Name)).WithRefOrOutKeyword(refOrOut));
                 }
@@ -616,16 +618,8 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                 ExpressionSyntax initialValue,
                 CancellationToken cancellationToken)
             {
-                // Convert to 'var' if appropriate.  Note: because we're extracting out
-                // to a method, the initialValue will be a method-call.  Types are not
-                // apperant with method calls (i.e. as opposed to a 'new XXX()' expression,
-                // where the type is apperant).
                 var type = variable.GetVariableType(this.SemanticDocument);
-                var typeNode = initialValue == null
-                    ? type.GenerateTypeSyntax()
-                    : type.GenerateTypeSyntaxOrVar(
-                          this.SemanticDocument.Document.Project.Solution.Options,
-                          typeIsApperant: false);
+                var typeNode = type.GenerateTypeSyntax();
 
                 var equalsValueClause = initialValue == null ? null : SyntaxFactory.EqualsValueClause(value: initialValue);
 
@@ -660,14 +654,14 @@ namespace Microsoft.CodeAnalysis.CSharp.ExtractMethod
                     return methodDefinition.ReplaceToken(
                             methodDefinition.Body.OpenBraceToken,
                             methodDefinition.Body.OpenBraceToken.WithAppendedTrailingTrivia(
-                                SpecializedCollections.SingletonEnumerable(SyntaxFactory.CarriageReturnLineFeed)));
+                                SpecializedCollections.SingletonEnumerable(SyntaxFactory.ElasticCarriageReturnLineFeed)));
                 }
                 else if (methodDefinition.ExpressionBody != null)
                 {
                     return methodDefinition.ReplaceToken(
                             methodDefinition.ExpressionBody.ArrowToken,
                             methodDefinition.ExpressionBody.ArrowToken.WithPrependedLeadingTrivia(
-                                SpecializedCollections.SingletonEnumerable(SyntaxFactory.CarriageReturnLineFeed)));
+                                SpecializedCollections.SingletonEnumerable(SyntaxFactory.ElasticCarriageReturnLineFeed)));
                 }
                 else
                 {

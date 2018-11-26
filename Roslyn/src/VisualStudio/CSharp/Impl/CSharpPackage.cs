@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.CodeAnalysis.Host;
+using Microsoft.VisualStudio.LanguageServices.Utilities;
 
 // NOTE(DustinCa): The EditorFactory registration is in VisualStudioComponents\CSharpPackageRegistration.pkgdef.
 // The reason for this is because the ProvideEditorLogicalView does not allow a name value to specified in addition to
@@ -28,6 +29,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
     // (See vsproject\cool\coolpkg\pkg\VCSharp_Proj_System_Reg.pkgdef for an example).
     [Guid(Guids.CSharpPackageIdString)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
+    [ProvideRoslynVersionRegistration(Guids.CSharpPackageIdString, "Microsoft Visual C#", productNameResourceID: 116, detailsResourceID: 117)]
     [ProvideLanguageExtension(typeof(CSharpLanguageService), ".cs")]
     [ProvideLanguageService(Guids.CSharpLanguageServiceIdString, "CSharp", languageResourceID: 101, RequestStockColors = true, ShowDropDownOptions = true)]
 
@@ -47,7 +49,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
     //         Wrapping
     //       Naming
     //     IntelliSense
-    
+
     [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
     [ProvideLanguageEditorToolsOptionCategory("CSharp", "Code Style", "#114")]
     [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.CodeStylePage), "CSharp", @"Code Style", "General", pageNameResourceId: "#108", keywordListResourceId: 313)]
@@ -98,8 +100,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
 
         private void RegisterObjectBrowserLibraryManager()
         {
-            var objectManager = this.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-            if (objectManager != null)
+            if (this.GetService(typeof(SVsObjectManager)) is IVsObjectManager2 objectManager)
             {
                 _libraryManager = new ObjectBrowserLibraryManager(this);
 
@@ -114,8 +115,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
         {
             if (_libraryManagerCookie != 0)
             {
-                var objectManager = this.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-                if (objectManager != null)
+                if (this.GetService(typeof(SVsObjectManager)) is IVsObjectManager2 objectManager)
                 {
                     objectManager.UnregisterLibrary(_libraryManagerCookie);
                     _libraryManagerCookie = 0;
@@ -147,7 +147,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
 
         protected override IEnumerable<IVsEditorFactory> CreateEditorFactories()
         {
-            var editorFactory = new CSharpEditorFactory(this);
+            var editorFactory = new CSharpEditorFactory(this.ComponentModel);
             var codePageEditorFactory = new CSharpCodePageEditorFactory(editorFactory);
 
             return new IVsEditorFactory[] { editorFactory, codePageEditorFactory };
@@ -163,8 +163,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
             miscellaneousFilesWorkspace.RegisterLanguage(
                 Guids.CSharpLanguageServiceId,
                 LanguageNames.CSharp,
-                ".csx",
-                CSharpParseOptions.Default);
+                ".csx");
         }
 
         protected override string RoslynLanguageName

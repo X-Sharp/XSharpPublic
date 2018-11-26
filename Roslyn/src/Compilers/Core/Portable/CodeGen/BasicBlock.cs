@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using Microsoft.CodeAnalysis.Debugging;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CodeGen
@@ -516,7 +518,8 @@ namespace Microsoft.CodeAnalysis.CodeGen
             private bool TryOptimizeBranchToEquivalent(BasicBlock next, ref int delta)
             {
                 var curBranchCode = this.BranchCode;
-                if (curBranchCode.IsConditionalBranch())
+                if (curBranchCode.IsConditionalBranch() &&
+                    next.EnclosingHandler == this.EnclosingHandler)
                 {
                     // check for branch to next, 
                     // or if both blocks are identical

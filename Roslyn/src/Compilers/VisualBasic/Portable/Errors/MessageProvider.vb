@@ -7,20 +7,26 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Namespace Microsoft.CodeAnalysis.VisualBasic
     Friend NotInheritable Class MessageProvider
         Inherits CommonMessageProvider
-        Implements IObjectWritable, IObjectReadable
+        Implements IObjectWritable
 
         Public Shared ReadOnly Instance As MessageProvider = New MessageProvider()
+
+        Shared Sub New()
+            ObjectBinder.RegisterTypeReader(GetType(MessageProvider), Function(r) Instance)
+        End Sub
 
         Private Sub New()
         End Sub
 
+        Private ReadOnly Property IObjectWritable_ShouldReuseInSerialization As Boolean Implements IObjectWritable.ShouldReuseInSerialization
+            Get
+                Return True
+            End Get
+        End Property
+
         Private Sub WriteTo(writer As ObjectWriter) Implements IObjectWritable.WriteTo
             ' don't write anything since we always return the shared 'Instance' when read.
         End Sub
-
-        Private Function GetReader() As Func(Of ObjectReader, Object) Implements IObjectReadable.GetReader
-            Return Function(r) Instance
-        End Function
 
         Public Overrides ReadOnly Property CodePrefix As String
             Get
@@ -153,9 +159,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
-        Public Overrides ReadOnly Property FTL_InputFileNameTooLong As Integer
+        Public Overrides ReadOnly Property FTL_InvalidInputFileName As Integer
             Get
-                Return ERRID.FTL_InputFileNameTooLong
+                Return ERRID.FTL_InvalidInputFileName
             End Get
         End Property
 
@@ -232,6 +238,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
+        ' parse options:
+
+        Public Overrides ReadOnly Property ERR_BadSourceCodeKind As Integer
+            Get
+                Return ERRID.ERR_BadSourceCodeKind
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property ERR_BadDocumentationMode As Integer
+            Get
+                Return ERRID.ERR_BadDocumentationMode
+            End Get
+        End Property
+
         ' compilation options:
 
         Public Overrides ReadOnly Property ERR_BadCompilationOptionValue As Integer
@@ -269,6 +289,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides ReadOnly Property ERR_InvalidSubsystemVersion As Integer
             Get
                 Return ERRID.ERR_InvalidSubsystemVersion
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property ERR_InvalidHashAlgorithmName As Integer
+            Get
+                Return ERRID.ERR_InvalidHashAlgorithmName
             End Get
         End Property
 
@@ -529,6 +555,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Public Overrides ReadOnly Property ERR_BadAssemblyName As Integer
             Get
                 Return ERRID.ERR_BadAssemblyName
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property ERR_InvalidDebugInfo As Integer
+            Get
+                Return ERRID.ERR_InvalidDebugInfo
             End Get
         End Property
     End Class

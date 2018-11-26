@@ -1,30 +1,28 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Collections.Immutable
-Imports System.IO
-Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.EditAndContinue
 Imports Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
+Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.VisualStudio.Editor
-Imports Microsoft.VisualStudio.LanguageServices.Implementation.ProjectSystem
 Imports Microsoft.VisualStudio.OLE.Interop
 Imports Microsoft.VisualStudio.Text
 Imports Microsoft.VisualStudio.Text.Editor
 Imports Microsoft.VisualStudio.TextManager.Interop
 Imports Microsoft.VisualStudio.Utilities
-Imports Moq
 Imports Roslyn.Test.Utilities
 
 Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
 
+    <[UseExportProvider]>
     Public Class VsReadOnlyDocumentTrackerTests
         <WpfFact>
-        Public Async Function StandardTextDocumentTest() As Task
+        Public Sub StandardTextDocumentTest()
             Dim diagnosticService As IDiagnosticAnalyzerService = New EditAndContinueTestHelper.TestDiagnosticAnalyzerService()
-            Dim encService As IEditAndContinueWorkspaceService = New EditAndContinueWorkspaceService(diagnosticService)
-            Dim workspace = Await EditAndContinueTestHelper.CreateTestWorkspaceAsync()
+            Dim encService As IEditAndContinueService = New EditAndContinueService(diagnosticService, New TestActiveStatementProvider())
+            Dim workspace = EditAndContinueTestHelper.CreateTestWorkspace()
             Dim currentSolution = workspace.CurrentSolution
             Dim project = currentSolution.Projects(0)
 
@@ -32,7 +30,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
             Assert.Equal(Of UInteger)(0, mockVsBuffer._oldFlags)
 
             Dim mockEditorAdaptersFactoryService = New VsEditorAdaptersFactoryServiceMock(mockVsBuffer)
-            WpfTestCase.RequireWpfFact($"{NameOf(VsReadOnlyDocumentTracker)} is thread affinitized")
+            WpfTestRunner.RequireWpfFact($"{NameOf(VsReadOnlyDocumentTracker)} is thread affinitized")
             Dim readOnlyDocumentTracker As VsReadOnlyDocumentTracker
 
             Dim sessionReason As SessionReadOnlyReason
@@ -42,39 +40,38 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
 
             ' start debugging
             encService.StartDebuggingSession(workspace.CurrentSolution)
-            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService, Nothing)
+            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(1, mockVsBuffer._oldFlags) ' Read-Only
 
             ' edit mode
-            Dim activeStatement = New Dictionary(Of DocumentId, ImmutableArray(Of ActiveStatementSpan))()
-            Dim projectStates = ImmutableArray.Create(Of KeyValuePair(Of ProjectId, ProjectReadOnlyReason))(New KeyValuePair(Of ProjectId, ProjectReadOnlyReason)(project.Id, ProjectReadOnlyReason.None))
+            Dim projectStates = ImmutableArray.Create(New KeyValuePair(Of ProjectId, ProjectReadOnlyReason)(project.Id, ProjectReadOnlyReason.None))
 
-            encService.StartEditSession(currentSolution, activeStatement, projectStates.ToImmutableDictionary(), stoppedAtException:=False)
+            encService.StartEditSession(currentSolution, projectStates.ToImmutableDictionary(), stoppedAtException:=False)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(0, mockVsBuffer._oldFlags) ' Editable
 
             ' end edit session
-            encService.EndEditSession()
+            encService.EndEditSession(ImmutableDictionary(Of ActiveMethodId, ImmutableArray(Of NonRemappableRegion)).Empty)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(1, mockVsBuffer._oldFlags) ' Read-Only
 
             ' break mode and stop at exception
-            encService.StartEditSession(currentSolution, activeStatement, projectStates.ToImmutableDictionary(), stoppedAtException:=True)
+            encService.StartEditSession(currentSolution, projectStates.ToImmutableDictionary(), stoppedAtException:=True)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(1, mockVsBuffer._oldFlags) ' Read-Only
-        End Function
+        End Sub
 
         <WorkItem(1089964, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1089964")>
         <WpfFact>
-        Public Async Function ContainedDocumentTest() As Task
+        Public Sub ContainedDocumentTest()
             Dim diagnosticService As IDiagnosticAnalyzerService = New EditAndContinueTestHelper.TestDiagnosticAnalyzerService()
-            Dim encService As IEditAndContinueWorkspaceService = New EditAndContinueWorkspaceService(diagnosticService)
-            Dim workspace = Await EditAndContinueTestHelper.CreateTestWorkspaceAsync()
+            Dim encService As IEditAndContinueService = New EditAndContinueService(diagnosticService, New TestActiveStatementProvider())
+            Dim workspace = EditAndContinueTestHelper.CreateTestWorkspace()
             Dim currentSolution = workspace.CurrentSolution
             Dim project = currentSolution.Projects(0)
 
@@ -91,39 +88,38 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
 
             ' start debugging
             encService.StartDebuggingSession(workspace.CurrentSolution)
-            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService, Nothing)
+            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(0, mockVsBuffer._oldFlags) ' Editable
 
             ' edit mode
-            Dim activeStatement = New Dictionary(Of DocumentId, ImmutableArray(Of ActiveStatementSpan))()
-            Dim projectStates = ImmutableArray.Create(Of KeyValuePair(Of ProjectId, ProjectReadOnlyReason))(New KeyValuePair(Of ProjectId, ProjectReadOnlyReason)(project.Id, ProjectReadOnlyReason.None))
+            Dim projectStates = ImmutableArray.Create(New KeyValuePair(Of ProjectId, ProjectReadOnlyReason)(project.Id, ProjectReadOnlyReason.None))
 
-            encService.StartEditSession(currentSolution, activeStatement, projectStates.ToImmutableDictionary(), stoppedAtException:=False)
+            encService.StartEditSession(currentSolution, projectStates.ToImmutableDictionary(), stoppedAtException:=False)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(0, mockVsBuffer._oldFlags) ' Editable
 
             ' end edit session
-            encService.EndEditSession()
+            encService.EndEditSession(ImmutableDictionary(Of ActiveMethodId, ImmutableArray(Of NonRemappableRegion)).Empty)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(0, mockVsBuffer._oldFlags) ' Editable
 
             ' break mode and stop at exception
-            encService.StartEditSession(currentSolution, activeStatement, projectStates.ToImmutableDictionary(), stoppedAtException:=True)
+            encService.StartEditSession(currentSolution, projectStates.ToImmutableDictionary(), stoppedAtException:=True)
             isReadOnly = encService.IsProjectReadOnly(project.Id, sessionReason, projectReason) AndAlso allowsReadOnly
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), isReadOnly)
             Assert.Equal(Of UInteger)(0, mockVsBuffer._oldFlags) ' Editable
-        End Function
+        End Sub
 
         <WorkItem(1147868, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1147868")>
         <WpfFact>
-        Public Async Function InvalidDocumentTest1() As Task
+        Public Sub InvalidDocumentTest1()
             Dim diagnosticService As IDiagnosticAnalyzerService = New EditAndContinueTestHelper.TestDiagnosticAnalyzerService()
-            Dim encService As IEditAndContinueWorkspaceService = New EditAndContinueWorkspaceService(diagnosticService)
-            Dim workspace = Await EditAndContinueTestHelper.CreateTestWorkspaceAsync()
+            Dim encService As IEditAndContinueService = New EditAndContinueService(diagnosticService, New TestActiveStatementProvider())
+            Dim workspace = EditAndContinueTestHelper.CreateTestWorkspace()
             Dim currentSolution = workspace.CurrentSolution
             Dim project = currentSolution.Projects(0)
 
@@ -135,7 +131,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
 
             ' start debugging & readOnlyDocumentTracker
             encService.StartDebuggingSession(workspace.CurrentSolution)
-            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService, Nothing)
+            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService)
 
             ' valid document
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), False)
@@ -143,14 +139,14 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
 
             ' invalid documentId
             readOnlyDocumentTracker.SetReadOnly(Nothing, False) ' Check no NRE
-        End Function
+        End Sub
 
         <WorkItem(1147868, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1147868")>
         <WpfFact>
-        Public Async Function InvalidDocumentTest2() As Task
+        Public Sub InvalidDocumentTest2()
             Dim diagnosticService As IDiagnosticAnalyzerService = New EditAndContinueTestHelper.TestDiagnosticAnalyzerService()
-            Dim encService As IEditAndContinueWorkspaceService = New EditAndContinueWorkspaceService(diagnosticService)
-            Dim workspace = Await EditAndContinueTestHelper.CreateTestWorkspaceAsync()
+            Dim encService As IEditAndContinueService = New EditAndContinueService(diagnosticService, New TestActiveStatementProvider())
+            Dim workspace = EditAndContinueTestHelper.CreateTestWorkspace()
             Dim currentSolution = workspace.CurrentSolution
             Dim project = currentSolution.Projects(0)
 
@@ -162,7 +158,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
 
             ' start debugging & readOnlyDocumentTracker
             encService.StartDebuggingSession(workspace.CurrentSolution)
-            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService, Nothing)
+            readOnlyDocumentTracker = New VsReadOnlyDocumentTracker(encService, mockEditorAdaptersFactoryService)
 
             ' valid document
             readOnlyDocumentTracker.SetReadOnly(project.DocumentIds.First(), False)
@@ -171,7 +167,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.EditAndContinue
             ' the given project does not contain this document
             Dim newDocumentId = DocumentId.CreateFromSerialized(ProjectId.CreateFromSerialized(Guid.NewGuid(), "TestProject"), Guid.NewGuid(), "TestDoc")
             readOnlyDocumentTracker.SetReadOnly(newDocumentId, False) ' Check no NRE
-        End Function
+        End Sub
 
 #Region "Helper Methods"
 

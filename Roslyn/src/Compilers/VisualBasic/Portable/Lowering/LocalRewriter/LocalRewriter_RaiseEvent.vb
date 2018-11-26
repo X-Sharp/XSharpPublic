@@ -62,6 +62,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                                                         raiseCallExpression.MethodGroupOpt,
                                                         tempAccess,
                                                         raiseCallExpression.Arguments,
+                                                        raiseCallExpression.DefaultArguments,
                                                         raiseCallExpression.ConstantValueOpt,
                                                         isLValue:=raiseCallExpression.IsLValue,
                                                         suppressObjectClone:=raiseCallExpression.SuppressObjectClone,
@@ -100,7 +101,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End If
 
             If Instrument(node, result) Then
-                result = _instrumenter.InstrumentRaiseEventStatement(node, result)
+                result = _instrumenterOpt.InstrumentRaiseEventStatement(node, result)
             End If
 
             Return result
@@ -160,7 +161,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 _diagnostics.Add(info, syntax.GetLocation())
             End If
 
-            Return New BoundBadExpression(syntax, LookupResultKind.NotReferencable, ImmutableArray(Of Symbol).Empty, ImmutableArray.Create(Of BoundNode)(rewrittenReceiver), ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
+            Return New BoundBadExpression(syntax, LookupResultKind.NotReferencable, ImmutableArray(Of Symbol).Empty, ImmutableArray.Create(rewrittenReceiver), ErrorTypeSymbol.UnknownResultType, hasErrors:=True)
         End Function
     End Class
 End Namespace

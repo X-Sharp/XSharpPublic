@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -49,8 +49,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Preview
             _componentModel = componentModel;
             var bufferFactory = componentModel.GetService<ITextBufferFactoryService>();
             var bufferText = left != null
-                ? left.GetTextAsync(CancellationToken.None).WaitAndGetResult(CancellationToken.None)
-                : right.GetTextAsync(CancellationToken.None).WaitAndGetResult(CancellationToken.None);
+                ? left.GetTextSynchronously(CancellationToken.None)
+                : right.GetTextSynchronously(CancellationToken.None);
             _buffer = bufferFactory.CreateTextBuffer(bufferText.ToString(), bufferFactory.InertContentType);
             _encoding = bufferText.Encoding;
 
@@ -71,8 +71,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Preview
                 return GetEntireDocumentAsSpanChange(left);
             }
 
-            var oldText = left.GetTextAsync(cancellationToken).WaitAndGetResult(cancellationToken);
-            var newText = right.GetTextAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+            var oldText = left.GetTextSynchronously(cancellationToken);
+            var newText = right.GetTextSynchronously(cancellationToken);
 
             var diffSelector = _componentModel.GetService<ITextDifferencingSelectorService>();
             var diffService = diffSelector.GetTextDifferencingService(
@@ -187,7 +187,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Preview
                 using (var edit = _buffer.CreateEdit())
                 {
                     edit.Replace(child.GetSpan(), child.GetApplicableText());
-                    edit.Apply();
+                    edit.ApplyAndLogExceptions();
                 }
             }
 
@@ -219,9 +219,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Preview
             // If these are documents from a VS workspace, then attempt to get the right display
             // data from the underlying VSHierarchy and itemids for the document.
             var workspace = document.Project.Solution.Workspace;
-            if (workspace is VisualStudioWorkspaceImpl)
+            if (workspace is VisualStudioWorkspaceImpl vsWorkspace)
             {
-                if (((VisualStudioWorkspaceImpl)workspace).TryGetImageListAndIndex(_imageService, document.Id, out pData[0].hImageList, out pData[0].Image))
+                if (vsWorkspace.TryGetImageListAndIndex(_imageService, document.Id, out pData[0].hImageList, out pData[0].Image))
                 {
                     pData[0].SelectedImage = pData[0].Image;
                     return;
@@ -237,8 +237,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Preview
             //       current way of just using text differ has its own issue, and using syntax differ in compiler that are for incremental parser
             //       has its own drawbacks.
 
-            var oldText = left.GetTextAsync(cancellationToken).WaitAndGetResult(cancellationToken);
-            var newText = right.GetTextAsync(cancellationToken).WaitAndGetResult(cancellationToken);
+            var oldText = left.GetTextSynchronously(cancellationToken);
+            var newText = right.GetTextSynchronously(cancellationToken);
 
             var oldString = oldText.ToString();
             var newString = newText.ToString();

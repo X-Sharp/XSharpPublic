@@ -1,27 +1,24 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.DiagnosticComments.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics;
-using Roslyn.Test.Utilities;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.DocumentationComments.CodeFixes
 {
     public class AddDocCommentNodesCodesFixProviderTests : AbstractCSharpDiagnosticProviderBasedUserDiagnosticTest
     {
-        internal override Tuple<DiagnosticAnalyzer, CodeFixProvider> CreateDiagnosticProviderAndFixer(Workspace workspace)
-        {
-            return new Tuple<DiagnosticAnalyzer, CodeFixProvider>(null, new CSharpAddDocCommentNodesCodeFixProvider());
-        }
+        internal override (DiagnosticAnalyzer, CodeFixProvider) CreateDiagnosticProviderAndFixer(Workspace workspace)
+            => (null, new CSharpAddDocCommentNodesCodeFixProvider());
 
         private async Task TestAsync(string initial, string expected)
         {
             var parseOptions = Options.Regular.WithDocumentationMode(DocumentationMode.Diagnose);
-            await TestAsync(initial, expected, parseOptions: parseOptions, compareTokens: false);
+            await TestAsync(initial, expected, parseOptions: parseOptions);
         }
 
         [Fact, Trait(Traits.Feature, Traits.Features.CodeActionsAddDocCommentNodes)]
@@ -153,8 +150,8 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.DocumentationComments.C
     /// <summary>
     /// 
     /// </summary>
-    /// <param name=""i"">Parameter `i` does something</param>
-    /// <param name=""k"">Parameter `k` does something else</param>
+    /// <param name=""i"">Parameter <paramref name=""i""/> does something</param>
+    /// <param name=""k"">Parameter <paramref name=""k""/> does something else</param>
     public void Fizz(int i, int [|j|], int k) {}
 }
 ";
@@ -165,9 +162,9 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.DocumentationComments.C
     /// <summary>
     /// 
     /// </summary>
-    /// <param name=""i"">Parameter `i` does something</param>
+    /// <param name=""i"">Parameter <paramref name=""i""/> does something</param>
     /// <param name=""j""></param>
-    /// <param name=""k"">Parameter `k` does something else</param>
+    /// <param name=""k"">Parameter <paramref name=""k""/> does something else</param>
     public void Fizz(int i, int j, int k) {}
 }
 ";
@@ -365,7 +362,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.DocumentationComments.C
     /// 
     /// </summary>
     /// <param name=""j""></param>
-    public delegate int Foo(int [|i|], int j, int k);
+    public delegate int Goo(int [|i|], int j, int k);
 }
 ";
 
@@ -378,7 +375,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.DocumentationComments.C
     /// <param name=""i""></param>
     /// <param name=""j""></param>
     /// <param name=""k""></param>
-    public delegate int Foo(int [|i|], int j, int k);
+    public delegate int Goo(int [|i|], int j, int k);
 }
 ";
             await TestAsync(initial, expected);

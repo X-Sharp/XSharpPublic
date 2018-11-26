@@ -12,7 +12,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
 {
     internal sealed class ReadOnlyDocumentTracker : ForegroundThreadAffinitizedObject, IDisposable
     {
-        private readonly IEditAndContinueWorkspaceService _encService;
+        private readonly IEditAndContinueService _encService;
         private readonly Workspace _workspace;
 
         // null after the object is disposed
@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
         // invoked on UI thread
         private readonly Action<DocumentId, SessionReadOnlyReason, ProjectReadOnlyReason> _onReadOnlyDocumentEditAttempt;
 
-        public ReadOnlyDocumentTracker(IEditAndContinueWorkspaceService encService, Action<DocumentId, SessionReadOnlyReason, ProjectReadOnlyReason> onReadOnlyDocumentEditAttempt)
+        public ReadOnlyDocumentTracker(IEditAndContinueService encService, Action<DocumentId, SessionReadOnlyReason, ProjectReadOnlyReason> onReadOnlyDocumentEditAttempt)
             : base(assertIsForeground: true)
         {
             Debug.Assert(encService.DebuggingSession != null);
@@ -40,10 +40,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.EditAndContinue
             }
         }
 
-        public Workspace Workspace
-        {
-            get { return _workspace; }
-        }
+        public Workspace Workspace => _workspace;
 
         private void OnDocumentOpened(object sender, DocumentEventArgs e)
         {

@@ -1,4 +1,4 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.IO
 Imports System.Threading
@@ -39,7 +39,7 @@ End Module
                 CompilationName,
                 {DirectCast(tree, VisualBasicSyntaxTree)},
                 References,
-                TestOptions.ReleaseDll.WithSpecificDiagnosticOptions({KeyValuePair.Create("BC0219", ReportDiagnostic.Suppress)}))
+                TestOptions.ReleaseDll.WithSpecificDiagnosticOptions({KeyValuePairUtil.Create("BC0219", ReportDiagnostic.Suppress)}))
         End Function
 
         Protected Overrides Function CompilationSucceeded(compilation As Compilation, temporaryStream As Stream) As Boolean

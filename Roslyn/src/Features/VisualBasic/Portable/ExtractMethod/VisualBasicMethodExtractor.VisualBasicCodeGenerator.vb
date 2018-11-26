@@ -1,4 +1,4 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Threading
 Imports Microsoft.CodeAnalysis
@@ -10,6 +10,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.Simplification
 Imports Microsoft.CodeAnalysis.Options
+Imports System.Collections.Immutable
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExtractMethod
     Partial Friend Class VisualBasicMethodExtractor
@@ -62,15 +63,16 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExtractMethod
                 Dim statements = result.Data
 
                 Dim methodSymbol = CodeGenerationSymbolFactory.CreateMethodSymbol(
-                    attributes:=SpecializedCollections.EmptyList(Of AttributeData)(),
+                    attributes:=ImmutableArray(Of AttributeData).Empty,
                     accessibility:=Accessibility.Private,
                     modifiers:=CreateMethodModifiers(),
                     returnType:=Me.AnalyzerResult.ReturnType,
-                    explicitInterfaceSymbol:=Nothing,
+                    refKind:=RefKind.None,
+                    explicitInterfaceImplementations:=Nothing,
                     name:=_methodName.ToString(),
                     typeParameters:=CreateMethodTypeParameters(cancellationToken),
                     parameters:=CreateMethodParameters(),
-                    statements:=statements.Cast(Of SyntaxNode).ToList())
+                    statements:=statements.Cast(Of SyntaxNode).ToImmutableArray())
 
                 Return result.With(
                     Me.MethodDefinitionAnnotation.AddAnnotationToSymbol(
@@ -160,7 +162,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExtractMethod
             End Function
 
             Private Function CreateMethodBody(cancellationToken As CancellationToken) As OperationStatus(Of IEnumerable(Of StatementSyntax))
-
                 Dim statements = GetInitialStatementsForMethodDefinitions()
                 statements = SplitOrMoveDeclarationIntoMethodDefinition(statements, cancellationToken)
                 statements = MoveDeclarationOutFromMethodDefinition(statements, cancellationToken)
@@ -383,7 +384,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExtractMethod
                     Dim newMethodDefinition =
                         methodDefinition.ReplaceToken(lastTokenOfBeginStatement,
                                                       lastTokenOfBeginStatement.WithAppendedTrailingTrivia(
-                                                            SpecializedCollections.SingletonEnumerable(SyntaxFactory.CarriageReturnLineFeed)))
+                                                            SpecializedCollections.SingletonEnumerable(SyntaxFactory.ElasticCarriageReturnLineFeed)))
 
                     newDocument = Await newDocument.WithSyntaxRootAsync(root.ReplaceNode(methodDefinition, newMethodDefinition), cancellationToken).ConfigureAwait(False)
                 End If

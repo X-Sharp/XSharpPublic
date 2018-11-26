@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -6,17 +6,19 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.KeywordHighlighting
 {
+    [UseExportProvider]
     public abstract class AbstractKeywordHighlighterTests
     {
         internal abstract IHighlighter CreateHighlighter();
         protected abstract IEnumerable<ParseOptions> GetOptions();
-        protected abstract Task<TestWorkspace> CreateWorkspaceFromFileAsync(string code, ParseOptions options);
+        protected abstract TestWorkspace CreateWorkspaceFromFile(string code, ParseOptions options);
 
         protected async Task TestAsync(
             string code)
@@ -32,7 +34,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.KeywordHighlighting
             ParseOptions options,
             bool optionIsEnabled = true)
         {
-            using (var workspace = await CreateWorkspaceFromFileAsync(markup, options))
+            using (var workspace = CreateWorkspaceFromFile(markup, options))
             {
                 var testDocument = workspace.Documents.Single();
                 var expectedHighlightSpans = testDocument.SelectedSpans ?? new List<TextSpan>();
@@ -54,28 +56,33 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.KeywordHighlighting
                     var highlightSpans = highlighter.GetHighlights(root, position, CancellationToken.None).ToList();
                     highlightSpans = Sort(highlightSpans);
 
-                    CheckSpans(expectedHighlightSpans, highlightSpans);
+                    CheckSpans(root.SyntaxTree, expectedHighlightSpans, highlightSpans);
                 }
             }
         }
 
-        private static void CheckSpans(IList<TextSpan> expectedHighlightSpans, List<TextSpan> highlightSpans)
+        private static void CheckSpans(SyntaxTree tree, IList<TextSpan> expectedHighlightSpans, List<TextSpan> highlightSpans)
         {
             for (int j = 0; j < Math.Max(highlightSpans.Count, expectedHighlightSpans.Count); j++)
             {
                 if (j >= expectedHighlightSpans.Count)
                 {
-                    Assert.False(true, "Unexpected highlight: " + highlightSpans[j].ToString());
+                    var actualLineSpan = tree.GetLineSpan(highlightSpans[j]).Span;
+                    var actualText = tree.GetText().ToString(highlightSpans[j]);
+                    Assert.False(true, $"Unexpected highlight at {actualLineSpan}: '{actualText}'");
                 }
                 else if (j >= highlightSpans.Count)
                 {
-                    Assert.False(true, "Missing highlight for: " + expectedHighlightSpans[j].ToString());
+                    var expectedLineSpan = tree.GetLineSpan(expectedHighlightSpans[j]).Span;
+                    var expectedText = tree.GetText().ToString(expectedHighlightSpans[j]);
+                    Assert.False(true, $"Missing highlight at {expectedLineSpan}: '{expectedText}'");
                 }
 
                 var expected = expectedHighlightSpans[j];
                 var actual = highlightSpans[j];
 
-                Assert.Equal(expected, actual);
+                if (actual != expected)
+                    Assert.Equal(tree.GetLineSpan(expected).Span, tree.GetLineSpan(actual).Span);
             }
         }
 

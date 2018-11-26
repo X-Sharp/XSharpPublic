@@ -1,19 +1,22 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using Microsoft.CodeAnalysis.Editor.Commands;
+using Microsoft.CodeAnalysis.Completion;
+using Microsoft.VisualStudio.Commanding;
+using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
+using VSCommanding = Microsoft.VisualStudio.Commanding;
 
 namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
 {
     internal partial class Controller
     {
-        CommandState ICommandHandler<InvokeCompletionListCommandArgs>.GetCommandState(InvokeCompletionListCommandArgs args, Func<CommandState> nextHandler)
+        VSCommanding.CommandState IChainedCommandHandler<InvokeCompletionListCommandArgs>.GetCommandState(InvokeCompletionListCommandArgs args, Func<VSCommanding.CommandState> nextHandler)
         {
             AssertIsForeground();
             return nextHandler();
         }
 
-        void ICommandHandler<InvokeCompletionListCommandArgs>.ExecuteCommand(InvokeCompletionListCommandArgs args, Action nextHandler)
+        void IChainedCommandHandler<InvokeCompletionListCommandArgs>.ExecuteCommand(InvokeCompletionListCommandArgs args, Action nextHandler, CommandExecutionContext context)
         {
             AssertIsForeground();
 
@@ -31,8 +34,8 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
                 return;
             }
 
-            StartNewModelComputation(
-                completionService, filterItems: false, dismissIfEmptyAllowed: false);
+            var trigger = CompletionTrigger.Invoke;
+            StartNewModelComputation(completionService, trigger);
         }
     }
 }

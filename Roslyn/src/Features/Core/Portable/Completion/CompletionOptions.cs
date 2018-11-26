@@ -37,6 +37,10 @@ namespace Microsoft.CodeAnalysis.Completion
             nameof(CompletionOptions), nameof(BlockForCompletionItems), defaultValue: true,
             storageLocations: new RoamingProfileStorageLocation($"TextEditor.%LANGUAGE%.Specific.{BlockForCompletionItems}"));
 
+        public static readonly PerLanguageOption<bool> ShowNameSuggestions =
+            new PerLanguageOption<bool>(nameof(CompletionOptions), nameof(ShowNameSuggestions), defaultValue: true,
+            storageLocations: new RoamingProfileStorageLocation("TextEditor.%LANGUAGE%.Specific.ShowNameSuggestions"));
+
         public static IEnumerable<PerLanguageOption<bool>> GetDev15CompletionOptions()
         {
             yield return ShowCompletionItemFilters;
@@ -46,7 +50,6 @@ namespace Microsoft.CodeAnalysis.Completion
 
     internal static class CompletionControllerOptions
     {
-        public static readonly Option<bool> AlwaysShowBuilder = new Option<bool>(nameof(CompletionControllerOptions), nameof(AlwaysShowBuilder), defaultValue: false);
         public static readonly Option<bool> FilterOutOfScopeLocals = new Option<bool>(nameof(CompletionControllerOptions), nameof(FilterOutOfScopeLocals), defaultValue: true);
         public static readonly Option<bool> ShowXmlDocCommentCompletion = new Option<bool>(nameof(CompletionControllerOptions), nameof(ShowXmlDocCommentCompletion), defaultValue: true);
     }

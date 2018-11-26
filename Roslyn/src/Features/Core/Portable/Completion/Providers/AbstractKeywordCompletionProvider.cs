@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Internal.Log;
 using Microsoft.CodeAnalysis.LanguageServices;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.CodeAnalysis.Tags;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
@@ -68,16 +69,18 @@ namespace Microsoft.CodeAnalysis.Completion.Providers
             return keywords?.Select(k => CreateItem(k, syntaxContext));
         }
 
-        protected static ImmutableArray<string> s_Tags = ImmutableArray.Create(CompletionTags.Intrinsic);
+        protected static ImmutableArray<string> s_Tags = ImmutableArray.Create(WellKnownTags.Intrinsic);
+
+        protected static CompletionItemRules s_keywordRules = CompletionItemRules.Default;
 
         protected virtual CompletionItem CreateItem(RecommendedKeyword keyword, TContext context)
         {
             return CommonCompletionItem.Create(
                 displayText: keyword.Keyword,
+                rules: s_keywordRules.WithMatchPriority(keyword.MatchPriority),
                 description: keyword.DescriptionFactory(CancellationToken.None),
                 glyph: Glyph.Keyword,
-                tags: s_Tags,
-                matchPriority: keyword.MatchPriority);
+                tags: s_Tags);
         }
 
         protected virtual async Task<IEnumerable<RecommendedKeyword>> RecommendKeywordsAsync(

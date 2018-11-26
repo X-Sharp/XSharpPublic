@@ -1,20 +1,20 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis.ChangeSignature;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.ChangeSignature;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Notification;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.ChangeSignature;
 using Microsoft.VisualStudio.Composition;
+using Roslyn.Test.Utilities;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.ChangeSignature
 {
@@ -27,18 +27,19 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ChangeSignature
         public string ErrorMessage { get; private set; }
         public NotificationSeverity ErrorSeverity { get; private set; }
 
-        public static async Task<ChangeSignatureTestState> CreateAsync(string markup, string languageName, ParseOptions parseOptions = null)
+        public static ChangeSignatureTestState Create(string markup, string languageName, ParseOptions parseOptions = null)
         {
+            var exportProvider = s_exportProviderFactory.CreateExportProvider();
             var workspace = languageName == LanguageNames.CSharp
-                  ? await TestWorkspace.CreateCSharpAsync(markup, exportProvider: s_exportProvider, parseOptions: (CSharpParseOptions)parseOptions)
-                  : await TestWorkspace.CreateVisualBasicAsync(markup, exportProvider: s_exportProvider, parseOptions: parseOptions, compilationOptions: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                  ? TestWorkspace.CreateCSharp(markup, exportProvider: exportProvider, parseOptions: (CSharpParseOptions)parseOptions)
+                  : TestWorkspace.CreateVisualBasic(markup, exportProvider: exportProvider, parseOptions: parseOptions, compilationOptions: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             return new ChangeSignatureTestState(workspace);
         }
 
-        public static async Task<ChangeSignatureTestState> CreateAsync(XElement workspaceXml)
+        public static ChangeSignatureTestState Create(XElement workspaceXml)
         {
-            var workspace = await TestWorkspace.CreateAsync(workspaceXml);
+            var workspace = TestWorkspace.Create(workspaceXml);
             return new ChangeSignatureTestState(workspace);
         }
 
@@ -66,7 +67,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ChangeSignature
 
         public ChangeSignatureResult ChangeSignature()
         {
-            Roslyn.Test.Utilities.WpfTestCase.RequireWpfFact($"{nameof(AbstractChangeSignatureService.ChangeSignature)} currently needs to run on a WPF Fact because it's factored in a way that tries popping up UI in some cases.");
+            WpfTestRunner.RequireWpfFact($"{nameof(AbstractChangeSignatureService.ChangeSignature)} currently needs to run on a WPF Fact because it's factored in a way that tries popping up UI in some cases.");
 
             return ChangeSignatureService.ChangeSignature(
                 InvocationDocument,
@@ -79,7 +80,8 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.ChangeSignature
                 CancellationToken.None);
         }
 
-        private static readonly ExportProvider s_exportProvider = MinimalTestExportProvider.CreateExportProvider(
+        private static readonly IExportProviderFactory s_exportProviderFactory =
+            ExportProviderCache.GetOrCreateExportProviderFactory(
                 TestExportProvider.MinimumCatalogWithCSharpAndVisualBasic
                     .WithPart(typeof(TestChangeSignatureOptionsService))
                     .WithPart(typeof(CSharpChangeSignatureService))

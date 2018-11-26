@@ -1,10 +1,10 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeStyle;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Diagnostics;
-using Roslyn.Test.Utilities;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.QualifyMemberAccess
@@ -88,12 +88,10 @@ class D
     </Project>
 </Workspace>";
 
-            await TestAsync(
+            await TestInRegularAndScriptAsync(
                 initialMarkup: input,
                 expectedMarkup: expected,
-                options: Option(CodeStyleOptions.QualifyPropertyAccess, true, NotificationOption.Suggestion),
-                compareTokens: false,
-                fixAllActionEquivalenceKey: CSharpFeaturesResources.Add_this);
+                options: Option(CodeStyleOptions.QualifyPropertyAccess, true, NotificationOption.Suggestion));
         }
     }
 }

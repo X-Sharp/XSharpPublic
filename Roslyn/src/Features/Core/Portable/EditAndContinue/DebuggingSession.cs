@@ -9,18 +9,12 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
     /// </summary>
     internal sealed class DebuggingSession
     {
-        private readonly Solution _initialSolution;
+        public readonly Solution InitialSolution;
 
         internal DebuggingSession(Solution initialSolution)
         {
             Debug.Assert(initialSolution != null);
-
-            _initialSolution = initialSolution;
-        }
-
-        internal Solution InitialSolution
-        {
-            get { return _initialSolution; }
+            InitialSolution = initialSolution;
         }
     }
 }

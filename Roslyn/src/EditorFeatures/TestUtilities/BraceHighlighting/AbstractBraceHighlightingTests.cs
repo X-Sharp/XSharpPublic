@@ -2,11 +2,11 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editor.Implementation.BraceMatching;
 using Microsoft.CodeAnalysis.Editor.Tagging;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
 using Microsoft.CodeAnalysis.Shared.TestHooks;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Text.Shared.Extensions;
 using Microsoft.VisualStudio.Text;
@@ -15,18 +15,19 @@ using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.UnitTests.BraceHighlighting
 {
+    [UseExportProvider]
     public abstract class AbstractBraceHighlightingTests
     {
         protected async Task TestBraceHighlightingAsync(string markup, ParseOptions options = null)
         {
-            using (var workspace = await CreateWorkspaceAsync(markup, options))
+            using (var workspace = CreateWorkspace(markup, options))
             {
-                WpfTestCase.RequireWpfFact($"{nameof(AbstractBraceHighlightingTests)}.{nameof(TestBraceHighlightingAsync)} creates asynchronous taggers");
+                WpfTestRunner.RequireWpfFact($"{nameof(AbstractBraceHighlightingTests)}.{nameof(TestBraceHighlightingAsync)} creates asynchronous taggers");
 
                 var provider = new BraceHighlightingViewTaggerProvider(
-                    workspace.GetService<IBraceMatchingService>(),
+                    GetBraceMatchingService(workspace),
                     workspace.GetService<IForegroundNotificationService>(),
-                    AggregateAsynchronousOperationListener.EmptyListeners);
+                    AsynchronousOperationListenerProvider.NullProvider);
 
                 var testDocument = workspace.Documents.First();
                 var buffer = testDocument.TextBuffer;
@@ -43,6 +44,9 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.BraceHighlighting
             }
         }
 
-        protected abstract Task<TestWorkspace> CreateWorkspaceAsync(string markup, ParseOptions options);
+        internal virtual IBraceMatchingService GetBraceMatchingService(TestWorkspace workspace)
+            => workspace.GetService<IBraceMatchingService>();
+
+        protected abstract TestWorkspace CreateWorkspace(string markup, ParseOptions options);
     }
 }

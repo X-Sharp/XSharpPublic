@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.Completion
         public ImmutableDictionary<string, string> Properties { get; }
 
         /// <summary>
-        /// Descriptive tags from <see cref="CompletionTags"/>.
+        /// Descriptive tags from <see cref="Tags.WellKnownTags"/>.
         /// These tags may influence how the item is displayed.
         /// </summary>
         public ImmutableArray<string> Tags { get; }
@@ -53,6 +53,14 @@ namespace Microsoft.CodeAnalysis.Completion
         /// Rules that declare how this item should behave.
         /// </summary>
         public CompletionItemRules Rules { get; }
+
+        /// <summary>
+        /// The <see cref="Document"/> that this <see cref="CompletionItem"/> was
+        /// created for.  Not available to clients.  Only used by the Completion
+        /// subsystem itself for things like being able to go back to the originating
+        /// Document when doing things like getting descriptions.
+        /// </summary>
+        internal Document Document { get; set; }
 
         private CompletionItem(
             string displayText,
@@ -79,11 +87,11 @@ namespace Microsoft.CodeAnalysis.Completion
             string filterText = null,
             string sortText = null,
             ImmutableDictionary<string, string> properties = null,
-            ImmutableArray<string> tags = default(ImmutableArray<string>),
+            ImmutableArray<string> tags = default,
             CompletionItemRules rules = null)
         {
             return new CompletionItem(
-                span: default(TextSpan),
+                span: default,
                 displayText: displayText,
                 filterText: filterText,
                 sortText: sortText,
@@ -124,13 +132,13 @@ namespace Microsoft.CodeAnalysis.Completion
         }
 
         private CompletionItem With(
-            Optional<TextSpan> span = default(Optional<TextSpan>),
-            Optional<string> displayText = default(Optional<string>),
-            Optional<string> filterText = default(Optional<string>),
-            Optional<string> sortText = default(Optional<string>),
-            Optional<ImmutableDictionary<string, string>> properties = default(Optional<ImmutableDictionary<string, string>>),
-            Optional<ImmutableArray<string>> tags = default(Optional<ImmutableArray<string>>),
-            Optional<CompletionItemRules> rules = default(Optional<CompletionItemRules>))
+            Optional<TextSpan> span = default,
+            Optional<string> displayText = default,
+            Optional<string> filterText = default,
+            Optional<string> sortText = default,
+            Optional<ImmutableDictionary<string, string>> properties = default,
+            Optional<ImmutableArray<string>> tags = default,
+            Optional<CompletionItemRules> rules = default)
         {
             var newSpan = span.HasValue ? span.Value : this.Span;
             var newDisplayText = displayText.HasValue ? displayText.Value : this.DisplayText;
@@ -257,9 +265,6 @@ namespace Microsoft.CodeAnalysis.Completion
             return result;
         }
 
-        public override string ToString()
-        {
-            return DisplayText;
-        }
+        public override string ToString() => DisplayText;
     }
 }

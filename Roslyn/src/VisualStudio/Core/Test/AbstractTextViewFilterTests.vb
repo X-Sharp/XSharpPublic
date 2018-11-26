@@ -1,17 +1,19 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Threading
 Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Editor
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
+Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.VisualStudio.LanguageServices.Implementation
 Imports Roslyn.Test.Utilities
 Imports VsTextSpan = Microsoft.VisualStudio.TextManager.Interop.TextSpan
 
 Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
+    <[UseExportProvider]>
     Public Class AbstractTextViewFilterTests
         <WpfFact, WorkItem(617826, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/617826"), Trait(Traits.Feature, Traits.Features.Venus), Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function MapPointsInProjectionCSharp() As Tasks.Task
+        Public Sub MapPointsInProjectionCSharp()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.CSharp %> CommonReferences="true">
@@ -30,7 +32,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim projected = workspace.CreateProjectionBufferDocument(<text><![CDATA[
 @{|S1:|}
@@ -43,10 +45,10 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                 TestSpan(workspace, projected, projected.CursorPosition.Value, matchingSpan.End)
                 TestSpan(workspace, projected, matchingSpan.End, projected.CursorPosition.Value)
             End Using
-        End Function
+        End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function GotoBraceNavigatesToOuterPositionOfMatchingBraceCSharp() As Tasks.Task
+        Public Sub GotoBraceNavigatesToOuterPositionOfMatchingBraceCSharp()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.CSharp %> CommonReferences="true">
@@ -67,16 +69,16 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim span = doc.SelectedSpans.Single()
                 TestSpan(workspace, doc, doc.CursorPosition.Value, span.End, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
                 TestSpan(workspace, doc, span.End, doc.CursorPosition.Value, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
             End Using
-        End Function
+        End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function GotoBraceFromLeftAndRightOfOpenAndCloseBracesCSharp() As Tasks.Task
+        Public Sub GotoBraceFromLeftAndRightOfOpenAndCloseBracesCSharp()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.CSharp %> CommonReferences="true">
@@ -97,7 +99,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim span = doc.SelectedSpans.Single()
                 TestSpan(workspace, doc, span.Start, span.End, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
@@ -105,10 +107,10 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                 TestSpan(workspace, doc, span.Start + 1, span.End, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
                 TestSpan(workspace, doc, span.End - 1, span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
             End Using
-        End Function
+        End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function GotoBraceExtFindsTheInnerPositionOfCloseBraceAndOuterPositionOfOpenBraceCSharp() As Tasks.Task
+        Public Sub GotoBraceExtFindsTheInnerPositionOfCloseBraceAndOuterPositionOfOpenBraceCSharp()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.CSharp %> CommonReferences="true">
@@ -129,16 +131,16 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim span = doc.SelectedSpans.Single()
                 TestSpan(workspace, doc, caretPosition:=span.Start, startPosition:=span.Start, endPosition:=span.End, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT))
                 TestSpan(workspace, doc, caretPosition:=doc.CursorPosition.Value, startPosition:=span.End, endPosition:=span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT))
             End Using
-        End Function
+        End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function GotoBraceExtFromLeftAndRightOfOpenAndCloseBracesCSharp() As Tasks.Task
+        Public Sub GotoBraceExtFromLeftAndRightOfOpenAndCloseBracesCSharp()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.CSharp %> CommonReferences="true">
@@ -159,7 +161,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim span = doc.SelectedSpans.Single()
 
@@ -171,10 +173,10 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                 TestSpan(workspace, doc, caretPosition:=span.End, startPosition:=span.End - 1, endPosition:=span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT))
                 TestSpan(workspace, doc, caretPosition:=span.End - 1, startPosition:=span.End - 1, endPosition:=span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT))
             End Using
-        End Function
+        End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function GotoBraceFromLeftAndRightOfOpenAndCloseBracesBasic() As Tasks.Task
+        Public Sub GotoBraceFromLeftAndRightOfOpenAndCloseBracesBasic()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.VisualBasic %> CommonReferences="true">
@@ -194,7 +196,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim span = doc.SelectedSpans.Single()
                 TestSpan(workspace, doc, span.Start, span.End, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
@@ -202,10 +204,10 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                 TestSpan(workspace, doc, span.Start + 1, span.End, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
                 TestSpan(workspace, doc, span.End - 1, span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE))
             End Using
-        End Function
+        End Sub
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.BraceMatching)>
-        Public Async Function GotoBraceExtFromLeftAndRightOfOpenAndCloseBracesBasic() As Tasks.Task
+        Public Sub GotoBraceExtFromLeftAndRightOfOpenAndCloseBracesBasic()
             Dim workspaceXml =
                 <Workspace>
                     <Project Language=<%= LanguageNames.VisualBasic %> CommonReferences="true">
@@ -225,7 +227,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                     </Project>
                 </Workspace>
 
-            Using workspace = Await TestWorkspace.CreateAsync(workspaceXml)
+            Using workspace = TestWorkspace.Create(workspaceXml, exportProvider:=VisualStudioTestExportProvider.Factory.CreateExportProvider())
                 Dim doc = workspace.Documents.Single()
                 Dim span = doc.SelectedSpans.Single()
 
@@ -237,10 +239,10 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
                 TestSpan(workspace, doc, caretPosition:=span.End, startPosition:=span.End - 1, endPosition:=span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT))
                 TestSpan(workspace, doc, caretPosition:=span.End - 1, startPosition:=span.End - 1, endPosition:=span.Start, commandId:=CUInt(VSConstants.VSStd2KCmdID.GOTOBRACE_EXT))
             End Using
-        End Function
+        End Sub
 
         Private Shared Sub TestSpan(workspace As TestWorkspace, document As TestHostDocument, startPosition As Integer, endPosition As Integer, Optional commandId As UInteger = Nothing)
-            Dim braceMatcher = VisualStudioTestExportProvider.ExportProvider.GetExportedValue(Of IBraceMatchingService)()
+            Dim braceMatcher = workspace.ExportProvider.GetExportedValue(Of IBraceMatchingService)()
             Dim initialLine = document.InitialTextSnapshot.GetLineFromPosition(startPosition)
             Dim initialLineNumber = initialLine.LineNumber
             Dim initialIndex = startPosition - initialLine.Start.Position
@@ -262,7 +264,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests
         End Sub
 
         Private Shared Sub TestSpan(workspace As TestWorkspace, document As TestHostDocument, caretPosition As Integer, startPosition As Integer, endPosition As Integer, Optional commandId As UInteger = Nothing)
-            Dim braceMatcher = VisualStudioTestExportProvider.ExportProvider.GetExportedValue(Of IBraceMatchingService)()
+            Dim braceMatcher = workspace.ExportProvider.GetExportedValue(Of IBraceMatchingService)()
             Dim initialLine = document.InitialTextSnapshot.GetLineFromPosition(caretPosition)
             Dim initialLineNumber = initialLine.LineNumber
             Dim initialIndex = caretPosition - initialLine.Start.Position

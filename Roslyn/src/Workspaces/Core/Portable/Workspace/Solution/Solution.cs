@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -94,11 +94,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public Project GetProject(ProjectId projectId)
         {
-            if (projectId == null)
-            {
-                throw new ArgumentNullException(nameof(projectId));
-            }
-
+            // ContainsProject checks projectId being null
             if (this.ContainsProject(projectId))
             {
                 return ImmutableHashMapExtensions.GetOrAdd(ref _projectIdToProjectMap, projectId, s_createProjectFunction, this);
@@ -116,7 +112,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Gets the <see cref="Project"/> associated with an assembly symbol.
         /// </summary>
-        public Project GetProject(IAssemblySymbol assemblySymbol, CancellationToken cancellationToken = default(CancellationToken))
+        public Project GetProject(IAssemblySymbol assemblySymbol, CancellationToken cancellationToken = default)
         {
             var projectState = _state.GetProjectState(assemblySymbol, cancellationToken);
 
@@ -165,7 +161,8 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public Document GetDocument(DocumentId documentId)
         {
-            if (documentId != null && this.ContainsDocument(documentId))
+            // ContainsDocument checks documentId being null
+            if (this.ContainsDocument(documentId))
             {
                 return this.GetProject(documentId.ProjectId).GetDocument(documentId);
             }
@@ -294,6 +291,20 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
+        /// Creates a new solution instance with the project specified updated to have the reference assembly output file path.
+        /// </summary>
+        public Solution WithProjectOutputRefFilePath(ProjectId projectId, string outputRefFilePath)
+        {
+            var newState = _state.WithProjectOutputRefFilePath(projectId, outputRefFilePath);
+            if (newState == _state)
+            {
+                return this;
+            }
+
+            return new Solution(newState);
+        }
+
+        /// <summary>
         /// Creates a new solution instance with the project specified updated to have the name.
         /// </summary>
         public Solution WithProjectName(ProjectId projectId, string name)
@@ -352,6 +363,23 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
+        /// Update a project as a result of option changes.
+        /// 
+        /// this is a temporary workaround until editorconfig becomes real part of roslyn solution snapshot.
+        /// until then, this will explicitly fork current solution snapshot
+        /// </summary>
+        internal Solution WithProjectOptionsChanged(ProjectId projectId)
+        {
+            var newState = _state.WithProjectOptionsChanged(projectId);
+            if (newState == _state)
+            {
+                return this;
+            }
+
+            return new Solution(newState);
+        }
+
+        /// <summary>
         /// Create a new solution instance with the project specified updated to have
         /// the specified hasAllInformation.
         /// </summary>
@@ -373,7 +401,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public Solution AddProjectReference(ProjectId projectId, ProjectReference projectReference)
         {
-            var newState = _state.AddProjectReference(projectId, projectReference);
+            var newState = _state.AddProjectReferences(projectId, SpecializedCollections.SingletonEnumerable(projectReference));
             if (newState == _state)
             {
                 return this;
@@ -742,12 +770,40 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
+        /// Creates a new solution instance with the document specified updated to have the new name.
+        /// </summary>
+        public Solution WithDocumentName(DocumentId documentId, string name)
+        {
+            var newState = _state.WithDocumentName(documentId, name);
+            if (newState == _state)
+            {
+                return this;
+            }
+
+            return new Solution(newState);
+        }
+
+        /// <summary>
         /// Creates a new solution instance with the document specified updated to be contained in
         /// the sequence of logical folders.
         /// </summary>
         public Solution WithDocumentFolders(DocumentId documentId, IEnumerable<string> folders)
         {
             var newState = _state.WithDocumentFolders(documentId, folders);
+            if (newState == _state)
+            {
+                return this;
+            }
+
+            return new Solution(newState);
+        }
+
+        /// <summary>
+        /// Creates a new solution instance with the document specified updated to have the specified file path.
+        /// </summary>
+        public Solution WithDocumentFilePath(DocumentId documentId, string filePath)
+        {
+            var newState = _state.WithDocumentFilePath(documentId, filePath);
             if (newState == _state)
             {
                 return this;
@@ -889,9 +945,9 @@ namespace Microsoft.CodeAnalysis
         /// 
         /// This not intended to be the public API, use Document.WithFrozenPartialSemantics() instead.
         /// </summary>
-        internal async Task<Solution> WithFrozenPartialCompilationIncludingSpecificDocumentAsync(DocumentId documentId, CancellationToken cancellationToken)
+        internal Solution WithFrozenPartialCompilationIncludingSpecificDocument(DocumentId documentId, CancellationToken cancellationToken)
         {
-            var newState = await _state.WithFrozenPartialCompilationIncludingSpecificDocumentAsync(documentId, cancellationToken).ConfigureAwait(false);
+            var newState = _state.WithFrozenPartialCompilationIncludingSpecificDocument(documentId, cancellationToken);
             return new Solution(newState);
         }
 
@@ -899,7 +955,7 @@ namespace Microsoft.CodeAnalysis
             Solution oldSolution,
             SolutionChanges? solutionChanges = null,
             IMergeConflictHandler mergeConflictHandler = null,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             // we only log sessioninfo for actual changes committed to workspace which should exclude ones from preview
             var session = new LinkedFileDiffMergingSession(oldSolution, this, solutionChanges ?? this.GetChanges(oldSolution), logSessionInfo: solutionChanges != null);

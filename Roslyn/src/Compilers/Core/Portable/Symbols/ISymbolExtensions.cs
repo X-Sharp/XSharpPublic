@@ -1,15 +1,8 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Text;
-
 namespace Microsoft.CodeAnalysis
 {
-    public static class ISymbolExtensions
+    public static partial class ISymbolExtensions
     {
         /// <summary>
         /// Returns the constructed form of the ReducedFrom property,
@@ -88,5 +81,20 @@ namespace Microsoft.CodeAnalysis
             return field.IsTupleElement() && !field.IsImplicitlyDeclared ? field.Name : null;
         }
 
+        internal static INamespaceSymbol GetNestedNamespace(this INamespaceSymbol container, string name)
+        {
+            foreach (var sym in container.GetMembers(name))
+            {
+                if (sym.Kind == SymbolKind.Namespace)
+                {
+                    return (INamespaceSymbol)sym;
+                }
+            }
+
+            return null;
+        }
+
+        internal static bool IsNetModule(this IAssemblySymbol assembly) =>
+            assembly is ISourceAssemblySymbol sourceAssembly && sourceAssembly.Compilation.Options.OutputKind.IsNetModule();
     }
 }

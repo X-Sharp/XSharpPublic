@@ -1,4 +1,4 @@
-' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Imports System.Threading
 Imports Microsoft.CodeAnalysis
@@ -8,6 +8,7 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.VisualStudio.Text
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests.LineSeparators
+    <[UseExportProvider]>
     Public Class LineSeparatorTests
         <Fact, Trait(Traits.Feature, Traits.Features.LineSeparators)>
         Public Async Function TestNoLinesInEmptyFile() As Task
@@ -233,7 +234,7 @@ End Class")
                        },
                        "Imports System
 
-Class Foo
+Class Goo
 End Class")
         End Function
 
@@ -284,7 +285,7 @@ End Class")
         End Function
 
         Private Async Function GetSpansForAsync(content As String) As Tasks.Task(Of IEnumerable(Of TextSpan))
-            Using workspace = Await TestWorkspace.CreateVisualBasicAsync(content)
+            Using workspace = TestWorkspace.CreateVisualBasic(content)
                 Dim document = workspace.CurrentSolution.GetDocument(workspace.Documents.First().Id)
                 Dim spans = Await New VisualBasicLineSeparatorService().GetLineSeparatorsAsync(document,
                     (Await document.GetSyntaxRootAsync()).FullSpan)

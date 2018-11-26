@@ -54,31 +54,6 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             return names1.Count - names2.Count;
         }
 
-        public static IEnumerable<INamedTypeSymbol> GetAllTypes(
-            this INamespaceSymbol namespaceSymbol,
-            CancellationToken cancellationToken)
-        {
-            var stack = new Stack<INamespaceOrTypeSymbol>();
-            stack.Push(namespaceSymbol);
-
-            while (stack.Count > 0)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var current = stack.Pop();
-                var currentNs = current as INamespaceSymbol;
-                if (currentNs != null)
-                {
-                    stack.Push(currentNs.GetMembers());
-                }
-                else
-                {
-                    var namedType = (INamedTypeSymbol)current;
-                    stack.Push(namedType.GetTypeMembers());
-                    yield return namedType;
-                }
-            }
-        }
-
         public static IEnumerable<INamespaceOrTypeSymbol> GetAllNamespacesAndTypes(
             this INamespaceSymbol namespaceSymbol,
             CancellationToken cancellationToken)
@@ -90,11 +65,10 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var current = stack.Pop();
-                if (current is INamespaceSymbol)
+                if (current is INamespaceSymbol childNamespace)
                 {
-                    var child = (INamespaceSymbol)current;
-                    stack.Push(child.GetMembers().AsEnumerable());
-                    yield return child;
+                    stack.Push(childNamespace.GetMembers().AsEnumerable());
+                    yield return childNamespace;
                 }
                 else
                 {
@@ -109,7 +83,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             this IEnumerable<INamespaceSymbol> namespaceSymbols,
             CancellationToken cancellationToken)
         {
-            return namespaceSymbols.SelectMany(n => GetAllTypes(n, cancellationToken));
+            return namespaceSymbols.SelectMany(n => n.GetAllTypes(cancellationToken));
         }
 
         /// <summary>

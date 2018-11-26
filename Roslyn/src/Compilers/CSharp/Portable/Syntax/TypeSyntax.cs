@@ -4,17 +4,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
     public abstract partial class TypeSyntax
     {
+#if XSHARP	
         public bool IsVar
         {
             get
             {
-#if XSHARP
+
                 var ts = this.Green as InternalSyntax.IdentifierNameSyntax;
                 return ts != null && ts.Identifier.ToString() == XSharpSpecialNames.ImpliedTypeName;
-#else
                 return ((InternalSyntax.TypeSyntax)this.Green).IsVar;
-#endif
             }
         }
+#else
+        public bool IsVar => ((InternalSyntax.TypeSyntax)this.Green).IsVar;
+#endif
+        public bool IsUnmanaged => ((InternalSyntax.TypeSyntax)this.Green).IsUnmanaged;
     }
 }

@@ -26,18 +26,9 @@ namespace Microsoft.CodeAnalysis.Scripting.Test
         {
         }
 
-        public override ConsoleColor ForegroundColor
-        {
-            set
-            {
-                ((Writer)Out).CurrentColor = value;
-            }
-        }
+        public override void SetForegroundColor(ConsoleColor consoleColor) => ((Writer)Out).CurrentColor = consoleColor;
 
-        public override void ResetColor()
-        {
-            ForegroundColor = InitialColor;
-        }
+        public override void ResetColor() => SetForegroundColor(InitialColor);
 
         private sealed class Reader : StringReader
         {
@@ -72,13 +63,13 @@ namespace Microsoft.CodeAnalysis.Scripting.Test
             {
                 if (_reader.ContentRead.Length > 0)
                 {
-                    base.Write(_reader.ContentRead.ToString());
+                    GetStringBuilder().Append(_reader.ContentRead.ToString());
                     _reader.ContentRead.Clear();
                 }
 
                 if (_lastColor != CurrentColor)
                 {
-                    base.WriteLine($"«{CurrentColor}»");
+                    GetStringBuilder().AppendLine($"«{CurrentColor}»");
                     _lastColor = CurrentColor;
                 }
             }
@@ -92,19 +83,19 @@ namespace Microsoft.CodeAnalysis.Scripting.Test
             public override void Write(string value)
             {
                 OnBeforeWrite();
-                base.Write(value);
+                GetStringBuilder().Append(value);
             }
 
             public override void WriteLine(string value)
             {
                 OnBeforeWrite();
-                base.WriteLine(value);
+                GetStringBuilder().AppendLine(value);
             }
 
             public override void WriteLine()
             {
                 OnBeforeWrite();
-                base.WriteLine();
+                GetStringBuilder().AppendLine();
             }
         }
 
@@ -121,25 +112,25 @@ namespace Microsoft.CodeAnalysis.Scripting.Test
             public override void Write(char value)
             {
                 _other.Write(value);
-                base.Write(value);
+                GetStringBuilder().Append(value);
             }
 
             public override void Write(string value)
             {
                 _other.Write(value);
-                base.Write(value);
+                GetStringBuilder().Append(value);
             }
 
             public override void WriteLine(string value)
             {
                 _other.WriteLine(value);
-                base.WriteLine(value);
+                GetStringBuilder().AppendLine(value);
             }
 
             public override void WriteLine()
             {
                 _other.WriteLine();
-                base.WriteLine();
+                GetStringBuilder().AppendLine();
             }
         }
     }

@@ -6,14 +6,12 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Shared.Options;
 using Microsoft.CodeAnalysis.SolutionCrawler;
 using Roslyn.Utilities;
 
-namespace Microsoft.VisualStudio.LanguageServices.Implementation.Diagnostics
+namespace Microsoft.CodeAnalysis.Diagnostics
 {
     [Shared]
     [ExportIncrementalAnalyzerProvider(WellKnownSolutionCrawlerAnalyzers.Diagnostic, workspaceKinds: null)]
@@ -40,16 +38,11 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Diagnostics
 
         public event EventHandler<DiagnosticsUpdatedArgs> DiagnosticsUpdated;
 
-        public bool SupportGetDiagnostics
-        {
-            get
-            {
+        public bool SupportGetDiagnostics =>
                 // this only support push model, pull model will be provided by DiagnosticService by caching everything this one pushed
-                return false;
-            }
-        }
+                false;
 
-        public ImmutableArray<DiagnosticData> GetDiagnostics(Workspace workspace, ProjectId projectId, DocumentId documentId, object id, bool includeSuppressedDiagnostics = false, CancellationToken cancellationToken = default(CancellationToken))
+        public ImmutableArray<DiagnosticData> GetDiagnostics(Workspace workspace, ProjectId projectId, DocumentId documentId, object id, bool includeSuppressedDiagnostics = false, CancellationToken cancellationToken = default)
         {
             // pull model not supported
             return ImmutableArray<DiagnosticData>.Empty;
@@ -86,7 +79,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Diagnostics
             {
                 // right now, there is no way to observe diagnostics for closed file.
                 if (!_workspace.IsDocumentOpen(document.Id) ||
-                    !_workspace.Options.GetOption(InternalRuntimeDiagnosticOptions.Syntax))
+                    !_workspace.Options.GetOption(InternalRuntimeDiagnosticOptions.Syntax) ||
+                    !document.SupportsSyntaxTree)
                 {
                     return;
                 }
@@ -136,7 +130,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Diagnostics
             {
                 // no closed file diagnostic and file is not opened, remove any existing diagnostics
                 RemoveDocument(document.Id);
-                return SpecializedTasks.EmptyTask;
+                return Task.CompletedTask;
             }
 
             public Task DocumentCloseAsync(Document document, CancellationToken cancellationToken)
@@ -152,17 +146,17 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Diagnostics
 
             public Task AnalyzeProjectAsync(Project project, bool semanticsChanged, InvocationReasons reasons, CancellationToken cancellationToken)
             {
-                return SpecializedTasks.EmptyTask;
+                return Task.CompletedTask;
             }
 
             public Task DocumentOpenAsync(Document document, CancellationToken cancellationToken)
             {
-                return SpecializedTasks.EmptyTask;
+                return Task.CompletedTask;
             }
 
             public Task NewSolutionSnapshotAsync(Solution solution, CancellationToken cancellationToken)
             {
-                return SpecializedTasks.EmptyTask;
+                return Task.CompletedTask;
             }
 
             public void RemoveProject(ProjectId projectId)

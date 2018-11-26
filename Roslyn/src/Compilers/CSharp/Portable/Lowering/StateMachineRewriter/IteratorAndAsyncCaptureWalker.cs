@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
@@ -89,9 +88,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert(variablesToHoist.Count == 0);
 
                 // In debug build we hoist all locals and parameters:
-                variablesToHoist.AddRange(from v in allVariables
-                                          where v.Symbol != null && HoistInDebugBuild(v.Symbol)
-                                          select v.Symbol);
+                foreach (var v in allVariables)
+                {
+                    var symbol = v.Symbol;
+                    if ((object)symbol != null && HoistInDebugBuild(symbol))
+                    {
+                        variablesToHoist.Add(symbol);
+                    }
+                }
             }
 
             return variablesToHoist;
@@ -110,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 LocalSymbol local = (LocalSymbol)symbol;
 
-                if (local.IsConst)
+                if (local.IsConst || local.IsPinned)
                 {
                     return false;
                 }
@@ -212,29 +216,27 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         protected override void EnterParameter(ParameterSymbol parameter)
         {
+            // Async and iterators should never have ref parameters aside from `this`
+            Debug.Assert(parameter.IsThis || parameter.RefKind == RefKind.None);
+
             // parameters are NOT initially assigned here - if that is a problem, then
             // the parameters must be captured.
             GetOrCreateSlot(parameter);
         }
 
-        protected override void ReportUnassigned(Symbol symbol, SyntaxNode node)
+        protected override void ReportUnassigned(Symbol symbol, SyntaxNode node, int slot, bool skipIfUseBeforeDeclaration)
         {
-            if (symbol is LocalSymbol || symbol is ParameterSymbol)
+            switch (symbol.Kind)
             {
-                CaptureVariable(symbol, node);
+                case SymbolKind.Field:
+                    symbol = GetNonFieldSymbol(slot);
+                    goto case SymbolKind.Local;
+
+                case SymbolKind.Local:
+                case SymbolKind.Parameter:
+                    CaptureVariable(symbol, node);
+                    break;
             }
-        }
-
-        // The iterator transformation causes some unreachable code to become
-        // reachable from the code gen's point of view, so we analyze the unreachable code too.
-        protected override LocalState UnreachableState()
-        {
-            return this.State;
-        }
-
-        protected override void ReportUnassigned(FieldSymbol fieldSymbol, int unassignedSlot, SyntaxNode node)
-        {
-            CaptureVariable(GetNonFieldSymbol(unassignedSlot), node);
         }
 
         protected override void VisitLvalueParameter(BoundParameter node)

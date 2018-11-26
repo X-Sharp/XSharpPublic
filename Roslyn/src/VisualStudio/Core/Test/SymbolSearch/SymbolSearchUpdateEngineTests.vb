@@ -1,28 +1,26 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-Imports System.Collections.Immutable
 Imports System.IO
 Imports System.IO.Compression
 Imports System.Threading
 Imports System.Threading.Tasks
-Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
 Imports Microsoft.CodeAnalysis.Elfie.Model
-Imports Microsoft.CodeAnalysis.Packaging
 Imports Microsoft.CodeAnalysis.SymbolSearch
+Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.VisualStudio.RemoteControl
 Imports Moq
-Imports Roslyn.Test.Utilities
 Imports Roslyn.Utilities
 
 Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
+    <[UseExportProvider]>
     Public Class SymbolSearchUpdateEngineTests
         Private Shared ReadOnly s_allButMoqExceptions As Func(Of Exception, Boolean) =
             Function(e) TypeOf e IsNot MockException
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function CreateCacheFolderIfMissing() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)(MockBehavior.Strict)
@@ -39,6 +37,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim service = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlService.Object,
                     delayService:=TestDelayService.Instance,
                     ioService:=ioMock.Object,
@@ -55,7 +54,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function DoNotCreateCacheFolderIfItIsThere() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)(MockBehavior.Strict)
@@ -69,6 +68,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim service = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlService.Object,
                     delayService:=TestDelayService.Instance,
                     ioService:=ioMock.Object,
@@ -85,7 +85,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function DownloadFullDatabaseWhenLocalDatabaseIsMissing() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -106,6 +106,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=serviceMock.Object,
                     delayService:=TestDelayService.Instance,
                     ioService:=ioMock.Object,
@@ -123,7 +124,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function FailureToParseFullDBAtXmlLevelTakesCatastrophicPath() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -149,6 +150,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=serviceMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -167,7 +169,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function TestClientDisposedAfterUse() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -184,6 +186,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=serviceMock.Object,
                     delayService:=TestDelayService.Instance,
                     ioService:=ioMock.Object,
@@ -201,7 +204,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function CrashInClientRunsFailureLoopPath() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -232,6 +235,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -250,7 +254,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function FailureToParseFullDBAtElfieLevelTakesCatastrophicPath() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -275,6 +279,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -294,7 +299,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function SuccessParsingDBWritesToDisk() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -322,6 +327,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -341,7 +347,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function WriteAgainOnIOFailure() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -380,6 +386,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -399,7 +406,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function LocalDatabaseExistingCausesPatchToDownload_UpToDate_DoesNothing() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -425,6 +432,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -444,7 +452,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function LocalDatabaseExistingCausesPatchToDownload_IsTooOldCausesFullDownload() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -478,6 +486,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -498,7 +507,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function LocalDatabaseExistingCausesPatchToDownload_ContentsCausesPatching_FailureToPatchCausesFullDownload() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -537,6 +546,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -558,7 +568,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
         <Fact, Trait(Traits.Feature, Traits.Features.Packaging)>
         Public Async Function LocalDatabaseExistingCausesPatchToDownload_ContentsCausesPatching_SuccessfulPatchWritesToDisk() As Task
-            Using workspace = Await TestWorkspace.CreateCSharpAsync("")
+            Using workspace = TestWorkspace.CreateCSharp("")
                 Dim cancellationTokenSource = New CancellationTokenSource()
 
                 Dim ioMock = New Mock(Of IIOService)()
@@ -592,6 +602,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
 
                 Dim searchService = New SymbolSearchUpdateEngine(
                     logService:=TestLogService.Instance,
+                    progressService:=TestProgressService.Instance,
                     remoteControlService:=remoteControlMock.Object,
                     delayService:=delayMock.Object,
                     ioService:=ioMock.Object,
@@ -741,11 +752,36 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.SymbolSearch
             End Sub
 
             Public Function LogExceptionAsync(exception As String, text As String) As Task Implements ISymbolSearchLogService.LogExceptionAsync
-                Return SpecializedTasks.EmptyTask
+                Return Task.CompletedTask
             End Function
 
             Public Function LogInfoAsync(text As String) As Task Implements ISymbolSearchLogService.LogInfoAsync
-                Return SpecializedTasks.EmptyTask
+                Return Task.CompletedTask
+            End Function
+        End Class
+
+        Private Class TestProgressService
+            Implements ISymbolSearchProgressService
+
+            Public Shared ReadOnly Instance As TestProgressService = New TestProgressService()
+
+            Private Sub New()
+            End Sub
+
+            Public Function OnDownloadFullDatabaseStartedAsync(title As String) As Task Implements ISymbolSearchProgressService.OnDownloadFullDatabaseStartedAsync
+                Return Task.CompletedTask
+            End Function
+
+            Public Function OnDownloadFullDatabaseSucceededAsync() As Task Implements ISymbolSearchProgressService.OnDownloadFullDatabaseSucceededAsync
+                Return Task.CompletedTask
+            End Function
+
+            Public Function OnDownloadFullDatabaseCanceledAsync() As Task Implements ISymbolSearchProgressService.OnDownloadFullDatabaseCanceledAsync
+                Return Task.CompletedTask
+            End Function
+
+            Public Function OnDownloadFullDatabaseFailedAsync(message As String) As Task Implements ISymbolSearchProgressService.OnDownloadFullDatabaseFailedAsync
+                Return Task.CompletedTask
             End Function
         End Class
     End Class

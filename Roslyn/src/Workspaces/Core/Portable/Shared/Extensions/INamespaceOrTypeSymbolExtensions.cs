@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Shared.Extensions
@@ -23,8 +24,6 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
         private static readonly SymbolDisplayFormat s_shortNameFormat = new SymbolDisplayFormat(
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes | SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-        public static readonly Comparison<INamespaceOrTypeSymbol> CompareNamespaceOrTypeSymbols = CompareTo;
-
         public static string GetShortName(this INamespaceOrTypeSymbol symbol)
         {
             return symbol.ToDisplayString(s_shortNameFormat);
@@ -37,24 +36,34 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
                 : symbol.GetMembers(WellKnownMemberNames.Indexer).OfType<IPropertySymbol>().Where(p => p.IsIndexer);
         }
 
-        public static int CompareTo(this INamespaceOrTypeSymbol n1, INamespaceOrTypeSymbol n2)
-        {
-            var names1 = s_namespaceOrTypeToNameMap.GetValue(n1, s_getNamePartsCallBack);
-            var names2 = s_namespaceOrTypeToNameMap.GetValue(n2, s_getNamePartsCallBack);
-
-            return CompareNameParts(names1, names2);
-        }
-
         public static IReadOnlyList<string> GetNameParts(this INamespaceOrTypeSymbol symbol)
-        {
-            return s_namespaceOrTypeToNameMap.GetValue(symbol, s_getNamePartsCallBack);
-        }
+            => s_namespaceOrTypeToNameMap.GetValue(symbol, s_getNamePartsCallBack);
 
-        public static int CompareNameParts(IReadOnlyList<string> names1, IReadOnlyList<string> names2)
+        public static int CompareNameParts(
+            IReadOnlyList<string> names1, IReadOnlyList<string> names2, 
+            bool placeSystemNamespaceFirst)
         {
             for (var i = 0; i < Math.Min(names1.Count, names2.Count); i++)
             {
-                var comp = names1[i].CompareTo(names2[i]);
+                var name1 = names1[i];
+                var name2 = names2[i];
+
+                if (i == 0 && placeSystemNamespaceFirst)
+                {
+                    var name1IsSystem = name1 == nameof(System);
+                    var name2IsSystem = name2 == nameof(System);
+
+                    if (name1IsSystem && !name2IsSystem)
+                    {
+                        return -1;
+                    }
+                    else if (!name1IsSystem && name2IsSystem)
+                    {
+                        return 1;
+                    }
+                }
+
+                var comp = name1.CompareTo(name2);
                 if (comp != 0)
                 {
                     return comp;
@@ -73,6 +82,34 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
 
             GetNameParts(namespaceOrTypeSymbol.ContainingNamespace, result);
             result.Add(namespaceOrTypeSymbol.Name);
+        }
+
+        /// <summary>
+        /// Lazily returns all nested types contained (recursively) within this namespace or type.
+        /// In case of a type, it is included itself as the first result.
+        /// </summary>
+        public static IEnumerable<INamedTypeSymbol> GetAllTypes(
+            this INamespaceOrTypeSymbol namespaceOrTypeSymbol,
+            CancellationToken cancellationToken)
+        {
+            var stack = new Stack<INamespaceOrTypeSymbol>();
+            stack.Push(namespaceOrTypeSymbol);
+
+            while (stack.Count > 0)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var current = stack.Pop();
+                if (current is INamespaceSymbol currentNs)
+                {
+                    stack.Push(currentNs.GetMembers());
+                }
+                else
+                {
+                    var namedType = (INamedTypeSymbol)current;
+                    stack.Push(namedType.GetTypeMembers());
+                    yield return namedType;
+                }
+            }
         }
     }
 }

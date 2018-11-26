@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -25,13 +25,14 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Differencing;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
-using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Projection;
 using Microsoft.VisualStudio.Utilities;
 using Roslyn.Utilities;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
 {
+    using Workspace = Microsoft.CodeAnalysis.Workspace;
+
     /// <summary>
     /// An IVisualStudioDocument which represents the secondary buffer to the workspace API.
     /// </summary>
@@ -121,23 +122,21 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
 
         private HostType GetHostType()
         {
-            var projectionBuffer = _containedLanguage.DataBuffer as IProjectionBuffer;
-            if (projectionBuffer != null)
+            if (_containedLanguage.DataBuffer is IProjectionBuffer projectionBuffer)
             {
-                // For TypeScript hosted in HTML the source buffers will have type names
-                // HTMLX and TypeScript. RazorCSharp has an HTMLX base type but should 
-                // not be associated with the HTML host type. Use ContentType.TypeName 
-                // instead of ContentType.IsOfType for HTMLX to ensure the Razor host 
-                // type is identified correctly.
-                if (projectionBuffer.SourceBuffers.Any(b => b.ContentType.IsOfType(HTML) ||
-                    string.Compare(HTMLX, b.ContentType.TypeName, StringComparison.OrdinalIgnoreCase) == 0))
-                {
-                    return HostType.HTML;
-                }
-
+                // RazorCSharp has an HTMLX base type but should not be associated with
+                // the HTML host type, so we check for it first.
                 if (projectionBuffer.SourceBuffers.Any(b => b.ContentType.IsOfType(Razor)))
                 {
                     return HostType.Razor;
+                }
+
+                // For TypeScript hosted in HTML the source buffers will have type names
+                // HTMLX and TypeScript.
+                if (projectionBuffer.SourceBuffers.Any(b => b.ContentType.IsOfType(HTML) ||
+                    b.ContentType.IsOfType(HTMLX)))
+                {
+                    return HostType.HTML;
                 }
             }
             else
@@ -180,8 +179,6 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
         public event EventHandler<bool> Closing;
 
 #pragma warning restore 67
-
-        IVisualStudioHostProject IVisualStudioHostDocument.Project { get { return this.Project; } }
 
         public ITextBuffer GetOpenTextBuffer()
         {
@@ -476,7 +473,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
                 switch (ch)
                 {
                     case ' ':
-                        if (!TextAt(text, i - 1, ' '))
+                    case '\t':
+                        if (!TextAt(text, i - 1, ' ', '\t'))
                         {
                             start = i;
                         }
@@ -489,7 +487,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
                         {
                             groups.Add(TextSpan.FromBounds(0, 0));
                         }
-                        else if (TextAt(text, i - 1, ' '))
+                        else if (TextAt(text, i - 1, ' ', '\t'))
                         {
                             groups.Add(TextSpan.FromBounds(start, i));
                         }
@@ -514,21 +512,32 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
             return true;
         }
 
-        private bool TextAt(string text, int index, char ch)
+        private bool TextAt(string text, int index, char ch1, char ch2 = default)
         {
             if (index < 0 || text.Length <= index)
             {
                 return false;
             }
 
-            return text[index] == ch;
+            var actual = text[index];
+            if (actual == ch1)
+            {
+                return true;
+            }
+
+            if (ch2 != default && actual == ch2)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool TryGetSubTextChange(
             SourceText originalText, TextSpan visibleSpanInOriginalText,
             string rightText, TextSpan spanInOriginalText, TextSpan spanInRightText, out TextChange textChange)
         {
-            textChange = default(TextChange);
+            textChange = default;
 
             var visibleFirstLineInOriginalText = originalText.Lines.GetLineFromPosition(visibleSpanInOriginalText.Start);
             var visibleLastLineInOriginalText = originalText.Lines.GetLineFromPosition(visibleSpanInOriginalText.End);
@@ -726,8 +735,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
         {
             var subjectBuffer = (IProjectionBuffer)this.GetOpenTextBuffer();
 
-            var projectionDataBuffer = _containedLanguage.DataBuffer as IProjectionBuffer;
-            if (projectionDataBuffer != null)
+            if (_containedLanguage.DataBuffer is IProjectionBuffer projectionDataBuffer)
             {
                 return projectionDataBuffer.CurrentSnapshot
                     .GetSourceSpans()
@@ -776,7 +784,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
                     affectedSpans.Add(currentVisibleSpanIndex);
                 }
 
-                edit.Apply();
+                edit.ApplyAndLogExceptions();
             }
         }
 
@@ -794,7 +802,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
                 return;
             }
 
-            var originalText = document.GetTextAsync(CancellationToken.None).WaitAndGetResult(CancellationToken.None);
+            var originalText = document.GetTextSynchronously(CancellationToken.None);
             Contract.Requires(object.ReferenceEquals(originalText, snapshot.AsText()));
 
             var root = document.GetSyntaxRootSynchronously(CancellationToken.None);
@@ -802,6 +810,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
             var editorOptionsFactory = _componentModel.GetService<IEditorOptionsFactoryService>();
             var editorOptions = editorOptionsFactory.GetOptions(_containedLanguage.DataBuffer);
             var options = _workspace.Options
+                                        .WithChangedOption(FormattingOptions.NewLine, root.Language, editorOptions.GetNewLineCharacter())
                                         .WithChangedOption(FormattingOptions.UseTabs, root.Language, !editorOptions.IsConvertTabsToSpacesEnabled())
                                         .WithChangedOption(FormattingOptions.TabSize, root.Language, editorOptions.GetTabSize())
                                         .WithChangedOption(FormattingOptions.IndentationSize, root.Language, editorOptions.GetIndentSize());
@@ -848,7 +857,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
                     workspace, options, formattingRules, CancellationToken.None);
 
                 visibleSpans.Add(visibleSpan);
-                var newChanges = FilterTextChanges(document.GetTextAsync(CancellationToken.None).WaitAndGetResult(CancellationToken.None), visibleSpans, changes.ToReadOnlyCollection()).Where(t => visibleSpan.Contains(t.Span));
+                var newChanges = FilterTextChanges(document.GetTextSynchronously(CancellationToken.None), visibleSpans, changes.ToReadOnlyCollection()).Where(t => visibleSpan.Contains(t.Span));
 
                 foreach (var change in newChanges)
                 {
@@ -983,7 +992,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
                 }
             }
 
-            return (start <= end) ? TextSpan.FromBounds(start, end + 1) : default(TextSpan);
+            return (start <= end) ? TextSpan.FromBounds(start, end + 1) : default;
         }
 
         private int GetAdditionalIndentation(SyntaxNode root, SourceText text, TextSpan span)
@@ -1151,10 +1160,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Venus
             return CheckCode(snapshot, position - tag2.Length, tag1);
         }
 
-        public ITextUndoHistory GetTextUndoHistory()
+        public ITextBuffer GetTextUndoHistoryBuffer()
         {
             // In Venus scenarios, the undo history is associated with the data buffer
-            return _componentModel.GetService<ITextUndoHistoryRegistry>().GetHistory(_containedLanguage.DataBuffer);
+            return _containedLanguage.DataBuffer;
         }
 
         public uint GetItemId()

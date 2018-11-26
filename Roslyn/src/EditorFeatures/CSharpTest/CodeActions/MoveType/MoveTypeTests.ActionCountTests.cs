@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
 
@@ -20,6 +21,47 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.CodeActions.MoveType
 }";
             // Fixes offered will be rename type to match file, rename file to match type.
             await TestActionCountAsync(code, count: 2);
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsMoveType)]
+        public async Task MoveType_MissingNotOnHeader1()
+        {
+            var code =
+@"namespace N1
+{
+    [||]
+    class Class1
+    {
+    }
+}";
+            await TestMissingInRegularAndScriptAsync(code);
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsMoveType)]
+        public async Task MoveType_MissingNotOnHeader2()
+        {
+            var code =
+@"namespace N1
+{
+    [||][X]
+    class Class1
+    {
+    }
+}";
+            await TestMissingInRegularAndScriptAsync(code);
+        }
+
+        [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsMoveType)]
+        public async Task MoveType_MissingNotOnHeader3()
+        {
+            var code =
+@"namespace N1
+{
+    class Class1
+    [||]{
+    }
+}";
+            await TestMissingInRegularAndScriptAsync(code);
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CodeActionsMoveType)]

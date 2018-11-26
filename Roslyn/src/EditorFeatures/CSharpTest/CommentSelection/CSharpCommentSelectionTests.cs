@@ -2,11 +2,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editor.Implementation.CommentSelection;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Utilities;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
@@ -15,10 +15,11 @@ using Xunit;
 
 namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.CommentSelection
 {
+    [UseExportProvider]
     public class CSharpCommentSelectionTests
     {
         [WpfFact, Trait(Traits.Feature, Traits.Features.CommentSelection)]
-        public async Task UncommentAndFormat1()
+        public void UncommentAndFormat1()
         {
             var code = @"class A
 {
@@ -34,11 +35,11 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.CommentSelection
 
     }
 }";
-            await UncommentSelectionAsync(code, expected);
+            UncommentSelection(code, expected);
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CommentSelection)]
-        public async Task UncommentAndFormat2()
+        public void UncommentAndFormat2()
         {
             var code = @"class A
 {
@@ -54,11 +55,11 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.CommentSelection
 
     }
 }";
-            await UncommentSelectionAsync(code, expected);
+            UncommentSelection(code, expected);
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CommentSelection)]
-        public async Task UncommentSingleLineCommentInPseudoBlockComment()
+        public void UncommentSingleLineCommentInPseudoBlockComment()
         {
             var code = @"
 class C
@@ -82,11 +83,11 @@ class C
     /* Hello world */
 }";
 
-            await UncommentSelectionAsync(code, expected);
+            UncommentSelection(code, expected);
         }
 
         [WpfFact, Trait(Traits.Feature, Traits.Features.CommentSelection)]
-        public async Task UncommentAndFormat3()
+        public void UncommentAndFormat3()
         {
             var code = @"class A
 {
@@ -102,23 +103,22 @@ class C
 
     }
 }";
-            await UncommentSelectionAsync(code, expected);
+            UncommentSelection(code, expected);
         }
 
-        private static async Task UncommentSelectionAsync(string markup, string expected)
+        private static void UncommentSelection(string markup, string expected)
         {
-            using (var workspace = await TestWorkspace.CreateCSharpAsync(markup))
+            using (var workspace = TestWorkspace.CreateCSharp(markup))
             {
                 var doc = workspace.Documents.First();
                 SetupSelection(doc.GetTextView(), doc.SelectedSpans.Select(s => Span.FromBounds(s.Start, s.End)));
 
                 var commandHandler = new CommentUncommentSelectionCommandHandler(
-                    TestWaitIndicator.Default,
                     workspace.ExportProvider.GetExportedValue<ITextUndoHistoryRegistry>(),
                     workspace.ExportProvider.GetExportedValue<IEditorOperationsFactoryService>());
                 var textView = doc.GetTextView();
                 var textBuffer = doc.GetTextBuffer();
-                commandHandler.ExecuteCommand(textView, textBuffer, CommentUncommentSelectionCommandHandler.Operation.Uncomment);
+                commandHandler.ExecuteCommand(textView, textBuffer, CommentUncommentSelectionCommandHandler.Operation.Uncomment, TestCommandExecutionContext.Create());
 
                 Assert.Equal(expected, doc.TextBuffer.CurrentSnapshot.GetText());
             }

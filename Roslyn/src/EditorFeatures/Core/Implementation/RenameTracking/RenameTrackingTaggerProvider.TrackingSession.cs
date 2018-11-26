@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -40,13 +40,13 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
             private Task<bool> _newIdentifierBindsTask = SpecializedTasks.False;
 
             private readonly string _originalName;
-            public string OriginalName { get { return _originalName; } }
+            public string OriginalName => _originalName;
 
             private readonly ITrackingSpan _trackingSpan;
-            public ITrackingSpan TrackingSpan { get { return _trackingSpan; } }
+            public ITrackingSpan TrackingSpan => _trackingSpan;
 
             private bool _forceRenameOverloads;
-            public bool ForceRenameOverloads { get { return _forceRenameOverloads; } }
+            public bool ForceRenameOverloads => _forceRenameOverloads;
 
             public TrackingSession(StateMachine stateMachine, SnapshotSpan snapshotSpan, IAsynchronousOperationListener asyncListener)
             {
@@ -143,7 +143,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
                 var document = snapshotSpan.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
                 if (document != null)
                 {
-                    var syntaxFactsService = document.Project.LanguageServices.GetService<ISyntaxFactsService>();
+                    var syntaxFactsService = document.GetLanguageService<ISyntaxFactsService>();
                     var syntaxTree = await document.GetSyntaxTreeAsync(_cancellationToken).ConfigureAwait(false);
                     var token = await syntaxTree.GetTouchingWordAsync(snapshotSpan.Start.Position, syntaxFactsService, _cancellationToken).ConfigureAwait(false);
 
@@ -158,7 +158,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.RenameTracking
                         return TriggerIdentifierKind.NotRenamable;
                     }
 
-                    var languageHeuristicsService = document.Project.LanguageServices.GetService<IRenameTrackingLanguageHeuristicsService>();
+                    var languageHeuristicsService = document.GetLanguageService<IRenameTrackingLanguageHeuristicsService>();
                     if (syntaxFactsService.IsIdentifier(token) && languageHeuristicsService.IsIdentifierValidForRenameTracking(token.Text))
                     {
                         var semanticModel = await document.GetSemanticModelForNodeAsync(token.Parent, _cancellationToken).ConfigureAwait(false);

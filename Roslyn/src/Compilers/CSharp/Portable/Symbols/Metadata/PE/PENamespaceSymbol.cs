@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using System;
 using System.Collections.Generic;
@@ -58,18 +59,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
+        [PerformanceSensitive(
+            "https://github.com/dotnet/roslyn/issues/23582",
+            Constraint = "Provide " + nameof(ArrayBuilder<Symbol>) + " capacity to reduce number of allocations.",
+            AllowGenericEnumeration = false)]
         public sealed override ImmutableArray<Symbol> GetMembers()
         {
             EnsureAllMembersLoaded();
 
-            var builder = ArrayBuilder<Symbol>.GetInstance();
+            var memberTypes = GetMemberTypesPrivate();
 #if XSHARP
             // call GetTypeMembers() because it includes the types from Siblings
+            var builder = ArrayBuilder<Symbol>.GetInstance();
             builder.AddRange(GetTypeMembers());
 #else
-            builder.AddRange(GetMemberTypesPrivate());
+            var builder = ArrayBuilder<Symbol>.GetInstance(memberTypes.Length + lazyNamespaces.Count);
+
+            builder.AddRange(memberTypes);
+            foreach (var pair in lazyNamespaces)
+            {
+                builder.Add(pair.Value);
+            }
 #endif
-            builder.AddRange(GetMemberNamespacesPrivate());
             return builder.ToImmutableAndFree();
         }
 
@@ -83,16 +94,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
 
             return StaticCast<NamedTypeSymbol>.From(_lazyFlattenedTypes);
-        }
-
-        private IEnumerable<PENestedNamespaceSymbol> GetMemberNamespacesPrivate()
-        {
-#if XSHARP
-            // the List contains duplicates
-            return lazyNamespacesList;
-#else
-            return lazyNamespaces.Values;
-#endif
         }
 
         public sealed override ImmutableArray<Symbol> GetMembers(string name)
@@ -164,6 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name)
         {
             EnsureAllMembersLoaded();
+
             ImmutableArray<PENamedTypeSymbol> t;
 #if XSHARP
             // When we have siblings then collect all types from all siblings
@@ -181,7 +183,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             return lazyTypes.TryGetValue(name, out t)
                 ? StaticCast<NamedTypeSymbol>.From(t)
                 : ImmutableArray<NamedTypeSymbol>.Empty;
-
         }
 
         public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name, int arity)

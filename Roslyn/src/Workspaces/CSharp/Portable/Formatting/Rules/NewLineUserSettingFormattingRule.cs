@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting.Rules;
@@ -11,19 +12,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Formatting
     {
         private bool IsControlBlock(SyntaxNode node)
         {
-            var parent = node != null ? node.Parent : null;
+            Debug.Assert(node != null);
 
-            return (node != null && node.Kind() == SyntaxKind.SwitchStatement) ||
-                   (parent != null &&
-                   (parent.Kind() == SyntaxKind.IfStatement || parent.Kind() == SyntaxKind.ElseClause ||
-                    parent.Kind() == SyntaxKind.WhileStatement || parent.Kind() == SyntaxKind.DoStatement ||
-                    parent.Kind() == SyntaxKind.ForEachStatement || parent.Kind() == SyntaxKind.ForEachVariableStatement ||
-                    parent.Kind() == SyntaxKind.UsingStatement ||
-                    parent.Kind() == SyntaxKind.ForStatement || parent.Kind() == SyntaxKind.TryStatement ||
-                    parent.Kind() == SyntaxKind.CatchClause || parent.Kind() == SyntaxKind.FinallyClause ||
-                    parent.Kind() == SyntaxKind.LockStatement || parent.Kind() == SyntaxKind.CheckedStatement ||
-                    parent.Kind() == SyntaxKind.UncheckedStatement || parent.Kind() == SyntaxKind.SwitchSection ||
-                    parent.Kind() == SyntaxKind.FixedStatement));
+            if (node.Kind() == SyntaxKind.SwitchStatement)
+            {
+                return true;
+            }
+
+            var parentKind = node.Parent?.Kind();
+
+            switch (parentKind.GetValueOrDefault())
+            {
+                case SyntaxKind.IfStatement:
+                case SyntaxKind.ElseClause:
+                case SyntaxKind.WhileStatement:
+                case SyntaxKind.DoStatement:
+                case SyntaxKind.ForEachStatement:
+                case SyntaxKind.ForEachVariableStatement:
+                case SyntaxKind.UsingStatement:
+                case SyntaxKind.ForStatement:
+                case SyntaxKind.TryStatement:
+                case SyntaxKind.CatchClause:
+                case SyntaxKind.FinallyClause:
+                case SyntaxKind.LockStatement:
+                case SyntaxKind.CheckedStatement:
+                case SyntaxKind.UncheckedStatement:
+                case SyntaxKind.SwitchSection:
+                case SyntaxKind.FixedStatement:
+                case SyntaxKind.UnsafeStatement:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public override AdjustSpacesOperation GetAdjustSpacesOperation(SyntaxToken previousToken, SyntaxToken currentToken, OptionSet optionSet, NextOperation<AdjustSpacesOperation> nextOperation)
@@ -111,6 +131,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Formatting
             if (currentToken.IsKind(SyntaxKind.OpenBraceToken) && currentTokenParentParent != null && currentTokenParentParent.IsKind(SyntaxKind.AnonymousMethodExpression))
             {
                 if (!optionSet.GetOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousMethods))
+                {
+                    operation = CreateAdjustSpacesOperation(1, AdjustSpacesOption.ForceSpaces);
+                }
+            }
+
+            // * { - in the local function context
+            if (currentToken.IsKind(SyntaxKind.OpenBraceToken) && currentTokenParentParent != null && currentTokenParentParent.IsKind(SyntaxKind.LocalFunctionStatement))
+            {
+                if (!optionSet.GetOption(CSharpFormattingOptions.NewLinesForBracesInMethods))
                 {
                     operation = CreateAdjustSpacesOperation(1, AdjustSpacesOption.ForceSpaces);
                 }
@@ -302,6 +331,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Formatting
                 if (optionSet.GetOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousMethods))
                 {
                     return CreateAdjustNewLinesOperation(1, AdjustNewLinesOption.ForceLinesIfOnSingleLine);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            // * { - in the local function context
+            if (currentToken.Kind() == SyntaxKind.OpenBraceToken && currentTokenParentParent != null && currentTokenParentParent.Kind() == SyntaxKind.LocalFunctionStatement)
+            {
+                if (optionSet.GetOption(CSharpFormattingOptions.NewLinesForBracesInMethods))
+                {
+                    return CreateAdjustNewLinesOperation(1, AdjustNewLinesOption.PreserveLines);
                 }
                 else
                 {

@@ -6,13 +6,13 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editor.Tags;
-using Microsoft.CodeAnalysis.Editor.Shared.Extensions;
 using Microsoft.CodeAnalysis.Editor.Shared.Utilities;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.CodeAnalysis.Editor.Wpf;
 
 namespace Microsoft.VisualStudio.LanguageServices.Shared
 {
@@ -55,7 +55,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Shared
 
         private ImageMoniker GetImageMoniker(ImmutableArray<string> tags)
         {
-            var glyph = tags.GetGlyph();
+            var glyph = tags.GetFirstGlyph();
             switch (glyph)
             {
                 case Glyph.AddReference:

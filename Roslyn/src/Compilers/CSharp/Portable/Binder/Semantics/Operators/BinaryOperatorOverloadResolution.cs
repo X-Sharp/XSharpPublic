@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -23,7 +24,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC VIOLATION: For compatibility with Dev11, do not apply this rule to built-in conversions.
 
             BinaryOperatorKind underlyingKind = kind & ~BinaryOperatorKind.Logical;
-
 
 #if XSHARP
             if (VOStructBinaryOperatorComparison(kind, left, right, result))
@@ -43,22 +43,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             // operands of a binary operation need to have a type.
 
             // SPEC: An operation of the form x op y, where op is an overloadable binary operator is processed as follows:
-            // SPEC: The set of candidate user-defined operators provided by the types (if any) of x and y for the
-            // SPEC operation operator op(x, y) is determined.
+            // SPEC: The set of candidate user-defined operators provided by the types (if any) of x and y for the 
+            // SPEC operation operator op(x, y) is determined. 
 
             bool hadUserDefinedCandidate = GetUserDefinedOperators(underlyingKind, left, right, result.Results, ref useSiteDiagnostics);
 
-            // SPEC: If the set of candidate user-defined operators is not empty, then this becomes the set of candidate
-            // SPEC: operators for the operation. Otherwise, the predefined binary operator op implementations, including
-            // SPEC: their lifted forms, become the set of candidate operators for the operation.
+            // SPEC: If the set of candidate user-defined operators is not empty, then this becomes the set of candidate 
+            // SPEC: operators for the operation. Otherwise, the predefined binary operator op implementations, including 
+            // SPEC: their lifted forms, become the set of candidate operators for the operation. 
 
-            // Note that the native compiler has a bug in its binary operator overload resolution involving
+            // Note that the native compiler has a bug in its binary operator overload resolution involving 
             // lifted built-in operators.  The spec says that we should add the lifted and unlifted operators
             // to a candidate set, eliminate the inapplicable operators, and then choose the best of what is left.
             // The lifted operator is defined as, say int? + int? --> int?.  That is not what the native compiler
             // does. The native compiler, rather, effectively says that there are *three* lifted operators:
             // int? + int? --> int?, int + int? --> int? and int? + int --> int?, and it chooses the best operator
-            // amongst those choices.
+            // amongst those choices.  
             //
             // This is a subtle difference; most of the time all it means is that we generate better code because we
             // skip an unnecessary operand conversion to int? when adding int to int?. But some of the time it
@@ -73,9 +73,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 GetAllBuiltInOperators(kind, left, right, result.Results, ref useSiteDiagnostics);
             }
 
-            // SPEC: The overload resolution rules of 7.5.3 are applied to the set of candidate operators to select the best
-            // SPEC: operator with respect to the argument list (x, y), and this operator becomes the result of the overload
-            // SPEC: resolution process. If overload resolution fails to select a single best operator, a binding-time
+            // SPEC: The overload resolution rules of 7.5.3 are applied to the set of candidate operators to select the best 
+            // SPEC: operator with respect to the argument list (x, y), and this operator becomes the result of the overload 
+            // SPEC: resolution process. If overload resolution fails to select a single best operator, a binding-time 
             // SPEC: error occurs.
 
             BinaryOperatorOverloadResolution(left, right, result, ref useSiteDiagnostics);
@@ -172,8 +172,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             // We might have a situation like
             //
             // Func<string> + Func<object>
-            //
-            // in which case overload resolution should consider both
+            // 
+            // in which case overload resolution should consider both 
             //
             // Func<string> + Func<string>
             // Func<object> + Func<object>
@@ -182,22 +182,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             // we might have something like:
             //
             // Func<object> + Func<dynamic>
-            //
+            // 
             // in which case neither candidate is better than the other,
             // resulting in an error.
             //
             // We could as an optimization say that if you are adding two completely
             // dissimilar delegate types D1 and D2, that neither is added to the candidate
             // set because neither can possibly be applicable, but let's not go there.
-            // Let's just add them to the set and let overload resolution (and the
+            // Let's just add them to the set and let overload resolution (and the 
             // error recovery heuristics) have at the real candidate set.
             //
             // However, we will take a spec violation for this scenario:
             //
             // SPEC VIOLATION:
             //
-            // Technically the spec implies that we ought to be able to compare
-            //
+            // Technically the spec implies that we ought to be able to compare 
+            // 
             // Func<int> x = whatever;
             // bool y = x == ()=>1;
             //
@@ -205,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // reason why we ought to allow this. However, a good question is whether
             // the violation ought to be here, where we are determining the operator
             // candidate set, or in overload resolution where we are determining applicability.
-            // In the native compiler we did it during candidate set determination,
+            // In the native compiler we did it during candidate set determination, 
             // so let's stick with that.
 
             if (leftDelegate && rightDelegate)
@@ -409,21 +409,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.And:
                 case BinaryOperatorKind.Or:
                 case BinaryOperatorKind.Xor:
-                    // These operations are ambiguous on non-equal identity-convertible types -
+                    // These operations are ambiguous on non-equal identity-convertible types - 
                     // it's not clear what the resulting type of the operation should be:
                     //   C<?>.E operator +(C<dynamic>.E x, C<object>.E y)
                     useIdentityConversion = false;
                     break;
 
                 case BinaryOperatorKind.Addition:
-                    // Addition only accepts a single enum type, so operations on non-equal identity-convertible types are not ambiguous.
+                    // Addition only accepts a single enum type, so operations on non-equal identity-convertible types are not ambiguous. 
                     //   E operator +(E x, U y)
                     //   E operator +(U x, E y)
                     useIdentityConversion = true;
                     break;
 
                 case BinaryOperatorKind.Subtraction:
-                    // Subtraction either returns underlying type or only accept a single enum type, so operations on non-equal identity-convertible types are not ambiguous.
+                    // Subtraction either returns underlying type or only accept a single enum type, so operations on non-equal identity-convertible types are not ambiguous. 
                     //   U operator –(E x, E y)
                     //   E operator –(E x, U y)
                     useIdentityConversion = true;
@@ -435,7 +435,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.LessThan:
                 case BinaryOperatorKind.GreaterThanOrEqual:
                 case BinaryOperatorKind.LessThanOrEqual:
-                    // Relational operations return Boolean, so operations on non-equal identity-convertible types are not ambiguous.
+                    // Relational operations return Boolean, so operations on non-equal identity-convertible types are not ambiguous. 
                     //   Boolean operator op(C<dynamic>.E, C<object>.E)
                     useIdentityConversion = true;
                     break;
@@ -523,6 +523,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private bool UseOnlyReferenceEquality(BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
+            // We consider the `null` literal, but not the `default` literal, since the latter does not require a reference equality
             return
                 BuiltInOperators.IsValidObjectEquality(Conversions, left.Type, left.IsLiteralNull(), right.Type, right.IsLiteralNull(), ref useSiteDiagnostics) &&
                 ((object)left.Type == null || (!left.Type.IsDelegateType() && left.Type.SpecialType != SpecialType.System_String && left.Type.SpecialType != SpecialType.System_Delegate)) &&
@@ -590,9 +591,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // Spec 7.3.4 Binary operator overload resolution:
             //   An operation of the form x op y, where op is an overloadable binary operator is processed as follows:
-            //   The set of candidate user-defined operators provided by the types (if any) of x and y for the
+            //   The set of candidate user-defined operators provided by the types (if any) of x and y for the 
             //   operation operator op(x, y) is determined. The set consists of the union of the candidate operators
-            //   provided by the type of x (if any) and the candidate operators provided by the type of y (if any),
+            //   provided by the type of x (if any) and the candidate operators provided by the type of y (if any), 
             //   each determined using the rules of 7.3.5. Candidate operators only occur in the combined set once.
 
             var operators = ArrayBuilder<BinaryOperatorAnalysisResult>.GetInstance();
@@ -673,20 +674,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // Spec 7.3.5 Candidate user-defined operators
-            // SPEC: Given a type T and an operation operator op(A), where op is an overloadable
-            // SPEC: operator and A is an argument list, the set of candidate user-defined operators
+            // SPEC: Given a type T and an operation operator op(A), where op is an overloadable 
+            // SPEC: operator and A is an argument list, the set of candidate user-defined operators 
             // SPEC: provided by T for operator op(A) is determined as follows:
 
-            // SPEC: Determine the type T0. If T is a nullable type, T0 is its underlying type,
+            // SPEC: Determine the type T0. If T is a nullable type, T0 is its underlying type, 
             // SPEC: otherwise T0 is equal to T.
 
             // (The caller has already passed in the stripped type.)
 
-            // SPEC: For all operator op declarations in T0 and all lifted forms of such operators,
-            // SPEC: if at least one operator is applicable (7.5.3.1) with respect to the argument
-            // SPEC: list A, then the set of candidate operators consists of all such applicable
+            // SPEC: For all operator op declarations in T0 and all lifted forms of such operators, 
+            // SPEC: if at least one operator is applicable (7.5.3.1) with respect to the argument 
+            // SPEC: list A, then the set of candidate operators consists of all such applicable 
             // SPEC: operators in T0. Otherwise, if T0 is object, the set of candidate operators is empty.
-            // SPEC: Otherwise, the set of candidate operators provided by T0 is the set of candidate
+            // SPEC: Otherwise, the set of candidate operators provided by T0 is the set of candidate 
             // SPEC: operators provided by the direct base class of T0, or the effective base class of
             // SPEC: T0 if T0 is a type parameter.
 
@@ -771,16 +772,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: For the binary operators + - * / % & | ^ << >> a lifted form of the
             // SPEC: operator exists if the operand and result types are all non-nullable
             // SPEC: value types. The lifted form is constructed by adding a single ?
-            // SPEC: modifier to each operand and result type.
+            // SPEC: modifier to each operand and result type. 
             //
             // SPEC: For the equality operators == != a lifted form of the operator exists
-            // SPEC: if the operand types are both non-nullable value types and if the
+            // SPEC: if the operand types are both non-nullable value types and if the 
             // SPEC: result type is bool. The lifted form is constructed by adding
             // SPEC: a single ? modifier to each operand type.
             //
-            // SPEC: For the relational operators > < >= <= a lifted form of the
+            // SPEC: For the relational operators > < >= <= a lifted form of the 
             // SPEC: operator exists if the operand types are both non-nullable value
-            // SPEC: types and if the result type is bool. The lifted form is
+            // SPEC: types and if the result type is bool. The lifted form is 
             // SPEC: constructed by adding a single ? modifier to each operand type.
 
             if (!left.IsValueType ||
@@ -821,22 +822,37 @@ namespace Microsoft.CodeAnalysis.CSharp
             BinaryOperatorOverloadResolutionResult result,
             ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
-            // SPEC: Given the set of applicable candidate function members, the best function member in that set is located.
-            // SPEC: If the set contains only one function member, then that function member is the best function member.
+            // SPEC: Given the set of applicable candidate function members, the best function member in that set is located. 
+            // SPEC: If the set contains only one function member, then that function member is the best function member. 
 
-            if (result.GetValidCount() == 1)
+            if (result.SingleValid())
             {
                 return;
             }
 
-            // SPEC: Otherwise, the best function member is the one function member that is better than all other function
-            // SPEC: members with respect to the given argument list, provided that each function member is compared to all
-            // SPEC: other function members using the rules in 7.5.3.2. If there is not exactly one function member that is
-            // SPEC: better than all other function members, then the function member invocation is ambiguous and a binding-time
+            // SPEC: Otherwise, the best function member is the one function member that is better than all other function 
+            // SPEC: members with respect to the given argument list, provided that each function member is compared to all 
+            // SPEC: other function members using the rules in 7.5.3.2. If there is not exactly one function member that is 
+            // SPEC: better than all other function members, then the function member invocation is ambiguous and a binding-time 
             // SPEC: error occurs.
 
-            // UNDONE: This is a naive quadratic algorithm; there is a linear algorithm that works. Consider using it.
             var candidates = result.Results;
+            // Try to find a single best candidate
+            int bestIndex = GetTheBestCandidateIndex(left, right, candidates, ref useSiteDiagnostics);
+            if (bestIndex != -1)
+            {
+                // Mark all other candidates as worse
+                for (int index = 0; index < candidates.Count; ++index)
+                {
+                    if (candidates[index].Kind != OperatorAnalysisResultKind.Inapplicable && index != bestIndex)
+                    {
+                        candidates[index] = candidates[index].Worse();
+                    }
+                }
+
+                return;
+            }
+
             for (int i = 1; i < candidates.Count; ++i)
             {
                 if (candidates[i].Kind != OperatorAnalysisResultKind.Applicable)
@@ -851,6 +867,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         continue;
                     }
+
                     var better = BetterOperator(candidates[i].Signature, candidates[j].Signature, left, right, ref useSiteDiagnostics);
                     if (better == BetterResult.Left)
                     {
@@ -864,14 +881,68 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        private int GetTheBestCandidateIndex(
+            BoundExpression left,
+            BoundExpression right,
+            ArrayBuilder<BinaryOperatorAnalysisResult> candidates,
+            ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            int currentBestIndex = -1;
+            for (int index = 0; index < candidates.Count; index++)
+            {
+                if (candidates[index].Kind != OperatorAnalysisResultKind.Applicable)
+                {
+                    continue;
+                }
+
+                // Assume that the current candidate is the best if we don't have any
+                if (currentBestIndex == -1)
+                {
+                    currentBestIndex = index;
+                }
+                else
+                {
+                    var better = BetterOperator(candidates[currentBestIndex].Signature, candidates[index].Signature, left, right, ref useSiteDiagnostics);
+                    if (better == BetterResult.Right)
+                    {
+                        // The current best is worse
+                        currentBestIndex = index;
+                    }
+                    else if (better != BetterResult.Left)
+                    {
+                        // The current best is not better
+                        currentBestIndex = -1;
+                    }
+                }
+            }
+
+            // Make sure that every candidate up to the current best is worse
+            for (int index = 0; index < currentBestIndex; index++)
+            {
+                if (candidates[index].Kind == OperatorAnalysisResultKind.Inapplicable)
+                {
+                    continue;
+                }
+
+                var better = BetterOperator(candidates[currentBestIndex].Signature, candidates[index].Signature, left, right, ref useSiteDiagnostics);
+                if (better != BetterResult.Left)
+                {
+                    // The current best is not better
+                    return -1;
+                }
+            }
+
+            return currentBestIndex;
+        }
+
         private BetterResult BetterOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
 #if !XSHARP
+            // We use Priority as a tie-breaker to help match native compiler bugs.
             Debug.Assert(op1.Priority.HasValue == op2.Priority.HasValue);
 #endif
 
-            // We use Priority as a tie-breaker to help match native compiler bugs.
-            if (op1.Priority.HasValue && op2.Priority.HasValue && op1.Priority.GetValueOrDefault() != op2.Priority.GetValueOrDefault())
+            if (op1.Priority.HasValue && op1.Priority.GetValueOrDefault() != op2.Priority.GetValueOrDefault())
             {
                 return (op1.Priority.GetValueOrDefault() < op2.Priority.GetValueOrDefault()) ? BetterResult.Left : BetterResult.Right;
             }
@@ -882,7 +953,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: Mp is defined to be a better function member than Mq if:
             // SPEC: * For each argument, the implicit conversion from Ex to Qx is not better than
             // SPEC:   the implicit conversion from Ex to Px, and
-            // SPEC: * For at least one argument, the conversion from Ex to Px is better than the
+            // SPEC: * For at least one argument, the conversion from Ex to Px is better than the 
             // SPEC:   conversion from Ex to Qx.
 
             // If that is hard to follow, consult this handy chart:
@@ -919,21 +990,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Conversions.HasIdentityConversion(op1.LeftType, op2.LeftType) &&
                 Conversions.HasIdentityConversion(op1.RightType, op2.RightType))
             {
-                // NOTE: The native compiler does not follow these rules; effectively, the native
+                // NOTE: The native compiler does not follow these rules; effectively, the native 
                 // compiler checks for liftedness first, and then for specificity. For example:
                 // struct S<T> where T : struct {
                 //   public static bool operator +(S<T> x, int y) { return true; }
                 //   public static bool? operator +(S<T>? x, int? y) { return false; }
                 // }
-                //
+                // 
                 // bool? b = new S<int>?() + new int?();
                 //
                 // should reason as follows: the two applicable operators are the lifted
                 // form of the first operator and the unlifted second operator. The
                 // lifted form of the first operator is *more specific* because int?
-                // is more specific than T?.  Therefore it should win. In fact the
+                // is more specific than T?.  Therefore it should win. In fact the 
                 // native compiler chooses the second operator, because it is unlifted.
-                //
+                // 
                 // Roslyn follows the spec rules; if we decide to change the spec to match
                 // the native compiler, or decide to change Roslyn to match the native
                 // compiler, we should change the order of the checks here.
@@ -961,13 +1032,46 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-#if XSHARP
+            // Always prefer operators with val parameters over operators with in parameters:
+            BetterResult valOverInPreference;
+
+            if (op1.LeftRefKind == RefKind.None && op2.LeftRefKind == RefKind.In)
+            {
+                valOverInPreference = BetterResult.Left;
+            }
+            else if (op2.LeftRefKind == RefKind.None && op1.LeftRefKind == RefKind.In)
+            {
+                valOverInPreference = BetterResult.Right;
+            }
             else
             {
-                return VoBetterOperator(op1, op2, left, right, ref useSiteDiagnostics);
+                valOverInPreference = BetterResult.Neither;
             }
-#endif
-            return BetterResult.Neither;
+
+            if (op1.RightRefKind == RefKind.None && op2.RightRefKind == RefKind.In)
+            {
+                if (valOverInPreference == BetterResult.Right)
+                {
+                    return BetterResult.Neither;
+                }
+                else
+                {
+                    valOverInPreference = BetterResult.Left;
+                }
+            }
+            else if (op2.RightRefKind == RefKind.None && op1.RightRefKind == RefKind.In)
+            {
+                if (valOverInPreference == BetterResult.Left)
+                {
+                    return BetterResult.Neither;
+                }
+                else
+                {
+                    valOverInPreference = BetterResult.Right;
+                }
+            }
+
+            return valOverInPreference;
         }
 
         private BetterResult MoreSpecificOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, ref HashSet<DiagnosticInfo> useSiteDiagnostics)

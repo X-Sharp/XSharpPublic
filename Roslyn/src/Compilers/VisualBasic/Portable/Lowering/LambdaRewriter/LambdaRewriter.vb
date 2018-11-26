@@ -3,6 +3,7 @@
 Imports System.Collections.Immutable
 Imports System.Runtime.InteropServices
 Imports Microsoft.CodeAnalysis.CodeGen
+Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
@@ -1430,6 +1431,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         Nothing,
                         receiver,
                         node.Arguments,
+                        node.DefaultArguments,
                         Nothing,
                         isLValue:=False,
                         suppressObjectClone:=node.SuppressObjectClone,

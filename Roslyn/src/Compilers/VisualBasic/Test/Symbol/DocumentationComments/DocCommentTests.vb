@@ -36,23 +36,25 @@ End Class
 ]]>
     </file>
 </compilation>
+            Using(new EnsureEnglishUICulture()) 
+            
+                Dim comp = CreateCompilationWithMscorlib40(sources)
+                Dim diags = New DiagnosticBag()
+                Dim badStream = New BrokenStream()
+                badStream.BreakHow = BrokenStream.BreakHowType.ThrowOnWrite
 
-            Dim comp = CreateCompilationWithMscorlib(sources)
-            Dim diags = New DiagnosticBag()
-            Dim badStream = New BrokenStream()
-            badStream.BreakHow = BrokenStream.BreakHowType.ThrowOnWrite
+                DocumentationCommentCompiler.WriteDocumentationCommentXml(
+                    comp,
+                    assemblyName:=Nothing,
+                    xmlDocStream:=badStream,
+                    diagnostics:=diags,
+                    cancellationToken:=Nothing)
 
-            DocumentationCommentCompiler.WriteDocumentationCommentXml(
-                comp,
-                assemblyName:=Nothing,
-                xmlDocStream:=badStream,
-                diagnostics:=diags,
-                cancellationToken:=Nothing)
-
-            AssertTheseDiagnostics(diags.ToReadOnlyAndFree(),
-                                   <errors><![CDATA[
+                AssertTheseDiagnostics(diags.ToReadOnlyAndFree(),
+									   <errors><![CDATA[
 BC37258: Error writing to XML documentation file: I/O error occurred.
                                    ]]></errors>)
+            End Using
         End Sub
 
         <Fact>
@@ -68,7 +70,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib(
+            Dim compilation = CreateCompilationWithMscorlib40(
                 sources,
                 options:=TestOptions.ReleaseDll.WithXmlReferenceResolver(Nothing),
                 parseOptions:=TestOptions.Regular.WithDocumentationMode(DocumentationMode.Parse))
@@ -111,7 +113,7 @@ End Module
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(
                 sources, parseOptions:=(New VisualBasicParseOptions()).WithDocumentationMode(DocumentationMode.None))
 
             Dim tree = compilation.SyntaxTrees(0)
@@ -142,7 +144,7 @@ End Module
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(
                 sources, parseOptions:=(New VisualBasicParseOptions()).WithDocumentationMode(DocumentationMode.Parse))
 
             Dim tree = compilation.SyntaxTrees(0)
@@ -173,7 +175,7 @@ End Module
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(
                 sources, parseOptions:=s_optionsDiagnoseDocComments)
 
             Dim tree = compilation.SyntaxTrees(0)
@@ -1941,7 +1943,7 @@ AssemblyName
 </xml>)
         End Sub
 
-        <Fact>
+        <ConditionalFact(GetType(DesktopOnly), Skip:="https://github.com/dotnet/roslyn/issues/18610")>
         Public Sub IllegalXmlInDocComment()
             CompileCheckDiagnosticsAndXmlDocument(
 <compilation name="AssemblyName">
@@ -1991,7 +1993,7 @@ AssemblyName
 </xml>)
         End Sub
 
-        <Fact>
+        <ConditionalFact(GetType(DesktopOnly), Skip:="https://github.com/dotnet/roslyn/issues/18610")>
         Public Sub IllegalXmlInDocComment_Schema()
             CompileCheckDiagnosticsAndXmlDocument(
 <compilation name="AssemblyName">
@@ -11168,7 +11170,7 @@ AssemblyName
         <WorkItem(757110, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/757110")>
         <Fact>
         Public Sub NoAssemblyElementForNetModule()
-            Dim comp = CreateCompilationWithMscorlibAndVBRuntime(
+            Dim comp = CreateCompilationWithMscorlib40AndVBRuntime(
                 <compilation name="EmptyCref">
                     <file name="a.vb">
                         <![CDATA[
@@ -11420,7 +11422,7 @@ End Class
 </compilation>
 
 
-            Dim compilation = CreateCompilationWithMscorlib(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40(source, parseOptions:=s_optionsDiagnoseDocComments)
 
             ' Compat fix: match dev11 with inaccessible lookup
             compilation.AssertNoDiagnostics()
@@ -11449,7 +11451,7 @@ End Class
 </compilation>
 
 
-            Dim compilation = CreateCompilationWithMscorlib(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40(source, parseOptions:=s_optionsDiagnoseDocComments)
 
             ' Compat fix: match dev11 with inaccessible lookup
             compilation.AssertNoDiagnostics()
@@ -11487,10 +11489,10 @@ End Class
 </compilation>
 
 
-            Dim lib1Ref = CreateCompilationWithMscorlib(lib1Source).EmitToImageReference()
-            Dim lib2Ref = CreateCompilationWithMscorlib(lib2Source).EmitToImageReference()
+            Dim lib1Ref = CreateCompilationWithMscorlib40(lib1Source).EmitToImageReference()
+            Dim lib2Ref = CreateCompilationWithMscorlib40(lib2Source).EmitToImageReference()
 
-            Dim compilation = CreateCompilationWithMscorlibAndReferences(source, {lib1Ref, lib2Ref}, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40AndReferences(source, {lib1Ref, lib2Ref}, parseOptions:=s_optionsDiagnoseDocComments)
             Dim tree = compilation.SyntaxTrees.Single()
             Dim model = compilation.GetSemanticModel(tree)
 
@@ -11528,7 +11530,7 @@ End Class
 </compilation>
 
 
-            Dim compilation = CreateCompilationWithMscorlib(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40(source, parseOptions:=s_optionsDiagnoseDocComments)
             compilation.AssertNoDiagnostics()
 
             Dim tree = compilation.SyntaxTrees.Single()
@@ -11564,7 +11566,7 @@ End Class
 </compilation>
 
 
-            Dim compilation = CreateCompilationWithMscorlib(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40(source, parseOptions:=s_optionsDiagnoseDocComments)
             compilation.AssertNoDiagnostics()
 
             Dim tree = compilation.SyntaxTrees.Single()
@@ -11593,7 +11595,7 @@ Delegate Sub D(Of T)(p As T)
 </compilation>
 
 
-            Dim compilation = CreateCompilationWithMscorlib(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40(source, parseOptions:=s_optionsDiagnoseDocComments)
             compilation.AssertTheseDiagnostics(<errors><![CDATA[
 BC42309: XML comment has a tag with a 'cref' attribute 'T' that could not be resolved.
 ''' <see cref="T"/>
@@ -11630,7 +11632,7 @@ Delegate Sub D(Of V)()
 </compilation>
 
             ' NOTE: Unlike C#, VB allows crefs to type parameters.
-            Dim compilation = CreateCompilationWithMscorlib(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40(source, parseOptions:=s_optionsDiagnoseDocComments)
             compilation.AssertTheseDiagnostics(<errors><![CDATA[
 BC42375: XML comment has a tag with a 'cref' attribute 'T' that bound to a type parameter.  Use the <typeparamref> tag instead.
 ''' <see cref='T'/>
@@ -11695,7 +11697,7 @@ End Enum
 </compilation>
 
             ' None of these work in dev11.
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(source, parseOptions:=s_optionsDiagnoseDocComments)
             compilation.AssertNoDiagnostics()
 
             Dim tree = compilation.SyntaxTrees.Single()
@@ -11728,7 +11730,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(source, parseOptions:=s_optionsDiagnoseDocComments)
             compilation.AssertNoDiagnostics()
 
             Dim tree = compilation.SyntaxTrees.Single()
@@ -11813,7 +11815,7 @@ End Class
                     </file>
                 </compilation>
 
-            Dim comp = CreateCompilationWithMscorlibAndVBRuntime(source, parseOptions:=s_optionsDiagnoseDocComments)
+            Dim comp = CreateCompilationWithMscorlib40AndVBRuntime(source, parseOptions:=s_optionsDiagnoseDocComments)
             comp.VerifyDiagnostics()
 
             Dim expectedXmlText = <![CDATA[
@@ -11829,7 +11831,7 @@ End Class
             Assert.Equal(expectedXmlText, sourceSymbol.GetDocumentationCommentXml())
 
             Dim metadataRef = comp.EmitToImageReference()
-            Dim comp2 = CreateCompilationWithReferences(<source/>, {metadataRef})
+            Dim comp2 = CreateEmptyCompilationWithReferences(<source/>, {metadataRef})
 
             Dim metadataSymbol = comp.GlobalNamespace.GetMember(Of NamedTypeSymbol)("C")
             Assert.Equal(expectedXmlText, metadataSymbol.GetDocumentationCommentXml())
@@ -12120,7 +12122,7 @@ xmlDoc)
                        DocumentationMode.Diagnose,
                        DocumentationMode.Parse))
 
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(sources,
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(sources,
                                                                         additionalRefs,
                                                                         TestOptions.ReleaseDll.WithXmlReferenceResolver(XmlFileResolver.Default),
                                                                         parseOptions)
@@ -12339,7 +12341,7 @@ End Module
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(
                 sources,
                 options:=TestOptions.ReleaseExe,
                 parseOptions:=TestOptions.Regular.WithDocumentationMode(DocumentationMode.Diagnose))
@@ -12406,6 +12408,41 @@ DashDash
 ]]>
     </xml>,
                 stringMapper:=Function(o) StringReplace(o, System.IO.Path.Combine(TestHelpers.AsXmlCommentText(path), "- - -.xml"), "**FILE**"), ensureEnglishUICulture:=True)
+        End Sub
+
+        <Fact>
+        <WorkItem(410932, "https://devdiv.visualstudio.com/DefaultCollection/DevDiv/_workitems?id=410932")>
+        Public Sub LookupOnCrefTypeParameter()
+
+            Dim sources =
+<compilation>
+    <file name="a.vb">
+        <![CDATA[
+Public Class Test
+    Function F(Of T)() As T
+    End Function
+
+    ''' <summary>
+    ''' <see cref="F(Of U)()"/>
+    ''' </summary>
+    Public Sub S()
+    End Sub
+End Class
+]]>
+    </file>
+</compilation>
+
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntime(
+                sources,
+                options:=TestOptions.ReleaseDll)
+
+
+            Dim tree = compilation.SyntaxTrees(0)
+            Dim model = compilation.GetSemanticModel(tree)
+
+            Dim name = FindNodesOfTypeFromText(Of NameSyntax)(tree, "U").Single()
+            Dim typeParameter = DirectCast(model.GetSymbolInfo(name).Symbol, TypeParameterSymbol)
+            Assert.Empty(model.LookupSymbols(name.SpanStart, typeParameter, "GetAwaiter"))
         End Sub
 
     End Class

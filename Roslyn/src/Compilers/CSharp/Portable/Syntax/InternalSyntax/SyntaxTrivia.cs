@@ -27,12 +27,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             this.FullWidth = this.Text.Length;
         }
 
-        internal override Func<ObjectReader, object> GetReader()
+        static SyntaxTrivia()
         {
-            return r => new SyntaxTrivia(r);
+            ObjectBinder.RegisterTypeReader(typeof(SyntaxTrivia), r => new SyntaxTrivia(r));
         }
 
         public override bool IsTrivia => true;
+
+        internal override bool ShouldReuseInSerialization => this.Kind == SyntaxKind.WhitespaceTrivia &&
+                                                             FullWidth < Lexer.MaxCachedTokenSize;
 
         internal override void WriteTo(ObjectWriter writer)
         {

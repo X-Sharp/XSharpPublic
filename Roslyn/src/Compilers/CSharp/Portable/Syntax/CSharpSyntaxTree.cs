@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
@@ -659,7 +660,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetText().Lines.GetLinePosition(position);
 #endif
         }
-
 
         /// <summary>
         /// Gets a <see cref="Location"/> for the specified text <paramref name="span"/>.

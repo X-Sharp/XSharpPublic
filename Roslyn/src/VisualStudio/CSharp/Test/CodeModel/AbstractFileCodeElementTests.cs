@@ -1,11 +1,13 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces;
+using Microsoft.CodeAnalysis.Test.Utilities;
+using Microsoft.VisualStudio.LanguageServices.Implementation.Interop;
 using Roslyn.Test.Utilities;
+using SyntaxNodeKey = Microsoft.VisualStudio.LanguageServices.Implementation.CodeModel.SyntaxNodeKey;
 
 namespace Microsoft.VisualStudio.LanguageServices.CSharp.UnitTests.CodeModel
 {
@@ -13,57 +15,57 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.UnitTests.CodeModel
     /// Base class of a all test-containing classes. Automatically creates a FileCodeModel for testing with the given
     /// file.
     /// </summary>
+    [UseExportProvider]
     public abstract class AbstractFileCodeElementTests : IDisposable
     {
-        private readonly Task<Tuple<TestWorkspace, FileCodeModel>> _task;
-
-        protected async Task<TestWorkspace> GetWorkspaceAsync()
-        {
-            var tuple = await _task;
-            return tuple.Item1;
-        }
-
-        protected async Task<FileCodeModel> GetCodeModelAsync()
-        {
-            var tuple = await _task;
-            return tuple.Item2;
-        }
-
-        protected async Task<Microsoft.CodeAnalysis.Solution> GetCurrentSolutionAsync()
-        {
-            return (await GetWorkspaceAsync()).CurrentSolution;
-        }
-
-        protected async Task<Microsoft.CodeAnalysis.Project> GetCurrentProjectAsync()
-        {
-            return (await GetCurrentSolutionAsync()).Projects.Single();
-        }
-
-        protected async Task<Microsoft.CodeAnalysis.Document> GetCurrentDocumentAsync()
-        {
-            return (await GetCurrentProjectAsync()).Documents.Single();
-        }
+        private readonly string _contents;
+        private Tuple<TestWorkspace, FileCodeModel> _workspaceAndCodeModel;
 
         public AbstractFileCodeElementTests(string contents)
         {
-            _task = CreateWorkspaceAndFileCodeModelAsync(contents);
+            _contents = contents;
         }
 
-        protected static Task<Tuple<TestWorkspace, EnvDTE.FileCodeModel>> CreateWorkspaceAndFileCodeModelAsync(string file)
+        public Tuple<TestWorkspace, FileCodeModel> WorkspaceAndCodeModel
         {
-            return FileCodeModelTestHelpers.CreateWorkspaceAndFileCodeModelAsync(file);
+            get
+            {
+                return _workspaceAndCodeModel ?? (_workspaceAndCodeModel = CreateWorkspaceAndFileCodeModelAsync(_contents));
+            }
         }
 
-        protected async Task<CodeElement> GetCodeElementAsync(params object[] path)
+        protected TestWorkspace GetWorkspace()
         {
-            WpfTestCase.RequireWpfFact("Tests create CodeElements which use the affinitized CleanableWeakComHandleTable");
+            return WorkspaceAndCodeModel.Item1;
+        }
+
+        protected FileCodeModel GetCodeModel()
+        {
+            return WorkspaceAndCodeModel.Item2;
+        }
+
+        protected Microsoft.CodeAnalysis.Solution GetCurrentSolution()
+            => GetWorkspace().CurrentSolution;
+
+        protected Microsoft.CodeAnalysis.Project GetCurrentProject()
+            => GetCurrentSolution().Projects.Single();
+
+        protected Microsoft.CodeAnalysis.Document GetCurrentDocument()
+            => GetCurrentProject().Documents.Single();
+
+        protected static Tuple<TestWorkspace, EnvDTE.FileCodeModel> CreateWorkspaceAndFileCodeModelAsync(string file)
+            => FileCodeModelTestHelpers.CreateWorkspaceAndFileCodeModel(file);
+
+        protected CodeElement GetCodeElement(params object[] path)
+        {
+            WpfTestRunner.RequireWpfFact($"Tests create {nameof(CodeElement)}s which use the affinitized {nameof(CleanableWeakComHandleTable<SyntaxNodeKey, CodeElement>)}");
 
             if (path.Length == 0)
             {
                 throw new ArgumentException("path must be non-empty.", nameof(path));
             }
 
-            CodeElement codeElement = (await GetCodeModelAsync()).CodeElements.Item(path[0]);
+            CodeElement codeElement = (GetCodeModel()).CodeElements.Item(path[0]);
 
             foreach (var pathElement in path.Skip(1))
             {
@@ -75,15 +77,15 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.UnitTests.CodeModel
 
         public void Dispose()
         {
-            GetWorkspaceAsync().Result.Dispose();
+            GetWorkspace().Dispose();
         }
 
         /// <summary>
         /// Returns the current text of the test buffer.
         /// </summary>
-        protected async Task<string> GetFileTextAsync()
+        protected string GetFileText()
         {
-            return (await GetWorkspaceAsync()).Documents.Single().GetTextBuffer().CurrentSnapshot.GetText();
+            return (GetWorkspace()).Documents.Single().GetTextBuffer().CurrentSnapshot.GetText();
         }
     }
 }

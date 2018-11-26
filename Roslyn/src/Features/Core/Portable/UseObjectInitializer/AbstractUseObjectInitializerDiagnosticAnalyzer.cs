@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis.CodeStyle;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.LanguageServices;
@@ -69,24 +70,32 @@ namespace Microsoft.CodeAnalysis.UseObjectInitializer
             }
 
             var syntaxFacts = GetSyntaxFactsService();
-            var analyzer = new ObjectCreationExpressionAnalyzer<TExpressionSyntax, TStatementSyntax, TObjectCreationExpressionSyntax, TMemberAccessExpressionSyntax, TAssignmentStatementSyntax, TVariableDeclaratorSyntax>(
-                syntaxFacts, objectCreationExpression);
-            var result = analyzer.Analyze();
+            var matches = ObjectCreationExpressionAnalyzer<TExpressionSyntax, TStatementSyntax, TObjectCreationExpressionSyntax, TMemberAccessExpressionSyntax, TAssignmentStatementSyntax, TVariableDeclaratorSyntax>.Analyze(
+                context.SemanticModel, syntaxFacts, objectCreationExpression, context.CancellationToken);
 
-            if (result == null || result.Value.Length == 0)
+            if (matches == null || matches.Value.Length == 0)
+            {
+                return;
+            }
+
+            var containingStatement = objectCreationExpression.FirstAncestorOrSelf<TStatementSyntax>();
+            var nodes = ImmutableArray.Create<SyntaxNode>(containingStatement).AddRange(matches.Value.Select(m => m.Statement));
+            if (syntaxFacts.ContainsInterleavedDirective(nodes, cancellationToken))
             {
                 return;
             }
 
             var locations = ImmutableArray.Create(objectCreationExpression.GetLocation());
 
-            var severity = option.Notification.Value;
-            context.ReportDiagnostic(Diagnostic.Create(
-                CreateDescriptorWithSeverity(severity),
+            var severity = option.Notification.Severity;
+            context.ReportDiagnostic(DiagnosticHelper.Create(
+                Descriptor,
                 objectCreationExpression.GetLocation(),
-                additionalLocations: locations));
+                severity,
+                additionalLocations: locations,
+                properties: null));
 
-            FadeOutCode(context, optionSet, result.Value, locations);
+            FadeOutCode(context, optionSet, matches.Value, locations);
         }
 
         private void FadeOutCode(
@@ -133,6 +142,6 @@ namespace Microsoft.CodeAnalysis.UseObjectInitializer
         protected abstract ISyntaxFactsService GetSyntaxFactsService();
 
         public override DiagnosticAnalyzerCategory GetAnalyzerCategory()
-            => DiagnosticAnalyzerCategory.SemanticDocumentAnalysis;
+            => DiagnosticAnalyzerCategory.SemanticSpanAnalysis;
     }
 }

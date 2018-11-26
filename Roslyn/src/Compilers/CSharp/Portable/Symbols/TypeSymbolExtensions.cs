@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
@@ -70,8 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool IsNullableType(this TypeSymbol type)
         {
-            var original = (TypeSymbol)type.OriginalDefinition;
-            return original.SpecialType == SpecialType.System_Nullable_T;
+            return type.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
         }
 
         public static TypeSymbol GetNullableUnderlyingType(this TypeSymbol type)
@@ -311,6 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 CheckFullName(type.ContainingSymbol, s_expressionsNamespaceName);
         }
 
+
         /// <summary>
         /// return true if the type is constructed from a generic interface that 
         /// might be implemented by an array.
@@ -345,14 +346,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             for (int i = 0; i < names.Length; i++)
             {
-                if (symbol != null)
-                {
-                    if (symbol.Name == names[i])
-                        return true;
-                }
+                if ((object)symbol == null || symbol.Name != names[i]) return false;
+                symbol = symbol.ContainingSymbol;
             }
 
-            return false;
+            return true;
         }
 
         public static bool IsDelegateType(this TypeSymbol type)
@@ -628,13 +626,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         {
                             // If s2 is private or internal, and within the same assembly as s1,
                             // then this is at least as restrictive as s1's internal.
-                            if ((acc2 == Accessibility.Private || acc2 == Accessibility.Internal) && s2.ContainingAssembly.HasInternalAccessTo(s1.ContainingAssembly))
+                            if ((acc2 == Accessibility.Private || acc2 == Accessibility.Internal || acc2 == Accessibility.ProtectedAndInternal) && s2.ContainingAssembly.HasInternalAccessTo(s1.ContainingAssembly))
                             {
                                 return true;
                             }
 
                             break;
                         }
+
+                    case Accessibility.ProtectedAndInternal:
+                        // Since s1 is private protected, s2 must pass the test for being both more restrictive than internal and more restrictive than protected.
+                        // We first do the "internal" test (copied from above), then if it passes we continue with the "protected" test.
+
+                        if ((acc2 == Accessibility.Private || acc2 == Accessibility.Internal || acc2 == Accessibility.ProtectedAndInternal) && s2.ContainingAssembly.HasInternalAccessTo(s1.ContainingAssembly))
+                        {
+                            // passed the internal test; now do the test for the protected case
+                            goto case Accessibility.Protected;
+                        }
+
+                        break;
 
                     case Accessibility.Protected:
                         {
@@ -656,7 +666,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     }
                                 }
                             }
-                            else if (acc2 == Accessibility.Protected)
+                            else if (acc2 == Accessibility.Protected || acc2 == Accessibility.ProtectedAndInternal)
                             {
                                 // if s2 is protected, and it's parent is a subclass (or the same as) s1's parent
                                 // then this is at least as restrictive as s1's protected
@@ -720,6 +730,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                                     break;
 
+                                case Accessibility.ProtectedAndInternal:
+                                    // if s2 is private protected, and it's parent is a subclass (or the same as) s1's parent
+                                    // or its in the same assembly as s1, then this is at least as restrictive as s1's protected
+                                    if (s2.ContainingAssembly.HasInternalAccessTo(s1.ContainingAssembly) ||
+                                        parent1.IsAccessibleViaInheritance(s2.ContainingType, ref useSiteDiagnostics))
+                                    {
+                                        return true;
+                                    }
+
+                                    break;
+
                                 case Accessibility.ProtectedOrInternal:
                                     // if s2 is internal protected, and it's parent is a subclass (or the same as) s1's parent
                                     // and its in the same assembly as s1, then this is at least as restrictive as s1's protected
@@ -738,7 +759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (acc2 == Accessibility.Private)
                         {
                             // if s2 is private, and it is within s1's parent, then this is at
-                            // least as restrictive as s1's private.                           
+                            // least as restrictive as s1's private.
                             NamedTypeSymbol parent1 = s1.ContainingType;
 
                             if ((object)parent1 == null)
@@ -762,6 +783,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         throw ExceptionUtilities.UnexpectedValue(acc1);
                 }
             }
+
             return false;
         }
 
@@ -915,13 +937,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
         }
 
-#pragma warning disable RS0010
+#pragma warning disable CA1200 // Avoid using cref tags with a prefix
         /// <summary>
         /// Returns true if the type is one of the restricted types, namely: <see cref="T:System.TypedReference"/>, 
         /// <see cref="T:System.ArgIterator"/>, or <see cref="T:System.RuntimeArgumentHandle"/>.
+        /// or a ref-like type.
         /// </summary>
-#pragma warning restore RS0010
-        internal static bool IsRestrictedType(this TypeSymbol type)
+#pragma warning restore CA1200 // Avoid using cref tags with a prefix
+        internal static bool IsRestrictedType(this TypeSymbol type,
+                                                bool ignoreSpanLikeTypes = false)
         {
             // See Dev10 C# compiler, "type.cpp", bool Type::isSpecialByRefType() const
             Debug.Assert((object)type != null);
@@ -932,7 +956,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case SpecialType.System_RuntimeArgumentHandle:
                     return true;
             }
-            return false;
+
+            return ignoreSpanLikeTypes? 
+                        false:
+                        type.IsByRefLikeType;
         }
 
         public static bool IsIntrinsicType(this TypeSymbol type)
@@ -1330,7 +1357,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal static bool IsCustomTaskType(this NamedTypeSymbol type, out object builderArgument)
         {
             Debug.Assert((object)type != null);
-            //Debug.Assert(type.SpecialType != SpecialType.System_Void);
 
             var arity = type.Arity;
             if (arity < 2)
@@ -1507,6 +1533,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
             return new Cci.TypeReferenceWithAttributes(typeRef);
+        }
+
+        internal static bool IsWellKnownTypeInAttribute(this ITypeSymbol typeSymbol) => typeSymbol.IsWellKnownInteropServicesTopLevelType("InAttribute");
+
+        internal static bool IsWellKnownTypeUnmanagedType(this ITypeSymbol typeSymbol) => typeSymbol.IsWellKnownInteropServicesTopLevelType("UnmanagedType");
+
+        private static bool IsWellKnownInteropServicesTopLevelType(this ITypeSymbol typeSymbol, string name)
+        {
+            if (typeSymbol.Name != name || typeSymbol.ContainingType != null)
+            {
+                return false;
+            }
+
+            var interopServicesNamespace = typeSymbol.ContainingNamespace;
+            if (interopServicesNamespace?.Name != "InteropServices")
+            {
+                return false;
+            }
+
+            var runtimeNamespace = interopServicesNamespace.ContainingNamespace;
+            if (runtimeNamespace?.Name != "Runtime")
+            {
+                return false;
+            }
+
+            var systemNamespace = runtimeNamespace.ContainingNamespace;
+            if (systemNamespace?.Name != "System")
+            {
+                return false;
+            }
+
+            var globalNamespace = systemNamespace.ContainingNamespace;
+
+            return globalNamespace != null && globalNamespace.IsGlobalNamespace;
         }
     }
 }

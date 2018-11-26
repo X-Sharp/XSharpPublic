@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -12,6 +13,18 @@ namespace Microsoft.CodeAnalysis
             foreach (var item in builder)
             {
                 if (predicate(item))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool Any<T, A>(this ArrayBuilder<T> builder, Func<T, A, bool> predicate, A arg)
+        {
+            foreach (var item in builder)
+            {
+                if (predicate(item, arg))
                 {
                     return true;
                 }

@@ -3,11 +3,13 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
-    internal sealed class LambdaSymbol : MethodSymbol
+    internal sealed class LambdaSymbol : SourceMethodSymbol
     {
         private readonly Symbol _containingSymbol;
         private readonly MessageID _messageID;
@@ -30,7 +32,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             ImmutableArray<TypeSymbol> parameterTypes, 
             ImmutableArray<RefKind> parameterRefKinds,
             RefKind refKind,
-            TypeSymbol returnType)
+            TypeSymbol returnType,
+            DiagnosticBag diagnostics)
         {
             _containingSymbol = containingSymbol;
             _messageID = unboundLambda.Data.MessageID;
@@ -40,22 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _isSynthesized = unboundLambda.WasCompilerGenerated;
             _isAsync = unboundLambda.IsAsync;
             // No point in making this lazy. We are always going to need these soon after creation of the symbol.
-            _parameters = MakeParameters(compilation, unboundLambda, parameterTypes, parameterRefKinds);
-        }
-
-        public LambdaSymbol(
-            Symbol containingSymbol,
-            MessageID messageID,
-            SyntaxNode syntax,
-            bool isSynthesized)
-        {
-            _containingSymbol = containingSymbol;
-            _messageID = messageID;
-            _syntax = syntax;
-            _refKind = RefKind.None;
-            _returnType = ErrorTypeSymbol.UnknownResultType;
-            _isSynthesized = isSynthesized;
-            _parameters = ImmutableArray<ParameterSymbol>.Empty;
+            _parameters = MakeParameters(compilation, unboundLambda, parameterTypes, parameterRefKinds, diagnostics);
         }
 
         public MessageID MessageID { get { return _messageID; } }
@@ -173,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return (object)this.ReturnType != null && this.ReturnType.SpecialType == SpecialType.System_Void; }
         }
 
-        internal override RefKind RefKind
+        public override RefKind RefKind
         {
             get { return _refKind; }
         }
@@ -259,6 +247,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
+        /// <summary>
+        /// Locations[0] on lambda symbols covers the entire syntax, which is inconvenient but remains for compatibility.
+        /// For better diagnostics quality, use the DiagnosticLocation instead, which points to the "delegate" or the "=>".
+        /// </summary>
+        internal Location DiagnosticLocation
+        {
+            get
+            {
+                switch (_syntax.Kind())
+                {
+                    case SyntaxKind.AnonymousMethodExpression:
+                        return ((AnonymousMethodExpressionSyntax)_syntax).DelegateKeyword.GetLocation();
+                    case SyntaxKind.SimpleLambdaExpression:
+                    case SyntaxKind.ParenthesizedLambdaExpression:
+                        return ((LambdaExpressionSyntax)_syntax).ArrowToken.GetLocation();
+                    default:
+                        return Locations[0];
+                }
+            }
+        }
+
         public override ImmutableArray<SyntaxReference> DeclaringSyntaxReferences
         {
             get
@@ -291,7 +300,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             CSharpCompilation compilation,
             UnboundLambda unboundLambda,
             ImmutableArray<TypeSymbol> parameterTypes,
-            ImmutableArray<RefKind> parameterRefKinds)
+            ImmutableArray<RefKind> parameterRefKinds,
+            DiagnosticBag diagnostics)
         {
             Debug.Assert(parameterTypes.Length == parameterRefKinds.Length);
 
@@ -337,7 +347,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     type = new ExtendedErrorTypeSymbol(compilation, name: string.Empty, arity: 0, errorInfo: null);
                     refKind = RefKind.None;
                 }
-
+                
                 var name = unboundLambda.ParameterName(p);
                 var location = unboundLambda.ParameterLocation(p);
                 var locations = ImmutableArray.Create<Location>(location);
@@ -381,6 +391,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get { return true; }
         }
+
+        public override ImmutableArray<TypeParameterConstraintClause> TypeParameterConstraintClauses => ImmutableArray<TypeParameterConstraintClause>.Empty;
 
         internal override int CalculateLocalSyntaxOffset(int localPosition, SyntaxTree localTree)
         {

@@ -171,6 +171,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_PTR:
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
+                    throw new NotImplementedException();
                 default:
                     throw new Exception("Unexpected literal kind");
             }

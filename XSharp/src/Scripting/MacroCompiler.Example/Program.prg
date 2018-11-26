@@ -6,6 +6,12 @@ using System.Text
 function U(u as usual) as usual
     return u
 
+function R(r as real8) as real8
+    return r
+
+function I(i as int) as int
+    return i
+
 function Test(u as usual) as void
     Console.WriteLine("Test: {0}", u)
     return
@@ -27,66 +33,98 @@ begin namespace MacroCompilerTest
 	function Start() as void
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 
-        //var test_source := "Console.WriteLine(123)"
-        //var test_source := "Test(12345)"
-        //var test_source := "Test(U(12345)-1)"
-        //var test_source := "Test(123+45)"
-        //var test_source := "TestR(123)"
-        //var test_source := "TestI(123.456)"
-        //var test_source := "{|a,b,c|a := b := 1343+1}"
-        //var test_source := "{|a,b,c|}"
-        //var test_source := "{|a,b,c|1234}"
-        //var test_source := "U(1234)"
-        //var test_source := "1234"
-        //var test_source := ""
-        //var test_source := "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}"
-        //var test_source := "{|a|a := 1343, a += 1}"
-        //var test_source := "{|a|a := -1343, a := -a}"
-        //var test_source := "{|a|a := 8, a := 8**a}"
-        //var test_source := "{|a|a := 8, ++a, ++a}"
-        //var test_source := "{|a| a:= 8, ++a, a++, a++}"
-        //var test_source := "{|a| ++a, a++, a++}"
-        //var test_source := "{|a| a++, Console.WriteLine(123), a++}"
-        //var test_source := e"{|a| a := \"abc\", Console.WriteLine(\"Hello\"), a + \"def\" }"
-        //var test_source := e"{|a| a := \"abc\" + \"def\"}"
-        //var test_source := e"{|a| \"abc\" == \"def\"}"
-        //var test_source := e"{|a| \"abc\" = \"abc\"}"
-        //var test_source := e"{|a| \"abc\" != \"abc\"}"
-        //var test_source := e"{|a| a := \"abc\", a == \"abc\"}"
-        //var test_source := e"{|a| 0 == 0 }"
-        //var test_source := e"{|a| 0 != 0 }"
-        //var test_source := e"{|a| (0 > 1) && (0 < 1) }"
-        //var test_source := e"{|a| a := \"qwerty\", a:Length }"
-        //var test_source := e"{|a| a := default(int) }"
-        //var test_source := e"{|a| a := default(string) }"
-        //var test_source := e"{|a| a := default(usual) }"
-        //var test_source := e"{|a| a := U(1234+1), a }"
-        //var test_source := e"{|a| UU := U(1234+1), UU }"
-//        var test_source := e"{|a| a:ToString() }" // Fails because String:ToString() is overloaded!
-        //var test_source := e"{|a| a := \"abcdef\", a:ToUpperInvariant() }"
-        var test_source := e"{|a| a := NIL }"
-
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        begin scope
-            Console.WriteLine("Executing macro ...")
-            var cb := mc:Compile(test_source)
-            var res := cb:EvalBlock(8)
-            Console.WriteLine("res = {0}",res)
-wait
-//return
-        end scope
+        EvalMacro(mc, e"{|a| a := NIL }")
+        wait
 
-        TestMacroCompiler(mc, test_source, 15, true, false)
-        TestMacroCompiler(mc, test_source, 15, true, true)
-        TestMacroCompiler(mc, test_source, 100000, false, false)
-        TestMacroCompiler(mc, test_source, 100000, false, true)
+        RunTests(mc)
+        wait
+
+        RunPerf(mc, "Console.WriteLine(123)")
 
         ReportMemory("final");
 
         Console.WriteLine("Press any key to continue...")
         Console.ReadKey()
+
+    function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string) as void
+        Console.WriteLine("Executing macro ...")
+        //var cb := MCompile(src)
+        var cb := mc:Compile(src)
+        var res := cb:EvalBlock(8)
+        Console.WriteLine("res = {0}",res)
+        return
+
+    global TotalFails := 0 as int
+    global TotalTests := 0 as int
+    global TotalSuccess := 0 as int
+
+    function RunTests(mc as XSharp.Runtime.MacroCompiler) as void
+        Console.WriteLine("Running tests ...")
+
+        TestMacro(mc, "U(12345)", <OBJECT>{}, 12345, typeof(usual))
+        TestMacro(mc, "U(U(12345)-1)", <OBJECT>{}, 12344, typeof(usual))
+        TestMacro(mc, "I(123+45)", <OBJECT>{}, 123+45, typeof(int))
+        TestMacro(mc, "R(123)", <OBJECT>{}, 123, typeof(real8))
+//        TestMacro(mc, "I(123.456)", <OBJECT>{}, 123, typeof(int))
+        TestMacro(mc, "{|a,b,c|a := b := 1343+1}", <OBJECT>{}, 1343+1, typeof(int))
+//        TestMacro(mc, "{|a,b,c|}", <OBJECT>{}, NIL, typeof(usual))
+        TestMacro(mc, "{|a,b,c|1234}", <OBJECT>{}, 1234, typeof(int))
+        TestMacro(mc, "1234", <OBJECT>{}, 1234, typeof(int))
+//        TestMacro(mc, "", <OBJECT>{}, 1234, typeof(int))
+        TestMacro(mc, "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}", <OBJECT>{}, 1343+1343-(1343+1)/2, typeof(usual))
+        TestMacro(mc, "{|a|a := 1343, a += 1}", <OBJECT>{}, 1343+1, typeof(usual))
+        TestMacro(mc, "{|a|a := -1343, a := -a}", <OBJECT>{}, 1343, typeof(usual))
+//        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real))
+        TestMacro(mc, "{|a|a := 8, ++a, ++a}", <OBJECT>{123}, 10, typeof(usual))
+        TestMacro(mc, "{|a|a := 8, ++a, a++, a++}", <OBJECT>{123}, 10, typeof(usual))
+        TestMacro(mc, "{|a|++a, a++, a++}", <OBJECT>{8}, 10, typeof(usual))
+        TestMacro(mc, "{|a| a++, U(a++), a++}", <OBJECT>{8}, 10, typeof(usual))
+        TestMacro(mc, e"{|a| a := \"abc\", a + \"def\"}", <OBJECT>{8}, "abcdef", typeof(string))
+        TestMacro(mc, e"{|a| a := \"abc\" + \"def\"}", <OBJECT>{8}, "abcdef", typeof(string))
+        TestMacro(mc, e"{|a| \"abc\" == \"def\"}", <OBJECT>{8}, false, typeof(logic))
+        TestMacro(mc, e"{|a| \"abc\" = \"abc\"}", <OBJECT>{8}, true, typeof(logic))
+        TestMacro(mc, e"{|a| \"abc\" != \"abc\"}", <OBJECT>{8}, false, typeof(logic))
+        TestMacro(mc, e"{|a| a := \"abc\", a == \"abc\"}", <OBJECT>{8}, true, typeof(logic))
+        TestMacro(mc, e"{|a| 0 == 0}", <OBJECT>{8}, true, typeof(logic))
+        TestMacro(mc, e"{|a| 0 != 0}", <OBJECT>{8}, false, typeof(logic))
+        TestMacro(mc, e"{|a| (0 > 1) && (0 < 1) }", <OBJECT>{8}, false, typeof(logic))
+        TestMacro(mc, e"{|a| a := \"qwerty\", a:Length }", <OBJECT>{8}, 6, typeof(usual))
+        TestMacro(mc, e"{|a| a := default(int) }", <OBJECT>{8}, 0, typeof(int))
+//        TestMacro(mc, e"{|a| a := default(string) }", <OBJECT>{8}, null, null)
+        TestMacro(mc, e"{|a| a := default(usual) }", <OBJECT>{8}, NIL, typeof(usual))
+        TestMacro(mc, e"{|a| a := U(1234+1), a }", <OBJECT>{8}, 1234+1, typeof(usual))
+        TestMacro(mc, e"{|a| UU := U(1234+1), UU }", <OBJECT>{8}, 1234+1, typeof(usual))
+//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // Fails because String:ToString() is overloaded!
+        TestMacro(mc, e"{|a| a := \"abcdef\", a:ToUpperInvariant() }", <OBJECT>{8}, "ABCDEF", typeof(usual))
+        TestMacro(mc, e"{|a| a := NIL }", <OBJECT>{8}, NIL, typeof(usual))
+
+        Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
+        return
+
+    function RunPerf(mc as XSharp.Runtime.MacroCompiler, src as string) as void
+        TestMacroCompiler(mc, src, 15, true, false)
+        TestMacroCompiler(mc, src, 15, true, true)
+        TestMacroCompiler(mc, src, 100000, false, false)
+        TestMacroCompiler(mc, src, 100000, false, true)
+        return
+
+    function TestMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args as object[], expect as usual, t as Type) as logic
+        TotalTests += 1
+        Console.Write("Test: '{0}' ", src)
+        var cb := mc:Compile(src)
+        var res := cb:EvalBlock(args)
+        if (res = expect) .and. ((t == null) || (t == res:GetType()))
+            TotalSuccess += 1
+            Console.WriteLine("[OK]")
+            return true
+        else
+            TotalFails += 1
+            Console.WriteLine("[FAIL] (res = {0}, type = {1})", res, res?:GetType())
+        end
+        return false
 
     function CreateMacroCompiler() as XSharp.Runtime.MacroCompiler
         Console.WriteLine("Creating macro compiler ...")

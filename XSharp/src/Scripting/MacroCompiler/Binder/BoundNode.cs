@@ -318,6 +318,15 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
     }
+    internal partial class EmptyExpr : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            Symbol = Constant.CreateDefault(Compilation.Get(NativeType.Usual));
+            Datatype = (Symbol as Constant)?.Type;
+            return null;
+        }
+    }
     internal partial class Arg : Node
     {
         internal override Node Bind(Binder b)

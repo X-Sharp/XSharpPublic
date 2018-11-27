@@ -13,10 +13,12 @@ namespace XSharp.MacroCompiler
     internal enum WellKnownTypes
     {
         System_Runtime_CompilerServices_IsConst,
+        ClipperCallingConventionAttribute,
+        DefaultParameterValueAttribute,
         XSharp_Internal_VOStructAttribute,
         XSharp_Internal_ClassLibraryAttribute,
         XSharp_Internal_CompilerServices,
-        XSharp_ImplicitNamespaceAttribute,
+        ImplicitNamespaceAttribute,
         XSharp_VO_Functions,
         XSharp_Codeblock,
         XSharp___VOFloat,
@@ -34,6 +36,8 @@ namespace XSharp.MacroCompiler
         static string[] TypeNames =
         {
             "System.Runtime.CompilerServices.IsConst",
+            XSharpQualifiedTypeNames.ClipperCallingConvention + "|" + VulcanQualifiedTypeNames.ClipperCallingConvention,
+            XSharpQualifiedTypeNames.DefaultParameterAttribute + "|" + VulcanQualifiedTypeNames.DefaultParameterAttribute,
             "XSharp.Internal.VOStructAttribute|Vulcan.Internal.VOStructAttribute",
             "XSharp.Internal.ClassLibraryAttribute|Vulcan.Internal.VulcanClassLibraryAttribute",
             "XSharp.Internal.CompilerServices|Vulcan.Internal.CompilerServices",
@@ -59,7 +63,7 @@ namespace XSharp.MacroCompiler
             foreach (var m in (WellKnownTypes[])Enum.GetValues(typeof(WellKnownTypes)))
             {
                 var names = TypeNames[(int)m];
-                Debug.Assert(names.Replace('.', '_').Replace("`","_T").Split('|').First() == m.ToString());
+                Debug.Assert(names.Replace('.', '_').Replace("`","_T").Split('|').First().Contains(m.ToString()));
                 foreach (var name in names.Split('|'))
                 {
                     var s = Binder.LookupFullName(name);

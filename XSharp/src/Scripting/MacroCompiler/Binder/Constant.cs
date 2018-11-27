@@ -22,6 +22,9 @@ namespace XSharp.MacroCompiler
         internal static ConstantWithValue<DateTime> Create(DateTime value) { return new ConstantWithValue<DateTime>(value, NativeType.DateTime); }
         internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
 
+        internal static ConstantDefault Null { get { return CreateDefault(Compilation.Get(NativeType.Object)); } }
+        internal static ConstantDefault Nil { get { return CreateDefault(Compilation.Get(NativeType.Usual)); } }
+
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
         internal virtual TypeSymbol Type { get; }

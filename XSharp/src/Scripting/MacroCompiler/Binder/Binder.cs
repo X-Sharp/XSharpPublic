@@ -137,7 +137,7 @@ namespace XSharp.MacroCompiler
             }
 
             var cla = Compilation.Get(WellKnownTypes.XSharp_Internal_ClassLibraryAttribute);
-            var ina = Compilation.Get(WellKnownTypes.XSharp_ImplicitNamespaceAttribute);
+            var ina = Compilation.Get(WellKnownTypes.ImplicitNamespaceAttribute);
             if (cla != null && ina != null)
             {
                 foreach (var a in AppDomain.CurrentDomain.GetAssemblies())

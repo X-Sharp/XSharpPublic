@@ -21,6 +21,7 @@
         internal const string WinBool = "global::Vulcan.__WinBool";
         internal const string RuntimeState = "global::Vulcan.Runtime.State";
         internal const string ClipperCallingConvention = "global::Vulcan.Internal.ClipperCallingConventionAttribute";
+        internal const string DefaultParameterAttribute = "global::Vulcan.Internal.DefaultParameterValueAttribute";
         internal const string WrappedException = "global::Vulcan.Internal.VulcanWrappedException";
         internal const string DefaultParameter = "global::Vulcan.Internal.DefaultParameterValueAttribute";
         internal const string ActualType = "global::Vulcan.Internal.ActualTypeAttribute";
@@ -45,6 +46,7 @@
         internal const string WinBool = "global::XSharp.__WinBool";
         internal const string RuntimeState = "global::XSharp.RuntimeState";
         internal const string ClipperCallingConvention = "global::XSharp.Internal.ClipperCallingConventionAttribute";
+        internal const string DefaultParameterAttribute = "global::XSharp.Internal.DefaultParameterValueAttribute";
         internal const string WrappedException = "global::XSharp.Internal.WrappedException";
         internal const string DefaultParameter = "global::XSharp.Internal.DefaultParameterValueAttribute";
         internal const string ActualType = "global::XSharp.Internal.ActualTypeAttribute";

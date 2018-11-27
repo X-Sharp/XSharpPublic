@@ -578,9 +578,7 @@ namespace XSharp.MacroCompiler
         internal Arg ParseArg()
         {
             var e = ParseExpression();
-            if (e != null)
-                return new Arg(e);
-            return null;
+            return new Arg(e ?? new EmptyExpr());
         }
 
         internal ArgList ParseArgList()

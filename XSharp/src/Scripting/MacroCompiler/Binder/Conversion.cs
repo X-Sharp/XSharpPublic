@@ -44,6 +44,7 @@ namespace XSharp.MacroCompiler
         //InterpolatedString, // a conversion from an interpolated string to IFormattable or FormattableString
         ImplicitUsual,
         ExplicitUsual,
+        ConstantReduction,
     }
 
     internal partial class ConversionSymbol : Symbol
@@ -58,6 +59,7 @@ namespace XSharp.MacroCompiler
 
         internal static ConversionSymbol Create(ConversionKind kind) { return simpleConv[(int)kind]; }
         internal static ConversionSymbolWithMethod Create(ConversionKind kind, MethodSymbol method) { return new ConversionSymbolWithMethod(kind, method); }
+        internal static ConversionSymbolToConstant Create(Constant constant) { return new ConversionSymbolToConstant(constant); }
         internal static ConversionChain Create(ConversionSymbol conv, ConversionSymbol prev) { return new ConversionChain(conv, prev); }
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
@@ -97,6 +99,7 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.Boxing] = Implicit | 3;
             convCost[(int)ConversionKind.ImplicitUsual] = Implicit | 4;
             convCost[(int)ConversionKind.ImplicitUserDefined] = Implicit | 4;
+            convCost[(int)ConversionKind.ConstantReduction] = Implicit | 0;
 
             convCost[(int)ConversionKind.ExplicitNumeric] = Explicit | 1;
             convCost[(int)ConversionKind.ExplicitNullable] = Explicit | 2;
@@ -119,6 +122,13 @@ namespace XSharp.MacroCompiler
         internal MethodSymbol Method;
 
         internal ConversionSymbolWithMethod(ConversionKind kind, MethodSymbol method) : base(kind) { Method = method; }
+    }
+
+    internal class ConversionSymbolToConstant : ConversionSymbol
+    {
+        internal Constant Constant;
+
+        internal ConversionSymbolToConstant(Constant constant) : base(ConversionKind.ConstantReduction) { Constant = constant; }
     }
 
     internal partial class ConversionChain : ConversionSymbol

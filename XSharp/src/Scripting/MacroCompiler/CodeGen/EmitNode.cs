@@ -310,6 +310,14 @@ namespace XSharp.MacroCompiler.Syntax
     {
         // TODO (nvk): to be implemented
     }
+    internal partial class EmptyExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                EmitLiteral(ilg, (Constant)Symbol);
+        }
+    }
     internal partial class Arg : Node
     {
         internal override void Emit(ILGenerator ilg)

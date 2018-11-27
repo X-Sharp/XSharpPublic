@@ -148,9 +148,38 @@ namespace XSharp.MacroCompiler
     internal partial class MethodBaseSymbol : MemberSymbol
     {
         internal MethodBase MethodBase { get { return (MethodBase)base.Member; } }
+        bool _foundAttributes = false;
+        CustomAttributeData _clipperAttr = null;
+        string[] _clipperParams = null;
+        bool _hasParamArray = false;
         //internal ParameterInfo[] Parameters { get { Interlocked.CompareExchange(ref _parameters, Method.GetParameters(), null); return _parameters; } }
         //ParameterInfo[] _parameters;
         internal MethodBaseSymbol(MethodBase method, TypeSymbol type) : base(method, type) { }
+        internal bool IsClipper { get { FindAttributes(); return _clipperAttr != null; } }
+        internal string[] ClipperParams { get { FindAttributes(); return _clipperParams; } }
+        internal bool HasParamArray { get { FindAttributes(); return _hasParamArray; } }
+        void FindAttributes()
+        {
+            if (!_foundAttributes)
+            {
+                foreach(var attr in MethodBase.CustomAttributes)
+                {
+                    if (attr.AttributeType == Compilation.Get(WellKnownTypes.ClipperCallingConventionAttribute).Type)
+                    {
+                        _clipperAttr = attr;
+                        _clipperParams = (string[])_clipperAttr?.ConstructorArguments[0].Value;
+                    }
+                }
+                foreach(var attr in ((MethodBase)Member).GetParameters().Last()?.CustomAttributes)
+                {
+                    if (attr.AttributeType == typeof(System.ParamArrayAttribute))
+                    {
+                        _hasParamArray = true;
+                    }
+                }
+                _foundAttributes = true;
+            }
+        }
     }
     internal partial class MethodSymbol : MethodBaseSymbol
     {

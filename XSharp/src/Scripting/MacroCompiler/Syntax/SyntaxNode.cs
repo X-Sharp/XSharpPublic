@@ -210,6 +210,11 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal ArrayAccessExpr(Expr e, ArgList a) : base(e, a) { }
     }
+    internal partial class EmptyExpr : Expr
+    {
+        internal EmptyExpr() { }
+        public override string ToString() { return ""; }
+    }
     internal partial class Arg : Node
     {
         internal Expr Expr;

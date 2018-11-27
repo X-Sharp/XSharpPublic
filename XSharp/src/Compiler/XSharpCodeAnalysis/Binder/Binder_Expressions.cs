@@ -124,7 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression BindIndexerOrVOArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var arrayType = Compilation.ArrayType();
                 var usualType = Compilation.UsualType();
@@ -390,7 +390,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool indexed
             )
         {
-            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
+            if (Compilation.Options.HasRuntime && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
             {
                 string propName = right.Identifier.ValueText;
                 if (leftType != null)
@@ -472,7 +472,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             TypeSymbol psz = Compilation.PszType();
             if (source.Type != null && source.Type.SpecialType == SpecialType.System_String &&
-                Compilation.Options.IsDialectVO &&
+                Compilation.Options.HasRuntime &&
                 (destination == psz || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.

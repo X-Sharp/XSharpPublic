@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     internal class XSharpBailErrorStrategy : BailErrorStrategy
     {
-        String _fileName;
+        readonly String _fileName;
         IList<ParseErrorData> _parseErrors;
         internal XSharpBailErrorStrategy(String FileName, IList<ParseErrorData> parseErrors) : base()
         {
@@ -87,9 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
   
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
-
-            String _fileName;
-            IList<ParseErrorData> _parseErrors;
+            readonly String _fileName;
+            readonly IList<ParseErrorData> _parseErrors;
             internal XSharpErrorListener(String FileName, IList<ParseErrorData> parseErrors) : base()
             {
                 _fileName = FileName;
@@ -158,6 +157,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     tree = parser.script();
             }
+            else if (_options.Dialect == XSharpDialect.XPP)
+                tree = parser.xppsource();
             else
                 tree = parser.source();
             return tree;
@@ -183,7 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var sourceText = _text.ToString();
             var lexer = XSharpLexer.Create(sourceText, _fileName, _options);
-            lexer.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
+            lexer.Options = _options;
             _lexerTokenStream = lexer.GetTokenStream();
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
@@ -255,16 +256,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ppStream.Fill();
             _preprocessorTokenStream = ppStream;
-            var parser = new XSharpParser(ppStream);
-            parser.IsScript = _options.Kind == SourceCodeKind.Script;
+            var parser = new XSharpParser(ppStream) { Options = _options };
             // See https://github.com/tunnelvisionlabs/antlr4/blob/master/doc/optimized-fork.md
             // for info about optimization flags such as the next line
-
-            parser.AllowFunctionInsideClass = _options.Dialect.AllowFunctionsInsideClass();
-            parser.AllowNamedArgs = _options.AllowNamedArguments;
-            parser.AllowXBaseVariables = _options.Dialect.AllowXBaseVariables();
-
-
+            
 #if DEBUG && DUMP_TIMES
            {
                 var ts = DateTime.Now - t;
@@ -340,7 +335,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             }   // _options.ParseLevel < Complete
-
+            if (_options.DumpAST && tree != null)
+            {
+                string strTree = tree.ToStringTree();
+                string file = System.IO.Path.ChangeExtension(_fileName, "ast");
+                strTree = strTree.Replace(@"\r\n)))))", @"\r\n*)))))"+ "\r\n");
+                strTree = strTree.Replace(@"\r\n))))", @"\r\n*)))" + "\r\n");
+                strTree = strTree.Replace(@"\r\n)))", @"\r\n*)))" + "\r\n");
+                strTree = strTree.Replace(@"\r\n))", @"\r\n*))" + "\r\n");
+                strTree = strTree.Replace(@"\r\n)", @"\r\n*)" + "\r\n");
+                strTree = strTree.Replace(@"\r\n*)", @"\r\n)" );
+                System.IO.File.WriteAllText(file, strTree);
+            }
             var walker = new ParseTreeWalker();
 
             foreach (var e in lexer.LexErrors)
@@ -358,15 +364,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             //
              
-            XSharpTreeTransformation treeTransform;
-            if (_options.IsDialectVO)
-            {
-                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-            }
-            else
-            {
-                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-            }
+            var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
             bool hasErrors = false;
             SyntaxToken eof = null;
             try
@@ -415,7 +413,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.IncludedFiles = pp?.IncludedFiles;
                     result.HasPCall = treeTransform.GlobalEntities.HasPCall;
                     result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;
-                    if (_options.IsDialectVO)
+                    if (_options.HasRuntime)
                     {
                         result.LiteralSymbols = ((XSharpVOTreeTransformation)treeTransform).LiteralSymbols;
                         result.LiteralPSZs = ((XSharpVOTreeTransformation)treeTransform).LiteralPSZs;
@@ -437,6 +435,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     pp.Close();
 
             }
+        }
+
+        internal static XSharpTreeTransformation CreateTransform(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+                    ContextAwareSyntax syntaxFactory, string fileName)
+        {
+            XSharpTreeTransformation treeTransform;
+            switch (options.Dialect)
+            {
+                case XSharpDialect.Core:
+                    treeTransform = new XSharpTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
+                case XSharpDialect.VO:
+                case XSharpDialect.Vulcan:
+                case XSharpDialect.Harbour:
+                    treeTransform = new XSharpVOTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
+                case XSharpDialect.XPP:
+                default:
+                treeTransform = new XSharpXPPTreeTransformation(parser, options, pool, syntaxFactory, fileName);
+                    break;
+            }
+            return treeTransform;
         }
 
         internal TNode ParseWithStackGuard<TNode>(Func<TNode> parseFunc, Func<TNode> createEmptyNodeFunc) where TNode : CSharpSyntaxNode
@@ -652,7 +672,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-                if (_options.IsDialectVO) 
+                if (_options.HasRuntime) 
                 {
                     if (compilationunit.LiteralSymbols.Count > 0)
                     {
@@ -684,15 +704,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // and return this tree to the caller.
                 // we copy the attributes, modifiers etc from one of the class instances to make sure that
                 // do not specify a conflicting modifier.
-                XSharpTreeTransformation trans = null;
-                if (_options.IsDialectVO)
-                {
-                    trans = new XSharpVOTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
-                }
-                else
-                {
-                    trans = new XSharpTreeTransformation(null, _options, _pool, _syntaxFactory, _fileName);
-                }
+                var trans = CreateTransform(null, _options, _pool, _syntaxFactory, _fileName);
                 SyntaxListBuilder<UsingDirectiveSyntax> usingslist = _pool.Allocate<UsingDirectiveSyntax>();
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
                 var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
@@ -938,8 +950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            var list = new List<XP.MethodContext>();
-                            list.Add(m);
+                            var list = new List<XP.MethodContext>() { m };
                             dict.Add(name, list);
                         }
                     }

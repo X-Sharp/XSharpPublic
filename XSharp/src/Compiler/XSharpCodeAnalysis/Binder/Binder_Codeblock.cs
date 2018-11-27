@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         private BoundExpression BindCodeblock(SyntaxNode syntax, UnboundLambda unboundLambda, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
         {
-            if (!Compilation.Options.IsDialectVO)
+            if (!Compilation.Options.HasRuntime)
                 return null;
             var isCodeblock = syntax.XIsCodeBlock;
             if (!isCodeblock)
@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conv = Conversions.ClassifyConversionFromType(Compilation.CodeBlockType(), destination, ref useSiteDiagnostics);
                 diagnostics.Add(syntax, useSiteDiagnostics);
             }
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
             }

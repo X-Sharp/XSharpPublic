@@ -965,7 +965,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 #if XSHARP
                 BoundBlock block = lambdaBodyBinder.BindEmbeddedBlock((BlockSyntax)this.Body, diagnostics);
-                if (lambdaBodyBinder.Compilation.Options.IsDialectVO)
+                if (lambdaBodyBinder.Compilation.Options.HasRuntime)
                 {
                     block = Binder.FixCodeBlockProblems(lambdaSymbol, lambdaBodyBinder, block, diagnostics);
                 }

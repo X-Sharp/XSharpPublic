@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoClipCall { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
 
-        public bool IsDialectVO { get { return this.Dialect.IsDialectVO(); } }
+        public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }
@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
 
         public RuntimeAssemblies RuntimeAssemblies ;
-        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO) |
+        public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }

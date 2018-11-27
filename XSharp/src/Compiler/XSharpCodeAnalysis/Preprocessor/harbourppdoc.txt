@@ -355,6 +355,9 @@ making in last days.
                 is not empty and then insert logical token .T. otherwise .F.
                 Leading spaces in new token are inherited from result pattern.
 
+   // XBase++ addition
+   <#idMarker>  Single Expression Match Marker      
+
    The Dumb stringify result marker format is a little bit differ then all
    others. It needs a special token '#' before '<'. Clipper PP strips all
    '#' tokens which are before result marker token '<' and if the result

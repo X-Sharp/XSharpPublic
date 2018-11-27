@@ -42,6 +42,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         MatchWild = 5,                     // <*idMarker*>         0000 0101
         MatchExtended = 6,                 // <(idMarker)>         0000 0110
         MatchOptional = 7,                 // [......]             0000 0111
+        // Xbase++ addition
+        MatchSingle = 8,                   // <#idMarker>          0000 1000 
 
         ResultRegular = 9,                 // <idMarker>           0000 1001
         ResultDumbStringify = 10,          // #<idMarker>          0000 1010
@@ -225,10 +227,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                _children = new List<PPMatchRange>();
-                _children.Add(Create(Start, End));
-                _children.Add(Create(start, end));
-                _length = end - Start + 1;
+                if (start == this.End + 1)
+                {
+                    _length += (end-start)+1;
+                }
+                else
+                {
+                    _children = new List<PPMatchRange>();
+                    _children.Add(Create(Start, End));
+                    _children.Add(Create(start, end));
+                    _length = end - Start + 1;
+                }
             }
         }
         internal void SetToken(int pos)

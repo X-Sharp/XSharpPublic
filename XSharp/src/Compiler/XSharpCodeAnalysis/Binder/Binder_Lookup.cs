@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(options.AreValid());
 
             // X# looks for functions first
-            //if (Compilation.Options.IsDialectVO)
+            //if (Compilation.Options.HasRuntime)
             {
                 // check for function calls method calls outside the current class
                 bool check = (options.HasFlag(LookupOptions.MustNotBeInstance) && !options.HasFlag(LookupOptions.MustNotBeMethod));

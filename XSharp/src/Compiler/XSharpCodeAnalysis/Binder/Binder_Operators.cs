@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol type;
             BoundCall opCall = null;
 
-            if (Compilation.Options.IsDialectVO && this.Compilation.Options.VOStringComparisons)
+            if (Compilation.Options.HasRuntime && this.Compilation.Options.VOStringComparisons)
             {
                 // VO Style String Comparison
                 type = Compilation.RuntimeFunctionsType();
@@ -380,7 +380,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
 
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.HasRuntime)
             {
                 var typeUsual = Compilation.UsualType();
                 var typePSZ = Compilation.PszType();
@@ -552,7 +552,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, DiagnosticBag diagnostics)
         {
-            if (!Compilation.Options.IsDialectVO)
+            if (!Compilation.Options.HasRuntime)
                 return;
             XSharpParser.BinaryExpressionContext xnode = null;
             if (node.XNode is XSharpParser.BinaryExpressionContext)
@@ -695,7 +695,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         trueType = falseType;
                 }
 
-                if (trueType != falseType && Compilation.Options.IsDialectVO)
+                if (trueType != falseType && Compilation.Options.HasRuntime)
                 {
                     // convert to usual when one of the two is a usual
                     var usualType = Compilation.UsualType();

@@ -377,7 +377,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         {
 #if XSHARP
                             // In VO/Vulcan dialect we allow a namespace and class with the same name
-                            if (!DeclaringCompilation.Options.IsDialectVO || other.Kind == nts.Kind )
+                            if (!DeclaringCompilation.Options.HasRuntime || other.Kind == nts.Kind )
 #endif
                             diagnostics.Add(ErrorCode.ERR_DuplicateNameInNS, symbol.Locations[0], name, this);
                         }
@@ -391,7 +391,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         Accessibility declaredAccessibility = nts.DeclaredAccessibility;
 #if XSHARP
                         // Allow private structs and classes and treat them as internal
-                        if (DeclaringCompilation.Options.IsDialectVO && declaredAccessibility == Accessibility.Private)
+                        if (DeclaringCompilation.Options.HasRuntime && declaredAccessibility == Accessibility.Private)
                         {
                             declaredAccessibility = Accessibility.Internal;
                         }

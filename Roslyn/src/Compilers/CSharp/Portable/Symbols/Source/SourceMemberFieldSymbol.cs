@@ -511,7 +511,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     var elementType = ((PointerTypeSymbol)type).PointedAtType;
 #if XSHARP
-                    int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
+                    int elementSize = DeclaringCompilation.Options.HasRuntime ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
 #else
                     int elementSize = elementType.FixedBufferElementSizeInBytes();
 #endif
@@ -524,7 +524,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (!binder.InUnsafeRegion)
                     {
 #if XSHARP
-                        if (! binder.Compilation.Options.IsDialectVO)
+                        if (! binder.Compilation.Options.HasRuntime)
                         {
                             diagnosticsForFirstDeclarator.Add(binder.Compilation.Options.AllowUnsafe ? ErrorCode.WRN_UnsafeImplied : ErrorCode.ERR_UnsafeNeeded, declarator.Location);
                         }

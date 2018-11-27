@@ -103,7 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                                     TypeSymbol elementType = ((PointerTypeSymbol)this.Type).PointedAtType;
 #if XSHARP
-                                    int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
+                                    int elementSize = DeclaringCompilation.Options.HasRuntime ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
 #else
                                     int elementSize = elementType.FixedBufferElementSizeInBytes();
 #endif
@@ -185,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 int nElements = _field.FixedSize;
                 var elementType = ((PointerTypeSymbol)_field.Type).PointedAtType;
 #if XSHARP
-                int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
+                int elementSize = DeclaringCompilation.Options.HasRuntime ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
 #else
                 int elementSize = elementType.FixedBufferElementSizeInBytes();
 #endif

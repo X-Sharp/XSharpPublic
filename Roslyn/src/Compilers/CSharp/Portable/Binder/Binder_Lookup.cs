@@ -1181,7 +1181,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         ref useSiteDiagnostics,
                                         basesBeingResolved)
 #if XSHARP
-                    && (!Compilation.Options.IsDialectVO || !inaccessibleViaQualifier)
+                    && (!Compilation.Options.HasRuntime || !inaccessibleViaQualifier)
 #endif
                                         )
             {

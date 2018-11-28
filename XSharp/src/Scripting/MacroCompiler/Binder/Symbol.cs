@@ -169,7 +169,8 @@ namespace XSharp.MacroCompiler
                         if (attr.AttributeType == Compilation.Get(WellKnownTypes.ClipperCallingConventionAttribute).Type)
                         {
                             _clipperAttr = attr;
-                            _clipperParams = (string[])_clipperAttr?.ConstructorArguments[0].Value;
+                            _clipperParams = ((IReadOnlyCollection<CustomAttributeTypedArgument>)_clipperAttr?.ConstructorArguments[0].Value)
+                                .Select(a => (string)a.Value).ToArray();
                         }
                     }
                 }

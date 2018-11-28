@@ -12,6 +12,9 @@ function R(r as real8) as real8
 function I(i as int) as int
     return i
 
+function A(i ref int) as int
+    return i;
+
 function I0() as int
     return 123;
 
@@ -19,6 +22,15 @@ function I3(a := 1 as int, b := 2 as int, c := 3 as int)
     return a+b+c
 
 function CC(a,b,c)
+    if a == NIL
+        a := 0
+    end
+    if b == NIL
+        b := 0
+    end
+    if c == NIL
+        c := 0
+    end
     return a+b+c
 
 global UU as usual
@@ -33,7 +45,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := I0() }")
+        EvalMacro(mc, e"{|a| a := CC(1,,3) }")
         wait
 
         RunTests(mc)
@@ -105,8 +117,15 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := I3(4) }", <OBJECT>{}, 9, typeof(usual))
         TestMacro(mc, e"{|a| a := I3() }", <OBJECT>{}, 6, typeof(usual))
         TestMacro(mc, e"{|a| a := I0() }", <OBJECT>{}, 123, typeof(int))
+        TestMacro(mc, e"{|a| a := CC(1,2,3) }", <OBJECT>{}, 6, typeof(usual))
+        TestMacro(mc, e"{|a| a := CC(1,2,3,4) }", <OBJECT>{}, 6, typeof(usual))
+        TestMacro(mc, e"{|a| a := CC() }", <OBJECT>{}, 0, typeof(usual))
+        TestMacro(mc, e"{|a| a := CC(1,2) }", <OBJECT>{}, 3, typeof(usual))
+        TestMacro(mc, e"{|a| a := CC(,1,2) }", <OBJECT>{}, 3, typeof(usual))
+        TestMacro(mc, e"{|a| a := CC(1,,2) }", <OBJECT>{}, 3, typeof(usual))
+//        TestMacro(mc, e"{|a| a := A(123) }", <OBJECT>{}, 3, typeof(usual)) // FAIL - A accepts byref arg
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
-//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // Fails because String:ToString() is overloaded!
+//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 //        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)

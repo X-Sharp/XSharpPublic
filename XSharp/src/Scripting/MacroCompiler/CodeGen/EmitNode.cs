@@ -342,13 +342,15 @@ namespace XSharp.MacroCompiler.Syntax
         {
             ilg.Emit(OpCodes.Ldc_I4, Values.Exprs.Count);
             ilg.Emit(OpCodes.Newarr, (Symbol as TypeSymbol).Type);
-            for (int i = 0; i < Values.Exprs.Count - 1; i++)
+            for (int i = 0; i < Values.Exprs.Count; i++)
             {
                 ilg.Emit(OpCodes.Dup);
                 ilg.Emit(OpCodes.Ldc_I4, i);
-                Values.Exprs[i].Emit(ilg, false);
+                Values.Exprs[i].Emit(ilg);
                 ilg.Emit(OpCodes.Stelem, (Symbol as TypeSymbol).Type);
             }
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class ArgList : Node

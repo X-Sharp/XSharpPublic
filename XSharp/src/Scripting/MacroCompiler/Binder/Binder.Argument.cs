@@ -28,7 +28,7 @@ namespace XSharp.MacroCompiler
                 else
                 {
                     var defValAttr = Compilation.Get(WellKnownTypes.DefaultParameterValueAttribute);
-                    foreach(var attr in param.CustomAttributes)
+                    foreach (var attr in param.CustomAttributes)
                     {
                         if (attr.AttributeType == defValAttr.Type)
                         {
@@ -91,6 +91,15 @@ namespace XSharp.MacroCompiler
                 return ConversionSymbol.Create(ConversionKind.NoConversion);
             }
             var conv = Conversion(arg.Expr, FindType(param.ParameterType));
+            return conv;
+        }
+        internal static ConversionSymbol VarArgumentConversion(Arg arg, TypeSymbol type)
+        {
+            if (arg == null || arg.Expr is EmptyExpr)
+            {
+                return ConversionSymbol.Create(Constant.CreateDefault(type));
+            }
+            var conv = Conversion(arg.Expr, type);
             return conv;
         }
     }

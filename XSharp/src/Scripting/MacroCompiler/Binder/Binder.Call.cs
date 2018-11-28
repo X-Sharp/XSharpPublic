@@ -63,19 +63,22 @@ namespace XSharp.MacroCompiler
             var varArgs = 0;
             var missingArgs = 0;
             bool hasExtraArgs = false;
-            if (nParams < fixedArgs)
+            if (nParams <= fixedArgs)
             {
                 if (m.HasParamArray)
                 {
-                    varArgs = fixedArgs - nParams;
-                    fixedArgs = nParams;
+                    varArgs = fixedArgs - (nParams - 1);
+                    fixedArgs = nParams - 1;
                 }
-                else
+                else if (nParams < fixedArgs)
                     hasExtraArgs = true;
             }
             else if (nParams > fixedArgs)
             {
-                missingArgs = nParams - fixedArgs;
+                if (m.HasParamArray)
+                    missingArgs = nParams - fixedArgs - 1;
+                else
+                    missingArgs = nParams - fixedArgs;
             }
             if (!hasExtraArgs)
             {
@@ -86,9 +89,17 @@ namespace XSharp.MacroCompiler
                 }
                 if (missingArgs > 0)
                 {
-                    for (int p = fixedArgs; p < fixedArgs+missingArgs; p++)
+                    for (int p = fixedArgs; p < fixedArgs + missingArgs; p++)
                     {
                         ovr.ArgConversion(p, ArgumentConversion(null, parameters[p]));
+                    }
+                }
+                else if (m.HasParamArray)
+                {
+                    var varArgType = FindType(parameters[fixedArgs].ParameterType.GetElementType());
+                    for (int p = fixedArgs; p < fixedArgs + varArgs; p++)
+                    {
+                        ovr.ArgConversion(p, VarArgumentConversion(args.Args[p], varArgType));
                     }
                 }
                 ovRes = ovr.Better(ovRes);
@@ -111,6 +122,19 @@ namespace XSharp.MacroCompiler
                     var conv = ovRes.Conversions[i];
                     args.Args.Add(new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant)));
                 }
+            }
+            else if (ovRes.Method.HasParamArray)
+            {
+                var varArgs = new List<Expr>(ovRes.VarArgs);
+                var varArgType = FindType(parameters[ovRes.FixedArgs].ParameterType.GetElementType());
+                for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.VarArgs; i++)
+                {
+                    var conv = ovRes.Conversions[i];
+                    Convert(ref args.Args[i].Expr, varArgType, conv);
+                    varArgs.Add(args.Args[i].Expr);
+                }
+                while (args.Args.Count > ovRes.FixedArgs) args.Args.RemoveAt(args.Args.Count - 1);
+                args.Args.Add(new Arg(LiteralArray.Bound(varArgs, varArgType)));
             }
         }
     }

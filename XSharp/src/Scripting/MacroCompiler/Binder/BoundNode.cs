@@ -361,17 +361,17 @@ namespace XSharp.MacroCompiler.Syntax
             Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
             return null;
         }
-        internal static LiteralArray Bound(IList<Expr> values)
+        internal static LiteralArray Bound(IList<Expr> values, TypeSymbol type = null)
         {
-            return new LiteralArray(new ExprList(values));
+            var e = new LiteralArray(new ExprList(values));
+            e.Convert(type ?? Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+            return e;
         }
-        internal static LiteralArray Bound(IList<Arg> args)
+        internal static LiteralArray Bound(IList<Arg> args, TypeSymbol type = null)
         {
             var values = new List<Expr>(args.Count);
             foreach(var a in args) values.Add(a.Expr);
-            var e = new LiteralArray(new ExprList(values));
-            e.Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
-            return e;
+            return Bound(values, type);
         }
         private void Convert(TypeSymbol t)
         {

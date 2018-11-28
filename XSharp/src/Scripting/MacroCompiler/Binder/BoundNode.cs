@@ -357,8 +357,13 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            if (ElemType != null) b.Bind(ref ElemType);
             b.Bind(ref Values);
-            Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+            if (ElemType != null)
+                Convert(ElemType.Symbol as TypeSymbol);
+            else
+                Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object),
+                    Compilation.Get(WellKnownTypes.XSharp___Array));
             return null;
         }
         internal static LiteralArray Bound(IList<Expr> values, TypeSymbol type = null)
@@ -373,16 +378,16 @@ namespace XSharp.MacroCompiler.Syntax
             foreach(var a in args) values.Add(a.Expr);
             return Bound(values, type);
         }
-        private void Convert(TypeSymbol t)
+        private void Convert(TypeSymbol et, TypeSymbol dt = null)
         {
             for (int i = 0; i < Values.Exprs.Count; i++)
             {
                 var v = Values.Exprs[i];
-                Binder.Convert(ref v, t);
+                Binder.Convert(ref v, et);
                 Values.Exprs[i] = v;
             }
-            Symbol = t;
-            Datatype = Binder.ArrayOf(t);
+            Symbol = et;
+            Datatype = dt ?? Binder.ArrayOf(et);
         }
     }
     internal partial class ArgList : Node

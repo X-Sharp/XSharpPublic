@@ -35,6 +35,7 @@ namespace XSharp.MacroCompiler
         IntPtr = 20,
         UIntPtr = 21,
         Usual = 22,
+        Array = 23,
     }
 
     public static class NativeTypeInfo
@@ -76,6 +77,7 @@ namespace XSharp.MacroCompiler
             "System.IntPtr",
             "System.UIntPtr",
             XSharpQualifiedTypeNames.Usual + "|" + VulcanQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Array + "|" + VulcanQualifiedTypeNames.Array,
         };
 
         static TypeSymbol[] NativeTypeSymbols;

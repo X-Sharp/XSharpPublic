@@ -45,7 +45,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := CC(1,,3) }")
+        EvalMacro(mc, e"{|a| a := {1,,2,,} }")
         wait
 
         RunTests(mc)
@@ -123,6 +123,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := CC(1,2) }", <OBJECT>{}, 3, typeof(usual))
         TestMacro(mc, e"{|a| a := CC(,1,2) }", <OBJECT>{}, 3, typeof(usual))
         TestMacro(mc, e"{|a| a := CC(1,,2) }", <OBJECT>{}, 3, typeof(usual))
+        TestMacro(mc, e"{|a| a := U({1,2,3}) }", <OBJECT>{}, {1,2,3}, typeof(usual))
+        TestMacro(mc, e"{|a| a := U({1,,2,,}) }", <OBJECT>{}, {1,NIL,2,NIL,NIL}, typeof(usual))
 //        TestMacro(mc, e"{|a| a := A(123) }", <OBJECT>{}, 3, typeof(usual)) // FAIL - A accepts byref arg
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
@@ -143,7 +145,16 @@ begin namespace MacroCompilerTest
         Console.Write("Test: '{0}' ", src)
         var cb := mc:Compile(src)
         var res := cb:EvalBlock(args)
-        if (res = expect) .and. ((t == null) || (t == res?:GetType()))
+        var match := res = expect
+        if IsArray(expect)
+            match := ALen(expect) = ALen((usual)res)
+            for var i := 1 to ALen(expect)
+                if expect[i] != ((usual)res)[i]
+                    match := false
+                end
+            next
+        end
+        if (match) .and. ((t == null) || (t == res?:GetType()))
             TotalSuccess += 1
             Console.WriteLine("[OK]")
             return true

@@ -229,8 +229,9 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class LiteralArray : Expr
     {
+        internal TypeExpr ElemType;
         internal ExprList Values;
-        internal LiteralArray(ExprList values) { Values = values; }
+        internal LiteralArray(ExprList values, TypeExpr elemType = null) { ElemType = elemType;  Values = values; }
         public override string ToString() { return "{" + Values.ToString() + "}"; }
     }
     internal partial class ArgList : Node

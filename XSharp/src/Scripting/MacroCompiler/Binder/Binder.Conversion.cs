@@ -57,6 +57,14 @@ namespace XSharp.MacroCompiler
             if (conversion != ConversionKind.NoConversion)
                 return ConversionSymbol.Create(conversion);
 
+            if (type.NativeType == NativeType.Object)
+            {
+                if (expr.Datatype.Type.IsValueType)
+                    return ConversionSymbol.Create(ConversionKind.Boxing);
+                else
+                    return ConversionSymbol.Create(ConversionKind.ImplicitReference);
+            }
+
             if (allowDynamic)
             {
                 var conv = ResolveDynamicConversion(expr, type);

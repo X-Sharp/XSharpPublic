@@ -349,6 +349,10 @@ namespace XSharp.MacroCompiler.Syntax
                 Values.Exprs[i].Emit(ilg);
                 ilg.Emit(OpCodes.Stelem, (Symbol as TypeSymbol).Type);
             }
+            if (Datatype.NativeType == NativeType.Array)
+            {
+                ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___Array_ctor) as ConstructorSymbol).Constructor);
+            }
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }

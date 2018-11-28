@@ -237,6 +237,22 @@ namespace XSharp.MacroCompiler
             return FindType(nt);
         }
 
+        internal static TypeSymbol PointerOf(TypeSymbol t)
+        {
+            if (t == null)
+                return null;
+            var nt = t.Type.MakePointerType();
+            return FindType(nt);
+        }
+
+        internal static TypeSymbol ByRefOf(TypeSymbol t)
+        {
+            if (t == null)
+                return null;
+            var nt = t.Type.MakeByRefType();
+            return FindType(nt);
+        }
+
         internal Symbol Lookup(Symbol decl, string name)
         {
             if (decl != null)
@@ -276,14 +292,9 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
-        internal static Symbol LookupFullName(string fullname)
+        internal static Symbol LookupFullName(string[] qnames)
         {
             Symbol n = Global;
-            if (fullname.StartsWith("global::"))
-            {
-                fullname = fullname.Substring(fullname.LastIndexOf(':') + 1);
-            }
-            var qnames = fullname.Split('.');
             if (qnames != null)
             {
                 foreach (var id in qnames)
@@ -295,6 +306,36 @@ namespace XSharp.MacroCompiler
                 return n;
             }
             return null;
+        }
+
+        internal static Symbol LookupFullName(string fullname)
+        {
+            if (fullname.StartsWith("global::"))
+            {
+                fullname = fullname.Substring(fullname.LastIndexOf(':') + 1);
+            }
+            var t = LookupFullName(fullname.TrimEnd(new char[] {'[',']','*','&'}).Split('.'));
+            while (true)
+            {
+                if (fullname.EndsWith("*"))
+                {
+                    fullname = fullname.Remove(fullname.Length - 1);
+                    t = PointerOf(t as TypeSymbol);
+                }
+                else if (fullname.EndsWith("&"))
+                {
+                    fullname = fullname.Remove(fullname.Length - 1);
+                    t = ByRefOf(t as TypeSymbol);
+                }
+                else if (fullname.EndsWith("[]"))
+                {
+                    fullname = fullname.Remove(fullname.Length - 2);
+                    t = ArrayOf(t as TypeSymbol);
+                }
+                else
+                    break;
+            }
+            return t;
         }
 
         internal LocalSymbol AddLocal(TypeSymbol type)

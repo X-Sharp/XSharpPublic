@@ -19,6 +19,7 @@ namespace XSharp.MacroCompiler
         System_String_op_Equality,
         System_String_op_Inequality,
         System_Object_Equals,
+        XSharp___Array_ctor,
     }
 
     public static partial class Compilation
@@ -32,6 +33,7 @@ namespace XSharp.MacroCompiler
             "System.String.op_Equality$(System.String,System.String)",
             "System.String.op_Inequality$(System.String,System.String)",
             "System.Object.Equals$(System.Object,System.Object)",
+            "XSharp.__Array.@ctor(XSharp.__Usual[])|Vulcan.__Array.@ctor(XSharp.__Usual[])",
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;
@@ -43,11 +45,11 @@ namespace XSharp.MacroCompiler
             foreach (var m in (WellKnownMembers[])Enum.GetValues(typeof(WellKnownMembers)))
             {
                 var names = MemberNames[(int)m];
-                Debug.Assert(m.ToString().StartsWith(names.Replace('.', '_').Replace("`", "_T").Replace("$","").Split('|','(').First()));
+                Debug.Assert(m.ToString().StartsWith(names.Replace('.', '_').Replace("`", "_T").Replace("$","").Replace("@", "").Split('|','(').First()));
                 foreach (var proto in names.Split('|'))
                 {
                     var name = proto.Replace("$", "").Split('(').First();
-                    var s = Binder.LookupFullName(name);
+                    var s = Binder.LookupFullName(name.Replace("global::","").Split('.').Select(n => n.Replace('@','.')).ToArray());
                     if (s == null)
                         continue;
                     if (s is SymbolList)
@@ -55,10 +57,10 @@ namespace XSharp.MacroCompiler
                         var isStatic = proto.Contains('$');
                         var args = proto.Replace(")", "").Split('(').Last().Split(',');
                         var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
-                        s = (s as SymbolList).Symbols.Find( x => (x as MethodSymbol)?.Method.GetParameters().Length == args.Length
-                            && (x as MethodSymbol)?.Method.IsStatic == isStatic
-                            && (x as MethodSymbol)?.Method.GetParameters().All( y => y.ParameterType == argTypes[y.Position].Type ) == true );
-                        Debug.Assert(s is MethodSymbol);
+                        s = (s as SymbolList).Symbols.Find( x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
+                            && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
+                            && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All( y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type ) == true );
+                        Debug.Assert(s is MethodBaseSymbol);
                     }
                     Debug.Assert(s is MemberSymbol);
                     memberSymbols[(int)m] = s as MemberSymbol;

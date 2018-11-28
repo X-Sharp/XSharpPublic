@@ -455,18 +455,24 @@ namespace XSharp.MacroCompiler
             return e;
         }
 
-        internal ExprList ParseExprList()
+        internal ExprList ParseExprList(bool allowEmpty = false)
         {
             IList<Expr> l = new List<Expr>();
 
             var e = ParseExpression();
+            bool empty = true;
             while (Expect(TokenType.COMMA))
             {
-                l.Add(e);
+                empty = false;
+                if (!allowEmpty) Require(e != null, "Expected expression");
+                l.Add(e ?? new EmptyExpr());
                 e = ParseExpression();
             }
-            if (e != null)
-                l.Add(e);
+            if (e != null || !empty)
+            {
+                if (!allowEmpty) Require(e != null, "Expected expression");
+                l.Add(e ?? new EmptyExpr());
+            }
 
             return new ExprList(l);
         }
@@ -542,11 +548,11 @@ namespace XSharp.MacroCompiler
         {
             Require(Expect(TokenType.LCURLY), "Expected '{'");
 
-            var e = ParseExprList();
+            var e = ParseExprList(true);
 
             Require(Expect(TokenType.RCURLY), "Expected '}'");
 
-            return new LiteralArray(e);
+            return new LiteralArray(e, t);
         }
 
         internal Expr ParseTypedLiteralArray()

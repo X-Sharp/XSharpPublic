@@ -22,9 +22,19 @@ namespace XSharp.MacroCompiler
 
         internal bool Unique { get { return Valid && ExtraValid == 0; } }
 
+        internal readonly int FixedArgs;
+        internal readonly int VarArgs;
+        internal readonly int MissingArgs;
         internal ConversionSymbol[] Conversions;
 
-        internal OverloadResult(MethodSymbol method, int nargs) { Method = method; Conversions = new ConversionSymbol[nargs]; }
+        internal OverloadResult(MethodSymbol method, int nFixedArgs, int nVarArgs, int nMissingArgs)
+        {
+            Method = method;
+            FixedArgs = nFixedArgs;
+            VarArgs = nVarArgs;
+            MissingArgs = nMissingArgs;
+            Conversions = new ConversionSymbol[nFixedArgs+ nVarArgs + nMissingArgs];
+        }
 
         internal void ArgConversion(int index, ConversionSymbol conv)
         {
@@ -33,7 +43,8 @@ namespace XSharp.MacroCompiler
             Valid &= conv.IsImplicit;
         }
 
-        internal static OverloadResult Create(MethodSymbol method, int nargs) { return new OverloadResult(method, nargs); }
+        internal static OverloadResult Create(MethodSymbol method, int nFixedArgs, int nVarArgs, int nMissingArgs)
+            { return new OverloadResult(method, nFixedArgs, nVarArgs, nMissingArgs); }
 
         internal OverloadResult Better(OverloadResult other)
         {

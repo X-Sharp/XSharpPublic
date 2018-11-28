@@ -145,51 +145,54 @@ namespace XSharp.MacroCompiler
                     if (a.IsDynamic)
                         continue;
                     var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
-                    foreach (var attr in a.CustomAttributes)
+                    if (a.CustomAttributes != null)
                     {
-                        if (attr.AttributeType == ina.Type)
+                        foreach (var attr in a.CustomAttributes)
                         {
-                            var args = attr.ConstructorArguments;
-                            if (args != null && args.Count == 1)
+                            if (attr.AttributeType == ina.Type)
                             {
-                                // first element is the default namespace
-                                var ns = args[0].Value.ToString();
-                                if (!string.IsNullOrEmpty(ns))
+                                var args = attr.ConstructorArguments;
+                                if (args != null && args.Count == 1)
                                 {
-                                    var s = LookupFullName(ns) as NamespaceSymbol;
-                                    if (s != null && !usedSymbols.Contains(s))
+                                    // first element is the default namespace
+                                    var ns = args[0].Value.ToString();
+                                    if (!string.IsNullOrEmpty(ns))
                                     {
-                                        usedSymbols.Add(s);
-                                        usings.Add(s);
+                                        var s = LookupFullName(ns) as NamespaceSymbol;
+                                        if (s != null && !usedSymbols.Contains(s))
+                                        {
+                                            usedSymbols.Add(s);
+                                            usings.Add(s);
+                                        }
                                     }
                                 }
                             }
-                        }
-                        else if (attr.AttributeType == cla.Type)
-                        {
-                            var args = attr.ConstructorArguments;
-                            if (args != null && args.Count == 2)
+                            else if (attr.AttributeType == cla.Type)
                             {
-                                // first element is the Functions class
-                                var cls = args[0].Value.ToString();
-                                if (!string.IsNullOrEmpty(cls))
+                                var args = attr.ConstructorArguments;
+                                if (args != null && args.Count == 2)
                                 {
-                                    var s = LookupFullName(cls) as TypeSymbol;
-                                    if (s != null && !usedSymbols.Contains(s))
+                                    // first element is the Functions class
+                                    var cls = args[0].Value.ToString();
+                                    if (!string.IsNullOrEmpty(cls))
                                     {
-                                        usedSymbols.Add(s);
-                                        usings.Add(s);
+                                        var s = LookupFullName(cls) as TypeSymbol;
+                                        if (s != null && !usedSymbols.Contains(s))
+                                        {
+                                            usedSymbols.Add(s);
+                                            usings.Add(s);
+                                        }
                                     }
-                                }
-                                // second element is the default namespace
-                                var ns = args[1].Value.ToString();
-                                if (!string.IsNullOrEmpty(ns))
-                                {
-                                    var s = LookupFullName(ns) as NamespaceSymbol;
-                                    if (s != null && !usedSymbols.Contains(s))
+                                    // second element is the default namespace
+                                    var ns = args[1].Value.ToString();
+                                    if (!string.IsNullOrEmpty(ns))
                                     {
-                                        usedSymbols.Add(s);
-                                        usings.Add(s);
+                                        var s = LookupFullName(ns) as NamespaceSymbol;
+                                        if (s != null && !usedSymbols.Contains(s))
+                                        {
+                                            usedSymbols.Add(s);
+                                            usings.Add(s);
+                                        }
                                     }
                                 }
                             }

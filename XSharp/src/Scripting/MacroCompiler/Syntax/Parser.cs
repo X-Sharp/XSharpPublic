@@ -578,6 +578,8 @@ namespace XSharp.MacroCompiler
         internal Arg ParseArg()
         {
             var e = ParseExpression();
+            if (e == null && La() != TokenType.COMMA)
+                return null;
             return new Arg(e ?? new EmptyExpr());
         }
 

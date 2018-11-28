@@ -162,19 +162,26 @@ namespace XSharp.MacroCompiler
         {
             if (!_foundAttributes)
             {
-                foreach(var attr in MethodBase.CustomAttributes)
+                if (MethodBase.CustomAttributes != null)
                 {
-                    if (attr.AttributeType == Compilation.Get(WellKnownTypes.ClipperCallingConventionAttribute).Type)
+                    foreach (var attr in MethodBase.CustomAttributes)
                     {
-                        _clipperAttr = attr;
-                        _clipperParams = (string[])_clipperAttr?.ConstructorArguments[0].Value;
+                        if (attr.AttributeType == Compilation.Get(WellKnownTypes.ClipperCallingConventionAttribute).Type)
+                        {
+                            _clipperAttr = attr;
+                            _clipperParams = (string[])_clipperAttr?.ConstructorArguments[0].Value;
+                        }
                     }
                 }
-                foreach(var attr in ((MethodBase)Member).GetParameters().Last()?.CustomAttributes)
+                var attrs = ((MethodBase)Member).GetParameters().LastOrDefault()?.CustomAttributes;
+                if (attrs != null)
                 {
-                    if (attr.AttributeType == typeof(System.ParamArrayAttribute))
+                    foreach (var attr in attrs)
                     {
-                        _hasParamArray = true;
+                        if (attr.AttributeType == typeof(System.ParamArrayAttribute))
+                        {
+                            _hasParamArray = true;
+                        }
                     }
                 }
                 _foundAttributes = true;

@@ -58,12 +58,38 @@ namespace XSharp.MacroCompiler
         {
             var method = m.Method;
             var parameters = method.GetParameters();
-            if (parameters.Length == args.Args.Count)
+            var nParams = parameters.Length;
+            var fixedArgs = args.Args.Count;
+            var varArgs = 0;
+            var missingArgs = 0;
+            bool hasExtraArgs = false;
+            if (nParams < fixedArgs)
             {
-                var ovr = OverloadResult.Create(m, args.Args.Count);
-                for (int p = 0; p < args.Args.Count; p++)
+                if (m.HasParamArray)
+                {
+                    varArgs = fixedArgs - nParams;
+                    fixedArgs = nParams;
+                }
+                else
+                    hasExtraArgs = true;
+            }
+            else if (nParams > fixedArgs)
+            {
+                missingArgs = nParams - fixedArgs;
+            }
+            if (!hasExtraArgs)
+            {
+                var ovr = OverloadResult.Create(m, fixedArgs, varArgs, missingArgs);
+                for (int p = 0; p < fixedArgs; p++)
                 {
                     ovr.ArgConversion(p, ArgumentConversion(args.Args[p], parameters[p]));
+                }
+                if (missingArgs > 0)
+                {
+                    for (int p = fixedArgs; p < fixedArgs+missingArgs; p++)
+                    {
+                        ovr.ArgConversion(p, ArgumentConversion(null, parameters[p]));
+                    }
                 }
                 ovRes = ovr.Better(ovRes);
             }
@@ -72,11 +98,19 @@ namespace XSharp.MacroCompiler
         static void ApplyConversions(ArgList args, OverloadResult ovRes)
         {
             var parameters = ovRes.Method.Method.GetParameters();
-            for (int i = 0; i < args.Args.Count; i++)
+            for (int i = 0; i < ovRes.FixedArgs; i++)
             {
                 var conv = ovRes.Conversions[i];
                 if (conv.Kind != ConversionKind.Identity)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
+            }
+            if (ovRes.MissingArgs > 0)
+            {
+                for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.MissingArgs; i++)
+                {
+                    var conv = ovRes.Conversions[i];
+                    args.Args.Add(new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant)));
+                }
             }
         }
     }

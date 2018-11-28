@@ -14,7 +14,7 @@ namespace XSharp.MacroCompiler
     {
         internal static ConversionSymbol ArgumentConversion(Arg arg, ParameterInfo param)
         {
-            if (arg.Expr is EmptyExpr)
+            if (arg == null || arg.Expr is EmptyExpr)
             {
                 var type = FindType(param.ParameterType);
                 if (param.HasDefaultValue && type.NativeType != NativeType.Unknown)

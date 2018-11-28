@@ -12,6 +12,9 @@ function R(r as real8) as real8
 function I(i as int) as int
     return i
 
+function I0() as int
+    return 123;
+
 function I3(a := 1 as int, b := 2 as int, c := 3 as int)
     return a+b+c
 
@@ -30,7 +33,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := I3(4,4,) }")
+        EvalMacro(mc, e"{|a| a := I0() }")
         wait
 
         RunTests(mc)
@@ -93,10 +96,15 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| UU := U(1234+1), UU }", <OBJECT>{8}, 1234+1, typeof(usual))
         TestMacro(mc, e"{|a| a := \"abcdef\", a:ToUpperInvariant() }", <OBJECT>{8}, "ABCDEF", typeof(usual))
         TestMacro(mc, e"{|a| a := NIL }", <OBJECT>{8}, NIL, typeof(usual))
-        TestMacro(mc, e"{|a| a := I3(4,4,4) }", <OBJECT>{}, 12, typeof(usual))
+        TestMacro(mc, e"{|| I3(4,4,4) }", <OBJECT>{}, 12, typeof(usual))
         TestMacro(mc, e"{|a| a := I3(4,4,) }", <OBJECT>{}, 11, typeof(usual))
         TestMacro(mc, e"{|a| a := I3(4,,4) }", <OBJECT>{}, 10, typeof(usual))
         TestMacro(mc, e"{|a| a := I3(,4,4) }", <OBJECT>{}, 9, typeof(usual))
+        TestMacro(mc, e"{|a| a := I3(,,) }", <OBJECT>{}, 6, typeof(usual))
+        TestMacro(mc, e"{|a| a := I3(4,4) }", <OBJECT>{}, 11, typeof(usual))
+        TestMacro(mc, e"{|a| a := I3(4) }", <OBJECT>{}, 9, typeof(usual))
+        TestMacro(mc, e"{|a| a := I3() }", <OBJECT>{}, 6, typeof(usual))
+        TestMacro(mc, e"{|a| a := I0() }", <OBJECT>{}, 123, typeof(int))
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // Fails because String:ToString() is overloaded!
 //        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL

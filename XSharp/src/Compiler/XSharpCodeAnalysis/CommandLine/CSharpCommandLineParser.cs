@@ -439,7 +439,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Ok;
                     isVo = true;
                 }
-                else if (options.XSharpVOIncluded || options.XSharpXPPIncluded) {
+                else if (options.XSharpRTIncluded  && options.XSharpCoreIncluded ) {
                     // Ok;
                     isVo = true;
                 }
@@ -448,7 +448,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     isVo = true;
                 }
                 else {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(), "VulcanRT.DLL and VulcanRTFuncs.DLL or XSharp.VO.DLL");
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
+                        "VulcanRT.DLL and VulcanRTFuncs.DLL or XSharp.Core.DLL and XSharp.RT.DLL");
                     newDialect = XSharpDialect.Core;
                 }
             }

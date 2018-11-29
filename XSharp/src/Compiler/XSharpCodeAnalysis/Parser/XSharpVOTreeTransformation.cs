@@ -651,6 +651,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateNIL()
         {
+            if (_options.NoClipCall)
+                return MakeDefault(_usualType);
             if (_options.XSharpRuntime)
                 return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
             else
@@ -1612,7 +1614,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(stmts);
 
         }
-
         public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
         {
             // The recover block has source code:
@@ -2135,29 +2136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // are no Attributes on the parameter, such as [CallerMember]
             if (context.Default != null && context.Attributes == null && ! _options.NoClipCall)
             {
-                /*
-                // only encode when there are parameters in this list after the current one
-                // that have no default. Otherwise we let Roslyn take care of it.
-                var ParamList = context.Parent as XP.ParameterListContext;
-                var needed = false;
-                var found = false;
-                foreach (var param in ParamList._Params)
-                {
-                    if (param == context)
-                    {
-                        found = true;
-                    }
-                    else if (found && param.Default == null)
-                    {
-                        needed = true;
-                    }
-                }
-                if (!needed)
-                {
-                    // Roslyn can handle it.
-                    return;
-                }
-                }*/
+             
                 AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)
                 {
@@ -2740,12 +2719,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (parameters.Parameters.Count > 0)
             {
                 // generate default parameter attribute to make sure that calling code will compile
-                //var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
+                var attr = MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));
                 var attrs = _pool.AllocateSeparated<AttributeSyntax>();
-                //attrs.Add(attr);
-                var defExpr = _syntaxFactory.EqualsValueClause(
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    MakeDefault(_usualType));
+                attrs.Add(attr);
+                //var defExpr = _syntaxFactory.EqualsValueClause(
+                //    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                //    MakeDefault(_usualType));
+
                 var attrlist = MakeList(MakeAttributeList(null, attrs));
                 var @params = _pool.AllocateSeparated<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
@@ -2755,8 +2735,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                           attributeLists: attrlist,
                           modifiers: null,
                           type: _usualType,
-                          identifier: parm.Identifier,
-                          @default: defExpr);
+                          identifier: parm.Identifier, @default: null);
+                          //@default: defExpr);
                     if (i > 0)
                         @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                     @params.Add(par);
@@ -2779,6 +2759,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
                 return;
             }
+            if (_options.NoClipCall && body != null && ! (context is XP.PropertyAccessorContext))
+            {
+                // Bring body back to a simple return call. We are not interested in the 'real thing'
+                var stmts = new List<StatementSyntax>();
+                if (parameters != null )
+                {
+                    for (int i = 0; i < parameters.Parameters.Count; i++)
+                    {
+                        var param = parameters.Parameters[i];
+                        if (param.Modifiers.Any((int)SyntaxKind.OutKeyword))
+                        {
+                            var assign = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                GenerateSimpleName(param.identifier.Text), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), MakeDefault(param.Type));
+                            stmts.Add(GenerateExpressionStatement(assign));
+                        }
+                    }
+                }
+
+
+                if (context.Data.MustBeVoid || dataType is null || isVoidType(dataType))
+                {
+                    stmts.Add(GenerateReturn(null));
+                }
+                else
+                {
+                    stmts.Add(GenerateReturn(MakeDefault(dataType)));
+                }
+                body = MakeBlock(stmts);
+                context.Data.UsesPSZ = false;
+            }
             if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ)
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
@@ -2794,7 +2804,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Assuming the parameters are called oPar1 and oPar2 then the following code is generated
                     // LOCAL oPar1 := iif(Xs$Args:Length > 0,  Xs$Args[0], NIL) as USUAL
                     // LOCAL oPar2 := iif(Xs$Args:Length > 1,  Xs$Args[1], NIL) as USUAL
-                    if (body != null)
+                    if (body != null && !_options.NoClipCall)
                     {
                         // Create the ClipperCallingConventionAttribute for the method/function
                         // using the names from the paramNames list

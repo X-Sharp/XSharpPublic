@@ -107,7 +107,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 
         [FlagsAttribute]
-        enum EntityFlags : short
+        enum EntityFlags : int
         {
             None = 0,
             ClipperCallingConvention = 1 << 0, // Member property
@@ -126,6 +126,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasDimVar = 1 << 12,        // Member property
             HasSync = 1 << 13,          // Member property
 			HasAddressOf = 1 << 14,     // Member property
+            IsInitProcedure = 1 << 15   // Member property
 
         }
 
@@ -227,6 +228,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.HasStatic); }
                 set { flags = setFlag(flags, EntityFlags.HasStatic, value); }
+            }
+
+            public bool IsInitProcedure
+            {
+                get { return flags.HasFlag(EntityFlags.IsInitProcedure); }
+                set { flags = setFlag(flags, EntityFlags.IsInitProcedure, value); }
             }
             private List<MemVarFieldInfo> Fields;
             public void AddField(string Name, string Alias, bool Field)

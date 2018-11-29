@@ -4962,6 +4962,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 break;
                         }
                         GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
+                        context.Data.IsInitProcedure = true;
+                        context.Data.HasClipperCallingConvention = false;
                     }
                 }
             }

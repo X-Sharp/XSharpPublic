@@ -71,7 +71,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := testclassdc{} }")
+        EvalMacro(mc, e"{|a| a := int{} }")
         wait
 
         RunTests(mc)
@@ -158,6 +158,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"testclass{}", <OBJECT>{}, testclass{}, typeof(testclass))
         TestMacro(mc, e"testclass{23}", <OBJECT>{}, testclass{23}, typeof(testclass))
         TestMacro(mc, e"testclassdc{}", <OBJECT>{}, testclassdc{}, typeof(testclassdc))
+        TestMacro(mc, e"int{}", <OBJECT>{}, 0, typeof(int))
 //        TestMacro(mc, e"{|a| a := A(123) }", <OBJECT>{}, 3, typeof(usual)) // FAIL - A accepts byref arg
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!

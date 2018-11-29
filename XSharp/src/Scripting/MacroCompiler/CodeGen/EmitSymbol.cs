@@ -32,9 +32,9 @@ namespace XSharp.MacroCompiler
     }
     internal partial class LocalSymbol : TypedSymbol
     {
-        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldloc, Index); }
-        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Stloc, Index); }
-        internal override void EmitGetAddr(ILGenerator ilg) { ilg.Emit(OpCodes.Ldloca, Index); }
+        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, Index); }
+        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Stloc_S : OpCodes.Stloc, Index); }
+        internal override void EmitGetAddr(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, Index); }
         internal void Declare(ILGenerator ilg)
         {
             var lb = ilg.DeclareLocal(Type.Type);

@@ -307,13 +307,13 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (Local != null)
+            if (Datatype.Type.IsValueType && Args.Args.Count == 0)
             {
-                Local.Declare(ilg);
-                Local.EmitGetAddr(ilg);
+                var l = ilg.DeclareLocal(Datatype.Type);
+                ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, l);
                 ilg.Emit(OpCodes.Initobj, Datatype.Type);
                 if (preserve)
-                    Local.EmitGet(ilg);
+                    ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, l);
             }
             else
             {

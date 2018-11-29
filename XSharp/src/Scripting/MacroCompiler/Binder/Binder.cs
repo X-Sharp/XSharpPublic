@@ -294,7 +294,11 @@ namespace XSharp.MacroCompiler
 
         internal static Symbol ResolveSuffix(string fullname, Symbol type)
         {
-            if (fullname?.EndsWith("*") == true)
+            if (fullname?.EndsWith("[]") == true)
+            {
+                return ArrayOf(ResolveSuffix(fullname.Remove(fullname.Length - 2), type as TypeSymbol) as TypeSymbol);
+            }
+            else if (fullname?.EndsWith("*") == true)
             {
                 return PointerOf(ResolveSuffix(fullname.Remove(fullname.Length - 1), type as TypeSymbol) as TypeSymbol);
             }
@@ -302,9 +306,9 @@ namespace XSharp.MacroCompiler
             {
                 return ByRefOf(ResolveSuffix(fullname.Remove(fullname.Length - 1), type as TypeSymbol) as TypeSymbol);
             }
-            else if (fullname?.EndsWith("[]") == true)
+            else if (fullname?.EndsWith("?") == true)
             {
-                return ArrayOf(ResolveSuffix(fullname.Remove(fullname.Length - 2), type as TypeSymbol) as TypeSymbol);
+                return NullableType(ResolveSuffix(fullname.Remove(fullname.Length - 1), type as TypeSymbol) as TypeSymbol);
             }
             else
                 return type;

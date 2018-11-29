@@ -125,6 +125,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := CC(1,,2) }", <OBJECT>{}, 3, typeof(usual))
         TestMacro(mc, e"{|a| a := U({1,2,3}) }", <OBJECT>{}, {1,2,3}, typeof(usual))
         TestMacro(mc, e"{|a| a := U({1,,2,,}) }", <OBJECT>{}, {1,NIL,2,NIL,NIL}, typeof(usual))
+        TestMacro(mc, e"{|a| a := <INT>{1,2,3} }", <OBJECT>{}, <INT>{1,2,3}, typeof(int[]))
 //        TestMacro(mc, e"{|a| a := A(123) }", <OBJECT>{}, 3, typeof(usual)) // FAIL - A accepts byref arg
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
@@ -150,6 +151,17 @@ begin namespace MacroCompilerTest
             match := ALen(expect) = ALen((usual)res)
             for var i := 1 to ALen(expect)
                 if expect[i] != ((usual)res)[i]
+                    match := false
+                end
+            next
+        elseif t != null .and. t:IsArray
+            local e := expect as object
+            match := e:Length = res:Length .and. t == res?:GetType()
+            local m := t:GetMethod("GetValue",<Type>{typeof(int)}) as System.Reflection.MethodInfo
+            for var i := 1 to e:Length
+                var ve := m:Invoke(e,<object>{i-1})
+                var vr := m:Invoke(res,<object>{i-1})
+                if !Object.Equals(ve,vr)
                     match := false
                 end
             next

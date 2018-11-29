@@ -292,6 +292,24 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
+        internal static Symbol ResolveSuffix(string fullname, Symbol type)
+        {
+            if (fullname?.EndsWith("*") == true)
+            {
+                return PointerOf(ResolveSuffix(fullname.Remove(fullname.Length - 1), type as TypeSymbol) as TypeSymbol);
+            }
+            else if (fullname?.EndsWith("&") == true)
+            {
+                return ByRefOf(ResolveSuffix(fullname.Remove(fullname.Length - 1), type as TypeSymbol) as TypeSymbol);
+            }
+            else if (fullname?.EndsWith("[]") == true)
+            {
+                return ArrayOf(ResolveSuffix(fullname.Remove(fullname.Length - 2), type as TypeSymbol) as TypeSymbol);
+            }
+            else
+                return type;
+        }
+
         internal static Symbol LookupFullName(string[] qnames)
         {
             Symbol n = Global;
@@ -303,7 +321,7 @@ namespace XSharp.MacroCompiler
                     if (n == null)
                         break;
                 }
-                return n;
+                return ResolveSuffix(qnames.LastOrDefault(), n);
             }
             return null;
         }
@@ -315,27 +333,7 @@ namespace XSharp.MacroCompiler
                 fullname = fullname.Substring(fullname.LastIndexOf(':') + 1);
             }
             var t = LookupFullName(fullname.TrimEnd(new char[] {'[',']','*','&'}).Split('.'));
-            while (true)
-            {
-                if (fullname.EndsWith("*"))
-                {
-                    fullname = fullname.Remove(fullname.Length - 1);
-                    t = PointerOf(t as TypeSymbol);
-                }
-                else if (fullname.EndsWith("&"))
-                {
-                    fullname = fullname.Remove(fullname.Length - 1);
-                    t = ByRefOf(t as TypeSymbol);
-                }
-                else if (fullname.EndsWith("[]"))
-                {
-                    fullname = fullname.Remove(fullname.Length - 2);
-                    t = ArrayOf(t as TypeSymbol);
-                }
-                else
-                    break;
-            }
-            return t;
+            return ResolveSuffix(fullname,t);
         }
 
         internal LocalSymbol AddLocal(TypeSymbol type)

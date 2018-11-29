@@ -9,50 +9,14 @@
         <para>Encapsulate a Win32 console application.</para>
       </summary>
     </member>
-    <member name="T:VO.ConsoleCoord">
-      <summary>
-        <para>A helper class encapsulating a console window's coordinates.</para>
-      </summary>
-    </member>
-    <member name="M:VO.Console.#ctor(XSharp.__Usual[])">
+    <member name="M:VO.Console.#ctor(XSharp.__Usual)">
       <summary>
         <para>Instantiate a new Console object.</para>
       </summary>
     </member>
-    <member name="M:VO.Console.Clear(XSharp.__Usual[])">
+    <member name="M:VO.Console.Clear">
       <summary>
         <para>Clear the console window.</para>
-      </summary>
-    </member>
-    <member name="M:VO.Console.Destroy(XSharp.__Usual[])">
-      <summary>
-        <para>Provide a method to de-instantiate a console object.</para>
-      </summary>
-    </member>
-    <member name="M:VO.Console.Read(XSharp.__Usual[])">
-      <summary>
-        <para>Use this to read the console input buffer.</para>
-      </summary>
-      <returns>
-        <para>A string containing the input characters.</para>
-      </returns>
-    </member>
-    <member name="M:VO.Console.Wait(XSharp.__Usual[])">
-      <summary>
-        <para>Waits for a key press or mouse click on the console window.</para>
-      </summary>
-      <returns>
-        <para>A character representation of the key pressed or mouse button clicked. In general this return value should not be used.</para>
-      </returns>
-    </member>
-    <member name="M:VO.Console.Write(XSharp.__Usual[])">
-      <summary>
-        <para>Write a string to the console window.</para>
-      </summary>
-    </member>
-    <member name="M:VO.Console.WriteLine(XSharp.__Usual[])">
-      <summary>
-        <para>Write a string to the console window and start a new line.</para>
       </summary>
     </member>
     <member name="P:VO.Console.CursorPos">
@@ -69,6 +33,20 @@
       <summary>
         <para>A logic controlling the cursor's visibility.</para>
       </summary>
+    </member>
+
+    <member name="M:VO.Console.Destroy">
+      <summary>
+        <para>Provide a method to de-instantiate a console object.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.Read">
+      <summary>
+        <para>Use this to read the console input buffer.</para>
+      </summary>
+      <returns>
+        <para>A string containing the input characters.</para>
+      </returns>
     </member>
     <member name="P:VO.Console.Size">
       <summary>
@@ -122,10 +100,38 @@
         <para>A string specifying the console application's caption.</para>
       </summary>
     </member>
-    <member name="M:VO.ConsoleCoord.#ctor(XSharp.__Usual[])">
+    <member name="M:VO.Console.Wait">
+      <summary>
+        <para>Waits for a key press or mouse click on the console window.</para>
+      </summary>
+      <returns>
+        <para>A character representation of the key pressed or mouse button clicked. In general this return value should not be used.</para>
+      </returns>
+    </member>
+    <member name="M:VO.Console.Write(XSharp.__Usual)">
+      <summary>
+        <para>Write a string to the console window.</para>
+      </summary>
+    </member>
+    <member name="M:VO.Console.WriteError(XSharp.__Usual)">
+    </member>
+
+    <member name="M:VO.Console.WriteLine(XSharp.__Usual)">
+      <summary>
+        <para>Write a string to the console window and start a new line.</para>
+      </summary>
+    </member>
+    <member name="T:VO.ConsoleCoord">
+      <summary>
+        <para>A helper class encapsulating a console window's coordinates.</para>
+      </summary>
+    </member>
+    <member name="M:VO.ConsoleCoord.#ctor(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Instantiate a ConsoleCoord object.</para>
       </summary>
-    </member>    
+    </member>
+    <member name="F:VO.ConsoleCoord.X"></member>
+    <member name="F:VO.ConsoleCoord.Y"></member>
   </members>
 </doc>

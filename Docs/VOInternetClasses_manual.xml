@@ -9,201 +9,25 @@
         <para>Provide a class to store and decode all data for an e-mail.</para>
       </summary>
     </member>
-    <member name="T:VO.CFtp">
-      <summary>
-        <para>Wrapper class for high-level File Transfer Protocol (FTP) functions provided by Microsoft in Wininet.dll.</para>
-      </summary>
-    </member>
-    <member name="T:VO.CHttp">
-      <summary>
-        <para>Wrapper class for an Http (Hypertext transfer protocol) session.</para>
-      </summary>
-    </member>
-    <member name="T:VO.CINetDial">
-      <summary>
-        <para>Class for establishing dial up connections</para>
-      </summary>
-    </member>
-    <member name="T:VO.CMailAbstract">
-      <summary>
-        <para>Base class for CPop, CSmtp and CNNTP classes.</para>
-      </summary>
-      <remarks>
-        <para>
-          <b>
-            <i>Important!</i>
-          </b>
-          <i>CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.</i>
-        </para>
-      </remarks>
-    </member>
-    <member name="T:VO.CNNTP">
-      <summary>
-        <para>Create an Internet News Server based on NNTP (Network News Transport Protocol).</para>
-      </summary>
-    </member>
-    <member name="T:VO.CPop">
-      <summary>
-        <para>Provide a class for Internet Post Office Protocol (POP).</para>
-      </summary>
-    </member>
-    <member name="T:VO.CSession">
-      <summary>
-        <para>Abstract class for wrapping an Internet session.</para>
-      </summary>
-    </member>
-    <member name="T:VO.CSmtp">
-      <summary>
-        <para>Provide a class for Internet Protocol SMTP.</para>
-      </summary>
-    </member>
-    <member name="T:VO.CSocket">
-      <summary>
-        <para>Provide a class for low-level TCP/IP programming.</para>
-      </summary>
-    </member>
-    <member name="T:VO.CStorage">
-      <summary>
-        <para>Provide an interface to handle large Email Messages and attachments</para>
-      </summary>
-      <remarks>
-        <para>This class is used Exclusively by the CEMail Class to read and write attachments.</para>
-        <para>The class reads/writes attachments in a disk folder.</para>
-        <para>
-          If you want to store attachments on another location (for example a SQL Database) then you should subclass this class and override the implementation of the
-          methods.
-        </para>
-        <para>CStorage also gives you an interface to store the raw data of received emails. During reception of an email the following three methods are called:</para>
-        <para>RawNew()</para>
-        <para>RawWrite()</para>
-        <para>RawClose()</para>
-        <para>You can use these methods to implement your own mechanism to save the raw email contents.</para>
-      </remarks>
-    </member>
-    <member name="M:VO.CEmail.#ctor(XSharp.__Usual[])">
+    <member name="M:VO.CEmail.#ctor(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CEmail object.</para>
       </summary>
     </member>
-    <member name="M:VO.CEmail.AddAttachment(XSharp.__Usual[])">
+    <member name="M:VO.CEmail.AddAttachment(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Adds an attachment to the email.</para>
       </summary>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
-    </member>
-    <member name="M:VO.CEmail.CloneAttachments">
-      <summary>
-        <para>Clones the internal Attachment array.</para>
-      </summary>
-      <returns>
-        <para>Nothing</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.CreateHtml(System.String)">
-      <summary>
-        <para>Creates a HTML body based on the text body of the email message.</para>
-      </summary>
-      <returns>
-        <para>cHTML</para>
-        <para>a HTML copy of cText.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.CreateReplyBody(System.Boolean)">
-      <summary>
-        <para>Prepares a default text response.</para>
-      </summary>
-    </member>
-    <member name="M:VO.CEmail.Decode(XSharp.__Usual[])">
-      <summary>
-        <para>Extract all information from the various parts of an e-mail.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.DeleteAttachment(System.UInt32)">
-      <summary>
-        <para>Adds an attachment to the email.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.GetAttachmentInfo(System.UInt32,System.UInt32)">
-      <summary>
-        <para>Method to decode all header elements of an email</para>
-      </summary>
-    </member>
-    <member name="M:VO.CEmail.GetHeaderInfo(XSharp.__Usual[])">
-      <summary>
-        <para>Method to decode all header elements of an email</para>
-      </summary>
-    </member>
-    <member name="M:VO.CEmail.MimeEncode(XSharp.__Usual[])">
-      <summary>
-        <para>Method to encode a string using a specific encoding or the default encoding of an email</para>
-      </summary>
-      <returns>
-        <para>The encoded string.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.MimeHeader(XSharp.__Usual[])">
-      <summary>
-        <para>Method to encode an MIME Attachment header</para>
-      </summary>
-      <returns>
-        <para>The encoded string.</para>
-      </returns>
-      <remarks>
-        <para>
-          <b>Description</b>
-        </para>
-        <para>The MimeHeader() method is called by the CEMail:StreamOut() method during the streaming of the message.</para>
-      </remarks>
-    </member>
-    <member name="M:VO.CEmail.SaveAs(XSharp.__Usual[])">
-      <summary>
-        <para>Decode and save the specified encoded attachment of an e-mail as a local file.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.SetAttachmentInfo(System.UInt32,System.UInt32,XSharp.__Usual)">
-      <summary>
-        <para>This method allows you to replace elements of the internal attachment array of the email object.</para>
-      </summary>
-      <returns>
-        <para>The old value for the attachment array element</para>
-      </returns>
-    </member>
-    <member name="M:VO.CEmail.SetHeaderInfo(XSharp.__Usual[])">
-      <summary>
-        <para>Method to encode all header elements of an email</para>
-      </summary>
-    </member>
-    <member name="M:VO.CEmail.StreamIn(System.String)">
-      <summary>
-        <para>This method gets called when an email messages is received. It calls into the Storage object to decode and store attachments.</para>
-      </summary>
-    </member>
-    <member name="M:VO.CEmail.StreamOut">
-      <summary>
-        <para>Generate message contents</para>
-      </summary>
-    </member>
-    <member name="M:VO.CEmail.StreamStart(XSharp.__Usual[])">
-      <summary>
-        <para>Initialize the Stream Status of an email message.</para>
-      </summary>
     </member>
     <member name="P:VO.CEmail.AttachmentFileList">
       <summary>
         <para>Array containing the names of the attached files.</para>
       </summary>
     </member>
+
     <member name="P:VO.CEmail.AttachmentInfo">
       <summary>
         <para>Returns or sets the information about all attachments as a single string.</para>
@@ -228,15 +52,84 @@
         <para>Array of strings containing the e-mails of all carbon copy (CC) recipients.</para>
       </summary>
     </member>
+    <member name="M:VO.CEmail.CloneAttachments">
+      <summary>
+        <para>Clones the internal Attachment array.</para>
+      </summary>
+      <returns>
+        <para>Nothing</para>
+      </returns>
+    </member>
+    <member name="M:VO.CEmail.CreateHtml(System.String)">
+      <summary>
+        <para>Creates a HTML body based on the text body of the email message.</para>
+      </summary>
+      <returns>
+        <para>cHTML</para>
+        <para>a HTML copy of cText.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CEmail.CreateReplyBody(System.Boolean)">
+      <summary>
+        <para>Prepares a default text response.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CEmail.Decode(XSharp.__Usual)">
+      <summary>
+        <para>Extract all information from the various parts of an e-mail.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CEmail.DeleteAttachment(System.UInt32)">
+      <summary>
+        <para>Adds an attachment to the email.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
     <member name="P:VO.CEmail.DestList">
       <summary>
         <para>Array of strings containing the e-mail addresses of all recipients.</para>
       </summary>
     </member>
+    <member name="P:VO.CEmail.DispositionNotification"></member>
+    <member name="M:VO.CEmail.GetAttachmentInfo(System.UInt32,System.UInt32)">
+      <summary>
+        <para>Method to decode all header elements of an email</para>
+      </summary>
+    </member>
+    <member name="M:VO.CEmail.GetHeaderInfo"></member>
+    <member name="P:VO.CEmail.HTMLText"></member>
     <member name="P:VO.CEmail.MailPriority">
       <summary>
         <para>Numeric value representing the e-mail priority.</para>
       </summary>
+    </member>
+
+    <member name="M:VO.CEmail.MimeEncode(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Method to encode a string using a specific encoding or the default encoding of an email</para>
+      </summary>
+      <returns>
+        <para>The encoded string.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CEmail.MimeHeader(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Method to encode an MIME Attachment header</para>
+      </summary>
+      <returns>
+        <para>The encoded string.</para>
+      </returns>
+      <remarks>
+        <para>
+          <b>Description</b>
+        </para>
+        <para>The MimeHeader() method is called by the CEMail:StreamOut() method during the streaming of the message.</para>
+      </remarks>
     </member>
     <member name="P:VO.CEmail.ReturnReceipt">
       <summary>
@@ -246,12 +139,59 @@
         Some email clients may use this to contain a return receipt and others may use Disposition Notification instead
       </remarks>
     </member>
-    <member name="M:VO.CFtp.#ctor(XSharp.__Usual[])">
+
+    <member name="M:VO.CEmail.SaveAs(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Decode and save the specified encoded attachment of an e-mail as a local file.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CEmail.SetAttachmentInfo(System.UInt32,System.UInt32,XSharp.__Usual)">
+      <summary>
+        <para>This method allows you to replace elements of the internal attachment array of the email object.</para>
+      </summary>
+      <returns>
+        <para>The old value for the attachment array element</para>
+      </returns>
+    </member>
+    <member name="M:VO.CEmail.SetHeaderInfo">
+      <summary>
+        <para>Method to encode all header elements of an email</para>
+      </summary>
+    </member>
+    <member name="P:VO.CEmail.Size"></member>
+    <member name="M:VO.CEmail.StreamIn(System.String)">
+      <summary>
+        <para>This method gets called when an email messages is received. It calls into the Storage object to decode and store attachments.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CEmail.StreamOut">
+      <summary>
+        <para>Generate message contents</para>
+      </summary>
+    </member>
+    <member name="M:VO.CEmail.StreamStart">
+      <summary>
+        <para>Initialize the Stream Status of an email message.</para>
+      </summary>
+    </member>
+    <member name="T:VO.CFtp">
+      <summary>
+        <para>Wrapper class for high-level File Transfer Protocol (FTP) functions provided by Microsoft in Wininet.dll.</para>
+      </summary>
+    </member>
+
+    <member name="M:VO.CFtp.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CFtp object instance.</para>
       </summary>
     </member>
-    <member name="M:VO.CFtp.ConnectRemote(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.Append(XSharp.__Usual,XSharp.__Usual)">
+    </member>
+
+    <member name="M:VO.CFtp.ConnectRemote(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual))">
       <summary>
         <para>Connect an application to a remote FTP server.</para>
       </summary>
@@ -259,7 +199,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.CreateDir(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.CreateDir(XSharp.__Usual)">
       <summary>
         <para>Create a new directory on the FTP server.</para>
       </summary>
@@ -267,7 +207,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.DeleteFile(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.DeleteFile(XSharp.__Usual)">
       <summary>
         <para>Delete a file stored on the FTP server.</para>
       </summary>
@@ -275,7 +215,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.Directory(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.Directory(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Create an array of directory and file information about the remote FTP server.</para>
       </summary>
@@ -286,7 +226,7 @@
         </para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.GetCurDir(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.GetCurDir">
       <summary>
         <para>Get the name of the current directory on the remote FTP server for the current process.</para>
       </summary>
@@ -294,7 +234,7 @@
         <para>Name of the current directory, if successful; otherwise, NULL_STRING.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.GetFile(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.GetFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Receive a file from the FTP server.</para>
       </summary>
@@ -302,7 +242,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.InternetStatus(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>
           Method InternetStatus() is a callback placeholder to receive current status information for an FTP session. It should be overloaded by subclasses to
@@ -310,7 +250,7 @@
         </para>
       </summary>
     </member>
-    <member name="M:VO.CFtp.Open(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.Open(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Initialize an application's use of the Win32 Internet functions.</para>
       </summary>
@@ -318,7 +258,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.OpenFile(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.OpenFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Open a remote file for writing or reading.</para>
       </summary>
@@ -326,7 +266,13 @@
         <para>File handle, if successful; otherwise, NULL_PTR.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.PutFile(XSharp.__Usual[])">
+    <member name="P:VO.CFtp.Proxy">
+      <summary>
+        <para>A string containing the name of the proxy server (or servers) to use for Internet connections.</para>
+      </summary>
+    </member>
+
+    <member name="M:VO.CFtp.PutFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Store a file on the FTP server.</para>
       </summary>
@@ -334,7 +280,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.RemoveDir(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.RemoveDir(XSharp.__Usual)">
       <summary>
         <para>Delete a directory from the remote FTP server.</para>
       </summary>
@@ -342,7 +288,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.RenameFile(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.RenameFile(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Rename a file stored on the FTP server.</para>
       </summary>
@@ -350,7 +296,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CFtp.SetCurDir(XSharp.__Usual[])">
+    <member name="M:VO.CFtp.SetCurDir(XSharp.__Usual)">
       <summary>
         <para>Change the current directory on the remote FTP server for the current process.</para>
       </summary>
@@ -358,17 +304,18 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CFtp.Proxy">
+    <member name="T:VO.CHttp">
       <summary>
-        <para>A string containing the name of the proxy server (or servers) to use for Internet connections.</para>
+        <para>Wrapper class for an Http (Hypertext transfer protocol) session.</para>
       </summary>
     </member>
-    <member name="M:VO.CHttp.#ctor(XSharp.__Usual[])">
+
+    <member name="M:VO.CHttp.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
-        <para>Instantiates a new Http wrapper object.</para>
+        <para>Instantiates a Http wrapper object.</para>
       </summary>
     </member>
-    <member name="M:VO.CHttp.AddRequestHeaders(XSharp.__Usual[])">
+    <member name="M:VO.CHttp.AddRequestHeaders(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Adds additional headers to the current request.</para>
       </summary>
@@ -376,7 +323,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CHttp.CloseRemote(XSharp.__Usual[])">
+    <member name="M:VO.CHttp.CloseRemote">
       <summary>
         <para>Closes the http connection.</para>
       </summary>
@@ -384,7 +331,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CHttp.CloseRequest(XSharp.__Usual[])">
+    <member name="M:VO.CHttp.CloseRequest">
       <summary>
         <para>Closes an http request.</para>
       </summary>
@@ -392,7 +339,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CHttp.ConnectRemote(XSharp.__Usual[])">
+    <member name="M:VO.CHttp.ConnectRemote(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Opens the http connection.</para>
       </summary>
@@ -400,94 +347,12 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CHttp.Directory(XSharp.__Usual[])">
+    <member name="M:VO.CHttp.Directory">
       <summary>
         <para>If an ftp server is accessed via http, this method returns an array of the files of the current directory.</para>
       </summary>
       <returns>
         <para>An array of the files in the current directory on the ftp server.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.GetCurDir(XSharp.__Usual[])">
-      <summary>
-        <para>Gets the name of the current directory on the remote server.</para>
-      </summary>
-      <returns>
-        <para>The directory name as a string.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.GetDocumentByURL(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves a document from the server.</para>
-      </summary>
-      <returns>
-        <para>The document as a string.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.GetFile(XSharp.__Usual[])">
-      <summary>
-        <para>
-          Retrieves the remote file <i>cRemoteFile</i> to the (local) file <i>cNewFile</i>.
-        </para>
-      </summary>
-      <returns>
-        <para>TRUE if the file is saved, otherwise FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.GetResponse(XSharp.__Usual[])">
-      <summary>
-        <para>Gets the response for the current request.</para>
-      </summary>
-      <returns>
-        <para>The response for the current request as a string.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.GetResponseHeader(XSharp.__Usual[])">
-      <summary>
-        <para>Gets the response header for the current request.</para>
-      </summary>
-      <returns>
-        <para>The response header for the current request as a string.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.Open(XSharp.__Usual[])">
-      <summary>
-        <para>Opens the http connection.</para>
-      </summary>
-      <returns>
-        <para>TRUE if the connection was opened, otherwise FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.OpenFile(XSharp.__Usual[])">
-      <summary>
-        <para>Opens a remote file.</para>
-      </summary>
-      <returns>
-        <para>The handle of the requested file.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.OpenRequest(XSharp.__Usual[])">
-      <summary>
-        <para>Opens a new request.</para>
-      </summary>
-      <returns>
-        <para>TRUE if the document was opened, otherwise FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.SendRequest(XSharp.__Usual[])">
-      <summary>
-        <para>Sends a request to the server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if the request is successful, otherwise FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CHttp.SetCurDir(XSharp.__Usual[])">
-      <summary>
-        <para>Changes the current directory on the remote server for the current process.</para>
-      </summary>
-      <returns>
-        <para>The new directory name as a string.</para>
       </returns>
     </member>
     <member name="P:VO.CHttp.FtpRequest">
@@ -498,6 +363,78 @@
         <para>TRUE if the http connection is used to access an ftp server, otherwise FALSE.</para>
       </returns>
     </member>
+    <member name="M:VO.CHttp.GetCurDir">
+      <summary>
+        <para>Gets the name of the current directory on the remote server.</para>
+      </summary>
+      <returns>
+        <para>The directory name as a string.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.GetDocumentByURL(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Retrieves a document from the server.</para>
+      </summary>
+      <returns>
+        <para>The document as a string.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.GetDocumentFromServer(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    </member>
+
+    <member name="M:VO.CHttp.GetFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>
+          Retrieves the remote file <i>cRemoteFile</i> to the (local) file <i>cNewFile</i>.
+        </para>
+      </summary>
+      <returns>
+        <para>TRUE if the file is saved, otherwise FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.GetResponse">
+      <summary>
+        <para>Gets the response for the current request.</para>
+      </summary>
+      <returns>
+        <para>The response for the current request as a string.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.GetResponseHeader">
+      <summary>
+        <para>Gets the response header for the current request.</para>
+      </summary>
+      <returns>
+        <para>The response header for the current request as a string.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.Open(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Opens the http connection.</para>
+      </summary>
+      <returns>
+        <para>TRUE if the connection was opened, otherwise FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.OpenFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Opens a remote file.</para>
+      </summary>
+      <returns>
+        <para>The handle of the requested file.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.OpenRequest(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Opens a new request.</para>
+      </summary>
+      <returns>
+        <para>TRUE if the document was opened, otherwise FALSE.</para>
+      </returns>
+    </member>
+    <member name="P:VO.CHttp.Proxy">
+    </member>
+
     <member name="P:VO.CHttp.Response">
       <summary>
         <para>Use this to get the response.</para>
@@ -514,12 +451,90 @@
         <para>The current response header as a string.</para>
       </returns>
     </member>
-    <member name="M:VO.CMailAbstract.#ctor(XSharp.__Usual[])">
+    <member name="M:VO.CHttp.SendRequest(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Sends a request to the server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if the request is successful, otherwise FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CHttp.SetCurDir(XSharp.__Usual)">
+      <summary>
+        <para>Changes the current directory on the remote server for the current process.</para>
+      </summary>
+      <returns>
+        <para>The new directory name as a string.</para>
+      </returns>
+    </member>
+    <member name="T:VO.CImap">
+		<summary>Provide a class for the Internet Message Access Protocol (IMAP).
+		</summary>
+	</member>
+    <member name="M:VO.CImap.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+        <summary>
+        <para>Construct a CImap object.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CImap.CheckReply"></member>
+    <member name="M:VO.CImap.ClientCommand(XSharp.__Usual)"></member>
+    <member name="M:VO.CImap.DeleteMail(XSharp.__Usual)"></member>
+    <member name="M:VO.CImap.Disconnect"></member>
+    <member name="M:VO.CImap.GetMail(XSharp.__Usual)"></member>
+    <member name="M:VO.CImap.GetPrefix"></member>
+    <member name="M:VO.CImap.GetStatus"></member>
+    <member name="M:VO.CImap.LogOn(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="P:VO.CImap.MailBox"></member>
+    <member name="M:VO.CImap.SendRemote(XSharp.__Usual)"></member>
+    <member name="T:VO.CINetDial">
+      <summary>
+        <para>Class for establishing dial up connections</para>
+      </summary>
+    </member>
+    <member name="M:VO.CINetDial.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+        <summary>
+        <para>Construct a CINetDial object.</para>
+      </summary>
+
+    </member>
+    <member name="M:VO.CINetDial.AutoDial(XSharp.__Usual)"></member>
+    <member name="M:VO.CINetDial.Dial(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="P:VO.CINetDial.DialFlag"></member>
+    <member name="P:VO.CINetDial.Error"></member>
+    <member name="P:VO.CINetDial.ErrorDescription"></member>
+    <member name="M:VO.CINetDial.GetConnectedState"></member>
+    <member name="M:VO.CINetDial.GetConnections"></member>
+    <member name="M:VO.CINetDial.GetDialUpEntries"></member>
+    <member name="M:VO.CINetDial.HangUp(XSharp.__Usual)"></member>
+    <member name="P:VO.CINetDial.IsConfigured"></member>
+    <member name="P:VO.CINetDial.IsConnected"></member>
+    <member name="P:VO.CINetDial.IsLan"></member>
+    <member name="P:VO.CINetDial.IsModem"></member>
+    <member name="P:VO.CINetDial.IsOffline"></member>
+    <member name="P:VO.CINetDial.IsProxy"></member>
+    <member name="M:VO.CINetDial.SetOwner(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CINetDial.SetSystemOffline(XSharp.__Usual)"></member>
+    <member name="M:VO.CINetDial.VerifyConnection(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="T:VO.CMailAbstract">
+      <summary>
+        <para>Base class for CPop, CSmtp and CNNTP classes.</para>
+      </summary>
+      <remarks>
+        <para>
+          <b>
+            <i>Important!</i>
+          </b>
+          <i>CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.</i>
+        </para>
+      </remarks>
+    </member>
+    <member name="M:VO.CMailAbstract.#ctor(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CMailAbstract object.</para>
       </summary>
     </member>
-    <member name="M:VO.CMailAbstract.Close(XSharp.__Usual[])">
+
+    <member name="M:VO.CMailAbstract.Close">
       <summary>
         <para>De-initialize all internal values of an Internet session.</para>
       </summary>
@@ -527,22 +542,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CMailAbstract.Open(XSharp.__Usual[])">
-      <summary>
-        <para>Initialize all internal startup values for an Internet session.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CMailAbstract.SendData(XSharp.__Usual[])">
-      <summary>
-        <para>Send data to a remote host.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
+    <member name="P:VO.CMailAbstract.DomainName"></member>
     <member name="P:VO.CMailAbstract.Error">
       <summary>
         <para>Numeric value representing the last occurring error code.</para>
@@ -553,11 +553,22 @@
         <para>A string representing the error description.</para>
       </summary>
     </member>
+    <member name="M:VO.CMailAbstract.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CMailAbstract.Open">
+      <summary>
+        <para>Initialize all internal startup values for an Internet session.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="F:VO.CMailAbstract.oSocket"></member>
     <member name="P:VO.CMailAbstract.PassWord">
       <summary>
         <para>A string representing the password to be used.</para>
       </summary>
     </member>
+    <member name="M:VO.CMailAbstract.RecvRemote"></member>
     <member name="P:VO.CMailAbstract.RemoteHost">
       <summary>
         <para>String representing the address of the mail server.</para>
@@ -578,22 +589,55 @@
         <para>String representing the server's reply.</para>
       </summary>
     </member>
+    <member name="M:VO.CMailAbstract.SendData(XSharp.__Usual)">
+      <summary>
+        <para>Send data to a remote host.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CMailAbstract.SendRaw(XSharp.__Usual)"></member>
+    <member name="M:VO.CMailAbstract.SendRemote(XSharp.__Usual)"></member>
     <member name="P:VO.CMailAbstract.Timeout">
       <summary>
         <para>Numeric value representing the time-out in milliseconds.</para>
       </summary>
     </member>
+    <member name="P:VO.CMailAbstract.TimeoutRetries"></member>
     <member name="P:VO.CMailAbstract.UserName">
       <summary>
         <para>A string containing the user name to be used.</para>
       </summary>
     </member>
-    <member name="M:VO.CMessage.#ctor(XSharp.__Usual[])">
+    <member name="T:VO.CMessage">
       <summary>
-        <para>Construct a new CMessage object.</para>
+        <para>Base class for CEmail class.</para>
+      </summary>
+	
+	</member>
+    <member name="M:VO.CMessage.#ctor">
+      <summary>
+        <para>Construct a CMessage object.</para>
       </summary>
     </member>
-    <member name="M:VO.CMessage.Decode(XSharp.__Usual[])">
+    <member name="P:VO.CMessage.AttachmentCount"></member>
+    <member name="P:VO.CMessage.AttachmentFileList">
+      <summary>
+        <para>An array of filenames for attachments. (Used only by CNews.)</para>
+      </summary>
+    </member>
+    <member name="P:VO.CMessage.AttachmentList"></member>
+    <member name="P:VO.CMessage.Body"></member>
+    <member name="M:VO.CMessage.BodyExtract(XSharp.__Usual)"></member>
+    <member name="P:VO.CMessage.BodyHtml"></member>
+    <member name="P:VO.CMessage.Cargo"></member>
+    <member name="P:VO.CMessage.ContentType">
+      <summary>
+        <para>A string representing the content type for that section.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CMessage.Decode(XSharp.__Usual)">
       <summary>
         <para>Decodes a raw message string into its parts.</para>
       </summary>
@@ -601,45 +645,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CMessage.GetAttachInfo(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves information about attachment(s).</para>
-      </summary>
-    </member>
-    <member name="M:VO.CMessage.GetHeaderInfo(XSharp.__Usual[])">
-      <summary>
-        <para>Extracts all the header information and stores that information into the appropriate properties.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CMessage.SaveAs(XSharp.__Usual[])">
-      <summary>
-        <para>Decode and save the attachment.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CMessage.SetMailTime(XSharp.__Usual[])">
-      <summary>
-        <para>Converts the current time and date into an Internet timestamp string for the current message object.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="P:VO.CMessage.AttachmentFileList">
-      <summary>
-        <para>An array of filenames for attachments. (Used only by CNews.)</para>
-      </summary>
-    </member>
-    <member name="P:VO.CMessage.ContentType">
-      <summary>
-        <para>A string representing the content type for that section.</para>
-      </summary>
-    </member>
+    <member name="M:VO.CMessage.DecodeAndSaveAs(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
     <member name="P:VO.CMessage.Error">
       <summary>
         <para>A number representing the error most recently occurring.</para>
@@ -650,6 +656,8 @@
         <para>A string representing the details of the last error.</para>
       </summary>
     </member>
+    <member name="M:VO.CMessage.FakeAttachmentList"></member>
+    <member name="P:VO.CMessage.From"></member>
     <member name="P:VO.CMessage.FromAddress">
       <summary>
         <para>A string representing the email address of the sender.</para>
@@ -660,6 +668,21 @@
         <para>A string representing the name of the sender.</para>
       </summary>
     </member>
+    <member name="M:VO.CMessage.GetAttachInfo(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Retrieves information about attachment(s).</para>
+      </summary>
+    </member>
+
+    <member name="M:VO.CMessage.GetHeaderInfo">
+      <summary>
+        <para>Extracts all the header information and stores that information into the appropriate properties.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="P:VO.CMessage.HEADER"></member>
     <member name="P:VO.CMessage.MailBody">
       <summary>
         <para>A string representing the entire contents of the body of the email. This will include all attachments and multi-part extensions.</para>
@@ -685,6 +708,26 @@
         <para>A string representing the ID of the email.</para>
       </summary>
     </member>
+    <member name="P:VO.CMessage.Priority"></member>
+    <member name="P:VO.CMessage.References"></member>
+    <member name="P:VO.CMessage.ReplyTo"></member>
+    <member name="M:VO.CMessage.SaveAs(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Decode and save the attachment.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CMessage.SetMailTime">
+      <summary>
+        <para>Converts the current time and date into an Internet timestamp string for the current message object.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="P:VO.CMessage.Subject"></member>
     <member name="P:VO.CMessage.TimeStamp">
       <summary>
         <para>Returns the creation date and time of the message as a Time-stamp string.</para>
@@ -695,28 +738,34 @@
         <para>A string representing the Transfer encoding type for the current section.</para>
       </summary>
     </member>
-    <member name="M:VO.CNews.#ctor(XSharp.__Usual[])">
+    <member name="T:VO.CNews">
       <summary>
-        <para>Construct a new CNews object.</para>
+        <para>To encapsulate Internet news messages.</para>
       </summary>
     </member>
-    <member name="M:VO.CNews.GetAttachInfo(XSharp.__Usual[])">
+
+    <member name="M:VO.CNews.#ctor(XSharp.__Usual)">
+      <summary>
+        <para>Construct a CNews object.</para>
+      </summary>
+    </member>
+    <member name="P:VO.CNews.FollowUpTo">
+      <summary>
+        <para>Returns a string representing the FollowUpTo field of the news message header.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CNews.GetAttachInfo(XSharp.__Usual)">
       <summary>
         <para>Returns information about any attachments.</para>
       </summary>
     </member>
-    <member name="M:VO.CNews.GetHeaderInfo(XSharp.__Usual[])">
+    <member name="M:VO.CNews.GetHeaderInfo">
       <summary>
         <para>Extracts all the header information and stores that information into the appropriate properties.</para>
       </summary>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
-    </member>
-    <member name="P:VO.CNews.FollowUpTo">
-      <summary>
-        <para>Returns a string representing the FollowUpTo field of the news message header.</para>
-      </summary>
     </member>
     <member name="P:VO.CNews.NewsGroups">
       <summary>
@@ -743,12 +792,18 @@
         <para>Returns a string representing the size of the news message.</para>
       </summary>
     </member>
-    <member name="M:VO.CNNTP.#ctor(XSharp.__Usual[])">
+    <member name="T:VO.CNNTP">
       <summary>
-        <para>Construct a new NNTP object.</para>
+        <para>Create an Internet News Server based on NNTP (Network News Transport Protocol).</para>
       </summary>
     </member>
-    <member name="M:VO.CNNTP.Authenticate(XSharp.__Usual[])">
+
+    <member name="M:VO.CNNTP.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Construct a NNTP object.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CNNTP.Authenticate">
       <summary>
         <para>Authenticates the user to a NNTP Server.</para>
       </summary>
@@ -756,7 +811,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CNNTP.CheckReply(XSharp.__Usual[])">
+    <member name="M:VO.CNNTP.CheckReply">
       <summary>
         <para>Determines if the reply from the server has been successful.</para>
       </summary>
@@ -764,99 +819,9 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CNNTP.connect(XSharp.__Usual[])">
+    <member name="M:VO.CNNTP.connect(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Establishes a connection to an Internet Mail Server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.Disconnect(XSharp.__Usual[])">
-      <summary>
-        <para>Disconnect from the news server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.GetArticle(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves a specified message from the selected group.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.GetBody(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves a specified message body from the selected group.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.GetHeader(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves a specified message header from the selected group.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.GetList(XSharp.__Usual[])">
-      <summary>
-        <para>
-          Returns a list of all groups from an NTTP Server containing <i>cSearch</i> in their names.
-        </para>
-      </summary>
-      <returns>
-        <para>An array of groups.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.GetNewGroups(XSharp.__Usual[])">
-      <summary>
-        <para>Returns a list of all newly created groups from an NTTP Server.</para>
-      </summary>
-      <returns>
-        <para>An array of groups.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.GetStatus(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves a specified message status from the selected group.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.RecvRemote(XSharp.__Usual[])">
-      <summary>
-        <para>Retrieves data from the news server via socket.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.SetNewsGroup(XSharp.__Usual[])">
-      <summary>
-        <para>Selects a newsgroup from a NTTP Server for further processing.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.SkipNext(XSharp.__Usual[])">
-      <summary>
-        <para>Sets the internal message pointer to the next available message of the current group.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CNNTP.SkipPrev(XSharp.__Usual[])">
-      <summary>
-        <para>Sets the internal message pointer to the previous available message of the current group.</para>
       </summary>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
@@ -866,6 +831,68 @@
       <summary>
         <para>The current CNews object of the CNNTP class.</para>
       </summary>
+    </member>
+
+    <member name="M:VO.CNNTP.Disconnect">
+      <summary>
+        <para>Disconnect from the news server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.GetArticle(XSharp.__Usual)">
+      <summary>
+        <para>Retrieves a specified message from the selected group.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.GetBody(XSharp.__Usual)">
+      <summary>
+        <para>Retrieves a specified message body from the selected group.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.GetHeader(XSharp.__Usual)">
+      <summary>
+        <para>Retrieves a specified message header from the selected group.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.GetList(XSharp.__Usual)">
+      <summary>
+        <para>
+          Returns a list of all groups from an NTTP Server containing <i>cSearch</i> in their names.
+        </para>
+      </summary>
+      <returns>
+        <para>An array of groups.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.GetNewGroups(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Returns a list of all newly created groups from an NTTP Server.</para>
+      </summary>
+      <returns>
+        <para>An array of groups.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.GetNewNews(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    </member>
+
+    <member name="M:VO.CNNTP.GetStatus(XSharp.__Usual)">
+      <summary>
+        <para>Retrieves a specified message status from the selected group.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
     </member>
     <member name="P:VO.CNNTP.GroupName">
       <summary>
@@ -897,17 +924,60 @@
         <para>Returns the numeric ID of the last available message in the currently selected group.</para>
       </summary>
     </member>
+    <member name="M:VO.CNNTP.Post(XSharp.__Usual)"></member>
+    <member name="M:VO.CNNTP.PrepareCommand(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CNNTP.RecvData(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CNNTP.RecvRemote">
+      <summary>
+        <para>Retrieves data from the news server via socket.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
     <member name="P:VO.CNNTP.ReplyString">
       <summary>
         <para>Returns a string with the latest reply from the NNTP Server.</para>
       </summary>
     </member>
-    <member name="M:VO.CPop.#ctor(XSharp.__Usual[])">
+    <member name="M:VO.CNNTP.SendHeader"></member>
+    <member name="M:VO.CNNTP.SendMailBody"></member>
+    <member name="M:VO.CNNTP.SetNewsGroup(XSharp.__Usual)">
+      <summary>
+        <para>Selects a newsgroup from a NTTP Server for further processing.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.SetReadMode"></member>
+    <member name="M:VO.CNNTP.SkipNext">
+      <summary>
+        <para>Sets the internal message pointer to the next available message of the current group.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CNNTP.SkipPrev">
+      <summary>
+        <para>Sets the internal message pointer to the previous available message of the current group.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="T:VO.CPop">
+      <summary>
+        <para>Provide a class for Internet Post Office Protocol (POP).</para>
+      </summary>
+    </member>
+    <member name="M:VO.CPop.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CPop object.</para>
       </summary>
     </member>
-    <member name="M:VO.CPop.CheckReply(XSharp.__Usual[])">
+    <member name="M:VO.CPop.CheckReply">
       <summary>
         <para>Check the response from a POP server for error codes.</para>
       </summary>
@@ -915,7 +985,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.connect(XSharp.__Usual[])">
+    <member name="M:VO.CPop.connect(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Establish a connection to the remote POP server.</para>
       </summary>
@@ -923,7 +993,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.DeleteMail(XSharp.__Usual[])">
+    <member name="M:VO.CPop.DeleteMail(XSharp.__Usual)">
       <summary>
         <para>Delete specified mail from a remote POP server.</para>
       </summary>
@@ -931,7 +1001,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.Disconnect(XSharp.__Usual[])">
+    <member name="M:VO.CPop.Disconnect">
       <summary>
         <para>Shut down the current POP connection.</para>
       </summary>
@@ -939,7 +1009,11 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.GetMail(XSharp.__Usual[])">
+    <member name="P:VO.CPop.Email"></member>
+
+    <member name="M:VO.CPop.GetList(XSharp.__Usual)"></member>
+    <member name="M:VO.CPop.GetListIDs(XSharp.__Usual)"></member>
+    <member name="M:VO.CPop.GetMail(XSharp.__Usual)">
       <summary>
         <para>Read specified mail from a remote POP server.</para>
       </summary>
@@ -947,7 +1021,8 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.GetStatus(XSharp.__Usual[])">
+    <member name="M:VO.CPop.GetMailTop(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CPop.GetStatus">
       <summary>
         <para>Retrieve the mail status for the current active user from a remote POP server.</para>
       </summary>
@@ -955,7 +1030,7 @@
         <para>A string containing the current status.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.ListMail(XSharp.__Usual[])">
+    <member name="M:VO.CPop.ListMail">
       <summary>
         <para>Read all e-mails from a remote POP server.</para>
       </summary>
@@ -963,17 +1038,9 @@
         <para>Array with all e-mails, if successful; otherwise, an empty array.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.LogOn(XSharp.__Usual[])">
+    <member name="M:VO.CPop.LogOn(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Log a user onto a connected POP server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CPop.RecvRemote(XSharp.__Usual[])">
-      <summary>
-        <para>Receive response data from a remote mail server.</para>
       </summary>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
@@ -989,47 +1056,30 @@
         <para>Numeric value representing the number of bytes received.</para>
       </summary>
     </member>
+    <member name="M:VO.CPop.RecvRemote">
+      <summary>
+        <para>Receive response data from a remote mail server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="P:VO.CPop.Storage"></member>
     <member name="P:VO.CPop.TotalBytes">
       <summary>
         <para>Total size of all e-mails for the specific user.</para>
       </summary>
     </member>
-    <member name="M:VO.CSession.#ctor(XSharp.__Usual[])">
+    <member name="T:VO.CSession">
+      <summary>
+        <para>Abstract class for wrapping an Internet session.</para>
+      </summary>
+    </member>
+
+    <member name="M:VO.CSession.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CSession object.</para>
       </summary>
-    </member>
-    <member name="M:VO.CSession.CloseFile(XSharp.__Usual[])">
-      <summary>
-        <para>Closes a remote file.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSession.CloseRemote(XSharp.__Usual[])">
-      <summary>
-        <para>Closes the Internet connection.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSession.ConnectRemote(XSharp.__Usual[])">
-      <summary>
-        <para>Opens a connection to the Internet server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSession.Open(XSharp.__Usual[])">
-      <summary>
-        <para>Opens a connection to the Internet server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
     </member>
     <member name="P:VO.CSession.AccessType">
       <summary>
@@ -1040,6 +1090,23 @@
         <para>The alternate type is INTERNET_OPEN_TYPE_PROXY.</para>
       </remarks>
     </member>
+
+    <member name="M:VO.CSession.CloseFile(XSharp.__Usual)">
+      <summary>
+        <para>Closes a remote file.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CSession.CloseRemote">
+      <summary>
+        <para>Closes the Internet connection.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
     <member name="P:VO.CSession.Connected">
       <summary>
         <para>A logical value indicating the status of the connection.</para>
@@ -1049,6 +1116,15 @@
       <summary>
         <para>Internet connection handle.</para>
       </summary>
+    </member>
+
+    <member name="M:VO.CSession.ConnectRemote(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Opens a connection to the Internet server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
     </member>
     <member name="P:VO.CSession.Error">
       <summary>
@@ -1065,6 +1141,18 @@
         <para>The Internet session handle.</para>
       </summary>
     </member>
+    <member name="M:VO.CSession.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="F:VO.CSession.ogStatus"></member>
+    <member name="F:VO.CSession.oLock"></member>
+    <member name="M:VO.CSession.Open(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+        <para>Opens a connection to the Internet server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="P:VO.CSession.OpenFlags"></member>
     <member name="P:VO.CSession.PassWord">
       <summary>
         <para>The password necessary to establish the remote connection.</para>
@@ -1090,17 +1178,24 @@
         <para>A string representing the Host name or IP address of the remote server.</para>
       </summary>
     </member>
+    <member name="M:VO.CSession.SetResponseStatus"></member>
     <member name="P:VO.CSession.UserName">
       <summary>
         <para>A string representing the User ID necessary to establish the remote connection.</para>
       </summary>
     </member>
-    <member name="M:VO.CSmtp.#ctor(XSharp.__Usual[])">
+    <member name="T:VO.CSmtp">
+      <summary>
+        <para>Provide a class for Internet Protocol SMTP.</para>
+      </summary>
+    </member>
+
+    <member name="M:VO.CSmtp.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CSmtp object.</para>
       </summary>
     </member>
-    <member name="M:VO.CSmtp.CheckReply(XSharp.__Usual[])">
+    <member name="M:VO.CSmtp.CheckReply">
       <summary>
         <para>Check the response from a mail server for error codes.</para>
       </summary>
@@ -1108,7 +1203,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CSmtp.connect(XSharp.__Usual[])">
+    <member name="M:VO.CSmtp.connect(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Establish a connection to a remote SMTP server.</para>
       </summary>
@@ -1116,41 +1211,9 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CSmtp.Disconnect(XSharp.__Usual[])">
+    <member name="M:VO.CSmtp.Disconnect">
       <summary>
         <para>Shut down the current SMTP connection.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSmtp.Logon(XSharp.__Usual[])">
-      <summary>
-        <para>Logs on to the remote host with the user name and password of the smtp class</para>
-      </summary>
-      <returns>
-        <para>Logic indicating if the Login was succesful</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSmtp.RecvRemote(XSharp.__Usual[])">
-      <summary>
-        <para>Receive response data from a remote mail server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSmtp.SendHeaderInfo(XSharp.__Usual[])">
-      <summary>
-        <para>Create a mail header and send it as part of an e-mail to a remote SMTP server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
-    </member>
-    <member name="M:VO.CSmtp.SendMail(XSharp.__Usual[])">
-      <summary>
-        <para>Send a complete e-mail to a remote SMTP server.</para>
       </summary>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
@@ -1166,22 +1229,60 @@
         <para>The format of the email.</para>
       </summary>
     </member>
+    <member name="M:VO.CSmtp.Logon">
+      <summary>
+        <para>Logs on to the remote host with the user name and password of the smtp class</para>
+      </summary>
+      <returns>
+        <para>Logic indicating if the Login was succesful</para>
+      </returns>
+    </member>
     <member name="P:VO.CSmtp.MailApplication">
       <summary>
         <para>A string that holds the name that is used when connection to mail servers</para>
       </summary>
+    </member>
+    <member name="M:VO.CSmtp.RecvRemote">
+      <summary>
+        <para>Receive response data from a remote mail server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
     </member>
     <member name="P:VO.CSmtp.SecureSMTP">
       <summary>
         <para>A logic indicating if the CSmtp class should use Secure SMTP</para>
       </summary>
     </member>
+    <member name="M:VO.CSmtp.SendHeaderInfo">
+      <summary>
+        <para>Create a mail header and send it as part of an e-mail to a remote SMTP server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+    <member name="M:VO.CSmtp.SendMail">
+      <summary>
+        <para>Send a complete e-mail to a remote SMTP server.</para>
+      </summary>
+      <returns>
+        <para>TRUE if successful; otherwise, FALSE.</para>
+      </returns>
+    </member>
+
     <member name="P:VO.CSmtp.TextEncoding">
       <summary>
         <para>The text encoding type of the email.</para>
       </summary>
     </member>
-    <member name="M:VO.CSocket.#ctor(XSharp.__Usual[])">
+    <member name="T:VO.CSocket">
+      <summary>
+        <para>Provide a class for low-level TCP/IP programming.</para>
+      </summary>
+    </member>
+    <member name="M:VO.CSocket.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a CSocket object.</para>
       </summary>
@@ -1215,6 +1316,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
+    <member name="M:VO.CSocket.Destroy"></member>
     <member name="M:VO.CSocket.DisConnect">
       <summary>
         <para>Shut down the current socket connection.</para>
@@ -1237,6 +1339,16 @@
         <para>Display error messages.</para>
       </summary>
     </member>
+    <member name="P:VO.CSocket.Error">
+      <summary>
+        <para>Numeric value representing the error code.</para>
+      </summary>
+    </member>
+    <member name="P:VO.CSocket.ErrorMsg">
+      <summary>
+        <para>String with error information.</para>
+      </summary>
+    </member>
     <member name="M:VO.CSocket.GetLine">
       <summary>
         <para>Extract the first line from the socket data received via the current connection.</para>
@@ -1253,6 +1365,7 @@
         <para>String containing the received line, if successful; otherwise, NULL_STRING</para>
       </returns>
     </member>
+    <member name="M:VO.CSocket.GetLines(XSharp.__Array)"></member>
     <member name="M:VO.CSocket.getpeername(System.String@,System.Int32@)">
       <summary>
         <para>Get the address of the peer to which the socket is connected.</para>
@@ -1285,6 +1398,7 @@
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
     </member>
+    <member name="M:VO.CSocket.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
     <member name="M:VO.CSocket.listen(System.Int32)">
       <summary>
         <para>Establish a socket to listen for an incoming connection.</para>
@@ -1293,6 +1407,7 @@
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
     </member>
+    <member name="P:VO.CSocket.RcvBufSize"></member>
     <member name="M:VO.CSocket.SendLine(System.String)">
       <summary>
         <para>Send data terminated by CRLF to the connected socket.</para>
@@ -1309,7 +1424,7 @@
         <para>Number of data sent, if successful; otherwise, 0 (zero).</para>
       </returns>
     </member>
-    <member name="M:VO.CSocket.SendRaw(System.Void,System.UInt32)">
+    <member name="M:VO.CSocket.SendRaw(System.Void*,System.UInt32)">
       <summary>
         <para>Send any data to the connected socket.</para>
       </summary>
@@ -1325,16 +1440,7 @@
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
     </member>
-    <member name="P:VO.CSocket.Error">
-      <summary>
-        <para>Numeric value representing the error code.</para>
-      </summary>
-    </member>
-    <member name="P:VO.CSocket.ErrorMsg">
-      <summary>
-        <para>String with error information.</para>
-      </summary>
-    </member>
+    <member name="P:VO.CSocket.SndBufSize"></member>
     <member name="P:VO.CSocket.Status">
       <summary>
         <para>Numeric value with the current status representing one of the following states:</para>
@@ -1373,6 +1479,31 @@
       <summary>
         <para>Numeric value representing the time-out in milliseconds.</para>
       </summary>
+    </member>
+    <member name="P:VO.CSocket.TimeOutRetries"></member>
+    <member name="T:VO.CStorage">
+      <summary>
+        <para>Provide an interface to handle large Email Messages and attachments</para>
+      </summary>
+      <remarks>
+        <para>This class is used Exclusively by the CEMail Class to read and write attachments.</para>
+        <para>The class reads/writes attachments in a disk folder.</para>
+        <para>
+          If you want to store attachments on another location (for example a SQL Database) then you should subclass this class and override the implementation of the
+          methods.
+        </para>
+        <para>CStorage also gives you an interface to store the raw data of received emails. During reception of an email the following three methods are called:</para>
+        <para>RawNew()</para>
+        <para>RawWrite()</para>
+        <para>RawClose()</para>
+        <para>You can use these methods to implement your own mechanism to save the raw email contents.</para>
+      </remarks>
+    </member>
+    <member name="M:VO.CStorage.#ctor(XSharp.__Usual)">
+      <summary>
+        <para>Construct a CStorage object.</para>
+      </summary>
+     
     </member>
     <member name="M:VO.CStorage.AttachmentAdd(System.String,System.UInt32)">
       <summary>
@@ -1443,6 +1574,14 @@
         &lt;<i>cID</i>&gt; STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
     </member>
+    <member name="P:VO.CStorage.AttachmentSize">
+      <summary>
+        <para>Returns the file size of a currently stored or an opened attachment file. This access is called during receiving an email.</para>
+      </summary>
+      <returns>
+        <i>DWORD</i> The size of the attachment
+      </returns>
+    </member>
     <member name="M:VO.CStorage.AttachmentWrite(System.String)">
       <summary>
         <para>This method is called multiple times per attachment during the receive process.</para>
@@ -1451,6 +1590,7 @@
         NOTHING
       </returns>
     </member>
+    <member name="M:VO.CStorage.CreateNewEMail"></member>
     <member name="M:VO.CStorage.LoadEMail(System.String)">
       <summary>
         <para>This method returns a CEMail object filled with all data addressed through the cID.</para>
@@ -1463,6 +1603,11 @@
       <returns>
         &lt;<i>oEmail</i>&gt;
       </returns>
+    </member>
+    <member name="P:VO.CStorage.NoSave">
+      <summary>
+        <para>You can use this assign to suppress the storing of the attachments into the storage. This makes sense, if you want to store only raw email files.</para>
+      </summary>
     </member>
     <member name="M:VO.CStorage.RawClose">
       <summary>
@@ -1514,18 +1659,12 @@
         <i>LOGIC</i> TRUE when the email was saved succesfully
       </returns>
     </member>
-    <member name="P:VO.CStorage.AttachmentSize">
-      <summary>
-        <para>Returns the file size of a currently stored or an opened attachment file. This access is called during receiving an email.</para>
-      </summary>
-      <returns>
-        <i>DWORD</i> The size of the attachment
-      </returns>
-    </member>
-    <member name="P:VO.CStorage.NoSave">
-      <summary>
-        <para>You can use this assign to suppress the storing of the attachments into the storage. This makes sense, if you want to store only raw email files.</para>
+    <member name="T:VO.StdSocket"></member>
+    <member name="M:VO.StdSocket.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+       <summary>
+        <para>Construct a StdSocket object.</para>
       </summary>
     </member>
+    <member name="M:VO.StdSocket.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
   </members>
 </doc>

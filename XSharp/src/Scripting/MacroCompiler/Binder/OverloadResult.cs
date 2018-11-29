@@ -15,7 +15,7 @@ namespace XSharp.MacroCompiler
         internal int TotalCost = 0;
         internal int ExtraValid = 0;
         internal bool Valid = true;
-        internal readonly MethodSymbol Method;
+        internal readonly MethodBaseSymbol Method;
         internal OverloadResult Equivalent = null;
 
         internal bool Exact { get { return Valid && TotalCost == 0; } }
@@ -27,7 +27,7 @@ namespace XSharp.MacroCompiler
         internal readonly int MissingArgs;
         internal ConversionSymbol[] Conversions;
 
-        internal OverloadResult(MethodSymbol method, int nFixedArgs, int nVarArgs, int nMissingArgs)
+        internal OverloadResult(MethodBaseSymbol method, int nFixedArgs, int nVarArgs, int nMissingArgs)
         {
             Method = method;
             FixedArgs = nFixedArgs;
@@ -43,7 +43,7 @@ namespace XSharp.MacroCompiler
             Valid &= conv.IsImplicit;
         }
 
-        internal static OverloadResult Create(MethodSymbol method, int nFixedArgs, int nVarArgs, int nMissingArgs)
+        internal static OverloadResult Create(MethodBaseSymbol method, int nFixedArgs, int nVarArgs, int nMissingArgs)
             { return new OverloadResult(method, nFixedArgs, nVarArgs, nMissingArgs); }
 
         internal OverloadResult Better(OverloadResult other)

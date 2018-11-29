@@ -23,6 +23,9 @@ namespace XSharp.MacroCompiler
         internal SymbolList() { Symbols = new List<Symbol>(); }
         internal SymbolList(Symbol s): this() { Add(s); SymbolTypes = 0; }
         internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.Member.MemberType ?? 0; }
+        internal bool HasMethod { get { return SymbolTypes.HasFlag(MemberTypes.Method); } }
+        internal bool HasConstructor { get { return SymbolTypes.HasFlag(MemberTypes.Constructor); } }
+        internal bool HasMethodBase { get { return HasMethod || HasConstructor; } }
         internal override Symbol Lookup(string name)
         {
             foreach (var s in Symbols)

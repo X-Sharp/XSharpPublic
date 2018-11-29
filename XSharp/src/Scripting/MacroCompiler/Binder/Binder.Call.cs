@@ -11,35 +11,25 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal MemberSymbol BindCall(Expr expr, ArgList args, out Expr self)
+        internal MemberSymbol BindCall(Expr self, Symbol symbol, ArgList args)
         {
-            if (expr is MemberAccessExpr)
-            {
-                self = ((MemberAccessExpr)expr).Expr;
-            }
-            else
-            {
-                self = null;
-            }
+            bool isStatic = self == null;
 
             OverloadResult ovRes = null;
 
-            if (expr.Symbol is MemberSymbol)
+            if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
             {
-                if (expr.Symbol is MethodSymbol)
-                {
-                    CheckArguments((MethodSymbol)expr.Symbol, args, ref ovRes);
-                }
+                CheckArguments((MethodBaseSymbol)symbol, args, ref ovRes);
             }
-            else if ((expr.Symbol as SymbolList)?.SymbolTypes.HasFlag(MemberTypes.Method) == true)
+            else if ((symbol as SymbolList)?.HasMethodBase == true)
             {
-                var methods = expr.Symbol as SymbolList;
+                var methods = symbol as SymbolList;
                 for (int i = 0; i<methods.Symbols.Count; i++)
                 {
                     var m = methods.Symbols[i];
-                    if (m is MethodSymbol)
+                    if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
                     {
-                        CheckArguments((MethodSymbol)m, args, ref ovRes);
+                        CheckArguments((MethodBaseSymbol)m, args, ref ovRes);
                         if (ovRes?.Exact == true)
                             break;
                     }
@@ -54,9 +44,9 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
-        static void CheckArguments(MethodSymbol m, ArgList args, ref OverloadResult ovRes)
+        static void CheckArguments(MethodBaseSymbol m, ArgList args, ref OverloadResult ovRes)
         {
-            var method = m.Method;
+            var method = m.MethodBase;
             var parameters = method.GetParameters();
             var nParams = parameters.Length;
             var fixedArgs = args.Args.Count;
@@ -108,7 +98,7 @@ namespace XSharp.MacroCompiler
 
         static void ApplyConversions(ArgList args, OverloadResult ovRes)
         {
-            var parameters = ovRes.Method.Method.GetParameters();
+            var parameters = ovRes.Method.MethodBase.GetParameters();
             for (int i = 0; i < ovRes.FixedArgs; i++)
             {
                 var conv = ovRes.Conversions[i];

@@ -295,16 +295,35 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
+            if (Self != null) Self.Emit(ilg);
             Args.Emit(ilg);
             var m = (MethodSymbol)Symbol;
-            ilg.Emit(OpCodes.Call, m.Method);
+            ilg.Emit(Self == null ? OpCodes.Call : OpCodes.Callvirt, m.Method);
             if (!preserve && Datatype.NativeType != NativeType.Void)
                 ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class CtorCallExpr : MethodCallExpr
     {
-        // TODO (nvk): to be implemented
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (Local != null)
+            {
+                Local.Declare(ilg);
+                Local.EmitGetAddr(ilg);
+                ilg.Emit(OpCodes.Initobj, Datatype.Type);
+                if (preserve)
+                    Local.EmitGet(ilg);
+            }
+            else
+            {
+                Args.Emit(ilg);
+                var c = (ConstructorSymbol)Symbol;
+                ilg.Emit(OpCodes.Newobj, c.Constructor);
+                if (!preserve)
+                    ilg.Emit(OpCodes.Pop);
+            }
+        }
     }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {

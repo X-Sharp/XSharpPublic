@@ -35,6 +35,32 @@ function CC(a,b,c)
 
 global UU as usual
 
+class testclassdc
+    v1 as int
+    v2 as string
+    operator ==(o1 as testclassdc, o2 as testclassdc) as logic
+        return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
+end class
+
+class testclass
+    v1 as int
+    v2 as string
+    constructor()
+    constructor(i as int)
+        v1 := i
+    operator ==(o1 as testclass, o2 as testclass) as logic
+        return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
+end class
+
+struct teststruct
+    v1 as int
+    v2 as string
+    constructor(i as int)
+        v1 := i
+    operator ==(o1 as teststruct, o2 as teststruct) as logic
+        return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
+end struct
+
 begin namespace MacroCompilerTest
     using XSharp.Runtime
     using XSharp.MacroCompiler
@@ -45,7 +71,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := {1,,2,,} }")
+        EvalMacro(mc, e"{|a| a := testclassdc{} }")
         wait
 
         RunTests(mc)
@@ -126,6 +152,12 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := U({1,2,3}) }", <OBJECT>{}, {1,2,3}, typeof(usual))
         TestMacro(mc, e"{|a| a := U({1,,2,,}) }", <OBJECT>{}, {1,NIL,2,NIL,NIL}, typeof(usual))
         TestMacro(mc, e"{|a| a := <INT>{1,2,3} }", <OBJECT>{}, <INT>{1,2,3}, typeof(int[]))
+        TestMacro(mc, e"object{}", <OBJECT>{}, object{}, typeof(object))
+        TestMacro(mc, e"teststruct{12}", <OBJECT>{}, teststruct{12}, typeof(teststruct))
+        TestMacro(mc, e"teststruct{}", <OBJECT>{}, teststruct{}, typeof(teststruct))
+        TestMacro(mc, e"testclass{}", <OBJECT>{}, testclass{}, typeof(testclass))
+        TestMacro(mc, e"testclass{23}", <OBJECT>{}, testclass{23}, typeof(testclass))
+        TestMacro(mc, e"testclassdc{}", <OBJECT>{}, testclassdc{}, typeof(testclassdc))
 //        TestMacro(mc, e"{|a| a := A(123) }", <OBJECT>{}, 3, typeof(usual)) // FAIL - A accepts byref arg
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
@@ -146,7 +178,7 @@ begin namespace MacroCompilerTest
         Console.Write("Test: '{0}' ", src)
         var cb := mc:Compile(src)
         var res := cb:EvalBlock(args)
-        var match := res = expect
+        local match as logic
         if IsArray(expect)
             match := ALen(expect) = ALen((usual)res)
             for var i := 1 to ALen(expect)
@@ -165,6 +197,16 @@ begin namespace MacroCompilerTest
                     match := false
                 end
             next
+        elseif t == typeof(object)
+            match := true
+        else
+            try
+                local r := res as dynamic
+                local e := expect as dynamic
+                match := r = e .or. res = expect
+            catch
+                match := res = expect
+            end
         end
         if (match) .and. ((t == null) || (t == res?:GetType()))
             TotalSuccess += 1

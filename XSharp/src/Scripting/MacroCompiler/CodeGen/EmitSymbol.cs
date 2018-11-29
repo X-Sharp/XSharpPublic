@@ -13,6 +13,7 @@ namespace XSharp.MacroCompiler
     {
         internal virtual void EmitGet(ILGenerator ilg) { throw new NotImplementedException(); }
         internal virtual void EmitSet(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void EmitGetAddr(ILGenerator ilg) { throw new NotImplementedException(); }
     }
     internal abstract partial class TypedSymbol : Symbol
     {
@@ -33,6 +34,7 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldloc, Index); }
         internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Stloc, Index); }
+        internal override void EmitGetAddr(ILGenerator ilg) { ilg.Emit(OpCodes.Ldloca, Index); }
         internal void Declare(ILGenerator ilg)
         {
             var lb = ilg.DeclareLocal(Type.Type);

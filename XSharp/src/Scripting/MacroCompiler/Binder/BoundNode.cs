@@ -309,9 +309,26 @@ namespace XSharp.MacroCompiler.Syntax
             }
             else
             {
-                Symbol = b.BindCall(Expr, Args, out Self);
+                Self = (Expr as MemberAccessExpr)?.Expr;
+                Symbol = b.BindCall(Self, Expr.Symbol, Args);
             }
             Datatype = ((MethodSymbol)Symbol)?.Type;
+            return null;
+        }
+    }
+    internal partial class CtorCallExpr : MethodCallExpr
+    {
+        internal LocalSymbol Local;
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            b.Bind(ref Args);
+            Symbol = b.BindCall(null, Expr.Symbol.Lookup(".ctor"), Args);
+            Datatype = Expr.Symbol as TypeSymbol;
+            if (Datatype.Type.IsValueType && Args.Args.Count == 0)
+            {
+                Local = b.AddLocal(Datatype);
+            }
             return null;
         }
     }

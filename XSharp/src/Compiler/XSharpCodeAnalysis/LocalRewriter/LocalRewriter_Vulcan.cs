@@ -65,17 +65,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (found)
                     {
-                        return CreateObject(value.Syntax, ctor, value);
+                        return new BoundObjectCreationExpression(value.Syntax, ctor, binderOpt: null, new BoundExpression[] { value });
+
                     }
                 }
             }
             return value;
-        }
-
-        BoundObjectCreationExpression CreateObject(SyntaxNode syntax, MethodSymbol ctor, BoundExpression argument)
-        {
-            // Todo
-            return null;
         }
         static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
         {

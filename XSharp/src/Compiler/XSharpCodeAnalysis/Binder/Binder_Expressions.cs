@@ -493,8 +493,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (stringctor != null)
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
-                    // todo: Convert string to psz by creating new psz object
-                    //source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
+                    source = new BoundObjectCreationExpression(syntax, stringctor, binderOpt: null, new BoundExpression[] { source });
                     return true;
                 }
             }

@@ -308,10 +308,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var boolean = Compilation.GetSpecialType(SpecialType.System_Boolean);
                     operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Enum, enumType, enumType, boolean));
                     operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Lifted | BinaryOperatorKind.Enum, nullableEnum, nullableEnum, boolean));
-#if XSHARP
-                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.EnumAndUnderlying, enumType, underlying, boolean));
-                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.UnderlyingAndEnum, underlying, enumType, boolean));
-#endif
 
                     break;
                 case BinaryOperatorKind.And:

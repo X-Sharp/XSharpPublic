@@ -3366,7 +3366,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
                 else
                 {
-
+//        TODO rvdH integrate old code
 //                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
 //                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
 //                    bool literalNullForRefParameter = false;

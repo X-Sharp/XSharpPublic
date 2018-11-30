@@ -1456,6 +1456,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
                 case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
                 case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Equal | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.NotEqual | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
 #endif
                     return left.Type;
                 case BinaryOperatorKind.UnderlyingAndEnumAddition:
@@ -1467,6 +1469,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
                 case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
                 case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Equal | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.NotEqual | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
 #endif
                     return right.Type;
                 default:

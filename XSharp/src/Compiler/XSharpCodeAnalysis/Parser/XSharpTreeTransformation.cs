@@ -5302,7 +5302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (m.Type != XP.AS && m.Type != XP.IS)
                     modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
-            modifiers.FixDefaultVisibility();
+            //modifiers.FixDefaultVisibility();
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }

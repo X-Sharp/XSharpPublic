@@ -848,7 +848,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitThrow;
             }
 
+#if !XSHARP
             return Conversion.NoConversion;
+#else
+            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+#endif
         }
 
         private static Conversion ClassifyNullLiteralConversion(BoundExpression source, TypeSymbol destination)

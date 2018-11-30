@@ -6,10 +6,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <RoslynSrc>..\..\..\..\Roslyn\src\</RoslynSrc>
     <RoslynBin>..\Roslyn\Binaries</RoslynBin>
-
     <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
     <CoreSource>$(RoslynSrc)Compilers\Core\Portable\</CoreSource>
     <OutputType>Library</OutputType>
+    <RoslynProjectType>XSharp</RoslynProjectType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
     <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

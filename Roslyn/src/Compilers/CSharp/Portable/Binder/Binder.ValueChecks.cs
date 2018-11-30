@@ -516,6 +516,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     (localSymbol.RefKind == RefKind.None && !localSymbol.IsWritableVariable))
                 {
                     ReportReadonlyLocalError(node, localSymbol, valueKind, checkingReceiver, diagnostics);
+#if XSHARP
+                    if (localSymbol.IsForEach)
+                        return true;
+#endif
                     return false;
                 }
             }
@@ -529,6 +533,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else if (!localSymbol.IsWritableVariable)
                 {
                     ReportReadonlyLocalError(node, localSymbol, valueKind, checkingReceiver, diagnostics);
+#if XSHARP
+                    if (localSymbol.IsForEach)
+                        return true;
+#endif
                     return false;
                 }
             }
@@ -1487,6 +1495,12 @@ moreArguments:
             };
 
             int index = (checkingReceiver ? 2 : 0) + (RequiresRefOrOut(kind) ? 0 : 1);
+#if XSHARP
+            if (local.IsForEach)
+            {
+                ReadOnlyLocalErrors[1] = ErrorCode.WRN_AssgReadonlyLocalCause;
+            }
+#endif        
 
             Error(diagnostics, ReadOnlyLocalErrors[index], node, local, cause.Localize());
         }

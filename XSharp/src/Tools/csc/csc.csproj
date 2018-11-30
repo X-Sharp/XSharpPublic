@@ -11,7 +11,7 @@
     <CscSource>$(RoslynSrc)Compilers\CSharp\csc\</CscSource>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
-    <RoslynProjectType>Custom</RoslynProjectType>
+    <RoslynProjectType>XSharp</RoslynProjectType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>

@@ -9,7 +9,6 @@ PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
 CopyAssembliesToFolder = 
-DebugExecutable = 
 
 [ProjectExportOptions]
 ExportResources = 0
@@ -35980,7 +35979,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C361 - Runtime problem with passing USUAL to CLIPPER constructor
 
-ApplicationGroup = DBAFC850-8A63-413C-9C9F-0450290A3721
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C362 - Missing pinning of locals in unsafe generated code *************
 Application = C362 - Missing pinning of locals in unsafe generated code
 IDEVersion = 1.06

@@ -136,7 +136,11 @@ namespace Microsoft.CodeAnalysis
         internal static string GetAssemblyFileVersion(Assembly assembly)
         {
             string assemblyVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+#if XSHARP
+            string hash = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration;
+#else
             string hash = ExtractShortCommitHash(assembly.GetCustomAttribute<CommitHashAttribute>()?.Hash);
+#endif
             return $"{assemblyVersion} ({hash})";
         }
 
@@ -686,7 +690,7 @@ namespace Microsoft.CodeAnalysis
             {
                 return;
             }
-#endif                        
+#endif
             cancellationToken.ThrowIfCancellationRequested();
 
             string outputName = GetOutputFileName(compilation, cancellationToken);

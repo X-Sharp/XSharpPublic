@@ -308,6 +308,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var boolean = Compilation.GetSpecialType(SpecialType.System_Boolean);
                     operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Enum, enumType, enumType, boolean));
                     operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Lifted | BinaryOperatorKind.Enum, nullableEnum, nullableEnum, boolean));
+#if XSHARP
+                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.EnumAndUnderlying, enumType, underlying, boolean));
+                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.UnderlyingAndEnum, underlying, enumType, boolean));
+#endif
+
                     break;
                 case BinaryOperatorKind.And:
                 case BinaryOperatorKind.Or:
@@ -1069,7 +1074,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     valOverInPreference = BetterResult.Right;
                 }
             }
-
+#if XSHARP
+            if (valOverInPreference == BetterResult.Neither)
+            {
+                return VoBetterOperator(op1, op2, left, right, ref useSiteDiagnostics);
+            }
+#endif
             return valOverInPreference;
         }
 

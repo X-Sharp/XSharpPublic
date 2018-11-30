@@ -296,14 +296,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
-            }
-            else if (_refKind == RefKind.RefReadOnly)
-            {
-                var modifierType = bodyBinder.GetWellKnownType(WellKnownType.System_Runtime_InteropServices_InAttribute, diagnostics, syntax.Type);
 
-                _customModifiers = CustomModifiersTuple.Create(
-                    ImmutableArray<CustomModifier>.Empty,
-                    ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType)));
+	            else if (_refKind == RefKind.RefReadOnly)
+	            {
+	                var modifierType = bodyBinder.GetWellKnownType(WellKnownType.System_Runtime_InteropServices_InAttribute, diagnostics, syntax.Type);
+
+	                _customModifiers = CustomModifiersTuple.Create(
+	                    ImmutableArray<CustomModifier>.Empty,
+	                    ImmutableArray.Create(CSharpCustomModifier.CreateRequired(modifierType)));
+	            }
+#if XSHARP
+	            else /*if (this.IsVirtual)*/ {
+	                _modifiers &= ~DeclarationModifiers.Override;
+	            }
+#endif
             }
 
             if (!hasAccessorList)

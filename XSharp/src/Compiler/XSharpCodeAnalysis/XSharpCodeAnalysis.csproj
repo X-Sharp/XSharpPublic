@@ -1,27 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\CompilerCommon.targets" />
   <PropertyGroup>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <RoslynSrc>\Xsharp\Dev\Roslyn\src\</RoslynSrc>
-    <RoslynBin>\Xsharp\Dev\Roslyn\Binaries\</RoslynBin>
-    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <CoreSource>$(RoslynSrc)Compilers\Core\Portable\</CoreSource>
-    <RoslynProjectType>Custom</RoslynProjectType>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFramework>netstandard1.3</TargetFramework>
     <ServiceablePackage>true</ServiceablePackage>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>  
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419,CS3008,CS3005,CS3001,CS3002,CS3015,</NoWarn> 
     <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;PORTABLE</DefineConstants>
-    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <Langversion>7.3</Langversion>
     <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
          reference Microsoft.NETCore.App to target the shared framework (bug
          https://github.com/dotnet/sdk/issues/1159) and NETCore.App
@@ -34,9 +26,7 @@
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\net46\</CscToolPath>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)src\commmon\XSharp.snk</AssemblyOriginatorKeyFile>
-
+    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -92,8 +82,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>XSharpResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="$(CoreSource)..\..\Shared\CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
-    <Compile Include="$(CoreSource)..\..\Shared\DesktopShim.cs">
+    <Compile Include="$(SharedSource)CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
+    <Compile Include="$(SharedSource)DesktopShim.cs">
       <Link>DesktopShim.cs</Link>
     </Compile>
     <Compile Update="CodeAnalysisResources.Designer.cs">
@@ -144,6 +134,7 @@
 	  </Compile>
     <Compile Remove="$(CSharpSource)Errors\ErrorCode.cs" />
     <Compile Remove="$(CSharpSource)CSharpResources.Designer.cs" />
+    <Compile Remove="$(CSharpSource)Generated\ErrorFacts.Generated.cs" />
     <Compile Include="$(CoreSource)**\*.cs">
       <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
     </Compile>
@@ -168,8 +159,8 @@
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
-  <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
   <PropertyGroup>
     <PreBuildEvent>
       $(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharpLexer.g4

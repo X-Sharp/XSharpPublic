@@ -2,16 +2,9 @@
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\CompilerCommon.targets" />
+
   <PropertyGroup>
-    <RoslynSrc>\Xsharp\Dev\Roslyn\src\</RoslynSrc>
-    <CoreSource>$(RoslynSrc)Compilers\Core\</CoreSource>
-    <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
-    <SharedSource>$(RoslynSrc)Compilers\Shared\</SharedSource>
-    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
-    <RoslynProjectType>Custom</RoslynProjectType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ProductVersion>8.0.30703</ProductVersion>
     <OutputType>Exe</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis.CompilerServer</RootNamespace>
@@ -23,11 +16,9 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\net46\</CscToolPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>  
+    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <Langversion>7.3</Langversion>
   
   </PropertyGroup>
   <ItemGroup Label="Project References">
@@ -79,5 +70,5 @@
 	</Compile>
 
   </ItemGroup>
-  <Import Project="$(CoreSource)CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

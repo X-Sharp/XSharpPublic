@@ -7,7 +7,24 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="'$(RoslynProjectType)' == 'UnitTest' OR '$(RoslynProjectType)' == 'UnitTestPortable'">
+   <When Condition="'$(RoslynProjectType)' == '' AND '$(OutputType)' == 'Library'">
+      <PropertyGroup>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Dlls\</OutputPath>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+      </PropertyGroup>
+    </When>
+   <When Condition="'$(RoslynProjectType)' == 'XSharp' ">
+      <PropertyGroup>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)</OutputPath>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+      </PropertyGroup>
+    </When>
+	
+   <When Condition="'$(RoslynProjectType)' == 'UnitTest' OR '$(RoslynProjectType)' == 'UnitTestPortable'">
       <PropertyGroup>
         <_IsAnyUnitTest>true</_IsAnyUnitTest>
         <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
@@ -53,6 +70,14 @@
         <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
         <CopyNuGetImplementations>true</CopyNuGetImplementations>
         <OutputPath>$(OutputPath)Exes\$(MSBuildProjectName)\</OutputPath>
+        <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+      </PropertyGroup>
+    </When>
+   <When Condition="'$(RoslynProjectType)' == 'XSharp' ">
+      <PropertyGroup>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Exes\</OutputPath>
         <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
       </PropertyGroup>
     </When>

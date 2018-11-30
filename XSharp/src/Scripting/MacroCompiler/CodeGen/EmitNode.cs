@@ -18,6 +18,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
         internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
         internal virtual void EmitBase(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
     internal partial class StoreTemp : Expr
@@ -65,6 +66,10 @@ namespace XSharp.MacroCompiler.Syntax
             if (preserve)
                 ilg.Emit(OpCodes.Dup);
             Symbol.EmitSet(ilg);
+        }
+        internal override void EmitAddr(ILGenerator ilg)
+        {
+            Symbol.EmitAddr(ilg);
         }
     }
     internal partial class MemberAccessExpr : Expr
@@ -257,10 +262,16 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            Expr.Emit(ilg, preserve);
-            if (preserve)
+            if (((ConversionSymbol)Symbol).Kind == ConversionKind.Refer)
             {
-                ((ConversionSymbol)Symbol).Emit(Expr,Datatype,ilg);
+                if (preserve)
+                    Expr.EmitAddr(ilg);
+            }
+            else
+            {
+                Expr.Emit(ilg, preserve);
+                if (preserve)
+                    ((ConversionSymbol)Symbol).Emit(Expr, Datatype, ilg);
             }
         }
     }

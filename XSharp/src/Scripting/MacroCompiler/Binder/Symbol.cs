@@ -55,6 +55,9 @@ namespace XSharp.MacroCompiler
         internal Type Type;
         internal NativeType NativeType;
         internal TypeSymbol(Type type) { Type = type; }
+        internal bool IsByRef { get { return Type.IsByRef; } }
+        internal bool IsValueType { get { return Type.IsValueType; } }
+        internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal void UpdateCache()
         {
             if (Cached)

@@ -29,13 +29,13 @@ namespace XSharp.MacroCompiler
                         break;
                     case NativeType.UInt64:
                     case NativeType.Int64:
-                        ilg.Emit(OpCodes.Ldc_I4_0);
+                        ilg.Emit(OpCodes.Ldc_I8, 0);
                         break;
                     case NativeType.Double:
-                        ilg.Emit(OpCodes.Ldc_R4, 0);
+                        ilg.Emit(OpCodes.Ldc_R8, 0);
                         break;
                     case NativeType.Single:
-                        ilg.Emit(OpCodes.Ldc_R4,0);
+                        ilg.Emit(OpCodes.Ldc_R4, 0);
                         break;
                     case NativeType.Decimal:
                         ilg.Emit(OpCodes.Ldsfld, (FieldInfo)Compilation.Get(WellKnownMembers.System_Decimal_Zero).Member);

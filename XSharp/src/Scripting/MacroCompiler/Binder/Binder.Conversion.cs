@@ -57,6 +57,13 @@ namespace XSharp.MacroCompiler
             if (conversion != ConversionKind.NoConversion)
                 return ConversionSymbol.Create(conversion);
 
+            if (type.IsByRef != expr.Datatype.IsByRef)
+            {
+                var conv = ResolveByRefConversion(expr, type);
+                if (conv != null)
+                    return conv;
+            }
+
             if (type.NativeType == NativeType.Object)
             {
                 if (expr.Datatype.Type.IsValueType)
@@ -123,6 +130,23 @@ namespace XSharp.MacroCompiler
             return ConversionKind.NoConversion;
         }
 
+        internal static ConversionSymbol ResolveByRefConversion(Expr expr, TypeSymbol type)
+        {
+            if (type.IsByRef && TypesMatch(expr.Datatype, type.ElementType))
+            {
+                return ConversionSymbol.Create(ConversionKind.Refer);
+            }
+            else
+            {
+                var inner = ConversionSymbol.Create(ConversionKind.Deref);
+                var outer = Conversion(TypeConversion.Bound(expr, expr.Datatype.ElementType, inner), type);
+                if (outer.Kind != ConversionKind.NoConversion)
+                {
+                    return ConversionSymbol.Create(outer, inner);
+                }
+            }
+            return null;
+        }
         internal static ConversionSymbol ResolveDynamicConversion(Expr expr, TypeSymbol type)
         {
             if (expr.Datatype.NativeType == NativeType.Object)

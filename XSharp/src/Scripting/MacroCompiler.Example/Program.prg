@@ -12,8 +12,10 @@ function R(r as real8) as real8
 function I(i as int) as int
     return i
 
-function A(i ref int) as int
-    return i;
+function A(i ref object) as int
+    var v := i astype int? DEFAULT 0
+    i := 1000 + v
+    return v
 
 function I0() as int
     return 123;
@@ -71,7 +73,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := int{} }")
+        EvalMacro(mc, e"{|z| A(z), z }")
         wait
 
         RunTests(mc)
@@ -159,7 +161,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"testclass{23}", <OBJECT>{}, testclass{23}, typeof(testclass))
         TestMacro(mc, e"testclassdc{}", <OBJECT>{}, testclassdc{}, typeof(testclassdc))
         TestMacro(mc, e"int{}", <OBJECT>{}, 0, typeof(int))
-//        TestMacro(mc, e"{|a| a := A(123) }", <OBJECT>{}, 3, typeof(usual)) // FAIL - A accepts byref arg
+        TestMacro(mc, e"{|z| A(z) }", <OBJECT>{123}, 123, typeof(int32))
+        TestMacro(mc, e"{|z| A(z), z }", <OBJECT>{123}, 1123, typeof(int32))
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 //        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL

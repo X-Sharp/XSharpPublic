@@ -44,6 +44,8 @@ namespace XSharp.MacroCompiler
         //InterpolatedString, // a conversion from an interpolated string to IFormattable or FormattableString
         ImplicitUsual,
         ExplicitUsual,
+        Refer,
+        Deref,
         ConstantReduction,
     }
 
@@ -99,6 +101,8 @@ namespace XSharp.MacroCompiler
             convCost[(int)ConversionKind.Boxing] = Implicit | 3;
             convCost[(int)ConversionKind.ImplicitUsual] = Implicit | 4;
             convCost[(int)ConversionKind.ImplicitUserDefined] = Implicit | 4;
+            convCost[(int)ConversionKind.Refer] = Implicit | 0;
+            convCost[(int)ConversionKind.Deref] = Implicit | 0;
             convCost[(int)ConversionKind.ConstantReduction] = Implicit | 0;
 
             convCost[(int)ConversionKind.ExplicitNumeric] = Explicit | 1;

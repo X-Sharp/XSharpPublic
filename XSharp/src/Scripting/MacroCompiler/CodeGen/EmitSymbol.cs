@@ -13,7 +13,7 @@ namespace XSharp.MacroCompiler
     {
         internal virtual void EmitGet(ILGenerator ilg) { throw new NotImplementedException(); }
         internal virtual void EmitSet(ILGenerator ilg) { throw new NotImplementedException(); }
-        internal virtual void EmitGetAddr(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
     }
     internal abstract partial class TypedSymbol : Symbol
     {
@@ -34,7 +34,7 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, Index); }
         internal override void EmitSet(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Stloc_S : OpCodes.Stloc, Index); }
-        internal override void EmitGetAddr(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, Index); }
+        internal override void EmitAddr(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, Index); }
         internal void Declare(ILGenerator ilg)
         {
             var lb = ilg.DeclareLocal(Type.Type);
@@ -45,6 +45,7 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldarg, Index); }
         internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Starg, Index); }
+        internal override void EmitAddr(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldarga_S : OpCodes.Ldarga, Index); }
     }
     internal partial class DynamicSymbol : TypedSymbol
     {
@@ -78,20 +79,9 @@ namespace XSharp.MacroCompiler
     }
     internal partial class FieldSymbol : MemberSymbol
     {
-        internal override void EmitGet(ILGenerator ilg)
-        {
-            if (Field.IsStatic)
-                ilg.Emit(OpCodes.Ldsfld, Field);
-            else
-                ilg.Emit(OpCodes.Ldfld, Field);
-        }
-        internal override void EmitSet(ILGenerator ilg)
-        {
-            if (Field.IsStatic)
-                ilg.Emit(OpCodes.Stsfld, Field);
-            else
-                ilg.Emit(OpCodes.Stfld, Field);
-        }
+        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(Field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, Field); }
+        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(Field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, Field); }
+        internal override void EmitAddr(ILGenerator ilg) { ilg.Emit(Field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda, Field); }
     }
     internal partial class EventSymbol : MemberSymbol
     {

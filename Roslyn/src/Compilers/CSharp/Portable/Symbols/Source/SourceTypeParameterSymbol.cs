@@ -720,7 +720,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             if (!Owner.IsOverride)
             {
-                var _constraintTypes = Owner.GetTypeParameterConstraintTypes(this.Ordinal);
+                var tp = Owner.TypeParameters[this.Ordinal];
+                if ((object)tp == null)
+                {
+                    return null;
+                }
+
+                var tmap = _map.TypeMap;
+                Debug.Assert(tmap != null);
+                var _constraintTypes = tmap.SubstituteTypesWithoutModifiers(tp.ConstraintTypesNoUseSiteDiagnostics);
+
                 return this.ResolveBounds(this.ContainingAssembly.CorLibrary, inProgress.Prepend(this), _constraintTypes, false, this.DeclaringCompilation, diagnostics);
             }
 #endif
@@ -753,7 +762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
         private TypeParameterConstraintKind GetDeclaredConstraints()
         {
-            return Owner.GetTypeParameterConstraints(this.Ordinal);
+            return Owner.TypeParameterConstraintClauses[this.Ordinal].Constraints;
         }
 #endif
     }

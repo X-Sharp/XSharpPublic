@@ -14,6 +14,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+#if XSHARP
     internal sealed class AliasAndUsingDirectiveComparer : IEqualityComparer<String>
     {
         public bool Equals(String x, String y)
@@ -26,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ((string)obj).ToLower().GetHashCode();
         }
     }
+#endif
     /// <summary>
     /// Represents symbols imported to the binding scope via using namespace, using alias, and extern alias.
     /// </summary>

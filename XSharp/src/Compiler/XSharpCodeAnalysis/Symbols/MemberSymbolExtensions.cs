@@ -55,7 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal static MethodSymbol BaseConstructor(this SourceMemberContainerTypeSymbol type)
         {
-            var baseType = type.BaseType;
+            var baseType = type.BaseTypeNoUseSiteDiagnostics;
             var members = baseType.GetMembers(".ctor");
             if (members.Length == 1)
             {
@@ -95,9 +95,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool HasClipperCallingConvention(this Symbol method)
         {
-            if (method is SourceMethodSymbol)
+            if (method is SourceMemberMethodSymbol)
             {
-                var sms = method as SourceMethodSymbol;
+                var sms = method as SourceMemberMethodSymbol;
                 var xnode = sms.SyntaxNode?.XNode;
                 if (xnode != null)
                 {

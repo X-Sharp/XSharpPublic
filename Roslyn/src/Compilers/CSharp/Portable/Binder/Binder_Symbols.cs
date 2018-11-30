@@ -1163,7 +1163,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(!typeArguments.IsEmpty);
 #if XSHARP
-            if (type.TypeArguments.Length == 0)
+            if (type.TypeArgumentsNoUseSiteDiagnostics.Length == 0)
             {
                 diagnostics.Add(ErrorCode.ERR_TypeArgsNotAllowed, typeSyntax.Location, type.Kind.ToString(),  type.Name);
                 return type;

@@ -26,7 +26,7 @@ using Microsoft.CodeAnalysis.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -302,6 +302,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             argumentRefKindsOpt: default(ImmutableArray<RefKind>),
                             expanded: false,
                             argsToParamsOpt: default(ImmutableArray<int>),
+                            binderOpt: this,
+                            useSetterForDefaultArgumentGeneration:false ,
                             type: usualType,
                             hasErrors: false)
                         { WasCompilerGenerated = true };
@@ -341,8 +343,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
-
-                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
+                    
+                    if (!CheckValueKind(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }
@@ -375,7 +377,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         analyzedArguments.Arguments[i] = arg;
                     }
 
-                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
+                    if (!CheckValueKind(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }
@@ -491,7 +493,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (stringctor != null)
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
-                    source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
+                    // todo: Convert string to psz by creating new psz object
+                    //source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
                     return true;
                 }
             }
@@ -708,7 +711,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);
                     }
 
-                    expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, isError);
+                    expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, indexed: false, isError);
 
                     if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
                     {
@@ -717,7 +720,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             syntax: node,
                             resultKind: LookupResultKind.WrongArity,
                             symbols: ImmutableArray.Create<Symbol>(symbol),
-                            childBoundNodes: ImmutableArray.Create<BoundNode>(expression),
+                            childBoundNodes: ImmutableArray.Create<BoundExpression>(expression),
                             type: expression.Type,
                             hasErrors: true);
                     }
@@ -829,7 +832,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression PszFromNull(BoundExpression expression)
         {
             var targetType = Compilation.PszType();
-            return new BoundDefaultOperator(expression.Syntax, targetType);
+            return new BoundDefaultExpression(expression.Syntax, targetType);
         }
     }
     internal static class XsBoundExpressionExtensions

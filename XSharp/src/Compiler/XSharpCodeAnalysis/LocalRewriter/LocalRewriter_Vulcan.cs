@@ -65,11 +65,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (found)
                     {
-                        return new BoundObjectCreationExpression(value.Syntax, ctor, value);
+                        return CreateObject(value.Syntax, ctor, value);
                     }
                 }
             }
             return value;
+        }
+
+        BoundObjectCreationExpression CreateObject(SyntaxNode syntax, MethodSymbol ctor, BoundExpression argument)
+        {
+            // Todo
+            return null;
         }
         static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
         {
@@ -81,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private static BoundExpressionStatement ClearGlobal(CSharpCompilation compilation, SyntaxNode node, FieldSymbol field)
         {
             var lhs = new BoundFieldAccess(node, null, field, null) { WasCompilerGenerated = true };
-            var rhs = new BoundDefaultOperator(node, field.Type) { WasCompilerGenerated = true };
+            var rhs = new BoundDefaultExpression(node, field.Type) { WasCompilerGenerated = true };
             var op = new BoundAssignmentOperator(node, lhs, rhs, field.Type) { WasCompilerGenerated = true };
             var stmt = new BoundExpressionStatement(node, op) { WasCompilerGenerated = true };
             return stmt;
@@ -125,6 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 invokedAsExtensionMethod: false,
                 argsToParamsOpt: default(ImmutableArray<int>),
                 resultKind: LookupResultKind.Viable,
+                binderOpt:null,
                 type: rettype,
                 hasErrors: false)
             { WasCompilerGenerated = true };
@@ -198,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var bfa = new BoundFieldAccess(syntax, null, field, ConstantValue.NotAvailable) { WasCompilerGenerated = true };
             var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
-            var ass = new BoundAssignmentOperator(syntax, bfa, lit, RefKind.None, lit.Type) { WasCompilerGenerated = true };
+            var ass = new BoundAssignmentOperator(syntax, bfa, lit, isRef: false, lit.Type) { WasCompilerGenerated = true };
             var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
             return stmt;
         }
@@ -206,7 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var bpa = new BoundPropertyAccess(syntax, null, prop, LookupResultKind.Viable,type) { WasCompilerGenerated = true };
             var lit = new BoundLiteral(syntax, ConstantValue.Create(value), type) { WasCompilerGenerated = true };
-            var ass = new BoundAssignmentOperator(syntax, bpa, lit, RefKind.None, lit.Type) { WasCompilerGenerated = true };
+            var ass = new BoundAssignmentOperator(syntax, bpa, lit, isRef: false, lit.Type) { WasCompilerGenerated = true };
             var stmt = new BoundExpressionStatement(syntax, ass) { WasCompilerGenerated = true };
             return stmt;
         }

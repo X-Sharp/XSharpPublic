@@ -477,6 +477,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// unfortunately either containing method or containing class could be synthetic
         /// therefore could have no syntax.
         /// </param>
+        /// <param name="diagnostics"></param>
         private SynthesizedClosureEnvironment GetStaticFrame(DiagnosticBag diagnostics, SyntaxNode syntax)
         {
             if (_lazyStaticLambdaFrame == null)

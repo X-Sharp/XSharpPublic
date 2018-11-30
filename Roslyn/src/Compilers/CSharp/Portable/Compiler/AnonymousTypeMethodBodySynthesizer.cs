@@ -48,7 +48,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     call = MethodCompiler.GenerateBaseParameterlessConstructorInitializer(this, diagnostics);
                 }
 #else
-                BoundExpression call = MethodCompiler.GenerateBaseParameterlessConstructorInitializer(this, diagnostics);
+                  Debug.Assert(ContainingType.BaseTypeNoUseSiteDiagnostics.SpecialType == SpecialType.System_Object);
+                  BoundExpression call = MethodCompiler.GenerateBaseParameterlessConstructorInitializer(this, diagnostics);
+
+
 #endif
                 if (call == null)
                 {

@@ -4,11 +4,11 @@
 using System;
 using System.Runtime.CompilerServices;
 
-[assembly: TypeForwardedTo(typeof(NonSerializedAttribute))]
+[assembly: TypeForwardedTo(typeof(System.NonSerializedAttribute))]
 #endif
 
 #else
-
+ 
 // ==++==
 // 
 //   Copyright (c) Microsoft Corporation.  All rights reserved.

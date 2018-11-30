@@ -410,9 +410,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         {
             CustomAttributeHandle extensionAttribute;
 #if XSHARP
-			var result = GetCustomAttributesForToken(token, out extensionAttribute, AttributeDescription.CaseInSensitiveExtensionAttribute);
+			var result = GetCustomAttributesForToken(token, out extensionAttribute, AttributeDescription.CaseInsensitiveExtensionAttribute);
 #else
-			var result = GetCustomAttributesForToken(token, out extensionAttribute, AttributeDescription.CaseSensitiveExtensionAttribute);
+            var result = GetCustomAttributesForToken(token, out extensionAttribute, AttributeDescription.CaseSensitiveExtensionAttribute);
 #endif
 
             foundExtension = !extensionAttribute.IsNil;
@@ -668,7 +668,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 #if XSHARP
             (int firstIndex, int secondIndex) = this.Module.GetAssemblyRefsForForwardedType(fullName.FullName, ignoreCase: true, matchedName: out matchedName);
 #else
-			(int firstIndex, int secondIndex) = this.Module.GetAssemblyRefsForForwardedType(fullName.FullName, ignoreCase: false, matchedName: out matchedName);
+            (int firstIndex, int secondIndex) = this.Module.GetAssemblyRefsForForwardedType(fullName.FullName, ignoreCase: false, matchedName: out matchedName);
 #endif
 
             if (firstIndex < 0)

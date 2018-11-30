@@ -656,13 +656,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
                 case BoundKind.Local:
                     return false;
-                default:
-                    return true;
-#else
-                default:
-                    return true;
-
 #endif
+                default:
+                    return true;
             }
         }
 

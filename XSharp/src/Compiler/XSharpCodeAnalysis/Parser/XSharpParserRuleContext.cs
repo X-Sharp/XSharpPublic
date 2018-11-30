@@ -19,14 +19,15 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
-#if ! TEST
+using System;
+#if !TEST
 using MCT= Microsoft.CodeAnalysis.Text;
 #endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpParserRuleContext :
         Antlr4.Runtime.ParserRuleContext,
-        IMessageSerializable,
+        IFormattable,
         IXParseTree
     {
         public XSharpParserRuleContext() : base()
@@ -270,6 +271,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 SetSequencePoint(this.Start, last);
             }
         }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString();
+        }
+
         public string ParentName
         {
             get

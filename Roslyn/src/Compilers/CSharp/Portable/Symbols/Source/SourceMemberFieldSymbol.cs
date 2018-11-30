@@ -15,13 +15,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
 #if XSHARP
     internal abstract partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
-#else
-    internal abstract class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
-#endif
     {
-#if XSHARP
         private DeclarationModifiers _modifiers;
 #else
+    internal abstract class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
+    {
         private readonly DeclarationModifiers _modifiers;
 #endif
 
@@ -447,7 +445,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     type = GetVOGlobalType(compilation, typeSyntax, binder, fieldsBeingBound);
                     if (type == null)
                     {
-                        type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
+                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
                     }
 #else
                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
@@ -516,10 +514,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
 
                     var elementType = ((PointerTypeSymbol)type).PointedAtType;
-#if XSHARP
-                    int elementSize = DeclaringCompilation.Options.HasRuntime ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
-#else
                     int elementSize = elementType.FixedBufferElementSizeInBytes();
+#if XSHARP
+					if (DeclaringCompilation.Options.HasRuntime )
+					{
+	                    elementSize = elementType.VoFixedBufferElementSizeInBytes() ;
+					}
 #endif
                     if (elementSize == 0)
                     {

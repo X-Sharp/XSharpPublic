@@ -360,7 +360,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 // Allow @ operator as alternative to REF
                 if (expr is BoundAddressOfOperator && Compilation.Options.VOImplicitCastsAndConversions)
+                { 
                     return;
+                }
 #endif
                 TypeSymbol exprType = expr.Type;
                 if ((object)exprType != null && exprType.IsUnsafe())
@@ -409,7 +411,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindXSIdentifier((SimpleNameSyntax)node, invoked, diagnostics, bindMethod: false);
 #else
                     return BindIdentifier((SimpleNameSyntax)node, invoked, indexed, diagnostics);
-
 #endif
                 case SyntaxKind.SimpleMemberAccessExpression:
                 case SyntaxKind.PointerMemberAccessExpression:
@@ -3486,7 +3487,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
-                    if (containingType.BaseType.SpecialType != SpecialType.System_Object)
+                    if (containingType.BaseTypeNoUseSiteDiagnostics.SpecialType != SpecialType.System_Object)
                     {
                         voDefaultCtorCall = true;
                     }
@@ -6249,8 +6250,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 OverloadResolution.MethodInvocationOverloadResolution(
-					methods: methodGroup.Methods, 
-					typeArguments: methodGroup.TypeArguments, 
+                    methods: methodGroup.Methods,
+                    typeArguments: methodGroup.TypeArguments,
                     receiver: methodGroup.Receiver,
                     arguments: actualArguments,
                     result: overloadResolutionResult,
@@ -6267,17 +6268,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #endif
                 var sealedDiagnostics = diagnostics.ToReadOnlyAndFree();
+                var result = new MethodGroupResolution(methodGroup, null, overloadResolutionResult, actualArguments, methodGroup.ResultKind, sealedDiagnostics);
 
-                // Note: the MethodGroupResolution instance is responsible for freeing its copy of actual arguments
-                var result = new MethodGroupResolution(methodGroup, null, overloadResolutionResult, AnalyzedArguments.GetInstance(actualArguments), methodGroup.ResultKind, sealedDiagnostics);
-
-                // If the search in the current scope resulted in any applicable method (regardless of whether a best
+                // If the search in the current scope resulted in any applicable method (regardless of whether a best 
                 // applicable method could be determined) then our search is complete. Otherwise, store aside the
                 // first non-applicable result and continue searching for an applicable result.
                 if (result.HasAnyApplicableMethod)
                 {
                     if (!firstResult.IsEmpty)
                     {
+                        // Free parts of the previous result but do not free AnalyzedArguments
+                        // since we're using the same arguments for the returned result.
                         firstResult.MethodGroup.Free();
                         firstResult.OverloadResolutionResult.Free();
                     }
@@ -6296,7 +6297,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             Debug.Assert((actualArguments == null) || !firstResult.IsEmpty);
-            actualArguments?.Free();
             return firstResult;
         }
 
@@ -6407,8 +6407,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             Error(diagnostics, isFixedStatementExpression ? ErrorCode.ERR_FixedNotNeeded : ErrorCode.ERR_FixedBufferNotFixed, node);
                             hasErrors = hasError = true;
                         }
-                    }
 #endif
+                    }
                 }
 
                 if (!hasError)
@@ -7353,8 +7353,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var diagnostics = DiagnosticBag.GetInstance();
                 diagnostics.AddRange(methodResolution.Diagnostics); // Could still have use site warnings.
                 BindMemberAccessReportError(node, diagnostics);
-
-                // Note: no need to free `methodResolution`, we're transferring the pooled objects it owned
                 return new MethodGroupResolution(methodResolution.MethodGroup, methodResolution.OtherSymbol, methodResolution.OverloadResolutionResult, methodResolution.AnalyzedArguments, methodResolution.ResultKind, diagnostics.ToReadOnlyAndFree());
             }
             return methodResolution;
@@ -7511,7 +7509,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     sealedDiagnostics = diagnostics.ToReadOnlyAndFree();
                 }
 #endif
-                return new MethodGroupResolution(methodGroup, null, result, AnalyzedArguments.GetInstance(analyzedArguments), methodGroup.ResultKind, sealedDiagnostics);
+                return new MethodGroupResolution(methodGroup, null, result, analyzedArguments, methodGroup.ResultKind, sealedDiagnostics);
             }
         }
 

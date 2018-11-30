@@ -76,11 +76,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
 
             // The easy out is that we have no named arguments and are in normal form.
-#if XSHARP && false
-            if (!expanded && arguments.Names.Count == 0 && !hasMissingArgs)
-#else
             if (!expanded && arguments.Names.Count == 0)
-#endif
             {
                 return AnalyzeArgumentsForNormalFormNoNamedArguments(parameters, arguments, isMethodGroupConversion, isVararg);
             }

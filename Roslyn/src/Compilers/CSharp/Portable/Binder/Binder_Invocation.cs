@@ -261,7 +261,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 !(expression.IsKind(SyntaxKind.SimpleMemberAccessExpression) && GetName((ExpressionSyntax)expression) == ".ctor"))
             {
                 ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
-                bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause, lateBound : true);
+                var refKindsArray = analyzedArguments.RefKinds.ToImmutableOrNull();
+
+                bool hasErrors = ReportBadDynamicArguments(node, argArray, refKindsArray, diagnostics, queryClause, lateBound : true);
                 result = new BoundDynamicInvocation(
                     node,
                     boundExpression,

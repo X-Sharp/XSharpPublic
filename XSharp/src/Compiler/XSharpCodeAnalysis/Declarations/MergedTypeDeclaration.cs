@@ -20,7 +20,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
 using xs = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     // An invariant of a merged type declaration is that all of its children are also merged

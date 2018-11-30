@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,11 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+#if XSHARP
+    public partial class CSharpCommandLineParser : CommandLineParser
+#else
     public class CSharpCommandLineParser : CommandLineParser
+#endif
     {
         public static CSharpCommandLineParser Default { get; } = new CSharpCommandLineParser();
         public static CSharpCommandLineParser Script { get; } = new CSharpCommandLineParser(isScriptCommandLineParser: true);
@@ -132,9 +136,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool publicSign = false;
             string sourceLink = null;
             string ruleSetPath = null;
-            #if XSHARP
+#if XSHARP
             this.ResetXSharpCommandlineOptions();
-            #endif
+#endif
 
             // Process ruleset files first so that diagnostic severity settings specified on the command line via
             // /nowarn and /warnaserror can override diagnostic severity settings specified in the ruleset file.

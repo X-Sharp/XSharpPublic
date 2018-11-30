@@ -405,7 +405,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             declaredAccessibility = Accessibility.Internal;
                         }
 #endif
-                        if ((declaredAccessibility & (Accessibility.Public | Accessibility.Internal)) != declaredAccessibility)
+                        if (declaredAccessibility != Accessibility.Public && declaredAccessibility != Accessibility.Internal)
                         {
                             diagnostics.Add(ErrorCode.ERR_NoNamespacePrivate, symbol.Locations[0]);
                         }

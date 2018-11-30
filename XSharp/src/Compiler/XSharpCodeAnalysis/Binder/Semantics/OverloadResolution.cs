@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP=LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using System;
-
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class OverloadResolution

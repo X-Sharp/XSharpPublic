@@ -28,6 +28,7 @@ using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics; // PLEASE DO NOT REMOVE THIS!!!!
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
@@ -5520,7 +5521,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var ldecl = _syntaxFactory.LocalDeclarationStatement(
                     modifiers.ToList<SyntaxToken>(),
                     _syntaxFactory.VariableDeclaration(
-                        _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), varType), variables),
+                        _syntaxFactory.RefType(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), null, varType), variables),
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 decl.Add(ldecl);
                 if (initExpr != null)

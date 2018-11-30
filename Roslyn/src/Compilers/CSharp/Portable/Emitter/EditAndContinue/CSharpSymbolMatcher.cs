@@ -19,8 +19,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
     {
 #if XSHARP
         private static readonly StringComparer s_nameComparer = CaseInsensitiveComparison.Comparer;
-#else
-        private static readonly StringComparer s_nameComparer = StringComparer.Ordinal;
 #endif
         private readonly MatchDefs _defs;
         private readonly MatchSymbols _symbols;
@@ -761,7 +759,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 Debug.Assert(s_nameComparer.Equals(type.Name, other.Name));
 #else
                 Debug.Assert(StringOrdinalComparer.Equals(type.Name, other.Name));
-
 #endif				
                 // TODO: Test with overloads (from PE base class?) that have modifiers.
                 Debug.Assert(!type.HasTypeArgumentsCustomModifiers);
@@ -801,7 +798,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 Debug.Assert(s_nameComparer.Equals(property.MetadataName, other.MetadataName));
 #else
                 Debug.Assert(StringOrdinalComparer.Equals(property.MetadataName, other.MetadataName));
-
 #endif				
                 return _comparer.Equals(property.Type, other.Type) &&
                     property.RefKind.Equals(other.RefKind) &&
@@ -942,6 +938,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
             public override Symbol VisitNamedType(NamedTypeSymbol type)
             {
+                if (type.IsTupleType)
+                {
+                    type = type.TupleUnderlyingType;
+                    Debug.Assert(!type.IsTupleType);
+                }
+
                 var originalDef = type.OriginalDefinition;
                 if ((object)originalDef != type)
                 {

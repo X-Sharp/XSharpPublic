@@ -459,6 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         // Handle the accessors here, instead of in the loop, so that we can ensure that
                         // they're checked *after* the corresponding event.
 #if !XSHARP
+						//TODO: Check if this still needs to be excluded in X#
                         if (member.IsOverride)
                         {
                             CheckOverrideMember(@event, @event.OverriddenOrHiddenMembers, diagnostics, out suppressAccessors);

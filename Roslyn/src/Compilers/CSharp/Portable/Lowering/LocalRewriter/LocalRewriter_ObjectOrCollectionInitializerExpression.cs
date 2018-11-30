@@ -161,6 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<LocalSymbol> temps;
             var argumentRefKindsOpt = default(ImmutableArray<RefKind>);
             rewrittenArguments = MakeArguments(syntax, rewrittenArguments, addMethod, addMethod, initializer.Expanded, initializer.ArgsToParamsOpt, ref argumentRefKindsOpt, out temps, enableCallerInfo: ThreeState.True);
+            Debug.Assert(argumentRefKindsOpt.IsDefault);
 
             if (initializer.InvokedAsExtensionMethod)
             {
@@ -177,7 +178,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return initializer.Update(addMethod, rewrittenArguments, rewrittenReceiver, expanded: false, argsToParamsOpt: default, initializer.InvokedAsExtensionMethod, initializer.ResultKind, initializer.BinderOpt, rewrittenType);
             }
 
-            return MakeCall(null, syntax, rewrittenReceiver, addMethod, rewrittenArguments, argumentRefKindsOpt, initializer.InvokedAsExtensionMethod, initializer.ResultKind, addMethod.ReturnType, temps);
+            return MakeCall(null, syntax, rewrittenReceiver, addMethod, rewrittenArguments, default(ImmutableArray<RefKind>), initializer.InvokedAsExtensionMethod, initializer.ResultKind, addMethod.ReturnType, temps);
         }
 
         // Rewrite object initializer member assignments and add them to the result.
@@ -233,12 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         if (!memberInit.Arguments.IsDefaultOrEmpty)
                         {
-                            var args = EvaluateSideEffectingArgumentsToTemps(
-                                memberInit.Arguments,
-                                memberInit.MemberSymbol?.GetParameterRefKinds() ?? default(ImmutableArray<RefKind>),
-                                result,
-                                ref temps);
-
+                            var args = EvaluateSideEffectingArgumentsToTemps(memberInit.Arguments, result, ref temps);
                             memberInit = memberInit.Update(
                                 memberInit.MemberSymbol,
                                 args,
@@ -324,11 +320,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.ArrayAccess:
                     {
                         var arrayAccess = (BoundArrayAccess)rewrittenLeft;
-                        var indices = EvaluateSideEffectingArgumentsToTemps(
-                            arrayAccess.Indices,
-                            paramRefKindsOpt: default,
-                            result,
-                            ref temps);
+                        var indices = EvaluateSideEffectingArgumentsToTemps(arrayAccess.Indices, result, ref temps);
                         rewrittenAccess = arrayAccess.Update(rewrittenReceiver, indices, arrayAccess.Type);
 
                         if (!isRhsNestedInitializer)
@@ -384,7 +376,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private ImmutableArray<BoundExpression> EvaluateSideEffectingArgumentsToTemps(
                                                  ImmutableArray<BoundExpression> args,
-                                                 ImmutableArray<RefKind> paramRefKindsOpt,
                                                  ArrayBuilder<BoundExpression> sideeffects,
                                                  ref ArrayBuilder<LocalSymbol> temps)
         {
@@ -402,10 +393,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         newArgs.AddRange(args, i);
                     }
 
-                    RefKind refKind = paramRefKindsOpt.RefKinds(i);
-
                     BoundAssignmentOperator store;
-                    var temp = _factory.StoreToTemp(arg, out store, refKind);
+                    var temp = _factory.StoreToTemp(arg, out store);
                     newArgs.Add(temp);
 
                     if (temps == null)
@@ -421,7 +410,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            return newArgs?.ToImmutableAndFree() ?? args;
+            return newArgs?
+                .ToImmutableAndFree() ??
+                args;
         }
 
         private BoundExpression MakeObjectInitializerMemberAccess(

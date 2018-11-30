@@ -413,6 +413,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// error scenarios, such as a delegate type that has no invoke method.</param>
         /// <param name="returnType">The return type of the delegate, if known. It isn't
         /// known when we're attempting to infer the return type of a method group for type inference.</param>
+        /// <param name="results"></param>
+        /// <param name="useSiteDiagnostics"></param>
         private void RemoveDelegateConversionsWithWrongReturnType<TMember>(
             ArrayBuilder<MemberResolutionResult<TMember>> results,
             ref HashSet<DiagnosticInfo> useSiteDiagnostics,
@@ -583,7 +585,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            var effectiveParameters = GetEffectiveParametersInExpandedForm(constructor, 
+            var effectiveParameters = GetEffectiveParametersInExpandedForm(
+				constructor, 
 				arguments.Arguments.Count, 
 				argumentAnalysis.ArgsToParamsOpt, 
 				arguments.RefKinds, 
@@ -2475,7 +2478,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     type2 == Conversions.Compilation.UsualType())
                     return BetterResult.Left;
             }
-
 #endif
             // Given two different types T1 and T2, T1 is a better conversion target than T2 if no implicit conversion from T2 to T1 exists, 
             // and at least one of the following holds:
@@ -2842,7 +2844,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind == RefKind.Ref || refKind == RefKind.Out))
 #else
-                if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind == RefKind.Ref))
+                if (parameterRefKinds.IsDefaultOrEmpty)
 #endif
                 {
                     return new EffectiveParameters(member.GetParameterTypes(), parameterRefKinds);
@@ -3364,36 +3366,38 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
                 else
                 {
-#if XSHARP
-                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
-                    if (Compilation.Options.VOImplicitCastsAndConversions)
-                    {
-                        // C590 Allow NULL as argument for REF parameters
-                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
-                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
-                            : default(ImmutableArray<RefKind>);
-                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
-                        if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
-                        {
-                            literalNullForRefParameter = true;
-                        }
-                        if (! literalNullForRefParameter)
-                        {
-                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
-                            {
-                                argument = (argument as BoundAddressOfOperator).Operand;
-                            }
-                        }
-                    }
-                    if (literalNullForRefParameter)
-                        conversion = Conversion.Identity;
-                    else
-					{
-#endif
-                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
-#if ! XSHARP					
-                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
-#endif					
+
+//                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
+//                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
+//                    bool literalNullForRefParameter = false;
+//                    if (Compilation.Options.VOImplicitCastsAndConversions)
+//                    {
+//                        // C590 Allow NULL as argument for REF parameters
+//                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+//                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+//                            : default(ImmutableArray<RefKind>);
+//                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+//                        if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
+//                        {
+//                            literalNullForRefParameter = true;
+//                        }
+//                        if (! literalNullForRefParameter)
+//                        {
+//                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+//                            {
+//                                argument = (argument as BoundAddressOfOperator).Operand;
+//                            }
+//                        }
+//                    }
+//                    if (literalNullForRefParameter)
+//                        conversion = Conversion.Identity;
+//                    else
+//					{
+//*/
+                        RefKind argumentRefKind = arguments.RefKind(argumentPosition);
+
+                        RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
+
                     bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
 
                     if (forExtensionMethodThisArg)

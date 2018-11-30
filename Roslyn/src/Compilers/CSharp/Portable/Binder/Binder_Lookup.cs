@@ -1181,10 +1181,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         out inaccessibleViaQualifier,
                                         ref useSiteDiagnostics,
                                         basesBeingResolved
+                                        )
 #if XSHARP
                     && (!Compilation.Options.HasRuntime || !inaccessibleViaQualifier)
 #endif
-                                        ))
+                                        )
 			{
                  if (!diagnose)
                  {
@@ -1265,12 +1266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     unwrappedSymbol.DeclaredAccessibility == Accessibility.ProtectedOrInternal)
                     && !options.IsAttributeTypeLookup())
                 {
-                    var assemblyName = this.Compilation.AssemblyName;
-                    if (assemblyName == null)
-                    {
-                        return false;
-                    }
-                    var keys = unwrappedSymbol.ContainingAssembly.GetInternalsVisibleToPublicKeys(assemblyName);
+                    var keys = unwrappedSymbol.ContainingAssembly.GetInternalsVisibleToPublicKeys(this.Compilation.AssemblyName);
                     if (!keys.Any())
                     {
                         return false;

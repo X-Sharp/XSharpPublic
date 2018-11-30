@@ -623,7 +623,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 return IsStatic && CaseInsensitiveComparison.Equals(Name, WellKnownMemberNames.EntryPointMethodName);
 #else				
-				return IsStatic && Name == WellKnownMemberNames.EntryPointMethodName;
+                return IsStatic && Name == WellKnownMemberNames.EntryPointMethodName;
 #endif								
             }
         }

@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // check to see if we are casting to an interface that the usualtype supports
                         if (rewrittenType.IsInterfaceType())
                         {
-                            foreach (var interf in usualType.Interfaces)
+                            foreach (var interf in usualType.AllInterfacesNoUseSiteDiagnostics)
                             {
                                 if (interf == rewrittenType)
                                 {

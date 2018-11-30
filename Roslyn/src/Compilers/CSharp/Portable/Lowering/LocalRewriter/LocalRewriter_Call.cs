@@ -183,16 +183,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // We have already lowered each argument, but we may need some additional rewriting for the arguments,
             // such as generating a params array, re-ordering arguments based on argsToParamsOpt map, inserting arguments for optional parameters, etc.
             ImmutableArray<LocalSymbol> temps;
-            rewrittenArguments = MakeArguments(
-                syntax,
-                rewrittenArguments,
-                method,
-                method,
-                expanded,
-                argsToParamsOpt,
-                ref argumentRefKindsOpt,
-                out temps,
-                invokedAsExtensionMethod);
+            rewrittenArguments = MakeArguments(syntax, rewrittenArguments, method, method, expanded, argsToParamsOpt, ref argumentRefKindsOpt, out temps, invokedAsExtensionMethod);
 
             return MakeCall(nodeOpt, syntax, rewrittenReceiver, method, rewrittenArguments, argumentRefKindsOpt, invokedAsExtensionMethod, resultKind, type, temps);
         }
@@ -418,18 +409,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // If none of those are the case then we can just take an early out.
 
-
 #if XSHARP
-            if (!_compilation.Options.HasRuntime)
-#endif
+            // TODO Check if this is still ok
+#endif            
+
             ArrayBuilder<LocalSymbol> temporariesBuilder = ArrayBuilder<LocalSymbol>.GetInstance();
             rewrittenArguments = _factory.MakeTempsForDiscardArguments(rewrittenArguments, temporariesBuilder);
             ImmutableArray<ParameterSymbol> parameters = methodOrIndexer.GetParameters();
-#if XSHARP
-            if (!_compilation.Options.HasRuntime)
-#endif
+
             if (CanSkipRewriting(rewrittenArguments, methodOrIndexer, expanded, argsToParamsOpt, invokedAsExtensionMethod, false, out var isComReceiver))
-			{
+            {
                 temps = temporariesBuilder.ToImmutableAndFree();
                 argumentRefKindsOpt = GetEffectiveArgumentRefKinds(argumentRefKindsOpt, parameters);
 
@@ -722,6 +711,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 RefKind argRefKind = argumentRefKinds.RefKinds(a);
                 RefKind paramRefKind = parameters[p].RefKind;
 
+                // Patch refKinds for arguments that match 'In' parameters to have effective RefKind
+                // For the purpose of further analysis we will mark the arguments as -
+                // - In        if was originally passed as None
+                // - StrictIn  if was originally passed as In
+                // Here and in the layers after the lowering we only care about None/notNone differences for the arguments
+                // Except for async stack spilling which needs to know whether arguments were originally passed as "In" and must obey "no copying" rule.
+                if (paramRefKind == RefKind.In)
+                {
+                    argRefKind = argRefKind == RefKind.None ? paramRefKind : RefKindExtensions.StrictIn;
+                }
+
                 Debug.Assert(arguments[p] == null);
 
                 // Unfortunately, we violate the specification and allow:
@@ -758,26 +758,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
-                    var temp = _factory.StoreToTemp(
-                        argument,
-                        out BoundAssignmentOperator assignment,
-                        refKind: paramRefKind == RefKind.In ? RefKind.In : argRefKind);
+                    BoundAssignmentOperator assignment;
+                    var temp = _factory.StoreToTemp(argument, out assignment, refKind: argRefKind);
                     storesToTemps.Add(assignment);
                     arguments[p] = temp;
                 }
-
-                // Patch refKinds for arguments that match 'In' parameters to have effective RefKind
-                // For the purpose of further analysis we will mark the arguments as -
-                // - In        if was originally passed as None
-                // - StrictIn  if was originally passed as In
-                // Here and in the layers after the lowering we only care about None/notNone differences for the arguments
-                // Except for async stack spilling which needs to know whether arguments were originally passed as "In" and must obey "no copying" rule.
-                if (paramRefKind == RefKind.In)
-                {
-                    Debug.Assert(argRefKind == RefKind.None || argRefKind == RefKind.In);
-                    argRefKind = argRefKind == RefKind.None ? RefKind.In : RefKindExtensions.StrictIn;
-                }
-
                 refKinds[p] = argRefKind;
             }
 
@@ -1135,7 +1120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Debug.Assert(parameter.IsOptional);
                     arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo);
 #else
-                    arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo) ?? arguments[p] ?? new BoundDefaultOperator(syntax, parameter.Type);
+                    arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo) ?? arguments[p] ?? new BoundDefaultExpression(syntax, parameter.Type);
 #endif
                     Debug.Assert(arguments[p].Type == parameter.Type);
 
@@ -1315,7 +1300,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (defaultConstantValue == null)
                     return null;
                 if ( parameterType is NamedTypeSymbol &&
-                    ((NamedTypeSymbol) parameterType).ConstructedFrom == _compilation.PszType())
+                    ((NamedTypeSymbol) parameterType).ConstructedFrom == compilation.PszType())
                 {
 
                     if (defaultConstantValue.StringValue != null)

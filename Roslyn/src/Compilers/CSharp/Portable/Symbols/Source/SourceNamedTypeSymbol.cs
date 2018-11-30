@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                 if ((object)backupLocation == null && inheritedTypeDecls.Count > 0)
 #else
-                if ((object)backupLocation == null )
+                if ((object)backupLocation == null)
 #endif
                 {
                     backupLocation = inheritedTypeDecls[0].Type.GetLocation();
@@ -96,7 +96,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 #endif
         }
-
 
         #region Syntax
 
@@ -1232,6 +1231,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
         }
 
-#endregion
+        #endregion
     }
 }

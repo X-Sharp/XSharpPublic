@@ -393,7 +393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             if (member1.GetMemberArity() != member2.GetMemberArity())
                 return false;
-            // When one or both are clipper then we see it as a match. We will report an error 
+            // When one or both are clipper then we see it as a match. We will report an error later
             if (member1.HasClipperCallingConvention() || member2.HasClipperCallingConvention())
                 return true;
             if (member1.GetParameterCount() != member2.GetParameterCount())
@@ -404,9 +404,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return false;
             }
-
 #endif
-
 
             var typeMap1 = GetTypeMap(member1);
             var typeMap2 = GetTypeMap(member2);

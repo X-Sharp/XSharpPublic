@@ -1,85 +1,75 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\Roslyn\build\Targets\Settings.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <RoslynProjectType>Custom</RoslynProjectType>
+    <RoslynSrc>..\..\..\..\Roslyn\src\</RoslynSrc>
+    <CoreSource>$(RoslynSrc)Compilers\Core\</CoreSource>
+    <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
+    <SharedSource>$(RoslynSrc)Compilers\Shared\</SharedSource>
+    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
+    <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
+    <RoslynProjectType>Custom</RoslynProjectType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9508F118-F62E-4C16-A6F4-7C3B56E166AD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>CSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(CfgPath)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworks>net46</TargetFrameworks>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
     <DefineConstants>$(DefineConstants);XSHARPPRE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj">
-      <Project>{7b774abc-83a0-4fd8-91fb-1dbe8829765b}</Project>
-      <Name>CSharpCodeAnalysis</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);XSHARP;</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp2.0'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\BuildClient.cs">
+    <Compile Include="$(SharedSource)BuildClient.cs">
       <Link>BuildClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\BuildServerConnection.cs">
+    <Compile Include="$(SharedSource)BuildServerConnection.cs">
       <Link>BuildServerConnection.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\DesktopAnalyzerAssemblyLoader.cs">
+    <Compile Include="$(SharedSource)CoreClrAnalyzerAssemblyLoader.cs">
+      <Link>CoreClrAnalyzerAssemblyLoader.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)DesktopAnalyzerAssemblyLoader.cs">
       <Link>DesktopAnalyzerAssemblyLoader.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\DesktopBuildClient.cs">
+    <Compile Include="$(SharedSource)DesktopBuildClient.cs">
       <Link>DesktopBuildClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\ExitingTraceListener.cs">
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
       <Link>ExitingTraceListener.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Shared\ShadowCopyAnalyzerAssemblyLoader.cs">
+    <Compile Include="$(SharedSource)ShadowCopyAnalyzerAssemblyLoader.cs">
       <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\AnalyzerConsistencyChecker.cs" />
-    <Compile Include="Assembly.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\DesktopCompilerServerHost.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\DesktopBuildServerController.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\NamedPipeClientConnection.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\VBCSCompiler.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Server\VBCSCompiler\MemoryHelper.cs" />
-    <Compile Include="VBCodeAnalysisDummy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="project.json" />
+    <None Include="App.config" />
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\CommandLine\CommandLine.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Server\ServerShared\ServerShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\build\Targets\Imports.targets" />
+  <ItemGroup>
+	<Compile Include="$(ServerSource)VBCSCompiler\**\*.cs" >
+		<Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+	</Compile>
+  </ItemGroup>
+  <Import Project="$(CoreSource)CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

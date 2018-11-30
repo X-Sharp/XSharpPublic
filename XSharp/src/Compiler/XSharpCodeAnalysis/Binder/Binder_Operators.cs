@@ -208,8 +208,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
             var lit0 = new BoundLiteral(node, ConstantValue.Create(0), intType);
             var lit1 = new BoundLiteral(node, ConstantValue.Create(1), intType);
-            left = new BoundConditionalOperator(node, left, lit1, lit0, null, intType);
-            right = new BoundConditionalOperator(node, right, lit1, lit0, null, intType);
+            left = new BoundConditionalOperator(node, false, left, lit1, lit0, null, intType);
+            right = new BoundConditionalOperator(node, false, right, lit1, lit0, null, intType);
             return null;
         }
 

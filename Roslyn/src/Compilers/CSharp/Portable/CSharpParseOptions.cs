@@ -12,7 +12,11 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// <summary>
     /// This class stores several source parsing related options and offers access to their values.
     /// </summary>
+#if XSHARP
+    public sealed partial class CSharpParseOptions : ParseOptions, IEquatable<CSharpParseOptions>
+#else
     public sealed class CSharpParseOptions : ParseOptions, IEquatable<CSharpParseOptions>
+#endif
     {
         /// <summary>
         /// The default parse options.

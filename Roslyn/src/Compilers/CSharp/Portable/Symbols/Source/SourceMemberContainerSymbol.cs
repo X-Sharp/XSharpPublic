@@ -1165,13 +1165,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 Debug.Assert(s_emptyTypeMembers.Count == 0);
-#if XSHARP
-                return symbols.Count > 0 ? symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer) : s_emptyTypeMembers;
-#else
                 return symbols.Count > 0 ?
+#if XSHARP				
+					symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer) : 
+#else
                     symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance) :
+#endif					
                     s_emptyTypeMembers;
-#endif
             }
             finally
             {
@@ -1737,6 +1737,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
 #if XSHARP
             if (indexer.IsIndexer())
+			{
 #endif
             if (!indexer.IsExplicitInterfaceImplementation) //explicit implementation names are not checked
             {
@@ -1766,6 +1767,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
+#if XSHARP
+			}
+#endif
 
             PropertySymbol prevIndexerBySignature;
             if (indexersBySignature.TryGetValue(indexer, out prevIndexerBySignature))
@@ -3091,9 +3095,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 diagnostics.Add(ErrorCode.ERR_NamespaceUnexpected,
                                     new SourceLocation(constructorSyntax.Identifier));
                             }
-#if XSHARP
-                            //constructorSyntax = AdjustGeneratedContructor(constructorSyntax, this);
-#endif
+
                             var constructor = SourceConstructorSymbol.CreateConstructorSymbol(this, constructorSyntax, diagnostics);
                             builder.NonTypeNonIndexerMembers.Add(constructor);
                         }

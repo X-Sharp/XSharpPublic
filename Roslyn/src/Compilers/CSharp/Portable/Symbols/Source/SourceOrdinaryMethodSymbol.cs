@@ -357,8 +357,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
                     if ((object)overriddenMethod != null)
                     {
-                        CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType, 
-                                                                      out _lazyCustomModifiers, 
+                        CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType,
+                                                                      out _lazyCustomModifiers,
                                                                       out _lazyParameters, alsoCopyParamsModifier: true);
                     }
 #if XSHARP
@@ -991,7 +991,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if (IsAbstract && IsVirtual)
             {
-                diagnostics.Add(ErrorCode.ERR_AbstractNotVirtual, location, this);
+                diagnostics.Add(ErrorCode.ERR_AbstractNotVirtual, location, this.Kind.Localize(), this);
             }
             else if (IsAbstract && ContainingType.TypeKind == TypeKind.Struct)
             {
@@ -1014,8 +1014,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Disable warning when compiling with /vo3
                 if (!this.DeclaringCompilation.Options.VirtualInstanceMethods)
                 {
-                    // '{0}' is a new virtual member in sealed class '{1}'
-                    diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+                // '{0}' is a new virtual member in sealed class '{1}'
+                diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
                 }
 #else
                     // '{0}' is a new virtual member in sealed class '{1}'
@@ -1204,7 +1204,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 #else
-          internal override bool GenerateDebugInfo => !IsAsync && !IsIterator;
+        internal override bool GenerateDebugInfo => !IsAsync && !IsIterator;
 #endif
     }
 }

@@ -661,7 +661,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     }
     [Serializable]
     public class XTerminalNodeImpl : Antlr4.Runtime.Tree.TerminalNodeImpl,
-        IMessageSerializable,
+        IFormattable,
         IXParseTree,
         IErrorNode
     {
@@ -671,6 +671,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsHidden { get { return false; } }
         public int Position { get { return Symbol.StartIndex; } }
         public int FullWidth { get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString();
+        }
         public string SourceFileName
         {
             get

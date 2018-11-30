@@ -581,7 +581,6 @@ namespace Microsoft.CodeAnalysis
             "Microsoft.VisualBasic.Conversion",
 
 #if XSHARP
-            ,
             "System.Runtime.CompilerServices.IsConst",
 
             "Vulcan.Internal.VOStructAttribute",

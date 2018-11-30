@@ -165,6 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         /// or of the ParamInfo passed in, otherwise).</param>
         /// <param name="parameterInfo" />
         /// <param name="isBad" />
+        /// <param name="isContainingSymbolVirtual"></param>
         internal static PEParameterSymbol Create(
             PEModuleSymbol moduleSymbol,
             PEPropertySymbol containingSymbol,

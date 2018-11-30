@@ -515,6 +515,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var syntax = initializer.Syntax;
 #if XSHARP
+			// TODO : Is this still needed
             if (syntax is VariableDeclaratorSyntax)
             {
                 return (initializer as BoundExpressionStatement)?.Expression.Kind == BoundKind.AssignmentOperator;

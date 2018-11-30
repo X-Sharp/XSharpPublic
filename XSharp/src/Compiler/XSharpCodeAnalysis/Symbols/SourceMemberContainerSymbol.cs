@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // not generated or inherit from nothing (OBJECT)
             if (!ctor.XGenerated || ctor.ParameterList.ParameterCount == 0)
                 return ctor;
-            var parentType = type.BaseType;
+            var parentType = type.BaseTypeNoUseSiteDiagnostics;
             while (parentType != null)
             {
                 // we expect exactly 1 parent ctor
@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 //    return ctor;
                 //}
 
-                parentType = parentType.BaseType;
+                parentType = parentType.BaseTypeNoUseSiteDiagnostics;
             }
 
 

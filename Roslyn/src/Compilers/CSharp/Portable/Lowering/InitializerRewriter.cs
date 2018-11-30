@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         new BoundThisReference(syntax, fieldInit.Field.ContainingType);
 
 #if XSHARP
-            var initValue = fieldInit.InitialValue;
+            var initValue = fieldInit.Value;
             // a generated initial value for VO NULL_STRING initialization
             // should not overwrite a value set in a child class
             // not that we recommend that <g>

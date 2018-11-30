@@ -609,6 +609,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
 
         }
+		
         private bool BindSimpleBinaryOperatorParts(BinaryExpressionSyntax node, DiagnosticBag diagnostics, BoundExpression left, BoundExpression right, BinaryOperatorKind kind,
             out LookupResultKind resultKind, out ImmutableArray<MethodSymbol> originalUserDefinedOperators,
             out BinaryOperatorSignature resultSignature, out BinaryOperatorAnalysisResult best)
@@ -2203,7 +2204,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindAddressOfExpression(PrefixUnaryExpressionSyntax node, DiagnosticBag diagnostics)
         {
 #if XSHARP
-
+			// TODO : MOve to our own files
             // In vulcan when we have defined a structure like:
             // VOSTRUCT _WINWIN32_FIND_DATA
             //   MEMBER DIM cFileName[10] AS BYTE

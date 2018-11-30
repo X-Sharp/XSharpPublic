@@ -684,7 +684,7 @@ namespace Microsoft.CodeAnalysis
             var parseOptions = Arguments.ParseOptions as CSharp.CSharpParseOptions;
             if (parseOptions.ParseLevel < CSharp.ParseLevel.Complete)
             {
-                return Succeeded;
+                return;
             }
 #endif                        
             cancellationToken.ThrowIfCancellationRequested();

@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
+using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
@@ -43,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.IVarPut,
                 MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
-                loweredValue.Type == null ? new BoundDefaultOperator(loweredValue.Syntax, usualType)
+                loweredValue.Type == null ? new BoundDefaultExpression(loweredValue.Syntax, usualType)
                 : MakeConversionNode(loweredValue, usualType, false));
         }
 
@@ -59,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 
                 if (a.Type == null && ! a.Syntax.XIsCodeBlock)
-                    convArgs.Add(new BoundDefaultOperator(a.Syntax, usualType));
+                    convArgs.Add(new BoundDefaultExpression(a.Syntax, usualType));
                 else
                    convArgs.Add(MakeConversionNode(a, usualType, false));
             }
@@ -80,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var a in args)
             {
                 if (a.Type == null)
-                    convArgs.Add(new BoundDefaultOperator(a.Syntax, usualType));
+                    convArgs.Add(new BoundDefaultExpression(a.Syntax, usualType));
                 else
                     convArgs.Add(MakeConversionNode(a, usualType, false));
             }

@@ -941,7 +941,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             // We use Priority as a tie-breaker to help match native compiler bugs.
             Debug.Assert(op1.Priority.HasValue == op2.Priority.HasValue);
 #endif
-
             if (op1.Priority.HasValue && op1.Priority.GetValueOrDefault() != op2.Priority.GetValueOrDefault())
             {
                 return (op1.Priority.GetValueOrDefault() < op2.Priority.GetValueOrDefault()) ? BetterResult.Left : BetterResult.Right;

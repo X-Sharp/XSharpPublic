@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             using (var outputstream = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
                             {
-                                provider.SignAssembly(compilation.StrongNameKeys, inputstream, outputstream);
+                                provider.SignStream(compilation.StrongNameKeys, inputstream, outputstream);
                                 outputstream.Flush();
                             }
                         }

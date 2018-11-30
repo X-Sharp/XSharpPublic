@@ -1,4 +1,4 @@
-// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
+﻿// Copyright (c) Terence Parr, Sam Harwell. All Rights Reserved.
 // Licensed under the BSD License. See LICENSE.txt in the project root for license information.
 
 using System;
@@ -22,7 +22,7 @@ namespace Antlr4.Runtime.Misc
     /// response to a parse error.
     /// </remarks>
     /// <author>Sam Harwell</author>
-    [System.Serializable]
+    //[System.Serializable]
     public class ParseCanceledException : OperationCanceledException
     {
         public ParseCanceledException()

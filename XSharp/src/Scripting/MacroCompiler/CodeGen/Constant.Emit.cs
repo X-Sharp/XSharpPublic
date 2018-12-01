@@ -32,6 +32,14 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___VOFloat_ctor) as ConstructorSymbol).Constructor);
         }
     }
+    internal partial class ConstantVOSymbol : ConstantWithValue<string>
+    {
+        internal override void Emit(ILGenerator ilg)
+        {
+            ilg.Emit(OpCodes.Ldstr, String);
+            ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___Symbol_ctor) as ConstructorSymbol).Constructor);
+        }
+    }
     internal partial class ConstantDefault : Constant
     {
         internal override void Emit(ILGenerator ilg)

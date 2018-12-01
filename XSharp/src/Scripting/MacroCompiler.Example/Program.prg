@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := 123.450m + 1 }", 8)
+        EvalMacro(mc, e"{|| #HELLo }", 8)
         wait
 
         RunTests(mc)
@@ -108,6 +108,7 @@ begin namespace MacroCompilerTest
     function RunTests(mc as XSharp.Runtime.MacroCompiler) as void
         Console.WriteLine("Running tests ...")
 
+        TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(symbol))
         TestMacro(mc, "U(12345)", <OBJECT>{}, 12345, typeof(usual))
         TestMacro(mc, "U(U(12345)-1)", <OBJECT>{}, 12344, typeof(usual))
         TestMacro(mc, "I(123+45)", <OBJECT>{}, 123+45, typeof(int))

@@ -176,7 +176,10 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldstr, c.String);
                     break;
                 case NativeType.DateTime:
-                    // TODO nvk
+                    EmitConstant_I4(ilg, c.DateTime.Value.Year);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Month);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Day);
+                    ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___VODate_ctor) as ConstructorSymbol).Constructor);
                     break;
                 case NativeType.Decimal:
                     {

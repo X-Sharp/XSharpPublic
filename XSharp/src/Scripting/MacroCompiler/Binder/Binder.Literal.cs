@@ -174,7 +174,23 @@ namespace XSharp.MacroCompiler
                 case TokenType.NIL:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Usual));
                 case TokenType.DATE_CONST:
-                    throw new NotImplementedException();
+                    {
+                        var args = Value.Split('.');
+                        if (args.Length == 3)
+                        {
+                            int year, month, day;
+                            if (Int32.TryParse(args[0], out year) &&
+                                Int32.TryParse(args[1], out month) &&
+                                Int32.TryParse(args[2], out day))
+                            {
+                                if (Options.VODateConstants)
+                                    return Constant.CreateVODate(year, month, day);
+                                else
+                                    return Constant.Create(new DateTime(year, month, day));
+                            }
+                        }
+                        throw new NotImplementedException();
+                    }
                 case TokenType.NULL_ARRAY:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Array));
                 case TokenType.NULL_CODEBLOCK:

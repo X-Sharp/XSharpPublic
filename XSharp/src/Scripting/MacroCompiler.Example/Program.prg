@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| 1 == 1 }", 8)
+        EvalMacro(mc, e"{|a| U(2018.12.31) = U(2018.12.31) }", 8)
         wait
 
         RunTests(mc)
@@ -93,13 +93,13 @@ begin namespace MacroCompilerTest
         Console.WriteLine("Press any key to exit...")
         Console.ReadKey()
 
-    function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args params object[]) as void
+    function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args params object[]) as usual
         Console.WriteLine("Executing macro ...")
         //var cb := MCompile(src)
         var cb := mc:Compile(src)
         var res := cb:EvalBlock(args)
         Console.WriteLine("res = {0}",res)
-        return
+        return res
 
     global TotalFails := 0 as int
     global TotalTests := 0 as int
@@ -130,6 +130,12 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "1234", <OBJECT>{}, 1234, typeof(int))
         TestMacro(mc, "12 == 12", <OBJECT>{}, true, typeof(logic))
         TestMacro(mc, "", <OBJECT>{}, null, null)
+        TestMacro(mc, "2018.12.31", <OBJECT>{}, 2018.12.31, typeof(date))
+        TestMacro(mc, "2018.1.1", <OBJECT>{}, 2018.1.1, typeof(date))
+        TestMacro(mc, "2018.12.31 = 2018.12.31", <OBJECT>{}, true, typeof(logic))
+        TestMacro(mc, "2018.12.31 = 2018.1.1", <OBJECT>{}, false, typeof(logic))
+        TestMacro(mc, "2018.12.31 != 2018.12.31", <OBJECT>{}, false, typeof(logic))
+        TestMacro(mc, "2018.12.31 != 2018.1.1", <OBJECT>{}, true, typeof(logic))
         TestMacro(mc, "null", <OBJECT>{}, null, null)
         TestMacro(mc, "null_object", <OBJECT>{}, null_object, null)
         TestMacro(mc, "null_string", <OBJECT>{}, null_string, null)

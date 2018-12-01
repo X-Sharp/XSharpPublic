@@ -15,5 +15,6 @@ namespace XSharp.MacroCompiler
         public bool AllowSingleQuotedStrings = true;
 
         public bool VOFloatConstants = true;
+        public bool VODateConstants = true;
     }
 }

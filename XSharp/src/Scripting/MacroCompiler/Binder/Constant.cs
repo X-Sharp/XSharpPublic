@@ -21,6 +21,7 @@ namespace XSharp.MacroCompiler
         internal static ConstantWithValue<string> Create(string value) { return new ConstantWithValue<string>(value, NativeType.String); }
         internal static ConstantWithValue<DateTime> Create(DateTime value) { return new ConstantWithValue<DateTime>(value, NativeType.DateTime); }
         internal static ConstantVOFloat Create(double value, int length, int decimals) { return new ConstantVOFloat(value, length, decimals); }
+        internal static ConstantVODate CreateVODate(int year, int month, int day) { return new ConstantVODate(year, month, day); }
         internal static ConstantVOSymbol CreateSymbol(string value) { return new ConstantVOSymbol(value); }
         internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
 
@@ -71,6 +72,10 @@ namespace XSharp.MacroCompiler
             Length = length;
             Decimals = decimals;
         }
+    }
+    internal partial class ConstantVODate: ConstantWithValue<DateTime>
+    {
+        internal ConstantVODate(int year, int month, int day) : base(new DateTime(year, month, day), NativeType.VODate) { }
     }
     internal partial class ConstantVOSymbol : ConstantWithValue<string>
     {

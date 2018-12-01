@@ -32,6 +32,16 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___VOFloat_ctor) as ConstructorSymbol).Constructor);
         }
     }
+    internal partial class ConstantVODate : ConstantWithValue<DateTime>
+    {
+        internal override void Emit(ILGenerator ilg)
+        {
+            EmitConstant_I4(ilg, DateTime.Value.Year);
+            EmitConstant_I4(ilg, DateTime.Value.Month);
+            EmitConstant_I4(ilg, DateTime.Value.Day);
+            ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___VODate_ctor) as ConstructorSymbol).Constructor);
+        }
+    }
     internal partial class ConstantVOSymbol : ConstantWithValue<string>
     {
         internal override void Emit(ILGenerator ilg)

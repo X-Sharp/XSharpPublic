@@ -22,6 +22,7 @@ namespace XSharp.MacroCompiler
         System_Decimal_ctor,
         XSharp___Array_ctor,
         XSharp___VOFloat_ctor,
+        XSharp___VODate_ctor,
         XSharp___Symbol_ctor,
     }
 
@@ -39,6 +40,7 @@ namespace XSharp.MacroCompiler
             "System.Decimal.@ctor(System.Int32[])",
             "XSharp.__Array.@ctor(XSharp.__Usual[])|Vulcan.__Array.@ctor(XSharp.__Usual[])",
             "XSharp.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)|Vulcan.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)",
+            "XSharp.__VODate.@ctor(System.Int32,System.Int32,System.Int32)|Vulcan.__VODate.@ctor(System.Int32,System.Int32,System.Int32)",
             "XSharp.__Symbol.@ctor(System.String)|Vulcan.__Symbol.@ctor(System.String)",
         };
 

@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| U(2018.12.31) == U(2018.12.31) }", 8)
+        EvalMacro(mc, e"{|a| IIF(a>0,12,1.5) }", -8)
         wait
 
         RunTests(mc)
@@ -198,6 +198,10 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|z| A(z), z }", <OBJECT>{123}, 1123, typeof(int32))
         TestMacro(mc, e"{|a| testclass.sprop := 555, a := ++testclass.sprop }", <OBJECT>{}, 556, typeof(int32))
         TestMacro(mc, e"{|a| testclass.sprop := a, a := ++testclass.sprop }", <OBJECT>{55}, 56, typeof(int32))
+        TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{100}, 123, typeof(float))
+        TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{1}, 1.23, typeof(float))
+        TestMacro(mc, e"{|a| IIF(a>10,1) }", <OBJECT>{100}, 1, typeof(usual))
+        TestMacro(mc, e"{|a| IIF(a>10,,1) }", <OBJECT>{100}, nil, typeof(usual))
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 //        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL

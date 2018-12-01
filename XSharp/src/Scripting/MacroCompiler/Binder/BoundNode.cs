@@ -410,6 +410,18 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = dt ?? Binder.ArrayOf(et);
         }
     }
+    internal partial class IifExpr : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Cond);
+            b.Bind(ref True);
+            b.Bind(ref False);
+            Binder.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
+            Datatype = Binder.ConvertResult(ref True, ref False);
+            return null;
+        }
+    }
     internal partial class ArgList : Node
     {
         internal override Node Bind(Binder b)

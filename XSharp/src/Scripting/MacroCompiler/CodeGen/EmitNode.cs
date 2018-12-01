@@ -379,6 +379,24 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class IifExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Cond.Emit(ilg);
+            var lbFalse = ilg.DefineLabel();
+            var lbTrue = ilg.DefineLabel();
+            ilg.Emit(OpCodes.Brfalse_S, lbFalse);
+            True.Emit(ilg);
+            ilg.Emit(OpCodes.Br, lbTrue);
+            ilg.MarkLabel(lbFalse);
+            False.Emit(ilg);
+            ilg.MarkLabel(lbTrue);
+
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class ArgList : Node
     {
         internal override void Emit(ILGenerator ilg)

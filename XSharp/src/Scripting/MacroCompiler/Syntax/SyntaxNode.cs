@@ -234,6 +234,14 @@ namespace XSharp.MacroCompiler.Syntax
         internal LiteralArray(ExprList values, TypeExpr elemType = null) { ElemType = elemType;  Values = values; }
         public override string ToString() { return "{" + Values.ToString() + "}"; }
     }
+    internal partial class IifExpr : Expr
+    {
+        internal Expr Cond;
+        internal Expr True;
+        internal Expr False;
+        internal IifExpr(Expr cond, Expr trueExpr, Expr falseExpr) { Cond = cond; True = trueExpr; False = falseExpr; }
+        public override string ToString() { return "{IIF(" + Cond.ToString() + "," + True.ToString() + "," + False.ToString() + ")}"; }
+    }
     internal partial class ArgList : Node
     {
         internal IList<Arg> Args;

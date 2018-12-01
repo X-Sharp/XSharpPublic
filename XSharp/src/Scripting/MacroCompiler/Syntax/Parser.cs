@@ -259,7 +259,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.LT:
                     return ParseTypedLiteralArray();
                 // TODO nvk: PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-                // TODO nvk: Expr=iif													#iifExpression			// iif( expr, expr, expr )
+                case TokenType.IF:
+                case TokenType.IIF:
+                    return ParseIif();
                 // TODO nvk: Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
                 // TODO nvk: FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                 // TODO nvk: {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
@@ -464,18 +466,21 @@ namespace XSharp.MacroCompiler
             IList<Expr> l = new List<Expr>();
 
             var e = ParseExpression();
-            bool empty = true;
+            if (e == null && La() == TokenType.COMMA)
+            {
+                if (allowEmpty) e = new EmptyExpr();
+                else Require(e != null, "Expected expression");
+            }
             while (Expect(TokenType.COMMA))
             {
-                empty = false;
-                if (!allowEmpty) Require(e != null, "Expected expression");
-                l.Add(e ?? new EmptyExpr());
+                l.Add(e);
                 e = ParseExpression();
+                if (e == null && allowEmpty) e = new EmptyExpr();
+                else Require(e != null, "Expected expression");
             }
-            if (e != null || !empty)
+            if (e != null)
             {
-                if (!allowEmpty) Require(e != null, "Expected expression");
-                l.Add(e ?? new EmptyExpr());
+                l.Add(e);
             }
 
             return new ExprList(l);
@@ -530,7 +535,7 @@ namespace XSharp.MacroCompiler
         {
             Require(Expect(TokenType.LPAREN), "Expected '('");
 
-            var t = ParseType();
+            var t = Require(ParseType(), "Expected type expression");
 
             Require(Expect(TokenType.RPAREN), "Expected ')'");
 
@@ -541,7 +546,7 @@ namespace XSharp.MacroCompiler
         {
             Require(Expect(TokenType.LPAREN), "Expected '('");
 
-            var e = ParseExpression();
+            var e = Require(ParseExpression(),"Expected expression");
 
             Require(Expect(TokenType.RPAREN), "Expected ')'");
 
@@ -585,12 +590,35 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
+        internal Expr ParseIif()
+        {
+            if (Expect(TokenType.IIF) || Expect(TokenType.IF))
+            {
+                Require(Expect(TokenType.LPAREN), "Expected '('");
+
+                var c = Require(ParseExpression(), "Expected expression");
+
+                Expect(TokenType.COMMA);
+
+                var et = ParseExpression() ?? new EmptyExpr();
+
+                Expect(TokenType.COMMA);
+
+                var ef = ParseExpression() ?? new EmptyExpr();
+
+                Require(Expect(TokenType.RPAREN), "Expected ')'");
+
+                return new IifExpr(c, et, ef);
+            }
+            return null;
+        }
+
         internal Arg ParseArg()
         {
             var e = ParseExpression();
-            if (e == null && La() != TokenType.COMMA)
+            if (e == null)
                 return null;
-            return new Arg(e ?? new EmptyExpr());
+            return new Arg(e);
         }
 
         internal ArgList ParseArgList()
@@ -598,13 +626,19 @@ namespace XSharp.MacroCompiler
             IList<Arg> l = new List<Arg>();
 
             var a = ParseArg();
+            if (a == null && La() == TokenType.COMMA)
+                a = new Arg(new EmptyExpr());
             while (Expect(TokenType.COMMA))
             {
                 l.Add(a);
                 a = ParseArg();
+                if (a == null)
+                    a = new Arg(new EmptyExpr());
             }
             if (a != null)
+            {
                 l.Add(a);
+            }
 
             return new ArgList(l);
         }

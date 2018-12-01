@@ -31,6 +31,40 @@ namespace XSharp.MacroCompiler
             Convert(ref e, type, Conversion(e, type));
         }
 
+        internal static TypeSymbol ConvertResult(ref Expr e1, ref Expr e2)
+        {
+            var conv1 = Conversion(e1, e2.Datatype);
+            var conv2 = Conversion(e2, e1.Datatype);
+            if (conv1.Kind == ConversionKind.NoConversion && conv2.Kind != ConversionKind.NoConversion)
+            {
+                Convert(ref e2, e1.Datatype, conv2);
+                return e1.Datatype;
+            }
+            if (conv1.Kind != ConversionKind.NoConversion && conv2.Kind == ConversionKind.NoConversion)
+            {
+                Convert(ref e1, e2.Datatype, conv1);
+                return e2.Datatype;
+            }
+            if (conv1.Kind != ConversionKind.NoConversion && conv2.Kind != ConversionKind.NoConversion)
+            {
+                int cost1 = conv1.Cost;
+                int cost2 = conv2.Cost;
+                if (cost1 <= cost2 && e1.Datatype.NativeType != NativeType.Usual)
+                {
+                    Convert(ref e1, e2.Datatype, conv1);
+                    return e2.Datatype;
+                }
+                else
+                {
+                    Convert(ref e2, e1.Datatype, conv2);
+                    return e1.Datatype;
+                }
+            }
+            Convert(ref e1, Compilation.Get(NativeType.Usual));
+            Convert(ref e2, Compilation.Get(NativeType.Usual));
+            return Compilation.Get(NativeType.Usual);
+        }
+
         internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, bool allowExplicit = false, bool allowDynamic = true)
         {
             var conversion = ConversionEasyOut.ClassifyConversion(expr.Datatype, type);

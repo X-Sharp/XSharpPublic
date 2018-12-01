@@ -262,17 +262,9 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (((ConversionSymbol)Symbol).Kind == ConversionKind.Refer)
-            {
-                if (preserve)
-                    Expr.EmitAddr(ilg);
-            }
-            else
-            {
-                Expr.Emit(ilg, preserve);
-                if (preserve)
-                    ((ConversionSymbol)Symbol).Emit(Expr, Datatype, ilg);
-            }
+            ((ConversionSymbol)Symbol).Emit(Expr, Datatype, ilg);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class TypeConversion : TypeCast

@@ -217,6 +217,51 @@ namespace XSharp.MacroCompiler
             }
         }
 
+        internal static void EmitDereference(ILGenerator ilg, TypeSymbol type)
+        {
+            switch (type.NativeType)
+            {
+                case NativeType.Byte:
+                    ilg.Emit(OpCodes.Ldind_I1);
+                    break;
+                case NativeType.Int16:
+                    ilg.Emit(OpCodes.Ldind_I2);
+                    break;
+                case NativeType.Int32:
+                    ilg.Emit(OpCodes.Ldind_I4);
+                    break;
+                case NativeType.Boolean:
+                case NativeType.SByte:
+                    ilg.Emit(OpCodes.Ldind_U1);
+                    break;
+                case NativeType.Char:
+                case NativeType.UInt16:
+                    ilg.Emit(OpCodes.Ldind_U2);
+                    break;
+                case NativeType.UInt32:
+                    ilg.Emit(OpCodes.Ldind_U4);
+                    break;
+                case NativeType.UInt64:
+                    ilg.Emit(OpCodes.Ldobj, type.Type);
+                    break;
+                case NativeType.Int64:
+                    ilg.Emit(OpCodes.Ldind_I8);
+                    break;
+                case NativeType.Double:
+                    ilg.Emit(OpCodes.Ldind_R4);
+                    break;
+                case NativeType.Single:
+                    ilg.Emit(OpCodes.Ldind_R4);
+                    break;
+                default:
+                    if (type.IsValueType)
+                        ilg.Emit(OpCodes.Ldobj, type.Type);
+                    else
+                        ilg.Emit(OpCodes.Ldind_Ref);
+                    break;
+            }
+        }
+
         internal static void EmitNumericConversion(ILGenerator ilg, NativeType fromType, NativeType toType, bool @checked)
         {
             bool fromUnsigned = fromType.IsUnsigned();

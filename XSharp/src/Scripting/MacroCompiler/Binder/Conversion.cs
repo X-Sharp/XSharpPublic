@@ -63,6 +63,7 @@ namespace XSharp.MacroCompiler
         internal static ConversionSymbolWithMethod Create(ConversionKind kind, MethodSymbol method) { return new ConversionSymbolWithMethod(kind, method); }
         internal static ConversionSymbolToConstant Create(Constant constant) { return new ConversionSymbolToConstant(constant); }
         internal static ConversionChain Create(ConversionSymbol conv, ConversionSymbol prev) { return new ConversionChain(conv, prev); }
+        internal static ConversionByRef CreateByRef() { return new ConversionByRef(); }
 
         internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
 
@@ -145,6 +146,11 @@ namespace XSharp.MacroCompiler
         internal override bool IsExplicit { get { return Previous.IsExplicit || Conversion.IsExplicit; } }
         internal override bool IsImplicit { get { return Previous.IsImplicit || Conversion.IsImplicit; } }
         internal override int Cost { get { return Previous.Cost + Conversion.Cost; } }
+    }
+
+    internal partial class ConversionByRef : ConversionSymbol
+    {
+        internal ConversionByRef() : base(ConversionKind.Refer) { }
     }
 
     internal static class ConversionEasyOut

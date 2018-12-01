@@ -134,7 +134,7 @@ namespace XSharp.MacroCompiler
         {
             if (type.IsByRef && TypesMatch(expr.Datatype, type.ElementType))
             {
-                return ConversionSymbol.Create(ConversionKind.Refer);
+                return ConversionSymbol.CreateByRef();
             }
             else
             {

@@ -29,6 +29,13 @@ namespace XSharp.MacroCompiler
                     return op;
             }
 
+            // Symbol/string operations
+            {
+                var op = SymbolAndStringBinaryOperator(kind, ref left, ref right);
+                if (op != null)
+                    return op;
+            }
+
             // Dynamic with usual
             if (allowDynamic)
             {
@@ -159,6 +166,29 @@ namespace XSharp.MacroCompiler
                 if (rconv != null && rconv.Kind != ConversionKind.Identity)
                     Convert(ref right, FindType(parameters[1].ParameterType), rconv);
             }
+        }
+
+        internal static BinaryOperatorSymbol SymbolAndStringBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right)
+        {
+            if (kind == BinaryOperatorKind.Addition)
+            {
+                var l = left;
+                var r = right;
+                if (left.Datatype.NativeType == NativeType.Symbol)
+                    Convert(ref l, Compilation.Get(NativeType.String));
+                if (right.Datatype.NativeType == NativeType.Symbol)
+                    Convert(ref r, Compilation.Get(NativeType.String));
+                var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, l.Datatype, r.Datatype);
+                if (sym != null)
+                {
+                    left = l;
+                    right = r;
+                    Convert(ref left, sym.TypeOfOp);
+                    Convert(ref right, sym.TypeOfOp);
+                    return sym;
+                }
+            }
+            return null;
         }
 
         static BinaryOperatorSymbol DynamicBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right)

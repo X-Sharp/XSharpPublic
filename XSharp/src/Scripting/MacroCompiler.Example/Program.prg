@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|| #HELLo }", 8)
+        EvalMacro(mc, e"{|| #HELLo + #world }", 8)
         wait
 
         RunTests(mc)
@@ -109,6 +109,9 @@ begin namespace MacroCompilerTest
         Console.WriteLine("Running tests ...")
 
         TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(symbol))
+        TestMacro(mc, "#HELLo + #World", <OBJECT>{}, #hello + #world, typeof(string))
+        TestMacro(mc, e"#HELLo + \"world\"", <OBJECT>{}, #hello + "world", typeof(string))
+        TestMacro(mc, e"\"Hello\" + #world", <OBJECT>{}, "Hello" + #world, typeof(string))
         TestMacro(mc, "U(12345)", <OBJECT>{}, 12345, typeof(usual))
         TestMacro(mc, "U(U(12345)-1)", <OBJECT>{}, 12344, typeof(usual))
         TestMacro(mc, "I(123+45)", <OBJECT>{}, 123+45, typeof(int))

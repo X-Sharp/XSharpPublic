@@ -11,7 +11,7 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal static Constant CreateLiteral(TokenType Kind, string Value)
+        internal Constant CreateLiteral(TokenType Kind, string Value)
         {
             switch (Kind)
             {
@@ -96,7 +96,18 @@ namespace XSharp.MacroCompiler
                         case 'd':
                             return Constant.Create(double.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
                         default:
-                            return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture));
+                            if (Options.VOFloatConstants)
+                            {
+                                var args = Value.Split('.');
+                                if (args.Length == 2)
+                                {
+                                    int dec = args[1].Length;
+                                    return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture), 0, dec);
+                                }
+                                throw new NotImplementedException();
+                            }
+                            else
+                                return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture));
                     }
                 case TokenType.INT_CONST:
                     switch (Value.Last())

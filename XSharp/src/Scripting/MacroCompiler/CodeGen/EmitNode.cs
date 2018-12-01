@@ -217,7 +217,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (preserve)
             {
-                EmitLiteral(ilg, (Constant)Symbol);
+                ((Constant)Symbol).Emit(ilg);
             }
         }
     }
@@ -337,7 +337,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             if (preserve)
-                EmitLiteral(ilg, (Constant)Symbol);
+                ((Constant)Symbol).Emit(ilg);
         }
     }
     internal partial class Arg : Node
@@ -407,12 +407,12 @@ namespace XSharp.MacroCompiler.Syntax
                     ParamArray.EmitGet(ilg);
                     ilg.Emit(OpCodes.Ldlen);
                     ilg.Emit(OpCodes.Conv_I4);
-                    EmitLiteral(ilg, lidx);
+                    lidx.Emit(ilg);
                     ilg.Emit(OpCodes.Cgt);
                     ilg.Emit(OpCodes.Brfalse_S, skip);
 
                     ParamArray.EmitGet(ilg);
-                    EmitLiteral(ilg, lidx);
+                    lidx.Emit(ilg);
                     ilg.Emit(OpCodes.Ldelem_Ref);
                     ls.EmitSet(ilg);
 

@@ -35,7 +35,11 @@ namespace XSharp.MacroCompiler
         IntPtr = 20,
         UIntPtr = 21,
         Usual = 22,
-        Array = 23,
+        VOFloat = 23,
+        VODate = 24,
+        Symbol = 25,
+        Psz = 26,
+        Array = 27,
     }
 
     public static class NativeTypeInfo
@@ -77,6 +81,10 @@ namespace XSharp.MacroCompiler
             "System.IntPtr",
             "System.UIntPtr",
             XSharpQualifiedTypeNames.Usual + "|" + VulcanQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Float + "|" + VulcanQualifiedTypeNames.Float,
+            XSharpQualifiedTypeNames.Date + "|" + VulcanQualifiedTypeNames.Date,
+            XSharpQualifiedTypeNames.Symbol + "|" + VulcanQualifiedTypeNames.Symbol,
+            XSharpQualifiedTypeNames.Psz + "|" + VulcanQualifiedTypeNames.Psz,
             XSharpQualifiedTypeNames.Array + "|" + VulcanQualifiedTypeNames.Array,
         };
 
@@ -96,10 +104,12 @@ namespace XSharp.MacroCompiler
                     foreach(var name in names.Split('|'))
                     {
                         var t = Binder.LookupFullName(name) as TypeSymbol;
+                        Debug.Assert(t != null);
                         if (t == null)
                             continue;
                         t.NativeType = m;
                         nativeTypeSymbols[(int)m] = t;
+                        break;
                     }
                 }
             }

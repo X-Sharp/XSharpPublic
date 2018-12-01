@@ -205,7 +205,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Symbol = Binder.CreateLiteral(Kind, Value);
+            Symbol = b.CreateLiteral(Kind, Value);
             Datatype = (Symbol as Constant)?.Type;
             return null;
         }

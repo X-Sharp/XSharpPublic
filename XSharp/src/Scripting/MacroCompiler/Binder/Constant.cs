@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XSharp.MacroCompiler
 {
-    internal class Constant : Symbol
+    internal abstract partial class Constant : Symbol
     {
         internal static ConstantWithValue<T> Create<T>(T value, NativeType nt) { return new ConstantWithValue<T>(value, nt); }
         internal static ConstantWithValue<bool> Create(bool value) { return new ConstantWithValue<bool>(value, NativeType.Boolean); }
@@ -20,6 +20,7 @@ namespace XSharp.MacroCompiler
         internal static ConstantWithValue<decimal> Create(decimal value) { return new ConstantWithValue<decimal>(value, NativeType.Decimal); }
         internal static ConstantWithValue<string> Create(string value) { return new ConstantWithValue<string>(value, NativeType.String); }
         internal static ConstantWithValue<DateTime> Create(DateTime value) { return new ConstantWithValue<DateTime>(value, NativeType.DateTime); }
+        internal static ConstantVOFloat Create(double value, int length, int decimals) { return new ConstantVOFloat(value, length, decimals); }
         internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
 
         internal static ConstantDefault Null { get { return CreateDefault(Compilation.Get(NativeType.Object)); } }
@@ -40,7 +41,7 @@ namespace XSharp.MacroCompiler
         internal virtual string String { get; }
         internal virtual DateTime? DateTime { get; }
     }
-    internal class ConstantWithValue<T> : Constant
+    internal partial class ConstantWithValue<T> : Constant
     {
         T Value;
         internal ConstantWithValue(T value, NativeType nt) { Value = value; Type = Compilation.Get(nt); }
@@ -60,7 +61,17 @@ namespace XSharp.MacroCompiler
 
         public override string ToString() { return Value.ToString(); }
     }
-    internal class ConstantDefault : Constant
+    internal partial class ConstantVOFloat : ConstantWithValue<double>
+    {
+        int Length;
+        int Decimals;
+        internal ConstantVOFloat(double value, int length, int decimals) : base(value, NativeType.VOFloat)
+        {
+            Length = length;
+            Decimals = decimals;
+        }
+    }
+    internal partial class ConstantDefault : Constant
     {
         internal ConstantDefault(TypeSymbol type) { Type = type; }
 

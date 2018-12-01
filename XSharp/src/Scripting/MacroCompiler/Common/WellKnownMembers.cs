@@ -20,6 +20,7 @@ namespace XSharp.MacroCompiler
         System_String_op_Inequality,
         System_Object_Equals,
         XSharp___Array_ctor,
+        XSharp___VOFloat_ctor,
     }
 
     public static partial class Compilation
@@ -34,6 +35,7 @@ namespace XSharp.MacroCompiler
             "System.String.op_Inequality$(System.String,System.String)",
             "System.Object.Equals$(System.Object,System.Object)",
             "XSharp.__Array.@ctor(XSharp.__Usual[])|Vulcan.__Array.@ctor(XSharp.__Usual[])",
+            "XSharp.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)|Vulcan.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)",
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;

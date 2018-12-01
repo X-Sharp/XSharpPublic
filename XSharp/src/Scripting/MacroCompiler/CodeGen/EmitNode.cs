@@ -362,14 +362,14 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            ilg.Emit(OpCodes.Ldc_I4, Values.Exprs.Count);
+            EmitConstant_I4(ilg, Values.Exprs.Count);
             ilg.Emit(OpCodes.Newarr, (Symbol as TypeSymbol).Type);
             for (int i = 0; i < Values.Exprs.Count; i++)
             {
                 ilg.Emit(OpCodes.Dup);
-                ilg.Emit(OpCodes.Ldc_I4, i);
+                EmitConstant_I4(ilg, i);
                 Values.Exprs[i].Emit(ilg);
-                ilg.Emit(OpCodes.Stelem, (Symbol as TypeSymbol).Type);
+                EmitArrayStoreElem(ilg, Symbol as TypeSymbol);
             }
             if (Datatype.NativeType == NativeType.Array)
             {

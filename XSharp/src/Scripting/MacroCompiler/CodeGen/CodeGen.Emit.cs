@@ -95,6 +95,44 @@ namespace XSharp.MacroCompiler
             }
         }
 
+        internal static void EmitArrayStoreElem(ILGenerator ilg, TypeSymbol type)
+        {
+            switch (type.NativeType)
+            {
+                case NativeType.Boolean:
+                case NativeType.SByte:
+                case NativeType.Byte:
+                    ilg.Emit(OpCodes.Stelem_I1);
+                    break;
+                case NativeType.Char:
+                case NativeType.Int16:
+                case NativeType.UInt16:
+                    ilg.Emit(OpCodes.Stelem_I2);
+                    break;
+                case NativeType.Int32:
+                case NativeType.UInt32:
+                    ilg.Emit(OpCodes.Stelem_I4);
+                    break;
+                case NativeType.Int64:
+                case NativeType.UInt64:
+                    ilg.Emit(OpCodes.Stelem_I8);
+                    break;
+                case NativeType.Single:
+                    ilg.Emit(OpCodes.Stelem_R4);
+                    break;
+                case NativeType.Double:
+                    ilg.Emit(OpCodes.Stelem_R8);
+                    break;
+                case NativeType.IntPtr:
+                case NativeType.UIntPtr:
+                    ilg.Emit(OpCodes.Stelem_I);
+                    break;
+                default:
+                    ilg.Emit(OpCodes.Stelem, type.Type);
+                    break;
+            }
+        }
+
         internal static void EmitLiteral(ILGenerator ilg, Constant c)
         {
             switch (c.Type.NativeType)
@@ -138,8 +176,22 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldstr, c.String);
                     break;
                 case NativeType.DateTime:
-                case NativeType.Decimal:
                     // TODO nvk
+                    break;
+                case NativeType.Decimal:
+                    {
+                        int[] bits = decimal.GetBits(c.Decimal.Value);
+                        EmitConstant_I4(ilg, bits.Length);
+                        ilg.Emit(OpCodes.Newarr, typeof(int));
+                        for(int i = 0; i < bits.Length; i++)
+                        {
+                            ilg.Emit(OpCodes.Dup);
+                            EmitConstant_I4(ilg, i);
+                            EmitConstant_I4(ilg, bits[i]);
+                            ilg.Emit(OpCodes.Stelem_I4);
+                        }
+                        ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.System_Decimal_ctor) as ConstructorSymbol).Constructor);
+                    }
                     break;
                 case NativeType.Object:
                     ilg.Emit(OpCodes.Ldnull);

@@ -31,12 +31,16 @@ namespace XSharp.MacroCompiler
             Convert(ref e, type, Conversion(e, type));
         }
 
-        internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, bool allowDynamic = true)
+        internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, bool allowExplicit = false, bool allowDynamic = true)
         {
             var conversion = ConversionEasyOut.ClassifyConversion(expr.Datatype, type);
 
             if (conversion != ConversionKind.NoConversion)
-                return ConversionSymbol.Create(conversion);
+            {
+                var conv = ConversionSymbol.Create(conversion);
+                if (allowExplicit || conv.IsImplicit)
+                    return conv;
+            }
 
             if (TypesMatch(expr.Datatype, type))
                 return ConversionSymbol.Create(ConversionKind.Identity);
@@ -44,14 +48,15 @@ namespace XSharp.MacroCompiler
             MethodSymbol converter = null;
 
             ResolveUserDefinedConversion(expr, type, expr.Datatype.Lookup(OperatorNames.Implicit), type.Lookup(OperatorNames.Implicit), ref converter);
-
             if (converter != null)
                 return ConversionSymbol.Create(ConversionKind.ImplicitUserDefined, converter);
 
-            ResolveUserDefinedConversion(expr, type, expr.Datatype.Lookup(OperatorNames.Explicit), type.Lookup(OperatorNames.Explicit), ref converter);
-
-            if (converter != null)
-                return ConversionSymbol.Create(ConversionKind.ExplicitUserDefined, converter);
+            if (allowExplicit)
+            {
+                ResolveUserDefinedConversion(expr, type, expr.Datatype.Lookup(OperatorNames.Explicit), type.Lookup(OperatorNames.Explicit), ref converter);
+                if (converter != null)
+                    return ConversionSymbol.Create(ConversionKind.ExplicitUserDefined, converter);
+            }
 
             conversion = ResolveUsualConversion(expr, type);
             if (conversion != ConversionKind.NoConversion)
@@ -74,7 +79,7 @@ namespace XSharp.MacroCompiler
 
             if (allowDynamic)
             {
-                var conv = ResolveDynamicConversion(expr, type);
+                var conv = ResolveDynamicConversion(expr, type, allowExplicit);
                 if (conv != null)
                     return conv;
             }
@@ -147,12 +152,12 @@ namespace XSharp.MacroCompiler
             }
             return null;
         }
-        internal static ConversionSymbol ResolveDynamicConversion(Expr expr, TypeSymbol type)
+        internal static ConversionSymbol ResolveDynamicConversion(Expr expr, TypeSymbol type, bool allowExplicit)
         {
             if (expr.Datatype.NativeType == NativeType.Object)
             {
                 var inner = Conversion(expr, Compilation.Get(NativeType.Usual));
-                var outer = Conversion(TypeConversion.Bound(expr, Compilation.Get(NativeType.Usual), inner), type);
+                var outer = Conversion(TypeConversion.Bound(expr, Compilation.Get(NativeType.Usual), inner), type, allowExplicit: allowExplicit);
                 if (outer.Kind != ConversionKind.NoConversion)
                 {
                     return ConversionSymbol.Create(outer, inner);

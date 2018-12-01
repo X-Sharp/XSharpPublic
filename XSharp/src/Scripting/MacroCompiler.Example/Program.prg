@@ -40,6 +40,7 @@ global UU as usual
 class testclassdc
     v1 as int
     v2 as string
+
     operator ==(o1 as testclassdc, o2 as testclassdc) as logic
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
 end class
@@ -47,6 +48,9 @@ end class
 class testclass
     v1 as int
     v2 as string
+
+    static property sprop as int auto get set
+
     constructor()
     constructor(i as int)
         v1 := i
@@ -57,6 +61,9 @@ end class
 struct teststruct
     v1 as int
     v2 as string
+
+    static property sprop as int auto get set
+
     constructor(i as int)
         v1 := i
     operator ==(o1 as teststruct, o2 as teststruct) as logic
@@ -73,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|z| A(z), z }")
+        EvalMacro(mc, e"{|a| testclass.sprop := a, a := ++testclass.sprop }")
         wait
 
         RunTests(mc)
@@ -163,6 +170,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"int{}", <OBJECT>{}, 0, typeof(int))
         TestMacro(mc, e"{|z| A(z) }", <OBJECT>{123}, 123, typeof(int32))
         TestMacro(mc, e"{|z| A(z), z }", <OBJECT>{123}, 1123, typeof(int32))
+        TestMacro(mc, e"{|a| testclass.sprop := 555, a := ++testclass.sprop }", <OBJECT>{}, 556, typeof(int32))
+        TestMacro(mc, e"{|a| testclass.sprop := a, a := ++testclass.sprop }", <OBJECT>{55}, 56, typeof(int32))
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 //        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL

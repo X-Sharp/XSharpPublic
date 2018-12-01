@@ -77,6 +77,9 @@ namespace XSharp.MacroCompiler
     internal partial class MethodSymbol : MethodBaseSymbol
     {
     }
+    internal partial class ConstructorSymbol : MethodBaseSymbol
+    {
+    }
     internal partial class FieldSymbol : MemberSymbol
     {
         internal override void EmitGet(ILGenerator ilg) { ilg.Emit(Field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, Field); }
@@ -88,8 +91,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class PropertySymbol : MemberSymbol
     {
-    }
-    internal partial class ConstructorSymbol : MethodBaseSymbol
-    {
+        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(Getter.IsStatic ? OpCodes.Call : OpCodes.Callvirt, Getter.Method); }
+        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(Setter.IsStatic ? OpCodes.Call : OpCodes.Callvirt, Setter.Method); }
     }
 }

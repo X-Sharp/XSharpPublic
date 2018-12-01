@@ -16,16 +16,12 @@ namespace XSharp.MacroCompiler
     {
         internal virtual void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
         {
-            expr.Emit(ilg);
+            if (expr != null) expr.Emit(ilg);
             switch (Kind)
             {
                 case ConversionKind.ImplicitNumeric:
                 case ConversionKind.ExplicitNumeric:
                     EmitNumericConversion(ilg, expr.Datatype.NativeType, type.NativeType, false);
-                    break;
-                case ConversionKind.ImplicitUserDefined:
-                case ConversionKind.ExplicitUserDefined:
-                    ilg.Emit(OpCodes.Call, ((ConversionSymbolWithMethod)this).Method.Method);
                     break;
                 case ConversionKind.Boxing:
                     ilg.Emit(OpCodes.Box, expr.Datatype.Type);
@@ -47,20 +43,36 @@ namespace XSharp.MacroCompiler
         }
     }
 
+    internal partial class ConversionSymbolWithMethod : ConversionSymbol
+    {
+        internal override void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
+        {
+            if (expr != null) expr.Emit(ilg);
+            ilg.Emit(OpCodes.Call, Method.Method);
+        }
+    }
+
     internal partial class ConversionChain : ConversionSymbol
     {
         internal override void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
         {
             Previous.Emit(expr, type, ilg);
-            Conversion.Emit(expr, type, ilg);
+            Conversion.Emit(null, type, ilg);
         }
+    }
+
+    internal partial class ConversionSymbolToConstant : ConversionSymbol
+    {
     }
 
     internal partial class ConversionByRef : ConversionSymbol
     {
         internal override void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
         {
-            expr.EmitAddr(ilg);
+            if (expr != null)
+                expr.EmitAddr(ilg);
+            else
+                CompileFailure.Throw(ErrorCode.NotSupported);
         }
     }
 }

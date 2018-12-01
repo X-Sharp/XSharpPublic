@@ -122,14 +122,14 @@ namespace XSharp.MacroCompiler
         }
     }
 
-    internal class ConversionSymbolWithMethod : ConversionSymbol
+    internal partial class ConversionSymbolWithMethod : ConversionSymbol
     {
         internal MethodSymbol Method;
 
         internal ConversionSymbolWithMethod(ConversionKind kind, MethodSymbol method) : base(kind) { Method = method; }
     }
 
-    internal class ConversionSymbolToConstant : ConversionSymbol
+    internal partial class ConversionSymbolToConstant : ConversionSymbol
     {
         internal Constant Constant;
 

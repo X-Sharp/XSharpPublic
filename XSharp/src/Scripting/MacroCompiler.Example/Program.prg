@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := 123.450m }", 8)
+        EvalMacro(mc, e"{|a| a := 123.450m + 1 }", 8)
         wait
 
         RunTests(mc)
@@ -118,6 +118,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "123.456s", <OBJECT>{}, 123.456s, typeof(real4))
         TestMacro(mc, "123.456d", <OBJECT>{}, 123.456d, typeof(real8))
         TestMacro(mc, "123.450m", <OBJECT>{}, 123.450m, typeof(decimal))
+        TestMacro(mc, "123.450m+321", <OBJECT>{}, 444.450m, typeof(decimal))
+        TestMacro(mc, "123.450m+321.05", <OBJECT>{}, 444.500m, typeof(decimal))
         TestMacro(mc, "{|a,b,c|a := b := 1343+1}", <OBJECT>{}, 1343+1, typeof(int))
         TestMacro(mc, "{|a,b,c|}", <OBJECT>{}, null, null)
         TestMacro(mc, "{|a,b,c|1234}", <OBJECT>{}, 1234, typeof(int))

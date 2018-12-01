@@ -229,7 +229,7 @@ namespace XSharp.MacroCompiler
                 case NativeType.UInt64: return 11;
                 case NativeType.Single: return 12;
                 case NativeType.Double: return 13;
-                case NativeType.Decimal: return 14;
+                //case NativeType.Decimal: return 14; // TODO nvk: easy-out ops
 
                 case NativeType.Unknown:
                     if ((object)type != null && type.IsNullableType())
@@ -250,7 +250,7 @@ namespace XSharp.MacroCompiler
                             case NativeType.UInt64: return 24;
                             case NativeType.Single: return 25;
                             case NativeType.Double: return 26;
-                            case NativeType.Decimal: return 27;
+                            //case NativeType.Decimal: return 27; // TODO nvk: easy-out ops
                         }
                     }
 

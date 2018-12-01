@@ -263,6 +263,7 @@ namespace XSharp.MacroCompiler
                 case BinaryOperatorKind.RightShift:
                     return OperatorNames.RightShift;
                 case BinaryOperatorKind.Equal:
+                case BinaryOperatorKind.ExactEqual:
                     return OperatorNames.Equality;
                 case BinaryOperatorKind.NotEqual:
                     return OperatorNames.Inequality;

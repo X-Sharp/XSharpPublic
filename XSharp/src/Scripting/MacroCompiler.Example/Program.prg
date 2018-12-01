@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| U(2018.12.31) = U(2018.12.31) }", 8)
+        EvalMacro(mc, e"{|a| U(2018.12.31) == U(2018.12.31) }", 8)
         wait
 
         RunTests(mc)
@@ -132,6 +132,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "", <OBJECT>{}, null, null)
         TestMacro(mc, "2018.12.31", <OBJECT>{}, 2018.12.31, typeof(date))
         TestMacro(mc, "2018.1.1", <OBJECT>{}, 2018.1.1, typeof(date))
+        TestMacro(mc, "2018.12.31 == 2018.12.31", <OBJECT>{}, true, typeof(logic))
         TestMacro(mc, "2018.12.31 = 2018.12.31", <OBJECT>{}, true, typeof(logic))
         TestMacro(mc, "2018.12.31 = 2018.1.1", <OBJECT>{}, false, typeof(logic))
         TestMacro(mc, "2018.12.31 != 2018.12.31", <OBJECT>{}, false, typeof(logic))

@@ -30,7 +30,9 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Unbox, type.Type);
                     break;
                 case ConversionKind.ImplicitReference:
+                    break;
                 case ConversionKind.ExplicitReference:
+                    ilg.Emit(OpCodes.Castclass, type.Type);
                     break;
                 case ConversionKind.NoConversion:
                     throw new CompileFailure(ErrorCode.NoConversion, expr.Datatype.Type, type.Type);

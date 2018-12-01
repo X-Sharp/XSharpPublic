@@ -262,6 +262,14 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class TypeCast : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            Expr.Bind(b);
+            Type.Bind(b);
+            Datatype = Type.Symbol as TypeSymbol;
+            Symbol = Binder.Conversion(Expr, Datatype, allowExplicit: true);
+            return null;
+        }
         internal static TypeCast Bound(Expr e, TypeSymbol t) { return new TypeCast(null, e) { Datatype = t }; }
     }
     internal partial class TypeConversion : TypeCast

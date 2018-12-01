@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| testclass.sprop := a, a := ++testclass.sprop }")
+        EvalMacro(mc, e"{|a| testclass.sprop := a, a := ++testclass.sprop }", 8)
         wait
 
         RunTests(mc)
@@ -90,14 +90,14 @@ begin namespace MacroCompilerTest
 
         ReportMemory("final");
 
-        Console.WriteLine("Press any key to continue...")
+        Console.WriteLine("Press any key to exit...")
         Console.ReadKey()
 
-    function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string) as void
+    function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args params object[]) as void
         Console.WriteLine("Executing macro ...")
         //var cb := MCompile(src)
         var cb := mc:Compile(src)
-        var res := cb:EvalBlock(8)
+        var res := cb:EvalBlock(args)
         Console.WriteLine("res = {0}",res)
         return
 

@@ -178,9 +178,9 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_ARRAY:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Array));
                 case TokenType.NULL_CODEBLOCK:
-                    throw new NotImplementedException();
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Codeblock));
                 case TokenType.NULL_DATE:
-                    throw new NotImplementedException();
+                    return Constant.CreateDefault(Compilation.Get(NativeType.VODate));
                 case TokenType.NULL_OBJECT:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Object));
                 case TokenType.NULL_PSZ:

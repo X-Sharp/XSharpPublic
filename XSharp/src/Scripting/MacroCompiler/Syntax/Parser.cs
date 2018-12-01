@@ -13,12 +13,16 @@ namespace XSharp.MacroCompiler
         // Input source
         IList<Token> _Input;
 
+        // Configuration
+        MacroOptions _options;
+
         // State
         int _index = 0;
 
-        internal Parser(IList<Token> input)
+        internal Parser(IList<Token> input, MacroOptions options)
         {
             _Input = input;
+            _options = options;
         }
 
         TokenType La()

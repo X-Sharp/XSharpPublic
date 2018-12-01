@@ -134,7 +134,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := \"abc\", a + \"def\"}", <OBJECT>{8}, "abcdef", typeof(string))
         TestMacro(mc, e"{|a| 0 == 0}", <OBJECT>{8}, true, typeof(logic))
         TestMacro(mc, e"{|a| 0 != 0}", <OBJECT>{8}, false, typeof(logic))
-        TestMacro(mc, e"{|a| (0 > 1) && (0 < 1) }", <OBJECT>{8}, false, typeof(logic))
+        TestMacro(mc, e"{|a| (0 > 1) .and. (0 < 1) }", <OBJECT>{8}, false, typeof(logic))
         TestMacro(mc, e"{|a| a := \"qwerty\", a:Length }", <OBJECT>{8}, 6, typeof(usual))
         TestMacro(mc, e"{|a| a := default(int) }", <OBJECT>{8}, 0, typeof(int))
         TestMacro(mc, e"{|a| a := default(string) }", <OBJECT>{8}, null, null)

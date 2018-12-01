@@ -55,6 +55,7 @@
     <Compile Include="CodeGen\EmitSymbol.cs" />
     <Compile Include="Common\LiteralNames.cs" />
     <Compile Include="Common\NativeTypes.cs" />
+    <Compile Include="Common\Options.cs" />
     <Compile Include="Common\WellKnownMembers.cs" />
     <Compile Include="Common\WellKnownTypes.cs" />
     <Compile Include="Compiler\Compiler.cs" />

@@ -21,6 +21,7 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
+        internal MacroOptions Options;
         internal bool DynamicUsual = true;
 
         internal Dictionary<string, LocalSymbol> LocalCache = new Dictionary<string, LocalSymbol>();
@@ -29,17 +30,18 @@ namespace XSharp.MacroCompiler
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
 
-        protected Binder(Type objectType, Type delegateType)
+        protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {
             Debug.Assert(delegateType.IsSubclassOf(typeof(Delegate)));
             BuildIndex();
             ObjectType = FindType(objectType);
             DelegateType = delegateType;
+            Options = options;
         }
 
-        internal static Binder<T, R> Create<T,R>() where R: class
+        internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: class
         {
-            return new Binder<T, R>();
+            return new Binder<T, R>(options);
         }
 
         static internal void BuildIndex()
@@ -371,7 +373,7 @@ namespace XSharp.MacroCompiler
 
     internal class Binder<T,R> : Binder where R: class
     {
-        internal Binder() : base(typeof(T),typeof(R)) { }
+        internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
 
         internal Codeblock Bind(Codeblock macro)
         {

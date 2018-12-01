@@ -137,6 +137,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "null_symbol", <OBJECT>{}, null_symbol, typeof(symbol))
         TestMacro(mc, "null_date", <OBJECT>{}, null_date, typeof(date))
         TestMacro(mc, "null_codeblock", <OBJECT>{}, null_codeblock, null)
+        TestMacro(mc, "null_ptr", <OBJECT>{}, null_ptr, null)
         TestMacro(mc, "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}", <OBJECT>{}, 1343+1343-(1343+1)/2, typeof(usual))
         TestMacro(mc, "{|a|a := 1343, a += 1}", <OBJECT>{}, 1343+1, typeof(usual))
         TestMacro(mc, "{|a|a := -1343, a := -a}", <OBJECT>{}, 1343, typeof(usual))

@@ -186,7 +186,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_PSZ:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Psz));
                 case TokenType.NULL_PTR:
-                    throw new NotImplementedException();
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Ptr));
                 case TokenType.NULL_STRING:
                     return Constant.CreateDefault(Compilation.Get(NativeType.String));
                 case TokenType.NULL_SYMBOL:

@@ -73,9 +73,9 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class QualifiedNameExpr : NameExpr
     {
-        internal NameExpr Expr;
+        internal TypeExpr Expr;
         internal NameExpr Member;
-        internal QualifiedNameExpr(NameExpr e, NameExpr n) { Expr = e; Member = n; }
+        internal QualifiedNameExpr(TypeExpr e, NameExpr n) { Expr = e; Member = n; }
         public override string ToString() { return "(" + Expr.ToString() + '.' + Member.ToString() + ")"; }
     }
     internal partial class AssignExpr : Expr

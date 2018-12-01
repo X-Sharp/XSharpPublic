@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|| #HELLo + #world }", 8)
+        EvalMacro(mc, e"{|a| 1 == 1 }", 8)
         wait
 
         RunTests(mc)
@@ -128,7 +128,13 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "{|a,b,c|}", <OBJECT>{}, null, null)
         TestMacro(mc, "{|a,b,c|1234}", <OBJECT>{}, 1234, typeof(int))
         TestMacro(mc, "1234", <OBJECT>{}, 1234, typeof(int))
+        TestMacro(mc, "12 == 12", <OBJECT>{}, true, typeof(logic))
         TestMacro(mc, "", <OBJECT>{}, null, null)
+        TestMacro(mc, "null", <OBJECT>{}, null, null)
+        TestMacro(mc, "null_object", <OBJECT>{}, null_object, null)
+        TestMacro(mc, "null_string", <OBJECT>{}, null_string, null)
+        TestMacro(mc, "null_psz = psz._NULL_PSZ", <OBJECT>{}, true, typeof(logic))
+        TestMacro(mc, "null_symbol", <OBJECT>{}, null_symbol, typeof(symbol))
         TestMacro(mc, "{|a,b,c|a := b := 1343, c := a + 1, a+b-c/2}", <OBJECT>{}, 1343+1343-(1343+1)/2, typeof(usual))
         TestMacro(mc, "{|a|a := 1343, a += 1}", <OBJECT>{}, 1343+1, typeof(usual))
         TestMacro(mc, "{|a|a := -1343, a := -a}", <OBJECT>{}, 1343, typeof(usual))

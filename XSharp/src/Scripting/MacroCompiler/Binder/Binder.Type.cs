@@ -21,13 +21,17 @@ namespace XSharp.MacroCompiler
             switch (kind)
             {
                 case TokenType.ARRAY:
+                    return Compilation.Get(NativeType.Array);
                 case TokenType.CODEBLOCK:
+                    return Compilation.Get(NativeType.Codeblock);
                 case TokenType.DATE:
+                    return Compilation.Get(NativeType.VODate);
                 case TokenType.FLOAT:
+                    return Compilation.Get(NativeType.VOFloat);
                 case TokenType.PSZ:
+                    return Compilation.Get(NativeType.Psz);
                 case TokenType.SYMBOL:
-                    // TODO nvk: create special types
-                    throw new NotImplementedException();
+                    return Compilation.Get(NativeType.Symbol);
                 case TokenType.USUAL:
                     return Compilation.Get(NativeType.Usual);
                 case TokenType.BYTE:
@@ -53,7 +57,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.OBJECT:
                     return Compilation.Get(NativeType.Object);
                 case TokenType.PTR:
-                    return Compilation.Get(NativeType.Unknown); // TODO nvk: PTR type
+                    return Compilation.Get(NativeType.Ptr);
                 case TokenType.REAL4:
                     return Compilation.Get(NativeType.Single);
                 case TokenType.REAL8:

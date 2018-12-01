@@ -174,15 +174,23 @@ namespace XSharp.MacroCompiler
                 case TokenType.NIL:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Usual));
                 case TokenType.DATE_CONST:
-                case TokenType.NULL_ARRAY:
-                case TokenType.NULL_CODEBLOCK:
-                case TokenType.NULL_DATE:
-                case TokenType.NULL_OBJECT:
-                case TokenType.NULL_PSZ:
-                case TokenType.NULL_PTR:
-                case TokenType.NULL_STRING:
-                case TokenType.NULL_SYMBOL:
                     throw new NotImplementedException();
+                case TokenType.NULL_ARRAY:
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Array));
+                case TokenType.NULL_CODEBLOCK:
+                    throw new NotImplementedException();
+                case TokenType.NULL_DATE:
+                    throw new NotImplementedException();
+                case TokenType.NULL_OBJECT:
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Object));
+                case TokenType.NULL_PSZ:
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Psz));
+                case TokenType.NULL_PTR:
+                    throw new NotImplementedException();
+                case TokenType.NULL_STRING:
+                    return Constant.CreateDefault(Compilation.Get(NativeType.String));
+                case TokenType.NULL_SYMBOL:
+                    return Constant.CreateDefault(Compilation.Get(NativeType.Symbol));
                 default:
                     throw new Exception("Unexpected literal kind");
             }

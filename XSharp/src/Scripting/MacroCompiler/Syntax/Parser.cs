@@ -776,7 +776,7 @@ namespace XSharp.MacroCompiler
 
             Opers[(int)TokenType.DOT] = new Oper(AssocType.Postfix, TokenType.DOT, 1,
                 (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(),"Name expected"); return Opers[(int)TokenType.DOT]; },
-                (l, o, r) => { if (!(l is NameExpr)) throw new Exception("Name required"); return new QualifiedNameExpr((NameExpr)l, (NameExpr)o); });
+                (l, o, r) => { if (!(l is TypeExpr)) throw new Exception("Type or name required"); return new QualifiedNameExpr((TypeExpr)l, (NameExpr)o); });
             Opers[(int)TokenType.COLON] = new Oper(AssocType.Postfix, TokenType.COLON, 1,
                 (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(), "Name expected"); return Opers[(int)TokenType.COLON]; },
                 (l, o, r) => { return new MemberAccessExpr(l, (NameExpr)o); });

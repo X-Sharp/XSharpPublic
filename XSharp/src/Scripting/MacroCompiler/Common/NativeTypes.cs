@@ -34,12 +34,14 @@ namespace XSharp.MacroCompiler
         Void = 19,
         IntPtr = 20,
         UIntPtr = 21,
-        Usual = 22,
-        VOFloat = 23,
-        VODate = 24,
-        Symbol = 25,
-        Psz = 26,
-        Array = 27,
+        Ptr = 22,
+        Usual = 23,
+        VOFloat = 24,
+        VODate = 25,
+        Symbol = 26,
+        Psz = 27,
+        Array = 28,
+        Codeblock = 29,
     }
 
     public static class NativeTypeInfo
@@ -80,12 +82,14 @@ namespace XSharp.MacroCompiler
             "System.Void",
             "System.IntPtr",
             "System.UIntPtr",
+            "System.Void*",
             XSharpQualifiedTypeNames.Usual + "|" + VulcanQualifiedTypeNames.Usual,
             XSharpQualifiedTypeNames.Float + "|" + VulcanQualifiedTypeNames.Float,
             XSharpQualifiedTypeNames.Date + "|" + VulcanQualifiedTypeNames.Date,
             XSharpQualifiedTypeNames.Symbol + "|" + VulcanQualifiedTypeNames.Symbol,
             XSharpQualifiedTypeNames.Psz + "|" + VulcanQualifiedTypeNames.Psz,
             XSharpQualifiedTypeNames.Array + "|" + VulcanQualifiedTypeNames.Array,
+            XSharpQualifiedTypeNames.Codeblock + "|" + VulcanQualifiedTypeNames.Codeblock,
         };
 
         static TypeSymbol[] NativeTypeSymbols;
@@ -100,7 +104,9 @@ namespace XSharp.MacroCompiler
                 nativeTypeSymbols[(int)m] = null;
                 if (!string.IsNullOrEmpty(names))
                 {
-                    Debug.Assert(names.Substring(names.LastIndexOf('.')+1).Replace("__","").Split('|', '(').First() == m.ToString());
+                    Debug.Assert(names.Substring(names.LastIndexOf('.')+1)
+                        .Replace("__","").Split('|', '(').First()
+                        .Replace("Void*","Ptr") == m.ToString());
                     foreach(var name in names.Split('|'))
                     {
                         var t = Binder.LookupFullName(name) as TypeSymbol;

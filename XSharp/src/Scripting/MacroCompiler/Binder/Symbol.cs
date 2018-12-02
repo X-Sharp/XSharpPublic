@@ -25,6 +25,7 @@ namespace XSharp.MacroCompiler
         internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.Member.MemberType ?? 0; }
         internal bool HasMethod { get { return SymbolTypes.HasFlag(MemberTypes.Method); } }
         internal bool HasConstructor { get { return SymbolTypes.HasFlag(MemberTypes.Constructor); } }
+        internal bool HasProperty { get { return SymbolTypes.HasFlag(MemberTypes.Property); } }
         internal bool HasMethodBase { get { return HasMethod || HasConstructor; } }
         internal override Symbol Lookup(string name)
         {
@@ -155,19 +156,38 @@ namespace XSharp.MacroCompiler
             }
         }
     }
+    internal partial class ParameterListSymbol : Symbol
+    {
+        internal bool HasParamArray { get; }
+        internal ParameterInfo[] Parameters;
+        internal ParameterListSymbol(ParameterInfo[] parameters) : base()
+        {
+            Parameters = parameters;
+            var attrs = Parameters.LastOrDefault()?.CustomAttributes;
+            if (attrs != null)
+            {
+                foreach (var attr in attrs)
+                {
+                    if (attr.AttributeType == typeof(System.ParamArrayAttribute))
+                    {
+                        HasParamArray = true;
+                    }
+                }
+            }
+        }
+        internal override Symbol Lookup(string name) { return null; }
+    }
     internal partial class MethodBaseSymbol : MemberSymbol
     {
         internal MethodBase MethodBase { get { return (MethodBase)base.Member; } }
         bool _foundAttributes = false;
         CustomAttributeData _clipperAttr = null;
         string[] _clipperParams = null;
-        bool _hasParamArray = false;
-        //internal ParameterInfo[] Parameters { get { Interlocked.CompareExchange(ref _parameters, Method.GetParameters(), null); return _parameters; } }
-        //ParameterInfo[] _parameters;
+        ParameterListSymbol _parameters;
         internal MethodBaseSymbol(TypeSymbol declType, MethodBase method, TypeSymbol type) : base(declType, method, type) { }
+        internal ParameterListSymbol Parameters { get { Interlocked.CompareExchange(ref _parameters, new ParameterListSymbol(MethodBase.GetParameters()), null); return _parameters; } }
         internal bool IsClipper { get { FindAttributes(); return _clipperAttr != null; } }
         internal string[] ClipperParams { get { FindAttributes(); return _clipperParams; } }
-        internal bool HasParamArray { get { FindAttributes(); return _hasParamArray; } }
         void FindAttributes()
         {
             if (!_foundAttributes)
@@ -181,17 +201,6 @@ namespace XSharp.MacroCompiler
                             _clipperAttr = attr;
                             _clipperParams = ((IReadOnlyCollection<CustomAttributeTypedArgument>)_clipperAttr?.ConstructorArguments[0].Value)
                                 .Select(a => (string)a.Value).ToArray();
-                        }
-                    }
-                }
-                var attrs = ((MethodBase)Member).GetParameters().LastOrDefault()?.CustomAttributes;
-                if (attrs != null)
-                {
-                    foreach (var attr in attrs)
-                    {
-                        if (attr.AttributeType == typeof(System.ParamArrayAttribute))
-                        {
-                            _hasParamArray = true;
                         }
                     }
                 }
@@ -217,9 +226,30 @@ namespace XSharp.MacroCompiler
     }
     internal partial class PropertySymbol : MemberSymbol
     {
+        internal bool IsStatic { get { return Getter?.IsStatic ?? Setter?.IsStatic ?? true; } }
         internal PropertyInfo Property { get { return (PropertyInfo)base.Member; } }
         internal MethodSymbol Getter { get { return DeclaringType.MemberTable[Property.GetMethod] as MethodSymbol; } }
         internal MethodSymbol Setter { get { return DeclaringType.MemberTable[Property.SetMethod] as MethodSymbol; } }
+        ParameterListSymbol _parameters;
+        internal ParameterListSymbol Parameters
+        {
+            get
+            {
+                var p = Getter?.Method.GetParameters();
+                if (p == null)
+                {
+                    p = Setter?.Method.GetParameters();
+                    if (p != null)
+                    {
+                        Array.Resize(ref p, p.Length - 1);
+                    }
+                    else
+                        p = new ParameterInfo[] { };
+                }
+                Interlocked.CompareExchange(ref _parameters, new ParameterListSymbol(p), null);
+                return _parameters;
+            }
+        }
         internal PropertySymbol(TypeSymbol declType, PropertyInfo property) : base(declType, property, Binder.FindType(property.PropertyType)) { }
     }
     internal partial class ConstructorSymbol : MethodBaseSymbol

@@ -19,7 +19,7 @@ namespace XSharp.MacroCompiler
 
             if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
             {
-                CheckArguments((MethodBaseSymbol)symbol, args, ref ovRes);
+                CheckArguments(symbol as MemberSymbol, ((MethodBaseSymbol)symbol).Parameters, args, ref ovRes);
             }
             else if ((symbol as SymbolList)?.HasMethodBase == true)
             {
@@ -29,7 +29,7 @@ namespace XSharp.MacroCompiler
                     var m = methods.Symbols[i];
                     if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
                     {
-                        CheckArguments((MethodBaseSymbol)m, args, ref ovRes);
+                        CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes);
                         if (ovRes?.Exact == true)
                             break;
                     }
@@ -39,15 +39,14 @@ namespace XSharp.MacroCompiler
             if (ovRes?.Unique == true)
             {
                 ApplyConversions(args, ovRes);
-                return ovRes.Method;
+                return ovRes.Symbol;
             }
             return null;
         }
 
-        static void CheckArguments(MethodBaseSymbol m, ArgList args, ref OverloadResult ovRes)
+        static void CheckArguments(MemberSymbol symbol, ParameterListSymbol paramList, ArgList args, ref OverloadResult ovRes)
         {
-            var method = m.MethodBase;
-            var parameters = method.GetParameters();
+            var parameters = paramList.Parameters;
             var nParams = parameters.Length;
             var fixedArgs = args.Args.Count;
             var varArgs = 0;
@@ -55,7 +54,7 @@ namespace XSharp.MacroCompiler
             bool hasExtraArgs = false;
             if (nParams <= fixedArgs)
             {
-                if (m.HasParamArray)
+                if (paramList.HasParamArray)
                 {
                     varArgs = fixedArgs - (nParams - 1);
                     fixedArgs = nParams - 1;
@@ -65,14 +64,14 @@ namespace XSharp.MacroCompiler
             }
             else if (nParams > fixedArgs)
             {
-                if (m.HasParamArray)
+                if (paramList.HasParamArray)
                     missingArgs = nParams - fixedArgs - 1;
                 else
                     missingArgs = nParams - fixedArgs;
             }
             if (!hasExtraArgs)
             {
-                var ovr = OverloadResult.Create(m, fixedArgs, varArgs, missingArgs);
+                var ovr = OverloadResult.Create(symbol, paramList, fixedArgs, varArgs, missingArgs);
                 for (int p = 0; p < fixedArgs; p++)
                 {
                     ovr.ArgConversion(p, ArgumentConversion(args.Args[p], parameters[p]));
@@ -84,7 +83,7 @@ namespace XSharp.MacroCompiler
                         ovr.ArgConversion(p, ArgumentConversion(null, parameters[p]));
                     }
                 }
-                else if (m.HasParamArray)
+                else if (paramList.HasParamArray)
                 {
                     var varArgType = FindType(parameters[fixedArgs].ParameterType.GetElementType());
                     for (int p = fixedArgs; p < fixedArgs + varArgs; p++)
@@ -98,7 +97,7 @@ namespace XSharp.MacroCompiler
 
         static void ApplyConversions(ArgList args, OverloadResult ovRes)
         {
-            var parameters = ovRes.Method.MethodBase.GetParameters();
+            var parameters = ovRes.Parameters.Parameters;
             for (int i = 0; i < ovRes.FixedArgs; i++)
             {
                 var conv = ovRes.Conversions[i];
@@ -113,7 +112,7 @@ namespace XSharp.MacroCompiler
                     args.Args.Add(new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant)));
                 }
             }
-            else if (ovRes.Method.HasParamArray)
+            else if (ovRes.Parameters.HasParamArray)
             {
                 var varArgs = new List<Expr>(ovRes.VarArgs);
                 var varArgType = FindType(parameters[ovRes.FixedArgs].ParameterType.GetElementType());

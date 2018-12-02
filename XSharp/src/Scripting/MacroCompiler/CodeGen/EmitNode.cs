@@ -330,7 +330,27 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
-        // TODO (nvk): to be implemented
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (Self != null) Self.Emit(ilg);
+            Args.Emit(ilg);
+            var m = (PropertySymbol)Symbol;
+            ilg.Emit(Self == null ? OpCodes.Call : OpCodes.Callvirt, m.Getter.Method);
+            if (!preserve && Datatype.NativeType != NativeType.Void)
+                ilg.Emit(OpCodes.Pop);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            var t = ilg.DeclareLocal(Datatype.Type);
+            ilg.Emit(OpCodes.Stloc, t.LocalIndex);
+            if (Self != null) Self.Emit(ilg);
+            Args.Emit(ilg);
+            ilg.Emit(OpCodes.Ldloc, t.LocalIndex);
+            var m = (PropertySymbol)Symbol;
+            ilg.Emit(Self == null ? OpCodes.Call : OpCodes.Callvirt, m.Setter.Method);
+        }
     }
     internal partial class EmptyExpr : Expr
     {

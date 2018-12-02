@@ -16,5 +16,7 @@ namespace XSharp.MacroCompiler
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;
+
+        public bool ArrayZero = false;
     }
 }

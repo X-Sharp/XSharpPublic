@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="Binder\BinaryOp.cs" />
     <Compile Include="Binder\Binder.Argument.cs" />
+    <Compile Include="Binder\Binder.Array.cs" />
     <Compile Include="Binder\Binder.BinaryOp.cs" />
     <Compile Include="Binder\Binder.Call.cs" />
     <Compile Include="Binder\Binder.Conversion.cs" />

@@ -137,6 +137,18 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
             return null;
         }
+        internal static BinaryExpr Bound(Expr Left, BinaryOperatorKind kind, bool logic, Expr Right)
+        {
+            var e = new BinaryExpr(Left, TokenType.LAST, Right);
+            if (logic)
+            {
+                Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
+                Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
+            }
+            e.Symbol = Binder.BinaryOperation(kind, ref e.Left, ref e.Right);
+            e.Datatype = (e.Symbol as BinaryOperatorSymbol)?.Type;
+            return e;
+        }
     }
     internal partial class BinaryLogicExpr : BinaryExpr
     {
@@ -300,7 +312,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class MethodCallExpr : Expr
     {
-        Expr Self = null;
+        protected Expr Self = null;
         internal override Node Bind(Binder b)
         {
             Expr.Affinity = BindAffinity.Invoke;
@@ -320,7 +332,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Self = (Expr as MemberAccessExpr)?.Expr;
                 Symbol = b.BindCall(Self, Expr.Symbol, Args);
             }
-            Datatype = ((MethodSymbol)Symbol)?.Type;
+            Datatype = (Symbol as MemberSymbol)?.Type;
             return null;
         }
     }
@@ -337,6 +349,19 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
+            b.Bind(ref Args);
+            Binder.Convert(ref Expr, Compilation.Get(NativeType.Array));
+            if (!b.Options.ArrayZero)
+                Args.ConvertArrayBase1();
+            Self = Expr;
+            var s = Self.Datatype.Lookup("Item");
+            Symbol = b.BindArrayAccess(Self, s, Args);
+            Datatype = (Symbol as MemberSymbol)?.Type;
+            return null;
+        }
     }
     internal partial class EmptyExpr : Expr
     {
@@ -428,6 +453,13 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(Args);
             return null;
+        }
+        internal void ConvertArrayBase1()
+        {
+            for (int i = 0; i < Args.Count; i++)
+            {
+                Args[i].Expr = BinaryExpr.Bound(Args[i].Expr, BinaryOperatorKind.Subtraction, false, LiteralExpr.Bound(Constant.Create(1)));
+            }
         }
     }
     internal partial class Codeblock : Node

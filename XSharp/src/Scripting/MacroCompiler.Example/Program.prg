@@ -80,7 +80,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| IIF(a>0,12,1.5) }", -8)
+        EvalMacro(mc, e"{|a| (0 > 1) .and. (0 < 1) }", 8)
         wait
 
         RunTests(mc)
@@ -202,6 +202,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{1}, 1.23, typeof(float))
         TestMacro(mc, e"{|a| IIF(a>10,1) }", <OBJECT>{100}, 1, typeof(usual))
         TestMacro(mc, e"{|a| IIF(a>10,,1) }", <OBJECT>{100}, nil, typeof(usual))
+        TestMacro(mc, e"{|a| (float)++a/2 }", <OBJECT>{2}, 1.5, typeof(float))
 //        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 2<<24, typeof(real)) // FAIL
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 //        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL

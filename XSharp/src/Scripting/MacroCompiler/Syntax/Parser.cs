@@ -158,6 +158,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.WORD:
                 case TokenType.LPAREN:
                 case TokenType.LCURLY:
+                case TokenType.IIF:
                     return true;
                 case TokenType.LT:
                     {
@@ -173,6 +174,10 @@ namespace XSharp.MacroCompiler
 
         internal Expr ParseTerm()
         {
+#if DEBUG
+            if (!CanParseTerm())
+                return null;
+#endif
             var t = La();
             switch (t)
             {
@@ -410,6 +415,11 @@ namespace XSharp.MacroCompiler
             return PrefixOpers[(int)La()].Parse(this, out n);
         }
 
+        bool CanParsePrefixOper()
+        {
+            return PrefixOpers[(int)La()] != Oper.Empty;
+        }
+
         internal Expr ParseExpression()
         {
             var exprs = new Stack<Tuple<Expr, Oper, Node>>();
@@ -421,17 +431,28 @@ namespace XSharp.MacroCompiler
                 Node n;
                 Oper op;
 
-                bool mayBeCast = La() == TokenType.LPAREN;
+                bool isCast = La() == TokenType.LPAREN;
 
                 e = ParseTerm();
-                op = e == null ? ParsePrefixOper(out n) : ParseOper(out n);
 
-                if (op == null && mayBeCast && e is TypeExpr && CanParseTerm())
+                if (isCast && e is TypeExpr && (CanParsePrefixOper() || CanParseTerm()))
+                {
+                    var p = Mark();
+                    while (ParsePrefixOper(out n) != null) { }
+                    isCast = CanParseTerm();
+                    Rewind(p);
+                }
+                else
+                    isCast = false;
+
+                if (isCast)
                 {
                     n = e;
                     e = null;
                     op = Opers[(int)TokenType.TYPECAST];
                 }
+                else
+                    op = e == null ? ParsePrefixOper(out n) : ParseOper(out n);
 
                 do
                 {
@@ -450,7 +471,7 @@ namespace XSharp.MacroCompiler
                         e = op.Combine(e,n,null);
                         op = ParseOper(out n);
                     }
-                } while (op?.assoc == AssocType.Postfix || (op == null && exprs.Count > 0));
+                } while (op?.assoc == AssocType.Postfix || (e != null && op == null && exprs.Count > 0));
 
                 if (op == null)
                     break;

@@ -17,6 +17,10 @@
       <summary>
         <para>Construct a data field.</para>
       </summary>
+      <param name="oHLName">
+      </param>
+      <param name="oFS">
+      </param>
     </member>
     <member name="M:VO.DataField.AsString">
       <summary>
@@ -151,8 +155,8 @@
 
       </summary>
     </member>
-    <member name="P:VO.DataServer.Clients"></member>
-    <member name="M:VO.DataServer.Close"></member>
+    <member name="P:VO.DataServer.Clients"><summary></summary></member>
+    <member name="M:VO.DataServer.Close"><summary></summary></member>
 
     <member name="M:VO.DataServer.Commit">
       <summary>
@@ -164,12 +168,14 @@
 
       </returns>
     </member>
-    <member name="P:VO.DataServer.ConcurrencyControl"></member>
+    <member name="P:VO.DataServer.ConcurrencyControl"><summary></summary></member>
     <member name="M:VO.DataServer.DataField(XSharp.__Usual)">
       <summary>
         <para>Retrieve the DataField object at a specified field position.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
     </member>
     <member name="P:VO.DataServer.DBStruct">
       <summary>
@@ -241,31 +247,46 @@
         <para>Return the contents of a specified field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
       <returns>
         <para>The field's contents. The data type of the return value depends on the data type of the field.</para>
 
       </returns>
     </member>
-    <member name="M:VO.DataServer.FieldGetFormatted(XSharp.__Usual)"></member>
-    <member name="M:VO.DataServer.FieldHyperLabel(XSharp.__Usual)"></member>
-
+    <member name="M:VO.DataServer.FieldGetFormatted(XSharp.__Usual)">
+      <param name="nFieldPosition">
+      </param>
+    </member>
+    <member name="M:VO.DataServer.FieldHyperLabel(XSharp.__Usual)">
+      <param name="nFieldPosition">
+      </param>
+    </member>
     <member name="M:VO.DataServer.FieldName(XSharp.__Usual)">
       <summary>
         <para>Return the name of a field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
     </member>
     <member name="M:VO.DataServer.FieldPos(XSharp.__Usual)">
       <summary>
         <para>Return the position of a field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
     </member>
     <member name="M:VO.DataServer.FIELDPUT(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Assign a value to a field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
+      <param name="uValue">
+      </param>
       <returns>
         <para>The newly assigned value if the operation was successful; otherwise, NIL.</para>
 
@@ -276,12 +297,16 @@
         <para>Return the FieldSpec object for a field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
     </member>
     <member name="M:VO.DataServer.FieldStatus(XSharp.__Usual)">
       <summary>
         <para>Determine the status of a field in this data server after the last operation.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
       <returns>
         <para>
           A HyperLabel object if any error condition had occurred or if a validation has failed, NIL if everything is OK, if the validation passed, or if there has
@@ -295,8 +320,15 @@
         <para>Return the symbolic name of a field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
     </member>
-    <member name="M:VO.DataServer.FieldValidate(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.DataServer.FieldValidate(XSharp.__Usual,XSharp.__Usual)">
+      <param name="nFieldPosition">
+      </param>
+      <param name="uValue">
+      </param>
+    </member>
     <member name="M:VO.DataServer.FLOCK">
       <summary>
         <para>Lock this entire data server for exclusive access.</para>
@@ -322,6 +354,8 @@
         <para>Position this data server on a specified record number.</para>
 
       </summary>
+      <param name="nPosition">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
@@ -337,7 +371,7 @@
 
       </returns>
     </member>
-    <member name="P:VO.DataServer.HLStatus"></member>
+    <member name="P:VO.DataServer.HLStatus"><summary></summary></member>
     <member name="P:VO.DataServer.HyperLabel">
       <summary>
         <para>The hyperlabel connected to this data server. </para>
@@ -381,6 +415,10 @@
           variable. In the DataServer class, it is used to implement the virtual field variable.
         </para>
       </summary>
+      <param name="symFieldName">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>
@@ -398,6 +436,13 @@
           instance variable. In the DataServer class, it is used to implement the virtual field variable.
         </para>
       </summary>
+      <param name="symFieldName">
+        
+      </param>
+      <param name="uValue">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>
@@ -419,6 +464,13 @@
           standard implementation notifies all the server's clients of the event.
         </para>
       </summary>
+      <param name="kNotification">
+        
+      </param>
+      <param name="uDescription">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>
@@ -438,8 +490,8 @@
 
       </returns>
     </member>
-    <member name="M:VO.DataServer.PostInit"></member>
-    <member name="M:VO.DataServer.PreInit"></member>
+    <member name="M:VO.DataServer.PostInit"><summary></summary></member>
+    <member name="M:VO.DataServer.PreInit"><summary></summary></member>
     <member name="P:VO.DataServer.RecCount">
       <summary>
         <para>A numeric value representing the number of records in this data server.</para>
@@ -464,13 +516,20 @@
 
       </remarks>
     </member>
-    <member name="M:VO.DataServer.RegisterClient(XSharp.__Usual)"></member>
-    <member name="M:VO.DataServer.ResetNotification"></member>
+    <member name="M:VO.DataServer.RegisterClient(XSharp.__Usual)">
+      <param name="oForm">
+        
+      </param>
+    </member>
+    <member name="M:VO.DataServer.ResetNotification"><summary></summary></member>
     <member name="M:VO.DataServer.RLOCK(XSharp.__Usual)">
       <summary>
         <para>Lock a specific record in this data server for exclusive write access; other users can still make read-only reference to the record.</para>
 
       </summary>
+      <param name="nRecord">
+        
+      </param>
       <returns>
         <para>
           TRUE if successful; otherwise, FALSE. Note that FALSE is returned even if the record was successfully locked but other record locks cannot be
@@ -504,6 +563,8 @@
         <para>Move to the next record having a specified key value in the controlling order.</para>
 
       </summary>
+      <param name="uValue">
+      </param>
       <returns>
         <para>
           TRUE if the specified key value was found; otherwise, FALSE. Note that a FALSE value can indicate either that the value was not found or that the server
@@ -517,6 +578,10 @@
         <para>Assign a DataField object to a specified field in this data server.</para>
 
       </summary>
+      <param name="nFieldPosition">
+      </param>
+      <param name="oDataField">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
@@ -527,6 +592,8 @@
         <para>Move the record pointer forward or backward in this data server a specified number of records.</para>
 
       </summary>
+      <param name="nRelativePosition">
+      </param>
       <returns>
         <para>
           TRUE if successful; otherwise, FALSE. Note that a FALSE value can also indicate that beginning- or end-of-file was encountered. Use the DataServer:Status
@@ -552,7 +619,7 @@
 
       </remarks>
     </member>
-    <member name="M:VO.DataServer.SuspendNotification"></member>
+    <member name="M:VO.DataServer.SuspendNotification"><summary></summary></member>
     <member name="M:VO.DataServer.UnLock">
       <summary>
         <para>Remove all locks held on this data server.</para>
@@ -562,7 +629,12 @@
 
       </returns>
     </member>
-    <member name="M:VO.DataServer.UnRegisterClient(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.DataServer.UnRegisterClient(XSharp.__Usual,XSharp.__Usual)">
+      <param name="oClient">
+      </param>
+      <param name="lAllowClose">
+      </param>
+    </member>
     <member name="M:VO.DataServer.Update">
       <summary>
         <para>Update this server with data from another server or table.</para>
@@ -588,6 +660,8 @@
         <para>Construct a date specification.</para>
 
       </summary>
+      <param name="oHLName">
+      </param>
     </member>
     <member name="T:VO.FieldSpec">
       <summary>
@@ -601,6 +675,14 @@
         <para>Construct a field specification.</para>
 
       </summary>
+      <param name="oHLName">
+      </param>
+      <param name="uType">
+      </param>
+      <param name="uLength">
+      </param>
+      <param name="uDecimals">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.AsString">
       <summary>
@@ -657,58 +739,89 @@
 
       </summary>
     </member>
-    <member name="P:VO.FieldSpec.MinLengthHL"></member>
-    <member name="P:VO.FieldSpec.Nullable"></member>
-    <member name="M:VO.FieldSpec.PerformValidations(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="P:VO.FieldSpec.MinLengthHL"><summary></summary></member>
+    <member name="P:VO.FieldSpec.Nullable"><summary></summary></member>
+    <member name="M:VO.FieldSpec.PerformValidations(XSharp.__Usual,XSharp.__Usual)">
+      <param name="uValue">
+      </param>
+      <param name="arg">
+      </param>
+    </member>
     <member name="P:VO.FieldSpec.Picture">
       <summary>
         <para>A string representing the picture clause defined to this field specification. It is used by the FieldSpec:Transform() method.</para>
 
       </summary>
     </member>
-    <member name="P:VO.FieldSpec.RangeHL"></member>
+    <member name="P:VO.FieldSpec.RangeHL"><summary></summary></member>
     <member name="P:VO.FieldSpec.Required">
       <summary>
         <para>Logical value indicating whether the field is required (TRUE) or not (FALSE).</para>
 
       </summary>
     </member>
-    <member name="P:VO.FieldSpec.RequiredHL"></member>
+    <member name="P:VO.FieldSpec.RequiredHL"><summary></summary></member>
     <member name="M:VO.FieldSpec.SetLength(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a new length for this field specification and new hyperlabel diagnostics for the length check.</para>
 
       </summary>
+      <param name="w">
+      </param>
+      <param name="oHL">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.SetMinLength(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a new minimum length validation for this field specification and new hyperlabel diagnostics for the minimum length check.</para>
 
       </summary>
+      <param name="w">
+      </param>
+      <param name="oHL">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.SetRange(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a new range validation for this field specification and new hyperlabel diagnostics for the range check.</para>
 
       </summary>
+      <param name="uMinimum">
+      </param>
+      <param name="uMaximum">
+      </param>
+      <param name="oHL">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.SetRequired(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a new required validation for this field specification and new hyperlabel diagnostics for the required check.</para>
 
       </summary>
+      <param name="lReq">
+      </param>
+      <param name="oHL">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.SetType(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a new data type for this field specification and new hyperlabel diagnostics for the data type check.</para>
 
       </summary>
+      <param name="uType">
+      </param>
+      <param name="oHL">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.SetValidation(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a new validation rule for this field specification and new hyperlabel diagnostics for the validation rule check.</para>
 
       </summary>
+      <param name="cb">
+      </param>
+      <param name="oHL">
+      </param>
     </member>
     <member name="P:VO.FieldSpec.Status">
       <summary>
@@ -724,6 +837,8 @@
         <para>Convert a specified value into a string, formatted according to this field specification's picture clause.</para>
 
       </summary>
+      <param name="uValue">
+      </param>
     </member>
     <member name="P:VO.FieldSpec.UsualType">
       <summary>
@@ -796,12 +911,18 @@
         <para>Convert a string to a value, according to this field specification's defined data type.</para>
 
       </summary>
+      <param name="cString">
+      </param>
     </member>
     <member name="M:VO.FieldSpec.Validate(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>A replaceable method for performing validations. The standard implementation evaluates the code block specified through FieldSpec:SetValidation().</para>
 
       </summary>
+      <param name="uValue">
+      </param>
+      <param name="arg">
+      </param>
       <returns>
         <para>TRUE if the value is valid; otherwise, FALSE.</para>
 
@@ -814,7 +935,7 @@
 
       </summary>
     </member>
-    <member name="P:VO.FieldSpec.ValidationHL"></member>
+    <member name="P:VO.FieldSpec.ValidationHL"><summary></summary></member>
     <member name="P:VO.FieldSpec.ValType">
       <summary>
         <para>A one-character string representing the data type defined to this field specification:</para>
@@ -859,12 +980,16 @@
         <para>Construct a file specification.</para>
 
       </summary>
+      <param name="cFullPath">
+      </param>
     </member>
     <member name="M:VO.FileSpec.AppendToPath(XSharp.__Usual)">
       <summary>
         <para>Append a subdirectory to the end of this file specification's path.</para>
 
       </summary>
+      <param name="cDirectory">
+      </param>
       <returns>
         <para>The resulting path.</para>
 
@@ -910,6 +1035,10 @@
         <para>Make a copy of the file represented by this file specification.</para>
 
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="lName">
+      </param>
       <returns>
         <para>TRUE, if the file was successfully copied; otherwise, FALSE.</para>
 
@@ -951,11 +1080,17 @@
 
       </remarks>
     </member>
-    <member name="P:VO.FileSpec.ErrInfo"></member>
+    <member name="P:VO.FileSpec.ErrInfo"><summary></summary></member>
     <member name="M:VO.FileSpec.Error(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Provide a method for handling error conditions raised during FileSpec processing. </para>
       </summary>
+      <param name="oError">
+        
+      </param>
+      <param name="symMethod">
+        
+      </param>
       <remarks>
         <i>This is an event handler:</i> it is automatically called by other methods; the developer does not
         normally need to call the error method, but might want to replace or amend it.
@@ -1056,6 +1191,10 @@
         <para>Move the file represented by this file specification to a new location.</para>
 
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="lName">
+      </param>
       <returns>
         <para>TRUE, if the file was successfully moved; otherwise, FALSE.</para>
 
@@ -1102,6 +1241,10 @@
         <para>Rename the file represented by this file specification.</para>
 
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="lName">
+      </param>
       <returns>
         <para>TRUE if the file was successfully renamed; otherwise, FALSE.</para>
 
@@ -1131,6 +1274,14 @@
         <para>Construct a hyperlabel.</para>
 
       </summary>
+      <param name="uName">
+      </param>
+      <param name="uCaption">
+      </param>
+      <param name="uDescription">
+      </param>
+      <param name="uHelpContext">
+      </param>
     </member>
     <member name="M:VO.HyperLabel.AsString">
       <summary>
@@ -1161,6 +1312,12 @@
       <summary>
         <para>Provide a method for handling error conditions raised during hyperlabel processing.</para>
       </summary>
+      <param name="oError">
+        
+      </param>
+      <param name="symMethod">
+        
+      </param>      
       <remarks>
         <para>
           <b>Note:</b> This is an event handler and is automatically called by other methods; the developer does not normally need to call the HyperLabel:Error()
@@ -1200,6 +1357,10 @@
       <summary>
         <para>Construct an integer field specification.</para>
       </summary>
+      <param name="oHLName">
+      </param>
+      <param name="uLength">
+      </param>
     </member>
     <member name="T:VO.LogicFS">
       <summary>
@@ -1211,6 +1372,8 @@
       <summary>
         <para>Construct a logic field specification.</para>
       </summary>
+      <param name="oHLName">
+      </param>
     </member>
 
     <member name="T:VO.MoneyFS">
@@ -1223,6 +1386,12 @@
       <summary>
         <para>Construct a money field specification.</para>
       </summary>
+      <param name="oHLName">
+      </param>
+      <param name="uLength">
+      </param>
+      <param name="uDecimals">
+      </param>
     </member>
     <member name="T:VO.NumberFS">
       <summary>
@@ -1233,14 +1402,27 @@
        <summary>
         <para>Construct a NumberFS object.</para>
       </summary>
+      <param name="oHLName">
+      </param>
+      <param name="uLength">
+      </param>
+      <param name="uDecimals">
+      </param>
     </member>
-    <member name="T:VO.ObjCodeBlock"></member>
+    <member name="T:VO.ObjCodeBlock"><summary></summary></member>
     <member name="M:VO.ObjCodeBlock.#ctor(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Construct a numeric field specification.</para>
       </summary>
+      <param name="xOwner">
+      </param>
+      <param name="xMethod">
+      </param>
     </member>
-    <member name="M:VO.ObjCodeBlock.Eval(XSharp.__Usual)"></member>
+    <member name="M:VO.ObjCodeBlock.Eval(XSharp.__Usual)">
+      <param name="xParam1">
+      </param>
+    </member>
     <member name="T:VO.StringFS">
       <summary>
         <para>Create a string field specification, which holds string data type information.</para>
@@ -1252,6 +1434,10 @@
       <summary>
         <para>Construct a string field specification.</para>
       </summary>
+      <param name="oHLName">
+      </param>
+      <param name="uLength">
+      </param>
     </member>
 
 

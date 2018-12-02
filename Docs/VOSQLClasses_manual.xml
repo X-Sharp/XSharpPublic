@@ -26,6 +26,8 @@
       <summary>
         <para>Construct an SQLCatalogQuery object.</para>
       </summary>
+      <param name="oSQLConnection">
+      </param>
     </member>
     <member name="P:VO.SQLCatalogQuery.CursorName">
       <summary>
@@ -47,12 +49,36 @@
 
       </remarks>
     </member>
-    <member name="M:VO.SQLCatalogQuery.Execute"></member>
-    <member name="M:VO.SQLCatalogQuery.FIELDPUT"></member>
-    <member name="M:VO.SQLCatalogQuery.GoTop"></member>
-    <member name="M:VO.SQLCatalogQuery.Prepare"></member>
-    <member name="M:VO.SQLCatalogQuery.Skip(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLCatalogQuery.Execute">
+      <summary>
+        
+      </summary>
+    </member>
+    <member name="M:VO.SQLCatalogQuery.FIELDPUT">
+      <summary>
+        
+      </summary>
+    </member>
+    <member name="M:VO.SQLCatalogQuery.GoTop">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLCatalogQuery.Prepare">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLCatalogQuery.Skip(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nRecordCount">
+        
+      </param>
+    </member>
     <member name="P:VO.SQLCatalogQuery.TableName">
+          <summary>
+        
+      </summary>
+
       <remarks>
         <para>This property is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery.</para>
 
@@ -79,6 +105,30 @@
       <summary>
         <para>Construct an SQL column object.</para>
       </summary>
+      <param name="oHyperLabel">
+        
+      </param>
+      <param name="oFieldSpec">
+        
+      </param>
+      <param name="nODBCType">
+        
+      </param>
+      <param name="nScale">
+        
+      </param>
+      <param name="lNullable">
+        
+      </param>
+      <param name="nIndex">
+        
+      </param>
+      <param name="cColName">
+        
+      </param>
+      <param name="cAlias">
+        
+      </param>
     </member>
     <member name="F:VO.SQLColumn.AliasName">
       <summary>
@@ -90,13 +140,19 @@
         <para>A string representing the SQL column name.</para>
       </summary>
     </member>
-    <member name="F:VO.SQLColumn.DisplaySize"></member>
+    <member name="F:VO.SQLColumn.DisplaySize">
+      <summary>
+      </summary>
+    </member>
     <member name="F:VO.SQLColumn.Index">
       <summary>
         <para>A numeric value representing the SQL column number.</para>
       </summary>
     </member>
-    <member name="F:VO.SQLColumn.Length"></member>
+    <member name="F:VO.SQLColumn.Length">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLColumnAttributes">
       <summary>
         <para>Describe the attributes of an SQL column.</para>
@@ -106,14 +162,47 @@
             <summary>
         <para>Construct an SQL column attributes object.</para>
       </summary>
-
+      <param name="oHyperLabel">
+      </param>
+      <param name="oFieldSpec">
+      </param>
+      <param name="nODBCType">
+      </param>
+      <param name="nScale">
+      </param>
+      <param name="lNullable">
+      </param>
+      <param name="nIndex">
+      </param>
+      <param name="cColName">
+      </param>
+      <param name="cAliasName">
+      </param>
     </member>
-    <member name="F:VO.SQLColumnAttributes.AutoIncrement"></member>
-    <member name="F:VO.SQLColumnAttributes.CaseSensitive"></member>
-    <member name="F:VO.SQLColumnAttributes.Money"></member>
-    <member name="F:VO.SQLColumnAttributes.Searchable"></member>
-    <member name="F:VO.SQLColumnAttributes.Unsigned"></member>
-    <member name="F:VO.SQLColumnAttributes.Updatable"></member>
+    <member name="F:VO.SQLColumnAttributes.AutoIncrement">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLColumnAttributes.CaseSensitive">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLColumnAttributes.Money">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLColumnAttributes.Searchable">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLColumnAttributes.Unsigned">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLColumnAttributes.Updatable">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLConnection">
       <summary>
         <para>Manage an SQL connection to an ODBC data source. A SQLConnection object is needed before any database operations can be performed.</para>
@@ -124,6 +213,12 @@
         <para>Construct an SQL connection.</para>
 
       </summary>
+      <param name="cDataSourceName">
+      </param>
+      <param name="cUserID">
+      </param>
+      <param name="cPassword">
+      </param>
     </member>
     <member name="P:VO.SQLConnection.AccessMode">
       <summary>
@@ -143,13 +238,31 @@
 
       </remarks>
     </member>
-    <member name="P:VO.SQLConnection.ActiveStmts"></member>
-    <member name="M:VO.SQLConnection.BeginTransaction"></member>
-    <member name="M:VO.SQLConnection.Commit"></member>
+    <member name="P:VO.SQLConnection.ActiveStmts">
+      <summary>
+        
+      </summary>
+    </member>
+    <member name="M:VO.SQLConnection.BeginTransaction">
+      <summary>
+        
+      </summary>
+    </member>
+    <member name="M:VO.SQLConnection.Commit">
+      <summary>
+        
+      </summary>
+    </member>
     <member name="M:VO.SQLConnection.Connect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Connect a user to an ODBC data source.</para>
       </summary>
+      <param name="cDataSource">
+      </param>
+      <param name="cUserID">
+      </param>
+      <param name="cPassword">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -187,9 +300,25 @@
         </para>
       </remarks>
     </member>
-    <member name="M:VO.SQLConnection.Disconnect"></member>
-    <member name="M:VO.SQLConnection.DriverConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.SQLConnection.EndTransaction"></member>
+    <member name="M:VO.SQLConnection.Disconnect">
+      <summary>
+        
+      </summary>
+    </member>
+    <member name="M:VO.SQLConnection.DriverConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="hWindow">
+      </param>
+      <param name="nDriverCompletion">
+      </param>
+      <param name="cConnStrIn">
+      </param>
+    </member>
+    <member name="M:VO.SQLConnection.EndTransaction">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLConnection.EnvHandle">
       <summary>
         <para>A long integer representing the environment handle.</para>
@@ -202,26 +331,53 @@
 
       </summary>
     </member>
-    <member name="M:VO.SQLConnection.GetConnectOption(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLConnection.GetConnectOption(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nOption">
+      </param>
+    </member>
     <member name="P:VO.SQLConnection.HyperLabel">
       <summary>
         <para>The hyperlabel of the connection containing the name of the data source, or NIL, if there is no data source name.</para>
 
       </summary>
     </member>
-    <member name="P:VO.SQLConnection.IdentifierQuoteChar"></member>
+    <member name="P:VO.SQLConnection.IdentifierQuoteChar">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLConnection.Info(XSharp.__Usual)">
       <summary>
         <para>Return current setting for connection information.</para>
 
       </summary>
+      <param name="nInfoType">
+      </param>
     </member>
 
-    <member name="M:VO.SQLConnection.isFunction(XSharp.__Usual)"></member>
-    <member name="P:VO.SQLConnection.IsolationOption"></member>
-    <member name="F:VO.SQLConnection.lSelect4Update"></member>
-    <member name="F:VO.SQLConnection.lUseSingleConnection"></member>
-    <member name="F:VO.SQLConnection.nActiveStmts"></member>
+    <member name="M:VO.SQLConnection.isFunction(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nFunction">
+      </param>
+    </member>
+    <member name="P:VO.SQLConnection.IsolationOption">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLConnection.lSelect4Update">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLConnection.lUseSingleConnection">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLConnection.nActiveStmts">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLConnection.ODBCCursors">
       <summary>
         <para>A constant representing the cursor type for the SQL connection.</para>
@@ -286,8 +442,14 @@
 
       </returns>
     </member>
-    <member name="M:VO.SQLConnection.Rollback"></member>
-    <member name="P:VO.SQLConnection.ScrollConcurrency"></member>
+    <member name="M:VO.SQLConnection.Rollback">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLConnection.ScrollConcurrency">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLConnection.ScrollCsr">
       <summary>
         <para>A logical value representing whether the driver supports scrollable cursors.</para>
@@ -300,7 +462,16 @@
 
       </remarks>
     </member>
-    <member name="M:VO.SQLConnection.SetConnectOption(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.SQLConnection.SetConnectOption(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nOption">
+        
+      </param>
+      <param name="uValue">
+        
+      </param>
+    </member>
     <member name="P:VO.SQLConnection.Status">
       <summary>
         <para>A hyperlabel of the SQLConnection object containing the error message, or NULL_OBJECT, if no error has occurred.</para>
@@ -329,18 +500,46 @@
 
       </summary>
     </member>
-    <member name="M:VO.SQLData.Clear"></member>
-    <member name="M:VO.SQLData.Initialize(System.Void*,System.Void*,System.UInt32,System.Boolean,System.Boolean)"></member>
-    <member name="F:VO.SQLData.Length"></member>
-    <member name="F:VO.SQLData.LongValue"></member>
+    <member name="M:VO.SQLData.Clear">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLData.Initialize(System.Void*,System.Void*,System.UInt32,System.Boolean,System.Boolean)">
+      <summary>
+      </summary>
+      <param name="pData">
+      </param>
+      <param name="pLength">
+      </param>
+      <param name="nLen">
+      </param>
+      <param name="lNull">
+      </param>
+      <param name="lChanged">
+      </param>
+    </member>
+    <member name="F:VO.SQLData.Length">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLData.LongValue">
+      <summary>
+      </summary>
+    </member>
     <member name="F:VO.SQLData.Null">
       <summary>
         <para>A logical value representing whether the SQL value is a NULL value. If it is NULL, TRUE is returned; otherwise, FALSE</para>
 
       </summary>
     </member>
-    <member name="F:VO.SQLData.ptrLength"></member>
-    <member name="F:VO.SQLData.ptrValue"></member>
+    <member name="F:VO.SQLData.ptrLength">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLData.ptrValue">
+      <summary>
+      </summary>
+    </member>
     <member name="F:VO.SQLData.ValueChanged">
       <summary>
         <para>
@@ -361,6 +560,16 @@
         <para>Construct a SQLErrorInfo object.</para>
 
       </summary>
+      <param name="oOriginator">
+      </param>
+      <param name="symMethod">
+      </param>
+      <param name="hEnv">
+      </param>
+      <param name="hDbc">
+      </param>
+      <param name="hStmt">
+      </param>
     </member>
     <member name="P:VO.SQLErrorInfo.ErrorFlag">
       <summary>
@@ -368,7 +577,10 @@
 
       </summary>
     </member>
-    <member name="P:VO.SQLErrorInfo.ErrorList"></member>
+    <member name="P:VO.SQLErrorInfo.ErrorList">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLErrorInfo.ErrorMessage">
       <summary>
         <para>A string that contains the SQL error message.</para>
@@ -398,7 +610,11 @@
 
       </remarks>
     </member>
-    <member name="M:VO.SQLErrorInfo.ShowErrorMsg"></member>
+    <member name="M:VO.SQLErrorInfo.ShowErrorMsg">
+      <summary>
+        
+      </summary>
+    </member>
     <member name="P:VO.SQLErrorInfo.SQLState">
       <summary>
         <para>A string that contains the SQL error state (for example, S1000, which is a general error).</para>
@@ -410,7 +626,11 @@
 
       </remarks>
     </member>
-    <member name="M:VO.SQLErrorInfo.Throw"></member>
+    <member name="M:VO.SQLErrorInfo.Throw">
+      <summary>
+        
+      </summary>
+    </member>
     <member name="T:VO.SQLListColumnPrivileges">
       <summary>
         <para>List the columns and associated privileges for one or more tables.</para>
@@ -420,12 +640,37 @@
       <summary>
         <para>Construct a SQLListColumnPrivileges object.</para>
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="cColName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="F:VO.SQLListColumnPrivileges.ColName"></member>
-    <member name="M:VO.SQLListColumnPrivileges.Execute"></member>
-    <member name="F:VO.SQLListColumnPrivileges.Owner"></member>
-    <member name="F:VO.SQLListColumnPrivileges.Qualifier"></member>
-    <member name="F:VO.SQLListColumnPrivileges.TableName"></member>
+    <member name="F:VO.SQLListColumnPrivileges.ColName">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLListColumnPrivileges.Execute">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListColumnPrivileges.Owner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListColumnPrivileges.Qualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListColumnPrivileges.TableName">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListColumns">
       <summary>
         <para>List the column names in specified tables.</para>
@@ -437,6 +682,16 @@
         <para>Construct a SQLListColumns object.</para>
 
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="cColName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
     <member name="F:VO.SQLListColumns.ColName">
       <summary>
@@ -460,8 +715,14 @@
 
       </summary>
     </member>
-    <member name="F:VO.SQLListColumns.Qualifier"></member>
-    <member name="F:VO.SQLListColumns.TableName"></member>
+    <member name="F:VO.SQLListColumns.Qualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListColumns.TableName">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListForeignKeys">
       <summary>
         <para>List the column names that comprise foreign keys, if they exist for a specified table.</para>
@@ -474,14 +735,49 @@
         <para>Construct a SQLListForeignKeys object.</para>
 
       </summary>
+      <param name="cPQualifier">
+      </param>
+      <param name="cpOwner">
+      </param>
+      <param name="cPTableName">
+      </param>
+      <param name="cFQualifier">
+      </param>
+      <param name="cFOwner">
+      </param>
+      <param name="cFTableName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="M:VO.SQLListForeignKeys.Execute"></member>
-    <member name="F:VO.SQLListForeignKeys.FOwner"></member>
-    <member name="F:VO.SQLListForeignKeys.FQualifier"></member>
-    <member name="F:VO.SQLListForeignKeys.FTableName"></member>
-    <member name="F:VO.SQLListForeignKeys.POwner"></member>
-    <member name="F:VO.SQLListForeignKeys.PQualifier"></member>
-    <member name="F:VO.SQLListForeignKeys.PTableName"></member>
+    <member name="M:VO.SQLListForeignKeys.Execute">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListForeignKeys.FOwner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListForeignKeys.FQualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListForeignKeys.FTableName">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListForeignKeys.POwner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListForeignKeys.PQualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListForeignKeys.PTableName">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListPrimaryKeys">
       <summary>
         <para>List the column names that comprise the primary key for a table.</para>
@@ -494,11 +790,31 @@
         <para>Construct a SQLListPrimaryKeys object.</para>
 
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="M:VO.SQLListPrimaryKeys.Execute"></member>
-    <member name="F:VO.SQLListPrimaryKeys.Owner"></member>
-    <member name="F:VO.SQLListPrimaryKeys.Qualifier"></member>
-    <member name="F:VO.SQLListPrimaryKeys.TableName"></member>
+    <member name="M:VO.SQLListPrimaryKeys.Execute">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListPrimaryKeys.Owner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListPrimaryKeys.Qualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListPrimaryKeys.TableName">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListProcedureColumns">
       <summary>
         <para>List the input and output procedure parameters and columns that make up the result set for the specified procedures.</para>
@@ -508,12 +824,37 @@
       <summary>
         <para>Construct a SQLListProcedureColumns object.</para>
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cProcName">
+      </param>
+      <param name="cColName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="F:VO.SQLListProcedureColumns.ColName"></member>
-    <member name="M:VO.SQLListProcedureColumns.Execute"></member>
-    <member name="F:VO.SQLListProcedureColumns.Owner"></member>
-    <member name="F:VO.SQLListProcedureColumns.ProcName"></member>
-    <member name="F:VO.SQLListProcedureColumns.Qualifier"></member>
+    <member name="F:VO.SQLListProcedureColumns.ColName">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLListProcedureColumns.Execute">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListProcedureColumns.Owner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListProcedureColumns.ProcName">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListProcedureColumns.Qualifier">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListProcedures">
       <summary>
         <para>List the procedure names stored in a specific data source.</para>
@@ -526,16 +867,33 @@
         <para>Construct a SQLListProcedures object.</para>
 
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cProcName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="M:VO.SQLListProcedures.Execute"></member>
+    <member name="M:VO.SQLListProcedures.Execute">
+      <summary>
+      </summary>
+    </member>
     <member name="F:VO.SQLListProcedures.Owner">
       <summary>
         <para>A string representing the name of the owner of the procedure.</para>
 
       </summary>
     </member>
-    <member name="F:VO.SQLListProcedures.ProcName"></member>
-    <member name="F:VO.SQLListProcedures.Qualifier"></member>
+    <member name="F:VO.SQLListProcedures.ProcName">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListProcedures.Qualifier">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListSpecialColumns">
       <summary>
         <para>
@@ -548,14 +906,49 @@
       <summary>
         <para>Construct a SQLListSpecialColumns object.</para>
       </summary>
+      <param name="nColType">
+      </param>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="nScope">
+      </param>
+      <param name="nNullable">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="F:VO.SQLListSpecialColumns.ColType"></member>
-    <member name="M:VO.SQLListSpecialColumns.Execute"></member>
-    <member name="F:VO.SQLListSpecialColumns.Nullable"></member>
-    <member name="F:VO.SQLListSpecialColumns.Owner"></member>
-    <member name="F:VO.SQLListSpecialColumns.Qualifier"></member>
-    <member name="F:VO.SQLListSpecialColumns.Scope"></member>
-    <member name="F:VO.SQLListSpecialColumns.TableName"></member>
+    <member name="F:VO.SQLListSpecialColumns.ColType">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLListSpecialColumns.Execute">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListSpecialColumns.Nullable">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListSpecialColumns.Owner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListSpecialColumns.Qualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListSpecialColumns.Scope">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListSpecialColumns.TableName">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListStatistics">
       <summary>
         <para>List the table statistics and the indexes.</para>
@@ -568,17 +961,44 @@
         <para>Construct a SQLListStatistics object.</para>
 
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="nUnique">
+      </param>
+      <param name="nAccuracy">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="F:VO.SQLListStatistics.Accuracy"></member>
-    <member name="M:VO.SQLListStatistics.Execute"></member>
+    <member name="F:VO.SQLListStatistics.Accuracy">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLListStatistics.Execute">
+      <summary>
+      </summary>
+    </member>
     <member name="F:VO.SQLListStatistics.Owner">
       <summary>
         <para>A string representing the owner of the table to which the statistic or index applies. NULL is not applicable to the data source.</para>
       </summary>
     </member>
-    <member name="F:VO.SQLListStatistics.Qualifier"></member>
-    <member name="F:VO.SQLListStatistics.TableName"></member>
-    <member name="F:VO.SQLListStatistics.Unique"></member>
+    <member name="F:VO.SQLListStatistics.Qualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListStatistics.TableName">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListStatistics.Unique">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListTablePrivileges">
       <summary>
         <para>List the tables and associated privileges.</para>
@@ -590,11 +1010,31 @@
        <summary>
         <para>Construct a SQLListTablePrivileges object.</para>
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="M:VO.SQLListTablePrivileges.Execute"></member>
-    <member name="F:VO.SQLListTablePrivileges.Owner"></member>
-    <member name="F:VO.SQLListTablePrivileges.Qualifier"></member>
-    <member name="F:VO.SQLListTablePrivileges.TableName"></member>
+    <member name="M:VO.SQLListTablePrivileges.Execute">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListTablePrivileges.Owner">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListTablePrivileges.Qualifier">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SQLListTablePrivileges.TableName">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLListTables">
       <summary>
         <para>List the table names stored in a specific data source.</para>
@@ -606,6 +1046,16 @@
         <para>Construct a SQLListTables object.</para>
 
       </summary>
+      <param name="cQualifier">
+      </param>
+      <param name="cOwner">
+      </param>
+      <param name="cTableName">
+      </param>
+      <param name="cTableType">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
     <member name="M:VO.SQLListTables.Execute">
       <summary>
@@ -653,6 +1103,10 @@
         <para>Construct a SQLListTypeInfo object.</para>
 
       </summary>
+      <param name="nSqlType">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
     <member name="M:VO.SQLListTypeInfo.Execute">
       <summary>
@@ -687,20 +1141,75 @@
         <para>Construct a SQLParameter object.</para>
 
       </summary>
+      <param name="xValue">
+      </param>
+      <param name="nIO">
+      </param>
+      <param name="nODBCType">
+      </param>
+      <param name="nSize">
+      </param>
     </member>
-    <member name="M:VO.SqlParameter.bind(VO.SQLStatement,System.UInt32)"></member>
-    <member name="F:VO.SqlParameter.CType"></member>
-    <member name="M:VO.SqlParameter.Destroy"></member>
-    <member name="F:VO.SqlParameter.InternalParam"></member>
-    <member name="F:VO.SqlParameter.IO"></member>
-    <member name="F:VO.SqlParameter.ODBCType"></member>
-    <member name="F:VO.SqlParameter.pBytes"></member>
-    <member name="F:VO.SqlParameter.pData"></member>
-    <member name="F:VO.SqlParameter.Precision"></member>
-    <member name="F:VO.SqlParameter.Scale"></member>
-    <member name="M:VO.SqlParameter.SetValue(XSharp.__Usual,System.Int32)"></member>
-    <member name="F:VO.SqlParameter.UsualType"></member>
-    <member name="P:VO.SqlParameter.Value"></member>
+    <member name="M:VO.SqlParameter.bind(VO.SQLStatement,System.UInt32)">
+      <summary>
+      </summary>
+      <param name="oStatement">
+      </param>
+      <param name="nPos">
+      </param>
+    </member>
+    <member name="F:VO.SqlParameter.CType">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SqlParameter.Destroy">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.InternalParam">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.IO">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.ODBCType">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.pBytes">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.pData">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.Precision">
+      <summary>
+      </summary>
+    </member>
+    <member name="F:VO.SqlParameter.Scale">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SqlParameter.SetValue(XSharp.__Usual,System.Int32)">
+      <summary>
+      </summary>
+      <param name="xValue">
+      </param>
+      <param name="nSize">
+      </param>
+    </member>
+    <member name="F:VO.SqlParameter.UsualType">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SqlParameter.Value">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLSelect">
       <summary>
         <para>Manage a SQL select statement to select a set of rows from an ODBC data source. The rows can be read, modified, or deleted using the SQLSelect methods.</para>
@@ -712,16 +1221,27 @@
         <para>Construct a SQL select object.</para>
 
       </summary>
-      <remarks>
-        <para>
-          As with all Init() methods, the instantiation returns the object. An object is created even if the table was not successfully opened, perhaps because the
-          table does not exist, is corrupted or is locked by another user.
-        </para>
-
-      </remarks>
+      <param name="cSQLSelect">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
-    <member name="M:VO.SQLSelect.AddDateVal(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.AddTimeString(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.AddDateVal(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+      </param>
+      <param name="dDate">
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.AddTimeString(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+      </param>
+      <param name="cTime">
+      </param>
+    </member>
     <member name="M:VO.SQLSelect.Append">
       <summary>
         <para>
@@ -741,12 +1261,22 @@
 
       </returns>
     </member>
-    <member name="P:VO.SQLSelect.AppendData"></member>
-    <member name="P:VO.SQLSelect.AppendFlag"></member>
+    <member name="P:VO.SQLSelect.AppendData">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLSelect.AppendFlag">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLSelect.AppendRow(XSharp.__Usual)">
       <summary>
         <para>Insert the row that has been created in the buffer since the last SQLSelect:Append() operation.</para>
       </summary>
+      <param name="lForce">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>Note:</b> The details of the implementation of this method, and how it interacts with other operations such as unique indexes and concurrency control,
@@ -759,7 +1289,12 @@
 
       </returns>
     </member>
-    <member name="M:VO.SQLSelect.BindColumn(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.BindColumn(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="i">
+      </param>
+    </member>
     <member name="P:VO.SQLSelect.BoF">
       <summary>
         <para>A logical value indicating whether the server is positioned at the beginning of the result set, on the first row.</para>
@@ -772,7 +1307,6 @@
 
       </remarks>
     </member>
-    <member name="P:VO.SQLSelect.BoundedColumns"></member>
     <member name="M:VO.SQLSelect.Close">
       <summary>
         <para>Close the cursor corresponding to the server. Note that the database connection is not closed, only the cursor.</para>
@@ -795,12 +1329,19 @@
         <para>Return a specified SQL column.</para>
 
       </summary>
+      <param name="siCol">
+      </param>
       <returns>
         <para>A SQLColumn object if successful; otherwise, NULL_OBJECT.</para>
 
       </returns>
     </member>
-    <member name="M:VO.SQLSelect.ColumnAttributes(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.ColumnAttributes(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="siCol">
+      </param>
+    </member>
     <member name="M:VO.SQLSelect.Commit">
       <summary>
         <para>Save the changes (updates and deletes) made since the last Commit().</para>
@@ -874,6 +1415,8 @@
         <para>Return the data (DataField object) at a specified column position.</para>
 
       </summary>
+      <param name="uFieldPos">
+      </param>
       <returns>
         <para>A DataField object if successful; otherwise, -1.</para>
 
@@ -939,7 +1482,12 @@
       </returns>
 
     </member>
-    <member name="M:VO.SQLSelect.DirectSkip(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.DirectSkip(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nSkip">
+      </param>
+    </member>
     <member name="P:VO.SQLSelect.EoF">
       <summary>
         <para>A logical value indicating whether the server is positioned at the end of the result set, after the last row.</para>
@@ -962,6 +1510,10 @@
       <summary>
         <para>Provide a method for handling error conditions raised during database processing.</para>
       </summary>
+      <param name="oError">
+        
+      </param>
+      
       <remarks>
         <para>
           <i>This is an event handler:</i> it is automatically called by other
@@ -975,6 +1527,8 @@
         <para>Open the cursor.</para>
 
       </summary>
+      <param name="uParam">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
@@ -985,6 +1539,10 @@
         <para>Provide extended fetch capabilities, specifying type and row.</para>
 
       </summary>
+      <param name="nFetchType">
+      </param>
+      <param name="nRow">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
@@ -1011,6 +1569,8 @@
         <para>Retrieve the contents of the specified column.</para>
 
       </summary>
+      <param name="uField">
+      </param>
       <returns>
         <para>
           The contents of the specified column, whose data type depends on the data type of the column, which is available from the Column() or ColumnAttributes()
@@ -1098,13 +1658,30 @@
         </list>
       </remarks>
     </member>
-    <member name="M:VO.SQLSelect.FieldGetFormatted(XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.FieldHyperLabel(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.FieldGetFormatted(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+        
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.FieldHyperLabel(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+      </param>
+    </member>
     <member name="M:VO.SQLSelect.FieldInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Retrieve information about or set an alias for the indicated column.</para>
 
       </summary>
+      <param name="kFieldInfoType">
+      </param>
+      <param name="uFieldPos">
+      </param>
+      <param name="uFieldVal">
+      </param>
       <returns>
         <para>A value (whose data type depends on the value requested) if successful; otherwise, NIL.</para>
 
@@ -1115,6 +1692,8 @@
         <para>Return the name of a specified column. Note that the column's hyperlabel also contains a name.</para>
 
       </summary>
+      <param name="siFieldPosition">
+      </param>
       <returns>
         <para>The name of the specified column if successful; otherwise, NULL_STRING.</para>
 
@@ -1125,6 +1704,8 @@
         <para>Return the position of a specified column within the data server, as a number starting with 1.</para>
 
       </summary>
+      <param name="cFieldName">
+      </param>
       <returns>
         <para>The position of the specified column if successful; otherwise, 0.</para>
 
@@ -1135,6 +1716,10 @@
         <para>Assign a value to a column in a data server.</para>
 
       </summary>
+      <param name="uFieldPos">
+      </param>
+      <param name="uValue">
+      </param>
       <returns>
         <para>The value assigned to the column if successful; otherwise, NIL.</para>
 
@@ -1145,6 +1730,8 @@
         <para>Return the field specification object for the indicated column.</para>
 
       </summary>
+      <param name="uFieldPos">
+      </param>
       <returns>
         <para>The field specification object if successful; otherwise, NULL_OBJECT.</para>
 
@@ -1155,6 +1742,8 @@
         <para>Return a hyperlabel object identifying the status after the last operation.</para>
 
       </summary>
+      <param name="uFieldPos">
+      </param>
       <returns>
         <para>Returns a hyperlabel object identifying the status after the last operation.</para>
       </returns>
@@ -1178,6 +1767,9 @@
       <summary>
         <para>Return the symbolic name of a specified column.</para>
       </summary>
+      <param name="uFieldPos">
+        
+      </param>
       <remarks>
         Note that the column's hyperlabel also contains a name; these two names are the same in the code generated by the SQL Editor.
 
@@ -1192,6 +1784,10 @@
         <para>Validate the provided value according to the validation rules of the indicated column's FieldSpec.</para>
 
       </summary>
+      <param name="uFieldPos">
+      </param>
+      <param name="uValue">
+      </param>
     </member>
     <member name="M:VO.SQLSelect.FLOCK">
       <summary>
@@ -1210,6 +1806,8 @@
         <para>Free the statement, according to the specified option.</para>
 
       </summary>
+      <param name="fOption">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
@@ -1220,6 +1818,9 @@
         <para>Retrieve the contents of the specified column.</para>
 
       </summary>
+      <param name="iCol">
+        
+      </param>
       <remarks>
         <para>
           The data type of the return value depends on the data type of the column, which is available from Column() or ColumnAttributes() methods. If the SQL value
@@ -1228,11 +1829,44 @@
 
       </remarks>
     </member>
-    <member name="M:VO.SQLSelect.GetdateVal(XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.GetLookupTable(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.GetStatementOption(XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.GetTimeStamp(XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.GetTimeString(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.GetdateVal(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+        
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.GetLookupTable(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nMaxRows">
+        
+      </param>
+      <param name="uField1">
+        
+      </param>
+      <param name="uField2">
+        
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.GetStatementOption(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="fOption">
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.GetTimeStamp(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.GetTimeString(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+      </param>
+    </member>
     <member name="M:VO.SQLSelect.GoBottom">
       <summary>
         <para>Position the data server on the last row.</para>
@@ -1247,6 +1881,10 @@
       <summary>
         <para>Position the data server on the specified row number.</para>
       </summary>
+      <param name="uRecordExpr">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>Note:</b> Some types of data servers cannot support movement by row number.
@@ -1268,9 +1906,18 @@
 
       </returns>
     </member>
-    <member name="P:VO.SQLSelect.IndexColumns"></member>
-    <member name="P:VO.SQLSelect.LASTREC"></member>
-    <member name="P:VO.SQLSelect.Modified"></member>
+    <member name="P:VO.SQLSelect.IndexColumns">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLSelect.LASTREC">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLSelect.Modified">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLSelect.MoreResults">
       <summary>
         <para>A logical value representing whether there are more rows to retrieve.</para>
@@ -1291,6 +1938,10 @@
           variable. In the SQLSelect class, it is used to implement the virtual column variable.
         </para>
       </summary>
+      <param name="symFieldName">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>
@@ -1308,6 +1959,13 @@
           instance variable.
         </para>
       </summary>
+      <param name="symFieldName">
+        
+      </param>
+      <param name="value">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>
@@ -1326,6 +1984,13 @@
       <summary>
         <para>Provide a method that is automatically called by the action methods of the server.</para>
       </summary>
+      <param name="kNotification">
+        
+      </param>
+      <param name="uDescription">
+        
+      </param>
+    
       <remarks>
         Provide a method that is automatically called by the action methods of the server after completion of some significant event: a column has changed, the
         server position has changed, some operation has been completed. Its standard implementation is to broadcast the same notification to its attached clients.
@@ -1382,7 +2047,6 @@
         </para>
       </remarks>
     </member>
-    <member name="P:VO.SQLSelect.NumCols"></member>
     <member name="P:VO.SQLSelect.NumParameters">
       <summary>
         <para>A numeric value containing the number of parameters. A value of -1 indicates an error.</para>
@@ -1417,6 +2081,8 @@
         <para>Return the SQL command that is generated by Visual Objects.</para>
 
       </summary>
+      <param name="cSQLString">
+      </param>
       <returns>
         <para>A possibly updated SQL string that will be passed to the SQL driver.</para>
 
@@ -1473,13 +2139,28 @@
 
       </returns>
     </member>
-    <member name="M:VO.SQLSelect.ReReadRow"></member>
-    <member name="M:VO.SQLSelect.ResetCursor(XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.ResetNotification"></member>
+    <member name="M:VO.SQLSelect.ReReadRow">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLSelect.ResetCursor(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nUpdateType">
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.ResetNotification">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLSelect.RLOCK(XSharp.__Usual)">
       <summary>
         <inheritdoc/>
       </summary>
+      <param name="uRecordNumber">
+        
+      </param>
+      
       <remarks>
         <para>This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.</para>
 
@@ -1508,7 +2189,6 @@
 
       </remarks>
     </member>
-    <member name="P:VO.SQLSelect.RowCount"></member>
     <member name="P:VO.SQLSelect.ScrollConcurrency">
       <summary>
         <para>A constant, which describes the concurrency mode used by the SQL statement</para>
@@ -1591,21 +2271,64 @@
         </list>
       </remarks>
     </member>
-    <member name="M:VO.SQLSelect.SetColumnAttributes(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.SetDataField(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.SetPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.SetColumnAttributes(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+        
+      </param>
+      <param name="oColAttributes">
+        
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.SetDataField(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nFieldPos">
+        
+      </param>
+      <param name="oField">
+        
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.SetPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="nPos">
+      </param>
+      <param name="nOption">
+      </param>
+      <param name="nLock">
+      </param>
+    </member>
     <member name="M:VO.SQLSelect.SetPrimaryKey(XSharp.__Usual)">
       <summary>
         <para>Specify a column to be used as a unique index in searched updates or deletes that require a key (i.e., SQLSelect:ScrollUpdateType = SQL_SC_UPD_KEY).</para>
 
       </summary>
+      <param name="uFieldPos">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
       </returns>
     </member>
-    <member name="M:VO.SQLSelect.SetStatementOption(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.SQLSelect.SetTimeStamp(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.SQLSelect.SetStatementOption(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="fOption">
+      </param>
+      <param name="uValue">
+      </param>
+    </member>
+    <member name="M:VO.SQLSelect.SetTimeStamp(XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="uFieldPos">
+      </param>
+      <param name="cTimestamp">
+      </param>
+    </member>
     <member name="P:VO.SQLSelect.SimulateCursor">
       <summary>
         <para>A constant, which describes the type of SQL statement</para>
@@ -1661,6 +2384,10 @@
       <summary>
         <para>Move forward or backward relative to the current row. (Similar to the Skip() function).</para>
       </summary>
+      <param name="nRecordCount">
+        
+      </param>
+      
       <remarks>
         <para>
           <b>Note:</b> Not all data servers are capable of moving backward. (See SQLConnection:ScrollCsr and SQLSelect:BufferData().)
@@ -1672,8 +2399,14 @@
 
       </returns>
     </member>
-    <member name="P:VO.SQLSelect.SQLColumns"></member>
-    <member name="P:VO.SQLSelect.SqlData"></member>
+    <member name="P:VO.SQLSelect.SQLColumns">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLSelect.SqlData">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLSelect.SQLString">
       <summary>
         <para>A string representing the SQL statement text.</para>
@@ -1711,17 +2444,23 @@
 
       </remarks>
     </member>
-    <member name="M:VO.SQLSelect.SuspendNotification"></member>
+    <member name="M:VO.SQLSelect.SuspendNotification">
+      <summary>
+        
+      </summary>
+    </member>
     <member name="P:VO.SQLSelect.TableName">
       <summary>
         <para>A string representing the name of the table.</para>
 
       </summary>
     </member>
-    <member name="P:VO.SQLSelect.TimeStampAsDate"></member>
+    <member name="P:VO.SQLSelect.TimeStampAsDate">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLSelect.Unlock(XSharp.__Usual)">
       <summary>
-        <inheritdoc/>
       </summary>
       <remarks>
         <para>This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.</para>
@@ -1733,14 +2472,26 @@
         <para>Update the current row or restore the original values of the row.</para>
 
       </summary>
+      <param name="lUpdateFlag">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
       </returns>
     </member>
-    <member name="M:VO.SQLSelect.UpdateCursor"></member>
-    <member name="M:VO.SQLSelect.UpdateKey"></member>
-    <member name="M:VO.SQLSelect.UpdateVal"></member>
+    <member name="M:VO.SQLSelect.UpdateCursor">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLSelect.UpdateKey">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLSelect.UpdateVal">
+      <summary>
+        
+      </summary>
+    </member>
     <member name="P:VO.SQLSelect.Used">
       <summary>
         <para>A logical value indicating whether the current query is active.</para>
@@ -1762,6 +2513,10 @@
         <para>Construct a SQLStatement object.</para>
 
       </summary>
+      <param name="cSQLStatement">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
     <member name="M:VO.SQLStatement.Commit">
       <summary>
@@ -1779,8 +2534,14 @@
 
       </summary>
     </member>
-    <member name="P:VO.SQLStatement.CursorType"></member>
-    <member name="M:VO.SQLStatement.Destroy"></member>
+    <member name="P:VO.SQLStatement.CursorType">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLStatement.Destroy">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLStatement.ErrInfo">
       <summary>
         <para>An SQL statement error information (SQLErrorInfo) object. Use the error flag of the returned object to determine if an error occurred.</para>
@@ -1793,6 +2554,8 @@
         <para>Execute the statement.</para>
 
       </summary>
+      <param name="uParm">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
@@ -1803,20 +2566,39 @@
         <para>Free the statement, according to the specified option.</para>
 
       </summary>
+      <param name="fOption">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
       </returns>
     </member>
-    <member name="M:VO.SQLStatement.GetStatementOption(XSharp.__Usual)"></member>
+    <member name="M:VO.SQLStatement.GetStatementOption(XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="fOption">
+      </param>
+    </member>
     <member name="P:VO.SQLStatement.HyperLabel">
       <summary>
         <para>A hyperlabel containing a description of the statement.</para>
 
       </summary>
     </member>
-    <member name="P:VO.SQLStatement.KeySet"></member>
-    <member name="M:VO.SQLStatement.MakeErrorInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="P:VO.SQLStatement.KeySet">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLStatement.MakeErrorInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="oObject">
+      </param>
+      <param name="symMethod">
+      </param>
+      <param name="nRetCode">
+      </param>
+    </member>
     <member name="P:VO.SQLStatement.NativeSQL">
       <summary>
         <para>A string containing the native text of the statement.</para>
@@ -1829,8 +2611,14 @@
 
       </summary>
     </member>
-    <member name="P:VO.SQLStatement.NumSuccessfulRows"></member>
-    <member name="P:VO.SQLStatement.Params"></member>
+    <member name="P:VO.SQLStatement.NumSuccessfulRows">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLStatement.Params">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLStatement.Prepare">
       <summary>
         <para>Prepare a statement.</para>
@@ -1847,7 +2635,10 @@
 
       </summary>
     </member>
-    <member name="P:VO.SQLStatement.RecCount"></member>
+    <member name="P:VO.SQLStatement.RecCount">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLStatement.RollBack">
       <summary>
         <para>Undo the changes made since the last Commit().</para>
@@ -1859,10 +2650,28 @@
       </returns>
     </member>
 
-    <member name="P:VO.SQLStatement.RowSet"></member>
-    <member name="P:VO.SQLStatement.ScrollConcurrency"></member>
-    <member name="M:VO.SQLStatement.SetStatementOption(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="P:VO.SQLStatement.SimulateCursor"></member>
+    <member name="P:VO.SQLStatement.RowSet">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLStatement.ScrollConcurrency">
+      <summary>
+      </summary>
+    </member>
+    <member name="M:VO.SQLStatement.SetStatementOption(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="fOption">
+      </param>
+      <param name="uValue">
+      </param>
+      <param name="lUser">
+      </param>
+    </member>
+    <member name="P:VO.SQLStatement.SimulateCursor">
+      <summary>
+      </summary>
+    </member>
     <member name="P:VO.SQLStatement.SQLString">
       <summary>
         <para>A string containing the text of the statement.</para>
@@ -1898,12 +2707,20 @@
         <para>Construct a SQLTable object.</para>
 
       </summary>
+      <param name="symTableName">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="oSQLConnection">
+      </param>
     </member>
     <member name="M:VO.SQLTable.ClearRelation(XSharp.__Usual)">
       <summary>
         <para>Clear a relation (or all relations) held by this server to other servers.</para>
 
       </summary>
+      <param name="nRelation">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, it returns FALSE.</para>
 
@@ -1914,8 +2731,13 @@
         <para>Store any other condition that is appended to the end of the SQL statement.</para>
 
       </summary>
+      <param name="cOtherConditions">
+      </param>
     </member>
-    <member name="P:VO.SQLTable.Fields"></member>
+    <member name="P:VO.SQLTable.Fields">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLTable.Notify(XSharp.__Usual,XSharp.__Usual)">
       <inheritdoc />
     </member>
@@ -1925,12 +2747,20 @@
         <para>Specify an ORDER BY clause.</para>
       </summary>
     </member>
-    <member name="P:VO.SQLTable.OrderByClause"></member>
-    <member name="P:VO.SQLTable.OrderSeek"></member>
+    <member name="P:VO.SQLTable.OrderByClause">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLTable.OrderSeek">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLTable.Relation(XSharp.__Usual)">
       <summary>
         <para>Return the linking expression of a specified relation.</para>
       </summary>
+      <param name="nRelation">
+      </param>
       <returns>
         <para>
           A string containing the linking expression of the relation specified by &lt;<i>nRelation</i>&gt;.
@@ -1946,6 +2776,12 @@
         <para>Search for a value based on a controlling search order.</para>
 
       </summary>
+      <param name="symColumn">
+      </param>
+      <param name="uValue">
+      </param>
+      <param name="lSoftSeek">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. (whether this is because the server is incapable of searching, or because the value was not found).</para>
       </returns>
@@ -1955,22 +2791,49 @@
         <para>Set a relation from this server to the child server; standard database operations are restricted to those records that match the relation.</para>
 
       </summary>
+      <param name="oChild">
+      </param>
+      <param name="uRelation">
+      </param>
+      <param name="cRelation">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
 
       </returns>
     </member>
-    <member name="M:VO.SQLTable.SetSelectiveRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="P:VO.SQLTable.Suffix"></member>
-    <member name="P:VO.SQLTable.Table"></member>
+    <member name="M:VO.SQLTable.SetSelectiveRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <summary>
+      </summary>
+      <param name="oChild">
+      </param>
+      <param name="uRelation">
+      </param>
+      <param name="cRelation">
+      </param>
+    </member>
+    <member name="P:VO.SQLTable.Suffix">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLTable.Table">
+      <summary>
+      </summary>
+    </member>
     <member name="M:VO.SQLTable.Where">
       <summary>
         <para>Specify a WHERE condition. The where clause is built by concatenating these conditions with the AND operator.</para>
 
       </summary>
     </member>
-    <member name="P:VO.SQLTable.WhereClause"></member>
-    <member name="P:VO.SQLTable.WhereSeek"></member>
+    <member name="P:VO.SQLTable.WhereClause">
+      <summary>
+      </summary>
+    </member>
+    <member name="P:VO.SQLTable.WhereSeek">
+      <summary>
+      </summary>
+    </member>
     <member name="T:VO.SQLValue">
       <summary>
         <para>Describe a SQL value.</para>
@@ -1981,6 +2844,16 @@
         <para>Construct a SQLValue object.</para>
 
       </summary>
+      <param name="oHyperLabel">
+      </param>
+      <param name="oFieldSpec">
+      </param>
+      <param name="nODBCType">
+      </param>
+      <param name="nScale">
+      </param>
+      <param name="lNullable">
+      </param>
     </member>
     <member name="F:VO.SQLValue.Nullable">
       <summary>

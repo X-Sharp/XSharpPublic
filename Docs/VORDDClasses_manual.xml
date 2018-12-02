@@ -13,18 +13,36 @@
       <summary>
         <para>Instantiates a DBFileSpec object and fills its instance variables with DBF information.</para>
       </summary>
+      <param name="cFullPath">
+      </param>
+      <param name="cDriver">
+      </param>
+      <param name="_aRDDs">
+      </param>
       <returns>A DBFileSpec object.</returns>
     </member>
     <member name="M:VO.DbFileSpec.Copy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Copies all files associated with DBFileSpec objects to a different drive and/or directory.</para>
       </summary>
+      <param name="oDBFSTarget">
+      </param>
+      <param name="lIDX">
+      </param>
+      <param name="lName">
+      </param>
       <returns>TRUE if the file was successfully copied; otherwise, FALSE.</returns>
     </member>
     <member name="M:VO.DbFileSpec.CopyTo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Copies the DBFileSpec object's DBF file to another data format. This can be used for copying out to another RDD, to a delimited file, or to an SDF file.</para>
       </summary>
+      <param name="oFS">
+      </param>
+      <param name="cDriver">
+      </param>
+      <param name="lWantAnsi">
+      </param>
       <returns>
         <para>TRUE if the file was successfully copied; otherwise, FALSE.</para>
       </returns>
@@ -33,6 +51,16 @@
       <summary>
         <para>Create a new DBF file with the given name, using a provided DBStruct array.</para>
       </summary>
+      <param name="cFullPath">
+      </param>
+      <param name="aDbStruct">
+      </param>
+      <param name="cDriver">
+      </param>
+      <param name="lWantAnsi">
+      </param>
+      <param name="aRDDs">
+      </param>
       <returns>
         <para>TRUE if the file was successfully created; otherwise, FALSE.</para>
       </returns>
@@ -59,6 +87,10 @@
           the file is found.
         </para>
       </summary>
+      <param name="xRDDs">
+      </param>
+      <param name="aHidden">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -247,6 +279,12 @@
           variables. Will also rename auto-open index files. Only DBF, MEMO and auto-open index files will get renamed.
         </para>
       </summary>
+      <param name="oDBFSTarget">
+      </param>
+      <param name="lIDX">
+      </param>
+      <param name="lName">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -306,6 +344,10 @@
           open or there is a file name conflict. To rename files to another directory, use the Move() method and supply a different target file name.
         </para>
       </summary>
+      <param name="oDBFSNewName">
+      </param>
+      <param name="lName">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -330,13 +372,23 @@
         <para>A WHILE condition code block used with the CopyTo() method.</para>
       </summary>
     </member>
-    <member name="T:VO.DBSelectionIndex"></member>
+    <member name="T:VO.DBSelectionIndex">
+      <summary></summary>
+    </member>
     <member name="M:VO.DBSelectionIndex.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
-     <summary>
+      <summary>
         <para>Instantiates a DBSelectionIndex object.</para>
       </summary>
+      <param name="oDBServer">
+      </param>
+      <param name="cExp">
+      </param>
+      <param name="nWorkArea">
+      </param>
     </member>
-    <member name="M:VO.DBSelectionIndex.Eval"></member>
+    <member name="M:VO.DBSelectionIndex.Eval">
+      <summary></summary>
+    </member>
     <member name="T:VO.DbServer">
       <summary>
         <para>Create a data server that can operate with existing .DBF database files and their associated index files.</para>
@@ -353,6 +405,16 @@
         <para>Construct a DBServer object.</para>
         <para></para>
       </summary>
+      <param name="oFile">
+      </param>
+      <param name="lShareMode">
+      </param>
+      <param name="lReadOnlyMode">
+      </param>
+      <param name="xDriver">
+      </param>
+      <param name="aRdd">
+      </param>
       <returns>
         <para>
           As with all constructors, the instantiation returns the object. An object is created even if the file was not successfully opened, perhaps because the
@@ -391,6 +453,8 @@
           locked if the Append() method returns TRUE.
         </para>
       </summary>
+      <param name="lReleaseLocks">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -399,13 +463,49 @@
       <summary>
         <para>Append new records to the table from another DBF file.</para>
       </summary>
+      <param name="oFSSource">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
+      <param name="cDriver">
+      </param>
+      <param name="aRdd">
+      </param>
     </member>
-    <member name="M:VO.DbServer.AppendDelimited(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
-
+    <member name="M:VO.DbServer.AppendDelimited(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="oFSSource">
+      </param>
+      <param name="cDelimiter">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
+    </member>
     <member name="M:VO.DbServer.AppendSDF(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Append new records to the table from an SDF-formatted file.</para>
       </summary>
+      <param name="oFSSource">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE (although this can still have caused records to be appended).</para>
       </returns>
@@ -414,15 +514,36 @@
       <summary>
         <para>Calculate the average of a series of numeric expressions, based on the number of actual records involved.</para>
       </summary>
+      <param name="acbExpression">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>An array that contains the averages for each field or expression specified. If a single expression was specified, an array length of 1 is returned.</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.BLOBDirectExport(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.BLOBDirectExport(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="nPointer">
+      </param>
+      <param name="oFSTarget">
+      </param>
+      <param name="kMode">
+      </param>
+    </member>
     <member name="M:VO.DbServer.BLOBDirectGet(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Retrieve data stored in a BLOB file without referencing a specific field.</para>
       </summary>
+      <param name="nPointer">
+      </param>
+      <param name="nStart">
+      </param>
+      <param name="nCount">
+      </param>
       <returns>
         <para>
           The data retrieved from the BLOB file. The data type of the return value depends on the actual data stored. Use ValType() or UsualType() to determine the
@@ -430,11 +551,20 @@
         </para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.BLOBDirectImport(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.BLOBDirectImport(XSharp.__Usual,XSharp.__Usual)">
+      <param name="nPointer">
+      </param>
+      <param name="oFSSource">
+      </param>
+    </member>
     <member name="M:VO.DbServer.BLOBDirectPut(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Put data in a BLOB file without referencing a specific field.</para>
       </summary>
+      <param name="nPointer">
+      </param>
+      <param name="uBlob">
+      </param>
       <returns>
         <para>
           A numeric pointer to the &lt;<i>uBLOB</i>&gt; data.
@@ -445,6 +575,12 @@
       <summary>
         <para>Copy the contents of a BLOB, identified by its memo field number, to a file.</para>
       </summary>
+      <param name="uField">
+      </param>
+      <param name="oFSTarget">
+      </param>
+      <param name="kMode">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -453,6 +589,12 @@
       <summary>
         <para>Get the contents of a BLOB, identified by its memo field number.</para>
       </summary>
+      <param name="uField">
+      </param>
+      <param name="nStart">
+      </param>
+      <param name="nCount">
+      </param>
       <returns>
         <para>
           The BLOB data retrieved from the memo field. The data type of the return value depends on the actual data stored. Use ValType() or UsualType() to determine
@@ -464,6 +606,10 @@
       <summary>
         <para>Read the contents of a file as a BLOB, identified by a memo field number.</para>
       </summary>
+      <param name="uField">
+      </param>
+      <param name="oFSSource">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -494,6 +640,8 @@
       <summary>
         <para>Store data in the root area of a BLOB file.</para>
       </summary>
+      <param name="uBlob">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise FALSE.</para>
       </returns>
@@ -526,6 +674,10 @@
       <summary>
         <para>Clear all indexes currently associated with the server.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="cOrdBag">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, it returns FALSE.</para>
       </returns>
@@ -538,7 +690,9 @@
         <para>TRUE if successful; otherwise, it returns FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.ClearOrderScope"></member>
+    <member name="M:VO.DbServer.ClearOrderScope">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.ClearRelation">
       <summary>
         <para>Clear all active relations held by this server to other servers.</para>
@@ -629,7 +783,11 @@
         </list>
       </remarks>
     </member>
-    <member name="M:VO.DbServer.ConstructUniqueAlias(XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.ConstructUniqueAlias(XSharp.__Usual)">
+      <param name="cFileName">
+
+      </param>
+    </member>
     <member name="M:VO.DbServer.Continue">
       <summary>
         <para>Resume a pending DBServer:Locate() operation, searching for the next record that matches (like the DBContinue() function).</para>
@@ -642,11 +800,37 @@
       <summary>
         <para>Copy records to another DBF file.</para>
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
+      <param name="cdriver">
+      </param>
+      <param name="aRdd">
+      </param>
     </member>
     <member name="M:VO.DbServer.CopyDelimited(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Copy records to a delimited file.</para>
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="cDelimiter">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. </para>
       </returns>
@@ -659,6 +843,16 @@
       <summary>
         <para>Copy records to an SDF file.</para>
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. </para>
       </returns>
@@ -671,6 +865,10 @@
       <summary>
         <para>Create a DBF file with the same record layout as the server object to which the message is sent.</para>
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="aFieldList">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -679,6 +877,12 @@
       <summary>
         <para>Return the number of records that match a specified scope.</para>
       </summary>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>The number of records that match the scope.</para>
       </returns>
@@ -687,6 +891,14 @@
       <summary>
         <para>Create an index file with an order in it.</para>
       </summary>
+      <param name="oFSIndex">
+      </param>
+      <param name="cExpr">
+      </param>
+      <param name="cbExpr">
+      </param>
+      <param name="lUnique">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -695,6 +907,16 @@
       <summary>
         <para>Create an order within an existing index file. The behavior depends on which driver is used.</para>
       </summary>
+      <param name="cOrderName">
+      </param>
+      <param name="cIndexFileName">
+      </param>
+      <param name="cExpr">
+      </param>
+      <param name="cbExpr">
+      </param>
+      <param name="lUnique">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -703,6 +925,8 @@
       <summary>
         <para>Retrieve the data field object at the specified field position.</para>
       </summary>
+      <param name="uField">
+      </param>
     </member>
     <member name="P:VO.DbServer.DBStruct">
       <summary>
@@ -740,11 +964,19 @@
         </list>
       </remarks>
     </member>
-    <member name="P:VO.DbServer.DbStructure"></member>
+    <member name="P:VO.DbServer.DbStructure">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.Delete(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Delete the current record or the records specified with the scoping parameters.</para>
       </summary>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. </para>
       </returns>
@@ -778,6 +1010,10 @@
       <summary>
         <para>Delete an order from an index file.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="cIndexFileName">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -814,6 +1050,13 @@
       <summary>
         <para>Provide a method for handling error conditions raised during database processing.</para>
       </summary>
+      <param name="oError">
+
+      </param>
+      <param name="symMethod">
+
+      </param>
+
       <remarks>
         <para>
           <b>Note</b> This is an event handler and is automatically called by other methods; the developer does not normally need to call the DBServer:Error()
@@ -821,7 +1064,9 @@
         </para>
       </remarks>
     </member>
-    <member name="P:VO.DbServer.ErrorInfo"></member>
+    <member name="P:VO.DbServer.ErrorInfo">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.Eval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>
@@ -829,6 +1074,14 @@
           server scope.
         </para>
       </summary>
+      <param name="cbBlock">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE (but note that even in the case of a failure, some records may have been processed).</para>
       </returns>
@@ -838,11 +1091,15 @@
         <para>The number of fields in the server.</para>
       </summary>
     </member>
-    <member name="P:VO.DbServer.FieldDesc"></member>
+    <member name="P:VO.DbServer.FieldDesc">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.FIELDGET(XSharp.__Usual)">
       <summary>
         <para>Get the contents of a field that is identified by its position.</para>
       </summary>
+      <param name="uField">
+      </param>
       <returns>
         <para>
           The value of the specified field. If &lt;<i>nFieldPos</i>&gt; does not correspond to the position of any field in the current data server,
@@ -850,12 +1107,24 @@
         </para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.FieldGetFormatted(XSharp.__Usual)"></member>
-    <member name="M:VO.DbServer.FieldHyperLabel(XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.FieldGetFormatted(XSharp.__Usual)">
+      <param name="uField">
+      </param>
+    </member>
+    <member name="M:VO.DbServer.FieldHyperLabel(XSharp.__Usual)">
+      <param name="uField">
+      </param>
+    </member>
     <member name="M:VO.DbServer.FieldInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Return and optionally change information about a field.</para>
       </summary>
+      <param name="kFieldInfoType">
+      </param>
+      <param name="uField">
+      </param>
+      <param name="uFieldVal">
+      </param>
       <returns>
         <para>
           If &lt;<i>uNewSetting</i>&gt; is not specified, DBServer:FieldInfo() returns the current setting. If &lt;<i>uNewSetting</i>&gt; is specified, the previous
@@ -867,11 +1136,15 @@
       <summary>
         <para>Return the name of a specified field as a string.</para>
       </summary>
+      <param name="nFieldPosition">
+      </param>
     </member>
     <member name="M:VO.DbServer.FieldPos(XSharp.__Usual)">
       <summary>
         <para>Return the position of a specified field within the data server, as a number starting with 1.</para>
       </summary>
+      <param name="cFieldName">
+      </param>
       <returns>
         <para>The field position in the dbServer structure, or zero if not found.</para>
         <para>See Also</para>&lt;span style="color: #000000;"&gt; &lt;/span&gt;
@@ -881,6 +1154,10 @@
       <summary>
         <para>Set the value of a field identified by its position.</para>
       </summary>
+      <param name="uField">
+      </param>
+      <param name="uValue">
+      </param>
       <returns>
         <para>
           The value assigned to the field. If &lt;<i>nFieldPos</i>&gt; does not correspond to the position of any field in the data server, DBServer:FieldPut()
@@ -892,11 +1169,15 @@
       <summary>
         <para>Return the FieldSpec object in the specified field.</para>
       </summary>
+      <param name="uField">
+      </param>
     </member>
     <member name="M:VO.DbServer.FieldStatus(XSharp.__Usual)">
       <summary>
         <para>Return the status of a field after the last operation.</para>
       </summary>
+      <param name="uField">
+      </param>
       <returns>
         <para>
           A HyperLabel object if any error condition had occurred or if a validation has failed, NIL if everything is OK, if the validation passed, or if there has
@@ -908,6 +1189,8 @@
       <summary>
         <para>Return the name of a specified field.</para>
       </summary>
+      <param name="uField">
+      </param>
     </member>
     <member name="M:VO.DbServer.FieldValidate(XSharp.__Usual,XSharp.__Usual)">
       <summary>
@@ -916,6 +1199,10 @@
           validation rule) and return the result of the test.
         </para>
       </summary>
+      <param name="uField">
+      </param>
+      <param name="uValue">
+      </param>
       <returns>
         <para>FALSE if any of the validations fail; otherwise, TRUE.</para>
       </returns>
@@ -983,6 +1270,12 @@
       <summary>
         <para>Retrieve an array of values from a field in the server, subject to the currently active selection, if any.</para>
       </summary>
+      <param name="nMaxRows">
+      </param>
+      <param name="uField1">
+      </param>
+      <param name="uSearchValue">
+      </param>
     </member>
     <member name="M:VO.DbServer.GetLocate">
       <summary>
@@ -993,6 +1286,14 @@
       <summary>
         <para>Retrieve a two-column array of values from two fields in the server, subject to the currently active selection, if any.</para>
       </summary>
+      <param name="nMaxRows">
+      </param>
+      <param name="uField1">
+      </param>
+      <param name="uField2">
+      </param>
+      <param name="uSearchValue">
+      </param>
       <returns>
         <para>The method returns a two-column array of values found for the specified fields</para>
       </returns>
@@ -1020,6 +1321,8 @@
       <summary>
         <para>Position the data server at a specified record number.</para>
       </summary>
+      <param name="nRecordNumber">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1047,6 +1350,8 @@
       <summary>
         <para>Return the key expression of a specified single-order index.</para>
       </summary>
+      <param name="uOrder">
+      </param>
       <returns>
         <para>
           The key expression of the specified index as a string; if there is no corresponding order or the order name is not unique, the method returns a
@@ -1054,7 +1359,9 @@
         </para>
       </returns>
     </member>
-    <member name="P:VO.DbServer.IndexList"></member>
+    <member name="P:VO.DbServer.IndexList">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.INDEXORD">
       <summary>
         <para>Return the ordinal position of the controlling order in the order list. (Similar to the IndexOrd() function.)</para>
@@ -1070,6 +1377,10 @@
       <summary>
         <para>Return and optionally change information about a data server.</para>
       </summary>
+      <param name="kInfoType">
+      </param>
+      <param name="uInfo">
+      </param>
       <returns>
         <para>
           If &lt;<i>uNewSetting</i>&gt; is not specified, DBServer:RDDInfo() returns the current setting. If &lt;<i>uNewSetting</i>&gt; is specified, the previous
@@ -1081,6 +1392,14 @@
       <summary>
         <para>Join this DBServer object with another DBServer object and place the results in the file specified.</para>
       </summary>
+      <param name="oDBSource">
+      </param>
+      <param name="oFSTarget">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
       <returns>
         <para>
           TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been processed. This would happen if the operation failed halfway
@@ -1104,6 +1423,12 @@
           scope.
         </para>
       </summary>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>
           TRUE if a record was found that matches the conditions, FALSE if no match was found or if the operation failed for some other reason. Afterwards, the Found
@@ -1111,7 +1436,9 @@
         </para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.LockCurrentRecord"></member>
+    <member name="M:VO.DbServer.LockCurrentRecord">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.LockSelection">
       <summary>
         <para>Lock all the records in the currently active selection.</para>
@@ -1128,8 +1455,12 @@
         <para>The last modification date of the DBF file used in the server.</para>
       </summary>
     </member>
-    <member name="P:VO.DbServer.MemoExt"></member>
-    <member name="P:VO.DbServer.Name"></member>
+    <member name="P:VO.DbServer.MemoExt">
+      <summary></summary>
+    </member>
+    <member name="P:VO.DbServer.Name">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.NoIVarGet(XSharp.__Usual)">
       <summary>
         <para>
@@ -1137,6 +1468,10 @@
           variable. In the DBServer class, it is used to implement the virtual field variable.
         </para>
       </summary>
+      <param name="symFieldName">
+
+      </param>
+
       <remarks>
         <para>
           <b>
@@ -1153,6 +1488,13 @@
           instance variable. In the DBServer class, it is used to implement the virtual field variable.
         </para>
       </summary>
+      <param name="symFieldName">
+
+      </param>
+      <param name="uValue">
+
+      </param>
+
       <remarks>
         <para>
           <b>
@@ -1181,13 +1523,19 @@
           </i>
         </para>
       </summary>
+      <param name="kNotification">
+      </param>
+      <param name="uDescription">
+      </param>
       <returns>
         <para>
           SELF, except if NOTIFYINTENTTOMOVE is specified for &lt;<i>kNotifyName</i>&gt;. In this case, the return value is TRUE if successful; otherwise, FALSE.
         </para>
       </returns>
     </member>
-    <member name="P:VO.DbServer.OleExt"></member>
+    <member name="P:VO.DbServer.OleExt">
+      <summary></summary>
+    </member>
     <member name="P:VO.DbServer.OrderBottomScope">
       <summary>
         <para>A key value representing the record of the bottom boundary in the range of key values that will be included in the controlling order's current scope.</para>
@@ -1197,6 +1545,12 @@
       <summary>
         <para>Return and optionally change the descending flag of an order.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="oFSIndex">
+      </param>
+      <param name="lNew">
+      </param>
       <returns>
         <para>
           If &lt;<i>lNewDescend</i>&gt; is not specified, DBServer:OrderDescend() returns the current setting. If &lt;<i>lNewDescend</i>&gt; is specified, the
@@ -1208,6 +1562,14 @@
       <summary>
         <para>Return and optionally change information about orders and index files.</para>
       </summary>
+      <param name="kOrderInfoType">
+      </param>
+      <param name="oFSIndex">
+      </param>
+      <param name="uOrder">
+      </param>
+      <param name="uOrdVal">
+      </param>
       <returns>
         <para>
           If &lt;<i>uNewSetting</i>&gt; is not specified, DBServer:OrderInfo() returns the current setting. If &lt;<i>uNewSetting</i>&gt; is specified, the previous
@@ -1219,6 +1581,10 @@
       <summary>
         <para>Return the status of the unique flag for a given order.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="oFSIndex">
+      </param>
       <returns>
         <para>The status of the indicated order's unique flag as a logical value.</para>
       </returns>
@@ -1227,6 +1593,12 @@
       <summary>
         <para>Add a key to a custom built order.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="oFSIndex">
+      </param>
+      <param name="uKeyValue">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise FALSE.</para>
       </returns>
@@ -1235,11 +1607,19 @@
       <summary>
         <para>Return the number of keys in an order.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="oFSIndex">
+      </param>
     </member>
     <member name="M:VO.DbServer.OrderKeyDel(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Delete a key from a custom built order.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="oFSIndex">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise FALSE.</para>
       </returns>
@@ -1248,6 +1628,8 @@
       <summary>
         <para>Move to a record specified by its logical record number in the controlling order.</para>
       </summary>
+      <param name="nKeyNo">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1256,6 +1638,10 @@
       <summary>
         <para>Get the logical record number of the current record.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="oFSIndex">
+      </param>
       <returns>
         <para>
           The relative position of the current record in the specified order, as a numeric value. DBServer:OrderKeyNo() respects the scope and for condition of the
@@ -1275,6 +1661,10 @@
       <summary>
         <para>Set the boundaries for scoping key values in the controlling order.</para>
       </summary>
+      <param name="nScope">
+      </param>
+      <param name="uValue">
+      </param>
       <returns>
         <para>
           If &lt;<i>uNewValue</i>&gt; is not specified, DBServer:OrderScope() returns the current setting. If &lt;<i>uNewValue</i>&gt; is specified, the previous
@@ -1282,7 +1672,10 @@
         </para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.OrderSkipUnique(XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.OrderSkipUnique(XSharp.__Usual)">
+      <param name="nDirection">
+      </param>
+    </member>
     <member name="P:VO.DbServer.OrderTopScope">
       <summary>
         <para>A key value representing the record of the top boundary in the range of key values that will be included in the controlling order's current scope.</para>
@@ -1296,12 +1689,18 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.DbServer.PaintedStructure"></member>
+    <member name="P:VO.DbServer.PaintedStructure">
+      <summary></summary>
+    </member>
 
     <member name="M:VO.DbServer.RDDINFO(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Return and optionally change settings controlled directly by the RDD.</para>
       </summary>
+      <param name="kRDDInfoType">
+      </param>
+      <param name="uRDDVal">
+      </param>
       <returns>
         <para>
           If &lt;<i>uNewSetting</i>&gt; is not specified, DBServer:RDDInfo() returns the current setting. If &lt;<i>uNewSetting</i>&gt; is specified, the previous
@@ -1320,7 +1719,9 @@
         </para>
       </remarks>
     </member>
-    <member name="P:VO.DbServer.Rdds"></member>
+    <member name="P:VO.DbServer.Rdds">
+      <summary></summary>
+    </member>
     <member name="P:VO.DbServer.ReadOnly">
       <summary>
         <para>A logical value indicating whether the file was opened as a read-only file. This is determined by an instantiation parameter of the server.</para>
@@ -1331,6 +1732,12 @@
       <summary>
         <para>Recall those deleted records indicated by a specified scope.</para>
       </summary>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. </para>
       </returns>
@@ -1382,6 +1789,12 @@
       <summary>
         <para>Retrieve information about the indicated record.</para>
       </summary>
+      <param name="kRecInfoType">
+      </param>
+      <param name="nRecordNumber">
+      </param>
+      <param name="uRecVal">
+      </param>
       <returns>
         <para>The data type of the return value depends on the value requested.</para>
       </returns>
@@ -1412,6 +1825,8 @@
       <summary>
         <para>Return the linking expression of a specified relation.</para>
       </summary>
+      <param name="nRelation">
+      </param>
       <returns>
         <para>
           A string containing the linking expression of the relation specified by &lt;<i>nRelation</i>&gt;. If there is no relation set for &lt;<i>nRelation</i>&gt;,
@@ -1419,21 +1834,39 @@
         </para>
       </returns>
     </member>
-    <member name="P:VO.DbServer.RelationChildren"></member>
+    <member name="P:VO.DbServer.RelationChildren">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.Replace(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Replace one or several fields with a new expression, for all records that match a specified scope.</para>
       </summary>
+      <param name="acbExpression">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE (although this can still have caused records to be modified).</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.ResetNotification"></member>
-    <member name="P:VO.DbServer.Retries"></member>
+    <member name="M:VO.DbServer.ResetNotification">
+      <summary></summary>
+    </member>
+    <member name="P:VO.DbServer.Retries">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.RLOCK(XSharp.__Usual)">
       <summary>
         <para>Lock a record for exclusive write access; other users can still make read-only reference to the record.</para>
       </summary>
+      <param name="nRecordNumber">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE (including if the indicated record was successfully locked but other record locks cannot be maintained).</para>
       </returns>
@@ -1487,16 +1920,30 @@
       <summary>
         <para>Move to the record having the specified key value in the controlling order.</para>
       </summary>
+      <param name="uSearchExpr">
+      </param>
+      <param name="lSoftSeek">
+      </param>
+      <param name="lLast">
+      </param>
       <returns>
         <para>TRUE if the specified key value was found; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.SELECT"></member>
-    <member name="P:VO.DbServer.SelectionWorkArea"></member>
+    <member name="M:VO.DbServer.SELECT">
+      <summary></summary>
+    </member>
+    <member name="P:VO.DbServer.SelectionWorkArea">
+      <summary></summary>
+    </member>
     <member name="M:VO.DbServer.SetDataField(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Assign a DataField object to a specified field.</para>
       </summary>
+      <param name="nFieldPosition">
+      </param>
+      <param name="oDataField">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1505,6 +1952,10 @@
       <summary>
         <para>Set a filter condition.</para>
       </summary>
+      <param name="cbFilterBlock">
+      </param>
+      <param name="cFilterText">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1513,6 +1964,8 @@
       <summary>
         <para>Open an index file and select its order as the controlling order, if this is the first index being opened.</para>
       </summary>
+      <param name="oFSIndexFile">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1521,20 +1974,70 @@
       <summary>
         <para>Select an order from one of the open index files as the controlling order.</para>
       </summary>
+      <param name="uOrder">
+      </param>
+      <param name="cIndexFileName">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.SetOrderCondition(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.SetOrderCondition(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="cFor">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="lAll">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="cbEvalBlock">
+      </param>
+      <param name="nStep">
+      </param>
+      <param name="nStart">
+      </param>
+      <param name="nNext">
+      </param>
+      <param name="nRecno">
+      </param>
+      <param name="lRest">
+      </param>
+      <param name="lDescending">
+      </param>
+      <param name="lAdditive">
+      </param>
+      <param name="lCurrent">
+      </param>
+      <param name="lCustom">
+      </param>
+      <param name="lNoOptimize">
+      </param>
+    </member>
     <member name="M:VO.DbServer.SetRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Set a relation from this server to the child server.</para>
       </summary>
+      <param name="oDBChild">
+      </param>
+      <param name="uRelation">
+      </param>
+      <param name="cRelation">
+      </param>
+      <param name="lSelective">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.SetSelectiveRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.DbServer.SetSelectiveRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="oDBChild">
+      </param>
+      <param name="uRelation">
+      </param>
+      <param name="cRelation">
+      </param>
+    </member>
     <member name="P:VO.DbServer.Shared">
       <summary>
         <para>A logical value indicating whether the server is sharable or exclusive. </para>
@@ -1548,6 +2051,8 @@
       <summary>
         <para>Move the record pointer forward or backward a specified number of records.</para>
       </summary>
+      <param name="nRecordCount">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1559,6 +2064,16 @@
           scope.
         </para>
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. </para>
       </returns>
@@ -1586,16 +2101,40 @@
       <summary>
         <para>Calculate the sum of a series of numeric expressions.</para>
       </summary>
+      <param name="acbExpression">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>An array that contains the sums for each expression or field specified.</para>
       </returns>
     </member>
-    <member name="M:VO.DbServer.SuspendNotification"></member>
-    <member name="P:VO.DbServer.TableExt"></member>
-    |   <member name="M:VO.DbServer.Total(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    <member name="M:VO.DbServer.SuspendNotification">
+      <summary></summary>
+    </member>
+    <member name="P:VO.DbServer.TableExt">
+      <summary></summary>
+    </member>
+    <member name="M:VO.DbServer.Total(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Aggregate records by key value, producing grouped summarizations, and write the aggregate records to another database.</para>
       </summary>
+      <param name="oFSTarget">
+      </param>
+      <param name="cbKeyField">
+      </param>
+      <param name="aFieldList">
+      </param>
+      <param name="cbForBlock">
+      </param>
+      <param name="cbWhileBlock">
+      </param>
+      <param name="uScope">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE. </para>
       </returns>
@@ -1608,6 +2147,8 @@
       <summary>
         <para>Release a specified lock or all locks.</para>
       </summary>
+      <param name="nRecordNumber">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1616,6 +2157,18 @@
       <summary>
         <para>Update this server with data from another server or table.</para>
       </summary>
+      <param name="oDbServer">
+
+      </param>
+      <param name="cbKey">
+
+      </param>
+      <param name="lRandomFlag">
+
+      </param>
+      <param name="cbReplace">
+
+      </param>
       <remarks>
         <para>
           <b>Note</b> This method requires a file lock or exclusive access.
@@ -1693,6 +2246,8 @@
       <summary>
         <para>Instantiates an OrderSpec object using an existing DBFileSpec object.</para>
       </summary>
+      <param name="oDBFS">
+      </param>
       <returns>
         <para>An OrderSpec object.</para>
       </returns>
@@ -1842,6 +2397,10 @@
           instantiation.
         </para>
       </summary>
+      <param name="oFS">
+      </param>
+      <param name="uOrder">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1855,6 +2414,16 @@
       <summary>
         <para>Create new orders, and if empty, fills in OrderSpec information and associates the created order with the DBFileSpec object.</para>
       </summary>
+      <param name="oFS">
+      </param>
+      <param name="cOrder">
+      </param>
+      <param name="cKeyValue">
+      </param>
+      <param name="cbKeyValue">
+      </param>
+      <param name="lUnique">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1866,6 +2435,8 @@
           the DBFileSpec object specific to this order.
         </para>
       </summary>
+      <param name="uOrder">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>

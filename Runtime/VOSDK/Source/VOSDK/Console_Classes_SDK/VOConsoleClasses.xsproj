@@ -55,4 +55,23 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165,9032,170,618,9068,108</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>c:\xsharp\devrt\runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <DefineConstants>DEBUG;TRACE;__XRUNTIME__;__VULCAN__</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+  </PropertyGroup>
 </Project>

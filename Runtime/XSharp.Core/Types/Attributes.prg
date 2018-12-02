@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.Internal
 	/// with Clipper calling convention
 	/// </summary>
 	
-	[AttributeUsage(AttributeTargets.Method)];
+	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Constructor)];
 	SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
 		PRIVATE INITONLY _parameterNames AS STRING[]
 		///<summary>List of parameter names for the method or constructor </summary>

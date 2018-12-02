@@ -204,7 +204,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
         
         FOR i := 1 TO nFields
             IF "->" $ aNames[i]
-                cName := SubStr(aNames[i], At(">", aNames[i]) + 1)
+                cName := SubStr2(aNames[i], At(">", aNames[i]) + 1)
             ELSE
                 cName :=  aNames[i]
             ENDIF

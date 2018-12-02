@@ -13,11 +13,25 @@
       <summary>
         <para>Construct a CEmail object.</para>
       </summary>
+      <param name="cRawMail">
+      </param>
+      <param name="uStorage">
+      </param>
     </member>
     <member name="M:VO.CEmail.AddAttachment(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Adds an attachment to the email.</para>
       </summary>
+      <param name="cFullPath">
+      </param>
+      <param name="cContentType">
+      </param>
+      <param name="dwEncodeType">
+      </param>
+      <param name="cContentID">
+      </param>
+      <param name="cFilename">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -64,6 +78,8 @@
       <summary>
         <para>Creates a HTML body based on the text body of the email message.</para>
       </summary>
+      <param name="cText">
+      </param>
       <returns>
         <para>cHTML</para>
         <para>a HTML copy of cText.</para>
@@ -73,11 +89,15 @@
       <summary>
         <para>Prepares a default text response.</para>
       </summary>
+      <param name="lReFormat">
+      </param>
     </member>
     <member name="M:VO.CEmail.Decode(XSharp.__Usual)">
       <summary>
         <para>Extract all information from the various parts of an e-mail.</para>
       </summary>
+      <param name="cMail">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -86,6 +106,8 @@
       <summary>
         <para>Adds an attachment to the email.</para>
       </summary>
+      <param name="dwIndex">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -95,14 +117,18 @@
         <para>Array of strings containing the e-mail addresses of all recipients.</para>
       </summary>
     </member>
-    <member name="P:VO.CEmail.DispositionNotification"></member>
+    <member name="P:VO.CEmail.DispositionNotification"><summary></summary></member>
     <member name="M:VO.CEmail.GetAttachmentInfo(System.UInt32,System.UInt32)">
       <summary>
         <para>Method to decode all header elements of an email</para>
       </summary>
+      <param name="dwIndex">
+      </param>
+      <param name="dwType">
+      </param>
     </member>
-    <member name="M:VO.CEmail.GetHeaderInfo"></member>
-    <member name="P:VO.CEmail.HTMLText"></member>
+    <member name="M:VO.CEmail.GetHeaderInfo"><summary></summary></member>
+    <member name="P:VO.CEmail.HTMLText"><summary></summary></member>
     <member name="P:VO.CEmail.MailPriority">
       <summary>
         <para>Numeric value representing the e-mail priority.</para>
@@ -113,6 +139,10 @@
       <summary>
         <para>Method to encode a string using a specific encoding or the default encoding of an email</para>
       </summary>
+      <param name="c">
+      </param>
+      <param name="nCode">
+      </param>
       <returns>
         <para>The encoded string.</para>
       </returns>
@@ -121,6 +151,14 @@
       <summary>
         <para>Method to encode an MIME Attachment header</para>
       </summary>
+      <param name="nCode">
+      </param>
+      <param name="xContentType">
+      </param>
+      <param name="cFile">
+      </param>
+      <param name="cCID">
+      </param>
       <returns>
         <para>The encoded string.</para>
       </returns>
@@ -144,6 +182,12 @@
       <summary>
         <para>Decode and save the specified encoded attachment of an e-mail as a local file.</para>
       </summary>
+      <param name="cPath">
+      </param>
+      <param name="cFile">
+      </param>
+      <param name="n">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -152,6 +196,12 @@
       <summary>
         <para>This method allows you to replace elements of the internal attachment array of the email object.</para>
       </summary>
+      <param name="dwIndex">
+      </param>
+      <param name="dwType">
+      </param>
+      <param name="uNewValue">
+      </param>
       <returns>
         <para>The old value for the attachment array element</para>
       </returns>
@@ -161,11 +211,13 @@
         <para>Method to encode all header elements of an email</para>
       </summary>
     </member>
-    <member name="P:VO.CEmail.Size"></member>
+    <member name="P:VO.CEmail.Size"><summary></summary></member>
     <member name="M:VO.CEmail.StreamIn(System.String)">
       <summary>
         <para>This method gets called when an email messages is received. It calls into the Storage object to decode and store attachments.</para>
       </summary>
+      <param name="cData">
+      </param>
     </member>
     <member name="M:VO.CEmail.StreamOut">
       <summary>
@@ -187,22 +239,35 @@
       <summary>
         <para>Construct a CFtp object instance.</para>
       </summary>
+      <param name="cCaption">
+      </param>
+      <param name="n">
+      </param>
+      <param name="lStat">
+      </param>
     </member>
     <member name="M:VO.CFtp.Append(XSharp.__Usual,XSharp.__Usual)">
+      <param name="cLocalFile">
+      </param>
+      <param name="nFlags">
+      </param>
     </member>
-
-    <member name="M:VO.CFtp.ConnectRemote(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual))">
-      <summary>
-        <para>Connect an application to a remote FTP server.</para>
-      </summary>
-      <returns>
-        <para>TRUE if successful; otherwise, FALSE.</para>
-      </returns>
+    <member name="M:VO.CFtp.ConnectRemote(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="cIP">
+      </param>
+      <param name="cID">
+      </param>
+      <param name="cPw">
+      </param>
+      <param name="lBypass">
+      </param>
     </member>
     <member name="M:VO.CFtp.CreateDir(XSharp.__Usual)">
       <summary>
         <para>Create a new directory on the FTP server.</para>
       </summary>
+      <param name="cRemoteDir">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -211,6 +276,8 @@
       <summary>
         <para>Delete a file stored on the FTP server.</para>
       </summary>
+      <param name="cRemoteFile">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -219,6 +286,10 @@
       <summary>
         <para>Create an array of directory and file information about the remote FTP server.</para>
       </summary>
+      <param name="cFile">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>
           An array of subarrays, with each subarray containing information about each file matching &lt;<i>cFileSpec</i>&gt;. The subarray elements are referenced as
@@ -238,6 +309,14 @@
       <summary>
         <para>Receive a file from the FTP server.</para>
       </summary>
+      <param name="cRemoteFile">
+      </param>
+      <param name="cNewFile">
+      </param>
+      <param name="lFailIfExists">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -249,11 +328,25 @@
           implement the desired behavior.
         </para>
       </summary>
+      <param name="nContext">
+      </param>
+      <param name="nStatus">
+      </param>
+      <param name="pStatusInfo">
+      </param>
+      <param name="nStatusLength">
+      </param>
     </member>
     <member name="M:VO.CFtp.Open(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Initialize an application's use of the Win32 Internet functions.</para>
       </summary>
+      <param name="nFlags">
+      </param>
+      <param name="xProxy">
+      </param>
+      <param name="aProxyByPass">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -262,6 +355,12 @@
       <summary>
         <para>Open a remote file for writing or reading.</para>
       </summary>
+      <param name="cRemoteFile">
+      </param>
+      <param name="nAccess">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>File handle, if successful; otherwise, NULL_PTR.</para>
       </returns>
@@ -276,6 +375,14 @@
       <summary>
         <para>Store a file on the FTP server.</para>
       </summary>
+      <param name="cLocalFile">
+      </param>
+      <param name="cRemoteFile">
+      </param>
+      <param name="lFailIfExists">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -284,6 +391,8 @@
       <summary>
         <para>Delete a directory from the remote FTP server.</para>
       </summary>
+      <param name="cRemoteDir">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -292,6 +401,10 @@
       <summary>
         <para>Rename a file stored on the FTP server.</para>
       </summary>
+      <param name="cRemoteFile">
+      </param>
+      <param name="cNewName">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -300,6 +413,8 @@
       <summary>
         <para>Change the current directory on the remote FTP server for the current process.</para>
       </summary>
+      <param name="cRemoteDir">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -314,11 +429,21 @@
       <summary>
         <para>Instantiates a Http wrapper object.</para>
       </summary>
+      <param name="cCaption">
+      </param>
+      <param name="n">
+      </param>
+      <param name="lStat">
+      </param>
     </member>
     <member name="M:VO.CHttp.AddRequestHeaders(XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Adds additional headers to the current request.</para>
       </summary>
+      <param name="cHeaders">
+      </param>
+      <param name="nModifiers">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -343,6 +468,12 @@
       <summary>
         <para>Opens the http connection.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="cID">
+      </param>
+      <param name="cPw">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -375,19 +506,36 @@
       <summary>
         <para>Retrieves a document from the server.</para>
       </summary>
+      <param name="cURL">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>The document as a string.</para>
       </returns>
     </member>
     <member name="M:VO.CHttp.GetDocumentFromServer(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="cServer">
+      </param>
+      <param name="cDocument">
+      </param>
+      <param name="cID">
+      </param>
+      <param name="cPw">
+      </param>
     </member>
-
     <member name="M:VO.CHttp.GetFile(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>
           Retrieves the remote file <i>cRemoteFile</i> to the (local) file <i>cNewFile</i>.
         </para>
       </summary>
+      <param name="cRemoteFile">
+      </param>
+      <param name="cNewFile">
+      </param>
+      <param name="lFailIfExists">
+      </param>
       <returns>
         <para>TRUE if the file is saved, otherwise FALSE.</para>
       </returns>
@@ -412,6 +560,12 @@
       <summary>
         <para>Opens the http connection.</para>
       </summary>
+      <param name="nFlags">
+      </param>
+      <param name="xProxy">
+      </param>
+      <param name="aProxyByPass">
+      </param>
       <returns>
         <para>TRUE if the connection was opened, otherwise FALSE.</para>
       </returns>
@@ -420,6 +574,12 @@
       <summary>
         <para>Opens a remote file.</para>
       </summary>
+      <param name="cRemoteFile">
+      </param>
+      <param name="nAccess">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>The handle of the requested file.</para>
       </returns>
@@ -428,12 +588,17 @@
       <summary>
         <para>Opens a new request.</para>
       </summary>
+      <param name="cMethod">
+      </param>
+      <param name="cDocument">
+      </param>
+      <param name="nFlags">
+      </param>
       <returns>
         <para>TRUE if the document was opened, otherwise FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CHttp.Proxy">
-    </member>
+    <member name="P:VO.CHttp.Proxy"><summary></summary></member>
 
     <member name="P:VO.CHttp.Response">
       <summary>
@@ -455,6 +620,12 @@
       <summary>
         <para>Sends a request to the server.</para>
       </summary>
+      <param name="cHeaders">
+      </param>
+      <param name="pData">
+      </param>
+      <param name="nDataSize">
+      </param>
       <returns>
         <para>TRUE if the request is successful, otherwise FALSE.</para>
       </returns>
@@ -463,6 +634,8 @@
       <summary>
         <para>Changes the current directory on the remote server for the current process.</para>
       </summary>
+      <param name="cRemoteDir">
+      </param>
       <returns>
         <para>The new directory name as a string.</para>
       </returns>
@@ -475,17 +648,40 @@
         <summary>
         <para>Construct a CImap object.</para>
       </summary>
+      <param name="cServer">
+      </param>
+      <param name="cUid">
+      </param>
+      <param name="cPwd">
+      </param>
     </member>
-    <member name="M:VO.CImap.CheckReply"></member>
-    <member name="M:VO.CImap.ClientCommand(XSharp.__Usual)"></member>
-    <member name="M:VO.CImap.DeleteMail(XSharp.__Usual)"></member>
-    <member name="M:VO.CImap.Disconnect"></member>
-    <member name="M:VO.CImap.GetMail(XSharp.__Usual)"></member>
-    <member name="M:VO.CImap.GetPrefix"></member>
-    <member name="M:VO.CImap.GetStatus"></member>
-    <member name="M:VO.CImap.LogOn(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="P:VO.CImap.MailBox"></member>
-    <member name="M:VO.CImap.SendRemote(XSharp.__Usual)"></member>
+    <member name="M:VO.CImap.CheckReply"><summary></summary></member>
+    <member name="M:VO.CImap.ClientCommand(XSharp.__Usual)">
+      <param name="cBuffer">
+      </param>
+    </member>
+    <member name="M:VO.CImap.DeleteMail(XSharp.__Usual)">
+      <param name="nMail">
+      </param>
+    </member>
+    <member name="M:VO.CImap.Disconnect"><summary></summary></member>
+    <member name="M:VO.CImap.GetMail(XSharp.__Usual)">
+      <param name="nMail">
+      </param>
+    </member>
+    <member name="M:VO.CImap.GetPrefix"><summary></summary></member>
+    <member name="M:VO.CImap.GetStatus"><summary></summary></member>
+    <member name="M:VO.CImap.LogOn(XSharp.__Usual,XSharp.__Usual)">
+      <param name="cUID">
+      </param>
+      <param name="cPwd">
+      </param>
+    </member>
+    <member name="P:VO.CImap.MailBox"><summary></summary></member>
+    <member name="M:VO.CImap.SendRemote(XSharp.__Usual)">
+      <param name="cData">
+      </param>
+    </member>
     <member name="T:VO.CINetDial">
       <summary>
         <para>Class for establishing dial up connections</para>
@@ -495,26 +691,55 @@
         <summary>
         <para>Construct a CINetDial object.</para>
       </summary>
-
+      <param name="dwDialFlag">
+      </param>
+      <param name="oOwner">
+      </param>
+      <param name="symNotifyMethod">
+      </param>
     </member>
-    <member name="M:VO.CINetDial.AutoDial(XSharp.__Usual)"></member>
-    <member name="M:VO.CINetDial.Dial(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="P:VO.CINetDial.DialFlag"></member>
-    <member name="P:VO.CINetDial.Error"></member>
-    <member name="P:VO.CINetDial.ErrorDescription"></member>
-    <member name="M:VO.CINetDial.GetConnectedState"></member>
-    <member name="M:VO.CINetDial.GetConnections"></member>
-    <member name="M:VO.CINetDial.GetDialUpEntries"></member>
-    <member name="M:VO.CINetDial.HangUp(XSharp.__Usual)"></member>
-    <member name="P:VO.CINetDial.IsConfigured"></member>
-    <member name="P:VO.CINetDial.IsConnected"></member>
-    <member name="P:VO.CINetDial.IsLan"></member>
-    <member name="P:VO.CINetDial.IsModem"></member>
-    <member name="P:VO.CINetDial.IsOffline"></member>
-    <member name="P:VO.CINetDial.IsProxy"></member>
-    <member name="M:VO.CINetDial.SetOwner(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.CINetDial.SetSystemOffline(XSharp.__Usual)"></member>
-    <member name="M:VO.CINetDial.VerifyConnection(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CINetDial.AutoDial(XSharp.__Usual)">
+      <param name="dwDialFlag">
+      </param>
+    </member>
+    <member name="M:VO.CINetDial.Dial(XSharp.__Usual,XSharp.__Usual)">
+      <param name="cConnectionName">
+      </param>
+      <param name="dwDialFlag">
+      </param>
+    </member>
+    <member name="P:VO.CINetDial.DialFlag"><summary></summary></member>
+    <member name="P:VO.CINetDial.Error"><summary></summary></member>
+    <member name="P:VO.CINetDial.ErrorDescription"><summary></summary></member>
+    <member name="M:VO.CINetDial.GetConnectedState"><summary></summary></member>
+    <member name="M:VO.CINetDial.GetConnections"><summary></summary></member>
+    <member name="M:VO.CINetDial.GetDialUpEntries"><summary></summary></member>
+    <member name="M:VO.CINetDial.HangUp(XSharp.__Usual)">
+      <param name="lAllModems">
+      </param>
+    </member>
+    <member name="P:VO.CINetDial.IsConfigured"><summary></summary></member>
+    <member name="P:VO.CINetDial.IsConnected"><summary></summary></member>
+    <member name="P:VO.CINetDial.IsLan"><summary></summary></member>
+    <member name="P:VO.CINetDial.IsModem"><summary></summary></member>
+    <member name="P:VO.CINetDial.IsOffline"><summary></summary></member>
+    <member name="P:VO.CINetDial.IsProxy"><summary></summary></member>
+    <member name="M:VO.CINetDial.SetOwner(XSharp.__Usual,XSharp.__Usual)">
+      <param name="oOwner">
+      </param>
+      <param name="symNotifyMethod">
+      </param>
+    </member>
+    <member name="M:VO.CINetDial.SetSystemOffline(XSharp.__Usual)">
+      <param name="lEnable">
+      </param>
+    </member>
+    <member name="M:VO.CINetDial.VerifyConnection(XSharp.__Usual,XSharp.__Usual)">
+      <param name="dwDialFlag">
+      </param>
+      <param name="cConnectionName">
+      </param>
+    </member>
     <member name="T:VO.CMailAbstract">
       <summary>
         <para>Base class for CPop, CSmtp and CNNTP classes.</para>
@@ -532,6 +757,10 @@
       <summary>
         <para>Construct a CMailAbstract object.</para>
       </summary>
+      <param name="nPort">
+      </param>
+      <param name="cServer">
+      </param>
     </member>
 
     <member name="M:VO.CMailAbstract.Close">
@@ -542,7 +771,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CMailAbstract.DomainName"></member>
+    <member name="P:VO.CMailAbstract.DomainName"><summary></summary></member>
     <member name="P:VO.CMailAbstract.Error">
       <summary>
         <para>Numeric value representing the last occurring error code.</para>
@@ -553,7 +782,16 @@
         <para>A string representing the error description.</para>
       </summary>
     </member>
-    <member name="M:VO.CMailAbstract.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CMailAbstract.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="nContext">
+      </param>
+      <param name="nStatus">
+      </param>
+      <param name="xStatus">
+      </param>
+      <param name="nStatusLength">
+      </param>
+    </member>
     <member name="M:VO.CMailAbstract.Open">
       <summary>
         <para>Initialize all internal startup values for an Internet session.</para>
@@ -562,13 +800,13 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="F:VO.CMailAbstract.oSocket"></member>
+    <member name="F:VO.CMailAbstract.oSocket"><summary></summary></member>
     <member name="P:VO.CMailAbstract.PassWord">
       <summary>
         <para>A string representing the password to be used.</para>
       </summary>
     </member>
-    <member name="M:VO.CMailAbstract.RecvRemote"></member>
+    <member name="M:VO.CMailAbstract.RecvRemote"><summary></summary></member>
     <member name="P:VO.CMailAbstract.RemoteHost">
       <summary>
         <para>String representing the address of the mail server.</para>
@@ -593,18 +831,26 @@
       <summary>
         <para>Send data to a remote host.</para>
       </summary>
+      <param name="cData">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CMailAbstract.SendRaw(XSharp.__Usual)"></member>
-    <member name="M:VO.CMailAbstract.SendRemote(XSharp.__Usual)"></member>
+    <member name="M:VO.CMailAbstract.SendRaw(XSharp.__Usual)">
+      <param name="cData">
+      </param>
+    </member>
+    <member name="M:VO.CMailAbstract.SendRemote(XSharp.__Usual)">
+      <param name="cData">
+      </param>
+    </member>
     <member name="P:VO.CMailAbstract.Timeout">
       <summary>
         <para>Numeric value representing the time-out in milliseconds.</para>
       </summary>
     </member>
-    <member name="P:VO.CMailAbstract.TimeoutRetries"></member>
+    <member name="P:VO.CMailAbstract.TimeoutRetries"><summary></summary></member>
     <member name="P:VO.CMailAbstract.UserName">
       <summary>
         <para>A string containing the user name to be used.</para>
@@ -621,17 +867,20 @@
         <para>Construct a CMessage object.</para>
       </summary>
     </member>
-    <member name="P:VO.CMessage.AttachmentCount"></member>
+    <member name="P:VO.CMessage.AttachmentCount"><summary></summary></member>
     <member name="P:VO.CMessage.AttachmentFileList">
       <summary>
         <para>An array of filenames for attachments. (Used only by CNews.)</para>
       </summary>
     </member>
-    <member name="P:VO.CMessage.AttachmentList"></member>
-    <member name="P:VO.CMessage.Body"></member>
-    <member name="M:VO.CMessage.BodyExtract(XSharp.__Usual)"></member>
-    <member name="P:VO.CMessage.BodyHtml"></member>
-    <member name="P:VO.CMessage.Cargo"></member>
+    <member name="P:VO.CMessage.AttachmentList"><summary></summary></member>
+    <member name="P:VO.CMessage.Body"><summary></summary></member>
+    <member name="M:VO.CMessage.BodyExtract(XSharp.__Usual)">
+      <param name="c">
+      </param>
+    </member>
+    <member name="P:VO.CMessage.BodyHtml"><summary></summary></member>
+    <member name="P:VO.CMessage.Cargo"><summary></summary></member>
     <member name="P:VO.CMessage.ContentType">
       <summary>
         <para>A string representing the content type for that section.</para>
@@ -641,11 +890,20 @@
       <summary>
         <para>Decodes a raw message string into its parts.</para>
       </summary>
+      <param name="cMail">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CMessage.DecodeAndSaveAs(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CMessage.DecodeAndSaveAs(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="cPath">
+      </param>
+      <param name="cFile">
+      </param>
+      <param name="cMail">
+      </param>
+    </member>
     <member name="P:VO.CMessage.Error">
       <summary>
         <para>A number representing the error most recently occurring.</para>
@@ -656,8 +914,8 @@
         <para>A string representing the details of the last error.</para>
       </summary>
     </member>
-    <member name="M:VO.CMessage.FakeAttachmentList"></member>
-    <member name="P:VO.CMessage.From"></member>
+    <member name="M:VO.CMessage.FakeAttachmentList"><summary></summary></member>
+    <member name="P:VO.CMessage.From"><summary></summary></member>
     <member name="P:VO.CMessage.FromAddress">
       <summary>
         <para>A string representing the email address of the sender.</para>
@@ -672,6 +930,10 @@
       <summary>
         <para>Retrieves information about attachment(s).</para>
       </summary>
+      <param name="c">
+      </param>
+      <param name="lNewsGroupMessage">
+      </param>
     </member>
 
     <member name="M:VO.CMessage.GetHeaderInfo">
@@ -682,7 +944,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CMessage.HEADER"></member>
+    <member name="P:VO.CMessage.HEADER"><summary></summary></member>
     <member name="P:VO.CMessage.MailBody">
       <summary>
         <para>A string representing the entire contents of the body of the email. This will include all attachments and multi-part extensions.</para>
@@ -708,13 +970,19 @@
         <para>A string representing the ID of the email.</para>
       </summary>
     </member>
-    <member name="P:VO.CMessage.Priority"></member>
-    <member name="P:VO.CMessage.References"></member>
-    <member name="P:VO.CMessage.ReplyTo"></member>
+    <member name="P:VO.CMessage.Priority"><summary></summary></member>
+    <member name="P:VO.CMessage.References"><summary></summary></member>
+    <member name="P:VO.CMessage.ReplyTo"><summary></summary></member>
     <member name="M:VO.CMessage.SaveAs(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Decode and save the attachment.</para>
       </summary>
+      <param name="cPath">
+      </param>
+      <param name="cFile">
+      </param>
+      <param name="n">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -727,7 +995,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CMessage.Subject"></member>
+    <member name="P:VO.CMessage.Subject"><summary></summary></member>
     <member name="P:VO.CMessage.TimeStamp">
       <summary>
         <para>Returns the creation date and time of the message as a Time-stamp string.</para>
@@ -748,6 +1016,8 @@
       <summary>
         <para>Construct a CNews object.</para>
       </summary>
+      <param name="xData">
+      </param>
     </member>
     <member name="P:VO.CNews.FollowUpTo">
       <summary>
@@ -758,6 +1028,8 @@
       <summary>
         <para>Returns information about any attachments.</para>
       </summary>
+      <param name="c">
+      </param>
     </member>
     <member name="M:VO.CNews.GetHeaderInfo">
       <summary>
@@ -802,6 +1074,12 @@
       <summary>
         <para>Construct a NNTP object.</para>
       </summary>
+      <param name="cServer">
+      </param>
+      <param name="cUid">
+      </param>
+      <param name="cPwd">
+      </param>
     </member>
     <member name="M:VO.CNNTP.Authenticate">
       <summary>
@@ -823,6 +1101,10 @@
       <summary>
         <para>Establishes a connection to an Internet Mail Server.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="n">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -845,6 +1127,8 @@
       <summary>
         <para>Retrieves a specified message from the selected group.</para>
       </summary>
+      <param name="xMsg">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -853,6 +1137,8 @@
       <summary>
         <para>Retrieves a specified message body from the selected group.</para>
       </summary>
+      <param name="xMsg">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -861,6 +1147,8 @@
       <summary>
         <para>Retrieves a specified message header from the selected group.</para>
       </summary>
+      <param name="xMsg">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -871,6 +1159,8 @@
           Returns a list of all groups from an NTTP Server containing <i>cSearch</i> in their names.
         </para>
       </summary>
+      <param name="cSearch">
+      </param>
       <returns>
         <para>An array of groups.</para>
       </returns>
@@ -879,17 +1169,35 @@
       <summary>
         <para>Returns a list of all newly created groups from an NTTP Server.</para>
       </summary>
+      <param name="cSearch">
+      </param>
+      <param name="dDate">
+      </param>
+      <param name="cTime">
+      </param>
+      <param name="lGmt">
+      </param>
       <returns>
         <para>An array of groups.</para>
       </returns>
     </member>
     <member name="M:VO.CNNTP.GetNewNews(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="cGroups">
+      </param>
+      <param name="dDate">
+      </param>
+      <param name="cTime">
+      </param>
+      <param name="lGmt">
+      </param>
     </member>
 
     <member name="M:VO.CNNTP.GetStatus(XSharp.__Usual)">
       <summary>
         <para>Retrieves a specified message status from the selected group.</para>
       </summary>
+      <param name="xMsg">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -924,9 +1232,22 @@
         <para>Returns the numeric ID of the last available message in the currently selected group.</para>
       </summary>
     </member>
-    <member name="M:VO.CNNTP.Post(XSharp.__Usual)"></member>
-    <member name="M:VO.CNNTP.PrepareCommand(XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="M:VO.CNNTP.RecvData(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CNNTP.Post(XSharp.__Usual)">
+      <param name="oMsg">
+      </param>
+    </member>
+    <member name="M:VO.CNNTP.PrepareCommand(XSharp.__Usual,XSharp.__Usual)">
+      <param name="cCommand">
+      </param>
+      <param name="xMsg">
+      </param>
+    </member>
+    <member name="M:VO.CNNTP.RecvData(XSharp.__Usual,XSharp.__Usual)">
+      <param name="cCommand">
+      </param>
+      <param name="nRetCode">
+      </param>
+    </member>
     <member name="M:VO.CNNTP.RecvRemote">
       <summary>
         <para>Retrieves data from the news server via socket.</para>
@@ -940,17 +1261,19 @@
         <para>Returns a string with the latest reply from the NNTP Server.</para>
       </summary>
     </member>
-    <member name="M:VO.CNNTP.SendHeader"></member>
-    <member name="M:VO.CNNTP.SendMailBody"></member>
+    <member name="M:VO.CNNTP.SendHeader"><summary></summary></member>
+    <member name="M:VO.CNNTP.SendMailBody"><summary></summary></member>
     <member name="M:VO.CNNTP.SetNewsGroup(XSharp.__Usual)">
       <summary>
         <para>Selects a newsgroup from a NTTP Server for further processing.</para>
       </summary>
+      <param name="cGroup">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CNNTP.SetReadMode"></member>
+    <member name="M:VO.CNNTP.SetReadMode"><summary></summary></member>
     <member name="M:VO.CNNTP.SkipNext">
       <summary>
         <para>Sets the internal message pointer to the next available message of the current group.</para>
@@ -976,6 +1299,16 @@
       <summary>
         <para>Construct a CPop object.</para>
       </summary>
+      <param name="cServer">
+      </param>
+      <param name="cUserName">
+      </param>
+      <param name="cPassword">
+      </param>
+      <param name="nPort">
+      </param>
+      <param name="oEMailStorage">
+      </param>
     </member>
     <member name="M:VO.CPop.CheckReply">
       <summary>
@@ -989,6 +1322,10 @@
       <summary>
         <para>Establish a connection to the remote POP server.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="n">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -997,6 +1334,8 @@
       <summary>
         <para>Delete specified mail from a remote POP server.</para>
       </summary>
+      <param name="nMail">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1009,19 +1348,32 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CPop.Email"></member>
+    <member name="P:VO.CPop.Email"><summary></summary></member>
 
-    <member name="M:VO.CPop.GetList(XSharp.__Usual)"></member>
-    <member name="M:VO.CPop.GetListIDs(XSharp.__Usual)"></member>
+    <member name="M:VO.CPop.GetList(XSharp.__Usual)">
+      <param name="nMail">
+      </param>
+    </member>
+    <member name="M:VO.CPop.GetListIDs(XSharp.__Usual)">
+      <param name="nMail">
+      </param>
+    </member>
     <member name="M:VO.CPop.GetMail(XSharp.__Usual)">
       <summary>
         <para>Read specified mail from a remote POP server.</para>
       </summary>
+      <param name="nMail">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CPop.GetMailTop(XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CPop.GetMailTop(XSharp.__Usual,XSharp.__Usual)">
+      <param name="nMail">
+      </param>
+      <param name="nBodyLines">
+      </param>
+    </member>
     <member name="M:VO.CPop.GetStatus">
       <summary>
         <para>Retrieve the mail status for the current active user from a remote POP server.</para>
@@ -1042,6 +1394,10 @@
       <summary>
         <para>Log a user onto a connected POP server.</para>
       </summary>
+      <param name="cUID">
+      </param>
+      <param name="cPwd">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1064,7 +1420,7 @@
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CPop.Storage"></member>
+    <member name="P:VO.CPop.Storage"><summary></summary></member>
     <member name="P:VO.CPop.TotalBytes">
       <summary>
         <para>Total size of all e-mails for the specific user.</para>
@@ -1080,6 +1436,12 @@
       <summary>
         <para>Construct a CSession object.</para>
       </summary>
+      <param name="cCaption">
+      </param>
+      <param name="n">
+      </param>
+      <param name="lStat">
+      </param>
     </member>
     <member name="P:VO.CSession.AccessType">
       <summary>
@@ -1095,6 +1457,8 @@
       <summary>
         <para>Closes a remote file.</para>
       </summary>
+      <param name="hFile">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1122,6 +1486,14 @@
       <summary>
         <para>Opens a connection to the Internet server.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="nService">
+      </param>
+      <param name="nFlags">
+      </param>
+      <param name="nContext">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1141,18 +1513,33 @@
         <para>The Internet session handle.</para>
       </summary>
     </member>
-    <member name="M:VO.CSession.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
-    <member name="F:VO.CSession.ogStatus"></member>
-    <member name="F:VO.CSession.oLock"></member>
+    <member name="M:VO.CSession.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="nContext">
+      </param>
+      <param name="nStatus">
+      </param>
+      <param name="pStatusInfo">
+      </param>
+      <param name="nStatusLength">
+      </param>
+    </member>
+    <member name="F:VO.CSession.ogStatus"><summary></summary></member>
+    <member name="F:VO.CSession.oLock"><summary></summary></member>
     <member name="M:VO.CSession.Open(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
       <summary>
         <para>Opens a connection to the Internet server.</para>
       </summary>
+      <param name="nFlags">
+      </param>
+      <param name="xProxy">
+      </param>
+      <param name="aProxyByPass">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="P:VO.CSession.OpenFlags"></member>
+    <member name="P:VO.CSession.OpenFlags"><summary></summary></member>
     <member name="P:VO.CSession.PassWord">
       <summary>
         <para>The password necessary to establish the remote connection.</para>
@@ -1178,7 +1565,7 @@
         <para>A string representing the Host name or IP address of the remote server.</para>
       </summary>
     </member>
-    <member name="M:VO.CSession.SetResponseStatus"></member>
+    <member name="M:VO.CSession.SetResponseStatus"><summary></summary></member>
     <member name="P:VO.CSession.UserName">
       <summary>
         <para>A string representing the User ID necessary to establish the remote connection.</para>
@@ -1194,6 +1581,12 @@
       <summary>
         <para>Construct a CSmtp object.</para>
       </summary>
+      <param name="oMail">
+      </param>
+      <param name="cServer">
+      </param>
+      <param name="nPort">
+      </param>
     </member>
     <member name="M:VO.CSmtp.CheckReply">
       <summary>
@@ -1207,6 +1600,10 @@
       <summary>
         <para>Establish a connection to a remote SMTP server.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="nPort">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1286,6 +1683,12 @@
       <summary>
         <para>Construct a CSocket object.</para>
       </summary>
+      <param name="nType">
+      </param>
+      <param name="xSocket">
+      </param>
+      <param name="xSocketStatus">
+      </param>
     </member>
     <member name="M:VO.CSocket.accept">
       <summary>
@@ -1299,6 +1702,12 @@
       <summary>
         <para>Associate a local address with a socket.</para>
       </summary>
+      <param name="nPort">
+      </param>
+      <param name="cIP">
+      </param>
+      <param name="nFamily">
+      </param>
     </member>
     <member name="M:VO.CSocket.Close">
       <summary>
@@ -1312,11 +1721,15 @@
       <summary>
         <para>Establish a connection of the socket instance to a peer.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="nPort">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
     </member>
-    <member name="M:VO.CSocket.Destroy"></member>
+    <member name="M:VO.CSocket.Destroy"><summary></summary></member>
     <member name="M:VO.CSocket.DisConnect">
       <summary>
         <para>Shut down the current socket connection.</para>
@@ -1361,15 +1774,26 @@
       <summary>
         <para>Wait for connection and extract first line from incoming data.</para>
       </summary>
+      <param name="cIP">
+      </param>
+      <param name="nRemPort">
+      </param>
       <returns>
         <para>String containing the received line, if successful; otherwise, NULL_STRING</para>
       </returns>
     </member>
-    <member name="M:VO.CSocket.GetLines(XSharp.__Array)"></member>
+    <member name="M:VO.CSocket.GetLines(XSharp.__Array)">
+      <param name="aSearch">
+      </param>
+    </member>
     <member name="M:VO.CSocket.getpeername(System.String@,System.Int32@)">
       <summary>
         <para>Get the address of the peer to which the socket is connected.</para>
       </summary>
+      <param name="cName">
+      </param>
+      <param name="nPort">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE.</para>
       </returns>
@@ -1386,6 +1810,12 @@
       <summary>
         <para>Receive all available data from a socket.</para>
       </summary>
+      <param name="lLineMode">
+      </param>
+      <param name="lNext">
+      </param>
+      <param name="dwByteCount">
+      </param>
       <returns>
         <para>String containing the received data, if successful; otherwise, NULL_STRING.</para>
       </returns>
@@ -1394,24 +1824,41 @@
       <summary>
         <para>Get the local name for a socket.</para>
       </summary>
+      <param name="cName">
+      </param>
+      <param name="nPort">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
     </member>
-    <member name="M:VO.CSocket.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.CSocket.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+      <param name="nContext">
+      </param>
+      <param name="nStatus">
+      </param>
+      <param name="xStatus">
+      </param>
+      <param name="nStatusLength">
+      </param>
+    </member>
     <member name="M:VO.CSocket.listen(System.Int32)">
       <summary>
         <para>Establish a socket to listen for an incoming connection.</para>
       </summary>
+      <param name="nBackLog">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
     </member>
-    <member name="P:VO.CSocket.RcvBufSize"></member>
+    <member name="P:VO.CSocket.RcvBufSize"><summary></summary></member>
     <member name="M:VO.CSocket.SendLine(System.String)">
       <summary>
         <para>Send data terminated by CRLF to the connected socket.</para>
       </summary>
+      <param name="cData">
+      </param>
       <returns>
         <para>Number of data sent, if successful; otherwise, 0 (zero).</para>
       </returns>
@@ -1420,6 +1867,12 @@
       <summary>
         <para>Send data terminated by CRLF to a specific destination.</para>
       </summary>
+      <param name="cData">
+      </param>
+      <param name="cDest">
+      </param>
+      <param name="nRemPort">
+      </param>
       <returns>
         <para>Number of data sent, if successful; otherwise, 0 (zero).</para>
       </returns>
@@ -1428,6 +1881,10 @@
       <summary>
         <para>Send any data to the connected socket.</para>
       </summary>
+      <param name="pData">
+      </param>
+      <param name="nSize">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
@@ -1436,11 +1893,13 @@
       <summary>
         <para>Send any data to the connected socket.</para>
       </summary>
+      <param name="cData">
+      </param>
       <returns>
         <para>TRUE if successful; otherwise, FALSE</para>
       </returns>
     </member>
-    <member name="P:VO.CSocket.SndBufSize"></member>
+    <member name="P:VO.CSocket.SndBufSize"><summary></summary></member>
     <member name="P:VO.CSocket.Status">
       <summary>
         <para>Numeric value with the current status representing one of the following states:</para>
@@ -1480,7 +1939,7 @@
         <para>Numeric value representing the time-out in milliseconds.</para>
       </summary>
     </member>
-    <member name="P:VO.CSocket.TimeOutRetries"></member>
+    <member name="P:VO.CSocket.TimeOutRetries"><summary></summary></member>
     <member name="T:VO.CStorage">
       <summary>
         <para>Provide an interface to handle large Email Messages and attachments</para>
@@ -1503,15 +1962,18 @@
       <summary>
         <para>Construct a CStorage object.</para>
       </summary>
+      <param name="cPath">
      
+      </param>
     </member>
     <member name="M:VO.CStorage.AttachmentAdd(System.String,System.UInt32)">
       <summary>
         <para>This method is called when an email is received to initialize the saving of a new attachment.</para>
       </summary>
-      <remarks>
-        <para>The implementation in CStorage generates a unique ID and creates the (empty) file.</para>
-      </remarks>
+      <param name="cFile">
+      </param>
+      <param name="dwCode">
+      </param>
       <returns>
         &lt;<i>cID</i>&gt; STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
@@ -1528,6 +1990,8 @@
       <summary>
         <para>This method returns the full path of an attachment file addressed through cAttachID.</para>
       </summary>
+      <param name="cID">
+      </param>
       <returns>
         LOGIC TRUE when the attachment could be deleted.
       </returns>
@@ -1536,6 +2000,8 @@
       <summary>
         <para>This method returns the full path of an attachment file addressed through cAttachID.</para>
       </summary>
+      <param name="cAttachID">
+      </param>
       <returns>
         &lt;<i>cID</i>&gt; STRING The full path of an attachment file
       </returns>
@@ -1544,9 +2010,10 @@
       <summary>
         <para>This method is called during sending of an email, if an attachment have to be sent. </para>
       </summary>
-      <remarks>
-        It prepares the loading process from the storage. In our case it addresses the attachment file and opens it.
-      </remarks>
+      <param name="cAttachID">
+      </param>
+      <param name="dwCode">
+      </param>
       <returns>
         LOGIC TRUE when the attachment could be opened successfully.
       </returns>
@@ -1567,9 +2034,10 @@
       <summary>
         <para>Stores the attachment with the ID cAttachID to the file cToFile.</para>
       </summary>
-      <remarks>
-        <para>cToFile must be a full path name. This method is called from CEMail:SaveAs().</para>
-      </remarks>
+      <param name="cAttachID">
+      </param>
+      <param name="cToFile">
+      </param>
       <returns>
         &lt;<i>cID</i>&gt; STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
@@ -1586,15 +2054,21 @@
       <summary>
         <para>This method is called multiple times per attachment during the receive process.</para>
       </summary>
+      <param name="cData">
+      </param>
       <returns>
         NOTHING
       </returns>
     </member>
-    <member name="M:VO.CStorage.CreateNewEMail"></member>
+    <member name="M:VO.CStorage.CreateNewEMail"><summary></summary></member>
     <member name="M:VO.CStorage.LoadEMail(System.String)">
       <summary>
         <para>This method returns a CEMail object filled with all data addressed through the cID.</para>
       </summary>
+      <param name="cId">
+        
+      </param>
+      
       <remarks>
         <para>You have to implement this method and the meaning of cID.</para>
         <b>THIS METHOD IS NOT IMPLEMENTED IN CSTORAGE AND NOT CALLED BY THE INTERNET CLASSES</b>
@@ -1621,6 +2095,10 @@
       <summary>
         <para>This method is called at the beginning before any data is received.</para>
       </summary>
+      <param name="oEMail">
+        
+      </param>
+      
       <remarks>
         <para>You have to implement how you want to store and address the raw data here.</para>
       </remarks>
@@ -1635,6 +2113,8 @@
           data block.
         </para>
       </summary>
+      <param name="cData">
+      </param>
       <returns>
         &lt;<i>cID</i>&gt; STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
@@ -1643,6 +2123,10 @@
       <summary>
         <para>This method stores all attachments of an email into the storage.</para>
       </summary>
+      <param name="oEMail">
+      </param>
+      <param name="lClone">
+      </param>
       <returns>
         &lt;<i>cID</i>&gt; STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
       </returns>
@@ -1651,6 +2135,11 @@
       <summary>
         <para>This method stores a CEMail object including all data under the address of the cID.</para>
       </summary>
+      <param name="cId">
+      </param>
+      <param name="oEMail">
+        
+      </param>
       <remarks>
         <para>You have to implement this method and the meaning of cID.</para>
         <b>THIS METHOD IS NOT IMPLEMENTED IN CSTORAGE AND NOT CALLED BY THE INTERNET CLASSES</b>
@@ -1659,12 +2148,30 @@
         <i>LOGIC</i> TRUE when the email was saved succesfully
       </returns>
     </member>
-    <member name="T:VO.StdSocket"></member>
+    <member name="T:VO.StdSocket"><summary></summary></member>
     <member name="M:VO.StdSocket.#ctor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
        <summary>
         <para>Construct a StdSocket object.</para>
       </summary>
+      <param name="xOwner">
+      </param>
+      <param name="nType">
+      </param>
+      <param name="xSocket">
+      </param>
+      <param name="xSocketStatus">
+      </param>
     </member>
-    <member name="M:VO.StdSocket.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"></member>
+    <member name="M:VO.StdSocket.InternetStatus(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">
+    <summary></summary>
+      <param name="nContext">
+      </param>
+      <param name="nStatus">
+      </param>
+      <param name="xStatus">
+      </param>
+      <param name="nStatusLength">
+      </param>
+    </member>
   </members>
 </doc>

@@ -20,13 +20,13 @@
     <HtmlHelpName>XsVOSDK</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Binaries\Debug\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\VOReportClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Debug\VOSQLClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
       <DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
@@ -43,13 +43,13 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>True</IndentHtml>
+    <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
     <ComponentConfigurations>
@@ -160,10 +160,7 @@
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
     <CatalogName>VisualStudio14</CatalogName>
     <ProjectSummary>This is the generated documentation for the Visual Objects SDK classes.&amp;lt%3bbr/&amp;gt%3b
-At this moment methods with &amp;quot%3bClipper Calling Convention&amp;quot%3b are documented with an Xs%24Args argument of type param array of USUAL[].
-This is how these methods are implemented technically. &amp;lt%3bbr/&amp;gt%3b
-In a future build of this documentation we will bring back the original parameter names and will try to include more information.&amp;lt%3bbr/&amp;gt%3b
-Most of the rest of the documentation has been automatically lifted from the Visual Objects documentation.
+Most of this documentation has been automatically lifted from the Visual Objects documentation.
 </ProjectSummary>
     <WorkingPath>Binaries\obj\VOHelp\</WorkingPath>
     <SearchResultsDisplayVersion>X# VOSDK</SearchResultsDisplayVersion>
@@ -924,6 +921,7 @@ Most of the rest of the documentation has been automatically lifted from the Vis
       <NamespaceSummaryItem name="VO" isDocumented="True">The VO Namespace contains all the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
 If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include a USING VO statement in your code. &lt;br/&gt;The compiler will then automatically find the classes. &lt;br/&gt;
 The Runtime will also respect these implicit namespaces, so CreateInstance(#DbServer) will also be able to find the DbServer class inside the VO namespace.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp" isDocumented="True">The XSharp namespace holds the new classes that are used in Hybrid applications, such as ChildWinForm, VOWinFormApp etc. These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.</NamespaceSummaryItem>
     </NamespaceSummaries>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
@@ -957,10 +955,13 @@ The Runtime will also respect these implicit namespaces, so CreateInstance(#DbSe
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="XSharp.Core">
-      <HintPath>Binaries\Debug\XSharp.Core.dll</HintPath>
+      <HintPath>Binaries\Documentation\XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT">
+      <HintPath>Binaries\Documentation\XSharp.RT.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VO">
-      <HintPath>Binaries\Debug\XSharp.VO.dll</HintPath>
+      <HintPath>Binaries\Documentation\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

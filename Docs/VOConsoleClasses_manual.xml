@@ -13,6 +13,8 @@
       <summary>
         <para>Instantiate a new Console object.</para>
       </summary>
+      <param name="lNew">
+      </param>
     </member>
     <member name="M:VO.Console.Clear">
       <summary>
@@ -112,14 +114,20 @@
       <summary>
         <para>Write a string to the console window.</para>
       </summary>
+      <param name="sMsg">
+      </param>
     </member>
     <member name="M:VO.Console.WriteError(XSharp.__Usual)">
+      <param name="sMsg">
+      </param>
     </member>
 
     <member name="M:VO.Console.WriteLine(XSharp.__Usual)">
       <summary>
         <para>Write a string to the console window and start a new line.</para>
       </summary>
+      <param name="sMsg">
+      </param>
     </member>
     <member name="T:VO.ConsoleCoord">
       <summary>
@@ -130,8 +138,12 @@
       <summary>
         <para>Instantiate a ConsoleCoord object.</para>
       </summary>
+      <param name="nX">
+      </param>
+      <param name="nY">
+      </param>
     </member>
-    <member name="F:VO.ConsoleCoord.X"></member>
-    <member name="F:VO.ConsoleCoord.Y"></member>
+    <member name="F:VO.ConsoleCoord.X"><summary></summary></member>
+    <member name="F:VO.ConsoleCoord.Y"><summary></summary></member>
   </members>
 </doc>

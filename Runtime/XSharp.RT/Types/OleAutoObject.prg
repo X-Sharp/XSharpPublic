@@ -22,7 +22,7 @@ CLASS XSharp.OleAutoObject
 	
 	
 	#region Constructors
-	PRIVATE CONSTRUCTOR
+	INTERNAL CONSTRUCTOR
 		_liFuncs                := _liVars := -1 
 		lOk                     := FALSE
 		oComObject              := NULL

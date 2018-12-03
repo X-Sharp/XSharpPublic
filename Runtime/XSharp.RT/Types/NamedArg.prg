@@ -16,7 +16,7 @@ CLASS XSharp.NamedArg
       SELF:Value	:= uValue
       RETURN
    /// <inheritdoc />   
-   METHOD ToString() AS STRING
+   OVERRIDE METHOD ToString() AS STRING
       RETURN  "NamedArg{ " + ArgName + ": " + SELF:Value:ToString() + " }"
    
 END CLASS

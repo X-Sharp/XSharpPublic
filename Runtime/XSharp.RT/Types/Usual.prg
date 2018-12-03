@@ -824,7 +824,7 @@ BEGIN NAMESPACE XSharp
             #endregion
         #region Operators FOR Equality
         /// <inheritdoc />
-        PUBLIC METHOD @@Equals(obj AS OBJECT) AS LOGIC
+        PUBLIC OVERRIDE METHOD @@Equals(obj AS OBJECT) AS LOGIC
             IF obj == NULL
                 RETURN SELF:IsNil
             ENDIF
@@ -832,7 +832,7 @@ BEGIN NAMESPACE XSharp
 
 
             /// <inheritdoc />
-        PUBLIC METHOD GetHashCode() AS INT
+        PUBLIC OVERRIDE METHOD GetHashCode() AS INT
             LOCAL oValue AS OBJECT
             oValue := SELF:Value
             IF oValue == NULL
@@ -2069,7 +2069,7 @@ BEGIN NAMESPACE XSharp
             RETURN result
 
         /// <exclude/>
-        PUBLIC METHOD ToString() AS STRING
+        PUBLIC OVERRIDE METHOD ToString() AS STRING
             LOCAL strResult AS STRING
 
             SWITCH (SELF:_usualType)

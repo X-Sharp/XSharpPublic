@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp
             RETURN IIF (lhs, rhs:_value == 0, rhs:_value != 0)
             
         /// <exclude/>
-        PUBLIC METHOD Equals(obj AS OBJECT) AS LOGIC
+        PUBLIC OVERRIDE METHOD Equals(obj AS OBJECT) AS LOGIC
             IF obj IS __WinBool
                 RETURN SELF:_value == ((__WinBool) obj):_value
             ENDIF

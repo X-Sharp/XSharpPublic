@@ -8,11 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LanguageService.CodeAnalysis.Scripting {
+namespace Microsoft.CodeAnalysis.Scripting {
     using System;
     using System.Reflection;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -40,7 +40,7 @@ namespace LanguageService.CodeAnalysis.Scripting {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.Scripting.XSharpScriptingResources", typeof(XSharpScriptingResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LanguageService.CodeAnalysis.XSharp.Scripting.XSharpScriptingResources", typeof(XSharpScriptingResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -64,13 +64,13 @@ namespace LanguageService.CodeAnalysis.Scripting {
         /// <summary>
         ///   Looks up a localized string similar to Usage: xsi [option] ... [script-file.prgx] [script-argument] ...
         ///
-        ///Executes script-file.prgx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
+        ///Executes script-file.csx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
         ///
         ///Options:
         ///  /help                          Display this usage message (alternative form: /?)
         ///  /version                       Display the version and exit
         ///  /i                             Drop to REPL after executing the specified script.
-        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternativ [rest of string was truncated]&quot;;.
+        ///  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InteractiveHelp {
             get {

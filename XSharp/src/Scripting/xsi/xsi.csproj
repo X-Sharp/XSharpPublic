@@ -1,69 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\build\Targets\Settings.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\..\Compiler\CompilerCommon.targets" />
   <PropertyGroup>
-    <RoslynProjectType>Custom</RoslynProjectType>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <CfgPath>$(Configuration)_$(Platform)</CfgPath>
-    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
-    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
-    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
-    <ProjectGuid>{BE3240A6-A018-4E62-B925-1A5415BD9A60}</ProjectGuid>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Exe</OutputType>
     <RootNamespace>XSharpInteractive</RootNamespace>
-    <AssemblyName>xsi</AssemblyName>
-    <Prefer32Bit>false</Prefer32Bit>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
-    <OutDir>$(BaseOutputPath)\$(CfgPath)\</OutDir>
-    <CscToolPath>$(BaseOutputPath)\$(CfgPath)\</CscToolPath>
-    <RestorePackages>true</RestorePackages>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NoWarn>1591, CS8032</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <!--Use the C# compiler created in this solution-->
+    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
+
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\..\..\src\Tools\csc\csc.csproj">
-      <Project>{4B45CA0C-03A0-400F-B454-3D4BCB16AF38}</Project>
-      <Name>csc</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
-      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
-      <Name>XSharpCodeAnalysis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj">
-      <Project>{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}</Project>
-      <Name>XSharpScripting</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
+    <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+    <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+    <PackageReference Include="Microsoft.CSharp" Version="$(MicrosoftCSharpVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="xsi.rsp">
+    <None Include="App.config" />
+    <None Include="xsi.coreclr.rsp" Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+      <Link>xsi.rsp</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="project.json" />
+    <None Include="xsi.desktop.rsp" Condition="'$(TargetFramework)' != 'netcoreapp2.0'">
+      <Link>xsi.rsp</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Xsi.cs" />
   </ItemGroup>
-  <Import Project="$(XSharpBuild)\Targets\Imports.targets" />
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
 </Project>

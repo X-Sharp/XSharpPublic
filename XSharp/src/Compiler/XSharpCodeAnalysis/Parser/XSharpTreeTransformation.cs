@@ -2245,14 +2245,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (context.Stmt is XP.ExpressionStmtContext)
                 {
-                    var b = (BlockSyntax)s;
-                    foreach (var stmt in b.Statements)
+                    if (s is BlockSyntax)
+                    {
+                        var b = (BlockSyntax)s;
+                        foreach (var stmt in b.Statements)
+                        {
+                            GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
+                                _syntaxFactory.ExpressionStatement(
+                                    ((ExpressionStatementSyntax)stmt).Expression,
+                                    SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
+                                ));
+                        }
+                    }
+                    else
                     {
                         GlobalClassEntities.Members.Add(_syntaxFactory.GlobalStatement(
                             _syntaxFactory.ExpressionStatement(
-                                ((ExpressionStatementSyntax)stmt).Expression,
+                                ((ExpressionStatementSyntax)s).Expression,
                                 SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))
                             ));
+
                     }
                 }
                 else

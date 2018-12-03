@@ -15,7 +15,7 @@
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>  
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
@@ -124,21 +124,21 @@
     <value>Copyright (C) XSharp BV. All rights reserved.</value>
   </data>
   <data name="InteractiveHelp" xml:space="preserve">
-    <value>Usage: xsi [option] ... [script-file.prgx] [script-argument] ...
+    <value><![CDATA[Usage: xsi [option] ... [script-file.prgx] [script-argument] ...
 
-Executes script-file.prgx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
+Executes script-file.csx if specified, otherwise launches an interactive REPL (Read Eval Print Loop).
 
 Options:
   /help                          Display this usage message (alternative form: /?)
   /version                       Display the version and exit
   /i                             Drop to REPL after executing the specified script.
-  /r:&lt;file&gt;                      Reference metadata from the specified assembly file (alternative form: /reference)
-  /r:&lt;file list&gt;                 Reference metadata from the specified assembly files (alternative form: /reference)
-  /lib:&lt;path list&gt;               List of directories where to look for libraries specified by #r directive. 
+  /r:<file>                      Reference metadata from the specified assembly file (alternative form: /reference)
+  /r:<file list>                 Reference metadata from the specified assembly files (alternative form: /reference)
+  /lib:<path list>               List of directories where to look for libraries specified by #r directive. 
                                  (alternative forms: /libPath /libPaths)
-  /u:&lt;namespace&gt;                 Define global namespace using (alternative forms: /using, /usings, /import, /imports)
-  @&lt;file&gt;                        Read response file for more options
+  /u:<namespace>                 Define global namespace using (alternative forms: /using, /usings, /import, /imports)
+  @<file>                        Read response file for more options
   --                             Indicates that the remaining arguments should not be treated as options.
-</value>
+]]></value>
   </data>
 </root>

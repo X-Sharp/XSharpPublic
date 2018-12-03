@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
@@ -20,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
         {
             Type globalsType = null;
             CancellationToken cancellationToken = default(CancellationToken);
-            return Script.CreateInitialScript<T>(XSharpMacroCompiler.GetInstance(allowSingleQuotes), code, options, globalsType, assemblyLoader).RunAsync(null, cancellationToken).GetEvaluationResultAsync().Result;
+            return Script.CreateInitialScript<T>(XSharpMacroCompiler.GetInstance(allowSingleQuotes), SourceText.From(code, options?.FileEncoding), options, globalsType, assemblyLoader).RunAsync(null, cancellationToken).GetEvaluationResultAsync().Result;
         }
     }
 }

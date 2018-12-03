@@ -13,10 +13,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting.Hosting
 
         internal static int Main(string[] args)
         {
-#if (DEBUG)
-            System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-            //System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-#endif
             try
             {
                 // Note that AppContext.BaseDirectory isn't necessarily the directory containing xsi.exe.

@@ -129,6 +129,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		SetThousandSep(thou)
 	RETURN
 
+	[Fact, Trait("Category", "TransForm")];
+	METHOD MoreStringTests() AS VOID
+		Assert.Equal("          ", Transform("", "@R XXXXXXXXXX")        )
+		Assert.Equal("Italia    ", Transform("Italia", "@R XXXXXXXXXX")  )
+		Assert.Equal("ITALIA    ", Transform("Italia", "@! XXXXXXXXXX")  )
+		Assert.Equal("Italia    ", Transform("Italia", "XXXXXXXXXX")     )
+		Assert.Equal("1234512345", Transform("1234512345", "XXXXXXXXXX") )
+		Assert.Equal("1234"      , Transform("1234", "XX99") )
+		Assert.Equal("ITALIA"    , Transform("Italia", "@!") )
+	RETURN
+
 
 
 // Tests that need to be moved in separate files in VO.Tests:

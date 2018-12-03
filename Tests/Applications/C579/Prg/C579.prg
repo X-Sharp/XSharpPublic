@@ -8,7 +8,7 @@
 FUNCTION Start() AS VOID
 	LOCAL o AS ChildClass
 	o := ChildClass{}
-RETURN
+RETURN                  
 
 CLASS ParentClass
 	EXPORT cStr AS STRING
@@ -35,4 +35,9 @@ IF l
 ELSE
 	THROW Exception{"Incorrect result"}
 END IF
-
+INTERFACE iTest
+	EXPORT Name AS STRING	// should not get a default
+END INTERFACE		
+STRUCTURE strTest
+	EXPORT Name AS STRING   // should not get a default
+END STRUCTURE

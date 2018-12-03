@@ -3184,8 +3184,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected virtual void VisitClassvar([NotNull] XP.ClassvarContext context)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
+            // make sure we do not initialize Interface and Structure members
+            // context.Parent = classvarList
+            // classvarList is used in VOGLobal, classvars
+            // classvars is used in classmember, classmember is used in interface, class and structure
+            var candefault = context.Parent.Parent is XP.VoglobalContext |
+                context.Parent.Parent.Parent.isInClass();
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
             bool isFixed = (context.Parent.Parent as XP.ClassvarsContext)?.Modifiers?._FIXED != null;
+            var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
+            if (initExpr == null && candefault && IsStringType(varType) && _options.VONullStrings )
+            {
+                initExpr = GenerateLiteral("");
+                initExpr.XGenerated = true;
+            }
+            
             if (isDim)
             {
                 if (isFixed)
@@ -3207,7 +3220,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
                     if (initExpr == null)
                     {
                         initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
@@ -4720,7 +4732,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(NotInDialect(m, "UNION"));
         }
 
-
+        protected bool IsStringType(TypeSyntax type)
+        {
+            if (type is PredefinedTypeSyntax)
+            {
+                var pretype = type as PredefinedTypeSyntax;
+                switch (pretype.keyword.Kind)
+                {
+                    case SyntaxKind.StringKeyword:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            else
+            {
+                if (type is QualifiedNameSyntax)
+                {
+                    var qns = type as QualifiedNameSyntax;
+                    // System.Void
+                    var sName = qns.ToFullString().Replace(" ", "");
+                    if (sName.Equals("System.String", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                    // global::System.Void
+                    if (sName.Equals("global::System.String", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         protected bool isVoidType(TypeSyntax type)
         {
             if (type is PredefinedTypeSyntax)

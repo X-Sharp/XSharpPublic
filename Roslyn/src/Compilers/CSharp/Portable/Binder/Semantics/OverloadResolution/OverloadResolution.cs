@@ -3342,8 +3342,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             for (int argumentPosition = 0; argumentPosition < paramCount; argumentPosition++)
             {
                 BoundExpression argument = arguments.Argument(argumentPosition);
-                Conversion conversion;
-
+#if XSHARP
+                Conversion conversion = Conversion.NoConversion;
+#else
+                Conversion conversion ;
+#endif
                 if (isVararg && argumentPosition == paramCount - 1)
                 {
                     // Only an __arglist() expression is convertible.
@@ -3358,55 +3361,58 @@ namespace Microsoft.CodeAnalysis.CSharp
                         conversion = Conversion.NoConversion;
                     }
                 }
-#if XSHARP
-                else if (argument.Syntax.XIsMissingArgument)
-                {
-                    conversion = Conversion.Identity;
-                }
-#endif
                 else
                 {
+#if XSHARP
+                    if (argument.Syntax.XIsMissingArgument)
+                    {
+                        conversion = Conversion.Identity;
+                    }
+#endif
                     RefKind argumentRefKind = arguments.RefKind(argumentPosition);
                     RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
 
 #if XSHARP
                     bool literalNullForRefParameter = false;
-                    if (Compilation.Options.VOImplicitCastsAndConversions)
+                    if (conversion.Kind == ConversionKind.NoConversion)
                     {
-                        // C590 Allow NULL as argument for REF parameters
-                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
-                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
-                            : default(ImmutableArray<RefKind>);
-                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
-                        if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
+                        if (Compilation.Options.VOImplicitCastsAndConversions)
                         {
-                            literalNullForRefParameter = true;
-                        }
-                        if (!literalNullForRefParameter)
-                        {
-                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                            // C590 Allow NULL as argument for REF parameters
+                            var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+                                : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+                                : default(ImmutableArray<RefKind>);
+                            RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+                            if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
                             {
-                                argument = (argument as BoundAddressOfOperator).Operand;
+                                literalNullForRefParameter = true;
+                            }
+                            if (!literalNullForRefParameter)
+                            {
+                                if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                                {
+                                    argument = (argument as BoundAddressOfOperator).Operand;
+                                }
                             }
                         }
-                    }
-                    if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
-                    {
-                        argumentRefKind = parameterRefKind;
-                        arguments.SetRefKind(argumentPosition, argumentRefKind);
-                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                        var info = new CSDiagnosticInfo(ErrorCode.WRN_ArgumentRefParameterOut,
-                                                        new object[] {argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
-                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                        useSiteDiagnostics.Add(info);
+                        if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
+                        {
+                            argumentRefKind = parameterRefKind;
+                            arguments.SetRefKind(argumentPosition, argumentRefKind);
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_ArgumentRefParameterOut,
+                                                            new object[] { argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            useSiteDiagnostics.Add(info);
 
+                        }
+                        if (literalNullForRefParameter)
+                        {
+                            conversion = Conversion.Identity;
+                        }
                     }
-                    if (literalNullForRefParameter)
-                    {
-                        conversion = Conversion.Identity;
-                    }
-                    else
-                    {
+                    if (conversion.Kind == ConversionKind.NoConversion)
+                    { 
 #endif
                         bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
 

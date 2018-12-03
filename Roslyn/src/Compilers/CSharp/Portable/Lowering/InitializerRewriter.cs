@@ -94,7 +94,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             // a generated initial value for VO NULL_STRING initialization
             // should not overwrite a value set in a child class
             // not that we recommend that <g>
-            if (initValue.WasCompilerGenerated && fieldInit.Field.Type.IsStringType() 
+            
+            if (((CSharpSyntaxNode)initValue.Syntax).XGenerated && fieldInit.Field.Type.IsStringType() 
                 && fieldInit.Field.DeclaringCompilation.Options.VONullStrings)
             {
                 var fldaccess = new BoundFieldAccess(syntax,

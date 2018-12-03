@@ -9,6 +9,7 @@ PrgEncoding = Default
 SupportCF = 0
 NoAppFileCreate = 1
 CopyAssembliesToFolder = 
+DebugExecutable = 
 
 [ProjectExportOptions]
 ExportResources = 0
@@ -35419,8 +35420,8 @@ FileGUID = 6294A93D-97C1-47EB-957C-69E05812804F
 FileType = Code
 [C356 - Issues with PSZ CAST and DIM array References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.0.0.7
-ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C356 - Issues with PSZ CAST and DIM array Resources]
 [C356 - Issues with PSZ CAST and DIM array Native Resources]
 [C356 - Issues with PSZ CAST and DIM array License files]

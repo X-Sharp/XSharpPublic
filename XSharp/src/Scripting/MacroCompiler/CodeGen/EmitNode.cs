@@ -355,13 +355,6 @@ namespace XSharp.MacroCompiler.Syntax
                 ((Constant)Symbol).Emit(ilg);
         }
     }
-    internal partial class Arg : Node
-    {
-        internal override void Emit(ILGenerator ilg)
-        {
-            Expr.Emit(ilg, true);
-        }
-    }
     internal partial class ExprList : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
@@ -410,6 +403,38 @@ namespace XSharp.MacroCompiler.Syntax
 
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
+        }
+    }
+    internal partial class AliasExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            if (Alias != null) Alias.Emit(ilg);
+            Field.Emit(ilg);
+            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_VO_Functions___FieldGetWa : WellKnownMembers.XSharp_VO_Functions___FieldGet) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            if (preserve)
+                ilg.Emit(OpCodes.Dup);
+            var v = ilg.DeclareLocal(Datatype.Type);
+            ilg.Emit(OpCodes.Stloc, v.LocalIndex);
+            if (Alias != null) Alias.Emit(ilg);
+            Field.Emit(ilg);
+            ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
+            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_VO_Functions___FieldSetWa : WellKnownMembers.XSharp_VO_Functions___FieldSet) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            ilg.Emit(OpCodes.Pop);
+        }
+    }
+    internal partial class Arg : Node
+    {
+        internal override void Emit(ILGenerator ilg)
+        {
+            Expr.Emit(ilg, true);
         }
     }
     internal partial class ArgList : Node

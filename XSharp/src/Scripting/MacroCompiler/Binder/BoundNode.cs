@@ -372,14 +372,6 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
-    internal partial class Arg : Node
-    {
-        internal override Node Bind(Binder b)
-        {
-            b.Bind(ref Expr);
-            return null;
-        }
-    }
     internal partial class ExprList : Expr
     {
         internal override Node Bind(Binder b)
@@ -444,6 +436,24 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref False);
             Binder.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             Datatype = Binder.ConvertResult(ref True, ref False);
+            return null;
+        }
+    }
+    internal partial class AliasExpr : Expr
+    {
+        internal override Node Bind(Binder b)
+        {
+            if (Alias != null) b.Bind(ref Alias);
+            b.Bind(ref Field);
+            Datatype = Compilation.Get(NativeType.Usual);
+            return null;
+        }
+    }
+    internal partial class Arg : Node
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Expr);
             return null;
         }
     }

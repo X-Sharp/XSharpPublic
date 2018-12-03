@@ -215,12 +215,6 @@ namespace XSharp.MacroCompiler.Syntax
         internal EmptyExpr() { }
         public override string ToString() { return ""; }
     }
-    internal partial class Arg : Node
-    {
-        internal Expr Expr;
-        internal Arg(Expr e) { Expr = e; }
-        public override string ToString() { return Expr.ToString(); }
-    }
     internal partial class ExprList : Expr
     {
         internal IList<Expr> Exprs;
@@ -241,6 +235,19 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr False;
         internal IifExpr(Expr cond, Expr trueExpr, Expr falseExpr) { Cond = cond; True = trueExpr; False = falseExpr; }
         public override string ToString() { return "{IIF(" + Cond.ToString() + "," + True.ToString() + "," + False.ToString() + ")}"; }
+    }
+    internal partial class AliasExpr : Expr
+    {
+        internal Expr Alias;
+        internal Expr Field;
+        internal AliasExpr(Expr alias, Expr field) { Alias = alias; Field = field; }
+        public override string ToString() { return "{" + Alias.ToString() + "->" + Field.ToString() + ")}"; }
+    }
+    internal partial class Arg : Node
+    {
+        internal Expr Expr;
+        internal Arg(Expr e) { Expr = e; }
+        public override string ToString() { return Expr.ToString(); }
     }
     internal partial class ArgList : Node
     {

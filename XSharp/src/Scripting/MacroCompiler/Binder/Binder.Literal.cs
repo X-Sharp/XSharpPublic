@@ -26,7 +26,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.INTERPOLATED_STRING_CONST:
                     return Constant.Create(Literals.StringValue(Value));
                 case TokenType.SYMBOL_CONST:
-                    return Constant.CreateSymbol(Value.Substring(1).ToUpperInvariant());
+                    return Constant.CreateSymbol(Value.StartsWith("#") ? Value.Substring(1).ToUpperInvariant() : Value.ToUpperInvariant());
                 case TokenType.HEX_CONST:
                     switch (Value.Last())
                     {

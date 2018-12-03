@@ -25,6 +25,15 @@ namespace XSharp.MacroCompiler
         XSharp___VODate_ctor,
         XSharp___Symbol_ctor,
         XSharp_VO_Functions_POW,
+        XSharp_VO_Functions___InternalSend,
+        XSharp_VO_Functions_IVarGet,
+        XSharp_VO_Functions_IVarPut,
+        XSharp_VO_Functions___MemVarGet,
+        XSharp_VO_Functions___MemVarPut,
+        XSharp_VO_Functions___FieldGet,
+        XSharp_VO_Functions___FieldSet,
+        XSharp_VO_Functions___FieldGetWa,
+        XSharp_VO_Functions___FieldSetWa,
     }
 
     public static partial class Compilation
@@ -44,6 +53,15 @@ namespace XSharp.MacroCompiler
             "XSharp.__VODate.@ctor(System.Int32,System.Int32,System.Int32)|Vulcan.__VODate.@ctor(System.Int32,System.Int32,System.Int32)",
             "XSharp.__Symbol.@ctor(System.String)|Vulcan.__Symbol.@ctor(System.String)",
             XSharpQualifiedTypeNames.Functions+".POW|"+VulcanQualifiedTypeNames.Functions+".POW",
+            XSharpQualifiedFunctionNames.InternalSend+"|"+VulcanQualifiedFunctionNames.InternalSend,
+            XSharpQualifiedFunctionNames.IVarGet+"|"+VulcanQualifiedFunctionNames.IVarGet,
+            XSharpQualifiedFunctionNames.IVarPut+"|"+VulcanQualifiedFunctionNames.IVarPut,
+            XSharpQualifiedFunctionNames.MemVarGet+"|"+VulcanQualifiedFunctionNames.MemVarGet,
+            XSharpQualifiedFunctionNames.MemVarPut+"|"+VulcanQualifiedFunctionNames.MemVarPut,
+            XSharpQualifiedFunctionNames.FieldGet+"|"+VulcanQualifiedFunctionNames.FieldGet,
+            XSharpQualifiedFunctionNames.FieldSet+"|"+VulcanQualifiedFunctionNames.FieldSet,
+            XSharpQualifiedFunctionNames.FieldGetWa+"|"+VulcanQualifiedFunctionNames.FieldGetWa,
+            XSharpQualifiedFunctionNames.FieldSetWa+"|"+VulcanQualifiedFunctionNames.FieldSetWa,
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;

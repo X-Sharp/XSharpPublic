@@ -55,7 +55,8 @@ namespace XSharp.MacroCompiler
                 MethodSymbol mop = null;
                 ConversionSymbol lconv = null;
                 ConversionSymbol rconv = null;
-                ResolveUserDefinedBinaryOperator(left, right, left.Datatype.Lookup(name), right.Datatype.Lookup(name), ref mop, ref lconv, ref rconv);
+                ResolveBinaryOperator(left, right, left.Datatype.Lookup(name), ref mop, ref lconv, ref rconv);
+                ResolveBinaryOperator(left, right, right.Datatype.Lookup(name), ref mop, ref lconv, ref rconv);
                 if (mop != null)
                 {
                     var op = BinaryOperatorSymbol.Create(kind, mop, lconv, rconv);
@@ -67,32 +68,21 @@ namespace XSharp.MacroCompiler
             if (kind == BinaryOperatorKind.Exponent &&
                 (left.Datatype.NativeType == NativeType.Usual || right.Datatype.NativeType == NativeType.Usual))
             {
-                name = OperatorNames.__UsualExponent;
-                if (name != null)
+                MethodSymbol mop = null;
+                ConversionSymbol lconv = null;
+                ConversionSymbol rconv = null;
+                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, false);
+                ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, false);
+                ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, false);
+                if (mop != null)
                 {
-                    MethodSymbol mop = null;
-                    ConversionSymbol lconv = null;
-                    ConversionSymbol rconv = null;
-                    ResolveUserDefinedBinaryOperator(left, right, left.Datatype.Lookup(name), right.Datatype.Lookup(name), ref mop, ref lconv, ref rconv, false);
-                    if (mop != null)
-                    {
-                        var op = BinaryOperatorSymbol.Create(kind, mop, lconv, rconv);
-                        ApplyBinaryOperator(ref left, ref right, op);
-                        return op;
-                    }
+                    var op = BinaryOperatorSymbol.Create(kind, mop, lconv, rconv);
+                    ApplyBinaryOperator(ref left, ref right, op);
+                    return op;
                 }
             }
 
             return null;
-        }
-
-        internal static void ResolveUserDefinedBinaryOperator(Expr left, Expr right, Symbol left_ops, Symbol right_ops,
-            ref MethodSymbol op, ref ConversionSymbol lconv, ref ConversionSymbol rconv, bool needSpecialName = true)
-        {
-            if (left_ops != null)
-                ResolveBinaryOperator(left, right, left_ops, ref op, ref lconv, ref rconv, needSpecialName);
-            if (right_ops != null)
-                ResolveBinaryOperator(left, right, right_ops, ref op, ref lconv, ref rconv, needSpecialName);
         }
 
         internal static void ResolveBinaryOperator(Expr left, Expr right, Symbol ops,

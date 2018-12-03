@@ -24,6 +24,7 @@ namespace XSharp.MacroCompiler
         XSharp___VOFloat_ctor,
         XSharp___VODate_ctor,
         XSharp___Symbol_ctor,
+        XSharp_VO_Functions_POW,
     }
 
     public static partial class Compilation
@@ -42,6 +43,7 @@ namespace XSharp.MacroCompiler
             "XSharp.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)|Vulcan.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)",
             "XSharp.__VODate.@ctor(System.Int32,System.Int32,System.Int32)|Vulcan.__VODate.@ctor(System.Int32,System.Int32,System.Int32)",
             "XSharp.__Symbol.@ctor(System.String)|Vulcan.__Symbol.@ctor(System.String)",
+            XSharpQualifiedTypeNames.Functions+".POW|"+VulcanQualifiedTypeNames.Functions+".POW",
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;
@@ -53,7 +55,7 @@ namespace XSharp.MacroCompiler
             foreach (var m in (WellKnownMembers[])Enum.GetValues(typeof(WellKnownMembers)))
             {
                 var names = MemberNames[(int)m];
-                Debug.Assert(m.ToString().StartsWith(names.Replace('.', '_').Replace("`", "_T").Replace("$","").Replace("@", "").Split('|','(').First()));
+                Debug.Assert(m.ToString().StartsWith(names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$","").Replace("@", "").Split('|','(').First()));
                 foreach (var proto in names.Split('|'))
                 {
                     var name = proto.Replace("$", "").Split('(').First();

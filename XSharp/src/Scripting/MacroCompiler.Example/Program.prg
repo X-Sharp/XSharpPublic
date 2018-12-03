@@ -237,6 +237,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int))
         TestMacro(mc, "{|a| b := 8, c := b**a, c}", <OBJECT>{8}, 16777216, typeof(usual))
         TestMacro(mc, "{|a,b,c|a.and.b.or..not.c}", <OBJECT>{true,false,true}, false, typeof(logic))
+        TestMacro(mc, "{|a| a := U({1,2,3", <OBJECT>{}, {1,2,3}, typeof(usual))
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)

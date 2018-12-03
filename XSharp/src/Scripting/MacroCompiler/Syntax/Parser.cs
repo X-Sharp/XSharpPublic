@@ -15,6 +15,7 @@ namespace XSharp.MacroCompiler
 
         // Configuration
         MacroOptions _options;
+        bool AllowMissingSyntax { get { return _options.AllowMissingSyntax; } }
 
         // State
         int _index = 0;
@@ -350,7 +351,7 @@ namespace XSharp.MacroCompiler
 
                 var expr = ParseExpression();
 
-                Require(Expect(TokenType.RPAREN), "Expected ')'");
+                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
 
                 return cast ? new TypeCast((TypeExpr)e, expr) : new TypeConversion((TypeExpr)e, expr);
             }
@@ -534,7 +535,7 @@ namespace XSharp.MacroCompiler
 
             var l = ParseExprList();
 
-            Require(Expect(TokenType.RCURLY), "Expected '}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, "Expected '}'");
 
             return new Codeblock(p,l);
         }
@@ -558,7 +559,7 @@ namespace XSharp.MacroCompiler
 
             var t = Require(ParseType(), "Expected type expression");
 
-            Require(Expect(TokenType.RPAREN), "Expected ')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
 
             return t;
         }
@@ -569,7 +570,7 @@ namespace XSharp.MacroCompiler
 
             var e = Require(ParseExpression(),"Expected expression");
 
-            Require(Expect(TokenType.RPAREN), "Expected ')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
 
             return e;
         }
@@ -580,7 +581,7 @@ namespace XSharp.MacroCompiler
 
             var e = ParseExprList(true);
 
-            Require(Expect(TokenType.RCURLY), "Expected '}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, "Expected '}'");
 
             return new LiteralArray(e, t);
         }
@@ -627,7 +628,7 @@ namespace XSharp.MacroCompiler
 
                 var ef = ParseExpression() ?? new EmptyExpr();
 
-                Require(Expect(TokenType.RPAREN), "Expected ')'");
+                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
 
                 return new IifExpr(c, et, ef);
             }
@@ -687,7 +688,7 @@ namespace XSharp.MacroCompiler
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RPAREN), "Expected ')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
 
             return l;
         }
@@ -709,7 +710,7 @@ namespace XSharp.MacroCompiler
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RCURLY), "Expected '}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, "Expected '}'");
 
             return l;
         }

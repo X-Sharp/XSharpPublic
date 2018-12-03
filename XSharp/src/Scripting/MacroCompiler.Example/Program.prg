@@ -74,6 +74,10 @@ struct teststruct
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
 end struct
 
+global tsi := teststruct{1} as teststruct
+
+global tci := testclass{1} as testclass
+
 begin namespace MacroCompilerTest
     using XSharp.Runtime
     using XSharp.MacroCompiler
@@ -214,6 +218,14 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := teststruct{222}, a:v1 }", <OBJECT>{}, 222, typeof(usual))
         TestMacro(mc, e"{|a| a := testclass{}, a:prop := 111 }", <OBJECT>{}, 111, typeof(usual))
         TestMacro(mc, e"{|a,b| b := testclass{}, b:prop := a, ++b:prop }", <OBJECT>{55}, 56, typeof(usual))
+        TestMacro(mc, e"{|| tsi:v1 }", <OBJECT>{}, 1, typeof(usual))
+        TestMacro(mc, e"{|| ++tsi:v1 }", <OBJECT>{}, 2, typeof(usual))
+//        TestMacro(mc, e"{|| tsi:v1 := 10, tsi:v1 }", <OBJECT>{}, 10, typeof(usual)) // FAIL because tsi is boxed by value
+        TestMacro(mc, e"{|| ++tsi:prop }", <OBJECT>{}, 2, typeof(usual))
+        TestMacro(mc, e"{|| tci:v1 }", <OBJECT>{}, 1, typeof(usual))
+        TestMacro(mc, e"{|| ++tci:v1 }", <OBJECT>{}, 2, typeof(usual))
+        TestMacro(mc, e"{|| ++tci:prop }", <OBJECT>{}, 2, typeof(usual))
+        TestMacro(mc, e"{|| tci:v1 := 10, tci:v1++, tci:v1 }", <OBJECT>{}, 11, typeof(usual))
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{100}, 123, typeof(float))
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{1}, 1.23, typeof(float))
         TestMacro(mc, e"{|a| IIF(a>10,1) }", <OBJECT>{100}, 1, typeof(usual))

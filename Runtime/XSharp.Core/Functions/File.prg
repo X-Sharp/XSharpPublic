@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved. 
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN oStream
             
         [MethodImpl(MethodImplOptions.AggressiveInlining)];            
-        INTERNAL STATIC method clearErrorState() as VOID
+        INTERNAL STATIC METHOD clearErrorState() AS VOID
             lastException := NULL
             errorCode := 0
             RETURN
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp.IO
 				    ENDIF
 				    oStream:Dispose()
 				RETURN TRUE
-                CATCH e as Exception
+                CATCH e AS Exception
                     setErrorState(e)
                 END TRY
 			ENDIF
@@ -283,14 +283,14 @@ BEGIN NAMESPACE XSharp.IO
 				TRY
                     clearErrorState()
 					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
-				CATCH e as Exception
+				CATCH e AS Exception
 					setErrorState(e)
 				END TRY
 			ENDIF
 			RETURN iResult
 
 		INTERNAL STATIC METHOD readBuff(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS INT, lAnsi AS LOGIC) AS INT64
-            LOCAL iResult := 0 as Int64
+            LOCAL iResult := 0 AS INT64
             iResult := readBuff(pFile, pBuffer, dwCount)
             IF FError() == 0 .and. !lAnsi
 				Oem2AnsiA(pBuffer)
@@ -314,7 +314,7 @@ BEGIN NAMESPACE XSharp.IO
 					cResult := Bytes2Line(pBuffer, REF iCount)
 					nPos += iCount	// advance CRLF
 					oStream:Position := nPos
-				CATCH e as Exception
+				CATCH e AS Exception
 					setErrorState(e)
 				END TRY
 			ENDIF
@@ -339,7 +339,7 @@ BEGIN NAMESPACE XSharp.IO
 						OTHERWISE
 							iResult := -1					
 					END SWITCH
-				CATCH e as Exception
+				CATCH e AS Exception
 					setErrorState(e)
 				END TRY
 				RETURN iResult 
@@ -359,7 +359,7 @@ BEGIN NAMESPACE XSharp.IO
                     clearErrorState()
 					oStream:Write(pBuffer, 0, iCount)
 					iWritten := iCount
-				CATCH e as Exception
+				CATCH e AS Exception
 					setErrorState(e)
 				END TRY
 				
@@ -392,7 +392,7 @@ BEGIN NAMESPACE XSharp.IO
 						oStream:UnLock(iOffset, iLength)
 					ENDIF
 					lResult := TRUE
-				CATCH e as Exception
+				CATCH e AS Exception
 					// Catch and save error
 					setErrorState(e)
 					lResult := FALSE
@@ -412,7 +412,7 @@ BEGIN NAMESPACE XSharp.IO
 						oStream:Flush()
 					ENDIF
 					lOk := TRUE
-				CATCH e as Exception
+				CATCH e AS Exception
 					// Catch and save error
 					setErrorState(e)
 					lOk := FALSE 
@@ -427,7 +427,7 @@ BEGIN NAMESPACE XSharp.IO
                     clearErrorState()
 					oStream:SetLength(nValue)
 					lOk := TRUE
-				CATCH e as Exception
+				CATCH e AS Exception
 					// Catch and save error
 					setErrorState(e)
 					lOk := FALSE
@@ -450,7 +450,7 @@ BEGIN NAMESPACE XSharp.IO
 				TRY
                     clearErrorState()
 					RETURN oStream:Position
-				CATCH e as Exception
+				CATCH e AS Exception
 					// Catch and save error
 					setErrorState(e)
 				END TRY
@@ -628,7 +628,7 @@ FUNCTION FReadLine2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
 /// </param>
 FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
 	LOCAL cResult AS STRING
-	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, FALSE)
+	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, XSharp.RuntimeState.Ansi)
 	RETURN cResult
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />

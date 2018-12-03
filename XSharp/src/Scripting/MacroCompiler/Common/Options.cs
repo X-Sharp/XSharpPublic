@@ -13,6 +13,7 @@ namespace XSharp.MacroCompiler
         public bool AllowFourLetterAbbreviations = true;
         public bool AllowOldStyleComments = true;
         public bool AllowSingleQuotedStrings = true;
+        public bool AllowPackedDotOperators = true;
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;

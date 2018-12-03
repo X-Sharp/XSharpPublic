@@ -88,7 +88,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| b:=8, b**a }", 8)
+        EvalMacro(mc, e"{|a,b|.not.a.and..not.b}", true, false)
         wait
 
         RunTests(mc)
@@ -233,8 +233,10 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| (float)++a/2 }", <OBJECT>{2}, 1.5, typeof(float))
         TestMacro(mc, e"{|a| a := {1,2,3,4}, a[1] := 10, a[1] + a[2] }", <OBJECT>{}, 12, typeof(usual))
         TestMacro(mc, e"{|a| a := {1,2,3,4}, a[1] += 10, a[1] }", <OBJECT>{}, 11, typeof(usual))
-        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 16777216, typeof(float)) // FAIL
+        TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 16777216, typeof(float))
         TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int))
+        TestMacro(mc, "{|a| b := 8, c := b**a, c}", <OBJECT>{8}, 16777216, typeof(usual))
+        TestMacro(mc, "{|a,b,c|a.and.b.or..not.c}", <OBJECT>{true,false,true}, false, typeof(logic))
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)

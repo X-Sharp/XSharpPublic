@@ -52,6 +52,10 @@ namespace XSharp.MacroCompiler
         {
             get { return _options.AllowOldStyleComments; }
         }
+        internal bool AllowPackedDotOperators
+        {
+            get { return _options.AllowPackedDotOperators; }
+        }
 
         IDictionary<string, TokenType> KwIds
         {
@@ -439,7 +443,7 @@ namespace XSharp.MacroCompiler
                             break;
                         case TokenType.DOT:
                             if (La() >= '0' && La() <= '9') goto case TokenType.REAL_CONST;
-                            if (!_inDottedIdentifier)
+                            if (!_inDottedIdentifier || AllowPackedDotOperators)
                             {
                                 if (La(2) == '.')
                                 {

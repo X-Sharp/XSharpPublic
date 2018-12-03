@@ -1687,8 +1687,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 diagnostics = new DiagnosticBag();
             }
+#if XSHARP
+            if (Compilation.Options.HasRuntime && targetType == Compilation.PszType())
+            {
+                if (IsNullNode(expression))
+                {
+                    return PszFromNull(expression);
+                }
+            }
+#endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+#if XSHARP
+            if (expression.Kind == BoundKind.UnboundLambda)
+            {
+                if (targetType.IsDelegateType())
+                {
+                    if (expression.Syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, expression.Syntax, targetType);
+                    }
+                }
+            }
+#endif
             var conversion = this.Conversions.ClassifyConversionFromExpression(expression, targetType, ref useSiteDiagnostics);
             diagnostics.Add(expression.Syntax, useSiteDiagnostics);
 

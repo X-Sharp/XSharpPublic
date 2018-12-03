@@ -5573,6 +5573,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak" xml:space="preserve">
     <value>The compiler generated an automatic conversion to PSZ. This may create a memory leak in your application. Please use String2Psz() to let the compiler manage the lifetime of the PSZ or use StringAlloc() and manage the lifetime of the PSZ yourself.</value>
   </data>
+  <data name="WRN_ArgumentRefParameterOut" xml:space="preserve">
+    <value>Argument {0} is passed with REF keyword but should be passed with the '{1}' keyword</value>
+  </data>
   <data name="ERR_XPPMultipleInheritance" xml:space="preserve">
     <value>XPP: Multiple Inheritance is not supported by the .Net Runtime.</value>
   </data>
@@ -5601,6 +5604,6 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>XPP: Method {0} has NOT been declared.</value>
   </data>
   <data name="ERR_XPPClassNotFound" xml:space="preserve">
-    <value>XPP: Class {0} has been declared.</value>
+    <value>XPP: Class {0} has not been declared.</value>
   </data>
 </root>

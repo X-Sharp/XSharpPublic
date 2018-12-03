@@ -452,8 +452,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return (this.DeclarationModifiers & DeclarationModifiers.Abstract) != 0;
             }
         }
-
+#if XSHARP
+        public override bool IsOverride
+#else
         public sealed override bool IsOverride
+#endif
         {
             get
             {
@@ -529,9 +532,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Syntax
+#region Syntax
 
         internal (BlockSyntax, ArrowExpressionClauseSyntax) Bodies
         {
@@ -667,7 +670,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return SourceDocumentationCommentUtils.GetAndCacheDocumentationComment(this, expandIncludes, ref lazyDocComment);
         }
 
-        #endregion
+#endregion
 
         public override ImmutableArray<CustomModifier> ReturnTypeCustomModifiers
         {
@@ -828,7 +831,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             state.SpinWaitComplete(allParts, cancellationToken);
         }
 
-        #region Attributes
+#region Attributes
 
         /// <summary>
         /// Symbol to copy bound attributes from, or null if the attributes are not shared among multiple source method symbols.

@@ -71,7 +71,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return RefKinds.Count > 0 ? RefKinds[i] : Microsoft.CodeAnalysis.RefKind.None;
         }
-
+#if XSHARP
+        internal void SetRefKind(int i, RefKind newRefKind)
+        {
+            if (i < RefKinds.Count && i >= 0)
+            {
+                RefKinds[i] = newRefKind;
+            }
+        }
+#endif
         public bool IsExtensionMethodThisArgument(int i)
         {
             return (i == 0) && this.IsExtensionMethodInvocation;

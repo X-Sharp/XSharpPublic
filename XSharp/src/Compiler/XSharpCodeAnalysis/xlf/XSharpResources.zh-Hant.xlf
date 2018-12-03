@@ -5818,8 +5818,8 @@
         <note />
       </trans-unit>
       <trans-unit id="ERR_XPPClassNotFound">
-        <source>XPP: Class {0} has been declared.</source>
-        <target state="new">XPP: Class {0} has been declared.</target>
+        <source>XPP: Class {0} has not been declared.</source>
+        <target state="new">XPP: Class {0} has not been declared.</target>
         <note />
       </trans-unit>
       <trans-unit id="ERR_XPPMultipleInheritance">
@@ -7069,6 +7069,11 @@
       <trans-unit id="WRN_ArgumentNameLocalNamePossibleConflict">
         <source>Possible conflict between assignment to local variable {0} and named argument syntax. The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</source>
         <target state="new">Possible conflict between assignment to local variable {0} and named argument syntax. The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="WRN_ArgumentRefParameterOut">
+        <source>Argument {0} is passed with REF keyword but should be passed with the '{1}' keyword</source>
+        <target state="new">Argument {0} is passed with REF keyword but should be passed with the '{1}' keyword</target>
         <note />
       </trans-unit>
       <trans-unit id="WRN_AssemblyAttributeFromModuleIsOverridden">

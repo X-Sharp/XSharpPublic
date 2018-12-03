@@ -590,7 +590,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         protected override MethodSymbol GetOverriddenMethod(SourceOrdinaryMethodSymbol overridingMethod)
         {
             MethodSymbol method = overridingMethod;
+#if !XSHARP
             Debug.Assert(method.IsOverride);
+#endif
             do
             {
                 method = method.OverriddenMethod;
@@ -657,13 +659,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
-#if XSHARP
-                if (!Owner.IsOverride)
-                {
-                    var constraints = this.GetDeclaredConstraints();
-                    return (constraints & TypeParameterConstraintKind.Constructor) != 0;
-                }
-#endif
                 var typeParameter = this.OverriddenTypeParameter;
                 return ((object)typeParameter != null) && typeParameter.HasConstructorConstraint;
             }
@@ -673,13 +668,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
-#if XSHARP
-                if (!Owner.IsOverride)
-                {
-                    var constraints = this.GetDeclaredConstraints();
-                    return (constraints & TypeParameterConstraintKind.ValueType) != 0;
-                }
-#endif
                 var typeParameter = this.OverriddenTypeParameter;
                 return ((object)typeParameter != null) && typeParameter.HasValueTypeConstraint;
             }
@@ -689,13 +677,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
-#if XSHARP
-                if (!Owner.IsOverride)
-                {
-                    var constraints = this.GetDeclaredConstraints();
-                    return (constraints & TypeParameterConstraintKind.ReferenceType) != 0;
-                }
-#endif
                 var typeParameter = this.OverriddenTypeParameter;
                 return ((object)typeParameter != null) && typeParameter.HasReferenceTypeConstraint;
             }
@@ -717,22 +698,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         protected override TypeParameterBounds ResolveBounds(ConsList<TypeParameterSymbol> inProgress, DiagnosticBag diagnostics)
         {
-#if XSHARP
-            if (!Owner.IsOverride)
-            {
-                var tp = Owner.TypeParameters[this.Ordinal];
-                if ((object)tp == null)
-                {
-                    return null;
-                }
-
-                var tmap = _map.TypeMap;
-                Debug.Assert(tmap != null);
-                var _constraintTypes = tmap.SubstituteTypesWithoutModifiers(tp.ConstraintTypesNoUseSiteDiagnostics);
-
-                return this.ResolveBounds(this.ContainingAssembly.CorLibrary, inProgress.Prepend(this), _constraintTypes, false, this.DeclaringCompilation, diagnostics);
-            }
-#endif
             var typeParameter = this.OverriddenTypeParameter;
             if ((object)typeParameter == null)
             {
@@ -758,12 +723,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return _map.GetOverriddenTypeParameter(this.Ordinal);
             }
         }
-
-#if XSHARP
-        private TypeParameterConstraintKind GetDeclaredConstraints()
-        {
-            return Owner.TypeParameterConstraintClauses[this.Ordinal].Constraints;
-        }
-#endif
     }
 }

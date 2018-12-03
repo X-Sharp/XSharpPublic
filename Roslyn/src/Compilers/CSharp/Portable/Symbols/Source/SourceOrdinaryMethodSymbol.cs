@@ -14,7 +14,11 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+#if XSHARP
+    internal sealed partial class SourceOrdinaryMethodSymbol : SourceMemberMethodSymbol
+#else
     internal sealed class SourceOrdinaryMethodSymbol : SourceMemberMethodSymbol
+#endif
     {
         private readonly ImmutableArray<TypeParameterSymbol> _typeParameters;
         private readonly TypeSymbol _explicitInterfaceType;
@@ -339,63 +343,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     MethodSymbol overriddenMethod = this.OverriddenMethod;
 
 #if XSHARP
-                    if ((object)overriddenMethod != null)
-                    {
-                        if (this.HasClipperCallingConvention() != overriddenMethod.HasClipperCallingConvention())
-                        {
-                            if (this.HasClipperCallingConvention())
-                            {
-                                diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
-                            }
-                            else
-                            {
-                                diagnostics.Add(ErrorCode.ERR_ClipperInParentClass, location, this.Name);
-                            }
-                            overriddenMethod = null;
-                        }
-                    }
-#endif
+                    // additional checks to see if we are overriding clipper with non clipper etc.
+                    overriddenMethod = validateMethod(overriddenMethod, diagnostics, location);
+
+#else
                     if ((object)overriddenMethod != null)
                     {
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType,
                                                                       out _lazyCustomModifiers,
                                                                       out _lazyParameters, alsoCopyParamsModifier: true);
                     }
-#if XSHARP
-                    /*if (this.IsVirtual)*/ {
-                        var node = this.SyntaxNode.Green as Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.MethodDeclarationSyntax;
-                        var mods = flags.DeclarationModifiers;
-                        if ((object)overriddenMethod != null) 
-                        {
-                            if (this.Name != overriddenMethod.Name)
-                            {
-                                this._name = overriddenMethod.Name;
-                            }
-                            // remove generated Virtual Modifiers
-                            foreach (var token in node.Modifiers)
-                            {
-                                if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
-                                {
-                                    mods = mods & ~DeclarationModifiers.Virtual;
-                                }
-                            }
-
-                            flags = new Flags(flags.MethodKind, mods, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
-                        }
-                        else
-                        {
-                            // remove generated Override Modifiers
-                            foreach (var token  in node.Modifiers)
-                            {
-                                if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
-                                {
-                                    mods = mods & ~DeclarationModifiers.Override;
-                                }
-                            }
-                            flags = new Flags(flags.MethodKind, mods , flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
-                        }
-                    }
 #endif
+
+
                 }
                 else if (_refKind == RefKind.RefReadOnly)
                 {
@@ -1014,8 +974,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Disable warning when compiling with /vo3
                 if (!this.DeclaringCompilation.Options.VirtualInstanceMethods)
                 {
-                // '{0}' is a new virtual member in sealed class '{1}'
-                diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+                    // '{0}' is a new virtual member in sealed class '{1}'
+                    diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
                 }
 #else
                     // '{0}' is a new virtual member in sealed class '{1}'
@@ -1189,20 +1149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return base.CallsAreOmitted(syntaxTree);
         }
 #if XSHARP
-        internal override bool GenerateDebugInfo
-        {
-            get
-            {
-                if (IsAsync || IsIterator)
-                {
-                    return false;
-                }
-                var node = this.GetNonNullSyntaxNode();
-                if (node.XGenerated)
-                    return false;
-                return true;
-            }
-        }
+        internal override bool GenerateDebugInfo => XsGenerateDebugInfo;
 #else
         internal override bool GenerateDebugInfo => !IsAsync && !IsIterator;
 #endif

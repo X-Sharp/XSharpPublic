@@ -1541,7 +1541,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;*/
             if (list.Any((int)SyntaxKind.StaticKeyword) || list.Any((int)SyntaxKind.ExternKeyword) || list.Any((int)SyntaxKind.OverrideKeyword) || list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword) || list.Any((int)SyntaxKind.PrivateKeyword))
                 return;
-            list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
+            //list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
         }
 
         public static int GetVisibilityLevel(this SyntaxListBuilder list)

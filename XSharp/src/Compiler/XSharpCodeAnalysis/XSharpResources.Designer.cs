@@ -10538,7 +10538,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XPP: Class {0} has been declared..
+        ///   Looks up a localized string similar to XPP: Class {0} has not been declared..
         /// </summary>
         internal static string ERR_XPPClassNotFound {
             get {
@@ -12155,6 +12155,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_ArgumentNameLocalNamePossibleConflict {
             get {
                 return ResourceManager.GetString("WRN_ArgumentNameLocalNamePossibleConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument {0} is passed with REF keyword but should be passed with the &apos;{1}&apos; keyword.
+        /// </summary>
+        internal static string WRN_ArgumentRefParameterOut {
+            get {
+                return ResourceManager.GetString("WRN_ArgumentRefParameterOut", resourceCulture);
             }
         }
         

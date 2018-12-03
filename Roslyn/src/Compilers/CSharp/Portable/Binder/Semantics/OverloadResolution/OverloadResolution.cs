@@ -3390,6 +3390,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
+                    if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
+                    {
+                        argumentRefKind = parameterRefKind;
+                        arguments.SetRefKind(argumentPosition, argumentRefKind);
+                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                        var info = new CSDiagnosticInfo(ErrorCode.WRN_ArgumentRefParameterOut,
+                                                        new object[] {argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
+                        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                        useSiteDiagnostics.Add(info);
+
+                    }
                     if (literalNullForRefParameter)
                     {
                         conversion = Conversion.Identity;

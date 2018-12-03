@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9206</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9206</para>
+    </header>
+    <para styleclass="Body Text">The XPP: READONLY clause for instance variables is not supported (yet) and ignored.</para>
+  </body>
+</topic>

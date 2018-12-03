@@ -234,8 +234,8 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := {1,2,3,4}, a[1] := 10, a[1] + a[2] }", <OBJECT>{}, 12, typeof(usual))
         TestMacro(mc, e"{|a| a := {1,2,3,4}, a[1] += 10, a[1] }", <OBJECT>{}, 11, typeof(usual))
         TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 16777216, typeof(float)) // FAIL
+        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int))
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
-//        TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int)) //FAIL
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         return

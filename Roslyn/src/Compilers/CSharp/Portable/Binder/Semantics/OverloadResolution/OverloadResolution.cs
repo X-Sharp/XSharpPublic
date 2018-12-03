@@ -3366,97 +3366,98 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
                 else
                 {
-//        TODO rvdH integrate old code
-//                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
-//                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
-//                    bool literalNullForRefParameter = false;
-//                    if (Compilation.Options.VOImplicitCastsAndConversions)
-//                    {
-//                        // C590 Allow NULL as argument for REF parameters
-//                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
-//                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
-//                            : default(ImmutableArray<RefKind>);
-//                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
-//                        if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
-//                        {
-//                            literalNullForRefParameter = true;
-//                        }
-//                        if (! literalNullForRefParameter)
-//                        {
-//                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
-//                            {
-//                                argument = (argument as BoundAddressOfOperator).Operand;
-//                            }
-//                        }
-//                    }
-//                    if (literalNullForRefParameter)
-//                        conversion = Conversion.Identity;
-//                    else
-//					{
-//*/
-                        RefKind argumentRefKind = arguments.RefKind(argumentPosition);
+                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
+                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
 
-                        RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
-
-                    bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
-
-                    if (forExtensionMethodThisArg)
+#if XSHARP
+                    bool literalNullForRefParameter = false;
+                    if (Compilation.Options.VOImplicitCastsAndConversions)
                     {
-                        Debug.Assert(argumentRefKind == RefKind.None);
-                        if (parameterRefKind == RefKind.Ref)
+                        // C590 Allow NULL as argument for REF parameters
+                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+                            : default(ImmutableArray<RefKind>);
+                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+                        if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
                         {
-                            // For ref extension methods, we omit the "ref" modifier on the receiver arguments
-                            // Passing the parameter RefKind for finding the correct conversion.
-                            // For ref-readonly extension methods, argumentRefKind is always None.
-                            argumentRefKind = parameterRefKind;
+                            literalNullForRefParameter = true;
+                        }
+                        if (!literalNullForRefParameter)
+                        {
+                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                            {
+                                argument = (argument as BoundAddressOfOperator).Operand;
+                            }
                         }
                     }
-
-                    conversion = CheckArgumentForApplicability(
-                        candidate,
-                        argument,
-                        argumentRefKind,
-                        parameters.ParameterTypes[argumentPosition],
-                        parameterRefKind,
-                        ignoreOpenTypes,
-                        ref useSiteDiagnostics,
-                        forExtensionMethodThisArg);
-
-                    if (forExtensionMethodThisArg && !Conversions.IsValidExtensionMethodThisArgConversion(conversion))
+                    if (literalNullForRefParameter)
                     {
-                        // Return early, without checking conversions of subsequent arguments,
-                        // if the instance argument is not convertible to the 'this' parameter,
-                        // even when 'completeResults' is requested. This avoids unnecessary
-                        // lambda binding in particular, for instance, with LINQ expressions.
-                        // Note that BuildArgumentsForErrorRecovery will still bind some number
-                        // of overloads for the semantic model.
-                        Debug.Assert(badArguments == null);
-                        Debug.Assert(conversions == null);
-                        return MemberAnalysisResult.BadArgumentConversions(argsToParameters, ImmutableArray.Create(argumentPosition), ImmutableArray.Create(conversion));
+                        conversion = Conversion.Identity;
                     }
+                    else
+                    {
+#endif
+                        bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
+
+                        if (forExtensionMethodThisArg)
+                        {
+                            Debug.Assert(argumentRefKind == RefKind.None);
+                            if (parameterRefKind == RefKind.Ref)
+                            {
+                                // For ref extension methods, we omit the "ref" modifier on the receiver arguments
+                                // Passing the parameter RefKind for finding the correct conversion.
+                                // For ref-readonly extension methods, argumentRefKind is always None.
+                                argumentRefKind = parameterRefKind;
+                            }
+                        }
+                        conversion = CheckArgumentForApplicability(
+                            candidate,
+                            argument,
+                            argumentRefKind,
+                            parameters.ParameterTypes[argumentPosition],
+                            parameterRefKind,
+                            ignoreOpenTypes,
+                            ref useSiteDiagnostics,
+                            forExtensionMethodThisArg);
+                        if (forExtensionMethodThisArg && !Conversions.IsValidExtensionMethodThisArgConversion(conversion))
+                        {
+                            // Return early, without checking conversions of subsequent arguments,
+                            // if the instance argument is not convertible to the 'this' parameter,
+                            // even when 'completeResults' is requested. This avoids unnecessary
+                            // lambda binding in particular, for instance, with LINQ expressions.
+                            // Note that BuildArgumentsForErrorRecovery will still bind some number
+                            // of overloads for the semantic model.
+                            Debug.Assert(badArguments == null);
+                            Debug.Assert(conversions == null);
+                            return MemberAnalysisResult.BadArgumentConversions(argsToParameters, ImmutableArray.Create(argumentPosition), ImmutableArray.Create(conversion));
+                        }
+#if XSHARP
+                    }
+#endif
 
                     if (!conversion.Exists)
                     {
                         badArguments = badArguments ?? ArrayBuilder<int>.GetInstance();
                         badArguments.Add(argumentPosition);
                     }
+
+                    if (conversions != null)
+                    {
+                        conversions.Add(conversion);
+                    }
+                    else if (!conversion.IsIdentity)
+                    {
+                        conversions = ArrayBuilder<Conversion>.GetInstance(paramCount);
+                        conversions.AddMany(Conversion.Identity, argumentPosition);
+                        conversions.Add(conversion);
+                    }
+
+                    if (badArguments != null && !completeResults)
+                    {
+                        break;
+                    }
                 }
 
-                if (conversions != null)
-                {
-                    conversions.Add(conversion);
-                }
-                else if (!conversion.IsIdentity)
-                {
-                    conversions = ArrayBuilder<Conversion>.GetInstance(paramCount);
-                    conversions.AddMany(Conversion.Identity, argumentPosition);
-                    conversions.Add(conversion);
-                }
-
-                if (badArguments != null && !completeResults)
-                {
-                    break;
-                }
             }
 
             MemberAnalysisResult result;

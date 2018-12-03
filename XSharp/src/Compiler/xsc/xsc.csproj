@@ -18,6 +18,7 @@
     <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
   </PropertyGroup>
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\XSCompiler\XSCompiler.csproj" />
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

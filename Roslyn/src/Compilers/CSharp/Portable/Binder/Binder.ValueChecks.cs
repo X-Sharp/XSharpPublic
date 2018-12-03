@@ -322,6 +322,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return CheckNotNamespaceOrType(expr, diagnostics);
             }
 
+#if XSHARP
+            if (expr.Kind == BoundKind.Call)
+            {
+                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node);
+                return false;
+            }
+            if (valueKind == BindValueKind.RefOrOut && Compilation.Options.VOImplicitCastsAndConversions
+                && expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull())
+            {
+                // C590 Allow NULL as argument for REF parameters
+                Error(diagnostics, ErrorCode.WRN_NullPointerForRefParameter, node);
+                return true;
+            }
+
+#endif
             // constants/literals are strictly RValues
             // void is not even an RValue
             if ((expr.ConstantValue != null) || (expr.Type.GetSpecialTypeSafe() == SpecialType.System_Void))

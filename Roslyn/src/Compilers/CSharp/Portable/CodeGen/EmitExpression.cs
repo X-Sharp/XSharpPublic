@@ -608,6 +608,15 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                     break;
 
               default:
+#if XSHARP
+                    if (argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull()
+                        && refKind == RefKind.Ref)
+                    {
+                        // C590 Allow NULL as argument for REF parameters. We will only get here if VOImplicitCastsAndConversions is TRUE
+                        EmitExpression(argument, true);
+                        return;
+                    }
+#endif
                     // NOTE: passing "ReadOnlyStrict" here. 
                     //       we should not get an address of a copy if at all possible
                     var unexpectedTemp = EmitAddress(argument, refKind == RefKindExtensions.StrictIn? AddressKind.ReadOnlyStrict: AddressKind.Writeable);
@@ -620,15 +629,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
 
                     break;					
 			  }
-#if XSHARP
-                if (argument.Kind == BoundKind.Literal && ((BoundLiteral) argument).IsLiteralNull() 
-                    && refKind == RefKind.Ref )
-                {
-                    // C590 Allow NULL as argument for REF parameters. We will only get here if VOImplicitCastsAndConversions is TRUE
-                    EmitExpression(argument, true);
-                    return;
-                }
-#endif
+
         }
 
         private void EmitAddressOfExpression(BoundAddressOfOperator expression, bool used)
@@ -832,7 +833,10 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
         {
             // We might have an extra argument for the __arglist() of a varargs method.
             Debug.Assert(arguments.Length == parameters.Length || arguments.Length == parameters.Length + 1, "argument count must match parameter count");
+#if !XSHARP
+            // X# allows NULL pointers for REF arguments
             Debug.Assert(parameters.All(p => p.RefKind == RefKind.None) || !argRefKindsOpt.IsDefault, "there are nontrivial parameters, so we must have argRefKinds");
+#endif
             Debug.Assert(argRefKindsOpt.IsDefault || argRefKindsOpt.Length == arguments.Length, "if we have argRefKinds, we should have one for each argument");
 
             for (int i = 0; i < arguments.Length; i++)

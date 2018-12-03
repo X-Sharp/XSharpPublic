@@ -272,8 +272,6 @@ namespace XSharp.MacroCompiler
                     return ParseFieldAlias();
                 // TODO nvk: PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
                 // TODO nvk: Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-                // TODO nvk: Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr
-                // TODO nvk: LPAREN Alias=expression RPAREN ALIAS Expr=expression		#aliasedExpr            // (expr) -> expr
                 // TODO nvk: AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                 // TODO nvk: AMP Id=identifierName										#macro					// &id
                 // TODO nvk: Key=ARGLIST												#argListExpression		// __ARGLIST

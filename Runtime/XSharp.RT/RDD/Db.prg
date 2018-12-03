@@ -1156,5 +1156,5 @@ FUNCTION __allocNames(aStruct AS ARRAY) AS _FieldNames
     RETURN VoDb.AllocFieldNames(aStruct)
 
 /// <exclude />
-FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list REF _JoinList ) AS ARRAY
-    RETURN VoDb.TargetFields(cAlias, aFields, REF list)
+FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list OUT _JoinList ) AS ARRAY 
+    RETURN VoDb.TargetFields(cAlias, aFields, OUT list)

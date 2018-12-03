@@ -54,7 +54,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         LOCAL cPic				AS STRING
         LOCAL cString			AS STRING
         wValueLen := cValue:Length
-        lRInsert	:= SplitPict(cSayPicture, OUT cPic, REF cFunc)
+        lRInsert	:= SplitPict(cSayPicture, OUT cPic, OUT cFunc)
         cSayPicture := cPic
         wPictureLen 	:= cSayPicture:Length
         IF lRInsert
@@ -280,7 +280,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         cTempValue := AllTrim(cValue)
         nValueLen  := cTempValue:Length
-        SplitPict(cSayPicture, OUT cPic, REF cFunc)
+        SplitPict(cSayPicture, OUT cPic, OUT cFunc)
         lRInsert   := cFunc:Contains("R")
         
         IF Empty(cTempValue) .AND. lNullable

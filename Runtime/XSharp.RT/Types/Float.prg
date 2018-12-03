@@ -460,7 +460,7 @@ BEGIN NAMESPACE XSharp
             #endregion
         #region IFormattable
         /// <inheritdoc />
-        PUBLIC METHOD ToString() AS STRING
+        PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN Str1(SELF)
             
         /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>

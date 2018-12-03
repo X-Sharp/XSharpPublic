@@ -89,7 +89,7 @@ FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
 		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDay -1)
 	ELSE
 		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
-		result := culture:DateTimeFormat:GetDayName((DayOfWeek) dwDay-1)   
+		result := culture:DateTimeFormat:GetDayName((DayOfWeek) (dwDay-1))   
 	ENDIF
 	RETURN result
 /// <summary>

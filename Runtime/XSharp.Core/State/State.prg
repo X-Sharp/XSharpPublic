@@ -96,7 +96,7 @@ CLASS XSharp.RuntimeState
 	PUBLIC PROPERTY BreakLevel AS INT AUTO
 	/// <summary>ToString() override</summary>
 	/// <returns>String value, such as "State for Thread 123"</returns>
-	PUBLIC VIRTUAL METHOD ToString() AS STRING
+	PUBLIC OVERRIDE METHOD ToString() AS STRING
 		RETURN SELF:Name
 
 	/// <summary>Retrieve a value from the state of the current Thread.</summary>

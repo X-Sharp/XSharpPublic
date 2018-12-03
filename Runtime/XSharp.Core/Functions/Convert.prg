@@ -478,7 +478,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 		IF hasexp
 			style |= NumberStyles.AllowExponent
 		ENDIF
-		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, REF r8Result)
+		IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT r8Result)
 			RETURN r8Result
 		ENDIF
 	ELSE
@@ -490,7 +490,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
 		ELSE
 			style := NumberStyles.Integer
 		ENDIF
-		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, REF iResult)
+		IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
 			IF iResult < Int32.MaxValue .AND. iResult > int32.MinValue
 				RETURN (INT) iResult
 			ENDIF

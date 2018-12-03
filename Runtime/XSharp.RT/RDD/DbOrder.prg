@@ -79,7 +79,7 @@ FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
 FUNCTION DbSetOrder(uOrder, cBagName) AS LOGIC CLIPPER
 	LOCAL cOrder  := "" AS STRING
 	DEFAULT( REF cBagName, "")
-	RETURN VoDb.OrdSetFocus(cBagName, uOrder, REF cOrder)
+	RETURN VoDb.OrdSetFocus(cBagName, uOrder, OUT cOrder)
 	
 
 /// <summary>
@@ -444,6 +444,6 @@ FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
 FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
 	LOCAL cOrder := ""   AS   STRING
 	DEFAULT( REF cOrdBag, "")
-	VoDb.OrdSetFocus(cOrdBag, uOrder, REF cOrder)
+	VoDb.OrdSetFocus(cOrdBag, uOrder, OUT cOrder)
 	RETURN cOrder
 	

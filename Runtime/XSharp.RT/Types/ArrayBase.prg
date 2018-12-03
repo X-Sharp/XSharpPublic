@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharp
 
 			#endregion
         /// <inheritdoc />
-		PUBLIC METHOD ToString() AS STRING
+		PUBLIC OVERRIDE METHOD ToString() AS STRING
 			RETURN string.Format("[{0}]",_internalList:Count)
 
 		INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<T>) AS VOID

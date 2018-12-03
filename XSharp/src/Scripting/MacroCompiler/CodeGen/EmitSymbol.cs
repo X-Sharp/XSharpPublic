@@ -66,6 +66,7 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Ldstr, Name);
             ilg.Emit(OpCodes.Ldloc, lv.LocalIndex);
             ilg.Emit(OpCodes.Call, m.Method);
+            ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class MemberSymbol : TypedSymbol

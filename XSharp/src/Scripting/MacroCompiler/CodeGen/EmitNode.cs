@@ -17,7 +17,6 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
         internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
-        internal virtual void EmitBase(ILGenerator ilg) { throw new NotImplementedException(); }
         internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
@@ -87,10 +86,6 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Dup);
             Expr.Emit(ilg);
             Symbol.EmitSet(ilg);
-        }
-        internal override void EmitBase(ILGenerator ilg)
-        {
-            Expr.Emit(ilg);
         }
     }
     internal partial class QualifiedNameExpr : NameExpr

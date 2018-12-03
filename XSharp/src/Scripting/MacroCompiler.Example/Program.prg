@@ -50,10 +50,12 @@ class testclass
     v2 as string
 
     static property sprop as int auto get set
+    property prop as int auto get set
 
     constructor()
     constructor(i as int)
         v1 := i
+        prop := i
     operator ==(o1 as testclass, o2 as testclass) as logic
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
 end class
@@ -63,9 +65,11 @@ struct teststruct
     v2 as string
 
     static property sprop as int auto get set
+    property prop as int auto get set
 
     constructor(i as int)
         v1 := i
+        prop := i
     operator ==(o1 as teststruct, o2 as teststruct) as logic
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
 end struct
@@ -80,7 +84,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a := {1,2,3,4}, a[1] += 10, a[1] + a[2] }", 8)
+        EvalMacro(mc, e"{|a| a := testclass{}, a:v1 := 1 }", 8)
         wait
 
         RunTests(mc)
@@ -198,6 +202,18 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|z| A(z), z }", <OBJECT>{123}, 1123, typeof(int32))
         TestMacro(mc, e"{|a| testclass.sprop := 555, a := ++testclass.sprop }", <OBJECT>{}, 556, typeof(int32))
         TestMacro(mc, e"{|a| testclass.sprop := a, a := ++testclass.sprop }", <OBJECT>{55}, 56, typeof(int32))
+        TestMacro(mc, e"{|a| teststruct.sprop := 555, a := ++teststruct.sprop }", <OBJECT>{}, 556, typeof(int32))
+        TestMacro(mc, e"{|a| teststruct.sprop := a, a := ++teststruct.sprop }", <OBJECT>{55}, 56, typeof(int32))
+        TestMacro(mc, e"{|a| a := testclass{}, a:prop }", <OBJECT>{}, 0, typeof(usual))
+        TestMacro(mc, e"{|a| a := testclass{222}, a:prop }", <OBJECT>{}, 222, typeof(usual))
+        TestMacro(mc, e"{|a| a := teststruct{}, a:prop }", <OBJECT>{}, 0, typeof(usual))
+        TestMacro(mc, e"{|a| a := teststruct{222}, a:prop }", <OBJECT>{}, 222, typeof(usual))
+        TestMacro(mc, e"{|a| a := testclass{}, a:v1 := 1 }", <OBJECT>{}, 1, typeof(usual))
+        TestMacro(mc, e"{|a| a := testclass{222}, a:v1 }", <OBJECT>{}, 222, typeof(usual))
+        TestMacro(mc, e"{|a| a := teststruct{}, a:v1 := 1 }", <OBJECT>{}, 1, typeof(usual))
+        TestMacro(mc, e"{|a| a := teststruct{222}, a:v1 }", <OBJECT>{}, 222, typeof(usual))
+        TestMacro(mc, e"{|a| a := testclass{}, a:prop := 111 }", <OBJECT>{}, 111, typeof(usual))
+        TestMacro(mc, e"{|a,b| b := testclass{}, b:prop := a, ++b:prop }", <OBJECT>{55}, 56, typeof(usual))
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{100}, 123, typeof(float))
         TestMacro(mc, e"{|a| IIF(a>10,123,1.23) }", <OBJECT>{1}, 1.23, typeof(float))
         TestMacro(mc, e"{|a| IIF(a>10,1) }", <OBJECT>{100}, 1, typeof(usual))

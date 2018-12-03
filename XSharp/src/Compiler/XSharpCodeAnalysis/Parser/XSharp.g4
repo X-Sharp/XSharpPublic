@@ -143,7 +143,7 @@ parameter           : (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_
                     | Ellipsis=ELLIPSIS
                     ;
 
-parameterDeclMods   : Tokens+=(AS | REF | OUT | IS | PARAMS) Tokens+=CONST?
+parameterDeclMods   : Tokens+=(AS | REF | OUT | IS | PARAMS) /*Tokens+=*/CONST?
                     ;
 
 statementBlock      : (Stmts+=statement)*

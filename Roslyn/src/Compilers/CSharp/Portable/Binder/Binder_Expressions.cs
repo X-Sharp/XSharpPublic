@@ -7484,7 +7484,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var result = OverloadResolutionResult<MethodSymbol>.GetInstance();
                 bool allowRefOmittedArguments = methodGroup.Receiver.IsExpressionOfComImportType(); 
 #if XSHARP
-                allowRefOmittedArguments |= Compilation.Options.Dialect != XSharpDialect.Core;
+                allowRefOmittedArguments = true;
 #endif
                 OverloadResolution.MethodInvocationOverloadResolution(
                     methods: methodGroup.Methods,

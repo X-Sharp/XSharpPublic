@@ -3404,8 +3404,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                             new object[] { argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
                             useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                             useSiteDiagnostics.Add(info);
-
                         }
+                        if ((parameterRefKind == RefKind.Out || parameterRefKind == RefKind.Ref) && argumentRefKind == RefKind.None)
+                        {
+                            argumentRefKind = parameterRefKind;
+                            arguments.SetRefKind(argumentPosition, argumentRefKind);
+                            if (!Compilation.Options.VOImplicitCastsAndConversions)
+                            { 
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                var info = new CSDiagnosticInfo(ErrorCode.ERR_BadArgExtraRef,
+                                                                new object[] { argumentPosition + 1, argumentRefKind.ToParameterDisplayString() });
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                useSiteDiagnostics.Add(info);
+                            }
+                        }
+
                         if (literalNullForRefParameter)
                         {
                             conversion = Conversion.Identity;

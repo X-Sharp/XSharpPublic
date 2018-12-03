@@ -859,10 +859,18 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                 {
                     // if we have an explicit refKind for the given argument, use that
                     argRefKind = argRefKindsOpt[i];
+#if XSHARP
+                    // Allow REF when parameter is OUT
+                    if (argRefKind == RefKind.Ref && parameters[i].RefKind == RefKind.Out)
+                    { 
+                        argRefKind = RefKind.Out;
+                    }
+#endif
 
                     Debug.Assert(argRefKind == parameters[i].RefKind ||
                             argRefKind == RefKindExtensions.StrictIn && parameters[i].RefKind == RefKind.In,
                             "in Emit the argument RefKind must be compatible with the corresponding parameter");
+
                 }
                 else
                 {

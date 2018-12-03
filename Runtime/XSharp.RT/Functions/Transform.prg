@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -288,7 +288,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         ELSE
             LOCAL aTemp AS STRING[]
             aTemp    := STRING[]{5}
-            IF Instr("L", cPic) .OR. Instr("L", cFunc)
+            IF InStr("L", cPic) .OR. Instr("L", cFunc)
                 aTemp[1] := "TRUE"
                 aTemp[2] := ".T."
                 aTemp[3] := "T"
@@ -316,7 +316,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                         IF nValIdx > nValueLen
                             EXIT
                         ENDIF
-                        IF Instr(cPic:SubString(n-1,1),"YL")
+                        IF InStr(cPic:SubString(n-1,1),"YL")
                             cChar := cValue:SubString(nValIdx-1,1)
                             nTemp := Array.IndexOf(aTemp, Upper(cChar) )+1
                             IF nTemp > 0
@@ -430,8 +430,8 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
         ENDDO
         // any remaining templ chars can be copied to the end of the string
-        IF nPictures:HasFlag(TransFormPictures:NonTemplate) .OR. cType == c'N'
-            DO WHILE nTempl < nDestLen .AND. nDest <= nDestLen - __ARRAYBASE__
+//      IF nPictures:HasFlag(TransFormPictures:NonTemplate) .OR. cType == c'N'
+            DO WHILE nTempl < nDestLen .AND. nDest <= nDestLen
                 VAR templChar := cTemplate[nTempl++]
                 IF IsPictureLiteral(cType,templChar)
                     result[nDest++] := templChar
@@ -439,7 +439,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                     result[nDest++] := c' '
                 ENDIF
             ENDDO
-        ENDIF
+//      ENDIF
         
         RETURN System.String{result}
         

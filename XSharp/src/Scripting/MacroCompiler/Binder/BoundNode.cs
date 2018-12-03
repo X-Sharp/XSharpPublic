@@ -62,6 +62,10 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.Lookup(null, Name);
+            if (Symbol == null)
+            {
+                Symbol = b.AddVariable(Name, Compilation.Get(NativeType.Usual));
+            }
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
@@ -474,7 +478,7 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Codeblock : Node
     {
-        ParameterSymbol ParamArray;
+        ArgumentSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
             if (Params != null)

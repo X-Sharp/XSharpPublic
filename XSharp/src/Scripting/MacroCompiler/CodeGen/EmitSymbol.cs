@@ -41,11 +41,17 @@ namespace XSharp.MacroCompiler
             Index = lb.LocalIndex;
         }
     }
-    internal partial class ParameterSymbol : LocalSymbol
+    internal partial class ArgumentSymbol : LocalSymbol
     {
         internal override void EmitGet(ILGenerator ilg) { ilg.Emit(OpCodes.Ldarg, Index); }
         internal override void EmitSet(ILGenerator ilg) { ilg.Emit(OpCodes.Starg, Index); }
         internal override void EmitAddr(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldarga_S : OpCodes.Ldarga, Index); }
+    }
+    internal partial class VariableSymbol : LocalSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg) { if (Index < 0) Declare(ilg); base.EmitGet(ilg); }
+        internal override void EmitSet(ILGenerator ilg) { if (Index < 0) Declare(ilg); base.EmitSet(ilg); }
+        internal override void EmitAddr(ILGenerator ilg) { if (Index < 0) Declare(ilg); base.EmitAddr(ilg); }
     }
     internal partial class DynamicSymbol : TypedSymbol
     {

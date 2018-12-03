@@ -88,7 +88,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| 8**a }", 8)
+        EvalMacro(mc, e"{|a| b:=8, b**a }", 8)
         wait
 
         RunTests(mc)

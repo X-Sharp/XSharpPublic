@@ -26,7 +26,7 @@ namespace XSharp.MacroCompiler
 
         internal Dictionary<string, LocalSymbol> LocalCache = new Dictionary<string, LocalSymbol>();
         internal List<LocalSymbol> Locals = new List<LocalSymbol>();
-        internal List<ParameterSymbol> Params = new List<ParameterSymbol>();
+        internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
 
@@ -347,7 +347,7 @@ namespace XSharp.MacroCompiler
             return AddLocal(null, type);
         }
 
-        internal ParameterSymbol AddParam(TypeSymbol type)
+        internal ArgumentSymbol AddParam(TypeSymbol type)
         {
             return AddParam(null, type);
         }
@@ -361,13 +361,22 @@ namespace XSharp.MacroCompiler
             return local;
         }
 
-        internal ParameterSymbol AddParam(string name, TypeSymbol type)
+        internal ArgumentSymbol AddParam(string name, TypeSymbol type)
         {
-            var param = new ParameterSymbol(name, type, Params.Count);
-            Params.Add(param);
+            var arg = new ArgumentSymbol(name, type, Args.Count);
+            Args.Add(arg);
             if (!string.IsNullOrEmpty(name))
-                LocalCache.Add(name, param);
-            return param;
+                LocalCache.Add(name, arg);
+            return arg;
+        }
+
+        internal VariableSymbol AddVariable(string name, TypeSymbol type)
+        {
+            var variable = new VariableSymbol(name, type);
+            Locals.Add(variable);
+            if (!string.IsNullOrEmpty(name))
+                LocalCache.Add(name, variable);
+            return variable;
         }
     }
 
@@ -387,7 +396,7 @@ namespace XSharp.MacroCompiler
             {
                 int c = 0;
                 foreach (var loc in LocalCache)
-                    if (loc.Value is ParameterSymbol)
+                    if (loc.Value is ArgumentSymbol)
                         c++;
                 return c;
             }

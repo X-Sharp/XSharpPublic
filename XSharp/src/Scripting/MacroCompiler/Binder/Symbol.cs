@@ -119,9 +119,13 @@ namespace XSharp.MacroCompiler
         internal LocalSymbol(string name, TypeSymbol type) { Name = name; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
     }
-    internal partial class ParameterSymbol : LocalSymbol
+    internal partial class ArgumentSymbol : LocalSymbol
     {
-        internal ParameterSymbol(string name, TypeSymbol type, int index) : base(name, type) { Index = index; }
+        internal ArgumentSymbol(string name, TypeSymbol type, int index) : base(name, type) { Index = index; }
+    }
+    internal partial class VariableSymbol : LocalSymbol
+    {
+        internal VariableSymbol(string name, TypeSymbol type) : base(name, type) { }
     }
     internal partial class DynamicSymbol : TypedSymbol
     {

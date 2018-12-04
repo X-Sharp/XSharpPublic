@@ -258,7 +258,12 @@ BEGIN NAMESPACE XSharp
     
     /// <exclude/>	
     STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
-    RETURN VOError( NULL , dwGenCode, cFuncName, cArgName, iArgNum, aArgs )
+        local e as Error
+        e:= Error{dwGencode,cArgName}
+        e:FuncSym := cFuncName
+        e:ArgNum := iArgNum
+        e:Args := aArgs
+        return e 
     
     /// <exclude/>	
     STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[]  ) AS Error

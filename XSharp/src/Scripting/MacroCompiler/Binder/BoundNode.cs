@@ -202,11 +202,11 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Left = Expr;
-            Value = CachedExpr.Bound(b, Expr);
-            Expr = UnaryExpr.Bound(Value, UnaryOperatorSymbol.OperatorKind(Kind));
+            Value = b.Cache(ref Expr);
+            Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
-            Symbol = Expr.Symbol;
-            Datatype = Expr.Datatype;
+            Symbol = Value.Symbol;
+            Datatype = Value.Datatype;
             return null;
         }
     }

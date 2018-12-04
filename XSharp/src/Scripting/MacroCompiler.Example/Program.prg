@@ -101,7 +101,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a,b,c| a := .not.c}", true, false, true)
+        EvalMacro(mc, e"{|a| a++}", 10)
         wait
 
         RunTests(mc)

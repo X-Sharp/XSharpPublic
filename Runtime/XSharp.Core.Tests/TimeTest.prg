@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -15,20 +15,23 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	[Fact, Trait("Category", "Time")];
 	METHOD AmPmTest() AS VOID
 		VAR time := "16:55:23"
-		SetAmPm(true)
+		SetAMPM(TRUE)
 		SetAMExt(" AM")
 		SetPMExt(" PM")
 		Assert.Equal("04:55:23 PM",AmPm(time))
 		time := "26:55:23"
 		Assert.Equal("",AmPm(time))
-		Assert.Equal("",AmPm(null))
+		Assert.Equal("",AmPm(NULL))
 	RETURN
 
 		[Fact, Trait("Category", "Time")];
 		METHOD ElapTimeTest() AS VOID
-			Assert.Equal("11:23:34",elaptime("12:00:00","23:23:34"))
-			Assert.Equal("12:36:26",elaptime("23:23:34","12:00:00"))	
-			Assert.Equal("06:36:26",elaptime("29:23:34","12:00:00"))
+			LOCAL lAmPm := GetAmPm() AS LOGIC
+			SetAMPM(FALSE)
+			Assert.Equal("11:23:34",ElapTime("12:00:00","23:23:34"))
+			Assert.Equal("12:36:26",ElapTime("23:23:34","12:00:00"))	
+			Assert.Equal("06:36:26",ElapTime("29:23:34","12:00:00"))
+			SetAMPM(lAmPm)
 		RETURN
 
 		[Fact, Trait("Category", "Time")];
@@ -58,13 +61,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		METHOD TimeTest() AS VOID
 			LOCAL cTime1 AS STRING
 			LOCAL cTime2 AS STRING
-			SetAmPm(FALSE)
+			SetAMPM(FALSE)
 			cTime1 := Time()
 			cTime2 := Time24()
 			Assert.Equal(cTime1, cTIme2)
-			SetAmPm(true)
-			SetAmExt("")
-			SetPmExt("")
+			SetAMPM(TRUE)
+			SetAMExt("")
+			SetPMExt("")
 			cTime1 := Time()
 			// can't control the time of the day the test is run
 			IF cTime2 > "13:00:00"

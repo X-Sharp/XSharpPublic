@@ -71,23 +71,26 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.Core">
+    <Reference Include="XSharp.Core, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\XSharp\Dev\XsRuntime\XSharp.Core.DLL</HintPath>
+      <Private>True</Private>
+      <HintPath>..\..\..\Runtime\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.RT">
+    <Reference Include="XSharp.RT, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\XSharp\Dev\XsRuntime\XSharp.RT.DLL</HintPath>
+      <Private>True</Private>
+      <HintPath>..\..\..\Runtime\XSharp.RT.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.VO">
+    <Reference Include="XSharp.VO, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VO</Name>
       <AssemblyName>XSharp.VO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\XSharp\Dev\XsRuntime\XSharp.VO.DLL</HintPath>
+      <Private>True</Private>
+      <HintPath>..\..\..\Runtime\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

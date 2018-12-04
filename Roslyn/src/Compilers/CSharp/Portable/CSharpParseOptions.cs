@@ -49,7 +49,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         public CSharpParseOptions(
+#if XSHARP
+            LanguageVersion languageVersion = LanguageVersion.CSharp7_3,
+#else
             LanguageVersion languageVersion = LanguageVersion.Default,
+#endif
             DocumentationMode documentationMode = DocumentationMode.Parse,
             SourceCodeKind kind = SourceCodeKind.Regular,
             IEnumerable<string> preprocessorSymbols = null)
@@ -84,6 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 #if XSHARP
             this.SetXSharpSpecificOptions(other);
+            LanguageVersion = LanguageVersion.CSharp7_3;
 #endif
         }
         

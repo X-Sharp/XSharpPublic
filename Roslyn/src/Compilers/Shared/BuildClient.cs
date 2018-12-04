@@ -300,6 +300,7 @@ namespace LanguageService.CodeAnalysis.CSharp.CommandLine
         internal static string[] GetPaths()
         {
             var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
+#if NET46
             string XSharpIncludeDir = String.Empty;
             string VulcanIncludeDir = string.Empty;
             try
@@ -341,7 +342,7 @@ namespace LanguageService.CodeAnalysis.CSharp.CommandLine
                 includeDir += ";" + XSharpIncludeDir;
             if (!string.IsNullOrEmpty(VulcanIncludeDir))
                 includeDir += ";" + VulcanIncludeDir;
-
+#endif
             string[] result = new string[]
             {
                 includeDir,

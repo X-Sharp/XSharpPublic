@@ -4724,6 +4724,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in the selected dialect {1}.
+        /// </summary>
+        internal static string ERR_FeatureNotAvailableInDialect {
+            get {
+                return ResourceManager.GetString("ERR_FeatureNotAvailableInDialect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 1. Please use language version {1} or greater..
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion1 {
@@ -10767,13 +10776,13 @@ namespace LanguageService.CodeAnalysis {
         ///                              X# Compiler Options
         ///
         ///                        - OUTPUT FILES -
-        /// /out:&lt;file&gt;                   Specify output file name (default: base name of
-        ///                               file with main class or first file)
-        /// /target:exe                   Build a console executable (default) (Short
-        ///                               form: /t:exe)
-        /// /target:winexe                Build a Windows executable (Short form:
-        ///                               /t:winexe)
-        /// /target:library               [rest of string was truncated]&quot;;.
+        ///-out:&lt;file&gt;                   Specify output file name (default: base name of
+        ///                              file with main class or first file)
+        ///-target:exe                   Build a console executable (default) (Short
+        ///                              form: -t:exe)
+        ///-target:winexe                Build a Windows executable (Short form:
+        ///                              -t:winexe)
+        ///-target:library               Build  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string IDS_CSCHelp {
             get {

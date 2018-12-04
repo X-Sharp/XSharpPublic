@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\CompilerCommon.targets" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)_$(Platform)\$(AssemblyName)\</IntermediateOutputPath>
     <ProjectGuid>5dc40adc-f250-4611-ad89-b67b150bbc8e</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -26,7 +25,6 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)_$(Platform)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,20 +33,21 @@
     <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
+    <AssemblyOriginatorKeyFile>$(solutiondir)build\strongnamekeys\xsharpkey.private.snk</AssemblyOriginatorKeyFile>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)_$(Platform)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutputPath>$(OutputPath)Dlls\</OutputPath>
+    <IntermediateOutputPath>$(IntermediateOutputPath)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)_$(Platform)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,13 +56,11 @@
     <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)src\common\xsharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
     <Prefer32Bit>False</Prefer32Bit>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)_$(Platform)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -74,19 +71,23 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.Core, Version=2.0.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.Core">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\Runtime\XSharp.Core.dll</HintPath>
+      <HintPath>C:\XSharp\Dev\XsRuntime\XSharp.Core.DLL</HintPath>
     </Reference>
-    <Reference Include="XSharp.VO, Version=2.0.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.RT">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\XSharp\Dev\XsRuntime\XSharp.RT.DLL</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VO">
       <Name>XSharp.VO</Name>
       <AssemblyName>XSharp.VO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\Runtime\XSharp.VO.dll</HintPath>
+      <HintPath>C:\XSharp\Dev\XsRuntime\XSharp.VO.DLL</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

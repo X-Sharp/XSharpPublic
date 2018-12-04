@@ -160,6 +160,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PushWorkarea = "global::VulcanRTFuncs.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
         internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate";
+        internal const string IVarGet = "global::VulcanRTFuncs.Functions.IVarGet";
+        internal const string IVarPut = "global::VulcanRTFuncs.Functions.IVarPut";
     }
 
     internal static class XSharpQualifiedFunctionNames
@@ -188,6 +190,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PushWorkarea = "global::XSharp.RT.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::XSharp.RT.Functions.__popWorkarea";
         internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate";
+        internal const string IVarGet = "global::XSharp.RT.Functions.IVarGet";
+        internal const string IVarPut = "global::XSharp.RT.Functions.IVarPut";
+
     }
 
     internal static class VulcanAssemblyNames
@@ -240,3 +245,4 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NonSerialized = "global::System.NonSerializedAttribute";
     }
 }
+

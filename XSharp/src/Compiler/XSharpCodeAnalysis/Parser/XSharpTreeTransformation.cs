@@ -3740,7 +3740,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface , context.isInStructure());
+            var noOverride = isInInterface || context.TypeParameters != null;
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(noOverride, context.isInStructure());
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
@@ -8351,6 +8352,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
             context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
+            return;
+        }
+        public override void ExitMacroName([NotNull] XP.MacroNameContext context)
+        {
+            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
+            return;
+        }
+        public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
+        {
+            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("value"), "Late bound member access"));
+            return;
+        }
+        public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
+        {
+            context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("value"), "Late bound member access"));
             return;
         }
 

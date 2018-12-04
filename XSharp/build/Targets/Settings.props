@@ -52,6 +52,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateFullPaths>true</GenerateFullPaths>
 	<!-- XSharp settings-->
+	<!-- Disable Localization, this makes the build process MUCH faster-->
+	<EnableXlfLocalization>false</EnableXlfLocalization>
 	
     <UseRoslynAnalyzers Condition="'$(UseRoslynAnalyzers)' == ''">false</UseRoslynAnalyzers>
 
@@ -76,6 +78,7 @@
          list as they will not be the same from machine to machine -->
     <AssemblySearchPaths>
       {TargetFrameworkDirectory};
+	  {HintPathFromItem};
       {RawFileName};
     </AssemblySearchPaths>
 
@@ -130,8 +133,7 @@
     <!-- Even when we're using the "desktop" version of MSBuild we always want to use the "Core" approach for generating satellite assemblies.
          This avoids a couple of issues in al.exe (see https://github.com/dotnet/roslyn/issues/23190 and https://github.com/dotnet/roslyn/issues/23191
          for details on those issues). -->
-    <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
-
+    <GenerateSatelliteAssembliesForCore>false</GenerateSatelliteAssembliesForCore>
     <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)\BeforeCommonTargets.targets</CustomBeforeMicrosoftCommonTargets>
     <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)\AfterCommonTargets.targets</CustomAfterMicrosoftCommonTargets>
   </PropertyGroup>
@@ -191,7 +193,7 @@
       tmp_proj.  In that case the SDK is unable to determine the target language and cannot pick
       the correct import. Need to set it explicitly here.
       See https://github.com/dotnet/project-system/issues/1467
-    -->
+  
   <Choose>
     <When Condition="'$(MSBuildProjectExtension)' != '.csproj' and '$(MSBuildProjectExtension)' != '.vbproj' and '$(MSBuildProjectExtension)' != '.shproj'">
       <Choose>
@@ -210,7 +212,7 @@
       </Choose>
     </When>
   </Choose>
-
+  -->
   <!-- 
     Language specifc settings 
     

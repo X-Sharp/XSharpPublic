@@ -10,17 +10,19 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <!--<StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject>-->
-    <TargetFrameworks>net46</TargetFrameworks>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <DefineConstants>$(DefineConstants);XSHARPPRE</DefineConstants>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\XSCompiler\XSCompiler.csproj" />
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;</DefineConstants>
   </PropertyGroup>

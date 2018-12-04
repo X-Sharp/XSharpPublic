@@ -176,6 +176,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 AllowNamedArguments = opt.AllowNamedArguments;
                 SaveAsCSharp = opt.SaveAsCSharp;
             }
+            LanguageVersion = LanguageVersion.CSharp7_3;
         }
 
         public void SetOptions(CSharpCommandLineArguments opt)
@@ -185,6 +186,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 DebugEnabled = opt.EmitPdb;
                 CommandLineArguments = opt;
             }
+            LanguageVersion = LanguageVersion.CSharp7_3;
         }
 
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
@@ -235,6 +237,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             ConsoleOutput = opt.ConsoleOutput;
             CommandLineArguments = opt.CommandLineArguments;
             ParseLevel = opt.ParseLevel;
+
+            LanguageVersion = LanguageVersion.CSharp7_3;
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
@@ -253,6 +257,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.ConsoleOutput = consoleOutput;
+            result.LanguageVersion = LanguageVersion.CSharp7_3;
             return result;
         }
         public CSharpParseOptions WithMacroScript(bool macroScript)
@@ -264,6 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = new CSharpParseOptions(this);
             result.SetXSharpSpecificOptions(this);
             result.MacroScript = macroScript;
+            result.LanguageVersion = LanguageVersion.CSharp7_3;
             return result;
         }
     }

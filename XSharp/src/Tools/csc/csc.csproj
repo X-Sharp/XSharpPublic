@@ -2,27 +2,21 @@
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\..\Compiler\CompilerCommon.targets" />
+
   <PropertyGroup>
-    <RoslynSrc>..\..\..\..\Roslyn\src\</RoslynSrc>
-    <CoreSource>$(RoslynSrc)Compilers\Core\</CoreSource>
-    <SharedSource>$(RoslynSrc)Compilers\Shared\</SharedSource>
-    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <CscSource>$(RoslynSrc)Compilers\CSharp\csc\</CscSource>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
-    <RoslynProjectType>XSharp</RoslynProjectType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>
     <Prefer32Bit>false</Prefer32Bit>
     <LargeAddressAware>true</LargeAddressAware>
     <StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject>
-    <TargetFrameworks>net46</TargetFrameworks>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+    <!--<TargetFrameworks>net46</TargetFrameworks>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>-->
+    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <DefineConstants>$(DefineConstants);XSHARPPRE</DefineConstants>
-    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants);XSHARPPRE;NET46</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net46'">$(DefineConstants);XSHARPPRE</DefineConstants>
     <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup Label="Project References">
@@ -70,5 +64,5 @@
     </Compile>
   </ItemGroup>
 
-  <Import Project="$(CoreSource)CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

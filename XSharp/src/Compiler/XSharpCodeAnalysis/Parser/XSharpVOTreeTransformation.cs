@@ -1543,6 +1543,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
+            else if (left.XNode is XP.AccessMemberLateContext || left.XNode is XP.AccessMemberLateNameContext)
+            {
+                var mcall = left as InvocationExpressionSyntax;
+                var obj     = mcall.ArgumentList.Arguments[0].Expression;
+                var varName = mcall.ArgumentList.Arguments[1].Expression;
+                string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarPut : VulcanQualifiedFunctionNames.IVarPut;
+                var args = MakeArgumentList(MakeArgument(obj), MakeArgument(varName), MakeArgument(right));
+                var ivarput = GenerateMethodCall(methodName, args, true);
+                if (context.Op.Type != XP.ASSIGN_OP)
+                {
+                    context.Put(NotInDialect(ivarput, "complex assignments for late bound member access"));
+                    return;
+                }
+                else
+                { 
+                    context.Put(ivarput);
+                    return;
+                }
+            }
             base.ExitAssignmentExpression(context);
         }
         public override void ExitSizeOfExpression([NotNull] XP.SizeOfExpressionContext context)
@@ -1614,6 +1633,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(stmts);
 
         }
+
         public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
         {
             // The recover block has source code:
@@ -2136,7 +2156,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // are no Attributes on the parameter, such as [CallerMember]
             if (context.Default != null && context.Attributes == null && ! _options.NoClipCall)
             {
-             
+                /*
+                // only encode when there are parameters in this list after the current one
+                // that have no default. Otherwise we let Roslyn take care of it.
+                var ParamList = context.Parent as XP.ParameterListContext;
+                var needed = false;
+                var found = false;
+                foreach (var param in ParamList._Params)
+                {
+                    if (param == context)
+                    {
+                        found = true;
+                    }
+                    else if (found && param.Default == null)
+                    {
+                        needed = true;
+                    }
+                }
+                if (!needed)
+                {
+                    // Roslyn can handle it.
+                    return;
+                }
+                }*/
                 AttributeSyntax attr = EncodeDefaultParameter(context.Default);
                 if (attr != null)
                 {
@@ -3492,15 +3534,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
+            // & LPAREN expression RPAREN
             ExpressionSyntax expr;
             expr = context.Expr.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(expr));
             context.SetSequencePoint();
-            expr = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Evaluate : VulcanQualifiedFunctionNames.Evaluate, args, true);
+            string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.Evaluate : VulcanQualifiedFunctionNames.Evaluate;
+            expr = GenerateMethodCall(methodName, args, true);
             context.Put(expr);
             return;
         }
+        public override void ExitMacroName([NotNull] XP.MacroNameContext context)
+        {
+            // &identifierName
+            var name = context.Name.Get<IdentifierNameSyntax>();
+            var args = MakeArgumentList(MakeArgument(name));
+            context.SetSequencePoint();
+            string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.Evaluate : VulcanQualifiedFunctionNames.Evaluate;
+            var expr = GenerateMethodCall(methodName, args, true);
+            context.Put(expr);
+            return;
+        }
+        public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
+        {
+            // expression:&(expression)
+            // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
+            var left = context.Left.Get<ExpressionSyntax>();
+            var right = context.Right.Get<ExpressionSyntax>();
+            var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
+            string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
+            var ivarget = GenerateMethodCall(methodName, args, true);
+            context.Put(ivarget);
+        }
+        public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
+        {
+            // expression:&identifierName
+            // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
+            var left = context.Left.Get<ExpressionSyntax>();
+            var right = context.Name.Get<IdentifierNameSyntax>();
+            var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
+            string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
+            var ivarget = GenerateMethodCall(methodName, args, true);
+            context.Put(ivarget);
 
+        }
         #endregion
 
         #region Conversions and Typecasts

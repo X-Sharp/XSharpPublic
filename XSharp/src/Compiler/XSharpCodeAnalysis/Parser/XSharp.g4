@@ -664,9 +664,10 @@ xbasedecl           : T=(PRIVATE                               // PRIVATE Foo, B
 //           ( 1)  unary                + - ++ -- ~
 
 expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access
-                    |                 Op=COLONCOLON  Name=simpleName            #accessMember           // XPP & Harbour SELF member access
-                    | Left=expression Op=(DOT | COLON) AMP Right=expression     #accessMemberLate       // aa:&Expr  or aa:&(Expr). Expr must evaluate to a string which is the ivar name
+                    |                 Op=COLONCOLON   Name=simpleName           #accessMember           // XPP & Harbour SELF member access
+                    | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
                                                                                                         // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
+                    | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Expr=expression LPAREN                       RPAREN       #methodCall             // method call, no params
                     | Expr=expression LPAREN ArgList=argumentList  RPAREN       #methodCall             // method call, params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
@@ -742,8 +743,9 @@ primary             : Key=SELF                                                  
                           Alias=identifier ALIAS Field=identifier               #aliasedField		      // CUSTOMER->NAME
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr          // id -> expr       // when id = 'M' then redirect to aliasedMemvar
                     | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr          // (expr) -> expr   // when expression = 'M' then redirect to aliasedMemvar
-                    | AMP Expr=expression                                       #macro					      // &expr            // expr may be parenExpression
-                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN   #parenExpression		  // ( expr,expr,expr )
+                    | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
+                    | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
+                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN  #parenExpression		  // ( expr,expr,expr )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 

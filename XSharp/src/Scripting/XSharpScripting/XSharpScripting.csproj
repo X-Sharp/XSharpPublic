@@ -13,7 +13,7 @@
     <DefineConstants>$(DefineConstants);SCRIPTING</DefineConstants>
     <!--Use the C# compiler created in this solution-->
 
-    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
 
   </PropertyGroup>
   <ItemGroup Label="Project References">

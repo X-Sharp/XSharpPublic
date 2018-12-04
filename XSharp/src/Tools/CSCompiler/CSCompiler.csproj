@@ -2,27 +2,21 @@
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\..\Compiler\CompilerCommon.targets" />
   <PropertyGroup>
-    <RoslynSrc>..\..\..\..\Roslyn\src\</RoslynSrc>
-    <CoreSource>$(RoslynSrc)Compilers\Core\</CoreSource>
-    <ServerSource>$(RoslynSrc)Compilers\Server\</ServerSource>
-    <SharedSource>$(RoslynSrc)Compilers\Shared\</SharedSource>
-    <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
-    <RoslynProjectType>XSharp</RoslynProjectType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ProductVersion>8.0.30703</ProductVersion>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>CSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>net46</TargetFrameworks>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
-    <DefineConstants>$(DefineConstants);XSHARPPRE</DefineConstants>
+    <!--<TargetFrameworks>net46</TargetFrameworks>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>-->
+    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
+
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
 
   </PropertyGroup>
   <ItemGroup Label="Project References">
@@ -32,7 +26,7 @@
     <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>$(DefineConstants);XSHARP;</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARPPRE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp2.0'" />
@@ -69,5 +63,5 @@
 		<Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
 	</Compile>
   </ItemGroup>
-  <Import Project="$(CoreSource)CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

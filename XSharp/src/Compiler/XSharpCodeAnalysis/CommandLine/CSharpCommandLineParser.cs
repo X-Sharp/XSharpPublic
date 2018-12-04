@@ -143,6 +143,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         name = "checked-";
                     handled = false;
                     break;
+                case "languageversion":
+                    handled = true;
+                    break;
                 case "lexonly":
                     options.ParseLevel = ParseLevel.Lex;
                     break;

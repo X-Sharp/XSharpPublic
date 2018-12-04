@@ -10,14 +10,16 @@
     <RootNamespace>LanguageService.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <TargetFrameworks>net46</TargetFrameworks>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
-    <DefineConstants>$(DefineConstants);XSHARPPRE</DefineConstants>
+    <!--<TargetFrameworks>net46</TargetFrameworks>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>-->
+    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
-    <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
   
   </PropertyGroup>
@@ -68,7 +70,6 @@
 	<Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
 		<Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
 	</Compile>
-
   </ItemGroup>
   <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
 </Project>

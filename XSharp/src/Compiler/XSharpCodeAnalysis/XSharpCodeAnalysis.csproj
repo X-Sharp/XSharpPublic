@@ -26,19 +26,20 @@
     <AntlrInputDir>$(MSBuildThisFileDirectory)Parser\</AntlrInputDir>
     <AntlrParams>-long-messages  -message-format vs2005 -Dlanguage=CSharp_v4_5 $(AntlrPackage) -listener -o $(AntlrOutputdir)</AntlrParams>
     <!--Use the C# compiler created in this solution-->
-    <CscToolPath>c:\XSharp\Dev\XSharp\Binaries\Debug\csc\net46\</CscToolPath>
+    <CscToolPath>$(GeneratedCompilerPath)</CscToolPath>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARP;</DefineConstants>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;</DefineConstants>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <DefineConstants>$(DefineConstants);XSHARP;</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;NDEBUG</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="$(SystemThreadingTasksParallelVersion)" />
@@ -162,14 +163,13 @@
   <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
   <PropertyGroup>
-    <PreBuildEventx>
-      $(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharpLexer.g4
-      $(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharp.g4
-      $(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharpLexer.g4 $(AntlrOutputdir)XSharpLexer.tokens $(AntlrOutputdir)XSharpLexer.cs
-      $(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharp.g4      $(AntlrOutputdir)XSharp.tokens      $(AntlrOutputdir)XSharpParser.cs $(AntlrOutputdir)XSharpListener.cs  $(AntlrOutputdir)XSharpBaseListener.cs
-    </PreBuildEventx>
+    <PreBuildEvent>$(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharpLexer.g4
+$(AntlrCall) $(AntlrParams) $(AntlrInputdir)XSharp.g4
+$(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharpLexer.g4 $(AntlrOutputdir)XSharpLexer.tokens $(AntlrOutputdir)XSharpLexer.cs
+$(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharp.g4      $(AntlrOutputdir)XSharp.tokens      $(AntlrOutputdir)XSharpParser.cs $(AntlrOutputdir)XSharpListener.cs  $(AntlrOutputdir)XSharpBaseListener.cs</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>if "$(Configuration)" == "Debug" XCopy $(TargetDir)$(TargetName).* \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
+    <PostBuildEvent>if "$(Configuration)" == "Debug" XCopy XSharp.CodeAnalysis.???  \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

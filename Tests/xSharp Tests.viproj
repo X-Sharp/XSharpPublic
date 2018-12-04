@@ -46706,7 +46706,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C464 - Problem defining literal array in GLOBAL definition
 
-ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C465 - Compiler crash with untyped FUNCTION Start() *************
 Application = C465 - Compiler crash with untyped FUNCTION Start()
 IDEVersion = 1.06
@@ -62281,6 +62281,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C613 - Ambiguous overloads Resources]
 [C613 - Ambiguous overloads Native Resources]
 [C613 - Ambiguous overloads License files]
@@ -63865,6 +63866,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime Native Resources]
 [C628 - Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime License files]
@@ -63965,6 +63967,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C629 - Incorrect PSZ returned from function returning PSZ Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ Native Resources]
 [C629 - Incorrect PSZ returned from function returning PSZ License files]
@@ -64065,6 +64068,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C630 - Problem calling function with PSZ(_CAST) param Resources]
 [C630 - Problem calling function with PSZ(_CAST) param Native Resources]
 [C630 - Problem calling function with PSZ(_CAST) param License files]
@@ -64164,6 +64168,7 @@ FileType = Code
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) References]
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) Native Resources]
 [C631 - Incorrect results with iif() and USUAL arguments (sample with /vo10 disabled) License files]
@@ -64364,6 +64369,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs Native Resources]
 [C633 - Various "the call is ambiguous" errors when calling X# runtime funcs License files]
@@ -64564,6 +64570,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD Native Resources]
 [C635 - Runtime error when converting from PTR inside USUAL to INT/DWORD License files]
@@ -64764,6 +64771,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Resources]
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable Native Resources]
 [C637 - SplitPath() with /vo7+ : A ref or out value must be an assignable variable License files]
@@ -64864,6 +64872,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C638 - Problem with String2Psz() in Start() function Resources]
 [C638 - Problem with String2Psz() in Start() function Native Resources]
 [C638 - Problem with String2Psz() in Start() function License files]
@@ -64964,6 +64973,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C639 - Integer divisions with /vo12 option Resources]
 [C639 - Integer divisions with /vo12 option Native Resources]
 [C639 - Integer divisions with /vo12 option License files]
@@ -65164,6 +65174,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.7
 ReferenceGAC = XSharp.VO,1,0,2.0.0.7
+ReferenceGAC = XSharp.RT,1,0,
 [C641 - Runtime error with SHORT( _CAST , usual) Resources]
 [C641 - Runtime error with SHORT( _CAST , usual) Native Resources]
 [C641 - Runtime error with SHORT( _CAST , usual) License files]

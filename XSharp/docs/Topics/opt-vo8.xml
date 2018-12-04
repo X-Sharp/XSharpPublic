@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo8</title>
+  <title>-vo8</title>
   <keywords>
-    <keyword>/vo8</keyword>
+    <keyword>-vo8</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo8<tab /><tab />Compatible preprocessor </para>
+      <para styleclass="Heading1">-vo8<tab -><tab ->Compatible preprocessor </para>
     </header>
-    <para styleclass="Normal">The /vo8 option enables Visual-Objects compatible preprocessor behavior.</para>
+    <para styleclass="Normal">The -vo8 option enables Visual-Objects compatible preprocessor behavior.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo8[+|-]</para>
+    <para styleclass="Code with box">-vo8[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just /vo8, changes certain aspects of the preprocessor to behave like Visual Objects. </para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab ->Specifying +, or just -vo8, changes certain aspects of the preprocessor to behave like Visual Objects. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Unlike Visual Objects, X# uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The /vo8 option controls the following behaviors:</para>
+    <para styleclass="Normal">Unlike Visual Objects, X# uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The -vo8 option controls the following behaviors:</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
       <li styleclass="Normal"><text style="font-weight:bold;">Case Sensitivity</text></li>
@@ -29,7 +29,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">However, in Visual Objects, DEFINE foo := 1 and DEFINE FOO := 2 declare the same entity (and would cause a compiler error because of the duplicate entity declaration).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When /vo8 is used, #define foo 1 and #define FOO 2 declare the same preprocessor symbol (and would cause a compiler warning because of the redefinition).</para>
+    <para styleclass="Normal">When -vo8 is used, #define foo 1 and #define FOO 2 declare the same preprocessor symbol (and would cause a compiler warning because of the redefinition).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The following code is valid in Visual Objects:</para>
     <para styleclass="Normal"></para>
@@ -39,7 +39,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using the /vo8 option will allow the above example to compile. An alternative to using /vo8 is to modify the code so that the case of the text you want to replace matches the case used in #define.</para>
+    <para styleclass="Normal">Using The -vo8 option will allow the above example to compile. An alternative to using -vo8 is to modify the code so that the case of the text you want to replace matches the case used in #define.</para>
     <para styleclass="Normal"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
       <li styleclass="Normal"><text style="font-weight:bold;">#ifdef</text></li>
@@ -56,14 +56,14 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When /vo8 is used, the X# preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the X# preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with /vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</para>
+    <para styleclass="Normal">When -vo8 is used, the X# preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the X# preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with -vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For example:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"> Tip: </para>
-    <para styleclass="Normal">The /ppo option is useful for debugging the output generated by the preprocessor. </para>
+    <para styleclass="Normal">The -ppo option is useful for debugging the output generated by the preprocessor. </para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
     <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">

@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/main</title>
+  <title>-main</title>
   <keywords>
-    <keyword>/main</keyword>
+    <keyword>-main</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/main</para>
+      <para styleclass="Heading1">-main</para>
     </header>
     <para styleclass="Normal">This option specifies the class that contains the entry point to the program, if more than one class contains a Main method.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/main:class &#160;</para>
+    <para styleclass="Code with box">-main:class &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">class</text><tab />The type that contains the Main method.</para>
+    <para styleclass="List"><text styleclass="Code Example">class</text><tab ->The type that contains the Main method.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If your compilation includes more than one type with a Main method, you can specify which type contains the Main method that you want to use as the entry point into the program.</para>
@@ -36,7 +36,7 @@
     <para styleclass="Normal">Compile<text styleclass="Code Example"> t2.prg</text> and <text styleclass="Code Example">t3.prg</text>, specifying that the Main method will be found in<text styleclass="Code Example"> Test2</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc t2.prg t3.prg /main:Test2 &#160;</para>
+    <para styleclass="Code with box">xsc t2.prg t3.prg -main:Test2 &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/ns</title>
+  <title>-ns</title>
   <keywords>
-    <keyword>/ns</keyword>
+    <keyword>-ns</keyword>
     <keyword>BEGIN NAMESPACE</keyword>
     <keyword>CLASS</keyword>
     <keyword>DELEGATE</keyword>
@@ -14,20 +14,20 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/ns</para>
+      <para styleclass="Heading1">-ns</para>
     </header>
-    <para styleclass="Normal">The /ns option explicitly specifies the default namespace for all types that do not have an explicit namespace in their name.</para>
+    <para styleclass="Normal">The -ns option explicitly specifies the default namespace for all types that do not have an explicit namespace in their name.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/ns[: ]namespaceName</para>
+    <para styleclass="Code with box">-ns[: ]namespaceName</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">namespaceName</text>&#32;<tab />The name of the default namespace for all types declared in the application or class library. </para>
+    <para styleclass="List"><text styleclass="Code Example">namespaceName</text>&#32;<tab ->The name of the default namespace for all types declared in the application or class library. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If the /ns option is not specified, then types that are not prefixed with a namespace and types that are not in a BEGIN NAMESPACE .. END NAMESPACE construct will be compiled as so-called global types.</para>
+    <para styleclass="Normal">If The -ns option is not specified, then types that are not prefixed with a namespace and types that are not in a BEGIN NAMESPACE .. END NAMESPACE construct will be compiled as so-called global types.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The /ns option will work on the following types:</para>
+    <para styleclass="Normal">The -ns option will work on the following types:</para>
     <para styleclass="Normal"></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Classes </li>
@@ -52,7 +52,7 @@
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When the following code is compiled without /ns compiler option the following types will be produced:</para>
+    <para styleclass="Normal">When the following code is compiled without -ns compiler option the following types will be produced:</para>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Customer </li>
@@ -64,7 +64,7 @@
     <para styleclass="Code with box">CLASS Customer<br/>.<br/>.<br/>END CLASS<br/><br/>STRUCT Point<br/>.<br/>.<br/>END STRUCT<br/><br/>ENUM CustomerType<br/>.<br/>END ENUM<br/><br/>CLASS MyProject.Customer<br/>.<br/>.<br/>END CLASS<br/><br/><br/>BEGIN NAMESPACE MyProject.Data<br/>CLASS Customer<br/>.<br/>.<br/>END CLASS<br/>END NAMESPACE<br/></para>
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you compile the same code with a /ns:MyNameSpace option the following types will be produced:</para>
+    <para styleclass="Normal">If you compile the same code with a -ns:MyNameSpace option the following types will be produced:</para>
     <para styleclass="Normal"></para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">MyNameSpace.Customer </li>

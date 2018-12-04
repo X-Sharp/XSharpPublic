@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/w</title>
+  <title>-w</title>
   <keywords>
-    <keyword>/w</keyword>
+    <keyword>-w</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/w</para>
+      <para styleclass="Heading1">-w</para>
     </header>
-    <para styleclass="Normal">The /w compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">/nowarn</link> command line option for compatibility with Vulcan.</para>
+    <para styleclass="Normal">The -w compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> command line option for compatibility with Vulcan.</para>
   </body>
 </topic>

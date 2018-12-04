@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/codepage</title>
+  <title>-codepage</title>
   <keywords>
-    <keyword>/codepage</keyword>
+    <keyword>-codepage</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/codepage</para>
+      <para styleclass="Heading1">-codepage</para>
     </header>
     <para styleclass="Normal">This option specifies which codepage to use during compilation if the required page is not the current default codepage for the system.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/codepage:id &#160;</para>
+    <para styleclass="Code with box">-codepage:id &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">id<tab />The id of the code page to use for all source code files in the compilation.</para>
+    <para styleclass="List">id<tab ->The id of the code page to use for all source code files in the compilation.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you compile one or more source code files that were not created to use the default code page on your computer, you can use the /codepage option to specify which code page should be used. /codepage applies to all source code files in your compilation.</para>
+    <para styleclass="Normal">If you compile one or more source code files that were not created to use the default code page on your computer, you can use The -codepage option to specify which code page should be used. -codepage applies to all source code files in your compilation.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If the source code files were created with the same codepage that is in effect on your computer or if the source code files were created with UNICODE or UTF-8, you need not use /codepage.</para>
+    <para styleclass="Normal">If the source code files were created with the same codepage that is in effect on your computer or if the source code files were created with UNICODE or UTF-8, you need not use -codepage.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">See GetCPInfo for information on how to find which code pages are supported on your system.</para>
     <para styleclass="Normal"></para>

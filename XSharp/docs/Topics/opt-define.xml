@@ -1,33 +1,33 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/define</title>
+  <title>-define</title>
   <keywords>
-    <keyword>/define</keyword>
+    <keyword>-define</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/define</para>
+      <para styleclass="Heading1">-define</para>
     </header>
-    <para styleclass="Normal">The /define compiler option defines name as a symbol in all source code files your program.</para>
+    <para styleclass="Normal">The -define compiler option defines name as a symbol in all source code files your program.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/define:name[;name2] &#160;</para>
+    <para styleclass="Code with box">-define:name[;name2] &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab />The name of one or more symbols that you want to define.</para>
+    <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab ->The name of one or more symbols that you want to define.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The /define option has the same effect as using a #define preprocessor directive except that the compiler option is in effect for all files in the project. A symbol remains defined in a source file until an #undef directive in the source file removes the definition. When you use the /define option, an #undef directive in one file has no effect on other source code files in the project.</para>
+    <para styleclass="Normal">The -define option has the same effect as using a #define preprocessor directive except that the compiler option is in effect for all files in the project. A symbol remains defined in a source file until an #undef directive in the source file removes the definition. When you use The -define option, an #undef directive in one file has no effect on other source code files in the project.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can use symbols created by this option with #if, #else, #elif, and #endif to compile source files conditionally.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">/d is the short form of /define.</para>
+    <para styleclass="Normal">-d is the short form of -define.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can define multiple symbols with /define by using a semicolon or comma to separate symbol names. For example:</para>
+    <para styleclass="Normal">You can define multiple symbols with -define by using a semicolon or comma to separate symbol names. For example:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/define:DEBUG;TUESDAY &#160;</para>
+    <para styleclass="Code with box">-define:DEBUG;TUESDAY &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The X# compiler defines a couple of symbols automatically. See the <link displaytype="text" defaultstyle="true" type="topiclink" href="Compiler-Macros">Macros </link>topic elsewhere in this documentation.</para>
     <para styleclass="Normal"><br/><text styleclass="Heading3">To set this compiler option in the Visual Studio development environment</text></para>
@@ -40,7 +40,7 @@
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// preprocessor_define.prg &#160;<br/>// compile with: /define:xx &#160;<br/>// or uncomment the next line &#160;<br/>// #define xx &#160;<br/>using System; &#160;<br/>public class Test &#160; <br/>{ &#160;<br/> &#160; &#160;public static void Main() &#160; <br/> &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160;#if (xx) &#160; <br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#else &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx not defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#endif &#160;<br/> &#160; &#160;} &#160;<br/>} <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-/ preprocessor_define.prg &#160;<br/>-/ compile with: -define:xx &#160;<br/>-/ or uncomment the next line &#160;<br/>-/ #define xx &#160;<br/>using System; &#160;<br/>public class Test &#160; <br/>{ &#160;<br/> &#160; &#160;public static void Main() &#160; <br/> &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160;#if (xx) &#160; <br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#else &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx not defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#endif &#160;<br/> &#160; &#160;} &#160;<br/>} <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

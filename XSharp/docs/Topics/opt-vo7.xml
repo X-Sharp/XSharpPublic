@@ -1,23 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo7</title>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-vo7</title>
   <keywords>
-    <keyword>/vo7</keyword>
+    <keyword>-vo7</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo7<tab /><tab />Implicit casts and conversions </para>
+      <para styleclass="Heading1">-vo7<tab /><tab />Implicit casts and conversions </para>
     </header>
-    <para styleclass="Normal">The /vo7 option directs the compiler to allow implicit casts and conversions that are allowed in Visual Objects but which would normally be illegal or require an explicit cast in X#.</para>
+    <para styleclass="Normal">The -vo7 option directs the compiler to allow implicit casts and conversions that are allowed in Visual Objects but which would normally be illegal or require an explicit cast in X#.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo7[+|-]</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">-vo7[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo7, directs the compiler to allow certain implicit casts and conversions that are allowed in Visual Objects. </para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -vo7, directs the compiler to allow certain implicit casts and conversions that are allowed in Visual Objects. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Objects allows implicit casts between types with different semantics, whereas X# normally requires explicit casts in such cases.</para>
@@ -28,7 +27,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">X# supports most of the casts that Visual Objects supports, but in cases where the types have different semantics, an explicit cast is usually required. However, this can cause a large number of compiler errors in existing Visual Objects code.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using /vo7 allows the following conversions to be performed implicitly, allowing existing Visual Objects code to compile:</para>
+    <para styleclass="Normal">Using -vo7 allows the following conversions to be performed implicitly, allowing existing Visual Objects code to compile:</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="3">
       <tr style="vertical-align:top">
         <td style="width:177px;">
@@ -93,18 +92,18 @@
           <para styleclass="Normal">REF type</para>
         </td>
         <td style="width:750px;">
-          <para styleclass="Normal">The compiler converts the pointer into a reference. Note that even with /vo7, not all pointers can be converted to references or else it would compromise the integrity of the garbage collector.</para>
+          <para styleclass="Normal">The compiler converts the pointer into a reference. Note that even with -vo7, not all pointers can be converted to references or else it would compromise the integrity of the garbage collector.</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless /vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</para>
+    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using /vo7 has the same effect as if the assignment into f were rewritten as:</para>
+    <para styleclass="Normal">Using -vo7 has the same effect as if the assignment into f were rewritten as:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
@@ -112,16 +111,16 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In either case, the resulting code is exactly the same, and the cast to foo may fail at runtime. However, the explicit cast self-documents that you expect the return from CreateObject() to contain an instance of foo.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example is also valid in Visual Objects, but will not compile in X# unless /vo7 is used, because the @ operator returns the address of its operand (a typed pointer) and pointers are not the same as references in X#:</para>
+    <para styleclass="Normal">The following example is also valid in Visual Objects, but will not compile in X# unless -vo7 is used, because the @ operator returns the address of its operand (a typed pointer) and pointers are not the same as references in X#:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The /vo7 option will automatically convert @x, which resolves to type INT PTR, into REF INT which is compatible with the function parameter. However, it is recommended that you remove the @ operator rather than use /vo7 for this purpose.</para>
+    <para styleclass="Normal">The -vo7 option will automatically convert @x, which resolves to type INT PTR, into REF INT which is compatible with the function parameter. However, it is recommended that you remove the @ operator rather than use -vo7 for this purpose.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the Compatible &quot;Implicit casts and conversions&quot; property. </li>

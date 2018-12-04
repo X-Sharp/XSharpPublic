@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-xpp1</title>
+  <keywords>
+    <keyword>-xpp1</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-xpp1</para>
+    </header>
+    <para styleclass="Body Text">All XPP classes inherit from the Abstract class (default = OFF)</para>
+  </body>
+</topic>

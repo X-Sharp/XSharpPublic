@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/unsafe</title>
+  <title>-unsafe</title>
   <keywords>
-    <keyword>/unsafe</keyword>
+    <keyword>-unsafe</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/unsafe</para>
+      <para styleclass="Heading1">-unsafe</para>
     </header>
-    <para styleclass="Normal">The /unsafe compiler option allows code that uses the unsafe keyword to compile.</para>
+    <para styleclass="Normal">The -unsafe compiler option allows code that uses the unsafe keyword to compile.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/unsafe &#160;</para>
+    <para styleclass="Code with box">-unsafe &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
@@ -32,7 +32,7 @@
     <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> for unsafe mode:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /unsafe in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -unsafe in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

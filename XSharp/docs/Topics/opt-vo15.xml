@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo15</title>
+  <title>-vo15</title>
   <keywords>
-    <keyword>/vo15</keyword>
+    <keyword>-vo15</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo15: Allow untyped Locals and return types </para>
+      <para styleclass="Heading1">-vo15: Allow untyped Locals and return types </para>
     </header>
     <para styleclass="Normal">This compiler option will allow you to control what the compiler will do with local variables, parameters and return types without type specification.</para>
-    <para styleclass="Normal">The default is /vo15+ for the VO and Vulcan dialects. For the Core dialect the default is /vo15-</para>
+    <para styleclass="Normal">The default is -vo15+ for the VO and Vulcan dialects. For the Core dialect the default is -vo15-</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo15[+|-]</para>
+    <para styleclass="Code with box">-vo15[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </para>
     <para styleclass="Heading2"></para>
     <para styleclass="Normal">For example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">FUNCTION LongSquare(nLong as LONG)<tab /><tab />// Note that the return type is missing<br/><br/>RETURN nLong * nLong<br/></para>
+    <para styleclass="Code with box">FUNCTION LongSquare(nLong as LONG)<tab -><tab ->-/ Note that the return type is missing<br/><br/>RETURN nLong * nLong<br/></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal">In VO/Vulcan mode this will (by default) generate a method with a USUAL return type. In Core mode this will not compile but produce a &quot;Missing Type&quot; error (XS1031)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When you compile with /vo15- this will also produce an error.</para>
+    <para styleclass="Normal">When you compile with -vo15- this will also produce an error.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Similar code that will be influenced by this compiler option</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">FUNCTION MultiplyLong(nParam1 as LONG, nParam2) AS LONG // Note that the type for nParam2 is missing<br/>RETURN nParam1 * nParam2<br/></para>
+    <para styleclass="Code with box">FUNCTION MultiplyLong(nParam1 as LONG, nParam2) AS LONG -/ Note that the type for nParam2 is missing<br/>RETURN nParam1 * nParam2<br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">And</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">FUNCTION Tomorrow() AS Date<br/>LOCAL dToday := Today() <tab /><tab /><tab />// Note that the AS DATE is missing<br/>RETURN dToday + 1</para>
+    <para styleclass="Code with box">FUNCTION Tomorrow() AS Date<br/>LOCAL dToday := Today() <tab -><tab -><tab ->-/ Note that the AS DATE is missing<br/>RETURN dToday + 1</para>
     <para styleclass="Code Example"></para>
   </body>
 </topic>

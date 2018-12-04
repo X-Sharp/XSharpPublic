@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/platform</title>
+  <title>-platform</title>
   <keywords>
-    <keyword>/platform</keyword>
+    <keyword>-platform</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/platform</para>
+      <para styleclass="Heading1">-platform</para>
     </header>
     <para styleclass="Normal">Specifies which version of the common language runtime (CLR) can run the assembly.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/platform:string &#160;</para>
+    <para styleclass="Code with box">-platform:string &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">Arguments</text></para>
-    <para styleclass="List"><text styleclass="Code Example">string</text><tab />anycpu (default), anycpu32bitpreferred, ARM, x64, x86, or Itanium.</para>
+    <para styleclass="List"><text styleclass="Code Example">string</text><tab ->anycpu (default), anycpu32bitpreferred, ARM, x64, x86, or Itanium.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -32,10 +32,10 @@
     <para styleclass="Normal">On a 64-bit Windows operating system:</para>
     <para styleclass="Normal"></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Assemblies compiled with /platform:x86 execute on the 32-bit CLR running under WOW64.</li>
-      <li styleclass="Normal" style="margin-left:13px;">A DLL compiled with the /platform:anycpu executes on the same CLR as the process into which it is loaded.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Executables that are compiled with the /platform:anycpu execute on the 64-bit CLR.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Executables compiled with /platform:anycpu32bitpreferred execute on the 32-bit CLR.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Assemblies compiled with -platform:x86 execute on the 32-bit CLR running under WOW64.</li>
+      <li styleclass="Normal" style="margin-left:13px;">A DLL compiled with The -platform:anycpu executes on the same CLR as the process into which it is loaded.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Executables that are compiled with The -platform:anycpu execute on the 64-bit CLR.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Executables compiled with -platform:anycpu32bitpreferred execute on the 32-bit CLR.</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">The anycpu32bitpreferred setting is valid only for executable (.EXE) files, and it requires the .NET Framework 4.5.</para>
@@ -48,10 +48,10 @@
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example shows how to use the /platform option to specify that the application should be run by the 64-bit CLR on a 64-bit Windows operating system.</para>
+    <para styleclass="Normal">The following example shows how to use The -platform option to specify that the application should be run by the 64-bit CLR on a 64-bit Windows operating system.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /platform:anycpu filename.prg &#160;</para>
+    <para styleclass="Code with box">xsc -platform:anycpu filename.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

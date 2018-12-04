@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo4</title>
+  <title>-vo4</title>
   <keywords>
-    <keyword>/vo4</keyword>
+    <keyword>-vo4</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo4<tab /><tab />Implicit signed/unsigned conversions</para>
+      <para styleclass="Heading1">-vo4<tab -><tab ->Implicit signed/unsigned conversions</para>
     </header>
-    <para styleclass="Normal">The /vo4 option directs the compiler to implicitly convert signed integer types to/from unsigned types, and larger integer types to smaller types.</para>
+    <para styleclass="Normal">The -vo4 option directs the compiler to implicitly convert signed integer types to/from unsigned types, and larger integer types to smaller types.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo4[+|-]</para>
+    <para styleclass="Code with box">-vo4[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For safety reasons, this option is off by default. Implicitly converting between signed and unsigned integer types or between larger to smaller integer types can cause numeric overflow errors at runtime or unintended values to be passed depending upon whether overflow checking is enabled or disabled. By default, you must explicitly cast a signed integer to its unsigned counterpart and from larger integer types to smaller integer types and by explicitly doing so, it is assumed that the conversion is known by the programmer to be safe.</para>
@@ -98,11 +98,11 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For each conversion, the compiler will raise an appropriate warning. You may disable the warning with the /wx switch, or insert an explicit cast in the source code to eliminate the warning.</para>
+    <para styleclass="Normal">For each conversion, the compiler will raise an appropriate warning. You may disable the warning with The -wx switch, or insert an explicit cast in the source code to eliminate the warning.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"> It is strongly recommended that you do not use this compiler option in new code. All of the conversions listed in the table above have the ability to lose data or return incorrect values, since the range of values in the source data type cannot be represented in the target data type.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For example, an INT containing a negative number cannot be represented in a DWORD. Similarly, an INT greater than 65535 cannot be represeneted in a SHORT. If you must mix signed and unsigned types or pass a larger type to a smaller type, you should always supply an explicit cast rather than using /vo4. This will document the fact that the conversion is known to be safe, and it will not suppress compile time errors if incompatible integer types are unintentionally used. </para>
+    <para styleclass="Normal">For example, an INT containing a negative number cannot be represented in a DWORD. Similarly, an INT greater than 65535 cannot be represeneted in a SHORT. If you must mix signed and unsigned types or pass a larger type to a smaller type, you should always supply an explicit cast rather than using -vo4. This will document the fact that the conversion is known to be safe, and it will not suppress compile time errors if incompatible integer types are unintentionally used. </para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>

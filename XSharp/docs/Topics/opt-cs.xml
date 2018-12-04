@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/cs</title>
+  <title>-cs</title>
   <keywords>
-    <keyword>/cs</keyword>
+    <keyword>-cs</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/cs</para>
+      <para styleclass="Heading1">-cs</para>
     </header>
-    <para styleclass="Normal">The /cs option directs the compiler to treat all identifiers and type names as case-sensitive.</para>
+    <para styleclass="Normal">The -cs option directs the compiler to treat all identifiers and type names as case-sensitive.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option is not supported yet in the current version of the compiler</text></para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/cs[+|-]</para>
+    <para styleclass="Code with box">-cs[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+|-<tab />Specifying +, or just /cs, directs the compiler to treat all type names as case-sensitive. </para>
+    <para styleclass="List">+|-<tab ->Specifying +, or just -cs, directs the compiler to treat all type names as case-sensitive. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This option is for those users who prefer a case-sensitive language. </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This option does not affect preprocessor symbols. The /vo8 compiler option controls case-sensitivitiy in the preprocessor. </para>
+    <para styleclass="Normal">This option does not affect preprocessor symbols. The -vo8 compiler option controls case-sensitivitiy in the preprocessor. </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This option also does not affect keywords. Keywords in X# are always case-insensitive.</para>
     <para styleclass="Normal"></para>

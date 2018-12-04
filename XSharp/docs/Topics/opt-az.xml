@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/az</title>
+  <title>-az</title>
   <keywords>
-    <keyword>/az</keyword>
+    <keyword>-az</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/az</para>
+      <para styleclass="Heading1">-az</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The /az option specifies that array elements begin with 0, rather than with 1 (the default).</para>
+    <para styleclass="Normal">The -az option specifies that array elements begin with 0, rather than with 1 (the default).</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/az[+|-]</para>
+    <para styleclass="Code with box">-az[+|-]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /az, directs the compiler to use 0-based array indexing rather than 1-based indexing. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -az, directs the compiler to use 0-based array indexing rather than 1-based indexing. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">This option is off by default, since it would break existing Visual Objects source code. If you prefer to use 0-based arrays with existing code written for Visual Objects, you will need to examine every place in your source code that uses arrays and manually make the appropriate adjustments.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note: This option does not affect how the assembly being compiled is used from other applications. When the /az option is not used, the compiler generates code to subtract 1 from the array index in order to provide 1-based array indexing semantics at the language level. When the /az option is used, the compiler does not adjust array indexes. Either way, the resulting arrays are always 0-based at the IL level, which allows compatibility with all other .NET languages. </para>
+    <para styleclass="Normal">Note: This option does not affect how the assembly being compiled is used from other applications. When The -az option is not used, the compiler generates code to subtract 1 from the array index in order to provide 1-based array indexing semantics at the language level. When The -az option is used, the compiler does not adjust array indexes. Either way, the resulting arrays are always 0-based at the IL level, which allows compatibility with all other .NET languages. </para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
@@ -32,7 +32,7 @@
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/> &#160;<tab />LOCAL DIM a[1] AS INT<br/> &#160;<tab />? a[0] // runtime error when /az switch is NOT used<br/> &#160;<tab />? a[1] // runtime error when /az switch is used <br/><tab />RETURN </para>
+    <para styleclass="Code with box">FUNCTION Start() AS VOID<br/> &#160;<tab ->LOCAL DIM a[1] AS INT<br/> &#160;<tab ->? a[0] -/ runtime error when -az switch is NOT used<br/> &#160;<tab ->? a[1] -/ runtime error when -az switch is used <br/><tab ->RETURN </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"></para>

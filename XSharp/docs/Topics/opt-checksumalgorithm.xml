@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/checksumalgorithm</title>
+  <title>-checksumalgorithm</title>
   <keywords>
-    <keyword>/checksumalgorithm</keyword>
+    <keyword>-checksumalgorithm</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/checksumalgorithm</para>
+      <para styleclass="Heading1">-checksumalgorithm</para>
     </header>
     <para styleclass="Body Text">Specify the algorithm for calculating the source file checksum stored in PDB. Supported values are: SHA1 (default) or SHA256.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/checksumalgorithm:&lt;alg&gt;</para>
+    <para styleclass="Code with box">-checksumalgorithm:&lt;alg&gt;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

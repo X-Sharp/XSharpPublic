@@ -1,64 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/langversion</title>
+  <title>-langversion</title>
   <keywords>
-    <keyword>/langversion</keyword>
+    <keyword>-langversion</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/langversion</para>
+      <para styleclass="Heading1">-langversion</para>
     </header>
-    <para styleclass="Normal">Causes the compiler to accept only syntax that is included in the chosen C# language specification.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/langversion:option &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List">option<tab /><text styleclass="Normal">The following values are valid:</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
-      <tr style="vertical-align:top">
-        <td style="width:246px;">
-          <para styleclass="Normal">Option</para>
-        </td>
-        <td style="width:870px;">
-          <para styleclass="Normal">Meaning</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:246px;">
-          <para styleclass="Normal">default</para>
-        </td>
-        <td style="width:870px;">
-          <para styleclass="Normal">The compiler accepts all valid language syntax.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:246px;">
-          <para styleclass="Normal">ISO-1</para>
-        </td>
-        <td style="width:870px;">
-          <para styleclass="Normal">The compiler accepts only syntax that is included in the ISO/IEC 23270:2003 C# language specification.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:246px;">
-          <para styleclass="Normal">ISO-2</para>
-        </td>
-        <td style="width:870px;">
-          <para styleclass="Normal">The compiler accepts only syntax that is included in the ISO/IEC 23270:2006 C# language specification. This specification is available on the ISO Web site.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:246px;">
-          <para styleclass="Normal">3</para>
-        </td>
-        <td style="width:870px;">
-          <para styleclass="Normal">The compiler accepts only syntax that is included in the version 3.0 C# Language Specification.</para>
-        </td>
-      </tr>
-    </table></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">this compiler option is ignored. When compared to the C# compiler, X# always compiles in the languageversion Latest.</para>
   </body>
 </topic>

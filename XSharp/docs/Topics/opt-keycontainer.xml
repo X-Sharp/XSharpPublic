@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/keycontainer</title>
+  <title>-keycontainer</title>
   <keywords>
-    <keyword>/keycontainer</keyword>
+    <keyword>-keycontainer</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/keycontainer</para>
+      <para styleclass="Heading1">-keycontainer</para>
     </header>
     <para styleclass="Normal">Specifies the name of the cryptographic key container.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/keycontainer:string <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-keycontainer:string <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">string</text><tab />The name of the strong name key container.</para>
+    <para styleclass="List"><text styleclass="Code Example">string</text><tab ->The name of the strong name key container.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When the /keycontainer option is used, the compiler creates a sharable component by inserting a public key from the specified container into the assembly manifest and signing the final assembly with the private key. To generate a key file, type sn -k file at the command line. sn -i installs the key pair into a container.</para>
+    <para styleclass="Normal">When The -keycontainer option is used, the compiler creates a sharable component by inserting a public key from the specified container into the assembly manifest and signing the final assembly with the private key. To generate a key file, type sn -k file at the command line. sn -i installs the key pair into a container.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you compile with /target:module, the name of the key file is held in the module and incorporated into the assembly when you compile this module into an assembly with /addmodule.</para>
+    <para styleclass="Normal">If you compile with -target:module, the name of the key file is held in the module and incorporated into the assembly when you compile this module into an assembly with -addmodule.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can also specify this option as a custom attribute (System.Reflection.AssemblyKeyNameAttribute) in the source code for any Microsoft intermediate language (MSIL) module.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can also pass your encryption information to the compiler with /keyfile. Use /delaysign if you want the public key added to the assembly manifest but want to delay signing the assembly until it has been tested.</para>
+    <para styleclass="Normal">You can also pass your encryption information to the compiler with -keyfile. Use -delaysign if you want the public key added to the assembly manifest but want to delay signing the assembly until it has been tested.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>

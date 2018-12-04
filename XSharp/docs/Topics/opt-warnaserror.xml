@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/warnaserror</title>
+  <title>-warnaserror</title>
   <keywords>
-    <keyword>/warnaserror</keyword>
+    <keyword>-warnaserror</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/warnaserror</para>
+      <para styleclass="Heading1">-warnaserror</para>
     </header>
-    <para styleclass="Normal">The /warnaserror+ option treats all warnings as errors</para>
+    <para styleclass="Normal">The -warnaserror+ option treats all warnings as errors</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/warnaserror[+|-][:warning-list] &#160;</para>
+    <para styleclass="Code with box">-warnaserror[+|-][:warning-list] &#160;</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Any messages that would ordinarily be reported as warnings are instead reported as errors, and the build process is halted (no output files are built).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">By default, /warnaserror- is in effect, which causes warnings to not prevent the generation of an output file. /warnaserror, which is the same as /warnaserror+, causes warnings to be treated as errors.</para>
+    <para styleclass="Normal">By default, -warnaserror- is in effect, which causes warnings to not prevent the generation of an output file. -warnaserror, which is the same as -warnaserror+, causes warnings to be treated as errors.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Optionally, if you want only a few specific warnings to be treated as errors, you may specify a comma-separated list of warning numbers to treat as errors.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">/warn</link> to specify the level of warnings that you want the compiler to display. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">/nowarn</link> to disable certain warnings.</para>
+    <para styleclass="Normal">Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">-warn</link> to specify the level of warnings that you want the compiler to display. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> to disable certain warnings.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
@@ -36,7 +36,7 @@
     <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and have the compiler display no warnings:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc /warnaserror in.prg &#160;<br/>xsc /warnaserror:642,649,652 in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -warnaserror in.prg &#160;<br/>xsc -warnaserror:642,649,652 in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

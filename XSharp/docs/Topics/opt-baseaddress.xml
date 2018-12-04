@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/baseaddress</title>
+  <title>-baseaddress</title>
   <keywords>
-    <keyword>/baseaddress</keyword>
+    <keyword>-baseaddress</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/baseaddress</para>
+      <para styleclass="Heading1">-baseaddress</para>
     </header>
-    <para styleclass="Normal">The /baseaddress option lets you specify the preferred base address at which to load a DLL. </para>
+    <para styleclass="Normal">The -baseaddress option lets you specify the preferred base address at which to load a DLL. </para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/baseaddress:address &#160;</para>
+    <para styleclass="Code with box">-baseaddress:address &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">address<tab />The base address for the DLL. This address can be specified as a decimal, hexadecimal, or octal number.</para>
+    <para styleclass="List">address<tab ->The base address for the DLL. This address can be specified as a decimal, hexadecimal, or octal number.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The default base address for a DLL is set by the .NET Framework common language runtime.</para>

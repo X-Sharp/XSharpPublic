@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/checked</title>
+  <title>-checked</title>
   <keywords>
-    <keyword>/checked</keyword>
-    <keyword>/checked</keyword>
+    <keyword>-checked</keyword>
+    <keyword>-checked</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/checked</para>
+      <para styleclass="Heading1">-checked</para>
     </header>
-    <para styleclass="Normal">The /checked option specifies whether an integer arithmetic statement that results in a value that is outside the range of the data type, and that is not in the scope of a checked or unchecked keyword, causes a run-time exception.</para>
+    <para styleclass="Normal">The -checked option specifies whether an integer arithmetic statement that results in a value that is outside the range of the data type, and that is not in the scope of a checked or unchecked keyword, causes a run-time exception.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/checked[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-checked[+ | -] <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">An integer arithmetic statement that is in the scope of a checked or unchecked keyword is not subject to the effect of the /checked option.</para>
+    <para styleclass="Normal">An integer arithmetic statement that is in the scope of a checked or unchecked keyword is not subject to the effect of The -checked option.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If an integer arithmetic statement that is not in the scope of a checked or unchecked keyword results in a value outside the range of the data type, and /checked+ (/checked) is used in the compilation, that statement causes an exception at run time. If /checked- is used in the compilation, that statement does not cause an exception at run time.</para>
+    <para styleclass="Normal">If an integer arithmetic statement that is not in the scope of a checked or unchecked keyword results in a value outside the range of the data type, and -checked+ (/checked) is used in the compilation, that statement causes an exception at run time. If -checked- is used in the compilation, that statement does not cause an exception at run time.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The default value for this option is /checked-. One scenario for using /checked- is in building large applications. Sometimes automated tools are used to build such applications, and such a tool might automatically set /checked to +. You can override the tool&apos;s global default by specifying /checked-.</para>
+    <para styleclass="Normal">The default value for this option is -checked-. One scenario for using -checked- is in building large applications. Sometimes automated tools are used to build such applications, and such a tool might automatically set -checked to +. You can override the tool&apos;s global default by specifying -checked-.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The VO Compatibility compiler options<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf"> /ovf</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">/fovf</link> both set this option</para>
+    <para styleclass="Normal">The VO Compatibility compiler options<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf"> -ovf</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">-fovf</link> both set this option</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
@@ -32,10 +32,10 @@
     </list>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following command compiles <text styleclass="Code Example">t2.prg</text>. The use of <text styleclass="Code Example">/checked</text> in the command specifies that any integer arithmetic statement in the file that is not in the scope of a checked or unchecked keyword, and that results in a value that is outside the range of the data type, causes an exception at run time.</para>
+    <para styleclass="Normal">The following command compiles <text styleclass="Code Example">t2.prg</text>. The use of <text styleclass="Code Example">-checked</text> in the command specifies that any integer arithmetic statement in the file that is not in the scope of a checked or unchecked keyword, and that results in a value that is outside the range of the data type, causes an exception at run time.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc t2.prg /checked &#160;</para>
+    <para styleclass="Code with box">xsc t2.prg -checked &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

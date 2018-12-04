@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/nostddefs</title>
+  <title>-nostddefs</title>
   <keywords>
-    <keyword>/nostddefs</keyword>
+    <keyword>-nostddefs</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/nostddefs</para>
+      <para styleclass="Heading1">-nostddefs</para>
     </header>
-    <para styleclass="Normal">The /nostddefs option prevents the compiler from using the preprocessor directives in XSharpDefs.xh.</para>
+    <para styleclass="Normal">The -nostddefs option prevents the compiler from using the preprocessor directives in XSharpDefs.xh.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/nostddefs[+|-]</para>
+    <para styleclass="Code with box">-nostddefs[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /nostddefs, prevents the compiler from using the preprocessor directives in <text styleclass="Normal">XSharpDefs.xh</text>. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -nostddefs, prevents the compiler from using the preprocessor directives in <text styleclass="Normal">XSharpDefs.xh</text>. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>

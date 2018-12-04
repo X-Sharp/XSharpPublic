@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>/out</title>
+  <title>-out</title>
   <keywords>
-    <keyword>/out</keyword>
+    <keyword>-out</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/out</para>
+      <para styleclass="Heading1">-out</para>
     </header>
-    <para styleclass="Normal">The /out option specifies the name of the output file.</para>
+    <para styleclass="Normal">The -out option specifies the name of the output file.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/out:filename &#160;</para>
+    <para styleclass="Code with box">-out:filename &#160;</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name of the output file created by the compiler.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab ->The name of the output file created by the compiler.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">On the command line, it is possible to specify multiple output files for your compilation. The compiler expects to find one or more source code files following the /out option. Then, all source code files will be compiled into the output file specified by that /out option.</para>
+    <para styleclass="Normal">On the command line, it is possible to specify multiple output files for your compilation. The compiler expects to find one or more source code files following The -out option. Then, all source code files will be compiled into the output file specified by that -out option.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Specify the full name and extension of the file you want to create.</para>
     <para styleclass="Normal"></para>
@@ -31,11 +31,11 @@
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">A source code file used to compile one output file cannot be used in the same compilation for the compilation of another output file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When producing multiple output files in a command-line compilation, keep in mind that only one of the output files can be an assembly and that only the first output file specified (implicitly or explicitly with /out) can be the assembly.</para>
+    <para styleclass="Normal">When producing multiple output files in a command-line compilation, keep in mind that only one of the output files can be an assembly and that only the first output file specified (implicitly or explicitly with -out) can be the assembly.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Any modules produced as part of a compilation become files associated with any assembly also produced in the compilation. Use ildasm.exe to view the assembly manifest to see the associated files.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The /out compiler option is required in order for an exe to be the target of a friend assembly. </para>
+    <para styleclass="Normal">The -out compiler option is required in order for an exe to be the target of a friend assembly. </para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
@@ -50,7 +50,7 @@
     <para styleclass="Normal">Compile t.prg and create output file <text styleclass="Code Example">t.exe</text>, as well as build <text styleclass="Code Example">t2.prg</text> and create module output file <text styleclass="Code Example">mymodule.netmodule</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc t.prg /out:mymodule.netmodule /target:module t2.prg &#160;</para>
+    <para styleclass="Code with box">xsc t.prg -out:mymodule.netmodule -target:module t2.prg &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

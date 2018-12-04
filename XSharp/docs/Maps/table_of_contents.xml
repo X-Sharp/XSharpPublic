@@ -761,266 +761,278 @@
           <topicref type="topic" id="423895745392288" build="ALL" modified="2016-01-20T09:45:47.193Z" icon="0" href="opt-At">
             <caption translate="true">@</caption>
           </topicref>
-          <topicref type="topic" id="423895573972437" build="ALL" modified="2016-01-20T09:45:41.310Z" icon="0" href="opt-additionalfile">
-            <caption translate="true">/additionalfile</caption>
+          <topicref type="topic" id="423895573972437" build="ALL" modified="2018-12-04T13:06:44.394Z" icon="0" href="opt-additionalfile">
+            <caption translate="true">-additionalfile</caption>
           </topicref>
           <topicref type="topic" id="423894984487432" build="ALL" modified="2016-01-20T09:45:43.575Z" icon="0" href="opt-addmodule">
-            <caption translate="true">/addmodule</caption>
+            <caption translate="true">-addmodule</caption>
           </topicref>
           <topicref type="topic" id="423894748709370" build="ALL" modified="2016-01-20T09:45:54.408Z" icon="0" href="opt-_analyzer">
-            <caption translate="true">/analyzer, /a</caption>
+            <caption translate="true">-analyzer, -a</caption>
           </topicref>
           <topicref type="topic" id="423892462437599" build="ALL" modified="2016-01-20T09:45:56.670Z" icon="0" href="opt-appconfig">
-            <caption translate="true">/appconfig</caption>
+            <caption translate="true">-appconfig</caption>
           </topicref>
           <topicref type="topic" id="423895373416237" build="ALL" modified="2016-01-20T09:45:58.371Z" icon="0" href="opt-az">
-            <caption translate="true">/az</caption>
+            <caption translate="true">-az</caption>
           </topicref>
           <topicref type="topic" id="423893654712185" build="ALL" modified="2016-01-20T09:46:00.043Z" icon="0" href="opt-baseaddress">
-            <caption translate="true">/baseaddress</caption>
+            <caption translate="true">-baseaddress</caption>
           </topicref>
           <topicref type="topic" id="423891988203537" build="ALL" modified="2016-01-20T09:46:05.831Z" icon="0" href="opt-checked">
-            <caption translate="true">/checked</caption>
+            <caption translate="true">-checked</caption>
           </topicref>
           <topicref type="topic" id="423893753168118" build="ALL" modified="2016-01-20T09:46:07.596Z" icon="0" href="opt-checksumalgorithm">
-            <caption translate="true">/checksumalgorithm</caption>
+            <caption translate="true">-checksumalgorithm</caption>
           </topicref>
           <topicref type="topic" id="423894663558282" build="ALL" modified="2016-01-20T09:46:09.119Z" icon="0" href="opt-codepage">
-            <caption translate="true">/codepage</caption>
+            <caption translate="true">-codepage</caption>
           </topicref>
           <topicref type="topic" id="423894237931976" build="ALL" modified="2016-01-20T09:46:10.489Z" icon="0" href="opt-cs">
-            <caption translate="true">/cs</caption>
+            <caption translate="true">-cs</caption>
           </topicref>
           <topicref type="topic" id="423895088794327" build="ALL" modified="2016-01-20T09:46:11.902Z" icon="0" href="opt-debug">
-            <caption translate="true">/debug</caption>
+            <caption translate="true">-debug</caption>
           </topicref>
           <topicref type="topic" id="424765344913340" build="ALL" modified="2016-04-16T16:40:08.634Z" icon="0" href="opt-dialect">
-            <caption translate="true">/dialect</caption>
+            <caption translate="true">-dialect</caption>
           </topicref>
           <topicref type="topic" id="423894830081676" build="ALL" modified="2016-01-20T09:46:13.247Z" icon="0" href="opt-define">
-            <caption translate="true">/define</caption>
+            <caption translate="true">-define</caption>
           </topicref>
           <topicref type="topic" id="42390944922440" build="ALL" modified="2016-01-20T09:46:14.505Z" icon="0" href="opt-delaysign">
-            <caption translate="true">/delaysign</caption>
+            <caption translate="true">-delaysign</caption>
           </topicref>
           <topicref type="topic" id="42390665422030" build="ALL" modified="2016-01-20T09:46:15.692Z" icon="0" href="opt-doc">
-            <caption translate="true">/doc</caption>
+            <caption translate="true">-doc</caption>
           </topicref>
           <topicref type="topic" id="426335377328542" build="ALL" modified="2016-09-20T09:20:11.513Z" icon="0" href="opt-errorendlocation">
-            <caption translate="true">/errorendlocation</caption>
+            <caption translate="true">-errorendlocation</caption>
           </topicref>
           <topicref type="topic" id="42388776619199" build="ALL" modified="2016-01-20T09:46:16.770Z" icon="0" href="opt-errorreport">
-            <caption translate="true">/errorreport</caption>
+            <caption translate="true">-errorreport</caption>
           </topicref>
           <topicref type="topic" id="423895138795483" build="ALL" modified="2016-01-20T09:46:17.961Z" icon="0" href="opt-filealign">
-            <caption translate="true">/filealign</caption>
+            <caption translate="true">-filealign</caption>
           </topicref>
           <topicref type="topic" id="423893924419519" build="ALL" modified="2016-01-20T09:46:19.415Z" icon="0" href="opt-fovf">
-            <caption translate="true">/fovf</caption>
+            <caption translate="true">-fovf</caption>
           </topicref>
           <topicref type="topic" id="423892407757277" build="ALL" modified="2016-01-20T09:46:22.400Z" icon="0" href="opt-fullpaths">
-            <caption translate="true">/fullpaths</caption>
+            <caption translate="true">-fullpaths</caption>
           </topicref>
           <topicref type="topic" id="423894862000692" build="ALL" modified="2016-01-20T09:46:45.005Z" icon="0" href="opt-help">
-            <caption translate="true">/help, /?</caption>
+            <caption translate="true">-help, /?</caption>
           </topicref>
-          <topicref type="topic" id="423894686640551" build="ALL" modified="2016-01-20T09:46:46.867Z" icon="0" href="opt-highentroyva">
-            <caption translate="true">/highentroyva</caption>
+          <topicref type="topic" id="423894686640551" build="ALL" modified="2018-12-04T13:23:45.010Z" icon="0" href="opt-highentroyva">
+            <caption translate="true">-highentropyva</caption>
           </topicref>
           <topicref type="topic" id="423892640420966" build="ALL" modified="2016-01-20T09:46:48.518Z" icon="0" href="opt-i">
-            <caption translate="true">/i</caption>
+            <caption translate="true">-i</caption>
           </topicref>
           <topicref type="topic" id="423894258729324" build="ALL" modified="2016-01-20T10:58:08.394Z" icon="0" href="opt-ins">
-            <caption translate="true">/ins</caption>
+            <caption translate="true">-ins</caption>
           </topicref>
           <topicref type="topic" id="423894917882933" build="ALL" modified="2016-01-20T09:46:49.889Z" icon="0" href="opt-keycontainer">
-            <caption translate="true">/keycontainer</caption>
+            <caption translate="true">-keycontainer</caption>
           </topicref>
           <topicref type="topic" id="423894696855398" build="ALL" modified="2016-01-20T09:46:51.208Z" icon="0" href="opt-keyfile">
-            <caption translate="true">/keyfile</caption>
+            <caption translate="true">-keyfile</caption>
           </topicref>
           <topicref type="topic" id="423894559147117" build="ALL" modified="2016-01-20T09:46:52.421Z" icon="0" href="opt-langversion">
-            <caption translate="true">/langversion</caption>
+            <caption translate="true">-langversion</caption>
           </topicref>
           <topicref type="topic" id="423892890596013" build="ALL" modified="2016-01-20T09:46:54.647Z" icon="0" href="opt-lb">
-            <caption translate="true">/lb</caption>
+            <caption translate="true">-lb</caption>
           </topicref>
           <topicref type="topic" id="423895050578111" build="ALL" modified="2016-01-20T09:46:55.851Z" icon="0" href="opt-lib">
-            <caption translate="true">/lib</caption>
+            <caption translate="true">-lib</caption>
           </topicref>
           <topicref type="topic" id="423893215033803" build="ALL" modified="2016-01-20T09:46:56.934Z" icon="0" href="opt-link">
-            <caption translate="true">/link</caption>
+            <caption translate="true">-link</caption>
           </topicref>
           <topicref type="topic" id="423892423799430" build="ALL" modified="2016-01-20T09:46:58.100Z" icon="0" href="opt-linkresource">
-            <caption translate="true">/linkresource</caption>
+            <caption translate="true">-linkresource</caption>
           </topicref>
           <topicref type="topic" id="423894825097684" build="ALL" modified="2016-01-20T09:46:59.258Z" icon="0" href="opt-main">
-            <caption translate="true">/main</caption>
+            <caption translate="true">-main</caption>
           </topicref>
           <topicref type="topic" id="42388171085567" build="ALL" modified="2016-01-20T09:47:00.545Z" icon="0" href="opt-moduleassemblyname">
-            <caption translate="true">/moduleassemblyname</caption>
+            <caption translate="true">-moduleassemblyname</caption>
           </topicref>
           <topicref type="topic" id="423891757272897" build="ALL" modified="2016-01-20T09:47:01.774Z" icon="0" href="opt-modulenamestring">
-            <caption translate="true">/modulename:&lt;string&gt;</caption>
+            <caption translate="true">-modulename:&lt;string&gt;</caption>
           </topicref>
           <topicref type="topic" id="433853984958897" build="ALL" modified="2018-10-12T13:36:20.417Z" icon="0" href="opt-namedargs">
-            <caption translate="true">/namedargs</caption>
+            <caption translate="true">-namedargs</caption>
           </topicref>
           <topicref type="topic" id="423893943704911" build="ALL" modified="2016-01-20T09:47:02.893Z" icon="0" href="opt-noconfig">
-            <caption translate="true">/noconfig</caption>
+            <caption translate="true">-noconfig</caption>
           </topicref>
           <topicref type="topic" id="423895087325436" build="ALL" modified="2016-01-20T09:47:04.028Z" icon="0" href="opt-nologo">
-            <caption translate="true">/nologo</caption>
+            <caption translate="true">-nologo</caption>
           </topicref>
           <topicref type="topic" id="423894257618205" build="ALL" modified="2016-01-20T09:47:05.179Z" icon="0" href="opt-nostddefs">
-            <caption translate="true">/nostddefs</caption>
+            <caption translate="true">-nostddefs</caption>
           </topicref>
           <topicref type="topic" id="423893095042818" build="ALL" modified="2016-01-20T09:47:06.283Z" icon="0" href="opt-nostdlib">
-            <caption translate="true">/nostdlib</caption>
+            <caption translate="true">-nostdlib</caption>
           </topicref>
           <topicref type="topic" id="423893443552552" build="ALL" modified="2016-01-20T09:47:07.323Z" icon="0" href="opt-nowarn">
-            <caption translate="true">/nowarn</caption>
+            <caption translate="true">-nowarn</caption>
           </topicref>
           <topicref type="topic" id="423892425559180" build="ALL" modified="2016-01-20T09:47:08.683Z" icon="0" href="opt-nowin32manifest">
-            <caption translate="true">/nowin32manifest</caption>
+            <caption translate="true">-nowin32manifest</caption>
           </topicref>
           <topicref type="topic" id="42389742814200" build="ALL" modified="2016-01-20T09:47:09.988Z" icon="0" href="opt-ns">
-            <caption translate="true">/ns</caption>
+            <caption translate="true">-ns</caption>
           </topicref>
           <topicref type="topic" id="423891682853497" build="ALL" modified="2016-01-20T09:47:11.096Z" icon="0" href="opt-optimize">
-            <caption translate="true">/optimize</caption>
+            <caption translate="true">-optimize</caption>
           </topicref>
           <topicref type="topic" id="423892095455643" build="ALL" modified="2016-01-20T09:47:12.164Z" icon="0" href="opt-out">
-            <caption translate="true">/out</caption>
+            <caption translate="true">-out</caption>
           </topicref>
           <topicref type="topic" id="423892282449061" build="ALL" modified="2016-01-20T09:47:13.279Z" icon="0" href="opt-ovf">
-            <caption translate="true">/ovf</caption>
+            <caption translate="true">-ovf</caption>
           </topicref>
           <topicref type="topic" id="423892971107092" build="ALL" modified="2016-01-20T09:47:17.159Z" icon="0" href="opt-parallel">
-            <caption translate="true">/parallel</caption>
+            <caption translate="true">-parallel</caption>
           </topicref>
           <topicref type="topic" id="426331724895353" build="ALL" modified="2016-09-20T09:16:55.333Z" icon="0" href="opt-pathmap">
-            <caption translate="true">/pathmap</caption>
+            <caption translate="true">-pathmap</caption>
           </topicref>
           <topicref type="topic" id="423893100935321" build="ALL" modified="2016-01-20T09:47:18.724Z" icon="0" href="opt-pdb">
-            <caption translate="true">/pdb</caption>
+            <caption translate="true">-pdb</caption>
           </topicref>
           <topicref type="topic" id="423891710785876" build="ALL" modified="2016-01-20T09:47:19.898Z" icon="0" href="opt-platform">
-            <caption translate="true">/platform</caption>
+            <caption translate="true">-platform</caption>
           </topicref>
           <topicref type="topic" id="423894595923125" build="ALL" modified="2016-01-20T09:47:21.309Z" icon="0" href="opt-ppo">
-            <caption translate="true">/ppo</caption>
+            <caption translate="true">-ppo</caption>
           </topicref>
           <topicref type="topic" id="423893646446377" build="ALL" modified="2016-01-20T09:47:22.542Z" icon="0" href="opt-preferreduilang">
-            <caption translate="true">/preferreduilang</caption>
+            <caption translate="true">-preferreduilang</caption>
           </topicref>
           <topicref type="topic" id="423891778626480" build="ALL" modified="2016-01-20T09:47:23.855Z" icon="0" href="opt-recurse">
-            <caption translate="true">/recurse</caption>
+            <caption translate="true">-recurse</caption>
           </topicref>
           <topicref type="topic" id="423891724876042" build="ALL" modified="2016-01-20T09:47:25.154Z" icon="0" href="opt-reference">
-            <caption translate="true">/reference</caption>
+            <caption translate="true">-reference</caption>
+          </topicref>
+          <topicref type="topic" id="434384240997141" build="ALL" modified="2018-12-04T13:12:04.478Z" icon="0" href="opt-refonly">
+            <caption translate="true">-refonly</caption>
+          </topicref>
+          <topicref type="topic" id="42099679105" build="ALL" modified="2018-12-04T13:12:12.211Z" icon="0" href="opt-refout">
+            <caption translate="true">-refout</caption>
           </topicref>
           <topicref type="topic" id="423893013499884" build="ALL" modified="2016-01-20T09:47:28.436Z" icon="0" href="opt-ruleset">
-            <caption translate="true">/ruleset</caption>
+            <caption translate="true">-ruleset</caption>
           </topicref>
           <topicref type="topic" id="423894484316881" build="ALL" modified="2016-01-20T09:47:30.260Z" icon="0" href="opt-resource">
-            <caption translate="true">/resource</caption>
+            <caption translate="true">-resource</caption>
           </topicref>
           <topicref type="topic" id="428115605166614" build="ALL" modified="2017-03-17T16:02:09.990Z" icon="0" href="opt-s">
-            <caption translate="true">/s</caption>
+            <caption translate="true">-s</caption>
           </topicref>
           <topicref type="topic" id="427117645122713" build="ALL" modified="2016-12-07T13:18:48.745Z" icon="0" href="_showdefs">
-            <caption translate="true">/showdefs</caption>
+            <caption translate="true">-showdefs</caption>
           </topicref>
           <topicref type="topic" id="423894563382635" build="ALL" modified="2016-01-20T09:47:50.088Z" icon="0" href="opt-showincludes">
-            <caption translate="true">/showincludes</caption>
+            <caption translate="true">-showincludes</caption>
           </topicref>
           <topicref type="topic" id="423891786127394" build="ALL" modified="2016-01-20T09:47:51.275Z" icon="0" href="opt-snk">
-            <caption translate="true">/snk</caption>
+            <caption translate="true">-snk</caption>
+          </topicref>
+          <topicref type="topic" id="434386956872031" build="ALL" modified="2018-12-04T13:24:50.973Z" icon="0" href="opt-stddefs">
+            <caption translate="true">-stddefs</caption>
           </topicref>
           <topicref type="topic" id="423894865213409" build="ALL" modified="2016-01-20T09:47:52.442Z" icon="0" href="opt-subsystemversion">
-            <caption translate="true">/subsystemversion</caption>
+            <caption translate="true">-subsystemversion</caption>
           </topicref>
           <topicref type="topic" id="42387395028509" build="ALL" modified="2016-01-20T09:47:53.603Z" icon="0" href="opt-target">
-            <caption translate="true">/target</caption>
+            <caption translate="true">-target</caption>
           </topicref>
           <topicref type="topic" id="426331860794285" build="ALL" modified="2016-09-20T09:17:14.803Z" icon="0" href="opt-touchedfiles">
-            <caption translate="true">/touchedfiles</caption>
+            <caption translate="true">-touchedfiles</caption>
           </topicref>
           <topicref type="topic" id="423894071853707" build="ALL" modified="2016-01-20T09:47:54.682Z" icon="0" href="opt-unsafe">
-            <caption translate="true">/unsafe</caption>
+            <caption translate="true">-unsafe</caption>
           </topicref>
           <topicref type="topic" id="423892780785481" build="ALL" modified="2016-01-20T09:47:55.759Z" icon="0" href="opt-utf8output">
-            <caption translate="true">/utf8output</caption>
+            <caption translate="true">-utf8output</caption>
           </topicref>
           <topicref type="topic" id="423893850878914" build="ALL" modified="2016-01-20T09:47:56.869Z" icon="0" href="opt-vo1">
-            <caption translate="true">/vo1</caption>
+            <caption translate="true">-vo1</caption>
           </topicref>
           <topicref type="topic" id="423894049775832" build="ALL" modified="2016-01-20T09:47:58.052Z" icon="0" href="opt-vo2">
-            <caption translate="true">/vo2</caption>
+            <caption translate="true">-vo2</caption>
           </topicref>
           <topicref type="topic" id="423893205405631" build="ALL" modified="2016-01-20T09:47:59.009Z" icon="0" href="opt-vo3">
-            <caption translate="true">/vo3</caption>
+            <caption translate="true">-vo3</caption>
           </topicref>
           <topicref type="topic" id="423891543197945" build="ALL" modified="2016-01-20T09:48:00.102Z" icon="0" href="opt-vo4">
-            <caption translate="true">/vo4</caption>
+            <caption translate="true">-vo4</caption>
           </topicref>
           <topicref type="topic" id="423893723867365" build="ALL" modified="2016-01-20T09:48:01.044Z" icon="0" href="opt-vo5">
-            <caption translate="true">/vo5</caption>
+            <caption translate="true">-vo5</caption>
           </topicref>
           <topicref type="topic" id="423893021568712" build="ALL" modified="2016-01-20T09:48:02.080Z" icon="0" href="opt-vo6">
-            <caption translate="true">/vo6</caption>
+            <caption translate="true">-vo6</caption>
           </topicref>
           <topicref type="topic" id="42387953066244" build="ALL" modified="2016-01-20T09:48:03.111Z" icon="0" href="opt-vo7">
-            <caption translate="true">/vo7</caption>
+            <caption translate="true">-vo7</caption>
           </topicref>
           <topicref type="topic" id="423892356043971" build="ALL" modified="2016-01-20T09:48:04.142Z" icon="0" href="opt-vo8">
-            <caption translate="true">/vo8</caption>
+            <caption translate="true">-vo8</caption>
           </topicref>
           <topicref type="topic" id="423894376298841" build="ALL" modified="2016-01-20T09:48:05.125Z" icon="0" href="opt-vo9">
-            <caption translate="true">/vo9</caption>
+            <caption translate="true">-vo9</caption>
           </topicref>
           <topicref type="topic" id="42390811694964" build="ALL" modified="2016-01-20T09:48:06.086Z" icon="0" href="opt-vo10">
-            <caption translate="true">/vo10</caption>
+            <caption translate="true">-vo10</caption>
           </topicref>
           <topicref type="topic" id="423894115008435" build="ALL" modified="2016-01-20T09:48:06.986Z" icon="0" href="opt-vo11">
-            <caption translate="true">/vo11</caption>
+            <caption translate="true">-vo11</caption>
           </topicref>
           <topicref type="topic" id="423892167710843" build="ALL" modified="2016-01-20T09:48:07.918Z" icon="0" href="opt-vo12">
-            <caption translate="true">/vo12</caption>
+            <caption translate="true">-vo12</caption>
           </topicref>
           <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
-            <caption translate="true">/vo13</caption>
+            <caption translate="true">-vo13</caption>
           </topicref>
           <topicref type="topic" id="424475874975800" build="ALL" modified="2016-05-26T08:29:50.517Z" icon="0" href="opt-vo14">
-            <caption translate="true">/vo14</caption>
+            <caption translate="true">-vo14</caption>
           </topicref>
           <topicref type="topic" id="425163894787003" build="ALL" modified="2016-05-26T09:05:09.907Z" icon="0" href="opt-vo15">
-            <caption translate="true">/vo15</caption>
+            <caption translate="true">-vo15</caption>
           </topicref>
           <topicref type="topic" id="428177565857255" build="ALL" modified="2017-03-23T21:32:33.398Z" icon="0" href="opt-vo16">
-            <caption translate="true">/vo16</caption>
+            <caption translate="true">-vo16</caption>
           </topicref>
           <topicref type="topic" id="423892403560623" build="ALL" modified="2016-01-20T09:48:09.787Z" icon="0" href="opt-w">
-            <caption translate="true">/w</caption>
+            <caption translate="true">-w</caption>
           </topicref>
           <topicref type="topic" id="423894941068471" build="ALL" modified="2016-01-20T09:48:10.816Z" icon="0" href="opt-warn">
-            <caption translate="true">/warn</caption>
+            <caption translate="true">-warn</caption>
           </topicref>
           <topicref type="topic" id="42389807440216" build="ALL" modified="2016-01-20T09:48:11.694Z" icon="0" href="opt-warnaserror">
-            <caption translate="true">/warnaserror</caption>
+            <caption translate="true">-warnaserror</caption>
           </topicref>
           <topicref type="topic" id="423893547101519" build="ALL" modified="2016-01-20T09:48:12.915Z" icon="0" href="opt-win32icon">
-            <caption translate="true">/win32icon</caption>
+            <caption translate="true">-win32icon</caption>
           </topicref>
           <topicref type="topic" id="423893025013828" build="ALL" modified="2016-01-20T09:48:14.095Z" icon="0" href="opt-win32manifest">
-            <caption translate="true">/win32manifest</caption>
+            <caption translate="true">-win32manifest</caption>
           </topicref>
           <topicref type="topic" id="423891900917353" build="ALL" modified="2016-01-20T09:48:15.025Z" icon="0" href="opt-win32res">
-            <caption translate="true">/win32res</caption>
+            <caption translate="true">-win32res</caption>
           </topicref>
           <topicref type="topic" id="423894125694455" build="ALL" modified="2016-01-20T09:48:15.904Z" icon="0" href="opt-wx">
-            <caption translate="true">/wx</caption>
+            <caption translate="true">-wx</caption>
+          </topicref>
+          <topicref type="topic" id="43439640255717" build="ALL" modified="2018-12-04T13:12:43.398Z" icon="0" href="opt-xpp1">
+            <caption translate="true">-xpp1</caption>
           </topicref>
         </topicref>
       </topicref>

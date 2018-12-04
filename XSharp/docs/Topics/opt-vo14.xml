@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
 <topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-  <title>/vo14</title>
+  <title>-vo14</title>
   <keywords>
-    <keyword>/vo14</keyword>
+    <keyword>-vo14</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">/vo14:<tab />Use Float Literals </para>
+      <para styleclass="Heading1">-vo14:<tab ->Use Float Literals </para>
     </header>
-    <para styleclass="Normal">The /vo14 option enables VO compatible handling of floating point literal numbers</para>
+    <para styleclass="Normal">The -vo14 option enables VO compatible handling of floating point literal numbers</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">/vo14[+|-]</para>
+    <para styleclass="Code with box">-vo14[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just /vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </para>
+    <para styleclass="List">+ | - <tab ->Specifying +, or just -vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When this option is enabled, floating point literal numbers are treated by the compiler as FLOAT values, for compatibility with existing Visual Objects code. This option is enabled by default in transported projects.</para>
@@ -25,9 +25,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">if /vo14 is enabled, the compiler treats the &quot;1.0&quot;, &quot;1.5&quot; and &quot;2.5&quot; values as numbers of type FLOAT, causing the whole calculation to be made on FLOAT values and the result is at the end converted to REAL8, before it is finally stored to the local variable. FLOAT is a special data type defined in the Vulcan.NET runtime and is significantly slower than the REAL8 (System.Decimal) data type, which maps directly to a (mathematic) processor registry. Disabling /vo14 option, would cause the above code to execute faster by a large factor.</para>
+    <para styleclass="Normal">if -vo14 is enabled, the compiler treats the &quot;1.0&quot;, &quot;1.5&quot; and &quot;2.5&quot; values as numbers of type FLOAT, causing the whole calculation to be made on FLOAT values and the result is at the end converted to REAL8, before it is finally stored to the local variable. FLOAT is a special data type defined in the Vulcan.NET runtime and is significantly slower than the REAL8 (System.Decimal) data type, which maps directly to a (mathematic) processor registry. Disabling -vo14 option, would cause the above code to execute faster by a large factor.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that by using the &quot;d&quot; or &quot;s&quot; suffix, as in 123.456d and 123.456s, the REAL8 or REAL4 data type is being enforced on a literal number, no matter if /vo14 is enabled or disabled. See Literals for more information.</para>
+    <para styleclass="Normal">Note that by using the &quot;d&quot; or &quot;s&quot; suffix, as in 123.456d and 123.456s, the REAL8 or REAL4 data type is being enforced on a literal number, no matter if -vo14 is enabled or disabled. See Literals for more information.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">

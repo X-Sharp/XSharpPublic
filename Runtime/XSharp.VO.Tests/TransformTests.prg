@@ -39,13 +39,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformDateTest() AS VOID 
 			// with @R other chars are appended, but only a single YN or TF flag is written. Other positions become a space
+			LOCAL cDF := GetDateFormat() AS STRING
             SetCentury(TRUE)
+			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal("10/12/2010", Transform(2010.12.10,"@E"))
 			Assert.Equal("20/11/2010", Transform(2010.11.20,"@E"))
 			SetDateFormat("dd-mm-yyyy")
 			Assert.Equal("20-11-2010", Transform(2010.11.20,"@D"))
 			SetDateFormat("dd-mm-yy")
 			Assert.Equal("20-11-10", Transform(2010.11.20,"@D"))
+			SetDateFormat(cDF)
 
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformStringTest() AS VOID 

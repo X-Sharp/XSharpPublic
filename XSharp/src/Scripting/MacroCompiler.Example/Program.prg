@@ -2,6 +2,7 @@
 using System.Collections.Generic
 using System.Linq
 using System.Text
+using XSharp.MacroCompiler
 
 function U(u as usual) as usual
     return u
@@ -78,6 +79,18 @@ global tsi := teststruct{1} as teststruct
 
 global tci := testclass{1} as testclass
 
+function MyFieldGet(name as string) as usual
+    return "FieldGet(" + name + ")"
+
+function MyFieldSet(name as string, value as usual) as usual
+    return "FieldSet(" + name +"):" + (string)value
+
+function MyFieldGetWa(wa as string, name as string) as usual
+    return "FieldGet(" + wa + "," + name + ")"
+
+function MyFieldSetWa(wa as string, name as string, value as usual) as usual
+    return "FieldSet(" + wa + "," + name +"):" + (string)value
+
 begin namespace MacroCompilerTest
     using XSharp.Runtime
     using XSharp.MacroCompiler
@@ -88,7 +101,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a,b|.not.a.and..not.b}", true, false)
+        EvalMacro(mc, e"{|a,b| _FIELD->NIKOS}", true, false)
         wait
 
         RunTests(mc)
@@ -238,7 +251,24 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "{|a| b := 8, c := b**a, c}", <OBJECT>{8}, 16777216, typeof(usual))
         TestMacro(mc, "{|a,b,c|a.and.b.or..not.c}", <OBJECT>{true,false,true}, false, typeof(logic))
         TestMacro(mc, "{|a| a := U({1,2,3", <OBJECT>{}, {1,2,3}, typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, nil, typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, nil, typeof(usual))
+        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, nil, typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+        TestMacro(mc, e"{|| BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
+
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGet, "MyFieldGet")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSet, "MyFieldSet")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGetWa, "MyFieldGetWa")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSetWa, "MyFieldSetWa")
+        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(usual))
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         return

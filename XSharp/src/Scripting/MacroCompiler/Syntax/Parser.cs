@@ -643,9 +643,9 @@ namespace XSharp.MacroCompiler
                     return null;
                 var alias = Require(ParseId(), "Expected name");
                 if (!Expect(TokenType.ALIAS))
-                    return new AliasExpr(null, new LiteralExpr(TokenType.SYMBOL, alias.Name));
+                    return new AliasExpr(null, new LiteralExpr(TokenType.SYMBOL_CONST, alias.Name));
                 var field = Require(ParseId(), "Expected name");
-                return new AliasExpr(new LiteralExpr(TokenType.SYMBOL,alias.Name),new LiteralExpr(TokenType.SYMBOL,field.Name));
+                return new AliasExpr(new LiteralExpr(TokenType.SYMBOL_CONST,alias.Name),new LiteralExpr(TokenType.SYMBOL_CONST,field.Name));
             }
             return null;
         }

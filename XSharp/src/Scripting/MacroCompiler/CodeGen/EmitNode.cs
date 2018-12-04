@@ -418,8 +418,6 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal override void EmitSet(ILGenerator ilg, bool preserve)
         {
-            if (preserve)
-                ilg.Emit(OpCodes.Dup);
             var v = ilg.DeclareLocal(Datatype.Type);
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
             if (Alias != null) Alias.Emit(ilg);
@@ -427,7 +425,6 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_VO_Functions___FieldSetWa : WellKnownMembers.XSharp_VO_Functions___FieldSet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
-            ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class Arg : Node

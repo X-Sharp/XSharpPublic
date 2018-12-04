@@ -447,8 +447,13 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            if (Alias != null) b.Bind(ref Alias);
+            if (Alias != null)
+            {
+                b.Bind(ref Alias);
+                Binder.Convert(ref Alias, Compilation.Get(NativeType.String));
+            }
             b.Bind(ref Field);
+            Binder.Convert(ref Field, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Usual);
             return null;
         }

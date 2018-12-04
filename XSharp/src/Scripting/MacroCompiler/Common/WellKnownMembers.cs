@@ -105,5 +105,29 @@ namespace XSharp.MacroCompiler
             Debug.Assert(WellKnownMemberSymbols != null);
             return WellKnownMemberSymbols[(int)kind];
         }
+
+        // Useful for testing
+        internal static bool Override(WellKnownMembers kind, string proto)
+        {
+            var name = proto.Replace("$", "").Split('(').First();
+            var s = Binder.Lookup(name);
+            if (s == null)
+                return false;
+            if (s is SymbolList)
+            {
+                var isStatic = proto.Contains('$');
+                var args = proto.Replace(")", "").Split('(').Last().Split(',');
+                var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
+                s = (s as SymbolList).Symbols.Find(x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
+                   && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
+                   && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All(y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type) == true);
+                if (!(s is MethodBaseSymbol))
+                    return false;
+            }
+            if (!(s is MemberSymbol))
+                return false;
+            WellKnownMemberSymbols[(int)kind] = s as MemberSymbol;
+            return true;
+        }
     }
 }

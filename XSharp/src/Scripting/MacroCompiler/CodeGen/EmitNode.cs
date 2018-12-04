@@ -9,48 +9,45 @@ namespace XSharp.MacroCompiler.Syntax
 {
     using static CodeGen;
 
-    internal partial class Node
+    abstract internal partial class Node
     {
         internal virtual void Emit(ILGenerator ilg) { throw new NotImplementedException(); }
     }
-    internal partial class Expr : Node
+    abstract internal partial class Expr : Node
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
         internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
         internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
-    internal partial class StoreTemp : Expr
+    abstract internal partial class TypeExpr : Expr
     {
+    }
+    abstract internal partial class NameExpr : TypeExpr
+    {
+    }
+    internal partial class CachedExpr : Expr
+    {
+        bool emitted = false;
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            Expr.Emit(ilg);
-            if (preserve)
-                ilg.Emit(OpCodes.Dup);
-            Local.Declare(ilg);
-            Local.EmitSet(ilg);
+            if (emitted)
+            {
+                if (preserve)
+                    Local.EmitGet(ilg);
+            }
+            else
+            {
+                Expr.Emit(ilg);
+                if (preserve)
+                    ilg.Emit(OpCodes.Dup);
+                Local.Declare(ilg);
+                Local.EmitSet(ilg);
+                emitted = true;
+            }
         }
-        internal override void EmitSet(ILGenerator ilg, bool preserve)
-        {
-            Expr.EmitSet(ilg, preserve);
-        }
-    }
-    internal partial class LoadTemp : Expr
-    {
-        internal override void Emit(ILGenerator ilg, bool preserve)
-        {
-            Expr?.Emit(ilg, false);
-            if (preserve)
-                Temp.Local.EmitGet(ilg);
-        }
-    }
-    internal partial class TypeExpr : Expr
-    {
     }
     internal partial class NativeTypeExpr : TypeExpr
-    {
-    }
-    internal partial class NameExpr : TypeExpr
     {
     }
     internal partial class IdExpr : NameExpr
@@ -201,9 +198,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Expr.Emit(ilg);
             Left.EmitSet(ilg, false);
-            Temp.Emit(ilg);
-            if (!preserve)
-                ilg.Emit(OpCodes.Pop);
+            Value.Emit(ilg, preserve);
         }
     }
     internal partial class LiteralExpr : Expr

@@ -777,7 +777,8 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Neg);
                     break;
                 case UnaryOperatorKind.LogicalNegation:
-                    ilg.Emit(OpCodes.Not);
+                    ilg.Emit(OpCodes.Ldc_I4_0);
+                    ilg.Emit(OpCodes.Ceq);
                     break;
                 case UnaryOperatorKind.BitwiseComplement:
                     ilg.Emit(OpCodes.Not);

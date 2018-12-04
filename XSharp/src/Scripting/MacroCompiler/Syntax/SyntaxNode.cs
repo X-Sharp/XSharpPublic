@@ -8,57 +8,31 @@ namespace XSharp.MacroCompiler.Syntax
 {
     using static TokenAttr;
 
-    internal partial class Node
+    abstract internal partial class Node
     {
         internal bool CompilerGenerated = false;
     }
-    internal partial class Expr : Node
+    abstract internal partial class Expr : Node
     {
     }
-    internal partial class StoreTemp : Expr
+    abstract internal partial class TypeExpr : Expr
     {
-        internal Expr Expr;
-        internal StoreTemp(Expr e)
-        {
-            CompilerGenerated = true;
-            Expr = e;
-        }
     }
-    internal partial class LoadTemp : Expr
+    abstract internal partial class NameExpr : TypeExpr
     {
-        internal Expr Expr;
-        internal StoreTemp Temp;
-        internal LoadTemp(Expr e, StoreTemp t)
-        {
-            CompilerGenerated = true;
-            Expr = e;
-            Temp = t;
-        }
-        internal LoadTemp(StoreTemp t)
-        {
-            CompilerGenerated = true;
-            Expr = null;
-            Temp = t;
-        }
-    }
-    internal partial class TypeExpr : Expr
-    {
+        internal string Name;
+        internal int Arity;
+        string lookupName = null;
+        internal NameExpr(string name, int arity) { Name = name; Arity = arity; }
+        internal NameExpr() : this(null, 0) { }
+        internal string LookupName { get { if (lookupName == null) lookupName = Arity == 0 ? Name : Name + '`' + Arity.ToString(); return lookupName; } }
+        public override string ToString() { return Name; }
     }
     internal partial class NativeTypeExpr : TypeExpr
     {
         internal TokenType Kind;
         internal NativeTypeExpr(TokenType kind) { Kind = kind; }
         public override string ToString() { return TokenText(Kind); }
-    }
-    internal partial class NameExpr : TypeExpr
-    {
-        internal string Name;
-        internal int Arity;
-        string lookupName = null;
-        internal NameExpr(string name, int arity) { Name = name; Arity = arity; }
-        internal NameExpr(): this(null,0) { }
-        internal string LookupName { get { if (lookupName == null) lookupName = Arity == 0 ? Name : Name + '`' + Arity.ToString(); return lookupName; } }
-        public override string ToString() { return Name; }
     }
     internal partial class IdExpr : NameExpr
     {

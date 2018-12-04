@@ -101,7 +101,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a,b| _FIELD->NIKOS}", true, false)
+        EvalMacro(mc, e"{|a,b,c| a := .not.c}", true, false, true)
         wait
 
         RunTests(mc)

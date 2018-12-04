@@ -10,41 +10,38 @@ namespace XSharp.MacroCompiler.Syntax
 {
     using static TokenAttr;
 
-    internal partial class Node
+    abstract internal partial class Node
     {
         internal Symbol Symbol = null;
         internal virtual Node Bind(Binder b) { throw new NotImplementedException(); }
     }
-    internal partial class Expr : Node
+    abstract internal partial class Expr : Node
     {
         internal TypeSymbol Datatype = null;
         internal BindAffinity Affinity = BindAffinity.Access;
     }
-    internal partial class StoreTemp : Expr
+    abstract internal partial class TypeExpr : Expr
+    {
+    }
+    abstract internal partial class NameExpr : TypeExpr
+    {
+    }
+    internal partial class CachedExpr : Expr
     {
         internal LocalSymbol Local;
-        internal override Node Bind(Binder b)
+        internal Expr Expr;
+        CachedExpr(Binder b, Expr e)
         {
-            b.Bind(ref Expr);
+            CompilerGenerated = true;
+            Expr = e;
             Local = b.AddLocal(Expr.Datatype);
             Symbol = Expr.Symbol;
             Datatype = Expr.Datatype;
-            return null;
         }
-    }
-    internal partial class LoadTemp : Expr
-    {
-        internal override Node Bind(Binder b)
+        internal static CachedExpr Bound(Binder b, Expr expr)
         {
-            Assert(Temp.Symbol != null);
-            b.Bind(ref Expr);
-            Symbol = Temp.Symbol;
-            Datatype = Temp.Datatype;
-            return null;
+            return new CachedExpr(b, expr);
         }
-    }
-    internal partial class TypeExpr : Expr
-    {
     }
     internal partial class NativeTypeExpr : TypeExpr
     {
@@ -53,9 +50,6 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = Binder.GetNativeTypeFromToken(Kind);
             return null;
         }
-    }
-    internal partial class NameExpr : TypeExpr
-    {
     }
     internal partial class IdExpr : NameExpr
     {
@@ -169,18 +163,21 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class UnaryExpr : Expr
     {
-        internal Expr Left;
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Left = Expr;
             if (UnaryOperatorSymbol.OperatorIsLogic(Kind))
             {
-                Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
+                Binder.Convert(ref Expr, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
             Datatype = (Symbol as UnaryOperatorSymbol)?.Type;
             return null;
+        }
+        internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind)
+        {
+            var s = Binder.UnaryOperation(kind, ref expr);
+            return new UnaryExpr(expr, TokenType.LAST) { Symbol = s, Datatype = s?.Type };
         }
     }
     internal partial class PrefixExpr : Expr
@@ -188,11 +185,10 @@ namespace XSharp.MacroCompiler.Syntax
         Expr Left;
         internal override Node Bind(Binder b)
         {
-            var u = new UnaryExpr(Expr, Kind);
-            Expr = u;
             b.Bind(ref Expr);
-            Left = u.Left;
-            Binder.Convert(ref Expr, (Expr as UnaryExpr).Left.Datatype);
+            Left = Expr;
+            Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
+            Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Expr.Symbol;
             Datatype = Expr.Datatype;
             return null;
@@ -201,17 +197,14 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class PostfixExpr : Expr
     {
         Expr Left;
-        LoadTemp Temp;
+        Expr Value;
         internal override Node Bind(Binder b)
         {
-            var t = new StoreTemp(Expr);
-            Expr = t;
-            Temp = new LoadTemp(t);
-            var u = new UnaryExpr(Expr, Kind);
-            Expr = u;
             b.Bind(ref Expr);
-            Left = u.Left;
-            Binder.Convert(ref Expr, (Expr as UnaryExpr).Left.Datatype);
+            Left = Expr;
+            Value = CachedExpr.Bound(b, Expr);
+            Expr = UnaryExpr.Bound(Value, UnaryOperatorSymbol.OperatorKind(Kind));
+            Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Expr.Symbol;
             Datatype = Expr.Datatype;
             return null;

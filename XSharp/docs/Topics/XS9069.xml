@@ -1,16 +1,15 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>XS9069</title>
-  <body>
-    <header>
-      <para styleclass="Heading1">Warning XS9069</para>
-    </header>
-    <para styleclass="Body Text">Argument {0} is passed with REF keyword but should be passed with the &apos;OUT&apos; keyword</para>
-    <para styleclass="Body Text">This usually happens in code that was migrated from Vulcan where the OUT keyword was not available.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> r </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">REAL8</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">System.Double.TryParse(&quot;1.3&quot; , </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">REF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> r)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? r</text></para>
-    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">You can solve the warning by changing the REF keyword to OUT.</text></para>
-    <para styleclass="Body Text"></para>
-  </body>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS9069</title>
+<keywords>
+<keyword>XS9069</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS9069</para>
+  </header>
+  <para styleclass="Normal">Argument {0} is passed with REF keyword but should be passed with the '{1}' keyword</para>
+  <para styleclass="Normal"></para>
+</body>
 </topic>

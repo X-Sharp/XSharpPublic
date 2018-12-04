@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8388</title>
+<keywords>
+<keyword>XS8388</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8388</para>
+  </header>
+  <para styleclass="Normal">An out variable cannot be declared as a ref local</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

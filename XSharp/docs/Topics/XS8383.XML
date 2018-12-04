@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8383</title>
+<keywords>
+<keyword>XS8383</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8383</para>
+  </header>
+  <para styleclass="Normal">The tuple element name '{0}' is ignored because a different name or no name is specified on the other side of the tuple == or != operator.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

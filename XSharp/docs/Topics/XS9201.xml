@@ -1,11 +1,15 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>XS9201</title>
-  <body>
-    <header>
-      <para styleclass="Heading1">Warning XS9201</para>
-    </header>
-    <para styleclass="Body Text">XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</para>
-  </body>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS9201</title>
+<keywords>
+<keyword>XS9201</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS9201</para>
+  </header>
+  <para styleclass="Normal">XPP: The FROM clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</para>
+  <para styleclass="Normal"></para>
+</body>
 </topic>

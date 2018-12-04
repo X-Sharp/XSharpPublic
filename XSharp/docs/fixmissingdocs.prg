@@ -46,7 +46,7 @@ FUNCTION Start AS VOID
 	
 	LOCAL asm AS System.Reflection.Assembly
 	LOCAL cFolder AS STRING
-	asm := System.Reflection.Assembly.LoadFile("c:\XSharp\Dev\XSharp\Binaries\Debug_AnyCPU\XSharp.CodeAnalysis.dll")
+	asm := System.Reflection.Assembly.LoadFile("c:\XSharp\Dev\XSharp\Binaries\Debug\XSharp.CodeAnalysis.dll")
 	LOCAL res AS System.Type
 	res := asm:GetType("LanguageService.CodeAnalysis.XSharpResources")	
 	LOCAL type AS System.Type
@@ -55,13 +55,12 @@ FUNCTION Start AS VOID
 	cFolder := "c:\XSharp\Dev\XSharp\docs\"
 	VAR sb := System.Text.StringBuilder{}    
 	VAR sbErrors := System.Text.StringBuilder{}
-	VAR sbWarnings := System.Text.StringBuilder{}
 	sb:AppendLine(e"<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
 	sb:AppendLine(e"<?xml-stylesheet type=\"text/xsl\" href=\"helpproject.xsl\" ?>")
 	sb:AppendLine(e"<topic template=\"Default\" status=\"Under Construction\" lasteditedby=\"robert\" version=\"2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"helpproject.xsd\">")
 	sb:AppendLine(e"<title>%ERRORCODE%</title>")
 	sb:AppendLine(e"<keywords>")
-    sb:AppendLine(e"<keyword>%ERRORCODE%</keyword>")
+    sb:AppendLine(e"<keyword>%KEYWORD%</keyword>")
     sb:AppendLine(e"</keywords>")
     sb:AppendLine(e"<body>")
     sb:AppendLine(e"  <header>")
@@ -90,23 +89,25 @@ FUNCTION Start AS VOID
 			IF prop != NULL
 				VAR errMsg := (STRING) prop:GetValue(NULL)
 				sb:Clear()
-				sb:Append(sTemplate)
-				sb:Replace("%ERRORCODE%", errcode)
+				sb:Append(sTemplate)   
+				LOCAL strType AS STRING					
+				IF (errname:StartsWith("WRN"))
+					strType := "Warning "
+				ELSE
+					strType := "Error "
+				ENDIF
+				sb:Replace("%KEYWORD%", errcode)
+				sb:Replace("%ERRORCODE%", strType + errcode)
 				sb:Replace("%ERRORMSG%", errMsg)
 				System.IO.File.WriteAllText(file, sb:ToString())
-				
+			
 				VAR template := sbErrTemplate:Replace("%ERRORCODE%", errcode) 
 				template := template:Replace("%ID%", (errno+1000000):ToString())
-				IF (errname:StartsWith("WRN"))
-					sbWarnings:AppendLine(template)
-				ELSE
-					sbErrors:AppendLine(template)
-				ENDIF
+				sbErrors:AppendLine(template)
 			ENDIF	
 		ENDIF		
 	NEXT
 	System.IO.File.WriteAllText(cFolder+"Maps\Errors.xml", sbErrors:ToString())		
-	System.IO.File.WriteAllText(cFolder+"Maps\Warnings.xml", sbWarnings:ToString())		
 	RETURN
 	
 	

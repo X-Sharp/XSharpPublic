@@ -936,19 +936,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (parentId == null)
                 {
-                    if (context.Parent is XP.ClsmethodContext)
-                    {
-                        parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                    }
-                    else
-                    {
-                        parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                    }
-                }
+                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+               }
                 if (parentId == null)
                     return null;
                 return _syntaxFactory.DestructorDeclaration(
@@ -1112,7 +1103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                context.StmtBlk = null;
+                base.ExitDestructor(context);
             }
             return;
         }

@@ -105,11 +105,11 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF Table flags.</summary>                            
     [Flags];
     ENUM DBFTableFlags AS BYTE
-        MEMBER None         :=0
-        MEMBER HasStructuralCDX:=1
-        MEMBER HasMemoField :=2
-        MEMBER IsDBC        :=4
-        MEMBER IsOLE        := 128
+        MEMBER None             := 0
+        MEMBER HasStructuralCDX := 1
+        MEMBER HasMemoField     := 2
+        MEMBER IsDBC            := 4
+        MEMBER IsOLE            := 128
     END ENUM
 
     /// <summary>DBF File Versions.</summary>                            

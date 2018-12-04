@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharp.RDD
                             System.Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
 							// Now, update state
 							SELF:_RecCount++
-							SELF:_RecNo := SELF:RecCount
+							SELF:_RecNo := SELF:_RecCount
 							SELF:_EOF := FALSE
 							SELF:_Bof := FALSE
 							SELF:_Deleted := FALSE
@@ -342,7 +342,7 @@ BEGIN NAMESPACE XSharp.RDD
 					isOk := TRUE
 					IF ( SELF:_Locks:Count > 0 )
 						IF ( recordNbr == 0 )
-							FOREACH VAR nbr IN SELF:_Locks
+							FOREACH VAR nbr IN SELF:_Locks:ToArray()
 								isOk := isOk .AND. SELF:_unlockRecord( nbr )
 							NEXT
 							SELF:_Locks:Clear()  // Should be useless as the record is removed from the list in _unlockRecord
@@ -708,11 +708,12 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 					//
 					TRY
-						//SUPER:Close()
 						isOk := FClose( SELF:_hFile )
 						IF ( SELF:_HasMemo )
 							SELF:CloseMemFile()
 						ENDIF
+
+                        isOk := SUPER:Close() .and. isOk
 					CATCH
 						isOk := FALSE
 					END TRY
@@ -1612,6 +1613,7 @@ BEGIN NAMESPACE XSharp.RDD
 				BEGIN LOCK SELF
 					SELF:_writeRecord()
 					SELF:_NewRecord := FALSE
+                    SELF:_Hot := FALSE
 				END LOCK
 			ENDIF
 			RETURN ret
@@ -2251,7 +2253,11 @@ BEGIN NAMESPACE XSharp.RDD
 			PROPERTY Version    AS DBFVersion	;
 			GET (DBFVersion) Buffer[OFFSET_SIG] ;
 			SET Buffer[OFFSET_SIG] := (BYTE) VALUE
-			
+
+            // Date of last update; in YYMMDD format.  Each byte contains the number as a binary.
+            // YY is added to a base of 1900 decimal to determine the actual year.
+            // Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.
+
 			PROPERTY Year		AS LONG			;
 			GET Buffer[OFFSET_YEAR]+1900	;
 			SET Buffer[OFFSET_YEAR] := (BYTE) VALUE-1900, isHot := TRUE
@@ -2263,11 +2269,11 @@ BEGIN NAMESPACE XSharp.RDD
 			PROPERTY Day		AS BYTE			;
 			GET Buffer[OFFSET_DAY]	;
 			SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
-					
+			// Number of records in the table. (Least significant byte first.)		
 			PROPERTY RecCount	AS LONG			;
 			GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
 			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
-					
+			// Number of bytes in the header. (Least significant byte first.)		
 			PROPERTY HeaderLen	AS SHORT		;
 			GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
 			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
@@ -2276,15 +2282,18 @@ BEGIN NAMESPACE XSharp.RDD
 			PROPERTY RecordLen	AS SHORT		;
 			GET BitConverter.ToInt16(Buffer, OFFSET_RECSIZE);
 			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(SHORT)), isHot := TRUE
-					
+
+            // Reserved
 			PROPERTY Reserved1	AS SHORT		;
 			GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
 			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
-					
+
+			// Flag indicating incomplete dBASE IV transaction.		
 			PROPERTY Transaction AS BYTE		;
 			GET Buffer[OFFSET_TRANSACTION];
 			SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
-					
+
+			// dBASE IV encryption flag.		
 			PROPERTY Encrypted	AS BYTE			;
 			GET Buffer[OFFSET_ENCRYPTED];
 			SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
@@ -2312,14 +2321,13 @@ BEGIN NAMESPACE XSharp.RDD
 			PROPERTY Reserved3	AS SHORT         ;
 			GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
 			SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
-					
-			PROPERTY LastUpdate AS DateTime      ;
-			GET DateTime{1900+Year, Month, Day} ;
-			SET Year := (BYTE) VALUE:Year % 100, Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
+
+            // Note that the year property already does the 1900 offset calculation ! 
+            PROPERTY LastUpdate AS DateTime      ;  
+			GET DateTime{Year, Month, Day} ;
+			SET Year := (BYTE) VALUE:Year , Month := (BYTE) VALUE:Month, Day := (BYTE) VALUE:Day, isHot := TRUE
 					
 			PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
-					
-					
 					
 			METHOD initialize() AS VOID STRICT
 				Buffer := BYTE[]{DbfHeader.SIZE}
@@ -2359,8 +2367,8 @@ BEGIN NAMESPACE XSharp.RDD
 				For example, the value 0x03 indicates the table has a structural .cdx and a
 				Memo field.
 				29 	Code page mark
-				30 – 31 	Reserved, contains 0x00
-				32 – n 	Field subrecords
+				30 â€“ 31 	Reserved, contains 0x00
+				32 â€“ n 	Field subrecords
 				The number of fields determines the number of field subrecords.
 				One field subrecord exists for each field in the table.
 				n+1 			Header record terminator (0x0D)

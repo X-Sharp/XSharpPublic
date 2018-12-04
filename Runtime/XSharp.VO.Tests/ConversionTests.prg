@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			Assert.Equal("1", AsString(1))
 			VAR c1 := GetRTFullPath()
-			Assert.Equal(TRUE, c1:ToLower():IndexOf(".vo.dll") > 0)
+			Assert.Equal(TRUE, c1:ToLower():IndexOf(".rt.dll") > 0)
 
 			VAR n1 := GetThreadCount()
 			Assert.Equal(TRUE, n1 > 1)

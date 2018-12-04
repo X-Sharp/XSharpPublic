@@ -76,7 +76,7 @@ CLASS XSharp.CoreDb
         oTmp := dst:Info( DBInfo.DBI_FCOUNT, NULL )
         dstFieldCount := Convert.ToUInt32( oTmp )
         
-        fMatch := (DWORD) dbti:ItemCount == srcFieldCount && srcFieldCount == dstFieldCount
+        fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount
         j := 1
         FOR i := 0 UPTO lpfn:fieldCount -1
         
@@ -455,10 +455,10 @@ CLASS XSharp.CoreDb
             RuntimeState.Workareas:CloseArea(uiNewArea)
         ENDIF
         RuntimeState.Workareas:CurrentWorkAreaNO := uiNewArea
-        IF ret && String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ) )
+        IF ret .AND. String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ) )
             RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF   
-        IF ret && ! ( ret := CoreDb.IsAliasUnused( cAlias ) )
+        IF ret .AND. ! ( ret := CoreDb.IsAliasUnused( cAlias ) )
             RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
         ENDIF
         // Now all arguments are valid. So lets create the RDD Object and try to create the file

@@ -450,7 +450,7 @@ FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	ENDIF
 	pChr	:= (BYTE PTR) pMemory
 	FOR VAR x := 1 TO dwCount
-		IF pChr[x] >= 'A' && pChr[x] <= 'Z'
+		IF pChr[x] >= 'A' .AND. pChr[x] <= 'Z'
 			pChr[x] += c'a' - c'A' 
 		ENDIF
 	NEXT
@@ -537,7 +537,7 @@ FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 
 	pChr	:= (BYTE PTR) pMemory
 	FOR VAR x := 1 TO dwCount
-		IF pChr[x] >= c'a' && pChr[x] <= 'z'
+		IF pChr[x] >= c'a' .AND. pChr[x] <= 'z'
 			pChr[x] -= c'a' - c'A' 
 		ENDIF
 	NEXT

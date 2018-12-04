@@ -686,7 +686,7 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    ENDIF
 
  
-   IF dwDec > 0 && dwLen != UInt32.MaxValue && ( dwLen < ( dwDec + 2 ) )
+   IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .and. ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)

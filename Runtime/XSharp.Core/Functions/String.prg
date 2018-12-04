@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -330,7 +330,7 @@ FUNCTION CharOdd(c AS STRING) AS STRING
 /// </returns>
 FUNCTION CharPos(c AS STRING, nStart AS DWORD) AS STRING
 	LOCAL result := string.Empty AS STRING
-	IF ( nStart >= 1 && nStart <= (DWORD) c:Length )
+	IF ( nStart >= 1 .AND. nStart <= (DWORD) c:Length )
 		result := c:SubString((INT)nStart-1,1)
 	ENDIF
 	RETURN result

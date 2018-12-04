@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -791,7 +791,7 @@ FUNCTION Transform( uValue AS USUAL, cPicture AS STRING ) AS STRING
     CASE __UsualType.Void
         ret := ""
     OTHERWISE
-        IF uValue:IsObject && IsMethod( uValue, #Transform )
+        IF uValue:IsObject .AND. IsMethod( uValue, #Transform )
             ret := Send( uValue, "Transform" , cPicture )
         ELSE
             THROW Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)

@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal(2016.01.01 ,ctod("01/01/2016"))
 			Assert.Equal(2016.02.13 ,ctod("13/02/2016"))
-			Assert.Equal(0001.01.01 ,ctod("01/01/0001"))
+			Assert.Equal(0001.01.02 ,ctod("02/01/0001"))
 			Assert.Equal(1901.01.01 ,ctod("01/01/01"))
 			SetDateFormat("mm/dd/yyyy")	
 			Assert.Equal(2016.01.01 ,ctod("01/01/2016"))

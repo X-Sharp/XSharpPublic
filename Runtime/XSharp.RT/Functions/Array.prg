@@ -1017,7 +1017,7 @@ FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUA
 	ENDIF */
 	
 	
-	IF cbOrder != NIL && ( ( ! cbOrder:IsCodeBlock ) || ((CODEBLOCK)cbOrder):PCount() != 2 )
+	IF cbOrder != NIL .AND. ( ( ! cbOrder:IsCodeBlock ) || ((CODEBLOCK)cbOrder):PCount() != 2 )
 		THROW Error.ArgumentError( __ENTITY__, "cbOrder", 4, <OBJECT>{ cbOrder } )
 	ENDIF
 	

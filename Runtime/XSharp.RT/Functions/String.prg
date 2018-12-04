@@ -219,7 +219,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    LOCAL x, y, z AS INT
 
-   DO WHILE iCount != 0 && ( iFound <= iSize )
+   DO WHILE iCount != 0 .AND. ( iFound <= iSize )
       iFound := __AtLenForStrTran( cSearch, cSource, iSource - iSrcPos, iSrcPos )
 
       IF iFound != 0

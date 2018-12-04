@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp
 			LOCAL ret := FALSE AS LOGIC
 			IF _value == p:_value
 				ret := TRUE
-			ELSEIF _value != NULL && p:_value != NULL
+			ELSEIF _value != NULL .AND. p:_value != NULL
 				ret := __StringCompare( ToString(), p:ToString() ) == 0
 			ENDIF
 			RETURN ret   
@@ -80,7 +80,7 @@ BEGIN NAMESPACE XSharp
 			LOCAL ret := FALSE AS LOGIC
 			IF _value == p:_value
 				ret := FALSE
-			ELSEIF _value != NULL && p:_value != NULL
+			ELSEIF _value != NULL .AND. p:_value != NULL
 				ret := __StringCompare( ToString(), p:ToString() ) < 0
 			ENDIF
 			RETURN ret       
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp
 			// todo: should this follow nation rules ?
 			IF _value == p:_value
 				ret := FALSE
-			ELSEIF _value != NULL && p:_value != NULL
+			ELSEIF _value != NULL .AND. p:_value != NULL
 				ret := __StringCompare( ToString(), p:ToString() ) > 0
 			ENDIF
 			RETURN ret     

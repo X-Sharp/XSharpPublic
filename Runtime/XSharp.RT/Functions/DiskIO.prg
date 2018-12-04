@@ -105,7 +105,7 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 		cFileSpec += "\*.*"
 	ELSEIF cFileSpec:EndsWith("\")
 		cFileSpec += "*.*"
-	ELSEIF cFileSpec:Length == 2 && cFileSpec[1] == ':' && Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
+	ELSEIF cFileSpec:Length == 2 && cFileSpec[1] == ':' .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
 		VAR  curdir := Environment.CurrentDirectory 
 		IF Char.ToUpper( cFileSpec[0] ) == Char.ToUpper( curdir[0] )  // if same drive, use current directory
 			cFileSpec := curdir + "\*.*"
@@ -145,9 +145,9 @@ FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
 	END TRY
 	
 	// Directory info
-	IF _AND( nAttr, FA_DIRECTORY) == FA_DIRECTORY && ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
+	IF _AND( nAttr, FA_DIRECTORY) == FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
 	
-		IF Path.GetDirectoryName( cFileSpec ) != Path.GetPathRoot( cFileSpec ) && ( Path.GetFileName( cFileSpec ) == "*.*" || Path.GetFileName( cFileSpec ) == "*" )
+		IF Path.GetDirectoryName( cFileSpec ) != Path.GetPathRoot( cFileSpec ) .AND. ( Path.GetFileName( cFileSpec ) == "*.*" || Path.GetFileName( cFileSpec ) == "*" )
 			_DirectoryAddDirectoryInfo( aReturn, Path.GetDirectoryName( cFileSpec ), nAttr, "." )
 			_DirectoryAddDirectoryInfo( aReturn, Path.GetDirectoryName( cFileSpec ), nAttr, ".." )
 		ENDIF         

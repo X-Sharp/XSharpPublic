@@ -207,7 +207,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (preserve)
             {
-                ((Constant)Symbol).Emit(ilg);
+                ((Constant)Symbol).EmitGet(ilg);
             }
         }
     }
@@ -347,7 +347,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             if (preserve)
-                ((Constant)Symbol).Emit(ilg);
+                ((Constant)Symbol).EmitGet(ilg);
         }
     }
     internal partial class ExprList : Expr
@@ -457,12 +457,12 @@ namespace XSharp.MacroCompiler.Syntax
                     ParamArray.EmitGet(ilg);
                     ilg.Emit(OpCodes.Ldlen);
                     ilg.Emit(OpCodes.Conv_I4);
-                    lidx.Emit(ilg);
+                    lidx.EmitGet(ilg);
                     ilg.Emit(OpCodes.Cgt);
                     ilg.Emit(OpCodes.Brfalse_S, skip);
 
                     ParamArray.EmitGet(ilg);
-                    lidx.Emit(ilg);
+                    lidx.EmitGet(ilg);
                     ilg.Emit(OpCodes.Ldelem_Ref);
                     ls.EmitSet(ilg);
 

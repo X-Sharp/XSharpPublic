@@ -13,18 +13,17 @@ namespace XSharp.MacroCompiler
 
     internal abstract partial class Constant : TypedSymbol
     {
-        internal abstract void Emit(ILGenerator ilg);
     }
     internal partial class ConstantWithValue<T> : Constant
     {
-        internal override void Emit(ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
             EmitLiteral(ilg, this);
         }
     }
     internal partial class ConstantVOFloat : ConstantWithValue<double>
     {
-        internal override void Emit(ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
             ilg.Emit(OpCodes.Ldc_R8, Double.Value);
             EmitConstant_I4(ilg, Length);
@@ -34,7 +33,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class ConstantVODate : ConstantWithValue<DateTime>
     {
-        internal override void Emit(ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
             EmitConstant_I4(ilg, DateTime.Value.Year);
             EmitConstant_I4(ilg, DateTime.Value.Month);
@@ -44,7 +43,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class ConstantVOSymbol : ConstantWithValue<string>
     {
-        internal override void Emit(ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
             ilg.Emit(OpCodes.Ldstr, String);
             ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___Symbol_ctor) as ConstructorSymbol).Constructor);
@@ -52,7 +51,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class ConstantDefault : Constant
     {
-        internal override void Emit(ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
             EmitDefault(ilg, Type);
         }

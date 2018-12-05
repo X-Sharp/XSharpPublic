@@ -1681,7 +1681,9 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         RETURN (INT64) u:_decimalValue 
                     ENDIF
-
+                CASE __UsualType.Ptr
+                     RETURN u:_ptrValue:ToInt64()
+   
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
   

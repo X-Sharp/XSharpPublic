@@ -1795,6 +1795,8 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Decimal; RETURN (UINT64) u:_decimalValue 
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
+                CASE __UsualType.Ptr    ; RETURN (UINT64) u:_ptrValue:ToInt64()
+
                 OTHERWISE
                     THROW ConversionError(UINT64, TYPEOF(UINT64), u)
                 END SWITCH

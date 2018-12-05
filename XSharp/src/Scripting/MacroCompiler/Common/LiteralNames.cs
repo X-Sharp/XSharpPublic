@@ -199,6 +199,10 @@
         internal const string Vulcan = "Vulcan";
         internal const string XSharp = "XSharp";
     }
+    internal static class SystemNames
+    {
+        internal const string IndexerName = "Item";
+    }
     internal static class SystemQualifiedNames
     {
         internal const string Cdecl = "global::System.Runtime.InteropServices.CallingConvention.Cdecl";

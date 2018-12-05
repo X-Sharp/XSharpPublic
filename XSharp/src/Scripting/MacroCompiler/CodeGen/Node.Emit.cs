@@ -333,12 +333,20 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (preserve)
                 ilg.Emit(OpCodes.Dup);
-            var t = ilg.DeclareLocal(Datatype.Type);
-            ilg.Emit(OpCodes.Stloc, t.LocalIndex);
-            if (Self != null) Self.Emit(ilg);
-            Args.Emit(ilg);
-            ilg.Emit(OpCodes.Ldloc, t.LocalIndex);
             var m = (PropertySymbol)Symbol;
+            if (m.ValueLast)
+            {
+                var t = ilg.DeclareLocal(Datatype.Type);
+                ilg.Emit(OpCodes.Stloc, t.LocalIndex);
+                if (Self != null) Self.Emit(ilg);
+                Args.Emit(ilg);
+                ilg.Emit(OpCodes.Ldloc, t.LocalIndex);
+            }
+            else
+            {
+                if (Self != null) Self.Emit(ilg);
+                Args.Emit(ilg);
+            }
             ilg.Emit(Self == null ? OpCodes.Call : OpCodes.Callvirt, m.Setter.Method);
         }
     }

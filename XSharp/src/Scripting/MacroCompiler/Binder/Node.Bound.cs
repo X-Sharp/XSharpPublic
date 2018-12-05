@@ -361,7 +361,7 @@ namespace XSharp.MacroCompiler.Syntax
             if (!b.Options.ArrayZero)
                 Args.ConvertArrayBase1();
             Self = Expr;
-            var s = Self.Datatype.Lookup("Item");
+            var s = Self.Datatype.Lookup(SystemNames.IndexerName);
             Symbol = b.BindArrayAccess(Self, s, Args);
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;

@@ -36,6 +36,8 @@ namespace XSharp.MacroCompiler
             VarArgs = nVarArgs;
             MissingArgs = nMissingArgs;
             Conversions = new ConversionSymbol[nFixedArgs+ nVarArgs + nMissingArgs];
+            if (VarArgs > 0)
+                TotalCost += 100;
         }
 
         internal void ArgConversion(int index, ConversionSymbol conv)

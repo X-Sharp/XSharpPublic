@@ -258,6 +258,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|| BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", <OBJECT>{{1,2,3}, 1}, 102, typeof(usual))
+        TestMacro(mc, e"{|v| v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual))
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
         Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGet, "MyFieldGet")

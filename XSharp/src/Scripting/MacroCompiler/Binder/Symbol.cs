@@ -23,7 +23,7 @@ namespace XSharp.MacroCompiler
         internal List<Symbol> Symbols;
         internal SymbolList() { Symbols = new List<Symbol>(); }
         internal SymbolList(Symbol s): this() { Add(s); SymbolTypes = 0; }
-        internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.Member.MemberType ?? 0; }
+        internal void Add(Symbol s) { Symbols.Add(s); SymbolTypes |= (s as MemberSymbol)?.MemberType ?? 0; }
         internal bool HasMethod { get { return SymbolTypes.HasFlag(MemberTypes.Method); } }
         internal bool HasConstructor { get { return SymbolTypes.HasFlag(MemberTypes.Constructor); } }
         internal bool HasProperty { get { return SymbolTypes.HasFlag(MemberTypes.Property); } }
@@ -61,6 +61,21 @@ namespace XSharp.MacroCompiler
         internal bool IsValueType { get { return Type.IsValueType; } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal Dictionary<MemberInfo, Symbol> MemberTable = new Dictionary<MemberInfo, Symbol>();
+        void AddMember(string name, Symbol ms)
+        {
+            Symbol s = null;
+            if (Members.TryGetValue(name, out s))
+            {
+                if (!(s is SymbolList))
+                {
+                    s = new SymbolList(s);
+                    Members[name] = s;
+                }
+                (s as SymbolList).Add(ms);
+            }
+            else
+                Members[name] = ms;
+        }
         internal void UpdateCache()
         {
             if (Cached)
@@ -72,20 +87,20 @@ namespace XSharp.MacroCompiler
             }
             foreach(var m in Type.GetMembers(flags))
             {
-                Symbol ms = MemberSymbol.Create(this, m);
+                var ms = MemberSymbol.Create(this, m);
                 MemberTable.Add(m, ms);
-                Symbol s = null;
-                if (Members.TryGetValue(m.Name, out s))
-                {
-                    if (!(s is SymbolList))
-                    {
-                        s = new SymbolList(s);
-                        Members[m.Name] = s;
-                    }
-                    (s as SymbolList).Add(ms);
-                }
-                else
-                    Members[m.Name] = ms;
+                AddMember(m.Name, ms);
+            }
+            if (NativeType == NativeType.Array)
+            {
+                Symbol getter;
+                Symbol setter;
+                Members.TryGetValue(XSharpFunctionNames.GetElement, out getter);
+                Members.TryGetValue(XSharpFunctionNames.SetElement, out setter);
+                if (getter is SymbolList) getter = (getter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
+                if (setter is SymbolList) setter = (setter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
+                if (getter is MethodSymbol && setter is MethodSymbol)
+                    AddMember(SystemNames.IndexerName, new PropertySymbol(this, getter as MethodSymbol, setter as MethodSymbol, false));
             }
             Cached = true;
         }
@@ -139,8 +154,15 @@ namespace XSharp.MacroCompiler
     {
         internal TypeSymbol DeclaringType;
         internal MemberInfo Member;
+        internal readonly MemberTypes MemberType;
         internal override TypeSymbol Type { get; }
-        internal MemberSymbol(TypeSymbol declType, MemberInfo member, TypeSymbol type) { DeclaringType = declType; Member = member; Type = type; }
+        internal MemberSymbol(TypeSymbol declType, MemberInfo member, TypeSymbol type, MemberTypes memberType)
+        {
+            DeclaringType = declType;
+            Member = member;
+            Type = type;
+            MemberType = memberType;
+        }
         internal override Symbol Lookup(string name) { return null; }
         internal static MemberSymbol Create(TypeSymbol declType, MemberInfo member)
         {
@@ -157,7 +179,7 @@ namespace XSharp.MacroCompiler
                 case MemberTypes.Constructor:
                     return new ConstructorSymbol(declType, (ConstructorInfo)member);
                 default:
-                    return new MemberSymbol(declType, member, null);
+                    return new MemberSymbol(declType, member, null, member.MemberType);
             }
         }
     }
@@ -189,7 +211,7 @@ namespace XSharp.MacroCompiler
         CustomAttributeData _clipperAttr = null;
         string[] _clipperParams = null;
         ParameterListSymbol _parameters;
-        internal MethodBaseSymbol(TypeSymbol declType, MethodBase method, TypeSymbol type) : base(declType, method, type) { }
+        internal MethodBaseSymbol(TypeSymbol declType, MethodBase method, TypeSymbol type) : base(declType, method, type, method.MemberType) { }
         internal ParameterListSymbol Parameters { get { Interlocked.CompareExchange(ref _parameters, new ParameterListSymbol(MethodBase.GetParameters()), null); return _parameters; } }
         internal bool IsClipper { get { FindAttributes(); return _clipperAttr != null; } }
         internal string[] ClipperParams { get { FindAttributes(); return _clipperParams; } }
@@ -222,19 +244,20 @@ namespace XSharp.MacroCompiler
     internal partial class FieldSymbol : MemberSymbol
     {
         internal FieldInfo Field { get { return (FieldInfo)base.Member; } }
-        internal FieldSymbol(TypeSymbol declType, FieldInfo field) : base(declType, field, Binder.FindType(field.FieldType)) { }
+        internal FieldSymbol(TypeSymbol declType, FieldInfo field) : base(declType, field, Binder.FindType(field.FieldType), field.MemberType) { }
     }
     internal partial class EventSymbol : MemberSymbol
     {
         internal EventInfo Event { get { return (EventInfo)base.Member; } }
-        internal EventSymbol(TypeSymbol declType, EventInfo evt) : base(declType, evt, Binder.FindType(evt.EventHandlerType)) { }
+        internal EventSymbol(TypeSymbol declType, EventInfo evt) : base(declType, evt, Binder.FindType(evt.EventHandlerType), evt.MemberType) { }
     }
     internal partial class PropertySymbol : MemberSymbol
     {
         internal bool IsStatic { get { return Getter?.IsStatic ?? Setter?.IsStatic ?? true; } }
         internal PropertyInfo Property { get { return (PropertyInfo)base.Member; } }
-        internal MethodSymbol Getter { get { return DeclaringType.MemberTable[Property.GetMethod] as MethodSymbol; } }
-        internal MethodSymbol Setter { get { return DeclaringType.MemberTable[Property.SetMethod] as MethodSymbol; } }
+        internal MethodSymbol Getter { get; }
+        internal MethodSymbol Setter { get; }
+        internal readonly bool ValueLast = true;
         ParameterListSymbol _parameters;
         internal ParameterListSymbol Parameters
         {
@@ -255,7 +278,17 @@ namespace XSharp.MacroCompiler
                 return _parameters;
             }
         }
-        internal PropertySymbol(TypeSymbol declType, PropertyInfo property) : base(declType, property, Binder.FindType(property.PropertyType)) { }
+        internal PropertySymbol(TypeSymbol declType, PropertyInfo property) : base(declType, property, Binder.FindType(property.PropertyType), property.MemberType)
+        {
+            Getter = Property.GetMethod != null ? DeclaringType.MemberTable[Property.GetMethod] as MethodSymbol : null;
+            Setter = Property.SetMethod != null ? DeclaringType.MemberTable[Property.SetMethod] as MethodSymbol : null;
+        }
+        internal PropertySymbol(TypeSymbol declType, MethodSymbol getter, MethodSymbol setter, bool valueLast) : base(declType, null, Binder.FindType(getter.Method.ReturnType), MemberTypes.Property)
+        {
+            Getter = getter;
+            Setter = setter;
+            ValueLast = valueLast;
+        }
     }
     internal partial class ConstructorSymbol : MethodBaseSymbol
     {

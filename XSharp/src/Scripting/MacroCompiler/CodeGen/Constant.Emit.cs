@@ -11,7 +11,7 @@ namespace XSharp.MacroCompiler
 {
     using static CodeGen;
 
-    internal abstract partial class Constant : Symbol
+    internal abstract partial class Constant : TypedSymbol
     {
         internal abstract void Emit(ILGenerator ilg);
     }

@@ -12,7 +12,7 @@ namespace XSharp.MacroCompiler
     using static CodeGen;
     using Syntax;
 
-    internal partial class BinaryOperatorSymbol : Symbol
+    internal partial class BinaryOperatorSymbol : TypedSymbol
     {
         internal virtual void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
         {

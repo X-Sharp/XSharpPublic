@@ -21,7 +21,7 @@ namespace XSharp.MacroCompiler
         False,
     }
 
-    internal class UnaryOperatorSymbol : Symbol
+    internal class UnaryOperatorSymbol : TypedSymbol
     {
         internal readonly UnaryOperatorKind Kind;
         internal readonly OperandType OpType;
@@ -30,9 +30,7 @@ namespace XSharp.MacroCompiler
         internal static UnaryOperatorSymbol Create(UnaryOperatorKind kind, OperandType opType) { return simpleOp[(int)kind, (int)opType]; }
         internal static UnaryOperatorSymbolWithMethod Create(UnaryOperatorKind kind, MethodSymbol method, ConversionSymbol conv) { return new UnaryOperatorSymbolWithMethod(kind, method, conv); }
 
-        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
-
-        internal virtual TypeSymbol Type { get { return OpType.TypeSymbol(); } }
+        internal override TypeSymbol Type { get { return OpType.TypeSymbol(); } }
 
         private static readonly UnaryOperatorSymbol[,] simpleOp;
 

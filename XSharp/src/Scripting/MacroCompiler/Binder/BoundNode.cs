@@ -112,7 +112,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             var r = new BinaryExpr(Left, Kind, Right);
             r.Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref r.Left, ref r.Right);
-            r.Datatype = (r.Symbol as BinaryOperatorSymbol)?.Type;
+            r.Datatype = (r.Symbol as TypedSymbol)?.Type;
             Right = r;
             Binder.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
@@ -132,7 +132,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
-            Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
         internal static BinaryExpr Bound(Expr Left, BinaryOperatorKind kind, bool logic, Expr Right)
@@ -144,7 +144,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             }
             e.Symbol = Binder.BinaryOperation(kind, ref e.Left, ref e.Right);
-            e.Datatype = (e.Symbol as BinaryOperatorSymbol)?.Type;
+            e.Datatype = (e.Symbol as TypedSymbol)?.Type;
             return e;
         }
     }
@@ -157,7 +157,7 @@ namespace XSharp.MacroCompiler.Syntax
             Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
             Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
-            Datatype = (Symbol as BinaryOperatorSymbol)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }
@@ -171,7 +171,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Binder.Convert(ref Expr, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
-            Datatype = (Symbol as UnaryOperatorSymbol)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
         internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind)
@@ -215,14 +215,14 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.CreateLiteral(Kind, Value);
-            Datatype = (Symbol as Constant)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
         internal static LiteralExpr Bound(Constant c)
         {
             var e = new LiteralExpr(TokenType.LAST, null);
             e.Symbol = c;
-            e.Datatype = (e.Symbol as Constant)?.Type;
+            e.Datatype = (e.Symbol as TypedSymbol)?.Type;
             return e;
         }
     }
@@ -329,7 +329,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Self = (Expr as MemberAccessExpr)?.Expr;
                 Symbol = b.BindCall(Self, Expr.Symbol, Args);
             }
-            Datatype = (Symbol as MemberSymbol)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }
@@ -356,7 +356,7 @@ namespace XSharp.MacroCompiler.Syntax
             Self = Expr;
             var s = Self.Datatype.Lookup("Item");
             Symbol = b.BindArrayAccess(Self, s, Args);
-            Datatype = (Symbol as MemberSymbol)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }
@@ -365,7 +365,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = Constant.CreateDefault(Compilation.Get(NativeType.Usual));
-            Datatype = (Symbol as Constant)?.Type;
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }

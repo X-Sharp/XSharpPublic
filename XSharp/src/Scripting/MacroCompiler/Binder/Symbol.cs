@@ -14,6 +14,7 @@ namespace XSharp.MacroCompiler
     }
     internal abstract partial class TypedSymbol : Symbol
     {
+        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
         abstract internal TypeSymbol Type { get; }
     }
     internal partial class SymbolList : Symbol

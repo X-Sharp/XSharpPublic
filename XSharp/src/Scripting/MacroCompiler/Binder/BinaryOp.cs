@@ -64,7 +64,7 @@ namespace XSharp.MacroCompiler
         NeqObjectString = NotEqual | (OperandType.ObjectAndString * OpBase) | (OperandType.Bool * OpResBase),
     }
 
-    internal partial class BinaryOperatorSymbol : Symbol
+    internal partial class BinaryOperatorSymbol : TypedSymbol
     {
         internal readonly BinaryOperatorKind Kind;
         internal readonly OperandType OpType;
@@ -77,9 +77,7 @@ namespace XSharp.MacroCompiler
             ConversionSymbol lconv, ConversionSymbol rconv)
         { return new BinaryOperatorSymbolWithMethod(kind, method, lconv, rconv); }
 
-        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
-
-        internal virtual TypeSymbol Type { get { return ResType.TypeSymbol(); } }
+        internal override TypeSymbol Type { get { return ResType.TypeSymbol(); } }
 
         internal TypeSymbol TypeOfOp { get { return OpType.TypeSymbol(); } }
 

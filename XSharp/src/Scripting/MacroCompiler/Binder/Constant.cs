@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XSharp.MacroCompiler
 {
-    internal abstract partial class Constant : Symbol
+    internal abstract partial class Constant : TypedSymbol
     {
         internal static ConstantWithValue<T> Create<T>(T value, NativeType nt) { return new ConstantWithValue<T>(value, nt); }
         internal static ConstantWithValue<bool> Create(bool value) { return new ConstantWithValue<bool>(value, NativeType.Boolean); }
@@ -27,10 +27,6 @@ namespace XSharp.MacroCompiler
 
         internal static ConstantDefault Null { get { return CreateDefault(Compilation.Get(NativeType.Object)); } }
         internal static ConstantDefault Nil { get { return CreateDefault(Compilation.Get(NativeType.Usual)); } }
-
-        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
-
-        internal virtual TypeSymbol Type { get; }
 
         internal virtual bool? Boolean { get; }
         internal virtual int? Int { get; }

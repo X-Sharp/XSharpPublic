@@ -19,6 +19,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal TypeSymbol Datatype = null;
         internal BindAffinity Affinity = BindAffinity.Access;
+        internal virtual Expr Cloned(Binder b) { return this; }
     }
     abstract internal partial class TypeExpr : Expr
     {
@@ -81,6 +82,11 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
+        internal override Expr Cloned(Binder b)
+        {
+            b.Cache(ref Expr);
+            return this;
+        }
     }
     internal partial class QualifiedNameExpr : NameExpr
     {
@@ -110,7 +116,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            var r = new BinaryExpr(Left, Kind, Right);
+            var r = new BinaryExpr(Left.Cloned(b), Kind, Right);
             r.Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref r.Left, ref r.Right);
             r.Datatype = (r.Symbol as TypedSymbol)?.Type;
             Right = r;
@@ -186,7 +192,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Left = Expr;
+            Left = Expr.Cloned(b);
             Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Expr.Symbol;
@@ -201,7 +207,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Left = Expr;
+            Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
             Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
@@ -340,7 +346,8 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             b.Bind(ref Args);
             Symbol = b.BindCall(null, Expr.Symbol.Lookup(".ctor"), Args);
-            Datatype = Expr.Symbol as TypeSymbol;
+            // TODO: nvk: Symbol can be null for value-type default .ctor (add ObjectInitSymbol?)
+            Datatype = (Symbol as TypedSymbol)?.Type ?? (Expr.Symbol as TypeSymbol);
             return null;
         }
     }
@@ -358,6 +365,12 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.BindArrayAccess(Self, s, Args);
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
+        }
+        internal override Expr Cloned(Binder b)
+        {
+            b.Cache(ref Expr);
+            foreach (var arg in Args.Args) b.Cache(ref arg.Expr);
+            return this;
         }
     }
     internal partial class EmptyExpr : Expr

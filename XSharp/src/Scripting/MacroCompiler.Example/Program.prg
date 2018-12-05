@@ -101,7 +101,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a| a|a}", 10)
+        EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         wait
 
         RunTests(mc)
@@ -257,6 +257,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| _FIELD->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|| BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+        TestMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", <OBJECT>{{1,2,3}, 1}, 102, typeof(usual))
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
         Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGet, "MyFieldGet")

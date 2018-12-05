@@ -54851,7 +54851,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C542 - StackOverflowException with FLOAT += USUAL
 
-ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C543 - Cannot initialize field using value from another initialized field *************
 Application = C543 - Cannot initialize field using value from another initialized field
 IDEVersion = 1.06
@@ -54860,9 +54860,9 @@ GalleryPage =
 GalleryDefaultName = 
 Target = 0
 Platform = x86
-Language = VulcanNet
+Language = XSharp
 Runtime = CLR4
-Dialect = None
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C543\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -65433,7 +65433,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C643 - Problems with overflows of arithmetic between literals
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C644 - Problems with && operator in VO dialect *************
 Application = C644 - Problems with && operator in VO dialect
 IDEVersion = 1.06
@@ -65444,7 +65444,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C644\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -65532,6 +65532,305 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C644 - Problems with && operator in VO dialect
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C645 - Compiler crash with usuals and decimals with the X# runtime *************
+Application = C645 - Compiler crash with usuals and decimals with the X# runtime
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C645\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C645
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = BB3C9182-DA9C-4FC6-8D04-C9C35585C637
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C645 - Compiler crash with usuals and decimals with the X# runtime FileGroups]
+[C645 - Compiler crash with usuals and decimals with the X# runtime Files]
+File = %AppPath%\Prg\C645.prg
+FileGUID = E9B5C4E8-1211-483D-A356-40804F62353B
+FileType = Code
+[C645 - Compiler crash with usuals and decimals with the X# runtime References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\xSharp\DevRt\Bin\Debug\XSharp.VO.dll,1,1
+[C645 - Compiler crash with usuals and decimals with the X# runtime Resources]
+[C645 - Compiler crash with usuals and decimals with the X# runtime Native Resources]
+[C645 - Compiler crash with usuals and decimals with the X# runtime License files]
+[C645 - Compiler crash with usuals and decimals with the X# runtime General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=1
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C645 - Compiler crash with usuals and decimals with the X# runtime Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C645 - Compiler crash with usuals and decimals with the X# runtime
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C646 - Problem with ENUM arithmetic *************
+Application = C646 - Problem with ENUM arithmetic
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C646\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C646
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2876AFF7-BC4B-4850-B468-A005C74DBA78
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C646 - Problem with ENUM arithmetic FileGroups]
+[C646 - Problem with ENUM arithmetic Files]
+File = %AppPath%\Prg\C646.prg
+FileGUID = 2242AC06-D141-4E94-A298-05CAA2AD769E
+FileType = Code
+[C646 - Problem with ENUM arithmetic References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C646 - Problem with ENUM arithmetic Resources]
+[C646 - Problem with ENUM arithmetic Native Resources]
+[C646 - Problem with ENUM arithmetic License files]
+[C646 - Problem with ENUM arithmetic General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C646 - Problem with ENUM arithmetic Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C646 - Problem with ENUM arithmetic
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C647 - Problem with taking address of DIM USUAL *************
+Application = C647 - Problem with taking address of DIM USUAL
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C647\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C647
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 14D8A5C3-9928-41C5-A9B6-68E524788475
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C647 - Problem with taking address of DIM USUAL FileGroups]
+[C647 - Problem with taking address of DIM USUAL Files]
+File = %AppPath%\Prg\C647.prg
+FileGUID = 9B4F8677-5C13-4065-9687-DD4723ACD30B
+FileType = Code
+[C647 - Problem with taking address of DIM USUAL References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C647 - Problem with taking address of DIM USUAL Resources]
+[C647 - Problem with taking address of DIM USUAL Native Resources]
+[C647 - Problem with taking address of DIM USUAL License files]
+[C647 - Problem with taking address of DIM USUAL General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C647 - Problem with taking address of DIM USUAL Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C647 - Problem with taking address of DIM USUAL
 [EndApplications]
 
 [Configurations]

@@ -12,6 +12,8 @@ this is only in VO dialect. In Core and Vulcan, correct results:
 ? TRUE && !FALSE // FALSE
 ? FALSE && !TRUE // FALSE
 
+
+Edit: It's because && is a single comment marker in VO dialect!
 */
 FUNCTION Start( ) AS VOID
 

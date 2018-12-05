@@ -96,6 +96,16 @@ namespace XSharp.MacroCompiler
             return n;
         }
 
+        T RequireEnd<T>(T n, string error)
+        {
+            Expect(TokenType.EOS);
+            if (La() != TokenType.EOF)
+            {
+                throw new Exception(error);
+            }
+            return n;
+        }
+
         internal bool CanParseTerm()
         {
             switch (La())
@@ -542,11 +552,11 @@ namespace XSharp.MacroCompiler
         {
             var p = new List<IdExpr>();
             if (La() == TokenType.LCURLY && (La(2) == TokenType.PIPE || La(2) == TokenType.OR))
-                return ParseCodeblock();
+                return RequireEnd(ParseCodeblock(), "Unexpected token");
 
             var l = ParseExprList();
             if (l != null)
-                return new Codeblock(null,l);
+                return RequireEnd(new Codeblock(null,l), "Unexpected token");
 
             return null;
         }

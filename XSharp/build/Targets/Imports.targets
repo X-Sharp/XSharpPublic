@@ -61,22 +61,12 @@
           </PropertyGroup>
         </Otherwise>
 
-
-        <When Condition="'$(NonShipping)' != 'true'">
-		  <PropertyGroup>
-			<AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
-			<DelaySign>false</DelaySign>
-			<PublicSign>true</PublicSign>
-		  </PropertyGroup>
-        </When>
-      </Choose>
-    </When>
   </Choose>
 -->  
   <PropertyGroup>
 	<AssemblyOriginatorKeyFile>$(SolutionDir)build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
 	<DelaySign>false</DelaySign>
-	<PublicSign>true</PublicSign>
+	<!--<PublicSign>true</PublicSign>-->
 	<RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
 

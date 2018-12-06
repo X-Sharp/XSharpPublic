@@ -199,7 +199,7 @@ namespace XSharp.MacroCompiler
             switch (t)
             {
                 case TokenType.ID:
-                    return ParseFieldAlias() ?? ParseNameOrCtorCall(ParseTypeSuffix(ParseQualifiedName()));
+                    return ParseFieldAlias() ?? ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(ParseQualifiedName()));
                 case TokenType.SELF:
                     Consume();
                     return new SelfExpr();
@@ -293,7 +293,7 @@ namespace XSharp.MacroCompiler
                     throw new Exception(string.Format("Not supported: {0}", Lt()?.value));
                 default:
                     if (TokenAttr.IsSoftKeyword(La()))
-                        return ParseFieldAlias() ?? ParseNameOrCtorCall(ParseTypeSuffix(ParseQualifiedName()));
+                        return ParseFieldAlias() ?? ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(ParseQualifiedName()));
                     return null;
             }
         }
@@ -349,7 +349,7 @@ namespace XSharp.MacroCompiler
 
         internal Expr ParseNativeTypeOrCast(NativeTypeExpr nt)
         {
-            var e = ParseNameOrCtorCall(ParseTypeSuffix(nt));
+            var e = ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(nt));
 
             if ((e as NativeTypeExpr) == nt && La() == TokenType.LPAREN)
             {
@@ -406,7 +406,7 @@ namespace XSharp.MacroCompiler
             return n;
         }
 
-        internal Expr ParseNameOrCtorCall(TypeExpr t)
+        internal Expr ParseNameOrCtorCallOrSpecialFunc(TypeExpr t)
         {
             if (t != null && La() == TokenType.LCURLY)
             {
@@ -415,6 +415,24 @@ namespace XSharp.MacroCompiler
                 // TODO nvk: Parse property initializers { name := expr }
 
                 return new CtorCallExpr(t, args);
+            }
+
+            if (t is IdExpr && La() == TokenType.LPAREN)
+            {
+                switch ((t as IdExpr).Name.ToUpperInvariant())
+                {
+                    case "ALTD":
+                        throw new Exception("Not supported");
+                    case "_GETINST":
+                        throw new Exception("Not supported");
+                    case "CHR":
+                    case "_CHR":
+                        {
+                            var args = ParseParenArgList();
+                            Require(args.Args.Count == 1, "Bad number of arguments (expected 1)");
+                            return new TypeCast(new NativeTypeExpr(TokenType.CHAR), args.Args.First().Expr);
+                        }
+                }
             }
 
             return t;

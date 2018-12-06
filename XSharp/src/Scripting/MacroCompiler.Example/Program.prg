@@ -258,6 +258,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|| BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", <OBJECT>{{1,2,3}, 1}, 102, typeof(usual))
+        TestMacro(mc, e"_chr(65)", <object>{}, 65, typeof(char))
+        TestMacro(mc, e"chr(65)", <object>{}, 65, typeof(char))
+        TestMacro(mc, e"char(65)", <object>{}, 65, typeof(char))
         TestMacro(mc, e"{|v| v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual))
 //        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
 //        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug

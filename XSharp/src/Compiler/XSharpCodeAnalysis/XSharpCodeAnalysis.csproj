@@ -76,6 +76,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </Content>
+    <Content Include="Preprocessor\harbourppdoc.txt" />
+    <Content Include="Preprocessor\preprocessor.txt" />
   </ItemGroup>
   <ItemGroup>
    <Compile Update="XSharpResources.Designer.cs">

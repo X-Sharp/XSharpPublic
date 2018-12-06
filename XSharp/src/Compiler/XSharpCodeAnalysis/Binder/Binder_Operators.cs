@@ -19,6 +19,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
@@ -675,6 +676,102 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return type;
             }
             return expr.Type;
+        }
+
+        public BoundExpression BindXsAddressOfExpression(PrefixUnaryExpressionSyntax node, DiagnosticBag diagnostics)
+        {
+            // In vulcan when we have defined a structure like:
+            // VOSTRUCT _WINWIN32_FIND_DATA
+            //   MEMBER DIM cFileName[10] AS BYTE
+            // This translates to 
+            // [StructLayout(LayoutKind.Sequential, Pack=8), VOStruct(10, 10)]
+            //    public struct _WINWIN32_FIND_DATA
+            //    {
+            //        [FixedBuffer(typeof(byte), 10)]
+            //        public <cFileName>e__FixedBuffer cFileName;
+            //        // Nested Types
+            //        [StructLayout(LayoutKind.Sequential, Size = 10), CompilerGenerated, UnsafeValueType]
+            //        public struct $DIM_Array_cFileName
+            //{
+            //    public byte FixedElementField;
+            //    }
+            //}
+            // The fixedBuffer is represented with a SourceFixedFieldSymbol
+            // and the cFileName element is then accessed by reference:
+            // cTemp := Psz2String(@pData:cFileName)
+            // in C# we do not need the @ sign. 
+            // So when we detect that the Operand is a Field of the type SourceFixedFieldSymbol
+            // we simply return the direct reference to the field without the AddressOf operator
+            if (node.Operand is InvocationExpressionSyntax)
+            {
+                Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node.Operand);
+            }
+
+            var expr = this.BindExpression(node.Operand, diagnostics: diagnostics, invoked: false, indexed: false);
+
+            if (expr.Kind == BoundKind.FieldAccess)
+            {
+                if (expr.ExpressionSymbol is SourceFixedFieldSymbol)
+                {
+                    return expr;
+                }
+                var bfa = expr as BoundFieldAccess;
+                // Externally defined fixed Field. Could be a DIM field in a VoStruct class
+                if (bfa.FieldSymbol.IsFixed)
+                {
+                    var type = bfa.FieldSymbol.ContainingType;
+                    if (type.IsVoStructOrUnion())
+                    {
+                        return expr;
+                    }
+                }
+
+
+            }
+            if (expr.Kind == BoundKind.ArrayAccess)
+            {
+                //translate @var[i]  to var[i]
+                var bac = expr as BoundArrayAccess;
+                var type = expr.Type;
+                if (bac.Expression.ExpressionSymbol is SourceLocalSymbol && type.IsVoStructOrUnion())
+                {
+                    var sls = bac.Expression.ExpressionSymbol as SourceLocalSymbol;
+                    var syntaxes = sls.DeclaringSyntaxReferences;
+                    if (syntaxes.Length > 0)
+                    {
+                        var syntaxNode = syntaxes[0].GetSyntax() as CSharpSyntaxNode;
+                        var lvc = syntaxNode.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.LocalvarContext;
+                        if (lvc.As.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AS)
+                        {
+                            return expr;
+                        }
+
+
+                    }
+                }
+            }
+            if (expr.Kind == BoundKind.Local)
+            {
+                var bl = expr as BoundLocal;
+                // only translate @name to @name[0] when not IsDecl
+                if (expr.Type.IsArray())
+                {
+                    var eltype = (expr.Type as ArrayTypeSymbol).ElementType;
+                    // convert from @expr to @expr[0]
+                    var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
+                    var arrType = expr.Type as ArrayTypeSymbol;
+                    var elType = arrType.ElementType;
+                    var aindex = ArrayBuilder<BoundExpression>.GetInstance();
+                    for (int i = 0; i < arrType.Rank; i++)
+                    {
+                        aindex.Add(new BoundLiteral(node, ConstantValue.Create(0), intType));
+                    }
+                    var bacc = new BoundArrayAccess(node.Operand, expr, aindex.ToImmutableAndFree(), elType, false);
+                    TypeSymbol ptrType = new PointerTypeSymbol(elType);
+                    return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
+                }
+            }
+            return null;
         }
         public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
             ref BoundExpression trueExpr, ref BoundExpression falseExpr, 

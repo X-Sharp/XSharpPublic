@@ -26,6 +26,11 @@ namespace XSharp.MacroCompiler
             _options = options;
         }
 
+        Token Lt()
+        {
+            return _index < _Input.Count ? _Input[_index] : null;
+        }
+
         TokenType La()
         {
             return _index < _Input.Count ? _Input[_index].type : TokenType.EOF;
@@ -284,7 +289,8 @@ namespace XSharp.MacroCompiler
                 // TODO nvk: Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
                 // TODO nvk: AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                 // TODO nvk: AMP Id=identifierName										#macro					// &id
-                // TODO nvk: Key=ARGLIST												#argListExpression		// __ARGLIST
+                case TokenType.ARGLIST:
+                    throw new Exception(string.Format("Not supported: {0}", Lt()?.value));
                 default:
                     if (TokenAttr.IsSoftKeyword(La()))
                         return ParseFieldAlias() ?? ParseNameOrCtorCall(ParseTypeSuffix(ParseQualifiedName()));

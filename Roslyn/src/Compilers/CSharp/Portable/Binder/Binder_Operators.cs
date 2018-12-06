@@ -598,14 +598,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     originalUserDefinedOperators,
                     resultType,
                     hasErrors);
-#if XSHARP
+            // Disable this for C642
+            //#if XSHARP
             //if (opType == VOOperatorType.Shift)
-            if (left.Type != null && result.Type != null && left.Type != result.Type && 
-                left.Type.IsIntegralType() && result.Type.IsIntegralType() && !(left is BoundLiteral))
-            {
-                result = new BoundConversion(left.Syntax, result, Conversion.ImplicitNumeric, false, false, null, left.Type) { WasCompilerGenerated = true };
-            }
-#endif
+            //if (left.Type != null && result.Type != null && left.Type != result.Type && 
+            //    left.Type.IsIntegralType() && result.Type.IsIntegralType() && !(left is BoundLiteral))
+            //{
+            //    result = new BoundConversion(left.Syntax, result, Conversion.ImplicitNumeric, false, false, null, left.Type) { WasCompilerGenerated = true };
+            //}
+            //#endif
             return result;
 
         }

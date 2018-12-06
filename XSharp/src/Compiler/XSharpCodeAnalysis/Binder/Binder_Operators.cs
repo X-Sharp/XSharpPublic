@@ -463,6 +463,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                     case XSharpParser.MINUS:
                     case XSharpParser.PLUS:
+                    //case XSharpParser.MULT:
+                    //case XSharpParser.DIV:
                         if (xnode.Op.Type == XSharpParser.MINUS)
                         {
                             // String Subtract 
@@ -482,6 +484,39 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 opType = VOOperatorType.SubtractString;
                             }
                         }
+                        /*
+                        if (leftType.SpecialType.IsNumericType() && rightType.SpecialType.IsNumericType())
+                        {
+                            if (left.Kind == BoundKind.Literal && right.Kind == BoundKind.Literal)
+                            {
+                                var int64Type = Compilation.GetSpecialType(SpecialType.System_Int64);
+                                if (leftType.SpecialType.IsIntegralType())
+                                {
+                                    Int64 value = Convert.ToInt64(left.ConstantValue.Value);
+                                    var constant = ConstantValue.Create(value);
+                                    left = new BoundConversion(left.Syntax, left, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: constant, int64Type) { WasCompilerGenerated = true };
+                                }
+                                if (rightType.SpecialType.IsIntegralType())
+                                {
+                                    Int64 value = Convert.ToInt64(right.ConstantValue.Value;
+                                    var constant = ConstantValue.Create(value);
+                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: constant, int64Type) { WasCompilerGenerated = true };
+                                }
+                            }
+                            else if (leftType != rightType)
+                            {
+                                var int32Type = Compilation.GetSpecialType(SpecialType.System_Int32);
+                                if (leftType.SpecialType.SizeInBytes() < 4)
+                                {
+                                    left = new BoundConversion(left.Syntax, left, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: left.ConstantValue, int32Type) { WasCompilerGenerated = true };
+                                }
+                                if (rightType.SpecialType.SizeInBytes() < 4)
+                                {
+                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: right.ConstantValue, int32Type) { WasCompilerGenerated = true };
+                                }
+                            }
+
+                        }*/
                         if (opType == VOOperatorType.None)
                         { 
                             typeDate = Compilation.DateType();
@@ -640,14 +675,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return Compilation.GetSpecialType(SpecialType.System_Double);
                     }
                 }
-                if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
-                {
-                    var val = lit.ConstantValue.Int32Value;
-                    if (val >= Byte.MinValue && val <= Byte.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Byte);
-                    else if (val >= Int16.MinValue && val <= Int16.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Int16);
-                }
+                // disable this for C642
+                //if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
+                //{
+                //    var val = lit.ConstantValue.Int32Value;
+                //    if (val >= Byte.MinValue && val <= Byte.MaxValue)
+                //        return Compilation.GetSpecialType(SpecialType.System_Byte);
+                //    else if (val >= Int16.MinValue && val <= Int16.MaxValue)
+                //        return Compilation.GetSpecialType(SpecialType.System_Int16);
+                //}
             }
             else if (expr.Kind ==BoundKind.UnaryOperator)
             {
@@ -847,3 +883,4 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
+

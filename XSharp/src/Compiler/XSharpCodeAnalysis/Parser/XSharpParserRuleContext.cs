@@ -282,17 +282,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get
             {
                 string name = "";
-                if (Parent is XSharpParser.IEntityContext)
+                if (Parent is XSharpParser.IEntityContext entity)
                 {
-                    name = ((XSharpParser.IEntityContext)Parent).Name + ".";
+                    name = entity.Name + ".";
                 }
-                else if (Parent.Parent is XSharpParser.IEntityContext)
+                else if (Parent.Parent is XSharpParser.IEntityContext entity2)
                 {
-                    name = ((XSharpParser.IEntityContext)Parent.Parent).Name + ".";
+                    name = entity2.Name + ".";
                 }
-                else if (Parent is XSharpParser.Namespace_Context)
+                else if (Parent is XSharpParser.Namespace_Context ns)
                 {
-                    name = ((XSharpParser.Namespace_Context)Parent).Name.GetText() + ".";
+                    name = ns.Name.GetText() + ".";
                 }
                 return name;
             }

@@ -7886,6 +7886,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         ?? context.ExprList?.Get<BlockSyntax>()
                         ?? MakeBlock(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
+            // set debugger sequence point to first statement or first expression
+            if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
+            {
+                context.SetSequencePoint(context.StmtBlk._Stmts[0].Stop);
+            }
+            else if (context.ExprList != null && context.ExprList._Exprs.Count > 0)
+            {
+                context.SetSequencePoint(context.ExprList._Exprs[0].Stop);
+            }
             context.Put(block);
         }
 

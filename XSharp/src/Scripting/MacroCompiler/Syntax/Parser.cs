@@ -432,6 +432,22 @@ namespace XSharp.MacroCompiler
                             Require(args.Args.Count == 1, "Bad number of arguments (expected 1)");
                             return new TypeCast(new NativeTypeExpr(TokenType.CHAR), args.Args.First().Expr);
                         }
+                    case "PCALL":
+                    case "CCALL":
+                        break;
+                    case "PCALLNATIVE":
+                    case "CCALLNATIVE":
+                        break;
+                    case "SLEN":
+                        break;
+                    case "STRING2PSZ":
+                    case "CAST2PSZ":
+                        break;
+                    case "PCOUNT":
+                    case "ARGCOUNT":
+                    case "_GETMPARAM":
+                    case "_GETFPARAM":
+                        break;
                 }
             }
 

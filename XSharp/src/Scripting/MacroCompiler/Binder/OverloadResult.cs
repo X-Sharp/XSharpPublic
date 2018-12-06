@@ -36,8 +36,6 @@ namespace XSharp.MacroCompiler
             VarArgs = nVarArgs;
             MissingArgs = nMissingArgs;
             Conversions = new ConversionSymbol[nFixedArgs+ nVarArgs + nMissingArgs];
-            if (VarArgs > 0)
-                TotalCost += 100;
         }
 
         internal void ArgConversion(int index, ConversionSymbol conv)
@@ -54,12 +52,12 @@ namespace XSharp.MacroCompiler
         {
             if (other?.Valid == true)
             {
-                if (Valid && other.TotalCost == TotalCost)
+                if (Valid && other.TotalCost == TotalCost && other.VarArgs == VarArgs)
                 {
                     Equivalent = other;
                     ExtraValid += other.ExtraValid + 1;
                 }
-                else if (!Valid || other.TotalCost < TotalCost)
+                else if (!Valid || other.TotalCost < TotalCost || other.VarArgs < VarArgs)
                 {
                     return  other;
                 }

@@ -40,7 +40,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
+#if ! XSHARP				
                     Debug.Assert(!pinnedTemp.Type.IsManagedType);
+#endif					
 
                     // temp = ref *default(T*);
                     cleanup[i] = _factory.Assignment(_factory.Local(pinnedTemp), new BoundPointerIndirectionOperator(

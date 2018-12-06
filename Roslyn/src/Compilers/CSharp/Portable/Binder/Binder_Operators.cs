@@ -2321,15 +2321,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)operandType != null, "BindValue should have caught a null operand type");
 
             bool isManagedType = operandType.IsManagedType;
-#if XSHARP
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
-            if (Compilation.Options.VOImplicitCastsAndConversions)
-                allowManagedAddressOf = true;
-            if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
-                allowManagedAddressOf = true;
-#else
-            bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
-#endif
             if (!allowManagedAddressOf)
             {
                 if (!hasErrors && isManagedType)

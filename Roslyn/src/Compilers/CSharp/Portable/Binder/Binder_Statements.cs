@@ -1177,7 +1177,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
             }
 
+#if XSHARP
+            if (elementType.IsManagedType && !Compilation.Options.AllowUnsafe)
+#else
             if (elementType.IsManagedType)
+#endif
             {
                 Error(diagnostics, ErrorCode.ERR_ManagedAddr, initializerSyntax, elementType);
                 hasErrors = true;
@@ -1410,6 +1414,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     op2 = conversion;
                 }
+#if XSHARP
+                //Dynamic operation for VO & Latebinding -> use conversion
+                else if (Compilation.Options.HasRuntime && Compilation.Options.LateBinding && op1.Type == Compilation.UsualType())
+                {
+                    op2 = conversion;
+                }
+
+#endif
 
                 if (isRef)
                 {

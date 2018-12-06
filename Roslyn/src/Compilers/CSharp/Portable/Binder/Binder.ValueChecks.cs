@@ -975,6 +975,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isAccessible = this.IsAccessible(setMethod, accessThroughType, out failedThroughTypeCheck, ref useSiteDiagnostics);
                     diagnostics.Add(node, useSiteDiagnostics);
 
+#if XSHARP
+                    if (Compilation.Options.HasRuntime && !isAccessible && failedThroughTypeCheck)
+                    {
+                        isAccessible = true;
+                    }
+#endif
                     if (!isAccessible)
                     {
                         if (failedThroughTypeCheck)
@@ -1024,6 +1030,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isAccessible = this.IsAccessible(getMethod, accessThroughType, out failedThroughTypeCheck, ref useSiteDiagnostics);
                     diagnostics.Add(node, useSiteDiagnostics);
 
+#if XSHARP
+                    if (Compilation.Options.HasRuntime && !isAccessible && failedThroughTypeCheck)
+                    {
+                        isAccessible = true;
+                    }
+#endif
                     if (!isAccessible)
                     {
                         if (failedThroughTypeCheck)
@@ -1587,9 +1599,13 @@ moreArguments:
             {
                 return ErrorCode.ERR_RefReadonlyLocalCause;
             }
-
+#if XSHARP
+            return ErrorCode.ERR_CannotAssignToMethod;
+#else
             // Cannot assign to 'W' because it is a 'method group'
             return ErrorCode.ERR_AssgReadonlyLocalCause;
+#endif
+
         }
 
         static private ErrorCode GetStandardLvalueError(BindValueKind kind)

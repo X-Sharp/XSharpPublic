@@ -59,7 +59,18 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.Lookup(null, Name);
             if (Symbol == null)
             {
-                Symbol = b.AddVariable(Name, Compilation.Get(NativeType.Usual));
+                switch (b.Options.UndeclaredVariableResolution)
+                {
+                    case VariableResolution.Error:
+                        throw new NotImplementedException();
+                    case VariableResolution.GenerateLocal:
+                        Symbol = b.AddVariable(Name, Compilation.Get(NativeType.Usual));
+                        break;
+                    case VariableResolution.TreatAsField:
+                        return AliasExpr.Bound(Name);
+                    case VariableResolution.TreatAsFieldOrMemvar:
+                        throw new NotImplementedException();
+                }
             }
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
@@ -462,6 +473,10 @@ namespace XSharp.MacroCompiler.Syntax
             Binder.Convert(ref Field, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Usual);
             return null;
+        }
+        internal static AliasExpr Bound(string fieldName)
+        {
+            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName))) { Datatype = Compilation.Get(NativeType.Usual) };
         }
     }
     internal partial class Arg : Node

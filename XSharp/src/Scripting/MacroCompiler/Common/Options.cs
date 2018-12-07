@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace XSharp.MacroCompiler
 {
+    public enum VariableResolution
+    {
+        Error,
+        GenerateLocal,
+        TreatAsField,
+        TreatAsFieldOrMemvar,
+    }
+
     public class MacroOptions
     {
         public static readonly MacroOptions Default = new MacroOptions();
@@ -20,5 +28,7 @@ namespace XSharp.MacroCompiler
         public bool VODateConstants = true;
 
         public bool ArrayZero = false;
+
+        public VariableResolution UndeclaredVariableResolution = VariableResolution.TreatAsField;
     }
 }

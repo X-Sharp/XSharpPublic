@@ -40,6 +40,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             SymbolCompare,
             LogicCompare
         }
+
+        private bool CheckImplicitCast(TypeSymbol sourceType, TypeSymbol targetType, SyntaxNode syntax, DiagnosticBag diagnostics)
+        {
+            if (targetType.IsIntegralType() && sourceType.IsIntegralType())
+            {
+                if (targetType.SpecialType.SizeInBytes() < sourceType.SpecialType.SizeInBytes())
+                {
+                    var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
+                    Error(diagnostics, ErrorCode.WRN_ImplicitCast, syntax, distinguisher.First, distinguisher.Second);
+                    return true;
+                }
+            }
+            return false;
+        }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
         {

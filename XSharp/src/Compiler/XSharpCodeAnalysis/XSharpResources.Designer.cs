@@ -14096,6 +14096,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The compiler generated an implicit cast to a smaller type from type &apos;{0}&apos; to &apos;{1}&apos;..
+        /// </summary>
+        internal static string WRN_ImplicitCast {
+            get {
+                return ResourceManager.GetString("WRN_ImplicitCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No explicit constructor chaining; generating implicit call to super constructor..
         /// </summary>
         internal static string WRN_ImplicitParentConstructorInitializer {

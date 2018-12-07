@@ -1697,6 +1697,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_InterfaceImplementationDifferentCallingConvention = 9067,
         WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak = 9068,
         WRN_ArgumentRefParameterOut = 9069,
+        WRN_ImplicitCast = 9070,
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,
         WRN_XPPSuperIVarsAlwaysShared = 9201,

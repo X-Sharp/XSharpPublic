@@ -1,22 +1,20 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
 USING System.Collections.Immutable
 USING System
 BEGIN NAMESPACE XSharpModel
-    
+
     STATIC CLASS TypeExtensions
         // Fields
         STATIC PRIVATE lookupTable AS IDictionary<STRING, STRING>
-        
+
         // Methods
         STATIC  CONSTRUCTOR()
-            SUPER()
-            //
-            lookupTable  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase} 
+            lookupTable  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             lookupTable:Add("System.Boolean", "LOGIC")
             lookupTable:Add("System.Byte", "BYTE")
             lookupTable:Add("System.String", "STRING")
@@ -48,7 +46,7 @@ BEGIN NAMESPACE XSharpModel
             lookupTable:Add("XSharp.__VOFloat", "FLOAT")
             lookupTable:Add("XSharp.__WinBool", "LOGIC")
             lookupTable := lookupTable:ToImmutableDictionary<STRING, STRING>(StringComparer.OrdinalIgnoreCase)
-            
+
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING) AS STRING
             //
 			// Todo: Rename to XSharp type names
@@ -68,7 +66,7 @@ BEGIN NAMESPACE XSharpModel
                     RETURN "Vulcan.__Usual"
             END SWITCH
             RETURN typename
-            
+
         STATIC METHOD GetXSharpTypeName( SELF sysType AS System.Type) AS STRING
             LOCAL fullName AS STRING
             LOCAL suffix AS STRING
@@ -110,9 +108,9 @@ BEGIN NAMESPACE XSharpModel
                 fullName := genTypeName + genericString
             ENDIF
             RETURN fullName+ suffix
-            
-            
+
+
     END CLASS
-    
-END NAMESPACE 
+
+END NAMESPACE
 

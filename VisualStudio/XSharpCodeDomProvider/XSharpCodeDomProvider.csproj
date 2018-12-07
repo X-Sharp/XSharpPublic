@@ -55,9 +55,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="XSharp.CodeAnalysis, Version=0.2.12.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

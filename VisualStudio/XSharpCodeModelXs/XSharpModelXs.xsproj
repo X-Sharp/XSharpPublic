@@ -138,12 +138,12 @@
       <Private>True</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="XSharp.CodeAnalysis, Version=1.2.1.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.CodeAnalysis</Name>
-      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+    <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VSParser</Name>
+      <AssemblyName>XSharp.VSParser.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\Debug\XSharp.VSParser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

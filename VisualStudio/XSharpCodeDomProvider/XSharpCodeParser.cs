@@ -8,9 +8,26 @@ using System.CodeDom.Compiler;
 using System.IO;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
+using static XSharp.Parser.VsParser;
+using LanguageService.CodeAnalysis.Text;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.CodeDom
 {
+    public class ErrorIgnorer : IErrorListener
+    {
+        #region IErrorListener
+        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+
+        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
+        {
+            ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
+        }
+        #endregion
+    }
     public class XSharpCodeParser : CodeParser
     {
         IProjectTypeHelper _projectNode;
@@ -41,7 +58,7 @@ namespace XSharp.CodeDom
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
@@ -55,10 +72,10 @@ namespace XSharp.CodeDom
                 String TabSpace = new String(' ', TabSize);
                 source = source.Replace("\t", TabSpace);
                 //
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source, _projectNode.ParseOptions);
-                var syntaxRoot = tree.GetRoot();
-                // Get the antlr4 parse tree root
-                var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
+                var reporter = new ErrorIgnorer();
+                ITokenStream tokenStream;
+                LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.SourceContext xtree;
+                bool ok = XSharp.Parser.VsParser.Parse(source, this.FileName, _projectNode.ParseOptions, reporter, out tokenStream, out xtree);
 
                 // We need to d 2 steps here:
                 // 1 - Scan for the fields , so we know the difference between fields and properties when we perform step 2

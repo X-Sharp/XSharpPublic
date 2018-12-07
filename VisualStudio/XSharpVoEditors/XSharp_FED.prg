@@ -11,7 +11,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 	PROTECT oXProject AS XProject
 
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
-		SUPER(_oSurface , _oGrid) 
+		SUPER(_oSurface , _oGrid)
 	RETURN
 	METHOD Open(cFileName AS STRING) AS LOGIC
 		LOCAL aFiles AS IList<XFile>
@@ -48,7 +48,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 //			MessageBox.Show("Fieldspec definitions read from xml file: " + cFileName , "FieldSpec Editor")
 			SELF:lLoadedAsXml := TRUE
 		ENDIF
-		
+
 		IF aFieldSpecs:Count == 1 .and. aFieldSpecs[0] == NULL // empty template
 			SELF:oSurface:Controls:Add(SELF:oListView)
 			SELF:cLoadedDir := FileInfo{cFileName}:DirectoryName
@@ -89,14 +89,14 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		IF aFieldSpecs:Count == 0
 			RETURN FALSE
 		END IF
-		
+
 		FOREACH  oDesign  AS  FSEDesignFieldSpec IN aFieldSpecs
 			IF oDesign != NULL .and. .not. SELF:NameExists(oDesign:Name)
 				oDesign:oItem:SetValues()
 				SELF:oListView:Items:Add(oDesign:oItem)
 			END IF
 		NEXT
-		
+
 		SELF:LoadUsedFieldSpecNames()
 
 		SELF:InitReadOnlyProperties()
@@ -106,13 +106,13 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		SELF:GiveFocus()
 
 	RETURN TRUE
-	
 
-	PROTECTED METHOD GetSaveFileStreams(cVNfsFileName REF STRING , cPrgFileName REF STRING , ;
+
+	PROTECTED METHOD GetSaveFileStreams(cVNfsFileName AS STRING , cPrgFileName REF STRING , ;
 								oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
-		
+
 		IF .not. SELF:lLoadedAsXml
 			cVNfsFileName := Funcs.GetModuleFilenameFromBinary(cVNfsFileName) + ".Fieldspecs.xsfs"
 			IF .not. VOFieldSpecEditor.lEditorCloseWarningShown
@@ -136,7 +136,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -146,7 +146,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 					lSuccess := TRUE
 				END IF
 			END IF
-			
+
 		CATCH e AS Exception
 
 			XFuncs.ErrorBox(e:Message )
@@ -166,7 +166,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		LOCAL oCode AS CodeContents
 		VAR oGenerator := CodeGenerator{oStream:Editor}
 		oGenerator:BeginCode()
-		
+
 		FOREACH oDesign AS FSEDesignFieldSpec IN aDesign
 			oCode := GetCodeContents(oDesign)
 			VAR cName := oDesign:GetProperty("classname"):TextValue
@@ -174,7 +174,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			oGenerator:WriteEntity(XIde.EntityType._Constructor , cName , cName , EntityOptions.None, oCode:aConstructor)
 			oGenerator:WriteEndClass(cName)
 		NEXT
-		
+
 		aPrevNames := List<STRING>{}
 		FOREACH cName AS STRING IN SELF:aUsedFieldSpecNames
 			aPrevNames:Add(cName)
@@ -189,7 +189,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		oGenerator:EndCode()
 		oStream:Save()
 	RETURN TRUE
- 
+
 	METHOD Save(cFileName AS STRING , lFsOnly AS LOGIC) AS LOGIC
 		LOCAL oPrgStream AS XSharp_EditorStream
 		LOCAL cOrigFilename AS STRING
@@ -211,14 +211,14 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 		IF .not. SELF:CheckIfValid()
 			RETURN FALSE
 		END IF
-		
+
 		cOrigFilename := cFileName
 
 		IF !VOFieldSpecEditor.LoadTemplate(SELF:cLoadedDir)
 			RETURN FALSE
 		ENDIF
 		lFsOnly := lFsOnly .or. SELF:lStandalone
-		
+
 		oPrgStream := XSharp_EditorStream{}
 
 		IF SELF:GetSaveFileStreams(cFileName , REF cPrgFileName , oPrgStream , lFsOnly)
@@ -239,7 +239,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
 			SELF:aFilesToDelete:Clear()
 			SELF:LoadUsedFieldSpecNames()
 		ENDIF
-		
+
 	RETURN lSuccess
 
 END CLASS

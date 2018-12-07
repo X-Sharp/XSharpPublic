@@ -15,6 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -98,7 +99,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string DefaultNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars(); } }
+#if !VSPARSER
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
+#else
+        public IList<string> IncludePaths { get; private set; } = new List<string>();
+#endif
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
@@ -150,7 +155,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;
+#if !VSPARSER
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
+#else
+                IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+#endif
                 VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
                 VirtualInstanceMethods = opt.Vo3;
@@ -235,9 +244,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
             ConsoleOutput = opt.ConsoleOutput;
-            CommandLineArguments = opt.CommandLineArguments;
-            ParseLevel = opt.ParseLevel;
 
+            ParseLevel = opt.ParseLevel;
+#if !VSPARSER
+            CommandLineArguments = opt.CommandLineArguments;
+#endif
             LanguageVersion = LanguageVersion.CSharp7_3;
         }
 

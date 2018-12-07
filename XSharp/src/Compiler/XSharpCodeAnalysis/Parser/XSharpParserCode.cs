@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
 using System.Collections.Generic;
@@ -22,9 +22,11 @@ using System;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Microsoft.CodeAnalysis;
-#if !TEST
+using Microsoft.CodeAnalysis; 
+#if !VSPARSER
 using MCT = Microsoft.CodeAnalysis.Text;
+using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+
 #endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
@@ -75,7 +77,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             la = InputStream.La(1);
             return la != CONSTRUCTOR && la != DESTRUCTOR;
         }
+        public partial class ParenExpressionContext
+        {
+            public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
+        }
 
+#if !VSPARSER
         public interface IPartialPropertyContext : IEntityContext
         {
             List<MethodContext> PartialProperties { get; set; }
@@ -257,10 +264,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 
         }
-        public partial class ParenExpressionContext
-        {
-            public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
-        }
+
 
         public partial class RepeatStmtContext : ILoopStmtContext
         {
@@ -589,6 +593,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
         }
+#endif
     }
 
 
@@ -655,7 +660,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         string MappedFileName { get; }
         int MappedLine { get; }
         IToken SourceSymbol { get; }
-#if ! TEST
+#if !VSPARSER
         Microsoft.CodeAnalysis.Location GetLocation();
 #endif
     }
@@ -699,7 +704,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
         public override string ToString() { return this.GetText(); }
-#if !TEST
+#if !VSPARSER
         public Microsoft.CodeAnalysis.Location GetLocation()
         {
             var token = this.Symbol;
@@ -732,11 +737,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsField = field;
         }
     }
-
+#if !VSPARSER
 
     internal static class RuleExtensions
     {
-#if !TEST
+
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
             return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
@@ -746,7 +751,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
         }
-#endif
+
         internal static void Put<T>([NotNull] this IXParseTree t, T node)
             where T : InternalSyntax.CSharpSyntaxNode
         {
@@ -847,5 +852,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return false;
         }
     }
-
+#endif
 }

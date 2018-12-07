@@ -151,6 +151,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SetXSharpSpecificOptions(opt);
             return this;
         }
+#if !VSPARSER
         public CSharpCompilationOptions WithMacroScript(bool macroScript)
         {
             if (macroScript == this.MacroScript)
@@ -204,5 +205,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         static extern IntPtr BeginUpdateResource(string pFileName, [MarshalAs(UnmanagedType.Bool)]bool bDeleteExistingResources);
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool EndUpdateResource(IntPtr hUpdate, bool fDiscard);
+#endif
     }
 }

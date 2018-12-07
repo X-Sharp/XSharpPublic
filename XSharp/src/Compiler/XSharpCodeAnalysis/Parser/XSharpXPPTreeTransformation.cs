@@ -551,7 +551,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-        private void implementConstructor([NotNull] XP.IXPPClassMember context)
+        private void implementConstructor([NotNull] XP.IXPPEntityContext context)
         {
             var idName = context.ShortName;
             var classCtor = String.Compare(idName, "initclass", true) == 0;
@@ -619,7 +619,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var method = XppCreateMethod(context, name, attributes, modifiers, parameters, returnType);
             context.Put(method);
         }
-        MemberDeclarationSyntax XppCreateMethod(XP.IXPPClassMember context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
+        MemberDeclarationSyntax XppCreateMethod(XP.IXPPEntityContext context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
             SyntaxList<SyntaxToken> modifiers, ParameterListSyntax parameters, TypeSyntax returnType)
         {
             var body = context.Statements.Get<BlockSyntax>();

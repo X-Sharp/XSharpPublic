@@ -135,12 +135,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal ITokenStream Tokens;
             internal int Index;
             internal string SourceFileName;
-            internal string MappedFileName;
             internal int MappedLineDiff;
             internal bool isSymbol;
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
+
+            internal string MappedFileName;
             internal PPRule udc;
             internal InputState(ITokenStream tokens)
             {
@@ -933,7 +934,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
         }
-
+#if !VSPARSER
         private Exception readFileContents( string fp, out string nfp, out SourceText text)
         {
             Exception ex = null;
@@ -967,7 +968,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return ex;
         }
-
+#endif
         private bool ProcessIncludeFile(string includeFileName, XSharpToken fileNameToken)
         {
             string nfp = null;
@@ -1015,11 +1016,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
+#if !VSPARSER
                         var ex = readFileContents(fp, out nfp, out text);
                         if (ex != null && fileReadException == null)
                         {
                             fileReadException = ex;
                         }
+#else
+                        Exception ex;
+                        try
+                        {
+                            var contents = System.IO.File.ReadAllText(fp);
+                            text = new SourceText(contents);
+                            nfp = fp;
+                        }
+                        catch (Exception e)
+                        {
+                            ex = e;
+                        }
+#endif
                     }
                     if (rooted || nfp != null)
                         break;
@@ -1405,6 +1420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 writeToPPO(original, true);
                 var ln = line[1];
+#if !VSPARSER
                 if (ln.Type == XSharpLexer.INT_CONST)
                 {
                     inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
@@ -1425,6 +1441,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     addParseError(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
                 }
+#endif
             }
             else
             {

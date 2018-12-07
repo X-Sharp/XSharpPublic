@@ -31,12 +31,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return options;
             }
         }
-        void ResetXSharpCommandlineOptions()
+        internal void ResetXSharpCommandlineOptions()
         {
             options = new XSharpSpecificCompilationOptions();
         }
         
-        bool ParseXSharpArgument(ref string name, ref string value, string arg, List<Diagnostic> diagnostics)
+        internal bool ParseXSharpArgument(ref string name, ref string value, string arg, List<Diagnostic> diagnostics)
         {
             if (options == null)
                 options = new XSharpSpecificCompilationOptions();

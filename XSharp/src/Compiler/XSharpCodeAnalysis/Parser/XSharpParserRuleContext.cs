@@ -20,21 +20,20 @@ using Antlr4.Runtime.Tree;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
-#if !TEST
 using MCT= Microsoft.CodeAnalysis.Text;
-#endif
+
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public class XSharpParserRuleContext :
         Antlr4.Runtime.ParserRuleContext,
-        IFormattable,
         IXParseTree
+        ,IFormattable
     {
         public XSharpParserRuleContext() : base()
         {
 
         }
-#if !TEST
+#if !VSPARSER
         public SyntaxTriviaList GetLeadingTrivia(CompilationUnitSyntax cu)
         {
             var list = new SyntaxTriviaList();
@@ -113,7 +112,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return (ErrorData != null) && ErrorData.Count > 0;
         }
-#if !TEST
+#if !VSPARSER
         public Location GetLocation()
         {
             return new XSharpSourceLocation(this);
@@ -183,6 +182,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             var s = this.GetType().ToString();
             return s.Substring(s.LastIndexOfAny(".+".ToCharArray()) + 1).Replace("Context", "");
         }
+#if !VSPARSER
         public void SetSequencePoint(IToken start, IToken end)
         {
             if (end != null && start != null)
@@ -272,10 +272,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return ToString();
-        }
 
         public string ParentName
         {
@@ -297,6 +293,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return name;
             }
         }
+#endif
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString();
+        }
+
     }
 }
 

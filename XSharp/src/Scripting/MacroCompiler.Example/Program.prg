@@ -128,6 +128,8 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
+        ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
+
 //        EvalMacro(mc, e"{|a,b| !a[++b] += 100, a[2]}", {1,2,3}, 1)
 //        EvalMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}", {1,2,3}, 1)
         EvalMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}", {1,2,3}, 1)
@@ -142,6 +144,11 @@ begin namespace MacroCompilerTest
 
         Console.WriteLine("Press any key to exit...")
         Console.ReadKey()
+
+    function ParseMacro(mc as XSharp.Runtime.MacroCompiler, src as string) as void
+        Console.WriteLine("Parsing macro ...")
+        var ast := mc:compiler:Parse(src)
+        Console.WriteLine(ast)
 
     function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args params object[]) as usual
         Console.WriteLine("Executing macro ...")

@@ -42,8 +42,14 @@ class testclassdc
     v1 as int
     v2 as string
 
+    override method GetHashCode() as int
+        return super:GetHashCode()
+    override method Equals(o as object) as logic
+        return self == o
     operator ==(o1 as testclassdc, o2 as testclassdc) as logic
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
+    operator !=(o1 as testclassdc, o2 as testclassdc) as logic
+        return !(o1 == o2)
 end class
 
 class testclass
@@ -57,8 +63,15 @@ class testclass
     constructor(i as int)
         v1 := i
         prop := i
+
+    override method GetHashCode() as int
+        return super:GetHashCode()
+    override method Equals(o as object) as logic
+        return self == o
     operator ==(o1 as testclass, o2 as testclass) as logic
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
+    operator !=(o1 as testclass, o2 as testclass) as logic
+        return !(o1 == o2)
 end class
 
 struct teststruct
@@ -70,9 +83,17 @@ struct teststruct
 
     constructor(i as int)
         v1 := i
+        v2 := null
         prop := i
+
+    override method GetHashCode() as int
+        return super:GetHashCode()
+    override method Equals(o as object) as logic
+        return self == (teststruct)o
     operator ==(o1 as teststruct, o2 as teststruct) as logic
         return o1:v1 == o2:v1 .and. o1:v2 == o2:v2
+    operator !=(o1 as teststruct, o2 as teststruct) as logic
+        return !(o1 == o2)
 end struct
 
 global tsi := teststruct{1} as teststruct

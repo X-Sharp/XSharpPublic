@@ -504,9 +504,11 @@ namespace XSharp.MacroCompiler
                 else
                     op = e == null ? ParsePrefixOper(out n) : ParseOper(out n);
 
+                AssocType at;
+
                 do
                 {
-                    var at = op?.assoc ?? AssocType.None;
+                    at = op?.assoc ?? AssocType.None;
                     if (e == null && op != null && at != AssocType.Prefix)
                         throw Error(Lt(), ErrorCode.Expected, "expression");
                     if (e != null && at == AssocType.Prefix)
@@ -521,7 +523,7 @@ namespace XSharp.MacroCompiler
                         e = op.Combine(this, e, n, null);
                         op = ParseOper(out n);
                     }
-                } while (op?.assoc == AssocType.Postfix || (e != null && op == null && exprs.Count > 0));
+                } while (at == AssocType.Postfix || (e != null && op == null && exprs.Count > 0));
 
                 if (op == null)
                     break;

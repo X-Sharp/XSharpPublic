@@ -257,7 +257,7 @@ BEGIN NAMESPACE XSharpModel
 				BEGIN LOCK SELF:_lock
 
 					statics:AddRange(SELF:_usingStatics)
-					IF (((SELF:Project != NULL) .AND. (SELF:Project:ProjectNode != NULL)) .AND. SELF:Project:ProjectNode:ParseOptions:Dialect == LanguageService.CodeAnalysis.XSharp.XSharpDialect.VO)
+					IF (((SELF:Project != NULL) .AND. (SELF:Project:ProjectNode != NULL)) .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime)
 
 						FOREACH asm AS AssemblyInfo IN SELF:Project:AssemblyReferences
 

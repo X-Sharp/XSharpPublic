@@ -75,14 +75,14 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
 		LOCAL nAt AS INT
-		
+
 		TRY
 
 			oFileInfo	:= FileInfo{cVNFrmFileName}
 			oBaseDir	:= oFileInfo:Directory
 			cBaseDir	:= oBaseDir:FullName
 			cBaseName	:= oFileInfo:Name
-			
+
 			IF cBaseName:ToLower():Endswith(".vnfrm") .or. cBaseName:ToLower():Endswith(".xsfrm")
 				cBaseName	:= System.IO.Path.GetFileNameWithoutExtension(cBaseName)
 			ENDIF
@@ -92,7 +92,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				cRCFileName := cAlternative
 				lRcInSameFolder := TRUE
 			ENDIF
-						
+
 			cFileName	:= cBaseName
 			nAt			:= cFileName:LastIndexOf('.')
 			IF nAt != -1 // strip out window name
@@ -104,7 +104,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, ".xh")
 			ENDIF
 			cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
-			IF !File.Exists(cPrgFileName) 
+			IF !File.Exists(cPrgFileName)
 				cPrgFileName := cAlternative
 				cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, ".vh")
 				IF !File.Exists(cHeaderFile)
@@ -112,7 +112,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				ENDIF
 			ENDIF
 			cVhName := System.IO.Path.GetFileName(cHeaderFile)
-	
+
 			lError := FALSE
 			IF !lVnfrmOnly
 				IF ! File.Exists(cRCFileName)
@@ -124,7 +124,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -143,7 +143,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				oVNFrmStream := File.Open(cVNFrmFileName , FileMode.Create , FileAccess.Write , FileShare.None)
 				lSuccess := TRUE
 			ENDIF
-			
+
 		CATCH e AS Exception
 
 			XFuncs.WarningBox(e:Message )
@@ -166,11 +166,11 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			ENDIF
 		END IF
 
-	RETURN lSuccess 
+	RETURN lSuccess
 
 	VIRTUAL METHOD Save() AS VOID
 		SELF:Save(SELF:cDefaultFileName , FALSE)
-	
+
 	VIRTUAL METHOD Save(cVNFrmFileName AS STRING , lBinaryOnly AS LOGIC) AS LOGIC
 		LOCAL oPrg , oVh  , oRC AS XSharp_EditorStream
 		LOCAL lRcInSameFolder AS LOGIC
@@ -184,18 +184,18 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
 		SELF:ArrangeColumnsOrder(TRUE)
 		SELF:ArrangeControlOrder()
-		
+
 		oPrg := XSharp_EditorStream{}
 		oVh := XSharp_EditorStream{}
 		oRc := XSharp_EditorStream{}
-		
+
 		oVNFrm := NULL; cVhName := NULL; lRcInSameFolder := FALSE // Grrr
-		IF .not. SELF:GetSaveFileStreams(cVNFrmFileName , oVNFrm , oRC , oPrg , oVh , REF cVhName , lBinaryOnly , REF lRcInSameFolder)
+		IF .not. SELF:GetSaveFileStreams(cVNFrmFileName , REF oVNFrm , oRC , oPrg , oVh , REF cVhName , lBinaryOnly , REF lRcInSameFolder)
 			RETURN FALSE
 		ENDIF
-		
+
 		lOldTransporter := .not. oVh:IsValid
-		
+
 		SELF:SaveToXml(oVNFrm)
 
 		IF .not. lBinaryOnly
@@ -242,7 +242,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL aEntity AS List<STRING>
 		LOCAL cFormName AS STRING
 		LOCAL cPrevName AS STRING
-		
+
 		LOCAL oGenerator AS CodeGenerator
 		oGenerator := CodeGenerator{oDest:Editor}
 		oGenerator:BeginCode()
@@ -258,7 +258,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oGenerator:DeleteDefines(oCode:aDefines)
 		oGenerator:RemoveDefines(cPrevName)
 		oGenerator:AddXSharpDefines(oCode:aDefines , oCode:aDefineValues,TRUE)
-	
+
 		oGenerator:WriteEntity(EntityType._Class , cPrevName , cPrevName , EntityOptions.AddUser , oCode:aClass)
 		oGenerator:WriteEntity(EntityType._Constructor , cFormName , cFormName , EntityOptions.None , oCode:aConstructor)
 
@@ -266,7 +266,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL oProp AS DesignProperty
 
 		aEntity := List<STRING>{}
-		
+
 		oProp := SELF:oWindowDesign:GetPropertyByMember("NoAcc")
 		lAccessAssign := oProp != NULL .and. oProp:TextValue:Trim() == "" .and. oProp:cPage != "_Hidden"
 		FOREACH cName AS STRING IN oCode:aAccessAssign
@@ -287,7 +287,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				oGenerator:DeleteEntity(EntityType._Assign , cName , cFormName)
 			END IF
 		NEXT
-		
+
 		oGenerator:WriteEndClass(cFormName)
 		oGenerator:EndCode()
 	RETURN oDest:Save()
@@ -298,14 +298,14 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oGenerator:BeginCode()
 
 		oGenerator:DeleteDefines(oCode:aDefines)
-		
+
 		oStream:Save()
 	RETURN TRUE
 
 	// The following is the original vulcan code which generates callbacks in the code
 	// Always generates the code directly in a VS editor file
 	// Of course needs adjustment to work with x#'s project system
-	
+
 	ACCESS XFile AS XSharpModel.XFile
 		LOCAL cPrgFileName AS STRING
 		cPrgFileName := Funcs.GetModuleFilenameFromBinary(SELF:cDefaultFileName) + ".prg"
@@ -321,7 +321,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		LOCAL lOpen AS LOGIC
 
 		cClass := SELF:oWindowDesign:Name
-		
+
 		oFile := SELF:XFile
 		IF oFile == NULL
 			RETURN
@@ -352,7 +352,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 				oType:OpenEditor()
 	            RETURN
 	        ENDIF
-		    
+
         ELSEIF oType != NULL_OBJECT
 			FOREACH VAR oMember IN oType:Members
 				IF string.Compare(oMember:Name, cName, TRUE) == 0
@@ -360,7 +360,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 					RETURN
 				ENDIF
 			NEXT
-        ENDIF		
+        ENDIF
 		lOpen := FALSE
 		VAR source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 
@@ -371,7 +371,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		IF .not. lOpen
 			RETURN
 		END IF
-		
+
 		VAR oEditor := XSharp_EditorStream{}
 		oEditor:Load(oFile:FullPath)
 		VAR nLine := oType:Range:EndLine -1

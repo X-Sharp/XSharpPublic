@@ -59,7 +59,15 @@ namespace XSharp.MacroCompiler
     {
         public readonly ErrorCode Code;
         public readonly SourceLocation Location;
-        public string DiagnosticMessage { get { return String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, Message); } }
+        public string DiagnosticMessage
+        {
+            get
+            {
+                return Location.Valid ?
+                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, Message)
+                    : String.Format("error XM{0:D4}: {1}", (int)Code, Message);
+            }
+        }
         internal CompileFailure(ErrorCode e, params object[] args): base(ErrorString.Format(e, args)) { Code = e; Location = SourceLocation.None; }
         internal CompileFailure(int offset, ErrorCode e, params object[] args) : base(ErrorString.Format(e, args)) { Code = e; Location = new SourceLocation(offset); }
         internal CompileFailure(SourceLocation loc, ErrorCode e, params object[] args) : base(ErrorString.Format(e, args)) { Code = e; Location = loc; }

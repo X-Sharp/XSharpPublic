@@ -12,6 +12,7 @@ namespace XSharp.MacroCompiler
         int Offset;
         public int Line;
         public int Col;
+        internal bool Valid { get { return Offset >= 0; } }
 
         internal static readonly SourceLocation None = new SourceLocation(-1);
 

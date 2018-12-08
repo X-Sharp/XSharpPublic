@@ -31,7 +31,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal LocalSymbol Local;
         internal Expr Expr;
-        CachedExpr(Binder b, Expr e)
+        CachedExpr(Binder b, Expr e) : base(e.Token)
         {
             CompilerGenerated = true;
             Expr = e;
@@ -127,7 +127,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            var r = new BinaryExpr(Left.Cloned(b), Kind, Right);
+            var r = new BinaryExpr(Left.Cloned(b), Token, Right);
             r.Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref r.Left, ref r.Right);
             r.Datatype = (r.Symbol as TypedSymbol)?.Type;
             Right = r;
@@ -154,7 +154,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static BinaryExpr Bound(Expr Left, BinaryOperatorKind kind, bool logic, Expr Right)
         {
-            var e = new BinaryExpr(Left, TokenType.LAST, Right);
+            var e = new BinaryExpr(Left, Left.Token, Right);
             if (logic)
             {
                 Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
@@ -194,7 +194,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind)
         {
             var s = Binder.UnaryOperation(kind, ref expr);
-            return new UnaryExpr(expr, TokenType.LAST) { Symbol = s, Datatype = s?.Type };
+            return new UnaryExpr(expr, expr.Token) { Symbol = s, Datatype = s?.Type };
         }
     }
     internal partial class PrefixExpr : Expr
@@ -237,10 +237,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static LiteralExpr Bound(Constant c)
         {
-            var e = new LiteralExpr(TokenType.LAST, null);
-            e.Symbol = c;
-            e.Datatype = (e.Symbol as TypedSymbol)?.Type;
-            return e;
+            return new LiteralExpr(Token.None) { Symbol = c, Datatype = c.Type };
         }
     }
     internal partial class SelfExpr : Expr
@@ -476,13 +473,13 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static AliasExpr Bound(string fieldName)
         {
-            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName))) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
         }
     }
     internal partial class AutoVarExpr : Expr
     {
         internal Expr Var;
-        AutoVarExpr(Expr var) { Var = var; }
+        AutoVarExpr(Expr var) : base(var.Token) { Var = var; }
         public override string ToString() { return "{Var:" + Var.ToString() + "}"; }
         internal static AutoVarExpr Bound(string varName)
         {

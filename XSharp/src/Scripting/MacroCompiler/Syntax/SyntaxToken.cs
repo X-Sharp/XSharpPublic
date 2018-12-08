@@ -170,6 +170,7 @@ namespace XSharp.MacroCompiler.Syntax
             this.channel = channel;
             this.value = value;
         }
+        internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.DEFOUTCHANNEL);
     }
 
     internal class TokenAttr

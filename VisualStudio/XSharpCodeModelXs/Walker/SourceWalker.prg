@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharpModel
 
 			VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
 				SELF:_errors:Add(XWarning{fileName, span, errorCode, message, args})
-
+            /*
 			PRIVATE METHOD ShowErrorsAsync(syntaxRoot AS SyntaxNode) AS VOID
 				LOCAL list AS System.Collections.Immutable.ImmutableList<XError>
 				LOCAL obj2 AS OBJECT
@@ -153,6 +153,7 @@ BEGIN NAMESPACE XSharpModel
 					END LOCK
 					WriteOutputMessage("<<-- ShowErrorsAsync() "+_file:FullPath)
 				ENDIF
+            */
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
 

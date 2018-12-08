@@ -826,8 +826,7 @@ namespace XSharp.Project
             XSharpLanguage.CompletionElement gotoElement = null;
             if (cType != null && methodName != null)
             {
-                cType = XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement);
-
+                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement );
             }
             else
             {
@@ -864,7 +863,8 @@ namespace XSharp.Project
                 {
                     currentNS = currentNamespace.Name;
                 }
-                cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber);
+                // We don't care of the corresponding Type, we are looking for the gotoElement
+                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber);
             }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))

@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharpModel
 				
 					parentName := thisName:Substring(0, (thisName:LastIndexOf(".") + 1)) + parentName
 				ENDIF
-				IF SELF:File != NULL .and. parentName != "System.Object"
+				IF SELF:File != NULL .AND. parentName != "System.Object"
 				
 					tmp := SELF:File:Project:Lookup(parentName, TRUE)
 					IF tmp != NULL
@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharpModel
 				nColEnd    := nColStart
 				nPosEnd    := oInfo:SourceLength-2
 			ENDIF
-			IF nLineStart == nLineEnd .and. nColEnd < nColStart
+			IF nLineStart == nLineEnd .AND. nColEnd < nColStart
 				nColEnd := nColStart + 1
 			ENDIF
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}

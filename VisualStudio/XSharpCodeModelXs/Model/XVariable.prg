@@ -17,11 +17,12 @@ BEGIN NAMESPACE XSharpModel
 		STATIC INITONLY PUBLIC UsualType := "USUAL" AS STRING
 		// Methods
 		CONSTRUCTOR(parent AS XElement, name AS STRING, kind AS Kind,  ;
-			span AS TextRange, position AS TextInterval, typeName AS STRING,  isParameter := false AS LOGIC)
+			span AS TextRange, position AS TextInterval, typeName AS STRING,  isParameter := FALSE AS LOGIC)
 			SUPER(name, kind, Modifiers.None, Modifiers.None, span, position)
 			SELF:_typeName		:= typeName
 			SELF:_isParameter	:= isParameter
 			SELF:_isTyped		:= !String.IsNullOrEmpty(typeName)
+			SELF:VarDefinition  := NULL	// Not a VAR
 			SUPER:Parent := parent
 		
 		
@@ -74,9 +75,10 @@ BEGIN NAMESPACE XSharpModel
 			END GET
 			SET
 				SELF:_typeName := VALUE
-				_isTyped := String.IsNullOrEmpty(_typeName)
+				_isTyped := ! String.IsNullOrEmpty(_typeName)
 			END SET
 		END PROPERTY
+
 		PROPERTY ShortTypeName AS STRING
 			GET
 				VAR cType := SELF:TypeName
@@ -87,6 +89,8 @@ BEGIN NAMESPACE XSharpModel
 				RETURN cType
 			END GET
 		END PROPERTY		
+
+		PROPERTY VarDefinition AS ParseContext AUTO
 		
 	END CLASS
 	

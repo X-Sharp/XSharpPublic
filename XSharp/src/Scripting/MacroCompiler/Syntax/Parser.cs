@@ -801,11 +801,19 @@ namespace XSharp.MacroCompiler
             Prefix,
             Postfix,
 
+            PostfixDot,
+            PostfixColon,
+            PostfixCall,
+            PostfixIndex,
             BinaryAssign,
             BinaryAssignOp,
             BinaryLogic,
             PrefixAssign,
             PostfixAssign,
+            PostfixIs,
+            PostfixAsType,
+            PrefixCast,
+            BinaryAlias,
         }
 
         class Oper
@@ -841,6 +849,26 @@ namespace XSharp.MacroCompiler
                         }
                         Combine = _combine_binary;
                         break;
+                    case AssocType.PostfixDot:
+                        this.assoc = AssocType.Postfix;
+                        Parse = _parse_postfix_dot;
+                        Combine = _combine_postfix_dot;
+                        break;
+                    case AssocType.PostfixColon:
+                        this.assoc = AssocType.Postfix;
+                        Parse = _parse_postfix_colon;
+                        Combine = _combine_postfix_colon;
+                        break;
+                    case AssocType.PostfixCall:
+                        this.assoc = AssocType.Postfix;
+                        Parse = _parse_postfix_call;
+                        Combine = _combine_postfix_call;
+                        break;
+                    case AssocType.PostfixIndex:
+                        this.assoc = AssocType.Postfix;
+                        Parse = _parse_postfix_index;
+                        Combine = _combine_postfix_index;
+                        break;
                     case AssocType.BinaryAssign:
                         this.assoc = AssocType.BinaryRight;
                         Parse = _parse;
@@ -873,6 +901,26 @@ namespace XSharp.MacroCompiler
                         this.assoc = AssocType.Prefix;
                         Parse = _parse;
                         Combine = _combine_prefix_assign;
+                        break;
+                    case AssocType.PostfixIs:
+                        this.assoc = AssocType.Postfix;
+                        Parse = _parse_is_as;
+                        Combine = _combine_postfix_is;
+                        break;
+                    case AssocType.PostfixAsType:
+                        this.assoc = AssocType.Postfix;
+                        Parse = _parse_is_as;
+                        Combine = _combine_postfix_as_type;
+                        break;
+                    case AssocType.PrefixCast:
+                        this.assoc = AssocType.Prefix;
+                        Parse = _parse;
+                        Combine = _combine_prefix_cast;
+                        break;
+                    case AssocType.BinaryAlias:
+                        this.assoc = AssocType.BinaryLeft;
+                        Parse = _parse;
+                        Combine = _combine_binary_alias;
                         break;
                     case AssocType.None:
                         Parse = _parse_empty;
@@ -920,43 +968,59 @@ namespace XSharp.MacroCompiler
                 Debug.Assert(n.Token.type == type);
                 return this;
             }
+            Oper _parse_is_as(Parser p, out Node n)
+            {
+                p.Consume();
+                n = p.ParseQualifiedName();
+                return this;
+            }
+            Oper _parse_postfix_dot(Parser p, out Node n)
+            {
+                p.Consume();
+                n = p.Require(p.ParseName(), ErrorCode.Expected, "name");
+                return this;
+            }
+            Oper _parse_postfix_colon(Parser p, out Node n)
+            {
+                p.Consume();
+                n = p.Require(p.ParseName(), ErrorCode.Expected, "name");
+                return this;
+            }
+            Oper _parse_postfix_call(Parser p, out Node n)
+            {
+                n = p.ParseParenArgList();
+                return this;
+            }
+            Oper _parse_postfix_index(Parser p, out Node n)
+            {
+                n = p.ParseBrktArgList();
+                return this;
+            }
             Oper _parse_empty(Parser p, out Node n)
             {
                 n = null;
                 return null;
             }
-            Expr _combine_prefix(Parser p, Expr l, Node o, Expr r)
+            Expr _combine_prefix(Parser p, Expr l, Node o, Expr r) => new UnaryExpr(r, o.Token);
+            Expr _combine_postfix(Parser p, Expr l, Node o, Expr r) => new UnaryExpr(l, o.Token);
+            Expr _combine_prefix_assign(Parser p, Expr l, Node o, Expr r) => new PrefixExpr(r, o.Token);
+            Expr _combine_postfix_assign(Parser p, Expr l, Node o, Expr r) => new PostfixExpr(l, o.Token);
+            Expr _combine_binary(Parser p, Expr l, Node o, Expr r) => new BinaryExpr(l, o.Token, r);
+            Expr _combine_binary_assign(Parser p, Expr l, Node o, Expr r) => new AssignExpr(l, o.Token, r);
+            Expr _combine_binary_assign_op(Parser p, Expr l, Node o, Expr r) => new AssignOpExpr(l, o.Token, r);
+            Expr _combine_binary_logic(Parser p, Expr l, Node o, Expr r) => new BinaryLogicExpr(l, o.Token, r);
+            Expr _combine_postfix_is(Parser p, Expr l, Node o, Expr r) => new IsExpr(l, (TypeExpr)o, o.Token);
+            Expr _combine_postfix_as_type(Parser p, Expr l, Node o, Expr r) => new AsTypeExpr(l, (TypeExpr)o, o.Token);
+            Expr _combine_prefix_cast(Parser p, Expr l, Node o, Expr r) => new TypeCast((TypeExpr)o, r);
+            Expr _combine_binary_alias(Parser p, Expr l, Node o, Expr r) => new AliasExpr(l, r, o.Token);
+            Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r)
             {
-                return new UnaryExpr(r, o.Token);
+                if (!(l is TypeExpr)) throw Compilation.Error(p.Lt(), ErrorCode.Expected, "name");
+                return new QualifiedNameExpr((TypeExpr)l, (NameExpr)o);
             }
-            Expr _combine_postfix(Parser p, Expr l, Node o, Expr r)
-            {
-                return new UnaryExpr(l, o.Token);
-            }
-            Expr _combine_prefix_assign(Parser p, Expr l, Node o, Expr r)
-            {
-                return new PrefixExpr(r, o.Token);
-            }
-            Expr _combine_postfix_assign(Parser p, Expr l, Node o, Expr r)
-            {
-                return new PostfixExpr(l, o.Token);
-            }
-            Expr _combine_binary(Parser p, Expr l, Node o, Expr r)
-            {
-                return new BinaryExpr(l, o.Token, r);
-            }
-            Expr _combine_binary_assign(Parser p, Expr l, Node o, Expr r)
-            {
-                return new AssignExpr(l, o.Token, r);
-            }
-            Expr _combine_binary_assign_op(Parser p, Expr l, Node o, Expr r)
-            {
-                return new AssignOpExpr(l, o.Token, r);
-            }
-            Expr _combine_binary_logic(Parser p, Expr l, Node o, Expr r)
-            {
-                return new BinaryLogicExpr(l, o.Token, r);
-            }
+            Expr _combine_postfix_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, (NameExpr)o);
+            Expr _combine_postfix_call(Parser p, Expr l, Node o, Expr r) => new MethodCallExpr(l, (ArgList)o);
+            Expr _combine_postfix_index(Parser p, Expr l, Node o, Expr r) => new ArrayAccessExpr(l, (ArgList)o);
             public static bool operator <(Oper a, Oper b)
             {
                 return a.level < b.level || (a.level == b.level && a.assoc != AssocType.BinaryRight);
@@ -981,28 +1045,14 @@ namespace XSharp.MacroCompiler
                 PrefixOpers[i] = Oper.Empty;
             }
 
-            Opers[(int)TokenType.DOT] = new Oper(AssocType.Postfix, TokenType.DOT, 1,
-                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(), ErrorCode.Expected, "name"); return Opers[(int)TokenType.DOT]; },
-                combineFunc: (p, l, o, r) => { if (!(l is TypeExpr)) throw Error(p.Lt(), ErrorCode.Expected, "name"); return new QualifiedNameExpr((TypeExpr)l, (NameExpr)o); });
-            Opers[(int)TokenType.COLON] = new Oper(AssocType.Postfix, TokenType.COLON, 1,
-                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(), ErrorCode.Expected, "name"); return Opers[(int)TokenType.COLON]; },
-                combineFunc: (p, l, o, r) => { return new MemberAccessExpr(l, (NameExpr)o); });
-
-            Opers[(int)TokenType.LPAREN] = new Oper(AssocType.Postfix, TokenType.LPAREN, 2,
-                parseFunc: (Parser p, out Node nn) => { nn = p.ParseParenArgList(); return Opers[(int)TokenType.LPAREN]; },
-                combineFunc: (p, l, o, r) => { return new MethodCallExpr(l, (ArgList)o); });
-            Opers[(int)TokenType.LBRKT] = new Oper(AssocType.Postfix, TokenType.LBRKT, 2,
-                parseFunc: (Parser p, out Node nn) => { nn = p.ParseBrktArgList(); return Opers[(int)TokenType.LBRKT]; },
-                combineFunc: (p, l, o, r) => { return new ArrayAccessExpr(l, (ArgList)o); });
-
+            Opers[(int)TokenType.DOT] = new Oper(AssocType.PostfixDot, TokenType.DOT, 1);
+            Opers[(int)TokenType.COLON] = new Oper(AssocType.PostfixColon, TokenType.COLON, 1);
+            Opers[(int)TokenType.LPAREN] = new Oper(AssocType.PostfixCall, TokenType.LPAREN, 2);
+            Opers[(int)TokenType.LBRKT] = new Oper(AssocType.PostfixIndex, TokenType.LBRKT, 2);
             Opers[(int)TokenType.QMARK] = new Oper(AssocType.Postfix, TokenType.QMARK, 3);
-
-            Opers[(int)TokenType.TYPECAST] = new Oper(AssocType.Prefix, TokenType.TYPECAST, 4, null,
-                combineFunc: (p, l, o, r) => { return new TypeCast((TypeExpr)o, r); });
-
+            Opers[(int)TokenType.TYPECAST] = new Oper(AssocType.PrefixCast, TokenType.TYPECAST, 4);
             Opers[(int)TokenType.INC] = new Oper(AssocType.PostfixAssign, TokenType.INC, 5);
             Opers[(int)TokenType.DEC] = new Oper(AssocType.PostfixAssign, TokenType.DEC, 5);
-
             PrefixOpers[(int)TokenType.AWAIT] = new Oper(AssocType.Prefix, TokenType.AWAIT, 6);
             PrefixOpers[(int)TokenType.INC] = new Oper(AssocType.PrefixAssign, TokenType.INC, 6);
             PrefixOpers[(int)TokenType.DEC] = new Oper(AssocType.PrefixAssign, TokenType.DEC, 6);
@@ -1010,29 +1060,17 @@ namespace XSharp.MacroCompiler
             PrefixOpers[(int)TokenType.MINUS] = new Oper(AssocType.Prefix, TokenType.MINUS, 6);
             PrefixOpers[(int)TokenType.TILDE] = new Oper(AssocType.Prefix, TokenType.TILDE, 6);
             PrefixOpers[(int)TokenType.ADDROF] = new Oper(AssocType.Prefix, TokenType.ADDROF, 6);
-
-            Opers[(int)TokenType.IS] = new Oper(AssocType.Postfix, TokenType.IS, 7,
-                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.ParseQualifiedName(); return Opers[(int)TokenType.IS]; },
-                combineFunc: (p, l, o, r) => { return new IsExpr(l,  (TypeExpr)o, o.Token); });
-            Opers[(int)TokenType.ASTYPE] = new Oper(AssocType.Postfix, TokenType.AS, 7,
-                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.ParseQualifiedName(); return Opers[(int)TokenType.ASTYPE]; },
-                combineFunc: (p, l, o, r) => { return new AsTypeExpr(l, (TypeExpr)o, o.Token); });
-
-            Opers[(int)TokenType.ALIAS] = new Oper(AssocType.BinaryLeft, TokenType.ALIAS, 8, 
-                combineFunc: (p, l, o, r) => { return new AliasExpr(l, r, o.Token); });
-
+            Opers[(int)TokenType.IS] = new Oper(AssocType.PostfixIs, TokenType.IS, 7);
+            Opers[(int)TokenType.ASTYPE] = new Oper(AssocType.PostfixAsType, TokenType.AS, 7);
+            Opers[(int)TokenType.ALIAS] = new Oper(AssocType.BinaryAlias, TokenType.ALIAS, 8);
             Opers[(int)TokenType.EXP] = new Oper(AssocType.BinaryLeft, TokenType.EXP, 9);
-
             Opers[(int)TokenType.MULT] = new Oper(AssocType.BinaryLeft, TokenType.MULT, 10);
             Opers[(int)TokenType.DIV] = new Oper(AssocType.BinaryLeft, TokenType.DIV, 10);
             Opers[(int)TokenType.MOD] = new Oper(AssocType.BinaryLeft, TokenType.MOD, 10);
-
             Opers[(int)TokenType.PLUS] = new Oper(AssocType.BinaryLeft, TokenType.PLUS,11);
             Opers[(int)TokenType.MINUS] = new Oper(AssocType.BinaryLeft, TokenType.MINUS, 11);
-
             Opers[(int)TokenType.LSHIFT] = new Oper(AssocType.BinaryLeft, TokenType.LSHIFT, 12);
             Opers[(int)TokenType.RSHIFT] = new Oper(AssocType.BinaryLeft, TokenType.RSHIFT, 12);
-
             Opers[(int)TokenType.GT] = new Oper(AssocType.BinaryLeft, TokenType.GT, 13);
             Opers[(int)TokenType.LT] = new Oper(AssocType.BinaryLeft, TokenType.LT, 13);
             Opers[(int)TokenType.GTE] = new Oper(AssocType.BinaryLeft, TokenType.GTE, 13);
@@ -1042,26 +1080,17 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.SUBSTR] = new Oper(AssocType.BinaryLeft, TokenType.SUBSTR, 13);
             Opers[(int)TokenType.NEQ] = new Oper(AssocType.BinaryLeft, TokenType.NEQ, 13);
             Opers[(int)TokenType.NEQ2] = new Oper(AssocType.BinaryLeft, TokenType.NEQ2, 13);
-
             Opers[(int)TokenType.AMP] = new Oper(AssocType.BinaryLeft, TokenType.AMP, 14);
-
             Opers[(int)TokenType.TILDE] = new Oper(AssocType.BinaryLeft, TokenType.TILDE, 15);
-
             Opers[(int)TokenType.PIPE] = new Oper(AssocType.BinaryLeft, TokenType.PIPE, 16);
-
             PrefixOpers[(int)TokenType.NOT] = new Oper(AssocType.Prefix, TokenType.NOT, 6);
             PrefixOpers[(int)TokenType.LOGIC_NOT] = new Oper(AssocType.Prefix, TokenType.LOGIC_NOT, 6);
-
             Opers[(int)TokenType.AND] = new Oper(AssocType.BinaryLogic, TokenType.AND, 18);
             Opers[(int)TokenType.LOGIC_AND] = new Oper(AssocType.BinaryLogic, TokenType.LOGIC_AND, 18);
-
             Opers[(int)TokenType.LOGIC_XOR] = new Oper(AssocType.BinaryLeft, TokenType.LOGIC_XOR, 19);
-
             Opers[(int)TokenType.OR] = new Oper(AssocType.BinaryLogic, TokenType.OR, 20);
             Opers[(int)TokenType.LOGIC_OR] = new Oper(AssocType.BinaryLogic, TokenType.LOGIC_OR, 20);
-
             Opers[(int)TokenType.DEFAULT] = new Oper(AssocType.BinaryLeft, TokenType.DEFAULT, 21);
-
             Opers[(int)TokenType.ASSIGN_OP] = new Oper(AssocType.BinaryAssign, TokenType.ASSIGN_OP, 22);
             Opers[(int)TokenType.ASSIGN_ADD] = new Oper(AssocType.BinaryAssignOp, TokenType.ASSIGN_ADD, 22);
             Opers[(int)TokenType.ASSIGN_SUB] = new Oper(AssocType.BinaryAssignOp, TokenType.ASSIGN_SUB, 22);

@@ -114,6 +114,15 @@ namespace XSharp.MacroCompiler
             return n;
         }
 
+        T Require<T>(T n, Token t, ErrorCode error, params object[] args)
+        {
+            if (n == null)
+            {
+                throw Error(t, error, args);
+            }
+            return n;
+        }
+
         T RequireEnd<T>(T n, ErrorCode error, params object[] args)
         {
             Expect(TokenType.EOS);
@@ -935,14 +944,9 @@ namespace XSharp.MacroCompiler
             }
             Oper _parse(Parser p, out Node n)
             {
-                n = null;
-                if (assoc != AssocType.None)
-                {
-                    n = new SyntaxToken(p.ConsumeAndGet());
-                    Debug.Assert(n.Token.type == type);
-                    return this;
-                }
-                return null;
+                n = new SyntaxToken(p.ConsumeAndGet());
+                Debug.Assert(n.Token.type == type);
+                return this;
             }
             Oper _parse_gt(Parser p, out Node n)
             {
@@ -1001,6 +1005,7 @@ namespace XSharp.MacroCompiler
                 n = null;
                 return null;
             }
+
             Expr _combine_prefix(Parser p, Expr l, Node o, Expr r) => new UnaryExpr(r, o.Token);
             Expr _combine_postfix(Parser p, Expr l, Node o, Expr r) => new UnaryExpr(l, o.Token);
             Expr _combine_prefix_assign(Parser p, Expr l, Node o, Expr r) => new PrefixExpr(r, o.Token);
@@ -1013,22 +1018,15 @@ namespace XSharp.MacroCompiler
             Expr _combine_postfix_as_type(Parser p, Expr l, Node o, Expr r) => new AsTypeExpr(l, (TypeExpr)o, o.Token);
             Expr _combine_prefix_cast(Parser p, Expr l, Node o, Expr r) => new TypeCast((TypeExpr)o, r);
             Expr _combine_binary_alias(Parser p, Expr l, Node o, Expr r) => new AliasExpr(l, r, o.Token);
-            Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r)
-            {
-                if (!(l is TypeExpr)) throw Compilation.Error(p.Lt(), ErrorCode.Expected, "name");
-                return new QualifiedNameExpr((TypeExpr)l, (NameExpr)o);
-            }
+            Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r) => new QualifiedNameExpr(p.Require((l as TypeExpr), l.Token, ErrorCode.Expected, "type"), (NameExpr)o);
             Expr _combine_postfix_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, (NameExpr)o);
             Expr _combine_postfix_call(Parser p, Expr l, Node o, Expr r) => new MethodCallExpr(l, (ArgList)o);
             Expr _combine_postfix_index(Parser p, Expr l, Node o, Expr r) => new ArrayAccessExpr(l, (ArgList)o);
+
             public static bool operator <(Oper a, Oper b)
-            {
-                return a.level < b.level || (a.level == b.level && a.assoc != AssocType.BinaryRight);
-            }
+                => a.level < b.level || (a.level == b.level && a.assoc != AssocType.BinaryRight);
             public static bool operator >(Oper a, Oper b)
-            {
-                return a.level > b.level || (a.level == b.level && a.assoc == AssocType.BinaryRight);
-            }
+                => a.level > b.level || (a.level == b.level && a.assoc == AssocType.BinaryRight);
         }
 
         static readonly Oper[] Opers;

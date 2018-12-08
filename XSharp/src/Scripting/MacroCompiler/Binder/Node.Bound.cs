@@ -515,6 +515,7 @@ namespace XSharp.MacroCompiler.Syntax
                     b.AddLocal(p.LookupName, b.ObjectType);
                     p.Bind(b);
                 }
+                // TODO: nvk: generate pcount?
             }
             if (Body != null)
             {

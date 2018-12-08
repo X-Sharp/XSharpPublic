@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace XSharp.MacroCompiler
 {
     using Syntax;
+    using static Compilation;
 
     partial class Parser
     {
@@ -83,30 +84,30 @@ namespace XSharp.MacroCompiler
             return false;
         }
 
-        bool Require(bool p, string error)
+        bool Require(bool p, ErrorCode error, params object[] args)
         {
             if (!p)
             {
-                throw new Exception(error);
+                throw Error(Lt(), error, args);
             }
             return p;
         }
 
-        T Require<T>(T n, string error)
+        T Require<T>(T n, ErrorCode error, params object[] args)
         {
             if (n == null)
             {
-                throw new Exception(error);
+                throw Error(Lt(), error, args);
             }
             return n;
         }
 
-        T RequireEnd<T>(T n, string error)
+        T RequireEnd<T>(T n, ErrorCode error, params object[] args)
         {
             Expect(TokenType.EOS);
             if (La() != TokenType.EOF)
             {
-                throw new Exception(error);
+                throw Error(Lt(), error, args);
             }
             return n;
         }
@@ -245,7 +246,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_SYMBOL:
                     return new LiteralExpr(t, ConsumeAndGet().value);
                 case TokenType.INCOMPLETE_STRING_CONST:
-                    throw new Exception("Unterminated string");
+                    throw Error(Lt(), ErrorCode.UnterminatedString);
                 case TokenType.ARRAY:
                 case TokenType.CODEBLOCK:
                 case TokenType.DATE:
@@ -290,7 +291,7 @@ namespace XSharp.MacroCompiler
                 // TODO nvk: AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                 // TODO nvk: AMP Id=identifierName										#macro					// &id
                 case TokenType.ARGLIST:
-                    throw new Exception(string.Format("Not supported: {0}", Lt()?.value));
+                    throw Error(Lt(), ErrorCode.NotSupported, Lt()?.value);
                 default:
                     if (TokenAttr.IsSoftKeyword(La()))
                         return ParseFieldAlias() ?? ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(ParseQualifiedName()));
@@ -355,17 +356,17 @@ namespace XSharp.MacroCompiler
             {
                 bool cast = false;
 
-                Require(Expect(TokenType.LPAREN), "Expected '('");
+                Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
 
                 if (Expect(TokenType.CAST))
                 {
-                    Require(Expect(TokenType.COMMA), "Expected ','");
+                    Require(Expect(TokenType.COMMA), ErrorCode.Expected, "','");
                     cast = true;
                 }
 
                 var expr = ParseExpression();
 
-                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
+                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
 
                 return cast ? new TypeCast((TypeExpr)e, expr) : new TypeConversion((TypeExpr)e, expr);
             }
@@ -422,14 +423,14 @@ namespace XSharp.MacroCompiler
                 switch ((t as IdExpr).Name.ToUpperInvariant())
                 {
                     case "ALTD":
-                        throw new Exception("Not supported");
+                        throw Error(Lt(), ErrorCode.NotSupported, (t as IdExpr).Name);
                     case "_GETINST":
-                        throw new Exception("Not supported");
+                        throw Error(Lt(), ErrorCode.NotSupported, (t as IdExpr).Name);
                     case "CHR":
                     case "_CHR":
                         {
                             var args = ParseParenArgList();
-                            Require(args.Args.Count == 1, "Bad number of arguments (expected 1)");
+                            Require(args.Args.Count == 1, ErrorCode.BadNumArgs, 1);
                             return new TypeCast(new NativeTypeExpr(TokenType.CHAR), args.Args.First().Expr);
                         }
                     case "PCALL":
@@ -507,17 +508,17 @@ namespace XSharp.MacroCompiler
                 {
                     var at = op?.assoc ?? AssocType.None;
                     if (e == null && op != null && at != AssocType.Prefix)
-                        throw new Exception("Expr expected");
+                        throw Error(Lt(), ErrorCode.Expected, "expression");
                     if (e != null && at == AssocType.Prefix)
-                        throw new Exception("Unexpected prefix operator");
+                        throw Error(Lt(), ErrorCode.Unexpected, "prefix operator");
                     while (exprs.Count > 0 && e != null && (op == null || exprs.Peek().Item2 < op))
                     {
                         var s = exprs.Pop();
-                        e = s.Item2.Combine(s.Item1, s.Item3, e);
+                        e = s.Item2.Combine(this, s.Item1, s.Item3, e);
                     }
                     if (at == AssocType.Postfix)
                     {
-                        e = op.Combine(e,n,null);
+                        e = op.Combine(this, e, n, null);
                         op = ParseOper(out n);
                     }
                 } while (op?.assoc == AssocType.Postfix || (e != null && op == null && exprs.Count > 0));
@@ -539,14 +540,14 @@ namespace XSharp.MacroCompiler
             if (e == null && La() == TokenType.COMMA)
             {
                 if (allowEmpty) e = new EmptyExpr();
-                else Require(e != null, "Expected expression");
+                else Require(e != null, ErrorCode.Expected, "expression");
             }
             while (Expect(TokenType.COMMA))
             {
                 l.Add(e);
                 e = ParseExpression();
                 if (e == null && allowEmpty) e = new EmptyExpr();
-                else Require(e != null, "Expected expression");
+                else Require(e != null, ErrorCode.Expected, "expression");
             }
             if (e != null)
             {
@@ -558,7 +559,7 @@ namespace XSharp.MacroCompiler
 
         internal Codeblock ParseCodeblock()
         {
-            Require(Expect(TokenType.LCURLY), "Expected '{'");
+            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "'{'");
 
             List<IdExpr> p = null;
 
@@ -573,17 +574,17 @@ namespace XSharp.MacroCompiler
                         p.Add(a);
                         if (!Expect(TokenType.COMMA))
                             break;
-                        a = Require(ParseId(), "Expected identifier");
+                        a = Require(ParseId(), ErrorCode.Expected, "identifier");
                     } while (true);
                 }
 
-                Require(Expect(TokenType.PIPE), "Expected '|'");
+                Require(Expect(TokenType.PIPE), ErrorCode.Expected, "'|'");
             }
-            else Require(Expect(TokenType.OR), "Expected '|'");
+            else Require(Expect(TokenType.OR), ErrorCode.Expected, "'|'");
 
             var l = ParseExprList();
 
-            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, "Expected '}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "'}'");
 
             return new Codeblock(p,l);
         }
@@ -592,44 +593,44 @@ namespace XSharp.MacroCompiler
         {
             var p = new List<IdExpr>();
             if (La() == TokenType.LCURLY && (La(2) == TokenType.PIPE || La(2) == TokenType.OR))
-                return RequireEnd(ParseCodeblock(), "Unexpected token");
+                return RequireEnd(ParseCodeblock(), ErrorCode.Unexpected, "token");
 
             var l = ParseExprList();
             if (l != null)
-                return RequireEnd(new Codeblock(null,l), "Unexpected token");
+                return RequireEnd(new Codeblock(null,l), ErrorCode.Unexpected, "token");
 
             return null;
         }
 
         internal TypeExpr ParseParenType()
         {
-            Require(Expect(TokenType.LPAREN), "Expected '('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
 
-            var t = Require(ParseType(), "Expected type expression");
+            var t = Require(ParseType(), ErrorCode.Expected, "type");
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
 
             return t;
         }
 
         internal Expr ParseParenExpr()
         {
-            Require(Expect(TokenType.LPAREN), "Expected '('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
 
-            var e = Require(ParseExpression(),"Expected expression");
+            var e = Require(ParseExpression(), ErrorCode.Expected, "expression");
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
 
             return e;
         }
 
         internal Expr ParseLiteralArray(TypeExpr t = null)
         {
-            Require(Expect(TokenType.LCURLY), "Expected '{'");
+            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "'{'");
 
             var e = ParseExprList(true);
 
-            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, "Expected '}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "'}'");
 
             return new LiteralArray(e, t);
         }
@@ -664,9 +665,9 @@ namespace XSharp.MacroCompiler
         {
             if (Expect(TokenType.IIF) || Expect(TokenType.IF))
             {
-                Require(Expect(TokenType.LPAREN), "Expected '('");
+                Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
 
-                var c = Require(ParseExpression(), "Expected expression");
+                var c = Require(ParseExpression(), ErrorCode.Expected, "expression");
 
                 Expect(TokenType.COMMA);
 
@@ -676,7 +677,7 @@ namespace XSharp.MacroCompiler
 
                 var ef = ParseExpression() ?? new EmptyExpr();
 
-                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
+                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
 
                 return new IifExpr(c, et, ef);
             }
@@ -688,13 +689,13 @@ namespace XSharp.MacroCompiler
             if (La(2) == TokenType.ALIAS)
             {
                 if (Expect(TokenType.FIELD_))
-                    Require(Expect(TokenType.ALIAS), "Expected '->'");
+                    Require(Expect(TokenType.ALIAS), ErrorCode.Expected, "'->'");
                 else if (La(4) == TokenType.LPAREN)
                     return null;
-                var alias = Require(ParseId(), "Expected name");
+                var alias = Require(ParseId(), ErrorCode.Expected, "name");
                 if (!Expect(TokenType.ALIAS))
                     return new AliasExpr(null, new LiteralExpr(TokenType.SYMBOL_CONST, alias.Name));
-                var field = Require(ParseId(), "Expected name");
+                var field = Require(ParseId(), ErrorCode.Expected, "name");
                 return new AliasExpr(new LiteralExpr(TokenType.SYMBOL_CONST,alias.Name),new LiteralExpr(TokenType.SYMBOL_CONST,field.Name));
             }
             return null;
@@ -732,33 +733,33 @@ namespace XSharp.MacroCompiler
 
         internal ArgList ParseParenArgList()
         {
-            Require(Expect(TokenType.LPAREN), "Expected '('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, "Expected ')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
 
             return l;
         }
 
         internal ArgList ParseBrktArgList()
         {
-            Require(Expect(TokenType.LBRKT), "Expected '['");
+            Require(Expect(TokenType.LBRKT), ErrorCode.Expected, "'['");
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RBRKT), "Expected ']'");
+            Require(Expect(TokenType.RBRKT), ErrorCode.Expected, "']'");
 
             return l;
         }
 
         internal ArgList ParseCurlyArgList()
         {
-            Require(Expect(TokenType.LCURLY), "Expected '{'");
+            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "'{'");
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, "Expected '}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "'}'");
 
             return l;
         }
@@ -780,7 +781,7 @@ namespace XSharp.MacroCompiler
         {
             internal static readonly Oper Empty = new Oper(AssocType.None, TokenType.UNRECOGNIZED, int.MaxValue);
             internal delegate Oper ParseDelegate(Parser p, out Node n);
-            internal delegate Expr CombineDelegate(Expr l, Node o, Expr r);
+            internal delegate Expr CombineDelegate(Parser p, Expr l, Node o, Expr r);
             internal readonly AssocType assoc;
             internal readonly TokenType type;
             internal readonly int level;
@@ -847,27 +848,27 @@ namespace XSharp.MacroCompiler
                 n = null;
                 return null;
             }
-            Expr _combine_prefix(Expr l, Node o, Expr r)
+            Expr _combine_prefix(Parser p, Expr l, Node o, Expr r)
             {
                 return new UnaryExpr(r, type);
             }
-            Expr _combine_postfix(Expr l, Node o, Expr r)
+            Expr _combine_postfix(Parser p, Expr l, Node o, Expr r)
             {
                 return new UnaryExpr(l, type);
             }
-            Expr _combine_prefix_assign(Expr l, Node o, Expr r)
+            Expr _combine_prefix_assign(Parser p, Expr l, Node o, Expr r)
             {
                 return new PrefixExpr(r, type);
             }
-            Expr _combine_postfix_assign(Expr l, Node o, Expr r)
+            Expr _combine_postfix_assign(Parser p, Expr l, Node o, Expr r)
             {
                 return new PostfixExpr(l, type);
             }
-            Expr _combine_binary(Expr l, Node o, Expr r)
+            Expr _combine_binary(Parser p, Expr l, Node o, Expr r)
             {
                 return new BinaryExpr(l, type, r);
             }
-            Expr _combine_binary_logic(Expr l, Node o, Expr r)
+            Expr _combine_binary_logic(Parser p, Expr l, Node o, Expr r)
             {
                 return new BinaryLogicExpr(l, type, r);
             }
@@ -896,23 +897,23 @@ namespace XSharp.MacroCompiler
             }
 
             Opers[(int)TokenType.DOT] = new Oper(AssocType.Postfix, TokenType.DOT, 1,
-                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(),"Name expected"); return Opers[(int)TokenType.DOT]; },
-                combineFunc: (l, o, r) => { if (!(l is TypeExpr)) throw new Exception("Type or name required"); return new QualifiedNameExpr((TypeExpr)l, (NameExpr)o); });
+                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(), ErrorCode.Expected, "name"); return Opers[(int)TokenType.DOT]; },
+                combineFunc: (p, l, o, r) => { if (!(l is TypeExpr)) throw Error(p.Lt(), ErrorCode.Expected, "name"); return new QualifiedNameExpr((TypeExpr)l, (NameExpr)o); });
             Opers[(int)TokenType.COLON] = new Oper(AssocType.Postfix, TokenType.COLON, 1,
-                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(), "Name expected"); return Opers[(int)TokenType.COLON]; },
-                combineFunc: (l, o, r) => { return new MemberAccessExpr(l, (NameExpr)o); });
+                parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.Require(p.ParseName(), ErrorCode.Expected, "name"); return Opers[(int)TokenType.COLON]; },
+                combineFunc: (p, l, o, r) => { return new MemberAccessExpr(l, (NameExpr)o); });
 
             Opers[(int)TokenType.LPAREN] = new Oper(AssocType.Postfix, TokenType.LPAREN, 2,
                 parseFunc: (Parser p, out Node nn) => { nn = p.ParseParenArgList(); return Opers[(int)TokenType.LPAREN]; },
-                combineFunc: (l, o, r) => { return new MethodCallExpr(l, (ArgList)o); });
+                combineFunc: (p, l, o, r) => { return new MethodCallExpr(l, (ArgList)o); });
             Opers[(int)TokenType.LBRKT] = new Oper(AssocType.Postfix, TokenType.LBRKT, 2,
                 parseFunc: (Parser p, out Node nn) => { nn = p.ParseBrktArgList(); return Opers[(int)TokenType.LBRKT]; },
-                combineFunc: (l, o, r) => { return new ArrayAccessExpr(l, (ArgList)o); });
+                combineFunc: (p, l, o, r) => { return new ArrayAccessExpr(l, (ArgList)o); });
 
             Opers[(int)TokenType.QMARK] = new Oper(AssocType.Postfix, TokenType.QMARK, 3);
 
             Opers[(int)TokenType.TYPECAST] = new Oper(AssocType.Prefix, TokenType.TYPECAST, 4, null,
-                combineFunc: (l, o, r) => { return new TypeCast((TypeExpr)o, r); });
+                combineFunc: (p, l, o, r) => { return new TypeCast((TypeExpr)o, r); });
 
             Opers[(int)TokenType.INC] = new Oper(AssocType.PostfixAssign, TokenType.INC, 5);
             Opers[(int)TokenType.DEC] = new Oper(AssocType.PostfixAssign, TokenType.DEC, 5);
@@ -927,13 +928,13 @@ namespace XSharp.MacroCompiler
 
             Opers[(int)TokenType.IS] = new Oper(AssocType.Postfix, TokenType.IS, 7,
                 parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.ParseQualifiedName(); return Opers[(int)TokenType.IS]; },
-                combineFunc: (l, o, r) => { return new IsExpr(l,  (TypeExpr)o); });
+                combineFunc: (p, l, o, r) => { return new IsExpr(l,  (TypeExpr)o); });
             Opers[(int)TokenType.ASTYPE] = new Oper(AssocType.Postfix, TokenType.AS, 7,
                 parseFunc: (Parser p, out Node nn) => { p.Consume(); nn = p.ParseQualifiedName(); return Opers[(int)TokenType.ASTYPE]; },
-                combineFunc: (l, o, r) => { return new AsTypeExpr(l, (TypeExpr)o); });
+                combineFunc: (p, l, o, r) => { return new AsTypeExpr(l, (TypeExpr)o); });
 
             Opers[(int)TokenType.ALIAS] = new Oper(AssocType.BinaryLeft, TokenType.ALIAS, 8, 
-                combineFunc: (l, o, r) => { return new AliasExpr(l, r); });
+                combineFunc: (p, l, o, r) => { return new AliasExpr(l, r); });
 
             Opers[(int)TokenType.EXP] = new Oper(AssocType.BinaryLeft, TokenType.EXP, 9);
 
@@ -981,29 +982,29 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.DEFAULT] = new Oper(AssocType.BinaryLeft, TokenType.DEFAULT, 21);
 
             Opers[(int)TokenType.ASSIGN_OP] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_OP, 22,
-                combineFunc: (l, o, r) => new AssignExpr(l, TokenType.ASSIGN_OP, r) );
+                combineFunc: (p, l, o, r) => new AssignExpr(l, TokenType.ASSIGN_OP, r) );
             Opers[(int)TokenType.ASSIGN_ADD] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_ADD, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_ADD, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_ADD, r));
             Opers[(int)TokenType.ASSIGN_SUB] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_SUB, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_SUB, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_SUB, r));
             Opers[(int)TokenType.ASSIGN_EXP] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_EXP, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_EXP, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_EXP, r));
             Opers[(int)TokenType.ASSIGN_MUL] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_MUL, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_MUL, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_MUL, r));
             Opers[(int)TokenType.ASSIGN_DIV] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_DIV, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_DIV, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_DIV, r));
             Opers[(int)TokenType.ASSIGN_MOD] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_MOD, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_MOD, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_MOD, r));
             Opers[(int)TokenType.ASSIGN_BITAND] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_BITAND, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_BITAND, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_BITAND, r));
             Opers[(int)TokenType.ASSIGN_BITOR] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_BITOR, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_BITOR, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_BITOR, r));
             Opers[(int)TokenType.ASSIGN_LSHIFT] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_LSHIFT, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_LSHIFT, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_LSHIFT, r));
             Opers[(int)TokenType.ASSIGN_RSHIFT] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_RSHIFT, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_RSHIFT, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_RSHIFT, r));
             Opers[(int)TokenType.ASSIGN_XOR] = new Oper(AssocType.BinaryRight, TokenType.ASSIGN_XOR, 22,
-                combineFunc: (l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_XOR, r));
+                combineFunc: (p, l, o, r) => new AssignOpExpr(l, TokenType.ASSIGN_XOR, r));
         }
     }
 }

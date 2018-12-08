@@ -25,7 +25,9 @@ namespace XSharp.MacroCompiler
         {
             public R Macro;
             public int ParamCount;
-            internal CompilationResult(R macro, int paramCount) { Macro = macro; ParamCount = paramCount; }
+            public CompileFailure Diagnostic;
+            internal CompilationResult(R macro, int paramCount) { Macro = macro; ParamCount = paramCount; Diagnostic = null; }
+            internal CompilationResult(CompileFailure diagnostic) { Macro = null; ParamCount = 0; Diagnostic = diagnostic; }
         }
 
         MacroOptions options;
@@ -37,9 +39,16 @@ namespace XSharp.MacroCompiler
 
         public CompilationResult Compile(string source)
         {
-            Binder<T, R> binder = Binder.Create<T, R>(options);
-            var ast = binder.Bind(Parse(source));
-            return new CompilationResult(binder.Emit(ast), binder.ParamCount);
+            try
+            {
+                Binder<T, R> binder = Binder.Create<T, R>(options);
+                var ast = binder.Bind(Parse(source));
+                return new CompilationResult(binder.Emit(ast), binder.ParamCount);
+            }
+            catch (CompileFailure e)
+            {
+                return new CompilationResult(new CompileFailure(e, source));
+            }
         }
 
         internal Syntax.Codeblock Parse(string source)

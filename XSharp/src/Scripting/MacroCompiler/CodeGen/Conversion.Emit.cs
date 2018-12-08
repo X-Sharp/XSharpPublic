@@ -74,7 +74,7 @@ namespace XSharp.MacroCompiler
             if (expr != null)
                 expr.EmitAddr(ilg);
             else
-                CompileFailure.Throw(ErrorCode.NotSupported);
+                Compilation.Error(ErrorCode.NotSupported);
         }
     }
 }

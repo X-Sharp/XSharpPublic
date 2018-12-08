@@ -101,7 +101,9 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
+//        EvalMacro(mc, e"{|a,b| !a[++b] += 100, a[2]}", {1,2,3}, 1)
+//        EvalMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}", {1,2,3}, 1)
+        EvalMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}", {1,2,3}, 1)
         wait
 
         RunTests(mc)
@@ -116,11 +118,16 @@ begin namespace MacroCompilerTest
 
     function EvalMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args params object[]) as usual
         Console.WriteLine("Executing macro ...")
-        //var cb := MCompile(src)
-        var cb := mc:Compile(src)
-        var res := cb:EvalBlock(args)
-        Console.WriteLine("res = {0}",res)
-        return res
+        try
+            //var cb := MCompile(src)
+            var cb := mc:Compile(src)
+            var res := cb:EvalBlock(args)
+            Console.WriteLine("res = {0}",res)
+            return res
+        catch e as XSharp.MacroCompiler.CompileFailure
+            Console.WriteLine("{0}",e:DiagnosticMessage)
+            return nil
+        end
 
     global TotalFails := 0 as int
     global TotalTests := 0 as int
@@ -129,7 +136,7 @@ begin namespace MacroCompilerTest
     function RunTests(mc as XSharp.Runtime.MacroCompiler) as void
         Console.WriteLine("Running tests ...")
 
-        //XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal // FAIL - runtume error because it is treated as late-bound!
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
 
         TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(symbol))
         TestMacro(mc, "#HELLo + #World", <OBJECT>{}, #hello + #world, typeof(string))
@@ -235,7 +242,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| b := testclass{}, b:prop := a, ++b:prop }", <OBJECT>{55}, 56, typeof(usual))
         TestMacro(mc, e"{|| tsi:v1 }", <OBJECT>{}, 1, typeof(usual))
         TestMacro(mc, e"{|| ++tsi:v1 }", <OBJECT>{}, 2, typeof(usual))
-//        TestMacro(mc, e"{|| tsi:v1 := 10, tsi:v1 }", <OBJECT>{}, 10, typeof(usual)) // FAIL because tsi is boxed by value
+//        TestMacro(mc, e"{|| tsi:v1 := 10, tsi:v1 }", <OBJECT>{}, 10, typeof(usual)) // FAIL because tsi is boxed by value for IVarPut()
         TestMacro(mc, e"{|| ++tsi:prop }", <OBJECT>{}, 2, typeof(usual))
         TestMacro(mc, e"{|| tci:v1 }", <OBJECT>{}, 1, typeof(usual))
         TestMacro(mc, e"{|| ++tci:v1 }", <OBJECT>{}, 2, typeof(usual))
@@ -250,7 +257,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a := {1,2,3,4}, a[1] += 10, a[1] }", <OBJECT>{}, 11, typeof(usual))
         TestMacro(mc, "{|a|a := 8, a := 8**a}", <OBJECT>{123}, 16777216, typeof(float))
         TestMacro(mc, "I((int)123.456)", <OBJECT>{}, 123, typeof(int))
-//        TestMacro(mc, "{|a| b := 8, c := b**a, c}", <OBJECT>{8}, 16777216, typeof(usual)) // FAIL - option change does not work!
+        TestMacro(mc, "{|a| b := 8, c := b**a, c}", <OBJECT>{8}, 16777216, typeof(usual))
         TestMacro(mc, "{|a,b,c|a.and.b.or..not.c}", <OBJECT>{true,false,true}, false, typeof(logic))
         TestMacro(mc, "{|a| a := U({1,2,3", <OBJECT>{}, {1,2,3}, typeof(usual))
         TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, nil, typeof(usual))
@@ -269,7 +276,7 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
-        //XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField // FAIL - runtume error because it is treated as late-bound!
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 
         TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))
         TestMacro(mc, e"{|| NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
@@ -296,50 +303,66 @@ begin namespace MacroCompilerTest
         TestMacroCompiler(mc, src, 100000, false, true)
         return
 
-    function TestMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args as object[], expect as usual, t as Type) as logic
-        TotalTests += 1
-        Console.Write("Test: '{0}' ", src)
-        var cb := mc:Compile(src)
-        var res := cb:EvalBlock(args)
-        local match as logic
-        if IsArray(expect)
-            match := ALen(expect) = ALen((usual)res)
-            for var i := 1 to ALen(expect)
-                if expect[i] != ((usual)res)[i]
-                    match := false
+    function TestMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args as object[], expect as usual, t as Type, ec := ErrorCode.NoError as ErrorCode) as logic
+        try
+            TotalTests += 1
+            Console.Write("Test: '{0}' ", src)
+            var cb := mc:Compile(src)
+            var res := cb:EvalBlock(args)
+            local match as logic
+            if IsArray(expect)
+                match := ALen(expect) = ALen((usual)res)
+                for var i := 1 to ALen(expect)
+                    if expect[i] != ((usual)res)[i]
+                        match := false
+                    end
+                next
+            elseif t != null .and. t:IsArray
+                local e := expect as object
+                match := e:Length = res:Length .and. t == res?:GetType()
+                local m := t:GetMethod("GetValue",<Type>{typeof(int)}) as System.Reflection.MethodInfo
+                for var i := 1 to e:Length
+                    var ve := m:Invoke(e,<object>{i-1})
+                    var vr := m:Invoke(res,<object>{i-1})
+                    if !Object.Equals(ve,vr)
+                        match := false
+                    end
+                next
+            elseif t == typeof(object)
+                match := true
+            else
+                try
+                    local r := res as dynamic
+                    local e := expect as dynamic
+                    match := r = e .or. res = expect
+                catch
+                    match := res = expect
                 end
-            next
-        elseif t != null .and. t:IsArray
-            local e := expect as object
-            match := e:Length = res:Length .and. t == res?:GetType()
-            local m := t:GetMethod("GetValue",<Type>{typeof(int)}) as System.Reflection.MethodInfo
-            for var i := 1 to e:Length
-                var ve := m:Invoke(e,<object>{i-1})
-                var vr := m:Invoke(res,<object>{i-1})
-                if !Object.Equals(ve,vr)
-                    match := false
-                end
-            next
-        elseif t == typeof(object)
-            match := true
-        else
-            try
-                local r := res as dynamic
-                local e := expect as dynamic
-                match := r = e .or. res = expect
-            catch
-                match := res = expect
             end
-        end
-        if (match) .and. ((t == null) || (t == res?:GetType()))
-            TotalSuccess += 1
-            Console.WriteLine("[OK]")
-            return true
-        else
+            if (ec == ErrorCode.NoError) .and. (match) .and. ((t == null) || (t == res?:GetType()))
+                TotalSuccess += 1
+                Console.WriteLine("[OK]")
+                return true
+            else
+                TotalFails += 1
+                Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res?:GetType())
+            end
+            return false
+        catch e as XSharp.MacroCompiler.CompileFailure
+            if e:@@Code == ec
+                TotalSuccess += 1
+                Console.WriteLine("[OK]")
+                return true
+            else
+                TotalFails += 1
+                Console.WriteLine("[FAIL] ({0})", e:DiagnosticMessage)
+            end
+            return false
+        catch e as Exception
             TotalFails += 1
-            Console.WriteLine("[FAIL] (res = {0}, type = {1})", res, res?:GetType())
+            Console.WriteLine("[FAIL] ({0})", e:Message)
+            return false
         end
-        return false
 
     function CreateMacroCompiler() as XSharp.Runtime.MacroCompiler
         Console.WriteLine("Creating macro compiler ...")
@@ -423,16 +446,22 @@ begin namespace XSharp.Runtime
     end class
 
     public class MacroCompiler implements IMacroCompiler
-        internal static Options := MacroOptions{}
+        internal static Options := MacroOptions{} as MacroOptions
         internal compiler := Compilation.Create<object,RuntimeCodeblockDelegate>(options) as Compilation<object,RuntimeCodeblockDelegate>
 
 	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as ICodeBlock
 		    lIsBlock := cMacro:StartsWith("{|")
             var m := compiler:Compile(cMacro)
+            if m:Diagnostic != null
+                throw m:Diagnostic
+            endif
     	    return RuntimeCodeblock{m:Macro,m:ParamCount}
 
 	    public method Compile (cMacro as string) as ICodeBlock
             var m := compiler:Compile(cMacro)
+            if m:Diagnostic != null
+                throw m:Diagnostic
+            endif
     	    return RuntimeCodeblock{m:Macro,m:ParamCount}
     end class
 

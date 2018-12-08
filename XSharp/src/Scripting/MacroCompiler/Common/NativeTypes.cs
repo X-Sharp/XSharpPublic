@@ -130,7 +130,7 @@ namespace XSharp.MacroCompiler
             Debug.Assert(NativeTypeSymbols != null);
             var result = NativeTypeSymbols[(int)kind];
             if (result == null)
-                CompileFailure.Throw(ErrorCode.TypeNotFound,kind);
+                Compilation.Error(ErrorCode.TypeNotFound,kind);
             return result;
         }
     }

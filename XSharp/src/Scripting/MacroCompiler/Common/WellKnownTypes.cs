@@ -84,7 +84,7 @@ namespace XSharp.MacroCompiler
             Debug.Assert(WellKnownTypeSymbols != null);
             var result = WellKnownTypeSymbols[(int)kind];
             if (result == null)
-                CompileFailure.Throw(ErrorCode.TypeNotFound, kind);
+                Compilation.Error(ErrorCode.TypeNotFound, kind);
             return result;
         }
     }

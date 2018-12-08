@@ -35,6 +35,8 @@ BEGIN NAMESPACE XSharpModel
 
 			PROPERTY TokenStream AS ITokenStream GET SELF:_tokenStream
 
+			PROPERTY StartPosition AS INT AUTO
+
 
 		#endregion
 
@@ -44,6 +46,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_gate := OBJECT{}
 			SELF:_file := file
 			SELF:_prjNode := SELF:_file?:Project?:ProjectNode
+			SELF:StartPosition := 0
 			//
 			sourcePath := SELF:_file:SourcePath
 
@@ -103,6 +106,7 @@ BEGIN NAMESPACE XSharpModel
 			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count+" locals "+lIncludeLocals+" )")
 
 			VAR oParser := XSharpModel.Parser{}
+			oParser:StartPosition := SELF:StartPosition
 			VAR info := oParser:Parse(lines, lIncludeLocals)
 			BEGIN LOCK SELF
 				SELF:_info := info

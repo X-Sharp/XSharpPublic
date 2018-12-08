@@ -69,7 +69,7 @@ namespace XSharp.MacroCompiler.Syntax
                     case VariableResolution.TreatAsField:
                         return AliasExpr.Bound(Name);
                     case VariableResolution.TreatAsFieldOrMemvar:
-                        throw new NotImplementedException();
+                        return AutoVarExpr.Bound(Name);
                 }
             }
             Datatype = (Symbol as TypedSymbol)?.Type;
@@ -477,6 +477,16 @@ namespace XSharp.MacroCompiler.Syntax
         internal static AliasExpr Bound(string fieldName)
         {
             return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName))) { Datatype = Compilation.Get(NativeType.Usual) };
+        }
+    }
+    internal partial class AutoVarExpr : Expr
+    {
+        internal Expr Var;
+        AutoVarExpr(Expr var) { Var = var; }
+        public override string ToString() { return "{Var:" + Var.ToString() + "}"; }
+        internal static AutoVarExpr Bound(string varName)
+        {
+            return new AutoVarExpr(LiteralExpr.Bound(Constant.Create(varName))) { Datatype = Compilation.Get(NativeType.Usual) };
         }
     }
     internal partial class Arg : Node

@@ -100,6 +100,12 @@ global tsi := teststruct{1} as teststruct
 
 global tci := testclass{1} as testclass
 
+function MyVarGet(name as string) as usual
+    return "VarGet(" + name + ")"
+
+function MyVarPut(name as string, value as usual) as usual
+    return "VarPut(" + name +"):" + (string)value
+
 function MyFieldGet(name as string) as usual
     return "FieldGet(" + name + ")"
 
@@ -298,9 +304,16 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
         XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
-
         TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))
         TestMacro(mc, e"{|| NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarGet, "MyVarGet")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarPut, "MyVarPut")
+        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "VarGet(NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "VarPut(NIKOS):123", typeof(usual))
+
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGet, "MyFieldGet")
         Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSet, "MyFieldSet")
         Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGetWa, "MyFieldGetWa")

@@ -433,6 +433,26 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Call, m.Method);
         }
     }
+    internal partial class AutoVarExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Var.Emit(ilg);
+            var m = Compilation.Get(WellKnownMembers.XSharp_VO_Functions_VarGet) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+        internal override void EmitSet(ILGenerator ilg, bool preserve)
+        {
+            var v = ilg.DeclareLocal(Datatype.Type);
+            ilg.Emit(OpCodes.Stloc, v.LocalIndex);
+            Var.Emit(ilg);
+            ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
+            var m = Compilation.Get(WellKnownMembers.XSharp_VO_Functions_VarPut) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+        }
+    }
     internal partial class Arg : Node
     {
         internal override void Emit(ILGenerator ilg)

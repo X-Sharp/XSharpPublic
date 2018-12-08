@@ -121,6 +121,8 @@
     }
     internal static class VulcanQualifiedFunctionNames
     {
+        internal const string VarGet = "global::VulcanRTFuncs.Functions.VarGet";
+        internal const string VarPut = "global::VulcanRTFuncs.Functions.VarPut";
         internal const string FieldGet = "global::VulcanRTFuncs.Functions.__FieldGet";
         internal const string FieldGetWa = "global::VulcanRTFuncs.Functions.__FieldGetWa";
         internal const string FieldSet = "global::VulcanRTFuncs.Functions.__FieldSet";
@@ -161,6 +163,8 @@
         internal const string InStr = "global::XSharp.Core.Functions.Instr";
         internal const string WrapException = "global::XSharp.Error.WrapRawException";
         // In VO assembly
+        internal const string VarGet = "global::XSharp.VO.Functions.VarGet";
+        internal const string VarPut = "global::XSharp.VO.Functions.VarPut";
         internal const string FieldGet = "global::XSharp.VO.Functions.__FieldGet";
         internal const string FieldGetWa = "global::XSharp.VO.Functions.__FieldGetWa";
         internal const string FieldSet = "global::XSharp.VO.Functions.__FieldSet";

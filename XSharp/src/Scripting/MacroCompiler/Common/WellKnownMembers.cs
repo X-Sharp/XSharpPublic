@@ -34,6 +34,8 @@ namespace XSharp.MacroCompiler
         XSharp_VO_Functions___FieldSet,
         XSharp_VO_Functions___FieldGetWa,
         XSharp_VO_Functions___FieldSetWa,
+        XSharp_VO_Functions_VarGet,
+        XSharp_VO_Functions_VarPut,
     }
 
     public static partial class Compilation
@@ -62,6 +64,8 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedFunctionNames.FieldSet+"|"+VulcanQualifiedFunctionNames.FieldSet,
             XSharpQualifiedFunctionNames.FieldGetWa+"|"+VulcanQualifiedFunctionNames.FieldGetWa,
             XSharpQualifiedFunctionNames.FieldSetWa+"|"+VulcanQualifiedFunctionNames.FieldSetWa,
+            XSharpQualifiedFunctionNames.VarGet+"|"+VulcanQualifiedFunctionNames.VarGet,
+            XSharpQualifiedFunctionNames.VarPut+"|"+VulcanQualifiedFunctionNames.VarPut,
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;

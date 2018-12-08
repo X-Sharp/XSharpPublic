@@ -168,6 +168,8 @@ begin namespace MacroCompilerTest
     function RunTests(mc as XSharp.Runtime.MacroCompiler) as void
         Console.WriteLine("Running tests ...")
 
+        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
+
         XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
 
         TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(symbol))
@@ -341,6 +343,20 @@ begin namespace MacroCompilerTest
         TestMacroCompiler(mc, src, 100000, false, false)
         TestMacroCompiler(mc, src, 100000, false, true)
         return
+
+    function TestParse(mc as XSharp.Runtime.MacroCompiler, src as string, val as string) as logic
+        TotalTests += 1
+        Console.Write("Test: '{0}' ", src)
+        var res := mc:compiler:Parse(src):ToString()
+        if res = val
+            TotalSuccess += 1
+            Console.WriteLine("[OK]")
+            return true
+        else
+            TotalFails += 1
+            Console.WriteLine("[FAIL] ({0} != {1})", res, val)
+        end
+        return false
 
     function TestMacro(mc as XSharp.Runtime.MacroCompiler, src as string, args as object[], expect as usual, t as Type, ec := ErrorCode.NoError as ErrorCode) as logic
         try

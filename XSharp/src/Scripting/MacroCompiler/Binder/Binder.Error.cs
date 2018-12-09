@@ -63,5 +63,24 @@ namespace XSharp.MacroCompiler
         {
             return expr.Error(ErrorCode.NoImplicitConversion, expr.Datatype.Type, type.Type);
         }
+
+        internal static CompilationError LookupError(Expr expr, NameExpr name)
+        {
+            if (expr.Symbol is NamespaceSymbol)
+                return name.Error(ErrorCode.TypeNotFoundInNamespace, name.Name, expr);
+            if (expr.Symbol is TypeSymbol)
+                return name.Error(ErrorCode.MemberNotFoundInType, name.Name, expr);
+            return name.Error(ErrorCode.NotTypeOrNamespace, expr);
+        }
+
+        internal static CompilationError BinaryOperationError(BinaryExpr expr, BinaryOperatorKind kind, bool isLogic = false)
+        {
+            return expr.Error(ErrorCode.BinaryOperationNotFound, BinaryOperatorSymbol.OperatorSymbol(kind), expr.Left.Datatype.Type, expr.Right.Datatype.Type);
+        }
+
+        internal static CompilationError UnaryOperationError(UnaryExpr expr, UnaryOperatorKind kind, bool isLogic = false)
+        {
+            return expr.Error(ErrorCode.UnaryOperationNotFound, UnaryOperatorSymbol.OperatorSymbol(kind), expr.Expr.Datatype.Type);
+        }
     }
 }

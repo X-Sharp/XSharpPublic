@@ -30,6 +30,11 @@ namespace XSharp.MacroCompiler
         ArgumentsNotMatchCtor = 211,
         NoSuitableCtor = 212,
         IndexerNotFound = 213,
+        TypeNotFoundInNamespace = 214,
+        MemberNotFoundInType = 215,
+        NotTypeOrNamespace = 216,
+        BinaryOperationNotFound = 217,
+        UnaryOperationNotFound = 218,
     }
 
     internal class ErrorString
@@ -57,6 +62,11 @@ namespace XSharp.MacroCompiler
             { ErrorCode.ArgumentsNotMatchCtor, "Constructor aruments do not match" },
             { ErrorCode.NoSuitableCtor, "No suitable constructor" },
             { ErrorCode.IndexerNotFound, "No suitable indexer for {0}" },
+            { ErrorCode.TypeNotFoundInNamespace, "Type {0} not found in namespace {1}" },
+            { ErrorCode.MemberNotFoundInType, "No accessible member {0} found in type {1}" },
+            { ErrorCode.NotTypeOrNamespace, "{0} is not a type or namespace" },
+            { ErrorCode.BinaryOperationNotFound, "Operator {0} on types {1} and {2} could not be resolved" },
+            { ErrorCode.UnaryOperationNotFound, "Operator {0} on type {1} could not be resolved" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

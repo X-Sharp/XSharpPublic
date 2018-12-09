@@ -285,6 +285,51 @@ namespace XSharp.MacroCompiler
                     return null;
             }
         }
+
+        public static string OperatorSymbol(BinaryOperatorKind kind)
+        {
+            switch (kind)
+            {
+                case BinaryOperatorKind.Multiplication:
+                    return "*";
+                case BinaryOperatorKind.Addition:
+                    return "+";
+                case BinaryOperatorKind.Subtraction:
+                    return "-";
+                case BinaryOperatorKind.Division:
+                    return "/";
+                case BinaryOperatorKind.Remainder:
+                    return "%";
+                case BinaryOperatorKind.LeftShift:
+                    return "<<";
+                case BinaryOperatorKind.RightShift:
+                    return ">>";
+                case BinaryOperatorKind.Equal:
+                    return "=";
+                case BinaryOperatorKind.ExactEqual:
+                    return "==";
+                case BinaryOperatorKind.NotEqual:
+                    return "!=";
+                case BinaryOperatorKind.GreaterThan:
+                    return ">";
+                case BinaryOperatorKind.LessThan:
+                    return "<";
+                case BinaryOperatorKind.GreaterThanOrEqual:
+                    return ">=";
+                case BinaryOperatorKind.LessThanOrEqual:
+                    return "<=";
+                case BinaryOperatorKind.And:
+                    return "&";
+                case BinaryOperatorKind.Xor:
+                    return "~";
+                case BinaryOperatorKind.Or:
+                    return "|";
+                case BinaryOperatorKind.Exponent:
+                    return "^";
+                default:
+                    return null;
+            }
+        }
     }
 
     internal partial class BinaryOperatorSymbolWithMethod : BinaryOperatorSymbol

@@ -22,6 +22,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal BindAffinity Affinity = BindAffinity.Access;
         internal virtual Expr Cloned(Binder b) { return this; }
         internal TypeSymbol ThrowError(ErrorCode e, params object[] args) { throw Error(e, args); }
+        internal TypeSymbol ThrowError(CompilationError e) { throw e; }
     }
     abstract internal partial class TypeExpr : Expr
     {
@@ -50,7 +51,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Symbol = Binder.GetNativeTypeFromToken(Kind);
+            Symbol = Binder.GetNativeTypeFromToken(Kind) ?? ThrowError(ErrorCode.NotSupported,Kind);
             return null;
         }
     }
@@ -106,7 +107,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
+            Symbol = b.Lookup(Expr.Symbol, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
             Datatype = Symbol.Type();
             return null;
         }
@@ -129,10 +130,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            var r = new BinaryExpr(Left.Cloned(b), Token, Right);
-            r.Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref r.Left, ref r.Right);
-            r.Datatype = (r.Symbol as TypedSymbol)?.Type;
-            Right = r;
+            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false);
             Binder.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
@@ -145,25 +143,15 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            if (BinaryOperatorSymbol.OperatorIsLogic(Kind))
-            {
-                Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
-                Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
-            }
-            Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
+            Symbol = Binder.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind), BinaryOperatorSymbol.OperatorIsLogic(Kind));
             Datatype = Symbol.Type();
             return null;
         }
-        internal static BinaryExpr Bound(Expr Left, BinaryOperatorKind kind, bool logic, Expr Right)
+        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, bool logic)
         {
-            var e = new BinaryExpr(Left, Left.Token, Right);
-            if (logic)
-            {
-                Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
-                Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
-            }
-            e.Symbol = Binder.BinaryOperation(kind, ref e.Left, ref e.Right);
-            e.Datatype = (e.Symbol as TypedSymbol)?.Type;
+            var e = new BinaryExpr(Left, t, Right);
+            e.Symbol = Binder.BindBinaryOperation(e, kind, logic);
+            e.Datatype = e.Symbol.Type();
             return e;
         }
     }
@@ -173,9 +161,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
-            Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
-            Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
-            Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
+            Symbol = Binder.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind), true);
             Datatype = Symbol.Type();
             return null;
         }
@@ -185,18 +171,16 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
-            if (UnaryOperatorSymbol.OperatorIsLogic(Kind))
-            {
-                Binder.Convert(ref Expr, Compilation.Get(NativeType.Boolean));
-            }
-            Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
+            Symbol = Binder.BindUnaryOperation(this, UnaryOperatorSymbol.OperatorKind(Kind), UnaryOperatorSymbol.OperatorIsLogic(Kind));
             Datatype = Symbol.Type();
             return null;
         }
         internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind)
         {
-            var s = Binder.UnaryOperation(kind, ref expr);
-            return new UnaryExpr(expr, expr.Token) { Symbol = s, Datatype = s?.Type };
+            var e = new UnaryExpr(expr, expr.Token);
+            e.Symbol = Binder.BindUnaryOperation(e, kind, false);
+            e.Datatype = e.Symbol.Type();
+            return e;
         }
     }
     internal partial class PrefixExpr : Expr

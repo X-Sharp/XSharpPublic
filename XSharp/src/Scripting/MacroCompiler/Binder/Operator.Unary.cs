@@ -120,6 +120,31 @@ namespace XSharp.MacroCompiler
                     return null;
             }
         }
+
+        public static string OperatorSymbol(UnaryOperatorKind kind)
+        {
+            switch (kind)
+            {
+                case UnaryOperatorKind.Increment:
+                    return "++";
+                case UnaryOperatorKind.Decrement:
+                    return "--";
+                case UnaryOperatorKind.UnaryPlus:
+                    return "+";
+                case UnaryOperatorKind.UnaryMinus:
+                    return "-";
+                case UnaryOperatorKind.LogicalNegation:
+                    return "!";
+                case UnaryOperatorKind.BitwiseComplement:
+                    return "~";
+                case UnaryOperatorKind.True:
+                    return "true";
+                case UnaryOperatorKind.False:
+                    return "false";
+                default:
+                    return null;
+            }
+        }
     }
 
     internal class UnaryOperatorSymbolWithMethod : UnaryOperatorSymbol

@@ -131,7 +131,7 @@ begin namespace MacroCompilerTest
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
-        EvalMacro(mc, e"{|a,b| tsi[2]}", {1,2,3}, 1)
+        EvalMacro(mc, e"{|a,b| (-tsi+1)[2]}", {1,2,3}, 1)
         wait
 
         RunTests(mc)

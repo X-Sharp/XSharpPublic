@@ -12,6 +12,21 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
+        internal static UnaryOperatorSymbol BindUnaryOperation(UnaryExpr expr, UnaryOperatorKind kind, bool isLogic, bool allowDynamic = true)
+        {
+            if (isLogic)
+            {
+                Convert(ref expr.Expr, Compilation.Get(NativeType.Boolean));
+            }
+
+            var res = UnaryOperation(kind, ref expr.Expr);
+
+            if (res != null)
+                return res;
+
+            throw UnaryOperationError(expr, kind, isLogic);
+        }
+
         internal static UnaryOperatorSymbol UnaryOperation(UnaryOperatorKind kind, ref Expr expr, bool allowDynamic = true)
         {
             var sym = UnaryOperatorEasyOut.ClassifyOperation(kind, expr.Datatype);

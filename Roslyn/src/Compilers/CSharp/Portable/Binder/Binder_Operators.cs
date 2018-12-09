@@ -586,7 +586,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
-#if XSHARP
+#if XXSHARP
             // determine the largest type of the 2 expressions
             if (resultType.SpecialType.IsNumericType() && leftType != rightType)
             {

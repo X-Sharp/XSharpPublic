@@ -1741,7 +1741,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // We suppress conversion errors on default parameters; eg, 
                 // if someone says "void M(string s = 123) {}". We will report
                 // a special error in the default parameter binder.
-#if XSHARP
+#if XXSHARP
                 if (conversion.IsExplicit)
                 {
                     // silently convert integral types
@@ -2143,7 +2143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var sourceType = operand.Type;
 
-#if XSHARP
+#if XXSHARP
             if (conversion.IsExplicit)
             {
                 // silently convert integral types

@@ -239,7 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return new BoundDefaultExpression(syntax, rewrittenType);
                     }
-#if XSHARP
+#if XXSHARP
 
                     if (rewrittenType.SpecialType == rewrittenOperand.Type.SpecialType)
                         break;

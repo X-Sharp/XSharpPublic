@@ -183,21 +183,21 @@ namespace XSharp.MacroCompiler.Syntax
             return e;
         }
     }
-    internal partial class PrefixExpr : Expr
+    internal partial class PrefixExpr : UnaryExpr
     {
         Expr Left;
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
             Left = Expr.Cloned(b);
-            Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
+            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Expr.Symbol;
             Datatype = Expr.Datatype;
             return null;
         }
     }
-    internal partial class PostfixExpr : Expr
+    internal partial class PostfixExpr : UnaryExpr
     {
         Expr Left;
         Expr Value;
@@ -206,7 +206,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
-            Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
+            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Value.Symbol;
             Datatype = Value.Datatype;
@@ -217,7 +217,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Symbol = b.CreateLiteral(Kind, Value);
+            Symbol = b.CreateLiteral(this, Value);
             Datatype = Symbol.Type();
             return null;
         }

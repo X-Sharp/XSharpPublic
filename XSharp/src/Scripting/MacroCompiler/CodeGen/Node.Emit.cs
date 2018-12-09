@@ -184,7 +184,7 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
-    internal partial class PrefixExpr : Expr
+    internal partial class PrefixExpr : UnaryExpr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
@@ -192,7 +192,7 @@ namespace XSharp.MacroCompiler.Syntax
             Left.EmitSet(ilg, preserve);
         }
     }
-    internal partial class PostfixExpr : Expr
+    internal partial class PostfixExpr : UnaryExpr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {

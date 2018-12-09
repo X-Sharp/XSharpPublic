@@ -210,29 +210,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (Compilation.Options.VOSignedUnsignedConversion) // vo4
             {
-                var result = Conversion.NoConversion;
-
-                // when both numeric and both integral or both not integral
+                // This compiler option only applies to numeric types
                 if (srcType.IsNumericType() && dstType.IsNumericType())
                 {
-                    if (srcType.IsIntegralType() == dstType.IsIntegralType())
+                    if (srcType.IsIntegralType() &&  dstType.IsIntegralType())
                     {
                         // when both same # of bits and integral, use Identity conversion
-                        if (srcType.SizeInBytes() == dstType.SizeInBytes() &&
-                            srcType.IsIntegralType() && dstType.IsIntegralType())
-                            result = Conversion.Identity;
+                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                            return Conversion.Identity;
                         else
-                            result = Conversion.ImplicitNumeric;
+                            // otherwise implicit conversion
+                            return Conversion.ImplicitNumeric;
                     }
                     // Vulcan also allows to convert floating point types <-> integral types
-                    else
+                    else if (srcType.IsIntegralType() || dstType.IsIntegralType())
                     {
-                        result = Conversion.ImplicitNumeric;
+                        return Conversion.ImplicitNumeric;
                     }
                 }
 
-                if (result != Conversion.NoConversion)
-                    return result;
             }
 
             return Conversion.NoConversion;

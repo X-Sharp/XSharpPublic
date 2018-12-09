@@ -230,24 +230,36 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            throw new CompilationError(ErrorCode.NotSupported, "SELF keyword");
+            throw Error(ErrorCode.NotSupported, "SELF keyword");
         }
     }
     internal partial class SuperExpr : Expr
     {
         internal override Node Bind(Binder b)
         {
-            throw new CompilationError(ErrorCode.NotSupported, "SELF keyword");
+            throw Error(ErrorCode.NotSupported, "SUPER keyword");
         }
     }
     internal partial class CheckedExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            throw Error(ErrorCode.NotImplemented, "CHECKED expression");
+        }
     }
     internal partial class UncheckedExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            throw Error(ErrorCode.NotImplemented, "UNCHECKED expression");
+        }
     }
     internal partial class TypeOfExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            throw Error(ErrorCode.NotImplemented, "TYPEOF operator");
+        }
     }
     internal partial class SizeOfExpr : Expr
     {

@@ -177,6 +177,15 @@ FUNCTION SetDateCountry(dwCountry AS DWORD) AS DWORD
 	RuntimeState.DateCountry := dwCountry
 	RETURN dwOld
 
+/// <summary>
+/// Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
+/// </summary>
+/// <param name="enumCountry"></param>
+/// <returns>
+/// </returns>
+FUNCTION SetDateCountry( enumCountry AS DateCountry ) AS DWORD 
+    RETURN SetDateCountry( (DWORD) enumCountry )
+
 
 
 /// <summary>
@@ -464,7 +473,7 @@ FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 /// <exclude/>
 FUNCTION _SetCollation(cBase AS STRING) AS LOGIC
 	VAR rm := System.Resources.ResourceManager{ "XSharp.Collations", TYPEOF(Functions):Assembly }
-	VAR obj := rm:GetObject(cBase) 
+	VAR obj := rm:GetObject(cBase:ToUpper()) 
 	IF obj != NULL
 		VAR bytes := obj ASTYPE BYTE[]
 		IF bytes != NULL

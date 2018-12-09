@@ -136,7 +136,7 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 			nMinutes := Int32.Parse(cTime:Substring(nOffSet,2))
 			nOffSet += cSeparator:Length +2
 			nSeconds := Int32.Parse(cTime:Substring(nOffSet,2))
-			result := (DWORD) nHours * 3600 + nMinutes * 60 + nSeconds
+			result := (DWORD) (nHours * 3600 + nMinutes * 60 + nSeconds)
 		CATCH 
 			result := 0
 		END TRY

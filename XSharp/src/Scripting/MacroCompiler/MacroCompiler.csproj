@@ -75,6 +75,7 @@
     <Compile Include="Common\WellKnownMembers.cs" />
     <Compile Include="Common\WellKnownTypes.cs" />
     <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Compiler\MacroCompiler.cs" />
     <Compile Include="Diagnostic\Error.cs" />
     <Compile Include="Diagnostic\Location.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="XSharp.Core">
+      <HintPath>..\..\..\Runtime\XSharp.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

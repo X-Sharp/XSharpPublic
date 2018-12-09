@@ -80,6 +80,13 @@
       <Private>True</Private>
       <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.RT, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\Runtime\XSharp.RT.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.VO, Version=2.0.0.1, Culture=neutral, PublicKeyToken=31c59c566fa38f21">
       <Name>XSharp.VO</Name>
       <AssemblyName>XSharp.VO.dll</AssemblyName>

@@ -325,3 +325,9 @@ CLASS GeneralLBTestClass
 		LOCAL n AS INT
 	RETURN @n
 END CLASS
+
+
+CLASS TestClassParent
+END CLASS
+CLASS TestClassChild INHERIT TestClassParent
+END CLASS

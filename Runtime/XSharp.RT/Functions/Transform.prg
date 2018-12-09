@@ -624,7 +624,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         IF cTemp:IndexOf('*') > -1	// overflow error
             cReturn := Replicate("*", (DWORD) nLength)
             IF nDecimal > 0
-                cReturn := Stuff(cReturn, (DWORD) nLength-nDecimal,1,".")
+                cReturn := Stuff(cReturn,  (DWORD)(nLength-nDecimal),1,".")
             ENDIF
         ELSE
         

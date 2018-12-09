@@ -16,10 +16,10 @@ USING XSharp.RDD.Support
 
 
 /// <exclude/>
-FUNCTION __DBAvg(siValue AS LONG) AS LONG
+FUNCTION __DBAvg(siValue AS LONG) AS FLOAT
 	
-	LOCAL  siRet    AS SHORT
-	STATIC siSum    AS SHORT
+	LOCAL  siRet    AS FLOAT
+	STATIC siSum    AS FLOAT
 	
 	IF siValue == 2
 		RETURN siSum

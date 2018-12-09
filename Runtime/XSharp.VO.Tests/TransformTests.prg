@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -451,7 +451,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		LOCAL cFileName_WithExt AS STRING
 		LOCAL cFileName_NoExt AS STRING
-		cFileName_NoExt := "C:\TEMP\testdbf"
+		cFileName_NoExt := "DBCreate_Tests"
 		cFileName_WithExt := cFileName_NoExt + ".dbf"
 		IF System.IO.File.Exists(cFileName_WithExt)
 			System.IO.File.Delete(cFileName_WithExt)
@@ -477,7 +477,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		LOCAL aFields AS ARRAY
 		LOCAL cFileName AS STRING
 		aFields := {{"TEST","C",10,0}}
-		cFileName := "C:\TEMP\testdbf"
+		cFileName := "DBAppend_Exclusive"
 
 		Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
 		Assert.True(  DBUseArea(,"DBFNTX",cFileName,,FALSE) )
@@ -492,7 +492,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		LOCAL aFields AS ARRAY
 		LOCAL cFileName AS STRING
 		aFields := {{"TEST","C",10,0}}
-		cFileName := "C:\TEMP\testdbf"
+		cFileName := "DBAppend_Shared"
 
 		Assert.True(  DBCreate(cFileName , aFields , "DBFNTX")  )
 		Assert.True(  DBUseArea(,"DBFNTX",cFileName,,TRUE) )
@@ -505,7 +505,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	[Fact, Trait("Category", "DBFFuncs")];
 	METHOD DBAppend_more() AS VOID
 	LOCAL cDbf AS STRING
-		cDbf := "c:\temp\testappend.DbF"
+		cDbf := "testappend.DbF"
 		RDDSetDefault( "DBFNTX" )
 		Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
 		// Appending in exclusive mode:
@@ -529,7 +529,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	METHOD DBUseArea_same_file_twice() AS VOID
 	LOCAL cDbf AS STRING
 		RDDSetDefault( "DBFNTX" )
-		cDbf := "c:\temp\testtwice.DbF"
+		cDbf := "testtwice.DbF"
 		Assert.True(  DBCreate(cDbf , { {"TEST","C",10,0} }) )
 
 		// shared mode

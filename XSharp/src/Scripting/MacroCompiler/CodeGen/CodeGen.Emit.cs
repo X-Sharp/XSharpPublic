@@ -203,7 +203,7 @@ namespace XSharp.MacroCompiler
                     EmitDefault(ilg, c.Type);
                     break;
                 default:
-                    throw new Exception("Unexpected literal kind");
+                    throw new InternalError();
             }
         }
 
@@ -231,17 +231,17 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldc_R8, (double)1);
                     break;
                 case NativeType.String:
-                    throw new Exception("Unsupported");
+                    throw new InternalError();
                 case NativeType.DateTime:
-                    throw new Exception("Unsupported");
+                    throw new InternalError();
                 case NativeType.Decimal:
                     ilg.Emit(OpCodes.Ldc_I4_1);
                     ilg.Emit(OpCodes.Newobj, typeof(decimal).GetConstructor(new[] { typeof(int) })); // TODO use Compilation.GetMember
                     break;
                 case NativeType.Object:
-                    throw new Exception("Unsupported");
+                    throw new InternalError();
                 default:
-                    throw new Exception("Unsupported");
+                    throw new InternalError();
             }
         }
 
@@ -608,7 +608,7 @@ namespace XSharp.MacroCompiler
                     break;*/
 
                 default:
-                    throw new CompileFailure(ErrorCode.UnexpectedValue);
+                    throw new InternalError();
             }
         }
 
@@ -727,7 +727,7 @@ namespace XSharp.MacroCompiler
                 case BinaryOperatorKind.Substr:
                 case BinaryOperatorKind.DefaultValue:
                 default:
-                    throw new NotImplementedException();
+                    throw new InternalError();
             }
         }
 
@@ -788,7 +788,7 @@ namespace XSharp.MacroCompiler
                 case UnaryOperatorKind.False:
                     break;
                 default:
-                    throw new CompileFailure(ErrorCode.UnexpectedValue);
+                    throw new InternalError();
             }
         }
     }

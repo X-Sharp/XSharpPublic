@@ -17,10 +17,14 @@ namespace XSharp.MacroCompiler
 
             var res = TryBindCall(expr, symbol, args, out self, ref ovRes, allowDynamic);
 
-            return res;
-        }
+            if (res != null)
+                return res;
 
-        internal Symbol BindCtorCall(Symbol symbol, ArgList args, bool allowDynamic = true)
+            throw MethodCallBindError(expr, symbol, args, ovRes);
+        }
+        internal void BindCtorCall(int i) { }
+
+        internal Symbol BindCtorCall(Expr expr, Symbol symbol, ArgList args, bool allowDynamic = true)
         {
             if ((symbol as TypeSymbol).IsValueType && args.Args.Count == 0)
             {
@@ -33,7 +37,10 @@ namespace XSharp.MacroCompiler
 
             var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out dummySelf, ref ovRes, allowDynamic);
 
-            return res;
+            if (res != null)
+                return res;
+
+            throw CtorCallBindError(expr, symbol, args, ovRes);
         }
 
         internal MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, ref OverloadResult ovRes, bool allowDynamic = true)

@@ -11,13 +11,13 @@ namespace XSharp.MacroCompiler.Syntax
 
     abstract internal partial class Node
     {
-        internal virtual void Emit(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void Emit(ILGenerator ilg) { throw new InternalError(); }
     }
     abstract internal partial class Expr : Node
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { }
-        internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
-        internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new InternalError(); }
+        internal virtual void EmitAddr(ILGenerator ilg) { throw new InternalError(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
     abstract internal partial class TypeExpr : Expr

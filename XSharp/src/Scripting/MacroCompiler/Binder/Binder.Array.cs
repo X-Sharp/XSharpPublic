@@ -13,9 +13,30 @@ namespace XSharp.MacroCompiler
     {
         internal MemberSymbol BindArrayAccess(Expr self, Symbol symbol, ArgList args)
         {
-            bool isStatic = self == null;
+            if (!Options.ArrayZero)
+                ConvertArrayBase(args);
 
             OverloadResult ovRes = null;
+
+            var res = TryBindArrayAccess(self, symbol, args, ref ovRes);
+
+            if (res != null)
+                return res;
+
+            throw ArrayAccessBindError(self, symbol, args, ovRes);
+        }
+
+        internal void ConvertArrayBase(ArgList args)
+        {
+            for (int i = 0; i < args.Args.Count; i++)
+            {
+                args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, BinaryOperatorKind.Subtraction, false, LiteralExpr.Bound(Constant.Create(1)));
+            }
+        }
+
+        internal MemberSymbol TryBindArrayAccess(Expr self, Symbol symbol, ArgList args, ref OverloadResult ovRes)
+        {
+            bool isStatic = self == null;
 
             if ((symbol as PropertySymbol)?.IsStatic == isStatic)
             {

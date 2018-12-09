@@ -14,13 +14,14 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Symbol Symbol = null;
         internal virtual Node Bind(Binder b) { throw new NotImplementedException(); }
-        internal CompileFailure Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
+        internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
     }
     abstract internal partial class Expr : Node
     {
         internal TypeSymbol Datatype = null;
         internal BindAffinity Affinity = BindAffinity.Access;
         internal virtual Expr Cloned(Binder b) { return this; }
+        internal TypeSymbol ThrowError(ErrorCode e, params object[] args) { throw Error(e, args); }
     }
     abstract internal partial class TypeExpr : Expr
     {
@@ -73,7 +74,7 @@ namespace XSharp.MacroCompiler.Syntax
                         return AutoVarExpr.Bound(Name);
                 }
             }
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
     }
@@ -91,7 +92,7 @@ namespace XSharp.MacroCompiler.Syntax
                     Binder.Convert(ref Expr, Compilation.Get(NativeType.Object));
                 Symbol = new DynamicSymbol(Member.LookupName);
             }
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
         internal override Expr Cloned(Binder b)
@@ -106,7 +107,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
     }
@@ -150,7 +151,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
         internal static BinaryExpr Bound(Expr Left, BinaryOperatorKind kind, bool logic, Expr Right)
@@ -175,7 +176,7 @@ namespace XSharp.MacroCompiler.Syntax
             Binder.Convert(ref Left, Compilation.Get(NativeType.Boolean));
             Binder.Convert(ref Right, Compilation.Get(NativeType.Boolean));
             Symbol = Binder.BinaryOperation(BinaryOperatorSymbol.OperatorKind(Kind), ref Left, ref Right);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
     }
@@ -189,7 +190,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Binder.Convert(ref Expr, Compilation.Get(NativeType.Boolean));
             }
             Symbol = Binder.UnaryOperation(UnaryOperatorSymbol.OperatorKind(Kind), ref Expr);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
         internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind)
@@ -233,7 +234,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = b.CreateLiteral(Kind, Value);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
         internal static LiteralExpr Bound(Constant c)
@@ -245,14 +246,14 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            throw new CompileFailure(ErrorCode.NotSupported, "SELF keyword");
+            throw new CompilationError(ErrorCode.NotSupported, "SELF keyword");
         }
     }
     internal partial class SuperExpr : Expr
     {
         internal override Node Bind(Binder b)
         {
-            throw new CompileFailure(ErrorCode.NotSupported, "SELF keyword");
+            throw new CompilationError(ErrorCode.NotSupported, "SELF keyword");
         }
     }
     internal partial class CheckedExpr : Expr
@@ -331,7 +332,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
     }
@@ -341,8 +342,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             b.Bind(ref Args);
-            Symbol = b.BindCtorCall(Expr.Symbol, Args);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args);
+            Datatype = Symbol.Type();
             return null;
         }
     }
@@ -353,12 +354,10 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             b.Bind(ref Args);
             Binder.Convert(ref Expr, Compilation.Get(NativeType.Array));
-            if (!b.Options.ArrayZero)
-                Args.ConvertArrayBase1();
             Self = Expr;
             var s = Self.Datatype.Lookup(SystemNames.IndexerName);
             Symbol = b.BindArrayAccess(Self, s, Args);
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
         internal override Expr Cloned(Binder b)
@@ -373,7 +372,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             Symbol = Constant.CreateDefault(Compilation.Get(NativeType.Usual));
-            Datatype = (Symbol as TypedSymbol)?.Type;
+            Datatype = Symbol.Type();
             return null;
         }
     }
@@ -487,13 +486,6 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(Args);
             return null;
-        }
-        internal void ConvertArrayBase1()
-        {
-            for (int i = 0; i < Args.Count; i++)
-            {
-                Args[i].Expr = BinaryExpr.Bound(Args[i].Expr, BinaryOperatorKind.Subtraction, false, LiteralExpr.Bound(Constant.Create(1)));
-            }
         }
     }
     internal partial class Codeblock : Node

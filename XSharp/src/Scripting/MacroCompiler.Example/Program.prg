@@ -130,7 +130,8 @@ begin namespace MacroCompilerTest
 
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
 
-        EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
+        //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
+        EvalMacro(mc, e"{|a,b| tsi[2]}", {1,2,3}, 1)
         wait
 
         RunTests(mc)
@@ -156,7 +157,7 @@ begin namespace MacroCompilerTest
             var res := cb:EvalBlock(args)
             Console.WriteLine("res = {0}",res)
             return res
-        catch e as XSharp.MacroCompiler.CompileFailure
+        catch e as XSharp.MacroCompiler.CompilationError
             Console.WriteLine("{0}",e:DiagnosticMessage)
             return nil
         end
@@ -406,7 +407,7 @@ begin namespace MacroCompilerTest
                 Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res?:GetType())
             end
             return false
-        catch e as XSharp.MacroCompiler.CompileFailure
+        catch e as XSharp.MacroCompiler.CompilationError
             if e:@@Code == ec
                 TotalSuccess += 1
                 Console.WriteLine("[OK]")

@@ -11,9 +11,9 @@ namespace XSharp.MacroCompiler
 {
     internal abstract partial class Symbol
     {
-        internal virtual void EmitGet(ILGenerator ilg) { throw new NotImplementedException(); }
-        internal virtual void EmitSet(ILGenerator ilg) { throw new NotImplementedException(); }
-        internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void EmitGet(ILGenerator ilg) { throw new InternalError(); }
+        internal virtual void EmitSet(ILGenerator ilg) { throw new InternalError(); }
+        internal virtual void EmitAddr(ILGenerator ilg) { throw new InternalError(); }
     }
     internal abstract partial class TypedSymbol : Symbol
     {

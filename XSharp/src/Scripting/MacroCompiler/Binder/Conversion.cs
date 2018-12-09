@@ -11,6 +11,7 @@ namespace XSharp.MacroCompiler
     internal enum ConversionKind
     {
         NoConversion,
+        NoImplicitConversion,
         Identity,
         ImplicitNumeric,
         //ImplicitEnumeration,
@@ -55,6 +56,7 @@ namespace XSharp.MacroCompiler
 
         internal virtual bool IsExplicit { get { return (convCost[(int)Kind] & Explicit) != 0; } }
         internal virtual bool IsImplicit { get { return (convCost[(int)Kind] & Implicit) != 0; } }
+        internal bool Exists { get { return Kind != ConversionKind.NoConversion && Kind != ConversionKind.NoImplicitConversion; } }
         internal virtual int Cost { get { return convCost[(int)Kind] & (Implicit-1); } }
 
         internal ConversionSymbol(ConversionKind kind) { Kind = kind; }
@@ -93,6 +95,7 @@ namespace XSharp.MacroCompiler
 #endif
 
             convCost[(int)ConversionKind.NoConversion] = 0;
+            convCost[(int)ConversionKind.NoImplicitConversion] = 0;
 
             convCost[(int)ConversionKind.Identity] = Implicit | 0;
             convCost[(int)ConversionKind.ImplicitNumeric] = Implicit | 1;

@@ -404,7 +404,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (Alias != null) Alias.Emit(ilg);
             Field.Emit(ilg);
-            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_VO_Functions___FieldGetWa : WellKnownMembers.XSharp_VO_Functions___FieldGet) as MethodSymbol;
+            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_RT_Functions___FieldGetWa : WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
@@ -416,7 +416,7 @@ namespace XSharp.MacroCompiler.Syntax
             if (Alias != null) Alias.Emit(ilg);
             Field.Emit(ilg);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
-            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_VO_Functions___FieldSetWa : WellKnownMembers.XSharp_VO_Functions___FieldSet) as MethodSymbol;
+            var m = Compilation.Get(Alias != null ? WellKnownMembers.XSharp_RT_Functions___FieldSetWa : WellKnownMembers.XSharp_RT_Functions___FieldSet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
         }
     }
@@ -425,7 +425,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Var.Emit(ilg);
-            var m = Compilation.Get(WellKnownMembers.XSharp_VO_Functions_VarGet) as MethodSymbol;
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_VarGet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
@@ -436,7 +436,7 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
             Var.Emit(ilg);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
-            var m = Compilation.Get(WellKnownMembers.XSharp_VO_Functions_VarPut) as MethodSymbol;
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_VarPut) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
         }
     }

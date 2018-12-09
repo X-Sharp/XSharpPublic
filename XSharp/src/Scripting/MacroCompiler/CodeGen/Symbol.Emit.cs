@@ -57,13 +57,13 @@ namespace XSharp.MacroCompiler
     {
         internal override void EmitGet(ILGenerator ilg)
         {
-            var m = Compilation.Get(WellKnownMembers.XSharp_VO_Functions_IVarGet) as MethodSymbol;
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarGet) as MethodSymbol;
             ilg.Emit(OpCodes.Ldstr, Name);
             ilg.Emit(OpCodes.Call, m.Method);
         }
         internal override void EmitSet(ILGenerator ilg)
         {
-            var m = Compilation.Get(WellKnownMembers.XSharp_VO_Functions_IVarPut) as MethodSymbol;
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_IVarPut) as MethodSymbol;
             var lo = ilg.DeclareLocal(Compilation.Get(NativeType.Object).Type);
             var lv = ilg.DeclareLocal(Type.Type);
             ilg.Emit(OpCodes.Stloc, lo.LocalIndex);

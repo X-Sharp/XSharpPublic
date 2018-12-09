@@ -14,6 +14,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Symbol Symbol = null;
         internal virtual Node Bind(Binder b) { throw new NotImplementedException(); }
+        internal CompileFailure Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
     }
     abstract internal partial class Expr : Node
     {
@@ -62,7 +63,7 @@ namespace XSharp.MacroCompiler.Syntax
                 switch (b.Options.UndeclaredVariableResolution)
                 {
                     case VariableResolution.Error:
-                        throw new NotImplementedException();
+                        throw Error(ErrorCode.IdentifierNotFound, Name);
                     case VariableResolution.GenerateLocal:
                         Symbol = b.AddVariable(Name, Compilation.Get(NativeType.Usual));
                         break;
@@ -329,20 +330,7 @@ namespace XSharp.MacroCompiler.Syntax
             Expr.Affinity = BindAffinity.Invoke;
             b.Bind(ref Expr);
             b.Bind(ref Args);
-            if (Expr.Symbol is DynamicSymbol)
-            {
-                Symbol = Binder.LookupFullName(XSharpQualifiedFunctionNames.InternalSend) ?? Binder.LookupFullName(VulcanQualifiedFunctionNames.InternalSend);
-                var a = new List<Arg>(3);
-                a.Add(new Arg((Expr as MemberAccessExpr)?.Expr));
-                a.Add(new Arg(LiteralExpr.Bound(Constant.Create((Expr.Symbol as DynamicSymbol).Name))));
-                a.Add(new Arg(LiteralArray.Bound(Args.Args)));
-                Args = new ArgList(a);
-            }
-            else
-            {
-                Self = (Expr as MemberAccessExpr)?.Expr;
-                Symbol = b.BindCall(Self, Expr.Symbol, Args);
-            }
+            Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
             Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
@@ -353,9 +341,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             b.Bind(ref Args);
-            Symbol = b.BindCall(null, Expr.Symbol.Lookup(".ctor"), Args);
-            // TODO: nvk: Symbol can be null for value-type default .ctor (add ObjectInitSymbol?)
-            Datatype = (Symbol as TypedSymbol)?.Type ?? (Expr.Symbol as TypeSymbol);
+            Symbol = b.BindCtorCall(Expr.Symbol, Args);
+            Datatype = (Symbol as TypedSymbol)?.Type;
             return null;
         }
     }

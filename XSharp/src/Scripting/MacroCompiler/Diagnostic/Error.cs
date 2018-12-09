@@ -10,15 +10,16 @@ namespace XSharp.MacroCompiler
     public enum ErrorCode
     {
         NoError,
-        NotImplemented,
-        Expected,
-        Unexpected,
-        BadNumArgs,
-        UnterminatedString,
-        NotSupported,
-        UnexpectedValue,
-        NoConversion,
-        TypeNotFound,
+        NotImplemented = 1,
+        Expected = 100,
+        Unexpected = 101,
+        BadNumArgs = 102,
+        UnterminatedString = 103,
+        NotSupported = 104,
+        UnexpectedValue = 200,
+        NoConversion = 201,
+        TypeNotFound = 202,
+        IdentifierNotFound = 203,
     }
 
     internal class ErrorString
@@ -35,6 +36,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.UnexpectedValue, "Unexpected value" },
             { ErrorCode.NoConversion, "No conversion from {0} to {1}" },
             { ErrorCode.TypeNotFound, "Type not found: {0}" },
+            { ErrorCode.IdentifierNotFound, "Not found: {0}" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

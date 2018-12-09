@@ -75,6 +75,16 @@ namespace XSharp.MacroCompiler
             ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class ObjectInitializerSymbol : TypedSymbol
+    {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            var l = ilg.DeclareLocal(Type.Type);
+            ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, l);
+            ilg.Emit(OpCodes.Initobj, Type.Type);
+            ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, l);
+        }
+    }
     internal partial class MemberSymbol : TypedSymbol
     {
     }
@@ -83,9 +93,17 @@ namespace XSharp.MacroCompiler
     }
     internal partial class MethodSymbol : MethodBaseSymbol
     {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            ilg.Emit(IsVirtual ? OpCodes.Callvirt : OpCodes.Call, Method);
+        }
     }
     internal partial class ConstructorSymbol : MethodBaseSymbol
     {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            ilg.Emit(OpCodes.Newobj, Constructor);
+        }
     }
     internal partial class FieldSymbol : MemberSymbol
     {

@@ -128,7 +128,7 @@ begin namespace MacroCompilerTest
         ReportMemory("initial")
         var mc := CreateMacroCompiler()
 
-        ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
+        //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
 
         EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         wait
@@ -170,8 +170,11 @@ begin namespace MacroCompilerTest
 
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
 
-        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.Error
+        TestMacro(mc, e"{|a,b| testtest__() }", <object>{1,2,3}, null, null, ErrorCode.IdentifierNotFound)
 
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
+        TestMacro(mc, e"{|a| a() }", <object>{(@@Func<int>){ => 1234}}, 1234, typeof(usual))
         TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(symbol))
         TestMacro(mc, "#HELLo + #World", <OBJECT>{}, #hello + #world, typeof(string))
         TestMacro(mc, e"#HELLo + \"world\"", <OBJECT>{}, #hello + "world", typeof(string))

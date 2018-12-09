@@ -150,6 +150,11 @@ namespace XSharp.MacroCompiler
         internal DynamicSymbol(string name) { Name = name; }
         internal override Symbol Lookup(string name) { return null; }
     }
+    internal partial class ObjectInitializerSymbol : TypedSymbol
+    {
+        internal override TypeSymbol Type { get; }
+        internal ObjectInitializerSymbol(TypeSymbol type) { Type = type; }
+    }
     internal partial class MemberSymbol : TypedSymbol
     {
         internal TypeSymbol DeclaringType;
@@ -238,6 +243,7 @@ namespace XSharp.MacroCompiler
     internal partial class MethodSymbol : MethodBaseSymbol
     {
         internal bool IsStatic { get { return Method.IsStatic; } }
+        internal bool IsVirtual { get { return Method.IsVirtual; } }
         internal MethodInfo Method { get { return (MethodInfo)base.Member; } }
         internal MethodSymbol(TypeSymbol declType, MethodInfo method) : base(declType, method, Binder.FindType(method.ReturnType)) { }
     }

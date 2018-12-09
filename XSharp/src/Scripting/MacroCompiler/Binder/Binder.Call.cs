@@ -11,11 +11,36 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal MemberSymbol BindCall(Expr self, Symbol symbol, ArgList args)
+        internal MemberSymbol BindMethodCall(Expr expr, Symbol symbol, ArgList args, out Expr self, bool allowDynamic = true)
         {
-            bool isStatic = self == null;
+            OverloadResult ovRes = null;
+
+            var res = TryBindCall(expr, symbol, args, out self, ref ovRes, allowDynamic);
+
+            return res;
+        }
+
+        internal Symbol BindCtorCall(Symbol symbol, ArgList args, bool allowDynamic = true)
+        {
+            if ((symbol as TypeSymbol).IsValueType && args.Args.Count == 0)
+            {
+                return new ObjectInitializerSymbol(symbol as TypeSymbol);
+            }
+
+            Expr dummySelf;
 
             OverloadResult ovRes = null;
+
+            var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out dummySelf, ref ovRes, allowDynamic);
+
+            return res;
+        }
+
+        internal MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, ref OverloadResult ovRes, bool allowDynamic = true)
+        {
+            self = (expr as MemberAccessExpr)?.Expr;
+
+            bool isStatic = self == null;
 
             if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
             {
@@ -41,6 +66,38 @@ namespace XSharp.MacroCompiler
                 ApplyConversions(args, ovRes);
                 return ovRes.Symbol;
             }
+
+            if (allowDynamic && expr != null && ovRes?.Valid != true)
+            {
+                if (symbol is DynamicSymbol)
+                {
+                    expr = self;
+                    self = null;
+                    Convert(ref expr, Compilation.Get(NativeType.Usual));
+                    var obj = new Arg(expr ?? LiteralExpr.Bound(Constant.Create(null)));
+                    var name = new Arg(LiteralExpr.Bound(Constant.Create((symbol as DynamicSymbol).Name)));
+                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    args.Args.Clear();
+                    args.Args.Add(obj);
+                    args.Args.Add(name);
+                    args.Args.Add(arguments);
+                    return Compilation.Get(WellKnownMembers.XSharp_VO_Functions___InternalSend);
+                }
+                else if (symbol.Type().IsUsualOrObject())
+                {
+                    self = null;
+                    Convert(ref expr, Compilation.Get(NativeType.Usual));
+                    var obj = new Arg(expr);
+                    var name = new Arg(LiteralExpr.Bound(Constant.Create(SystemNames.DelegateInvokeName)));
+                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    args.Args.Clear();
+                    args.Args.Add(obj);
+                    args.Args.Add(name);
+                    args.Args.Add(arguments);
+                    return Compilation.Get(WellKnownMembers.XSharp_VO_Functions___InternalSend);
+                }
+            }
+
             return null;
         }
 

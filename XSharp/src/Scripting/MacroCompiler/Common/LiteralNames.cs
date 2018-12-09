@@ -206,6 +206,8 @@
     internal static class SystemNames
     {
         internal const string IndexerName = "Item";
+        internal const string DelegateInvokeName = "Invoke";
+        internal const string CtorName = ".ctor";
     }
     internal static class SystemQualifiedNames
     {

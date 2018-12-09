@@ -12,12 +12,20 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)src\commmon\XSharp.snk</AssemblyOriginatorKeyFile>
+    <Langversion>7.3</Langversion>
+    <RoslynProjectType>XSharp</RoslynProjectType>
+    <DeveloperBuild>true</DeveloperBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,37 +33,55 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>
+    <Compile Include="Binder\Operator.Binary.cs" />
     <Compile Include="Binder\Binder.Argument.cs" />
+    <Compile Include="Binder\Binder.Array.cs" />
     <Compile Include="Binder\Binder.BinaryOp.cs" />
     <Compile Include="Binder\Binder.Call.cs" />
     <Compile Include="Binder\Binder.Conversion.cs" />
     <Compile Include="Binder\Binder.cs" />
     <Compile Include="Binder\Binder.Expr.cs" />
+    <Compile Include="Binder\Binder.Literal.cs" />
     <Compile Include="Binder\Binder.Type.cs" />
-    <Compile Include="Binder\BoundNode.cs" />
+    <Compile Include="Binder\Binder.UnaryOp.cs" />
+    <Compile Include="Binder\Node.Bound.cs" />
     <Compile Include="Binder\Constant.cs" />
     <Compile Include="Binder\Conversion.cs" />
     <Compile Include="Binder\Operator.cs" />
     <Compile Include="Binder\OverloadResult.cs" />
     <Compile Include="Binder\Symbol.cs" />
+    <Compile Include="Binder\Operator.Unary.cs" />
+    <Compile Include="CodeGen\Operator.Binary.Emit.cs" />
     <Compile Include="CodeGen\CodeGen.cs" />
     <Compile Include="CodeGen\CodeGen.Emit.cs" />
-    <Compile Include="CodeGen\EmitNode.cs" />
+    <Compile Include="CodeGen\Constant.Emit.cs" />
+    <Compile Include="CodeGen\Conversion.Emit.cs" />
+    <Compile Include="CodeGen\Node.Emit.cs" />
+    <Compile Include="CodeGen\Symbol.Emit.cs" />
     <Compile Include="Common\LiteralNames.cs" />
     <Compile Include="Common\NativeTypes.cs" />
+    <Compile Include="Common\Options.cs" />
     <Compile Include="Common\WellKnownMembers.cs" />
+    <Compile Include="Common\WellKnownTypes.cs" />
     <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Diagnostic\Error.cs" />
+    <Compile Include="Diagnostic\Location.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Syntax\Lexer.cs" />
     <Compile Include="Syntax\Literal.cs" />
     <Compile Include="Syntax\Parser.cs" />
-    <Compile Include="Syntax\SyntaxNode.cs" />
+    <Compile Include="Syntax\Node.Syntax.cs" />
     <Compile Include="Syntax\SyntaxToken.cs" />
   </ItemGroup>
   <ItemGroup>

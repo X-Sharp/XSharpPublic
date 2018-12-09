@@ -586,7 +586,35 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
-
+#if XSHARP
+            // determine the largest type of the 2 expressions
+            if (resultType.SpecialType.IsNumericType() && leftType != rightType)
+            {
+                if (leftType.IsIntegralType() && rightType.IsIntegralType())
+                {
+                    bool leftLiteral = (left is BoundLiteral);
+                    bool rightLiteral = (right is BoundLiteral);
+                    bool doLeft = false;
+                    bool doRight = false;
+                    if (leftLiteral && !rightLiteral)
+                        doLeft = true;
+                    else if (rightLiteral && !leftLiteral)
+                        doRight = true;
+                    else if (leftType.SpecialType.SizeInBytes() < rightType.SpecialType.SizeInBytes())
+                        doLeft = true;
+                    else
+                        doRight = true; 
+                    if (doLeft)
+                    {
+                        left = new BoundConversion(left.Syntax, left, Conversion.ImplicitNumeric, false, false, left.ConstantValue, rightType) { WasCompilerGenerated = true };
+                    }
+                    else if (doRight)
+                    {
+                        right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                    }
+                }
+            }
+#endif
             BoundExpression result = new BoundBinaryOperator(
                     node,
                     resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
@@ -598,15 +626,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     originalUserDefinedOperators,
                     resultType,
                     hasErrors);
-            // Disable this for C642
-            //#if XSHARP
-            //if (opType == VOOperatorType.Shift)
-            //if (left.Type != null && result.Type != null && left.Type != result.Type && 
-            //    left.Type.IsIntegralType() && result.Type.IsIntegralType() && !(left is BoundLiteral))
-            //{
-            //    result = new BoundConversion(left.Syntax, result, Conversion.ImplicitNumeric, false, false, null, left.Type) { WasCompilerGenerated = true };
-            //}
-            //#endif
+
             return result;
 
         }

@@ -1,34 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
-  <PropertyGroup>
+   <PropertyGroup>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>cea6079a-eff1-4ae7-acdc-ebafc1555b02</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MacroCompilerTest</RootNamespace>
     <AssemblyName>MacroCompilerTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>MacroCompiler.Example</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
     <OutputName>MacroCompilerTest</OutputName>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
+        <RoslynProjectType>XSharp</RoslynProjectType>
+    <DeveloperBuild>true</DeveloperBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings />
     <SignAssembly>false</SignAssembly>
@@ -45,7 +50,6 @@
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,6 +57,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>Microsoft.CSharp</Name>
+      <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,14 +69,21 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.Core, Version=2.0.0.1, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="XSharp.Core, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\..\..\Runtime\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.VO, Version=2.0.0.1, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="XSharp.RT, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\Runtime\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VO, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VO</Name>
       <AssemblyName>XSharp.VO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
@@ -85,6 +101,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

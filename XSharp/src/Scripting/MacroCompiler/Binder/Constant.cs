@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XSharp.MacroCompiler
 {
-    internal class Constant : Symbol
+    internal abstract partial class Constant : TypedSymbol
     {
         internal static ConstantWithValue<T> Create<T>(T value, NativeType nt) { return new ConstantWithValue<T>(value, nt); }
         internal static ConstantWithValue<bool> Create(bool value) { return new ConstantWithValue<bool>(value, NativeType.Boolean); }
@@ -20,10 +20,13 @@ namespace XSharp.MacroCompiler
         internal static ConstantWithValue<decimal> Create(decimal value) { return new ConstantWithValue<decimal>(value, NativeType.Decimal); }
         internal static ConstantWithValue<string> Create(string value) { return new ConstantWithValue<string>(value, NativeType.String); }
         internal static ConstantWithValue<DateTime> Create(DateTime value) { return new ConstantWithValue<DateTime>(value, NativeType.DateTime); }
+        internal static ConstantVOFloat Create(double value, int length, int decimals) { return new ConstantVOFloat(value, length, decimals); }
+        internal static ConstantVODate CreateVODate(int year, int month, int day) { return new ConstantVODate(year, month, day); }
+        internal static ConstantVOSymbol CreateSymbol(string value) { return new ConstantVOSymbol(value); }
+        internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
 
-        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
-
-        internal virtual TypeSymbol Type { get; }
+        internal static ConstantDefault Null { get { return CreateDefault(Compilation.Get(NativeType.Object)); } }
+        internal static ConstantDefault Nil { get { return CreateDefault(Compilation.Get(NativeType.Usual)); } }
 
         internal virtual bool? Boolean { get; }
         internal virtual int? Int { get; }
@@ -36,10 +39,10 @@ namespace XSharp.MacroCompiler
         internal virtual string String { get; }
         internal virtual DateTime? DateTime { get; }
     }
-    internal class ConstantWithValue<T> : Constant
+    internal partial class ConstantWithValue<T> : Constant
     {
         T Value;
-        internal ConstantWithValue(T value, NativeType nt) { Value = value; Type = Compilation.GetNativeType(nt); }
+        internal ConstantWithValue(T value, NativeType nt) { Value = value; Type = Compilation.Get(nt); }
 
         internal override TypeSymbol Type { get; }
 
@@ -55,5 +58,29 @@ namespace XSharp.MacroCompiler
         internal override DateTime? DateTime { get { return Value as DateTime?; } }
 
         public override string ToString() { return Value.ToString(); }
+    }
+    internal partial class ConstantVOFloat : ConstantWithValue<double>
+    {
+        int Length;
+        int Decimals;
+        internal ConstantVOFloat(double value, int length, int decimals) : base(value, NativeType.VOFloat)
+        {
+            Length = length;
+            Decimals = decimals;
+        }
+    }
+    internal partial class ConstantVODate: ConstantWithValue<DateTime>
+    {
+        internal ConstantVODate(int year, int month, int day) : base(new DateTime(year, month, day), NativeType.VODate) { }
+    }
+    internal partial class ConstantVOSymbol : ConstantWithValue<string>
+    {
+        internal ConstantVOSymbol(string value) : base(value, NativeType.Symbol) {}
+    }
+    internal partial class ConstantDefault : Constant
+    {
+        internal ConstantDefault(TypeSymbol type) { Type = type; }
+
+        internal override TypeSymbol Type { get; }
     }
 }

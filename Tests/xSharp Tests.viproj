@@ -65473,8 +65473,8 @@ FileGUID = 0491CACB-7BA1-4AB7-BE6C-BFA15F10A86C
 FileType = Code
 [C644 - Problems with && operator in VO dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C644 - Problems with && operator in VO dialect Resources]
 [C644 - Problems with && operator in VO dialect Native Resources]
 [C644 - Problems with && operator in VO dialect License files]

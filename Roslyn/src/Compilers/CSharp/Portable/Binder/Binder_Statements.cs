@@ -1741,6 +1741,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // We suppress conversion errors on default parameters; eg, 
                 // if someone says "void M(string s = 123) {}". We will report
                 // a special error in the default parameter binder.
+#if XSHARP
+                if (conversion.IsExplicit)
+                {
+                    // silently convert integral types
+                    if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics))
+                    { 
+                        return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+                    }
+                }
+#endif
 
                 if (!isDefaultParameter)
                 {
@@ -2132,6 +2142,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             var sourceType = operand.Type;
+
+#if XSHARP
+            if (conversion.IsExplicit)
+            {
+                // silently convert integral types
+                if (CheckImplicitCast(sourceType, targetType, operand.Syntax, diagnostics))
+                    return;
+            }
+#endif
             if ((object)sourceType != null)
             {
                 GenerateImplicitConversionError(diagnostics, this.Compilation, syntax, conversion, sourceType, targetType, operand.ConstantValue);

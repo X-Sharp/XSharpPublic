@@ -25,5 +25,10 @@ namespace XSharp.MacroCompiler
                 }
             }
         }
+
+        internal Syntax.Expr Cache(ref Syntax.Expr expr)
+        {
+            return expr = Syntax.CachedExpr.Bound(this, expr);
+        }
     }
 }

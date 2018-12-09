@@ -33,7 +33,7 @@
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;PORTABLE;XSHARP;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -148,6 +148,8 @@
 
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="VsParser\**" />
+    <EmbeddedResource Remove="VsParser\**" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
@@ -171,7 +173,6 @@ $(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharpLexer.g4 $(Antl
 $(MSBuildThisFileDirectory)TouchFiles.exe  $(AntlrInputdir)XSharp.g4      $(AntlrOutputdir)XSharp.tokens      $(AntlrOutputdir)XSharpParser.cs $(AntlrOutputdir)XSharpListener.cs  $(AntlrOutputdir)XSharpBaseListener.cs</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>if "$(Configuration)" == "Debug" XCopy XSharp.CodeAnalysis.???  \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

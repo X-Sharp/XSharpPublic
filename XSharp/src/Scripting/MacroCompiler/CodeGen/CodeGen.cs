@@ -12,9 +12,9 @@ namespace XSharp.MacroCompiler
 
     internal static partial class CodeGen
     {
-        internal static R Emit<T,R>(this Binder<T,R> b, Codeblock macro) where R: class
+        internal static R Emit<T,R>(this Binder<T,R> b, Codeblock macro, string source) where R: class
         {
-            var dm = new DynamicMethod("<macro>", typeof(T), new Type[] { typeof(T[]) });
+            var dm = new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
             macro.Emit(dm.GetILGenerator());
             return dm.CreateDelegate(typeof(R)) as R;
         }

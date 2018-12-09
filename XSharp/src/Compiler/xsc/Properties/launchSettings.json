@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@XSFullMacroCompiler.rsp ",
-      "workingDirectory": "c:\\XSharp\\Dev\\XSharp\\src\\Compiler\\XSFullMacroCompiler"
+      "commandLineArgs": "@C645.rsp",
+      "workingDirectory": "c:\\XSharp\\Dev\\tests"
     }
   }
 }

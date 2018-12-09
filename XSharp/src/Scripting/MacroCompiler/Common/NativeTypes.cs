@@ -32,7 +32,28 @@ namespace XSharp.MacroCompiler
         //
         String = 18,
         Void = 19,
-        __Usual = 20,
+        IntPtr = 20,
+        UIntPtr = 21,
+        Ptr = 22,
+        Usual = 23,
+        VOFloat = 24,
+        VODate = 25,
+        Symbol = 26,
+        Psz = 27,
+        Array = 28,
+        Codeblock = 29,
+    }
+
+    public static class NativeTypeInfo
+    {
+        internal static bool IsUnsigned(this NativeType t)
+        {
+            return t == NativeType.Char || t == NativeType.Byte || t == NativeType.UInt16 || t == NativeType.UInt32 || t == NativeType.UInt64;
+        }
+        internal static bool IsFloatingPoint(this NativeType t)
+        {
+            return t == NativeType.Single || t == NativeType.Double || t == NativeType.Decimal;
+        }
     }
 
     public static partial class Compilation
@@ -59,7 +80,16 @@ namespace XSharp.MacroCompiler
             null,
             "System.String",
             "System.Void",
-            VulcanQualifiedTypeNames.Usual,
+            "System.IntPtr",
+            "System.UIntPtr",
+            "System.Void*",
+            XSharpQualifiedTypeNames.Usual + "|" + VulcanQualifiedTypeNames.Usual,
+            XSharpQualifiedTypeNames.Float + "|" + VulcanQualifiedTypeNames.Float,
+            XSharpQualifiedTypeNames.Date + "|" + VulcanQualifiedTypeNames.Date,
+            XSharpQualifiedTypeNames.Symbol + "|" + VulcanQualifiedTypeNames.Symbol,
+            XSharpQualifiedTypeNames.Psz + "|" + VulcanQualifiedTypeNames.Psz,
+            XSharpQualifiedTypeNames.Array + "|" + VulcanQualifiedTypeNames.Array,
+            XSharpQualifiedTypeNames.Codeblock + "|" + VulcanQualifiedTypeNames.Codeblock,
         };
 
         static TypeSymbol[] NativeTypeSymbols;
@@ -70,19 +100,24 @@ namespace XSharp.MacroCompiler
 
             foreach (var m in (NativeType[])Enum.GetValues(typeof(NativeType)))
             {
-                var name = NativeTypeNames[(int)m];
-                if (!string.IsNullOrEmpty(name))
+                var names = NativeTypeNames[(int)m];
+                nativeTypeSymbols[(int)m] = null;
+                if (!string.IsNullOrEmpty(names))
                 {
-                    Debug.Assert(name.Substring(name.LastIndexOf('.')+1) == m.ToString());
-                    var t = Binder.Lookup(name) as TypeSymbol;
-                    if (t != null)
+                    Debug.Assert(names.Substring(names.LastIndexOf('.')+1)
+                        .Replace("__","").Split('|', '(').First()
+                        .Replace("Void*","Ptr") == m.ToString());
+                    foreach(var name in names.Split('|'))
                     {
+                        var t = Binder.LookupFullName(name) as TypeSymbol;
+                        Debug.Assert(t != null);
+                        if (t == null)
+                            continue;
                         t.NativeType = m;
+                        nativeTypeSymbols[(int)m] = t;
+                        break;
                     }
-                    nativeTypeSymbols[(int)m] = t;
                 }
-                else
-                    nativeTypeSymbols[(int)m] = null;
             }
 
             Interlocked.CompareExchange(ref NativeTypeSymbols, nativeTypeSymbols, null);
@@ -90,10 +125,13 @@ namespace XSharp.MacroCompiler
 
         internal static readonly int NativeTypeCount = Enum.GetValues(typeof(NativeType)).Length;
 
-        internal static TypeSymbol GetNativeType(NativeType kind)
+        internal static TypeSymbol Get(NativeType kind)
         {
             Debug.Assert(NativeTypeSymbols != null);
-            return NativeTypeSymbols[(int)kind];
+            var result = NativeTypeSymbols[(int)kind];
+            if (result == null)
+                Compilation.Error(ErrorCode.TypeNotFound,kind);
+            return result;
         }
     }
 }

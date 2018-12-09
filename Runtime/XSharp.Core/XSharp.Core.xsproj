@@ -195,6 +195,7 @@
     <Compile Include="Types\Error.prg" />
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
+    <Compile Include="Types\MacroSupport.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>

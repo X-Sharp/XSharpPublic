@@ -71,7 +71,7 @@ namespace XSharp.MacroCompiler
                 MethodSymbol mop = null;
                 ConversionSymbol lconv = null;
                 ConversionSymbol rconv = null;
-                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, false);
+                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions_POW), ref mop, ref lconv, ref rconv, false);
                 ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, false);
                 ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, false);
                 if (mop != null)

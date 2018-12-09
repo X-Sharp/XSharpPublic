@@ -3,7 +3,8 @@ using System.Collections.Generic
 using System.Linq
 using System.Text
 using XSharp.MacroCompiler
-
+    using XSharp.Runtime
+    
 function U(u as usual) as usual
     return u
 
@@ -39,8 +40,8 @@ function CC(a,b,c)
 global UU as usual
 
 class testclassdc
-    v1 as int
-    v2 as string
+   export v1 as int
+   export v2 as string
 
     override method GetHashCode() as int
         return super:GetHashCode()
@@ -53,8 +54,8 @@ class testclassdc
 end class
 
 class testclass
-    v1 as int
-    v2 as string
+    export v1 as int
+    export v2 as string
 
     static property sprop as int auto get set
     property prop as int auto get set
@@ -75,8 +76,8 @@ class testclass
 end class
 
 struct teststruct
-    v1 as int
-    v2 as string
+    export v1 as int
+    export v2 as string
 
     static property sprop as int auto get set
     property prop as int auto get set
@@ -118,9 +119,6 @@ function MyFieldGetWa(wa as string, name as string) as usual
 function MyFieldSetWa(wa as string, name as string, value as usual) as usual
     return "FieldSet(" + wa + "," + name +"):" + (string)value
 
-begin namespace MacroCompilerTest
-    using XSharp.Runtime
-    using XSharp.MacroCompiler
 
 	function Start() as void
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
@@ -315,16 +313,16 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|| NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
 
         XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
-        Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarGet, "MyVarGet")
-        Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarPut, "MyVarPut")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions_VarGet, "MyVarGet")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions_VarPut, "MyVarPut")
         TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "VarGet(NIKOS)", typeof(usual))
         TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "VarPut(NIKOS):123", typeof(usual))
 
         XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
-        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGet, "MyFieldGet")
-        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSet, "MyFieldSet")
-        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGetWa, "MyFieldGetWa")
-        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSetWa, "MyFieldSetWa")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
         TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
         TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(usual))
         TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
@@ -476,7 +474,6 @@ begin namespace MacroCompilerTest
         Console.WriteLine()
         return
 
-end namespace
 
 begin namespace XSharp.Runtime
     using XSharp.MacroCompiler

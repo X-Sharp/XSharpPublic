@@ -43,7 +43,7 @@ namespace XSharp.MacroCompiler
             {
                 Binder<T, R> binder = Binder.Create<T, R>(options);
                 var ast = binder.Bind(Parse(source));
-                return new CompilationResult(binder.Emit(ast), binder.ParamCount);
+                return new CompilationResult(binder.Emit(ast,source), binder.ParamCount);
             }
             catch (CompileFailure e)
             {

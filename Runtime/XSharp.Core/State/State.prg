@@ -456,25 +456,26 @@ CLASS XSharp.RuntimeState
 		SWITCH format
 			CASE "MM/DD/YY"
 			CASE "MM/DD/YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD) 1)	// American
+				SetValue(Set.DATECOUNTRY, (DWORD) DateCountry.American)	
 			CASE "YY.MM.DD"
 			CASE "YYYY.MM.DD"
-				SetValue(Set.DATECOUNTRY, (DWORD)2)	// Ansi
+				SetValue(Set.DATECOUNTRY, (DWORD) DateCountry.Ansi)	
 			CASE "DD/MM/YY"
 			CASE "DD/MM/YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)3)	// British & french
+                // What a laugh, the British & french have an identical format. 
+				SetValue(Set.DATECOUNTRY, (DWORD)DateCountry.British)	
 			CASE "DD.MM.YY"
 			CASE "DD.MM.YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)5)	// German
+				SetValue(Set.DATECOUNTRY, (DWORD)DateCountry.German)	
 			CASE "DD-MM-YY"
 			CASE "DD-MM-YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)6)	// Italian
+				SetValue(Set.DATECOUNTRY, (DWORD)DateCountry.Italian)	
 			CASE "YY/MM/DD"
 			CASE "YYYY/MM/DD"
-				SetValue(Set.DATECOUNTRY, (DWORD)7)	// Japanese
+				SetValue(Set.DATECOUNTRY, (DWORD)DateCountry.Japanese)	
 			CASE "MM-DD-YY"
 			CASE "MM-DD-YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)8)	// USA
+				SetValue(Set.DATECOUNTRY, (DWORD)DateCountry.USA)	
 			OTHERWISE
 				SetValue(Set.DATECOUNTRY, (DWORD)0)	
 		END SWITCH
@@ -489,21 +490,22 @@ CLASS XSharp.RuntimeState
 		
 		LOCAL format, year AS STRING
 		year := IIF(Century , "YYYY" , "YY")
-		SWITCH country
-			CASE 1 // American
+		SWITCH (DateCountry) country
+			CASE DateCountry.American
 				format := "MM/DD/" + year
-			CASE 2 // Ansi
+			CASE DateCountry.Ansi
 				format := year + ".MM.DD"
-			CASE 3 // British & french
-			CASE 4 // British & french
+			CASE DateCountry.British
+			CASE DateCountry.French
+                // What a laugh, the British & french have an identical format. 
 				format := "DD/MM/" + year
-			CASE 5 // German
+			CASE DateCountry.German
 				format := "DD.MM." + year
-			CASE 6 // Italian
+			CASE DateCountry.Italian
 				format := "DD-MM-" + year
-			CASE 7 // Japanese
+			CASE DateCountry.Japanese
 				format := year + "/MM/DD"
-			CASE 8 // USA
+			CASE DateCountry.USA
 				format := "MM-DD-" + year
 			OTHERWISE
 				format := "MM/DD/" + year

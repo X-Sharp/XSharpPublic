@@ -186,6 +186,7 @@
     <Compile Include="RDD\CoreDb.prg" />
     <Compile Include="RDD\Workarea.prg" />
     <Compile Include="RDD\Workareas.prg" />
+    <Compile Include="State\DateCountryEnum.prg" />
     <Compile Include="State\Get.prg" />
     <Compile Include="State\EnumSet.prg" />
     <Compile Include="State\Set.prg" />

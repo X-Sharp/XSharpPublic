@@ -25,9 +25,9 @@ namespace XSharp.MacroCompiler
         {
             public R Macro;
             public int ParamCount;
-            public CompileFailure Diagnostic;
+            public CompilationError Diagnostic;
             internal CompilationResult(R macro, int paramCount) { Macro = macro; ParamCount = paramCount; Diagnostic = null; }
-            internal CompilationResult(CompileFailure diagnostic) { Macro = null; ParamCount = 0; Diagnostic = diagnostic; }
+            internal CompilationResult(CompilationError diagnostic) { Macro = null; ParamCount = 0; Diagnostic = diagnostic; }
         }
 
         MacroOptions options;
@@ -45,9 +45,9 @@ namespace XSharp.MacroCompiler
                 var ast = binder.Bind(Parse(source));
                 return new CompilationResult(binder.Emit(ast,source), binder.ParamCount);
             }
-            catch (CompileFailure e)
+            catch (CompilationError e)
             {
-                return new CompilationResult(new CompileFailure(e, source));
+                return new CompilationResult(new CompilationError(e, source));
             }
         }
 

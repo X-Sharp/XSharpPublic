@@ -73,7 +73,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.WORD:
                     return Compilation.Get(NativeType.UInt16);
                 default:
-                    throw new NotImplementedException();
+                    return null;
             }
         }
     }

@@ -3,7 +3,8 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XSharp.MacroCompiler
-
+    USING XSharp.Runtime
+    
 FUNCTION U(u AS USUAL) AS USUAL
     RETURN u
 
@@ -39,8 +40,8 @@ FUNCTION CC(a,b,c)
 GLOBAL UU AS USUAL
 
 CLASS testclassdc
-    EXPORT v1 AS INT
-    EXPORT v2 AS STRING
+   EXPORT v1 AS INT
+   EXPORT v2 AS STRING
 
     OVERRIDE METHOD GetHashCode() AS INT
         RETURN SUPER:GetHashCode()
@@ -118,17 +119,19 @@ FUNCTION MyFieldGetWa(wa AS STRING, name AS STRING) AS USUAL
 FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
     RETURN "FieldSet(" + wa + "," + name +"):" + (STRING)VALUE
 
-
-
+BEGIN NAMESPACE MacroCompilerTest
+    USING XSharp.Runtime
+    USING XSharp.MacroCompiler
 	FUNCTION Start() AS VOID
 	    SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
 
-        ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
+        //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
 
-        EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
+        //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
+        EvalMacro(mc, e"{|a,b| (-tsi+1)[2]}", {1,2,3}, 1)
         wait
 
         RunTests(mc)
@@ -154,7 +157,7 @@ FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
             VAR res := cb:EvalBlock(args)
             Console.WriteLine("res = {0}",res)
             RETURN res
-        CATCH e AS XSharp.MacroCompiler.CompileFailure
+        CATCH e AS XSharp.MacroCompiler.CompilationError
             Console.WriteLine("{0}",e:DiagnosticMessage)
             RETURN NIL
         END
@@ -168,8 +171,11 @@ FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
 
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
 
-        mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
+        mc:Options:UndeclaredVariableResolution := VariableResolution.Error
+        TestMacro(mc, e"{|a,b| testtest__() }", <OBJECT>{1,2,3}, NULL, NULL, ErrorCode.IdentifierNotFound)
 
+        mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
+        TestMacro(mc, e"{|a| a() }", <OBJECT>{(@@Func<INT>){ => 1234}}, 1234, typeof(USUAL))
         TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(SYMBOL))
         TestMacro(mc, "#HELLo + #World", <OBJECT>{}, #hello + #world, typeof(STRING))
         TestMacro(mc, e"#HELLo + \"world\"", <OBJECT>{}, #hello + "world", typeof(STRING))
@@ -306,7 +312,7 @@ FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
         TestMacro(mc, e"{|v| v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, NIL, NIL }}} },"DATEI_1", typeof(USUAL))
         TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, NIL, NIL }}} },"TEST", typeof(USUAL)) 
         TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <OBJECT>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(USUAL)) // FAIL - due to ARRAY:__SetElement() bug
-        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
+        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(STRING)) // FAIL - String:ToString() is overloaded!
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, NIL, typeof(USUAL))
@@ -401,7 +407,7 @@ FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
                 Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res?:GetType())
             END
             RETURN FALSE
-        CATCH e AS XSharp.MacroCompiler.CompileFailure
+        CATCH e AS XSharp.MacroCompiler.CompilationError
             IF e:@@Code == ec
                 TotalSuccess += 1
                 Console.WriteLine("[OK]")
@@ -474,5 +480,6 @@ FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
         Console.WriteLine()
         RETURN
 
+END NAMESPACE
 
 

@@ -20,6 +20,10 @@ namespace XSharp.MacroCompiler
                 case ConversionKind.ConstantReduction:
                     e = LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant);
                     break;
+                case ConversionKind.NoConversion:
+                    throw ConversionError(e, type);
+                case ConversionKind.NoImplicitConversion:
+                    throw ImplicitConversionError(e, type);
                 default:
                     e = TypeConversion.Bound(e, type, conv);
                     break;
@@ -35,17 +39,17 @@ namespace XSharp.MacroCompiler
         {
             var conv1 = Conversion(e1, e2.Datatype);
             var conv2 = Conversion(e2, e1.Datatype);
-            if (conv1.Kind == ConversionKind.NoConversion && conv2.Kind != ConversionKind.NoConversion)
+            if (!conv1.Exists && conv2.Exists)
             {
                 Convert(ref e2, e1.Datatype, conv2);
                 return e1.Datatype;
             }
-            if (conv1.Kind != ConversionKind.NoConversion && conv2.Kind == ConversionKind.NoConversion)
+            if (conv1.Exists && !conv2.Exists)
             {
                 Convert(ref e1, e2.Datatype, conv1);
                 return e2.Datatype;
             }
-            if (conv1.Kind != ConversionKind.NoConversion && conv2.Kind != ConversionKind.NoConversion)
+            if (conv1.Exists && conv2.Exists)
             {
                 int cost1 = conv1.Cost;
                 int cost2 = conv2.Cost;
@@ -67,6 +71,8 @@ namespace XSharp.MacroCompiler
 
         internal static ConversionSymbol Conversion(Expr expr, TypeSymbol type, bool allowExplicit = false, bool allowDynamic = true)
         {
+            var noConversion = ConversionKind.NoConversion;
+
             var conversion = ConversionEasyOut.ClassifyConversion(expr.Datatype, type);
 
             if (conversion != ConversionKind.NoConversion)
@@ -74,6 +80,8 @@ namespace XSharp.MacroCompiler
                 var conv = ConversionSymbol.Create(conversion);
                 if (allowExplicit || conv.IsImplicit)
                     return conv;
+                if (conv.Exists)
+                    noConversion = ConversionKind.NoImplicitConversion;
             }
 
             if (TypesMatch(expr.Datatype, type))
@@ -118,7 +126,14 @@ namespace XSharp.MacroCompiler
                     return conv;
             }
 
-            return ConversionSymbol.Create(ConversionKind.NoConversion);
+            if (!allowExplicit && noConversion == ConversionKind.NoConversion)
+            {
+                ResolveUserDefinedConversion(expr, type, expr.Datatype.Lookup(OperatorNames.Explicit), type.Lookup(OperatorNames.Explicit), ref converter);
+                if (converter != null)
+                    noConversion = ConversionKind.NoImplicitConversion;
+            }
+
+            return ConversionSymbol.Create(noConversion);
         }
 
         internal static void ResolveUserDefinedConversion(Expr expr, TypeSymbol type, Symbol src_conv, Symbol dest_conv, ref MethodSymbol converter)
@@ -179,7 +194,7 @@ namespace XSharp.MacroCompiler
             {
                 var inner = ConversionSymbol.Create(ConversionKind.Deref);
                 var outer = Conversion(TypeConversion.Bound(expr, expr.Datatype.ElementType, inner), type);
-                if (outer.Kind != ConversionKind.NoConversion)
+                if (outer.Exists)
                 {
                     return ConversionSymbol.Create(outer, inner);
                 }
@@ -192,7 +207,7 @@ namespace XSharp.MacroCompiler
             {
                 var inner = Conversion(expr, Compilation.Get(NativeType.Usual));
                 var outer = Conversion(TypeConversion.Bound(expr, Compilation.Get(NativeType.Usual), inner), type, allowExplicit: allowExplicit);
-                if (outer.Kind != ConversionKind.NoConversion)
+                if (outer.Exists)
                 {
                     return ConversionSymbol.Create(outer, inner);
                 }

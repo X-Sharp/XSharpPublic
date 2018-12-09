@@ -34,11 +34,12 @@ namespace XSharp.MacroCompiler
                 case ConversionKind.ExplicitReference:
                     ilg.Emit(OpCodes.Castclass, type.Type);
                     break;
-                case ConversionKind.NoConversion:
-                    throw new CompileFailure(ErrorCode.NoConversion, expr.Datatype.Type, type.Type);
                 case ConversionKind.Deref:
                     EmitDereference(ilg, type);
                     break;
+                case ConversionKind.NoConversion:
+                case ConversionKind.NoImplicitConversion:
+                    throw new InternalError();
                 default:
                     throw new NotImplementedException();
             }
@@ -74,7 +75,7 @@ namespace XSharp.MacroCompiler
             if (expr != null)
                 expr.EmitAddr(ilg);
             else
-                Compilation.Error(ErrorCode.NotSupported);
+                throw new InternalError();
         }
     }
 }

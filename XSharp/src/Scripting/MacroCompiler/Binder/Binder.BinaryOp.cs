@@ -12,6 +12,22 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
+        internal static BinaryOperatorSymbol BindBinaryOperation(BinaryExpr expr, BinaryOperatorKind kind, bool isLogic, bool allowDynamic = true)
+        {
+            if (isLogic)
+            {
+                Convert(ref expr.Left, Compilation.Get(NativeType.Boolean));
+                Convert(ref expr.Right, Compilation.Get(NativeType.Boolean));
+            }
+
+            var res = BinaryOperation(kind, ref expr.Left, ref expr.Right, allowDynamic);
+
+            if (res != null)
+                return res;
+
+            throw BinaryOperationError(expr, kind, isLogic);
+        }
+
         internal static BinaryOperatorSymbol BinaryOperation(BinaryOperatorKind kind, ref Expr left, ref Expr right, bool allowDynamic = true)
         {
             var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);

@@ -11,13 +11,13 @@ namespace XSharp.MacroCompiler.Syntax
 
     abstract internal partial class Node
     {
-        internal virtual void Emit(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void Emit(ILGenerator ilg) { throw new InternalError(); }
     }
     abstract internal partial class Expr : Node
     {
-        internal virtual void Emit(ILGenerator ilg, bool preserve) { }
-        internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new NotImplementedException(); }
-        internal virtual void EmitAddr(ILGenerator ilg) { throw new NotImplementedException(); }
+        internal virtual void Emit(ILGenerator ilg, bool preserve) { throw new InternalError(); }
+        internal virtual void EmitSet(ILGenerator ilg, bool preserve) { throw new InternalError(); }
+        internal virtual void EmitAddr(ILGenerator ilg) { throw new InternalError(); }
         internal sealed override void Emit(ILGenerator ilg) { Emit(ilg, true); }
     }
     abstract internal partial class TypeExpr : Expr
@@ -290,8 +290,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (Self != null) Self.Emit(ilg);
             Args.Emit(ilg);
-            var m = (MethodSymbol)Symbol;
-            ilg.Emit(Self == null ? OpCodes.Call : OpCodes.Callvirt, m.Method);
+            Symbol.EmitGet(ilg);
             if (!preserve && Datatype.NativeType != NativeType.Void)
                 ilg.Emit(OpCodes.Pop);
         }
@@ -300,22 +299,10 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (Datatype.Type.IsValueType && Args.Args.Count == 0)
-            {
-                var l = ilg.DeclareLocal(Datatype.Type);
-                ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, l);
-                ilg.Emit(OpCodes.Initobj, Datatype.Type);
-                if (preserve)
-                    ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, l);
-            }
-            else
-            {
-                Args.Emit(ilg);
-                var c = (ConstructorSymbol)Symbol;
-                ilg.Emit(OpCodes.Newobj, c.Constructor);
-                if (!preserve)
-                    ilg.Emit(OpCodes.Pop);
-            }
+            Args.Emit(ilg);
+            Symbol.EmitGet(ilg);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
     }
     internal partial class ArrayAccessExpr : MethodCallExpr

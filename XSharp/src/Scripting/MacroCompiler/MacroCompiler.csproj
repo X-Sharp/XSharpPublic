@@ -44,6 +44,7 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>
+    <Compile Include="Binder\Binder.Error.cs" />
     <Compile Include="Binder\Operator.Binary.cs" />
     <Compile Include="Binder\Binder.Argument.cs" />
     <Compile Include="Binder\Binder.Array.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Binder\OverloadResult.cs" />
     <Compile Include="Binder\Symbol.cs" />
     <Compile Include="Binder\Operator.Unary.cs" />
+    <Compile Include="Binder\Symbol.Extensions.cs" />
     <Compile Include="CodeGen\Operator.Binary.Emit.cs" />
     <Compile Include="CodeGen\CodeGen.cs" />
     <Compile Include="CodeGen\CodeGen.Emit.cs" />

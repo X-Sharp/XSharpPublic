@@ -50,7 +50,7 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="30" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="35" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -251,6 +251,17 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal">__HARBOUR__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logic literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the Harbour dialect is selected. Otherwise not defined.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal">__LINE__</para>
         </td>
         <td>
@@ -339,6 +350,17 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal">__VO__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logic literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the VO dialect is selected. Otherwise not defined.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal">__VO1__ , __VO2__<br/>... __VO16__</para>
         </td>
         <td>
@@ -346,6 +368,17 @@
         </td>
         <td>
           <para styleclass="Normal">Current value of the matching VO compatibility compiler option</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__VULCAN__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logic literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the Vulcan dialect is selected. Otherwise not defined.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -372,6 +405,17 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal">__XPP__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logic literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the XBase++ dialect is selected. Otherwise not defined.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal">__XSHARP__</para>
         </td>
         <td>
@@ -379,6 +423,17 @@
         </td>
         <td>
           <para styleclass="Normal">Always TRUE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__XSHARP_RT__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when compiling against the X# runtime. Not defined otherwise.</para>
         </td>
       </tr>
     </table></para>

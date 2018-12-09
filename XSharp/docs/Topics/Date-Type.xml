@@ -2,10 +2,14 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Date Type</title>
+  <keywords>
+    <keyword>DATE</keyword>
+    <keyword>XSharp.__Date</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Date Type</para>
     </header>
-    <para styleclass="Normal">This structure holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic. There are implicit converters between Date and DateTime.</para>
+    <para styleclass="Normal">This structure holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic. There are implicit converters between Date and DateTime.<br/>The internal type name for this type is XSharp.__Date</para>
   </body>
 </topic>

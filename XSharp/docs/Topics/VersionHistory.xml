@@ -12,9 +12,28 @@
     <para styleclass="List"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="Heading1">Changes in 2.0.0.8 (Bandol Beta 8)</para>
     <para styleclass="Heading2">Compiler</para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The compiler source code has been upgraded to Roslyn 2.10 (C# 7.3). As a result of that there are some new compiler options, such as <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-refout">/refout</link> and we also support the combination of the &quot;PRIVATE PROTECTED&quot; modifier that defines a type member as accessible for subclasses in the same assembly but not for subclasses in other assemblies</li>
+      <li styleclass="List">We have added support for XBase++ class declarations. See the XBase++ class declaration topic for more information about the syntax and what is supported and what not.</li>
+      <li styleclass="List">We have added support for simple macros with the &amp;Identifier syntax</li>
+      <li styleclass="List">We have added support for late bound property access:</li>
+      <list id="54" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="List">The &lt;Expression&gt;:&amp;&lt;Identifier&gt; syntax. <br/>This translates to IVarGet(&lt;Expression&gt;, &lt;Identifier&gt;).</li>
+        <li styleclass="List">The &lt;Expression&gt;:&amp;(&lt;Expression2&gt;) syntax. <br/>This translates to IVarGet(&lt;Expression&gt;, &lt;Expression2&gt;).</li>
+        <li styleclass="List">Both of these can also be used for assignments and will be translated to IVarPut: <br/>&lt;Expression&gt;:&amp;&lt;Identifier&gt; := &lt;Value&gt; <br/>This becomes IVarPut(&lt;Expression&gt;, &lt;Identifier&gt;, &lt;Value&gt;)</li>
+        <li styleclass="List">All of these will work even when Late Binding is not enabled.</li>
+      </list>
+    </list>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">We have added a new compiler options <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs">/stddefs</link> that allows you to change the standard header file (which defaults to <text styleclass="Body Text">XSharpDefs.xh)</text></li>
+      <li styleclass="List"><text styleclass="Body Text">We have added a new preprocessor Match marker &lt;#idMarker&gt; which matches a single token (all characters until the first whitespace character)</text></li>
+      <li styleclass="List"><text styleclass="Body Text">When you select a dialect now, then the compiler will automatically add some compiler macros. The VO dialect declares the macro __VO__, the Vulcan dialect declares the macro __VULCAN__ the harbour dialect declares the macro __HARBOUR__ and the XBase++ dialect declares the macro __XPP__. </text></li>
+      <li styleclass="List"><text styleclass="Body Text">When compiling against the X# runtime then also the macro __XSHARP_RT__ will be defined.</text></li>
+    </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">Fix Ansi2OEM problem with FRead3() and FWrite3()</li>
+      <li styleclass="List">We moved most of the generic XBase code to XSharp.RT.DLL. XSharp.VO.DLL now only has VO specific code. We have also added XSharp.XPP.DLL for XPP</li>
+      <li styleclass="List">Fix Ansi2OEM problem with FRead3(), FWrite3() and FReadStr</li>
       <li styleclass="List">Added &#160;missing functions EnableLBOptimizations() and property Array:Count</li>
       <li styleclass="List">Fixed problem with latebound assign with CodeBlock values</li>
       <li styleclass="List">Fixed problem with AScan() and AEval() with missing parameters</li>
@@ -22,9 +41,21 @@
       <li styleclass="List">Send() was &quot;swallowing&quot; errors. This has been fixed</li>
       <li styleclass="List">Fixed a problem with assigning to multi dimensional arrays</li>
       <li styleclass="List">Fixed a problem with creating objects with CreateInstance() where objects are not in the &quot;global&quot; namespace</li>
+      <li styleclass="List">Fixed several problems in the RDD system and support functions.</li>
+      <li styleclass="List">Fixed several problems in the late binding support, such as IsMethod, IsAccess, IVarPut, IVarPutSelf etc.</li>
+      <li styleclass="List">Fixed several problems with TransForm()</li>
+      <li styleclass="List">Integer divisions for usuals containing integers now return </li>
+      <li styleclass="List">We fixed several conversions that were used during late bound calls</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
-    <para styleclass="Normal"></para>
+    <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed filtering on &apos;current project&apos; in the error list</li>
+      <li styleclass="List">Type lookup for local variables was sometimes failing. This has been fixed</li>
+      <li styleclass="List">Fixed a problem with Brace Matching that could cause an exception in VS</li>
+      <li styleclass="List">Fixed a problem with Tooltips that could cause an exception in VS</li>
+      <li styleclass="List">Fixed a problem with uncommenting that could cause an exception in VS</li>
+      <li styleclass="List">New references added in VS would not always be included in the type search in the editor. This has been fixed.</li>
+    </list>
     <para styleclass="Heading2">Tools</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">VulcanXPorter was always adjusting the referenced VO libraries and &#160;was ignoring the &quot;Use X# Runtime&quot; checkbox</li>

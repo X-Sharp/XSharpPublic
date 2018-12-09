@@ -99,6 +99,9 @@
         <topicref type="topic" id="424000672684667" build="ALL" modified="2016-11-03T15:16:02.923Z" icon="0" href="YIELD-RETURN-EXAMPLE">
           <caption translate="true">YIELD </caption>
         </topicref>
+        <topicref type="topic" id="434413139318325" build="ALL" modified="2018-12-07T11:16:16.160Z" icon="0" href="XBase-class-declarations">
+          <caption translate="true">XBase++ class declarations</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="428711073823775" build="ALL" modified="2017-05-17T10:08:58.415Z" icon="0" href="Licenses">
         <caption translate="true">Licensing</caption>
@@ -145,8 +148,14 @@
       <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
         <caption translate="true">XSharp.Core</caption>
       </topicref>
+      <topicref type="topic" id="4345204950299" build="ALL" modified="2018-12-07T11:35:46.212Z" icon="0" href="XSharp_RT">
+        <caption translate="true">XSharp.RT</caption>
+      </topicref>
       <topicref type="topic" id="432586107516927" build="ALL" modified="2018-06-07T17:53:59.687Z" icon="0" href="XSharp_VO">
         <caption translate="true">XSharp.VO</caption>
+      </topicref>
+      <topicref type="topic" id="434416934907107" build="ALL" modified="2018-12-07T11:35:55.812Z" icon="0" href="XSharp_XPP">
+        <caption translate="true">XSharp.XPP</caption>
       </topicref>
       <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
         <caption translate="true">XSharp.Macrocompiler</caption>

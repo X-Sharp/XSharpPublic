@@ -293,7 +293,7 @@ BEGIN NAMESPACE XSharp
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
-        PRIVATE PROPERTY _floatValue    AS FLOAT			GET Float{ _valueData:r8, _width, _decimals}
+        PRIVATE PROPERTY _floatValue    AS FLOAT			GET FLOAT{ _valueData:r8, _width, _decimals}
         PRIVATE PROPERTY _i64Value		AS INT64			GET _valueData:i64
         PRIVATE PROPERTY _intValue		AS INT				GET _valueData:i
         PRIVATE PROPERTY _logicValue	AS LOGIC			GET _valueData:l
@@ -1575,7 +1575,7 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         RETURN CHECKED((BYTE) u:_r8Value)
                     ENDIF
-                CASE __UsualType.Logic		; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Logic		; RETURN (BYTE) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionVO11
                         RETURN CHECKED(Convert.ToByte(u:_decimalValue ))
@@ -1613,7 +1613,7 @@ BEGIN NAMESPACE XSharp
                         RETURN CHECKED((SHORT) u:_decimalValue )
                     ENDIF
 
-                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Logic	; RETURN (SHORT) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
                 OTHERWISE
                     THROW ConversionError(SHORT, TYPEOF(SHORT), u)
@@ -1743,7 +1743,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN CHECKED((WORD) u:_i64Value)
                 CASE __UsualType.Float	; RETURN CHECKED((WORD) u:_r8Value)
                 CASE __UsualType.Decimal; RETURN CHECKED((WORD) u:_decimalValue )
-                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Logic	; RETURN (WORD) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void	; RETURN 0
                 OTHERWISE
                     THROW ConversionError(WORD, TYPEOF(WORD), u)
@@ -1764,7 +1764,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64    ; RETURN (DWORD) u:_i64Value
                 CASE __UsualType.Float    ; RETURN (DWORD) u:_r8Value
                 CASE __UsualType.Decimal  ; RETURN (DWORD) u:_decimalValue 
-                CASE __UsualType.Logic    ; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Logic    ; RETURN (DWORD) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Void     ; RETURN 0
                 CASE __UsualType.Ptr
                     // this strange behavior is needed to be compatible with VO. 
@@ -1846,12 +1846,12 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
             TRY
                 SWITCH u:_usualType
-                CASE __UsualType.Long	; RETURN Float{(REAL8) u:_intValue}
-                CASE __UsualType.Int64	; RETURN Float{(REAL8) u:_i64Value}
+                CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue}
+                CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value}
                 CASE __UsualType.Float	; RETURN u:_floatValue
-                CASE __UsualType.Decimal; RETURN Float{(REAL8) u:_decimalValue}
-                CASE __UsualType.Logic	; RETURN Float{IIF(u:_logicValue, 1, 0)}
-                CASE __UsualType.Void	; RETURN Float{0}
+                CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue}
+                CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0)}
+                CASE __UsualType.Void	; RETURN FLOAT{0}
                 OTHERWISE
                     THROW ConversionError(FLOAT, TYPEOF(FLOAT), u)
                 END SWITCH
@@ -2210,7 +2210,7 @@ BEGIN NAMESPACE XSharp
         STATIC INTERNAL METHOD BinaryError( cOperator AS STRING, message AS STRING, left AS LOGIC, lhs AS __Usual, rhs AS __Usual) AS Error
             VAR err			 := Error{ArgumentException{}}
             err:GenCode		 := GenCode.EG_ARG
-            err:ArgNum		 := IIF (left, 1, 2)
+            err:ArgNum		 := (DWORD) IIF (left, 1, 2)
             err:FuncSym		 := cOperator
             err:Description  := message
             err:Arg			 := IIF(left, "left operand" , "right operand")

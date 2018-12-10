@@ -132,21 +132,22 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     /// The original string without leading and trailing spaces
     /// </returns>
     // _FIELD->Name
-FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
+
+FUNCTION __FieldGet( fieldName AS STRING ) AS OBJECT
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
-    LOCAL ret := NIL AS USUAL
+    LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE
-        VoDb.FieldGet( fieldpos, REF ret )
+         _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
     ENDIF
     RETURN ret
     
     
     // CUSTOMER->NAME
 /// <exclude/>
-FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
-    LOCAL ret AS USUAL
+FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS OBJECT
+    LOCAL ret AS OBJECT
     LOCAL newArea := SELECT( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     IF newArea > 0
@@ -163,15 +164,15 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
     
     // _FIELD->Name := "Foo"
 /// <exclude/>
-FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
+FUNCTION __FieldSet( fieldName AS STRING, oValue AS OBJECT ) AS OBJECT
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
     ELSE
-        _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut( fieldpos, uValue))
+        _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldPut( fieldpos, oValue))
     ENDIF
     // We return the original value to allow chained expressions
-    RETURN uValue
+    RETURN oValue
     
     
     // CUSTOMER->Name := "Foo"
@@ -205,6 +206,22 @@ FUNCTION __MemVarGet(cName AS STRING) AS USUAL
 /// <exclude/>
 FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     RETURN uValue
+    
+
+/// <exclude/>
+FUNCTION __VarGet(cName AS STRING) AS OBJECT
+    IF FieldPos(cName) > 0
+        RETURN __FieldGet(cName)
+    ENDIF
+    RETURN __MemVarGet(cName)
+    
+/// <exclude/>
+FUNCTION __VarPut(cName AS STRING, uValue AS OBJECT) AS OBJECT
+    IF FieldPos(cName) > 0
+        RETURN __FieldSet(cName, uValue)
+    ENDIF
+    RETURN __MemVarPut(cName, uValue)
+    
     
     
     // ALIAS->(DoSomething())

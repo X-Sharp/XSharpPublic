@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -49,6 +49,22 @@ INTERNAL STATIC CLASS ConversionHelpers
             IF parts:Length > 1
                 // If the G17 format contains a decimal part, fetch it.
                 VAR cDec := parts[1+ __ARRAYBASE__]
+                VAR cInt := parts[0+ __ARRAYBASE__]
+
+				// could end up being represented in exp format. For example
+				// Str3(70.00 - 65.01 - 4.99,16,2)
+				// causes cTemp above to have a value of "-5.3290705182007514E-15"
+	            LOCAL nExp AS INT
+	            nExp := cDec:IndexOf('E')
+	            IF nExp != -1
+	            	IF cDec[nExp + 1] == '-'
+	            		LOCAL cExp AS STRING
+	            		cExp := System.String{'0', Int32.Parse(cDec:Substring(nExp + 2))}
+	            		cDec := cExp + iif(cInt[0] == '-' , cInt:SubString(1) , cInt) + cDec
+	            		cInt := iif(cInt[0] == '-' , "-0" , "0")
+	            	END IF
+	            END IF
+
                 parts := result:Split(<CHAR>{c'.'}, StringSplitOptions.RemoveEmptyEntries)
                 VAR cOldDec := parts[1+ __ARRAYBASE__]
                 IF cDec:Length > cOldDec:Length
@@ -56,7 +72,7 @@ INTERNAL STATIC CLASS ConversionHelpers
                 ELSEIF cDec:Length < cOldDec:Length
                     cDec := cDec:PadRight(cOldDec:Length,c'0')
                 ENDIF
-                result := parts[1] + "." + cDec
+                result := parts[0+ __ARRAYBASE__] + "." + cDec
             ENDIF
         ENDIF
 		IF result:Length > nLen

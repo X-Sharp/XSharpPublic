@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -45,9 +45,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c := StrZero(12.3456,10,2)
 			Assert.Equal("0000012.35", c)	// ROunded up
 			c := Str3(2.49999,4,2)
-			assert.Equal("2.50", c )  
+			Assert.Equal("2.50", c )  
 			c := Str3(2.50012,4,2)
-			assert.Equal("2.50", c )  
+			Assert.Equal("2.50", c )  
+
+			c := Str3(70.00 - 65.01 - 4.99 , 16 , 2)
+			Assert.Equal("            0.00", c )  
+			c := Str3(70.00 - 65.01 - 4.99 , 20 , 15)
+			assert.Equal("  -0.000000000000005", c )  
 
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID

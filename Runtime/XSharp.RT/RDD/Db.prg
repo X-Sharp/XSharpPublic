@@ -35,7 +35,7 @@ FUNCTION _Select(xValue) AS USUAL CLIPPER
     xType := UsualType(xValue)
     SWITCH xType
     CASE SYMBOL
-        local symSelect := xValue as symbol
+        LOCAL symSelect := xValue AS SYMBOL
         nSelect := VoDb.SymSelect(symSelect)
     CASE STRING
         nSelect := 0
@@ -244,31 +244,9 @@ FUNCTION FieldPutSym(symField AS SYMBOL,uValue AS USUAL) AS USUAL
     /// <returns>
     /// </returns>
 FUNCTION FieldPutSelect(uSelect AS USUAL,symField AS SYMBOL,uValue AS USUAL) AS USUAL
-    LOCAL origArea := (INT) RuntimeState.CurrentWorkArea  AS INT
-    LOCAL ret AS USUAL
-    LOCAL dwPos AS DWORD
-    
-    TRY
-        dwPos := SELECT(uSelect )
-        IF dwPos == 0
-            THROW Error.VODBError( EG_ARG, EDB_BADALIAS,  symField  )
-        ENDIF
-        VoDb.SetSelect( (INT) dwPos )
-        dwPos := FieldPosSym(symField)
-        IF dwPos == 0
-            VoDb.SetSelect( origArea )
-            THROW Error.VODBError( EG_ARG, EDB_FIELDNAME,  symField  )
-        ENDIF
-        
-        ret := FieldPut( dwPos, uValue )
-    FINALLY
-        VoDb.SetSelect( origArea )
-    END TRY   
-    
-    RETURN ret
-    
-    
-    
+    LOCAL nArea AS DWORD
+    nArea := SELECT(uSelect )
+    RETURN FieldPutArea(nArea, symField, uValue)
     
     
     *----------------------------------------------------------------------------
@@ -363,7 +341,7 @@ FUNCTION DbCreate (   cName,  aStruct, cRddName , lNew,  cAlias, cDelim, lJustOp
         cDelim := ""
     ENDIF
     LOCAL oDriver := cRddName AS OBJECT
-    if oDriver == NULL_OBJECT
+    IF oDriver == NULL_OBJECT
         oDriver := RuntimeState.DefaultRDD
     ENDIF
     IF oDriver IS STRING
@@ -781,6 +759,41 @@ FUNCTION FieldGet(wPos) AS USUAL CLIPPER
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGet(wPos, REF xRetVal))
     RETURN xRetVal
     
+FUNCTION FieldGetArea(workarea AS DWORD, symField AS SYMBOL) AS USUAL 
+    LOCAL oldArea := VoDbGetSelect() AS DWORD
+    LOCAL result := NIL  AS USUAL
+    LOCAL dwPos AS DWORD
+    TRY
+        VoDbSetSelect( (INT) workarea)
+        dwPos := FieldPosSym(symField)
+        IF dwPos == 0
+           VoDbSetSelect( (INT) oldArea)
+           THROW Error.VODBError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, {symField})
+        ELSE
+            VODBFieldGet( dwPos, REF result )
+        ENDIF
+    FINALLY
+        VoDbSetSelect( (INT) oldArea)
+    END TRY
+    RETURN result
+
+
+FUNCTION FieldPutArea(workarea AS DWORD, symField AS SYMBOL, uNewValue AS USUAL) AS USUAL 
+    LOCAL oldArea := VoDbGetSelect() AS DWORD
+    LOCAL dwPos AS DWORD
+    TRY
+        VoDbSetSelect( (INT) workarea)
+        dwPos := FieldPosSym(symField)
+        IF dwPos == 0
+           VoDbSetSelect( (INT) oldArea)
+           THROW Error.VODBError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, {symField})
+        ELSE
+            VODBFieldPut( dwPos, uNewValue)
+        ENDIF
+    FINALLY
+        VoDbSetSelect( (INT) oldArea)
+    END TRY
+    RETURN uNewValue
     
     /// <summary>
     /// </summary>

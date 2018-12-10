@@ -177,16 +177,6 @@ FUNCTION SetDateCountry(dwCountry AS DWORD) AS DWORD
 	RuntimeState.DateCountry := dwCountry
 	RETURN dwOld
 
-/// <summary>
-/// Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-/// </summary>
-/// <param name="enumCountry"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDateCountry( enumCountry AS DateCountry ) AS DWORD 
-    RETURN SetDateCountry( (DWORD) enumCountry )
-
-
 
 /// <summary>
 /// Return the current Date format.

@@ -108,7 +108,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     
   INTERNAL METHOD _CheckDateFormat() AS LOGIC
     ACE.AdsSetDateFormat(RuntimeState.DateFormat)
-    ACE.AdsSetExact(IIF(RuntimeState.Exact,1 , 0 ))
+    ACE.AdsSetExact((WORD) IIF(RuntimeState.Exact,1 , 0 ))
     ACE.AdsSetDecimals((WORD)RuntimeState.Decimals )
     ACE.AdsSetEpoch((WORD)RuntimeState.Epoch )
     RETURN TRUE
@@ -1015,7 +1015,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         IF tc != TypeCode.Boolean
           SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Logic value expected")
         ENDIF
-      SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, IIF( (LOGIC) oValue, 1, 0)))
+      SELF:_CheckError(ACE.AdsSetLogical(SELF:_Table, dwField, (WORD)  IIF( (LOGIC) oValue, 1, 0)))
     CASE DbFieldType.Date
         IF tc != TypeCode.DateTime
           SELF:ADSERROR(ERDD_DATATYPE, EG_DataType, "PutValue","Date or DateTime value expected")
@@ -1194,7 +1194,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS LOGIC
       LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
-      SELF:_CheckError(IIF(SELF:_CheckDateFormat(),0,1))
+      SELF:_CheckError((DWORD) IIF(SELF:_CheckDateFormat(),0,1))
       IF String.IsNullOrEmpty(fi:FilterText)
         // clear filter
         // Ignore "No filter" error
@@ -1208,7 +1208,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         ENDIF
       ELSE
         IF RuntimeState.Optimize
-          SELF:_CheckError(ACE.AdsSetAOF(SELF:_Table, fi:FilterText, (WORD) ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF))
+          SELF:_CheckError(ACE.AdsSetAOF(SELF:_Table, fi:FilterText, (WORD) (ACE.ADS_RESOLVE_DYNAMIC | ACE.ADS_DYNAMIC_AOF)))
         ELSE
           SELF:_CheckError(ACE.AdsSetFilter(SELF:_Table, fi:FilterText))
         ENDIF

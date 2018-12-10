@@ -247,42 +247,42 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			SetDateCountry(0)
 			Assert.Equal("01/31/2000", DToC(dDate))
-			SetDateCountry(1) // American
+			SetDateCountry(DateCountry.American) 
 			Assert.Equal("01/31/2000", DToC(dDate))
-			SetDateCountry(2) // Ansi
+			SetDateCountry(DateCountry.Ansi) 
 			Assert.Equal("2000.01.31", DToC(dDate))
-			SetDateCountry(3) // British & French
+			SetDateCountry(DateCountry.British) 
 			Assert.Equal("31/01/2000", DToC(dDate))
-			SetDateCountry(4) // 
+			SetDateCountry(DateCountry.French) 
 			Assert.Equal("31/01/2000", DToC(dDate))
-			SetDateCountry(5) // German
+			SetDateCountry(DateCountry.German) 
 			Assert.Equal("31.01.2000", DToC(dDate))
-			SetDateCountry(6) // Italian
+			SetDateCountry(DateCountry.Italian) 
 			Assert.Equal("31-01-2000", DToC(dDate))
-			SetDateCountry(7) // Japanese
+			SetDateCountry(DateCountry.Japanese) 
 			Assert.Equal("2000/01/31", DToC(dDate))
-			SetDateCountry(8) // USA
+			SetDateCountry(DateCountry.USA) 
 			Assert.Equal("01-31-2000", DToC(dDate))
 				 
 			SetCentury(FALSE)
 
 			SetDateCountry(0)
 			Assert.Equal("01/31/00", DToC(dDate))
-			SetDateCountry(1) // American
+			SetDateCountry(DateCountry.American) 
 			Assert.Equal("01/31/00", DToC(dDate))
-			SetDateCountry(2) // Ansi
+			SetDateCountry(DateCountry.Ansi) 
 			Assert.Equal("00.01.31", DToC(dDate))
-			SetDateCountry(3) // British & French
+			SetDateCountry(DateCountry.British) 
 			Assert.Equal("31/01/00", DToC(dDate))
-			SetDateCountry(4) // 
+			SetDateCountry(DateCountry.French) 
 			Assert.Equal("31/01/00", DToC(dDate))
-			SetDateCountry(5) // German
+			SetDateCountry(DateCountry.German) 
 			Assert.Equal("31.01.00", DToC(dDate))
-			SetDateCountry(6) // Italian
+			SetDateCountry(DateCountry.Italian) 
 			Assert.Equal("31-01-00", DToC(dDate))
-			SetDateCountry(7) // Japanese
+			SetDateCountry(DateCountry.Japanese) 
 			Assert.Equal("00/01/31", DToC(dDate))
-			SetDateCountry(8) // USA
+			SetDateCountry(DateCountry.USA) 
 			Assert.Equal("01-31-00", DToC(dDate))
 				 
 

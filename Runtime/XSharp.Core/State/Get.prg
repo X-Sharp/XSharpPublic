@@ -43,7 +43,7 @@ FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION GetCurPath() AS STRING
-	getstate STRING Set.Path
+	GETSTATE STRING Set.Path
 	
 	
 	/// <summary>
@@ -52,7 +52,7 @@ FUNCTION GetCurPath() AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION GetDefault() AS STRING
-	getstate STRING Set.Default 
+	GETSTATE STRING Set.Default 
 	
 	/// <summary>
 	/// Return the current SetDefaultDir() setting.
@@ -60,7 +60,7 @@ FUNCTION GetDefault() AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION GetDefaultDir() AS STRING
-	getstate STRING Set.Default 
+	GETSTATE STRING Set.Default 
 	
 	
 /// <summary>This function is not implemented yet</summary>
@@ -74,7 +74,7 @@ FUNCTION GetMimType(c AS STRING) AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION GetNatDLL() AS STRING
-	getstate STRING Set.NatDLL 
+	GETSTATE STRING Set.NatDLL 
 	
 	
 	/// <summary>
@@ -83,7 +83,7 @@ FUNCTION GetNatDLL() AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION GetPMExt() AS STRING
-	getstate STRING Set.PmExt
+	GETSTATE STRING Set.PmExt
 	
 	
 
@@ -95,7 +95,7 @@ FUNCTION GetPMExt() AS STRING
 	/// <returns>
 	/// </returns>
 FUNCTION GetTimeSep() AS DWORD
-	getstate DWORD Set.TimeSep
+	GETSTATE DWORD Set.TimeSep
 	
 	/// <summary>
 	/// Returns TimeZone difference for current timezone in Hours

@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL _LastCodeBlock AS ICodeblock
 		INTERNAL _Encoding      AS Encoding
 		//
-        STATIC PRIVATE  culture := System.Globalization.CultureInfo.GetCultureInfo("en-US") AS CultureInfo
+        STATIC PRIVATE  culture := System.Globalization.CultureInfo.InvariantCulture
         PRIVATE METHOD _AllocateBuffers() AS VOID
             SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
             SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}

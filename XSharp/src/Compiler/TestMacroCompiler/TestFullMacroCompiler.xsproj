@@ -11,7 +11,7 @@
     <RootNamespace>TestMacroCompiler</RootNamespace>
     <AssemblyName>TestMacroCompiler</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>TestMacroCompiler</Name>
+    <Name>TestFullMacroCompiler</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Vulcan</Dialect>

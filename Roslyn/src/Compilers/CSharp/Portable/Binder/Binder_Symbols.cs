@@ -1461,12 +1461,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (best.IsFromSourceModule)
                         {
                             arg0 = srcSymbol.Locations.First().SourceTree.FilePath;
+#if XSHARP
+                            // suppress warnings if mdSymbol was an internal exposed to us
+                            if (mdSymbol.DeclaredAccessibility == Accessibility.Friend)
+                            {
+                                return originalSymbols[best.Index];
+                            }
+#endif       
                         }
                         else
                         {
                             Debug.Assert(best.IsFromAddedModule);
                             arg0 = srcSymbol.ContainingModule;
                         }
+                     
+
 
                         //if names match, arities match, and containing symbols match (recursively), ...
                         if (srcSymbol.ToDisplayString(SymbolDisplayFormat.QualifiedNameArityFormat) ==

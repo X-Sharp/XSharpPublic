@@ -596,8 +596,12 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
+            IF _macroCompilerType:Assembly:CodeBase:ToLower():Contains(".fast")
+                _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+            ELSE
 			VAR macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
             _macroCompiler := MacroPreCompiler{macroCompiler}
+            ENDIF
 		ENDIF
 		RETURN 
 

@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
 		INTERNAL _LastCodeBlock AS ICodeblock
 		INTERNAL _Encoding      AS Encoding
 		//
-
+        STATIC PRIVATE  culture := System.Globalization.CultureInfo.GetCultureInfo("en-US") AS CultureInfo
         PRIVATE METHOD _AllocateBuffers() AS VOID
             SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
             SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
@@ -713,7 +713,7 @@ BEGIN NAMESPACE XSharp.RDD
 							SELF:CloseMemFile()
 						ENDIF
 
-                        isOk := SUPER:Close() .and. isOk
+                        isOk := SUPER:Close() .AND. isOk
 					CATCH
 						isOk := FALSE
 					END TRY
@@ -766,7 +766,7 @@ BEGIN NAMESPACE XSharp.RDD
 				LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 				LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 				// First, just the Header
-				SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE) + fieldDefSize + 1
+				SELF:_Header:HeaderLen := SHORT(DbfHeader.SIZE + fieldDefSize + 1)
 				SELF:_Header:isHot := TRUE
 				//
 				LOCAL codePage AS LONG
@@ -1269,10 +1269,12 @@ BEGIN NAMESPACE XSharp.RDD
 					r8 := 0.0
 					IF (! String.IsNullOrWhiteSpace(str))
 						//
+
 						IF ( ( fieldType == DbFieldType.Number ) .AND. (nDec == 0 ) ) .OR. ( fieldType == DbFieldType.Integer ) 
 							r8 := System.Convert.ToInt32(str)
 						ELSE
-							r8 := System.Convert.ToDouble(str)
+                            
+							r8 := System.Convert.ToDouble(str, culture:NumberFormat)
 						ENDIF
 					ENDIF
 					data := DbFloat{r8, length, nDec} 
@@ -1353,6 +1355,7 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL encoding AS Encoding //ASCIIEncoding
 			LOCAL isOk := FALSE AS LOGIC
 			LOCAL str AS STRING
+            LOCAL isNum := FALSE AS LOGIC
 			//
 			encoding := SELF:_Encoding
 			objType := oValue:GetType()
@@ -1390,29 +1393,7 @@ BEGIN NAMESPACE XSharp.RDD
 			CASE TypeCode.UInt32
 			CASE TypeCode.UInt64
 				
-					IF ( fieldType == DbFieldType.Number ) .OR. ;
-					    ( fieldType == DbFieldType.Float ) .OR. ;
-					    ( fieldType == DbFieldType.Double ) .OR. ;
-					    ( fieldType == DbFieldType.Integer )
-						LOCAL format AS NumberFormatInfo
-						//
-						format := NumberFormatInfo{}
-						format:NumberDecimalSeparator := "."
-						format:NumberDecimalDigits := dec
-						//
-						str := Convert.ToString( oValue, format )
-						IF ( str:Length > length )
-							str := STRING{'*', length}
-						ELSE
-							str := str:PadLeft(length)
-						ENDIF
-   						encoding:GetBytes( str, 0, length, buffer, offset )
-						isOk := TRUE
-					ELSE
-						// Type Error !
-						isOk := FALSE
-					ENDIF
-					
+	            isNum := TRUE				
 				CASE TypeCode.Boolean
 					IF ( fieldType == DbFieldType.Logic )
 						buffer[offset] := IIF( (LOGIC)oValue, (BYTE)'T', (BYTE)'F' )
@@ -1449,8 +1430,38 @@ BEGIN NAMESPACE XSharp.RDD
 						// Type Error !
 						isOk := FALSE
 					ENDIF
-					
+				CASE TypeCode.Object
+                    IF oValue IS IFloat
+                        isNum := TRUE
+                        oValue := ((IFloat) oValue):Value
+                    ELSEIF oValue IS IDate
+                    	LOCAL oDate AS IDate
+                        LOCAL dt AS DateTime
+                        oDate := (IDate) oValue
+						dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+						str := dt:ToString( "yyyyMMdd" )
+						encoding:GetBytes( str, 0, length, buffer, offset )
+						isOk := TRUE
+                    ELSE
+                       isOk := FALSE
+                    ENDIF
 				END SWITCH
+                IF IsNum
+					LOCAL format AS NumberFormatInfo
+					//
+					format := culture:NumberFormat:Clone() ASTYPE NumberFormatInfo
+					format:NumberDecimalDigits := dec
+					//
+					str := Convert.ToString( oValue, format )
+					IF ( str:Length > length )
+						str := STRING{'*', length}
+					ELSE
+						str := str:PadLeft(length)
+					ENDIF
+   					encoding:GetBytes( str, 0, length, buffer, offset )
+					isOk := TRUE
+                ENDIF	
+
 			//
 			RETURN isOk
 			
@@ -2260,7 +2271,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 			PROPERTY Year		AS LONG			;
 			GET Buffer[OFFSET_YEAR]+1900	;
-			SET Buffer[OFFSET_YEAR] := (BYTE) VALUE-1900, isHot := TRUE
+			SET Buffer[OFFSET_YEAR] := (BYTE) (VALUE-1900), isHot := TRUE
 				
 			PROPERTY Month		AS BYTE			;
 			GET Buffer[OFFSET_MONTH]	;

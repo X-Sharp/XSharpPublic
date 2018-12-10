@@ -91,19 +91,13 @@ namespace XSharp.MacroCompiler.Syntax
         internal UnaryExpr(Expr e, Token o) : base(o) { Expr = e; Kind = o.type; }
         public override string ToString() { return "(" + TokenText(Kind) + Expr.ToString() + ")"; }
     }
-    internal partial class PrefixExpr : Expr
+    internal partial class PrefixExpr : UnaryExpr
     {
-        internal Expr Expr;
-        internal TokenType Kind;
-        internal PrefixExpr(Expr e, Token o) : base(o) { Expr = e; Kind = o.type; }
-        public override string ToString() { return "(" + TokenText(Kind) + Expr.ToString() + ")"; }
+        internal PrefixExpr(Expr e, Token o) : base(e, o) { }
     }
-    internal partial class PostfixExpr : Expr
+    internal partial class PostfixExpr : UnaryExpr
     {
-        internal Expr Expr;
-        internal TokenType Kind;
-        internal PostfixExpr(Expr e, Token o) : base(o) { Expr = e; Kind = o.type; }
-        public override string ToString() { return "(" + Expr.ToString() + TokenText(Kind) + ")"; }
+        internal PostfixExpr(Expr e, Token o) : base(e, o) { }
     }
     internal partial class LiteralExpr : Expr
     {

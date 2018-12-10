@@ -568,7 +568,7 @@ namespace XSharp.MacroCompiler
                             }
                             break;
                         case TokenType.INT_CONST:
-                            if (c == '0')
+                            if (c == '0' && !ExpectRange('0', '9'))
                             {
                                 if (ExpectAny('X','x'))
                                 {
@@ -585,7 +585,7 @@ namespace XSharp.MacroCompiler
                             {
                                 while (ExpectRange('0', '9')) ;
                                 c = La();
-                                if (c == '.' && (La(2) >= '0' && La(2) <= '9')) { Consume(); goto case TokenType.REAL_CONST; }
+                                if (c == '.') { Consume(); goto case TokenType.REAL_CONST; }
                                 if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                                 ExpectAny('U', 'u', 'L', 'l');
                             }

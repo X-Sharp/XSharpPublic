@@ -13,7 +13,7 @@ namespace XSharp.MacroCompiler.Syntax
     abstract internal partial class Node
     {
         internal Symbol Symbol = null;
-        internal virtual Node Bind(Binder b) { throw new NotImplementedException(); }
+        internal virtual Node Bind(Binder b) { throw new InternalError(); }
         internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
     }
     abstract internal partial class Expr : Node
@@ -183,21 +183,21 @@ namespace XSharp.MacroCompiler.Syntax
             return e;
         }
     }
-    internal partial class PrefixExpr : Expr
+    internal partial class PrefixExpr : UnaryExpr
     {
         Expr Left;
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
             Left = Expr.Cloned(b);
-            Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
+            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Expr.Symbol;
             Datatype = Expr.Datatype;
             return null;
         }
     }
-    internal partial class PostfixExpr : Expr
+    internal partial class PostfixExpr : UnaryExpr
     {
         Expr Left;
         Expr Value;
@@ -206,7 +206,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
-            Expr = UnaryExpr.Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
+            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
             Symbol = Value.Symbol;
             Datatype = Value.Datatype;
@@ -217,7 +217,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Symbol = b.CreateLiteral(Kind, Value);
+            Symbol = b.CreateLiteral(this, Value);
             Datatype = Symbol.Type();
             return null;
         }
@@ -230,24 +230,36 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            throw new CompilationError(ErrorCode.NotSupported, "SELF keyword");
+            throw Error(ErrorCode.NotSupported, "SELF keyword");
         }
     }
     internal partial class SuperExpr : Expr
     {
         internal override Node Bind(Binder b)
         {
-            throw new CompilationError(ErrorCode.NotSupported, "SELF keyword");
+            throw Error(ErrorCode.NotSupported, "SUPER keyword");
         }
     }
     internal partial class CheckedExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            throw Error(ErrorCode.NotImplemented, "CHECKED expression");
+        }
     }
     internal partial class UncheckedExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            throw Error(ErrorCode.NotImplemented, "UNCHECKED expression");
+        }
     }
     internal partial class TypeOfExpr : Expr
     {
+        internal override Node Bind(Binder b)
+        {
+            throw Error(ErrorCode.NotImplemented, "TYPEOF operator");
+        }
     }
     internal partial class SizeOfExpr : Expr
     {

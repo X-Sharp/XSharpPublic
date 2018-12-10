@@ -11,11 +11,11 @@ namespace XSharp.MacroCompiler
     {
         NoError,
         NotImplemented = 1,
+        NotSupported = 2,
         Expected = 100,
         Unexpected = 101,
         BadNumArgs = 102,
         UnterminatedString = 103,
-        NotSupported = 104,
         UnexpectedValue = 200,
         NoConversion = 201,
         NoImplicitConversion = 202,
@@ -35,6 +35,8 @@ namespace XSharp.MacroCompiler
         NotTypeOrNamespace = 216,
         BinaryOperationNotFound = 217,
         UnaryOperationNotFound = 218,
+        LiteralIntegerOverflow = 219,
+        LiteralFloatOverflow = 220,
     }
 
     internal class ErrorString
@@ -43,11 +45,11 @@ namespace XSharp.MacroCompiler
         {
             { ErrorCode.NoError, "No error" },
             { ErrorCode.NotImplemented, "Feature not implemented: {0}" },
+            { ErrorCode.NotSupported, "Not supported: {0}" },
             { ErrorCode.Expected, "Expected {0}" },
             { ErrorCode.Unexpected, "Unexpected {0}" },
             { ErrorCode.BadNumArgs, "Bad number of arguments (expected {0})" },
             { ErrorCode.UnterminatedString, "Unterminated string" },
-            { ErrorCode.NotSupported, "Not supported: {0}" },
             { ErrorCode.UnexpectedValue, "Unexpected value" },
             { ErrorCode.NoConversion, "No conversion from {0} to {1}" },
             { ErrorCode.NoImplicitConversion, "No implicit conversion from {0} to {1} (explicit conversion exists)" },
@@ -67,6 +69,8 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NotTypeOrNamespace, "{0} is not a type or namespace" },
             { ErrorCode.BinaryOperationNotFound, "Operator {0} on types {1} and {2} could not be resolved" },
             { ErrorCode.UnaryOperationNotFound, "Operator {0} on type {1} could not be resolved" },
+            { ErrorCode.LiteralIntegerOverflow, "Integer overflow at literal constant" },
+            { ErrorCode.LiteralFloatOverflow, "Floating=point overflow at literal constant" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }
@@ -98,19 +102,20 @@ namespace XSharp.MacroCompiler
     {
         public readonly ErrorCode Code;
         public readonly SourceLocation Location;
-        public string DiagnosticMessage
+        public readonly string ErrorMessage;
+        public override string Message
         {
             get
             {
                 return Location.Valid ?
-                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, Message)
-                    : String.Format("error XM{0:D4}: {1}", (int)Code, Message);
+                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
+                    : String.Format("error XM{0:D4}: {1}", (int)Code, ErrorMessage);
             }
         }
-        internal CompilationError(ErrorCode e, params object[] args): base(ErrorString.Format(e, args)) { Code = e; Location = SourceLocation.None; }
-        internal CompilationError(int offset, ErrorCode e, params object[] args) : base(ErrorString.Format(e, args)) { Code = e; Location = new SourceLocation(offset); }
-        internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) : base(ErrorString.Format(e, args)) { Code = e; Location = loc; }
-        internal CompilationError(CompilationError e, string source) : base(e.Message) { Code = e.Code; Location = new SourceLocation(source, e.Location); }
+        internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) { Code = e; Location = loc; ErrorMessage = ErrorString.Format(e, args); }
+        internal CompilationError(ErrorCode e, params object[] args) : this(SourceLocation.None, e, args) { }
+        internal CompilationError(int offset, ErrorCode e, params object[] args) : this(new SourceLocation(offset), e, args) { }
+        internal CompilationError(CompilationError e, string source) { Code = e.Code; ErrorMessage = e.Message; Location = new SourceLocation(source, e.Location); }
     }
 
     public static partial class Compilation

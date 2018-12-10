@@ -11,9 +11,9 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal Constant CreateLiteral(TokenType Kind, string Value)
+        internal Constant CreateLiteral(LiteralExpr expr, string Value)
         {
-            switch (Kind)
+            switch (expr.Kind)
             {
                 case TokenType.TRUE_CONST:
                     return Constant.Create(true);
@@ -88,26 +88,55 @@ namespace XSharp.MacroCompiler
                     {
                         case 'M':
                         case 'm':
-                            return Constant.Create(decimal.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
+                            try
+                            {
+                                return Constant.Create(decimal.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
+                            }
+                            catch (OverflowException)
+                            {
+                                throw expr.Error(ErrorCode.LiteralFloatOverflow);
+                            }
                         case 'S':
                         case 's':
-                            return Constant.Create(float.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
+                            try
+                            {
+                                return Constant.Create(float.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
+                            }
+                            catch (OverflowException)
+                            {
+                                throw expr.Error(ErrorCode.LiteralFloatOverflow);
+                            }
                         case 'D':
                         case 'd':
-                            return Constant.Create(double.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
-                        default:
-                            if (Options.VOFloatConstants)
+                            try
                             {
-                                var args = Value.Split('.');
-                                if (args.Length == 2)
-                                {
-                                    int dec = args[1].Length;
-                                    return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture), 0, dec);
-                                }
-                                throw new NotImplementedException();
+                                return Constant.Create(double.Parse(Value.Substring(0, Value.Length - 1), System.Globalization.CultureInfo.InvariantCulture));
                             }
-                            else
-                                return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture));
+                            catch (OverflowException)
+                            {
+                                throw expr.Error(ErrorCode.LiteralFloatOverflow);
+                            }
+                        default:
+                            try
+                            {
+                                if (Options.VOFloatConstants)
+                                {
+                                    var args = Value.Split('.');
+                                    if (args.Length == 2)
+                                    {
+                                        int dec = 0;
+                                        while (args[1].Length > dec && Char.IsDigit(args[1][dec])) dec++;
+                                        return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture), 0, dec);
+                                    }
+                                    return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture));
+                                }
+                                else
+                                    return Constant.Create(double.Parse(Value, System.Globalization.CultureInfo.InvariantCulture));
+                            }
+                            catch (OverflowException)
+                            {
+                                throw expr.Error(ErrorCode.LiteralFloatOverflow);
+                            }
                     }
                 case TokenType.INT_CONST:
                     switch (Value.Last())
@@ -124,7 +153,7 @@ namespace XSharp.MacroCompiler
                             }
                             catch (OverflowException)
                             {
-                                throw new Exception("Integer overflow");
+                                throw expr.Error(ErrorCode.LiteralIntegerOverflow);
                             }
                         case 'L':
                         case 'l':
@@ -138,7 +167,7 @@ namespace XSharp.MacroCompiler
                             }
                             catch (OverflowException)
                             {
-                                throw new Exception("Integer overflow");
+                                throw expr.Error(ErrorCode.LiteralIntegerOverflow);
                             }
                         default:
                             try
@@ -166,7 +195,7 @@ namespace XSharp.MacroCompiler
                             }
                             catch (OverflowException)
                             {
-                                throw new Exception("Integer overflow");
+                                throw expr.Error(ErrorCode.LiteralIntegerOverflow);
                             }
                     }
                 case TokenType.NULL:
@@ -189,7 +218,7 @@ namespace XSharp.MacroCompiler
                                     return Constant.Create(new DateTime(year, month, day));
                             }
                         }
-                        throw new NotImplementedException();
+                        throw new InternalError();
                     }
                 case TokenType.NULL_ARRAY:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Array));
@@ -208,7 +237,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_SYMBOL:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Symbol));
                 default:
-                    throw new Exception("Unexpected literal kind");
+                    throw new InternalError();
             }
         }
     }

@@ -67,7 +67,7 @@ namespace XSharp.MacroCompiler
         internal static ConversionChain Create(ConversionSymbol conv, ConversionSymbol prev) { return new ConversionChain(conv, prev); }
         internal static ConversionByRef CreateByRef() { return new ConversionByRef(); }
 
-        internal override Symbol Lookup(string name) { throw new NotImplementedException(); }
+        internal override Symbol Lookup(string name) { throw new InternalError(); }
 
         const int Explicit = 0x20000;
         const int Implicit = 0x10000;

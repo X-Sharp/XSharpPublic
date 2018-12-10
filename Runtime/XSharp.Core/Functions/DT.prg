@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -28,7 +28,7 @@ FUNCTION AmPm(cTime AS STRING) AS STRING
 	nSeconds := nSeconds % 3600
 	nMinutes := nSeconds / 60
 	nSeconds := nSeconds % 60
-	RETURN _TimeString(nHours, nMinutes, nSeconds, TRUE, GetAmExt(), GetPmExt())
+	RETURN _TimeString(nHours, nMinutes, nSeconds, TRUE, GetAMExt(), GetPMExt())
 
 
 /// <summary>
@@ -126,7 +126,7 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 	IF String.IsNullOrEmpty(cTime)
 		RETURN 0
 	ENDIF
-	cSeparator := chr(GetTimeSep())
+	cSeparator := Chr(GetTimeSep())
 	nExpectedLength := 6 + 2 * cSeparator:Length
 	IF cTime:Length >= nExpectedLength
 		LOCAL nOffSet := 0 AS INT
@@ -266,6 +266,27 @@ FUNCTION _ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DateTime
         RETURN DateTime.MinValue
    END TRY
 
+STATIC FUNCTION _SplitDate(cDate AS STRING) AS STRING[]
+	LOCAL aNums := STRING[]{3} AS STRING[]
+	LOCAL cCurrent := "" AS STRING
+	LOCAL nCurrent := __ARRAYBASE__ AS INT
+	FOREACH cChar AS Char IN cDate
+		IF cChar >= '0' .and. cChar <= '9'
+			cCurrent += cChar:ToString()
+		ELSE
+			aNums[nCurrent] := cCurrent
+			cCurrent := ""
+			nCurrent++
+			IF nCurrent > 2 + __ARRAYBASE__
+				EXIT
+			END IF
+		END IF
+	NEXT
+	IF nCurrent == 2 + __ARRAYBASE__
+		aNums[nCurrent] := cCurrent
+	END IF
+RETURN aNums
+	
 FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	LOCAL dDate AS DateTime
 	LOCAL nDay, nMonth, nYear AS DWORD
@@ -275,9 +296,9 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 		RETURN dDate
 	ENDIF
 	LOCAL nPos AS INT
-	LOCAL cSep AS STRING
+//	LOCAL cSep AS STRING
 	nDayPos := nMonthPos := nYearPos := -1
-	cSep := "./-"
+//	cSep := "./-"
 	nPos :=-1
 	FOREACH c AS CHAR IN cDateFormat
 		SWITCH c
@@ -297,9 +318,10 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 				nYearPos  := nPos
 			ENDIF
 		OTHERWISE
-			IF cSep:IndexOf(c) == -1
+			NOP
+/*			IF cSep:IndexOf(c) == -1
 				cSep += c:ToString()
-			ENDIF
+			ENDIF*/
 		END SWITCH
 	NEXT
 	IF nDayPos == -1 .OR. nMonthPos == -1 .OR. nYearPos == -1
@@ -307,7 +329,9 @@ FUNCTION _CToD(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	ENDIF
 	TRY
 		// we now know the seperators and the positions in the string
-		LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
+		// LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
+		// VO's CToD() "correctly" parses dates with any char used as separator
+		LOCAL aNums := _SplitDate(cDate) AS STRING[]
 		IF UInt32.TryParse(aNums[nDayPos], OUT nDay) .AND. ;
     		UInt32.TryParse(aNums[nMonthPos], OUT nMonth) .AND. ;
 	    	UInt32.TryParse(aNums[nYearPos], OUT nYear)

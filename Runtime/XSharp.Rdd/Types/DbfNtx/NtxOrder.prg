@@ -203,17 +203,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         //
         SELF:_oRdd:GoTo(1)
         LOCAL evalOk AS LOGIC
+        LOCAL oResult AS OBJECT
         evalOk := TRUE
         TRY
-            SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+            oResult := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
         CATCH
             evalOk := FALSE
+            oResult := NULL
         END TRY
         IF (!evalOk)
             SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
             RETURN FALSE
         ENDIF
-        SELF:_KeyExprType := SELF:_getTypeCode(SELF:_oRDD:_EvalResult)
+        SELF:_KeyExprType := SELF:_getTypeCode(oResult)
         // For Condition
         SELF:_Conditional := FALSE
         SELF:_ForExpr := SELF:_Header:ForExpression
@@ -228,7 +230,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_oRdd:GoTo(1)
             evalOk := TRUE
             TRY
-                SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                VAR lOk := (LOGIC) SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
             CATCH
                 evalOk := FALSE
             END TRY
@@ -394,31 +396,27 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF (SELF:_Conditional)
                     evalOk := TRUE
                     TRY
-                        SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
+                        condFor := (LOGIC)SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     CATCH
                         evalOk := FALSE
+                         SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
                     END TRY
                     IF (!evalOk)
                         errorLevel := 1
                         EXIT
                     ENDIF
-                    TRY
-                        condFor := (LOGIC)SELF:_oRdd:_EvalResult
-                                        
-                    CATCH //innerExcept AS Exception
-                        SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
-                    END TRY
                 ENDIF
                 evalOk := TRUE
+                LOCAL oValue AS OBJECT
                 TRY
-                    SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                    oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 CATCH
                     evalOk := FALSE
                 END TRY
                 IF (!evalOk) 
                     errorLevel := 1
                 ELSE
-                    IF (!SELF:_ToString(SELF:_oRdd:_EvalResult, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi))
+                    IF (!SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_newKeyBuffer, SELF:_Ansi))
                         errorLevel := 1
                     ELSE
                         IF (!fNew)
@@ -493,13 +491,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             uiRealLen := 0
             IF ((rcno != SELF:_knownRecno) .OR. (SELF:_Shared))
                 SELF:_knownRecno := 0u
-                SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                isOk := ( SELF:_oRdd:_EvalResult != NULL )
+                VAR oValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                isOk := ( oValue != NULL )
                 IF (isOk)
-                    isOk := SELF:_ToString(SELF:_oRdd:_EvalResult, SELF:_keySize, SELF:_keyDecimals, SELF:_knownKeyBuffer, SELF:_Ansi, REF uiRealLen)
-                ENDIF
-                IF (isOk)
-                    SELF:_knownRecno := rcno
+                    isOk := SELF:_ToString(oValue, SELF:_keySize, SELF:_keyDecimals, SELF:_knownKeyBuffer, SELF:_Ansi, REF uiRealLen)
+                    IF (isOk)
+                        SELF:_knownRecno := rcno
+                    ENDIF
                 ENDIF
             ENDIF
             IF (!isOk)
@@ -606,8 +604,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             SELF:_oRdd:GoToId(1)
-            SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-            SELF:_KeyExprType := SELF:_getTypeCode(SELF:_oRdd:_EvalResult)
+            VAR oValue          := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock) 
+            SELF:_KeyExprType   := SELF:_getTypeCode(oValue)
             SELF:_KeyExpr := createInfo:Expression
             IF (ordCondInfo != NULL) .AND. (ordCondInfo:ForExpression != NULL)
                 SELF:_ForExpr := ordCondInfo:ForExpression
@@ -632,7 +630,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF (SELF:_SingleField == -1)
                 SELF:_keyDecimals := 0
                 SELF:_keySize := 0
-                isOk := SELF:_determineSize(SELF:_oRdd:_EvalResult)
+                isOk := SELF:_determineSize(oValue)
             ENDIF
             IF ((!isOk) .OR. (SELF:_keySize == 0))
                 SELF:Close()
@@ -746,7 +744,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
             LOCAL tCode AS TypeCode
             LOCAL expr AS STRING
-            LOCAL cdeBlock AS ICodeblock
             LOCAL anyOf AS CHAR[]
             LOCAL nPos AS INT
             LOCAL sysType AS System.Type
@@ -778,23 +775,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             CASE TypeCode.Double
             CASE TypeCode.Decimal
                 TRY
-                expr := "STR(" + SELF:_KeyExpr + ")"
-                TRY
-                    SELF:_oRdd:Compile(expr)
-                CATCH
-                    RETURN FALSE
-                END TRY
-                cdeBlock := (ICodeblock)SELF:_oRdd:_LastCodeBlock
-                SELF:_oRdd:EvalBlock(cdeBlock)
-                expr := (STRING)SELF:_oRdd:_EvalResult
-                SELF:_keySize := expr:Length
-                anyOf := <CHAR>{',', '.' }
-                nPos := expr:IndexOfAny(anyOf)
-                IF (nPos < 0)
-                    SELF:_keyDecimals := 0
-                ELSE
-                    SELF:_keyDecimals := SELF:_keySize - nPos - 1
-                ENDIF
+                    expr := "STR(" + SELF:_KeyExpr + ")"
+                    TRY
+                        VAR oBlock := SELF:_oRdd:Compile(expr)
+                        expr := (STRING) SELF:_oRdd:EvalBlock(oBlock)
+                    CATCH
+                        RETURN FALSE
+                    END TRY
+                    SELF:_keySize := expr:Length
+                    anyOf := <CHAR>{',', '.' }
+                    nPos := expr:IndexOfAny(anyOf)
+                    IF (nPos < 0)
+                        SELF:_keyDecimals := 0
+                    ELSE
+                        SELF:_keyDecimals := SELF:_keySize - nPos - 1
+                    ENDIF
                                 
             CATCH //Exception
             END TRY
@@ -956,10 +951,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         sortInfo:Items[0]:OffSet := 0
         SELF:_oRdd:GoTo(1)
         byteArray := BYTE[]{ SELF:_keySize }
+        LOCAL oKeyValue := NULL AS OBJECT
         REPEAT
             result := TRUE
             TRY
-                SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH
                 result := FALSE
             END TRY
@@ -973,7 +969,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 result := TRUE
             ELSE
-                result := SELF:_ToString(SELF:_oRdd:_EvalResult, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
+                result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, SELF:_Ansi, REF uiRealLen)
             ENDIF
             IF (!result)
                 EXIT
@@ -1183,23 +1179,15 @@ PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
         IF (hasWhile)
             isOk := TRUE
             TRY
-                SELF:_oRdd:EvalBlock(ordCondInfo:WhileBlock)
+                isOk := (LOGIC) SELF:_oRdd:EvalBlock(ordCondInfo:WhileBlock)
             CATCH
+                SELF:_oRdd:_dbfError(SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE, SELF:fileName)
                 isOk := FALSE
             END TRY
             IF (! isOk)
                 EXIT
             ENDIF
             //
-            TRY
-                isOk := (LOGIC)SELF:_oRdd:_EvalResult
-            CATCH //Exception
-                SELF:_oRdd:_dbfError(SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE, SELF:fileName)
-                isOk := FALSE
-            END TRY
-            IF (!isOk)
-                EXIT
-            ENDIF
         ENDIF
         IF (!SELF:_KeyUpdate((DWORD)SELF:_oRdd:RecNo, TRUE))
             EXIT
@@ -1208,21 +1196,12 @@ PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
             IF (count >= ordCondInfo:StepSize)
                 isOk := TRUE
                 TRY
-                    SELF:_oRdd:EvalBlock(ordCondInfo:EvalBlock)
+                    isOk := (LOGIC) SELF:_oRdd:EvalBlock(ordCondInfo:EvalBlock)
                 CATCH
-                    isOk := FALSE
-                END TRY
-                IF (! isOk)
-                    EXIT
-                ENDIF
-                TRY
-                    isOk := (LOGIC)SELF:_oRdd:_EvalResult
-                                    
-                CATCH //Exception
                     SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
                     isOk := FALSE
                 END TRY
-                IF (!isOk)
+                IF (! isOk)
                     EXIT
                 ENDIF
                 count := 1
@@ -1596,7 +1575,7 @@ PRIVATE METHOD _Balance() AS VOID
                         //Iterators
                         uiCount++
                     ENDDO
-                    ntxPage2:NodeCount := (WORD)num - 1
+                    ntxPage2:NodeCount := (WORD)(num - 1)
                 ELSE
                     uiCount := ntxPage2:NodeCount
                     num4++

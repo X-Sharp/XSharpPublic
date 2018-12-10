@@ -85,6 +85,8 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
         LOCAL lInString := FALSE AS LOGIC
         LOCAL delimChar := '\0' AS CHAR
         LOCAL lInComplexName := FALSE AS LOGIC
+        LOCAL lastWasZero := FALSE AS LOGIC
+        LOCAL lHex        := FALSE AS LOGIC
         FOREACH cChar AS CHAR IN cMacro
 #region Handle Strings inside macros            
             IF lInString
@@ -116,7 +118,17 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
 #endregion           
             IF Char.IsLetter(cChar) .OR. cChar = '_'
                 // add char to id
-                sbId:Append(cChar)
+                IF lastWasZero
+                    IF cChar:ToString() $ "XxBb"
+                        sbResult:Append(cChar)
+                        lHex := cChar:ToString() $ "Xx"
+                    ENDIF
+                ELSEIF lHex .AND. cChar:ToString() $ "AaBbCcDdEeFf"
+                    sbResult:Append(cChar)
+                ELSE
+                    sbId:Append(cChar)
+                    lHex := FALSE
+                ENDIF
             ELSEIF Char.IsDigit(cChar)
                 // after letter or _ then it is part of the id
                 IF sbid:Length > 0
@@ -145,10 +157,28 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
                 sbId:Clear()
                 sbResult:Append(cChar)
                 lInComplexName := FALSE
+            ELSEIF cChar == ' ' .OR. cChar == '\t'
+                IF sbId:Length > 0
+                    sbId:Append(cChar)
+                ELSE
+                    sbResult:Append(cChar)
+                ENDIF
             ELSE
                 // another non character or digit, so add name if it exists
                 GetIdName(sbResult, sbId, aParams)
                 sbResult:Append(cChar)
+            ENDIF
+            IF cChar == '0' .AND. ! lHex
+                lastWasZero := TRUE
+            ELSE
+                IF lastwaszero .AND. cChar:ToString() $ "Xx"
+                    lHex := TRUE
+                ELSEIF lHex .AND. cChar:ToString() $ "AaBbCcDdEeFf"
+                    NOP
+                ELSE
+                    lHex := FALSE
+                ENDIF
+                lastwasZero := FALSE
             ENDIF
         NEXT
         // when we end with an id then append to the end of the result

@@ -158,7 +158,7 @@ begin namespace MacroCompilerTest
             Console.WriteLine("res = {0}",res)
             return res
         catch e as XSharp.MacroCompiler.CompilationError
-            Console.WriteLine("{0}",e:DiagnosticMessage)
+            Console.WriteLine("{0}",e:Message)
             return nil
         end
 
@@ -414,7 +414,7 @@ begin namespace MacroCompilerTest
                 return true
             else
                 TotalFails += 1
-                Console.WriteLine("[FAIL] ({0})", e:DiagnosticMessage)
+                Console.WriteLine("[FAIL] ({0})", e:Message)
             end
             return false
         catch e as Exception

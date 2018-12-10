@@ -102,19 +102,20 @@ namespace XSharp.MacroCompiler
     {
         public readonly ErrorCode Code;
         public readonly SourceLocation Location;
-        public string DiagnosticMessage
+        public readonly string ErrorMessage;
+        public override string Message
         {
             get
             {
                 return Location.Valid ?
-                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, Message)
-                    : String.Format("error XM{0:D4}: {1}", (int)Code, Message);
+                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
+                    : String.Format("error XM{0:D4}: {1}", (int)Code, ErrorMessage);
             }
         }
-        internal CompilationError(ErrorCode e, params object[] args): base(ErrorString.Format(e, args)) { Code = e; Location = SourceLocation.None; }
-        internal CompilationError(int offset, ErrorCode e, params object[] args) : base(ErrorString.Format(e, args)) { Code = e; Location = new SourceLocation(offset); }
-        internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) : base(ErrorString.Format(e, args)) { Code = e; Location = loc; }
-        internal CompilationError(CompilationError e, string source) : base(e.Message) { Code = e.Code; Location = new SourceLocation(source, e.Location); }
+        internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) { Code = e; Location = loc; ErrorMessage = ErrorString.Format(e, args); }
+        internal CompilationError(ErrorCode e, params object[] args) : this(SourceLocation.None, e, args) { }
+        internal CompilationError(int offset, ErrorCode e, params object[] args) : this(new SourceLocation(offset), e, args) { }
+        internal CompilationError(CompilationError e, string source) { Code = e.Code; ErrorMessage = e.Message; Location = new SourceLocation(source, e.Location); }
     }
 
     public static partial class Compilation

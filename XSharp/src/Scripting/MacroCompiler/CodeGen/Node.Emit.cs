@@ -425,7 +425,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Var.Emit(ilg);
-            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_VarGet) as MethodSymbol;
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___VarGet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
@@ -436,7 +436,7 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
             Var.Emit(ilg);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
-            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_VarPut) as MethodSymbol;
+            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___VarPut) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
         }
     }

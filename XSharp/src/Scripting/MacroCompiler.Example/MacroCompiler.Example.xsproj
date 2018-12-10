@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\..\Compiler\CompilerCommon.targets" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>cea6079a-eff1-4ae7-acdc-ebafc1555b02</ProjectGuid>
@@ -17,11 +18,6 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <RoslynProjectType>XSharp</RoslynProjectType>
-    <DeveloperBuild>true</DeveloperBuild>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
-    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <TargetFrameworkProfile />
     <AZ>false</AZ>
     <CS>false</CS>
@@ -47,7 +43,6 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <AssemblyOriginatorKeyFile>$(solutiondir)build\strongnamekeys\xsharpkey.private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -73,7 +68,6 @@
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

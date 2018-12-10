@@ -450,12 +450,12 @@ namespace XSharp.MacroCompiler.Syntax
             }
             b.Bind(ref Field);
             Binder.Convert(ref Field, Compilation.Get(NativeType.String));
-            Datatype = Compilation.Get(NativeType.Usual);
+            Datatype = Compilation.Get(NativeType.Object);
             return null;
         }
         internal static AliasExpr Bound(string fieldName)
         {
-            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Object) };
         }
     }
     internal partial class AutoVarExpr : Expr
@@ -465,7 +465,7 @@ namespace XSharp.MacroCompiler.Syntax
         public override string ToString() { return "{Var:" + Var.ToString() + "}"; }
         internal static AutoVarExpr Bound(string varName)
         {
-            return new AutoVarExpr(LiteralExpr.Bound(Constant.Create(varName))) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AutoVarExpr(LiteralExpr.Bound(Constant.Create(varName))) { Datatype = Compilation.Get(NativeType.Object) };
         }
     }
     internal partial class Arg : Node

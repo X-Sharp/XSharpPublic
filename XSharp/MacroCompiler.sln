@@ -62,7 +62,7 @@ Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "VisualBasicSyntaxGenerator"
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "VisualBasicErrorFactsGenerator", "..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\VisualBasicErrorFactsGenerator\VisualBasicErrorFactsGenerator.vbproj", "{909B656F-6095-4AC2-A5AB-C3F032315C45}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestMacroCompiler", "src\Compiler\TestMacroCompiler\TestMacroCompiler.xsproj", "{DE0191E1-E0C1-4651-B999-0F28167EB96B}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestFullMacroCompiler", "src\Compiler\TestMacroCompiler\TestFullMacroCompiler.xsproj", "{DE0191E1-E0C1-4651-B999-0F28167EB96B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "src\Scripting\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
 EndProject

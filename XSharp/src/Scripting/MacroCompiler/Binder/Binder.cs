@@ -60,6 +60,8 @@ namespace XSharp.MacroCompiler
                 if (a.IsDynamic)
                     continue;
                 var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
+                try
+                { 
                 var types = most_visible ? a.GetTypes() : a.GetExportedTypes();
 
                 // Build type lookup dictionary
@@ -118,6 +120,11 @@ namespace XSharp.MacroCompiler
                         usedSymbols.Add(ts);
                         usings.Add(ts);
                     }*/
+                }
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error loading types from " + a.CodeBase + "\r" + e.Message);
                 }
             }
 

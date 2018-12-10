@@ -34,8 +34,8 @@ namespace XSharp.MacroCompiler
         XSharp_RT_Functions___FieldSet,
         XSharp_RT_Functions___FieldGetWa,
         XSharp_RT_Functions___FieldSetWa,
-        XSharp_RT_Functions_VarGet,
-        XSharp_RT_Functions_VarPut,
+        XSharp_RT_Functions___VarGet,
+        XSharp_RT_Functions___VarPut,
     }
 
     public static partial class Compilation

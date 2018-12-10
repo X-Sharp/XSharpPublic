@@ -159,7 +159,20 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
         IF sbid:Length > 0
             VAR sName := sbid:ToString():ToUpper()
             IF aParams == NULL .OR. Array.IndexOf(aParams, sName) < 0
-                sbResult:Append("_FIELD->")
+                SWITCH sName
+                CASE "NIL"
+                CASE "NULL_ARRAY"
+                CASE "NULL_CODEBLOCK"
+                CASE "NULL_DATE"
+                CASE "NULL_OBJECT"
+                CASE "NULL_PSZ"
+                CASE "NULL_PTR"
+                CASE "NULL_STRING"
+                CASE "NULL_SYMBOL"
+                    NOP
+                OTHERWISE
+                    sbResult:Append("_FIELD->")
+                END SWITCH
             ENDIF
             sbResult:Append(sbid:ToString())
             sbId:Clear()

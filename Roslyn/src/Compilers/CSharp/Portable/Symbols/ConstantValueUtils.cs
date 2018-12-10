@@ -96,6 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // If we have already computed the unconverted constant value, then this call is cheap
                     // because BoundConversions store their constant values (i.e. not recomputing anything).
                     var constantValue = boundValue.ConstantValue;
+
 #if XSHARP
                     // Make sure the boundValue is Completely processed
                     // this may happen for DIM arrays inside VOSTRUCT where the dimension is a VO Define

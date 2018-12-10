@@ -239,11 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return new BoundDefaultExpression(syntax, rewrittenType);
                     }
-#if XXSHARP
 
-                    if (rewrittenType.SpecialType == rewrittenOperand.Type.SpecialType)
-                        break;
-#endif
                     if (rewrittenType.SpecialType == SpecialType.System_Decimal || rewrittenOperand.Type.SpecialType == SpecialType.System_Decimal)
                     {
                         return RewriteDecimalConversion(syntax, rewrittenOperand, rewrittenOperand.Type, rewrittenType, conversion.Kind.IsImplicitConversion(), constantValueOpt);

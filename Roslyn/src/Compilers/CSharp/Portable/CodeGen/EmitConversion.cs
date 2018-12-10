@@ -187,12 +187,19 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
         {
             var fromType = conversion.Operand.Type;
             var fromPredefTypeKind = fromType.PrimitiveTypeCode;
+#if XSHARP
+            Debug.Assert(fromPredefTypeKind.IsNumeric() || fromType.IsEnumType());
+#else
             Debug.Assert(fromPredefTypeKind.IsNumeric());
+#endif
 
             var toType = conversion.Type;
             var toPredefTypeKind = toType.PrimitiveTypeCode;
+#if XSHARP
+            Debug.Assert(toPredefTypeKind.IsNumeric() || toType.IsEnumType());
+#else
             Debug.Assert(toPredefTypeKind.IsNumeric());
-
+#endif
             _builder.EmitNumericConversion(fromPredefTypeKind, toPredefTypeKind, conversion.Checked);
         }
 

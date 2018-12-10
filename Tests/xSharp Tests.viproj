@@ -32826,7 +32826,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0
@@ -33026,7 +33026,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0
@@ -65233,7 +65233,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C641 - Runtime error with SHORT( _CAST , usual)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C642 - Inconistncies in arithmetic between different numeric types *************
 Application = C642 - Inconistncies in arithmetic between different numeric types
 IDEVersion = 1.06
@@ -65533,7 +65533,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C644 - Problems with && operator in VO dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C645 - Compiler crash with usuals and decimals with the X# runtime *************
 Application = C645 - Compiler crash with usuals and decimals with the X# runtime
 IDEVersion = 1.06
@@ -65634,7 +65634,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C645 - Compiler crash with usuals and decimals with the X# runtime
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C646 - Problem with ENUM arithmetic *************
 Application = C646 - Problem with ENUM arithmetic
 IDEVersion = 1.06
@@ -65732,7 +65732,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C646 - Problem with ENUM arithmetic
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A0D98383-C5F1-4134-AC6B-8AC98A1EC5BA
 ; ************** APPLICATION C647 - Problem with taking address of DIM USUAL *************
 Application = C647 - Problem with taking address of DIM USUAL
 IDEVersion = 1.06

@@ -3,7 +3,7 @@
 FUNCTION Start() AS VOID
 	LOCAL uUsual AS USUAL
 	LOCAL lDecimal AS Decimal
-	lDecimal := 1.23
+	lDecimal := 1.23m
 	uUsual := lDecimal
 	? lDecimal , uUsual
 RETURN

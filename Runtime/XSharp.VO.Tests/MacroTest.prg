@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cMacro AS STRING
 			LOCAL bMacro AS USUAL
 			LOCAL uValue AS USUAL
+            SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
 			cMacro := "1+1"
 			uValue := &(cMacro)
 			Assert.Equal (2, (INT) uValue)
@@ -40,7 +41,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			uValue := Eval(bMacro,20,22)
 			Assert.Equal (42, (INT) uValue)
 
-            cMacro := "{| a, b, c |  'a' $ 'a|b|c|d' }"
+            //cMacro := "{| a, b, c |  'a' $ 'a|b|c|d' }"
+            cMacro := "{| a,b,c| c == a + b}"
             bMacro := MCompile(cMacro,TRUE)
 			uValue := Eval(bMacro,1,2,3)
             Assert.Equal (TRUE, (LOGIC) uValue)
@@ -48,7 +50,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			bMacro := MCompile(cMacro)
 			uValue := Eval(bMacro,20,22)
 			Assert.Equal (42, (INT) uValue)
-		    cMacro := "{|aaa , bbb| aaa + bbb + ccc }"
+		    cMacro := "{|aaa , bbb| aaa + bbb + ccc }" // not existing field
 			bMacro := MCompile(cMacro)
 	        Assert.ThrowsAny<Exception>( { => Eval(bMacro,20,22) })
 

@@ -148,6 +148,14 @@ namespace Microsoft.CodeAnalysis
     {
         internal CSharp.CSharpSyntaxNode CsNode => (CSharp.CSharpSyntaxNode)this;
         internal IXParseTree XNode => CsNode.CsGreen.XNode ?? CsNode.Parent?.XNode;
+        internal bool XIsVoCast
+        {
+            get
+            {
+                var node = XNode as XSharpParserRuleContext;
+                return node is XSharpParser.VoCastExpressionContext;
+            }
+        }
         internal bool XIsMissingArgument
         {
             get

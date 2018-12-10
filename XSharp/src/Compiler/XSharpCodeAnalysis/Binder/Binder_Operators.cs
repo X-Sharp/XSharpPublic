@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             NotEqualsUsual,
             SubtractString,
             UsualOther,
-            Shift,
+            Cast,
             PSZCompare,
             SymbolCompare,
             LogicCompare
@@ -168,6 +168,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         case XSharpParser.NULL_PTR:
                         case XSharpParser.NULL_PSZ:
                             return true;
+                        case XSharpParser.INT_CONST:
+                            return Convert.ToInt64(xnode.Literal.Token.Text) == 0;
                     }
                 }
             }
@@ -389,13 +391,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 xnode = ((XSharpParser.CodeblockCodeContext)node.XNode).Expr as XSharpParser.BinaryExpressionContext;
             else
                 xnode = node.XNode as XSharpParser.BinaryExpressionContext;
-            if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
-                return opType;
 
             TypeSymbol leftType = left.Type;
             TypeSymbol rightType = right.Type;
 
-            if (Compilation.Options.HasRuntime)
+            if (Compilation.Options.HasRuntime && xnode != null)
             {
                 var typeUsual = Compilation.UsualType();
                 var typePSZ = Compilation.PszType();
@@ -469,10 +469,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 opType = VOOperatorType.CompareString;
                             }
                         }
-                        if (leftType == Compilation.GetSpecialType(SpecialType.System_Boolean) &&
+                        else if (leftType == Compilation.GetSpecialType(SpecialType.System_Boolean) &&
                             rightType == Compilation.GetSpecialType(SpecialType.System_Boolean))
                         {
                             opType = VOOperatorType.LogicCompare;
+                        }
+                        else if (leftType == typePSZ || rightType == typePSZ)
+                        {
+                            opType = VOOperatorType.PSZCompare;
                         }
                         break;
                     case XSharpParser.MINUS:
@@ -498,39 +502,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 opType = VOOperatorType.SubtractString;
                             }
                         }
-                        /*
-                        if (leftType.SpecialType.IsNumericType() && rightType.SpecialType.IsNumericType())
-                        {
-                            if (left.Kind == BoundKind.Literal && right.Kind == BoundKind.Literal)
-                            {
-                                var int64Type = Compilation.GetSpecialType(SpecialType.System_Int64);
-                                if (leftType.SpecialType.IsIntegralType())
-                                {
-                                    Int64 value = Convert.ToInt64(left.ConstantValue.Value);
-                                    var constant = ConstantValue.Create(value);
-                                    left = new BoundConversion(left.Syntax, left, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: constant, int64Type) { WasCompilerGenerated = true };
-                                }
-                                if (rightType.SpecialType.IsIntegralType())
-                                {
-                                    Int64 value = Convert.ToInt64(right.ConstantValue.Value;
-                                    var constant = ConstantValue.Create(value);
-                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: constant, int64Type) { WasCompilerGenerated = true };
-                                }
-                            }
-                            else if (leftType != rightType)
-                            {
-                                var int32Type = Compilation.GetSpecialType(SpecialType.System_Int32);
-                                if (leftType.SpecialType.SizeInBytes() < 4)
-                                {
-                                    left = new BoundConversion(left.Syntax, left, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: left.ConstantValue, int32Type) { WasCompilerGenerated = true };
-                                }
-                                if (rightType.SpecialType.SizeInBytes() < 4)
-                                {
-                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, @checked: false, explicitCastInCode: false, constantValueOpt: right.ConstantValue, int32Type) { WasCompilerGenerated = true };
-                                }
-                            }
-
-                        }*/
+    
                         if (opType == VOOperatorType.None)
                         { 
                             typeDate = Compilation.DateType();
@@ -559,22 +531,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         break;
                     default:
-                        switch (node.Kind())
-                        {
-                            case SyntaxKind.RightShiftExpression:
-                            case SyntaxKind.LeftShiftExpression:
-                            case SyntaxKind.RightShiftAssignmentExpression:
-                            case SyntaxKind.LeftShiftAssignmentExpression:
-                                opType = VOOperatorType.Shift;
-                                break;
-                            default:
-                                opType = VOOperatorType.None;
-                                break;
-                        }
                         break;
                 }
             }
-            else
+            if (opType == VOOperatorType.None)
             {
                 switch (node.Kind())
                 {
@@ -592,9 +552,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.LeftShiftExpression:
                     case SyntaxKind.RightShiftAssignmentExpression:
                     case SyntaxKind.LeftShiftAssignmentExpression:
-                        opType = VOOperatorType.Shift;
+                    case SyntaxKind.BitwiseAndExpression:
+                    case SyntaxKind.BitwiseOrExpression:
+                    case SyntaxKind.BitwiseNotExpression:
+                        opType = VOOperatorType.Cast;
                         break;
-
+                    case SyntaxKind.AddExpression:
+                    case SyntaxKind.SubtractExpression:
+                    case SyntaxKind.AddAssignmentExpression:
+                    case SyntaxKind.SubtractAssignmentExpression:
+                        if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
+                        {
+                            if (leftType.SpecialType.SizeInBytes() == 4)
+                            {
+                                if (rightType.SpecialType.SizeInBytes() < 4)
+                                {
+                                    right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
+                                }
+                            }
+                        }
+                        break;
                 }
 
             }

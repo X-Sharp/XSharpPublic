@@ -1153,7 +1153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,
                                                 SyntaxFactory.Literal(null, value.ToString(), value, null));
         }
-        protected LiteralExpressionSyntax GenerateLiteral(double value)
+            protected LiteralExpressionSyntax GenerateLiteral(double value)
         {
             return _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,
                                                 SyntaxFactory.Literal(null, value.ToString(), value, null));
@@ -7175,6 +7175,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax type;
             long mask = 0;
             var expr = context.Expr.Get<ExpressionSyntax>();
+            if (expr is CastExpressionSyntax castExpr)
+            {
+                // no need to double cast the expression. For example INT(_CAST, SLen(string)) will already have a cast for the SLen
+                expr = castExpr.Expression;
+            }
             if (context.Type != null)
             {
                 bool docast = false;
@@ -7212,6 +7217,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     expr,
                                     SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
                                     GenerateLiteral(mask));
+                        expr.XGenerated = true;
                     }
                     expr = MakeChecked(MakeCastTo(type, expr), false);
                     context.Put(expr);

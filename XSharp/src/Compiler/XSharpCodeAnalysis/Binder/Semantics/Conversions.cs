@@ -425,7 +425,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (srcType.IsIntegralType() && dstType.IsIntegralType())
             {
-                if (srcType.SizeInBytes() < dstType.SizeInBytes())
+                if (srcType.SizeInBytes() < dstType.SizeInBytes()
+                    || sourceExpression is BoundConditionalOperator)
+					// IIF expressions with literals are always seen as Int, even when the values are asmall
                 {
                     return Conversion.ImplicitNumeric;
                 }

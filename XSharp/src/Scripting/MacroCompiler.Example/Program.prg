@@ -131,7 +131,8 @@ begin namespace MacroCompilerTest
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
-        EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
+        //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
+        EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
         wait
 
         RunTests(mc)
@@ -313,6 +314,8 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
 //        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
+        TestMacro(mc, e"{|a,b| a $ b}", <object>{"est", "test"}, true, typeof(boolean))
+        TestMacro(mc, e"{|a,b| a $ b}", <object>{"test", "est"}, false, typeof(boolean))
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

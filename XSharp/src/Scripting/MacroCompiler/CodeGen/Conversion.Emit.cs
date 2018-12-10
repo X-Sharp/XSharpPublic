@@ -39,9 +39,8 @@ namespace XSharp.MacroCompiler
                     break;
                 case ConversionKind.NoConversion:
                 case ConversionKind.NoImplicitConversion:
-                    throw new InternalError();
                 default:
-                    throw new NotImplementedException();
+                    throw new InternalError();
             }
         }
     }

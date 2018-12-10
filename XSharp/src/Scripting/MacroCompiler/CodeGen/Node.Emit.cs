@@ -125,7 +125,7 @@ namespace XSharp.MacroCompiler.Syntax
                 (Symbol as BinaryOperatorSymbol).Emit(this, Datatype, ilg);
             }
             else
-                throw new NotImplementedException();
+                throw new InternalError();
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }
@@ -149,14 +149,14 @@ namespace XSharp.MacroCompiler.Syntax
                         ilg.Emit(OpCodes.Brtrue_S, lb);
                         break;
                     default:
-                        throw new NotImplementedException();
+                        throw new InternalError();
                 }
                 ilg.Emit(OpCodes.Pop);
                 Right.Emit(ilg);
                 ilg.MarkLabel(lb);
             }
             else
-                throw new NotImplementedException();
+                throw new InternalError();
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }
@@ -178,7 +178,7 @@ namespace XSharp.MacroCompiler.Syntax
             }
             else
             {
-                throw new NotImplementedException();
+                throw new InternalError();
             }
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);

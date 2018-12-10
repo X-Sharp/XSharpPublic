@@ -13,7 +13,7 @@ namespace XSharp.MacroCompiler.Syntax
     abstract internal partial class Node
     {
         internal Symbol Symbol = null;
-        internal virtual Node Bind(Binder b) { throw new NotImplementedException(); }
+        internal virtual Node Bind(Binder b) { throw new InternalError(); }
         internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
     }
     abstract internal partial class Expr : Node

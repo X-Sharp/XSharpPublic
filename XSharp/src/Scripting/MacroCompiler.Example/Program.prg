@@ -39,8 +39,8 @@ function CC(a,b,c)
 global UU as usual
 
 class testclassdc
-    v1 as int
-    v2 as string
+    public v1 as int
+    public v2 as string
 
     override method GetHashCode() as int
         return super:GetHashCode()
@@ -53,8 +53,8 @@ class testclassdc
 end class
 
 class testclass
-    v1 as int
-    v2 as string
+    public v1 as int
+    public v2 as string
 
     static property sprop as int auto get set
     property prop as int auto get set
@@ -75,8 +75,8 @@ class testclass
 end class
 
 struct teststruct
-    v1 as int
-    v2 as string
+    public v1 as int
+    public v2 as string
 
     static property sprop as int auto get set
     property prop as int auto get set
@@ -298,12 +298,12 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "{|a| b := 8, c := b**a, c}", <OBJECT>{8}, 16777216, typeof(usual))
         TestMacro(mc, "{|a,b,c|a.and.b.or..not.c}", <OBJECT>{true,false,true}, false, typeof(logic))
         TestMacro(mc, "{|a| a := U({1,2,3", <OBJECT>{}, {1,2,3}, typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, nil, typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, nil, typeof(usual))
-        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, nil, typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
-        TestMacro(mc, e"{|| BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+//        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, nil, typeof(usual))
+//        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, nil, typeof(usual))
+//        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, nil, typeof(usual))
+//        TestMacro(mc, e"{|| _FIELD->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+//        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+//        TestMacro(mc, e"{|| BASE->NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
         TestMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", <OBJECT>{{1,2,3}, 1}, 102, typeof(usual))
         TestMacro(mc, e"_chr(65)", <object>{}, 65, typeof(char))
         TestMacro(mc, e"chr(65)", <object>{}, 65, typeof(char))
@@ -314,9 +314,9 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
 
-        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
-        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))
-        TestMacro(mc, e"{|| NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
+//        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
+//        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))
+//        TestMacro(mc, e"{|| NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
 
         XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarGet, "MyVarGet")

@@ -5,7 +5,7 @@
 //
 USING System
 USING System.Globalization
-using System.Collections.Generic
+USING System.Collections.Generic
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Text
@@ -20,13 +20,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _Shared    AS LOGIC
         INTERNAL _ReadOnly  AS LOGIC
         INTERNAL _Hot       AS LOGIC
-        INTERNAL _oRDD      as DBFCDX
-        INTERNAL _root      as CdxFileHeader
-        INTERNAL _tagList   as CdxTagList
-        INTERNAL _tags      as IList<CdxTag>
+        INTERNAL _oRDD      AS DBFCDX
+        INTERNAL _root      AS CdxFileHeader
+        INTERNAL _tagList   AS CdxTagList
+        INTERNAL _tags      AS IList<CdxTag>
 
-        INTERNAL PROPERTY FileName as STRING AUTO
-        INTERNAL PROPERTY Tags as IList<CdxTag> GET _tags
+        INTERNAL PROPERTY FileName AS STRING AUTO
+        INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
             SUPER( oRdd )
             SELF:_oRdd := oRDD
@@ -67,27 +67,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
         #endregion
         #region Open and Close etc
-        INTERNAL METHOD Close() as LOGIC
+        INTERNAL METHOD Close() AS LOGIC
             RETURN TRUE
-        INTERNAL METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) as LOGIC
+        INTERNAL METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
             IF !File(info:FileName)
-                return FALSE
+                RETURN FALSE
             ENDIF
             SELF:_hFile    := FOpen(info:FileName, info:FileMode)
-            if SELF:_hFile == F_ERROR
-                return FALSE
-            endif
+            IF SELF:_hFile == F_ERROR
+                RETURN FALSE
+            ENDIF
             SELF:FileName := info:FileName
             _root := CdxFileHeader{SELF:_hFile}
             IF _root:Read()
-                local nTagList as DWORD
+                LOCAL nTagList AS DWORD
                 nTagList := SELF:_root:TagList
-                _tagList := CdxTagList{_hFile, (int) nTagList, _root:KeyLength}
+                _tagList := CdxTagList{_hFile, (INT) nTagList, _root:KeyLength}
                 _tagList:Read()
                 _tags := _tagList:Tags
                 // Compile expressions
-                FOREACH var tag in _tags
-                    LOCAL nIndex as INT
+                FOREACH VAR tag IN _tags
+                    LOCAL nIndex AS INT
                     nIndex := _oRdd:FieldIndex(tag:KeyExpression)
                     IF  nIndex > 0
                         tag:SingleField := TRUE

@@ -40,7 +40,7 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
-using System.Diagnostics
+USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
@@ -51,9 +51,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // TagHeader consists of 2 pages. One with flags and one with Expressions
         // so therefore allocate extra 2nd page
     	INTERNAL ExprBuffer   AS CdxPage
-        INTERNAL TagName      as STRING
+        INTERNAL TagName      AS STRING
 			
-	    INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage as Int32, cTagName as STRING  )
+	    INTERNAL CONSTRUCTOR( fileHandle AS IntPtr, nPage AS Int32, cTagName AS STRING  )
             SUPER(fileHandle, nPage)
             SELF:ExprBuffer := CdxPage{fileHandle, nPage + CDXPAGE_SIZE}
             SELF:TagName    := cTagName
@@ -72,11 +72,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
 #region properties
 
-        PROTECTED INTERNAL PROPERTY RootPage as LONG ;
+        PROTECTED INTERNAL PROPERTY RootPage AS LONG ;
 			GET _GetLong(CDXOFFSET_ROOT);
 			SET _SetLong(CDXOFFSET_ROOT, VALUE), isHot := TRUE
             
-        PROTECTED INTERNAL PROPERTY FreeList as LONG ;
+        PROTECTED INTERNAL PROPERTY FreeList AS LONG ;
 			GET _GetLong(CDXOFFSET_FREELIST);
 			SET _SetLong(CDXOFFSET_FREELIST, VALUE), isHot := TRUE
 
@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 		PROTECTED INTERNAL PROPERTY Signature  AS BYTE	;
 			GET _GetByte(CDXOFFSET_SIG) ;
-            SET _SetByte(CDXOFFSET_SIG, value)
+            SET _SetByte(CDXOFFSET_SIG, VALUE)
 
 	    PROTECTED INTERNAL PROPERTY KeyExprPos		AS WORD			;
 			GET _GetWord(CDXOFFSET_KEYEXPRPOS);
@@ -115,15 +115,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
   			
 		PROTECTED INTERNAL PROPERTY Descending	AS LOGIC  ;
 			GET _GetWord( CDXOFFSET_DESCENDING ) != 0 ;
-			SET _SetWord( CDXOFFSET_DESCENDING, IIF(VALUE,1,0) ), isHot := TRUE
+			SET _SetWord( CDXOFFSET_DESCENDING, (WORD) IIF(VALUE,1,0) ), isHot := TRUE
 
-        PROTECTED INTERNAL PROPERTY KeyExpression as STRING ;
+        PROTECTED INTERNAL PROPERTY KeyExpression AS STRING ;
             GET _GetString(ExprBuffer:buffer, KeyExprPos, KeyExprLen-1) ;
-            SET _SetString(ExprBuffer:Buffer, KeyExprPos, KeyExprLen, Value) , isHot := TRUE
+            SET _SetString(ExprBuffer:Buffer, KeyExprPos, KeyExprLen, VALUE) , isHot := TRUE
 
-        PROTECTED INTERNAL PROPERTY ForExpression as STRING ;
+        PROTECTED INTERNAL PROPERTY ForExpression AS STRING ;
             GET _GetString(ExprBuffer:buffer, ForExprPos, ForExprLen-1) ;
-            SET _SetString(ExprBuffer:buffer, ForExprPos, ForExprLen, Value) , isHot := TRUE
+            SET _SetString(ExprBuffer:buffer, ForExprPos, ForExprLen, VALUE) , isHot := TRUE
 
 #endregion
 #region constants

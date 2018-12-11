@@ -237,7 +237,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (preserve)
             {
-                ilg.Emit(OpCodes.Sizeof, (Symbol as TypedSymbol).Type.Type);
+                ilg.Emit(OpCodes.Sizeof, (Symbol as TypeSymbol).Type);
             }
         }
     }

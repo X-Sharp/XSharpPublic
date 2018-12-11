@@ -53,6 +53,12 @@ class testclassdc
 end class
 
 class testclass
+    class nested
+        enum child
+            haha
+        end enum
+    end class
+
     public v1 as int
     public v2 as string
 
@@ -132,7 +138,9 @@ begin namespace MacroCompilerTest
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
-        EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
+        //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
+        EvalMacro(mc, e"{|a,b| sizeof(int) }")
+        EvalMacro(mc, e"{|a,b| sizeof(teststruct) }")
         wait
 
         RunTests(mc)
@@ -316,6 +324,8 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"est", "test"}, true, typeof(boolean))
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"test", "est"}, false, typeof(boolean))
+        TestMacro(mc, e"{|a,b| sizeof(int) }", <object>{}, 4, typeof(dword))
+        TestMacro(mc, e"{|a,b| sizeof(teststruct) }", <object>{}, 12, typeof(dword))
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -284,34 +284,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	   Assert.Equal( Str(-12.34 , 4, 2)     	, "****")    // VO 
 	   Assert.Equal( Str(-12.34 , 4, 1)     	, "****")    //VO: -2.3
 	   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
-
-
-	[Fact, Trait("Category", "Val")];
-	METHOD ValTests() AS VOID
-		SetDecimalSep(',')
-		SetThousandSep('.')
-		Assert.Equal(123, (INT) Val("123") )
-		Assert.Equal(123.456, (FLOAT) Val("123,456") )
-
-		Assert.Equal(0, (INT) Val("") )
-
-		Assert.Equal(0, (INT) Val("abc") )
-		Assert.Equal(123, (INT) Val("123abc") )
-		Assert.Equal(123, (INT) Val("123abc456") )
-		Assert.Equal(123, (INT) Val("123abc456,789") )
-		Assert.Equal(0, (INT) Val("abc123456,789") )
-		Assert.Equal(255, (INT) Val("0xFF") )
-		Assert.Equal(0xFFFF, (INT) Val("0xFFFF") )
-		Assert.Equal(4294967295, (INT64) Val("0xFFFFFFFF") )
-		Assert.Equal(11, (INT) Val("11L11") )
-        
-		Assert.Equal(1.0001, (FLOAT) Val("1,000.1") )
-		Assert.Equal(1.0011, (FLOAT) Val("1,001.1") )
-		SetDecimalSep('.')
-		SetThousandSep(',')
-		Assert.Equal(1000.1, (FLOAT) Val("1,000.1") )
-		Assert.Equal(1001.1, (FLOAT) Val("1,001.1") )
-	RETURN
 
 	[Fact, Trait("Category", "SplitPath")];
 	METHOD SplitPathTests() AS VOID

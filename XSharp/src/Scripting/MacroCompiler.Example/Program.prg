@@ -141,8 +141,7 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
-//        EvalMacro(mc, e"{|a,b| testclass.nested.fff, sizeof(int) }")
-        EvalMacro(mc, e"{|a,b| default(testclass), sizeof(int) }")
+        EvalMacro(mc, e"{|a,b| testclass.nested.fff, sizeof(int) }")
         wait
 
         RunTests(mc)
@@ -332,6 +331,7 @@ begin namespace MacroCompilerTest
 //        TestMacro(mc, e"{|a,b| testclass.nested.child.haha }", <object>{}, 4321, typeof(int)) // FAIL - not supported
         TestMacro(mc, e"{|a,b| testclass.nested.fff }", <object>{}, 333, typeof(int))
         TestMacro(mc, e"{|a,b| default(testclass), sizeof(int) }", <object>{}, 4, typeof(dword))
+        TestMacro(mc, e"{|a,b| testclass.nested.fff, sizeof(int) }", <object>{}, 4, typeof(dword))
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

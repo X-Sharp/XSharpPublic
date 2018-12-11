@@ -69,6 +69,8 @@ namespace XSharp.MacroCompiler
 
         internal override Symbol Lookup(string name) { throw new InternalError(); }
 
+        internal override string FullName { get { return Kind.ToString(); } }
+
         const int Explicit = 0x20000;
         const int Implicit = 0x10000;
         private static readonly ConversionSymbol[] simpleConv;

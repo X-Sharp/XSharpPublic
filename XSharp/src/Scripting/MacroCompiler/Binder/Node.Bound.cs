@@ -266,7 +266,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Type);
-            Symbol = Type.Symbol;
+            Symbol = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
             Datatype = Compilation.Get(NativeType.UInt32);
             return null;
         }
@@ -276,7 +276,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Type);
-            Symbol = Type.Symbol;
+            Symbol = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
             Datatype = Symbol as TypeSymbol;
             return null;
         }
@@ -287,8 +287,10 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Expr.Bind(b);
             Type.Bind(b);
-            Datatype = Type.Symbol as TypeSymbol;
+            Datatype = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
             Symbol = Binder.Conversion(Expr, Datatype, allowExplicit: true);
+            if ((Symbol as ConversionSymbol).Kind == ConversionKind.NoConversion)
+                ThrowError(ErrorCode.NoConversion, Expr.Datatype.Type, Type.Symbol);
             return null;
         }
         internal static TypeCast Bound(Expr e, TypeSymbol t) { return new TypeCast(null, e) { Datatype = t }; }

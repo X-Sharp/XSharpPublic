@@ -141,7 +141,10 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
-        EvalMacro(mc, e"{|a,b| testclass.nested.fff, sizeof(int) }")
+        //EvalMacro(mc, e"{|a,b| sizeof(testclass.nested.fff) }")
+        //EvalMacro(mc, e"{|a,b| default(testclass.nested.fff) }")
+        //EvalMacro(mc, e"{|a,b| (testclass.nested.fff)123 }")
+        EvalMacro(mc, e"{|a,b| _chr(65) }")
         wait
 
         RunTests(mc)

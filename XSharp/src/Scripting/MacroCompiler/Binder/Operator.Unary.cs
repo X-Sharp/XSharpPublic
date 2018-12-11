@@ -34,6 +34,8 @@ namespace XSharp.MacroCompiler
 
         private static readonly UnaryOperatorSymbol[,] simpleOp;
 
+        internal override string FullName { get { return OperatorSymbol(Kind); } }
+
         static UnaryOperatorSymbol()
         {
             var ops = (UnaryOperatorKind[])Enum.GetValues(typeof(UnaryOperatorKind));

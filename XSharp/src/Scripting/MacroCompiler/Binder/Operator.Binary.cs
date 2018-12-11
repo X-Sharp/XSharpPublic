@@ -83,6 +83,8 @@ namespace XSharp.MacroCompiler
 
         private static readonly BinaryOperatorSymbol[,] simpleOp;
 
+        internal override string FullName { get { return OperatorSymbol(Kind); } }
+
         static BinaryOperatorSymbol()
         {
             var ops = (BinaryOperatorKind[])Enum.GetValues(typeof(BinaryOperatorKind));

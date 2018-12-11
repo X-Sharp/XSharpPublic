@@ -37,13 +37,85 @@ INTERNAL STATIC CLASS ConversionHelpers
 		formatStrings:Add(nKey, cFormat)
 		RETURN cFormat
 
+	PRIVATE CONST NOCHAR := '\0' AS Char
+	STATIC METHOD NextChar(c AS STRING, nIndex REF INT) AS Char
+		LOCAL cChar AS Char
+		LOCAL lStart := nIndex == -1 AS LOGIC
+		DO WHILE TRUE
+			nIndex ++
+			IF nIndex >= c:Length
+				RETURN NOCHAR
+			END IF
+			cChar := c[nIndex]
+			IF cChar == 'E'
+				RETURN NOCHAR
+			END IF
+			IF cChar >= '0' .and. cChar <= '9'
+				IF cChar == '0' .and. lStart
+					nIndex ++
+					LOOP
+				END IF
+				RETURN cChar
+			END IF
+		END DO
+	RETURN NOCHAR
+	
+	STATIC METHOD AdjustPrecision(cNum15 AS STRING, cNum17 AS STRING) AS STRING
+		LOCAL cDiff15 := "0", cDiff17 := "0" AS STRING
+		LOCAL cResult AS STRING
+		LOCAL c15,c17 AS Char
+		LOCAL n15,n17 AS INT
+		LOCAL nMatch AS INT
+		LOCAL lDiff  AS LOGIC
+		n15 := n17 := -1
+		nMatch := 0
+		cResult := cNum15
+		lDiff := FALSE
+		DO WHILE TRUE
+			c15 := NextChar(cNum15 , REF n15)
+			c17 := NextChar(cNum17 , REF n17)
+			IF c15 == NOCHAR .or. c17 == NOCHAR
+				IF lDiff
+					EXIT
+				ELSE
+					RETURN cNum15
+				END IF
+			ELSEIF c15 == c17
+				nMatch ++
+			ELSE
+				IF nMatch >= 14
+					IF nMatch < 17
+						lDiff := TRUE
+						cResult := cResult:Substring(0, n15) + c17:ToString() + cResult:Substring(n15 + 1)
+						nMatch ++
+						cDiff15 += c15:ToString()
+						cDiff17 += c17:ToString()
+					ELSE
+						EXIT
+					END IF
+				ELSE
+					RETURN cNum15
+				END IF
+			END IF
+		END DO
+		
+		// if the difference of the two numbers is the minimum one, then it was probably just a rounding issue in "G17" representation
+		IF Math.Abs( Int32.Parse(cDiff15) - Int32.Parse(cDiff17) ) == 1
+			RETURN cNum15
+		END IF
+	RETURN cResult
+
 	STATIC METHOD FormatNumber(n AS REAL8, nLen AS INT, nDec AS INT) AS STRING
 		LOCAL cFormat AS STRING
 		LOCAL result AS STRING
 		cFormat := GetFormatString(nLen, nDec)
         // G17 returns all 17 relevant digits for a REAL8
+        // See https://docs.microsoft.com/en-us/dotnet/api/system.double.tostring?view=netframework-4.7.2
 		result := String.Format(usCulture, cFormat, n)
-        IF result:EndsWith("0") .AND. nDec > 0 .AND. nLen > 15
+		IF nLen > 15 .and. result:Length >= 15
+			result := AdjustPrecision(result, n:ToString("G17", usCulture))
+		END IF
+/*      IF result:EndsWith("0") .AND. nDec > 0 .AND. nLen > 15
             VAR cTemp := n:ToString("G17", usCulture)
             VAR parts := cTemp:Split(<CHAR>{c'.'}, StringSplitOptions.RemoveEmptyEntries)
             IF parts:Length > 1
@@ -74,7 +146,7 @@ INTERNAL STATIC CLASS ConversionHelpers
                 ENDIF
                 result := parts[0+ __ARRAYBASE__] + "." + cDec
             ENDIF
-        ENDIF
+        ENDIF*/
 		IF result:Length > nLen
 			result := Replicate("*", (DWORD) nLen)
 		ENDIF

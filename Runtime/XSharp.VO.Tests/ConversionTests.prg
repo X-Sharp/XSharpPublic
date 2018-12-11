@@ -52,7 +52,27 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			c := Str3(70.00 - 65.01 - 4.99 , 16 , 2)
 			Assert.Equal("            0.00", c )  
 			c := Str3(70.00 - 65.01 - 4.99 , 20 , 15)
-			assert.Equal("  -0.000000000000005", c )  
+			Assert.Equal("  -0.000000000000005", c )  
+
+			c := Str3(123456.7890/2.34, 25,15)
+			Assert.Equal("    52759.311538461545000", c )  
+			c := Str(123456.7890/2.34, 25,15)
+			Assert.Equal("    52759.311538461545000", c )  
+			
+			SetDecimalSep(Asc(","))
+			f := 1.2345999999
+			Assert.Equal("1,2", Str(f, 30,1):Trim() )  
+			Assert.Equal("1,23", Str(f, 30,2):Trim() )  
+			Assert.Equal("1,235", Str(f, 30,3):Trim() )  
+			Assert.Equal("1,2346", Str(f, 30,4):Trim() )  
+			Assert.Equal("1,23460", Str(f, 30,5):Trim() )  
+			Assert.Equal("1,234600", Str(f, 30,6):Trim() )  
+			Assert.Equal("1,2346000", Str(f, 30,7):Trim() )  
+			Assert.Equal("1,23460000", Str(f, 30,8):Trim() )  
+			Assert.Equal("1,234600000", Str(f, 30,9):Trim() )  
+			Assert.Equal("1,2345999999", Str(f, 30,10):Trim() )  
+			Assert.Equal("1,23459999990", Str(f, 30,11):Trim() )  
+			Assert.Equal("1,234599999900", Str(f, 30,12):Trim() )  
 
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID

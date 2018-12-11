@@ -55,8 +55,10 @@ end class
 class testclass
     class nested
         enum child
-            haha
+            haha := 4321
         end enum
+
+        public static fff := 333 as int
     end class
 
     public v1 as int
@@ -139,8 +141,7 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
-        EvalMacro(mc, e"{|a,b| sizeof(int) }")
-        EvalMacro(mc, e"{|a,b| sizeof(teststruct) }")
+        EvalMacro(mc, e"{|a,b| testclass.nested.fff }")
         wait
 
         RunTests(mc)
@@ -326,6 +327,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"test", "est"}, false, typeof(boolean))
         TestMacro(mc, e"{|a,b| sizeof(int) }", <object>{}, 4, typeof(dword))
         TestMacro(mc, e"{|a,b| sizeof(teststruct) }", <object>{}, 12, typeof(dword))
+        TestMacro(mc, e"{|a,b| sizeof(testclass.nested.child) }", <object>{}, 4, typeof(dword))
+//        TestMacro(mc, e"{|a,b| testclass.nested.child.haha }", <object>{}, 4321, typeof(int)) // FAIL - not supported
+        TestMacro(mc, e"{|a,b| testclass.nested.fff }", <object>{}, 333, typeof(int))
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

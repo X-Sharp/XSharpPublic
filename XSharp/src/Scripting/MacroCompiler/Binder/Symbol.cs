@@ -169,7 +169,7 @@ namespace XSharp.MacroCompiler
             MemberType = memberType;
         }
         internal override Symbol Lookup(string name) { return null; }
-        internal static MemberSymbol Create(TypeSymbol declType, MemberInfo member)
+        internal static Symbol Create(TypeSymbol declType, MemberInfo member)
         {
             switch (member.MemberType)
             {
@@ -183,6 +183,8 @@ namespace XSharp.MacroCompiler
                     return new PropertySymbol(declType, (PropertyInfo)member);
                 case MemberTypes.Constructor:
                     return new ConstructorSymbol(declType, (ConstructorInfo)member);
+                case MemberTypes.NestedType:
+                    return new TypeSymbol(member as Type);
                 default:
                     return new MemberSymbol(declType, member, null, member.MemberType);
             }

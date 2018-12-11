@@ -458,6 +458,18 @@ namespace XSharp.MacroCompiler.Syntax
             return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Object) };
         }
     }
+    internal partial class SubstrExpr : BinaryExpr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Left);
+            b.Bind(ref Right);
+            Binder.Convert(ref Left, Compilation.Get(NativeType.String));
+            Binder.Convert(ref Right, Compilation.Get(NativeType.String));
+            Datatype = Compilation.Get(NativeType.Boolean);
+            return null;
+        }
+    }
     internal partial class AutoVarExpr : Expr
     {
         internal Expr Var;

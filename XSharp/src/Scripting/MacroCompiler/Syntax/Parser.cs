@@ -823,6 +823,7 @@ namespace XSharp.MacroCompiler
             PostfixAsType,
             PrefixCast,
             BinaryAlias,
+            BinarySubstr,
         }
 
         class Oper
@@ -931,6 +932,11 @@ namespace XSharp.MacroCompiler
                         Parse = _parse;
                         Combine = _combine_binary_alias;
                         break;
+                    case AssocType.BinarySubstr:
+                        this.assoc = AssocType.BinaryLeft;
+                        Parse = _parse;
+                        Combine = _combine_binary_substr;
+                        break;
                     case AssocType.None:
                         Parse = _parse_empty;
                         Combine = null;
@@ -1018,6 +1024,7 @@ namespace XSharp.MacroCompiler
             Expr _combine_postfix_as_type(Parser p, Expr l, Node o, Expr r) => new AsTypeExpr(l, (TypeExpr)o, o.Token);
             Expr _combine_prefix_cast(Parser p, Expr l, Node o, Expr r) => new TypeCast((TypeExpr)o, r);
             Expr _combine_binary_alias(Parser p, Expr l, Node o, Expr r) => new AliasExpr(l, r, o.Token);
+            Expr _combine_binary_substr(Parser p, Expr l, Node o, Expr r) => new SubstrExpr(l, o.Token, r);
             Expr _combine_postfix_dot(Parser p, Expr l, Node o, Expr r) => new QualifiedNameExpr(p.Require((l as TypeExpr), l.Token, ErrorCode.Expected, "type"), (NameExpr)o);
             Expr _combine_postfix_colon(Parser p, Expr l, Node o, Expr r) => new MemberAccessExpr(l, (NameExpr)o);
             Expr _combine_postfix_call(Parser p, Expr l, Node o, Expr r) => new MethodCallExpr(l, (ArgList)o);
@@ -1075,7 +1082,7 @@ namespace XSharp.MacroCompiler
             Opers[(int)TokenType.LTE] = new Oper(AssocType.BinaryLeft, TokenType.LTE, 13);
             Opers[(int)TokenType.EQ] = new Oper(AssocType.BinaryLeft, TokenType.EQ, 13);
             Opers[(int)TokenType.EEQ] = new Oper(AssocType.BinaryLeft, TokenType.EEQ, 13);
-            Opers[(int)TokenType.SUBSTR] = new Oper(AssocType.BinaryLeft, TokenType.SUBSTR, 13);
+            Opers[(int)TokenType.SUBSTR] = new Oper(AssocType.BinarySubstr, TokenType.SUBSTR, 13);
             Opers[(int)TokenType.NEQ] = new Oper(AssocType.BinaryLeft, TokenType.NEQ, 13);
             Opers[(int)TokenType.NEQ2] = new Oper(AssocType.BinaryLeft, TokenType.NEQ2, 13);
             Opers[(int)TokenType.AMP] = new Oper(AssocType.BinaryLeft, TokenType.AMP, 14);

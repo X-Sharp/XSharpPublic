@@ -420,6 +420,18 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Call, m.Method);
         }
     }
+    internal partial class SubstrExpr : BinaryExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Left.Emit(ilg);
+            Right.Emit(ilg);
+            var m = Compilation.Get(WellKnownMembers.XSharp_Core_Functions_Instr) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class AutoVarExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

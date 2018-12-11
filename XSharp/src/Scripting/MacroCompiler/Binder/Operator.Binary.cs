@@ -326,6 +326,8 @@ namespace XSharp.MacroCompiler
                     return "|";
                 case BinaryOperatorKind.Exponent:
                     return "^";
+                case BinaryOperatorKind.Substr:
+                    return "$";
                 default:
                     return null;
             }

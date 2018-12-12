@@ -108,22 +108,22 @@ global tsi := teststruct{1} as teststruct
 
 global tci := testclass{1} as testclass
 
-function MyVarGet(name as string) as usual
+function MyVarGet(name as string) as object
     return "VarGet(" + name + ")"
 
-function MyVarPut(name as string, value as usual) as usual
+function MyVarPut(name as string, value as object) as object
     return "VarPut(" + name +"):" + (string)value
 
-function MyFieldGet(name as string) as usual
+function MyFieldGet(name as string) as object
     return "FieldGet(" + name + ")"
 
-function MyFieldSet(name as string, value as usual) as usual
+function MyFieldSet(name as string, value as object) as object
     return "FieldSet(" + name +"):" + (string)value
 
-function MyFieldGetWa(wa as string, name as string) as usual
+function MyFieldGetWa(wa as string, name as object) as object
     return "FieldGet(" + wa + "," + name + ")"
 
-function MyFieldSetWa(wa as string, name as string, value as usual) as usual
+function MyFieldSetWa(wa as string, name as string, value as object) as object
     return "FieldSet(" + wa + "," + name +"):" + (string)value
 
 begin namespace MacroCompilerTest
@@ -327,9 +327,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"char(65)", <object>{}, 65, typeof(char))
         TestMacro(mc, e"slen(\"hello\")", <object>{}, 5, typeof(dword))
         TestMacro(mc, e"{|v| v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual))
-//        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
-//        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
-//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
+        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"TEST", typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
+        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
+        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"est", "test"}, true, typeof(boolean))
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"test", "est"}, false, typeof(boolean))
         TestMacro(mc, e"{|a,b| sizeof(int) }", <object>{}, sizeof(int), typeof(dword))
@@ -347,22 +347,22 @@ begin namespace MacroCompilerTest
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut, "MyVarPut")
-        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "VarGet(NIKOS)", typeof(usual))
-        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "VarPut(NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "VarGet(NIKOS)", typeof(string))
+        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "VarPut(NIKOS):123", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
-        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
-        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(usual))
-        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(usual))
-        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(usual))
-        TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(string))
+        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(string))
+        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(string))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(string))
+        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(string))
+        TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(string))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(string))
+        TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(string))
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         return

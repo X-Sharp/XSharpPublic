@@ -45,7 +45,7 @@
     <VO16>false</VO16>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -62,6 +62,9 @@
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
+    <OutputPath>$(OutputPath)\</OutputPath>
+    <IntermediateOutputPath>$(IntermediateOutputPath)\</IntermediateOutputPath>
+    <AssemblyOriginatorKeyFile>$(solutiondir)build\strongnamekeys\xsharpkey.private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

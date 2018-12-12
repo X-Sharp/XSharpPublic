@@ -23,6 +23,16 @@ namespace XSharp.MacroCompiler.Syntax
         internal virtual Expr Cloned(Binder b) { return this; }
         internal TypeSymbol ThrowError(ErrorCode e, params object[] args) { throw Error(e, args); }
         internal TypeSymbol ThrowError(CompilationError e) { throw e; }
+        internal void RequireValue()
+        {
+            if (Datatype == null)
+                ThrowError(ErrorCode.NotAnExpression, Symbol);
+        }
+        internal void RequireType()
+        {
+            if (!(Symbol is TypeSymbol))
+                ThrowError(ErrorCode.NotAType, Symbol);
+        }
     }
     abstract internal partial class TypeExpr : Expr
     {
@@ -84,6 +94,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireValue();
             Symbol = b.Lookup(Expr.Symbol, Member.LookupName);
             if (Symbol == null)
             {
@@ -118,6 +129,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
+            Left.RequireValue();
+            Right.RequireValue();
             Binder.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
@@ -130,6 +143,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
+            Left.RequireValue();
+            Right.RequireValue();
             Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false);
             Binder.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
@@ -143,6 +158,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
+            Left.RequireValue();
+            Right.RequireValue();
             Symbol = Binder.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind), BinaryOperatorSymbol.OperatorIsLogic(Kind));
             Datatype = Symbol.Type();
             return null;
@@ -161,6 +178,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
+            Left.RequireValue();
+            Right.RequireValue();
             Symbol = Binder.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind), true);
             Datatype = Symbol.Type();
             return null;
@@ -171,6 +190,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireValue();
             Symbol = Binder.BindUnaryOperation(this, UnaryOperatorSymbol.OperatorKind(Kind), UnaryOperatorSymbol.OperatorIsLogic(Kind));
             Datatype = Symbol.Type();
             return null;
@@ -189,6 +209,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireValue();
             Left = Expr.Cloned(b);
             Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
             Binder.Convert(ref Expr, Left.Datatype);
@@ -204,6 +225,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireValue();
             Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
             Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
@@ -266,7 +288,8 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Type);
-            Symbol = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
+            Type.RequireType();
+            Symbol = Type.Symbol as TypeSymbol;
             Datatype = Compilation.Get(NativeType.UInt32);
             return null;
         }
@@ -276,7 +299,8 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Type);
-            Symbol = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
+            Type.RequireType();
+            Symbol = Type.Symbol as TypeSymbol;
             Datatype = Symbol as TypeSymbol;
             return null;
         }
@@ -287,7 +311,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Expr.Bind(b);
             Type.Bind(b);
-            Datatype = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
+            Type.RequireType();
+            Datatype = Type.Symbol as TypeSymbol;
             Symbol = Binder.Conversion(Expr, Datatype, allowExplicit: true);
             if (!(Symbol as ConversionSymbol).Exists)
                 ThrowError(ErrorCode.NoConversion, Expr.Datatype, Type.Symbol);
@@ -305,7 +330,19 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             b.Bind(ref Type);
-            Symbol = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
+            Expr.RequireValue();
+            Type.RequireType();
+            Symbol = Type.Symbol as TypeSymbol;
+            if (Expr.Datatype.IsValueType)
+            {
+                if (Binder.TypesMatch(Expr.Datatype, Type.Symbol as TypeSymbol))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                else if (Binder.TypesMatch(Type.Symbol as TypeSymbol, Compilation.Get(WellKnownTypes.System_ValueType)))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                else if (Binder.TypesMatch(Type.Symbol as TypeSymbol, Compilation.Get(NativeType.Object)))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                return LiteralExpr.Bound(Constant.Create(false));
+            }
             Datatype = Compilation.Get(NativeType.Boolean);
             return null;
         }
@@ -316,7 +353,9 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             b.Bind(ref Type);
-            Symbol = Type.Symbol as TypeSymbol ?? ThrowError(ErrorCode.NotAType, Type.Symbol);
+            Expr.RequireValue();
+            Type.RequireType();
+            Symbol = Type.Symbol as TypeSymbol;
             Datatype = Type.Symbol as TypeSymbol;
             return null;
         }

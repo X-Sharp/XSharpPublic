@@ -11,7 +11,7 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        static bool TypesMatch(TypeSymbol t1, TypeSymbol t2)
+        internal static bool TypesMatch(TypeSymbol t1, TypeSymbol t2)
         {
             return t1 == t2;
         }

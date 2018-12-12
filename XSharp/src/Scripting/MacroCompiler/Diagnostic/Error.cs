@@ -38,6 +38,7 @@ namespace XSharp.MacroCompiler
         LiteralIntegerOverflow = 219,
         LiteralFloatOverflow = 220,
         NotAType = 221,
+        NotAnExpression = 222,
     }
 
     internal class ErrorString
@@ -73,6 +74,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.LiteralIntegerOverflow, "Integer overflow at literal constant" },
             { ErrorCode.LiteralFloatOverflow, "Floating=point overflow at literal constant" },
             { ErrorCode.NotAType, "{0} is not a type" },
+            { ErrorCode.NotAnExpression, "{0} is not a valid expression term" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

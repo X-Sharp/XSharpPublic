@@ -981,7 +981,7 @@ namespace XSharp.MacroCompiler
             Oper _parse_is_as(Parser p, out Node n)
             {
                 p.Consume();
-                n = p.ParseQualifiedName();
+                n = p.ParseType();
                 return this;
             }
             Oper _parse_postfix_dot(Parser p, out Node n)

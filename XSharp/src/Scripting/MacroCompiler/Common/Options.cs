@@ -29,6 +29,6 @@ namespace XSharp.MacroCompiler
 
         public bool ArrayZero = false;
 
-        public VariableResolution UndeclaredVariableResolution = VariableResolution.TreatAsField;
+        public VariableResolution UndeclaredVariableResolution = VariableResolution.TreatAsFieldOrMemvar;
     }
 }

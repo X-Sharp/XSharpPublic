@@ -236,16 +236,15 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             if (preserve)
-            {
-                ilg.Emit(OpCodes.Sizeof, (Symbol as TypedSymbol).Type.Type);
-            }
+                ilg.Emit(OpCodes.Sizeof, (Symbol as TypeSymbol).Type);
         }
     }
     internal partial class DefaultExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            EmitDefault(ilg, (TypeSymbol)Symbol);
+            if (preserve)
+                EmitDefault(ilg, (TypeSymbol)Symbol);
         }
     }
     internal partial class TypeCast : Expr

@@ -255,7 +255,7 @@ FUNCTION IsAlpha(pszSource AS PSZ) AS LOGIC
 /// <param name="pszSource">The string to examine.</param>
 /// <returns>TRUE if the first character is alphanumeric.</returns>
 FUNCTION IsAlphaNum(pszSource AS PSZ) AS LOGIC
-	RETURN XSharp.VO.Functions.IsAlNum(pszSource)
+	RETURN XSharp.RT.Functions.IsAlNum(pszSource)
 
 /// <summary>Determine if the leftmost character in a PSZ is a binary digit  (0 or 1)).</summary>
 /// <param name="pszSource">The string to examine.</param>

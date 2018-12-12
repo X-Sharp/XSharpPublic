@@ -31,7 +31,7 @@ FUNCTION ErrorBlock() AS USUAL STRICT
 
 
 
-/// <inheritdoc cref="M:XSharp.VO.Functions.ErrorBlock" />
+/// <inheritdoc cref="M:XSharp.RT.Functions.ErrorBlock" />
 /// <param name="cobError"></param>
 /// <summary>Return and optionally change the code block that is executed when a runtime error occurs.</summary>
 FUNCTION ErrorBlock(cobError AS CODEBLOCK) AS USUAL

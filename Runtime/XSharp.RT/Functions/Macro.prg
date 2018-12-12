@@ -15,7 +15,7 @@ USING System.IO
 /// <param name="cExpression">The string containing the expression to evaluate.</param>
 /// <returns>The value of the expression.</returns>
 /// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
-/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String)" />
+/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
 FUNCTION Evaluate(cExpression AS STRING) AS USUAL
 	RETURN Evaluate(cExpression, TRUE)
 	
@@ -26,7 +26,7 @@ FUNCTION Evaluate(cExpression AS STRING) AS USUAL
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
 /// <returns>The value of the expression.</returns>
 /// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
-/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String,System.Boolean)" />
+/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._CODEBLOCK 
 	LOCAL uRes   AS USUAL
@@ -48,8 +48,8 @@ FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
 /// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
 /// <seealso cref="T:XSharp._CodeBlock" />
-/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String,System.Boolean)" />
-/// <seealso cref="M:XSharp.VO.Functions.MExec(XSharp.CodeBlock)" />
+/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
+/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.CodeBlock)" />
 FUNCTION MCompile(cMacro AS STRING) AS XSharp._CODEBLOCK
 	RETURN MCompile(cMacro, TRUE)
 	
@@ -62,8 +62,8 @@ FUNCTION MCompile(cMacro AS STRING) AS XSharp._CODEBLOCK
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
 /// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
 /// <seealso cref="T:XSharp._CodeBlock" />
-/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String)" />
-/// <seealso cref="M:XSharp.VO.Functions.MExec(XSharp.CodeBlock)" />
+/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
+/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.CodeBlock)" />
 FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._CodeBlock
 	
 	VAR oMC := XSharp.RuntimeState.MacroCompiler
@@ -89,8 +89,8 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 	/// <returns>The result of evalating the macro compiled expression.</returns>
 	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net. Therefore the parameter of MExec is a Codeblock</note>
 	/// <seealso cref="T:XSharp._CodeBlock" />
-	/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String)" />
-	/// <seealso cref="M:XSharp.VO.Functions.MCompile(System.String,System.Boolean)" />
+	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
+	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION MExec(cb AS CODEBLOCK) AS USUAL
 	IF cb:PCount() == -1
 		RETURN cb:EvalBlock()

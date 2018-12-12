@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -37,7 +37,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 		formatStrings:Add(nKey, cFormat)
 		RETURN cFormat
 
-	PRIVATE CONST NOCHAR := '\0' AS Char
+	PRIVATE CONST NOCHAR := c'\0' AS Char
 	STATIC METHOD NextChar(c AS STRING, nIndex REF INT) AS Char
 		LOCAL cChar AS Char
 		LOCAL lStart := nIndex == -1 AS LOGIC
@@ -47,11 +47,11 @@ INTERNAL STATIC CLASS ConversionHelpers
 				RETURN NOCHAR
 			END IF
 			cChar := c[nIndex]
-			IF cChar == 'E'
+			IF cChar == c'E'
 				RETURN NOCHAR
 			END IF
-			IF cChar >= '0' .and. cChar <= '9'
-				IF cChar == '0' .and. lStart
+			IF cChar >= c'0' .and. cChar <= c'9'
+				IF cChar == c'0' .and. lStart
 					nIndex ++
 					LOOP
 				END IF

@@ -122,9 +122,15 @@
     <Compile Include="Functions\Registry.prg" />
     <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="Types\NamedArg.prg" />
+    <Compile Include="Types\OleAutoObject.prg" />
+    <Compile Include="Types\OleAutoObjectFromFile.prg" />
+    <Compile Include="Types\OleDateTime.prg" />
+    <Compile Include="Types\VObject.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Functions\" />
+    <Folder Include="Types" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

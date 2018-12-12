@@ -230,5 +230,11 @@
     <Prefer32Bit>False</Prefer32Bit>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebuggerCommand>$(TargetPath)</DebuggerCommand>
+    <DebuggerCommandArguments />
+    <DebuggerWorkingDirectory />
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <EmitDebugInformation>true</EmitDebugInformation>
   </PropertyGroup>
 </Project>

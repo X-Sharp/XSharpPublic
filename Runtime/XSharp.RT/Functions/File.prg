@@ -17,7 +17,7 @@ FUNCTION FRead(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
 	Marshal.Copy(bData, 0, pData, (INT) dwResult)
 	RETURN dwResult
 
-/// <inheritdoc cref="M:XSharp.VO.Functions.FRead(System.IntPtr,System.IntPtr,System.UInt32)" />
+/// <inheritdoc cref="M:XSharp.RT.Functions.FRead(System.IntPtr,System.IntPtr,System.UInt32)" />
 FUNCTION FRead3(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
 	RETURN Fread(pFile, pData, dwCount)
 
@@ -25,7 +25,7 @@ FUNCTION FRead3(pFile AS IntPtr,pData AS IntPtr,dwCount AS DWORD) AS DWORD
 /// <summary>
 /// Read characters from a file into an allocated buffer with optional OEM to Ansi conversion.
 /// </summary>
-/// <inheritdoc cref="M:XSharp.VO.Functions.FRead(System.IntPtr,System.IntPtr,System.UInt32)" />
+/// <inheritdoc cref="M:XSharp.RT.Functions.FRead(System.IntPtr,System.IntPtr,System.UInt32)" />
 /// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
 FUNCTION FRead4(pFile AS IntPtr, pData AS IntPtr,dwCount AS DWORD, lAnsi AS LOGIC) AS DWORD
 	// use Buffer associated with file handle

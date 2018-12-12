@@ -157,15 +157,10 @@
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
-    <Compile Include="Types\NamedArg.prg" />
-    <Compile Include="Types\OleAutoObject.prg" />
-    <Compile Include="Types\OleAutoObjectFromFile.prg" />
-    <Compile Include="Types\OleDateTime.prg" />
     <Compile Include="Types\PSZ.prg" />
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />
     <Compile Include="Types\Usual.prg" />
-    <Compile Include="Types\VObject.prg" />
     <Compile Include="Types\WinBool.prg" />
   </ItemGroup>
   <ItemGroup>

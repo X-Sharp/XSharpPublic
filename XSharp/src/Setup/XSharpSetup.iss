@@ -8,19 +8,21 @@
 
 #ifndef Compression
 #define Compression     "lzma/ultra64"
-;#define Compression     "lzma/ultra"
+; "lzma/ultra"
+;#define Compression     "none" 
 #endif
 #define FOX
 ;#undef FOX
-
+; define the next line to prevent cab building and have a fast test
+;#define FAST
 
 ; version info and similar stuff.
   
-#define Version             "2.0.0.7"
-#define FileNameVersion     "2Beta7"
-#define VIVersion           "2.0.0.7"
-#define TouchDate           "2018-11-11"
-#define TouchTime           "02:00:07"
+#define Version             "2.0.0.8"
+#define FileNameVersion     "2Beta8"
+#define VIVersion           "2.0.0.8"
+#define TouchDate           "2018-12-12"
+#define TouchTime           "02:00:08"
 
 #define DevFolder           "C:\Xsharp\Dev\XSharp"
 #define DevPublicFolder     "C:\Xsharp\DevPublic"
@@ -34,13 +36,23 @@
 #define ObjFolder           DevPublicFolder +"\Binaries\Obj\"
 #define DebuggerObjFolder   ObjFolder + "Release\XSharpDebugger\"
 #define ProjectObjFolder    ObjFolder + "Release\XSharpProject\"
-#define BinDFolder          DevFolder + "\Binaries\Debug_AnyCPU\"
+#define BinDFolder          DevFolder + "\Binaries\Debug\net46\"
+#define BinRFolder          DevFolder + "\Binaries\Release\net46\"
+#define BinDllDFolder       DevFolder + "\Binaries\Debug\Dlls\"
+#define BinDllRFolder       DevFolder + "\Binaries\Release\Dlls\"
+#define BinCoreDFolder      DevFolder + "\Binaries\Release\netcoreapp2.0\"
+#define BinCoreRFolder      DevFolder + "\Binaries\Release\netcoreapp2.0\"
+
 #ifdef FOX
 #define Suffix              "Fox"
-#define BinFolder           DevFolder + "\Binaries\Release_AnyCPU\"
+#define BinFolder           BinRFolder
+#define BinDllFolder        BinDllRFolder
+#define BinCoreFolder       BinCoreRFolder
 #else   
 #define Suffix              "Public"
-#define BinFolder           DevFolder + "\Binaries\Debug_AnyCPU\"
+#define BinFolder           BinDFolder
+#define BinDllFolder        BinDllDFolder
+#define BinCoreFolder       BinCoreDFolder
 #endif
 
 #define SetupExeName        "XSharpSetup"+FileNameVersion+Suffix
@@ -80,15 +92,16 @@
 #define StdFlags            "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall          "gacinstall uninsnosharedfileprompt uninsrestartdelete"
 #define GACShared           "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
-#define ImmutableVersion    "System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-#define MetadataVersion     "System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-#define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
+#define ImmutableVersion    "System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+#define MetadataVersion     "System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+;#define ValueTupleVersion   "System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
 #define XSharpVersion       ", Version="+Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" 
 
 
 ;
 ; preprocess the help cab files
 ;
+#ifndef FAST
 #expr Exec( SetupFolder+'\makecabs.cmd')
 #expr Exec( 'taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe"')
 
@@ -96,6 +109,7 @@
 ; The updatevsix.exe is created from updatevsix.prg in this folder
 #expr Exec(SetupFolder+'\updatevsix.exe', '"' + VIVersion + '" "' + DebuggerObjFolder + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
 #expr Exec(SetupFolder+'\updatevsix.exe', '"' + VIVersion + '" "' + ProjectObjFolder  + 'extension.vsixmanifest"' ,SetupFolder,1,sw_ShowNormal)
+#endif
 
 ; Registry name for prgx extension
 #define XSScript            "XSharpScript"
@@ -190,8 +204,8 @@ Name: "main\ngen";        Description: "Optimize performance by generating nativ
 Name: "main\gac";         Description: "Register runtime DLLs in the GAC (recommended !)";   Types: full custom;         Flags: disablenouninstallwarning; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: Vs2015IsInstalled; 
 Name: "vs2015\help";      Description: "Install VS 2015 documentation";                     Types: full custom;         Flags: disablenouninstallwarning;  Check: HelpViewer22Found; 
-Name: "vs2017";           Description: "Visual Studio 2017 Integration";                    Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
-Name: "vs2017\help";      Description: "Install VS 2017 documentation";                     Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+Name: "vs2017";           Description: "Visual Studio 2017 & 2019 Integration";             Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
+Name: "vs2017\help";      Description: "Install VS 2017 & 2019 documentation";              Types: full custom;         Flags: disablenouninstallwarning;  Check: vs2017IsInstalled; 
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";        Types: full custom;         Flags: disablenouninstallwarning;
 
 
@@ -213,7 +227,7 @@ Name: "{app}\Debug";
 Name: "{app}\Help";
 Name: "{app}\Images";
 Name: "{app}\Include";
-Name: "{app}\Portable";
+Name: "{app}\NetCore20";
 Name: "{app}\ProjectSystem";                                
 Name: "{app}\Redist"
 Name: "{app}\Snippets"
@@ -223,9 +237,10 @@ Name: "{app}\Xide";
 Components: vs2015; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";                              
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";   
 Components: vs2017; Name: "{code:GetVs2017IdeDir|1}\Extensions\XSharp";    Check: HasVs2017('1');
-Components: vs2017; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";    Check: HasVs2017('1');
-Components: vs2017; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";    Check: HasVs2017('1');
+Components: vs2017; Name: "{code:GetVs2017IdeDir|2}\Extensions\XSharp";    Check: HasVs2017('2');
+Components: vs2017; Name: "{code:GetVs2017IdeDir|3}\Extensions\XSharp";    Check: HasVs2017('3');
 Components: vs2017; Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My Code Snippets";   
+
 ; user template folders
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Templates\ProjectTemplates\XSharp";   
 Components: vs2015; Name: "{userdocs}\Visual Studio 2015\Templates\ItemTemplates\XSharp";   
@@ -239,53 +254,40 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 ; Main program
 ; Text files, independent of Debug/Release and independent of Fox
-Source: "{#BinFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags};   
-Source: "{#BinFolder}xsi.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}xsi.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinFolder}xs?.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags};   
+Source: "{#BinFolder}xs*.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
 
-
-Source: "{#BinFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinFolder}xs?.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 Source: "{#BinFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; BeforeInstall: TaskKill('xscompiler.exe');
-Source: "{#BinFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}xsi.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinFolder}xsi.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}XSharp.Scripting.dll";               DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinFolder}XSharp.Scripting.pdb";               DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinFolder}xs*.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinFolder}System.*.dll";                       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinFolder}Microsoft.*.dll";                       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinDllFolder}XSharp.*.dll";                    DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
 
-Source: "{#BinFolder}Portable\XSharp.CodeAnalysis.dll";   DestDir: "{app}\Portable"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinFolder}Portable\XSharp.CodeAnalysis.pdb";   DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
-Source: "{#BinFolder}Portable\XSharp.Scripting.dll";      DestDir: "{app}\Portable"; Flags: {#StdFlags} signonce ; 
-Source: "{#BinFolder}Portable\XSharp.Scripting.pdb";      DestDir: "{app}\Portable"; Flags: {#StdFlags}; 
+Source: "{#BinFolder}xs?.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; BeforeInstall: TaskKill('xscompiler.exe');
+Source: "{#BinFolder}XSharp.*.dll";                       DestDir: "{app}\bin"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinFolder}xs*.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; 
+Source: "{#BinFolder}System.*.dll";                       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+Source: "{#BinFolder}Microsoft.*.dll";                    DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
 
 
-; GAC files in Bin folder, must be found by intellisense or Macro compiler as well
-Source: "{#BinFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}";  Flags: {#StdFlags} {#GACShared};
-Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";   Flags: {#StdFlags} {#GACShared};
-Source: "{#BinFolder}System.Valuetuple.dll";              DestDir: "{app}\bin"; StrongAssemblyName: "{#ValueTupleVersion}"; Flags: {#StdFlags} {#GACShared};
+; NetCore 2.0 files
+Source: "{#BinCoreFolder}xs?.rsp";                            DestDir: "{app}\NetCore20"; Flags: {#StdFlags};   
+Source: "{#BinCoreFolder}xs?.dll.config";                     DestDir: "{app}\NetCore20"; Flags: {#StdFlags}; 
+Source: "{#BinCoreFolder}xs?.dll";                            DestDir: "{app}\NetCore20"; Flags: {#StdFlags} signonce ; 
+Source: "{#BinCoreFolder}xs?.pdb";                            DestDir: "{app}\NetCore20"; Flags: {#StdFlags}; 
+Source: "{#BinCoreFolder}XSCompiler.dll";                      DestDir: "{app}\NetCore20"; Flags: {#StdFlags} signonce ; BeforeInstall: TaskKill('xscompiler.exe');
+;Source: "{#BinCoreFolder}System.*.dll";                       DestDir: "{app}\NetCore20"; Flags: {#StdFlags} ; 
+Source: "{#BinCoreFolder}Microsoft.*.dll";                    DestDir: "{app}\NetCore20"; Flags: {#StdFlags} ; 
+Source: "{#BinDllFolder}XSharp.*.dll";                        DestDir: "{app}\NetCore20"; Flags: {#StdFlags} signonce ; 
+
+
 
 ; 'Normal' Ms Runtime DLLs needed by 4.6 version
-Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Security.Crypt*.Alg*.dll";    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Text.Encoding.*.dll";         DestDir: "{app}\bin"; Flags: {#StdFlags} ;
-
-; 'Normal' Ms Runtime DLLs needed by Portable Version
-Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\portable"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.AppContext.dll";              DestDir: "{app}\portable"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Composition.*.dll";           DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Console.dll";                 DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Diagnostics.*.dll";           DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.IO.*.dll";                    DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Security.*.dll";              DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Text.*.dll";                  DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Threading.*.dll";             DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Valuetuple.dll";              DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}System.Xml.*.dll";                   DestDir: "{app}\portable"; Flags: {#StdFlags} ;
-
+;Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";       DestDir: "{app}\bin"; Flags: {#StdFlags} ; 
+;Source: "{#BinFolder}System.Security.Crypt*.Alg*.dll";    DestDir: "{app}\bin"; Flags: {#StdFlags} ;
+;Source: "{#BinFolder}System.Text.Encoding.*.dll";         DestDir: "{app}\bin"; Flags: {#StdFlags} ;
 
 ; native resource compiler
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; 
@@ -333,7 +335,7 @@ Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{app}\MsBuil
 Source: "{#BinPFolder}XSharp.Build.pdb";                  DestDir: "{app}\MsBuild";        Flags: {#StdFlags}; 
 
 ;Documentation
-Source: "{#DocFolder}XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
+  Source: "{#DocFolder}XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.msha";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; 
 Source: "{#DocFolder}XSharp.cab";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; 
@@ -349,118 +351,75 @@ Components: Xide; Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide"; 
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Core{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Rdd{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.VO{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.RT.dll";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.RT{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}XSharp.XPP.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.XPP{#XSharpVersion}" 
 Components: main\gac;  Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.CodeAnalysis{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinDllFolder}XSharp.MacroCompiler.Fast.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.MacroCompiler.Fast{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinDllFolder}XSharp.Scripting.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "XSharp.Scripting{#XSharpVersion}" 
 
-Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOWin32APILibrary.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOGUIClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSQLClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOReportClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOConsoleClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOInternetClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOInternetClasses.dll{#XSharpVersion}" 
-Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.pdb";                DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.pdb";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.pdb";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.pdb";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: main\gac;  Source: "{#BinRtFolder}VOInternetClasses.pdb";                DestDir: "{app}\Redist"; Flags: {#StdFlags} 
+Components: main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOWin32APILibrary.dll{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSystemClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VORDDClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOSQLClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOGUIClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOReportClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.dll";               DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOConsoleClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOInternetClasses.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce {#GACInstall};  StrongAssemblyName: "VOInternetClasses{#XSharpVersion}" 
+Components: main\gac;  Source: "{#BinRtFolder}VOWin32*.pdb";                       DestDir: "{app}\Redist"; Flags: {#StdFlags} 
+Components: main\gac;  Source: "{#BinRtFolder}VO*Classes.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} 
 
 
 ; Runtime
-Components: not main\gac; Source: "{#BinRtFolder}XSharp.Core.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
-Components: not main\gac; Source: "{#BinRtFolder}XSharp.Rdd.dll";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
-Components: not main\gac; Source: "{#BinRtFolder}XSharp.VO.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
-Components: not main\gac; Source: "{#BinFolder}XSharp.MacroCompiler.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
-Components: not main\gac; Source: "{#BinFolder}XSharp.CodeAnalysis.dll";           DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
-Components: not main\gac; Source: "{#BinFolder}XSharp.Scripting.dll";              DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinRtFolder}XSharp.????.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinRtFolder}XSharp.???.dll";                  DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinRtFolder}XSharp.??.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
+Components: not main\gac; Source: "{#BinDllFolder}XSharp.*.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;  
 ; VO SDK libraries
-Components: not main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
+Components: not main\gac;  Source: "{#BinRtFolder}VOWin32*.dll";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
 Components: not main\gac;  Source: "{#BinRtFolder}VOSystemClasses.dll";            DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VOGUIClasses.dll";               DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VORDDClasses.dll";               DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VOSQLClasses.dll";               DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VOReportClasses.dll";            DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.dll";           DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VOInternetClasses.dll";          DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
-Components: not main\gac;  Source: "{#BinRtFolder}VOWin32APILibrary.pdb";          DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VOSystemClasses.pdb";            DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VOGUIClasses.pdb";               DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VORDDClasses.pdb";               DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VOSQLClasses.pdb";               DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VOReportClasses.pdb";            DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VOConsoleClasses.pdb";           DestDir: "{app}\Redist"; Flags: {#StdFlags} 
-Components: not main\gac;  Source: "{#BinRtFolder}VOInternetClasses.pdb";          DestDir: "{app}\Redist"; Flags: {#StdFlags} 
+Components: not main\gac;  Source: "{#BinRtFolder}VO*Classes.dll";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} signonce ;
+Components: not main\gac;  Source: "{#BinRtFolder}VOWin32*.pdb";                   DestDir: "{app}\Redist"; Flags: {#StdFlags} 
+Components: not main\gac;  Source: "{#BinRtFolder}VO*Classes.pdb";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} 
 
-Source: "{#BinRtFolder}XSharp.Core.pdb";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-Source: "{#BinRtFolder}XSharp.Rdd.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-Source: "{#BinRtFolder}XSharp.VO.pdb";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.????.pdb";                    DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.???.pdb";                     DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
+Source: "{#BinRtFolder}XSharp.??.pdb";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
 ; Macro compiler
-Source: "{#BinFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
-Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Collections.Immutable.dll";     DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Reflection.Metadata.dll";       DestDir: "{app}\Redist"; Flags: {#StdFlags} ; 
-Source: "{#BinFolder}System.Valuetuple.dll";                DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
+Source: "{#BinDllFolder}XSharp.*.pdb";                      DestDir: "{app}\Redist"; Flags: {#StdFlags} ;
+
 ;Debug versions
 #ifdef FOX
-Source: "{#BinRtDFolder}XSharp.Core.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
-Source: "{#BinRtDFolder}XSharp.Core.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinRtDFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
-Source: "{#BinRtDFolder}XSharp.Rdd.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinRtDFolder}XSharp.VO.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
-Source: "{#BinRtDFolder}XSharp.VO.pdb";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinDFolder}XSharp.MacroCompiler.dll";             DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinDFolder}XSharp.MacroCompiler.pdb";             DestDir: "{app}\Debug"; Flags: {#StdFlags} ;
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";              DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
-Source: "{#BinDFolder}XSharp.Scripting.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinDFolder}XSharp.Scripting.pdb";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} ; 
+Source: "{#BinRtDFolder}XSharp.??.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtDFolder}XSharp.???.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
+Source: "{#BinRtDFolder}XSharp.????.dll";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce;
+Source: "{#BinDllDFolder}XSharp.*.dll";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
 
-Source: "{#BinRtDFolder}VOWin32APILibrary.dll";                DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOWin32APILibrary.pdb";                DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VOSystemClasses.dll";                  DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOSystemClasses.pdb";                  DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VOGUIClasses.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOGUIClasses.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VORDDClasses.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VORDDClasses.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VOSQLClasses.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOSQLClasses.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VOReportClasses.dll";                  DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOReportClasses.pdb";                  DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VOConsoleClasses.dll";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOConsoleClasses.pdb";                 DestDir: "{app}\Debug"; Flags: {#StdFlags} 
-Source: "{#BinRtDFolder}VOInternetClasses.dll";               DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
-Source: "{#BinRtDFolder}VOInternetClasses.pdb";               DestDir: "{app}\Debug"; Flags: {#StdFlags} 
+Source: "{#BinRtDFolder}XSharp.??.pdb";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} 
+Source: "{#BinRtDFolder}XSharp.???.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} 
+Source: "{#BinRtDFolder}XSharp.????.pdb";                    DestDir: "{app}\Debug"; Flags: {#StdFlags} 
+Source: "{#BinDllDFolder}XSharp.*.pdb";                      DestDir: "{app}\Debug"; Flags: {#StdFlags} 
 
+Source: "{#BinRtDFolder}VOWin32*.dll";                       DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
+Source: "{#BinRtDFolder}VO*Classes.dll";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} signonce 
+Source: "{#BinRtDFolder}VOWin32*.pdb";                       DestDir: "{app}\Debug"; Flags: {#StdFlags} 
+Source: "{#BinRtDFolder}VO*Classes.pdb";                     DestDir: "{app}\Debug"; Flags: {#StdFlags} 
 #endif
 
 
 Source: "{#BinRtHelpFolder}XSharp*.xml";                     DestDir: "{app}\Redist"; Flags: {#StdFlags}
 
 ; Assemblies for Add References Dialog
-Source: "{#BinRtFolder}XSharp.Core.dll";                    DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
-Source: "{#BinRtFolder}XSharp.VO.dll";                      DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
-; Is the RDD dll needed for Add reference ? Maybe for the Ax functions from Advantage.
-Source: "{#BinRtFolder}XSharp.Rdd.dll";                     DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
+Source: "{#BinRtFolder}XSharp.????.dll";                    DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
+Source: "{#BinRtFolder}XSharp.???.dll";                     DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
+Source: "{#BinRtFolder}XSharp.??.dll";                      DestDir: "{app}\Assemblies"; Flags: signonce {#StdFlags} 
 ; VO SDK 
 
-Source: "{#BinRtFolder}VOWin32APILibrary.dll";              DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VOSystemClasses.dll";                DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VOGUIClasses.dll";                   DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VORDDClasses.dll";                   DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VOSQLClasses.dll";                   DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VOReportClasses.dll";                DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VOConsoleClasses.dll";               DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
-Source: "{#BinRtFolder}VOInternetClasses.dll";              DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
+Source: "{#BinRtFolder}VOWin32*.dll";                       DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
+Source: "{#BinRtFolder}VO*Classes.dll";                     DestDir: "{app}\Assemblies"; Flags: {#StdFlags} signonce ;
 Source: "{#BinRtHelpFolder}XSharp*.xml";                    DestDir: "{app}\Assemblies"; Flags: {#StdFlags}
 
-Source: "{#BinPFolder}SetupCheck2017.exe";          DestDir: "{tmp}";      Flags: signonce {#StdFlags};
+Source: "{#BinPFolder}SetupCheck2017.exe";                  DestDir: "{tmp}";      Flags: signonce {#StdFlags};
 
 
 Components: vs2015; Source: "{#BinPFolder}XSharpProject.vsix";        DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}
@@ -474,8 +433,8 @@ Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               D
 Components: vs2017;  Source: "{#BinPFolder}XSharpVSIXLogo.png ";               DestDir: "{code:GetVs2017IdeDir|3}\Extensions\XSharp\Project"; Flags: {#StdFlags}; Check: HasVs2017('3'); BeforeInstall: DeleteOldFiles(20173);
 
 
-Components: vs2015 or vs2017; Source: "{#BinFolder}XSharp.CodeAnalysis.dll";           DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinDllFolder}XSharp.VSParser.dll";       DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinDllFolder}XSharp.VSParser.pdb";       DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
 ; Codedom provider must go to the gac because of WPF
 ; always install this, also on a build server
@@ -484,14 +443,12 @@ Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{app}\Extens
 Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
 
 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpModel.dll";                   DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpModel.pdb";                   DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
-Components: vs2015 or vs2017; Source: "{#BinFolder}Microsoft.DiaSymReader.*.Dll";      DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} ; 
-Components: vs2015 or vs2017; Source: "{#BinFolder}System.Security.Cryp*Alg*.dll";     DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} ;
-Components: vs2015 or vs2017; Source: "{#BinFolder}System.Text.Encoding.*.dll";        DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} ;
-Components: vs2015 or vs2017; Source: "{#BinFolder}System.Valuetuple.dll";             DestDir: "{app}\Extension\Project"; Flags: {#StdFlags} ;
+Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.dll";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpColorizer.pdb";              DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpModel.dll";                  DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharpModel.pdb";                  DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
+Components: vs2015 or vs2017; Source: "{#BinPFolder}System.Collections.Immutable.dll"; DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#ImmutableVersion}";  Flags: {#StdFlags} {#GACShared};
+Components: vs2015 or vs2017; Source: "{#BinPFolder}System.Reflection.Metadata.dll";   DestDir: "{app}\Extension\Project"; StrongAssemblyName: "{#MetadataVersion}";   Flags: {#StdFlags} {#GACShared};
 
 ; VOEditors
 Components: vs2015 or vs2017; Source: "{#BinPFolder}XSharp.CodeGenerator.dll";          DestDir: "{app}\Extension\Project"; Flags: {#StdFlags}; 
@@ -762,7 +719,7 @@ Type: filesandordirs; Name: "{app}\Extension"                     ;
 Type: filesandordirs; Name: "{app}\Help"                          ; 
 Type: filesandordirs; Name: "{app}\Images"                        ; 
 Type: dirifempty;     Name: "{app}\Include"; 
-Type: filesandordirs; Name: "{app}\Portable"                      ; 
+Type: filesandordirs; Name: "{app}\NetCore20"                      ; 
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; 
 Type: filesandordirs; Name: "{app}\Redist"                        ; 
 Type: filesandordirs; Name: "{app}\Tools"                         ; 
@@ -996,9 +953,9 @@ begin
       begin
         if LoadStringsFromFile(ExpandConstant('{tmp}\vs2017.txt'), FileContents) then
         begin
-            Log('========================================');
-            Log('Installed versions of Visual Studio 2017');
-            Log('========================================');
+            Log('===============================================');
+            Log('Installed versions of Visual Studio 2017 & 2019');
+            Log('===============================================');
             for i:= 0 to GetArrayLength(FileContents)-1 do
             begin
                line := Trim( FileContents[i]);
@@ -1208,6 +1165,7 @@ begin
   '3' : result := Length(vs2017path3) > 0 ;
   end;
 end ;
+
 
 
 /////////////////////////////////////////////////////////////////////
@@ -1536,4 +1494,5 @@ end;
 
 
 #expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")
+
 

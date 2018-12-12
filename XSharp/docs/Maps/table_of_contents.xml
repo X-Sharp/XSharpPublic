@@ -124,6 +124,9 @@
       <topicref type="topic" id="428724207686309" build="ALL" modified="2017-05-17T10:00:44.864Z" icon="0" href="Who-is-the-X-team">
         <caption translate="true">Who is who in the X# team</caption>
       </topicref>
+      <topicref type="topic" id="434463351461062" build="ALL" modified="2018-12-12T11:34:07.977Z" icon="0" href="Using-the-new-macro-compiler">
+        <caption translate="true">Using the new macro compiler</caption>
+      </topicref>
     </topicref>
     <topicref type="topic" id="428984094992566" build="ALL" modified="2017-06-12T12:42:21.816Z" icon="0" href="MigratingappsfromVOtoX">
       <caption translate="true">Migrating apps from VO to X#</caption>

@@ -32,6 +32,7 @@
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">This build includes a new (experimental) fast macro compiler. <link displaytype="text" defaultstyle="true" type="topiclink" href="Using-the-new-macro-compiler">See this topic on how to use this macro compiler</link></li>
       <li styleclass="List">We moved most of the generic XBase code to XSharp.RT.DLL. XSharp.VO.DLL now only has VO specific code. We have also added XSharp.XPP.DLL for XPP</li>
       <li styleclass="List">Fix Ansi2OEM problem with FRead3(), FWrite3() and FReadStr</li>
       <li styleclass="List">Added &#160;missing functions EnableLBOptimizations() and property Array:Count</li>

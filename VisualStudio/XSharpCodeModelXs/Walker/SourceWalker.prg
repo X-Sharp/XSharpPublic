@@ -42,14 +42,15 @@ BEGIN NAMESPACE XSharpModel
 
 		CONSTRUCTOR(file AS XFile)
 			SUPER()
-			LOCAL sourcePath AS STRING
-			SELF:_gate := OBJECT{}
-			SELF:_file := file
-			SELF:_prjNode := SELF:_file?:Project?:ProjectNode
-			SELF:StartPosition := 0
-			//
-			sourcePath := SELF:_file:SourcePath
-
+            if (file != null)
+			    LOCAL sourcePath AS STRING
+			    SELF:_gate := OBJECT{}
+			    SELF:_file := file
+			    SELF:_prjNode := SELF:_file?:Project?:ProjectNode
+			    SELF:StartPosition := 0
+			    //
+			    sourcePath := SELF:_file:SourcePath
+            endif
 
 
 		METHOD BuildModel(oInfo AS ParseResult) AS VOID

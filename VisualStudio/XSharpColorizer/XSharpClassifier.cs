@@ -85,10 +85,10 @@ namespace XSharpColorizer
             if (buffer.Properties.ContainsProperty(typeof(XFile)))
             {
                 file = buffer.GetFile();
-                if (file == null)
-                {
-                    return;
-                }
+            }
+            if (file == null)
+            {
+                return;
             }
             _file = file;
             // Initialize our background workers

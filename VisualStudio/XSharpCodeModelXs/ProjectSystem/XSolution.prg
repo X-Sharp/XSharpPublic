@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Concurrent
@@ -12,11 +12,14 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PRIVATE _orphanedFilesProject := null AS XProject
 		CONST PRIVATE OrphanedFiles := "(OrphanedFiles)" AS STRING
 		STATIC INITONLY PRIVATE xProjects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase} AS ConcurrentDictionary<STRING, XProject>
-		
+
 		PUBLIC STATIC OutputWindow AS IOutPutWindow
 		// Methods
-		STATIC CONSTRUCTOR 
+		STATIC CONSTRUCTOR
 			OutputWindow := ModelOutputWindow{}
+            var x := XSolution.OrphanedFilesProject
+            OutputWindow:DisplayOutPutMessage("XSolution Loaded")
+
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			OutputWindow:DisplayOutPutMessage(message)
@@ -34,14 +37,14 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD @@Add(project AS XProject) AS LOGIC
 			RETURN @@Add(project:Name, project)
-		
+
 		STATIC METHOD @@Add(projectName AS STRING, project AS XProject) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Add() "+projectName)
 			IF xProjects:ContainsKey(projectName)
 				RETURN false
 			ENDIF
 			RETURN xProjects:TryAdd(projectName, project)
-		
+
 		STATIC METHOD CloseAll() AS VOID
 			WriteOutputMessage("XModel.Solution.CloseAll()")
 			xProjects:Clear()
@@ -51,12 +54,12 @@ BEGIN NAMESPACE XSharpModel
 					SystemTypeController.LoadAssembly(info:FileName)
 				NEXT
 			ENDIF
-		
+
 		STATIC METHOD FileClose(fileName AS STRING) AS VOID
 			IF FindFile(fileName):Project == _orphanedFilesProject
 				_orphanedFilesProject:RemoveFile(fileName)
 			ENDIF
-		
+
 		STATIC METHOD FindFile(fileName AS STRING) AS XFile
 			FOREACH VAR project IN xProjects
 				VAR file := project:Value:FindFullPath(fileName)
@@ -65,7 +68,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN null
-		
+
 		STATIC METHOD FindFullPath(fullPath AS STRING) AS XFile
 			FOREACH VAR project IN xProjects
 				VAR file := project:Value:FindFullPath(fullPath)
@@ -74,7 +77,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN null
-		
+
 		STATIC METHOD FindProject(projectFile AS STRING) AS XProject
 			LOCAL project AS XProject
 			projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
@@ -83,7 +86,7 @@ BEGIN NAMESPACE XSharpModel
 				RETURN project
 			ENDIF
 			RETURN null
-		
+
 		STATIC METHOD @@Remove(projectName AS STRING) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
 			IF xProjects:ContainsKey(projectName)
@@ -94,20 +97,20 @@ BEGIN NAMESPACE XSharpModel
 				RETURN result
 			ENDIF
 			RETURN false
-		
+
 		STATIC METHOD @@Remove(project AS XProject) AS LOGIC
 			IF project != null
 				RETURN @@Remove(project:Name)
 			ENDIF
 			RETURN false
-		
+
 		STATIC METHOD WalkFile(fileName AS STRING) AS VOID
 			VAR file := FindFile(fileName)
 			IF file != null
 				ModelWalker.GetWalker():FileWalk(file)
 			ENDIF
-			RETURN 		
-		
+			RETURN
+
 		// Properties
 		STATIC PROPERTY OrphanedFilesProject AS XProject
 			GET
@@ -122,18 +125,18 @@ BEGIN NAMESPACE XSharpModel
 				RETURN _orphanedFilesProject
 			END GET
 		END PROPERTY
-		
-		
+
+
 	END CLASS
 
 	CLASS ModelOutputWindow IMPLEMENTS IOutputWindow
 		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
 			System.Diagnostics.Debug.WriteLine(message)
 			RETURN
-	END CLASS	
+	END CLASS
 
 	INTERFACE IOutputWindow
 		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
 	END INTERFACE
-END NAMESPACE 
+END NAMESPACE
 

@@ -230,10 +230,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\..\packages\System.Reflection.Metadata.1.5.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -504,6 +500,7 @@
       <DependentUpon>XStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Wix\XVsConstants.cs" />
+    <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />

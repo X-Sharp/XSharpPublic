@@ -90,6 +90,8 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Symbol.EmitGet(ilg);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
         internal override void EmitSet(ILGenerator ilg, bool preserve)
         {

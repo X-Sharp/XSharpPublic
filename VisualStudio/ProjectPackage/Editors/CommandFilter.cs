@@ -296,6 +296,8 @@ namespace XSharp.Project
         }
         private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
+            if (XSharpProjectPackage.Instance.DebuggerIsRunning)
+                return;
             XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber+1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
@@ -372,6 +374,8 @@ namespace XSharp.Project
         }
         private void formatCaseForWholeBuffer()
         {
+            if (XSharpProjectPackage.Instance.DebuggerIsRunning)
+                return;
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {

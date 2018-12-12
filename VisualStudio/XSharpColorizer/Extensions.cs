@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.Text;
@@ -111,10 +111,13 @@ namespace XSharpColorizer
                     path = doc.FilePath;
                 }
             }
-            // Find and attach the X# document when we have it, or a null to indicate that we have searched 
+            // Find and attach the X# document when we have it, or a null to indicate that we have searched
             // and not found it
             var file = XSolution.FindFile(path);
-            buffer.Properties.AddProperty(typeof(XFile), file);
+            if (file != null)
+            {
+                buffer.Properties.AddProperty(typeof(XFile), file);
+            }
             return file != null;
         }
     }

@@ -27,7 +27,6 @@
 /r:System.Linq.Expressions
 /r:System.Runtime.Numerics
 /r:System.Dynamic.Runtime
-/r:System.ValueTuple.dll
 /r:Microsoft.CSharp
 # imports
 /u:System

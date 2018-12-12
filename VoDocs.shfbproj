@@ -21,20 +21,19 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VORDDClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VOReportClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VOSQLClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
+<DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
+<DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
+<DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
+<DocumentationSource sourceFile="Docs\VORDDClasses_manual.xml" />
+<DocumentationSource sourceFile="Docs\VOReportClasses_manual.xml" />
+<DocumentationSource sourceFile="Docs\VOSQLClasses_manual.xml" />
+<DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" /></DocumentationSources>
     <HelpTitle>X# Visual Objects SDK Documentation</HelpTitle>
     <HelpFileVersion>2.0.0.6</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -43,7 +42,7 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>

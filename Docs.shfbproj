@@ -27,7 +27,9 @@
 <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
 <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
 <DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.XML" />
-<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.dll" /></DocumentationSources>
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.XPP\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.XML" />
+<DocumentationSource sourceFile="Binaries\Obj\Documentation\XSharp.RT\XSharp.RT.dll" /></DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
     <HelpFileVersion>2.0.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -57,10 +59,29 @@
     <Filter entryType="Method" fullName="XSharp.__ArrayBase`1.__GetElement" filterName="__GetElement" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__ArrayBase`1.__SetElement" filterName="__SetElement" isExposed="False" />
   </Filter>
+  <Filter entryType="Structure" fullName="XSharp.__Date" filterName="__Date" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.__Date.Add" filterName="Add" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Date.FromDateTime" filterName="FromDateTime" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Date.NullDate" filterName="NullDate" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Date.Subtract" filterName="Subtract" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Date.ToDateTime" filterName="ToDateTime" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.__Date._dtCalc" filterName="_dtCalc" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.__Date._NULL_DATE" filterName="_NULL_DATE" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.__Date.CLIPPER_MAX_DATE" filterName="CLIPPER_MAX_DATE" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.__Date.CLIPPER_MIN_DATE" filterName="CLIPPER_MIN_DATE" isExposed="False" />
+  </Filter>
+  <Filter entryType="Structure" fullName="XSharp.__Float" filterName="__Float" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.__Float.Add" filterName="Add" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Float.CastToInt" filterName="CastToInt" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Float.CastToInt64" filterName="CastToInt64" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Float.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Float.Subtract" filterName="Subtract" isExposed="False" />
+  </Filter>
   <Filter entryType="Structure" fullName="XSharp.__Psz" filterName="__Psz" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.__Psz.DebuggerString" filterName="DebuggerString" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Psz.Equals" filterName="Equals" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Psz.Free" filterName="Free" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Psz.ToString" filterName="ToString" isExposed="False" />
     <Filter entryType="Property" fullName="XSharp.__Psz._NULL_PSZ" filterName="_NULL_PSZ" isExposed="False" />
     <Filter entryType="Property" fullName="XSharp.__Psz.Address" filterName="Address" isExposed="False" />
     <Filter entryType="Property" fullName="XSharp.__Psz.IsEmpty" filterName="IsEmpty" isExposed="False" />
@@ -68,12 +89,39 @@
     <Filter entryType="Property" fullName="XSharp.__Psz.Item" filterName="Item" isExposed="False" />
     <Filter entryType="Property" fullName="XSharp.__Psz.Length" filterName="Length" isExposed="False" />
   </Filter>
+  <Filter entryType="Structure" fullName="XSharp.__Symbol" filterName="__Symbol" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.__Symbol.Clone" filterName="Clone" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Symbol.CompareTo" filterName="CompareTo" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Symbol.Equals" filterName="Equals" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Symbol.SysGetAtomName" filterName="SysGetAtomName" isExposed="False" />
+  </Filter>
   <Filter entryType="Structure" fullName="XSharp.__Usual" filterName="__Usual" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.__Usual.__InexactEquals" filterName="__InexactEquals" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.__Usual.__InexactNotEquals" filterName="__InexactNotEquals" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Usual.AsString" filterName="AsString" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Usual.Clone" filterName="Clone" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Usual.CompareTo" filterName="CompareTo" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Usual.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Usual.ToObject" filterName="ToObject" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__Usual.ToString" filterName="ToString" isExposed="False" />
+    <Filter entryType="Property" fullName="XSharp.__Usual.Value" filterName="Value" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.__Usual._NIL" filterName="_NIL" isExposed="False" />
   </Filter>
   <Filter entryType="Enumeration" fullName="XSharp.__UsualType" filterName="__UsualType" isExposed="False" />
+  <Filter entryType="Structure" fullName="XSharp.__WinBool" filterName="__WinBool" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.__WinBool.Equals" filterName="Equals" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__WinBool.GetTypeCode" filterName="GetTypeCode" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.__WinBool.ToString" filterName="ToString" isExposed="False" />
+  </Filter>
+  <Filter entryType="Class" fullName="XSharp._CodeBlock" filterName="_CodeBlock" isExposed="True">
+    <Filter entryType="Field" fullName="XSharp._CodeBlock._cMacro" filterName="_cMacro" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp._CodeBlock._innerBlock" filterName="_innerBlock" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp._CodeBlock._lIsBlock" filterName="_lIsBlock" isExposed="False" />
+  </Filter>
   <Filter entryType="Class" fullName="XSharp.AssemblyHelper" filterName="AssemblyHelper" isExposed="False" />
+  <Filter entryType="Class" fullName="XSharp.CodeBlock" filterName="CodeBlock" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.CodeBlock._BlockArg" filterName="_BlockArg" isExposed="False" />
+  </Filter>
   <Filter entryType="Class" fullName="XSharp.CoreDb" filterName="CoreDb" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.CoreDb.CWA" filterName="CWA" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.CoreDb.CWANum" filterName="CWANum" isExposed="False" />
@@ -89,10 +137,38 @@
     <Filter entryType="Method" fullName="XSharp.Error.VOError" filterName="VOError" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.Error.WrapRawException" filterName="WrapRawException" isExposed="False" />
   </Filter>
+  <Filter entryType="Structure" fullName="XSharp.FixedMemBlockEnd" filterName="FixedMemBlockEnd" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.FixedMemBlockEnd.Initialize" filterName="Initialize" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.FixedMemBlockEnd.IsValid" filterName="IsValid" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.FixedMemBlockEnd.MAGIC" filterName="MAGIC" isExposed="False" />
+  </Filter>
+  <Filter entryType="Structure" fullName="XSharp.FixedMemBlockStart" filterName="FixedMemBlockStart" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.FixedMemBlockStart.Initialize" filterName="Initialize" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.FixedMemBlockStart.IsValid" filterName="IsValid" isExposed="False" />
+    <Filter entryType="Field" fullName="XSharp.FixedMemBlockStart.MAGIC" filterName="MAGIC" isExposed="False" />
+  </Filter>
   <Filter entryType="Class" fullName="XSharp.OleAutoObject" filterName="OleAutoObject" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIvarGet" filterName="__OleIvarGet" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.OleAutoObject.__OleIVarPut" filterName="__OleIVarPut" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.NoIVarGet" filterName="NoIVarGet" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.NoIVarGetCollection" filterName="NoIVarGetCollection" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.NoIvarPut" filterName="NoIvarPut" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.NoIVarPutCollection" filterName="NoIVarPutCollection" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.NoMethod" filterName="NoMethod" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleCreateObject" filterName="OleCreateObject" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleGetObject" filterName="OleGetObject" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleIvarGet" filterName="OleIvarGet" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleIVarPut" filterName="OleIVarPut" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleSend" filterName="OleSend" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleUnWrapObject" filterName="OleUnWrapObject" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.OleAutoObject.OleWrapObject" filterName="OleWrapObject" isExposed="False" />
     <Filter entryType="Property" fullName="XSharp.OleAutoObject.__ComObject" filterName="__ComObject" isExposed="False" />
+    <Filter entryType="Property" fullName="XSharp.OleAutoObject.dwFuncs" filterName="dwFuncs" isExposed="False" />
+    <Filter entryType="Property" fullName="XSharp.OleAutoObject.dwVars" filterName="dwVars" isExposed="False" />
+    <Filter entryType="Property" fullName="XSharp.OleAutoObject.fInit" filterName="fInit" isExposed="False" />
+  </Filter>
+  <Filter entryType="Class" fullName="XSharp.OleDateTime" filterName="OleDateTime" isExposed="True">
+    <Filter entryType="Operator" fullName="XSharp.OleDateTime.op_Implicit" filterName="op_Implicit" isExposed="False" />
   </Filter>
   <Filter entryType="Class" fullName="XSharp.RuntimeState" filterName="RuntimeState" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.RuntimeState.Finalize" filterName="Finalize" isExposed="False" />
@@ -101,7 +177,7 @@
   </Filter>
   <Filter entryType="Class" fullName="XSharp.StringHelpers" filterName="StringHelpers" isExposed="False" />
 </Filter>
-<Filter entryType="Namespace" fullName="XSharp.Core" isExposed="True">
+<Filter entryType="Namespace" fullName="XSharp.Core" isExposed="False">
   <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True">
     <Filter entryType="Method" fullName="XSharp.Core.Functions.__CavoStr" filterName="__CavoStr" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.Core.Functions.__FGetBuffer" filterName="__FGetBuffer" isExposed="False" />
@@ -135,6 +211,8 @@
 </Filter>
 <Filter entryType="Namespace" fullName="XSharp.RT" isExposed="True">
   <Filter entryType="Class" fullName="XSharp.RT.Functions" filterName="Functions" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.$Exit" filterName="$Exit" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.$Init1" filterName="$Init1" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.RT.Functions.__allocNames" filterName="__allocNames" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.RT.Functions.__AllocRddList" filterName="__AllocRddList" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.RT.Functions.__CanEval" filterName="__CanEval" isExposed="False" />
@@ -165,6 +243,28 @@
     <Filter entryType="Method" fullName="XSharp.RT.Functions.__TargetFields" filterName="__TargetFields" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.RT.Functions.__UniqueAlias" filterName="__UniqueAlias" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.RT.Functions.__UpperPsz" filterName="__UpperPsz" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.__VarGet" filterName="__VarGet" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.__VarPut" filterName="__VarPut" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._AllocFieldNames" filterName="_AllocFieldNames" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._AsString" filterName="_AsString" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._DbCreate" filterName="_DbCreate" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._DbThrowErrorOnFailure" filterName="_DbThrowErrorOnFailure" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._FreeFieldNames" filterName="_FreeFieldNames" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._NGet" filterName="_NGet" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._NPut" filterName="_NPut" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._SendClassParams" filterName="_SendClassParams" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions._Str3" filterName="_Str3" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.AxitCalled" filterName="AxitCalled" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.Cast2Psz" filterName="Cast2Psz" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.DoEvents" filterName="DoEvents" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.Mem2String" filterName="Mem2String" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.MemCompact" filterName="MemCompact" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.MemExit" filterName="MemExit" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.MemGrpCompact" filterName="MemGrpCompact" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.MemInit" filterName="MemInit" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.String2Mem" filterName="String2Mem" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.String2Psz" filterName="String2Psz" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.RT.Functions.VO_Sprintf" filterName="VO_Sprintf" isExposed="False" />
   </Filter>
 </Filter>
 <Filter entryType="Namespace" fullName="XSharp.VO" isExposed="True">
@@ -340,20 +440,27 @@
     <Filter entryType="Method" fullName="XSharp.VO.Functions.Wide2Multi" filterName="Wide2Multi" isExposed="False" />
     <Filter entryType="Method" fullName="XSharp.VO.Functions.WriteAtomTable" filterName="WriteAtomTable" isExposed="False" />
   </Filter>
+</Filter>
+<Filter entryType="Namespace" fullName="XSharp.XPP" isExposed="True">
+  <Filter entryType="Class" fullName="XSharp.XPP.Functions" filterName="Functions" isExposed="True">
+    <Filter entryType="Method" fullName="XSharp.XPP.Functions.$Exit" filterName="$Exit" isExposed="False" />
+    <Filter entryType="Method" fullName="XSharp.XPP.Functions.$Init1" filterName="$Init1" isExposed="False" />
+  </Filter>
 </Filter></ApiFilter>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
-<NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (classes and attributes) used by the compiler. These are normally not used in End users  (your) code</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.RT" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.RT.DLL</NamespaceSummaryItem>
-<NamespaceSummaryItem name="XSharp.XPP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.XPP.DLL</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (classes and attributes) used by the compiler. These are normally not used in End users  (your) code</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RT" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.RT.DLL</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.XPP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.XPP.DLL</NamespaceSummaryItem>
+    </NamespaceSummaries>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">
         <component id="Syntax Component">

@@ -56,12 +56,12 @@ namespace XSharp.MacroCompiler
 
         internal static CompilationError ConversionError(Expr expr, TypeSymbol type)
         {
-            return expr.Error(ErrorCode.NoConversion, expr.Datatype.Type, type.Type);
+            return expr.Error(ErrorCode.NoConversion, expr.Datatype, type);
         }
 
         internal static CompilationError ImplicitConversionError(Expr expr, TypeSymbol type)
         {
-            return expr.Error(ErrorCode.NoImplicitConversion, expr.Datatype.Type, type.Type);
+            return expr.Error(ErrorCode.NoImplicitConversion, expr.Datatype, type);
         }
 
         internal static CompilationError LookupError(Expr expr, NameExpr name)
@@ -75,12 +75,12 @@ namespace XSharp.MacroCompiler
 
         internal static CompilationError BinaryOperationError(BinaryExpr expr, BinaryOperatorKind kind, bool isLogic = false)
         {
-            return expr.Error(ErrorCode.BinaryOperationNotFound, BinaryOperatorSymbol.OperatorSymbol(kind), expr.Left.Datatype.Type, expr.Right.Datatype.Type);
+            return expr.Error(ErrorCode.BinaryOperationNotFound, BinaryOperatorSymbol.OperatorSymbol(kind), expr.Left.Datatype, expr.Right.Datatype);
         }
 
         internal static CompilationError UnaryOperationError(UnaryExpr expr, UnaryOperatorKind kind, bool isLogic = false)
         {
-            return expr.Error(ErrorCode.UnaryOperationNotFound, UnaryOperatorSymbol.OperatorSymbol(kind), expr.Expr.Datatype.Type);
+            return expr.Error(ErrorCode.UnaryOperationNotFound, UnaryOperatorSymbol.OperatorSymbol(kind), expr.Expr.Datatype);
         }
     }
 }

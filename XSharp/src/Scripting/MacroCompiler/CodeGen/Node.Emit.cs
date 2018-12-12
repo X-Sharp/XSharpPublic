@@ -268,7 +268,7 @@ namespace XSharp.MacroCompiler.Syntax
             Expr.Emit(ilg, preserve);
             if (preserve)
             {
-                ilg.Emit(OpCodes.Isinst, (Symbol as TypedSymbol).Type.Type);
+                ilg.Emit(OpCodes.Isinst, (Symbol as TypeSymbol).Type);
                 ilg.Emit(OpCodes.Ldnull);
                 ilg.Emit(OpCodes.Cgt_Un);
             }

@@ -123,6 +123,69 @@ namespace XSharp.MacroCompiler
             Interlocked.CompareExchange(ref NativeTypeSymbols, nativeTypeSymbols, null);
         }
 
+        internal static string NativeTypeName(NativeType kind)
+        {
+            switch(kind)
+            {
+                case NativeType.Object:
+                    return "object";
+                case NativeType.Boolean:
+                    return "logic";
+                case NativeType.Char:
+                    return "char";
+                case NativeType.SByte:
+                    return null;
+                case NativeType.Byte:
+                    return "byte";
+                case NativeType.Int16:
+                    return "shortint";
+                case NativeType.UInt16:
+                    return "word";
+                case NativeType.Int32:
+                    return "int";
+                case NativeType.UInt32:
+                    return "dword";
+                case NativeType.Int64:
+                    return "int64";
+                case NativeType.UInt64:
+                    return "uint64";
+                case NativeType.Single:
+                    return "real4";
+                case NativeType.Double:
+                    return "real8";
+                case NativeType.Decimal:
+                    return "decimal";
+                case NativeType.DateTime:
+                    return "datetime";
+                case NativeType.String:
+                    return "string";
+                case NativeType.Void:
+                    return "void";
+                case NativeType.IntPtr:
+                    return "intptr";
+                case NativeType.UIntPtr:
+                    return "uintptr";
+                case NativeType.Ptr:
+                    return "ptr";
+                case NativeType.Usual:
+                    return "usual";
+                case NativeType.VOFloat:
+                    return "float";
+                case NativeType.VODate:
+                    return "date";
+                case NativeType.Symbol:
+                    return "symbol";
+                case NativeType.Psz:
+                    return "psz";
+                case NativeType.Array:
+                    return "array";
+                case NativeType.Codeblock:
+                    return "codeblock";
+                default:
+                    return null;
+            }
+    }
+
         internal static readonly int NativeTypeCount = Enum.GetValues(typeof(NativeType)).Length;
 
         internal static TypeSymbol Get(NativeType kind)

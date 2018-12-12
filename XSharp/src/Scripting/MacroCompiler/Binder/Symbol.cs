@@ -39,7 +39,7 @@ namespace XSharp.MacroCompiler
             return null;
         }
     }
-    internal partial class ContainerSymbol : Symbol
+    internal abstract partial class ContainerSymbol : Symbol
     {
         internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(StringComparer.OrdinalIgnoreCase);
         internal ContainerSymbol() { }
@@ -48,14 +48,17 @@ namespace XSharp.MacroCompiler
     internal partial class NamespaceSymbol : ContainerSymbol
     {
         internal string Name;
-        internal NamespaceSymbol(string name) { Name = name; }
-        internal NamespaceSymbol() { Name = null; }
+        internal NamespaceSymbol ParentNamespace;
+        internal NamespaceSymbol(string name, NamespaceSymbol parent) { Name = name; ParentNamespace = parent; }
+        internal NamespaceSymbol() { Name = null; ParentNamespace = null; }
     }
     internal partial class TypeSymbol : ContainerSymbol
     {
         bool Cached = false;
-        internal Type Type;
+        internal readonly Type Type;
         internal NativeType NativeType;
+        internal TypeSymbol DeclaringType { get { return Binder.FindType(Type.DeclaringType); } }
+        internal NamespaceSymbol Namespace { get { return Binder.LookupFullName(Type.Namespace) as NamespaceSymbol; } }
         internal TypeSymbol(Type type) { Type = type; }
         internal bool IsByRef { get { return Type.IsByRef; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
@@ -88,8 +91,11 @@ namespace XSharp.MacroCompiler
             foreach(var m in Type.GetMembers(flags))
             {
                 var ms = MemberSymbol.Create(this, m);
-                MemberTable.Add(m, ms);
-                AddMember(m.Name, ms);
+                if (ms != null)
+                {
+                    MemberTable.Add(m, ms);
+                    AddMember(m.Name, ms);
+                }
             }
             if (NativeType == NativeType.Array)
             {
@@ -155,7 +161,7 @@ namespace XSharp.MacroCompiler
         internal override TypeSymbol Type { get; }
         internal ObjectInitializerSymbol(TypeSymbol type) { Type = type; }
     }
-    internal partial class MemberSymbol : TypedSymbol
+    internal abstract partial class MemberSymbol : TypedSymbol
     {
         internal TypeSymbol DeclaringType;
         internal MemberInfo Member;
@@ -186,7 +192,7 @@ namespace XSharp.MacroCompiler
                 case MemberTypes.NestedType:
                     return new TypeSymbol(member as Type);
                 default:
-                    return new MemberSymbol(declType, member, null, member.MemberType);
+                    return null; // ignore unrecognized types
             }
         }
     }
@@ -211,7 +217,7 @@ namespace XSharp.MacroCompiler
         }
         internal override Symbol Lookup(string name) { return null; }
     }
-    internal partial class MethodBaseSymbol : MemberSymbol
+    internal abstract partial class MethodBaseSymbol : MemberSymbol
     {
         internal MethodBase MethodBase { get { return (MethodBase)base.Member; } }
         bool _foundAttributes = false;

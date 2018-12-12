@@ -211,14 +211,14 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr True;
         internal Expr False;
         internal IifExpr(Expr cond, Expr trueExpr, Expr falseExpr, Token o) : base(o) { Cond = cond; True = trueExpr; False = falseExpr; }
-        public override string ToString() { return "{IIF(" + Cond.ToString() + "," + True.ToString() + "," + False.ToString() + ")}"; }
+        public override string ToString() { return "(IIF(" + Cond.ToString() + "," + True.ToString() + "," + False.ToString() + "))"; }
     }
     internal partial class AliasExpr : Expr
     {
         internal Expr Alias;
         internal Expr Field;
         internal AliasExpr(Expr alias, Expr field, Token o) : base(o) { Alias = alias; Field = field; }
-        public override string ToString() { return "{" + Alias.ToString() + "->" + Field.ToString() + ")}"; }
+        public override string ToString() { return "(" + Alias.ToString() + "->" + Field.ToString() + ")"; }
     }
     internal partial class SubstrExpr : BinaryExpr
     {

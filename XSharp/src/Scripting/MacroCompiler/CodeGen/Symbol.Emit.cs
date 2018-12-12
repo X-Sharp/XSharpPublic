@@ -21,7 +21,7 @@ namespace XSharp.MacroCompiler
     internal partial class SymbolList : Symbol
     {
     }
-    internal partial class ContainerSymbol : Symbol
+    internal abstract partial class ContainerSymbol : Symbol
     {
     }
     internal partial class NamespaceSymbol : ContainerSymbol
@@ -85,10 +85,10 @@ namespace XSharp.MacroCompiler
             ilg.Emit(l.LocalIndex < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, l);
         }
     }
-    internal partial class MemberSymbol : TypedSymbol
+    internal abstract partial class MemberSymbol : TypedSymbol
     {
     }
-    internal partial class MethodBaseSymbol : MemberSymbol
+    internal abstract partial class MethodBaseSymbol : MemberSymbol
     {
     }
     internal partial class MethodSymbol : MethodBaseSymbol

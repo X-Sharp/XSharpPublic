@@ -78,7 +78,7 @@ namespace XSharp.MacroCompiler
                                 Symbol nn;
                                 if (!n.Members.TryGetValue(ns, out nn) || (!(nn is NamespaceSymbol) && most_visible))
                                 {
-                                    nn = new NamespaceSymbol(ns);
+                                    nn = new NamespaceSymbol(ns,n);
                                     n.Members[ns] = nn;
                                 }
                                 if (!(nn is NamespaceSymbol))
@@ -341,6 +341,8 @@ namespace XSharp.MacroCompiler
 
         internal static Symbol LookupFullName(string fullname)
         {
+            if (fullname == null)
+                return null;
             if (fullname.StartsWith("global::"))
             {
                 fullname = fullname.Substring(fullname.LastIndexOf(':') + 1);

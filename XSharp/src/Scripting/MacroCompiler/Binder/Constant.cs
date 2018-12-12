@@ -57,7 +57,7 @@ namespace XSharp.MacroCompiler
         internal override string String { get { return Value as string; } }
         internal override DateTime? DateTime { get { return Value as DateTime?; } }
 
-        public override string ToString() { return Value.ToString(); }
+        internal override string FullName { get { return Value.ToString(); } }
     }
     internal partial class ConstantVOFloat : ConstantWithValue<double>
     {
@@ -82,5 +82,7 @@ namespace XSharp.MacroCompiler
         internal ConstantDefault(TypeSymbol type) { Type = type; }
 
         internal override TypeSymbol Type { get; }
+
+        internal override string FullName { get { return "default(" + Type.FullName + ")"; } }
     }
 }

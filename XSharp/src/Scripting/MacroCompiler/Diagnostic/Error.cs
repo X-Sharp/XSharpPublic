@@ -37,6 +37,7 @@ namespace XSharp.MacroCompiler
         UnaryOperationNotFound = 218,
         LiteralIntegerOverflow = 219,
         LiteralFloatOverflow = 220,
+        NotAType = 221,
     }
 
     internal class ErrorString
@@ -71,6 +72,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.UnaryOperationNotFound, "Operator {0} on type {1} could not be resolved" },
             { ErrorCode.LiteralIntegerOverflow, "Integer overflow at literal constant" },
             { ErrorCode.LiteralFloatOverflow, "Floating=point overflow at literal constant" },
+            { ErrorCode.NotAType, "{0} is not a type" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }
@@ -115,7 +117,7 @@ namespace XSharp.MacroCompiler
         internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) { Code = e; Location = loc; ErrorMessage = ErrorString.Format(e, args); }
         internal CompilationError(ErrorCode e, params object[] args) : this(SourceLocation.None, e, args) { }
         internal CompilationError(int offset, ErrorCode e, params object[] args) : this(new SourceLocation(offset), e, args) { }
-        internal CompilationError(CompilationError e, string source) { Code = e.Code; ErrorMessage = e.Message; Location = new SourceLocation(source, e.Location); }
+        internal CompilationError(CompilationError e, string source) { Code = e.Code; ErrorMessage = e.ErrorMessage; Location = new SourceLocation(source, e.Location); }
     }
 
     public static partial class Compilation

@@ -144,7 +144,11 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| sizeof(testclass.nested.fff) }")
         //EvalMacro(mc, e"{|a,b| default(testclass.nested.fff) }")
         //EvalMacro(mc, e"{|a,b| (testclass.nested.fff)123 }")
-        EvalMacro(mc, e"{|a,b| _chr(65) }")
+        //EvalMacro(mc, e"{|a,b| (testclass.nested)123 }")
+        //EvalMacro(mc, e"{|a,b| testclass{} is testclass.nested.fff }")
+        EvalMacro(mc, e"{|a,b| testclass{} is testclass }")
+        EvalMacro(mc, e"{|a,b| testclass{} is testclass.nested }")
+        //EvalMacro(mc, e"{|a,b| testclass{} is int }")
         wait
 
         RunTests(mc)

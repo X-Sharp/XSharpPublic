@@ -29,14 +29,15 @@ namespace XSharp.MacroCompiler
     }
     internal partial class TypeSymbol : ContainerSymbol
     {
-        internal override string FullName
+        string namePrefix
         {
             get
             {
                 var n = (Namespace?.FullName ?? DeclaringType?.FullName ?? "");
-                return string.IsNullOrEmpty(n) ? Type.Name : n + "." + Type.Name;
+                return string.IsNullOrEmpty(n) ? "" : n + ".";
             }
         }
+        internal override string FullName { get { return Compilation.NativeTypeName(NativeType) ?? namePrefix + Type.Name; } }
     }
     internal partial class LocalSymbol : TypedSymbol
     {

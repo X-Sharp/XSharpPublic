@@ -367,6 +367,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Expr.Affinity = BindAffinity.Invoke;
             b.Bind(ref Expr);
+            Expr.RequireValue();
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
             Datatype = Symbol.Type();
@@ -378,6 +379,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireType();
             b.Bind(ref Args);
             Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args);
             Datatype = Symbol.Type();
@@ -389,6 +391,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireValue();
             b.Bind(ref Args);
             Binder.Convert(ref Expr, Compilation.Get(NativeType.Array));
             Self = Expr;
@@ -418,6 +421,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(Exprs);
+            foreach(var expr in Exprs) expr.RequireValue();
             var e = Exprs.LastOrDefault();
             if (e != null)
             {
@@ -435,7 +439,11 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            if (ElemType != null) b.Bind(ref ElemType);
+            if (ElemType != null)
+            {
+                b.Bind(ref ElemType);
+                ElemType.RequireType();
+            }
             b.Bind(ref Values);
             if (ElemType != null)
                 Convert(ElemType.Symbol as TypeSymbol);
@@ -475,6 +483,9 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Cond);
             b.Bind(ref True);
             b.Bind(ref False);
+            Cond.RequireValue();
+            True.RequireValue();
+            False.RequireValue();
             Binder.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             Datatype = Binder.ConvertResult(ref True, ref False);
             return null;
@@ -487,9 +498,11 @@ namespace XSharp.MacroCompiler.Syntax
             if (Alias != null)
             {
                 b.Bind(ref Alias);
+                Alias.RequireValue();
                 Binder.Convert(ref Alias, Compilation.Get(NativeType.String));
             }
             b.Bind(ref Field);
+            Field.RequireValue();
             Binder.Convert(ref Field, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Usual);
             return null;
@@ -505,6 +518,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Left);
             b.Bind(ref Right);
+            Left.RequireValue();
+            Right.RequireValue();
             Binder.Convert(ref Left, Compilation.Get(NativeType.String));
             Binder.Convert(ref Right, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Boolean);
@@ -526,6 +541,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr);
+            Expr.RequireValue();
             return null;
         }
     }

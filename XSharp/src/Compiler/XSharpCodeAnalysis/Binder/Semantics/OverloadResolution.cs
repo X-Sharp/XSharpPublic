@@ -528,6 +528,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (op2.LeftType.IsVoidPointer() && op2.RightType.IsVoidPointer())
                             return BetterResult.Right;
                     }
+                    // Prefer Date over DateTime, becuse when one of the two is date then we know that we can't compare the time parts
+                    if (left.Type.SpecialType == SpecialType.System_DateTime && right.Type == Compilation.DateType())
+                        return BetterResult.Right;
+                    if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type == Compilation.DateType())
+                        return BetterResult.Left;
+
 
                 }
 

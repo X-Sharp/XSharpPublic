@@ -140,8 +140,7 @@ begin namespace MacroCompilerTest
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
-        //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
-        EvalMacro(mc, e"{|a,b| int is ValueType }")
+        EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
         wait
 
         RunTests(mc)
@@ -355,6 +354,15 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| testclass.nested(123) }", <object>{}, null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| Console.Write(null) }", <object>{}, null, null)
         TestMacro(mc, e"{|a,b| Console.Write() }", <object>{}, null, null, ErrorCode.NoSuitableOverload)
+        TestMacro(mc, e"'AA' == U('A')", <object>{}, false, typeof(logic))
+        TestMacro(mc, e"'AA' = U('A')", <object>{}, true, typeof(logic))
+        TestMacro(mc, e"'AA' == 'A'", <object>{}, false, typeof(logic))
+        TestMacro(mc, e"'AA' = 'A'", <object>{}, true, typeof(logic))
+        TestMacro(mc, e"'AA' == (object)'A'", <object>{}, false, typeof(logic))
+        TestMacro(mc, e"'AA' = (object)'A'", <object>{}, true, typeof(logic))
+        TestMacro(mc, e"'AA' != U('A')", <object>{}, false, typeof(logic))
+        TestMacro(mc, e"'AA' != 'A'", <object>{}, false, typeof(logic))
+        TestMacro(mc, e"'AA' != (object)'A'", <object>{}, false, typeof(logic))
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

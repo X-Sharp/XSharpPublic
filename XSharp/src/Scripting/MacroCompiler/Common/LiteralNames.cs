@@ -121,6 +121,9 @@
     }
     internal static class VulcanQualifiedFunctionNames
     {
+        internal const string StringCompare = "global::VulcanRTFuncs.Functions.__StringCompare";
+        internal const string StringEquals = "global::VulcanRTFuncs.Functions.__StringEquals";
+        internal const string StringNotEquals = "global::VulcanRTFuncs.Functions.__StringNotEquals";
         internal const string VarGet = "global::VulcanRTFuncs.Functions.VarGet";
         internal const string VarPut = "global::VulcanRTFuncs.Functions.VarPut";
         internal const string FieldGet = "global::VulcanRTFuncs.Functions.__FieldGet";
@@ -163,6 +166,9 @@
         internal const string InStr = "global::XSharp.Core.Functions.Instr";
         internal const string WrapException = "global::XSharp.Error.WrapRawException";
         // In VO assembly
+        internal const string StringCompare = "global::XSharp.VO.Functions.__StringCompare";
+        internal const string StringEquals = "global::XSharp.VO.Functions.__StringEquals";
+        internal const string StringNotEquals = "global::XSharp.VO.Functions.__StringNotEquals";
         internal const string VarGet = "global::XSharp.VO.Functions.VarGet";
         internal const string VarPut = "global::XSharp.VO.Functions.VarPut";
         internal const string FieldGet = "global::XSharp.VO.Functions.__FieldGet";
@@ -273,5 +279,7 @@
         internal const string IntegerDivision = "op_IntegerDivision";
         internal const string Like = "op_Like";
         internal const string __UsualExponent = "__Pow";
+        internal const string __UsualInExactEquals = "__InexactEquals";
+        internal const string __UsualInExactNotEquals = "__InexactNotEquals";
     }
 }

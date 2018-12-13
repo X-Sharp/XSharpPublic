@@ -37,6 +37,9 @@ namespace XSharp.MacroCompiler
         XSharp_VO_Functions_VarGet,
         XSharp_VO_Functions_VarPut,
         XSharp_Core_Functions_Instr,
+        XSharp_VO_Functions___StringCompare,
+        XSharp_VO_Functions___StringEquals,
+        XSharp_VO_Functions___StringNotEquals,
     }
 
     public static partial class Compilation
@@ -68,6 +71,9 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedFunctionNames.VarGet+"|"+VulcanQualifiedFunctionNames.VarGet,
             XSharpQualifiedFunctionNames.VarPut+"|"+VulcanQualifiedFunctionNames.VarPut,
             XSharpQualifiedFunctionNames.InStr+"|"+VulcanQualifiedFunctionNames.InStr,
+            XSharpQualifiedFunctionNames.StringCompare+"|"+VulcanQualifiedFunctionNames.StringCompare,
+            XSharpQualifiedFunctionNames.StringEquals+"|"+VulcanQualifiedFunctionNames.StringEquals,
+            XSharpQualifiedFunctionNames.StringNotEquals+"|"+VulcanQualifiedFunctionNames.StringNotEquals,
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;

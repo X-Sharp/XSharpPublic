@@ -212,16 +212,21 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
                 END SWITCH
             ENDIF
 			IF !SELF:lRuntimeAdded
-                LOCAL cRt1, cRt2 AS STRING
+                LOCAL cRt1, cRt2, cRT3 AS STRING
                 IF SELF:lUseXsRuntime
                     cRT1 := "XSharp.Core"
-                    cRT2 := "XSharp.VO"
+                    cRT2 := "XSharp.RT"
+                    cRT3 := "XSharp.VO"
                 ELSE
                     cRT1 := "VulcanRT"
                     cRT2 := "VulcanRTFuncs"
+                    cRT3 := ""
                 ENDIF
                 SELF:AddReference(oElement, cRT1)
                 SELF:AddReference(oElement, cRT2)
+                if !String.IsNullOrEmpty(cRT3)
+                    SELF:AddReference(oElement, cRT3)
+                endif
 				SELF:lRuntimeAdded := TRUE
 			ENDIF
 		OTHERWISE

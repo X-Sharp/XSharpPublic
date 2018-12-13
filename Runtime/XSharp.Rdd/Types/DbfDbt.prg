@@ -10,12 +10,13 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
     CLASS DBFDBT INHERIT DBF
+        PRIVATE _oDBtMemo as DbtMemo
         CONSTRUCTOR
             SUPER()
-            SELF:_oMemo := DBTMemo{SELF}
+            SELF:_oMemo := _oDbtMemo := DBTMemo{SELF}
             
         VIRTUAL PROPERTY SysName AS STRING GET TYPEOF(DbfDbt):ToString()
-        
+                
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL buffer AS BYTE[]
@@ -23,23 +24,64 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
-				IF ( buffer != NULL )
-					LOCAL encoding AS Encoding //ASCIIEncoding
-	                LOCAL str AS STRING
-					encoding := SELF:_Encoding // ASCIIEncoding{}
-					str :=  encoding:GetString(buffer)
-					// Convert to String and return
-					RETURN str
-				ELSE
-					// No Memo ?!, Empty String
-					RETURN String.Empty
-				ENDIF
+                IF ( buffer != NULL )
+                    LOCAL encoding AS Encoding //ASCIIEncoding
+                    LOCAL str AS STRING
+                    encoding := SELF:_Encoding // ASCIIEncoding{}
+                    str :=  encoding:GetString(buffer)
+                    // Convert to String and return
+                    RETURN str
+                ELSE
+                    // No Memo ?!, Empty String
+                    RETURN String.Empty
+                ENDIF
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
+
+        /// <inheritdoc />
+        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+            LOCAL oResult AS OBJECT
+            SWITCH nOrdinal
+            CASE DbInfo.DBI_MEMOHANDLE
+                IF ( SELF:_oDbtMemo != NULL )
+                    oResult := SELF:_oDbtMemo:_hFile
+                ELSE
+                    oResult := IntPtr.Zero
+                ENDIF
+                    
+            CASE DbInfo.DBI_MEMOEXT
+                IF ( SELF:_oDbtMemo != NULL )
+                    oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:_FileName)
+                ELSE
+                    oResult := DbtMemo.DefExt
+                ENDIF
+                IF oNewValue is STRING
+                    DbtMemo.DefExt := (String) oNewValue
+                ENDIF
+            CASE DbInfo.DBI_MEMOBLOCKSIZE
+                oResult := SELF:_oDbtMemo:BlockSize
+            case DBInfo.DBI_MEMOFIELD
+                oResult := ""
+                if oNewValue != NULL
+                    TRY
+                       local fldPos as Long
+                       fldPos := Convert.ToInt32(oNewValue)
+                       oResult := SELF:GetValue(fldPos)
+                    CATCH
+                        oResult := ""   
+                    END TRY
+                endif
+			case DbInfo.DBI_MEMOTYPE
+                oResult := DB_MEMO_DBT
+            case DbInfo.DBI_MEMOVERSION
+                oResult := DB_MEMOVER_STD
+            OTHERWISE
+                oResult := SUPER:Info(nOrdinal, oNewValue)
+            END SWITCH
+            RETURN oResult
             
             
-            
-            END CLASS
+     END CLASS
             
             
             
@@ -54,16 +96,16 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _ReadOnly   AS LOGIC
         PROTECT _oRDD       AS DBF
         PROTECT _blockSize  AS SHORT
-        PROTECT _defExt     AS STRING
+        STATIC PRIVATE _defExt    := DBT_MEMOEXT AS STRING
         PROTECT _lockScheme AS DbfLocking
-		
         
-        PROPERTY DefExt AS STRING
+        
+        STATIC PROPERTY DefExt AS STRING
             GET
-                RETURN SELF:_defExt
+                RETURN _defExt
             END GET
             SET
-                SELF:_defExt := VALUE
+                _defExt := VALUE
             END SET
         END PROPERTY
         
@@ -88,8 +130,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_hFile := F_ERROR
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
-			SELF:_Encoding := SELF:_oRdd:_Encoding
-            SELF:DefExt := DBT_MEMOEXT
+            SELF:_Encoding := SELF:_oRdd:_Encoding
             // We should read the MEMOBLOCK setting here : 512 Per default
             SELF:_blockSize := 0
             
@@ -303,7 +344,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:_FileName  := info:FileName
-            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, SELF:DefExt )
+            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, DefExt )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             //
@@ -331,7 +372,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:_FileName  := info:FileName
-            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, SELF:DefExt )
+            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, DefExt )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             //
@@ -417,7 +458,7 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Zap() AS LOGIC
             THROW NotImplementedException{}
             
-    END CLASS    
+      END CLASS    
     
     
     

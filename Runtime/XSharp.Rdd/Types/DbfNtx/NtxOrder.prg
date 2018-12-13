@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _levelsCount AS DWORD
         PRIVATE _midItem AS NtxItem
         PRIVATE _outPageNo AS LONG
-        PROTECT _parkPlace AS LONG
+        PRIVATE _parkPlace AS LONG
         
         INTERNAL _lockScheme     AS DbfLocking
         
@@ -2137,9 +2137,7 @@ PRIVATE METHOD _Balance() AS VOID
             SELF:_oRdd:_Eof := isEof
                     
         CATCH e AS Exception
-            LOCAL dummy AS STRING
-            dummy := e:Message
-                    
+            System.Diagnostics.Debug.WriteLine(e:Message)  
         FINALLY
             IF (locked)
                 result := SELF:_unLockForRead()

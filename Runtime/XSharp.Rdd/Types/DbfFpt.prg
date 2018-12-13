@@ -49,11 +49,14 @@ BEGIN NAMESPACE XSharp.RDD
             
     /// <summary>FPT Memo class. Implements the FTP support.</summary>
     INTERNAL CLASS FptMemo INHERIT DBTMemo 
-    
+
+        STATIC CONSTRUCTOR
+            DefExt := FPT_MEMOEXT
+
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             //
-            SELF:DefExt := FPT_MEMOEXT
+            
             
             // Called from CreateMemFile : The Header has been filled with 0, so the BlockSize is 0
             // Called from OpenMemFile : The Header contains the Size of Block to use

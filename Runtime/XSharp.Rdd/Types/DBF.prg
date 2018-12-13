@@ -55,6 +55,8 @@ BEGIN NAMESPACE XSharp.RDD
 		PROTECT _addFieldPos    AS LONG     // Used by AddFields Method, and SetFieldsExtent
 		PROTECT _lockScheme     AS DbfLocking
 		PROTECT _NewRecord      AS LOGIC
+        STATIC PROTECT _Extension := ".DBF" AS STRING
+
 		INTERNAL _Ansi          AS LOGIC
 		//
 		INTERNAL _LastCodeBlock AS ICodeblock
@@ -521,11 +523,8 @@ BEGIN NAMESPACE XSharp.RDD
 						// Just add the lock to the list
 						isOk := SELF:_lockRecord( (LONG)nToLock )
 					ELSE // DbLockInfo.LockMethod.Exclusive
-						// One lock at a time
-						IF( SELF:_fLocked )
-							// Unlock all records and file
-							SELF:UnLock( 0 )
-						ENDIF
+						// Release the locks
+                        SELF:UnLock(0)  
 						// Now, lock the one
 						isOk := SELF:_lockRecord( (LONG)nToLock )
 						// Go to there
@@ -750,7 +749,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_OpenInfo := info
 			// Should we set to .DBF per default ?
 			IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
-				SELF:_OpenInfo:Extension := ".DBF"
+				SELF:_OpenInfo:Extension := _Extension
 				//
 			ENDIF
 			SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
@@ -867,7 +866,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_OpenInfo := info
 			// Should we set to .DBF per default ?
 			IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
-				SELF:_OpenInfo:Extension := ".DBF"
+				SELF:_OpenInfo:Extension := _Extension
 			ENDIF
 			SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
 			//
@@ -1917,42 +1916,125 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := SELF:_Header:LastUpdate
 				CASE DbInfo.DBI_GETHEADERSIZE
 					oResult := SELF:_Header:HeaderLen
-					// DbInfo.GETLOCKARRAY
-						// DbInfo.TABLEEXT
-						// DbInfo.FULLPATH
-						// DbInfo.MEMOTYPE
-						// DbInfo.TABLETYPE
-						//                CASE DbInfo.FILEHANDLE
-						//                    oResult := SELF:_hFile
-						//                CASE DbInfo.MEMOHANDLE
-						//                    IF ( SELF:_oMemo != NULL )
-						//                        oResult := SELF:_oMemo:_hFile
-						//                    ENDIF
+                 CASE DbInfo.DBI_CODEPAGE
+                    oResult := (INT) SELF:_Header:CodePage
+                CASE DbInfo.DBI_DOSCODEPAGE
+                CASE DbInfo.DBI_CODEPAGE_HB
+                    // DOS or Windows codepage based on DBF Codepage
+					oResult := (INT) SELF:_Header:CodePage:ToCodePage()
+
+				CASE DbInfo.DBI_GETLOCKARRAY
+                    oResult := SELF:_Locks:ToArray()
+				CASE DbInfo.DBI_LOCKCOUNT
+                    oResult := SELF:_Locks:Count
+                 CASE DbInfo.DBI_LOCKOFFSET
+                    oResult := SELF:_lockScheme:Offset
+
+                CASE DbInfo.DBI_FILEHANDLE
+                    oResult := SELF:_hFile
+                CASE DbInfo.DBI_FULLPATH
+                    oResult := SELF:_FileName
+                CASE DbInfo.DBI_TABLEEXT
+                    IF SELF:_FileName != NULL
+                        oResult := System.IO.Path.GetExtension(SELF:_FileName)
+                    ELSE
+                        oResult := _Extension
+                    ENDIF
+                    IF oNewValue IS STRING
+                        _Extension := (String) oNewValue
+                    ENDIF
+  
+                 CASE DbInfo.DBI_SHARED
+                    oResult := SELF:_Shared
+
+                 case DbInfo.DBI_READONLY
+                 case DbInfo.DBI_ISREADONLY
+                    oResult := SELF:_ReadOnly
+
+                 case DbInfo.DBI_ISANSI
+                    oResult := SELF:_Ansi
+
+
+                 CASE DbInfo.DBI_ISFLOCK
+                    oResult := SELF:_fLocked
+
+
+
+                 CASE DbInfo.DBI_MEMOHANDLE
+                    oResult := IntPtr.Zero      // Should be handled in the memo subclass
+                 CASE DbInfo.DBI_MEMOExt
+                    oResult := ""               // Should be handled in the memo subclass
+                 CASE DbInfo.DBI_MEMOBLOCKSIZE
+                    oResult := 0
+                 case DBInfo.DBI_MEMOFIELD
+                    oResult := ""
 						// DbInfo.TRANSREC
-						//                CASE DbInfo.SHARED
-						//                    oResult := SELF:_Shared
-						//                CASE DbInfo.ISFLOCK
-					//                    oResult := SELF:_fLocked
 				CASE DbInfo.DBI_VALIDBUFFER
 					oResult := SELF:_BufferValid
-					// DbInfo.POSITIONED
-						// DbInfo.ISENCRYPTED
-						// DbInfo.DECRYPT
-						// DbInfo.ENCRYPT
-						// DbInfo.LOCKCOUNT
-						// DbInfo.LOCKOFFSET
-						// DbInfo.LOCKTEST
-						// DbInfo.LOCKSCHEME
-						// DbInfo.ROLLBACK
-						// DbInfo.PASSWORD
-						// DbInfo.TRIGGER
-						// DbInfo.OPENINFO
-						// DbInfo.DIRTYREAD
-						// DbInfo.DB_VERSION
-						// DbInfo.RDD_VERSION
-						// DbInfo.CODEPAGE
-					// DbInfo.DOS_CODEPAGE
+					// CASE DbInfo.DBI_POSITIONED
 					
+				CASE DbInfo.DBI_OPENINFO
+                    oResult := SELF:_OpenInfo
+
+				CASE DbInfo.DBI_DB_VERSION
+				CASE DbInfo.DBI_RDD_VERSION
+                    local oAsm as System.Reflection.AssemblyName
+                    local oType as System.Type
+                    oType := typeof(DBF)
+                    oAsm := oType:Assembly:GetName()
+                    return oAsm:Version:ToString()
+
+                // Harbour extensions. Some are supported. Other not yet
+                // case DbInfo.DBI_ISREADONLY
+				CASE DbInfo.DBI_LOCKSCHEME
+                    return 0
+				CASE DbInfo.DBI_ROLLBACK
+                    if SELF:_Hot
+                        IF SELF:_Appended
+                             System.Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+                             SELF:_Deleted := FALSE
+                        ELSE
+                            SELF:_BufferValid := FALSE
+                        ENDIF
+                        SELF:_Hot := FALSE
+                    ENDIF
+				CASE DbInfo.DBI_PASSWORD
+                    oResult := NULL             
+                CASE DbInfo.DBI_ISENCRYPTED     
+                    oResult := FALSE
+				case DbInfo.DBI_MEMOTYPE
+                    oResult := DB_MEMO_NONE
+                case DbInfo.DBI_SEPARATOR
+                    oResult := ""
+                case DbInfo.DBI_MEMOVERSION
+                    oResult := 0
+			    case DbInfo.DBI_TABLETYPE
+                    oResult := 0
+                case DbInfo.DBI_SCOPEDRELATION
+                    oResult := FALSE
+                case DbInfo.DBI_TRIGGER
+                    oResult := NULL     // Todo
+                CASE DbInfo.DBI_DECRYPT         // Todo
+                CASE DbInfo.DBI_ENCRYPT         // Todo
+                CASE DbInfo.DBI_MEMOPACK
+                CASE DbInfo.DBI_DIRTYREAD
+                CASE DbInfo.DBI_POSITIONED
+                CASE DbInfo.DBI_ISTEMPORARY
+                CASE DbInfo.DBI_LOCKTEST
+                CASE DbInfo.DBI_TRANSREC
+                CASE DbInfo.DBI_SETHEADER
+                //CASE DbInfo.DBI_CODEPAGE_HB    // defined above
+                CASE DbInfo.DBI_RM_SUPPORTED
+                CASE DbInfo.DBI_RM_CREATE
+                CASE DbInfo.DBI_RM_REMOVE
+                CASE DbInfo.DBI_RM_CLEAR 
+                CASE DbInfo.DBI_RM_FILL  
+                CASE DbInfo.DBI_RM_ADD   
+                CASE DbInfo.DBI_RM_DROP  
+                CASE DbInfo.DBI_RM_TEST  
+                CASE DbInfo.DBI_RM_COUNT 
+                CASE DbInfo.DBI_RM_HANDLE
+                   return FALSE
 				OTHERWISE
 					oResult := SUPER:Info(nOrdinal, oNewValue)
 			END SWITCH

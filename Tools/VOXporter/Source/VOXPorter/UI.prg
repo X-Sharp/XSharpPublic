@@ -1,4 +1,4 @@
-// the files below is in c:\XSharp\DevPublic\Common
+﻿// the files below is in c:\XSharp\DevPublic\Common
 #include "buildnumber.h"
 USING System.IO
 USING System.Reflection
@@ -441,7 +441,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		END IF*/
 		TRY
 			Directory.CreateDirectory(cOutputFolder)
-		CATCH
+ 		CATCH
 			MessageBox.Show("Could not create output folder." , "xPorter")
 			RETURN
 		END TRY

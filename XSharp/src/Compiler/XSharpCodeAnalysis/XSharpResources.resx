@@ -5,7 +5,7 @@
     
     Version 2.0
     
-    The primary goals of this format is to allow a simple XML format 
+    The primary goals of this format is to allow a simple XML format  
     that is mostly human readable. The generation and parsing of the 
     various data types are done through the TypeConverter classes 
     associated with the data types.
@@ -5613,6 +5613,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="WRN_ImplicitCast" xml:space="preserve">
     <value>The compiler generated an implicit cast to a smaller type from type '{0}' to '{1}'.</value>
+  </data>
+  <data name="WRN_AutomaticRefGeneration" xml:space="preserve">
+    <value>Parameter {0} needs a(n) '{1}' modifier. This modifier was automatically added.</value>
   </data>
 
 </root>

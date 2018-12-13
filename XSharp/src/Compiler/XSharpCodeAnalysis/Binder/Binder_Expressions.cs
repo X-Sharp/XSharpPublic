@@ -315,21 +315,39 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private bool CheckValidRefOmittedArguments(OverloadResolutionResult<MethodSymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
+            var member = result.ValidResult.Member;
+            
             for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
             {
-                if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
+                var parNumber = result.ValidResult.Result.ParameterFromArgument(i);
+                var parRefKind = member.Parameters[parNumber].RefKind;
+
+                if (analyzedArguments.RefKind(i) == RefKind.None &&  parRefKind != RefKind.None)
                 {
                     var arg = analyzedArguments.Arguments[i];
 
                     if (Compilation.Options.VOImplicitCastsAndConversions)
                     {
+                        bool adjust = false;
                         if (arg is BoundAddressOfOperator)
                         {
                             arg = (arg as BoundAddressOfOperator).Operand;
+                            adjust = true;
+                        }
+                        else
+                        {
+                            adjust = true;
+                            Error(diagnostics, ErrorCode.WRN_AutomaticRefGeneration, arg.Syntax, i + 1, parRefKind);
+                        }
+                        if (adjust)
+                        {
                             if (!analyzedArguments.RefKinds.Any())
                             {
+                                // Size the analyzedArguments list
                                 for (int j = 0; j < analyzedArguments.Arguments.Count; j++)
-                                    analyzedArguments.RefKinds.Add(i==j ? RefKind.Ref : RefKind.None);
+                                {
+                                    analyzedArguments.RefKinds.Add(i == j ? parRefKind : RefKind.None);
+                                }
                             }
                             else
                             {
@@ -339,8 +357,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // check for correct type
                             if (arg.Type != result.ValidResult.Member.ParameterTypes[i])
                             {
-                                Error(diagnostics,ErrorCode.ERR_BadArgType, arg.Syntax, i+1, arg.Type, result.ValidResult.Member.ParameterTypes[i]);
+                                Error(diagnostics, ErrorCode.ERR_BadArgType, arg.Syntax, i + 1, arg.Type, member.ParameterTypes[i]);
                             }
+
                         }
                     }
                     

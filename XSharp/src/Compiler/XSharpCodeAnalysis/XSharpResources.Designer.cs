@@ -12321,6 +12321,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter {0} needs a(n) &apos;{1}&apos; modifier. This modifier was automatically added..
+        /// </summary>
+        internal static string WRN_AutomaticRefGeneration {
+            get {
+                return ResourceManager.GetString("WRN_AutomaticRefGeneration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Possible unintended reference comparison; to get a value comparison, cast the left hand side to type &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_BadRefCompareLeft {

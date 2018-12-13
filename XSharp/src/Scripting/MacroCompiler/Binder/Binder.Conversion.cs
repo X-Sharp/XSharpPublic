@@ -100,9 +100,11 @@ namespace XSharp.MacroCompiler
                     return ConversionSymbol.Create(ConversionKind.ExplicitUserDefined, converter);
             }
 
-            conversion = ResolveUsualConversion(expr, type);
-            if (conversion != ConversionKind.NoConversion)
-                return ConversionSymbol.Create(conversion);
+            {
+                var conv = ResolveUsualConversion(expr, type);
+                if (conv != null)
+                    return conv;
+            }
 
             if (type.IsByRef != expr.Datatype.IsByRef)
             {
@@ -165,7 +167,7 @@ namespace XSharp.MacroCompiler
         static bool CheckConversionMethod(Expr expr, TypeSymbol type, MethodSymbol m)
         {
             var method = m.Method;
-            if (!m.Method.IsStatic || !m.Method.IsSpecialName)
+            if (!m.Method.IsStatic)
                 return false;
             if (!TypesMatch(FindType(m.Method.ReturnType), type))
                 return false;
@@ -177,11 +179,18 @@ namespace XSharp.MacroCompiler
             return true;
         }
 
-        internal static ConversionKind ResolveUsualConversion(Expr expr, TypeSymbol type)
+        internal static ConversionSymbol ResolveUsualConversion(Expr expr, TypeSymbol type)
         {
             if (expr.Datatype.NativeType == NativeType.Usual && type.NativeType == NativeType.Object)
-                return ConversionKind.Boxing;
-            return ConversionKind.NoConversion;
+            {
+                MethodSymbol converter = null;
+                ResolveConversionMethod(expr, type, Compilation.Get(NativeType.Usual).Lookup(XSharpFunctionNames.ToObject), ref converter);
+                if (converter != null)
+                    return ConversionSymbol.Create(ConversionKind.ImplicitUserDefined, converter);
+                else
+                    return ConversionSymbol.Create(ConversionKind.Boxing);
+            }
+            return null;
         }
 
         internal static ConversionSymbol ResolveByRefConversion(Expr expr, TypeSymbol type)

@@ -1385,7 +1385,11 @@ CLASS XSharp.CoreDb
         LOCAL lockInfo AS DbLockInfo
         lockInfo := DbLockInfo{}
         lockInfo:RecId := uRecID
-        lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
+        if uRecID == null
+            lockInfo:@@METHOD  := DbLockInfo.LockMethod.Exclusive
+        ELSE
+            lockInfo:@@METHOD  := DbLockInfo.LockMethod.Multiple
+        ENDIF
         RETURN oRDD:Lock(lockInfo)
         })
         /// <summary>

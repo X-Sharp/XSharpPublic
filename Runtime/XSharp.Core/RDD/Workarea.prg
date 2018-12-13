@@ -60,9 +60,9 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Current Record</summary>
 		PUBLIC _RecordBuffer	AS BYTE[]	
 		/// <summary>Field delimiter (for DELIM RDD)</summary>
-		PUBLIC _Delimiter		AS STRING	
+		PUBLIC _Delimiter	:= "" AS STRING	
 		/// <summary>Field separator (for DELIM RDD)</summary>
-		PUBLIC _Separator	    AS STRING	
+		PUBLIC _Separator	:= ""  AS STRING	
 		/// <summary> Is the file opened ReadOnly ?</summary>
 		PUBLIC _ReadOnly		AS LOGIC	
 		/// <summary> Is the file opened Shared ?</summary>
@@ -942,56 +942,58 @@ BEGIN NAMESPACE XSharp.RDD
 			LOCAL oResult AS OBJECT
 			// todo check basic implementation
 			SWITCH nOrdinal
-			CASE DBI_ISDBF
-				CASE DBI_CANPUTREC
-				CASE DBI_ISFLOCK
-				CASE DBI_TRANSREC
-				CASE DBI_RM_SUPPORTED
+			    CASE DbInfo.DBI_ISDBF
+				CASE DbInfo.DBI_CANPUTREC
+				CASE DbInfo.DBI_ISFLOCK
+				CASE DbInfo.DBI_TRANSREC
+				CASE DbInfo.DBI_RM_SUPPORTED
 					oResult := FALSE      
-				CASE DBI_SHARED
+				CASE DbInfo.DBI_SHARED
 					oResult := SELF:_Shared
-				CASE DBI_ISREADONLY
+				CASE DbInfo.DBI_ISREADONLY
+                CASE DbInfo.DBI_READONLY
 					oResult := SELF:_ReadOnly
-				CASE DBI_GETDELIMITER
+				CASE DbInfo.DBI_GETDELIMITER
 					oResult := SELF:_Delimiter
-				CASE DBI_SEPARATOR
+				CASE DbInfo.DBI_SEPARATOR
 					oResult := SELF:_Separator
-				CASE DBI_SETDELIMITER            
+				CASE DbInfo.DBI_SETDELIMITER            
 					oResult := SELF:_Separator		
 					IF oNewValue != NULL .AND. oNewValue:GetType() == TYPEOF(STRING)
 						SELF:_Separator	:= (STRING) oNewValue
 					ENDIF
-				CASE DBI_DB_VERSION
-				CASE DBI_RDD_VERSION
+				CASE DbInfo.DBI_DB_VERSION
+				CASE DbInfo.DBI_RDD_VERSION
 					oResult := ""
-				CASE DBI_GETHEADERSIZE
-				CASE DBI_LOCKCOUNT
+				CASE DbInfo.DBI_GETHEADERSIZE
+				CASE DbInfo.DBI_LOCKCOUNT
 					oResult := 0     
-				CASE DBI_GETRECSIZE
+				CASE DbInfo.DBI_GETRECSIZE
 					oResult := SELF:_RecordLength
-				CASE DBI_LASTUPDATE
+				CASE DbInfo.DBI_LASTUPDATE
 					oResult := DateTime.MinValue 
-				CASE DBI_GETLOCKARRAY
+				CASE DbInfo.DBI_GETLOCKARRAY
 					oResult := <DWORD>{}
-				CASE DBI_BOF           
+				CASE DbInfo.DBI_BOF           
 					oResult := SELF:_BOF
-				CASE DBI_EOF           
+				CASE DbInfo.DBI_EOF           
 					oResult := SELF:_EOF   
-				CASE DBI_DBFILTER      
-					oResult := SELF:_FilterInfo?:FilterText
-				CASE DBI_FOUND
+				CASE DbInfo.DBI_DBFILTER
+                    IF SELF:_FilterInfo != null
+					    oResult := SELF:_FilterInfo:FilterText
+                    ELSE
+                        oResult := String.Empty
+                    endif
+				CASE DbInfo.DBI_FOUND
 					oResult := SELF:_Found
-				CASE DBI_FCOUNT
+				CASE DbInfo.DBI_FCOUNT
 					oResult := (INT) _Fields?:Length
-				CASE DBI_ALIAS
+				CASE DbInfo.DBI_ALIAS
 					oResult := _Alias
-				CASE DBI_FULLPATH
+				CASE DbInfo.DBI_FULLPATH
 					oResult := SELF:_FileName
-					// CASE DBI_CHILDCOUNT:
-					// CASE DBI_TABLEEXT
-					// CASE DBI_SCOPEDRELATION
-					// CASE DBI_POSITIONED
-					// CASE DBI_CODEPAGE
+                CASE DbInfo.DBI_CHILDCOUNT
+                    oResult := SELF:_Relations:Count
 				OTHERWISE
 					oResult := NULL
 				END SWITCH

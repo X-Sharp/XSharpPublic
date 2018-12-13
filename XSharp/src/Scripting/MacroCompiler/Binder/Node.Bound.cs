@@ -367,7 +367,6 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Expr.Affinity = BindAffinity.Invoke;
             b.Bind(ref Expr);
-            Expr.RequireValue();
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
             Datatype = Symbol.Type();
@@ -533,7 +532,8 @@ namespace XSharp.MacroCompiler.Syntax
         public override string ToString() { return "{Var:" + Var.ToString() + "}"; }
         internal static AutoVarExpr Bound(string varName)
         {
-            return new AutoVarExpr(LiteralExpr.Bound(Constant.Create(varName))) { Datatype = Compilation.Get(NativeType.Usual) };
+            var e = LiteralExpr.Bound(Constant.Create(varName));
+            return new AutoVarExpr(e) { Symbol = e.Symbol, Datatype = Compilation.Get(NativeType.Usual) };
         }
     }
     internal partial class Arg : Node

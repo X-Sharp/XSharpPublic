@@ -142,7 +142,6 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
         EvalMacro(mc, e"{|a,b| int is ValueType }")
-        EvalMacro(mc, e"{|a,b| int }")
         wait
 
         RunTests(mc)
@@ -181,6 +180,7 @@ begin namespace MacroCompilerTest
         Console.WriteLine("Running tests ...")
 
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
+        TestMacro(mc, e"{|a,b| asdgfafd(123) }", <object>{}, null, null,ErrorCode.NotAMethod)
 
         XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", <object>{1,2,3}, null, null, ErrorCode.IdentifierNotFound)
@@ -351,6 +351,10 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| int is ValueType }", <object>{}, null, null, ErrorCode.NotAnExpression)
         TestMacro(mc, e"{|a,b| int }", <object>{}, null, null, ErrorCode.NotAnExpression)
         TestMacro(mc, e"{|a,b| U(int) }", <object>{}, null, null, ErrorCode.NotAnExpression)
+//        TestMacro(mc, e"{|a,b| asdgfafd(123) }", <object>{}, null, null, ErrorCode.NotAMethod)
+        TestMacro(mc, e"{|a,b| testclass.nested(123) }", <object>{}, null, null, ErrorCode.NotAMethod)
+        TestMacro(mc, e"{|a,b| Console.Write(null) }", <object>{}, null, null)
+        TestMacro(mc, e"{|a,b| Console.Write() }", <object>{}, null, null, ErrorCode.NoSuitableOverload)
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))
@@ -457,7 +461,7 @@ begin namespace MacroCompilerTest
             return false
         catch e as Exception
             TotalFails += 1
-            Console.WriteLine("[FAIL] ({0})", e:Message)
+            Console.WriteLine("[FAIL] (Exception: {0})", e:Message)
             return false
         end
 

@@ -90,7 +90,7 @@ namespace XSharp.MacroCompiler
                     args.Args.Add(arguments);
                     return Compilation.Get(WellKnownMembers.XSharp_VO_Functions___InternalSend);
                 }
-                else if (symbol.Type().IsUsualOrObject())
+                else if (symbol.Type()?.IsUsualOrObject() == true)
                 {
                     self = null;
                     Convert(ref expr, Compilation.Get(NativeType.Usual));

@@ -116,20 +116,28 @@ FUNCTION FCount() AS DWORD
     /// Return the name of a field as a string.
     /// </summary>
     /// <param name="dwFieldPos">The position of the field in the database file structure.</param>
-    /// <returns>
+    /// <returns>The name of the specified field as a symbol.  If dwFieldPos does not correspond to an existing field in a database file
+    /// or if no database file is open, FieldName() return an empty string.
     /// </returns>
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
-    return VoDb.FieldName(dwFieldPos)    
+    IF dwFieldPos > 0 .and. dwFieldPos <= VoDb.FCount() 
+        return VoDb.FieldName(dwFieldPos)
+    ENDIF
+    RETURN String.Empty
     
 
     /// <summary>
     /// Return the name of a field as a symbol.
     /// </summary>
     /// <param name="dwFieldPos">The position of the field in the database file structure.</param>
-    /// <returns>
+    /// <returns>The name of the specified field as a symbol.  If dwFieldPos does not correspond to an existing field in a database file
+    /// or if no database file is open, FieldSym() returns NULL_SYMBOL.
     /// </returns>
 FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
-    return (SYMBOL) VoDb.FieldName(dwFieldPos)
+    IF dwFieldPos > 0 .and. dwFieldPos <= VoDb.FCount() 
+        return (SYMBOL) VoDb.FieldName(dwFieldPos)
+    ENDIF
+    RETURN NULL_SYMBOL
 
 
     /// <summary>

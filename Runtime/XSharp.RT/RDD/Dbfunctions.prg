@@ -357,7 +357,13 @@ FUNCTION Used() AS LOGIC
 FUNCTION DoError (cSymFunc AS STRING, nTries:= 0 AS INT) AS OBJECT
 	LOCAL oError    AS Error
     LOCAL bBlock    AS ICodeBlock
-	oError         := (Error) RuntimeState.LastRDDError
+    IF RuntimeState.LastRDDError is Error
+	    oError         := (Error) RuntimeState.LastRDDError
+    ELSEIF RuntimeState.LastRDDError != NULL_OBJECT
+        oError         := Error{RuntimeState.LastRDDError}
+    ELSE
+        oError  := Error{"Unknown Error occurred" }
+    ENDIF
 	oError:FuncSym := cSymFunc
     oError:Tries   := nTries
     bBlock := XSharp.RuntimeState.GetValue<ICodeBlock>(Set.ErrorBlock)

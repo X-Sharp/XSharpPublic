@@ -100,10 +100,10 @@ namespace XSharp.MacroCompiler
                 switch(kind)
                 {
                     case BinaryOperatorKind.Equal:
-                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
+                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                     case BinaryOperatorKind.NotEqual:
-                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
+                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                 }
             }
@@ -132,7 +132,7 @@ namespace XSharp.MacroCompiler
 
             if (mop == null && kind == BinaryOperatorKind.Exponent && hasUsual)
             {
-                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, options);
+                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions_POW), ref mop, ref lconv, ref rconv, options);
                 ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
                 ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
             }

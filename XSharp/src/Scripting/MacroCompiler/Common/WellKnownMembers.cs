@@ -37,9 +37,9 @@ namespace XSharp.MacroCompiler
         XSharp_RT_Functions___VarGet,
         XSharp_RT_Functions___VarPut,
         XSharp_Core_Functions_Instr,
-        XSharp_VO_Functions___StringCompare,
-        XSharp_VO_Functions___StringEquals,
-        XSharp_VO_Functions___StringNotEquals,
+        XSharp_RT_Functions___StringCompare,
+        XSharp_RT_Functions___StringEquals,
+        XSharp_RT_Functions___StringNotEquals,
     }
 
     public static partial class Compilation

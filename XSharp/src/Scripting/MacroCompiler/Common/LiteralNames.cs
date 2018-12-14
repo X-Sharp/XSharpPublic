@@ -37,8 +37,8 @@
     internal static class XSharpQualifiedTypeNames
     {
         internal const string Usual = "global::XSharp.__Usual";
-        internal const string Float = "global::XSharp.__VOFloat";
-        internal const string Date = "global::XSharp.__VODate";
+        internal const string Float = "global::XSharp.__Float";
+        internal const string Date = "global::XSharp.__Date";
         internal const string Array = "global::XSharp.__Array";
         internal const string Symbol = "global::XSharp.__Symbol";
         internal const string Psz = "global::XSharp.__Psz";
@@ -57,7 +57,7 @@
         internal const string VOStructAttribute = "global::XSharp.Internal.VOStructAttribute";
         internal const string CompilerServices = "global::XSharp.Internal.CompilerServices";
         internal const string ImplicitNamespaceAttribute = "global::XSharp.ImplicitNamespaceAttribute";
-        internal const string Functions = "global::XSharp.VO.Functions";
+        internal const string Functions = "global::XSharp.RT.Functions";
         internal const string ArrayBase = "global::XSharp.__ArrayBase`1";
     }
     internal static class XSharpSpecialNames
@@ -91,6 +91,7 @@
         internal const string VOExeFunctionsClass = ".Exe.Functions";
         internal const string XSharpCoreFunctionsClass = "XSharp.Core.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
+        internal const string XSharpRTFunctionsClass = "XSharp.RT.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
@@ -166,21 +167,21 @@
         internal const string InStr = "global::XSharp.Core.Functions.Instr";
         internal const string WrapException = "global::XSharp.Error.WrapRawException";
         // In VO assembly
-        internal const string StringCompare = "global::XSharp.VO.Functions.__StringCompare";
-        internal const string StringEquals = "global::XSharp.VO.Functions.__StringEquals";
-        internal const string StringNotEquals = "global::XSharp.VO.Functions.__StringNotEquals";
-        internal const string VarGet = "global::XSharp.VO.Functions.VarGet";
-        internal const string VarPut = "global::XSharp.VO.Functions.VarPut";
-        internal const string FieldGet = "global::XSharp.VO.Functions.__FieldGet";
-        internal const string FieldGetWa = "global::XSharp.VO.Functions.__FieldGetWa";
-        internal const string FieldSet = "global::XSharp.VO.Functions.__FieldSet";
-        internal const string FieldSetWa = "global::XSharp.VO.Functions.__FieldSetWa";
-        internal const string MemVarGet = "global::XSharp.VO.Functions.__MemVarGet";
-        internal const string MemVarPut = "global::XSharp.VO.Functions.__MemVarPut";
-        internal const string IVarGet = "global::XSharp.VO.Functions.IVarGet";
-        internal const string IVarPut = "global::XSharp.VO.Functions.IVarPut";
-        internal const string InternalSend = "global::XSharp.VO.Functions.__InternalSend";
-        internal const string ASend = "global::XSharp.VO.Functions.ASend";
+        internal const string StringCompare = "global::XSharp.RT.Functions.__StringCompare";
+        internal const string StringEquals = "global::XSharp.RT.Functions.__StringEquals";
+        internal const string StringNotEquals = "global::XSharp.RT.Functions.__StringNotEquals";
+        internal const string VarGet = "global::XSharp.RT.Functions.__VarGet";
+        internal const string VarPut = "global::XSharp.RT.Functions.__VarPut";
+        internal const string FieldGet = "global::XSharp.RT.Functions.__FieldGet";
+        internal const string FieldGetWa = "global::XSharp.RT.Functions.__FieldGetWa";
+        internal const string FieldSet = "global::XSharp.RT.Functions.__FieldSet";
+        internal const string FieldSetWa = "global::XSharp.RT.Functions.__FieldSetWa";
+        internal const string MemVarGet = "global::XSharp.RT.Functions.__MemVarGet";
+        internal const string MemVarPut = "global::XSharp.RT.Functions.__MemVarPut";
+        internal const string IVarGet = "global::XSharp.RT.Functions.IVarGet";
+        internal const string IVarPut = "global::XSharp.RT.Functions.IVarPut";
+        internal const string InternalSend = "global::XSharp.RT.Functions.__InternalSend";
+        internal const string ASend = "global::XSharp.RT.Functions.ASend";
         internal const string NullDate = "global::XSharp.__VODate.NullDate";
         //internal const string UsualNIL = "global::XSharp.__Usual._NIL";
         internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
@@ -188,12 +189,12 @@
         internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";
         internal const string EnterSequence = "global::XSharp.Internal.CompilerServices.EnterBeginSequence";
         internal const string ExitSequence = "global::XSharp.Internal.CompilerServices.ExitBeginSequence";
-        internal const string QQout = "global::XSharp.VO.Functions.QQOut";
-        internal const string Qout = "global::XSharp.VO.Functions.QOut";
-        internal const string StringAlloc = "global::XSharp.VO.Functions.StringAlloc";
-        internal const string PushWorkarea = "global::XSharp.VO.Functions.__pushWorkarea";
-        internal const string PopWorkarea = "global::XSharp.VO.Functions.__popWorkarea";
-        internal const string Evaluate = "global::XSharp.VO.Functions.Evaluate";
+        internal const string QQout = "global::XSharp.RT.Functions.QQOut";
+        internal const string Qout = "global::XSharp.RT.Functions.QOut";
+        internal const string StringAlloc = "global::XSharp.RT.Functions.StringAlloc";
+        internal const string PushWorkarea = "global::XSharp.RT.Functions.__pushWorkarea";
+        internal const string PopWorkarea = "global::XSharp.RT.Functions.__popWorkarea";
+        internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate";
     }
     internal static class OurAssemblyNames
     {

@@ -88,7 +88,8 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:_Top := TRUE
 					SELF:_Bottom := FALSE
 					SELF:_BufferValid := FALSE
-					RETURN TRUE
+                    // Apply Filter and SetDeleted
+                    RETURN SkipFilter(1)
 				END LOCK
 			ENDIF
 			RETURN FALSE
@@ -101,7 +102,8 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:_Top := FALSE
 					SELF:_Bottom := TRUE
 					SELF:_BufferValid := FALSE
-					RETURN TRUE
+                    // Apply Filter and SetDeleted
+                    RETURN SkipFilter(-1)
 				END LOCK
 			ENDIF
 			RETURN FALSE
@@ -816,7 +818,8 @@ BEGIN NAMESPACE XSharp.RDD
 					SELF:GoTop()
 				ENDIF
 			ELSE
-				SELF:_DbfError( ERDD.CREATE_FILE, XSharp.Gencode.EG_CREATE )
+                VAR ex := FException()
+				SELF:_DbfError( ex, ERDD.CREATE_FILE, XSharp.Gencode.EG_CREATE )
 			ENDIF
 			RETURN isOK
 			
@@ -902,7 +905,8 @@ BEGIN NAMESPACE XSharp.RDD
 			ELSE
 				// Error or just FALSE ?
 				isOK := FALSE
-				//SELF:_DbfError( ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
+                local ex := FException() as Exception
+				SELF:_DbfError( ex, ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
 			ENDIF
 			//
 			RETURN isOk
@@ -1463,31 +1467,42 @@ BEGIN NAMESPACE XSharp.RDD
 
 			//
 			RETURN isOk
-			
+
+        INTERNAL METHOD _dbfError(ex as Exception, iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
+            SELF:_DbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR)
+        			
 		// Throw a Error, indicating the SubSystem Code and the General Code
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
-			SELF:_DbfError(iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
+			SELF:_DbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
 			
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
-			SELF:_DbfError(iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
+			SELF:_DbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
 			
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
-			SELF:_DbfError(iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
+			SELF:_DbfError(NULL, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
 			
 		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
-			SELF:_DbfError(iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
+			SELF:_DbfError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
 			
-		INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
+		INTERNAL METHOD _dbfError(ex as Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
 			LOCAL oError AS RddError
 			//
-			oError := RddError{}
+            if ex != NULL
+			    oError := RddError{ex}
+            ELSE
+                oError := RddError{}
+            ENDIF
 			oError:SubCode := iSubCode
 			oError:Gencode := iGenCode
 			oError:SubSystem := SELF:SysName
 			oError:Severity := iSeverity
 			oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
 			oError:FileName := SELF:_FileName
+            if String.IsNullOrEmpty(strMessage) == NULL .and. ex != NULL
+                strMessage := ex:Message
+            endif
 			oError:Description := IIF(strMessage == NULL , "", strMessage)
+
 			//
 			THROW oError
 			

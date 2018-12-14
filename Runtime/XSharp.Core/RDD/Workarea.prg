@@ -565,23 +565,24 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-			// Note that nFldPos is 1 based
-			IF SELF:_FieldIndexValidate(nFldPos)
+            // Note that nFldPos is 1 based
+            IF SELF:_FieldIndexValidate(nFldPos)
                 LOCAL ofld AS RddFieldInfo
                 ofld := SELF:_Fields[nFldPos-1]
                 SWITCH nOrdinal
-                CASE DBS_NAME
+                CASE DbFieldInfo.DBS_NAME
                     RETURN ofld:Name
-                CASE DBS_TYPE
-                    RETURN oFld:FieldType:ToString()
-                CASE DBS_LEN
+                CASE DbFieldInfo.DBS_TYPE
+                    RETURN oFld:FieldType:ToString():Substring(0,1)
+                CASE DbFieldInfo.DBS_LEN
                     RETURN oFld:Length
-                CASE DBS_DEC
+                CASE DbFieldInfo.DBS_DEC
                     RETURN oFld:Decimals
-                CASE DBS_ALIAS
+                CASE DbFieldInfo.DBS_ALIAS
                     IF oNewValue IS STRING
+                        // set new alias for the field
                         IF _fieldNames:ContainsValue(nFldPos-1)
-                            // Should always be the case
+                            // Should always be the case, but better safe than sorry
                             FOREACH VAR pair IN SELF:_fieldNames
                                 IF pair:value == nFldPos-1
                                     SELF:_fieldNames:Remove(pair:Key)
@@ -591,18 +592,21 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
                         oFld:Alias := ((STRING) oNewValue):ToUpperInvariant()
                         // the new alias could be an empty string !
-                        IF !String.IsNullOrEmpty(oFld:Alias) 
-                            SELF:_fieldNames:Add(oFld:Alias:Trim(), nFldPos-1)
-                        ELSE
-                            SELF:_fieldNames:Add(oFld:Name:Trim(), nFldPos-1)
+                        // When it is then we use the fieldname, because every field
+                        // must be represented in the Names table
+                        VAR cNewName := oFld:Alias:Trim()
+                        IF String.IsNullOrEmpty(cNewName)
+                            oFld:Alias := NULL
+                            cNewName  := oFld:Name:Trim()
                         ENDIF
+                        SELF:_fieldNames:Add(cNewName, nFldPos-1)
                     ENDIF
                     IF oFld:Alias != NULL
                         RETURN oFld:Alias
                     ELSE
                         RETURN oFld:Name
                     ENDIF
-                CASE DBS_PROPERTIES
+                CASE DbFieldInfo.DBS_PROPERTIES
                     RETURN 5
                 END SWITCH
             ENDIF

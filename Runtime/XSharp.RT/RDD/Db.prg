@@ -405,7 +405,7 @@ FUNCTION DbEval(uBlock, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPP
     /// <returns>
     /// </returns>
 FUNCTION DbFieldInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER
-    _DbThrowErrorOnFailure(__FUNCTION__, !VoDb.FieldInfo(nOrdinal, nPos, REF xNewVal))
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldInfo(nOrdinal, nPos, REF xNewVal))
     RETURN xNewVal
     
     

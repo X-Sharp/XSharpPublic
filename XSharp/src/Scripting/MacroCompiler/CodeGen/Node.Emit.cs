@@ -120,14 +120,9 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
-            if (Symbol is BinaryOperatorSymbol)
-            {
-                Left.Emit(ilg);
-                Right.Emit(ilg);
-                (Symbol as BinaryOperatorSymbol).Emit(this, Datatype, ilg);
-            }
-            else
-                throw new InternalError();
+            Left.Emit(ilg);
+            Right.Emit(ilg);
+            Symbol.EmitGet(ilg);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }
@@ -168,20 +163,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Expr.Emit(ilg);
-            if (Symbol is UnaryOperatorSymbolWithMethod)
-            {
-                var op = (UnaryOperatorSymbolWithMethod)Symbol;
-                ilg.Emit(OpCodes.Call, op.Method.Method);
-            }
-            else if (Symbol is UnaryOperatorSymbol)
-            {
-                var op = (UnaryOperatorSymbol)Symbol;
-                EmitUnaryOperator(ilg, op, Datatype); // TODO nkok: handle checked/unchecked
-            }
-            else
-            {
-                throw new InternalError();
-            }
+            Symbol.EmitGet(ilg);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }

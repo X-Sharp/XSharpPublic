@@ -75,7 +75,24 @@ namespace XSharp.MacroCompiler
         internal static BinaryOperatorSymbol Create(BinaryOperatorKind kind, OperandType opType) { return simpleOp[(int)kind, (int)opType]; }
         internal static BinaryOperatorSymbolWithMethod Create(BinaryOperatorKind kind, MethodSymbol method,
             ConversionSymbol lconv, ConversionSymbol rconv)
-        { return new BinaryOperatorSymbolWithMethod(kind, method, lconv, rconv); }
+        {
+            switch (kind)
+            {
+                case BinaryOperatorKind.GreaterThan:
+                case BinaryOperatorKind.LessThan:
+                case BinaryOperatorKind.GreaterThanOrEqual:
+                case BinaryOperatorKind.LessThanOrEqual:
+                case BinaryOperatorKind.Equal:
+                case BinaryOperatorKind.ExactEqual:
+                case BinaryOperatorKind.NotEqual:
+                    if (!method.Method.IsSpecialName && method.Type.NativeType == NativeType.Int32)
+                        return new BinaryComparisonSymbolWithMethod(kind, method, lconv, rconv);
+                    else
+                        return new BinaryOperatorSymbolWithMethod(kind, method, lconv, rconv);
+                default:
+                    return new BinaryOperatorSymbolWithMethod(kind, method, lconv, rconv);
+            }
+        }
 
         internal override TypeSymbol Type { get { return ResType.TypeSymbol(); } }
 
@@ -351,6 +368,14 @@ namespace XSharp.MacroCompiler
         }
 
         internal override TypeSymbol Type { get { return Method.Type; } }
+    }
+
+    internal partial class BinaryComparisonSymbolWithMethod : BinaryOperatorSymbolWithMethod
+    {
+        internal BinaryComparisonSymbolWithMethod(BinaryOperatorKind kind, MethodSymbol method,
+            ConversionSymbol convLeft, ConversionSymbol convRight) : base(kind, method, convLeft, convRight) { }
+
+        internal override TypeSymbol Type { get { return Compilation.Get(NativeType.Boolean); } }
     }
 
     internal static class BinaryOperatorEasyOut

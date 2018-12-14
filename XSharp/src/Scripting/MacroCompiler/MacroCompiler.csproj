@@ -64,6 +64,7 @@
     <Compile Include="CodeGen\Constant.Emit.cs" />
     <Compile Include="CodeGen\Conversion.Emit.cs" />
     <Compile Include="CodeGen\Node.Emit.cs" />
+    <Compile Include="CodeGen\Operator.Unary.Emit.cs" />
     <Compile Include="CodeGen\Symbol.Emit.cs" />
     <Compile Include="Common\LiteralNames.cs" />
     <Compile Include="Common\NativeTypes.cs" />

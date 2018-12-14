@@ -14,17 +14,27 @@ namespace XSharp.MacroCompiler
 
     internal partial class BinaryOperatorSymbol : TypedSymbol
     {
-        internal virtual void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
-            EmitBinaryOperator(ilg, this, type); // TODO nkok: handle checked/unchecked
+            EmitBinaryOperator(ilg, this, Type); // TODO nkok: handle checked/unchecked
         }
     }
 
     internal partial class BinaryOperatorSymbolWithMethod : BinaryOperatorSymbol
     {
-        internal override void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
+        internal override void EmitGet(ILGenerator ilg)
         {
             ilg.Emit(OpCodes.Call, this.Method.Method);
+        }
+    }
+
+    internal partial class BinaryComparisonSymbolWithMethod : BinaryOperatorSymbolWithMethod
+    {
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            base.EmitGet(ilg);
+            EmitConstant_I4(ilg, 0);
+            EmitBinaryOperator(ilg, this, Compilation.Get(NativeType.Int32));
         }
     }
 }

@@ -42,16 +42,19 @@ namespace XSharp.MacroCompiler
         {
             var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);
 
-            switch(sym?.Kind)
+            if (options.HasFlag(BindOptions.AllowInexactComparisons) && sym != null)
             {
-                case BinaryOperatorKind.EqString:
-                case BinaryOperatorKind.EqStringObject:
-                case BinaryOperatorKind.EqObjectString:
-                case BinaryOperatorKind.NeqString:
-                case BinaryOperatorKind.NeqStringObject:
-                case BinaryOperatorKind.NeqObjectString:
-                    sym = null;
-                    break;
+                switch (sym.Kind)
+                {
+                    case BinaryOperatorKind.EqString:
+                    case BinaryOperatorKind.EqStringObject:
+                    case BinaryOperatorKind.EqObjectString:
+                    case BinaryOperatorKind.NeqString:
+                    case BinaryOperatorKind.NeqStringObject:
+                    case BinaryOperatorKind.NeqObjectString:
+                        sym = null;
+                        break;
+                }
             }
 
             if (sym != null)
@@ -93,29 +96,47 @@ namespace XSharp.MacroCompiler
             ConversionSymbol rconv = null;
 
             bool hasUsual = left.Datatype.NativeType == NativeType.Usual || right.Datatype.NativeType == NativeType.Usual;
-            bool hasString = left.Datatype.NativeType == NativeType.String || right.Datatype.NativeType == NativeType.String;
 
-            if (left.Datatype.NativeType == NativeType.String && right.Datatype.NativeType == NativeType.String)
+            if (options.HasFlag(BindOptions.AllowInexactComparisons))
             {
-                switch(kind)
+                bool hasString = left.Datatype.NativeType == NativeType.String || right.Datatype.NativeType == NativeType.String;
+                bool bothStrings = left.Datatype.NativeType == NativeType.String && right.Datatype.NativeType == NativeType.String;
+
+                switch (kind)
                 {
                     case BinaryOperatorKind.Equal:
-                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
+                        if (bothStrings)
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
+                        else if (hasString)
+                            ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                     case BinaryOperatorKind.NotEqual:
-                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
+                        if (bothStrings)
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
+                        else if (hasString)
+                            ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactNotEquals), ref mop, ref lconv, ref rconv, options);
+                        break;
+                    case BinaryOperatorKind.GreaterThan:
+                    case BinaryOperatorKind.LessThan:
+                    case BinaryOperatorKind.GreaterThanOrEqual:
+                    case BinaryOperatorKind.LessThanOrEqual:
+                        if (bothStrings)
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringCompare), ref mop, ref lconv, ref rconv, options);
                         break;
                 }
             }
-            else if (hasString || hasUsual)
+            else
             {
                 switch (kind)
                 {
                     case BinaryOperatorKind.Equal:
-                        ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactEquals), ref mop, ref lconv, ref rconv, options);
-                        break;
                     case BinaryOperatorKind.NotEqual:
-                        ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactNotEquals), ref mop, ref lconv, ref rconv, options);
+                    case BinaryOperatorKind.GreaterThan:
+                    case BinaryOperatorKind.LessThan:
+                    case BinaryOperatorKind.GreaterThanOrEqual:
+                    case BinaryOperatorKind.LessThanOrEqual:
+                        if (left.Datatype.NativeType == NativeType.String && right.Datatype.NativeType == NativeType.String)
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.System_String_CompareOrdinal), ref mop, ref lconv, ref rconv, options);
                         break;
                 }
             }
@@ -130,11 +151,14 @@ namespace XSharp.MacroCompiler
                 }
             }
 
-            if (mop == null && kind == BinaryOperatorKind.Exponent && hasUsual)
+            if (mop == null && kind == BinaryOperatorKind.Exponent)
             {
-                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions_POW), ref mop, ref lconv, ref rconv, options);
-                ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
-                ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
+                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, options);
+                if (hasUsual)
+                {
+                    ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
+                    ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
+                }
             }
 
             if (mop != null)

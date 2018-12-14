@@ -12,41 +12,51 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal static UnaryOperatorSymbol BindUnaryOperation(UnaryExpr expr, UnaryOperatorKind kind, bool isLogic, bool allowDynamic = true)
+        internal UnaryOperatorSymbol BindUnaryLogicOperation(UnaryExpr expr, UnaryOperatorKind kind)
         {
-            if (isLogic)
+            return BindUnaryOperation(expr, kind, Options.Binding | BindOptions.Logic);
+        }
+
+        internal UnaryOperatorSymbol BindUnaryOperation(UnaryExpr expr, UnaryOperatorKind kind)
+        {
+            return BindUnaryOperation(expr, kind, Options.Binding);
+        }
+
+        internal static UnaryOperatorSymbol BindUnaryOperation(UnaryExpr expr, UnaryOperatorKind kind, BindOptions options)
+        {
+            if (options.HasFlag(BindOptions.Logic))
             {
-                Convert(ref expr.Expr, Compilation.Get(NativeType.Boolean));
+                Convert(ref expr.Expr, Compilation.Get(NativeType.Boolean), options);
             }
 
-            var res = UnaryOperation(kind, ref expr.Expr);
+            var res = UnaryOperation(kind, ref expr.Expr, options);
 
             if (res != null)
                 return res;
 
-            throw UnaryOperationError(expr, kind, isLogic);
+            throw UnaryOperationError(expr, kind, options);
         }
 
-        internal static UnaryOperatorSymbol UnaryOperation(UnaryOperatorKind kind, ref Expr expr, bool allowDynamic = true)
+        internal static UnaryOperatorSymbol UnaryOperation(UnaryOperatorKind kind, ref Expr expr, BindOptions options)
         {
             var sym = UnaryOperatorEasyOut.ClassifyOperation(kind, expr.Datatype);
             if (sym != null)
             {
-                Convert(ref expr, sym.Type);
+                Convert(ref expr, sym.Type, options);
                 return sym;
             }
 
             // User-defined operators
             {
-                var op = UserDefinedUnaryOperator(kind, ref expr);
+                var op = UserDefinedUnaryOperator(kind, ref expr, options);
                 if (op != null)
                     return op;
             }
 
             // Dynamic with usual
-            if (allowDynamic)
+            if (options.HasFlag(BindOptions.AllowDynamic))
             {
-                var op = DynamicUnaryOperator(kind, ref expr);
+                var op = DynamicUnaryOperator(kind, ref expr, options);
                 if (op != null)
                     return op;
             }
@@ -54,14 +64,14 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
-        internal static UnaryOperatorSymbol UserDefinedUnaryOperator(UnaryOperatorKind kind, ref Expr expr)
+        internal static UnaryOperatorSymbol UserDefinedUnaryOperator(UnaryOperatorKind kind, ref Expr expr, BindOptions options)
         {
             var name = UnaryOperatorSymbol.OperatorName(kind);
             if (name != null)
             {
                 MethodSymbol mop = null;
                 ConversionSymbol conv = null;
-                ResolveUserDefinedUnaryOperator(expr, expr.Datatype.Lookup(name), ref mop, ref conv);
+                ResolveUserDefinedUnaryOperator(expr, expr.Datatype.Lookup(name), ref mop, ref conv, options);
                 if (mop != null)
                 {
                     var op = UnaryOperatorSymbol.Create(kind, mop, conv);
@@ -73,18 +83,18 @@ namespace XSharp.MacroCompiler
         }
 
         internal static void ResolveUserDefinedUnaryOperator(Expr expr, Symbol ops,
-            ref MethodSymbol op, ref ConversionSymbol conv)
+            ref MethodSymbol op, ref ConversionSymbol conv, BindOptions options)
         {
             if (ops != null)
-                ResolveUnaryOperator(expr, ops, ref op, ref conv);
+                ResolveUnaryOperator(expr, ops, ref op, ref conv, options);
         }
 
         internal static void ResolveUnaryOperator(Expr expr, Symbol ops,
-            ref MethodSymbol op, ref ConversionSymbol conv)
+            ref MethodSymbol op, ref ConversionSymbol conv, BindOptions options)
         {
             if (ops is MethodSymbol)
             {
-                if (CheckUnaryOperator(expr, (MethodSymbol)ops, ref conv))
+                if (CheckUnaryOperator(expr, (MethodSymbol)ops, ref conv, options))
                     op = (MethodSymbol)ops;
             }
             else if ((ops as SymbolList)?.SymbolTypes.HasFlag(MemberTypes.Method) == true)
@@ -92,13 +102,13 @@ namespace XSharp.MacroCompiler
                 foreach (MethodSymbol m in ((SymbolList)ops).Symbols)
                     if (m != null)
                     {
-                        if (CheckUnaryOperator(expr, m, ref conv))
+                        if (CheckUnaryOperator(expr, m, ref conv, options))
                             op = m;
                     }
             }
         }
 
-        internal static bool CheckUnaryOperator(Expr expr, MethodSymbol m, ref ConversionSymbol conv, bool needSpecialName = true)
+        internal static bool CheckUnaryOperator(Expr expr, MethodSymbol m, ref ConversionSymbol conv, BindOptions options, bool needSpecialName = true)
         {
             var method = m.Method;
             if (!m.Method.IsStatic || (needSpecialName && !m.Method.IsSpecialName))
@@ -112,7 +122,7 @@ namespace XSharp.MacroCompiler
                 conv = ConversionSymbol.Create(ConversionKind.Identity);
                 return true;
             }
-            var _conv = Conversion(expr, type);
+            var _conv = Conversion(expr, type, options);
 
             if (_conv.IsImplicit)
             {
@@ -144,14 +154,14 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        static UnaryOperatorSymbol DynamicUnaryOperator(UnaryOperatorKind kind, ref Expr expr)
+        static UnaryOperatorSymbol DynamicUnaryOperator(UnaryOperatorKind kind, ref Expr expr, BindOptions options)
         {
             var e = expr;
 
             if (e.Datatype.NativeType == NativeType.Object)
-                Convert(ref e, Compilation.Get(NativeType.Usual));
+                Convert(ref e, Compilation.Get(NativeType.Usual), options);
 
-            var op = UserDefinedUnaryOperator(kind, ref e);
+            var op = UserDefinedUnaryOperator(kind, ref e, options);
 
             if (op != null)
             {

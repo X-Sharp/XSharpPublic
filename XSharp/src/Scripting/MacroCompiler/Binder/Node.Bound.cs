@@ -99,9 +99,9 @@ namespace XSharp.MacroCompiler.Syntax
             if (Symbol == null)
             {
                 if (Affinity == BindAffinity.Invoke)
-                    Binder.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+                    b.Convert(ref Expr, Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
                 else
-                    Binder.Convert(ref Expr, Compilation.Get(NativeType.Object));
+                    b.Convert(ref Expr, Compilation.Get(NativeType.Object));
                 Symbol = new DynamicSymbol(Member.LookupName);
             }
             Datatype = Symbol.Type();
@@ -131,7 +131,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireValue();
             Right.RequireValue();
-            Binder.Convert(ref Right, Left.Datatype);
+            b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
             return null;
@@ -145,8 +145,8 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireValue();
             Right.RequireValue();
-            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false);
-            Binder.Convert(ref Right, Left.Datatype);
+            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false, b.Options.Binding);
+            b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
             return null;
@@ -160,14 +160,17 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireValue();
             Right.RequireValue();
-            Symbol = Binder.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind), BinaryOperatorSymbol.OperatorIsLogic(Kind));
+            if (BinaryOperatorSymbol.OperatorIsLogic(Kind))
+                Symbol = b.BindBinaryLogicOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
+            else
+                Symbol = b.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
             Datatype = Symbol.Type();
             return null;
         }
-        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, bool logic)
+        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, bool logic, BindOptions options)
         {
             var e = new BinaryExpr(Left, t, Right);
-            e.Symbol = Binder.BindBinaryOperation(e, kind, logic);
+            e.Symbol = Binder.BindBinaryOperation(e, kind, options);
             e.Datatype = e.Symbol.Type();
             return e;
         }
@@ -180,7 +183,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireValue();
             Right.RequireValue();
-            Symbol = Binder.BindBinaryOperation(this, BinaryOperatorSymbol.OperatorKind(Kind), true);
+            Symbol = b.BindBinaryLogicOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
             Datatype = Symbol.Type();
             return null;
         }
@@ -191,14 +194,17 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Expr.RequireValue();
-            Symbol = Binder.BindUnaryOperation(this, UnaryOperatorSymbol.OperatorKind(Kind), UnaryOperatorSymbol.OperatorIsLogic(Kind));
+            if (UnaryOperatorSymbol.OperatorIsLogic(Kind))
+                Symbol = b.BindUnaryLogicOperation(this, UnaryOperatorSymbol.OperatorKind(Kind));
+            else
+                Symbol = b.BindUnaryOperation(this, UnaryOperatorSymbol.OperatorKind(Kind));
             Datatype = Symbol.Type();
             return null;
         }
-        internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind)
+        internal static UnaryExpr Bound(Expr expr, UnaryOperatorKind kind, BindOptions options)
         {
             var e = new UnaryExpr(expr, expr.Token);
-            e.Symbol = Binder.BindUnaryOperation(e, kind, false);
+            e.Symbol = Binder.BindUnaryOperation(e, kind, options);
             e.Datatype = e.Symbol.Type();
             return e;
         }
@@ -211,8 +217,8 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Expr.RequireValue();
             Left = Expr.Cloned(b);
-            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
-            Binder.Convert(ref Expr, Left.Datatype);
+            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
+            b.Convert(ref Expr, Left.Datatype);
             Symbol = Expr.Symbol;
             Datatype = Expr.Datatype;
             return null;
@@ -228,8 +234,8 @@ namespace XSharp.MacroCompiler.Syntax
             Expr.RequireValue();
             Left = Expr.Cloned(b);
             Value = b.Cache(ref Expr);
-            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind));
-            Binder.Convert(ref Expr, Left.Datatype);
+            Expr = Bound(Expr, UnaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
+            b.Convert(ref Expr, Left.Datatype);
             Symbol = Value.Symbol;
             Datatype = Value.Datatype;
             return null;
@@ -313,7 +319,7 @@ namespace XSharp.MacroCompiler.Syntax
             Type.Bind(b);
             Type.RequireType();
             Datatype = Type.Symbol as TypeSymbol;
-            Symbol = Binder.Conversion(Expr, Datatype, allowExplicit: true);
+            Symbol = b.ExplicitConversion(Expr, Datatype);
             if (!(Symbol as ConversionSymbol).Exists)
                 ThrowError(ErrorCode.NoConversion, Expr.Datatype, Type.Symbol);
             return null;
@@ -392,7 +398,7 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Expr.RequireValue();
             b.Bind(ref Args);
-            Binder.Convert(ref Expr, Compilation.Get(NativeType.Array));
+            b.Convert(ref Expr, Compilation.Get(NativeType.Array));
             Self = Expr;
             var s = Self.Datatype.Lookup(SystemNames.IndexerName);
             Symbol = b.BindArrayAccess(Self, s, Args);
@@ -445,16 +451,16 @@ namespace XSharp.MacroCompiler.Syntax
             }
             b.Bind(ref Values);
             if (ElemType != null)
-                Convert(ElemType.Symbol as TypeSymbol);
+                ConvertElements(ElemType.Symbol as TypeSymbol);
             else
-                Convert(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object),
+                ConvertElements(Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object),
                     Compilation.Get(WellKnownTypes.XSharp___Array));
             return null;
         }
         internal static LiteralArray Bound(IList<Expr> values, TypeSymbol type = null)
         {
             var e = new LiteralArray(new ExprList(values));
-            e.Convert(type ?? Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
+            e.ConvertElements(type ?? Compilation.Get(NativeType.Usual) ?? Compilation.Get(NativeType.Object));
             return e;
         }
         internal static LiteralArray Bound(IList<Arg> args, TypeSymbol type = null)
@@ -463,12 +469,12 @@ namespace XSharp.MacroCompiler.Syntax
             foreach(var a in args) values.Add(a.Expr);
             return Bound(values, type);
         }
-        private void Convert(TypeSymbol et, TypeSymbol dt = null)
+        private void ConvertElements(TypeSymbol et, TypeSymbol dt = null)
         {
             for (int i = 0; i < Values.Exprs.Count; i++)
             {
                 var v = Values.Exprs[i];
-                Binder.Convert(ref v, et);
+                Binder.Convert(ref v, et, BindOptions.Default);
                 Values.Exprs[i] = v;
             }
             Symbol = et;
@@ -485,8 +491,8 @@ namespace XSharp.MacroCompiler.Syntax
             Cond.RequireValue();
             True.RequireValue();
             False.RequireValue();
-            Binder.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
-            Datatype = Binder.ConvertResult(ref True, ref False);
+            b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
+            Datatype = b.ConvertResult(ref True, ref False);
             return null;
         }
     }
@@ -498,11 +504,11 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.Bind(ref Alias);
                 Alias.RequireValue();
-                Binder.Convert(ref Alias, Compilation.Get(NativeType.String));
+                b.Convert(ref Alias, Compilation.Get(NativeType.String));
             }
             b.Bind(ref Field);
             Field.RequireValue();
-            Binder.Convert(ref Field, Compilation.Get(NativeType.String));
+            b.Convert(ref Field, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Usual);
             return null;
         }
@@ -519,8 +525,8 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireValue();
             Right.RequireValue();
-            Binder.Convert(ref Left, Compilation.Get(NativeType.String));
-            Binder.Convert(ref Right, Compilation.Get(NativeType.String));
+            b.Convert(ref Left, Compilation.Get(NativeType.String));
+            b.Convert(ref Right, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Boolean);
             return null;
         }
@@ -574,7 +580,7 @@ namespace XSharp.MacroCompiler.Syntax
                 if (Body.Datatype.NativeType != NativeType.Void)
                 {
                     Expr e = Body.Exprs.Last();
-                    Binder.Convert(ref e, b.ObjectType);
+                    b.Convert(ref e, b.ObjectType);
                     Body.Exprs[Body.Exprs.Count - 1] = e;
                 }
             }

@@ -18,7 +18,7 @@ namespace XSharp.MacroCompiler
 
             OverloadResult ovRes = null;
 
-            var res = TryBindArrayAccess(self, symbol, args, ref ovRes);
+            var res = TryBindArrayAccess(self, symbol, args, ref ovRes, Options.Binding);
 
             if (res != null)
                 return res;
@@ -30,17 +30,17 @@ namespace XSharp.MacroCompiler
         {
             for (int i = 0; i < args.Args.Count; i++)
             {
-                args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, args.Args[i].Expr.Token, LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Subtraction, false);
+                args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, args.Args[i].Expr.Token, LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Subtraction, false, Options.Binding);
             }
         }
 
-        internal MemberSymbol TryBindArrayAccess(Expr self, Symbol symbol, ArgList args, ref OverloadResult ovRes)
+        internal static MemberSymbol TryBindArrayAccess(Expr self, Symbol symbol, ArgList args, ref OverloadResult ovRes, BindOptions options)
         {
             bool isStatic = self == null;
 
             if ((symbol as PropertySymbol)?.IsStatic == isStatic)
             {
-                CheckArguments(symbol as PropertySymbol, (symbol as PropertySymbol).Parameters, args, ref ovRes);
+                CheckArguments(symbol as PropertySymbol, (symbol as PropertySymbol).Parameters, args, ref ovRes, options);
             }
             else if ((symbol as SymbolList)?.HasProperty == true)
             {
@@ -50,7 +50,7 @@ namespace XSharp.MacroCompiler
                     var p = properties.Symbols[i];
                     if ((p as PropertySymbol)?.IsStatic == isStatic)
                     {
-                        CheckArguments(p as PropertySymbol, (p as PropertySymbol).Parameters, args, ref ovRes);
+                        CheckArguments(p as PropertySymbol, (p as PropertySymbol).Parameters, args, ref ovRes, options);
                         if (ovRes?.Exact == true)
                             break;
                     }

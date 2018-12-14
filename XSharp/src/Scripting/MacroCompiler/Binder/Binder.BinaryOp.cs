@@ -12,23 +12,33 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal static BinaryOperatorSymbol BindBinaryOperation(BinaryExpr expr, BinaryOperatorKind kind, bool isLogic, bool allowDynamic = true)
+        internal BinaryOperatorSymbol BindBinaryLogicOperation(BinaryExpr expr, BinaryOperatorKind kind)
         {
-            if (isLogic)
+            return BindBinaryOperation(expr, kind, Options.Binding | BindOptions.Logic);
+        }
+
+        internal BinaryOperatorSymbol BindBinaryOperation(BinaryExpr expr, BinaryOperatorKind kind)
+        {
+            return BindBinaryOperation(expr, kind, Options.Binding);
+        }
+
+        internal static BinaryOperatorSymbol BindBinaryOperation(BinaryExpr expr, BinaryOperatorKind kind, BindOptions options)
+        {
+            if (options.HasFlag(BindOptions.Logic))
             {
-                Convert(ref expr.Left, Compilation.Get(NativeType.Boolean));
-                Convert(ref expr.Right, Compilation.Get(NativeType.Boolean));
+                Convert(ref expr.Left, Compilation.Get(NativeType.Boolean), options);
+                Convert(ref expr.Right, Compilation.Get(NativeType.Boolean), options);
             }
 
-            var res = BinaryOperation(kind, ref expr.Left, ref expr.Right, allowDynamic);
+            var res = BinaryOperation(kind, ref expr.Left, ref expr.Right, options);
 
             if (res != null)
                 return res;
 
-            throw BinaryOperationError(expr, kind, isLogic);
+            throw BinaryOperationError(expr, kind, options);
         }
 
-        internal static BinaryOperatorSymbol BinaryOperation(BinaryOperatorKind kind, ref Expr left, ref Expr right, bool allowDynamic = true)
+        internal static BinaryOperatorSymbol BinaryOperation(BinaryOperatorKind kind, ref Expr left, ref Expr right, BindOptions options)
         {
             var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);
 
@@ -46,29 +56,29 @@ namespace XSharp.MacroCompiler
 
             if (sym != null)
             {
-                Convert(ref left, sym.TypeOfOp);
-                Convert(ref right, sym.TypeOfOp);
+                Convert(ref left, sym.TypeOfOp, options);
+                Convert(ref right, sym.TypeOfOp, options);
                 return sym;
             }
 
             // User-defined operators
             {
-                var op = UserDefinedBinaryOperator(kind, ref left, ref right);
+                var op = UserDefinedBinaryOperator(kind, ref left, ref right, options);
                 if (op != null)
                     return op;
             }
 
             // Symbol/string operations
             {
-                var op = SymbolAndStringBinaryOperator(kind, ref left, ref right);
+                var op = SymbolAndStringBinaryOperator(kind, ref left, ref right, options);
                 if (op != null)
                     return op;
             }
 
             // Dynamic with usual
-            if (allowDynamic)
+            if (options.HasFlag(BindOptions.AllowDynamic))
             {
-                var op = DynamicBinaryOperator(kind, ref left, ref right);
+                var op = DynamicBinaryOperator(kind, ref left, ref right, options);
                 if (op != null)
                     return op;
             }
@@ -76,7 +86,7 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
-        internal static BinaryOperatorSymbol UserDefinedBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right)
+        internal static BinaryOperatorSymbol UserDefinedBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right, BindOptions options)
         {
             MethodSymbol mop = null;
             ConversionSymbol lconv = null;
@@ -90,10 +100,10 @@ namespace XSharp.MacroCompiler
                 switch(kind)
                 {
                     case BinaryOperatorKind.Equal:
-                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringEquals), ref mop, ref lconv, ref rconv, false);
+                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                     case BinaryOperatorKind.NotEqual:
-                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, false);
+                        ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                 }
             }
@@ -102,10 +112,10 @@ namespace XSharp.MacroCompiler
                 switch (kind)
                 {
                     case BinaryOperatorKind.Equal:
-                        ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactEquals), ref mop, ref lconv, ref rconv, false);
+                        ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                     case BinaryOperatorKind.NotEqual:
-                        ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactNotEquals), ref mop, ref lconv, ref rconv, false);
+                        ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactNotEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                 }
             }
@@ -115,16 +125,16 @@ namespace XSharp.MacroCompiler
                 var name = BinaryOperatorSymbol.OperatorName(kind);
                 if (name != null)
                 {
-                    ResolveBinaryOperator(left, right, left.Datatype.Lookup(name), ref mop, ref lconv, ref rconv);
-                    ResolveBinaryOperator(left, right, right.Datatype.Lookup(name), ref mop, ref lconv, ref rconv);
+                    ResolveBinaryOperator(left, right, left.Datatype.Lookup(name), ref mop, ref lconv, ref rconv, options | BindOptions.Special);
+                    ResolveBinaryOperator(left, right, right.Datatype.Lookup(name), ref mop, ref lconv, ref rconv, options | BindOptions.Special);
                 }
             }
 
             if (mop == null && kind == BinaryOperatorKind.Exponent && hasUsual)
             {
-                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, false);
-                ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, false);
-                ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, false);
+                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, options);
+                ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
+                ResolveBinaryOperator(left, right, right.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);
             }
 
             if (mop != null)
@@ -138,11 +148,11 @@ namespace XSharp.MacroCompiler
         }
 
         internal static void ResolveBinaryOperator(Expr left, Expr right, Symbol ops,
-            ref MethodSymbol op, ref ConversionSymbol lconv, ref ConversionSymbol rconv, bool needSpecialName = true)
+            ref MethodSymbol op, ref ConversionSymbol lconv, ref ConversionSymbol rconv, BindOptions options)
         {
             if (ops is MethodSymbol)
             {
-                if (CheckBinaryOperator(left, right, (MethodSymbol)ops, ref lconv, ref rconv, needSpecialName))
+                if (CheckBinaryOperator(left, right, (MethodSymbol)ops, ref lconv, ref rconv, options))
                     op = (MethodSymbol)ops;
             }
             else if ((ops as SymbolList)?.SymbolTypes.HasFlag(MemberTypes.Method) == true)
@@ -150,17 +160,17 @@ namespace XSharp.MacroCompiler
                 foreach (MethodSymbol m in ((SymbolList)ops).Symbols)
                     if (m != null)
                     {
-                        if (CheckBinaryOperator(left, right, m, ref lconv, ref rconv, needSpecialName))
+                        if (CheckBinaryOperator(left, right, m, ref lconv, ref rconv, options))
                             op = m;
                     }
             }
         }
 
         internal static bool CheckBinaryOperator(Expr left, Expr right, MethodSymbol m,
-            ref ConversionSymbol lconv, ref ConversionSymbol rconv, bool needSpecialName = true)
+            ref ConversionSymbol lconv, ref ConversionSymbol rconv, BindOptions options)
         {
             var method = m.Method;
-            if (!m.Method.IsStatic || (needSpecialName && !m.Method.IsSpecialName))
+            if (!m.Method.IsStatic || (options.HasFlag(BindOptions.Special) && !m.Method.IsSpecialName))
                 return false;
             var parameters = method.GetParameters();
             if (parameters.Length != 2)
@@ -173,8 +183,8 @@ namespace XSharp.MacroCompiler
                 rconv = ConversionSymbol.Create(ConversionKind.Identity);
                 return true;
             }
-            var _lconv = Conversion(left, ltype);
-            var _rconv = Conversion(right, rtype);
+            var _lconv = Conversion(left, ltype, options);
+            var _rconv = Conversion(right, rtype, options);
             if (_lconv.IsImplicit && _rconv.IsImplicit)
             {
                 if (lconv == null && rconv == null)
@@ -210,41 +220,41 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        internal static BinaryOperatorSymbol SymbolAndStringBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right)
+        internal static BinaryOperatorSymbol SymbolAndStringBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right, BindOptions options)
         {
             if (kind == BinaryOperatorKind.Addition)
             {
                 var l = left;
                 var r = right;
                 if (left.Datatype.NativeType == NativeType.Symbol)
-                    Convert(ref l, Compilation.Get(NativeType.String));
+                    Convert(ref l, Compilation.Get(NativeType.String), options);
                 if (right.Datatype.NativeType == NativeType.Symbol)
-                    Convert(ref r, Compilation.Get(NativeType.String));
+                    Convert(ref r, Compilation.Get(NativeType.String), options);
                 var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, l.Datatype, r.Datatype);
                 if (sym != null)
                 {
                     left = l;
                     right = r;
-                    Convert(ref left, sym.TypeOfOp);
-                    Convert(ref right, sym.TypeOfOp);
+                    Convert(ref left, sym.TypeOfOp, options);
+                    Convert(ref right, sym.TypeOfOp, options);
                     return sym;
                 }
             }
             return null;
         }
 
-        static BinaryOperatorSymbol DynamicBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right)
+        static BinaryOperatorSymbol DynamicBinaryOperator(BinaryOperatorKind kind, ref Expr left, ref Expr right, BindOptions options)
         {
             var l = left;
             var r = right;
 
             if (l.Datatype.NativeType == NativeType.Object)
-                Convert(ref l, Compilation.Get(NativeType.Usual));
+                Convert(ref l, Compilation.Get(NativeType.Usual), options);
 
             if (r.Datatype.NativeType == NativeType.Object)
-                Convert(ref r, Compilation.Get(NativeType.Usual));
+                Convert(ref r, Compilation.Get(NativeType.Usual), options);
 
-            var op = UserDefinedBinaryOperator(kind, ref l, ref r);
+            var op = UserDefinedBinaryOperator(kind, ref l, ref r, options);
 
             if (op != null)
             {

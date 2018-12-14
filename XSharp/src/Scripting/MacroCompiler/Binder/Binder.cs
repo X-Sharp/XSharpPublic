@@ -15,6 +15,21 @@ namespace XSharp.MacroCompiler
         Invoke,
     }
 
+    [Flags]
+    internal enum BindOptions
+    {
+        AllowDynamic = 1,
+        AllowInexactComparisons = 2,
+
+        BoxUsual = 128,
+        Explicit = 256,
+        Special = 512,
+        Logic = 1024,
+
+        None = 0,
+        Default = AllowDynamic | AllowInexactComparisons
+    }
+
     internal partial class Binder
     {
         static NamespaceSymbol Global = null;

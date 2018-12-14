@@ -29,8 +29,13 @@ namespace XSharp.MacroCompiler
 
         public bool ArrayZero = false;
 
-        public bool AllowInexactComparisons = true;
+        public bool AllowInexactComparisons {
+            get { return Binding.HasFlag(BindOptions.AllowInexactComparisons); }
+            set { Binding |= BindOptions.AllowInexactComparisons; }
+        }
 
         public VariableResolution UndeclaredVariableResolution = VariableResolution.TreatAsFieldOrMemvar;
+
+        internal BindOptions Binding { get; private set; } = BindOptions.Default;
     }
 }

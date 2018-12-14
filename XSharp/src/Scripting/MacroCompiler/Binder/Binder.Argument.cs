@@ -12,7 +12,7 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal static ConversionSymbol ArgumentConversion(Arg arg, ParameterInfo param)
+        internal static ConversionSymbol ArgumentConversion(Arg arg, ParameterInfo param, BindOptions options)
         {
             if (arg == null || arg.Expr is EmptyExpr)
             {
@@ -90,16 +90,16 @@ namespace XSharp.MacroCompiler
                 }
                 return ConversionSymbol.Create(ConversionKind.NoConversion);
             }
-            var conv = Conversion(arg.Expr, FindType(param.ParameterType));
+            var conv = Conversion(arg.Expr, FindType(param.ParameterType), options);
             return conv;
         }
-        internal static ConversionSymbol VarArgumentConversion(Arg arg, TypeSymbol type)
+        internal static ConversionSymbol VarArgumentConversion(Arg arg, TypeSymbol type, BindOptions options)
         {
             if (arg == null || arg.Expr is EmptyExpr)
             {
                 return ConversionSymbol.Create(Constant.CreateDefault(type));
             }
-            var conv = Conversion(arg.Expr, type);
+            var conv = Conversion(arg.Expr, type, options);
             return conv;
         }
     }

@@ -77,12 +77,12 @@ namespace XSharp.MacroCompiler
             return name.Error(ErrorCode.NotTypeOrNamespace, expr);
         }
 
-        internal static CompilationError BinaryOperationError(BinaryExpr expr, BinaryOperatorKind kind, bool isLogic = false)
+        internal static CompilationError BinaryOperationError(BinaryExpr expr, BinaryOperatorKind kind, BindOptions options)
         {
             return expr.Error(ErrorCode.BinaryOperationNotFound, BinaryOperatorSymbol.OperatorSymbol(kind), expr.Left.Datatype, expr.Right.Datatype);
         }
 
-        internal static CompilationError UnaryOperationError(UnaryExpr expr, UnaryOperatorKind kind, bool isLogic = false)
+        internal static CompilationError UnaryOperationError(UnaryExpr expr, UnaryOperatorKind kind, BindOptions options)
         {
             return expr.Error(ErrorCode.UnaryOperationNotFound, UnaryOperatorSymbol.OperatorSymbol(kind), expr.Expr.Datatype);
         }

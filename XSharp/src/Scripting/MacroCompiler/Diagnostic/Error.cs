@@ -39,6 +39,8 @@ namespace XSharp.MacroCompiler
         LiteralFloatOverflow = 220,
         NotAType = 221,
         NotAnExpression = 222,
+        NotAMethod = 223,
+        NotFound = 224,
     }
 
     internal class ErrorString
@@ -55,12 +57,12 @@ namespace XSharp.MacroCompiler
             { ErrorCode.UnexpectedValue, "Unexpected value" },
             { ErrorCode.NoConversion, "No conversion from {0} to {1}" },
             { ErrorCode.NoImplicitConversion, "No implicit conversion from {0} to {1} (explicit conversion exists)" },
-            { ErrorCode.TypeNotFound, "Type not found: {0}" },
-            { ErrorCode.IdentifierNotFound, "Not found: {0}" },
+            { ErrorCode.TypeNotFound, "Type {0} not found" },
+            { ErrorCode.IdentifierNotFound, "Identifier {0} not found" },
             { ErrorCode.NoSuitableOverload, "No suitable overload of {0}" },
             { ErrorCode.MemberNotMethod, "Member is not a method: {0}" },
             { ErrorCode.ArgumentsNotMatch, "Aruments do not match method {0}" },
-            { ErrorCode.MemberNotFound, "No accessible member found" },
+            { ErrorCode.MemberNotFound, "No accessible member {0} found" },
             { ErrorCode.AmbiguousCall, "Ambiguous call" },
             { ErrorCode.CtorNotFound, "No accessible constructor found" },
             { ErrorCode.ArgumentsNotMatchCtor, "Constructor aruments do not match" },
@@ -75,6 +77,8 @@ namespace XSharp.MacroCompiler
             { ErrorCode.LiteralFloatOverflow, "Floating=point overflow at literal constant" },
             { ErrorCode.NotAType, "{0} is not a type" },
             { ErrorCode.NotAnExpression, "{0} is not a valid expression term" },
+            { ErrorCode.NotAMethod, "{0} is not a method" },
+            { ErrorCode.NotFound, "{0} not found" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

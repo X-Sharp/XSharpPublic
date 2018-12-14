@@ -21,14 +21,18 @@ namespace XSharp.MacroCompiler
                     return expr.Error(ErrorCode.ArgumentsNotMatch, symbol.MemberName());
                 else if (symbol is MemberSymbol)
                     return expr.Error(ErrorCode.MemberNotMethod, symbol.MemberName());
-                else
-                    return expr.Error(ErrorCode.MemberNotFound);
+                else if (expr.Symbol != null)
+                    return expr.Error(ErrorCode.NotAMethod, symbol);
+                else if (expr is QualifiedNameExpr)
+                    return expr.Error(ErrorCode.MemberNotFound, (expr as QualifiedNameExpr).Name);
+                else if (expr is MemberAccessExpr)
+                    return expr.Error(ErrorCode.MemberNotFound, (expr as MemberAccessExpr).Member.Name);
             }
 
             if (ovRes.Unique == false)
                 return expr.Error(ErrorCode.AmbiguousCall);
 
-            return expr.Error(ErrorCode.MemberNotFound);
+            return expr.Error(ErrorCode.NotFound, "Expression");
         }
 
         internal static CompilationError CtorCallBindError(Expr expr, Symbol symbol, ArgList args, OverloadResult ovRes)
@@ -73,12 +77,12 @@ namespace XSharp.MacroCompiler
             return name.Error(ErrorCode.NotTypeOrNamespace, expr);
         }
 
-        internal static CompilationError BinaryOperationError(BinaryExpr expr, BinaryOperatorKind kind, bool isLogic = false)
+        internal static CompilationError BinaryOperationError(BinaryExpr expr, BinaryOperatorKind kind, BindOptions options)
         {
             return expr.Error(ErrorCode.BinaryOperationNotFound, BinaryOperatorSymbol.OperatorSymbol(kind), expr.Left.Datatype, expr.Right.Datatype);
         }
 
-        internal static CompilationError UnaryOperationError(UnaryExpr expr, UnaryOperatorKind kind, bool isLogic = false)
+        internal static CompilationError UnaryOperationError(UnaryExpr expr, UnaryOperatorKind kind, BindOptions options)
         {
             return expr.Error(ErrorCode.UnaryOperationNotFound, UnaryOperatorSymbol.OperatorSymbol(kind), expr.Expr.Datatype);
         }

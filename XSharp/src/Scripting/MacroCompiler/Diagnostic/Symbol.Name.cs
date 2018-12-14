@@ -25,7 +25,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class NamespaceSymbol : ContainerSymbol
     {
-        internal override string FullName { get { return ParentNamespace != null ? ParentNamespace.FullName + "." + Name : Name; } }
+        internal override string FullName { get { return string.IsNullOrEmpty(ParentNamespace?.FullName) ? Name : ParentNamespace.FullName + "." + Name; } }
     }
     internal partial class TypeSymbol : ContainerSymbol
     {
@@ -33,7 +33,7 @@ namespace XSharp.MacroCompiler
         {
             get
             {
-                var n = (Namespace?.FullName ?? DeclaringType?.FullName ?? "");
+                var n = Namespace?.FullName ?? DeclaringType?.FullName;
                 return string.IsNullOrEmpty(n) ? "" : n + ".";
             }
         }
@@ -70,7 +70,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class MethodSymbol : MethodBaseSymbol
     {
-        internal override string FullName { get { return DeclaringType.FullName + "." + Method.Name + "(...)"; } }
+        internal override string FullName { get { return DeclaringType.FullName + "." + Method.Name + "()"; } }
     }
     internal partial class FieldSymbol : MemberSymbol
     {
@@ -86,6 +86,6 @@ namespace XSharp.MacroCompiler
     }
     internal partial class ConstructorSymbol : MethodBaseSymbol
     {
-        internal override string FullName { get { return Type.FullName + "{...}"; } }
+        internal override string FullName { get { return Type.FullName + "{}"; } }
     }
 }

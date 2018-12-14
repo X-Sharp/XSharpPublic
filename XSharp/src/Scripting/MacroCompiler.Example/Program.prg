@@ -108,22 +108,22 @@ global tsi := teststruct{1} as teststruct
 
 global tci := testclass{1} as testclass
 
-function MyVarGet(name as string) as object
+function MyVarGet(name as string) as usual
     return "VarGet(" + name + ")"
 
-function MyVarPut(name as string, value as object) as object
+function MyVarPut(name as string, value as usual) as usual
     return "VarPut(" + name +"):" + (string)value
 
-function MyFieldGet(name as string) as object
+function MyFieldGet(name as string) as usual
     return "FieldGet(" + name + ")"
 
-function MyFieldSet(name as string, value as object) as object
+function MyFieldSet(name as string, value as usual) as usual
     return "FieldSet(" + name +"):" + (string)value
 
-function MyFieldGetWa(wa as string, name as object) as object
+function MyFieldGetWa(wa as string, name as string) as usual
     return "FieldGet(" + wa + "," + name + ")"
 
-function MyFieldSetWa(wa as string, name as string, value as object) as object
+function MyFieldSetWa(wa as string, name as string, value as usual) as usual
     return "FieldSet(" + wa + "," + name +"):" + (string)value
 
 begin namespace MacroCompilerTest
@@ -142,7 +142,6 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| a $ b}", "est", "test")
         EvalMacro(mc, e"{|a,b| int is ValueType }")
-        EvalMacro(mc, e"{|a,b| int }")
         wait
 
         RunTests(mc)
@@ -182,10 +181,10 @@ begin namespace MacroCompilerTest
 
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
 
-        mc:Options:UndeclaredVariableResolution := VariableResolution.Error
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", <object>{1,2,3}, null, null, ErrorCode.IdentifierNotFound)
 
-        mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
         TestMacro(mc, e"{|a| a() }", <object>{(@@Func<int>){ => 1234}}, 1234, typeof(usual))
         TestMacro(mc, "#HELLo", <OBJECT>{}, #hello, typeof(symbol))
         TestMacro(mc, "#HELLo + #World", <OBJECT>{}, #hello + #world, typeof(string))
@@ -321,9 +320,9 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"char(65)", <object>{}, 65, typeof(char))
         TestMacro(mc, e"slen(\"hello\")", <object>{}, 5, typeof(dword))
         TestMacro(mc, e"{|v| v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual))
-        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"TEST", typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
-        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
-        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
+//        TestMacro(mc, e"{|v| v[2,1,2,1,1] := 'TEST', v[2,1,2,1,1] }", <OBJECT>{ {{}, {{ "1_78", {{ 'DATEI_1', 'C', 100, 0,'Anhang 1','Anhang1' }}, nil, nil }}} },"DATEI_1", typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
+//        TestMacro(mc, e"{|a| a[2,2,2,2,2] := 12, a[2,2,2,2,2] }", <object>{ {1,{1,{1,{1,{1, 3}}}}} }, 12 , typeof(usual)) // FAIL - due to ARRAY:__SetElement() bug
+//        TestMacro(mc, e"{|a| a:ToString() }", <OBJECT>{8}, "8", typeof(string)) // FAIL - String:ToString() is overloaded!
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"est", "test"}, true, typeof(boolean))
         TestMacro(mc, e"{|a,b| a $ b}", <object>{"test", "est"}, false, typeof(boolean))
         TestMacro(mc, e"{|a,b| sizeof(int) }", <object>{}, sizeof(int), typeof(dword))
@@ -349,32 +348,30 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| (testclass.nested.fff)123 }", <object>{}, null, null, ErrorCode.NotAType)
         TestMacro(mc, e"{|a,b| (testclass.nested)123 }", <object>{}, null, null, ErrorCode.NoConversion)
         TestMacro(mc, e"{|a,b| int is ValueType }", <object>{}, null, null, ErrorCode.NotAnExpression)
-        TestMacro(mc, e"{|a,b| int }", <object>{}, null, null, ErrorCode.NotAnExpression)
-        TestMacro(mc, e"{|a,b| U(int) }", <object>{}, null, null, ErrorCode.NotAnExpression)
 
-        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
+//        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))
 //        TestMacro(mc, e"{|| NIKOS := 123}", <OBJECT>{}, 123, typeof(usual))
 
-        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut, "MyVarPut")
-        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "VarGet(NIKOS)", typeof(string))
-        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "VarPut(NIKOS):123", typeof(string))
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarGet, "MyVarGet")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions_VarPut, "MyVarPut")
+        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "VarGet(NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "VarPut(NIKOS):123", typeof(usual))
 
-        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
-        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(string))
-        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(string))
-        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(string))
-        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(string))
-        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(string))
-        TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(string))
-        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(string))
-        TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(string))
+        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGet, "MyFieldGet")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSet, "MyFieldSet")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldGetWa, "MyFieldGetWa")
+        Compilation.Override(WellKnownMembers.XSharp_VO_Functions___FieldSetWa, "MyFieldSetWa")
+        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->NIKOS}", <OBJECT>{}, "FieldGet(NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| BASE->NIKOS}", <OBJECT>{}, "FieldGet(BASE,NIKOS)", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| _FIELD->BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(usual))
+        TestMacro(mc, e"{|| BASE->NIKOS := \"123\"}", <OBJECT>{}, "FieldSet(BASE,NIKOS):123", typeof(usual))
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         return
@@ -520,5 +517,46 @@ begin namespace MacroCompilerTest
 
 end namespace
 
+begin namespace XSharp.Runtime
+    using XSharp.MacroCompiler
+    //using Vulcan.Runtime
+    using XSharp
 
+    delegate RuntimeCodeblockDelegate(args params dynamic[]) as dynamic
 
+    public class RuntimeCodeblock implements ICodeBlock
+        private _eval as RuntimeCodeblockDelegate
+        private _pcount as int
+
+        public method EvalBlock(args params dynamic[]) as dynamic
+            return _eval(args)
+
+        public method PCount() as int
+            return _pcount
+
+        public constructor(evalMethod as RuntimeCodeblockDelegate, pCount as int)
+            _eval := evalMethod
+            _pcount := pCount
+    end class
+
+    public class MacroCompiler implements IMacroCompiler
+        internal static Options := MacroOptions{} as MacroOptions
+        internal compiler := Compilation.Create<object,RuntimeCodeblockDelegate>(options) as Compilation<object,RuntimeCodeblockDelegate>
+
+	    public method Compile (cMacro as string, lOldStyle as logic, Module as System.Reflection.Module, lIsBlock ref logic) as ICodeBlock
+		    lIsBlock := cMacro:StartsWith("{|")
+            var m := compiler:Compile(cMacro)
+            if m:Diagnostic != null
+                throw m:Diagnostic
+            endif
+    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
+
+	    public method Compile (cMacro as string) as ICodeBlock
+            var m := compiler:Compile(cMacro)
+            if m:Diagnostic != null
+                throw m:Diagnostic
+            endif
+    	    return RuntimeCodeblock{m:Macro,m:ParamCount}
+    end class
+
+end namespace

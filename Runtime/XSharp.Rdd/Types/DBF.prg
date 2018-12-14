@@ -1098,40 +1098,39 @@ BEGIN NAMESPACE XSharp.RDD
 				ENDIF
 				//
 				SWITCH nOrdinal
-					CASE DbFieldInfo.DBS_NAME
-						oResult := SELF:_Fields[nArrPos]:Name
-					CASE DbFieldInfo.DBS_LEN
-						oResult := SELF:_Fields[nArrPos]:Length
-					CASE DbFieldInfo.DBS_DEC
-						oResult := SELF:_Fields[nArrPos]:Decimals
-					CASE DbFieldInfo.DBS_TYPE
-						oResult := SELF:_Fields[nArrPos]:FieldType:ToString():Substring(0,1)
-					CASE DbFieldInfo.DBS_ALIAS
-						oResult := SELF:_Fields[nArrPos]:Alias
-						
-					CASE DbFieldInfo.DBS_ISNULL
-					CASE DbFieldInfo.DBS_COUNTER
-					CASE DbFieldInfo.DBS_STEP
-					
-					CASE DbFieldInfo.DBS_BLOB_GET
-					CASE DbFieldInfo.DBS_BLOB_TYPE	// Returns the data type of a BLOB (memo) field. This
-						// is more efficient than using Type() or ValType()
-						// since the data itself does not have to be retrieved
-						// from the BLOB file in order to determine the type.
-				CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file
-					CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
-					CASE DbFieldInfo.DBS_BLOB_POINTER	// Returns a numeric pointer to the data in a blob
-						// file. This pointer can be used with BLOBDirectGet(),
-						// BLOBDirectImport(), etc.
-						
-					CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
-					CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
-					
-					CASE DbFieldInfo.DBS_STRUCT
-					CASE DbFieldInfo.DBS_PROPERTIES
-					CASE DbFieldInfo.DBS_USER
-					
+                    // These are handled in the parent class and also take care of aliases etc.
+                    CASE DbFieldInfo.DBS_NAME
+                    CASE DbFieldInfo.DBS_LEN
+                    CASE DbFieldInfo.DBS_DEC
+                    CASE DbFieldInfo.DBS_TYPE
+                    CASE DbFieldInfo.DBS_ALIAS
+                        oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+                        
+                    CASE DbFieldInfo.DBS_ISNULL
+                    CASE DbFieldInfo.DBS_COUNTER
+                    CASE DbFieldInfo.DBS_STEP
+                    
+                    CASE DbFieldInfo.DBS_BLOB_GET
+                    CASE DbFieldInfo.DBS_BLOB_TYPE
+                        // Returns the data type of a BLOB (memo) field. This
+                        // is more efficient than using Type() or ValType()
+                        // since the data itself does not have to be retrieved
+                        // from the BLOB file in order to determine the type.
+                    CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file
+                    CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
+                    CASE DbFieldInfo.DBS_BLOB_POINTER
+                        // Returns a numeric pointer to the data in a blob
+                        // file. This pointer can be used with BLOBDirectGet(),
+                        // BLOBDirectImport(), etc.
+                        
+                    CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
+                    CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
+                    
+                    CASE DbFieldInfo.DBS_STRUCT
+                    CASE DbFieldInfo.DBS_PROPERTIES
+                    CASE DbFieldInfo.DBS_USER
 					OTHERWISE
+                        // Everything falls through to parent at this moment
 						oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
 					END SWITCH
 			END LOCK

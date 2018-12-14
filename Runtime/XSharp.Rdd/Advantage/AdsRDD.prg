@@ -258,7 +258,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
         strFieldDef += (fld:Length + fld:Decimals*256):ToString()+";" 
       CASE DbFieldType.Number
       CASE DbFieldType.Integer
-        strFieldDef += "N;"+fld:Length:ToString()+", "+fld:Decimals:ToString()+";"
+        strFieldDef += "N,"+fld:Length:ToString()+", "+fld:Decimals:ToString()+";"
       CASE DbFieldType.Date
         strFieldDef += "D;"
       CASE DbFieldType.Logic
@@ -421,10 +421,11 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
     LOCAL dwLength AS DWORD
     SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength))
     SELF:_RecordLength := (LONG) dwLength
-    IF !SUPER:Create(info)
-      SELF:Close()
-      RETURN FALSE
-    ENDIF
+    // Workarea has no implementation of Create
+    //    IF !SUPER:Create(info)            
+    //      SELF:Close()
+    //      RETURN FALSE
+    //    ENDIF
     RETURN SELF:RecordMovement()
     
     
@@ -1249,13 +1250,13 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       CASE DBS_BLOB_TYPE
           SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT fieldType))
           SWITCH fieldType
-          CASE ACE.ADS_MEMO
-          CASE ACE.ADS_BINARY
+        CASE ACE.ADS_MEMO
+        CASE ACE.ADS_BINARY
         CASE ACE.ADS_IMAGE
-          CASE ACE.ADS_NMEMO
+        CASE ACE.ADS_NMEMO
             RETURN "?"
         END SWITCH
-      CASE DBS_BLOB_LEN
+        CASE DBS_BLOB_LEN
           IF SUPER:_fields[uiPos-1]:fieldType != DBFieldType.Memo  
             RETURN -1
           ELSE

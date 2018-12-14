@@ -133,7 +133,7 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     /// </returns>
     // _FIELD->Name
 
-FUNCTION __FieldGet( fieldName AS STRING ) AS OBJECT
+FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
@@ -146,7 +146,7 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS OBJECT
     
     // CUSTOMER->NAME
 /// <exclude/>
-FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS OBJECT
+FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS USUAL
     LOCAL ret AS OBJECT
     LOCAL newArea := SELECT( alias ) AS DWORD
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
@@ -164,7 +164,7 @@ FUNCTION __FieldGetWa( alias AS STRING, fieldName AS STRING ) AS OBJECT
     
     // _FIELD->Name := "Foo"
 /// <exclude/>
-FUNCTION __FieldSet( fieldName AS STRING, oValue AS OBJECT ) AS OBJECT
+FUNCTION __FieldSet( fieldName AS STRING, oValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
         THROW Error.VODBError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  fieldName  )
@@ -209,14 +209,14 @@ FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     
 
 /// <exclude/>
-FUNCTION __VarGet(cName AS STRING) AS OBJECT
+FUNCTION __VarGet(cName AS STRING) AS USUAL
     IF FieldPos(cName) > 0
         RETURN __FieldGet(cName)
     ENDIF
     RETURN __MemVarGet(cName)
     
 /// <exclude/>
-FUNCTION __VarPut(cName AS STRING, uValue AS OBJECT) AS OBJECT
+FUNCTION __VarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     IF FieldPos(cName) > 0
         RETURN __FieldSet(cName, uValue)
     ENDIF

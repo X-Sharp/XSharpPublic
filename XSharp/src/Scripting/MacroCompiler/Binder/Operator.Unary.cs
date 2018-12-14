@@ -21,7 +21,7 @@ namespace XSharp.MacroCompiler
         False,
     }
 
-    internal class UnaryOperatorSymbol : TypedSymbol
+    internal partial class UnaryOperatorSymbol : TypedSymbol
     {
         internal readonly UnaryOperatorKind Kind;
         internal readonly OperandType OpType;
@@ -149,7 +149,7 @@ namespace XSharp.MacroCompiler
         }
     }
 
-    internal class UnaryOperatorSymbolWithMethod : UnaryOperatorSymbol
+    internal partial class UnaryOperatorSymbolWithMethod : UnaryOperatorSymbol
     {
         internal MethodSymbol Method;
         internal ConversionSymbol Conv;

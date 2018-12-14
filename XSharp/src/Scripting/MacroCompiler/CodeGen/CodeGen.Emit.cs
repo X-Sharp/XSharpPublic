@@ -662,18 +662,21 @@ namespace XSharp.MacroCompiler
                 case BinaryOperatorKind.Or:
                     ilg.Emit(OpCodes.Or);
                     break;
+                case BinaryOperatorKind.GreaterThan:
                 case BinaryOperatorKind.GreaterThanAny:
                     if (type.NativeType.IsUnsigned())
                         ilg.Emit(OpCodes.Cgt_Un);
                     else
                         ilg.Emit(OpCodes.Cgt);
                     break;
+                case BinaryOperatorKind.LessThan:
                 case BinaryOperatorKind.LessThanAny:
                     if (type.NativeType.IsUnsigned())
                         ilg.Emit(OpCodes.Clt_Un);
                     else
                         ilg.Emit(OpCodes.Clt);
                     break;
+                case BinaryOperatorKind.GreaterThanOrEqual:
                 case BinaryOperatorKind.GreaterThanOrEqualAny:
                     if (type.NativeType.IsUnsigned())
                         ilg.Emit(OpCodes.Clt_Un);
@@ -682,6 +685,7 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldc_I4_0);
                     ilg.Emit(OpCodes.Ceq);
                     break;
+                case BinaryOperatorKind.LessThanOrEqual:
                 case BinaryOperatorKind.LessThanOrEqualAny:
                     if (type.NativeType.IsUnsigned())
                         ilg.Emit(OpCodes.Cgt_Un);
@@ -690,10 +694,13 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldc_I4_0);
                     ilg.Emit(OpCodes.Ceq);
                     break;
+                case BinaryOperatorKind.ExactEqual:
+                case BinaryOperatorKind.Equal:
                 case BinaryOperatorKind.ExactEqualAny:
                 case BinaryOperatorKind.EqualAny:
                     ilg.Emit(OpCodes.Ceq);
                     break;
+                case BinaryOperatorKind.NotEqual:
                 case BinaryOperatorKind.NotEqualAny:
                     ilg.Emit(OpCodes.Ceq);
                     ilg.Emit(OpCodes.Ldc_I4_0);

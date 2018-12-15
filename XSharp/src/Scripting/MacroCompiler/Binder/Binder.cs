@@ -39,7 +39,7 @@ namespace XSharp.MacroCompiler
         internal MacroOptions Options;
         internal bool DynamicUsual = true;
 
-        internal Dictionary<string, LocalSymbol> LocalCache = new Dictionary<string, LocalSymbol>();
+        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>();
         internal List<LocalSymbol> Locals = new List<LocalSymbol>();
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
@@ -286,7 +286,7 @@ namespace XSharp.MacroCompiler
             else
             {
                 {
-                    LocalSymbol v;
+                    Symbol v;
                     LocalCache.TryGetValue(name, out v);
                     if (v != null)
                         return v;
@@ -401,6 +401,12 @@ namespace XSharp.MacroCompiler
             if (!string.IsNullOrEmpty(name))
                 LocalCache.Add(name, variable);
             return variable;
+        }
+
+        internal void AddConstant(string name, Constant c)
+        {
+            if (!string.IsNullOrEmpty(name))
+                LocalCache.Add(name, c);
         }
     }
 

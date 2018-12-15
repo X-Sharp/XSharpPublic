@@ -277,30 +277,31 @@ namespace XSharp.MacroCompiler
             return FindType(nt);
         }
 
-        internal Symbol Lookup(Symbol decl, string name)
+        internal Symbol Lookup(string name)
         {
-            if (decl != null)
             {
-                return decl.Lookup(name);
+                Symbol v;
+                LocalCache.TryGetValue(name, out v);
+                if (v != null)
+                    return v;
             }
-            else
             {
-                {
-                    Symbol v;
-                    LocalCache.TryGetValue(name, out v);
-                    if (v != null)
-                        return v;
-                }
-                {
-                    Symbol v = Lookup(name);
-                    if (v != null)
-                        return v;
-                }
+                Symbol v = LookupName(name);
+                if (v != null)
+                    return v;
             }
             return null;
         }
 
-        internal static Symbol Lookup(string name)
+        internal Symbol Lookup(Symbol decl, string name)
+        {
+            if (decl != null)
+                return decl.Lookup(name);
+            else
+                return Lookup(name);
+        }
+
+        internal static Symbol LookupName(string name)
         {
             {
                 Symbol v = Global.Lookup(name);

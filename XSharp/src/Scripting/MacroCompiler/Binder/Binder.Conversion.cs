@@ -35,6 +35,11 @@ namespace XSharp.MacroCompiler
             Convert(ref e, type, Conversion(e, type, Options.Binding));
         }
 
+        internal void ConvertExplicit(ref Expr e, TypeSymbol type)
+        {
+            Convert(ref e, type, Conversion(e, type, Options.Binding | BindOptions.Explicit));
+        }
+
         internal TypeSymbol ConvertResult(ref Expr e1, ref Expr e2)
         {
             return ConvertResult(ref e1, ref e2, Options.Binding);

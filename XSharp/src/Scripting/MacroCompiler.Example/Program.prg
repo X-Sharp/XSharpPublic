@@ -141,7 +141,7 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
         //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
-        //? _XOR((usual)7,(usual)7)
+        EvalMacro(mc, e"_GETMPARAM(3)", 1, 2, 3)
         wait
 
         RunTests(mc)
@@ -393,6 +393,16 @@ begin namespace MacroCompilerTest
         TestMacro(mc, "PCount()", <object>{}, 0, typeof(int))
         TestMacro(mc, "{|a,b|PCount()}", <object>{}, 0, typeof(int))
         TestMacro(mc, "{|a|PCount()}", <object>{1,2,3}, 3, typeof(int))
+        TestMacro(mc, e"_GetMParam(0)", <object>{10, 20, 30.5}, null, typeof(object))
+        TestMacro(mc, e"_GetMParam(1)", <object>{10, 20, 30.5}, 10, typeof(int))
+        TestMacro(mc, e"_GetMParam(2)", <object>{10, 20, 30.5}, 20, typeof(int))
+        TestMacro(mc, e"_GetMParam(3)", <object>{10, 20, 30.5}, 30.5, typeof(real8))
+        TestMacro(mc, e"_GetMParam(100)", <object>{10, 20, 30.5}, null, typeof(object))
+        TestMacro(mc, e"_GetFParam(0)", <object>{10, 20, 30.5}, null, typeof(object))
+        TestMacro(mc, e"_GetFParam(1)", <object>{10, 20, 30.5}, 10, typeof(int))
+        TestMacro(mc, e"_GetFParam(2)", <object>{10, 20, 30.5}, 20, typeof(int))
+        TestMacro(mc, e"_GetFParam(3)", <object>{10, 20, 30.5}, 30.5, typeof(real8))
+        TestMacro(mc, e"_GetFParam(100)", <object>{10, 20, 30.5}, null, typeof(object))
 
 //        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

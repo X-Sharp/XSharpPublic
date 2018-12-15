@@ -124,7 +124,7 @@ namespace XSharp.MacroCompiler
         internal static bool Override(WellKnownMembers kind, string proto)
         {
             var name = proto.Replace("$", "").Split('(').First();
-            var s = Binder.Lookup(name);
+            var s = Binder.LookupName(name);
             if (s == null)
                 return false;
             if (s is SymbolList)

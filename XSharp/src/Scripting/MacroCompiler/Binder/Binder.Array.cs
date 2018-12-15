@@ -13,8 +13,7 @@ namespace XSharp.MacroCompiler
     {
         internal MemberSymbol BindArrayAccess(Expr self, Symbol symbol, ArgList args)
         {
-            if (!Options.ArrayZero)
-                ConvertArrayBase(args);
+            ConvertArrayBase(args);
 
             OverloadResult ovRes = null;
 
@@ -28,9 +27,12 @@ namespace XSharp.MacroCompiler
 
         internal void ConvertArrayBase(ArgList args)
         {
-            for (int i = 0; i < args.Args.Count; i++)
+            if (!Options.ArrayZero)
             {
-                args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, args.Args[i].Expr.Token, LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Subtraction, false, Options.Binding);
+                for (int i = 0; i < args.Args.Count; i++)
+                {
+                    args.Args[i].Expr = BinaryExpr.Bound(args.Args[i].Expr, args.Args[i].Expr.Token, LiteralExpr.Bound(Constant.Create(1)), BinaryOperatorKind.Subtraction, false, Options.Binding);
+                }
             }
         }
 

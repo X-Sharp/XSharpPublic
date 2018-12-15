@@ -89,7 +89,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Symbol = b.Lookup(null, Name);
+            Symbol = b.Lookup(Name);
             if (Symbol == null)
             {
                 switch (b.Options.UndeclaredVariableResolution)
@@ -411,6 +411,26 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
+    internal partial class IntrinsicCallExpr : MethodCallExpr
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Bind(ref Args);
+            switch (Kind)
+            {
+                case IntrinsicCallType.GetFParam:
+                case IntrinsicCallType.GetMParam:
+                    b.ConvertArrayBase(Args);
+                    b.ConvertExplicit(ref Args.Args[0].Expr, Compilation.Get(NativeType.UInt32));
+                    break;
+                default:
+                    throw new InternalError();
+            }
+            Symbol = b.Lookup(XSharpSpecialNames.ClipperArgs);
+            Datatype = Compilation.Get(NativeType.Object);
+            return null;
+        }
+    }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
         internal override Node Bind(Binder b)
@@ -585,7 +605,6 @@ namespace XSharp.MacroCompiler.Syntax
         ArgumentSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
-            ParamArray = b.AddParam(Binder.ArrayOf(b.ObjectType));
             if (Params != null)
             {
                 foreach (var p in Params)
@@ -594,6 +613,7 @@ namespace XSharp.MacroCompiler.Syntax
                     p.Bind(b);
                 }
             }
+            ParamArray = b.AddParam(XSharpSpecialNames.ClipperArgs, Binder.ArrayOf(b.ObjectType));
             b.AddConstant(XSharpSpecialNames.ClipperArgCount, Constant.Create(Params?.Count ?? 0));
             PCount = b.AddLocal(XSharpSpecialNames.ClipperPCount, Compilation.Get(NativeType.Int32));
             if (Body != null)

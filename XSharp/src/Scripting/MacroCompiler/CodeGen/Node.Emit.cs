@@ -288,6 +288,24 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class IntrinsicCallExpr : MethodCallExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Args.Emit(ilg);
+            switch (Kind)
+            {
+                case IntrinsicCallType.GetFParam:
+                case IntrinsicCallType.GetMParam:
+                    EmitGetElemSafe(ilg, Symbol, Datatype);
+                    break;
+                default:
+                    throw new InternalError();
+            }
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

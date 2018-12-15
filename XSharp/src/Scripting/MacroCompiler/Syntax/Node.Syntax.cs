@@ -44,7 +44,8 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IdExpr : NameExpr
     {
-        internal IdExpr(Token t): base(t, t.value, 0) { }
+        internal IdExpr(Token t) : base(t, t.value, 0) { }
+        internal IdExpr WithName(string name) { Name = name; return this; }
     }
     internal partial class MemberAccessExpr : Expr
     {

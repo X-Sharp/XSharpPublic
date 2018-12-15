@@ -68,6 +68,8 @@
         internal const string StaticLocalInitFieldNameSuffix = "$init";
         internal const string StaticLocalLockFieldNameSuffix = "$lock";
         internal const string EventFieldNamePrefix = "Xs$Event$";
+        internal const string AccessSuffix = "$Access";
+        internal const string AssignSuffix = "$Assign";
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";
@@ -80,9 +82,12 @@
         internal const string ExitProc = "$Exit";
         internal const string PCallProc = "$PCallGetDelegate";
         internal const string SymbolTable = "Xs$SymbolTable";
+        internal const string PSZTable = "Xs$PSZLiteralsTable";
 
         internal const string VoPszList = "Xs$PszList";
         internal const string ClipperArgs = "Xs$Args";
+        internal const string ClipperPCount = "Xs$PCount";
+        internal const string ClipperArgCount = "Xs$ArgCount";
         internal const string RecoverVarName = "Xs$Obj";
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
@@ -94,10 +99,6 @@
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
-
-        internal const string ReturnType = "<XsRetT>";
-        internal const string ArgumentType = "<XsArgT>";
-
     }
     internal static class XSharpFunctionNames
     {

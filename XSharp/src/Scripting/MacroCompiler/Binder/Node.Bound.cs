@@ -581,19 +581,21 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Codeblock : Node
     {
+        LocalSymbol PCount;
         ArgumentSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
+            ParamArray = b.AddParam(Binder.ArrayOf(b.ObjectType));
             if (Params != null)
             {
-                ParamArray = b.AddParam(Binder.ArrayOf(b.ObjectType));
                 foreach (var p in Params)
                 {
                     b.AddLocal(p.LookupName, b.ObjectType);
                     p.Bind(b);
                 }
-                // TODO: nvk: generate pcount?
             }
+            b.AddConstant(XSharpSpecialNames.ClipperArgCount, Constant.Create(Params?.Count ?? 0));
+            PCount = b.AddLocal(XSharpSpecialNames.ClipperPCount, Compilation.Get(NativeType.Int32));
             if (Body != null)
             {
                 b.Bind(ref Body);

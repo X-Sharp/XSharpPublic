@@ -482,6 +482,14 @@ namespace XSharp.MacroCompiler.Syntax
                     ilg.MarkLabel(skip);
                 }
             }
+            if (PCount != null)
+            {
+                PCount.Declare(ilg);
+                ParamArray.EmitGet(ilg);
+                ilg.Emit(OpCodes.Ldlen);
+                ilg.Emit(OpCodes.Conv_I4);
+                PCount.EmitSet(ilg);
+            }
             bool isVoid = true;
             if (Body != null)
             {

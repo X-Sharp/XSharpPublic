@@ -483,8 +483,18 @@ namespace XSharp.MacroCompiler
                     case "STRING2PSZ":
                     case "CAST2PSZ":
                         break;
-                    case "PCOUNT":
                     case "ARGCOUNT":
+                        {
+                            var args = ParseParenArgList();
+                            Require(args.Args.Count == 0, ErrorCode.BadNumArgs, 0);
+                            return (t as IdExpr).WithName(XSharpSpecialNames.ClipperArgCount);
+                        }
+                    case "PCOUNT":
+                        {
+                            var args = ParseParenArgList();
+                            Require(args.Args.Count == 0, ErrorCode.BadNumArgs, 0);
+                            return (t as IdExpr).WithName(XSharpSpecialNames.ClipperPCount);
+                        }
                     case "_GETMPARAM":
                     case "_GETFPARAM":
                         break;

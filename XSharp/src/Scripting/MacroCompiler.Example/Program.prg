@@ -141,7 +141,6 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
         //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
-        EvalMacro(mc, "_XOR(9,7)")
         //? _XOR((usual)7,(usual)7)
         wait
 
@@ -376,6 +375,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| _AND(a,a) }", <object>{7}, 7, typeof(int))
         TestMacro(mc, e"{|a| _AND(a,a,a) }", <object>{7}, 7, typeof(int))
         TestMacro(mc, e"{|a| _AND(a,0,a) }", <object>{7}, 0, typeof(int))
+        TestMacro(mc, e"_XOR(7,9)", <object>{}, 14, typeof(int))
         TestMacro(mc, e"_XOR(7,7)", <object>{}, 0, typeof(int))
         TestMacro(mc, e"_XOR(7,7,7)", <object>{}, 7, typeof(int))
         TestMacro(mc, e"{|a| (int)a }", <object>{7}, 7, typeof(int))
@@ -385,6 +385,14 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"tsi+1", <object>{}, null, null, ErrorCode.BinaryOperationNotFound)
         TestMacro(mc, e"tsi[2]", <object>{}, null, null, ErrorCode.NoConversion)
         TestMacro(mc, e"{|a,b| 1[2]}", <object>{}, null, null, ErrorCode.NoConversion)
+        TestMacro(mc, "ArgCount(1,nil)", <object>{}, null, null, ErrorCode.BadNumArgs)
+        TestMacro(mc, "ArgCount()", <object>{}, 0, typeof(int))
+        TestMacro(mc, "{|a,b|ArgCount()}", <object>{}, 2, typeof(int))
+        TestMacro(mc, "{|a|ArgCount()}", <object>{1,2,3}, 1, typeof(int))
+        TestMacro(mc, "PCount(1,nil)", <object>{}, null, null, ErrorCode.BadNumArgs)
+        TestMacro(mc, "PCount()", <object>{}, 0, typeof(int))
+        TestMacro(mc, "{|a,b|PCount()}", <object>{}, 0, typeof(int))
+        TestMacro(mc, "{|a|PCount()}", <object>{1,2,3}, 3, typeof(int))
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

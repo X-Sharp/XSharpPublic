@@ -141,6 +141,7 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
+        //EvalMacro(mc, e"{|a,b| asdgfafd(123) }")
         EvalMacro(mc, "_XOR(9,7)")
         //? _XOR((usual)7,(usual)7)
         wait
@@ -352,6 +353,7 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a,b| int is ValueType }", <object>{}, null, null, ErrorCode.NotAnExpression)
         TestMacro(mc, e"{|a,b| int }", <object>{}, null, null, ErrorCode.NotAnExpression)
         TestMacro(mc, e"{|a,b| U(int) }", <object>{}, null, null, ErrorCode.NotAnExpression)
+        TestMacro(mc, "U", <object>{}, null, null, ErrorCode.NotAnExpression)
 //        TestMacro(mc, e"{|a,b| asdgfafd(123) }", <object>{}, null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| testclass.nested(123) }", <object>{}, null, null, ErrorCode.NotAMethod)
         TestMacro(mc, e"{|a,b| Console.Write(null) }", <object>{}, null, typeof(object))

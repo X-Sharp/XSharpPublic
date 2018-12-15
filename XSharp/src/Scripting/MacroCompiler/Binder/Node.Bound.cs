@@ -23,19 +23,31 @@ namespace XSharp.MacroCompiler.Syntax
         internal virtual Expr Cloned(Binder b) { return this; }
         internal TypeSymbol ThrowError(ErrorCode e, params object[] args) { throw Error(e, args); }
         internal TypeSymbol ThrowError(CompilationError e) { throw e; }
-        internal void RequireValue()
+        internal virtual void RequireValue()
         {
             if (Datatype == null)
                 ThrowError(ErrorCode.NotAnExpression, Symbol);
+            if (Symbol is SymbolList)
+                ThrowError(ErrorCode.NotAnExpression, Symbol);
         }
-        internal void RequireType()
+        internal virtual void RequireType()
         {
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Type");
             if (!(Symbol is TypeSymbol))
                 ThrowError(ErrorCode.NotAType, Symbol);
         }
     }
     abstract internal partial class TypeExpr : Expr
     {
+        internal override void RequireValue()
+        {
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression");
+            if (Symbol is MethodBaseSymbol)
+                ThrowError(ErrorCode.NotAnExpression, Symbol);
+            base.RequireValue();
+        }
     }
     abstract internal partial class NameExpr : TypeExpr
     {
@@ -55,6 +67,14 @@ namespace XSharp.MacroCompiler.Syntax
         internal static CachedExpr Bound(Binder b, Expr expr)
         {
             return new CachedExpr(b, expr);
+        }
+        internal override void RequireValue()
+        {
+            Expr.RequireValue();
+        }
+        internal override void RequireType()
+        {
+            Expr.RequireType();
         }
     }
     internal partial class NativeTypeExpr : TypeExpr

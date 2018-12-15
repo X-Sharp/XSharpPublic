@@ -139,9 +139,8 @@ begin namespace MacroCompilerTest
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
-        //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
-        //EvalMacro(mc, e"{|a,b| asdgfafd(123) }")
+        //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
         EvalMacro(mc, "_XOR(9,7)")
         //? _XOR((usual)7,(usual)7)
         wait
@@ -380,6 +379,12 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"_XOR(7,7)", <object>{}, 0, typeof(int))
         TestMacro(mc, e"_XOR(7,7,7)", <object>{}, 7, typeof(int))
         TestMacro(mc, e"{|a| (int)a }", <object>{7}, 7, typeof(int))
+        TestMacro(mc, e"999999999999999999999999", <object>{}, null, null, ErrorCode.LiteralIntegerOverflow)
+        TestMacro(mc, e"9.99999e999999999999999999", <object>{}, null, null, ErrorCode.LiteralFloatOverflow)
+        TestMacro(mc, e"-tsi", <object>{}, null, null, ErrorCode.UnaryOperationNotFound)
+        TestMacro(mc, e"tsi+1", <object>{}, null, null, ErrorCode.BinaryOperationNotFound)
+        TestMacro(mc, e"tsi[2]", <object>{}, null, null, ErrorCode.NoConversion)
+        TestMacro(mc, e"{|a,b| 1[2]}", <object>{}, null, null, ErrorCode.NoConversion)
 
 //        XSharp.Runtime.MacroCompiler.Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

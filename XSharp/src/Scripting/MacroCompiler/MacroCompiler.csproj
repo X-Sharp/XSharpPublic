@@ -68,6 +68,7 @@
     <Compile Include="Diagnostic\Location.cs" />
     <Compile Include="Diagnostic\Symbol.Name.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Binder\Intrinsic.cs" />
     <Compile Include="Syntax\Lexer.cs" />
     <Compile Include="Syntax\Literal.cs" />
     <Compile Include="Syntax\Parser.cs" />

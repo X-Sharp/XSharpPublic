@@ -496,8 +496,17 @@ namespace XSharp.MacroCompiler
                             return (t as IdExpr).WithName(XSharpSpecialNames.ClipperPCount);
                         }
                     case "_GETMPARAM":
+                        {
+                            var args = ParseParenArgList();
+                            Require(args.Args.Count == 1, ErrorCode.BadNumArgs, 1);
+                            return new IntrinsicCallExpr(t as IdExpr, args, IntrinsicCallType.GetMParam);
+                        }
                     case "_GETFPARAM":
-                        break;
+                        {
+                            var args = ParseParenArgList();
+                            Require(args.Args.Count == 1, ErrorCode.BadNumArgs, 1);
+                            return new IntrinsicCallExpr(t as IdExpr, args, IntrinsicCallType.GetFParam);
+                        }
                 }
             }
 

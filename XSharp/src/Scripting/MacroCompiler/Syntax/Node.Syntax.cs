@@ -184,6 +184,11 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal CtorCallExpr(TypeExpr e, ArgList a) : base(e,a) { }
     }
+    internal partial class IntrinsicCallExpr : MethodCallExpr
+    {
+        IntrinsicCallType Kind;
+        internal IntrinsicCallExpr(IdExpr e, ArgList a, IntrinsicCallType t) : base(e, a) { Kind = t; }
+    }
     internal partial class ArrayAccessExpr : MethodCallExpr
     {
         internal ArrayAccessExpr(Expr e, ArgList a) : base(e, a) { }

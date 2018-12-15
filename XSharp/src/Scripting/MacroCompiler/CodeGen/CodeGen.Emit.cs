@@ -11,6 +11,33 @@ namespace XSharp.MacroCompiler
 {
     static partial class CodeGen
     {
+        internal static void EmitGetElemSafe(ILGenerator ilg, Symbol array, TypeSymbol elemType)
+        {
+            LocalSymbol ls = new LocalSymbol(null, Compilation.Get(NativeType.Int32));
+            ls.Declare(ilg);
+            ls.EmitSet(ilg);
+
+            var notExist = ilg.DefineLabel();
+            var exist = ilg.DefineLabel();
+
+            array.EmitGet(ilg);
+            ilg.Emit(OpCodes.Ldlen);
+            ilg.Emit(OpCodes.Conv_U4);
+            ls.EmitGet(ilg);
+            ilg.Emit(OpCodes.Cgt_Un);
+            ilg.Emit(OpCodes.Brfalse_S, notExist);
+
+            array.EmitGet(ilg);
+            ls.EmitGet(ilg);
+            ilg.Emit(OpCodes.Ldelem_Ref);
+            ilg.Emit(OpCodes.Br_S, exist);
+
+            ilg.MarkLabel(notExist);
+            EmitDefault(ilg, elemType);
+
+            ilg.MarkLabel(exist);
+        }
+
         internal static void EmitDefault(ILGenerator ilg, TypeSymbol t)
         {
             if (t.Type.IsValueType)

@@ -1005,16 +1005,9 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			
 			/// <inheritdoc />
-		VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
-			LOCAL oResult AS OBJECT
-			//Todo: Basic implementation of Recno deleted etc.
-			SWITCH nOrdinal
-			
-				// etc
-				OTHERWISE
-					oResult := NULL
-			END SWITCH
-			RETURN oResult
+		VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
+
+			RETURN NULL
 			
 			/// <inheritdoc />
 		VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC

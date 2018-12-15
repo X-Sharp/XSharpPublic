@@ -254,7 +254,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Retrieve and optionally change information about a work area.</summary>
 	METHOD Info(nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 	/// <summary>Retrieve and optionally change information about a row.</summary>
-	METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT  
+	METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
 
 	// Properties
 	/// <summary>Retrieve the alias name.</summary>

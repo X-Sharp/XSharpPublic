@@ -1330,7 +1330,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-            oRDD:RecInfo(oRecID, (INT) nOrdinal, oRet )
+            oRet := oRDD:RecInfo( (INT) nOrdinal,oRecID, oRet )
             RETURN TRUE
         CATCH e AS Exception
             RuntimeState.LastRDDError := e

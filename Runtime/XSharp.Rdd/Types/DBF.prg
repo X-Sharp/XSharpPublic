@@ -1497,7 +1497,7 @@ BEGIN NAMESPACE XSharp.RDD
 			oError:Severity := iSeverity
 			oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
 			oError:FileName := SELF:_FileName
-            if String.IsNullOrEmpty(strMessage) == NULL .and. ex != NULL
+            if String.IsNullOrEmpty(strMessage)  .and. ex != NULL
                 strMessage := ex:Message
             endif
 			oError:Description := IIF(strMessage == NULL , "", strMessage)
@@ -2058,58 +2058,63 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			
 		/// <inheritdoc />
-		VIRTUAL METHOD RecInfo(oRecID AS OBJECT, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-			LOCAL nCurrent := 0 AS LONG
-			LOCAL isOk AS LOGIC
-			//
-			isOk := TRUE
+		VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
+			LOCAL nNewRec := 0 AS LONG
+            LOCAL oResult as OBJECT
+			LOCAL nOld := 0 as LONG
 			IF ( oRecID == NULL )
-				nCurrent := SELF:RecNo
-				ELSE
-					TRY
-						nCurrent := Convert.ToInt32( oRecID )
-					CATCH
-						isOk := FALSE
-				END TRY
+				TRY
+					nNewRec := Convert.ToInt32( oRecID )
+				CATCH
+					nNewRec := 0
+    			END TRY
 			ENDIF
-			IF isOk
-				//
-				SWITCH nOrdinal
-					CASE DBRI_DELETED
+            // Some operations require the new record te be selected
+          IF nNewRec != 0
+              SWITCH nOrdinal
+      
+            case DBRI_DELETED
+            case DBRI_ENCRYPTED
+            case DBRI_RAWRECORD
+            case DBRI_RAWMEMOS
+            case DBRI_RAWDATA
+                nOld     := SELF:Recno
+                SELF:Goto(nNewRec)
+            end switch
+        endif
+			SWITCH nOrdinal
+				CASE DBRI_DELETED
+                    oResult := SELF:Deleted
+				CASE DBRI_LOCKED
+					IF ( SELF:_Shared )
+						oResult := SELF:_Locks:Contains( nNewRec )
+					ELSE
+						oResult := TRUE
+					ENDIF
+				CASE DBRI_RECNO
+					oResult := SELF:RecNo
+				CASE DBRI_RECSIZE
+					oResult := SELF:_RecordLength
+                CASE DBRI_BUFFPTR
+                    oResult := self:_RecordBuffer
+				CASE DBRI_RAWRECORD
+                    oResult := SELF:_Encoding:GetString(self:_RecordBuffer,0, self:_RecordLength)
+                CASE DBRI_UPDATED
+                    oResult := SELF:_Hot
+				CASE DBRI_RAWMEMOS
+                CASE DBRI_RAWDATA
+                    // RawData returns a string with the record + memos
+                    // RawMemos returns just the memos
+                    oResult := ""
 				CASE DBRI_ENCRYPTED
-					CASE DBRI_RAWRECORD
-					CASE DBRI_RAWMEMOS
-					CASE DBRI_RAWDATA
-						// Move
-						SELF:GoTo( nCurrent )
-						// and get Data
-						SELF:_readRecord()
-					END SWITCH
-				//
-				SWITCH nOrdinal
-					CASE DBRI_DELETED
-						oNewValue := SELF:Deleted
-					CASE DBRI_RAWDATA
-						oNewValue := SELF:GetRec()
-					CASE DBRI_LOCKED
-						IF ( SELF:_Shared )
-							oNewValue := SELF:_Locks:Contains( nCurrent )
-						ELSE
-							oNewValue := TRUE
-						ENDIF
-					CASE DBRI_RECNO
-						oNewValue := SELF:RecNo
-					CASE DBRI_RECSIZE
-						oNewValue := SELF:_RecordLength
-					CASE DBRI_RAWRECORD
-					CASE DBRI_RAWMEMOS
-					CASE DBRI_ENCRYPTED
-					OTHERWISE
-						oNewValue := SUPER:Info(nOrdinal, oNewValue)
-				END SWITCH
-			ENDIF
-			//
-			RETURN isOk
+                    oResult := FALSE
+				OTHERWISE
+					oResult := SUPER:Info(nOrdinal, oNewValue)
+			END SWITCH
+            if nOld != 0
+                SELF:Goto(nOld)
+            endif
+			RETURN oResult
 			
 		METHOD Sort(info AS DbSortInfo) AS LOGIC
 			LOCAL recordNumber AS LONG

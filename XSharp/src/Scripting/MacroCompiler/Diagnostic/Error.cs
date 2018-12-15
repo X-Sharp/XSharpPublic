@@ -74,7 +74,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.BinaryOperationNotFound, "Operator {0} on types {1} and {2} could not be resolved" },
             { ErrorCode.UnaryOperationNotFound, "Operator {0} on type {1} could not be resolved" },
             { ErrorCode.LiteralIntegerOverflow, "Integer overflow at literal constant" },
-            { ErrorCode.LiteralFloatOverflow, "Floating=point overflow at literal constant" },
+            { ErrorCode.LiteralFloatOverflow, "Floating-point overflow at literal constant" },
             { ErrorCode.NotAType, "{0} is not a type" },
             { ErrorCode.NotAnExpression, "{0} is not a valid expression term" },
             { ErrorCode.NotAMethod, "{0} is not a method" },

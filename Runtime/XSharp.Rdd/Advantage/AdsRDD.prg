@@ -1276,7 +1276,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       END SWITCH
       RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
       
-    VIRTUAL METHOD RecInfo(iRecID AS OBJECT, uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+    VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
       LOCAL dwRecno AS DWORD
       //
       SWITCH (DBRecordInfo) uiOrdinal
@@ -1309,7 +1309,7 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
       OTHERWISE
         SELF:ADSERROR(ERDD_UNSUPPORTED, EG_UNSUPPORTED, "RecInfo")
       END SWITCH
-      RETURN SUPER:RecInfo(iRecID, uiOrdinal, oNewValue)
+      RETURN SUPER:RecInfo( uiOrdinal, iRecID, oNewValue)
       
       
       /// <inheritdoc />

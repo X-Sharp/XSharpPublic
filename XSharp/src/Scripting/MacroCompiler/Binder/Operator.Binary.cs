@@ -200,10 +200,13 @@ namespace XSharp.MacroCompiler
                 case TokenType.NEQ2:
                     return BinaryOperatorKind.NotEqual;
                 case TokenType.AMP:
+                case TokenType.VO_AND:
                     return BinaryOperatorKind.And;
                 case TokenType.TILDE:
+                case TokenType.VO_XOR:
                     return BinaryOperatorKind.Xor;
                 case TokenType.PIPE:
+                case TokenType.VO_OR:
                     return BinaryOperatorKind.Or;
                 case TokenType.AND:
                     return BinaryOperatorKind.And;

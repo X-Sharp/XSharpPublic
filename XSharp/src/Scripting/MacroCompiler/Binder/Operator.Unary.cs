@@ -72,6 +72,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.MINUS:
                     return UnaryOperatorKind.UnaryMinus;
                 case TokenType.TILDE:
+                case TokenType.VO_NOT:
                     return UnaryOperatorKind.BitwiseComplement;
                 case TokenType.NOT:
                 case TokenType.LOGIC_NOT:

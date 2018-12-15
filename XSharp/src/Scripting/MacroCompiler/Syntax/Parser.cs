@@ -198,6 +198,11 @@ namespace XSharp.MacroCompiler
                 case TokenType.LCURLY:
                 case TokenType.IIF:
                 case TokenType.FIELD_:
+                case TokenType.ARGLIST:
+                case TokenType.VO_AND:
+                case TokenType.VO_OR:
+                case TokenType.VO_XOR:
+                case TokenType.VO_NOT:
                     return true;
                 case TokenType.LT:
                     {
@@ -321,6 +326,11 @@ namespace XSharp.MacroCompiler
                 // TODO nvk: AMP Id=identifierName										#macro					// &id
                 case TokenType.ARGLIST:
                     throw Error(Lt(), ErrorCode.NotSupported, Lt()?.value);
+                case TokenType.VO_AND:
+                case TokenType.VO_OR:
+                case TokenType.VO_XOR:
+                case TokenType.VO_NOT:
+                    return ParseIntrinsicFunction();
                 default:
                     if (TokenAttr.IsSoftKeyword(La()))
                         return ParseFieldAlias() ?? ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(ParseQualifiedName()));
@@ -482,6 +492,36 @@ namespace XSharp.MacroCompiler
             }
 
             return t;
+        }
+
+        internal Expr ParseIntrinsicFunction()
+        {
+            var o = ConsumeAndGet();
+
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+
+            var e = ParseExprList(true);
+
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+
+            switch (o.type)
+            {
+                case TokenType.VO_AND:
+                case TokenType.VO_OR:
+                case TokenType.VO_XOR:
+                    {
+                        Require(e.Exprs.Count >= 2, ErrorCode.BadNumArgs, "at least 2");
+                        var r = new BinaryExpr(e.Exprs[0], o, e.Exprs[1]);
+                        for (int i = 2; i < e.Exprs.Count; i++)
+                            r = new BinaryExpr(r, o, e.Exprs[i]);
+                        return r;
+                    }
+                case TokenType.VO_NOT:
+                    Require(e.Exprs.Count == 1, ErrorCode.BadNumArgs, 1);
+                    return new UnaryExpr(e.Exprs[0], o);
+                default:
+                    throw Error(ErrorCode.Unexpected, o.value);
+            }
         }
 
         Oper ParseOper(out Node n)
@@ -747,7 +787,7 @@ namespace XSharp.MacroCompiler
             return new Arg(e);
         }
 
-        internal ArgList ParseArgList()
+        internal ArgList ParseArgList(bool allowEmpty = true)
         {
             IList<Arg> l = new List<Arg>();
 
@@ -758,8 +798,8 @@ namespace XSharp.MacroCompiler
             {
                 l.Add(a);
                 a = ParseArg();
-                if (a == null)
-                    a = new Arg(new EmptyExpr(Lt()));
+                if (a == null && allowEmpty) a = new Arg(new EmptyExpr(Lt()));
+                else Require(a != null, ErrorCode.Expected, "argument");
             }
             if (a != null)
             {

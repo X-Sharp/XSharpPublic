@@ -27,7 +27,7 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Box, expr.Datatype.Type);
                     break;
                 case ConversionKind.Unboxing:
-                    ilg.Emit(OpCodes.Unbox, type.Type);
+                    ilg.Emit(OpCodes.Unbox_Any, type.Type);
                     break;
                 case ConversionKind.ImplicitReference:
                     break;

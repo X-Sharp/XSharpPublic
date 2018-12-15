@@ -140,7 +140,9 @@ begin namespace MacroCompilerTest
 
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a,b| 999999999999999999999999 + (-tsi+1)[2]}", {1,2,3}, 1)
-        EvalMacro(mc, e"'A' < 'AA'")
+        //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
+        EvalMacro(mc, "_XOR(9,7)")
+        //? _XOR((usual)7,(usual)7)
         wait
 
         RunTests(mc)
@@ -369,6 +371,13 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"{|a| a > 'a'}", <object>{"est"}, true, typeof(logic))
         TestMacro(mc, e"'A' > 'AA'", <object>{}, false, typeof(logic))
         TestMacro(mc, e"'A' < 'AA'", <object>{}, true, typeof(logic))
+        TestMacro(mc, e"{|a| _NOT(a) }", <object>{7}, -8, typeof(int))
+        TestMacro(mc, e"{|a| _AND(a,a) }", <object>{7}, 7, typeof(int))
+        TestMacro(mc, e"{|a| _AND(a,a,a) }", <object>{7}, 7, typeof(int))
+        TestMacro(mc, e"{|a| _AND(a,0,a) }", <object>{7}, 0, typeof(int))
+        TestMacro(mc, e"_XOR(7,7)", <object>{}, 0, typeof(int))
+        TestMacro(mc, e"_XOR(7,7,7)", <object>{}, 7, typeof(int))
+        TestMacro(mc, e"{|a| (int)a }", <object>{7}, 7, typeof(int))
 
 //        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

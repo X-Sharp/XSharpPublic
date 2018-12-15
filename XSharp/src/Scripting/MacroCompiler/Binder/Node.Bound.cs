@@ -315,8 +315,8 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            Expr.Bind(b);
-            Type.Bind(b);
+            b.Bind(ref Expr);
+            b.Bind(ref Type);
             Type.RequireType();
             Datatype = Type.Symbol as TypeSymbol;
             Symbol = b.ExplicitConversion(Expr, Datatype);

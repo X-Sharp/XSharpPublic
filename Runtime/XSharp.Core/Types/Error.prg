@@ -493,7 +493,7 @@ BEGIN NAMESPACE XSharp
         /// <exclude/>	
         MEMBER @@Logic		:=8
         /// <exclude/>	
-        MEMBER @@CodeBlock	:=9
+        MEMBER @@Codeblock	:=9
         /// <exclude/>	
         MEMBER @@Symbol		:=10
         // see below for missing values

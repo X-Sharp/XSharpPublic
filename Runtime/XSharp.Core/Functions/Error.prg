@@ -66,7 +66,7 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "STRING"
    CASE  __UsualType.Logic
       ret := "LOGIC"
-   CASE  __UsualType.CodeBlock
+   CASE  __UsualType.Codeblock
       ret := "CODEBLOCK"
    CASE  __UsualType.Symbol
       ret := "SYMBOL"

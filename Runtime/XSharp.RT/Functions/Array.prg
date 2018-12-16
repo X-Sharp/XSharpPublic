@@ -127,7 +127,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 			IF lIsCodeBlock      
 				iCBRet := Eval( cb, a[x] )
 				IF ! IsNumeric( iCBRet )
-					THROW Error.DataTypeError(cFuncName, "Return value of CodeBlock", 0)
+					THROW Error.DataTypeError(cFuncName, "Return value of Codeblock", 0)
 				ELSE
 					iComp := iCBRet
 				ENDIF
@@ -147,7 +147,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 					IF lIsCodeBlock      
 						iCBRet := Eval( cb, a[x] )
 						IF ! IsNumeric( iCBRet )
-							THROW Error.DataTypeError(cFuncName, "Return value of CodeBlock", 0)
+							THROW Error.DataTypeError(cFuncName, "Return value of Codeblock", 0)
 						ELSE
 							iComp := iCBRet
 						ENDIF
@@ -170,7 +170,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		
 		
-	STATIC METHOD AEval(aArray AS ARRAY, cbBlock AS ICODEBLOCK, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC )  AS ARRAY
+	STATIC METHOD AEval(aArray AS ARRAY, cbBlock AS ICodeblock, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC )  AS ARRAY
 		LOCAL elements := ALen(aArray) AS DWORD
 		LOCAL last   AS DWORD
 		LOCAL result AS USUAL
@@ -223,7 +223,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		RETURN aArray
 		
-	STATIC METHOD AEvalCheckArgs(aArray AS ARRAY, cb AS ICodeBlock, iStart REF USUAL, iCount REF USUAL,cFuncName AS STRING) AS VOID
+	STATIC METHOD AEvalCheckArgs(aArray AS ARRAY, cb AS ICodeblock, iStart REF USUAL, iCount REF USUAL,cFuncName AS STRING) AS VOID
 		IF aArray == NULL_ARRAY
             RETURN
 		ENDIF
@@ -1039,9 +1039,9 @@ FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUA
 
 INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.IComparer<USUAL> 
 
-	PRIVATE _cb AS ICodeBlock
+	PRIVATE _cb AS ICodeblock
 	
-	CONSTRUCTOR( cb AS ICodeBlock)
+	CONSTRUCTOR( cb AS ICodeblock)
 		_cb := cb
 		RETURN
 		
@@ -1155,7 +1155,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCou
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeBlock ) AS USUAL 
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ) AS USUAL 
 	LOCAL iStart AS USUAL
 	LOCAL iCount AS USUAL
 	iStart := NIL
@@ -1171,7 +1171,7 @@ FUNCTION AEval(aArray AS ARRAY,cb AS ICodeBlock ) AS USUAL
 /// <param name="iStart"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICODEBLOCK ,iStart AS INT ) AS USUAL 
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,iStart AS INT ) AS USUAL 
 	LOCAL uCount AS USUAL
 	LOCAL uStart AS USUAL
 	uCount := NIL
@@ -1188,7 +1188,7 @@ FUNCTION AEval(aArray AS ARRAY,cb AS ICODEBLOCK ,iStart AS INT ) AS USUAL
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeBlock ,iStart AS INT ,iCount AS INT) AS USUAL 
+FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,iStart AS INT ,iCount AS INT) AS USUAL 
 	LOCAL uCount AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := iCount
@@ -1204,7 +1204,7 @@ FUNCTION AEval(aArray AS ARRAY,cb AS ICodeBlock ,iStart AS INT ,iCount AS INT) A
 /// <param name="cb"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock) AS ARRAY
+FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock) AS ARRAY
 	LOCAL uCount AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := NIL
@@ -1221,7 +1221,7 @@ FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock) AS ARRAY
 /// <param name="iStart"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ) AS ARRAY
+FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, iStart AS INT ) AS ARRAY
 	LOCAL uCount AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := NIL
@@ -1238,7 +1238,7 @@ FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ) AS ARRAY
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeBlock, iStart  AS INT ,iCount AS INT) AS ARRAY
+FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, iStart  AS INT ,iCount AS INT) AS ARRAY
 	LOCAL uCount AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := iCount
@@ -1299,7 +1299,7 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,i
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock, iStart  AS INT ,iCount AS INT) AS ARRAY
+FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock, iStart  AS INT ,iCount AS INT) AS ARRAY
 	LOCAL uCount	AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := iCount
@@ -1317,7 +1317,7 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock, iStart  AS INT ,iCount AS I
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ) AS ARRAY
+FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock, iStart AS INT ) AS ARRAY
 	LOCAL uCount	AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := NIL
@@ -1335,7 +1335,7 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock, iStart AS INT ) AS ARRAY
 /// <param name="iCount"></param>
 /// <returns>
 /// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeBlock) AS ARRAY
+FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock) AS ARRAY
 	LOCAL uCount	AS USUAL
 	LOCAL uStart	 AS USUAL
 	uCount := NIL

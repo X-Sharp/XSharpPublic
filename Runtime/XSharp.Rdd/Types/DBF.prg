@@ -1893,10 +1893,10 @@ BEGIN NAMESPACE XSharp.RDD
 			// Blob
 			//	METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 			
-			// CodeBlock Support
+			// Codeblock Support
 			
-		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
-			LOCAL result AS ICodeBlock
+		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
+			LOCAL result AS ICodeblock
 			result := SUPER:Compile(sBlock)
 			IF result == NULL
 				SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")

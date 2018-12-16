@@ -108,7 +108,7 @@ CLASS XSharp.CoreDb
         RETURN fMatch
         /// <exclude />   
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRDD, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
-                                        uCobFor AS ICodeBlock ,uCobWhile AS ICodeBlock ,;
+                                        uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
         LOCAL oDest := RUntimeState.Workareas.GetRDD(nDest) AS IRDD
         IF oDest == NULL
@@ -577,7 +577,7 @@ CLASS XSharp.CoreDb
         /// In fact, many of the database processing commands are created using Eval().
         /// </remarks>
         
-    STATIC METHOD Eval(uBlock AS ICodeBlock,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Eval(uBlock AS ICodeblock,uCobFor AS ICodeblock,uCobWhile AS ICodeblock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL nNext AS LONG
         IF uBlock == NULL
@@ -924,7 +924,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBLocate() but strongly typed.  
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
-    STATIC METHOD Locate(uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Locate(uCobFor AS ICodeblock,uCobWhile AS ICodeblock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL scopeinfo := DbScopeInfo{} AS DbScopeInfo
@@ -990,7 +990,7 @@ CLASS XSharp.CoreDb
         /// </remarks>
         
         
-    STATIC METHOD OrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeBlock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
+    STATIC METHOD OrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeblock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR info := DbOrderCreateInfo{}
@@ -1468,7 +1468,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD SetFilter(oBlock AS ICodeBlock,cFilter AS STRING) AS LOGIC
+    STATIC METHOD SetFilter(oBlock AS ICodeblock,cFilter AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR info 		 := DbFilterInfo{}
@@ -1501,7 +1501,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD SetLocate(oBlock AS ICodeBlock) AS LOGIC
+    STATIC METHOD SetLocate(oBlock AS ICodeblock) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR scope := oRDD:GetScope()
@@ -1521,7 +1521,7 @@ CLASS XSharp.CoreDb
         /// <inheritdoc cref="M:XSharp.CoreDb.Append(System.Boolean)" select="span[@id='LastError']" />
         /// </remarks>
         
-    STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeBlock,cKey AS STRING) AS LOGIC
+    STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeblock,cKey AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL nDest := RuntimeState.Workareas.FindAlias(cAlias) AS DWORD
@@ -1618,7 +1618,7 @@ CLASS XSharp.CoreDb
         /// <param name="sortNames"></param>
         /// <returns>
         /// </returns>
-    STATIC METHOD Sort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC
+    STATIC METHOD Sort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL info AS DbSortInfo
@@ -1680,7 +1680,7 @@ CLASS XSharp.CoreDb
         /// <param name="nRecno"></param>
         /// <param name="lRest"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
-    STATIC METHOD Trans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeBlock,uCobWhile AS ICodeBlock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
+    STATIC METHOD Trans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         LOCAL info AS DbTransInfo

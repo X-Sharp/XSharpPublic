@@ -12,9 +12,9 @@ USING System.Runtime.CompilerServices
 /// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
 /// This type has methods that normally are never directly called from user code.
 /// </summary>
-/// <seealso cref="T:XSharp.ICodeBlock"/>
+/// <seealso cref="T:XSharp.ICodeblock"/>
 [DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
-ABSTRACT CLASS XSharp.CodeBlock IMPLEMENTS ICodeBlock
+ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	PRIVATE INITONLY _pcount AS INT
 	/// <summary>Returns the number of parameters in the codeblock</summary>
 	PUBLIC VIRTUAL METHOD PCount AS INT 
@@ -61,13 +61,13 @@ ABSTRACT CLASS XSharp.CodeBlock IMPLEMENTS ICodeBlock
 		
 /// <summary>Internal type that is the base class for macro compiled codeblocks.
 /// </summary>
-/// <seealso cref="T:XSharp.ICodeBlock"/>
+/// <seealso cref="T:XSharp.ICodeblock"/>
 /// <seealso cref="T:XSharp.IMacroCompiler"/>
-/// <seealso cref="T:XSharp.CodeBlock"/>
-[DebuggerDisplay( "{_cMacro}", Type := "_CODEBLOCK" )] ;
-PUBLIC CLASS XSharp._CodeBlock INHERIT XSharp.CodeBlock
+/// <seealso cref="T:XSharp.Codeblock"/>
+[DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
+PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
 	/// <exclude />
-	PROTECT _innerBlock AS ICodeBlock 
+	PROTECT _innerBlock AS ICodeblock 
 	/// <exclude />
 	PROTECT _cMacro		AS STRING
 	/// <exclude />
@@ -77,7 +77,7 @@ PUBLIC CLASS XSharp._CodeBlock INHERIT XSharp.CodeBlock
 	/// <param name="innerBlock">Compiled codeblock created by the macro compiler.</param>
 	/// <param name="cMacro">Macro string that was used to create the codeblock.</param>
 	/// <param name="lIsBlock">Did the macro string start with "{|".</param>
-	PUBLIC CONSTRUCTOR(innerBlock AS ICodeBlock, cMacro AS STRING, lIsBlock AS LOGIC)
+	PUBLIC CONSTRUCTOR(innerBlock AS ICodeblock, cMacro AS STRING, lIsBlock AS LOGIC)
 		SUPER(IIF (lIsBlock, innerBlock:Pcount(), -1))
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro

@@ -46,10 +46,11 @@ INTERNAL CLASS MacroPrecompiler IMPLEMENTS XSharp.IMacroCompiler
     PRIVATE INITONLY originalCompiler AS IMacroCompiler
     CONSTRUCTOR (oCompiler AS IMacroCompiler)
       originalCompiler := oCompiler
-    METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
+    METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock REF LOGIC) AS ICodeblock
         LOCAL newmacro AS STRING
         newmacro := PrepareMacro(macro,lAllowSingleQuotes)
-        RETURN originalCompiler:Compile(newmacro, lAllowSingleQuotes, module, OUT isCodeblock)
+
+        RETURN originalCompiler:Compile(newmacro, lAllowSingleQuotes, module, REF isCodeblock)
         
     PRIVATE STATIC METHOD PrepareMacro(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS STRING
         VAR sbResult := StringBuilder{cMacro:Length * 2} 

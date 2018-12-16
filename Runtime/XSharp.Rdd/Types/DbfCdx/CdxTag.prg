@@ -31,9 +31,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Name           as STRING AUTO
         PROPERTY Page           as Int32 AUTO
         PROPERTY KeyExpression  as STRING AUTO
-        PROPERTY KeyBlock       as ICodeBlock AUTO
+        PROPERTY KeyBlock       as ICodeblock AUTO
         PROPERTY ForExpression  as STRING AUTO
-        PROPERTY ForBlock       as ICodeBlock AUTO
+        PROPERTY ForBlock       as ICodeblock AUTO
         PROPERTY KeyLength      as INT AUTO
         PROPERTY KeyType        as TypeCode auto
         PROPERTY Custom         AS LOGIC GET Options:HasFlag(CdxOptions.IsCustom)

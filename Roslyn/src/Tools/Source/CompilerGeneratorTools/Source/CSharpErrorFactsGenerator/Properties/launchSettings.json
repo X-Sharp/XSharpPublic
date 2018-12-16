@@ -3,7 +3,7 @@
     "CSharpErrorFactsGenerator": {
       "commandName": "Project",
       "commandLineArgs": "ErrorCode.cs  Generated\\ErrorFacts.Generated.cs ",
-      "workingDirectory": "c:\\XSharp\\Dev\\XSharp\\src\\Compiler\\XSharpCodeAnalysis"
+      "workingDirectory": "..\\..\\..\\..\\..\\..\\..\\XSharp\\src\\Compiler\\XSharpCodeAnalysis"
     }
   }
 }

@@ -60,11 +60,21 @@ namespace XSharp.Project
             {
                 Guid langId;
                 textlines.GetLanguageServiceID(out langId);
+                IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
+                Debug.Assert(textView != null);
+                // Note that this may get called after the classifier has been instantiated
+
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
                     string fileName = FilePathUtilities.GetFilePath(textlines);
-                    if (!IsOurFile(fileName))       // is this a file node from Vulcan ?
+                    if (!IsOurSourceFile(fileName))       // is this a file node from Vulcan ?
                     {
+                        // we always register the file in the classifier.
+                        if (textView.TextBuffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
+                        {
+                            textView.TextBuffer.Properties.RemoveProperty(typeof(XSharpModel.XFile));
+                        }
+
                         Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
                         return;
@@ -72,8 +82,16 @@ namespace XSharp.Project
                     //
                     // Only capturing keystroke for OUR languageService... ???
                     //
-                    IWpfTextView textView = AdaptersFactory.GetWpfTextView(textViewAdapter);
-                    Debug.Assert(textView != null);
+
+                    // Get XFile and assign it to the textbuffer
+                    if (!textView.TextBuffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
+                    {
+                        var file = XSharpModel.XSolution.FindFile(fileName);
+                        if (file != null)
+                        {
+                            textView.TextBuffer.Properties.AddProperty(typeof(XSharpModel.XFile), file);
+                        }
+                    }
                     CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
@@ -81,11 +99,22 @@ namespace XSharp.Project
                 }
             }
         }
-        internal static bool IsOurFile(string fileName)
+        internal static bool IsOurSourceFile(string fileName)
         {
             var serviceProvider = XSharpEditorFactory.GetServiceProvider();
             if (serviceProvider == null)
                 return false;
+            var type = XSharpModel.XFileTypeHelpers.GetFileType(fileName);
+            switch (type)
+            {
+                case XSharpModel.XFileType.SourceCode:
+                case XSharpModel.XFileType.Header:
+                case XSharpModel.XFileType.PreprocessorOutput:
+                    break;
+                default:
+                    return false;
+            }
+
             // Find the document in the Running Document Table and Get Its hierarchy object
             // so we can ask for a property that we can use to see if this is 'Ours'
             IVsRunningDocumentTable rdt = serviceProvider.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
@@ -114,8 +143,19 @@ namespace XSharp.Project
                 var file = XSharpModel.XSolution.FindFullPath(fileName);
                 ours = (file != null);
             }
+            if (! ours)
+            {
+                // ask for a project root. If there is no project root, then we take ownership
+                hierarchy.GetProperty(itemID, (int)__VSHPROPID.VSHPROPID_Root, out result);
+                ours = (result == null);
+                if (ours)
+                {
+                    XSharpModel.XSolution.OrphanedFilesProject.AddFile(fileName);
+                }
+            }
             return ours;
         }
     }
 
 }
+

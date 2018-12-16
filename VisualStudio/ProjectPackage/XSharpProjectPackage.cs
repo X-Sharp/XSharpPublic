@@ -199,6 +199,7 @@ namespace XSharp.Project
         private XPackageSettings settings;
         private uint shellCookie;
         private XSharpLibraryManager _libraryManager;
+        private XSharpDocumentWatcher _documentWatcher;
 
         // =========================================================================================
         // Properties
@@ -296,6 +297,7 @@ namespace XSharp.Project
             ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateService);
             //
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
+            this._documentWatcher = new XSharpDocumentWatcher(this);
         }
 
 

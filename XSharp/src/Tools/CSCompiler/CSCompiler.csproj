@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
-  <Import Project="..\..\Compiler\CompilerCommon.targets" />
+  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
   <PropertyGroup>
     <ProductVersion>8.0.30703</ProductVersion>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
     <AssemblyName>CSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
-    <!--<TargetFrameworks>net46</TargetFrameworks>
-    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>-->
-    <TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
-    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <TargetFrameworks>net46</TargetFrameworks>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+    <!--<TargetFrameworks>$(RoslynPortableTargetFrameworks)</TargetFrameworks>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>-->
     <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
 
     <UseVSHostingProcess>false</UseVSHostingProcess>

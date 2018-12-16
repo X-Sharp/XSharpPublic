@@ -23,7 +23,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\net46\</GeneratedCompilerPath>
+    <GeneratedCompilerPath>$(Solutiondir)Binaries\Debug\net46\</GeneratedCompilerPath>
   </PropertyGroup>
 
 

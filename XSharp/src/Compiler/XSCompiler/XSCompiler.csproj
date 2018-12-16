@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
-  <Import Project="..\CompilerCommon.targets" />
+  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\CompilerCommon.props" />
 
   <PropertyGroup>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -23,6 +23,9 @@
   
   </PropertyGroup>
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj" />
+    <ProjectReference Include="..\..\Tools\csc\csc.csproj" />
+    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,6 +42,9 @@
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <!--<Compile Include="..\..\Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>-->
 
     <Compile Include="$(SharedSource)BuildClient.cs">
       <Link>BuildClient.cs</Link>

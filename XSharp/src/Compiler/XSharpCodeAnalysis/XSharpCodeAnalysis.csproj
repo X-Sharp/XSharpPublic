@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\CompilerCommon.targets" />
+  <Import Project="..\CompilerCommon.props" />
   <PropertyGroup>
-    <RoslynSrc>\Xsharp\Dev\Roslyn\src\</RoslynSrc>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
@@ -49,7 +48,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Constants.cs">
-      <Link>Common\Constants.cs</Link>
+      <Link>Properties\Constants.cs</Link>
     </Compile>
     <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
     <Compile Remove="ParserTest.cs" />
@@ -159,6 +158,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
   </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />

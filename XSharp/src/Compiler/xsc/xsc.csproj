@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="\xsharp\dev\xsharp\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
-  <Import Project="..\CompilerCommon.targets" />
+  <Import Project="..\..\..\build\Targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="..\CompilerCommon.props" />
   <PropertyGroup>
     <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
     <OutputType>Exe</OutputType>
@@ -18,7 +18,9 @@
     <DefineConstants Condition="'$(TargetFramework)' == 'net46'">$(DefineConstants)NET46</DefineConstants>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\XSCompiler\XSCompiler.csproj" />
+    <ProjectReference Include="..\..\Tools\CSCompiler\CSCompiler.csproj" />
+    <ProjectReference Include="..\..\Tools\csc\csc.csproj" />
+    <ProjectReference Include="..\..\Tools\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
   </ItemGroup>
   
@@ -36,6 +38,9 @@
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <!--<Compile Include="..\..\Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>-->
 
     <Compile Include="$(SharedSource)BuildClient.cs">
       <Link>BuildClient.cs</Link>

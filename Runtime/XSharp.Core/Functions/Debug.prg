@@ -7,6 +7,7 @@
 // Debug Output and Stack trace info etc.
 USING System.Reflection
 USING System.Diagnostics
+using System.Runtime.InteropServices
 
 
 /// <summary>
@@ -15,7 +16,7 @@ USING System.Diagnostics
 /// <returns>
 /// </returns>
 FUNCTION DebOut32( s AS STRING ) AS VOID
-   System.Diagnostics.Debug.WriteLine(s)
+    Win32.OutputDebugString(s+e"\r\n")
    RETURN
 
 /// <summary>
@@ -24,7 +25,7 @@ FUNCTION DebOut32( s AS STRING ) AS VOID
 /// <returns>
 /// </returns>
 FUNCTION _DebOut32( s AS STRING ) AS VOID
-   System.Diagnostics.Debug.WriteLine(s)
+   Win32.OutputDebugString(s+e"\r\n")
    RETURN
 
 

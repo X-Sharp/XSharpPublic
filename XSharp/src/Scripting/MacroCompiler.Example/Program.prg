@@ -56,9 +56,16 @@ class testclass
     class nested
         enum child
             haha := 4321
+            blabla := 1
         end enum
 
+        public static ttt := child.blabla as child
+
         public static fff := 333 as int
+
+        public const ccc := 456 as int
+
+        public const eee := child.blabla as child
     end class
 
     public v1 as int
@@ -141,7 +148,7 @@ begin namespace MacroCompilerTest
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a| (testclass)a }",tci) // FAIL - should work (TODO: implement type casts)
         //EvalMacro(mc, e"{|a,b| asdgfafd(123) }") // FAIL - error message is OK but TestMacro() fails
-        EvalMacro(mc, e"_GETMPARAM(3)", 1, 2, 3)
+        EvalMacro(mc, e"testclass.nested.eee")
         wait
 
         RunTests(mc)
@@ -403,6 +410,10 @@ begin namespace MacroCompilerTest
         TestMacro(mc, e"_GetFParam(2)", <object>{10, 20, 30.5}, 20, typeof(int))
         TestMacro(mc, e"_GetFParam(3)", <object>{10, 20, 30.5}, 30.5, typeof(real8))
         TestMacro(mc, e"_GetFParam(100)", <object>{10, 20, 30.5}, null, typeof(object))
+        TestMacro(mc, e"testclass.nested.child.haha", <object>{}, testclass.nested.child.haha, typeof(testclass.nested.child))
+        TestMacro(mc, e"testclass.nested.ttt", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
+        TestMacro(mc, e"testclass.nested.ccc", <object>{}, 456, typeof(int))
+        TestMacro(mc, e"testclass.nested.eee", <object>{}, testclass.nested.child.blabla, typeof(testclass.nested.child))
 
 //        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsField
 //        TestMacro(mc, e"{|| NIKOS}", <OBJECT>{}, nil, typeof(usual))

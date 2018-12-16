@@ -62,7 +62,9 @@ namespace XSharp.MacroCompiler
         internal TypeSymbol(Type type) { Type = type; }
         internal bool IsByRef { get { return Type.IsByRef; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
+        internal bool IsEnum { get { return Type.IsEnum; } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
+        internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }
         internal Dictionary<MemberInfo, Symbol> MemberTable = new Dictionary<MemberInfo, Symbol>();
         void AddMember(string name, Symbol ms)
         {
@@ -182,7 +184,17 @@ namespace XSharp.MacroCompiler
                 case MemberTypes.Method:
                     return new MethodSymbol(declType, (MethodInfo)member);
                 case MemberTypes.Field:
-                    return new FieldSymbol(declType, (FieldInfo)member);
+                    {
+                        var field = (FieldInfo)member;
+                        if (field.IsLiteral)
+                        {
+                            return Constant.Create(
+                                field.FieldType.IsEnum ?
+                                    Convert.ChangeType(field.GetValue(null), field.FieldType.GetEnumUnderlyingType()) : field.GetValue(null),
+                                Binder.FindType(field.FieldType));
+                        }
+                        return new FieldSymbol(declType, field);
+                    }
                 case MemberTypes.Event:
                     return new EventSymbol(declType, (EventInfo)member);
                 case MemberTypes.Property:

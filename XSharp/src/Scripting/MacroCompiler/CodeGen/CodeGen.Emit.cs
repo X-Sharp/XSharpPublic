@@ -160,9 +160,11 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        internal static void EmitLiteral(ILGenerator ilg, Constant c)
+        internal static void EmitLiteral(ILGenerator ilg, Constant c, TypeSymbol t = null)
         {
-            switch (c.Type.NativeType)
+            if (t == null)
+                t = c.Type;
+            switch (t.NativeType)
             {
                 case NativeType.Boolean:
                     if (c.Boolean == true)
@@ -227,9 +229,14 @@ namespace XSharp.MacroCompiler
                     ilg.Emit(OpCodes.Ldnull);
                     break;
                 case NativeType.Usual:
-                    EmitDefault(ilg, c.Type);
+                    EmitDefault(ilg, t);
                     break;
                 default:
+                    if (c.Type.IsEnum)
+                    {
+                        EmitLiteral(ilg, c, c.Type.EnumUnderlyingType);
+                        break;
+                    }
                     throw new InternalError();
             }
         }

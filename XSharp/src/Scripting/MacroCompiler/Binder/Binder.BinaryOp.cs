@@ -106,13 +106,13 @@ namespace XSharp.MacroCompiler
                 {
                     case BinaryOperatorKind.Equal:
                         if (bothStrings)
-                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
                         else if (hasString)
                             ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                     case BinaryOperatorKind.NotEqual:
                         if (bothStrings)
-                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringNotEquals), ref mop, ref lconv, ref rconv, options);
                         else if (hasString)
                             ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactNotEquals), ref mop, ref lconv, ref rconv, options);
                         break;
@@ -121,7 +121,7 @@ namespace XSharp.MacroCompiler
                     case BinaryOperatorKind.GreaterThanOrEqual:
                     case BinaryOperatorKind.LessThanOrEqual:
                         if (bothStrings)
-                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions___StringCompare), ref mop, ref lconv, ref rconv, options);
+                            ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringCompare), ref mop, ref lconv, ref rconv, options);
                         break;
                 }
             }
@@ -153,7 +153,7 @@ namespace XSharp.MacroCompiler
 
             if (mop == null && kind == BinaryOperatorKind.Exponent)
             {
-                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_VO_Functions_POW), ref mop, ref lconv, ref rconv, options);
+                ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions_POW), ref mop, ref lconv, ref rconv, options);
                 if (hasUsual)
                 {
                     ResolveBinaryOperator(left, right, left.Datatype.Lookup(OperatorNames.__UsualExponent), ref mop, ref lconv, ref rconv, options);

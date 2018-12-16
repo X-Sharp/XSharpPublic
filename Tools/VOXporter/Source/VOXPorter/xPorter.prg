@@ -1,11 +1,11 @@
-USING System.IO
+﻿USING System.IO
 USING System.Collections
 USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.Reflection
 USING System.Text
 USING System.Drawing
-
+using System.Linq
 USING Xide
 
 GLOBAL DefaultOutputFolder := "" AS STRING
@@ -37,6 +37,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:AdjustCallbackFunctions := TRUE      
 	oOptions:SortEntitiesByName := TRUE
 	oOptions:UseXSharpRuntime := FALSE
+    oOptions:CopyResourcesToProjectFolder := TRUE
 	xPorter.Options := oOptions
 	
 	ReadIni()
@@ -225,7 +226,8 @@ STRUCTURE xPorterOptions
 	EXPORT AdjustCallbackFunctions AS LOGIC
 	EXPORT ExportOnlyDefines AS LOGIC 
 	EXPORT SortEntitiesByName AS LOGIC 
-	EXPORT UseXSharpRuntime AS LOGIC 
+	EXPORT UseXSharpRuntime AS LOGIC
+    EXPORT CopyResourcesToProjectFolder as LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -548,6 +550,7 @@ CLASS ApplicationDescriptor
 	PROTECT _aGACReferences AS List<STRING>
 	PROTECT _aBrowseReferences AS List<STRING>
 	PROTECT _aProjectReferences AS List<STRING>
+    PROTECT _aOtherFiles as List<String>
 	
 	PROTECT _aFunctions AS List<STRING>
 	PROTECT _aCallbacks AS List<STRING>
@@ -572,6 +575,7 @@ CLASS ApplicationDescriptor
 		
 		SELF:_aFunctions := List<STRING>{}
 		SELF:_aCallbacks := List<STRING>{}
+        SELF:_aOtherFiles := List<STRING>{}
 		
 		SELF:_oProject := oProject
 		
@@ -582,6 +586,7 @@ CLASS ApplicationDescriptor
 
 		IF xPorter.Options:UseXSharpRuntime
 			SELF:AddRuntimeReference("XSharp.Core")
+            SELF:AddRuntimeReference("XSharp.RT")
 			SELF:AddRuntimeReference("XSharp.VO")
 		ELSE
 			SELF:AddRuntimeReference("VulcanRT")
@@ -859,7 +864,57 @@ CLASS ApplicationDescriptor
 		SELF:_lLoaded := TRUE
 		
 	RETURN
-	
+
+    METHOD CopyWedFiles(cFolder as STRING) as VOID
+        // Copy INF and TPL files to properties folder
+        var  cVOFolder := System.IO.Path.Combine(VoFolder.Get(),"Bin")
+        Directory.CreateDirectory(cFolder+"\Properties")
+        var aFiles := List<String>{}
+        aFiles:Add("cavowed.inf")
+        aFiles:Add("cavowed.tpl")
+        aFiles:Add("cavoded.tpl")
+        aFiles:Add("cavofed.tpl")
+        foreach var cFile in aFiles
+            var cSource := System.IO.Path.Combine(cVoFolder, cFile)
+            var cDest   := System.IO.Path.Combine(cFolder+"\Properties", cFile)
+            if System.IO.File.Exists(cSource) .and. ! System.IO.File.Exists(cDest)
+                System.IO.File.Copy(cSource, cDest, TRUE)
+                SELF:_aOtherFiles:Add("Properties\"+System.IO.Path.GetFileName(cDest))
+            endif
+            if cFile == "cavowed.inf" .and. System.IO.File.Exists(cSource)
+                // open file and read [SupplementalFiles] section
+                var aLines := System.IO.File.ReadAllLines(cSource)
+                var lSupplemental := false
+                foreach var cLine in aLines
+                    if cLine:Trim():ToUpper() == "[SUPPLEMENTALFILES]"
+                        lSupplemental := TRUE
+                    elseif cLine:Trim():Startswith("[")
+                        // end of section
+                        lSupplemental := FALSE
+                    endif
+                    if lSupplemental
+                        if cLine:Trim():ToUpper():Startswith("FILE")
+                            var aElements := cLine:Trim():Split(<Char>{'='})
+                            if aElements:Length >= 2
+                                var cAdditional := aElements[2]
+                                cSource := System.IO.Path.Combine(cVoFolder, cAdditional)
+                                cDest   := System.IO.Path.Combine(cFolder+"\Properties", cAdditional)
+                                if System.IO.File.Exists(cSource) .and. ! System.IO.File.Exists(cDest)
+                                    System.IO.File.Copy(cSource, cDest, TRUE)
+                                endif
+                                IF System.IO.File.Exists(cDest)
+                                    SELF:_aOtherFiles:Add("Properties\"+cAdditional)
+                                endif
+                            endif
+                        endif
+                    endif
+
+                next
+                
+            endif
+
+        next
+
 	METHOD Generate() AS VOID
 		LOCAL cFolder AS STRING
 		cFolder := SELF:AppFolder
@@ -869,7 +924,8 @@ CLASS ApplicationDescriptor
 		SELF:ResolveReferences()
 		
 		Directory.CreateDirectory(cFolder)
-		
+		Directory.CreateDirectory(cFolder+"\Resources")
+        SELF:CopyWedFiles(cFolder)
 		FOREACH oModule AS ModuleDescriptor IN SELF:_aModules
 			
 			xPorter.uiForm:AdvanceProgressbar()
@@ -926,10 +982,11 @@ CLASS ApplicationDescriptor
 					LOCAL oXideResources, oWedResources AS OutputCode
 					oXideResources := OutputCode{}
 					oWedResources := OutputCode{}
-					FOREACH oPair AS KeyValuePair<STRING , OutputCode> IN aResources
+                    FOREACH oPair AS KeyValuePair<STRING , OutputCode> IN aResources
 
 						// For VS:
 						LOCAL cName, cUpperName AS STRING
+                        LOCAL cRcSource as STRING
 						cName := oPair:Key
 						cUpperName := cName:ToUpperInvariant()
 
@@ -944,7 +1001,14 @@ CLASS ApplicationDescriptor
 						END CASE
 
 						cResFileName := oModule:PathValidName + "." + cName + ".rc"
-						File.WriteAllLines(cFolder + "\" + cResFileName , oPair:Value:GetContents() , System.Text.Encoding.Default)
+                        var aContents := oPair:Value:GetContents():ToArray()
+                        cRcSource     := aContents[1]
+                        
+                        if xPorter.Options:CopyResourcesToProjectFolder
+                            cRcSource := SELF:AdjustResource(cRcSource,cFolder)
+                            aContents[1] := cRcSource 
+                        endif
+						File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
 						oModule:AddVSrc(cResFileName)
 
 						// For XIDE:
@@ -967,7 +1031,16 @@ CLASS ApplicationDescriptor
 					IF xPorter.ExportXideBinaries
 						IF .not. oXideResources:IsEmpty()
 							cResFileName := oModule:PathValidName + ".rc"
-							File.WriteAllLines(cFolder + "\" + cResFileName , oXideResources:GetContents() , System.Text.Encoding.Default)
+                            local aResult   := List<String>{} as List<String>
+                            FOREACH cLine as STRING in oXideResources:GetContents():ToArray()
+                                if xPorter.Options:CopyResourcesToProjectFolder
+                                    var cNewLine := SELF:AdjustResource(cLine, cFolder)
+                                    aResult:Add(cNewLine)
+                                else
+                                    aResult:Add(cLine)
+                                endif
+                            next
+							File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
 							oModule:AddXIDErc(cResFileName)
 						END IF
 
@@ -992,7 +1065,52 @@ CLASS ApplicationDescriptor
 		SELF:CreateAppFile(cFolder , TRUE)
 		SELF:CreateAppFile(cFolder , FALSE)
 	RETURN
-	
+
+    METHOD AdjustResource(cLine as STRING,cFolder as STRING) as STRING
+        local aElements as string[]
+        local lHasFile  as LOGIC
+        local cResourcesFolder := cFolder+"\Resources" as string
+        aElements := cLine:Split(<Char>{' '},StringSplitOptions.RemoveEmptyEntries)
+        if aElements:Length > 2
+            // Element 1 = Name
+            // Element 2 = Type
+            // Element 3 = FileName
+            switch aElements[2]:ToUpper()
+            case "DIALOG"
+            case "DIALOGEX"
+            case "MENU"
+            case "MENUEX"
+            case "VERSIONINFO"
+            case "STRINGTABLE"
+                lHasFile := FALSE
+            case "BITMAP"
+            case "ICON"
+            case "CURSOR"
+                lHasFile := TRUE
+            otherwise
+                lHasFile := TRUE
+            end switch
+            if lHasFile
+                local nPos      := cLine:IndexOf(aElements[2]) + aElements[2]:Length as INT
+                local cFileName := cLine:SubString(nPos) as STRING
+                cFileName := cFileName:Trim()
+                if cFileName:StartsWith(e"\"") .and. cFileName:EndsWith(e"\"")
+                    cFileName := cFileName:Substring(1, cFileName:Length-2)
+                endif
+                if System.IO.File.Exists(cFileName)
+                    var cDestName := System.IO.Path.Combine(cResourcesFolder, System.IO.Path.GetFileName(cFileName))
+                    IF ! System.IO.File.Exists(cDestName)
+                        System.IO.File.Copy(cFileName, cDestName)
+                    ENDIF
+                    // change to relative path
+                    cDestName := cDestName:Replace(cFolder+"\", "")
+                    SELF:_aOtherFiles:Add(cDestName)
+                    cLine  := cLine :Replace(cFileName, cDestName)
+                endif
+            endif
+        endif
+       return cLine:Trim()
+
 	METHOD CreateAppFile(cFolder AS STRING , lXide AS LOGIC) AS VOID
 		LOCAL oTemplate AS StreamReader
 		LOCAL oOutput AS StreamWriter
@@ -1069,7 +1187,11 @@ CLASS ApplicationDescriptor
 								ENDIF
 							NEXT
 						END IF
-					END IF
+                        FOREACH VAR cLine in SELF:_aOtherFiles
+                            oOutPut:WriteLine(String.Format(e"<None Include=\"{0}\" />", cLine:Trim()))
+                        NEXT
+                    END IF
+					
 					
 				NEXT
 			CASE cTemplate == "%references%"
@@ -2161,4 +2283,6 @@ FUNCTION SafeFolderExists(cFolder AS STRING) AS LOGIC
 		lRet := Directory.Exists(cFolder)
 	END TRY
 RETURN lRet
+
+
 

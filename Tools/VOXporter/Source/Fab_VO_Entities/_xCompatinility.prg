@@ -1,4 +1,4 @@
-#using System.Text
+﻿#using System.Text
 #using System.Collections
 
 
@@ -32,7 +32,7 @@ GET ((xARRAY)(SELF:aItems[(INT)nIndex1 - 1]))[nIndex2] ;
 SET ((xARRAY)(SELF:aItems[(INT)nIndex1 - 1]))[nIndex2] := VALUE
 METHOD ASize(nSize AS DWORD) AS xARRAY
 	IF nSize < SELF:aItems:Count
-		SELF:aItems:RemoveRange((INT)nSize, SELF:aItems:Count - nSize)
+		SELF:aItems:RemoveRange((INT)nSize, (INT)(SELF:aItems:Count - nSize))
 	ELSEIF nSize > SELF:aItems:Count
 		DO WHILE nSize > SELF:aItems:Count
 			SELF:aItems:Add(xNIL)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using XSharp.MacroCompiler;
 
 namespace XSharp.Runtime
-{
+    {
     public class MacroCompiler : IMacroCompiler
     {
         private  MacroOptions options;
@@ -33,7 +33,8 @@ namespace XSharp.Runtime
             return compiler;
         }
 
-        public ICodeBlock Compile(string macro, bool lAllowSingleQuotes, Module module, out bool isCodeblock)
+        public ICodeblock Compile(string macro, bool lAllowSingleQuotes, Module module, ref bool isCodeblock)
+
         {
             isCodeblock = macro.Replace(" ", "").StartsWith("{|");
             Compilation<object, RuntimeCodeblockDelegate> compiler = GetCompiler(lAllowSingleQuotes);
@@ -44,7 +45,8 @@ namespace XSharp.Runtime
             }
             return new RuntimeCodeblock(m.Macro, m.ParamCount);
         }
-        public ICodeBlock Compile(string macro)
+
+        public ICodeblock Compile(string macro)
         {
             Compilation<object, RuntimeCodeblockDelegate> compiler = GetCompiler(true);
             var m = compiler.Compile(macro);

@@ -317,10 +317,10 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
         cName   := Trim(Upper(cName))
         RETURN cName
 
-    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL) AS ICodeBlock
+    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL) AS ICodeblock
         LOCAL oBlock    := uBlock   AS OBJECT
-        IF oBlock IS ICodeBlock
-            RETURN (ICodeBlock) oBlock
+        IF oBlock IS ICodeblock
+            RETURN (ICodeblock) oBlock
         ENDIF
         RETURN NULL  
 

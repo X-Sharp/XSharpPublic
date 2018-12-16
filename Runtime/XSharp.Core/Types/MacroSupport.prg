@@ -7,9 +7,9 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines Compile time and runtime codeblocks
 	/// </summary>
-	/// <seealso cref="T:XSharp.CodeBlock"/>
-	/// <seealso cref="T:XSharp._CodeBlock"/>
-	INTERFACE ICodeBlock
+	/// <seealso cref="T:XSharp.Codeblock"/>
+	/// <seealso cref="T:XSharp._Codeblock"/>
+	INTERFACE ICodeblock
 		/// <summary>Evaluate the codeblock</summary>
 		METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
 		/// <summary>
@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp
 	/// </summary>
 	/// <seealso cref="M:XSharp.Core.Functions.SetMacroCompiler(System.Type)"/>
 	/// <seealso cref="M:XSharp.Core.Functions.GetMacroCompiler"/>
-	/// <seealso cref="T:XSharp.ICodeBlock"/>
+	/// <seealso cref="T:XSharp.ICodeblock"/>
 	INTERFACE IMacroCompiler
 		/// <summary>Compile a string into a runtime codeblock.</summary>
 		/// <param name="macro">String to compile</param>
@@ -30,15 +30,15 @@ BEGIN NAMESPACE XSharp
 		/// <param name="module">Module of the main app</param>
 		/// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
 		/// <returns>A compiled codeblock</returns>
-		/// <seealso cref="T:XSharp.ICodeBlock"/>
-		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock OUT LOGIC) AS ICodeBlock
+		/// <seealso cref="T:XSharp.ICodeblock"/>
+		METHOD Compile(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module, isCodeblock REF LOGIC) AS ICodeblock
     END INTERFACE
 
     /// <summary>Delegate used for Runtime Codeblocks </summary>
     DELEGATE RuntimeCodeblockDelegate(args PARAMS DYNAMIC[]) AS DYNAMIC
 
     /// <summary>Class wrapper used for Runtime Codeblocks </summary>
-    PUBLIC CLASS RuntimeCodeblock IMPLEMENTS ICodeBlock
+    PUBLIC CLASS RuntimeCodeblock IMPLEMENTS ICodeblock
         PRIVATE _eval AS RuntimeCodeblockDelegate
         PRIVATE _pcount AS INT
 

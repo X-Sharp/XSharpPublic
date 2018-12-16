@@ -28,7 +28,7 @@ FUNCTION Evaluate(cExpression AS STRING) AS USUAL
 /// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
-	LOCAL oMacro AS XSharp._CODEBLOCK 
+	LOCAL oMacro AS XSharp._Codeblock 
 	LOCAL uRes   AS USUAL
 	oMacro := MCompile(cExpression, lAllowSingleQuotes)
 	IF oMacro != NULL_OBJECT .AND. ! oMacro:IsBlock
@@ -46,11 +46,11 @@ FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 /// <param name="cMacro">The string to compile.</param>
 /// <returns>The string in a macro-compiled form.</returns>
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
-/// <seealso cref="T:XSharp._CodeBlock" />
+/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
+/// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
-/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.CodeBlock)" />
-FUNCTION MCompile(cMacro AS STRING) AS XSharp._CODEBLOCK
+/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.Codeblock)" />
+FUNCTION MCompile(cMacro AS STRING) AS XSharp._Codeblock
 	RETURN MCompile(cMacro, TRUE)
 	
 /// <summary>
@@ -60,11 +60,11 @@ FUNCTION MCompile(cMacro AS STRING) AS XSharp._CODEBLOCK
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
 /// <returns>The string in a macro-compiled form.</returns>
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net.</note>
-/// <seealso cref="T:XSharp._CodeBlock" />
+/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
+/// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.CodeBlock)" />
-FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._CodeBlock
+/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.Codeblock)" />
+FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
 	
 	VAR oMC := XSharp.RuntimeState.MacroCompiler
 	IF oMC != NULL_OBJECT
@@ -72,11 +72,11 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 		IF oMod == NULL_OBJECT
 			XSharp.RuntimeState.AppModule := TYPEOF(XSharp.Core.Functions):Module
 		ENDIF
-		LOCAL iResult AS ICodeBlock
-		LOCAL oResult AS XSharp._CodeBlock
-		LOCAL lIsCodeblock AS LOGIC
-		iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, OUT lIsCodeBlock)
-		oResult := XSharp._CodeBlock{iResult, cMacro, lIsCodeBlock}
+		LOCAL iResult AS ICodeblock
+		LOCAL oResult AS XSharp._Codeblock
+		LOCAL lIsCodeblock := FALSE AS LOGIC
+		iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, REF lIsCodeBlock)
+		oResult := XSharp._Codeblock{iResult, cMacro, lIsCodeBlock}
 		RETURN oResult
 	ENDIF
 	RETURN NULL_OBJECT	
@@ -87,8 +87,8 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 	/// </summary>
 	/// <param name="cb">The macro-compiled codeblock.</param>
 	/// <returns>The result of evalating the macro compiled expression.</returns>
-	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._CodeBlock in .Net. Therefore the parameter of MExec is a Codeblock</note>
-	/// <seealso cref="T:XSharp._CodeBlock" />
+	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
+	/// <seealso cref="T:XSharp._Codeblock" />
 	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
 	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
 FUNCTION MExec(cb AS CODEBLOCK) AS USUAL

@@ -143,7 +143,7 @@ METHOD Trans(info AS DbTransInfo) 		AS LOGIC
 	// Blob
 //	METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 
-	// CodeBlock Support
+	// Codeblock Support
 //	METHOD Compile(sBlock AS STRING) AS LOGIC
 //	METHOD EvalBlock(oBlock AS OBJECT) AS OBJECT	
 	// Other

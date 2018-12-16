@@ -82,7 +82,7 @@ BEGIN NAMESPACE XSharp
 		MEMBER NatDLL		:= 79   // string
 		MEMBER CollationTable := 80  // byte[]
 		MEMBER ErrorLevel   := 81  // DWORD
-		MEMBER ErrorBlock   := 82  // CodeBlock
+		MEMBER ErrorBlock   := 82  // Codeblock
         MEMBER OPTIONVO13	:= 83	// Logic
         MEMBER LastRddError := 84   // Exception object
 		MEMBER DICT        := 98	// LOGIC

@@ -49,7 +49,7 @@ FUNCTION Eval( obj AS OBJECT,  args PARAMS USUAL[] ) AS USUAL
 	
 	IF obj == NULL
 		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(obj), 1)
-	ELSEIF obj IS XSharp.CodeBlock
+	ELSEIF obj IS XSharp.Codeblock
 		result := Eval( (CODEBLOCK) obj, args )
 	ELSE
 		VAR types   := Type[]{ 1 }

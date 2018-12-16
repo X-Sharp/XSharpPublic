@@ -241,14 +241,14 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Retrieve information about a memo column.</summary>
 	METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
 
-	// CodeBlock Support
+	// Codeblock Support
 	/// <summary>Compile an expression.</summary>
 	/// <param name="sBlock">The expression to compile.</param>
 
-	METHOD Compile(sBlock AS STRING)				AS ICodeBlock
+	METHOD Compile(sBlock AS STRING)				AS ICodeblock
 	/// <summary>Evaluate a code block.</summary>
 	/// <param name="sBlock">The code block to evaluate.</param>
-	METHOD EvalBlock(oBlock AS ICodeBlock)			AS OBJECT	
+	METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT	
 
 	// Info
 	/// <summary>Retrieve and optionally change information about a work area.</summary>

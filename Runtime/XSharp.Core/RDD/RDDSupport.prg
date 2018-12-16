@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD.Support
 CLASS DbEvalInfo  
 	
 	/// <summary>A code block to be evaluated with DbEval() on each row of the work area that is in the range defined by ScopeInfo.  </summary>
-	PUBLIC Block	 AS ICodeBlock
+	PUBLIC Block	 AS ICodeblock
 
 	/// <summary>A DbScopeInfo structure limiting the evaluation of Block.</summary>
 	PUBLIC ScopeInfo AS DbScopeInfo
@@ -34,7 +34,7 @@ CLASS DbFilterInfo
 	PUBLIC FilterText	AS STRING
 	
 	/// <summary>A code block representing the condition that is evaluated at each cursor location.  If the result of the evaluation is FALSE, the cursor location requested is invalid according to the current filter condition.</summary>
-	PUBLIC FilterBlock	AS ICodeBlock
+	PUBLIC FilterBlock	AS ICodeblock
 	
 	/// <summary>A flag that is TRUE if a filter is active.</summary>
 	PUBLIC Active		AS LOGIC
@@ -155,9 +155,9 @@ CLASS DbOrderCondInfo
 	/// <summary> A flag that is TRUE if the order should be created in descending order. </summary>
 	PUBLIC @@Descending 	AS LOGIC
 	/// <summary>A code block defining the expression to evaluate every StepSize rows during the creation of the order.  The code block referenced should return a logical value: TRUE indicates that creation of the order should continue normally, and FALSE indicates that order creation should terminate. </summary>
-	PUBLIC EvalBlock		AS ICodeBlock 
+	PUBLIC EvalBlock		AS ICodeblock 
 	/// <summary>A code block defining the for condition to use for the creation and maintenance of the order.</summary>
-	PUBLIC ForBlock			AS ICodeBlock 
+	PUBLIC ForBlock			AS ICodeblock 
 	/// <summary>A string defining the for condition to use for the creation and maintenance of the order.</summary>
 	PUBLIC ForExpression	AS STRING    
 	/// <summary>The number of rows to process for order creation.</summary>
@@ -177,7 +177,7 @@ CLASS DbOrderCondInfo
 	/// <summary>A flag that is TRUE if only rows in the controlling order are to be included in the order.</summary>
 	PUBLIC UseCurrent		AS LOGIC
 	/// <summary>A code block defining the while condition to use for the creation of the order.  An empty value indicates that no while condition is being imposed.</summary>
-	PUBLIC WhileBlock		AS ICodeBlock
+	PUBLIC WhileBlock		AS ICodeblock
 	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
 	PUBLIC WhileExpression	AS STRING    
 
@@ -202,7 +202,7 @@ CLASS DbOrderCreateInfo
 	/// <summary>A flag that is TRUE if the order should contain only unique keys. </summary>
 	PUBLIC Unique		AS LOGIC
 	/// <summary>A code block containing the key expression defining the order imposed on the work area. </summary>
-	PUBLIC Block		AS ICodeBlock
+	PUBLIC Block		AS ICodeblock
 	/// <summary>A DbOrderCondInfo object containing information about the condition (if any) for the order. </summary>
 	PUBLIC OrdCondInfo	AS DbOrderCondInfo
 
@@ -220,7 +220,7 @@ CLASS DbOrderInfo
 	/// <summary>A flag that is TRUE if all tags of the index file must be opened.</summary>
 	PUBLIC AllTags		AS LOGIC
 	/// <summary>A code block containing the key expression defining the order imposed on the work area.</summary>
-	PUBLIC Expression	AS ICodeBlock
+	PUBLIC Expression	AS ICodeblock
 	/// <summary>An object containing the order name or number</summary>
 	PUBLIC Order		AS OBJECT
 	/// <summary>The index file name.</summary>
@@ -234,7 +234,7 @@ CLASS DbRelInfo
 	/// <summary>The expression used to reposition the cursor of the child table when this relation is resolved.</summary>
 	PUBLIC Key			AS STRING
 	/// <summary>A code block used to reposition the cursor of the child table when this relation is resolved.</summary>
-	PUBLIC Block		AS ICodeBlock
+	PUBLIC Block		AS ICodeblock
 	/// <summary>A reference to the child RDD for the relation.</summary>
 	PUBLIC Child		AS IRDD	
 	/// <summary>A reference to the parent RDD for the relation.</summary>
@@ -256,7 +256,7 @@ CLASS DbScopeInfo
 	/// <summary> A flag that is TRUE if a process should include deleted rows. </summary>
 	PUBLIC IncludeDeleted	AS LOGIC
 	/// <summary>A code block representing the conditional for clause.  A for condition is, essentially, a filter that hides rows for which the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
-	PUBLIC ForBlock			AS ICodeBlock
+	PUBLIC ForBlock			AS ICodeblock
 	/// <summary>A string representing the conditional for clause.  A for condition is, essentially, a filter that hides rows for which the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC ForExpression	AS STRING
 	/// <summary>A flag that is TRUE if the last row of the current scope is required. </summary>
@@ -268,7 +268,7 @@ CLASS DbScopeInfo
 	/// <summary>A flag that is TRUE if a process should continue stepping through data from the current work area cursor position until logical end-of-file. </summary>
 	PUBLIC Rest				AS LOGIC    
 	/// <summary>A code block representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
-	PUBLIC WhileBlock		AS ICodeBlock
+	PUBLIC WhileBlock		AS ICodeblock
 	/// <summary>A string representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC WhileExpression	AS STRING    
 	/// <summary>Construct a DbScopeInfo object.</summary>

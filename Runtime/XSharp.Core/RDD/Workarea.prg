@@ -130,9 +130,9 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL isOk     := TRUE AS LOGIC
             LOCAL lLimit   := FALSE AS LOGIC
             LOCAL lRecordOk := TRUE AS LOGIC
-            LOCAL cbWhile   AS ICodeBlock
-            LOCAL cbFor     AS ICodeBlock
-            LOCAL cbEval    AS ICodeBlock
+            LOCAL cbWhile   AS ICodeblock
+            LOCAL cbFor     AS ICodeblock
+            LOCAL cbEval    AS ICodeblock
             info:ScopeInfo:Compile(SELF)
             cbWhile  := info:ScopeInfo:WhileBlock 
             cbFor    := info:ScopeInfo:ForBlock   
@@ -234,7 +234,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL fromTop      AS LOGIC
             LOCAL recordHidden AS LOGIC
             LOCAL result       AS LOGIC
-            LOCAL cbFilter     AS ICodeBlock
+            LOCAL cbFilter     AS ICodeblock
             LOCAL fRtDeleted   AS LOGIC
             fRtDeleted := RuntimeState.Deleted
             IF SELF:_FilterInfo:Active
@@ -295,8 +295,8 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lContinue := TRUE AS LOGIC
             LOCAL result    := TRUE AS LOGIC
             LOCAL nextCnt := SELF:_ScopeInfo:NextCount  AS LONG
-            LOCAL cbWhile AS ICodeBlock
-            LOCAL cbFor   AS ICodeBlock
+            LOCAL cbWhile AS ICodeblock
+            LOCAL cbFor   AS ICodeblock
             _ScopeInfo:Compile(SELF)
             cbWhile := _ScopeInfo:WhileBlock
             cbFor   := _ScopeInfo:ForBlock
@@ -821,8 +821,8 @@ BEGIN NAMESPACE XSharp.RDD
 			
 			/// <inheritdoc />
 			VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
-			    LOCAL cbFor     := info:Scope:ForBlock AS ICodeBlock
-                LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeBlock
+			    LOCAL cbFor     := info:Scope:ForBlock AS ICodeblock
+                LOCAL cbWhile   := info:Scope:WhileBlock AS ICodeblock
                 LOCAL result    := TRUE AS LOGIC
                 LOCAL lQualified:= TRUE AS LOGIC
                 LOCAL lLimit    := TRUE AS LOGIC
@@ -906,15 +906,15 @@ BEGIN NAMESPACE XSharp.RDD
      
 
 			/// <inheritdoc />
-		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeBlock
-			LOCAL oBlock := NULL AS ICodeBlock
+		VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
+			LOCAL oBlock := NULL AS ICodeblock
 			TRY
 				LOCAL oC AS IMacroCompiler
 				oC          := XSharp.RuntimeState.MacroCompiler
 				LOCAL oType := typeof(Workarea) AS System.Type
 				IF oC != NULL
-					LOCAL isBlock AS LOGIC
-					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock)
+					LOCAL isBlock := FALSE AS LOGIC
+					oBlock := oC:Compile(sBlock, TRUE, oType:Module, REF isBlock)
 				ENDIF
 			CATCH e AS Exception
 				XSharp.RuntimeState.LastRddError := e
@@ -922,7 +922,7 @@ BEGIN NAMESPACE XSharp.RDD
 			RETURN oBlock
 			
 			/// <inheritdoc />
-		VIRTUAL METHOD EvalBlock(oBlock AS ICodeBlock) AS OBJECT
+		VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
 				LOCAL currentWk AS DWORD
                 LOCAL result AS OBJECT
 				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO

@@ -1,4 +1,4 @@
- EmailWindowMain DIALOGEX  45, 41, 419, 222
+EmailWindowMain DIALOGEX  45, 41, 419, 222
 STYLE	1073741824
 FONT	8, "MS Shell Dlg"
 BEGIN

@@ -24,6 +24,18 @@ CONSTRUCTOR(xKey)
 
 
 
+METHOD QueryInt      (cName)                     
+    Default(@cName, "")
+    RETURN QueryRTRegInt(SELF:cSubKey, cName)
+
+
+
+METHOD QueryString   (cName)                     
+    Default(@cName, "")
+    RETURN QueryRTRegString(SELF:cSubKey, cName)
+
+
+
 METHOD QueryValue    (cName)                     
     LOCAL xRet  AS USUAL
     LOCAL nRet  AS INT
@@ -37,18 +49,6 @@ METHOD QueryValue    (cName)
     ENDIF
 
     RETURN xRet
-
-
-
-METHOD QueryInt      (cName)                     
-    Default(@cName, "")
-    RETURN QueryRTRegInt(SELF:cSubKey, cName)
-
-
-
-METHOD QueryString   (cName)                     
-    Default(@cName, "")
-    RETURN QueryRTRegString(SELF:cSubKey, cName)
 
 
 

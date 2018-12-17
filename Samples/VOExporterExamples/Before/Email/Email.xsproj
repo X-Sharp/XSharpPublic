@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>70BB4A7D-5886-43A4-8E1A-6A48436BF4EE</ProjectGuid>
+    <ProjectGuid>4CF7B582-F705-419D-B1B2-481AB17A7547</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Email</RootNamespace>
     <AssemblyName>Email</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>Email</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -114,6 +114,21 @@
     <Compile Include="_Start.prg">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\BOOK.ICO" />
+    <None Include="Resources\BOX.ICO" />
+    <None Include="Resources\BOXTICK.ICO" />
+    <None Include="Resources\OBOOK.ICO" />
+    <None Include="Resources\READ.ICO" />
+    <None Include="Resources\SENT.ICO" />
+    <None Include="Resources\UNREAD.ICO" />
+    <None Include="Resources\cctl6.man" />
+    <None Include="Resources\HelpAbt.BMP" />
     <Compile Include="WINDOW Email Window Main.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -346,7 +361,10 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>

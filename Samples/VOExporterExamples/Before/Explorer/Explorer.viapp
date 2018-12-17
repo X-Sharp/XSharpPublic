@@ -12,7 +12,7 @@ Extension =
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = BF102398-AABB-4141-BE44-2249006869DE
+GUID = 0C4F4347-33C2-4A81-A1D5-306C46FDB0BD
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -23,28 +23,28 @@ KeyFile =
 [Files]
 
 File = %AppPath%\Start.prg
-FileGUID = 4AAA6B34-E63B-47CD-823D-64D7506EB122
+FileGUID = 5CA2D66D-6010-4337-90B6-C049517D724B
 FileType = Code
 File = %AppPath%\Explorer Shell.prg
-FileGUID = 79A38E99-2675-4979-BBFB-A32B9D99CF57
+FileGUID = D6FBED68-24D3-4DD7-8CA7-6C1CB6AE0E81
 FileType = Code
 File = %AppPath%\Menus.prg
-FileGUID = AFE846C5-AE98-4033-B9D9-895A634052E7
+FileGUID = 21A3D9AD-E527-47DF-8BDC-69EE74A53D35
 FileType = Code
 File = %AppPath%\Customer Explorer.prg
-FileGUID = 9B8E689B-527E-4642-B605-B41C3C7DEAE5
+FileGUID = FC809F89-6778-47F0-887D-87A890184A4D
 FileType = Code
 File = %AppPath%\Help About.prg
-FileGUID = 19EF3655-9353-44A3-80C8-45CDFB0249C2
+FileGUID = 635D7266-2031-499F-9FA4-A44C1A0F1B91
 FileType = Code
 File = %AppPath%\Data Servers.prg
-FileGUID = 34D2CF5E-B07B-453D-ABF5-BA0CD99CCC14
+FileGUID = 515E260B-422D-4DFB-A8EF-BD9B0C66C833
 FileType = Code
 File = %AppPath%\Icons.prg
-FileGUID = 3075D4CC-6F0E-4388-8AB1-078A7D7047CD
+FileGUID = 262D2EDE-D70B-45C5-A770-95EDC6A08003
 FileType = Code
 NativeResourceFile = External , %AppPath%\Icons.rc
-ResourceFileGuid = 8FFE8307-D8E6-44A8-92B8-19E8FD43C74A
+ResourceFileGuid = F9B93C8E-9D4B-4C0F-A706-E3C1B7213BCA
 
 [References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
@@ -55,7 +55,7 @@ ReferenceGAC = CLR4,VulcanVOSystemClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVORDDClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0, 0.0.0.0
 ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0, 0.0.0.0
-ReferenceBrowse = C:\XporterOutput\SDK_DEFINES.dll,1,1
+ReferenceBrowse = %ProjectPath%\SDK_DEFINES.dll,1,1
 
 [General Options]
 Switches=/nowarn:9032,9043,618,162,649,9025

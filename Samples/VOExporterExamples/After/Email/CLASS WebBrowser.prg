@@ -1,4 +1,4 @@
-using ShDocVw
+﻿using ShDocVw
 using AxShDocVw
 using Email
 using System.Collections.Generic
@@ -6,6 +6,35 @@ CLASS WebBrowser INHERIT MultiLineEdit
 	EXPORT Okay AS LOGIC
     	EXPORT oHost as webBrowserHost
     	EXPORT oWebBrowser as AxWebBrowser	
+
+
+METHOD Display(cText AS STRING, lHtml AS LOGIC) AS VOID PASCAL 
+	LOCAL cFileName AS STRING
+	LOCAL ptrFile AS PTR
+	LOCAL nSize AS DWORD
+
+	// Turn an string into an HTM or TXT file for display in a browser control
+	// Returns the filename is successful
+	
+	cFileName := GetTempFilePath() + "temp."+IF(lHtml, "htm", "txt")
+	nSize := SLen(cText)
+	
+	ptrFile := FCreate(cFileName, FC_NORMAL)	// overwrite any file which is there
+	IF ptrFile != NULL_PTR
+		IF FWrite(ptrFile, cText, nSize) != nSize
+			cFileName := ""	// failed the write
+		ENDIF
+		FClose(ptrFile)
+	ELSE
+		cFileName := ""	// failed to open the file
+	ENDIF
+	
+	IF !Empty(cFileName)	
+        	SELF:oWebBrowser:Navigate(cFileName)
+	ENDIF
+	
+	RETURN
+
 
 
 METHOD GoEnd()	 
@@ -103,7 +132,6 @@ METHOD Resize(oEvent)
 		SELF:oWebBrowser:ResumeLayout()
 	ENDIF
 	RETURN NIL
-
 METHOD Destroy() CLIPPER
     	SUPER:Destroy()
     	SELF:oWebBrowser:Dispose()
@@ -168,40 +196,11 @@ METHOD Quit(		)
 //
     	SELF:oWebBrowser:Quit()
 	RETURN (uRetValue)
-
-METHOD Display(cText AS STRING, lHtml AS LOGIC) AS VOID PASCAL 
-	LOCAL cFileName AS STRING
-	LOCAL ptrFile AS PTR
-	LOCAL nSize AS DWORD
-
-	// Turn an string into an HTM or TXT file for display in a browser control
-	// Returns the filename is successful
-	
-	cFileName := GetTempFilePath() + "temp."+IF(lHtml, "htm", "txt")
-	nSize := SLen(cText)
-	
-	ptrFile := FCreate(cFileName, FC_NORMAL)	// overwrite any file which is there
-	IF ptrFile != NULL_PTR
-		IF FWrite(ptrFile, cText, nSize) != nSize
-			cFileName := ""	// failed the write
-		ENDIF
-		FClose(ptrFile)
-	ELSE
-		cFileName := ""	// failed to open the file
-	ENDIF
-	
-	IF !Empty(cFileName)	
-        	SELF:oWebBrowser:Navigate(cFileName)
-	ENDIF
-	
-	RETURN
-
-
-
-
+    
 END CLASS
 STATIC FUNCTION WebBrowserTrapError(oError AS Error)
 	BREAK oError
 RETURN NIL
+
 
 

@@ -1,4 +1,4 @@
- AttachmentAskDialog DIALOGEX  14, 29, 260, 157
+AttachmentAskDialog DIALOGEX  14, 29, 260, 157
 STYLE	4|128|2147483648|12582912|524288
 CAPTION	"Attachment Virus Warning"
 FONT	8, "MS Shell Dlg"

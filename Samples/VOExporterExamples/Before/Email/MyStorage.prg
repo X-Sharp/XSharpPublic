@@ -9,7 +9,7 @@ CONSTRUCTOR()
 
    cCurPath := CurDrive()+":\"+CurDir(CurDrive())
 
-   cPath := "C:\cavo28SP3\Samples\Email"
+   cPath := "C:\Cavo28SP3\Samples\Email"
 
    IF DirChange(Cast2Psz(cPath)) = 0
       cPath += "\Data"

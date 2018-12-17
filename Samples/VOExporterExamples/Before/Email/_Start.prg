@@ -4,11 +4,11 @@ GLOBAL aMailInfo AS ARRAY
 
 GLOBAL oEmailServer AS EmailStore	
 
-GLOBAL ogStorage AS MyStorage
+GLOBAL ogINetDial AS CINetDial
 
 GLOBAL ogOpenWindows AS Container
 
-GLOBAL ogINetDial AS CINetDial
+GLOBAL ogStorage AS MyStorage
 
 
 [STAThread];

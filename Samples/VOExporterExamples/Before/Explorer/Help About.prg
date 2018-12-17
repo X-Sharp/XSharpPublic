@@ -1,7 +1,7 @@
 #region DEFINES
+STATIC DEFINE HELPABOUTDIALOG_ENDDIALOG := 102 
 STATIC DEFINE HELPABOUTDIALOG_LABEL1 := 100 
 STATIC DEFINE HELPABOUTDIALOG_LABEL2 := 101 
-STATIC DEFINE HELPABOUTDIALOG_ENDDIALOG := 102 
 #endregion
 
 class HelpAboutDialog inherit DIALOGWINDOW 
@@ -33,7 +33,6 @@ self:HyperLabel := HyperLabel{#HelpAboutDialog,"About Explorer Sample...",NULL_S
 self:PostInit(oParent,uExtra)
 
 return self
-
 
 
 END CLASS

@@ -1,15 +1,15 @@
 #region DEFINES
-STATIC DEFINE EMAILDISPLAYDIALOG_FROM_FT := 100 
-STATIC DEFINE EMAILDISPLAYDIALOG_DATE_FT := 102 
-STATIC DEFINE EMAILDISPLAYDIALOG_TO_FT := 104 
-STATIC DEFINE EMAILDISPLAYDIALOG_CC_FT := 106 
-STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECT_FT := 108 
 STATIC DEFINE EMAILDISPLAYDIALOG_ATTACH_FT := 110 
 STATIC DEFINE EMAILDISPLAYDIALOG_ATTACHMENTS := 111 
-STATIC DEFINE EMAILDISPLAYDIALOG_FROMTEXT := 101 
-STATIC DEFINE EMAILDISPLAYDIALOG_DATETEXT := 103 
-STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECTTEXT := 109 
+STATIC DEFINE EMAILDISPLAYDIALOG_CC_FT := 106 
 STATIC DEFINE EMAILDISPLAYDIALOG_CCMLE := 107 
+STATIC DEFINE EMAILDISPLAYDIALOG_DATE_FT := 102 
+STATIC DEFINE EMAILDISPLAYDIALOG_DATETEXT := 103 
+STATIC DEFINE EMAILDISPLAYDIALOG_FROM_FT := 100 
+STATIC DEFINE EMAILDISPLAYDIALOG_FROMTEXT := 101 
+STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECT_FT := 108 
+STATIC DEFINE EMAILDISPLAYDIALOG_SUBJECTTEXT := 109 
+STATIC DEFINE EMAILDISPLAYDIALOG_TO_FT := 104 
 STATIC DEFINE EMAILDISPLAYDIALOG_TOMLE := 105 
 STATIC DEFINE EMAILDISPLAYDIALOG_WEBBROWSER := 112 
 #endregion
@@ -35,6 +35,30 @@ CLASS EmailDisplayDialog INHERIT EMailDialog
    EXPORT oServer AS EmailStore
    PROTECT oReplyMenu AS Menu
 
+
+METHOD AttachButton( ) 
+	LOCAL oDlg AS AttachmentsDialog
+	LOCAL oEmail AS CEmail
+	
+	oEmail := oEmailServer:GetEMail()
+	oDlg := AttachmentsDialog{SELF,oEmail}		// send the decoded email object
+	oDlg:Show()
+	
+	RETURN SELF
+	
+
+METHOD DeleteMail() 
+	
+	SELF:oCaller:DeleteSingle(SELF:oLVI)
+	SELF:EndWindow()
+	
+	RETURN SELF
+
+METHOD Destroy( ) 
+
+   ogOpenWindows:UnRegister(SELF)
+   
+   RETURN SUPER:Destroy()
 
 CONSTRUCTOR(oWindow,iCtlID,oServer,uExtra)  
 LOCAL DIM aFonts[1] AS OBJECT
@@ -110,6 +134,90 @@ self:PostInit(oWindow,iCtlID,oServer,uExtra)
 return self
 
 
+METHOD MailForward() 
+
+	SELF:EndWindow()
+	SELF:oCaller:MailForward()
+
+	RETURN SELF
+
+
+METHOD MailNewFrom() 
+
+	SELF:EndWindow()
+	SELF:oCaller:MailNewFrom()
+
+	RETURN SELF
+
+
+METHOD MailReply() 
+	
+	SELF:EndWindow()
+	SELF:oCaller:MailReply()
+
+	RETURN SELF
+
+METHOD MailReplyAll() 
+	
+	SELF:EndWindow()
+	SELF:oCaller:MailReplyAll()
+
+	RETURN SELF
+
+METHOD MenuCommand(oMenuCommandEvent) 
+   LOCAL dwItemID AS DWORD
+	
+	dwItemID := oMenuCommandEvent:ItemID
+	
+	DO CASE
+	CASE dwItemID = EmailDisplayToolBar_Reply_ID	
+		SELF:ReplyMenu()
+		
+	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_sender_ID //	Reply only to sender
+		SELF:MailReply()
+		
+	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_all_ID //	Reply to all addressees list in the email
+		SELF:MailReplyAll()	
+		
+	CASE dwItemID = EmailDisplayToolBar_Forward_ID	//	Forward/New to as yet unselected addressee
+	   IF SELF:oCaller:MailBox = SENTBOX
+	      SELF:MailNewFrom()
+	   ELSE
+		   SELF:MailForward()
+		ENDIF
+		
+	CASE dwItemID = EmailDisplayToolBar_Send_ID		//	Send email
+		SELF:SendMail()
+		
+	CASE dwItemID = EmailDisplayToolBar_Attach_ID	// add an attachment
+		SELF:AttachButton()	
+		
+	CASE dwItemID = EmailDisplayToolBar_Print_ID	//	Print out email
+		SELF:PrintMail()
+		
+	CASE dwItemID = EmailDisplayToolBar_Preview_ID	//	Preview email	
+		SELF:PreviewMail()
+		
+	CASE dwItemID = EmailDisplayToolBar_Delete_ID	//	Delete the email currently selected
+		SELF:DeleteMail()
+
+	CASE dwItemID = EmailDisplayToolBar_Address_ID	//	Goto address book
+		SELF:AddressBook()
+		
+	CASE dwItemID = EmailDisplayToolBar_Close_ID	//	Close display window
+		SELF:EndWindow()
+
+	CASE dwItemID = EmailDisplayToolBar_Back_Page_ID	//	Close display window
+		SELF:oDCWebBrowser:HTMLPageGoBack()
+		
+	CASE dwItemID = EmailDisplayToolBar_Fwd_Page_ID	//	Close display window
+		SELF:oDCWebBrowser:HTMLPageGoForward()
+		
+	ENDCASE
+
+	RETURN NIL
+
+
 METHOD PostInit(oWindow,iCtlID,oServer,uExtra) 
 	LOCAL nRecno AS INT 
 	
@@ -177,6 +285,40 @@ METHOD PostInit(oWindow,iCtlID,oServer,uExtra)
 	RETURN NIL
 
 
+METHOD PreviewMail() 
+	
+	SELF:oDCWebBrowser:PrintPreview()
+	
+   RETURN SELF
+
+METHOD PrintMail() 
+	AltD()
+	SELF:oDCWebBrowser:Print()
+   RETURN SELF
+
+METHOD ReplyMenu() 
+
+   IF oReplyMenu = Null_Object
+      oReplyMenu := ReplyMenu{SELF}
+   ENDIF
+
+   SELF:ToolBar:ShowButtonMenu(EmailDisplayToolBar_Reply_ID, SELF:oReplyMenu)
+   RETURN SELF
+
+METHOD SendMail() 
+   LOCAL oShell  AS EmailWindowMain
+   LOCAL dwRecno AS DWORD
+
+   oShell  := SELF:oCaller
+   dwRecno := SELF:oServer:Recno
+   
+   IF ogINetDial:Verifyconnection()
+	   oShell:SendEMails(dwRecno)
+		ogINetDial:HangUp()
+   ENDIF	 
+   
+	RETURN SELF
+
 METHOD SetToolbar() 
 
 	LOCAL oTB AS ToolBar
@@ -237,149 +379,6 @@ METHOD SetToolbar()
 	SELF:ToolBar := oTB
 
 	RETURN SELF
-
-
-METHOD MenuCommand(oMenuCommandEvent) 
-   LOCAL dwItemID AS DWORD
-	
-	dwItemID := oMenuCommandEvent:ItemID
-	
-	DO CASE
-	CASE dwItemID = EmailDisplayToolBar_Reply_ID	
-		SELF:ReplyMenu()
-		
-	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_sender_ID //	Reply only to sender
-		SELF:MailReply()
-		
-	CASE dwItemID ==  IDM_ReplyMenu_Reply_Reply_to_all_ID //	Reply to all addressees list in the email
-		SELF:MailReplyAll()	
-		
-	CASE dwItemID = EmailDisplayToolBar_Forward_ID	//	Forward/New to as yet unselected addressee
-	   IF SELF:oCaller:MailBox = SENTBOX
-	      SELF:MailNewFrom()
-	   ELSE
-		   SELF:MailForward()
-		ENDIF
-		
-	CASE dwItemID = EmailDisplayToolBar_Send_ID		//	Send email
-		SELF:SendMail()
-		
-	CASE dwItemID = EmailDisplayToolBar_Attach_ID	// add an attachment
-		SELF:AttachButton()	
-		
-	CASE dwItemID = EmailDisplayToolBar_Print_ID	//	Print out email
-		SELF:PrintMail()
-		
-	CASE dwItemID = EmailDisplayToolBar_Preview_ID	//	Preview email	
-		SELF:PreviewMail()
-		
-	CASE dwItemID = EmailDisplayToolBar_Delete_ID	//	Delete the email currently selected
-		SELF:DeleteMail()
-
-	CASE dwItemID = EmailDisplayToolBar_Address_ID	//	Goto address book
-		SELF:AddressBook()
-		
-	CASE dwItemID = EmailDisplayToolBar_Close_ID	//	Close display window
-		SELF:EndWindow()
-
-	CASE dwItemID = EmailDisplayToolBar_Back_Page_ID	//	Close display window
-		SELF:oDCWebBrowser:HTMLPageGoBack()
-		
-	CASE dwItemID = EmailDisplayToolBar_Fwd_Page_ID	//	Close display window
-		SELF:oDCWebBrowser:HTMLPageGoForward()
-		
-	ENDCASE
-
-	RETURN NIL
-
-
-METHOD DeleteMail() 
-	
-	SELF:oCaller:DeleteSingle(SELF:oLVI)
-	SELF:EndWindow()
-	
-	RETURN SELF
-
-METHOD MailForward() 
-
-	SELF:EndWindow()
-	SELF:oCaller:MailForward()
-
-	RETURN SELF
-
-
-METHOD MailReplyAll() 
-	
-	SELF:EndWindow()
-	SELF:oCaller:MailReplyAll()
-
-	RETURN SELF
-
-METHOD MailReply() 
-	
-	SELF:EndWindow()
-	SELF:oCaller:MailReply()
-
-	RETURN SELF
-
-METHOD SendMail() 
-   LOCAL oShell  AS EmailWindowMain
-   LOCAL dwRecno AS DWORD
-
-   oShell  := SELF:oCaller
-   dwRecno := SELF:oServer:Recno
-   
-   IF ogINetDial:Verifyconnection()
-	   oShell:SendEMails(dwRecno)
-		ogINetDial:HangUp()
-   ENDIF	 
-   
-	RETURN SELF
-
-METHOD PrintMail() 
-	AltD()
-	SELF:oDCWebBrowser:Print()
-   RETURN SELF
-
-METHOD PreviewMail() 
-	
-	SELF:oDCWebBrowser:PrintPreview()
-	
-   RETURN SELF
-
-METHOD AttachButton( ) 
-	LOCAL oDlg AS AttachmentsDialog
-	LOCAL oEmail AS CEmail
-	
-	oEmail := oEmailServer:GetEMail()
-	oDlg := AttachmentsDialog{SELF,oEmail}		// send the decoded email object
-	oDlg:Show()
-	
-	RETURN SELF
-	
-
-METHOD ReplyMenu() 
-
-   IF oReplyMenu = Null_Object
-      oReplyMenu := ReplyMenu{SELF}
-   ENDIF
-
-   SELF:ToolBar:ShowButtonMenu(EmailDisplayToolBar_Reply_ID, SELF:oReplyMenu)
-   RETURN SELF
-
-METHOD MailNewFrom() 
-
-	SELF:EndWindow()
-	SELF:oCaller:MailNewFrom()
-
-	RETURN SELF
-
-
-METHOD Destroy( ) 
-
-   ogOpenWindows:UnRegister(SELF)
-   
-   RETURN SUPER:Destroy()
 
 
 END CLASS

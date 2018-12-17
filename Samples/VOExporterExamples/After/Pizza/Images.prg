@@ -52,7 +52,7 @@ CONSTRUCTOR()
 	return self
 
 END CLASS
-CLASS ImgPIZZA INHERIT Bitmap
+CLASS PIZZA INHERIT Bitmap
 CONSTRUCTOR() 
 	SUPER(ResourceID{"PIZZA", _GetInst()})
 	return self
@@ -68,5 +68,6 @@ CLASS TOMATO INHERIT Bitmap
 CONSTRUCTOR() 
 	SUPER(ResourceID{"TOMATO", _GetInst()})
 	return self
+
 
 END CLASS

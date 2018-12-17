@@ -1,4 +1,4 @@
- HelpAboutDialog DIALOGEX  6, 17, 202, 69
+HelpAboutDialog DIALOGEX  6, 17, 202, 69
 STYLE	4|128|2147483648|12582912
 CAPTION	"About Explorer Sample..."
 FONT	8, "MS Sans Serif"

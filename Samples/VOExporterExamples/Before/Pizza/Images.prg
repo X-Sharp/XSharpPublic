@@ -69,4 +69,5 @@ CONSTRUCTOR()
 	SUPER(ResourceID{"TOMATO", _GetInst()})
 	return self
 
+
 END CLASS

@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>BF102398-AABB-4141-BE44-2249006869DE</ProjectGuid>
+    <ProjectGuid>0C4F4347-33C2-4A81-A1D5-306C46FDB0BD</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Explorer</RootNamespace>
     <AssemblyName>Explorer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>Explorer</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -40,13 +40,13 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,6 +59,7 @@
     <PPO>false</PPO>
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -74,7 +75,7 @@
     <PPO>false</PPO>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(MsBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -106,63 +107,75 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Start.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Explorer Shell.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Menus.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <NativeResource Include="Menus.CustomerExplorerMenu_Accelerator.rc">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Menus.EMPTYSHELLMENU_Accelerator.rc">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Menus.CustomerExplorerMenu.rc">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Menus.EMPTYSHELLMENU.rc">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Menus.OrdersListViewMenu.rc">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </NativeResource>
-    <VOBinary Include="Menus.CustomerExplorerMenu.xsmnu">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </VOBinary>
-    <VOBinary Include="Menus.EMPTYSHELLMENU.xsmnu">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </VOBinary>
-    <VOBinary Include="Menus.OrdersListViewMenu.xsmnu">
-      <DependentUpon>Menus.prg</DependentUpon>
-    </VOBinary>
-    <Compile Include="Customer Explorer.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Help About.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <NativeResource Include="Help About.HelpAboutDialog.rc">
-      <DependentUpon>Help About.prg</DependentUpon>
-    </NativeResource>
-    <VOBinary Include="Help About.HelpAboutDialog.xsfrm">
-      <DependentUpon>Help About.prg</DependentUpon>
-    </VOBinary>
-    <Compile Include="Data Servers.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Icons.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <NativeResource Include="Icons.ICONONE.rc">
-      <DependentUpon>Icons.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Icons.ICONTWO.rc">
-      <DependentUpon>Icons.prg</DependentUpon>
-    </NativeResource>
+<Compile Include="Start.prg">
+  <SubType>Code</SubType>
+</Compile>
+<None Include="Properties\cavowed.inf" />
+<None Include="Properties\saswed.inf" />
+<None Include="Properties\GSGWED.INF" />
+<None Include="Properties\cavowed.tpl" />
+<None Include="Properties\cavoded.tpl" />
+<None Include="Properties\cavofed.tpl" />
+<None Include="Resources\ONE.ICO" />
+<None Include="Resources\TWO.ICO" />
+<Compile Include="Explorer Shell.prg">
+  <SubType>Code</SubType>
+</Compile>
+<Compile Include="Menus.prg">
+  <SubType>Code</SubType>
+</Compile>
+<NativeResource Include="Menus.CustomerExplorerMenu_Accelerator.rc">
+  <DependentUpon>Menus.prg</DependentUpon>
+</NativeResource>
+<NativeResource Include="Menus.EMPTYSHELLMENU_Accelerator.rc">
+  <DependentUpon>Menus.prg</DependentUpon>
+</NativeResource>
+<NativeResource Include="Menus.CustomerExplorerMenu.rc">
+  <DependentUpon>Menus.prg</DependentUpon>
+</NativeResource>
+<NativeResource Include="Menus.EMPTYSHELLMENU.rc">
+  <DependentUpon>Menus.prg</DependentUpon>
+</NativeResource>
+<NativeResource Include="Menus.OrdersListViewMenu.rc">
+  <DependentUpon>Menus.prg</DependentUpon>
+</NativeResource>
+<VOBinary Include="Menus.CustomerExplorerMenu.xsmnu">
+  <DependentUpon>Menus.prg</DependentUpon>
+</VOBinary>
+<VOBinary Include="Menus.EMPTYSHELLMENU.xsmnu">
+  <DependentUpon>Menus.prg</DependentUpon>
+</VOBinary>
+<VOBinary Include="Menus.OrdersListViewMenu.xsmnu">
+  <DependentUpon>Menus.prg</DependentUpon>
+</VOBinary>
+<Compile Include="Customer Explorer.prg">
+  <SubType>Code</SubType>
+</Compile>
+<Compile Include="Help About.prg">
+  <SubType>Code</SubType>
+</Compile>
+<NativeResource Include="Help About.HelpAboutDialog.rc">
+  <DependentUpon>Help About.prg</DependentUpon>
+</NativeResource>
+<VOBinary Include="Help About.HelpAboutDialog.xsfrm">
+  <DependentUpon>Help About.prg</DependentUpon>
+</VOBinary>
+<Compile Include="Data Servers.prg">
+  <SubType>Code</SubType>
+</Compile>
+<Compile Include="Icons.prg">
+  <SubType>Code</SubType>
+</Compile>
+<NativeResource Include="Icons.ICONONE.rc">
+  <DependentUpon>Icons.prg</DependentUpon>
+</NativeResource>
+<NativeResource Include="Icons.ICONTWO.rc">
+  <DependentUpon>Icons.prg</DependentUpon>
+</NativeResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

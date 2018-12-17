@@ -1,4 +1,4 @@
- OrdersListViewMenu MENU
+OrdersListViewMenu MENU
 Begin
 	POPUP "X"
 	BEGIN

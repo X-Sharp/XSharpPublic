@@ -2,19 +2,6 @@ class ExplorerShellWindow inherit ShellWindow
 	export aChildWindows as array
 	
 
-method OpenExplorer() 
-	local oNewExplorer as CustomerExplorer
-	
-	// create the new explorer window with labels and show it
-	oNewExplorer := CustomerExplorer{self, true}
-	oNewExplorer:Show()
-
-	// add the new explorer to the list of children
-	AAdd(aChildWindows, oNewExplorer)
-
-	return nil
-
-
 method Close(oCloseEvent) 
 
 	self:Owner:Quit()
@@ -28,25 +15,15 @@ method FileExit()
 	return self:EndWindow()
 	
 
+method FileOpen() 
+	
+	return self:OpenExplorer()
+
+
 method HelpAboutDialog() 
 
 	return HelpAboutDialog{self}:Show()
 	
-
-method WindowCascade() 
-
-	return self:Arrange(ARRANGECASCADE)
-
-
-method WindowIcon() 
-
-	return self:Arrange(ARRANGEASICONS)
-
-
-method WindowTile() 
-
-	return self:Arrange(ARRANGETILE)
-
 
 CONSTRUCTOR(oApp) 
 	local oStatusBar as StatusBar
@@ -69,9 +46,32 @@ CONSTRUCTOR(oApp)
 	return self
 
 
-method FileOpen() 
+method OpenExplorer() 
+	local oNewExplorer as CustomerExplorer
 	
-	return self:OpenExplorer()
+	// create the new explorer window with labels and show it
+	oNewExplorer := CustomerExplorer{self, true}
+	oNewExplorer:Show()
+
+	// add the new explorer to the list of children
+	AAdd(aChildWindows, oNewExplorer)
+
+	return nil
+
+
+method WindowCascade() 
+
+	return self:Arrange(ARRANGECASCADE)
+
+
+method WindowIcon() 
+
+	return self:Arrange(ARRANGEASICONS)
+
+
+method WindowTile() 
+
+	return self:Arrange(ARRANGETILE)
 
 
 

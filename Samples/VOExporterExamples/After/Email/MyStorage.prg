@@ -1,4 +1,4 @@
-CLASS MyStorage INHERIT CStorage
+﻿CLASS MyStorage INHERIT CStorage
 
 METHOD CreateNewEmail() AS CEMail PASCAL 
     RETURN CEmail{,SELF}
@@ -9,14 +9,14 @@ CONSTRUCTOR()
 
    cCurPath := CurDrive()+":\"+CurDir(CurDrive())
 
-   cPath := "C:\cavo28SP3\Samples\Email"
+   cPath := "C:\Cavo28SP3\Samples\Email"
 
-   IF DirChange(Cast2Psz(cPath)) = 0
+   IF DirChange(String2Psz(cPath)) = 0
       cPath += "\Data"
-      IF DirChange(Cast2Psz(cPath)) != 0
-         DirMake(Cast2Psz(cPath))
+      IF DirChange(String2Psz(cPath)) != 0
+         DirMake(String2Psz(cPath))
       ENDIF
-      DirChange(Cast2Psz(cCurPath))
+      DirChange(String2Psz(cCurPath))
    ELSE
       cPath := WorkDir()
    ENDIF

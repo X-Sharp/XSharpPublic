@@ -1,4 +1,4 @@
- CustomerExplorerMenu ACCELERATORS
+CustomerExplorerMenu ACCELERATORS
 Begin
 	79, 26580, CONTROL, VIRTKEY
 	115, 26585, ALT, VIRTKEY

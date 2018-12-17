@@ -1,4 +1,4 @@
- EmailAddressBook DIALOGEX  21, 19, 260, 190
+EmailAddressBook DIALOGEX  21, 19, 260, 190
 STYLE	1073741824
 FONT	8, "MS Shell Dlg"
 BEGIN

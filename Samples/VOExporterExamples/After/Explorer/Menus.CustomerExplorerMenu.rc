@@ -1,4 +1,4 @@
- CustomerExplorerMenu MENU
+CustomerExplorerMenu MENU
 Begin
 	POPUP "&File"
 	BEGIN

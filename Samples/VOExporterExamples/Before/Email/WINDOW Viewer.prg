@@ -4,6 +4,33 @@ STATIC DEFINE VIEWERDLG_INFO := 100
 STATIC DEFINE VIEWERDLG_SIZER := 102 
 #endregion
 
+CLASS MailIDsDialog INHERIT ViewerDlg
+
+METHOD PostInit(oParent,uExtra) 
+
+	SUPER:PostInit()
+	
+	SELF:Size := Dimension{250,300}
+	
+	SELF:Caption   := "Mail IDs"
+	SELF:TextValue := uExtra
+   RETURN SELF
+
+END CLASS
+CLASS MessageSourceDialog INHERIT ViewerDlg
+
+METHOD PostInit(oParent,uExtra) 
+
+	SUPER:PostInit()
+	
+	SELF:Size := Dimension{500, 300}
+	
+	SELF:Caption   := "Message Source"
+	SELF:TextLimit := 1000000L
+	SELF:TextValue := uExtra
+   RETURN SELF
+
+END CLASS
 class ViewerDlg inherit DIALOGWINDOW 
 
 	protect oDCInfo as MULTILINEEDIT
@@ -55,9 +82,6 @@ METHOD PostInit(oParent,uExtra)
 	
 	RETURN NIL
 
-ASSIGN TextValue(cValue) 
-   RETURN oDCInfo:TextValue := cValue
-
 ASSIGN TextLimit(nBytes) 
    LOCAL liCount as DWORD
 
@@ -69,32 +93,7 @@ ASSIGN TextLimit(nBytes)
    RETURN nBytes
 
 
-END CLASS
-CLASS MessageSourceDialog INHERIT ViewerDlg
-
-METHOD PostInit(oParent,uExtra) 
-
-	SUPER:PostInit()
-	
-	SELF:Size := Dimension{500, 300}
-	
-	SELF:Caption   := "Message Source"
-	SELF:TextLimit := 1000000L
-	SELF:TextValue := uExtra
-   RETURN SELF
-
-END CLASS
-CLASS MailIDsDialog INHERIT ViewerDlg
-
-METHOD PostInit(oParent,uExtra) 
-
-	SUPER:PostInit()
-	
-	SELF:Size := Dimension{250,300}
-	
-	SELF:Caption   := "Mail IDs"
-	SELF:TextValue := uExtra
-   RETURN SELF
-
+ASSIGN TextValue(cValue) 
+   RETURN oDCInfo:TextValue := cValue
 
 END CLASS

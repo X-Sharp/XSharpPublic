@@ -1,4 +1,4 @@
- EmailPropertiesDialog DIALOGEX  22, 36, 280, 228
+EmailPropertiesDialog DIALOGEX  22, 36, 280, 228
 STYLE	4|128|2147483648|12582912|524288
 CAPTION	"Email Properties"
 FONT	8, "MS Shell Dlg"

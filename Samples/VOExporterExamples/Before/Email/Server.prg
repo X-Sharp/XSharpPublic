@@ -1,46 +1,21 @@
-CLASS EmailStore INHERIT DBSERVER
-		
-
-CONSTRUCTOR(cDBF, lShare, lRO, xRdd)  
-   LOCAL oFS AS FILESPEC
+CLASS Contacts INHERIT DBSERVER
 	
-	oFS 	   := FileSpec{"EMAIL.DBF"}
-	oFS:Path := "C:\cavo28SP3\Samples\Email\"
+
+CONSTRUCTOR(cDBF, lShare, lRO, xRdd) 
+	LOCAL oFS AS FILESPEC
+	
+	oFS 	   := FileSpec{"CONTACTS.DBF"}
+	oFS:Path := "C:\Cavo28SP3\Samples\Email\"
 
 	SUPER(oFS, TRUE, FALSE , "DBFCDX" )
 
-	oHyperLabel := HyperLabel{#EmailStore, "EmailStore", "", "EmailStore"}
+	oHyperLabel := HyperLabel{#Contacts, "Contacts", "", "Contacts"}
 
 	RETURN SELF
 
-METHOD AddReceivedEmail(oMail) 
-	
-	SELF:AddEmail(oMail, INBOX, "ADMIN", TRUE) // InBox
-	SELF:Commit()
-
-	RETURN SELF
-
-METHOD AddEmailForTransmission (oEmail AS CEmail) AS LOGIC PASCAL 
-   oEMail:SetHeaderInfo()
-	SELF:AddEmail(oEmail, OUTBOX, "ADMIN", FALSE) // OutBox
-	SELF:Commit()
-	
-	RETURN TRUE
-
-
-METHOD ApplyInboxRules() 
-	
-	// assuems a prepared and decoded email
-	// applies inbox business rules to determine the CORRECT inbox to receive the email
-	
-	RETURN INBOX
-
-METHOD ApplySentboxRules() 
-	
-	// assuems a prepared and decoded email
-	// applies inbox business rules to determine the CORRECT inbox to receive the email
-	
-	RETURN SENTBOX
+END CLASS
+CLASS EmailStore INHERIT DBSERVER
+		
 
 METHOD AddEmail(oEmail AS CEmail, cBoxID AS STRING, cUser AS STRING, lUnread AS LOGIC) AS LOGIC PASCAL 
 	LOCAL cToName AS STRING
@@ -78,19 +53,34 @@ METHOD AddEmail(oEmail AS CEmail, cBoxID AS STRING, cUser AS STRING, lUnread AS 
 	RETURN TRUE
 
 
-METHOD GetEMail() 
-   LOCAL oEmail AS CEMail
+METHOD AddEmailForTransmission (oEmail AS CEmail) AS LOGIC PASCAL 
+   oEMail:SetHeaderInfo()
+	SELF:AddEmail(oEmail, OUTBOX, "ADMIN", FALSE) // OutBox
+	SELF:Commit()
+	
+	RETURN TRUE
 
-   oEMail := ogStorage:CreateNewEmail()
-   oEMail:MailHeader     := SELF:FIELDGET(#E_HEADER)
-   oEMail:GetHeaderInfo()
-   oEMail:Body           := SELF:FIELDGET(#E_BODY)
-   oEMail:BodyHtml       := SELF:FIELDGET(#E_BODYHTML)
-   IF SELF:FIELDGET(#E_ATCH)
-      oEMail:AttachmentInfo := SELF:FIELDGET(#E_ATTACHS)
-   ENDIF
 
-   RETURN oEMail
+METHOD AddReceivedEmail(oMail) 
+	
+	SELF:AddEmail(oMail, INBOX, "ADMIN", TRUE) // InBox
+	SELF:Commit()
+
+	RETURN SELF
+
+METHOD ApplyInboxRules() 
+	
+	// assuems a prepared and decoded email
+	// applies inbox business rules to determine the CORRECT inbox to receive the email
+	
+	RETURN INBOX
+
+METHOD ApplySentboxRules() 
+	
+	// assuems a prepared and decoded email
+	// applies inbox business rules to determine the CORRECT inbox to receive the email
+	
+	RETURN SENTBOX
 
 METHOD Delete() 
    LOCAL oEmail  AS CEMail
@@ -181,6 +171,32 @@ METHOD FileSaveAs(oOwner, oEMail)
 
 	RETURN SELF
 
+METHOD GetEMail() 
+   LOCAL oEmail AS CEMail
+
+   oEMail := ogStorage:CreateNewEmail()
+   oEMail:MailHeader     := SELF:FIELDGET(#E_HEADER)
+   oEMail:GetHeaderInfo()
+   oEMail:Body           := SELF:FIELDGET(#E_BODY)
+   oEMail:BodyHtml       := SELF:FIELDGET(#E_BODYHTML)
+   IF SELF:FIELDGET(#E_ATCH)
+      oEMail:AttachmentInfo := SELF:FIELDGET(#E_ATTACHS)
+   ENDIF
+
+   RETURN oEMail
+
+CONSTRUCTOR(cDBF, lShare, lRO, xRdd)  
+   LOCAL oFS AS FILESPEC
+	
+	oFS 	   := FileSpec{"EMAIL.DBF"}
+	oFS:Path := "C:\Cavo28SP3\Samples\Email\"
+
+	SUPER(oFS, TRUE, FALSE , "DBFCDX" )
+
+	oHyperLabel := HyperLabel{#EmailStore, "EmailStore", "", "EmailStore"}
+
+	RETURN SELF
+
 ACCESS MailSize 
    RETURN SELF:FIELDGET(#E_SIZE)
 
@@ -210,21 +226,5 @@ METHOD SendMailAsFile(cFile, oMail)
 	RETURN SELF
 	
 
-
-END CLASS
-CLASS Contacts INHERIT DBSERVER
-	
-
-CONSTRUCTOR(cDBF, lShare, lRO, xRdd) 
-	LOCAL oFS AS FILESPEC
-	
-	oFS 	   := FileSpec{"CONTACTS.DBF"}
-	oFS:Path := "C:\cavo28SP3\Samples\Email\"
-
-	SUPER(oFS, TRUE, FALSE , "DBFCDX" )
-
-	oHyperLabel := HyperLabel{#Contacts, "Contacts", "", "Contacts"}
-
-	RETURN SELF
 
 END CLASS

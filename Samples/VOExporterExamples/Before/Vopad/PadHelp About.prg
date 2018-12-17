@@ -1,7 +1,7 @@
 #region DEFINES
-STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101 
-STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102 
 STATIC DEFINE HELPABOUT_ABOUTTEXT := 100 
+STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102 
+STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101 
 #endregion
 
 class HelpAbout inherit DIALOGWINDOW 
@@ -35,11 +35,6 @@ self:PostInit(oParent,uExtra)
 
 return self
 
-
-METHOD PushButton1() 
-
-	SELF:EndDialog()
-	
 
 METHOD PostInit(oParent,uExtra) 
 	LOCAL sVer AS STRING
@@ -96,5 +91,10 @@ METHOD PostInit(oParent,uExtra)
 
 	RETURN NIL
 
+
+METHOD PushButton1() 
+
+	SELF:EndDialog()
+	
 
 END CLASS

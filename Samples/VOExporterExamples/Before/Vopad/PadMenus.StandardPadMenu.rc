@@ -1,4 +1,4 @@
- StandardPadMenu MENU
+StandardPadMenu MENU
 Begin
 	POPUP "&File"
 	BEGIN

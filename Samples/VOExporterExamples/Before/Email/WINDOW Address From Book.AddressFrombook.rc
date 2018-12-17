@@ -1,4 +1,4 @@
- AddressFrombook DIALOGEX  26, 24, 361, 345
+AddressFrombook DIALOGEX  26, 24, 361, 345
 STYLE	1073741824
 FONT	8, "MS Shell Dlg"
 BEGIN
